@@ -1,0 +1,66 @@
+--First Time Point
+node FTP() returns (X:bool);
+let
+  X = true -> false;
+tel
+
+--Historically
+node H(X:bool) returns (Y:bool);
+let
+    Y = X -> (X and (pre Y));
+tel
+
+--Y since inclusive X
+node SI(X,Y: bool) returns (Z:bool);
+let
+Z = Y and (X or (false -> pre Z));
+tel
+
+--Y since X
+node S(X,Y: bool) returns (Z:bool);
+let
+Z = X or (Y and (false -> pre Z));
+tel
+
+--Once
+node O(X:bool) returns (Y:bool);
+let
+ Y = X or (false -> pre Y);
+tel
+
+node First( X : bool ) returns ( Y : bool );
+let
+  Y = X -> pre Y;
+tel
+
+--Timed Once: less than or equal to N
+node OTlore(const N: int; X: bool; ) returns (Y: bool);
+    var C:int;
+let
+    C = if X then 0
+        else (-1 -> pre C + (if pre C <0 then 0 else 1));
+
+    Y = First(X)
+        ->
+        (if C < 0  then false
+         else C <= N
+        );
+tel
+
+-- Timed Historically: less than or equal to N
+node HTlore(const N: int; X: bool) returns (Y: bool);
+let
+  Y = not OTlore(N, not X);
+tel
+
+-- Timed Since: less than or equal to N
+node STlore(const N: int; X: bool; Y: bool; )  returns (Z: bool);
+let
+  Z = S(X, Y) and OTlore(N, X);
+tel
+
+-- Timed Since Inclusive: less than or equal to N
+node SITlore(const N: int; X: bool; Y: bool; )  returns (Z: bool);
+let
+  Z = SI(X,Y) and OTlore(N, X);
+tel

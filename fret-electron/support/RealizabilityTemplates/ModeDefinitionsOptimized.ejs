@@ -1,0 +1,10 @@
+<% for (i=0; i < modes.length; i++) {%>
+ Mode <%- modes[i].name %> (
+  <% if (modes[i].require) {%>
+    <%- modes[i].require %>
+  <%}%>
+  <% if (modes[i].ensure) {%>
+    <%- modes[i].ensure %>
+  <%}%>
+ );
+<%}%>

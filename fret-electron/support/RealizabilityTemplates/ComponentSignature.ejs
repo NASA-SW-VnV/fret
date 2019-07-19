@@ -1,0 +1,13 @@
+node 
+<%- componentName %>(<% for (i=0; i < inputVariables.length; i++){%>
+
+<%- inputVariables[i].name %>:<%- inputVariables[i].type %>; 
+
+<%}
+
+<%for (i=0; i < outputVariables.length; i++) {%>
+<%-outputVariables[i].name %>: <%- outputVariables[i].type %>;
+<%}
+
+%>)
+returns ( );
