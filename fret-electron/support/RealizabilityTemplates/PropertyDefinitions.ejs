@@ -1,17 +1,13 @@
 <% for (i=0; i < properties.length; i++) {%> 
-
-P<%-i%> = <%-properties[i].value%>; 
-
+P<%- i -%> = <%- properties[i].value %>; 
 <%}%>
 
 <% for(i=0; i < properties.length; i++){%>
---%PROPERTY P<%-i%>;
+--%PROPERTY P<%- i -%>;
 <%}%>
-
---%REALIZABLE <% 
-for(i=0; i < properties.length;i++){%>
-<%-outputVariables[i].name-%> 
-<%if(i<properties.length){%>, <%}%>
-<%else{%> ; <%}%>
+<%for(i=0; i < inputVariables.length;i++){%>
+    <%if(i==0){%> --%REALIZABLE <%}%>    
+    <%- inputVariables[i].name -%> 
+    <%if(i<inputVariables.length){%> , <%}else{%> ; <%}%>
 <%}%> 
 tel

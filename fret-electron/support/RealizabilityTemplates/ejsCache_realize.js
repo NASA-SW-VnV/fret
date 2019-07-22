@@ -1,4 +1,4 @@
-const contractSignature = require('ejs-compiled-loader!./ComponentSignature.ejs'),
+const componentSignature = require('ejs-compiled-loader!./ComponentSignature.ejs'),
       internalVariables = require('ejs-compiled-loader!./InternalVariables.ejs'),
       internalAssignments = require('ejs-compiled-loader!./InternalAssignments.ejs'),
       modeDefinitions = require('ejs-compiled-loader!./ModeDefinitions.ejs'),
@@ -7,7 +7,7 @@ const contractSignature = require('ejs-compiled-loader!./ComponentSignature.ejs'
 
 exports.renderRealizeCode = () => {
   return {
-    contract: {
+    component: {
       componentSignature: componentSignature,
       internalVariables: internalVariables,
       internalAssignments: internalAssignments,
