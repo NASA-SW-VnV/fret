@@ -1,1 +1,4 @@
-
+<%for (i=0; i < internalVariables.length; i++) {%>
+<%- internalVariables[i].name %> = <%- assignments[i] %>;<%}%>
+<%for (i=0; i < modes.length; i++) {%>
+<%- modes[i].name %> = <%- modes[i].assignment %>;<%}%>

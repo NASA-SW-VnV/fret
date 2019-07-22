@@ -1,6 +1,13 @@
-let
 <%for (i=0; i < internalVariables.length; i++) {%>
-var <%- internalVariables[i].name %>: <%- internalVariables[i].type %> = <%- assignments[i] %><%}%>
-
+var <%- internalVariables[i].name %>: <%- internalVariables[i].type %>;<%}%>
 <%for (i=0; i < modes.length; i++) {%>
-var <%- modes[i].name %>: <%- modes[i].type %> = <%- modes[i].assignment %><%}%>
+var <%- modes[i].name %>: <%- modes[i].type %>;<%}%>
+<%for (i=0; i < modes.length; i++) {%>
+var <%- modes[i].name %>: <%- modes[i].type %>;<%}%>
+<%for (i=0; i < properties.length; i++) {%>
+var P<%- i -%>:bool;<%}%>
+
+
+let
+
+
