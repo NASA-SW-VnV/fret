@@ -1,10 +1,10 @@
 <% for (i=0; i < properties.length; i++) {%> 
 (* <%-properties[i].fullText%>  *)
-P<%- i -%> = <%- properties[i].value %>;  
+<%- properties[i].reqid -%> = <%- properties[i].value %>;  
 
 <%}%>
 <% for(i=0; i < properties.length; i++){%> 
---%PROPERTY P<%- i %>; <%}%>
+--%PROPERTY <%- properties[i].reqid %>; <%}%>
 <%for(i=0; i < inputVariables.length;i++){%><%if(i==0){%>--%REALIZABLE <%}%><%- inputVariables[i].name -%><%if(i<inputVariables.length-1){%>,<%}else{%>;<%}%> 
 <%}%> 
 

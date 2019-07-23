@@ -5,7 +5,7 @@ var <%- modes[i].name %>: <%- modes[i].type %>;<%}%>
 <%for (i=0; i < modes.length; i++) {%>
 var <%- modes[i].name %>: <%- modes[i].type %>;<%}%>
 <%for (i=0; i < properties.length; i++) {%>
-var P<%- i -%>:bool;<%}%>
+var <%- properties[i].reqid -%>:bool;<%}%>
 
 var FTP: bool;
 
