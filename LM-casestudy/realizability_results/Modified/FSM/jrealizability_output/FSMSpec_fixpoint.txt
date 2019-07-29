@@ -1,0 +1,11 @@
+dkooi@rse-mac-2:~/Workspace/fret/LM-casestudy/realizability_results/Modified/FSM$ jrealizability FSMSpec.lus --fixpoint
+Warning at line 86:64 unguarded pre expression
+Warning at line 89:81 unguarded pre expression
+==========================================
+  JRealizability 3.0.1
+==========================================
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+UNREALIZABLE || REFINEMENTS = 1 || Time = 0.924s
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
