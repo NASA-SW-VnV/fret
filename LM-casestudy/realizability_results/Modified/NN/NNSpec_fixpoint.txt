@@ -1,0 +1,14 @@
+dkooi@rse-mac-2:~/Workspace/fret/LM-casestudy/realizability_results/Modified/NN$ jrealizability NNSpec.lus --fixpoint
+Warning at line 293:25 unguarded pre expression
+Warning at line 293:40 unguarded pre expression
+Warning at line 292:39 non-constant division
+Warning at line 293:32 non-constant division
+==========================================
+  JRealizability 3.0.1
+==========================================
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+REALIZABLE || REFINEMENTS = 1 || Time = 0.402s
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
