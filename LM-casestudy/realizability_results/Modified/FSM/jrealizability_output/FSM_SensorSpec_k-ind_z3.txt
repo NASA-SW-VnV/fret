@@ -1,0 +1,37 @@
+idkooi@rse-mac-2:~/Desktop/Output/Specs/Modified/FSM$ jrealizability FSM_SensorSpec.lus --solver z3
+==========================================
+  JRealizability 3.0.1
+==========================================
+ 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+UNREALIZABLE || K = 1 || Time = 0.105s
+                            Step 
+variable                       0 
+ 
+REALIZABILITY INPUTS       
+MODE                        true 
+limits                     false 
+request                     true 
+senstate                       1 
+ 
+NODE LOCALS                
+FSM010                     false 
+FSM011v1                   false 
+FSM012                     false 
+FSM013                      true 
+pre_senstate                   0 
+sen_fault_state                2 
+sen_nominal_state              0 
+sen_transition_state           1 
+ 
+NODE INLINED               
+H~0.X                      false 
+H~0.Y                      false 
+H~1.X                      false 
+H~1.Y                      false 
+H~2.X                      false 
+H~2.Y                      false 
+H~3.X                       true 
+H~3.Y                       true 
+ 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
