@@ -1,0 +1,53 @@
+dkooi@rse-mac-2:~/Desktop/Output/Specs/Modified/FSM$ jrealizability FSM_AutopilotSpec.lus --solver z3
+==========================================
+  JRealizability 3.0.1
+==========================================
+ 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+UNREALIZABLE || K = 1 || Time = 0.1s
+                            Step 
+variable                       0 
+ 
+REALIZABILITY INPUTS       
+apfail                     false 
+good                       false 
+standby                    false 
+state                          4 
+supported                  false 
+ 
+NODE LOCALS                
+FSM002                     false 
+FSM003                     false 
+FSM004                     false 
+FSM005                     false 
+FSM006                     false 
+FSM007                     false 
+FSM008v1                   false 
+FSM008v2                   false 
+FSM009                     false 
+ap_maneuver_state              2 
+ap_nominal_state               1 
+ap_standby_state               3 
+ap_transition_state            0 
+ 
+NODE INLINED               
+H~0.X                      false 
+H~0.Y                      false 
+H~1.X                      false 
+H~1.Y                      false 
+H~2.X                      false 
+H~2.Y                      false 
+H~3.X                      false 
+H~3.Y                      false 
+H~4.X                      false 
+H~4.Y                      false 
+H~5.X                      false 
+H~5.Y                      false 
+H~6.X                      false 
+H~6.Y                      false 
+H~7.X                      false 
+H~7.Y                      false 
+H~8.X                      false 
+H~8.Y                      false 
+ 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

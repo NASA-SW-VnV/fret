@@ -1,0 +1,65 @@
+dkooi@rse-mac-2:~/Desktop/Output/Specs/Modified/FSM$ jrealizability FSMSpec.lus 
+
+Warning at line 86:64 unguarded pre expression
+Warning at line 89:81 unguarded pre expression
+==========================================
+  JRealizability 3.0.1
+==========================================
+ 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+UNREALIZABLE || K = 1 || Time = 0.1s
+                              Step 
+variable                         0 
+ 
+REALIZABILITY INPUTS         
+apfail                       false 
+limits                       false 
+standby                      false 
+supported                    false 
+ 
+NODE LOCALS                  
+FSM001v1                     false 
+FSM001v2                     false 
+FSM001v3                     false 
+FTP                           true 
+autopilot                    false 
+htlore3autopilot             false 
+htlore3notpreprelimits       false 
+not_pre_pre_limits           false 
+preautopilot                 false 
+prelimits                    false 
+ 
+NODE INLINED                 
+HT~0.L                           3 
+HT~0.OT~0.L                      3 
+HT~0.OT~0.OTlore~0.C             0 
+HT~0.OT~0.OTlore~0.N             3 
+HT~0.OT~0.OTlore~0.X          true 
+HT~0.OT~0.OTlore~0.Y          true 
+HT~0.OT~0.R                      0 
+HT~0.OT~0.X                   true 
+HT~0.OT~0.Y                   true 
+HT~0.R                           0 
+HT~0.X                       false 
+HT~0.Y                       false 
+HT~1.L                           3 
+HT~1.OT~0.L                      3 
+HT~1.OT~0.OTlore~0.C             0 
+HT~1.OT~0.OTlore~0.N             3 
+HT~1.OT~0.OTlore~0.X          true 
+HT~1.OT~0.OTlore~0.Y          true 
+HT~1.OT~0.R                      0 
+HT~1.OT~0.X                   true 
+HT~1.OT~0.Y                   true 
+HT~1.R                           0 
+HT~1.X                       false 
+HT~1.Y                       false 
+H~0.X                        false 
+H~0.Y                        false 
+H~1.X                        false 
+H~1.Y                        false 
+H~2.X                        false 
+H~2.Y                        false 
+~flatten0                    false 
+ 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

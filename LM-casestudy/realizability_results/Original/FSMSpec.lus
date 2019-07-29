@@ -1,0 +1,101 @@
+--Historically
+node H(X:bool) returns (Y:bool);
+let
+    Y = X -> (X and (pre Y));
+tel
+
+--Y since inclusive X
+node SI(X,Y: bool) returns (Z:bool);
+let
+Z = Y and (X or (false -> pre Z));
+tel
+
+--Y since X
+node S(X,Y: bool) returns (Z:bool);
+let
+Z = X or (Y and (false -> pre Z));
+tel
+
+--Once
+node O(X:bool) returns (Y:bool);
+let
+ Y = X or (false -> pre Y);
+tel
+
+--Timed Once: less than or equal to N
+node OTlore(const N: int; X: bool;) returns (Y: bool);
+    var C:int;
+let
+    C = if X then 0
+        else (-1 -> pre C + (if pre C <0 then 0 else 1));
+
+    Y = 0 <= C and C <= N;
+tel
+
+--Timed Once: general case
+node OT(const L: int; const R: int; X: bool;) returns (Y: bool);
+var  D:bool;
+
+let
+D=delay(X, R);
+Y=OTlore(L-R, D);
+tel
+
+-- Timed Historically: general case
+node HT(const L: int; const R: int; X: bool;) returns (Y: bool);
+let
+  Y = not OT(L, R, not X);
+tel
+
+-- Timed Since: general case
+node ST(const L: int; const R: int; X: bool; Y: bool;)  returns (Z: bool);
+let
+  Z = S(X, Y) and OT(L, R, X);
+tel
+
+-- Timed Since: general case
+node SIT(const L: int; const R: int; X: bool; Y: bool;) returns (Z: bool);
+let
+  Z = SI(X, Y) and OT(L, R, X);
+tel
+
+
+
+
+
+node FSMSpec( apfail:bool;  limits:bool;  standby:bool;  supported:bool;    pullup: bool;  ) returns ( );
+
+var autopilot:bool; htlore3autopilot:bool; htlore3notpreprelimits:bool; preautopilot:bool; prelimits:bool; FSM001v2:bool; FSM001v3:bool; FSM001v1:bool; FTP: bool; 
+let
+
+
+FTP = true->false;
+
+
+autopilot = (not standby) and supported and (not apfail);
+htlore3autopilot = HTlore(3, autopilot);
+htlore3notpreprelimits = HTlore(3, not_pre_pre_limits);
+preautopilot = false -> pre autopilot;
+prelimits = false -> pre limits;
+
+
+
+
+ 
+(* Req text: if autopilot & preautopilot & prelimits FSM shall immediately satisfy pullup  *)
+FSM001v2 = (H(((autopilot and preautopilot and prelimits) and ((pre ( not (autopilot and preautopilot and prelimits))) or FTP)) -> (pullup)));  
+ 
+(* Req text: if  htlore3autopilot  &  htlore3notpreprelimits  &  prelimits  FSM  shall  immediately satisfy pullup  *)
+FSM001v3 = (H(((htlore3autopilot and htlore3notpreprelimits and prelimits) and ((pre ( not (htlore3autopilot and htlore3notpreprelimits and prelimits))) or FTP)) -> (pullup)));  
+ 
+(* Req text: FSM  shall  always  satisfy(limits & !  standby & !  apfail &supported => pullup)  *)
+FSM001v1 = (H((( limits and not standby and not apfail and supported -> pullup ))));  
+
+ 
+ --%PROPERTY FSM001v2;  
+ --%PROPERTY FSM001v3;  
+ --%PROPERTY FSM001v1; 
+--%REALIZABLE apfail, limits, standby, supported;  
+
+tel
+
