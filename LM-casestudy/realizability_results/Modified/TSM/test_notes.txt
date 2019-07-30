@@ -1,0 +1,64 @@
+3/30/19
+
+Changed -> to =>
+
+dkooi@rse-mac-2:~/Workspace/fret/LM-casestudy/realizability_results/Modified/TSM$ jrealizability TriplexSignalMonitorSpec.lus --solver z3
+==========================================
+  JRealizability 3.0.1
+==========================================
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+UNKNOWN || True for 1 steps || Time = 4.618s
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+dkooi@rse-mac-2:~/Workspace/fret/LM-casestudy/realizability_results/Modified/TSM$ jrealizability TriplexSignalMonitorSpec.lus --fixpoint --solver z3
+==========================================
+  JRealizability 3.0.1
+==========================================
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+UNKNOWN || True for 0 steps || Time = 1m 17.759s
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+fixpoint process failed
+jkind.JKindException: AEVAL error (see TriplexSignalMonitorSpec_fixpointsubset0_s_part.smt2 file for details)
+	at jkind.aeval.AevalSolver.readFromAeval(AevalSolver.java:299)
+	at jkind.aeval.AevalSolver.refinementQuery(AevalSolver.java:248)
+	at jkind.realizability.engines.RealizabilityFixpointEngine.refineRegion(RealizabilityFixpointEngine.java:229)
+	at jkind.realizability.engines.RealizabilityFixpointEngine.checkRealizable(RealizabilityFixpointEngine.java:215)
+	at jkind.realizability.engines.RealizabilityFixpointEngine.main(RealizabilityFixpointEngine.java:43)
+	at jkind.realizability.engines.RealizabilityEngine.run(RealizabilityEngine.java:67)
+	at java.lang.Thread.run(Thread.java:748)
+
+
+7/30/19
+Added
+assert FC=0 or FC=1 or FC=2 or FC=4
+
+dkooi@rse-mac-2:~/Workspace/fret/LM-casestudy/realizability_results/Modified/TSM$ jrealizability TriplexSignalMonitorSpec.lus --solver z3
+==========================================
+  JRealizability 3.0.1
+==========================================
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+UNKNOWN || True for 2 steps || Time = 59.636s
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+dkooi@rse-mac-2:~/Workspace/fret/LM-casestudy/realizability_results/Modified/TSM$ jrealizability TriplexSignalMonitorSpec.lus --fixpoint --solver z3
+==========================================
+  JRealizability 3.0.1
+==========================================
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+UNKNOWN || True for 0 steps || Time = 21.616s
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+fixpoint process failed
+jkind.JKindException: AEVAL error (see TriplexSignalMonitorSpec_fixpointsubset0_s_part.smt2 file for details)
+	at jkind.aeval.AevalSolver.readFromAeval(AevalSolver.java:299)
+	at jkind.aeval.AevalSolver.refinementQuery(AevalSolver.java:248)
+	at jkind.realizability.engines.RealizabilityFixpointEngine.refineRegion(RealizabilityFixpointEngine.java:229)
+	at jkind.realizability.engines.RealizabilityFixpointEngine.checkRealizable(RealizabilityFixpointEngine.java:215)
+	at jkind.realizability.engines.RealizabilityFixpointEngine.main(RealizabilityFixpointEngine.java:43)
+	at jkind.realizability.engines.RealizabilityEngine.run(RealizabilityEngine.java:67)
+	at java.lang.Thread.run(Thread.java:748)
