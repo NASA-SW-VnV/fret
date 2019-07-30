@@ -78,18 +78,15 @@ preautopilot = false -> pre autopilot;
 prelimits = false -> pre limits;
 not_pre_pre_limits = (false -> pre (false -> not prelimits)); 
 
-
-
-
  
 (* Req text: if autopilot & preautopilot & prelimits FSM shall immediately satisfy pullup  *)
-FSM001v2 = (H(((autopilot and preautopilot and prelimits) and ((pre ( not (autopilot and preautopilot and prelimits))) or FTP)) -> (pullup)));  
+FSM001v2 = (H(((autopilot and preautopilot and prelimits) and ((pre ( not (autopilot and preautopilot and prelimits))) or FTP)) => (pullup)));  
  
 (* Req text: if  htlore3autopilot  &  htlore3notpreprelimits  &  prelimits  FSM  shall  immediately satisfy pullup  *)
-FSM001v3 = (H(((htlore3autopilot and htlore3notpreprelimits and prelimits) and ((pre ( not (htlore3autopilot and htlore3notpreprelimits and prelimits))) or FTP)) -> (pullup)));  
+FSM001v3 = (H(((htlore3autopilot and htlore3notpreprelimits and prelimits) and ((pre ( not (htlore3autopilot and htlore3notpreprelimits and prelimits))) or FTP)) => (pullup)));  
  
 (* Req text: FSM  shall  always  satisfy(limits & !  standby & !  apfail &supported => pullup)  *)
-FSM001v1 = (H((( limits and not standby and not apfail and supported -> pullup ))));  
+FSM001v1 = (H((( limits and not standby and not apfail and supported => pullup ))));  
 
  
  --%PROPERTY FSM001v2;  

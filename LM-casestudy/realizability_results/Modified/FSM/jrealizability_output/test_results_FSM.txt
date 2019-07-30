@@ -1,0 +1,25 @@
+7/30/19
+Changed -> to =>
+
+dkooi@rse-mac-2:~/Workspace/fret/LM-casestudy/realizability_results/Modified/FSM$ jrealizability FSMSpec.lus --fixpoint --solver z3
+Warning at line 83:64 unguarded pre expression
+Warning at line 86:81 unguarded pre expression
+==========================================
+  JRealizability 3.0.1
+==========================================
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+REALIZABLE || REFINEMENTS = 1 || Time = 1.651s
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+dkooi@rse-mac-2:~/Workspace/fret/LM-casestudy/realizability_results/Modified/FSM$ jrealizability FSMSpec.lus --solver z3
+Warning at line 83:64 unguarded pre expression
+Warning at line 86:81 unguarded pre expression
+==========================================
+  JRealizability 3.0.1
+==========================================
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+REALIZABLE || K = 1 || Time = 0.41s
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+

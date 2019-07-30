@@ -63,7 +63,8 @@ tel
 
 node Tustin_IntegratorSpec( BL:real;  IC:real;  RESET:bool;  T:real;  TL:real;  xin:real;    yout: real) returns ( );
 
-var normal:bool; xinpv:real; ypv:real; TUI002:bool; TUI001:bool; TUI003:bool; FTP: bool; 
+var normal:bool; xinpv:real; ypv:real; TUI002:bool; TUI001:bool;
+TUI003:bool; FTP: bool; 
 let
 
 
@@ -79,16 +80,19 @@ ypv = 0.0 -> pre yout;
 TUI002 = (H((yout <= TL and yout >= BL)));  
  
 (* Req text: Tustin_Integrator shall always satisfy ((BL <= IC & IC <= TL) & RESET)  => yout = IC  *)
-TUI001 = (H((( ( BL <= IC and IC <= TL ) and RESET ) -> yout = IC)));  
+TUI001 = (H((( ( BL <= IC and IC <= TL ) and RESET ) => yout = IC)));  
  
 (* Req text: Tustin_Integrator shall always satisfy normal => (yout = T/2.0 * (xin + xinpv) + ypv)  *)
-TUI003 = (H((normal -> ( yout = T / 2.0 * ( xin + xinpv ) + ypv ))));  
+TUI003 = (H((normal => ( yout = T / 2.0 * ( xin + xinpv ) + ypv ))));  
+
+--TUI003A = (H((normal => ( yout = T / 2.0 * ( xin + xinpv ) + ypv )))) and (yout <= TL and yout >= BL); 
+
+
+
+assert BL <= TL;
 
  
  --%PROPERTY TUI002;  
  --%PROPERTY TUI001;  
- --%PROPERTY TUI003; 
---%REALIZABLE BL, IC, RESET, T, TL, xin;  
-
-tel
-
+ --%PROPERTY TUI003;
+ --%REALIZABLE BL, IC, RESET, T, TL, xin;  tel 
