@@ -129,3 +129,195 @@ jkind.JKindException: AEVAL error (see Tustin_IntegratorSpec_fixpointsubset0_s_p
 	at jkind.realizability.engines.RealizabilityFixpointEngine.main(RealizabilityFixpointEngine.java:43)
 	at jkind.realizability.engines.RealizabilityEngine.run(RealizabilityEngine.java:67)
 	at java.lang.Thread.run(Thread.java:748)
+
+
+7/31/19
+Removed TUI003
+
+dkooi@rse-mac-2:~/Workspace/fret/LM-casestudy/realizability_results/Modified/TUI$ jrealizability Tustin_IntegratorSpec.lus --fixpoint --solver z3
+==========================================
+  JRealizability 3.0.1
+==========================================
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+REALIZABLE || REFINEMENTS = 1 || Time = 0.409s
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+dkooi@rse-mac-2:~/Workspace/fret/LM-casestudy/realizability_results/Modified/TUI$ jrealizability Tustin_IntegratorSpec.lus --solver z3
+==========================================
+  JRealizability 3.0.1
+==========================================
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+REALIZABLE || K = 1 || Time = 0.101s
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+7/31/19
+TUI003 Only
+
+dkooi@rse-mac-2:~/Workspace/fret/LM-casestudy/realizability_results/Modified/TUI$ jrealizability Tustin_IntegratorSpec.lus --fixpoint --solver z3
+Warning at line 85:40 non-constant multiplication
+==========================================
+  JRealizability 3.0.1
+==========================================
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+REALIZABLE || REFINEMENTS = 1 || Time = 0.307s
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+dkooi@rse-mac-2:~/Workspace/fret/LM-casestudy/realizability_results/Modified/TUI$ jrealizability Tustin_IntegratorSpec.lus --solver z3
+Warning at line 85:40 non-constant multiplication
+==========================================
+  JRealizability 3.0.1
+==========================================
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+UNKNOWN || True for 0 steps || Time = 0.102s
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++o
+
+7/30/19
+Removed TUI003
+Removed assert BL <= TL
+
+dkooi@rse-mac-2:~/Workspace/fret/LM-casestudy/realizability_results/Modified/TUI$ jrealizability Tustin_IntegratorSpec.lus --fixpoint --solver z3
+Warning at line 85:40 non-constant multiplication
+==========================================
+  JRealizability 3.0.1
+==========================================
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+REALIZABLE || REFINEMENTS = 1 || Time = 0.31s
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+dkooi@rse-mac-2:~/Workspace/fret/LM-casestudy/realizability_results/Modified/TUI$ jrealizability Tustin_IntegratorSpec.lus --solver z3
+Warning at line 85:40 non-constant multiplication
+==========================================
+  JRealizability 3.0.1
+==========================================
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+UNKNOWN || True for 0 steps || Time = 0.102s
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+7/31/19
+TUI001 and TUI002 and TUI003
+No assert
+
+dkooi@rse-mac-2:~/Workspace/fret/LM-casestudy/realizability_results/Modified/TUI$ jrealizability Tustin_IntegratorSpec.lus --fixpoint --solver z3
+Warning at line 85:40 non-constant multiplication
+==========================================
+  JRealizability 3.0.1
+==========================================
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+UNKNOWN || True for 0 steps || Time = 0.613s
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+fixpoint process failed
+jkind.JKindException: AEVAL error (see Tustin_IntegratorSpec_fixpointsubset0_s_part.smt2 file for details)
+	at jkind.aeval.AevalSolver.readFromAeval(AevalSolver.java:299)
+	at jkind.aeval.AevalSolver.refinementQuery(AevalSolver.java:248)
+	at jkind.realizability.engines.RealizabilityFixpointEngine.refineRegion(RealizabilityFixpointEngine.java:229)
+	at jkind.realizability.engines.RealizabilityFixpointEngine.checkRealizable(RealizabilityFixpointEngine.java:215)
+	at jkind.realizability.engines.RealizabilityFixpointEngine.main(RealizabilityFixpointEngine.java:43)
+	at jkind.realizability.engines.RealizabilityEngine.run(RealizabilityEngine.java:67)
+	at java.lang.Thread.run(Thread.java:748)
+dkooi@rse-mac-2:~/Workspace/fret/LM-casestudy/realizability_results/Modified/TUI$ jrealizability Tustin_IntegratorSpec.lus --solver z3
+Warning at line 85:40 non-constant multiplication
+==========================================
+  JRealizability 3.0.1
+==========================================
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+UNKNOWN || True for 0 steps || Time = 0.105s
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+7/31/19
+TUI001 and TUI002 and TUI003
+No Assert
+
+dkooi@rse-mac-2:~/Workspace/fret/LM-casestudy/realizability_results/Modified/TUI$ jrealizability Tustin_IntegratorSpec.lus --fixpoint --solver z3
+Warning at line 87:41 non-constant multiplication
+==========================================
+  JRealizability 3.0.1
+==========================================
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+UNKNOWN || True for 0 steps || Time = 0.413s
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+fixpoint process failed
+jkind.JKindException: AEVAL error (see Tustin_IntegratorSpec_fixpointsubset0_s_part.smt2 file for details)
+	at jkind.aeval.AevalSolver.readFromAeval(AevalSolver.java:299)
+	at jkind.aeval.AevalSolver.refinementQuery(AevalSolver.java:248)
+	at jkind.realizability.engines.RealizabilityFixpointEngine.refineRegion(RealizabilityFixpointEngine.java:229)
+	at jkind.realizability.engines.RealizabilityFixpointEngine.checkRealizable(RealizabilityFixpointEngine.java:215)
+	at jkind.realizability.engines.RealizabilityFixpointEngine.main(RealizabilityFixpointEngine.java:43)
+	at jkind.realizability.engines.RealizabilityEngine.run(RealizabilityEngine.java:67)
+	at java.lang.Thread.run(Thread.java:748)
+dkooi@rse-mac-2:~/Workspace/fret/LM-casestudy/realizability_results/Modified/TUI$ jrealizability Tustin_IntegratorSpec.lus --solver z3
+Warning at line 87:41 non-constant multiplication
+==========================================
+  JRealizability 3.0.1
+==========================================
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+UNKNOWN || True for 0 steps || Time = 0.105s
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+7/31/19
+TUI002 and TUI003
+No assert
+
+dkooi@rse-mac-2:~/Workspace/fret/LM-casestudy/realizability_results/Modified/TUI$ jrealizability Tustin_IntegratorSpec.lus --fixpoint --solver z3
+Warning at line 85:40 non-constant multiplication
+==========================================
+  JRealizability 3.0.1
+==========================================
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+UNKNOWN || True for 0 steps || Time = 0.309s
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+fixpoint process failed
+jkind.JKindException: AEVAL error (see Tustin_IntegratorSpec_fixpointsubset0_s_part.smt2 file for details)
+	at jkind.aeval.AevalSolver.readFromAeval(AevalSolver.java:299)
+	at jkind.aeval.AevalSolver.refinementQuery(AevalSolver.java:248)
+	at jkind.realizability.engines.RealizabilityFixpointEngine.refineRegion(RealizabilityFixpointEngine.java:229)
+	at jkind.realizability.engines.RealizabilityFixpointEngine.checkRealizable(RealizabilityFixpointEngine.java:215)
+	at jkind.realizability.engines.RealizabilityFixpointEngine.main(RealizabilityFixpointEngine.java:43)
+	at jkind.realizability.engines.RealizabilityEngine.run(RealizabilityEngine.java:67)
+	at java.lang.Thread.run(Thread.java:748)
+dkooi@rse-mac-2:~/Workspace/fret/LM-casestudy/realizability_results/Modified/TUI$ jrealizability Tustin_IntegratorSpec.lus --solver z3
+Warning at line 85:40 non-constant multiplication
+==========================================
+  JRealizability 3.0.1
+==========================================
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+UNKNOWN || True for 0 steps || Time = 0.104s
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+7/31/19
+TUI003 Only
+No Assert
+
+dkooi@rse-mac-2:~/Workspace/fret/LM-casestudy/realizability_results/Modified/TUI$ jrealizability Tustin_IntegratorSpec.lus --fixpoint --solver z3
+Warning at line 85:40 non-constant multiplication
+==========================================
+  JRealizability 3.0.1
+==========================================
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+REALIZABLE || REFINEMENTS = 1 || Time = 0.602s
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+dkooi@rse-mac-2:~/Workspace/fret/LM-casestudy/realizability_results/Modified/TUI$ jrealizability Tustin_IntegratorSpec.lus --solver z3
+Warning at line 85:40 non-constant multiplication
+==========================================
+  JRealizability 3.0.1
+==========================================
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+UNKNOWN || True for 0 steps || Time = 0.104s
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

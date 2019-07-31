@@ -39,6 +39,7 @@ let
 Y=OTlore(L-R,X);
 tel
 
+
 -- Timed Historically: general case
 node HT( L: int;  R: int; X: bool) returns (Y: bool);
 let
@@ -61,40 +62,34 @@ tel
 
 
 
-node Tustin_IntegratorSpec( BL:real;  IC:real;  RESET:bool;  T:real;  TL:real;  xin:real;    yout: real) returns ( );
+node FSM_AutopilotSpec( apfail:bool;  good:bool;  standby:bool;  state:real;  supported:bool;    STATE: real) returns ( );
 
-var normal:bool; xinpv:real; ypv:real; TUI003A:bool; FTP: bool; 
+var ap_maneuver_state:real; ap_nominal_state:real; ap_standby_state:real; ap_transition_state:real;  FSM007:bool; FSM006:bool; FTP: bool; 
 let
 
 
 FTP = true->false;
 
 
-normal = not RESET and yout <= TL and yout >= BL;
-xinpv = 0.0 -> pre xin;
-ypv = 0.0 -> pre yout;
+ap_maneuver_state = 2.0;
+ap_nominal_state = 1.0;
+ap_standby_state = 3.0;
+ap_transition_state = 0.0;
+
+
+assert STATE=0.0 or STATE=1.0 or STATE = 2.0 or STATE = 3.0;
 
  
-(* Req text: Tustin_Integrator shall always satisfy yout <= TL &  yout >= BL  *)
---TUI002 = (H((yout <= TL and yout >= BL)));  
+(* Req text: FSM_Autopilot shall always satisfy (state = ap_maneuver_state & supported & good) => STATE = ap_transition_state  *)
+FSM007 = (H((( state = ap_maneuver_state and supported and good ) => STATE = ap_transition_state)));  
  
-(* Req text: Tustin_Integrator shall always satisfy ((BL <= IC & IC <= TL) & RESET)  => yout = IC  *)
---TUI001 = (H((( ( BL <= IC and IC <= TL ) and RESET ) => yout = IC)));  
- 
-(* Req text: Tustin_Integrator shall always satisfy normal => (yout = T/2.0 * (xin + xinpv) + ypv)  *)
---TUI003 = (H((normal => ( yout = T / 2.0 * ( xin + xinpv ) + ypv ))));  
-
-TUI003A = (H((normal => ( yout = T / 2.0 * ( xin + xinpv ) + ypv )))) and (yout <= TL and yout >= BL); 
-
-
-
-assert BL <= TL;
+(* Req text: FSM_Autopilot shall always satisfy (state = ap_maneuver_state & standby & good) => STATE = ap_standby_state  *)
+FSM006 = (H((( state = ap_maneuver_state and standby and good ) => STATE = ap_standby_state)));  
 
  
-(* --%PROPERTY TUI002;  
- --%PROPERTY TUI001;  
-*)
- --%PROPERTY TUI003A;
- --%REALIZABLE BL, IC, RESET, T, TL, xin;  
-tel 
+ --%PROPERTY FSM007;  
+ --%PROPERTY FSM006; 
+--%REALIZABLE apfail, good, standby, state, supported;  
+
+tel
 
