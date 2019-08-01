@@ -348,6 +348,9 @@ class ComponentSummary extends React.Component {
               archive.append(ejsCache.renderContractCode().contract.complete(contract), {name: contract.componentName+'.lus'})
             } else if (language === 'copilot'){
               archive.append(ejsCacheCoPilot.renderCoPilotSpec().contract.complete(contract), {name: contract.componentName+'.json'})
+            } else {
+//            archive.append(ejsCache.renderContractCode().contract.complete(contract), {name: contract.componentName+'.lus'})
+              archive.append(ejsCache_realize.renderRealizeCode().component.complete(contract), {name: contract.componentName+'.lus'})
             }
             // finalize the archive (ie we are done appending files but streams have to finish yet)
             archive.finalize();

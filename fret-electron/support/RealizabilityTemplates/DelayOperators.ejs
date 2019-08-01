@@ -1,0 +1,25 @@
+
+node delay(X:bool;  R:int) returns(Y:bool);
+let
+<%if (delays.length == 0){%>
+  Y = X;<%}%>
+ <% if (delays.length > 0){%>
+  Y = if (R=0) then X
+   <%for (i=0; i < delays.length-1; i++) {%>
+      else if (R=<%-delays[i]%>) then delay<%-delays[i]%>(X)
+   <%}%>
+     else delay<%-delays[delays.length-1]%>(X);
+ <%}%>
+tel
+
+<%for (i=0; i < delays.length; i++) {%>
+  node delay<%-delays[i]%>(X:bool) returns(Y:bool);
+  var <%for (j=0; j < delays[i]; j++) {%> X_<%-j%>, <%}%>X_<%-delays[i]%> :bool;
+  let
+
+  X_0=X; <%for (j=1; j <= delays[i]; j++) {%>
+  X_<%-j%>=false -> pre X_<%-j-1%>;<%}%>
+  Y = X_<%-delays[i]%>;
+
+  tel
+<%}%>
