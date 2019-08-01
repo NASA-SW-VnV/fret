@@ -113,7 +113,7 @@ tel
 ----
 TriplexSignalMonitor.lus
 Added Tlevel to input
-Added mis
+Added miscompare
 
 Removed trailing ';' and  const
 
