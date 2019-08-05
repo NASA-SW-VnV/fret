@@ -1,27 +1,29 @@
 grammar LustreExpressions;
 
+proposition : ID ;
+
 expr:
-      ID                                                       # idExpr
-    | INT                                                      # intExpr
-    | REAL                                                     # realExpr
-    | BOOL                                                     # boolExpr
-    | expr '.' ID                                              # recordAccessExpr
-    | expr '{' ID ':=' expr '}'                                # recordUpdateExpr
-    | expr '[' expr ']'                                        # arrayAccessExpr
-    | expr '[' expr ':=' expr ']'                              # arrayUpdateExpr
-    | 'pre' expr                                               # preExpr
-    | 'not' expr                                               # notExpr
-    | '-' expr                                                 # negateExpr
-    | expr op=('*' | '/' | 'div' | 'mod') expr                 # binaryExpr
-    | expr op=('+' | '-') expr                                 # binaryExpr
-    | expr op=('<' | '<=' | '>' | '>=' | '=' | '<>') expr      # binaryExpr
-    | expr op='and' expr                                       # binaryExpr
-    | expr op=('or' | 'xor') expr                              # binaryExpr
-    | <assoc=right> expr op='=>' expr                          # binaryExpr
-    | <assoc=right> expr op='->' expr                          # binaryExpr
-    | 'if' expr 'then' expr 'else' expr                        # ifThenElseExpr
-    | '[' expr (',' expr)* ']'                                 # arrayExpr
-    | '(' expr (',' expr)* ')'                                 # tupleExpr
+      proposition                                                      
+    | INT
+    | REAL
+    | BOOL
+    | expr '.' ID
+    | expr '{' ID ':=' expr '}'
+    | expr '[' expr ']'
+    | expr '[' expr ':=' expr ']'
+    | 'pre' expr
+    | 'not' expr
+    | '-' expr
+    | expr op=('*' | '/' | 'div' | 'mod') expr
+    | expr op=('+' | '-') expr
+    | expr op=('<' | '<=' | '>' | '>=' | '=' | '<>') expr
+    | expr op='and' expr
+    | expr op=('or' | 'xor') expr
+    | <assoc=right> expr op='=>' expr
+    | <assoc=right> expr op='->' expr
+    | 'if' expr 'then' expr 'else' expr
+    | '[' expr (',' expr)* ']'
+    | '(' expr (',' expr)* ')'
     ;
 
 REAL: INT '.' INT;
