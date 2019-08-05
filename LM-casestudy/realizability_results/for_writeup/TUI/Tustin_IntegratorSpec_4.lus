@@ -83,13 +83,13 @@ ypv = 0.0 -> pre yout;
 
 
 
-
+assert BL <= TL;
  
 (* Req text: Tustin_Integrator shall always satisfy yout <= TL &  yout >= BL  *)
 TUI002 = (H((yout <= TL and yout >= BL)));  
  
 (* Req text: Tustin_Integrator shall always satisfy ((BL <= IC & IC <= TL) & RESET)  => yout = IC  *)
-TUI001 = (H((( ( BL <= IC and IC <= TL ) and RESET ) => yout = IC)));  
+TUI001 = true;--(H((( ( BL <= IC and IC <= TL ) and RESET ) => yout = IC)));  
  
 (* Req text: Tustin_Integrator shall always satisfy normal => (yout = T/2.0 * (xin + xinpv) + ypv)  *)
 TUI003 = (H((normal => ( yout = T / 2.0 * ( xin + xinpv ) + ypv ))));  

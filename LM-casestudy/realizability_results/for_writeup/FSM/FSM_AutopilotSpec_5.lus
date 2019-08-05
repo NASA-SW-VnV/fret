@@ -1,9 +1,3 @@
---First Time Point
-node FTP() returns (X:bool);
-let
-  X = true -> false;
-tel
-
 --Historically
 node H(X:bool) returns (Y:bool);
 let
@@ -28,11 +22,6 @@ let
  Y = X or (false -> pre Y);
 tel
 
-node First( X : bool ) returns ( Y : bool );
-let
-  Y = X -> pre Y;
-tel
-
 --Timed Once: less than or equal to N
 node OTlore( N: int; X: bool) returns (Y: bool);
     var C:int;
@@ -40,29 +29,33 @@ let
     C = if X then 0
         else (-1 -> pre C + (if pre C <0 then 0 else 1));
 
-    Y = First(X)
-        ->
-        (if C < 0  then false
-         else C <= N
-        );
+    Y = 0 <= C and C <= N;
 tel
 
--- Timed Historically: less than or equal to N
-node HTlore( N: int; X: bool) returns (Y: bool);
+--Timed Once: general case
+node OT( L: int;  R: int; X: bool) returns (Y: bool);
+var  D:bool;
 let
-  Y = not OTlore(N, not X);
+  D=delay(X, R);
+  Y=OTlore(L-R, D);
 tel
 
--- Timed Since: less than or equal to N
-node STlore( N: int; X: bool; Y: bool)  returns (Z: bool);
+-- Timed Historically: general case
+node HT( L: int;  R: int; X: bool) returns (Y: bool);
 let
-  Z = S(X, Y) and OTlore(N, X);
+  Y = not OT(L, R, not X);
 tel
 
--- Timed Since Inclusive: less than or equal to N
-node SITlore( N: int; X: bool; Y: bool)  returns (Z: bool);
+-- Timed Since: general case
+node ST( L: int;  R: int; X: bool; Y: bool)  returns (Z: bool);
 let
-  Z = SI(X,Y) and OTlore(N, X);
+  Z = S(X, Y) and OT(L, R, X);
+tel
+
+-- Timed Since: general case
+node SIT( L: int;  R: int; X: bool; Y: bool) returns (Z: bool);
+let
+  Z = SI(X, Y) and OT(L, R, X);
 tel
 
 
@@ -77,7 +70,7 @@ tel
 
 node FSM_AutopilotSpec( apfail:bool; good:bool; standby:bool; state:real; supported:bool; STATE:real   ) returns ( );
 
-var ap_maneuver_state:real; ap_nominal_state:real; ap_standby_state:real; ap_transition_state:real; FSM002:bool; FSM003:bool; FSM008v1:bool; FSM009:bool; FSM005:bool; FSM008v2:bool; FSM007:bool; FSM004:bool; FSM006:bool; FTP: bool; 
+var ap_maneuver_state:real; ap_nominal_state:real; ap_standby_state:real; ap_transition_state:real; FSM003v2:bool; FSM002:bool; FSM003:bool; FSM008v1:bool; FSM009:bool; FSM005:bool; FSM008v2:bool; FSM007:bool; FSM004v2:bool; FSM006:bool; FSM004:bool; FTP: bool; 
 let
 
 
@@ -93,34 +86,45 @@ ap_transition_state = 0.0;
 
 
  
+(* Req text: FSM_Autopilot shall always satisfy state = ap_transition_state & good & supported & ! standby => STATE = ap_nominal_state  *)
+FSM003v2 = (H((state = ap_transition_state and good and supported and not standby => STATE = ap_nominal_state)));  
+ 
 (* Req text: FSM_Autopilot shall always satisfy (standby & state = ap_transition_state)=> STATE = ap_standby_state  *)
-FSM002 = (H((( standby and state = ap_transition_state ) => STATE = ap_standby_state)));  
+FSM002 = true;--(H((( standby and state = ap_transition_state ) => STATE = ap_standby_state)));  
  
 (* Req text: FSM_Autopilot shall always satisfy state = ap_transition_state & good & supported => STATE = ap_nominal_state  *)
 FSM003 = (H((state = ap_transition_state and good and supported => STATE = ap_nominal_state)));  
  
 (* Req text:  FSM_Autopilot shall always satisfy (state = ap_standby_state & !standby) => STATE = ap_transition_state  *)
-FSM008v1 = (H((( state = ap_standby_state and not standby ) => STATE = ap_transition_state)));  
+FSM008v1 = true; 
  
 (* Req text: FSM_Autopilot shall always satisfy (state = ap_standby_state & apfail )=> STATE = ap_maneuver_state  *)
 FSM009 = (H((( state = ap_standby_state and apfail ) => STATE = ap_maneuver_state)));  
  
-(* Req text: FSM_Autopilot shall always satisfy state = ap_nominal_state & !  good & !  standby => STATE = ap_maneuver_state  *)
-FSM005 = (H((state = ap_nominal_state and not good and not standby => STATE = ap_maneuver_state)));  
+(* Req text: FSM_Autopilot shall always satisfy (state = ap_nominal_state & standby) => STATE = ap_standby_state  *)
+FSM005 = (H((( state = ap_nominal_state and standby ) => STATE = ap_standby_state)));  
  
 (* Req text: FSM_Autopilot shall always satisfy (state = ap_standby_state & ! standby & ! apfail ) => STATE = ap_transition_state  *)
 FSM008v2 = (H((( state = ap_standby_state and not standby and not apfail ) => STATE = ap_transition_state)));  
  
 (* Req text: FSM_Autopilot shall always satisfy (state = ap_maneuver_state & supported & good) => STATE = ap_transition_state  *)
-FSM007 = (H((( state = ap_maneuver_state and supported and good ) => STATE = ap_transition_state)));  
+FSM007 = true; 
  
-(* Req text: FSM_Autopilot shall always satisfy (! good & state = ap_nominal_state) => STATE = ap_maneuver_state  *)
-FSM004 = (H((( not good and state = ap_nominal_state ) => STATE = ap_maneuver_state)));  
+(* Req text: FSM_Autopilot shall always satisfy state = ap_nominal_state & ! good & ! standby => STATE = ap_maneuver_state  *)
+FSM004v2 = (H((state = ap_nominal_state and not good and not standby => STATE = ap_maneuver_state)));  
  
 (* Req text: FSM_Autopilot shall always satisfy (state = ap_maneuver_state & standby & good) => STATE = ap_standby_state  *)
-FSM006 = (H((( state = ap_maneuver_state and standby and good ) => STATE = ap_standby_state)));  
+FSM006 = true; 
+ 
+(* Req text: FSM_Autopilot shall always satisfy (!good & state = ap_nominal_state) => STATE=ap_maneuver_state  *)
+FSM004 = true;--(H((( not good and state = ap_nominal_state ) => STATE = ap_maneuver_state)));  
+
+assert state=0.0 or state=1.0 or state=2.0 or state=3.0;
+assert STATE=0.0 or STATE=1.0 or STATE=2.0 or STATE=3.0;
+
 
  
+ --%PROPERTY FSM003v2;  
  --%PROPERTY FSM002;  
  --%PROPERTY FSM003;  
  --%PROPERTY FSM008v1;  
@@ -128,8 +132,9 @@ FSM006 = (H((( state = ap_maneuver_state and standby and good ) => STATE = ap_st
  --%PROPERTY FSM005;  
  --%PROPERTY FSM008v2;  
  --%PROPERTY FSM007;  
- --%PROPERTY FSM004;  
- --%PROPERTY FSM006; 
+ --%PROPERTY FSM004v2;  
+ --%PROPERTY FSM006;  
+ --%PROPERTY FSM004; 
 --%REALIZABLE apfail, good, standby, state, supported;  
 
 tel

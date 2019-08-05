@@ -89,12 +89,13 @@ sen_fault_state = 2.0;
 sen_nominal_state = 0.0;
 sen_transition_state = 1.0;
 
-
+assert senstate = 0.0 or senstate = 1.0 or senstate = 2.0;
+assert SENSTATE = 0.0 or SENSTATE = 1.0 or SENSTATE = 2.0;
 
 
  
 (* Req text: FSM_Sensor shall always  satisfy (senstate = sen_nominal_state & !request) => SENSTATE = sen_transition_state  *)
-FSM011v1 = (H((( senstate = sen_nominal_state and not request ) => SENSTATE = sen_transition_state)));  
+FSM011v1 = true;--(H((( senstate = sen_nominal_state and not request ) => SENSTATE = sen_transition_state)));  
  
 (* Req text: FSM_Sensor shall  always  satisfy (pre_senstate = sen_fault_state & !request & !  limits) => SENSTATE = sen_transition_state  *)
 FSM012 = (H((( pre_senstate = sen_fault_state and not request and not limits ) => SENSTATE = sen_transition_state)));  
