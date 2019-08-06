@@ -6,38 +6,27 @@ const antlrUtilities = new AntlrUtilities();
 
 var internalVariables = [];
 
-function lustreExpressionsAnalyzer() {
+function lustreExprAnalyzer() {
   LustreExpressionsListener.call(this);
   return this;
 }
 
-lustreExpressionsAnalyzer.prototype = Object.create(LustreExpressionsListener.prototype);
-lustreExpressionsAnalyzer.prototype.constructor = lustreExpressionsAnalyzer;
-
-// Enter a parse tree produced by LustreExpressionsParser#proposition.
-lustreExpressionsAnalyzer.prototype.enterProposition = function(ctx) {
-};
+lustreExprAnalyzer.prototype = Object.create(LustreExpressionsListener.prototype);
+lustreExprAnalyzer.prototype.constructor = lustreExprAnalyzer;
 
 // Exit a parse tree produced by LustreExpressionsParser#proposition.
-lustreExpressionsAnalyzer.prototype.exitProposition = function(ctx) {
+lustreExprAnalyzer.prototype.exitProposition = function(ctx) {
     var variable = antlrUtilities.getText(ctx);
     if (variable && ! internalVariables.includes(variable))
       internalVariables.push(variable);
 };
 
-
-// Enter a parse tree produced by LustreExpressionsParser#expr.
-lustreExpressionsAnalyzer.prototype.enterExpr = function(ctx) {
-};
-
-// Exit a parse tree produced by LustreExpressionsParser#expr.
-lustreExpressionsAnalyzer.prototype.exitExpr = function(ctx) {
-};
-
 lustreExprAnalyzer.prototype.variables = () => {
+  return internalVariables;
+}
 
-  return internVariables;
-
+lustreExprAnalyzer.prototype.clearVariables = () => {
+  internalVariables = [];
 }
 
 

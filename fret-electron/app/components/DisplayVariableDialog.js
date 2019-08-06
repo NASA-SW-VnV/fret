@@ -55,6 +55,8 @@ import Select from '@material-ui/core/Select';
 const db = require('electron').remote.getGlobal('sharedObj').db;
 const modeldb = require('electron').remote.getGlobal('sharedObj').modeldb;
 
+const lustreExprSemantics = require('../../support/lustreExprSemantics');
+
 const styles = theme => ({
   container: {
       display: 'flex',
@@ -94,7 +96,8 @@ class DisplayVariableDialog extends React.Component {
     assignment: '',
     modeRequirement: '',
     modeldoc_id: '',
-    modelComponent: ''
+    modelComponent: '',
+    errors: ''
   }
 
   handleTextFieldFocused = name => event => {
@@ -104,8 +107,10 @@ class DisplayVariableDialog extends React.Component {
   };
 
   handleTextFieldChange = name => event => {
+    const result = lustreExprSemantics.compileLustreExpr(event.target.value);
     this.setState({
       [name]: event.target.value,
+      errors: 'Error: '+ result.parseErrors
     });
   };
 
@@ -128,6 +133,8 @@ class DisplayVariableDialog extends React.Component {
     if (modeRequirement || modeldoc_id || dataType && assignment){
       completedVariable = true;
     }
+
+
 
     modeldb.get(modeldbid).then(function(vdoc){
       return modeldb.put({
@@ -176,7 +183,8 @@ class DisplayVariableDialog extends React.Component {
   handleChange = event => {
     const self = this;
     const {selectedVariable, modelComponent} = this.state;
-    this.setState({ [event.target.name]: event.target.value });
+    this.setState({ [event.target.name]: event.target.value
+                 });
     if (event.target.name === 'modeldoc_id'){
       modeldb.find({
         selector: {
@@ -517,6 +525,7 @@ class DisplayVariableDialog extends React.Component {
                 multiline
                 onChange={this.handleTextFieldChange('assignment')}
                 onFocus={this.handleTextFieldFocused('assignment')}
+                helperText={this.state.errors}
               />
               <TextField
                 id="description"
@@ -541,6 +550,7 @@ class DisplayVariableDialog extends React.Component {
           </DialogActions>
           </Dialog>
         </div>
+
       );
     } else {
         return (
