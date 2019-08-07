@@ -110,13 +110,16 @@ class DisplayVariableDialog extends React.Component {
     const result = lustreExprSemantics.compileLustreExpr(event.target.value);
     this.setState({
       [name]: event.target.value,
-      errors: 'Error: '+ result.parseErrors
+      errors: result.parseErrors ? 'Parse Errors: '+ result.parseErrors : ''
     });
   };
 
   handleClose = () => {
     this.setState({open: false});
     this.state.dialogCloseListener();
+    this.setState({
+      errors: ''
+    });
   };
 
   handleUpdate = () => {
@@ -208,7 +211,7 @@ class DisplayVariableDialog extends React.Component {
 
   render(){
     const {classes, selectedVariable, modelVariables} = this.props;
-    const {dataType, idType, modeRequirement, assignment} = this.state;
+    const {dataType, idType, modeRequirement, assignment, errors} = this.state;
 
     if (idType === 'Input' || idType === 'Output'){
       return (
@@ -423,7 +426,7 @@ class DisplayVariableDialog extends React.Component {
           </Dialog>
         </div>
       );
-    } else if (idType === 'Internal'){
+    } else if (idType === 'Internal' && errors == ''){
       return (
         <div>
           <Dialog
@@ -525,7 +528,6 @@ class DisplayVariableDialog extends React.Component {
                 multiline
                 onChange={this.handleTextFieldChange('assignment')}
                 onFocus={this.handleTextFieldFocused('assignment')}
-                helperText={this.state.errors}
               />
               <TextField
                 id="description"
@@ -552,7 +554,137 @@ class DisplayVariableDialog extends React.Component {
         </div>
 
       );
-    } else {
+    } else if (idType === 'Internal' && errors != ''){
+      return (
+        <div>
+          <Dialog
+          open={this.state.open}
+          onClose={this.handleClose}
+          aria-labelledby="form-dialog-title"
+          maxWidth='sm'
+          >
+          <DialogTitle id="form-dialog-title">Update Variable</DialogTitle>
+          <DialogContent>
+            <form className={classes.container} noValidate autoComplete="off">
+              <TextField
+                id="standard-read-only-input"
+                label="FRET Project"
+                defaultValue={selectedVariable.project}
+                className={classes.extendedTextField}
+                margin="normal"
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+              <TextField
+                id="standard-read-only-input"
+                label="FRET Component"
+                defaultValue={selectedVariable.component_name}
+                className={classes.extendedTextField}
+                margin="normal"
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+              <TextField
+                id="standard-read-only-input"
+                label="Model Component"
+                defaultValue={selectedVariable.modelComponent}
+                className={classes.descriptionField}
+                margin="normal"
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+              <TextField
+                id="standard-read-only-input"
+                label="FRET Variable"
+                defaultValue={selectedVariable.variable_name}
+                className={classes.extendedTextField}
+                margin="normal"
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+              <FormControl className={classes.formControl}>
+                <InputLabel htmlFor="idType-simple">Variable Type*</InputLabel>
+                <Select
+                  key={selectedVariable}
+                  value={this.state.idType}
+                  onChange={this.handleChange}
+                  inputProps={{
+                    name: 'idType',
+                    id: 'idType-simple',
+                  }}>
+                  <MenuItem value="" key={selectedVariable}>
+                    <em>None</em>
+                  </MenuItem>
+                  <MenuItem value="Input" >Input</MenuItem>
+                  <MenuItem value="Output">Output</MenuItem>
+                  <MenuItem value="Internal">Internal</MenuItem>
+                </Select>
+              </FormControl>
+              <FormControl className={classes.formControl}>
+                <InputLabel htmlFor="dataType-simple">Data Type*</InputLabel>
+                <Select
+                key={selectedVariable}
+                  value={this.state.dataType}
+                  onChange={this.handleChange}
+                  inputProps={{
+                    name: 'dataType',
+                    id: 'dataType-simple',
+                  }}>
+                  <MenuItem
+                    value=""
+                  >
+                    <em>None</em>
+                  </MenuItem>
+                  <MenuItem value="boolean" >boolean</MenuItem>
+                  <MenuItem value="int*" >int*</MenuItem>
+                  <MenuItem value="single">single</MenuItem>
+                  <MenuItem value="double">double</MenuItem>
+                  <MenuItem value="enum">enum</MenuItem>
+                </Select>
+              </FormControl>
+              <TextField
+                error
+                id="assignment"
+                label="Variable Assignment*"
+                type="text"
+                value={this.state.assignment}
+                margin="normal"
+                className={classes.descriptionField}
+                multiline
+                onChange={this.handleTextFieldChange('assignment')}
+                onFocus={this.handleTextFieldFocused('assignment')}
+                helperText={this.state.errors}
+              />
+              <TextField
+                id="description"
+                label="Description"
+                type="text"
+                defaultValue={this.state.description}
+                margin="normal"
+                className={classes.descriptionField}
+                multiline
+                onChange={this.handleTextFieldChange('description')}
+                onFocus={this.handleTextFieldFocused('description')}
+              />
+            </form>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleClose}>
+              Cancel
+            </Button>
+            <Button disabled color="secondary" variant='contained'>
+              Update
+            </Button>
+          </DialogActions>
+          </Dialog>
+        </div>
+
+      );
+    }  else {
         return (
           <div>
             <Dialog
