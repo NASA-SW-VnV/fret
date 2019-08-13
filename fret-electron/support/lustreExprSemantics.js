@@ -25,7 +25,7 @@ exports.compileLustreExpr = (text) => {
     lustreExprAnalyzer.clearVariables();
     antlr4.tree.ParseTreeWalker.DEFAULT.walk(lustreExprAnalyzer, tree);
     return ({
-      internalVariables: lustreExprAnalyzer.variables()
+      variables: lustreExprAnalyzer.variables()
     })
   }
 }

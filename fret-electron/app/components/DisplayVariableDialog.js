@@ -97,7 +97,8 @@ class DisplayVariableDialog extends React.Component {
     modeRequirement: '',
     modeldoc_id: '',
     modelComponent: '',
-    errors: ''
+    errors: '',
+    variables: ''
   }
 
   handleTextFieldFocused = name => event => {
@@ -110,7 +111,8 @@ class DisplayVariableDialog extends React.Component {
     const result = lustreExprSemantics.compileLustreExpr(event.target.value);
     this.setState({
       [name]: event.target.value,
-      errors: result.parseErrors ? 'Parse Errors: '+ result.parseErrors : ''
+      errors: result.parseErrors ? 'Parse Errors: '+ result.parseErrors : '',
+      variables: result.variables ? result.variables : ''
     });
   };
 
@@ -124,7 +126,7 @@ class DisplayVariableDialog extends React.Component {
 
   handleUpdate = () => {
     const self = this;
-    const {selectedVariable, description, idType, dataType, assignment, modeRequirement, modeldoc_id, modelComponent} = this.state;
+    const {selectedVariable, description, idType, dataType, assignment, modeRequirement, modeldoc_id, modelComponent, variables} = this.state;
     var modeldbid = selectedVariable._id;
     var completedVariable = false;
     /*
@@ -133,12 +135,9 @@ class DisplayVariableDialog extends React.Component {
       Input/Output -> Model Variable
       Internal => Data Type + Variable Assignment
     */
-    if (modeRequirement || modeldoc_id || dataType && assignment){
+    if (modeRequirement || modeldoc_id || (dataType && assignment)){
       completedVariable = true;
     }
-
-
-
     modeldb.get(modeldbid).then(function(vdoc){
       return modeldb.put({
         _id: modeldbid,
@@ -163,8 +162,28 @@ class DisplayVariableDialog extends React.Component {
             return console.log(err);
         })
     })
-    this.setState({open: false});
-    this.state.dialogCloseListener();
+    //Add newly mentioned in assignment variables in the table.
+    variables.forEach(function(v){
+      modeldb.put({
+        _id: selectedVariable.project + selectedVariable.component_name + v,
+        project: selectedVariable.project,
+        component_name: selectedVariable.component_name,
+        variable_name: v,
+        reqs: selectedVariable.reqs,
+        dataType: '',
+        idType: '',
+        description: '',
+        assignment: '',
+        modeRequirement: '',
+        modeldoc: false,
+        }).then(function (response) {
+          console.log(response);
+        }).catch(function (err){
+          console.log(err);
+        })
+      })
+      self.setState({open: false});
+      self.state.dialogCloseListener();
   }
 
   componentWillReceiveProps = (props) => {
