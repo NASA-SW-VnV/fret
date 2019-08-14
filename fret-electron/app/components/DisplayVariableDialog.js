@@ -129,41 +129,19 @@ class DisplayVariableDialog extends React.Component {
     const {selectedVariable, description, idType, dataType, assignment, modeRequirement, modeldoc_id, modelComponent, variables} = this.state;
     var modeldbid = selectedVariable._id;
     var completedVariable = false;
-    /*
-     For each Variable Type we need the following:
-      Mode -> Mode Requirement
-      Input/Output -> Model Variable
-      Internal => Data Type + Variable Assignment
-    */
-    if (modeRequirement || modeldoc_id || (dataType && assignment)){
-      completedVariable = true;
-    }
-    modeldb.get(modeldbid).then(function(vdoc){
-      return modeldb.put({
-        _id: modeldbid,
-        _rev: vdoc._rev,
-        project: vdoc.project,
-        component_name: vdoc.component_name,
-        variable_name: vdoc.variable_name,
-        reqs: vdoc.reqs,
-        dataType: dataType,
-        idType: idType,
-        description: description,
-        assignment: assignment,
-        modeRequirement: modeRequirement,
-        modeldoc: false,
-        modeldoc_id: modeldoc_id,
-        modelComponent: modelComponent,
-        completed: completedVariable
-      }).then(function (response){
-        self.state.checkComponentCompleted(vdoc.component_name, vdoc.project);
-      }).catch(function (err) {
-            self.state.dialogCloseListener(false);
-            return console.log(err);
-        })
-    })
-    //Add newly mentioned in assignment variables in the table.
+
+    modeldb.find({
+      selector: {
+        component_name: modelComponent,
+        project: selectedVariable.project,
+        variable_name: event.target.value
+      }
+    }).then(function (result){
+    });
+
+    //Add in table newly mentioned assignment variables
     variables.forEach(function(v){
+      //TODO: Check if it exists first before adding it
       modeldb.put({
         _id: selectedVariable.project + selectedVariable.component_name + v,
         project: selectedVariable.project,
@@ -182,8 +160,44 @@ class DisplayVariableDialog extends React.Component {
           console.log(err);
         })
       })
+
+      /*
+       For each Variable Type we need the following:
+        Mode -> Mode Requirement
+        Input/Output -> Model Variable
+        Internal => Data Type + Variable Assignment
+      */
+      if (modeRequirement || modeldoc_id || (dataType && assignment)){
+        completedVariable = true;
+      }
+      modeldb.get(modeldbid).then(function(vdoc){
+        return modeldb.put({
+          _id: modeldbid,
+          _rev: vdoc._rev,
+          project: vdoc.project,
+          component_name: vdoc.component_name,
+          variable_name: vdoc.variable_name,
+          reqs: vdoc.reqs,
+          dataType: dataType,
+          idType: idType,
+          description: description,
+          assignment: assignment,
+          modeRequirement: modeRequirement,
+          modeldoc: false,
+          modeldoc_id: modeldoc_id,
+          modelComponent: modelComponent,
+          completed: completedVariable
+        }).then(function (response){
+          self.state.checkComponentCompleted(vdoc.component_name, vdoc.project);
+        }).catch(function (err) {
+              self.state.dialogCloseListener(false);
+              return console.log(err);
+          })
+      })
       self.setState({open: false});
       self.state.dialogCloseListener();
+
+
   }
 
   componentWillReceiveProps = (props) => {
