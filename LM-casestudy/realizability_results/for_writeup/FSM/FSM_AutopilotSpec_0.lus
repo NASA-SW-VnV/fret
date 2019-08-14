@@ -97,7 +97,7 @@ ap_transition_state = 0.0;
 FSM002 = (H((( standby and state = ap_transition_state ) => STATE = ap_standby_state)));  
  
 (* Req text: FSM_Autopilot shall always satisfy state = ap_transition_state & good & supported => STATE = ap_nominal_state  *)
-FSM003 = (H((state = ap_transition_state and good and supported => STATE = ap_nominal_state)));  
+FSM003 = true;--(H((state = ap_transition_state and good and supported => STATE = ap_nominal_state)));  
  
 (* Req text:  FSM_Autopilot shall always satisfy (state = ap_standby_state & !standby) => STATE = ap_transition_state  *)
 FSM008v1 = (H((( state = ap_standby_state and not standby ) => STATE = ap_transition_state)));  
@@ -106,13 +106,13 @@ FSM008v1 = (H((( state = ap_standby_state and not standby ) => STATE = ap_transi
 FSM009 = (H((( state = ap_standby_state and apfail ) => STATE = ap_maneuver_state)));  
  
 (* Req text: FSM_Autopilot shall always satisfy state = ap_nominal_state & !  good & !  standby => STATE = ap_maneuver_state  *)
-FSM005 = (H((state = ap_nominal_state and not good and not standby => STATE = ap_maneuver_state)));  
+FSM005 = true;--(H((state = ap_nominal_state and not good and not standby => STATE = ap_maneuver_state)));  
  
 (* Req text: FSM_Autopilot shall always satisfy (state = ap_standby_state & ! standby & ! apfail ) => STATE = ap_transition_state  *)
-FSM008v2 = (H((( state = ap_standby_state and not standby and not apfail ) => STATE = ap_transition_state)));  
+FSM008v2 = true;--(H((( state = ap_standby_state and not standby and not apfail ) => STATE = ap_transition_state)));  
  
 (* Req text: FSM_Autopilot shall always satisfy (state = ap_maneuver_state & supported & good) => STATE = ap_transition_state  *)
-FSM007 = (H((( state = ap_maneuver_state and supported and good ) => STATE = ap_transition_state)));  
+FSM007 = true;--(H((( state = ap_maneuver_state and supported and good ) => STATE = ap_transition_state)));  
  
 (* Req text: FSM_Autopilot shall always satisfy (! good & state = ap_nominal_state) => STATE = ap_maneuver_state  *)
 FSM004 = true;--(H((( not good and state = ap_nominal_state ) => STATE = ap_maneuver_state)));  

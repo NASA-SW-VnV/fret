@@ -1,1 +1,0 @@
-{"NNSpec":{"contract_name":"NNSpec","model_path":"nn_12B","Inputs":[{"variable_name":"x","variable_path":"nn_12B/x"},{"variable_name":"y","variable_path":"nn_12B/y"}],"Outputs":[{"variable_name":"z","variable_path":"nn_12B/z"}]}}
