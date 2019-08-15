@@ -140,8 +140,8 @@ assert(AP006);
  --%PROPERTY AP004a;  
  --%PROPERTY AP000;  
  --%PROPERTY AP004b;  
- --%PROPERTY AP005;  
- --%PROPERTY AP006; 
+
+
 --%REALIZABLE altitude_hold, APeng, HDGmode, phi;  
 
 tel
