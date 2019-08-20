@@ -1,5 +1,9 @@
+import os
 import networkx as nx
-import matplotlib.pyplot as plt
+from networkx.drawing.nx_agraph import write_dot
+#import matplotlib.pyplot as plt
+
+
 
 req_list   = ["FSM-006", "FSM-007"] 
 input_list = ["standby", "apfail", "supported", "limits"] 
@@ -57,10 +61,6 @@ FSM009_edges = [ ("FSM-009", "state"),\
 
 
 
-
-
-
-
 G = nx.Graph()
 
 G.add_nodes_from(req_list)
@@ -95,6 +95,12 @@ pos_higher = {}
 for k,v in pos.items():
     pos_higher[k] = (v[0], v[1]+10)
 
-plt.figure()
-nx.draw_spring(G, with_labels=True, font_weight='bold')
-plt.show()
+
+write_dot(G, "fsm.dot")
+os.system('dot -Tpng fsm.dot -o fsm.png')
+
+
+## MATPLOTLIB Drawing
+#plt.figure()
+#nx.draw_spring(G, with_labels=True, font_weight='bold')
+#plt.show()
