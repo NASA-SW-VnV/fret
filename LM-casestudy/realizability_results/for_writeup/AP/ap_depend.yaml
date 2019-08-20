@@ -1,0 +1,22 @@
+AP004a:
+   - phi
+   - APeng
+   - phiCmd
+   - HDGmode
+
+AP000:
+   - altitude
+   - altitude_hold
+
+AP004b:
+   - phiCmd
+   - HDGmode
+   - phi
+   - APeng
+
+AP005:
+   - phi
+
+AP006:
+   - phi
+
