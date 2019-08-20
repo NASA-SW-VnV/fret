@@ -130,36 +130,56 @@ class DisplayVariableDialog extends React.Component {
     var modeldbid = selectedVariable._id;
     var completedVariable = false;
 
-    modeldb.find({
-      selector: {
-        component_name: modelComponent,
-        project: selectedVariable.project,
-        variable_name: event.target.value
-      }
-    }).then(function (result){
-    });
-
-    //Add in table newly mentioned assignment variables
-    variables.forEach(function(v){
-      //TODO: Check if it exists first before adding it
-      modeldb.put({
-        _id: selectedVariable.project + selectedVariable.component_name + v,
-        project: selectedVariable.project,
-        component_name: selectedVariable.component_name,
-        variable_name: v,
-        reqs: selectedVariable.reqs,
-        dataType: '',
-        idType: '',
-        description: '',
-        assignment: '',
-        modeRequirement: '',
-        modeldoc: false,
-        }).then(function (response) {
-          console.log(response);
-        }).catch(function (err){
-          console.log(err);
+    if(variables.length != 0){
+      variables.forEach(function(v){
+        modeldb.find({
+              selector: {
+                _id: selectedVariable.project + selectedVariable.component_name + v,
+              }
+            }).then(function (result){
+              if(result.docs.length == 0){
+                otherDeps = [modeldbid];
+                modeldb.put({
+                  _id: selectedVariable.project + selectedVariable.component_name + v,
+                  project: selectedVariable.project,
+                  component_name: selectedVariable.component_name,
+                  variable_name: v,
+                  reqs: selectedVariable.reqs,
+                  otherDeps: otherDeps,
+                  dataType: '',
+                  idType: '',
+                  description: '',
+                  assignment: '',
+                  modeRequirement: '',
+                  modeldoc: false,
+                  }).then(function (response) {
+                    console.log(response);
+                  }).catch(function (err){
+                    console.log(err);
+                  })
+              } else {
+                modeldb.put({
+                  _id: vdoc._id,
+                  _rev: vdoc._rev,
+                  project: vdoc.project,
+                  variable_name: vdoc.variable_name,
+                  reqs: vdoc.reqs,
+                  otherDeps: vdoc.otherDeps.push(modeldbid),
+                  dataType: vdoc.dataType,
+                  idType: vdoc.idType,
+                  description: vdoc.description,
+                  assignment: vdoc.assignment,
+                  modeRequirement: vdoc.modeRequirement,
+                  modeldoc: vdoc.modeldoc,
+                }).then(function (response) {
+                  console.log(response);
+                }).catch(function (err){
+                  console.log(err);
+                })
+              }
+            });
         })
-      })
+    }
 
       /*
        For each Variable Type we need the following:

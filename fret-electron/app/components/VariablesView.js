@@ -528,7 +528,7 @@ class VariablesView extends React.Component {
     var modelComponents= [];
     const {selectedProject} = this.props,
           self = this;
-
+    //TODO: Update here cocospec data
     modeldb.find({
       selector: {
         project: selectedProject,
