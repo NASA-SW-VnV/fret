@@ -164,7 +164,7 @@ FSM009 = (H((( state = ap_standby_state and apfail ) => STATE = ap_maneuver_stat
 FSM005 = (H((state = ap_nominal_state and not good and not standby => STATE = ap_maneuver_state)));  
  
 (* Req text: FSM_Autopilot shall always satisfy (state = ap_standby_state & ! standby & ! apfail ) => STATE = ap_transition_state  *)
-FSM008v2 = true;--(H((( state = ap_standby_state and not standby and not apfail ) => STATE = ap_transition_state)));  
+FSM008v2 = H((( state = ap_standby_state and not standby and not apfail ) => STATE = ap_transition_state));  
  
 (* Req text: FSM_Autopilot shall always satisfy (state = ap_maneuver_state & supported & good) => STATE = ap_transition_state  *)
 FSM007 = H((( state = ap_maneuver_state and supported and good ) => STATE = ap_transition_state));  
@@ -217,8 +217,16 @@ assert SENSTATE = 0.0 or SENSTATE = 1.0 or SENSTATE = 2.0;
  --%PROPERTY FSM004;  
  --%PROPERTY FSM006; 
 
+(*FSM Sensor*)
+ --%PROPERTY FSM011v1;  
+ --%PROPERTY FSM012;  
+ --%PROPERTY FSM010;  
+ --%PROPERTY FSM013; 
 
---%REALIZABLE apfail, limits, standby, supported, good, state;  
+
+
+--%REALIZABLE apfail, limits, standby, supported, good, state, senstate,
+request, MODE;  
 
 tel
 
