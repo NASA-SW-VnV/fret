@@ -1,0 +1,15 @@
+strict graph "" {
+	Buminusd_1 -- EB004;
+	Buminusd_2 -- EB004;
+	Buminusd_3 -- EB004;
+	EB001 -- check_3_2;
+	EB001 -- check_3_3;
+	EB001 -- check_3_1;
+	EB001 -- check_1_1;
+	EB001 -- check_1_2;
+	EB001 -- check_1_3;
+	EB001 -- check_2_3;
+	EB001 -- check_2_2;
+	EB001 -- check_2_1;
+	EB001 -- ridge_on;
+}

@@ -1,0 +1,60 @@
+REG004:
+   - xcvdt_cmd_fcs_fps2
+
+REG001:
+   - lcvdt_cmd_fcs_dps2
+
+REG006:
+   - lcvdt_cmd_fcs_dps2
+
+REG005:
+   - hcvdt_cmd_fcs_fps2
+
+REG007:
+   - mcvdt_cmd_fcs_dps2
+
+REG008:
+   - ncvdt_cmd_fcs_dps2
+
+REG009:
+   - xcvdt_cmd_fcs_fps2
+
+REG010:
+   - hcvdt_cmd_fcs_fps2
+
+REG002:
+   - mcvdt_cmd_fcs_dps2
+
+REG003:
+   - ncvdt_cmd_fcs_dps2
+
+REG004:
+   - xcvdt_cmd_fcs_fps2
+
+REG001:
+   - lcvdt_cmd_fcs_dps2
+
+REG006:
+   - lcvdt_cmd_fcs_dps2
+
+REG005:
+   - hcvdt_cmd_fcs_fps2
+
+REG007:
+   - mcvdt_cmd_fcs_dps2
+
+REG008:
+   - ncvdt_cmd_fcs_dps2
+
+REG009:
+   - xcvdt_cmd_fcs_fps2
+
+REG010:
+   - hcvdt_cmd_fcs_fps2
+
+REG002:
+   - mcvdt_cmd_fcs_dps2
+
+REG003:
+   - ncvdt_cmd_fcs_dps2
+

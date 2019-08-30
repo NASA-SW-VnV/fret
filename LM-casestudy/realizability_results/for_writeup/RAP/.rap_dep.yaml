@@ -1,0 +1,100 @@
+AP002c:
+   - phiCmd
+   - roll_hold
+   - roll_hold_mode_cmd
+
+AP002a:
+   - hdg_mode_is_active
+   - roll_hold
+   - autopilot_engaged
+
+AP001A:
+   - roll_actuator_command
+   - autopilot_engaged
+
+AP007:
+   - roll_actuator_command
+
+AP008A:
+   - hdg_mode_is_active
+
+AP008B:
+   - hdg_mode_is_active
+   - phiCmd
+   - hdg_hold_mode_cmd
+
+AP002c:
+   - phiCmd
+   - roll_hold
+   - roll_hold_mode_cmd
+
+AP002a:
+   - hdg_mode_is_active
+   - roll_hold
+   - autopilot_engaged
+
+AP001A:
+   - roll_actuator_command
+   - autopilot_engaged
+
+AP007:
+   - roll_actuator_command
+
+AP008A:
+   - hdg_mode_is_active
+
+AP008B:
+   - hdg_mode_is_active
+   - phiCmd
+   - hdg_hold_mode_cmd
+
+AP002c:
+   - phiCmd
+   - roll_hold
+   - roll_hold_mode_cmd
+
+AP002a:
+   - hdg_mode_is_active
+   - roll_hold
+   - autopilot_engaged
+
+AP001A:
+   - roll_actuator_command
+   - autopilot_engaged
+
+AP007:
+   - roll_actuator_command
+
+AP008A:
+   - hdg_mode_is_active
+
+AP008B:
+   - hdg_mode_is_active
+   - phiCmd
+   - hdg_hold_mode_cmd
+
+AP002c:
+   - phiCmd
+   - roll_hold
+   - roll_hold_mode_cmd
+
+AP002a:
+   - hdg_mode_is_active
+   - roll_hold
+   - autopilot_engaged
+
+AP001A:
+   - roll_actuator_command
+   - autopilot_engaged
+
+AP007:
+   - roll_actuator_command
+
+AP008A:
+   - hdg_mode_is_active
+
+AP008B:
+   - hdg_mode_is_active
+   - phiCmd
+   - hdg_hold_mode_cmd
+

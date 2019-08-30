@@ -1,0 +1,161 @@
+--Historically
+node H(X:bool) returns (Y:bool);
+let
+    Y = X -> (X and (pre Y));
+tel
+
+--Y since inclusive X
+node SI(X,Y: bool) returns (Z:bool);
+let
+Z = Y and (X or (false -> pre Z));
+tel
+
+--Y since X
+node S(X,Y: bool) returns (Z:bool);
+let
+Z = X or (Y and (false -> pre Z));
+tel
+
+--Once
+node O(X:bool) returns (Y:bool);
+let
+ Y = X or (false -> pre Y);
+tel
+
+--Timed Once: less than or equal to N
+node OTlore( N: int; X: bool) returns (Y: bool);
+    var C:int;
+let
+    C = if X then 0
+        else (-1 -> pre C + (if pre C <0 then 0 else 1));
+
+    Y = 0 <= C and C <= N;
+tel
+
+--Timed Once: general case
+node OT( L: int;  R: int; X: bool) returns (Y: bool);
+var  D:bool;
+let
+  D=delay(X, R);
+  Y=OTlore(L-R, D);
+tel
+
+-- Timed Historically: general case
+node HT( L: int;  R: int; X: bool) returns (Y: bool);
+let
+  Y = not OT(L, R, not X);
+tel
+
+-- Timed Since: general case
+node ST( L: int;  R: int; X: bool; Y: bool)  returns (Z: bool);
+let
+  Z = S(X, Y) and OT(L, R, X);
+tel
+
+-- Timed Since: general case
+node SIT( L: int;  R: int; X: bool; Y: bool) returns (Z: bool);
+let
+  Z = SI(X, Y) and OT(L, R, X);
+tel
+
+node abs(x:real) returns(y:real);
+let
+ 
+ y = if x >= 0.0 then x else - x;
+
+tel
+
+
+
+node delay(X:bool;  R:int) returns(Y:bool);
+let
+
+  Y = X;
+ 
+tel
+
+
+node det_3x3(a11 : real; a21 : real;
+a31 : real;
+a12 : real;
+a22 : real; a32 : real; a13 : real; a23 : real; a33 : real) returns(det : real); 
+var adj11 : real; adj21 : real; adj31 : real;
+let
+
+det = (((a11 * adj11) + (a12 * adj21)) + (a13 * adj31));
+adj11 = ((a22 * a33) - (a23 * a32));
+adj21 = ((a23 * a31) - (a21 * a33));
+adj31 = ((a21 * a32) - (a31 * a22));
+
+
+tel
+
+
+node EBSpec( check_1_1:real ;  check_1_2:real ;  check_1_3:real ;  check_2_1:real ;  check_2_2:real ;  check_2_3:real ;  check_3_1:real ;  check_3_2:real ;  check_3_3:real ;  ridge_on:bool; B_1_1:real; B_1_2:real; B_1_3:real; B_1_4:real; B_1_5:real; B_2_1:real; B_2_2:real; B_2_3:real;
+B_2_4:real; B_2_5:real; B_3_1:real; B_3_2:real; B_3_3:real; B_3_4:real;
+B_3_5:real; Buminusd_1:real; Buminusd_2:real; Buminusd_3:real 
+ ) returns ( );
+
+var Buminusd_norm:real; TRUE:bool; det_B_BT:real; eps12:real; eps6:real; EB001:bool; EB004:bool; FTP: bool;  
+B_B_T_1_1:real;
+B_B_T_1_2:real;
+B_B_T_1_3:real;
+B_B_T_2_1:real;
+B_B_T_2_2:real;
+B_B_T_2_3:real;
+B_B_T_3_1:real;
+B_B_T_3_2:real;
+B_B_T_3_3:real;
+
+let
+ 
+
+
+FTP = true->false;
+
+
+
+
+
+
+B_B_T_1_1  = B_1_1*B_1_1 + B_1_2*B_1_2 + B_1_3* B_1_3 + B_1_4*B_1_4 + B_1_5*B_1_5;
+B_B_T_1_2  = B_1_1*B_2_1 + B_1_2*B_2_2 + B_1_3* B_2_3 + B_1_4*B_2_4 + B_1_5*B_2_5;
+B_B_T_1_3  = B_1_1*B_3_1 + B_1_2*B_3_2 + B_1_3* B_3_3 + B_1_4*B_3_4 + B_1_5*B_3_5;
+B_B_T_2_1  = B_B_T_1_2;
+B_B_T_2_2  = B_2_1*B_2_1 + B_2_2*B_2_2 + B_2_3* B_2_3 + B_2_4*B_2_4 + B_2_5*B_2_5;
+B_B_T_2_3  = B_2_1*B_3_1 + B_2_2*B_3_2 + B_2_3* B_3_3 + B_2_4*B_3_4 + B_2_5*B_3_5;
+B_B_T_3_1  = B_B_T_1_3;
+B_B_T_3_2  = B_B_T_2_3;
+B_B_T_3_3  = B_3_1*B_3_1 + B_3_2*B_3_2 + B_3_3* B_3_3 + B_3_4*B_3_4 + B_3_5*B_3_5;
+
+
+
+Buminusd_norm = Buminusd_1*Buminusd_1 + Buminusd_2*Buminusd_2 + Buminusd_3*Buminusd_3;
+TRUE = true;
+det_B_BT = det_3x3(B_B_T_1_1 , B_B_T_2_1 ,
+B_B_T_3_1 , B_B_T_2_3 ,
+B_B_T_1_2 , B_B_T_2_2 , B_B_T_3_2 , B_B_T_1_3 , B_B_T_3_3);
+eps12 = 0.000000000001;
+eps6 = 0.000001;
+
+
+
+
+ 
+(* Req text: EB  shall  always  satisfy  (det_B_BT <= eps12) => (ridge_on  =  TRUE) &  abs(check_1_1  - 1.0)<eps6  &  abs(check_1_2)<eps6  &  abs(check_1_3)<eps6  & abs(check_2_1)<eps6  &  abs(check_2_2  -  1.0)<eps6  &  abs(check_2_3)<eps6  & abs(check_3_1)<eps6 & abs(check_3_2)< eps6 & abs(check_3_3 - 1.0)<eps6  *)
+EB001 = true;--(H((( det_B_BT <= eps12 ) => ( ridge_on = TRUE ) and abs ( check_1_1 - 1.0 ) < eps6 and abs ( check_1_2 ) < eps6 and abs ( check_1_3 ) < eps6 and abs ( check_2_1 ) < eps6 and abs ( check_2_2 - 1.0 ) < eps6 and abs ( check_2_3 ) < eps6 and abs ( check_3_1 ) < eps6 and abs ( check_3_2 ) < eps6 and abs ( check_3_3 - 1.0 ) < eps6)));  
+ 
+(* Req text: EB shall always satisfy Buminusd_norm<0.0001  *)
+EB004 = H((Buminusd_norm < 0.0001));  
+
+ 
+ --%PROPERTY EB001;  
+ --%PROPERTY EB004; 
+ --%REALIZABLE B_1_1, B_1_2, B_1_3, B_1_4, B_1_5, B_2_1, B_2_2, B_2_3,
+B_2_4, B_2_5, B_3_1, B_3_2, B_3_3, B_3_4, B_3_5; 
+
+
+ 
+
+tel
+

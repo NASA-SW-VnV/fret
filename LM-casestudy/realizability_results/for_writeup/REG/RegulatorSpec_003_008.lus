@@ -1,0 +1,140 @@
+--Historically
+node H(X:bool) returns (Y:bool);
+let
+    Y = X -> (X and (pre Y));
+tel
+
+--Y since inclusive X
+node SI(X,Y: bool) returns (Z:bool);
+let
+Z = Y and (X or (false -> pre Z));
+tel
+
+--Y since X
+node S(X,Y: bool) returns (Z:bool);
+let
+Z = X or (Y and (false -> pre Z));
+tel
+
+--Once
+node O(X:bool) returns (Y:bool);
+let
+ Y = X or (false -> pre Y);
+tel
+
+--Timed Once: less than or equal to N
+node OTlore( N: int; X: bool) returns (Y: bool);
+    var C:int;
+let
+    C = if X then 0
+        else (-1 -> pre C + (if pre C <0 then 0 else 1));
+
+    Y = 0 <= C and C <= N;
+tel
+
+--Timed Once: general case
+node OT( L: int;  R: int; X: bool) returns (Y: bool);
+var  D:bool;
+let
+  D=delay(X, R);
+  Y=OTlore(L-R, D);
+tel
+
+-- Timed Historically: general case
+node HT( L: int;  R: int; X: bool) returns (Y: bool);
+let
+  Y = not OT(L, R, not X);
+tel
+
+-- Timed Since: general case
+node ST( L: int;  R: int; X: bool; Y: bool)  returns (Z: bool);
+let
+  Z = S(X, Y) and OT(L, R, X);
+tel
+
+-- Timed Since: general case
+node SIT( L: int;  R: int; X: bool; Y: bool) returns (Z: bool);
+let
+  Z = SI(X, Y) and OT(L, R, X);
+tel
+
+
+node delay(X:bool;  R:int) returns(Y:bool);
+let
+
+  Y = X;
+ 
+tel
+
+
+
+node RegulatorSpec( xcvdt_cmd_fcs_fps2:real; hcvdt_cmd_fcs_fps2:real;
+mcvdt_cmd_fcs_dps2:real; lcvdt_cmd_fcs_dps2:real; ncvdt_cmd_fcs_dps2:real) returns ( );
+
+var airspeed_command_acceleration:real; count_airspeed_output_exceeding_32:int; count_height_output_exceeding_32:int; count_pitch_output_exceeding_50:int; count_roll_output_exceeding_50:int; count_yaw_output_exceeding_50:int; height_command_acceleration:real; pitch_command_acceleration:real; roll_command_acceleration:real; yaw_command_acceleration:real; REG004:bool; REG001:bool; REG006:bool; REG005:bool; REG007:bool; REG008:bool; REG009:bool; REG010:bool; REG002:bool; REG003:bool; FTP: bool; 
+let
+
+
+FTP = true->false;
+
+
+airspeed_command_acceleration = 0.0 -> ( xcvdt_cmd_fcs_fps2 - pre xcvdt_cmd_fcs_fps2) * 100.0;
+count_airspeed_output_exceeding_32 = 0 -> if ( xcvdt_cmd_fcs_fps2 > 32.0) then pre count_airspeed_output_exceeding_32 + 1 else 0;
+count_height_output_exceeding_32 = 0 -> if ( hcvdt_cmd_fcs_fps2 > 32.0) then pre count_height_output_exceeding_32 + 1 else 0;
+count_pitch_output_exceeding_50 = 0 -> if ( mcvdt_cmd_fcs_dps2 > 50.0) then pre count_pitch_output_exceeding_50 + 1 else 0;
+count_roll_output_exceeding_50 = 0 -> if ( lcvdt_cmd_fcs_dps2 > 50.0) then pre count_roll_output_exceeding_50 + 1 else 0;
+count_yaw_output_exceeding_50 = 0 -> if ( ncvdt_cmd_fcs_dps2 > 50.0) then pre count_yaw_output_exceeding_50 + 1 else 0;
+height_command_acceleration = 0.0 -> ( hcvdt_cmd_fcs_fps2 - pre hcvdt_cmd_fcs_fps2) * 100.0;
+pitch_command_acceleration = 0.0 -> ( mcvdt_cmd_fcs_dps2 - pre mcvdt_cmd_fcs_dps2) * 100.0;
+roll_command_acceleration = 0.0 -> ( lcvdt_cmd_fcs_dps2 - pre lcvdt_cmd_fcs_dps2) * 100.0;
+yaw_command_acceleration = 0.0 -> ( ncvdt_cmd_fcs_dps2 - pre ncvdt_cmd_fcs_dps2) * 100.0;
+
+
+
+
+ 
+(* Req text: Regulator shall always satisfy count_airspeed_output_exceeding_32 > 100  *)
+REG004 =true;--H((count_airspeed_output_exceeding_32 <=  100)));  
+ 
+(* Req text: Regulator shall always satisfy count_roll_output_exceeding_50 <= 100  *)
+REG001 =true;--H((count_roll_output_exceeding_50 <= 100)));  
+ 
+(* Req text: Regulator shall always satisfy roll_command_acceleration <= 50.0  *)
+REG006 =true;--H((roll_command_acceleration <= 50.0)));  
+ 
+(* Req text: Regulator shall always satisfy count_height_output_exceeding_32 > 100  *)
+REG005 =true;--H((count_height_output_exceeding_32 <= 100)));  
+ 
+(* Req text: Regulator shall always satisfy pitch_command_acceleration <= 50.0  *)
+REG007 =true;--H((pitch_command_acceleration <= 50.0)));  
+ 
+(* Req text: Regulator shall always satisfy yaw_command_acceleration <= 50.0  *)
+REG008 = (H((yaw_command_acceleration <= 50.0)));  
+ 
+(* Req text: Regulator shall always satisfy airspeed_command_acceleration <=32.0  *)
+REG009 =true;--H((airspeed_command_acceleration <= 32.0)));  
+ 
+(* Req text: Regulator shall always satisfy height_command_acceleration <= 32.0  *)
+REG010 =true;--H((height_command_acceleration <= 32.0)));  
+ 
+(* Req text: Regulator shall always satisfy count_pitch_output_exceeding_50 > 100   *)
+REG002 =true;--H((count_pitch_output_exceeding_50 <=  100)));  
+ 
+(* Req text: Regulator shall always satisfy count_yaw_output_exceeding_50 > 100  *)
+REG003 = (H((count_yaw_output_exceeding_50 <= 100)));  
+
+ 
+ --%PROPERTY REG004;  
+ --%PROPERTY REG001;  
+ --%PROPERTY REG006;  
+ --%PROPERTY REG005;  
+ --%PROPERTY REG007;  
+ --%PROPERTY REG008;  
+ --%PROPERTY REG009;  
+ --%PROPERTY REG010;  
+ --%PROPERTY REG002;  
+ --%PROPERTY REG003; 
+--%REALIZABLE;
+
+tel
+

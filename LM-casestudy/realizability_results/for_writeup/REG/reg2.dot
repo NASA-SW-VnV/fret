@@ -1,0 +1,5 @@
+strict graph "" {
+	REG004 -- xcvdt_cmd_fcs_fps2;
+	xcvdt_cmd_fcs_fps2 -- REG009;
+	REG010 -- ncvdt_cmd_fcs_dps2;
+}

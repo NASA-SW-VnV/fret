@@ -1,0 +1,212 @@
+--Historically
+node H(X:bool) returns (Y:bool);
+let
+    Y = X -> (X and (pre Y));
+tel
+
+--Y since inclusive X
+node SI(X,Y: bool) returns (Z:bool);
+let
+Z = Y and (X or (false -> pre Z));
+tel
+
+--Y since X
+node S(X,Y: bool) returns (Z:bool);
+let
+Z = X or (Y and (false -> pre Z));
+tel
+
+--Once
+node O(X:bool) returns (Y:bool);
+let
+ Y = X or (false -> pre Y);
+tel
+
+--Timed Once: less than or equal to N
+node OTlore( N: int; X: bool) returns (Y: bool);
+    var C:int;
+let
+    C = if X then 0
+        else (-1 -> pre C + (if pre C <0 then 0 else 1));
+
+    Y = 0 <= C and C <= N;
+tel
+
+--Timed Once: general case
+node OT( L: int;  R: int; X: bool) returns (Y: bool);
+var  D:bool;
+let
+  D=delay(X, R);
+  Y=OTlore(L-R, D);
+tel
+
+-- Timed Historically: general case
+node HT( L: int;  R: int; X: bool) returns (Y: bool);
+let
+  Y = not OT(L, R, not X);
+tel
+
+-- Timed Since: general case
+node ST( L: int;  R: int; X: bool; Y: bool)  returns (Z: bool);
+let
+  Z = S(X, Y) and OT(L, R, X);
+tel
+
+-- Timed Since: general case
+node SIT( L: int;  R: int; X: bool; Y: bool) returns (Z: bool);
+let
+  Z = SI(X, Y) and OT(L, R, X);
+tel
+
+
+node delay(X:bool;  R:int) returns(Y:bool);
+let
+
+  Y = X;
+ 
+tel
+
+node abs(x:real) returns (y:real); let
+y = if x >= 0.0 then x else - x;
+tel
+
+node abs_real(x:real) returns(y:real);
+let
+    y = if x >= 0.0 then x else - x;
+tel
+
+
+node AP_RAP( altitude_hold:bool; APeng:bool; HDGmode:bool; phi:real;
+altitude:real; phiCmd:real;
+hdg_hold_mode_cmd:real; hdg_mode_is_active:bool; 
+roll_actuator_command:real ;  roll_hold_mode_cmd:real) returns ( );
+
+var roll_cmd:real; rollAtZero:real; altitude_IC:real;
+absOf_alt_minus_IC:real; roll_rate:real; roll_angle:real;
+abs_roll_angle:real; abs_roll_rate:real; abs_roller_err:real;
+overshoot:real; steady_state:bool; AP004a:bool; AP000:bool;
+AP004b:bool; AP005:bool; AP006:bool; FTP: bool; autopilot_engaged:bool;
+step:real; epsilon:real; roll_err:real; autopilotEngaged:bool;
+abs_aileron_cmd:real; no_other_lateral_mode:bool;  hdg_hold:bool;
+AP002c:bool; AP002a:bool; AP001A:bool; AP007:bool; AP008A:bool; AP008B:bool;
+rollHold:bool; roll_hold:bool; 
+
+let
+
+
+FTP = true->false;
+
+
+(*Autopilot Variables*)
+roll_hold = autopilot_engaged and not HDGmode;
+
+
+epsilon = 0.0001;
+roll_angle = phi;
+roll_rate = pre roll_angle - roll_angle;
+altitude_IC = 7225.0;
+step = roll_cmd - rollAtZero;
+roll_err = roll_angle - roll_cmd;
+roll_cmd = phiCmd;
+
+rollAtZero = roll_angle -> if (roll_hold and
+not pre roll_hold) then roll_angle else pre
+rollAtZero;
+
+absOf_alt_minus_IC = abs_real(altitude - altitude_IC);
+abs_roll_angle = abs_real(roll_angle);
+abs_roll_rate = abs_real(roll_rate);
+abs_roller_err = abs_real(roll_angle - roll_cmd);
+overshoot = (roll_angle - step)/step;
+steady_state = false -> abs(roll_err - pre
+roll_err) <= epsilon;
+
+autopilot_engaged = APeng;
+
+
+
+
+(*RollAutopilot Variables*)
+
+
+autopilotEngaged = autopilot_engaged;
+abs_aileron_cmd = abs_real(roll_actuator_command);
+no_other_lateral_mode = not hdg_mode_is_active;
+
+hdg_hold = hdg_mode_is_active;
+rollHold = roll_hold; 
+ 
+
+
+
+
+
+
+ 
+(*Autopilot Requirements*)
+ 
+(* Req text: when in roll_hold mode, when steady_state Autopilot shall always satisfy abs_roller_err <= 1.0  *)
+AP004a = ((H(((( not roll_hold) and (pre (roll_hold))) and ( not FTP)) => (pre (SI( (roll_hold and (FTP or (pre ( not roll_hold)))), ((SI( (roll_hold and (FTP or (pre ( not roll_hold)))), ( not (steady_state)) )) or (SI( ((steady_state) and ((pre ( not (steady_state))) or (roll_hold and (FTP or (pre ( not roll_hold)))))), (abs_roller_err <= 1.0) ))) ))))) and ((SI( (roll_hold and (FTP or (pre ( not roll_hold)))), ( not (( not roll_hold) and (pre (roll_hold)))) )) => (SI( (roll_hold and (FTP or (pre ( not roll_hold)))), ((SI( (roll_hold and (FTP or (pre ( not roll_hold)))), ( not (steady_state)) )) or (SI( ((steady_state) and ((pre ( not (steady_state))) or (roll_hold and (FTP or (pre ( not roll_hold)))))), (abs_roller_err <= 1.0) ))) ))));  
+ 
+(* Req text: Autopilot shall always satisfy altitude_hold => absOf_alt_minus_IC <= 35.0  *)
+AP000 = (H((altitude_hold => absOf_alt_minus_IC <= 35.0)));  
+ 
+(* Req text: when in roll_hold mode Autopilot shall always satisfy overshoot <= 0.1  *)
+AP004b = ((H(((( not roll_hold) and (pre (roll_hold))) and ( not FTP)) => (pre (SI( (roll_hold and (FTP or (pre ( not roll_hold)))), (overshoot <= 0.1) ))))) and ((SI( (roll_hold and (FTP or (pre ( not roll_hold)))), ( not (( not roll_hold) and (pre (roll_hold)))) )) => (SI( (roll_hold and (FTP or (pre ( not roll_hold)))), (overshoot <= 0.1) ))));  
+ 
+(* Req text: Autopilot shall always satisfy  abs_roll_rate <= 6.6  *)
+AP005 = (H((abs_roll_rate <= 6.6)));  
+ 
+(* Req text: Autopilot shall always satisfy abs_roll_angle < 33.0  *)
+AP006 = (H((abs_roll_angle < 33.0)));  
+
+
+
+
+
+(*RollAutopilot Requirements*)
+
+(* Req text: in roll_hold mode RollAutopilot shall always satisfy roll_cmd = roll_hold_mode_cmd  *)
+AP002c = ((H(((( not roll_hold) and (pre (roll_hold))) and ( not FTP)) => (pre (SI( (roll_hold and (FTP or (pre ( not roll_hold)))), (roll_cmd = roll_hold_mode_cmd) ))))) and ((SI( (roll_hold and (FTP or (pre ( not roll_hold)))), ( not (( not roll_hold) and (pre (roll_hold)))) )) => (SI( (roll_hold and (FTP or (pre ( not roll_hold)))), (roll_cmd = roll_hold_mode_cmd) ))));  
+ 
+(* Req text: when in rollHold mode RollAutopilot shall always satisfy autopilotEngaged & no_other_lateral_mode  *)
+AP002a = ((H(((( not rollHold) and (pre (rollHold))) and ( not FTP)) => (pre (SI( (rollHold and (FTP or (pre ( not rollHold)))), (autopilotEngaged and no_other_lateral_mode) ))))) and ((SI( (rollHold and (FTP or (pre ( not rollHold)))), ( not (( not rollHold) and (pre (rollHold)))) )) => (SI( (rollHold and (FTP or (pre ( not rollHold)))), (autopilotEngaged and no_other_lateral_mode) ))));  
+ 
+(* Req text: RollAutopilot shall always satisfy !  autopilot_engaged => roll_actuator_command = 0.0  *)
+AP001A = (H((not autopilot_engaged => roll_actuator_command = 0.0)));  
+ 
+(* Req text: RollAutopilot shall always satisfy abs_aileron_cmd <= 15.0  *)
+AP007 = (H((abs_aileron_cmd <= 15.0)));  
+ 
+(* Req text: in hdg_hold mode RollAutopilot shall always satisfy hdg_mode_is_active  *)
+AP008A = ((H(((( not hdg_hold) and (pre (hdg_hold))) and ( not FTP)) => (pre (SI( (hdg_hold and (FTP or (pre ( not hdg_hold)))), (hdg_mode_is_active) ))))) and ((SI( (hdg_hold and (FTP or (pre ( not hdg_hold)))), ( not (( not hdg_hold) and (pre (hdg_hold)))) )) => (SI( (hdg_hold and (FTP or (pre ( not hdg_hold)))), (hdg_mode_is_active) ))));  
+ 
+(* Req text: in hdg_hold mode RollAutopilot shall always satisfy roll_cmd = hdg_hold_mode_cmd  *)
+AP008B = ((H(((( not hdg_hold) and (pre (hdg_hold))) and ( not FTP)) => (pre (SI( (hdg_hold and (FTP or (pre ( not hdg_hold)))), (roll_cmd = hdg_hold_mode_cmd) ))))) and ((SI( (hdg_hold and (FTP or (pre ( not hdg_hold)))), ( not (( not hdg_hold) and (pre (hdg_hold)))) )) => (SI( (hdg_hold and (FTP or (pre ( not hdg_hold)))), (roll_cmd = hdg_hold_mode_cmd) ))));  
+
+
+ 
+(*Autopilot Requirements*)
+ --%PROPERTY AP004a;  
+ --%PROPERTY AP000;  
+ --%PROPERTY AP004b;  
+ --%PROPERTY AP005;  
+ --%PROPERTY AP006; 
+--%REALIZABLE altitude_hold, APeng, HDGmode, phi, hdg_hold_mode_cmd,
+hdg_mode_is_active; 
+  
+
+
+(*RollAutopilot Requirements*)
+ --%PROPERTY AP002c;  
+ --%PROPERTY AP002a;  
+ --%PROPERTY AP001A;  
+ --%PROPERTY AP007;  
+ --%PROPERTY AP008A;  
+ --%PROPERTY AP008B; 
+
+tel
+
+
+
+

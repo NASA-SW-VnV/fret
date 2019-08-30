@@ -1,0 +1,7 @@
+strict graph "" {
+	NN002;
+	NN001;
+	NN003B -- z;
+	NN003A -- z;
+	NN004;
+}
