@@ -90,3 +90,69 @@ AP007:
 AP008B:
    - phiCmd
 
+AP004a:
+   - phiCmd
+
+AP000:
+   - altitude
+
+AP004b:
+   - phiCmd
+
+AP002c:
+   - roll_hold_mode_cmd
+   - phiCmd
+
+AP001A:
+   - roll_actuator_command
+
+AP007:
+   - roll_actuator_command
+
+AP008B:
+   - phiCmd
+
+AP004a:
+   - phiCmd
+
+AP000:
+   - altitude
+
+AP004b:
+   - phiCmd
+
+AP002c:
+   - roll_hold_mode_cmd
+   - phiCmd
+
+AP001A:
+   - roll_actuator_command
+
+AP007:
+   - roll_actuator_command
+
+AP008B:
+   - phiCmd
+
+AP004a:
+   - phiCmd
+
+AP000:
+   - altitude
+
+AP004b:
+   - phiCmd
+
+AP002c:
+   - roll_hold_mode_cmd
+   - phiCmd
+
+AP001A:
+   - roll_actuator_command
+
+AP007:
+   - roll_actuator_command
+
+AP008B:
+   - phiCmd
+
