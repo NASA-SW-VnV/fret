@@ -357,6 +357,15 @@ class ComponentSummary extends React.Component {
               var mappings = compute_dependency_maps(contract);
               console.log(mappings);
               var connected_components = compute_connected_components(contract, mappings['output']);
+            console.log(contract);
+
+            /* Use contract to determined the output connected components
+             * */
+
+            //var mappings = compute_dependency_maps(contract);
+            //console.log(mappings);
+            // var connected_components = compute_connected_components(contract, mappings['output']);
+
 //            archive.append(ejsCache.renderContractCode().contract.complete(contract), {name: contract.componentName+'.lus'})
               archive.append(ejsCache_realize.renderRealizeCode().component.complete(contract), {name: contract.componentName+'.lus'})
             }
@@ -405,7 +414,6 @@ ComponentSummary.propTypes = {
 };
 
 ComponentSummary = withStyles(componentStyles)(ComponentSummary);
-
 
 class VariablesView extends React.Component {
   state = {
