@@ -124,19 +124,23 @@ class DisplayVariableDialog extends React.Component {
     });
   };
 
+
   handleUpdate = () => {
     const self = this;
     const {selectedVariable, description, idType, dataType, assignment, modeRequirement, modeldoc_id, modelComponent, variables} = this.state;
     var modeldbid = selectedVariable._id;
+    console.log(modeldbid);
     var completedVariable = false;
 
+    //Check if variables are already in the model db. If yes, add modeldbid in the otherDeps array.
     if(variables.length != 0){
+      console.log(variables);
       variables.forEach(function(v){
         modeldb.find({
               selector: {
                 _id: selectedVariable.project + selectedVariable.component_name + v,
               }
-            }).then(function (result){
+            }).then(function(result){
               if(result.docs.length == 0){
                 otherDeps = [modeldbid];
                 modeldb.put({
@@ -157,28 +161,40 @@ class DisplayVariableDialog extends React.Component {
                   }).catch(function (err){
                     console.log(err);
                   })
-              } else {
-                modeldb.put({
-                  _id: vdoc._id,
-                  _rev: vdoc._rev,
-                  project: vdoc.project,
-                  variable_name: vdoc.variable_name,
-                  reqs: vdoc.reqs,
-                  otherDeps: vdoc.otherDeps.push(modeldbid),
-                  dataType: vdoc.dataType,
-                  idType: vdoc.idType,
-                  description: vdoc.description,
-                  assignment: vdoc.assignment,
-                  modeRequirement: vdoc.modeRequirement,
-                  modeldoc: vdoc.modeldoc,
-                }).then(function (response) {
-                  console.log(response);
-                }).catch(function (err){
-                  console.log(err);
-                })
+              } else if (result.docs.length == 1){
+                //If it already exists check if otherDeps contains the right dependencies
+                if(!result.docs[0].otherDeps.contains(modeldbid)){
+                  modeldb.put({
+                    _id: result.docs[0]._id,
+                    _rev: result.docs[0]._rev,
+                    project: result.docs[0].project,
+                    variable_name: result.docs[0].variable_name,
+                    reqs: result.docs[0].reqs,
+                    otherDeps: result.docs[0].otherDeps.push(modeldbid),
+                    dataType: result.docs[0].dataType,
+                    idType: result.docs[0].idType,
+                    description: result.docs[0].description,
+                    assignment: result.docs[0].assignment,
+                    modeRequirement: result.docs[0].modeRequirement,
+                    modeldoc: result.docs[0].modeldoc,
+                  }).then(function (response) {
+                    console.log(response);
+                  }).catch(function (err){
+                    console.log(err);
+                  })
+                }
               }
             });
         })
+        modeldb.find({
+              selector: {
+                otherDeps: selectedVariable.project + selectedVariable.component_name + v,
+              }
+            }).then(function(result){
+
+            })
+
+
     }
 
       /*
