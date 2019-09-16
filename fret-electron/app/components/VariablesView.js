@@ -63,6 +63,9 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import ejsCache_realize from '../../support/RealizabilityTemplates/ejsCache_realize';
 
+/* Connected Component Analysis Imports */
+import * as cc_analysis from '../../analysis/connected_components';
+
 const sharedObj = require('electron').remote.getGlobal('sharedObj');
 const constants = require('../parser/Constants');
 const db = sharedObj.db;
@@ -367,8 +370,6 @@ class ComponentSummary extends React.Component {
               archive.append(ejsCache_realize.renderRealizeCode().component.complete(contract), {name: contract.componentName+'.lus'})
             }
 //            archive.append(ejsCache.renderContractCode().contract.complete(contract), {name: contract.componentName+'.lus'})
-
-
             // finalize the archive (ie we are done appending files but streams have to finish yet)
             archive.finalize();
 
@@ -414,6 +415,7 @@ ComponentSummary.propTypes = {
 };
 
 ComponentSummary = withStyles(componentStyles)(ComponentSummary);
+
 
 class VariablesView extends React.Component {
   state = {
