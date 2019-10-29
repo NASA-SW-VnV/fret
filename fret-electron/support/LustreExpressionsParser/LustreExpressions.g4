@@ -3,7 +3,7 @@ grammar LustreExpressions;
 proposition : ID ;
 
 expr:
-      proposition                                                      
+      proposition
     | INT
     | REAL
     | BOOL
@@ -32,6 +32,6 @@ BOOL: 'true' | 'false';
 
 INT: [0-9]+;
 
-ID:[a-zA-Z][a-zA-Z0-9]*;
+ID:[_a-zA-Z][_a-zA-Z0-9]*;
 
 WS : [ \t\r\n]+ -> skip ;  // skip spaces, tabs, newlines
