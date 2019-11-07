@@ -567,7 +567,6 @@ class VariablesView extends React.Component {
     const {cocospecData, cocospecModes,completedComponents} = this.state;
     var dataAndModesLength = 0;
     cocospecModes[component_name] ? dataAndModesLength = cocospecData[component_name].length + cocospecModes[component_name].length : dataAndModesLength = cocospecData[component_name].length;
-
     modeldb.find({
       selector: {
         component_name: component_name,
@@ -576,7 +575,7 @@ class VariablesView extends React.Component {
         modeldoc: false
       }
     }).then(function (result) {
-      if (result.docs.length === dataAndModesLength && dataAndModesLength !== 0){
+      if (result.docs.length >= dataAndModesLength && dataAndModesLength !== 0){
         if (!completedComponents.includes(component_name))
          completedComponents.push(component_name);
       } else {

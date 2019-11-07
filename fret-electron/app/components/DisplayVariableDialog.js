@@ -129,12 +129,10 @@ class DisplayVariableDialog extends React.Component {
     const self = this;
     const {selectedVariable, description, idType, dataType, assignment, modeRequirement, modeldoc_id, modelComponent, variables} = this.state;
     var modeldbid = selectedVariable._id;
-    console.log(modeldbid);
     var completedVariable = false;
 
     //Check if variables are already in the model db. If yes, add modeldbid in the otherDeps array.
     if(variables.length != 0){
-      console.log(variables);
       variables.forEach(function(v){
         modeldb.find({
               selector: {
@@ -142,20 +140,23 @@ class DisplayVariableDialog extends React.Component {
               }
             }).then(function(result){
               if(result.docs.length == 0){
-                otherDeps = [modeldbid];
+                var otherDeps = [modeldbid];
                 modeldb.put({
                   _id: selectedVariable.project + selectedVariable.component_name + v,
                   project: selectedVariable.project,
                   component_name: selectedVariable.component_name,
                   variable_name: v,
                   reqs: selectedVariable.reqs,
-                  otherDeps: otherDeps,
+                  otherDeps: [modeldbid],
                   dataType: '',
                   idType: '',
                   description: '',
                   assignment: '',
                   modeRequirement: '',
                   modeldoc: false,
+                  modeldoc_id: '',
+                  modelComponent: '',
+                  completed: false,
                   }).then(function (response) {
                     console.log(response);
                   }).catch(function (err){
@@ -163,40 +164,44 @@ class DisplayVariableDialog extends React.Component {
                   })
               } else if (result.docs.length == 1){
                 //If it already exists check if otherDeps contains the right dependencies
-                if(!result.docs[0].otherDeps.contains(modeldbid)){
+                var doc = result.docs[0];
+                if(!doc.otherDeps.includes(modeldbid)){
+                  var otherDeps = doc.otherDeps;
+                  otherDeps.push(modeldbid);
                   modeldb.put({
-                    _id: result.docs[0]._id,
-                    _rev: result.docs[0]._rev,
-                    project: result.docs[0].project,
-                    variable_name: result.docs[0].variable_name,
-                    reqs: result.docs[0].reqs,
-                    otherDeps: result.docs[0].otherDeps.push(modeldbid),
-                    dataType: result.docs[0].dataType,
-                    idType: result.docs[0].idType,
-                    description: result.docs[0].description,
-                    assignment: result.docs[0].assignment,
-                    modeRequirement: result.docs[0].modeRequirement,
-                    modeldoc: result.docs[0].modeldoc,
+                    _id: doc._id,
+                    _rev: doc._rev,
+                    project: doc.project,
+                    variable_name: doc.variable_name,
+                    component_name: doc.component_name,
+                    reqs: doc.reqs,
+                    otherDeps: otherDeps,
+                    dataType: doc.dataType,
+                    idType: doc.idType,
+                    description: doc.description,
+                    assignment: doc.assignment,
+                    modeRequirement: doc.modeRequirement,
+                    modeldoc: doc.modeldoc,
+                    modeldoc_id: doc.modeldoc_id,
+                    modelComponent: doc.modelComponent,
+                    completed: doc.completed,
                   }).then(function (response) {
                     console.log(response);
                   }).catch(function (err){
                     console.log(err);
                   })
+                  modeldb.find({
+                        selector: {
+                          _id: doc._id,
+                        }
+                      }).then(function(result){
+                        console.log(result);
+                  });
                 }
               }
             });
         })
-        modeldb.find({
-              selector: {
-                otherDeps: selectedVariable.project + selectedVariable.component_name + v,
-              }
-            }).then(function(result){
-
-            })
-
-
     }
-
       /*
        For each Variable Type we need the following:
         Mode -> Mode Requirement
@@ -214,6 +219,7 @@ class DisplayVariableDialog extends React.Component {
           component_name: vdoc.component_name,
           variable_name: vdoc.variable_name,
           reqs: vdoc.reqs,
+          otherDeps: vdoc.otherDeps,
           dataType: dataType,
           idType: idType,
           description: description,
@@ -232,8 +238,6 @@ class DisplayVariableDialog extends React.Component {
       })
       self.setState({open: false});
       self.state.dialogCloseListener();
-
-
   }
 
   componentWillReceiveProps = (props) => {
