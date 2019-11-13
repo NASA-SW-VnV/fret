@@ -129,7 +129,7 @@ TSM003c = (H((FC = 4 => set_val = 0.5 * ( ib + ic ))));
 TSM002 = (H((( nofail => ( setval = midvalue ) ))));  
  
 (* Req text: TriplexSignalMonitor shall always satisfy  countFC0 & prePC > 0 & prePC < PCLimit & ((! C1 & C2 & C3) | (C1 & ! C2 & C3) | (C1 & C2 & ! C3))  => set_val = prevSet_val  *)
-TSM004v2 = true;--(H((countFC0 and prePC > 0 and prePC < PCLimit and ( ( not C1 and C2 and C3 ) or ( C1 and not C2 and C3 ) or ( C1 and C2 and not C3 ) ) => set_val = prevSet_val)));  
+TSM004v2 = (H((countFC0 and prePC > 0 and prePC < PCLimit and ( ( not C1 and C2 and C3 ) or ( C1 and not C2 and C3 ) or ( C1 and C2 and not C3 ) ) => set_val = prevSet_val)));  
  
 (* Req text: TriplexSignalMonitor shall always satisfy FC =1 => set_val = 0.5 * (ia +ib)  *)
 TSM003a = (H((FC = 1 => set_val = 0.5 * ( ia + ib ))));  
