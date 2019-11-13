@@ -203,7 +203,7 @@ assert SENSTATE = 0.0 or SENSTATE = 1.0 or SENSTATE = 2.0;
 
  
 (*FSM Global*)
- --%PROPERTY FSM001v2;  
+ --PROPERTY FSM001v2;  
  --%PROPERTY FSM001v3;  
  --%PROPERTY FSM001v1; 
 
