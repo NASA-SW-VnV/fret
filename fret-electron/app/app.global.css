@@ -1,0 +1,370 @@
+/*
+ * @NOTE: Prepend a `~` to css file paths that are in your node_modules
+ *        See https://github.com/webpack-contrib/sass-loader#imports
+ */
+@import "~typeface-roboto";
+@import "~typeface-gloria-hallelujah";
+@import "~typeface-indie-flower";
+@import "~font-awesome/css/font-awesome.css";
+
+body {
+  font-family: 'Roboto', sans-serif;
+  margin: 0;
+}
+
+//CirclePacking css (begin)
+.node {
+  cursor: pointer;
+}
+
+.node:hover {
+  stroke: hsl(0, 0%, 39%);
+  stroke-width: 1.5px;
+}
+
+.node--leaf {
+  fill: #9CCC65;
+}
+
+.node--leaf-unformalized {
+  fill: #E57373;
+}
+
+.label {
+  font: .75em "Roboto", monospace;
+  text-anchor: middle;
+  cursor: default;
+}
+
+.node--root,
+.node--leaf {
+  pointer-events: none;
+}
+
+div.tooltip {
+    position: absolute;
+    padding: 10px;
+    font: 12px sans-serif;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    border: 0px;
+    border-radius: 2px;
+    pointer-events: none;
+    width: 200px;
+}
+//CirclePacking css (end)
+
+.links line {
+  stroke: #999;
+  stroke-opacity: 0.6;
+}
+
+.nodes circle {
+  stroke: #fff;
+  stroke-width: 1.5px;
+}
+
+:root {
+--annotation-color: #607D8B;
+}
+
+svg {
+ font-family: 'Lato';
+}
+
+line {
+ stroke:#eae4e4;
+}
+
+.annotation path {
+  stroke: var(--annotation-color);
+  fill: rgba(0,0,0,0);
+}
+
+.annotation path.connector-arrow{
+  fill: var(--annotation-color);
+}
+
+.annotation text {
+  fill: var(--annotation-color);
+}
+
+.annotation-title {
+  font-weight: bold;
+}
+
+circle.handle {
+  stroke-dasharray: 5;
+  stroke: var(--annotation-color);
+  fill: rgba(255, 255, 255, .5);
+  cursor: move;
+
+  stroke-opacity: .4;
+}
+
+circle.handle.highlight {
+  stroke-opacity: 1;
+}
+
+.annotation-note-bg {
+  fill: rgba(255, 255, 255, 0);
+}
+
+// Slate styles
+
+html,
+input,
+textarea {
+  font-family: 'Roboto', sans-serif;
+  line-height: 1.4;
+  background: #eee;
+}
+
+body {
+  margin: 0;
+}
+
+p {
+  margin: 0;
+}
+
+pre {
+  padding: 10px;
+  background-color: #eee;
+  white-space: pre-wrap;
+}
+
+:not(pre) > code {
+  font-family: monospace;
+  background-color: #eee;
+  padding: 3px;
+  margin-right: 6px;
+  border-style: none solid none solid;
+}
+
+img {
+  max-width: 100%;
+  max-height: 20em;
+}
+
+img.active {
+  box-shadow: 0 0 0 2px blue;
+}
+
+blockquote {
+  border-left: 2px solid #ddd;
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: 10px;
+  color: #aaa;
+  font-style: italic;
+}
+
+blockquote[dir='rtl'] {
+  border-left: none;
+  padding-left: 0;
+  padding-right: 10px;
+  border-right: 2px solid #ddd;
+}
+
+input {
+  box-sizing: border-box;
+  font-size: 0.85em;
+  width: 100%;
+  padding: 0.5em;
+  border: 2px solid #ddd;
+  background: #fafafa;
+}
+
+input:focus {
+  outline: 0;
+  border-color: blue;
+}
+
+/**
+ * App.
+ */
+
+.nav {
+  padding: 10px 15px;
+  color: #aaa;
+  background: #000;
+}
+
+.nav-title {
+  margin-right: 0.5em;
+}
+
+.nav-links {
+  float: right;
+}
+
+.nav-link {
+  margin-left: 1em;
+  color: #aaa;
+  text-decoration: none;
+}
+
+.nav-link:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.tabs {
+  padding: 15px 15px;
+  background-color: #222;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.tab {
+  color: #777;
+  display: inline-block;
+  text-decoration: none;
+  padding: 0.2em 0.5em;
+  border-radius: 0.2em;
+  margin-bottom: 0.2em;
+}
+
+.tab:hover {
+  background: #333;
+}
+
+.tab + .tab {
+  margin-left: 0.5em;
+}
+
+.tab.active {
+  color: white;
+  background: #333;
+}
+
+/**
+ * Example.
+ */
+
+.example,
+.error {
+  max-width: 42em;
+  margin: 0 auto 20px;
+  padding: 20px;
+}
+
+.example {
+  background: #fff;
+}
+
+.error {
+  background: #fffae0;
+}
+
+.error .info {
+  background: #fbf1bd;
+  white-space: pre;
+  overflow-x: scroll;
+  margin-bottom: 0;
+}
+
+.editor > * > * + * {
+  margin-top: 1em;
+}
+
+.menu > * {
+  display: inline-block;
+}
+
+.menu > * + * {
+  margin-left: 15px;
+}
+
+.button {
+  color: #ccc;
+  cursor: pointer;
+}
+
+.button[data-active='true'] {
+  color: black;
+}
+
+.toolbar-menu {
+  position: relative;
+  padding: 1px 18px 17px;
+  margin: 0 -20px;
+  border-bottom: 2px solid #eee;
+  margin-bottom: 20px;
+}
+
+.toolbar-menu .search {
+  position: relative;
+}
+
+.toolbar-menu .search-icon {
+  position: absolute;
+  top: 0.5em;
+  left: 0.5em;
+  color: #ccc;
+}
+
+.toolbar-menu .search-box {
+  padding-left: 2em;
+  width: 100%;
+}
+
+.hover-menu {
+  padding: 8px 7px 6px;
+  position: absolute;
+  z-index: 1;
+  top: -10000px;
+  left: -10000px;
+  margin-top: -6px;
+  opacity: 0;
+  background-color: #222;
+  border-radius: 4px;
+  transition: opacity 0.75s;
+}
+
+.hover-menu .button {
+  color: #aaa;
+}
+
+.hover-menu .button[data-active='true'] {
+  color: #fff;
+}
+
+.emoji.selected {
+  outline: 2px solid blue;
+}
+
+.check-list-item + .check-list-item {
+  margin-top: 0;
+}
+
+.check-list-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.check-list-item.checked {
+  opacity: 0.666;
+  text-decoration: line-through;
+}
+
+.check-list-item > span:first-child {
+  margin-right: 0.75em;
+}
+
+.check-list-item > span:last-child {
+  flex: 1;
+}
+
+.check-list-item > span:last-child:focus {
+  outline: none;
+}
+
+.word-counter {
+  margin-top: 10px;
+  padding: 12px;
+  background-color: #ebebeb;
+  display: inline-block;
+}

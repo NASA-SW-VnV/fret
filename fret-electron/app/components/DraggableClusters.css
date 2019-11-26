@@ -1,0 +1,46 @@
+@import "https://fonts.googleapis.com/css?family=Lato:300,900";
+:root {
+--annotation-color: #607D8B;
+}
+
+svg {
+ font-family: 'Lato';
+}
+
+line {
+ stroke:#eae4e4;
+}
+
+.annotation path {
+  stroke: var(--annotation-color);
+  fill: rgba(0,0,0,0);
+}
+
+.annotation path.connector-arrow{
+  fill: var(--annotation-color);
+}
+
+.annotation text {
+  fill: var(--annotation-color);
+}
+
+.annotation-title {
+  font-weight: bold;
+}
+
+circle.handle {
+  stroke-dasharray: 5;
+  stroke: var(--annotation-color);
+  fill: rgba(255, 255, 255, .5);
+  cursor: move;
+
+  stroke-opacity: .4;
+}
+
+circle.handle.highlight {
+  stroke-opacity: 1;
+}
+
+.annotation-note-bg {
+  fill: rgba(255, 255, 255, 0);
+}

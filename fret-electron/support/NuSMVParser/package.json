@@ -1,0 +1,14 @@
+{
+  "name": "nusmvparser",
+  "version": "1.0.0",
+  "description": "NuSMV parser for the FRET project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "NuSMV",
+    "parser"
+  ],
+  "author": "Anastasia Mavridou"
+}

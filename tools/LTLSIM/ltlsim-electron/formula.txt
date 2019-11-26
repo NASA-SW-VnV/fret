@@ -1,0 +1,1 @@
+H ((!((!RES) S ((!RES) & ((MODE & ((! Y TRUE) | (Y ! MODE))) & ((Y (H ! MODE)) | (! Y TRUE)))))) -> (O[0, 0] ((MODE & ((! Y TRUE) | (Y ! MODE))) & ((Y (H ! MODE)) | (! Y TRUE)))))

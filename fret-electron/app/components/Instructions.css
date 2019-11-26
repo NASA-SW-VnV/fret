@@ -1,0 +1,29 @@
+.body {
+  background: #ECEFF1;
+}
+.divider{
+    padding-left: 5%;
+    padding-right: 5%;
+    background: #ECEFF1;
+}
+
+.examples {
+  font-family: 'Indie Flower', cursive;
+  padding-left: 10%;
+  color: '#CFD8DC';
+}
+
+.imgWrap {
+  width: 450px;
+  position: relative;
+  display: inline-block;
+  margin-top: -5%;
+  margin-left: 5%;
+  margin-right: 5%;
+}
+
+.notationWrap {
+  width: 400px;
+  position: relative;
+ display: inline-block;
+}

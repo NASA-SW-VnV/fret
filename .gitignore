@@ -1,0 +1,7 @@
+#Logs
+*.log
+logs
+
+# OSX
+.DS_Store
+tools/Scripts/.DS_Store

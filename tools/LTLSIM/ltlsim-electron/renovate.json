@@ -1,0 +1,10 @@
+{
+  "extends": [
+    "config:base"
+  ],
+  "rangeStrategy": "bump",
+  "baseBranches": ["next"],
+  "patch": {
+    "automerge": true
+  }
+}

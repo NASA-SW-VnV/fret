@@ -1,0 +1,7 @@
+<% for (i=0; i < properties.length; i++) {%>
+(* <%-properties[i].fullText%>  *)
+<% if (properties[i].allInput) {%>assume "<%-properties[i].reqid%>" <%- properties[i].value %>;
+<%} else {%>guarantee "<%-properties[i].reqid%>" <%- properties[i].value %>;<%}%>
+
+<%}%>
+tel

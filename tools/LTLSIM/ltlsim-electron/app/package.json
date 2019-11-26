@@ -1,0 +1,19 @@
+{
+  "name": "ltlsim",
+  "productName": "LTLSIM",
+  "version": "0.1.0",
+  "description": "Interactive Simulation of LTL Formulas",
+  "main": "./main.prod.js",
+  "author": {
+    "name": "Julian Rhein",
+    "email": "julian.rhein@tum.de"
+  },
+  "scripts": {
+    "electron-rebuild": "node -r babel-register ../internals/scripts/ElectronRebuild.js",
+    "postinstall": "yarn electron-rebuild"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "ltlsim-core": "file:../../ltlsim-core"
+  }
+}

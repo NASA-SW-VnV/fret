@@ -1,0 +1,5 @@
+<% for (i=0; i < modes.length; i++) {%>
+ mode <%- modes[i].name%>_mode (
+  require <%-modes[i].name%>;
+ );
+<%}%>

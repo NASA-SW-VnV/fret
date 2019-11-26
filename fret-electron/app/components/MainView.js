@@ -1,0 +1,523 @@
+// *****************************************************************************
+// Notices:
+// 
+// Copyright © 2019 United States Government as represented by the Administrator
+// of the National Aeronautics and Space Administration.  All Rights Reserved.
+// 
+// Disclaimers
+// 
+// No Warranty: THE SUBJECT SOFTWARE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY OF
+// ANY KIND, EITHER EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED
+// TO, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL CONFORM TO SPECIFICATIONS, 
+// ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, 
+// OR FREEDOM FROM INFRINGEMENT, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL BE
+// ERROR FREE, OR ANY WARRANTY THAT DOCUMENTATION, IF PROVIDED, WILL CONFORM TO
+// THE SUBJECT SOFTWARE. THIS AGREEMENT DOES NOT, IN ANY MANNER, CONSTITUTE AN
+// ENDORSEMENT BY GOVERNMENT AGENCY OR ANY PRIOR RECIPIENT OF ANY RESULTS,
+// RESULTING DESIGNS, HARDWARE, SOFTWARE PRODUCTS OR ANY OTHER APPLICATIONS
+// RESULTING FROM USE OF THE SUBJECT SOFTWARE.  FURTHER, GOVERNMENT AGENCY
+// DISCLAIMS ALL WARRANTIES AND LIABILITIES REGARDING THIRD-PARTY SOFTWARE, IF
+// PRESENT IN THE ORIGINAL SOFTWARE, AND DISTRIBUTES IT ''AS IS.''
+// 
+// Waiver and Indemnity:  RECIPIENT AGREES TO WAIVE ANY AND ALL CLAIMS AGAINST
+// THE UNITED STATES GOVERNMENT, ITS CONTRACTORS AND SUBCONTRACTORS, AS WELL AS
+// ANY PRIOR RECIPIENT.  IF RECIPIENT'S USE OF THE SUBJECT SOFTWARE RESULTS IN
+// ANY LIABILITIES, DEMANDS, DAMAGES, EXPENSES OR LOSSES ARISING FROM SUCH USE,
+// INCLUDING ANY DAMAGES FROM PRODUCTS BASED ON, OR RESULTING FROM, RECIPIENT'S
+// USE OF THE SUBJECT SOFTWARE, RECIPIENT SHALL INDEMNIFY AND HOLD HARMLESS THE
+// UNITED STATES GOVERNMENT, ITS CONTRACTORS AND SUBCONTRACTORS, AS WELL AS ANY
+// PRIOR RECIPIENT, TO THE EXTENT PERMITTED BY LAW.  RECIPIENT'S SOLE REMEDY FOR
+// ANY SUCH MATTER SHALL BE THE IMMEDIATE, UNILATERAL TERMINATION OF THIS
+// AGREEMENT.
+// *****************************************************************************
+// @flow
+import React from 'react';
+import ReactDOM from 'react-dom';
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
+import classNames from 'classnames';
+import Icon from '@material-ui/core/Icon';
+import Drawer from '@material-ui/core/Drawer';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import List from '@material-ui/core/List';
+import Typography from '@material-ui/core/Typography';
+import Divider from '@material-ui/core/Divider';
+import IconButton from '@material-ui/core/IconButton';
+import Button from '@material-ui/core/Button';
+import Snackbar from '@material-ui/core/Snackbar';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+
+import MenuIcon from '@material-ui/icons/Menu';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import ImportIcon from '@material-ui/icons/ArrowDownward';
+import ExportIcon from '@material-ui/icons/ArrowUpward';
+import DashboardIcon from '@material-ui/icons/Dashboard';
+import GraphIcon from '@material-ui/icons/Timeline';
+import ClusterIcon from '@material-ui/icons/BubbleChart';
+import ListIcon from '@material-ui/icons/List';
+import HelpIcon from '@material-ui/icons/Help';
+import SettingsIcon from '@material-ui/icons/Settings';
+import LanguageIcon from '@material-ui/icons/Language';
+import CloseIcon from '@material-ui/icons/Close';
+import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
+import NotesIcon from "@material-ui/icons/Notes";
+
+import css from './MainView.css';
+import CreateRequirementDialog from './CreateRequirementDialog';
+import CreateProjectDialog from './CreateProjectDialog';
+import AppMainContent from './AppMainContent';
+
+const app = require('electron').remote.app
+const dialog = require('electron').remote.dialog
+const db = require('electron').remote.getGlobal('sharedObj').db;
+const fs = require('fs');
+const uuidv1 = require('uuid/v1');
+const system_dbkeys = require('electron').remote.getGlobal('sharedObj').system_dbkeys;
+
+const drawerWidth = 240;
+
+const styles = theme => ({
+  root: {
+    width: '100%',
+    height: '100%',
+    marginTop: 0,
+    zIndex: 1,
+    overflow: 'hidden',
+  },
+  appFrame: {
+    position: 'relative',
+    display: 'flex',
+    width: '100%',
+    height: '100%',
+  },
+  appBar: {
+    position: 'absolute',
+    zIndex: theme.zIndex.drawer + 1,
+    transition: theme.transitions.create(['width', 'margin'], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+  },
+  appBarShift: {
+    marginLeft: drawerWidth,
+    width: `calc(100% - ${drawerWidth}px)`,
+    transition: theme.transitions.create(['width', 'margin'], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  },
+  menuButton: {
+    marginLeft: 12,
+    marginRight: 12,
+  },
+  hide: {
+    display: 'none',
+  },
+  drawerPaper: {
+    position: 'relative',
+    height: '100%',
+    width: drawerWidth,
+    transition: theme.transitions.create('width', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  },
+  drawerPaperClose: {
+    width: 60,
+    overflowX: 'hidden',
+    transition: theme.transitions.create('width', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+  },
+  drawerInner: {
+    // Make the items inside not wrap when transitioning:
+    width: drawerWidth,
+  },
+  drawerHeader: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    padding: '0 8px',
+    ...theme.mixins.toolbar,
+  },
+  content: {
+    width: '100%',
+    flexGrow: 1,
+    backgroundColor: theme.palette.background.default,
+    padding: 24,
+    height: 'calc(100% - 56px)',
+    marginTop: 56,
+    [theme.breakpoints.up('sm')]: {
+      height: 'calc(100% - 64px)',
+      marginTop: 64,
+    },
+    snackbarClose: {
+      width: theme.spacing.unit * 2.5,
+      height: theme.spacing.unit * 2.5,
+    },
+  },
+  formControl: {
+    margin: theme.spacing.unit,
+    minWidth: 120,
+  },
+});
+
+class MainView extends React.Component {
+  state = {
+    drawerOpen: false,
+    snackbarOpen: false,
+    createDialogOpen: false,
+    createProjectDialogOpen: false,
+    lastCreatedRequirementId: undefined,
+    mainContent: 'dashboard',
+    selectedProject: 'All Projects',
+    anchorEl: null,
+    listOfProjects: []
+  };
+
+  handleImport = () => {
+    var homeDir = app.getPath('home');
+    var filepaths = dialog.showOpenDialog({
+      defaultPath : homeDir,
+      title : 'Import Requirements',
+      buttonLabel : 'Import',
+      filters: [
+        { name: "Documents", extensions: ['json'] }
+      ],
+      properties: ['openFile' ]})
+    if (filepaths && filepaths.length > 0) {
+      var content = fs.readFileSync(filepaths[0]);
+      var data = JSON.parse(content);
+      db.bulkDocs(data)
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }
+
+
+
+  handleProjectMenuClick = event => {
+    this.setState({ anchorEl: event.currentTarget });
+  };
+
+  handleSetProject = (name) => {
+    this.setState({
+      selectedProject: name,
+      anchorEl: null
+    })
+  }
+
+  handleClose = () => {
+    this.setState({ anchorEl: null });
+  };
+
+
+  handleExport = () => {
+    var homeDir = app.getPath('home');
+    var filepath = dialog.showSaveDialog(
+      {
+        defaultPath : homeDir,
+        title : 'Export Requirements',
+        buttonLabel : 'Export',
+        filters: [
+          { name: "Documents", extensions: ['json'] }
+        ],
+      })
+    if (filepath) {
+      db.allDocs({
+        include_docs: true,
+      }).then((result) => {
+        var filteredReqs = result.rows.filter(r => !system_dbkeys.includes(r.key))
+        var filteredResult = []
+        filteredReqs.forEach((r) => {
+          var doc = (({reqid, parent_reqid, project, rationale, fulltext, semantics, input}) =>
+                      ({reqid, parent_reqid, project, rationale, fulltext, semantics, input}))(r.doc)
+          doc._id = uuidv1()
+          filteredResult.push(doc)
+        })
+        var content = JSON.stringify(filteredResult, null, 4)
+        console.log(content)
+        fs.writeFile(filepath, content, (err) => {
+            if(err) {
+                return console.log(err);
+            }
+            console.log("The file was saved!");
+        });
+      }).catch((err) => {
+        console.log(err);
+      });
+    }
+
+  }
+
+  handleCreateDialogOpen = () => {
+    this.setState({ createDialogOpen: true});
+  };
+
+  handleCreateDialogClose = (newRequirementCreated, newReqId) => {
+    this.setState(
+      {
+        createDialogOpen: false,
+        snackbarOpen: newRequirementCreated,
+        lastCreatedRequirementId: newReqId
+      });
+  }
+
+  /*
+   * Handling project management BEGIN
+   */
+
+  handleNewProject = () => {
+
+    // Close dropdown menu
+    this.setState({ anchorEl: null });
+    this.setState({ createProjectDialogOpen: true });
+  }
+
+  handleCreateProjectDialogClose = (newProjectCreated, newProjectName) => {
+    this.setState(
+      {
+        createProjectDialogOpen: false,
+      });
+  }
+
+  // Handling project management END
+
+  handleDrawerOpen = () => {
+    this.setState({ drawerOpen: true });
+  };
+
+  handleDrawerClose = () => {
+    this.setState({ drawerOpen: false });
+  };
+
+  handleSnackbarClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    this.setState({ snackbarOpen: false });
+  };
+
+  setMainContent = (content) => {
+      this.setState(
+        {
+          mainContent: content
+        }
+      )
+  }
+
+  componentDidMount = () => {
+    db.get('FRET_PROJECTS')
+      .then((result) => {
+      this.setState({
+        listOfProjects : result.names.sort()
+      })
+    }).catch((err) => {
+      console.log(err)
+    })
+
+    db.changes({
+      since: 'now',
+      live: true,
+      include_docs: true
+    }).on('change', (change) => {
+      if (change.id == 'FRET_PROJECTS') {
+        this.setState({
+          listOfProjects : change.doc.names.sort()
+        })
+      }
+    })
+  }
+
+  render() {
+    const { classes, theme } = this.props;
+    const { anchorEl } = this.state;
+
+    return (
+      <div className={classes.root}>
+        <div className={classes.appFrame}>
+          <AppBar className={classNames(classes.appBar, this.state.drawerOpen && classes.appBarShift)}>
+            <Toolbar disableGutters={!this.state.drawerOpen}>
+              <IconButton
+                color="inherit"
+                aria-label="open drawer"
+                onClick={this.handleDrawerOpen}
+                className={classNames(classes.menuButton, this.state.drawerOpen && classes.hide)}
+              >
+                <MenuIcon />
+              </IconButton>
+              <Typography variant="h6" color="inherit" noWrap>
+                <div className={css.logo_container}>
+                  <div className={css.logo_content}>FRET</div>
+                  <div style={{paddingLeft: '30px'}}>
+                    <Button
+                      color="secondary"
+                      size="small"
+                      aria-owns={anchorEl ? 'simple-menu' : null}
+                      aria-haspopup="true"
+                      onClick={this.handleProjectMenuClick}
+                      style={{ textTransform : 'none' }}
+                    >
+                      Projects
+                      <KeyboardArrowDownIcon className={classes.rightIcon} fontSize="small"/>
+                    </Button>
+                    <Menu
+                      id="simple-menu"
+                      anchorEl={anchorEl}
+                      open={Boolean(anchorEl)}
+                      onClose={this.handleClose}
+                    >
+                      <MenuItem
+                        onClick={() =>  this.handleSetProject('All Projects')}
+                        dense
+                        >
+                        <ListItemIcon><NotesIcon color="primary"/></ListItemIcon>
+                        <ListItemText inset primary = {'All Projects'} />
+                      </MenuItem>
+                      {
+                        this.state.listOfProjects.map(name => {
+                          return <MenuItem
+                                    key={name}
+                                    dense
+                                    onClick={() => this.handleSetProject(name)}>
+                                    <ListItemIcon><NotesIcon color="secondary"/></ListItemIcon>
+                                    <ListItemText inset primary = {name} />
+                                  </MenuItem>
+                        })
+                      }
+                      <MenuItem onClick={this.handleNewProject} dense>New Project ...</MenuItem>
+                    </Menu>
+                    &nbsp;
+                    <Button variant="contained" onClick={this.handleCreateDialogOpen} color="secondary" size="small" className={classes.button}>
+                      Create
+                    </Button>
+                  </div>
+                </div>
+              </Typography>
+            </Toolbar>
+          </AppBar>
+          <Drawer
+            variant="permanent"
+            classes={{
+              paper: classNames(classes.drawerPaper, !this.state.drawerOpen && classes.drawerPaperClose),
+            }}
+            open={this.state.drawerOpen}
+          >
+            <div className={classes.drawerInner}>
+              <div className={classes.drawerHeader}>
+                <IconButton onClick={this.handleDrawerClose}>
+                  {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+                </IconButton>
+              </div>
+              <Divider />
+              <List>
+              <div>
+                <ListItem button onClick={() => this.setMainContent('dashboard')}>
+                  <ListItemIcon>
+                    <DashboardIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Dashboard" />
+                </ListItem>
+                <ListItem button onClick={() => this.setMainContent('graph')}>
+                  <ListItemIcon>
+                    <GraphIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Graph View" />
+                </ListItem>
+                <ListItem button onClick={() => this.setMainContent('requirements')}>
+                  <ListItemIcon>
+                    <ListIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Requirements" />
+                </ListItem>
+              </div>
+              </List>
+              <Divider />
+                <List>
+                <div>
+                  <ListItem button onClick={() => this.handleImport()}>
+                    <ListItemIcon>
+                      <ImportIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Import" />
+                  </ListItem>
+                  <ListItem button>
+                    <ListItemIcon onClick={() => this.handleExport()}>
+                      <ExportIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Export" />
+                  </ListItem>
+                </div>
+                </List>
+              <Divider />
+              <List>
+              <div>
+              <ListItem button onClick={() => this.setMainContent('help')}>
+                <ListItemIcon>
+                  <HelpIcon />
+                </ListItemIcon>
+                <ListItemText primary="Help" />
+              </ListItem>
+              </div>
+              </List>
+            </div>
+          </Drawer>
+          <main className={classes.content}>
+          <AppMainContent content={this.state.mainContent} selectedProject={this.state.selectedProject} existingProjectNames={this.state.listOfProjects}/>
+          </main>
+          <CreateRequirementDialog
+            open={this.state.createDialogOpen}
+            handleCreateDialogClose={this.handleCreateDialogClose}
+            editRequirement={undefined}
+            selectedProject={this.state.selectedProject}
+            existingProjectNames={this.state.listOfProjects}
+            />
+          <CreateProjectDialog open={this.state.createProjectDialogOpen} handleDialogClose={this.handleCreateProjectDialogClose} existingProjectNames={this.state.listOfProjects}/>
+        </div>
+        <Snackbar
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'center',
+          }}
+          open={this.state.snackbarOpen}
+          autoHideDuration={6000}
+          onClose={this.handleSnackbarClose}
+          snackbarcontentprops={{
+            'aria-describedby': 'message-id',
+          }}
+          message={<span id="message-id">New Requirement Created</span>}
+          action={[
+            <Button key="undo" color="secondary" size="small" onClick={this.handleSnackbarClose}>
+              {this.state.lastCreatedRequirementId}
+            </Button>,
+            <IconButton
+              key="close"
+              aria-label="Close"
+              color="inherit"
+              className={classes.snackbarClose}
+              onClick={this.handleSnackbarClose}
+            >
+              <CloseIcon />
+            </IconButton>,
+          ]}
+        />
+      </div>
+    );
+  }
+}
+
+MainView.propTypes = {
+  classes: PropTypes.object.isRequired,
+  theme: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles, { withTheme: true })(MainView);

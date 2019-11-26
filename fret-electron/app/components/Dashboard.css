@@ -1,0 +1,8 @@
+.layout {
+  display: table;
+}
+
+.widget {
+  display: table-cell;
+  vertical-align: top;
+}

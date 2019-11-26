@@ -1,0 +1,9 @@
+node_modules
+simulator/tmp/
+*.exe
+*.smv
+*.vscode
+*.o
+**/doc
+simulator/ltlsim
+simulator/ltlsim.dSYM/

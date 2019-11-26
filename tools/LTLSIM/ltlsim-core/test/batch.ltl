@@ -1,0 +1,5 @@
+add-atomic a 000000011110000000111111100000111
+add-formula f H[0, 4] a
+analyse-formula f
+print-atomic-trace
+print-formula-trace

@@ -1,0 +1,23 @@
+:root {
+  --main-bg-color: rgba(144, 164, 174, .1);
+  --main-grid-color: rgba(144, 164, 174, .3);
+}
+
+.blueprintGrid {
+  border: var(--main-grid-color) solid 1px;
+  background-color: var(--main-bg-color);
+  background-image:
+  linear-gradient(var(--main-grid-color) 1px, transparent 1px),
+  linear-gradient(90deg, var(--main-grid-color) 1px, transparent 1px),
+  linear-gradient(var(--main-bg-color) 1px, transparent 1px),
+  linear-gradient(90deg, var(--main-bg-color) 1px, transparent 1px);
+  background-size:100px 100px, 100px 100px, 20px 20px, 20px 20px;
+  background-position:-2px -2px, -2px -2px, -1px -1px, -1px -1px
+}
+
+.showGrammarBtn {
+  position: relative;
+  right: -49.5%;
+  top: 60px;
+  margin-top: -6%;
+}

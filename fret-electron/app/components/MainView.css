@@ -1,0 +1,12 @@
+.logo_container {
+  font-family: 'Gloria Hallelujah', cursive;
+  position: relative;
+  display: table;
+  font-size: 25px;
+  line-height: 40px;
+}
+
+.logo_content {
+  display: table-cell;
+  vertical-align: middle;
+}
