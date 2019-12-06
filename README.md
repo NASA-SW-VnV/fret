@@ -17,7 +17,7 @@ Installation
 
 ### Dependencies
 
- * [nodejs](https://nodejs.org/en/download/) [recommended v10.15.x]
+ * [nodejs](https://nodejs.org/en/about/) [recommended v10.15.x](https://nodejs.org/download/release/v10.15.3/)
  * Python 2.x
  * (Optional) [NuSMV](http://nusmv.fbk.eu/)
 
