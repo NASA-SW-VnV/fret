@@ -1,17 +1,28 @@
-#### Condition
+#### Condition (optional)
 
-The conditional constraints for this requirement.
+Specifies the conditions under which the requirement shall be true. The condition can be a sequence of Boolean expressions connected by the keyword and and or. Individual Boolean Expressions can be qualified by keywords
 
-* upon BOOL_EXPRESSION 
-* when BOOL_EXPRESSION 
-* where BOOL_EXPRESSION 
-* if BOOL_EXPRESSION
+* **unless**
+* **when**, **where**, **if**, **upon**
 
-* unless BOOL_EXPRESSION
+Validity of each Boolean Expression BEXP can be stated by BEXP is **true** (same as BEXP) or BEXP is **false**.
+A Boolean Expression can be a Boolean variable, a numerical comparison between two numerical expressions (e.g., level > 0.8 * content), or a concatenation of Boolean Expressions using the operators
 
-For example:
+* **!** (not)
+* **&** (and)
+* **|** (or)
+* **=>** or **->** (implies)
+* **<=>** or **<->** (biconditional)
+* **xor** (exclusive OR)
 
-* when abs(x) >= 0
-* unless x * x < 0
+Boolean or numerical variables correspond to signals or variables in the
+component.
+The mapping between requirement variables and model signals is specified when exporting requirements for verification. Check the user manual under "Exporting for Analysis" for more details.
 
-> BOOL_EXPRESSION is an expression that produces a Boolean value when evaluated, i.e. one of true or false.
+Parentheses **(** **)** are used as usual. Please use parentheses as much as
+possible to avoid mistakes and misunderstandings.
+
+Examples:
+
+* **if** **((**level < 0.3**)** **&** **(**altitude > 1000**))** **is not true**
+* **If** **(**limits **&** **!**standby **&** **!**apfail **&** supported**)**

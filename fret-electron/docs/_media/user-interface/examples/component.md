@@ -1,7 +1,11 @@
-#### Component
+#### Component (mandatory)
 
-The name of the target software or hardware component involved in this requirement.
+Specifies the component of the system that the requirement applies to. ID is a string identifier starting with an upper- or lower-case letter, followed by letters, digits or underscores ‘_’
 
-* ID
+Examples:
+* FMS_CMD_INPUT
+* fuel_pump_99
+* BackupGenerator1
 
-> ID is anything used for the name of a declared entity. It must start with a letter.
+>Single-letter identifiers are strongly discouraged, because they may clash
+with reserved keywords of some tools used internally by FRET (e.g., NuSMV).

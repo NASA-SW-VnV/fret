@@ -1,17 +1,15 @@
-#### Scope
+#### Scope (optional)
 
-The scope defines the mode of which this requirement is currently in.
+specifies intervals where the requirement must hold; intervals are defined with respect to a MODE, e.g.,
 
-* Before ID mode
-* After ID mode
-* When in ID mode
-* During ID mode *(same as "when in")*
+* **before** MODE, **only before** MODE
+* **in** MODE, **not in** MODE, **when in** MODE, **during** MODE
+*  **after** MODE
 
-* When not in ID mode
-* Unless in ID mode *(same as above)*
-* Only in ID mode *(meaning: if not in the mode, it must not happen)*
-* Only before ID mode
-* Only after ID mode
+These specifications can be negated (e.g., **when not in** MODE), and refined by constraints (strictly or only) and behavior on entering or leaving the mode.
+MODE is a string identifier starting with an upper- or lower-case letter, followed by letters, digits or underscores ‘_’.
 
+Examples:
 
-> ID is the mode name. It must start with a letter.
+* **after** initialization
+* **when in** landing_mode_1
