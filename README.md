@@ -6,6 +6,8 @@ Introduction
 
 FRET is a framework for the elicitation, formalization and understanding of requirements. Users enter system requirements in a specialized natural language. FRET helps understanding and review of semantics by utilizing a variety of forms for each requirement: natural language description, formal mathematical logics, and diagrams. Requirements can be defined in a hierarchical fashion and can be exported in a variety of forms to be used by analysis tools.
 
+Take a look at the [FRET demo](https://drive.google.com/open?id=142C-xIw6ar9rSgxz-wAXktYrTwAG0sKw).
+
 Contact
 -------
 
