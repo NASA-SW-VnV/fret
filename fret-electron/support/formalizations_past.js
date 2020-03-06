@@ -179,7 +179,8 @@ function throughout(property, duration, cond='null') {
     // following created parse errors
     //var formula1 = `((not LEFTEND) since timed[<=${duration}] exclusive required ${conditionTrigger}) implies (${property})`
     var formula2 = `(${cond} and LEFTEND) implies (${property})` // check at leftend because of exclusive above
-    formula = conjunction(formula1, formula2)
+    //formula = conjunction(formula1, formula2)
+      formula = formula1
   }
   else {    // formula for null condition
     formula = `((once timed[<=${duration}] LEFTEND) implies ${property})` // if there is another leftend in between then it is even closer so still should be true
