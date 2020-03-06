@@ -169,6 +169,21 @@ const styles = theme => ({
   },
 });
 
+
+// https://stackoverflow.com/questions/19706046/how-to-read-an-external-local-json-file-in-javascript/45035939 
+// Used in handleImport below
+function readTextFile(file, callback) {
+    var rawFile = new XMLHttpRequest();
+    rawFile.overrideMimeType("application/json");
+    rawFile.open("GET", file, true);
+    rawFile.onreadystatechange = function() {
+        if (rawFile.readyState === 4 && rawFile.status === 200) {
+            callback(rawFile.responseText);
+        }
+    }
+    rawFile.send(null);
+}
+
 class MainView extends React.Component {
   state = {
     drawerOpen: false,
@@ -192,17 +207,43 @@ class MainView extends React.Component {
         { name: "Documents", extensions: ['json'] }
       ],
       properties: ['openFile' ]})
-    if (filepaths && filepaths.length > 0) {
-      var content = fs.readFileSync(filepaths[0]);
-      var data = JSON.parse(content);
-      db.bulkDocs(data)
-        .catch((err) => {
-          console.log(err);
-        });
+      if (filepaths && filepaths.length > 0) {
+	  const filepath = filepaths[0];
+
+	  /*
+	  // Version using "require" causes error: Cannot find module "."
+	  const filepathnoext = filepath.slice(0,-5); // The slice is to remove the .json suffix
+	  console.log('*** filepathnoext = ' + JSON.stringify(filepathnoext));
+	  data = require(filepathnoext); 
+	  db.bulkDocs(data).catch((err) => {console.log(err);});
+	  */
+
+	  /*
+	  // Version using "readFileSync" causes error: Cannot read property 'shift' of undefined
+	  var content = fs.readFileSync(filepath);  // maybe add "utf8" to return a string instead of a buffer
+	  var data = JSON.parse(content);
+	  db.bulkDocs(data).catch((err) => {console.log(err);});
+	  */
+
+	  /*
+	  // Version using readTextFile defined above, works.
+	  readTextFile(filepath, function (text) {
+	      let data = JSON.parse(text);
+	      console.log('length = ' + data.length);
+	      db.bulkDocs(data).catch((err) => {console.log(err);});
+	  })
+	  */
+
+	  // Version using readFile, works.
+	  fs.readFile(filepath,
+		      function (err,buffer) {
+			  if (err) throw err;
+			  let data = JSON.parse(buffer);
+			  console.log('length = ' + data.length);
+			  db.bulkDocs(data).catch((err) => {console.log(err);});
+		      });
     }
   }
-
-
 
   handleProjectMenuClick = event => {
     this.setState({ anchorEl: event.currentTarget });
