@@ -54,11 +54,13 @@ const maxDuration = 9;
 //const config_7_2 = require('./config_7_2.json'); // 3911 test cases
 //const config_7_1 = require('./config_7_1.json'); // 2739 test cases
 //const config = config_7_1; // [config1[0],config1[1],config1[2],config1[3]];
-
+// Run a configuration, where duration is passed in the call to runConfiguration.
+//var res2 = runConfiguration(config,1,'SMV');
 //const settings = require('./settings_5_2.json');
 //const settings = require('./settings_9_4.json');
 //const settings = require('./settings_11_5.json');
-//const settings = require('./settings_12_4_2cond.json');
+//const settings = require('./settings_12_4_2cond.json');  // 32718 test cases
+//const settings = require('./settings_random_60000.json');
 
 const reverseSubstitutions = [
   ['\\$scope_mode\\$', 'MODE'],
@@ -70,29 +72,45 @@ const reverseSubstitutions = [
 ];
 
 var args = minimist(process.argv.slice(2), options.runtimeOptions);
+console.log(JSON.stringify(args))
 if (args.h === true) console.log(options.help);
 else if (!options.toolOptions.includes(args.t)) console.log(options.incorrectTool);
 else if (!options.rangeOptions.includes(args.r)) console.log(options.incorrectRange);
-else if (!options.timingOptions.includes(args.i)) console.log(options.timingRange);
+else if (!options.timingOptions.includes(args.i)) console.log(options.incorrectTiming);
 else if (!options.conditionOptions.includes(args.c)) console.log(options.incorrectCondition);
+else if (!options.strategyOptions.includes(args.s)) console.log(options.incorrectStrategy);
+else if (args.s === 'random' && !(typeof(args.l) === 'number' && typeof(args.n)==='number')) console.log(options.incorrectRandom);
+else if (args.s === 'settings' && args.f === undefined) console.log(options.incorrectSettings);
 else {
-  var range = (args.r === undefined) ? 'simple' : args.r;
-  var tool = (args.t === undefined) ? 'SMV' : args.t;
-  var Timings = (args.i === undefined) ? options.timingSubs['mostTiming'] : options.timingSubs[args.i];
-  var C = (args.c === undefined) ? options.conditionSubs['fullCondition'] : options.conditionSubs[args.c];
+  var range = args.r;
+  var tool =  args.t;
+  var strategy = args.s;
+  var settingsFile = args.f;
+  var traceLength = args.l;
+  var numTests = args.n;
+  var Timings = options.timingSubs[args.i];
+  var C = options.conditionSubs[args.c];
   var R = options.satisfaction;
   var discrepancies = 0;
   var executed = 0;
   var trace = {};
   var res = {settings:0, failed:0};
+  var res2 = undefined;
+  if (strategy === 'classic')
+      // Original test framework
+      res2 = generateAndRun(range, tool, Timings, C, R);
+  else if (strategy === 'settings') {
+	// Run settings previously computed with either testgen.prolog or runRandomSettings.
+	settings = require(settingsFile);
+	res2 = runSettings(settings,tool);
+    }
+  else if (strategy === 'random')
+	res2 = runRandomSettings(traceLength,numTests,tool);
 
-  var res2 = generateAndRun(range, tool, Timings, C, R);
-  //Set the duration in the call to runConfiguration below.
-  //var res2 = runConfiguration(config,1,'SMV');
-  //var res2 = runSettings(settings,'SMV')
-  //var res2 = runRandomSettings(12,23000,'SMV');
+  // Run random settings.
   //var res2 = runRandomSettings(12,5,'SMV');
   //var res2 = runRandomSettings(12,10000,'SMV');
+  //var res2 = runRandomSettings(12,23000,'SMV');
   //var res2 = runRandomSettings(12,60000,'SMV');
 
   res.settings = res.settings + res2.settings;

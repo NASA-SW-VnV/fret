@@ -58,11 +58,27 @@ toolOptions: ['SMV', 'CoCoSpec', undefined],
 rangeOptions: ['simple', 'extended', undefined],
 timingOptions: ['nonMetricTiming', 'metricTiming', 'mostTiming', 'fullTiming', undefined],
 conditionOptions: ['fullCondition', 'nullCondition', undefined],
+strategyOptions: ['classic','settings','random', undefined],
 
+/*
 runtimeOptions : {
   string : {t: 'tool', r: 'range'},
   object : {i: 'timing', c: 'condition'},
-  alias: {h: 'help'},
+  alias: {h: 'help'}
+},
+*/
+
+runtimeOptions : {
+    string : ['tool','range','timing','condition',
+	      'strategy','duration','settingsFile'],
+    boolean : ['help'],
+    number : ['traceLength', 'numTests'],
+    alias: {h : 'help', t : 'tool', r : 'range', i : 'timing', c : 'condition',
+	    s : 'strategy', d : 'duration', f : 'settingsFile',
+	    l : 'traceLength', n : 'numTests'},
+    default: { tool : 'SMV', range : 'simple', timing : 'mostTiming',
+	       condition : 'fullCondition',
+	       strategy : 'classic'}
 },
 
 timingSubs : {
@@ -82,12 +98,19 @@ conditionSubs : {
   '\xa0 -t, --tool:\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0 Specify tool (SMV or CoCoSpec)\n'+
   '\xa0 -r, --range:\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0 Specify range (simple or extended)\n'+
   '\xa0 -i, --timing:\xa0\xa0\xa0\xa0\xa0\xa0\xa0 Specify timing (nonMetricTiming or metricTiming or mostTiming or fullTiming)\n'+
-  '\xa0 -c, --condition:\xa0\xa0\xa0\xa0 Specify condition (fullCondition or nullCondition)\n'+
-  '\nBy default tests will run for SMV, simple, mostTiming and fullCondition.\n',
+	'\xa0 -c, --condition:\xa0\xa0\xa0\xa0 Specify condition (fullCondition or nullCondition)\n'+
+	'\xa0 -s, --strategy:\xa0\xa0\xa0\xa0\xa0 Specify testing strategy (classic or settings or random)\n' +
+	'\xa0 -f, --settingsFile:\xa0 The settings filename to be used with strategy settings\n' +
+	'\xa0 -l, --traceLength:\xa0\xa0 The trace length to be used with strategy random\n' +
+	'\xa0 -n, --numTests:\xa0\xa0\xa0\xa0\xa0 The number of tests to be computed with strategy random.\n' +
+
+  '\nBy default, tests will run for SMV, classic strategy, simple, mostTiming and fullCondition.\n',
 
   incorrectTool: '\nIncorrect option was given for the tool argument. Please see help for additional info.\n',
   incorrectRange: '\nIncorrect option was given for the range argument. Please see help for additional info.\n',
   incorrectTiming: '\nIncorrect option was given for the timing argument. Please see help for additional info.\n',
   incorrectCondition: '\nIncorrect option was given for the condition argument. Please see help for additional info.\n',
-
+    incorrectStrategy: '\nIncorrect option was given for the strategy argument. Please see help for additional info.\n',
+    incorrectRandom: '\nRandom strategy was specified but either traceLength (-l) or numTests (-n) is not a number.\n',
+  incorrectSettings: '\nSettings strategy was specified but no file (-f) was given.\n'
 });
