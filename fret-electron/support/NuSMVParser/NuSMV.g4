@@ -35,6 +35,7 @@ grammar NuSMV;
 plHolders : '$post_condition$'
           | '$action$'
           | '$scope_mode$'
+	  | '$stop_condition$'
           | '$regular_condition$'
           | '$action1$'
           | '$action2$'

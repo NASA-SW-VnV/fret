@@ -32,6 +32,9 @@
 // *****************************************************************************
 const fretSupportPath = "../../support/";
 const utilities = require(fretSupportPath + 'utilities');
+const fretParserPath = "../../app/parser/";
+const constants = require(fretParserPath + 'Constants');
+
 //const intervalLogic = require(fretSupportPath + 'intervalLogic');
 
 const fs = require('fs');
@@ -132,7 +135,7 @@ function writeSMV(testID,str,msg='SMV') {
 // The tenses are used to decide whether to evaluate the formula
 // at the beginning (ft) or end (pt) of the interval.
 // The keys are used in the name of the LTLSPEC formula.
-function createSMV(nTimeSteps,modeIntervals,condIntervals,respIntervals,formulaTenses) {
+function createSMV(nTimeSteps,modeIntervals,condIntervals,stopIntervals,respIntervals,formulaTenses) {
 	 // trace is [t=0, t=limit-1]
 	 // t remains at value limit and we interpret the formulas at t=limit-1
 	 // (if we made it loop at last point in trace it messes the timed once operator)
@@ -140,6 +143,7 @@ function createSMV(nTimeSteps,modeIntervals,condIntervals,respIntervals,formulaT
     var limit = nTimeSteps;
     var modeWaveform = smvWaveform(modeIntervals, limit);
     var condWaveform = smvWaveform(condIntervals);
+    var stopWaveform = smvWaveform(stopIntervals);
     var respWaveform = smvWaveform(respIntervals, limit);
     var str = `MODULE main
 VAR
@@ -151,10 +155,13 @@ DEFINE
   LAST := (t = ` + (limit-1) + `);
   MODE := case
 ` + modeWaveform
-    + `  esac;
+  + `  esac;
   COND := case
 ` + condWaveform
-    + `  esac;
+  + `  esac;
+  STOP := case
+` + stopWaveform
+  + `  esac;
   RES := case
 ` + respWaveform
 	+ '  esac;\n';
@@ -176,10 +183,10 @@ function LTLSpecs (limit,formulaTenses) {
 	tense = ft[1];
 	key = ft[2] ? ft[2].replace(/,/g,'_') : 'undefined';
 	var NuSMVFormula = utilities.replaceStrings(NuSMVSubsts,formula);
-
+	let form = (NuSMVFormula === constants.undefined_semantics) ? 'TRUE' : NuSMVFormula;
         i++;
 	startPoint = (tense == 'ft') ? 0 : ((tense == 'pt') ? limit-1 : -1);
-	str = 'LTLSPEC NAME F' + i + '_' + key + '_' + tense + ' := G((t = ' + startPoint + ') -> (' + NuSMVFormula + '));\n';
+	str = 'LTLSPEC NAME F' + i + '_' + key + '_' + tense + ' := G((t = ' + startPoint + ') -> (' + form + '));\n';
 	//console.log('LTL spec: ' + str);
 	result = result + str;
     }
@@ -208,8 +215,8 @@ function smvWaveform (intervals, limit=null) {
     return str;
 }
 
-exports.testNuSMV = (testID, nTimeSteps,modeIntervals,condIntervals,respIntervals,formulaTenses) => {
-    var NuSMVSpec = createSMV(nTimeSteps,modeIntervals,condIntervals,respIntervals,formulaTenses);
+exports.testNuSMV = (testID, nTimeSteps,modeIntervals,condIntervals,stopIntervals,respIntervals,formulaTenses) => {
+    var NuSMVSpec = createSMV(nTimeSteps,modeIntervals,condIntervals,stopIntervals,respIntervals,formulaTenses);
     fileName = writeSMV(testID,NuSMVSpec); // This writes the spec to a file.
     var resultVector = this.callNuSMV(fileName); // This calls NuSMV on the file.
     return resultVector;

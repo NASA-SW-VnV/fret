@@ -73,6 +73,8 @@ const BaseForm = [ // negate, timing, condition
   ['true,for,null', notThroughout('RES','BOUND')],
   ['false,after,null', after('RES','BOUND')],
   ['true,after,null', notAfter('RES','BOUND')],
+    ['false,until,null', untilTiming('RES','STOPCOND')],
+    ['true,until,null', notUntilTiming('RES','STOPCOND')],
   // now with condition
   ['false,immediately,regular', immediately('RES','COND')],
   ['true,immediately,regular', notImmediately('RES','COND')],
@@ -87,13 +89,16 @@ const BaseForm = [ // negate, timing, condition
   ['false,for,regular', throughout('RES','BOUND','COND')],
   ['true,for,regular', notThroughout('RES','BOUND','COND')],
   ['false,after,regular', after('RES','BOUND','COND')],
-  ['true,after,regular', notAfter('RES','BOUND','COND')]
+  ['true,after,regular', notAfter('RES','BOUND','COND')],
+    ['false,until,regular', untilTiming('RES','STOPCOND','COND')],
+    ['true,until,regular', notUntilTiming('RES','STOPCOND','COND')]
 ]
 
 function negate(str) {return utilities.negate(str)}
 function parenthesize(str) {return utilities.parenthesize(str)}
 function disjunction(str1, str2) {return utilities.disjunction([str1, str2])}
 function conjunction(str1, str2) {return utilities.conjunction([str1, str2])}
+function implication(str1, str2) {return utilities.implication(str1, str2)}
 
 function checkAllUpToLeft(left) { return ` since required inclusive ${left} `}
 
@@ -255,6 +260,20 @@ previous once timed[<${duration}] (${property} or LEFTEND)`)
     return parenthesize(parenthesize(form) + checkAllUpToLeft('LEFTEND'))
 }
 
+function untilTiming(property, stopcond, cond='null') {
+    let trigger = conditionTrigger(cond,'LEFTEND')
+    let formula = (cond === 'null') ?
+	 (`((not ${stopcond}) since inclusive required LEFTEND)` +
+          `implies ${property}`)
+        : implication(conjunction(parenthesize(`(not LEFTEND) since exclusive required ${trigger}`),
+				  parenthesize(`(not ${stopcond}) since inclusive required ${trigger}`)),
+		      property);
+    return parenthesize(parenthesize(formula) + checkAllUpToLeft('LEFTEND'));
+}
+
+function notUntilTiming(property,stopcond,cond='null') {
+    return constants.undefined_semantics;
+}
 
 // The order here matters, because some substitutions are in terms of others.
 // Note for past time we have [LEFTEND, RIGHTEND)
@@ -305,7 +324,7 @@ exports.getFormalization = (key, neg, left, right, options) => {
  var historically = ' '
 
  if (!(right.includes('LAST'))) {
-   historically = 'historically ' // need to look for the tigger to scopeInterval
+   historically = 'historically ' // need to look for the trigger to scopeInterval
 
    // eotInterval is an interval that expands to the end of the trace
    eotInterval= requirementInterval.createInterval([left],

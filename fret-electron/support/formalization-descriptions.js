@@ -64,7 +64,9 @@ const sentenceTime = [
   ['-,-,within,-', 'REQUIRES: for every trigger, RES must hold at some point with distance <=$duration$ from the trigger, except if the end of the interval occurs sooner.'],
   ['-,-,after,-', 'REQUIRES: for every trigger, RES must be false at all time points with distance <=$duration$ from the trigger; moreover, RES must hold at the point that is at distance $duration$+1 from the trigger, except if the end of the interval occurs earlier.'],
   ['-,-,for,-', 'REQUIRES: for every trigger, RES must remain true for $duration$ time points starting at the trigger, or to the end of the interval.'],
-  ['-,-,null,-', 'REQUIRES: for every trigger, RES must hold at some time point between (and including) the trigger and the end of the interval.']]
+  ['-,-,null,-', 'REQUIRES: for every trigger, RES must hold at some time point between (and including) the trigger and the end of the interval.'],
+    ['-,-,until,-', 'REQUIRES: for every trigger, RES must remain true until (but not necessarily including) the point where the stop condition holds, or to the end of the interval.']
+    ]
 
 const sentenceNegatedTime = [
     ['-,-,immediately,-', 'REQUIRES: for every trigger, trigger and RES cannot hold at the same time point.'],
@@ -74,6 +76,7 @@ const sentenceNegatedTime = [
     ['-,-,within,-', 'REQUIRES: for every trigger, RES must be false at all time points with distance <=$duration$ from the trigger, or until the end of the interval.'],
     ['-,-,after,-', 'REQUIRES: for every trigger, RES must hold at some point with distance <=$duration$ from the trigger; or RES must remain false for $duration$+1 time points starting at the trigger, or to the end of the interval.'],
     ['-,-,for,-', 'REQUIRES: for every trigger, RES must be false at some point with distance <=$duration$ from the trigger, except if the end of the interval occurs sooner.'],
+    ['-,-,until,-', 'REQUIRES: TODO'],
     ['-,-,null,-', 'REQUIRES: for every trigger, RES must be false at all time points between (and including) the trigger and the end of the interval.']]
 
 const sentenceResponse = [

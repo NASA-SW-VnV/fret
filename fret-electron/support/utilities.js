@@ -216,4 +216,6 @@ exports.disjunction=(formulaStrings) => {
   return this.parenthesize(disjunction)
 }
 
-
+exports.implication=(antecedent,consequent) => {
+    return `(${antecedent} implies ${consequent})`
+}

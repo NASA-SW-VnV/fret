@@ -56,7 +56,7 @@ optimizeTests : false, // Only test non-metric timings with duration=1 and null 
 //All allowed command line options. These are used to check whether the user specified options correctly.
 toolOptions: ['SMV', 'CoCoSpec', undefined],
 rangeOptions: ['simple', 'extended', undefined],
-timingOptions: ['nonMetricTiming', 'metricTiming', 'mostTiming', 'fullTiming', undefined],
+timingOptions: ['nonMetricTiming', 'metricTiming', 'mostTiming', 'fullTiming', 'untilTiming', undefined],
 conditionOptions: ['fullCondition', 'nullCondition', undefined],
 strategyOptions: ['classic','settings','random', undefined],
 
@@ -82,10 +82,12 @@ runtimeOptions : {
 },
 
 timingSubs : {
-  nonMetricTiming:  ['immediately','always','never','eventually'],
-  metricTiming: ['within','for','after'],
-  mostTiming: ['immediately','always','never','eventually','within', 'for'],
-  fullTiming: ['immediately','always','never','eventually','within', 'for', 'after'],
+    nonMetricTiming:  ['immediately','always','never','eventually'],
+    metricTiming: ['within','for','after'],
+    mostTiming: ['immediately','always','never','eventually','within', 'for'],
+    untilTiming: ['until'],
+    fullTiming: ['immediately','always','never','eventually','within', 'for', 'after'],
+
 },
 
 conditionSubs : {

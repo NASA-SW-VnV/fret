@@ -68,11 +68,12 @@ const reverseSubstitutions = [
   ['\\$action1\\$', 'RES1'],
   ['\\$action2\\$', 'RES2'],
   ['\\$regular_condition\\$', 'COND'],
+  ['\\$stop_condition\\$', 'STOP'],
   ['\\$post_condition\\$', 'RES']
 ];
 
 var args = minimist(process.argv.slice(2), options.runtimeOptions);
-console.log(JSON.stringify(args))
+//console.log(JSON.stringify(args))
 if (args.h === true) console.log(options.help);
 else if (!options.toolOptions.includes(args.t)) console.log(options.incorrectTool);
 else if (!options.rangeOptions.includes(args.r)) console.log(options.incorrectRange);
@@ -128,6 +129,7 @@ function pairToInterval(pair) {
 // Example of config = { testLength: 9, settings: [ [ [[1,3]], [[2,2]], [[3,9]] ], ... ] }
 // where settings is [ [ modeIntervalsEndpoints, conditionIntervalsEndpoints,
 //                       responseIntervalsEndpoints ], ...]
+/*
 function runConfiguration(config,duration,tool) {
     var testLength = config.testLength;
     console.log('testLength = ' + testLength + ' duration = ' + duration);
@@ -146,6 +148,7 @@ function runConfiguration(config,duration,tool) {
     }
     return{settings:executed, failed:discrepancies};
 }
+*/
 
 // Example of settings: [ [9, 3, [[1,3]], [[2,2]], [[3,9]] ], ... ]
 // where settings is [[ testlength, duration, modeIntervalsEndpoints, conditionIntervalsEndpoints,
@@ -160,7 +163,9 @@ function runSettings(settings,tool) {
 	let modeIntervals = setting[2].map(pairToInterval);
 	let conditionIntervals = setting[3].map(pairToInterval);
 	let responseIntervals = setting[4].map(pairToInterval);
-	var testCase = generate_tests(modeIntervals,responseIntervals,duration,conditionIntervals,
+	let stopIntervals = setting[5].map(pairToInterval);
+	var testCase = generate_tests(modeIntervals,responseIntervals,duration,
+				      conditionIntervals, stopIntervals,
 				      testID, testLength+1, tool);
 	executeTestCase(testCase, tool, testLength+1);
 	testID++;
@@ -175,11 +180,13 @@ function genRandomSetting(max) {
     let nModes = utils.getRandomIntBetween(0,maxNumIntervals);
     let nConds = utils.getRandomIntBetween(0,maxNumIntervals);
     let nResps = utils.getRandomIntBetween(0,maxNumIntervals);
+    let nStops = utils.getRandomIntBetween(0,maxNumIntervals);
     let dur = utils.getRandomIntBetween(1,Math.min(max,maxDuration));
     let modes = utils.genRandomIntervals(max,nModes);
     let conds = utils.genRandomIntervals(max,nConds);
     let resps = utils.genRandomIntervals(max,nResps);
-    return [max,dur,modes,conds,resps];
+    let stops = utils.genRandomIntervals(max,nStops);
+    return [max,dur,modes,conds,resps,stops];
 }
 
 function genRandomSettings(max,nSettings) {
@@ -291,7 +298,7 @@ function generateAllIntervals(min, max, maxlength) {
   return generated
 }
 
-function generate_tests(modeIntervals, responseIntervals, n, conditionIntervals, id, trlength, tool) {
+function generate_tests(modeIntervals, responseIntervals, n, conditionIntervals, stopIntervals, id, trlength, tool) {
   var testCase= {};
   var semantics = {};
   var product = new ProductIterable(constants.fullScope,
@@ -309,6 +316,7 @@ function generate_tests(modeIntervals, responseIntervals, n, conditionIntervals,
   testCase.modeIntervals = modeIntervals
   testCase.responseIntervals = responseIntervals
   testCase.conditionIntervals = conditionIntervals
+  testCase.stopIntervals = stopIntervals
   testCase.duration = n;
   testCase.testFormulas = [];
 
@@ -331,7 +339,7 @@ function generate_tests(modeIntervals, responseIntervals, n, conditionIntervals,
       triple.expected = semanticsOracle.applyConstraints(key.value[0],key.value[1],
 							 key.value[2], key.value[3],
 							 modeIntervals, conditionIntervals,
-							 responseIntervals,
+							 stopIntervals,responseIntervals,
 							 trace, testCase.duration)
 	  if (triple.obtainedSemantics) {
             if (options.outputKeyandExpected)
@@ -426,8 +434,11 @@ function executeTestCase(testCase, tool, testLength) {
     console.log("Test Case: " + testCase.id + "; Mode: " + 
 		intervalLogic.intervalsToString(testCase.modeIntervals) + "; Condition: " +
 		intervalLogic.intervalsToString(testCase.conditionIntervals)
-		+ "; Duration: " + n + "; Response: " + 
-		intervalLogic.intervalsToString(testCase.responseIntervals));
+		+ "; Duration: "
+		+ n + "; Response: " + 
+		intervalLogic.intervalsToString(testCase.responseIntervals)
+		+ "; StopCondition: " + 
+		intervalLogic.intervalsToString(testCase.stopIntervals));
   }
   	// triple is a triple of
   	// key (as string),
@@ -460,12 +471,14 @@ function executeTestCase(testCase, tool, testLength) {
            if (options.printDiscrepancyFiles){
               printDiscrepancy("discrepancy"+testCase.id+"_"+n,keys,i,testCase, formulaeTenses[i]);
             }
-  	        console.log('\n!! Discrepancy ' + keys[i] + ': expected: ' + expected[i] + '; ' + tool + ': ' + tazVector[i] + '\n' + formulaeTenses[i][0]);
-  	        intervalLogic.printMultiple(testCase.modeIntervals, 'Mode');
-  	        if (keys[i][0].split(',')[1] == 'regular')
-  	           intervalLogic.printMultiple(testCase.conditionIntervals,'Condition');
+  	    console.log('\n!! Discrepancy ' + keys[i] + ': expected: ' + expected[i] + '; ' + tool + ': ' + tazVector[i] + '\n' + formulaeTenses[i][0]);
+  	    intervalLogic.printMultiple(testCase.modeIntervals, 'Mode');
+  	    if (keys[i][0].split(',')[1] == 'regular')
+  	        intervalLogic.printMultiple(testCase.conditionIntervals,'Condition');
             if (options.timingSubs.metricTiming.includes(keys[i][0].split(',')[2]))
-  		        console.log('Duration = ' + n);
+  		console.log('Duration = ' + n);
+	    if (keys[i][0].split(',')[2] == 'until')
+		intervalLogic.printMultiple(testCase.stopIntervals,'StopCondition');
             intervalLogic.printMultiple(testCase.responseIntervals, 'Response')
           }
   	   }
@@ -481,7 +494,8 @@ function runTraceAnalyzer(tool, testCase, formulaeTenses, keys) {
   if (tool == 'SMV') {
     TAZVector = callNuSMV.testNuSMV(testCase.id,testCase.TraceLength,
   			  testCase.modeIntervals,
-  			  testCase.conditionIntervals,
+                          testCase.conditionIntervals,
+	                  testCase.stopIntervals,
   			  testCase.responseIntervals, formulaeTenses);
   } else if (tool === 'CoCoSpec'){
     TAZVector = callKind2.testKind2(testCase, formulaeTenses, keys, testCase.TraceLength);

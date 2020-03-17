@@ -56,6 +56,7 @@ const booleanSimplifications = [
     [ '! (! __p)', trueFn, '__p'],
     [ '__p | __p', trueFn, '__p'],
     [ '__p & __p', trueFn, '__p'],
+    [ '! (!__p & !__q)',trueFn,'__p | __q'],
     [ '(__p & __q) | (__p & __r)', trueFn, '__p & (__q | __r)'],
     [ '(! __p) | (__p & __q)', trueFn, '(! __p) | __q'],
     [ '__p | ((! __p) & __q)', trueFn, '__p | __q'],

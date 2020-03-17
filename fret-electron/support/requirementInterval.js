@@ -46,10 +46,11 @@ exports.createInterval = (left=['LEFTEND'], right=['RIGHTEND'],
     var interval = {leftEnd: left, rightEnd: right, formula: formula,
                     leftOpen: lopen, rightOpen:ropen}
 
-    if (right[0].includes('LAST')) {
+    if (right[0] === 'LAST') { // LAST will appear only by itself in right[0].
       // if the right end of our interval is the end of a trace, then
       // it is closed on the right
-      right[0] = 'true'
+      // Array right is passed by reference to interval so the next assignment side-effects interval
+      right[0] = 'true' 
       interval.rightOpen = false
 
       // the only condition is to have a left end to the interval

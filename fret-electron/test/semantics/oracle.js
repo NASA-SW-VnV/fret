@@ -35,7 +35,7 @@ const intervalLogic = require(fretSupportPath + 'intervalLogic');
 
 exports.applyConstraints =
     (scope, condition, timing, response,
-     modeIntervals, conditionIntervals, responseIntervals,
+     modeIntervals, conditionIntervals, stopCondIntervals, responseIntervals,
      traceInterval, n) => {
 
   var result = 'undefined';
@@ -53,27 +53,29 @@ exports.applyConstraints =
   // console.log('1. ' + JSON.stringify(modeIntervals))
   // console.log('2. ' + JSON.stringify(modesArray))
   for (let scopeInterval of modesArray) {
-    if (condition == 'regular') {
-      for (let conditionInterval of conditionIntervals) {
-        var trigger = findConditionTrigger(scopeInterval, conditionInterval);
-        if (trigger.point >=0) {
-          var res = this.checkTimings(n, scope, scopeInterval, trigger, responseIntervals, timingFunction, traceInterval)
-          if (res != null) // means it's a dont care
-            resultArray.push(res)
-        }
-    }
-  } else {
-        res = this.checkTimings(n, scope, scopeInterval, null, responseIntervals, timingFunction, traceInterval)
-        if (res != null) // means it's a dont care
-          resultArray.push(res)
+      if (condition == 'regular') {
+	  for (let conditionInterval of conditionIntervals) {
+	      let trigger = findConditionTrigger(scopeInterval, conditionInterval);
+	      if (trigger.point >=0) {
+		  var res = this.checkTimings(n, scope, scopeInterval, trigger,
+					      stopCondIntervals,responseIntervals,
+					      timingFunction, traceInterval)
+		  if (res != null) // null means it's a don't care
+		      resultArray.push(res)
+	      }
+	  }
+      }
+      else {
+	  res = this.checkTimings(n, scope, scopeInterval, null, stopCondIntervals,responseIntervals, timingFunction, traceInterval);
+          if (res != null) // means it's a don't care
+	      resultArray.push(res)
+      }
   }
-  }
-
   //console.log(JSON.stringify(resultArray))
   return resultArray.every((x) => x)
 }
 
-exports.checkTimings =  (duration, scope, scopeInterval, trigger, responseIntervals, functionCase, traceInterval) => {
+exports.checkTimings =  (duration, scope, scopeInterval, trigger, stopCondIntervals, responseIntervals, functionCase, traceInterval) => {
 
 var constraints = 'undefined'
 var isNegated = scope.includes('only');
@@ -93,7 +95,9 @@ switch (functionCase) {
 case 'forCond': constraints = forDurationCond(responseIntervals, trigger, duration,isNegated); break;
 case 'after': constraints = after(scopeInterval, responseIntervals, duration, traceInterval, isNegated); break;
 case 'afterCond': constraints = afterCond(responseIntervals, trigger, duration, traceInterval, isNegated); break;
-
+case 'until': constraints = untilTiming(scopeInterval,stopCondIntervals,responseIntervals,isNegated); break;
+case 'untilCond' : constraints = untilTimingCond(scopeInterval,stopCondIntervals,responseIntervals,trigger,isNegated); break;
+    
 default: { console.log('!! Unhandled functionCase ' + functionCase + 'in checkTimings');
 	   constraints = 'undefined'
 	 }
@@ -169,12 +173,31 @@ function findConditionTrigger(scopeInterval, conditionInterval) {
   } else if (intervalLogic.includesPoint(conditionInterval,scopeInterval.left)) {
       triggerPoint = scopeInterval.left;
   }
-
   return {point:triggerPoint, scope:intervalLogic.createInterval(triggerPoint, scopeInterval.right)}
+}
+
+// assume stopIntervals is an increasing sequence
+// Find the scope within scopeInterval where an "until" property must hold.
+function findStop(scopeInterval,stopIntervals) {
+    let stopPoint = -1;
+    for (let stopInterval of stopIntervals) {
+	if (intervalLogic.includesPoint(stopInterval,scopeInterval.left)) {
+	    stopPoint = scopeInterval.left;
+	    break;
+	} else if (intervalLogic.includesPoint(scopeInterval,stopInterval.left)) {
+	    stopPoint = stopInterval.left
+	    break;
+	}
+    }
+    // If there wasn't a stop in the scope, the response must be over the whole scope
+    if (stopPoint === -1) stopPoint = scopeInterval.right;
+    return {point: stopPoint,
+	    scope: intervalLogic.createInterval(scopeInterval.left,stopPoint)};
 }
 
 // immediately when unconditional
 function immediately(scopeInterval, responseIntervals, negate=false) {
+  //console.log('scopeInterval: ' + intervalLogic.intervalToString(scopeInterval) + ' responseIntervals: ' + intervalLogic.intervalsToString(responseIntervals));
   var pos = intervalLogic.includesPointMultiple(responseIntervals, scopeInterval.left)
   return (negate?!pos:pos)
 }
@@ -223,19 +246,21 @@ function neverCond(responseIntervals, trigger, negate=false) {
 
 function within (scopeInterval, responseIntervals, duration, negate=false) {
 
-	    var scopeIntervalTruncated = intervalLogic.createInterval(scopeInterval.left,
-								  Math.min(scopeInterval.left+duration, scopeInterval.right));
+    var scopeIntervalTruncated =
+	intervalLogic.createInterval(scopeInterval.left,
+				     Math.min(scopeInterval.left+duration,
+					      scopeInterval.right));
 
 	    // if it is negate (not within) then we check even if the
 	    // interval is shorter than duration - note that the negation
 	    // is to happen outside this function
 
-      var pos =  intervalLogic.overlaps(responseIntervals,scopeIntervalTruncated);
-	    if (negate || (intervalLogic.length(scopeIntervalTruncated) >= duration)) {
+    var pos =  intervalLogic.overlaps(responseIntervals,scopeIntervalTruncated);
+    if (negate || (intervalLogic.length(scopeIntervalTruncated) >= duration)) {
 		      return (negate?!pos:pos);
-      } else {
-        return null // null is dont care
-      }
+    } else {
+        return null // null is don't care
+    }
 }
 
 // new semantics: when condition value switches from false to true,
@@ -247,18 +272,17 @@ function withinCond (responseIntervals, trigger, duration, negate=false) {
 
 function forDuration  (scopeInterval, responseIntervals, duration, negate=false) {
 
-	var scopeIntervalTruncated =
-	    intervalLogic.createInterval(scopeInterval.left,
-					 Math.min(scopeInterval.left+duration,
-						  scopeInterval.right));
-	//intervalLogic.print(scopeIntervalTruncated,'scopeIntervalTruncated');
-	var pos = intervalLogic.contains(responseIntervals,[scopeIntervalTruncated])
-	//console.log('incl = ' + incl);
-	if (!negate || (intervalLogic.length(scopeIntervalTruncated) === duration))
-	    return (negate?!pos:pos)
-  else {
-    return null // null is dont care
-  }
+    var scopeIntervalTruncated =
+	intervalLogic.createInterval(scopeInterval.left,
+				     Math.min(scopeInterval.left+duration,
+					      scopeInterval.right));
+    //intervalLogic.print(scopeIntervalTruncated,'scopeIntervalTruncated');
+    var pos = intervalLogic.contains(responseIntervals,[scopeIntervalTruncated])
+    if (!negate || (intervalLogic.length(scopeIntervalTruncated) === duration))
+	return (negate?!pos:pos)
+    else {
+	return null // null is don't care
+    }
 }
 
 function forDurationCond (responseIntervals, trigger, duration, negate=false) {
@@ -287,4 +311,19 @@ function after (scopeInterval, responseIntervals, duration, traceInterval, negat
 
 function afterCond (responseIntervals, trigger, duration, traceInterval, negate=false) {
   return (after(trigger.scope, responseIntervals, duration, traceInterval, negate))
+}
+
+function untilTiming(scopeInterval,stopCondIntervals,responseIntervals,negate) {
+    // find leftmost stopCondInterval within scopeInterval after scopeInterval.left
+    let stop = findStop(scopeInterval, stopCondIntervals)
+
+    // The stop happened immediately so we don't care? or it does satisfy it?
+    if (stop.point === scopeInterval.left) return null;
+
+    let p = intervalLogic.contains(responseIntervals,[stop.scope]);
+    return (negate ? !p : p)
+}
+
+function untilTimingCond(scopeInterval,stopCondIntervals,responseIntervals,trigger,negate) {
+    return untilTiming(trigger.scope,stopCondIntervals,responseIntervals,negate);
 }

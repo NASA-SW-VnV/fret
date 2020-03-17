@@ -1,36 +1,4 @@
-// *****************************************************************************
-// Notices:
-// 
-// Copyright © 2019 United States Government as represented by the Administrator
-// of the National Aeronautics and Space Administration.  All Rights Reserved.
-// 
-// Disclaimers
-// 
-// No Warranty: THE SUBJECT SOFTWARE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY OF
-// ANY KIND, EITHER EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED
-// TO, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL CONFORM TO SPECIFICATIONS, 
-// ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, 
-// OR FREEDOM FROM INFRINGEMENT, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL BE
-// ERROR FREE, OR ANY WARRANTY THAT DOCUMENTATION, IF PROVIDED, WILL CONFORM TO
-// THE SUBJECT SOFTWARE. THIS AGREEMENT DOES NOT, IN ANY MANNER, CONSTITUTE AN
-// ENDORSEMENT BY GOVERNMENT AGENCY OR ANY PRIOR RECIPIENT OF ANY RESULTS,
-// RESULTING DESIGNS, HARDWARE, SOFTWARE PRODUCTS OR ANY OTHER APPLICATIONS
-// RESULTING FROM USE OF THE SUBJECT SOFTWARE.  FURTHER, GOVERNMENT AGENCY
-// DISCLAIMS ALL WARRANTIES AND LIABILITIES REGARDING THIRD-PARTY SOFTWARE, IF
-// PRESENT IN THE ORIGINAL SOFTWARE, AND DISTRIBUTES IT ''AS IS.''
-// 
-// Waiver and Indemnity:  RECIPIENT AGREES TO WAIVE ANY AND ALL CLAIMS AGAINST
-// THE UNITED STATES GOVERNMENT, ITS CONTRACTORS AND SUBCONTRACTORS, AS WELL AS
-// ANY PRIOR RECIPIENT.  IF RECIPIENT'S USE OF THE SUBJECT SOFTWARE RESULTS IN
-// ANY LIABILITIES, DEMANDS, DAMAGES, EXPENSES OR LOSSES ARISING FROM SUCH USE,
-// INCLUDING ANY DAMAGES FROM PRODUCTS BASED ON, OR RESULTING FROM, RECIPIENT'S
-// USE OF THE SUBJECT SOFTWARE, RECIPIENT SHALL INDEMNIFY AND HOLD HARMLESS THE
-// UNITED STATES GOVERNMENT, ITS CONTRACTORS AND SUBCONTRACTORS, AS WELL AS ANY
-// PRIOR RECIPIENT, TO THE EXTENT PERMITTED BY LAW.  RECIPIENT'S SOLE REMEDY FOR
-// ANY SUCH MATTER SHALL BE THE IMMEDIATE, UNILATERAL TERMINATION OF THIS
-// AGREEMENT.
-// *****************************************************************************
-// Generated from NuSMV.g4 by ANTLR 4.7.1
+// Generated from NuSMV.g4 by ANTLR 4.7
 // jshint ignore: start
 var antlr4 = require('antlr4/index');
 var NuSMVListener = require('./NuSMVListener').NuSMVListener;
@@ -39,7 +7,7 @@ var NuSMVVisitor = require('./NuSMVVisitor').NuSMVVisitor;
 var grammarFileName = "NuSMV.g4";
 
 var serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964",
-    "\u00034\u00e7\u0004\u0002\t\u0002\u0004\u0003\t\u0003\u0004\u0004\t",
+    "\u00035\u00e7\u0004\u0002\t\u0002\u0004\u0003\t\u0003\u0004\u0004\t",
     "\u0004\u0004\u0005\t\u0005\u0004\u0006\t\u0006\u0004\u0007\t\u0007\u0004",
     "\b\t\b\u0004\t\t\t\u0004\n\t\n\u0004\u000b\t\u000b\u0004\f\t\f\u0004",
     "\r\t\r\u0004\u000e\t\u000e\u0004\u000f\t\u000f\u0004\u0010\t\u0010\u0004",
@@ -77,9 +45,9 @@ var serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964",
     "\u0016\u0003\u0017\u0003\u0017\u0003\u0018\u0003\u0018\u0003\u0019\u0003",
     "\u0019\u0003\u0019\u0002\u0004\b\n\u001a\u0002\u0004\u0006\b\n\f\u000e",
     "\u0010\u0012\u0014\u0016\u0018\u001a\u001c\u001e \"$&(*,.0\u0002\t\u0003",
-    "\u0002\u0003\u000f\u0003\u0002\u0010\u0011\u0003\u0002\u0012\u0014\u0003",
-    "\u0002\u0016\u0018\u0003\u0002\u0019\u001b\u0003\u0002\u001d\u001f\u0003",
-    "\u0002 $\u0002\u00ed\u00022\u0003\u0002\u0002\u0002\u00044\u0003\u0002",
+    "\u0002\u0003\u0010\u0003\u0002\u0011\u0012\u0003\u0002\u0013\u0015\u0003",
+    "\u0002\u0017\u0019\u0003\u0002\u001a\u001c\u0003\u0002\u001e \u0003",
+    "\u0002!%\u0002\u00ed\u00022\u0003\u0002\u0002\u0002\u00044\u0003\u0002",
     "\u0002\u0002\u00066\u0003\u0002\u0002\u0002\bD\u0003\u0002\u0002\u0002",
     "\n~\u0003\u0002\u0002\u0002\f\u00b5\u0003\u0002\u0002\u0002\u000e\u00b9",
     "\u0003\u0002\u0002\u0002\u0010\u00bb\u0003\u0002\u0002\u0002\u0012\u00bd",
@@ -92,7 +60,7 @@ var serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964",
     "\u0002,\u00e0\u0003\u0002\u0002\u0002.\u00e2\u0003\u0002\u0002\u0002",
     "0\u00e4\u0003\u0002\u0002\u000223\t\u0002\u0002\u00023\u0003\u0003\u0002",
     "\u0002\u000245\t\u0003\u0002\u00025\u0005\u0003\u0002\u0002\u000267",
-    "\u00072\u0002\u00027\u0007\u0003\u0002\u0002\u000289\b\u0005\u0001\u0002",
+    "\u00073\u0002\u00027\u0007\u0003\u0002\u0002\u000289\b\u0005\u0001\u0002",
     "9E\u0005\u0006\u0004\u0002:E\u0005\u0002\u0002\u0002;E\u00050\u0019",
     "\u0002<E\u0005.\u0018\u0002=>\u0005\u001e\u0010\u0002>?\u0005\b\u0005",
     "\u0002?@\u0005 \u0011\u0002@E\u0003\u0002\u0002\u0002AB\u0005\"\u0012",
@@ -156,30 +124,30 @@ var serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964",
     "\u00b4\u0003\u0002\u0002\u0002\u00b2\u00b0\u0003\u0002\u0002\u0002\u00b2",
     "\u00b3\u0003\u0002\u0002\u0002\u00b3\u000b\u0003\u0002\u0002\u0002\u00b4",
     "\u00b2\u0003\u0002\u0002\u0002\u00b5\u00b6\t\u0004\u0002\u0002\u00b6",
-    "\r\u0003\u0002\u0002\u0002\u00b7\u00ba\u0007\u0015\u0002\u0002\u00b8",
+    "\r\u0003\u0002\u0002\u0002\u00b7\u00ba\u0007\u0016\u0002\u0002\u00b8",
     "\u00ba\u0005\f\u0007\u0002\u00b9\u00b7\u0003\u0002\u0002\u0002\u00b9",
     "\u00b8\u0003\u0002\u0002\u0002\u00ba\u000f\u0003\u0002\u0002\u0002\u00bb",
     "\u00bc\t\u0005\u0002\u0002\u00bc\u0011\u0003\u0002\u0002\u0002\u00bd",
     "\u00be\t\u0006\u0002\u0002\u00be\u0013\u0003\u0002\u0002\u0002\u00bf",
-    "\u00c2\u0007\u001c\u0002\u0002\u00c0\u00c2\u0005\u0012\n\u0002\u00c1",
+    "\u00c2\u0007\u001d\u0002\u0002\u00c0\u00c2\u0005\u0012\n\u0002\u00c1",
     "\u00bf\u0003\u0002\u0002\u0002\u00c1\u00c0\u0003\u0002\u0002\u0002\u00c2",
     "\u0015\u0003\u0002\u0002\u0002\u00c3\u00c4\t\u0007\u0002\u0002\u00c4",
     "\u0017\u0003\u0002\u0002\u0002\u00c5\u00c6\t\b\u0002\u0002\u00c6\u0019",
-    "\u0003\u0002\u0002\u0002\u00c7\u00c8\u0007%\u0002\u0002\u00c8\u00c9",
-    "\u00073\u0002\u0002\u00c9\u00ca\u0007&\u0002\u0002\u00ca\u00cb\u0007",
-    "3\u0002\u0002\u00cb\u00cc\u0007\'\u0002\u0002\u00cc\u001b\u0003\u0002",
-    "\u0002\u0002\u00cd\u00ce\u0007%\u0002\u0002\u00ce\u00cf\u0005\u0018",
-    "\r\u0002\u00cf\u00d0\u0005\u0004\u0003\u0002\u00d0\u00d1\u0007\'\u0002",
-    "\u0002\u00d1\u001d\u0003\u0002\u0002\u0002\u00d2\u00d3\u0007(\u0002",
-    "\u0002\u00d3\u001f\u0003\u0002\u0002\u0002\u00d4\u00d5\u0007)\u0002",
-    "\u0002\u00d5!\u0003\u0002\u0002\u0002\u00d6\u00d7\u0007*\u0002\u0002",
-    "\u00d7#\u0003\u0002\u0002\u0002\u00d8\u00d9\u0007+\u0002\u0002\u00d9",
-    "%\u0003\u0002\u0002\u0002\u00da\u00db\u0007,\u0002\u0002\u00db\'\u0003",
-    "\u0002\u0002\u0002\u00dc\u00dd\u0007-\u0002\u0002\u00dd)\u0003\u0002",
-    "\u0002\u0002\u00de\u00df\u0007.\u0002\u0002\u00df+\u0003\u0002\u0002",
-    "\u0002\u00e0\u00e1\u0007/\u0002\u0002\u00e1-\u0003\u0002\u0002\u0002",
-    "\u00e2\u00e3\u00070\u0002\u0002\u00e3/\u0003\u0002\u0002\u0002\u00e4",
-    "\u00e5\u00071\u0002\u0002\u00e51\u0003\u0002\u0002\u0002\nDZ\\~\u00b0",
+    "\u0003\u0002\u0002\u0002\u00c7\u00c8\u0007&\u0002\u0002\u00c8\u00c9",
+    "\u00074\u0002\u0002\u00c9\u00ca\u0007\'\u0002\u0002\u00ca\u00cb\u0007",
+    "4\u0002\u0002\u00cb\u00cc\u0007(\u0002\u0002\u00cc\u001b\u0003\u0002",
+    "\u0002\u0002\u00cd\u00ce\u0007&\u0002\u0002\u00ce\u00cf\u0005\u0018",
+    "\r\u0002\u00cf\u00d0\u0005\u0004\u0003\u0002\u00d0\u00d1\u0007(\u0002",
+    "\u0002\u00d1\u001d\u0003\u0002\u0002\u0002\u00d2\u00d3\u0007)\u0002",
+    "\u0002\u00d3\u001f\u0003\u0002\u0002\u0002\u00d4\u00d5\u0007*\u0002",
+    "\u0002\u00d5!\u0003\u0002\u0002\u0002\u00d6\u00d7\u0007+\u0002\u0002",
+    "\u00d7#\u0003\u0002\u0002\u0002\u00d8\u00d9\u0007,\u0002\u0002\u00d9",
+    "%\u0003\u0002\u0002\u0002\u00da\u00db\u0007-\u0002\u0002\u00db\'\u0003",
+    "\u0002\u0002\u0002\u00dc\u00dd\u0007.\u0002\u0002\u00dd)\u0003\u0002",
+    "\u0002\u0002\u00de\u00df\u0007/\u0002\u0002\u00df+\u0003\u0002\u0002",
+    "\u0002\u00e0\u00e1\u00070\u0002\u0002\u00e1-\u0003\u0002\u0002\u0002",
+    "\u00e2\u00e3\u00071\u0002\u0002\u00e3/\u0003\u0002\u0002\u0002\u00e4",
+    "\u00e5\u00072\u0002\u0002\u00e51\u0003\u0002\u0002\u0002\nDZ\\~\u00b0",
     "\u00b2\u00b9\u00c1"].join("");
 
 
@@ -190,8 +158,8 @@ var decisionsToDFA = atn.decisionToState.map( function(ds, index) { return new a
 var sharedContextCache = new antlr4.PredictionContextCache();
 
 var literalNames = [ null, "'$post_condition$'", "'$action$'", "'$scope_mode$'", 
-                     "'$regular_condition$'", "'$action1$'", "'$action2$'", 
-                     "'FTP'", "'FFin_$scope_mode$'", "'FLin_$scope_mode$'", 
+                     "'$stop_condition$'", "'$regular_condition$'", "'$action1$'", 
+                     "'$action2$'", "'FTP'", "'FFin_$scope_mode$'", "'FLin_$scope_mode$'", 
                      "'Fin_$scope_mode$'", "'Lin_$scope_mode$'", "'FNin_$scope_mode$'", 
                      "'LNin_$scope_mode$'", "'$duration$'", "'$duration$+1'", 
                      "'H'", "'O'", "'<|'", "'Y'", "'S'", "'T'", "'SI'", 
@@ -205,7 +173,7 @@ var symbolicNames = [ null, null, null, null, null, null, null, null, null,
                       null, null, null, null, null, null, null, null, null, 
                       null, null, null, null, null, null, null, null, null, 
                       null, null, null, null, null, null, null, null, null, 
-                      null, null, null, "ID", "UINT", "WS" ];
+                      null, null, null, null, "ID", "UINT", "WS" ];
 
 var ruleNames =  [ "plHolders", "durPlHolders", "proposition", "simpleExpr", 
                    "ltlExpr", "pastTimedUnaryOp", "pastUnaryOp", "pastBinaryOp", 
@@ -279,9 +247,10 @@ NuSMVParser.T__43 = 44;
 NuSMVParser.T__44 = 45;
 NuSMVParser.T__45 = 46;
 NuSMVParser.T__46 = 47;
-NuSMVParser.ID = 48;
-NuSMVParser.UINT = 49;
-NuSMVParser.WS = 50;
+NuSMVParser.T__47 = 48;
+NuSMVParser.ID = 49;
+NuSMVParser.UINT = 50;
+NuSMVParser.WS = 51;
 
 NuSMVParser.RULE_plHolders = 0;
 NuSMVParser.RULE_durPlHolders = 1;
@@ -359,7 +328,7 @@ NuSMVParser.prototype.plHolders = function() {
         this.enterOuterAlt(localctx, 1);
         this.state = 48;
         _la = this._input.LA(1);
-        if(!((((_la) & ~0x1f) == 0 && ((1 << _la) & ((1 << NuSMVParser.T__0) | (1 << NuSMVParser.T__1) | (1 << NuSMVParser.T__2) | (1 << NuSMVParser.T__3) | (1 << NuSMVParser.T__4) | (1 << NuSMVParser.T__5) | (1 << NuSMVParser.T__6) | (1 << NuSMVParser.T__7) | (1 << NuSMVParser.T__8) | (1 << NuSMVParser.T__9) | (1 << NuSMVParser.T__10) | (1 << NuSMVParser.T__11) | (1 << NuSMVParser.T__12))) !== 0))) {
+        if(!((((_la) & ~0x1f) == 0 && ((1 << _la) & ((1 << NuSMVParser.T__0) | (1 << NuSMVParser.T__1) | (1 << NuSMVParser.T__2) | (1 << NuSMVParser.T__3) | (1 << NuSMVParser.T__4) | (1 << NuSMVParser.T__5) | (1 << NuSMVParser.T__6) | (1 << NuSMVParser.T__7) | (1 << NuSMVParser.T__8) | (1 << NuSMVParser.T__9) | (1 << NuSMVParser.T__10) | (1 << NuSMVParser.T__11) | (1 << NuSMVParser.T__12) | (1 << NuSMVParser.T__13))) !== 0))) {
         this._errHandler.recoverInline(this);
         }
         else {
@@ -431,7 +400,7 @@ NuSMVParser.prototype.durPlHolders = function() {
         this.enterOuterAlt(localctx, 1);
         this.state = 50;
         _la = this._input.LA(1);
-        if(!(_la===NuSMVParser.T__13 || _la===NuSMVParser.T__14)) {
+        if(!(_la===NuSMVParser.T__14 || _la===NuSMVParser.T__15)) {
         this._errHandler.recoverInline(this);
         }
         else {
@@ -648,18 +617,19 @@ NuSMVParser.prototype.simpleExpr = function(_p) {
         case NuSMVParser.T__10:
         case NuSMVParser.T__11:
         case NuSMVParser.T__12:
+        case NuSMVParser.T__13:
             this.state = 56;
             this.plHolders();
             break;
-        case NuSMVParser.T__46:
+        case NuSMVParser.T__47:
             this.state = 57;
             this.t();
             break;
-        case NuSMVParser.T__45:
+        case NuSMVParser.T__46:
             this.state = 58;
             this.f();
             break;
-        case NuSMVParser.T__37:
+        case NuSMVParser.T__38:
             this.state = 59;
             this.lp();
             this.state = 60;
@@ -667,7 +637,7 @@ NuSMVParser.prototype.simpleExpr = function(_p) {
             this.state = 61;
             this.rp();
             break;
-        case NuSMVParser.T__39:
+        case NuSMVParser.T__40:
             this.state = 63;
             this.not();
             this.state = 64;
@@ -1772,7 +1742,7 @@ NuSMVParser.prototype.pastTimedUnaryOp = function() {
         this.enterOuterAlt(localctx, 1);
         this.state = 179;
         _la = this._input.LA(1);
-        if(!((((_la) & ~0x1f) == 0 && ((1 << _la) & ((1 << NuSMVParser.T__15) | (1 << NuSMVParser.T__16) | (1 << NuSMVParser.T__17))) !== 0))) {
+        if(!((((_la) & ~0x1f) == 0 && ((1 << _la) & ((1 << NuSMVParser.T__16) | (1 << NuSMVParser.T__17) | (1 << NuSMVParser.T__18))) !== 0))) {
         this._errHandler.recoverInline(this);
         }
         else {
@@ -1846,14 +1816,14 @@ NuSMVParser.prototype.pastUnaryOp = function() {
         this.state = 183;
         this._errHandler.sync(this);
         switch(this._input.LA(1)) {
-        case NuSMVParser.T__18:
+        case NuSMVParser.T__19:
             this.enterOuterAlt(localctx, 1);
             this.state = 181;
-            this.match(NuSMVParser.T__18);
+            this.match(NuSMVParser.T__19);
             break;
-        case NuSMVParser.T__15:
         case NuSMVParser.T__16:
         case NuSMVParser.T__17:
+        case NuSMVParser.T__18:
             this.enterOuterAlt(localctx, 2);
             this.state = 182;
             this.pastTimedUnaryOp();
@@ -1926,7 +1896,7 @@ NuSMVParser.prototype.pastBinaryOp = function() {
         this.enterOuterAlt(localctx, 1);
         this.state = 185;
         _la = this._input.LA(1);
-        if(!((((_la) & ~0x1f) == 0 && ((1 << _la) & ((1 << NuSMVParser.T__19) | (1 << NuSMVParser.T__20) | (1 << NuSMVParser.T__21))) !== 0))) {
+        if(!((((_la) & ~0x1f) == 0 && ((1 << _la) & ((1 << NuSMVParser.T__20) | (1 << NuSMVParser.T__21) | (1 << NuSMVParser.T__22))) !== 0))) {
         this._errHandler.recoverInline(this);
         }
         else {
@@ -1998,7 +1968,7 @@ NuSMVParser.prototype.futureTimedUnaryOp = function() {
         this.enterOuterAlt(localctx, 1);
         this.state = 187;
         _la = this._input.LA(1);
-        if(!((((_la) & ~0x1f) == 0 && ((1 << _la) & ((1 << NuSMVParser.T__22) | (1 << NuSMVParser.T__23) | (1 << NuSMVParser.T__24))) !== 0))) {
+        if(!((((_la) & ~0x1f) == 0 && ((1 << _la) & ((1 << NuSMVParser.T__23) | (1 << NuSMVParser.T__24) | (1 << NuSMVParser.T__25))) !== 0))) {
         this._errHandler.recoverInline(this);
         }
         else {
@@ -2072,14 +2042,14 @@ NuSMVParser.prototype.futureUnaryOp = function() {
         this.state = 191;
         this._errHandler.sync(this);
         switch(this._input.LA(1)) {
-        case NuSMVParser.T__25:
+        case NuSMVParser.T__26:
             this.enterOuterAlt(localctx, 1);
             this.state = 189;
-            this.match(NuSMVParser.T__25);
+            this.match(NuSMVParser.T__26);
             break;
-        case NuSMVParser.T__22:
         case NuSMVParser.T__23:
         case NuSMVParser.T__24:
+        case NuSMVParser.T__25:
             this.enterOuterAlt(localctx, 2);
             this.state = 190;
             this.futureTimedUnaryOp();
@@ -2152,7 +2122,7 @@ NuSMVParser.prototype.futureBinaryOp = function() {
         this.enterOuterAlt(localctx, 1);
         this.state = 193;
         _la = this._input.LA(1);
-        if(!((((_la) & ~0x1f) == 0 && ((1 << _la) & ((1 << NuSMVParser.T__26) | (1 << NuSMVParser.T__27) | (1 << NuSMVParser.T__28))) !== 0))) {
+        if(!((((_la) & ~0x1f) == 0 && ((1 << _la) & ((1 << NuSMVParser.T__27) | (1 << NuSMVParser.T__28) | (1 << NuSMVParser.T__29))) !== 0))) {
         this._errHandler.recoverInline(this);
         }
         else {
@@ -2224,7 +2194,7 @@ NuSMVParser.prototype.comparisonOp = function() {
         this.enterOuterAlt(localctx, 1);
         this.state = 195;
         _la = this._input.LA(1);
-        if(!(((((_la - 30)) & ~0x1f) == 0 && ((1 << (_la - 30)) & ((1 << (NuSMVParser.T__29 - 30)) | (1 << (NuSMVParser.T__30 - 30)) | (1 << (NuSMVParser.T__31 - 30)) | (1 << (NuSMVParser.T__32 - 30)) | (1 << (NuSMVParser.T__33 - 30)))) !== 0))) {
+        if(!(((((_la - 31)) & ~0x1f) == 0 && ((1 << (_la - 31)) & ((1 << (NuSMVParser.T__30 - 31)) | (1 << (NuSMVParser.T__31 - 31)) | (1 << (NuSMVParser.T__32 - 31)) | (1 << (NuSMVParser.T__33 - 31)) | (1 << (NuSMVParser.T__34 - 31)))) !== 0))) {
         this._errHandler.recoverInline(this);
         }
         else {
@@ -2305,15 +2275,15 @@ NuSMVParser.prototype.bound = function() {
     try {
         this.enterOuterAlt(localctx, 1);
         this.state = 197;
-        this.match(NuSMVParser.T__34);
+        this.match(NuSMVParser.T__35);
         this.state = 198;
         this.match(NuSMVParser.UINT);
         this.state = 199;
-        this.match(NuSMVParser.T__35);
+        this.match(NuSMVParser.T__36);
         this.state = 200;
         this.match(NuSMVParser.UINT);
         this.state = 201;
-        this.match(NuSMVParser.T__36);
+        this.match(NuSMVParser.T__37);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
 	        localctx.exception = re;
@@ -2384,13 +2354,13 @@ NuSMVParser.prototype.saltBound = function() {
     try {
         this.enterOuterAlt(localctx, 1);
         this.state = 203;
-        this.match(NuSMVParser.T__34);
+        this.match(NuSMVParser.T__35);
         this.state = 204;
         this.comparisonOp();
         this.state = 205;
         this.durPlHolders();
         this.state = 206;
-        this.match(NuSMVParser.T__36);
+        this.match(NuSMVParser.T__37);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
 	        localctx.exception = re;
@@ -2454,7 +2424,7 @@ NuSMVParser.prototype.lp = function() {
     try {
         this.enterOuterAlt(localctx, 1);
         this.state = 208;
-        this.match(NuSMVParser.T__37);
+        this.match(NuSMVParser.T__38);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
 	        localctx.exception = re;
@@ -2518,7 +2488,7 @@ NuSMVParser.prototype.rp = function() {
     try {
         this.enterOuterAlt(localctx, 1);
         this.state = 210;
-        this.match(NuSMVParser.T__38);
+        this.match(NuSMVParser.T__39);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
 	        localctx.exception = re;
@@ -2582,7 +2552,7 @@ NuSMVParser.prototype.not = function() {
     try {
         this.enterOuterAlt(localctx, 1);
         this.state = 212;
-        this.match(NuSMVParser.T__39);
+        this.match(NuSMVParser.T__40);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
 	        localctx.exception = re;
@@ -2646,7 +2616,7 @@ NuSMVParser.prototype.and = function() {
     try {
         this.enterOuterAlt(localctx, 1);
         this.state = 214;
-        this.match(NuSMVParser.T__40);
+        this.match(NuSMVParser.T__41);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
 	        localctx.exception = re;
@@ -2710,7 +2680,7 @@ NuSMVParser.prototype.or = function() {
     try {
         this.enterOuterAlt(localctx, 1);
         this.state = 216;
-        this.match(NuSMVParser.T__41);
+        this.match(NuSMVParser.T__42);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
 	        localctx.exception = re;
@@ -2774,7 +2744,7 @@ NuSMVParser.prototype.xor = function() {
     try {
         this.enterOuterAlt(localctx, 1);
         this.state = 218;
-        this.match(NuSMVParser.T__42);
+        this.match(NuSMVParser.T__43);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
 	        localctx.exception = re;
@@ -2838,7 +2808,7 @@ NuSMVParser.prototype.implies = function() {
     try {
         this.enterOuterAlt(localctx, 1);
         this.state = 220;
-        this.match(NuSMVParser.T__43);
+        this.match(NuSMVParser.T__44);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
 	        localctx.exception = re;
@@ -2902,7 +2872,7 @@ NuSMVParser.prototype.equiv = function() {
     try {
         this.enterOuterAlt(localctx, 1);
         this.state = 222;
-        this.match(NuSMVParser.T__44);
+        this.match(NuSMVParser.T__45);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
 	        localctx.exception = re;
@@ -2966,7 +2936,7 @@ NuSMVParser.prototype.f = function() {
     try {
         this.enterOuterAlt(localctx, 1);
         this.state = 224;
-        this.match(NuSMVParser.T__45);
+        this.match(NuSMVParser.T__46);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
 	        localctx.exception = re;
@@ -3030,7 +3000,7 @@ NuSMVParser.prototype.t = function() {
     try {
         this.enterOuterAlt(localctx, 1);
         this.state = 226;
-        this.match(NuSMVParser.T__46);
+        this.match(NuSMVParser.T__47);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
 	        localctx.exception = re;

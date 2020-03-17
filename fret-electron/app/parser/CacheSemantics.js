@@ -112,8 +112,9 @@ var product = new ProductIterable(...Object.values(fieldRanges));
 var FRETSemantics = utilities.createKeyStructObj(Object.values(fieldRanges), semanticsObjUndefined);
 
 
+if (constants.verboseCacheSemantics) {
 console.log('\nCS0: ' + JSON.stringify(FRETSemantics["null,null,always,satisfaction"] === FRETSemantics["null,null,immediately,satisfaction"]) + '\n' + JSON.stringify(FRETSemantics["null,null,always,satisfaction"]) + '\n' + JSON.stringify(FRETSemantics["null,null,immediately,satisfaction"]))
-
+}
 
 
 
@@ -133,7 +134,9 @@ createSemantics(product, {sem:'finite',in:'between'},
 		 pt:'ptFinBtw',ptExpanded:'ptFinBtwExpanded',
 		 CoCoSpecCode: 'CoCoSpecCodeFinBtw'});
 
-//console.log('\nCS2: '+ JSON.stringify(FRETSemantics["null,null,always,satisfaction"]));
+if (constants.verboseCacheSemantics) {
+console.log('\nCS2: '+ JSON.stringify(FRETSemantics["null,null,always,satisfaction"]));
+}
 
 // finally create json file with semantics
 var semanticsJSONname = 'semantics.json';
@@ -146,7 +149,9 @@ fs.writeFile(semanticsJSONname, JSON.stringify(FRETSemantics,undefined,2), funct
 function createSemantics(product,options,properties) {
     //Also updates FRETSemantics var
     var saltInfo = createSaltBatchString(product,options);
-    //console.log('\nsaltInfo\n' + JSON.stringify(saltInfo));
+    if (constants.verboseCacheSemantics){
+    console.log('\nsaltInfo\n' + JSON.stringify(saltInfo));
+    }
     var saltString = saltInfo.str;
     var semanticsMap = saltInfo.mp;
 
@@ -167,7 +172,7 @@ function createSemantics(product,options,properties) {
 
 	// now set up FRETSemantics based on map
 	for (var index=0; index < semanticsMap.length; index++) {
-	    //if (constants.verboseCacheSemantics) console.log(batchSemantics[index])
+	    if (constants.verboseCacheSemantics) console.log(batchSemantics[index])
 	    let sem = batchSemantics[index];  // LTL formula
 	    let type = semanticsMap[index].tp;  // future or past
 	    let key = semanticsMap[index].fields; // what key it is for
@@ -185,8 +190,8 @@ function createSemantics(product,options,properties) {
 
 			if (constants.verboseCacheSemantics) {
 			    //console.log('\nCS5: ' + JSON.stringify(FRETSemantics["null,null,always,satisfaction"] === FRETSemantics["null,null,immediately,satisfaction"]))
-			    //console.log('createSemantics ft ' + JSON.stringify(key) + ': ' +
-			    //	       	FRETSemantics[key][properties.ft]);
+			    console.log('createSemantics ft before ' + JSON.stringify(key) + ': ' +
+			           	FRETSemantics[key][properties.ft]);
 			    //console.log('createSemantics ft "null,null,always,satisfaction": '+ JSON.stringify(FRETSemantics["null,null,always,satisfaction"][properties.ft]))
 			}
 
@@ -201,7 +206,7 @@ function createSemantics(product,options,properties) {
 
 			if (constants.verboseCacheSemantics) {
 			    //console.log('\nCS6: ' + JSON.stringify(FRETSemantics["null,null,always,satisfaction"] === FRETSemantics["null,null,immediately,satisfaction"]))
-			    console.log('createSemantics ft: ' + JSON.stringify(key) + ': ' +
+			    console.log('createSemantics ft after: ' + JSON.stringify(key) + ': ' +
 				       	FRETSemantics[key][properties.ft]);
 			    //console.log('createSemantics ft "null,null,always,satisfaction": '+ JSON.stringify(FRETSemantics["null,null,always,satisfaction"][properties.ft]))
 			}
@@ -246,7 +251,9 @@ function createSemantics(product,options,properties) {
 		console.log('Undefined result returned from SALT for key ' + key)
 	    }
 	}
+	if (constants.verboseCacheSemantics) {
 	console.log('\nCS3: '+ JSON.stringify(FRETSemantics["null,null,always,satisfaction"]));
+	}
 
     }
 }
@@ -321,6 +328,7 @@ function createSaltBatchString(product,options) {
     return ({mp:SemanticsMap, str:saltStr})
 }
 
+/*
 function resolveAfter10Seconds() {
   return new Promise(resolve => {
     setTimeout(() => {
@@ -336,3 +344,4 @@ async function asyncCall(saltString) {
 
   // expected output: 'resolved'
 }
+*/

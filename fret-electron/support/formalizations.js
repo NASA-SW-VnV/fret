@@ -44,7 +44,8 @@ const nonsense_patterns = [
 ]
 
 const high_level_unhandled = [
-    '-,-,-,!satisfaction'
+    '-,-,-,!satisfaction',
+    'onlyAfter|onlyBefore|onlyIn,-,until,satisfaction'
 ]
 
 const NuSMVSubsts = [

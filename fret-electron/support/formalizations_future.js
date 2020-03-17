@@ -76,7 +76,9 @@ const BaseForm = [ // negate, timing,condition
   ['false,for,null|regular', throughout('RES','BOUND')],
   ['true,for,null|regular', notThroughout('RES','BOUND')],
   ['false,after,null|regular', afterTiming('RES','BOUND')], // scope also named after...
-  ['true,after,null|regular', notAfterTiming('RES','BOUND')]
+  ['true,after,null|regular', notAfterTiming('RES','BOUND')],
+    ['false,until,null|regular', untilTiming('RES','STOPCOND')],
+    ['true,until,null|regular', notUntilTiming('RES','STOPCOND')],
 ]
 
 function negate(str) {return utilities.negate(str)}
@@ -170,6 +172,14 @@ function notAfterTiming(property, duration, endsScope='ENDSCOPE') {
     return disjunction(within(property, duration, endsScope),
 		       throughout(negate(property), duration + 'PLUSONE')
 		      )
+}
+
+function untilTiming(property,stopcond) {
+    return `${property} until exclusive weak ${stopcond}`;
+}
+
+function notUntilTiming(property,stopcond) {
+    return constants.undefined_semantics;
 }
 
 exports.getEndPointRewrites = () => {
