@@ -174,8 +174,8 @@ function notAfterTiming(property, duration, endsScope='ENDSCOPE') {
 		      )
 }
 
-function untilTiming(property,stopcond) {
-    return `${property} until exclusive weak ${stopcond}`;
+function untilTiming(property,stopcond,endsScope='ENDSCOPE') {
+    return `${property} until exclusive weak (${stopcond} | ${endsScope})`
 }
 
 function notUntilTiming(property,stopcond) {

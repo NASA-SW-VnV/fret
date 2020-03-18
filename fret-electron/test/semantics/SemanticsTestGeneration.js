@@ -393,8 +393,8 @@ function generateSMVInfo(triple, n) {
   pfe =  updateDurations(pfe,n,'SMV');
   auxInfo.formulaeTenses.push([ffe,'ft',triple.key]);
   auxInfo.formulaeTenses.push([pfe,'pt',triple.key]);
-  auxInfo.expected.push(triple.expected);
-  auxInfo.expected.push(triple.expected);
+    auxInfo.expected.push((futureFormula === constants.undefined_semantics) ? null : triple.expected);
+    auxInfo.expected.push((pastFormula === constants.undefined_semantics) ? null : triple.expected);
   auxInfo.keys.push([triple.key,'ft']);
   auxInfo.keys.push([triple.key,'pt']);
   return auxInfo;
@@ -418,6 +418,10 @@ function generateCoCoSpecInfo(triple, n){
   auxInfo.expected.push(triple.expected);
   auxInfo.keys.push([triple.key,'CoCoSpec']);
   return auxInfo;
+}
+
+function matchExpected(expected,calculated) {
+    return ((expected === null) || (expected === calculated));
 }
 
 function executeTestCase(testCase, tool, testLength) {
@@ -460,17 +464,17 @@ function executeTestCase(testCase, tool, testLength) {
     }
     else {
       for (let i = 0; i < expected.length; i++) {
-  	    if (options.dumpAllTestCases){
-  		     printDiscrepancy("test"+testCase.id+"_"+n,keys,i,testCase, formulaeTenses[i])
-   	    }
-        if ((expected[i] == tazVector[i]) && options.reportAllTestCases)
-                 console.log('\n' + keys[i] + ': expected: ' + expected[i] + '; ' + tool + ': '
-                  + tazVector[i] + '\n' + formulaeTenses[i][0]);
-        if (expected[i] !== tazVector[i]) {
-           discrepancies++;
-           if (options.printDiscrepancyFiles){
-              printDiscrepancy("discrepancy"+testCase.id+"_"+n,keys,i,testCase, formulaeTenses[i]);
-            }
+  	  if (options.dumpAllTestCases){
+  	      printDiscrepancy("test"+testCase.id+"_"+n,keys,i,testCase, formulaeTenses[i])
+   	  }
+          if (matchExpected(expected[i],tazVector[i]) && options.reportAllTestCases)
+              console.log('\n' + keys[i] + ': expected: ' + expected[i] + '; ' + tool + ': '
+			  + tazVector[i] + '\n' + formulaeTenses[i][0]);
+          if (!matchExpected(expected[i],tazVector[i])) {
+              discrepancies++;
+              if (options.printDiscrepancyFiles) {
+		  printDiscrepancy("discrepancy"+testCase.id+"_"+n,keys,i,testCase, formulaeTenses[i]);
+              }
   	    console.log('\n!! Discrepancy ' + keys[i] + ': expected: ' + expected[i] + '; ' + tool + ': ' + tazVector[i] + '\n' + formulaeTenses[i][0]);
   	    intervalLogic.printMultiple(testCase.modeIntervals, 'Mode');
   	    if (keys[i][0].split(',')[1] == 'regular')
