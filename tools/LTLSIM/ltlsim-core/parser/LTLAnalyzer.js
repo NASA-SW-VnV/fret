@@ -1,7 +1,7 @@
 // *****************************************************************************
 // Notices:
 // 
-// Copyright © 2019 United States Government as represented by the Administrator
+// Copyright ï¿½ 2019 United States Government as represented by the Administrator
 // of the National Aeronautics and Space Administration.  All Rights Reserved.
 // 
 // Disclaimers
@@ -31,6 +31,19 @@
 // AGREEMENT.
 // *****************************************************************************
 const NuSMVVisitor = require('nusmvparser').NuSMVVisitor;
+const NuSMVParser = require('nusmvparser').NuSMVParser; 
+const LpContext = NuSMVParser.LpContext;
+const RpContext = NuSMVParser.RpContext;
+
+function isSubExpression(ctx) {
+  return ctx && ctx.parentCtx && !isParenthesesExpression(ctx) && isParenthesesExpression(ctx.parentCtx);
+}
+
+function isParenthesesExpression(ctx) {
+  return ctx.children && 
+        (ctx.children[0] instanceof LpContext) && 
+        (ctx.children[ctx.children.length-1] instanceof RpContext);
+}
 
 var LTLAnalyzer = function() {
     NuSMVVisitor.call(this);
@@ -41,326 +54,245 @@ var LTLAnalyzer = function() {
 
 LTLAnalyzer.prototype = Object.create(NuSMVVisitor.prototype);
 LTLAnalyzer.prototype.constructor = LTLAnalyzer;
-// Visit a parse tree produced by NuSMVParser#ftp.
-LTLAnalyzer.prototype.visitFtp = function(ctx) {
+
+
+// Visit a parse tree produced by NuSMVParser#plHolders.
+LTLAnalyzer.prototype.visitPlHolders = function(ctx) {
     return ctx.getText() + " ";
-};
-
-
-// Visit a parse tree produced by NuSMVParser#plHolder.
-LTLAnalyzer.prototype.visitPlHolder = function(ctx) {
-  return ctx.getText() + " ";
-};
-
-
-// Visit a parse tree produced by NuSMVParser#fmpl.
-LTLAnalyzer.prototype.visitFmpl = function(ctx) {
+  };
+  
+  
+  // Visit a parse tree produced by NuSMVParser#durPlHolders.
+  LTLAnalyzer.prototype.visitDurPlHolders = function(ctx) {
     return ctx.getText() + " ";
-};
-
-
-// Visit a parse tree produced by NuSMVParser#lmpl.
-LTLAnalyzer.prototype.visitLmpl = function(ctx) {
-    return ctx.getText() + " ";
-};
-
-
-// Visit a parse tree produced by NuSMVParser#timingLessOrEqual.
-LTLAnalyzer.prototype.visitTimingLessOrEqual = function(ctx) {
-    return ctx.getText() + " ";
-};
-
-
-// Visit a parse tree produced by NuSMVParser#timingLess.
-LTLAnalyzer.prototype.visitTimingLess = function(ctx) {
-    return ctx.getText() + " ";
-};
-
-
-// Visit a parse tree produced by NuSMVParser#timingLessOrEqualPlusOne.
-LTLAnalyzer.prototype.visitTimingLessOrEqualPlusOne = function(ctx) {
-    return ctx.getText() + " ";
-};
-
-
-// Visit a parse tree produced by NuSMVParser#timingLessPlusOne.
-LTLAnalyzer.prototype.visitTimingLessPlusOne = function(ctx) {
-    return ctx.getText() + " ";
-};
-
-
-// Visit a parse tree produced by NuSMVParser#proposition.
-NuSMVVisitor.prototype.visitProposition = function(ctx) {
+  };
+  
+  
+  // Visit a parse tree produced by NuSMVParser#proposition.
+  LTLAnalyzer.prototype.visitProposition = function(ctx) {
     let atomic = ctx.getText();
     if (this.atomics.indexOf(atomic) === -1) {
         this.atomics.push(atomic);
     }
     return atomic + " ";
-};
+  };
+  
+  
+  // Visit a parse tree produced by NuSMVParser#simpleExpr.
+  LTLAnalyzer.prototype.visitSimpleExpr = function(ctx) {
+    return this.visitSubExpr(ctx);
+  };
+  
+  
+  // Visit a parse tree produced by NuSMVParser#binaryBoundedPastOp.
+  LTLAnalyzer.prototype.visitBinaryBoundedPastOp = function(ctx) {
+    return this.visitSubExpr(ctx);
+  };
+  
+  
+  // Visit a parse tree produced by NuSMVParser#binaryBoundedFutureOp.
+  LTLAnalyzer.prototype.visitBinaryBoundedFutureOp = function(ctx) {
+    return this.visitSubExpr(ctx);
+  };
+  
+  
+  // Visit a parse tree produced by NuSMVParser#timedBinarySaltPastOp.
+  LTLAnalyzer.prototype.visitTimedBinarySaltPastOp = function(ctx) {
+    return this.visitSubExpr(ctx);
+  };
+  
+  
+  // Visit a parse tree produced by NuSMVParser#binaryPastOp.
+  LTLAnalyzer.prototype.visitBinaryPastOp = function(ctx) {
+    return this.visitSubExpr(ctx);
+  };
+  
+  
+  // Visit a parse tree produced by NuSMVParser#unaryPastOp.
+  LTLAnalyzer.prototype.visitUnaryPastOp = function(ctx) {
+    return this.visitSubExpr(ctx);
+  };
+  
+  
+  // Visit a parse tree produced by NuSMVParser#unaryBoundedPastOp.
+  LTLAnalyzer.prototype.visitUnaryBoundedPastOp = function(ctx) {
+    return this.visitSubExpr(ctx);
+  };
+  
+  
+  // Visit a parse tree produced by NuSMVParser#timedUnarySaltFutureOp.
+  LTLAnalyzer.prototype.visitTimedUnarySaltFutureOp = function(ctx) {
+    return this.visitSubExpr(ctx);
+  };
+  
+  
+  // Visit a parse tree produced by NuSMVParser#simpleltl.
+  LTLAnalyzer.prototype.visitSimpleltl = function(ctx) {
+    return this.visitSubExpr(ctx);
+  };
+  
+  
+  // Visit a parse tree produced by NuSMVParser#timedUnarySaltPastOp.
+  LTLAnalyzer.prototype.visitTimedUnarySaltPastOp = function(ctx) {
+    return this.visitSubExpr(ctx);
+  };
+  
+  
+  // Visit a parse tree produced by NuSMVParser#binaryFutureOp.
+  LTLAnalyzer.prototype.visitBinaryFutureOp = function(ctx) {
+    return this.visitSubExpr(ctx);
+  };
+  
+  
+  // Visit a parse tree produced by NuSMVParser#unaryBoundedFutureOp.
+  LTLAnalyzer.prototype.visitUnaryBoundedFutureOp = function(ctx) {
+    return this.visitSubExpr(ctx);
+  };
+  
+  
+  // Visit a parse tree produced by NuSMVParser#timedBinarySaltFutureOp.
+  LTLAnalyzer.prototype.visitTimedBinarySaltFutureOp = function(ctx) {
+    return this.visitSubExpr(ctx);
+  };
+  
+  
+  // Visit a parse tree produced by NuSMVParser#unaryFutureOp.
+  LTLAnalyzer.prototype.visitUnaryFutureOp = function(ctx) {
+    return this.visitSubExpr(ctx);
+  };
+  
+  
+  // Visit a parse tree produced by NuSMVParser#pastTimedUnaryOp.
+  LTLAnalyzer.prototype.visitPastTimedUnaryOp = function(ctx) {
+    return ctx.getText() + " ";
+  };
+  
+  
+  // Visit a parse tree produced by NuSMVParser#pastUnaryOp.
+  LTLAnalyzer.prototype.visitPastUnaryOp = function(ctx) {
+    return ctx.getText() + " ";
+  };
+  
+  
+  // Visit a parse tree produced by NuSMVParser#pastBinaryOp.
+  LTLAnalyzer.prototype.visitPastBinaryOp = function(ctx) {
+    return ctx.getText() + " ";
+  };
+  
+  
+  // Visit a parse tree produced by NuSMVParser#futureTimedUnaryOp.
+  LTLAnalyzer.prototype.visitFutureTimedUnaryOp = function(ctx) {
+    return ctx.getText() + " ";
+  };
+  
+  
+  // Visit a parse tree produced by NuSMVParser#futureUnaryOp.
+  LTLAnalyzer.prototype.visitFutureUnaryOp = function(ctx) {
+    return ctx.getText() + " ";
+  };
+  
+  
+  // Visit a parse tree produced by NuSMVParser#futureBinaryOp.
+  LTLAnalyzer.prototype.visitFutureBinaryOp = function(ctx) {
+    return ctx.getText() + " ";
+  };
+  
+  
+  // Visit a parse tree produced by NuSMVParser#comparisonOp.
+  LTLAnalyzer.prototype.visitComparisonOp = function(ctx) {
+    return ctx.getText() + " ";
+  };
+  
+  
+  // Visit a parse tree produced by NuSMVParser#bound.
+  LTLAnalyzer.prototype.visitBound = function(ctx) {
+    return ctx.getText() + " ";
+  };
+  
+  
+  // Visit a parse tree produced by NuSMVParser#saltBound.
+  LTLAnalyzer.prototype.visitSaltBound = function(ctx) {
+    return ctx.getText() + " ";
+  };
+  
+  
+  // Visit a parse tree produced by NuSMVParser#lp.
+  LTLAnalyzer.prototype.visitLp = function(ctx) {
+    return ctx.getText() + " ";
+  };
+  
+  
+  // Visit a parse tree produced by NuSMVParser#rp.
+  LTLAnalyzer.prototype.visitRp = function(ctx) {
+    return ctx.getText() + " ";
+  };
+  
+  
+  // Visit a parse tree produced by NuSMVParser#not.
+  LTLAnalyzer.prototype.visitNot = function(ctx) {
+    return ctx.getText() + " ";
+  };
+  
+  
+  // Visit a parse tree produced by NuSMVParser#and.
+  LTLAnalyzer.prototype.visitAnd = function(ctx) {
+    return ctx.getText() + " ";
+  };
+  
+  
+  // Visit a parse tree produced by NuSMVParser#or.
+  LTLAnalyzer.prototype.visitOr = function(ctx) {
+    return ctx.getText() + " ";
+  };
+  
+  
+  // Visit a parse tree produced by NuSMVParser#xor.
+  LTLAnalyzer.prototype.visitXor = function(ctx) {
+    return ctx.getText() + " ";
+  };
+  
+  
+  // Visit a parse tree produced by NuSMVParser#implies.
+  LTLAnalyzer.prototype.visitImplies = function(ctx) {
+    return ctx.getText() + " ";
+  };
+  
+  
+  // Visit a parse tree produced by NuSMVParser#equiv.
+  LTLAnalyzer.prototype.visitEquiv = function(ctx) {
+    return ctx.getText() + " ";
+  };
+  
+  
+  // Visit a parse tree produced by NuSMVParser#f.
+  LTLAnalyzer.prototype.visitF = function(ctx) {
+    return ctx.getText() + " ";
+  };
+  
+  
+  // Visit a parse tree produced by NuSMVParser#t.
+  LTLAnalyzer.prototype.visitT = function(ctx) {
+    return ctx.getText() + " ";
+  };
 
-// Visit a parse tree produced by NuSMVParser#simpleExpr.
-LTLAnalyzer.prototype.visitSimpleExpr = function(ctx) {
+  LTLAnalyzer.prototype.visitSubExpr = function(ctx) {
     let result = '';
     this.visitChildren(ctx).forEach(child => {
         if (child != null && child != undefined) {
             result += child;
         }
     });
-    let r = result.trim();
-    if (this.atomics.indexOf(r) === -1 &&
-        (r[0] === '(' && r[r.length-1] === ')')) {
-        let subExpression = r;
-        if (this.subexpressions.indexOf(subExpression) === -1) {
-            this.subexpressions.push(subExpression);
-        }
+
+    if (isSubExpression(ctx)) {
+      let s = result.trim();
+      if (this.atomics.indexOf(s) === -1 && 
+          this.subexpressions.indexOf(s) === -1) {
+        this.subexpressions.push(s);
+      }
     }
+
+
     return result;
-};
-
-
-// Visit a parse tree produced by NuSMVParser#simpleltl.
-LTLAnalyzer.prototype.visitSimpleltl = function(ctx) {
-    let result = '';
-    this.visitChildren(ctx).forEach(child => {
-        if (child != null && child != undefined) {
-            result += child;
-        }
-    });
-    let r = result.trim();
-    if (this.atomics.indexOf(r) === -1 &&
-        (r[0] === '(' && r[r.length-1] === ')')) {
-        let subExpression = r;
-        if (this.subexpressions.indexOf(subExpression) === -1) {
-            this.subexpressions.push(subExpression);
-        }
-    }
-    return result;
-};
-
-
-// Visit a parse tree produced by NuSMVParser#timingExpr.
-LTLAnalyzer.prototype.visitTimingExpr = function(ctx) {
-    let result = '';
-    this.visitChildren(ctx).forEach(child => {
-        if (child != null && child != undefined) {
-            result += child;
-        }
-    });
-    let r = result.trim();
-    if (this.atomics.indexOf(r) === -1 &&
-        (r[0] === '(' && r[r.length-1] === ')')) {
-        let subExpression = r;
-        if (this.subexpressions.indexOf(subExpression) === -1) {
-            this.subexpressions.push(subExpression);
-        }
-    }
-    return result;
-};
-
-
-// Visit a parse tree produced by NuSMVParser#binaryPastOp.
-LTLAnalyzer.prototype.visitBinaryPastOp = function(ctx) {
-    let result = '';
-    this.visitChildren(ctx).forEach(child => {
-        if (child != null && child != undefined) {
-            result += child;
-        }
-    });
-    let r = result.trim();
-    if (this.atomics.indexOf(r) === -1 &&
-        (r[0] === '(' && r[r.length-1] === ')')) {
-        let subExpression = r;
-        if (this.subexpressions.indexOf(subExpression) === -1) {
-            this.subexpressions.push(subExpression);
-        }
-    }
-    return result;
-};
-
-
-// Visit a parse tree produced by NuSMVParser#binaryFutureOp.
-LTLAnalyzer.prototype.visitBinaryFutureOp = function(ctx) {
-    let result = '';
-    this.visitChildren(ctx).forEach(child => {
-        if (child != null && child != undefined) {
-            result += child;
-        }
-    });
-    let r = result.trim();
-    if (this.atomics.indexOf(r) === -1 &&
-        (r[0] === '(' && r[r.length-1] === ')')) {
-        let subExpression = r;
-        if (this.subexpressions.indexOf(subExpression) === -1) {
-            this.subexpressions.push(subExpression);
-        }
-    }
-    return result;
-};
-
-
-// Visit a parse tree produced by NuSMVParser#unaryPastOp.
-LTLAnalyzer.prototype.visitUnaryPastOp = function(ctx) {
-    let result = '';
-    this.visitChildren(ctx).forEach(child => {
-        if (child != null && child != undefined) {
-            result += child;
-        }
-    });
-    let r = result.trim();
-    if (this.atomics.indexOf(r) === -1 &&
-        (r[0] === '(' && r[r.length-1] === ')')) {
-        let subExpression = r;
-        if (this.subexpressions.indexOf(subExpression) === -1) {
-            this.subexpressions.push(subExpression);
-        }
-    }
-    return result;
-};
-
-
-// Visit a parse tree produced by NuSMVParser#unaryFutureOp.
-LTLAnalyzer.prototype.visitUnaryFutureOp = function(ctx) {
-    let result = '';
-    this.visitChildren(ctx).forEach(child => {
-        if (child != null && child != undefined) {
-            result += child;
-        }
-    });
-    let r = result.trim();
-    if (this.atomics.indexOf(r) === -1 &&
-        (r[0] === '(' && r[r.length-1] === ')')) {
-        let subExpression = r;
-        if (this.subexpressions.indexOf(subExpression) === -1) {
-            this.subexpressions.push(subExpression);
-        }
-    }
-    return result;
-};
-
-// Visit a parse tree produced by NuSMVParser#unaryBoundedPastOp.
-NuSMVVisitor.prototype.visitUnaryBoundedPastOp = function(ctx) {
-    let result = '';
-    this.visitChildren(ctx).forEach(child => {
-        if (child != null && child != undefined) {
-            result += child;
-        }
-    });
-    let r = result.trim();
-    if (this.atomics.indexOf(r) === -1 &&
-        (r[0] === '(' && r[r.length-1] === ')')) {
-        let subExpression = r;
-        if (this.subexpressions.indexOf(subExpression) === -1) {
-            this.subexpressions.push(subExpression);
-        }
-    }
-    return result;
-};
-
-// Visit a parse tree produced by NuSMVParser#unaryBoundedFutureOp.
-NuSMVVisitor.prototype.visitUnaryBoundedFutureOp = function(ctx) {
-    let result = '';
-    this.visitChildren(ctx).forEach(child => {
-        if (child != null && child != undefined) {
-            result += child;
-        }
-    });
-    let r = result.trim();
-    if (this.atomics.indexOf(r) === -1 &&
-        (r[0] === '(' && r[r.length-1] === ')')) {
-        let subExpression = r;
-        if (this.subexpressions.indexOf(subExpression) === -1) {
-            this.subexpressions.push(subExpression);
-        }
-    }
-    return result;
-};
-
-// Visit a parse tree produced by NuSMVParser#bound.
-NuSMVVisitor.prototype.visitBound = function(ctx) {
-    return ctx.getText() + " ";
-};
-
-// Visit a parse tree produced by NuSMVParser#pastUnaryOp.
-LTLAnalyzer.prototype.visitPastUnaryOp = function(ctx) {
-    return ctx.getText() + " ";
-};
-
-
-// Visit a parse tree produced by NuSMVParser#pastBinaryOp.
-LTLAnalyzer.prototype.visitPastBinaryOp = function(ctx) {
-    return ctx.getText() + " ";
-};
-
-
-// Visit a parse tree produced by NuSMVParser#futureUnaryOp.
-LTLAnalyzer.prototype.visitFutureUnaryOp = function(ctx) {
-    return ctx.getText() + " ";
-};
-
-
-// Visit a parse tree produced by NuSMVParser#futureBinaryOp.
-LTLAnalyzer.prototype.visitFutureBinaryOp = function(ctx) {
-    return ctx.getText() + " ";
-};
-
-
-// Visit a parse tree produced by NuSMVParser#lp.
-LTLAnalyzer.prototype.visitLp = function(ctx) {
-    return ctx.getText() + " ";
-};
-
-
-// Visit a parse tree produced by NuSMVParser#rp.
-LTLAnalyzer.prototype.visitRp = function(ctx) {
-    return ctx.getText() + " ";
-};
-
-
-// Visit a parse tree produced by NuSMVParser#not.
-LTLAnalyzer.prototype.visitNot = function(ctx) {
-    return ctx.getText() + " ";
-};
-
-
-// Visit a parse tree produced by NuSMVParser#and.
-LTLAnalyzer.prototype.visitAnd = function(ctx) {
-    return ctx.getText() + " ";
-};
-
-
-// Visit a parse tree produced by NuSMVParser#or.
-LTLAnalyzer.prototype.visitOr = function(ctx) {
-    return ctx.getText() + " ";
-};
-
-
-// Visit a parse tree produced by NuSMVParser#xor.
-LTLAnalyzer.prototype.visitXor = function(ctx) {
-    return ctx.getText() + " ";
-};
-
-
-// Visit a parse tree produced by NuSMVParser#implies.
-LTLAnalyzer.prototype.visitImplies = function(ctx) {
-    return " " + ctx.getText() + " ";
-};
-
-
-// Visit a parse tree produced by NuSMVParser#equiv.
-LTLAnalyzer.prototype.visitEquiv = function(ctx) {
-    return ctx.getText() + " ";
-};
-
-
-// Visit a parse tree produced by NuSMVParser#f.
-LTLAnalyzer.prototype.visitF = function(ctx) {
-    return ctx.getText() + " ";
-};
-
-
-// Visit a parse tree produced by NuSMVParser#t.
-LTLAnalyzer.prototype.visitT = function(ctx) {
-    return ctx.getText() + " ";
-};
+  }
 
 exports.LTLAnalyzer = LTLAnalyzer;
