@@ -190,9 +190,11 @@ function findStop(scopeInterval,stopIntervals) {
 	}
     }
     // If there wasn't a stop in the scope, the response must be over the whole scope
-    if (stopPoint === -1) stopPoint = scopeInterval.right;
+    if (stopPoint === -1) {
+	right = scopeInterval.right;
+    } else { right = stopPoint; }
     return {point: stopPoint,
-	    scope: intervalLogic.createInterval(scopeInterval.left,stopPoint)};
+	    scope: intervalLogic.createInterval(scopeInterval.left,right)}
 }
 
 // immediately when unconditional

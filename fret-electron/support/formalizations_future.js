@@ -174,8 +174,13 @@ function notAfterTiming(property, duration, endsScope='ENDSCOPE') {
 		      )
 }
 
+// !((!(stopcond | endScope)) U ((!property) & (!(stopcond | endScope))))
 function untilTiming(property,stopcond,endsScope='ENDSCOPE') {
-    return `${property} until exclusive weak (${stopcond} | ${endsScope})`
+//    return `${property} until exclusive weak (${stopcond} | ${endsScope})`
+//    return `${property} until inclusive weak ((next ${stopcond}) | ${endsScope})`
+  return `(${property} until exclusive weak (${stopcond}))` +
+        ` or (${property} until inclusive weak (${endsScope}))`
+
 }
 
 function notUntilTiming(property,stopcond) {
@@ -227,7 +232,8 @@ exports.getFormalization = (key, negate, leftEnd, rightEnd, options) => {
 function addScope (scope, main_formula, left, right, options) {
   // endsScope may actually be LAST but only with after, null, and onlyBefore
   // so it will never occur in the calls to the actual functions below
-  var endsScope = ((options.in == 'afterUntil') && !(right=='LAST'))?`(${right} or LAST)`:right
+    var endsScope = ((options.in == 'afterUntil') && !(right=='LAST')) ?
+	`(${right} or LAST)` : right;
   var formula = main_formula.replace(/ENDSCOPE/g, endsScope)
 
   var qualifier = (options.in == 'afterUntil') ? `weak` : `optional`
