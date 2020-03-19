@@ -1,7 +1,7 @@
 // *****************************************************************************
 // Notices:
 // 
-// Copyright © 2019 United States Government as represented by the Administrator
+// Copyright ï¿½ 2019 United States Government as represented by the Administrator
 // of the National Aeronautics and Space Administration.  All Rights Reserved.
 // 
 // Disclaimers
@@ -232,13 +232,24 @@ class Instructions extends React.Component {
     if (type === 'nasa'){
       /* TODO: Update, when replaceTemplateVarsWithArgs function gets updated
       to yield plain formulas instead of html beatified formulas. */
-      let expression = this.props.formalization.semantics.ftExpanded
+      let ftExpression = this.props.formalization.semantics.ftExpanded
                           .replace(/<b>/g, "")
                           .replace(/<i>/g, "")
                           .replace(/<\/b>/g, "")
                           .replace(/<\/i>/g, "")
-                          .replace(/\[<=(\d+)\s*\w+\s*\]/g, "[0, $1]")
-                          .replace(/\[<(\d+)\s*\w+\s*\]/g, (str, p1, offset, s) => (`[0, ${p1-1}]`));
+                          .replace(/(\d+)\+1/g, (str, p1, offset, s) => (`${parseInt(p1)+1}`))
+                          .replace(/\[<=(\d+)\]/g, "[0, $1]")
+                          .replace(/\[=(\d+)\]/g, "[$1, $1]")
+                          .replace(/\[<(\d+)\]/g, (str, p1, offset, s) => (`[0, ${p1-1}]`));
+      let ptExpression = this.props.formalization.semantics.ptExpanded
+                          .replace(/<b>/g, "")
+                          .replace(/<i>/g, "")
+                          .replace(/<\/b>/g, "")
+                          .replace(/<\/i>/g, "")
+                          .replace(/(\d+)\+1/g, (str, p1, offset, s) => (`${parseInt(p1)+1}`))
+                          .replace(/\[<=(\d+)\]/g, "[0, $1]")
+                          .replace(/\[=(\d+)\]/g, "[$1, $1]")
+                          .replace(/\[<(\d+)\]/g, (str, p1, offset, s) => (`[0, ${p1-1}]`));
 
       var ltlsimLauncher = (this.LTLSimStatus.ltlsim && this.LTLSimStatus.nusmv) ?
         (<div>
@@ -250,8 +261,10 @@ class Instructions extends React.Component {
             <LTLSimDialog
               open={this.state.LTLSimDialogOpen}
               id="REQ"
-              expression={expression}
-              onClose={this.closeLTLSimDialog}/>
+              ftExpression={ftExpression}
+              ptExpression={ptExpression}
+              onClose={this.closeLTLSimDialog}
+            />
           </div>) :
         (<Tooltip title={this.LTLSimStatus.ltlsim ?
           "Can't find a running NuSMV installation. Make sure to install NuSMV and add it to the PATH envinronment variable." :
