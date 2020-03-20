@@ -1,7 +1,7 @@
 // *****************************************************************************
 // Notices:
 // 
-// Copyright © 2019 United States Government as represented by the Administrator
+// Copyright ï¿½ 2019 United States Government as represented by the Administrator
 // of the National Aeronautics and Space Administration.  All Rights Reserved.
 // 
 // Disclaimers
@@ -31,8 +31,8 @@
 // AGREEMENT.
 // *****************************************************************************
 import PropTypes from 'prop-types';
-import { Editor } from 'slate-react'
-import { Value } from 'slate'
+import { createEditor, Node } from 'slate';
+import { Slate, Editable, withReact } from 'slate-react';
 import initialValue from './slateConfigs2.json'
 
 import React from 'react'
@@ -117,6 +117,20 @@ var dbChangeListener = undefined;
 
 class SlateEditor2 extends React.Component {
 
+  constructor(props) {
+    super(props)
+    this.state = {
+      value: initialValue,
+      inputText: ' ',
+      fieldColors: {}
+    }  
+
+    this.editor = withFields(withReact(createEditor()));
+
+    this.handleEditorValueChange = this.handleEditorValueChange.bind(this);
+    this.renderEditor = this.renderEditor.bind(this);
+  }
+
   componentWillUnmount() {
     this.mounted = false
     dbChangeListener.cancel()
@@ -137,11 +151,11 @@ class SlateEditor2 extends React.Component {
       if (this.props.inputFields) {
         const inputFields = this.props.inputFields
         let clonedValue = JSON.parse(JSON.stringify(initialValue))
-        clonedValue.document.nodes[0].nodes[0].leaves[0].text = inputFields.fulltext
-        this.setContentInEditor(Value.fromJSON(clonedValue))
+        clonedValue[0].children[0].text = inputFields.fulltext
+        this.setContentInEditor(clonedValue)
       } else {
         this.setState({
-          value: Value.fromJSON(initialValue),
+          value: initialValue,
         })
       }
     }).catch((err) => {
@@ -153,11 +167,11 @@ class SlateEditor2 extends React.Component {
       include_docs: true
     }).on('change', (change) => {
       if (change.id == 'FRET_PROPS') {
-        const updatedValue = this.state.value.toJSON()
+        const updatedValue = this.state.value
         if (this.mounted) {
           this.setState({
             fieldColors: change.doc.fieldColors,
-            value: Value.fromJSON(updatedValue)
+            value: updatedValue
           })
         }
       }
@@ -175,18 +189,7 @@ class SlateEditor2 extends React.Component {
       }
     )
   }
-  /**
-   * Deserialize the initial editor value.
-   *
-   * @type {Object}
-   */
-
-  state = {
-    value: Value.fromJSON(initialValue),
-    inputText: '',
-    fieldColors: {}
-  }
-
+  
   componentWillUnmount() {
     this.props.onRef(undefined)
   }
@@ -207,19 +210,25 @@ class SlateEditor2 extends React.Component {
    */
 
   setContentInEditor = (value) => {
-    const result = FretSemantics.compilePartialText(value.document.text)
+    console.log('setContentInEditor:')
+    console.log(value)
+    const inputText = editor2Text(value);
+    const result = FretSemantics.compilePartialText(inputText)
     this.setState({
       value,
-      inputText: value.document.text,
+      inputText,
       errors: result.parseErrors,
       semantics: result.collectedSemantics
     })
   }
 
-  onChange = ({ value }) => {
-    if (this.state.inputText != value.document.text) {
-      this.setContentInEditor(value)
-    }
+  handleEditorValueChange = (value) => {
+    console.log('onChange:')
+    console.log(value)
+    const editorText = editor2Text(value)
+    // if (this.state.inputText != editorText) {
+    //   this.setContentInEditor(value)
+    // }
     this.setState({
       value,
     })
@@ -231,7 +240,7 @@ class SlateEditor2 extends React.Component {
    */
 
    getTextInEditor = () => {
-     return this.state.value.document.text
+     return editor2Text(this.state.value);
    }
 
    enableSemantics = () => {
@@ -449,13 +458,14 @@ class SlateEditor2 extends React.Component {
 
     return (
     <div className="editor" style={{width: 750, height: 150}}>
-      <Editor
-        value={this.state.value}
-        onChange={this.onChange}
-        decorateNode={this.decorateNode}
-        renderMark={this.renderMark}
-        style={{border: 'solid 1px gray', padding: '10px', height: 100}}
-      />
+      <div style={{border: 'solid 1px gray', padding: '10px', height: 100}}>
+        <Slate 
+          editor={this.editor} 
+          value={this.state.value}
+          onChange={(value)=>{console.log(value); console.log(this.editor); this.setState({value})}}>
+          {/* <Editable /> */}
+        </Slate>
+      </div>
       <GridList cols={3} cellHeight='auto' spacing={0}>
         <GridListTile cols={2}>
         </GridListTile>
@@ -467,9 +477,151 @@ class SlateEditor2 extends React.Component {
           </div>
         </GridListTile>
       </GridList>
-      </div>
+    </div>
     )
   }
+}
+
+function editor2Text(editorValue) {
+  return Node.string({children: editorValue})
+}
+
+const withFields = editor => {
+  const { isInline, 
+          deleteBackward, 
+          deleteForward, 
+          deleteFragment, 
+          normalizeNode, 
+          insertText } = editor;
+
+  editor.instantiate = true;
+  editor.fieldsEnabled = true;
+  // editor.onChange = (value) => {console.log(value)};
+
+  editor.isInline = element => {
+    return (element.type === 'field-element') && editor.fieldsEnabled ? true : isInline(element)
+  }
+
+  // editor.normalizeNode = entry => {
+  //   if (editor.fieldsEnabled) {
+  //     let [node, path] = entry;
+  //     if (node.type === 'paragraph') {
+  //       for(const [child, childPath] of Node.children(editor, path)) {
+  //         if (Text.isText(child) && child.text.length === 0) {
+  //           Transforms.removeNodes(editor, {at: childPath})
+  //         }
+  //       }
+  //       return
+  //     }
+  //   }
+  //   normalizeNode(entry)
+  // }
+
+  // editor.insertText = text => {
+  //   if (editor.fieldsEnabled) {
+  //     if (!isMany(editor)) {
+  //       let field = isField(editor);
+  //       let start = Range.start(editor.selection);
+  //       let end = Range.end(editor.selection);
+  //       let leaf = getFirstLeaf(editor);
+  //       if (field) {
+  //         if (start.offset >= 1 && end.offset < leaf.text.length) {
+  //           insertText(text)
+  //         }
+  //       } else if (!editor.instantiate) {
+  //         insertText(text)
+  //       }
+  //     }
+  //   } else {
+  //     insertText(text)
+  //   }
+  // }
+
+  editor.insertBreak = () => {}
+
+  // editor.deleteBackward = () => {
+  //   if (editor.fieldsEnabled) {
+  //     if (!isMany(editor)) {
+  //       let field = isField(editor);
+  //       let left = getLeftSibling(editor, field);
+  //       let start = Range.start(editor.selection);
+  //       let leaf = getFirstLeaf(editor);
+  //       if (start.offset === 0 && left && left.type === 'field-element') {
+  //         return
+  //       }
+  //       if (field) {
+  //         if (start.offset !== 1 && start.offset < leaf.text.length) {
+  //           deleteBackward()
+  //         }
+  //       } else if (!editor.instantiate) {
+  //         deleteBackward()
+  //       }
+  //     }
+  //   } else {
+  //     deleteBackward();
+  //   }
+  // }
+
+  // editor.deleteForward = () => {
+  //   if (editor.fieldsEnabled) {
+  //     if (!isMany(editor)) {
+  //       let field = isField(editor);
+  //       let right = getRightSibling(editor, field);
+  //       let end = Range.end(editor.selection);
+  //       let leaf = getFirstLeaf(editor);
+  //       if (end.offset === leaf.text.length && right && right.type === 'field-element') {
+  //         return
+  //       }
+  //       if (field) {
+  //         if (end.offset !== 0 && end.offset < leaf.text.length-1) {
+  //           deleteForward()
+  //         } 
+  //       } else if (!editor.instantiate) {
+  //         deleteForward()
+  //       }
+  //     }
+  //   } else {
+  //     deleteForward()
+  //   }
+  // }
+
+  // editor.deleteFragment = () => {  
+  //   if (editor.fieldsEnabled) {
+  //     if (!isMany(editor)) {
+  //       let field = isField(editor);
+  //       let start = Range.start(editor.selection);
+  //       let end = Range.end(editor.selection);
+  //       let leaf = getFirstLeaf(editor);
+  //       if (field && start.offset !== 0 && end.offset < leaf.text.length) {
+  //         deleteFragment()
+  //       } else if (!editor.instantiate) {
+  //         deleteFragment()
+  //       }
+  //     } 
+  //   } else {
+  //     deleteFragment();
+  //   }
+  // } 
+  return editor;
+}
+
+function isMany(editor) {
+  const selection = editor.selection;
+  const edges = selection && Range.edges(selection);
+  return edges && !isEqualPath(edges[0], edges[1]);
+}
+
+function isEqualPath(start, end) {
+  if (!start || !end) return false;
+  let result = true;
+  let i;
+  for(i = 0; i < start.path.length; i++) {
+    if (start.path[i] !== end.path[i]) {
+      result = false;
+      break;
+    }
+  }
+  return result;
 }
 
 SlateEditor2.propTypes = {

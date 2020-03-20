@@ -17,7 +17,8 @@
       "plugins": [
         "transform-class-properties",
         "transform-es2015-classes",
-        "flow-react-proptypes"
+        "flow-react-proptypes",
+        "transform-object-rest-spread"
       ]
     }
   }

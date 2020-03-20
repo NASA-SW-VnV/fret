@@ -29,7 +29,7 @@ export default merge.smart(baseConfig, {
     rules: [
       {
         test: /\.jsx?$/,
-        exclude: /node_modules(\/|\\)(?!slate)/,
+        exclude: /node_modules(\/|\\)(?!slate-react)/,
         use: {
           loader: 'babel-loader',
           options: {
