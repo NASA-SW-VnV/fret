@@ -40,6 +40,7 @@ CondLength : 2,
 SCLength : 3,
 N_RANGE : 3,
 
+verboseOracle: false,
 verboseSemanticsTest : false,
 reportAllTestCases : false,
 // if false: only dump discrepancies
@@ -99,7 +100,7 @@ conditionSubs : {
   '\xa0 -h, --help:\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0 Print usage info\n'+
   '\xa0 -t, --tool:\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0 Specify tool (SMV or CoCoSpec)\n'+
   '\xa0 -r, --range:\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0 Specify range (simple or extended)\n'+
-  '\xa0 -i, --timing:\xa0\xa0\xa0\xa0\xa0\xa0\xa0 Specify timing (nonMetricTiming or metricTiming or mostTiming or fullTiming)\n'+
+  '\xa0 -i, --timing:\xa0\xa0\xa0\xa0\xa0\xa0\xa0 Specify timing (nonMetricTiming or metricTiming or mostTiming or fullTiming or untilTiming)\n'+
 	'\xa0 -c, --condition:\xa0\xa0\xa0\xa0 Specify condition (fullCondition or nullCondition)\n'+
 	'\xa0 -s, --strategy:\xa0\xa0\xa0\xa0\xa0 Specify testing strategy (classic or settings or random)\n' +
 	'\xa0 -f, --settingsFile:\xa0 The settings filename to be used with strategy settings\n' +

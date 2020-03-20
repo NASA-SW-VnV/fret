@@ -32,6 +32,7 @@
 // *****************************************************************************
 const fretSupportPath = "../../support/";
 const intervalLogic = require(fretSupportPath + 'intervalLogic');
+const testOptions = require('./testingOptions');
 
 exports.applyConstraints =
     (scope, condition, timing, response,
@@ -48,14 +49,21 @@ exports.applyConstraints =
     timingFunction = timingFunction + 'Cond'
     //console.log("************  CHECK THIS OUT **************")
   }
-
+  if (testOptions.verboseOracle) {
+    console.log('KEY: ' + scope + ',' + condition + ',' + timing + ',' + response)
+    console.log('modeIntervals: ' + JSON.stringify(modeIntervals))
+    console.log('active intervals: ' + JSON.stringify(modesArray))
+  }
   var resultArray = [];
-  // console.log('1. ' + JSON.stringify(modeIntervals))
-  // console.log('2. ' + JSON.stringify(modesArray))
+  
   for (let scopeInterval of modesArray) {
       if (condition == 'regular') {
 	  for (let conditionInterval of conditionIntervals) {
 	      let trigger = findConditionTrigger(scopeInterval, conditionInterval);
+	      if (testOptions.verboseOracle)
+              console.log('TRIGGER: scopeInterval: ' + JSON.stringify(scopeInterval)
+			  + ' conditionInterval: ' + JSON.stringify(conditionInterval)
+			  + ' trigger: ' + JSON.stringify(trigger));
 	      if (trigger.point >=0) {
 		  var res = this.checkTimings(n, scope, scopeInterval, trigger,
 					      stopCondIntervals,responseIntervals,
@@ -96,7 +104,7 @@ case 'forCond': constraints = forDurationCond(responseIntervals, trigger, durati
 case 'after': constraints = after(scopeInterval, responseIntervals, duration, traceInterval, isNegated); break;
 case 'afterCond': constraints = afterCond(responseIntervals, trigger, duration, traceInterval, isNegated); break;
 case 'until': constraints = untilTiming(scopeInterval,stopCondIntervals,responseIntervals,isNegated); break;
-case 'untilCond' : constraints = untilTimingCond(scopeInterval,stopCondIntervals,responseIntervals,trigger,isNegated); break;
+case 'untilCond' : constraints = untilTimingCond(stopCondIntervals,responseIntervals,trigger,isNegated); break;
     
 default: { console.log('!! Unhandled functionCase ' + functionCase + 'in checkTimings');
 	   constraints = 'undefined'
@@ -192,7 +200,7 @@ function findStop(scopeInterval,stopIntervals) {
     // If there wasn't a stop in the scope, the response must be over the whole scope
     if (stopPoint === -1) {
 	right = scopeInterval.right;
-    } else { right = stopPoint; }
+    } else { right = stopPoint -1 ; }
     return {point: stopPoint,
 	    scope: intervalLogic.createInterval(scopeInterval.left,right)}
 }
@@ -319,13 +327,24 @@ function untilTiming(scopeInterval,stopCondIntervals,responseIntervals,negate) {
     // find leftmost stopCondInterval within scopeInterval after scopeInterval.left
     let stop = findStop(scopeInterval, stopCondIntervals)
 
+    if (testOptions.verboseOracle)
+    console.log('untilTiming: '
+		+ 'scopeInterval: ' + JSON.stringify(scopeInterval)
+		+ '; stopCondIntervals: ' + JSON.stringify(stopCondIntervals)
+		+ '; stop: ' + JSON.stringify(stop)
+		+ '; responseIntervals: ' + JSON.stringify(responseIntervals))
+
+
     // The stop happened immediately so we don't care? or it does satisfy it?
     if (stop.point === scopeInterval.left) return null;
 
     let p = intervalLogic.contains(responseIntervals,[stop.scope]);
+    if (testOptions.verboseOracle)
+    console.log('p: ' + JSON.stringify(p));
+              
     return (negate ? !p : p)
 }
 
-function untilTimingCond(scopeInterval,stopCondIntervals,responseIntervals,trigger,negate) {
+function untilTimingCond(stopCondIntervals,responseIntervals,trigger,negate) {
     return untilTiming(trigger.scope,stopCondIntervals,responseIntervals,negate);
 }
