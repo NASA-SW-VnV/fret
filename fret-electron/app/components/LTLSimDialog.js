@@ -77,16 +77,8 @@ class LTLSimDialog extends Component {
         let model = LTLSimController.init(traceLength);
         LTLSimController.addFormula(model, props.id, props.ftExpression);
 
-        if (LTLSimController.getAtomicKeys(model).includes("LAST")) {
-            let trace = new Array(LTLSimController.getTraceLength(model)).fill(0);
-            trace[trace.length-1] = 1; 
-            LTLSimController.setAtomicTrace(model, "LAST", trace);
-        }
-        if (LTLSimController.getAtomicKeys(model).includes("FTP")) {
-            let trace = new Array(LTLSimController.getTraceLength(model)).fill(0);
-            trace[0] = 1; 
-            LTLSimController.setAtomicTrace(model, "FTP", trace);
-        }
+        // Set the traces for "LAST" or "FTP" variables in the model, if any
+        setMarginVariableTraces(model);
 
         this.state = {
             model,
@@ -178,17 +170,11 @@ class LTLSimDialog extends Component {
             let {model} = prevState;
             const { id } = this.props;
             LTLSimController.setTraceLength(model, traceLength);
-
-            if (LTLSimController.getAtomicKeys(model).includes("LAST")) {
-                let trace = new Array(LTLSimController.getTraceLength(model)).fill(0);
-                trace[trace.length-1] = 1; 
-                LTLSimController.setAtomicTrace(model, "LAST", trace);
-            }
-            if (LTLSimController.getAtomicKeys(model).includes("FTP")) {
-                let trace = new Array(LTLSimController.getTraceLength(model)).fill(0);
-                trace[0] = 1; 
-                LTLSimController.setAtomicTrace(model, "FTP", trace);
-            }
+            
+            /* Set the traces for "LAST" or "FTP" variables in the model, if any 
+            (this needs to be done again when the tracelength changes, e.g. 
+            LAST = 0000000001, tracelength is changed to 4, LAST = 0001) */
+            setMarginVariableTraces(model);
 
             /* Set the formula value to unknown */
             LTLSimController.setFormulaValue(model, id, "", EFormulaStates.UNKNOWN);
@@ -352,6 +338,27 @@ class LTLSimDialog extends Component {
             }
     }
 }
+
+/**
+ * This function creates and sets the traces for the special variables "LAST" and "FTP"
+ * (first time point) procuced by FRETish formalization. For last, the trace is set to
+ * 00000...1 and for FTP the trace is set to 1000...0. The length of the trace is the 
+ * current tracelength of the LTLSIM model.
+ * 
+ * @param {LTLSimModel} model The model containing the variables to be modified 
+ */
+function setMarginVariableTraces(model) {
+    if (LTLSimController.getAtomicKeys(model).includes("FTP")) {
+        let trace = new Array(LTLSimController.getTraceLength(model)).fill(0);
+        trace[0] = 1; 
+        LTLSimController.setAtomicTrace(model, "FTP", trace);
+    }
+    if (LTLSimController.getAtomicKeys(model).includes("LAST")) {
+        let trace = new Array(LTLSimController.getTraceLength(model)).fill(0);
+        trace[trace.length-1] = 1; 
+        LTLSimController.setAtomicTrace(model, "LAST", trace);
+    }
+} 
 
 LTLSimDialog.propTypes = {
     classes: PropTypes.object.isRequired,

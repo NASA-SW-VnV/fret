@@ -32,8 +32,6 @@
 // *****************************************************************************
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
@@ -53,7 +51,7 @@ import ThumbDown from '@material-ui/icons/ThumbDown';
 import css from './Instructions.css';
 import Help from './Help';
 import ColorPicker from './ColorPicker';
-import LTLSimDialog from './LTLSimDialog';
+import LTLSimLauncher from './LTLSimLauncher';
 
 import {scopeInstruction, conditionInstruction, componentInstruction, timingInstruction, responseInstruction } from 'examples'
 
@@ -230,51 +228,15 @@ class Instructions extends React.Component {
     var notationPath = `../docs/_media/user-interface/examples/svgDiagrams/Notation.svg`;
 
     if (type === 'nasa'){
+      var ltlsimLauncher = <LTLSimLauncher 
+                            open={this.state.LTLSimDialogOpen}
+                            semantics={this.props.formalization.semantics}
+                            status={this.LTLSimStatus}
+                            onOpen={this.openLTLSimDialog}
+                            onClose={this.closeLTLSimDialog}
+                            />;
       /* TODO: Update, when replaceTemplateVarsWithArgs function gets updated
       to yield plain formulas instead of html beatified formulas. */
-      let ftExpression = this.props.formalization.semantics.ftExpanded
-                          .replace(/<b>/g, "")
-                          .replace(/<i>/g, "")
-                          .replace(/<\/b>/g, "")
-                          .replace(/<\/i>/g, "")
-                          .replace(/(\d+)\+1/g, (str, p1, offset, s) => (`${parseInt(p1)+1}`))
-                          .replace(/\[<=(\d+)\]/g, "[0, $1]")
-                          .replace(/\[=(\d+)\]/g, "[$1, $1]")
-                          .replace(/\[<(\d+)\]/g, (str, p1, offset, s) => (`[0, ${p1-1}]`));
-      let ptExpression = this.props.formalization.semantics.ptExpanded
-                          .replace(/<b>/g, "")
-                          .replace(/<i>/g, "")
-                          .replace(/<\/b>/g, "")
-                          .replace(/<\/i>/g, "")
-                          .replace(/(\d+)\+1/g, (str, p1, offset, s) => (`${parseInt(p1)+1}`))
-                          .replace(/\[<=(\d+)\]/g, "[0, $1]")
-                          .replace(/\[=(\d+)\]/g, "[$1, $1]")
-                          .replace(/\[<(\d+)\]/g, (str, p1, offset, s) => (`[0, ${p1-1}]`));
-
-      var ltlsimLauncher = (this.LTLSimStatus.ltlsim && this.LTLSimStatus.nusmv) ?
-        (<div>
-            <Tooltip title="Launch interactive simulation" >
-              <Button color="secondary" onClick={this.openLTLSimDialog}>
-                Simulate
-              </Button>
-            </Tooltip>
-            <LTLSimDialog
-              open={this.state.LTLSimDialogOpen}
-              id="REQ"
-              ftExpression={ftExpression}
-              ptExpression={ptExpression}
-              onClose={this.closeLTLSimDialog}
-            />
-          </div>) :
-        (<Tooltip title={this.LTLSimStatus.ltlsim ?
-          "Can't find a running NuSMV installation. Make sure to install NuSMV and add it to the PATH envinronment variable." :
-          "Can't find a running ltlsim installation. Make sure to install ltlsim-core and NuSMV as described in the installation instructions."}>
-          <div>
-            <Button color="secondary" onClick={this.openLTLSimDialog} disabled>
-              Simulate
-            </Button>
-            </div>
-         </Tooltip>);
     }
 
     if ((ft !== constants.unhandled_semantics) && (ft !== constants.nonsense_semantics) && (ft !== constants.undefined_semantics) && (diagram !== constants.undefined_svg))
