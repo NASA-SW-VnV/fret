@@ -241,10 +241,9 @@
     "recharts": "^1.4.1",
     "redux": "^3.7.2",
     "redux-thunk": "^2.2.0",
-    "slate": "^0.33.4",
-    "slate-react": "^0.12.4",
-    "source-map-support": "^0.5.3",
-    "xml-js": "^1.6.11"
+    "slate": "^0.57.1",
+    "slate-react": "^0.57.1",
+    "source-map-support": "^0.5.3"
   },
   "devEngines": {
     "node": ">=7.x",
