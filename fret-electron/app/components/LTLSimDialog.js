@@ -47,7 +47,7 @@ import PTLogicsIcon from '@material-ui/icons/ArrowBack';
 
 
 import TimeSeriesWidget from './TimeSeriesWidget';
-import FormulaDetails from './FormulaDetails';
+// import FormulaDetails from './FormulaDetails';
 
 const ltlsim = require('ltlsim-core').ltlsim;
 const LTLSimController = require('ltlsim-core').LTLSimController;
@@ -341,11 +341,11 @@ class LTLSimDialog extends Component {
                             displaySubformulas={true}
                             selectedFormula=""
                         />}
-                    <FormulaDetails
+                    {/* <FormulaDetails
                         fkey={id}
                         model={model}
                         actions={false}
-                    />
+                    /> */}
                 </Dialog>
             )} else {
                 return null;
