@@ -228,6 +228,15 @@ class Instructions extends React.Component {
     var notationPath = `../docs/_media/user-interface/examples/svgDiagrams/Notation.svg`;
 
     if (type === 'nasa'){
+      /* TODO: Currently, formalization.semantics contains HTML beautified expression
+       * (i.e. including <b> and <i> tags). They are currently removed in LTLSimLauncher
+       * (rewriteExpressionForLTLSIM) but this should probably be done before, such that
+       * the semantics object contains both, the plain and the HTML tagged expressions. 
+       * 
+       * Currently the HTML tags are injected in SemanticsAnalyzer.replaceTemplateVarsWithArgs(),
+       * which has also a parameter noHTML to prevent injection of HTML, but it is always 
+       * called with noHMTL = false in SemanticsAnalyzer.semantics(). 
+       */
       var ltlsimLauncher = <LTLSimLauncher 
                             open={this.state.LTLSimDialogOpen}
                             semantics={this.props.formalization.semantics}
@@ -235,8 +244,6 @@ class Instructions extends React.Component {
                             onOpen={this.openLTLSimDialog}
                             onClose={this.closeLTLSimDialog}
                             />;
-      /* TODO: Update, when replaceTemplateVarsWithArgs function gets updated
-      to yield plain formulas instead of html beatified formulas. */
     }
 
     if ((ft !== constants.unhandled_semantics) && (ft !== constants.nonsense_semantics) && (ft !== constants.undefined_semantics) && (diagram !== constants.undefined_svg))

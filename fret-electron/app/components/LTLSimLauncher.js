@@ -45,6 +45,8 @@ export default function LTLSimLauncher(props) {
  * @returns {string} the modified expression
 */
 function rewriteExpressionForLTLSIM(expression) {
+    /* TODO: Remove removal of HTML tags, when parsing and construction of
+     * the semantics is changed to give also plain (no HTML) expressions. */
     return expression
             .replace(/<b>/g, "")
             .replace(/<i>/g, "")

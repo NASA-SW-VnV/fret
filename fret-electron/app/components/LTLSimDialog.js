@@ -173,7 +173,7 @@ class LTLSimDialog extends Component {
             
             /* Set the traces for "LAST" or "FTP" variables in the model, if any 
             (this needs to be done again when the tracelength changes, e.g. 
-            LAST = 0000000001, tracelength is changed to 4, LAST = 0001) */
+            LAST = [0,0,0,0,0,0,0,0,0,1] tracelength is changed to 4, LAST = [0,0,0,1]) */
             setMarginVariableTraces(model);
 
             /* Set the formula value to unknown */
@@ -341,9 +341,9 @@ class LTLSimDialog extends Component {
 
 /**
  * This function creates and sets the traces for the special variables "LAST" and "FTP"
- * (first time point) procuced by FRETish formalization. For last, the trace is set to
- * 00000...1 and for FTP the trace is set to 1000...0. The length of the trace is the 
- * current tracelength of the LTLSIM model.
+ * (first time point) procuced by FRETish formalization. For LAST the trace is set to
+ * [0,0,0,0,0,...,1] and for FTP the trace is set to [1,0,0,0,...,0]. The length of the
+ * trace is the current tracelength of the LTLSIM model.
  * 
  * @param {LTLSimModel} model The model containing the variables to be modified 
  */
