@@ -151,7 +151,8 @@ class SlateEditor2 extends React.Component {
       if (this.props.inputFields) {
         const inputFields = this.props.inputFields
         let clonedValue = JSON.parse(JSON.stringify(initialValue))
-        clonedValue[0].children[0].text = inputFields.fulltext
+        const text = inputFields.fulltext;
+        clonedValue[0].children[0].text = text ? text : 'Some initial text, just for testing!';
         this.setContentInEditor(clonedValue)
       } else {
         this.setState({
@@ -456,14 +457,15 @@ class SlateEditor2 extends React.Component {
   renderEditor = () => {
     const { classes } = this.props;
 
+    console.log(this.state.value)
     return (
     <div className="editor" style={{width: 750, height: 150}}>
       <div style={{border: 'solid 1px gray', padding: '10px', height: 100}}>
         <Slate 
           editor={this.editor} 
           value={this.state.value}
-          onChange={(value)=>{console.log(value); console.log(this.editor); this.setState({value})}}>
-          {/* <Editable /> */}
+          onChange={(value)=>{this.setState({value})}}>
+          <Editable />
         </Slate>
       </div>
       <GridList cols={3} cellHeight='auto' spacing={0}>
@@ -500,6 +502,11 @@ const withFields = editor => {
 
   editor.isInline = element => {
     return (element.type === 'field-element') && editor.fieldsEnabled ? true : isInline(element)
+  }
+
+  editor.insertText = text => {
+    console.log(`Insert ${text} ...`)
+    insertText(text);
   }
 
   // editor.normalizeNode = entry => {
