@@ -451,86 +451,97 @@ class SlateEditor2 extends React.Component {
    * @return {Element}
    */
 
-  decorateNode = node => {
-    const { inputText, semantics } = this.state
+  decorateNode = ([node, path]) => {
+    const { inputText, semantics, value } = this.state;
 
     // Remove leading whitespaces if there is any
     const blankOffset = inputText.length - inputText.replace(/^\s+/g, "").length
 
-    if (!semantics) return null
+    if (!semantics) return [];
 
-    const texts = node.getTexts().toArray()
+    const text = editor2Text(value);
     const tokens = []
-
-    Object.keys(semantics).filter(k => {
-      return k.endsWith('TextRange')
-    }).forEach(k => {
-      const v = semantics[k]
-      tokens.push({
-        content: inputText.substring(v[0], v[1] + 1),
-        type: k
-      })
-    })
     const decorations = []
-    texts.forEach((textNode) => {
-      // Find tokens in texts
-      const text = textNode.text
+
+    if (node && node.type === 'paragraph') {
+      Object.keys(semantics).filter(k => {
+        return k.endsWith('TextRange')
+      }).forEach(k => {
+        const v = semantics[k]
+        tokens.push({
+          content: inputText.substring(v[0], v[1] + 1),
+          type: k
+        })
+      })
+  
       tokens.forEach((token) => {
-        let startOffset = text.indexOf(token.content) + blankOffset
+        let startOffset = text.indexOf(token.content) + blankOffset;
+        let endOffset = startOffset + token.content.length;
         if (startOffset >= 0) {
-          const range = {
-            anchorKey: textNode.key,
-            anchorOffset: startOffset,
-            focusKey: textNode.key,
-            focusOffset: startOffset + token.content.length,
-            marks: [
-              {
-                type: token.type,
-                color: this.state.fieldColors[token.type.replace("TextRange", "")]
-              }],
-          }
-          decorations.push(range)
+          decorations.push({
+            anchor: {path, offset: startOffset},
+            focus: {path, offset: endOffset},
+            color: this.state.fieldColors[token.type.replace("TextRange", "")],
+            type: token.type
+          })
         }
       })
-    })
+    }
+
+    // texts.forEach((textNode) => {
+    //   // Find tokens in texts
+    //   const text = textNode.text
+    //   tokens.forEach((token) => {
+    //     let startOffset = text.indexOf(token.content) + blankOffset;
+    //     let endOffset = startOffset + token.content.length;
+    //     if (startOffset >= 0) {
+    //       const range = {
+    //         anchorKey: textNode.key,
+    //         anchorOffset: startOffset,
+    //         focusKey: textNode.key,
+    //         focusOffset: startOffset + token.content.length,
+    //         marks: [
+    //           {
+    //             type: token.type,
+    //             color: this.state.fieldColors[token.type.replace("TextRange", "")]
+    //           }],
+    //       }
+    //       decorations.push(range)
+    //     }
+    //   })
+    // })
     return decorations
   }
 
-  renderMark = props => {
-    const { children, mark, attributes } = props
+  renderLeaf = props => {
+    const { attributes, children, leaf } = props
     const { fieldColors } = this.state
-    switch (mark.type) {
+    let style = {};
+    console.log(leaf)
+    console.log(fieldColors)
+    switch (leaf.type) {
       case 'scopeTextRange':
-        return (
-          <span {...attributes} style={{ color: fieldColors.scope }}>
-            {children}
-          </span>
-        )
+        style = { color: fieldColors.scope };
+        break
       case 'conditionTextRange':
-        return (
-          <span {...attributes} style={{ color: fieldColors.condition }}>
-            {children}
-          </span>
-        )
+        style = { color: fieldColors.condition };
+        break
       case 'componentTextRange':
-        return (
-          <span {...attributes} style={{ color: fieldColors.component }}>
-            {children}
-          </span>
-        )
+        style = { color: fieldColors.component };
+        break
       case 'timingTextRange':
-        return (
-          <span {...attributes} style={{ color: fieldColors.timing }}>
-            {children}
-          </span>
-        )
+        style = { color: fieldColors.timing };
+        break
       case 'responseTextRange':
-        return (
-          <span {...attributes} style={{ color: fieldColors.response }}>
-            {children}
-          </span>
-        )
+        style = { color: fieldColors.response };
+        break
     }
+    
+    return (
+      <span {...attributes} style={style}>
+        {children}
+      </span>
+    )
   }
 
   renderEditor = () => {
@@ -544,7 +555,10 @@ class SlateEditor2 extends React.Component {
           value={this.state.value}
           onChange={this.handleEditorValueChange}>
           <Editable 
-            onKeyDown={this.handleKeyDown}/>
+            onKeyDown={this.handleKeyDown}
+            decorate={this.decorateNode}
+            renderLeaf={this.renderLeaf}
+          />
         </Slate>
       </div>
       <GridList cols={3} cellHeight='auto' spacing={0}>
