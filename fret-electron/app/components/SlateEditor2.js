@@ -31,7 +31,7 @@
 // AGREEMENT.
 // *****************************************************************************
 import PropTypes from 'prop-types';
-import { createEditor, Node } from 'slate';
+import { createEditor, Node, Range, Transforms } from 'slate';
 import { Slate, Editable, withReact } from 'slate-react';
 import initialValue from './slateConfigs2.json'
 
@@ -129,6 +129,7 @@ class SlateEditor2 extends React.Component {
 
     this.handleEditorValueChange = this.handleEditorValueChange.bind(this);
     this.renderEditor = this.renderEditor.bind(this);
+    this.handleKeyDown = this.handleKeyDown.bind(this);
   }
 
   componentWillUnmount() {
@@ -211,8 +212,6 @@ class SlateEditor2 extends React.Component {
    */
 
   setContentInEditor = (value) => {
-    console.log('setContentInEditor:')
-    console.log(value)
     const inputText = editor2Text(value);
     const result = FretSemantics.compilePartialText(inputText)
     this.setState({
@@ -224,15 +223,95 @@ class SlateEditor2 extends React.Component {
   }
 
   handleEditorValueChange = (value) => {
-    console.log('onChange:')
-    console.log(value)
     const editorText = editor2Text(value)
-    // if (this.state.inputText != editorText) {
-    //   this.setContentInEditor(value)
-    // }
+    if (this.state.inputText != editorText) {
+      this.setContentInEditor(value)
+    }
     this.setState({
       value,
     })
+  }
+
+  handleKeyDown = (event) => {
+    const selection = this.editor.selection;
+    const isCollapsed = selection && Range.isCollapsed(selection);
+ 
+    if (event.key.length === 1) {
+      /* Regular character. All hotkeys have a length > 1. 
+       * In this case the corresponding character is simply
+       * inserted. */
+      event.preventDefault();
+      this.editor.insertText(event.key)
+    } else if (isKeyHotkey('space', event)) {
+      /* Space character is inserted */
+      event.preventDefault();
+      this.editor.insertText(' ')
+    } else if (isKeyHotkey('delete', event)) {
+      /* When the selection is collapsed (i.e. the cursor is at 
+       * a single position instead of a range of text beeing 
+       * selected) a single character is deleted forward, 
+       * otherwise the entire selection is deleted. */
+      event.preventDefault();
+      if (isCollapsed) {
+        this.editor.deleteForward('character');
+      } else {
+        this.editor.deleteFragment();
+      }
+    } else if (isKeyHotkey('backspace', event)) {
+      /* When the selection is collapsed (i.e. the cursor is at 
+       * a single position instead of a range of text beeing 
+       * selected) a single character is deleted backwards, 
+       * otherwise the entire selection is deleted. */
+      event.preventDefault();
+      if (isCollapsed) {
+        this.editor.deleteBackward('character');
+      } else {
+        this.editor.deleteFragment();
+      }
+    } else if (isKeyHotkey('enter', event)) {
+      /* Enter is supressed */
+      event.preventDefault();
+    } else if (isKeyHotkey('arrowup', event)) {
+      /* Arrow up is supressed */
+      event.preventDefault();
+    } else if (isKeyHotkey('arrowdown', event)) {
+      /* Arrow down is supressed */
+      event.preventDefault();
+    } else if (isKeyHotkey('arrowleft', event)) {
+      /* Arrow left moves the cursor, this is working fine */
+    } else if (isKeyHotkey('arrowright', event)) {
+      /* Arrow right moves the cursor, this is working fine */
+    } else if (isKeyHotkey('tab', event)) {
+      /* Tab moves the focus to the next ui control, this is working fine */
+    } else if (isKeyHotkey('mod+arrowleft', event)) {
+      /* Ctrl/Cmd + left moves the cursor backwards by one word */
+      event.preventDefault();
+      Transforms.move(this.editor, {distance: 1, unit: 'word', reverse: true})
+    } else if (isKeyHotkey('mod+arrowright', event)) {
+      /* Ctrl/Cmd + right moves the cursor forward by one word */
+      event.preventDefault();
+      Transforms.move(this.editor, {distance: 1, unit: 'word', reverse: false})
+    } else if (isKeyHotkey('mod+shift+arrowleft', event)) {
+      /* Ctrl/Cmd + shift + left moves the focus of the 
+       * current selection backwards by one word */
+      event.preventDefault();
+      const {anchor} = this.editor.selection;
+      const oldAnchor = JSON.parse(JSON.stringify(anchor));
+      Transforms.move(this.editor, { distance: 1, unit: 'word', reverse: true})
+      const {focus} = this.editor.selection;
+      Transforms.select(this.editor, {focus, anchor: oldAnchor});
+    } else if (isKeyHotkey('mod+shift+arrowright', event)) {
+      /* Ctrl/Cmd + shift + right moves the focus of the 
+       * current selection forward by one word */
+      event.preventDefault();
+      const {anchor} = this.editor.selection;
+      const oldAnchor = JSON.parse(JSON.stringify(anchor));
+      Transforms.move(this.editor, { distance: 1, unit: 'word', reverse: false})
+      const {focus} = this.editor.selection;
+      Transforms.select(this.editor, {focus, anchor: oldAnchor});
+    } else {
+      event.preventDefault();
+    }
   }
 
   /**
@@ -457,15 +536,15 @@ class SlateEditor2 extends React.Component {
   renderEditor = () => {
     const { classes } = this.props;
 
-    console.log(this.state.value)
     return (
     <div className="editor" style={{width: 750, height: 150}}>
       <div style={{border: 'solid 1px gray', padding: '10px', height: 100}}>
         <Slate 
           editor={this.editor} 
           value={this.state.value}
-          onChange={(value)=>{this.setState({value})}}>
-          <Editable />
+          onChange={this.handleEditorValueChange}>
+          <Editable 
+            onKeyDown={this.handleKeyDown}/>
         </Slate>
       </div>
       <GridList cols={3} cellHeight='auto' spacing={0}>
@@ -504,10 +583,10 @@ const withFields = editor => {
     return (element.type === 'field-element') && editor.fieldsEnabled ? true : isInline(element)
   }
 
-  editor.insertText = text => {
-    console.log(`Insert ${text} ...`)
-    insertText(text);
-  }
+  // editor.insertText = text => {
+  //   console.log(`Insert ${text} ...`)
+  //   insertText(text);
+  // }
 
   // editor.normalizeNode = entry => {
   //   if (editor.fieldsEnabled) {
