@@ -120,7 +120,7 @@ class SlateEditor2 extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      value: initialValue,
+      editorValue: initialValue,
       inputText: ' ',
       fieldColors: {}
     }  
@@ -153,11 +153,11 @@ class SlateEditor2 extends React.Component {
         const inputFields = this.props.inputFields
         let clonedValue = JSON.parse(JSON.stringify(initialValue))
         const text = inputFields.fulltext;
-        clonedValue[0].children[0].text = text ? text : 'Some initial text, just for testing!';
+        clonedValue[0].children[0].text = text ? text : '';
         this.setContentInEditor(clonedValue)
       } else {
         this.setState({
-          value: initialValue,
+          editorValue: initialValue,
         })
       }
     }).catch((err) => {
@@ -169,11 +169,11 @@ class SlateEditor2 extends React.Component {
       include_docs: true
     }).on('change', (change) => {
       if (change.id == 'FRET_PROPS') {
-        const updatedValue = this.state.value
+        const updatedValue = this.state.editorValue
         if (this.mounted) {
           this.setState({
             fieldColors: change.doc.fieldColors,
-            value: updatedValue
+            editorValue: updatedValue
           })
         }
       }
@@ -206,29 +206,29 @@ class SlateEditor2 extends React.Component {
 
 
   /**
-   * On change, save the new `value`.
+   * On change, save the new `editorValue`.
    *
    * @param {Change} change
    */
 
-  setContentInEditor = (value) => {
-    const inputText = editor2Text(value);
+  setContentInEditor = (editorValue) => {
+    const inputText = editor2Text(editorValue);
     const result = FretSemantics.compilePartialText(inputText)
     this.setState({
-      value,
+      editorValue,
       inputText,
       errors: result.parseErrors,
       semantics: result.collectedSemantics
     })
   }
 
-  handleEditorValueChange = (value) => {
-    const editorText = editor2Text(value)
+  handleEditorValueChange = (editorValue) => {
+    const editorText = editor2Text(editorValue)
     if (this.state.inputText != editorText) {
-      this.setContentInEditor(value)
+      this.setContentInEditor(editorValue)
     }
     this.setState({
-      value,
+      editorValue,
     })
   }
 
@@ -320,7 +320,7 @@ class SlateEditor2 extends React.Component {
    */
 
    getTextInEditor = () => {
-     return editor2Text(this.state.value);
+     return editor2Text(this.state.editorValue);
    }
 
    enableSemantics = () => {
@@ -452,14 +452,14 @@ class SlateEditor2 extends React.Component {
    */
 
   decorateNode = ([node, path]) => {
-    const { inputText, semantics, value } = this.state;
+    const { inputText, semantics, editorValue } = this.state;
 
     // Remove leading whitespaces if there is any
     const blankOffset = inputText.length - inputText.replace(/^\s+/g, "").length
 
     if (!semantics) return [];
 
-    const text = editor2Text(value);
+    const text = editor2Text(editorValue);
     const tokens = []
     const decorations = []
 
@@ -552,7 +552,7 @@ class SlateEditor2 extends React.Component {
       <div style={{border: 'solid 1px gray', padding: '10px', height: 100}}>
         <Slate 
           editor={this.editor} 
-          value={this.state.value}
+          value={this.state.editorValue}
           onChange={this.handleEditorValueChange}>
           <Editable 
             onKeyDown={this.handleKeyDown}
@@ -591,7 +591,6 @@ const withFields = editor => {
 
   editor.instantiate = true;
   editor.fieldsEnabled = true;
-  // editor.onChange = (value) => {console.log(value)};
 
   editor.isInline = element => {
     return (element.type === 'field-element') && editor.fieldsEnabled ? true : isInline(element)
