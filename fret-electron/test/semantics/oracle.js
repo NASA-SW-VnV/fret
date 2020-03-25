@@ -105,7 +105,9 @@ case 'after': constraints = after(scopeInterval, responseIntervals, duration, tr
 case 'afterCond': constraints = afterCond(responseIntervals, trigger, duration, traceInterval, isNegated); break;
 case 'until': constraints = untilTiming(scopeInterval,stopCondIntervals,responseIntervals,isNegated); break;
 case 'untilCond' : constraints = untilTimingCond(stopCondIntervals,responseIntervals,trigger,isNegated); break;
-    
+case 'before' : constraints = beforeTiming(scopeInterval,stopCondIntervals,responseIntervals,isNegated); break;
+case 'beforeCond' : constraints = beforeTimingCond(stopCondIntervals,responseIntervals,trigger,isNegated); break;
+
 default: { console.log('!! Unhandled functionCase ' + functionCase + 'in checkTimings');
 	   constraints = 'undefined'
 	 }
@@ -336,7 +338,7 @@ function untilTiming(scopeInterval,stopCondIntervals,responseIntervals,negate) {
 
 
     // The stop happened immediately so we don't care? or it does satisfy it?
-    if (stop.point === scopeInterval.left) return null;
+    if (stop.point === scopeInterval.left) return ! negate; //null;
 
     let p = intervalLogic.contains(responseIntervals,[stop.scope]);
     if (testOptions.verboseOracle)
@@ -347,4 +349,30 @@ function untilTiming(scopeInterval,stopCondIntervals,responseIntervals,negate) {
 
 function untilTimingCond(stopCondIntervals,responseIntervals,trigger,negate) {
     return untilTiming(trigger.scope,stopCondIntervals,responseIntervals,negate);
+}
+
+function beforeTiming(scopeInterval,stopCondIntervals,responseIntervals,negate) {
+    // find leftmost stopCondInterval within scopeInterval after scopeInterval.left
+    let stop = findStop(scopeInterval, stopCondIntervals)
+
+    if (testOptions.verboseOracle)
+    console.log('beforeTiming: '
+		+ 'scopeInterval: ' + JSON.stringify(scopeInterval)
+		+ '; stopCondIntervals: ' + JSON.stringify(stopCondIntervals)
+		+ '; stop: ' + JSON.stringify(stop)
+		+ '; responseIntervals: ' + JSON.stringify(responseIntervals))
+
+
+    // The stop happened immediately. Since response can't occur before stop, before 
+    // should return false whereas until should return true?
+    if (stop.point === scopeInterval.left) return negate;
+
+    let p = intervalLogic.overlaps(responseIntervals,stop.scope);
+    if (testOptions.verboseOracle) console.log('p: ' + JSON.stringify(p));
+              
+    return (negate ? !p : p)
+}
+
+function beforeTimingCond(stopCondIntervals,responseIntervals,trigger,negate) {
+    return beforeTiming(trigger.scope,stopCondIntervals,responseIntervals,negate);
 }

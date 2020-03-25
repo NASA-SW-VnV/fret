@@ -52,6 +52,7 @@ const placeholderSubsts =
       [
 	  ['\\$regular_condition\\$','pre'],
 	  ['\\$post_condition\\$', 'post'],
+	  ['\\$stop_condition\\$', 'stop'],
 	  ['\\$scope_mode\\$', 'm'],
 	  ['\\$duration\\$', duration]
       ];
@@ -92,6 +93,7 @@ VAR
   t : 0 .. 10;
   m : boolean;
   pre : boolean;
+  stop : boolean;
   post : boolean;
 ASSIGN
   init(t) := 0;

@@ -44,8 +44,8 @@ const nonsense_patterns = [
 ]
 
 const high_level_unhandled = [
-    '-,-,-,!satisfaction',
-    'onlyAfter|onlyBefore|onlyIn,-,until,satisfaction'
+    '-,-,-,!satisfaction'//,
+//    'onlyAfter|onlyBefore|onlyIn,-,until,satisfaction'
 ]
 
 const NuSMVSubsts = [
@@ -89,6 +89,8 @@ exports.translateToSMV = (formula) => {
 }
 
 // neverOK means that we check if point never happens
+// type can be pt or ft
+// key is array of strings.
 // sem can be finite or infinite
 // in can be afterUntil or between
 exports.getFormalization = (key, type, options = {sem:'finite', in:'afterUntil'}) => {
@@ -121,15 +123,21 @@ exports.getFormalization = (key, type, options = {sem:'finite', in:'afterUntil'}
 
   if (type == 'ft') {
     var form = formalizations_future.getFormalization(key, scopeRequiresNegation, endpoints[0],endpoints[1], options)
-    if (options.sem == 'infinite')
+   if (form.includes(constants.undefined_semantics))
+       return 'TRUE'
+    else if (options.sem == 'infinite')
       return form.replace(/LAST/g, 'false')
     else {
       return form
     }
   }
 
-  if (type == 'pt')
-    return formalizations_past.getFormalization(key, scopeRequiresNegation, endpoints[0],endpoints[1], options)
+    if (type == 'pt') {
+	let formalization = formalizations_past.getFormalization(key, scopeRequiresNegation, endpoints[0],endpoints[1], options)
+	if (formalization.includes(constants.undefined_semantics))
+	    formalization = 'TRUE'
+        return formalization;
+    }
 }
 
 exports.suggestedEndPointRewriteRules = (time) => {

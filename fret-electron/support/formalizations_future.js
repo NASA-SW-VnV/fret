@@ -62,7 +62,7 @@ const SpecialCases =
 	   'always (RES implies MODE)']
       ];
 
-const BaseForm = [ // negate, timing,condition
+const BaseForm = [ // negate,timing,condition
   ['false,immediately,null|regular', immediately('RES')],
   ['true,immediately,null|regular', notImmediately('RES')],
   ['false,eventually|null,null|regular', eventually('RES')],
@@ -79,6 +79,8 @@ const BaseForm = [ // negate, timing,condition
   ['true,after,null|regular', notAfterTiming('RES','BOUND')],
     ['false,until,null|regular', untilTiming('RES','STOPCOND')],
     ['true,until,null|regular', notUntilTiming('RES','STOPCOND')],
+    ['false,before,null|regular', beforeTiming('RES','STOPCOND')], // scope also named before
+    ['true,before,null|regular', notBeforeTiming('RES','STOPCOND')]
 ]
 
 function negate(str) {return utilities.negate(str)}
@@ -174,17 +176,27 @@ function notAfterTiming(property, duration, endsScope='ENDSCOPE') {
 		      )
 }
 
-// !((!(stopcond | endScope)) U ((!property) & (!(stopcond | endScope))))
 function untilTiming(property,stopcond,endsScope='ENDSCOPE') {
-//    return `${property} until exclusive weak (${stopcond} | ${endsScope})`
-//    return `${property} until inclusive weak ((next ${stopcond}) | ${endsScope})`
-  return `(${property} until exclusive weak (${stopcond}))` +
-        ` or (${property} until inclusive weak (${endsScope}))`
-
+    let formula1 = `(${property} until exclusive weak (${stopcond}))`
+    // if no stopcond, the property must hold until the end.
+    let formula2 = `${endsScope} releases ${property}`
+    return disjunction(formula1,formula2)
 }
 
-function notUntilTiming(property,stopcond) {
-    return constants.undefined_semantics;
+function notUntilTiming(property,stopcond, endsScope='ENDSCOPE') {
+    return beforeTiming(negate(property),stopcond,endsScope)
+}
+
+function beforeTiming(property,stopcond,endsScope='ENDSCOPE') {
+    //let formula1 = `${property} releases ${negate(stopcond)}`
+    //let formula2 = `${endsScope} releases ${negate(stopcond)}`
+    // In case stopcond never happens, we don't require property to hold.
+    let formula = `(${property} or ${endsScope}) releases ${negate(stopcond)}`
+    return formula;
+}
+
+function notBeforeTiming(property,stopcond,endsScope='ENDSCOPE') {
+    return untilTiming(negate(property),stopcond,endsScope);
 }
 
 exports.getEndPointRewrites = () => {
