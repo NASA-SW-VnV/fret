@@ -64,6 +64,8 @@ import Instructions from './Instructions';
 import SlateEditor2 from './SlateEditor2';
 import VariablesSortableTable from './VariablesSortableTable';
 
+import templates from '../../templates/templates';
+
 const db = require('electron').remote.getGlobal('sharedObj').db;
 const modeldb = require('electron').remote.getGlobal('sharedObj').modeldb;
 
@@ -462,7 +464,8 @@ class CreateRequirementDialog extends React.Component {
         onRef={ref => (this.stepper = ref)}
         updateInstruction={this.handleUpdateInstruction}
         updateSemantics={this.handleUpdateSemantics}
-        inputFields={inputFields} />
+        inputFields={inputFields}
+        template={templates[0]}/>
     )
   }
 
