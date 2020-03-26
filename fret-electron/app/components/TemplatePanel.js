@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import Button from '@material-ui/core/Button';
@@ -32,26 +33,28 @@ class TemplatePanel extends Component {
 
     render() {
         const {templates, selected} = this.props;
-        const template = templates[selected]
+
+        const template = templates && templates[selected]
         const patternSelected = Boolean(template);
         const {anchor} = this.state;
-        const info = patternSelected ? 
-            <TemplateInfo template={template} onClickField={this.props.onClickField}/> : 
+        const info = patternSelected ?
+            <TemplateInfo template={template} onClickField={this.props.onClickField}/> :
             <NoTemplateInfo onClickPatternSelect={this.handleOpenMenu}/>;
-        const title = patternSelected ? template.title+' Template' : 'No Template Selected';                        
-        const menuItems = templates.map((template, index) => (
-            <MenuOption 
+        const title = patternSelected ? template.title+' Template' : 'No Template Selected';
+        const menuItems = templates && templates.map((template, index) => (
+            <MenuOption
                 key={template.title}
                 onClick={this.handleMenuClick(index)}
                 title={template.title}
-                description={template.description} 
+                description={template.description}
             />))
-        menuItems.splice(0,0, 
-            <MenuOption 
+        if (menuItems != undefined)
+          menuItems.splice(0,0,
+            <MenuOption
                 key={'none'}
                 onClick={this.handleMenuClick(-1)}
                 title={'No template'}
-                description={'Create a requirement from plain FRETish without applying a predfined template.'} 
+                description={'Create a requirement from plain FRETish without applying a predfined template.'}
             />)
         return (
             <div style={{paddingBottom:20}}>
@@ -92,13 +95,13 @@ class TemplateInfo extends Component {
             <Typography variant='body1'>{template.description}</Typography>
         );
         const examplesList = ( template.examples &&
-            <div style={{marginTop:24}}> 
+            <div style={{marginTop:24}}>
                 <Typography variant='body1'>Examples:</Typography>
                 {template.examples
                     .map((example, index) => {
-                        return <Example 
-                                template={template} 
-                                values={example} 
+                        return <Example
+                                template={template}
+                                values={example}
                                 index={index}
                                 key={`${template.name}-example-${index}`}/>
                     })}
@@ -162,13 +165,13 @@ class Example extends Component {
                 </Typography>
             </div>
         )
-        
+
     }
 }
 
 class MenuOption extends Component {
     render() {
-        return (    
+        return (
             <ListItem button onClick={this.props.onClick}>
                 <div>
                 <Typography variant='body1'>{this.props.title}</Typography>
@@ -177,6 +180,10 @@ class MenuOption extends Component {
             </ListItem>
         )
     }
+}
+
+TemplatePanel.propTypes = {
+  templates: PropTypes.array.isRequired,
 }
 
 export default TemplatePanel;

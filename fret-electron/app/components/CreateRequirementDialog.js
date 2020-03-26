@@ -61,6 +61,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import styles from './CreateRequirementDialog.css';
 import Instructions from './Instructions';
+import TemplatePanel from './TemplatePanel'
 import SlateEditor2 from './SlateEditor2';
 import VariablesSortableTable from './VariablesSortableTable';
 
@@ -110,6 +111,7 @@ class CreateRequirementDialog extends React.Component {
     rationale: '',
     comments:'',
     focus: '',
+   selectedPattern: -1,
   };
 
   handleTextFieldFocused = name => event => {
@@ -128,6 +130,27 @@ class CreateRequirementDialog extends React.Component {
     this.setState({ createDialogOpen: false });
     this.state.dialogCloseListener(false);
   };
+
+  handleSelectedPatternChange = (selectedPattern) => {
+    this.setState({selectedPattern});
+    // this.setState(prevState => {
+    //   if (selectedPattern >= 0) {
+    //     const template = templates[selectedPattern];
+    //     let {values} = prevState;
+    //     if (template) syncValuesWithStructure(values, template.structure);
+    //     return {selectedPattern, values};
+    //   } else {
+    //     const prevSelected = prevState.selectedPattern;
+    //     const {values} = prevState;
+    //     if (prevSelected >= 0) {
+    //       const template = templates[prevSelected];
+    //       const editorText = instantiate(template, values);
+    //       return {selectedPattern, editorText}
+    //     }
+    //     return
+    //   }
+    // });
+  }
 
   handleCreate = () => {
     var self = this;
@@ -458,19 +481,19 @@ class CreateRequirementDialog extends React.Component {
     }
   }
 
-  renderEditor = (type, inputFields) => {
+  renderEditor = (type, inputFields, selectedPattern) => {
     return (
       <SlateEditor2
         onRef={ref => (this.stepper = ref)}
         updateInstruction={this.handleUpdateInstruction}
         updateSemantics={this.handleUpdateSemantics}
         inputFields={inputFields}
-        template={templates[0]}/>
+        template={templates[selectedPattern]}/>
     )
   }
 
   render() {
-    const { edittingRequirement } = this.state
+    const { edittingRequirement, selectedPattern } = this.state
     const { classes, existingProjectNames, addChildRequirementToParent } = this.props;
     const isRequirementUpdate = !addChildRequirementToParent && (edittingRequirement && Object.keys(edittingRequirement).length > 0)
     const actionLabel = isRequirementUpdate ? 'Update' : 'Create'
@@ -577,7 +600,7 @@ class CreateRequirementDialog extends React.Component {
                     </GridList>
                     {this.renderEditor('slate2', {
                       fulltext: fulltext
-                    })}
+                    }, selectedPattern)}
               </DialogContent>
               <DialogActions>
                 <Button onClick={this.handleClose}>
@@ -589,12 +612,19 @@ class CreateRequirementDialog extends React.Component {
               </DialogActions>
               </div>
               <div className={styles.instruction}>
+<<<<<<< HEAD
                 <Instructions
                 field={this.state.focus}
                 grammarRule={this.getGrammarRuleOnFocus()}
                 formalization={this.state.formalization}
                 requirement = {fulltext ? fulltext : ''}
                 requirementID = {this.state.reqid}/>
+=======
+                <TemplatePanel
+                templates={templates}
+                selected={selectedPattern}
+                onChange={this.handleSelectedPatternChange}/>
+>>>>>>> Templates Instructions added in the gray area. Connected it with the Requirements Editor.
               </div>
             </div>
           </Dialog>
