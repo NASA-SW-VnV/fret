@@ -179,17 +179,22 @@ exports.intersectMultiple = (intervals1, intervals2) => {
 exports.overlaps = (intervals, interval) =>
     intervals.some((i) => !this.disjoint(i,interval))
 
+// Whether some interval in intervals2 overlaps with some interval in intervals1.
+exports.overlapsMultiple = (intervals1, intervals2) =>
+   intervals2.some((i) => this.overlaps(intervals1,i))
 
-exports.intervalToString = (interval) => {
-    return ('[' + interval.left + ',' + interval.right + ']');
+exports.intervalToString = (interval) =>
+    ('[' + interval.left + ',' + interval.right + ']')
+
+exports.intervalsToString = (intervals) => 
+    ('[' + intervals.map((i) => this.intervalToString(i)).join(',') + ']');
+
+exports.intervalToPair = (interval) => {
+    return [interval.left,interval.right];
 }
 
-exports.intervalsToString = (intervals) => {
-    result = '[';
-    for (let interval of intervals) {
-	result = result + this.intervalToString(interval, '')
-    }
-    return (result + ']');
+exports.intervalsToArray = (intervals) => {
+    return intervals.map(this.intervalToPair);
 }
 
 exports.print = (interval, name) => {

@@ -80,6 +80,7 @@ else if (!options.rangeOptions.includes(args.r)) console.log(options.incorrectRa
 else if (!options.timingOptions.includes(args.i)) console.log(options.incorrectTiming);
 else if (!options.conditionOptions.includes(args.c)) console.log(options.incorrectCondition);
 else if (!options.strategyOptions.includes(args.s)) console.log(options.incorrectStrategy);
+else if (!options.scopeOptions.includes(args.p)) console.log(options.incorrectScopes);
 else if (args.s === 'random' && !(typeof(args.l) === 'number' && typeof(args.n)==='number')) console.log(options.incorrectRandom);
 else if (args.s === 'settings' && args.f === undefined) console.log(options.incorrectSettings);
 else {
@@ -90,8 +91,9 @@ else {
   var traceLength = args.l;
   var numTests = args.n;
   var Timings = options.timingSubs[args.i];
-  var C = options.conditionSubs[args.c];
-  var R = options.satisfaction;
+  var Conditions = options.conditionSubs[args.c];
+  var Responses = options.satisfaction;
+  var Scopes = options.scopeSubs[args.p]
   var discrepancies = 0;
   var executed = 0;
   var trace = {};
@@ -99,7 +101,7 @@ else {
   var res2 = undefined;
   if (strategy === 'classic')
       // Original test framework
-      res2 = generateAndRun(range, tool, Timings, C, R);
+      res2 = generateAndRun(range, tool, Timings, Conditions, Responses);
   else if (strategy === 'settings') {
 	// Run settings previously computed with either testgen.prolog or runRandomSettings.
 	settings = require(settingsFile);
@@ -150,9 +152,11 @@ function runConfiguration(config,duration,tool) {
 }
 */
 
-// Example of settings: [ [9, 3, [[1,3]], [[2,2]], [[3,9]] ], ... ]
-// where settings is [[ testlength, duration, modeIntervalsEndpoints, conditionIntervalsEndpoints,
-//                       responseIntervalsEndpoints ], ...]
+// Example of settings: [9,4,[[4,4]],[[0,1],[3,4]],[[6,7]],[],[[3,6],[8,8]]]
+// where settings is
+// [[ testlength, duration, modeIntervalsEndpoints, conditionIntervalsEndpoints,
+//    responseIntervalsEndpoints, stopIntervalsEndpoints ], ...]
+// [max,dur,modes,conds,resps,stops];
 function runSettings(settings,tool) {
     let testID = 0;
     for (let i = 0; i < settings.length; i++) {
@@ -301,10 +305,7 @@ function generateAllIntervals(min, max, maxlength) {
 function generate_tests(modeIntervals, responseIntervals, n, conditionIntervals, stopIntervals, id, trlength, tool) {
   var testCase= {};
   var semantics = {};
-  var product = new ProductIterable(constants.fullScope,
-//				    constants.fullCondition, constants.fullTiming, constants.fullResponse)
-				    C,Timings,R);
-
+  var product = new ProductIterable(Scopes,Conditions,Timings,Responses);
 
   //console.log('Dimitra ' + modeIntervals.forEach(function(element) {console.log(element)}))
   var keyIterator = product[Symbol.iterator]();
@@ -434,7 +435,13 @@ function executeTestCase(testCase, tool, testLength) {
   if (options.outputOnlyDiscrepancies)
     console.log(testCase.id)  // to visualize computation if there is no discrepancies
   if (! options.outputOnlyDiscrepancies) {
-    console.log("\n\n**************************************");
+      console.log("\n\n**************************************");
+      let modes = intervalLogic.intervalsToArray(testCase.modeIntervals)
+      let conds = intervalLogic.intervalsToArray(testCase.conditionIntervals)
+      let resps = intervalLogic.intervalsToArray(testCase.responseIntervals)
+      let stops = intervalLogic.intervalsToArray(testCase.stopIntervals)
+      let theSetting = [testLength,n,modes,conds,resps,stops];
+
     console.log("Test Case: " + testCase.id + "; Mode: " + 
 		intervalLogic.intervalsToString(testCase.modeIntervals) + "; Condition: " +
 		intervalLogic.intervalsToString(testCase.conditionIntervals)
@@ -442,7 +449,8 @@ function executeTestCase(testCase, tool, testLength) {
 		+ n + "; Response: " + 
 		intervalLogic.intervalsToString(testCase.responseIntervals)
 		+ "; StopCondition: " + 
-		intervalLogic.intervalsToString(testCase.stopIntervals));
+		intervalLogic.intervalsToString(testCase.stopIntervals)
+		+ "\nSetting: " + JSON.stringify(theSetting))
   }
   	// triple is a triple of
   	// key (as string),
@@ -481,7 +489,7 @@ function executeTestCase(testCase, tool, testLength) {
   	        intervalLogic.printMultiple(testCase.conditionIntervals,'Condition');
             if (options.timingSubs.metricTiming.includes(keys[i][0].split(',')[2]))
   		console.log('Duration = ' + n);
-	    if (keys[i][0].split(',')[2] == 'until')
+	      if (['until','before'].includes(keys[i][0].split(',')[2]))
 		intervalLogic.printMultiple(testCase.stopIntervals,'StopCondition');
             intervalLogic.printMultiple(testCase.responseIntervals, 'Response')
           }

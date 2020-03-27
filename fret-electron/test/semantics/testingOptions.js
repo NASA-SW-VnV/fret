@@ -31,7 +31,6 @@
 // AGREEMENT.
 // *****************************************************************************
 module.exports = Object.freeze({
-satisfaction : ['satisfaction'],
 
 TraceLength : 15,
 MAX_COMPLETE_EXPLORE : 5,
@@ -55,9 +54,11 @@ outputKeyandExpected : false, // Output key and expected for each setting, befor
 optimizeTests : false, // Only test non-metric timings with duration=1 and null condtions with condition intervals length 0
 
 //All allowed command line options. These are used to check whether the user specified options correctly.
+satisfaction : ['satisfaction'],
+scopeOptions: ['full','only','nonOnly', undefined],
 toolOptions: ['SMV', 'CoCoSpec', undefined],
 rangeOptions: ['simple', 'extended', undefined],
-    timingOptions: ['nonMetricTiming', 'metricTiming', 'mostTiming', 'fullTiming', 'untilTiming','beforeTiming', undefined],
+timingOptions: ['nonMetricTiming', 'metricTiming', 'mostTiming', 'fullTiming', 'untilTiming','beforeTiming', undefined],
 conditionOptions: ['fullCondition', 'nullCondition', undefined],
 strategyOptions: ['classic','settings','random', undefined],
 
@@ -71,14 +72,14 @@ runtimeOptions : {
 
 runtimeOptions : {
     string : ['tool','range','timing','condition',
-	      'strategy','duration','settingsFile'],
+	      'strategy','duration','settingsFile','scope'],
     boolean : ['help'],
     number : ['traceLength', 'numTests'],
     alias: {h : 'help', t : 'tool', r : 'range', i : 'timing', c : 'condition',
 	    s : 'strategy', d : 'duration', f : 'settingsFile',
-	    l : 'traceLength', n : 'numTests'},
+	    l : 'traceLength', n : 'numTests', p : 'scope'},
     default: { tool : 'SMV', range : 'simple', timing : 'mostTiming',
-	       condition : 'fullCondition',
+	       condition : 'fullCondition', scope : 'full',
 	       strategy : 'classic'}
 },
 
@@ -89,7 +90,12 @@ timingSubs : {
     untilTiming: ['until'],
     beforeTiming: ['before'],
     fullTiming: ['immediately','always','never','eventually','within', 'for', 'after'],
+},
 
+scopeSubs : {
+    nonOnly : ['null','in','after','before','notin'],
+    only: ['onlyAfter','onlyBefore','onlyIn'],
+    full: ['null','in','after','before','notin','onlyAfter','onlyBefore','onlyIn']
 },
 
 conditionSubs : {
@@ -99,16 +105,16 @@ conditionSubs : {
 
   help: '\nOptions: \n'+
   '\xa0 -h, --help:\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0 Print usage info\n'+
-  '\xa0 -t, --tool:\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0 Specify tool (SMV or CoCoSpec)\n'+
   '\xa0 -r, --range:\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0 Specify range (simple or extended)\n'+
-  '\xa0 -i, --timing:\xa0\xa0\xa0\xa0\xa0\xa0\xa0 Specify timing (nonMetricTiming or metricTiming or mostTiming or fullTiming or untilTiming)\n'+
+  '\xa0 -i, --timing:\xa0\xa0\xa0\xa0\xa0\xa0\xa0 Specify timing (nonMetricTiming or metricTiming or mostTiming or fullTiming or untilTiming or beforeTiming)\n'+
 	'\xa0 -c, --condition:\xa0\xa0\xa0\xa0 Specify condition (fullCondition or nullCondition)\n'+
 	'\xa0 -s, --strategy:\xa0\xa0\xa0\xa0\xa0 Specify testing strategy (classic or settings or random)\n' +
 	'\xa0 -f, --settingsFile:\xa0 The settings filename to be used with strategy settings\n' +
 	'\xa0 -l, --traceLength:\xa0\xa0 The trace length to be used with strategy random\n' +
 	'\xa0 -n, --numTests:\xa0\xa0\xa0\xa0\xa0 The number of tests to be computed with strategy random.\n' +
-
-  '\nBy default, tests will run for SMV, classic strategy, simple, mostTiming and fullCondition.\n',
+  '\xa0 -t, --tool:\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0 Specify tool (SMV or CoCoSpec)\n'+
+  '\xa0 -p, --scope:\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0 Specify scopes (full or nonOnly or Only)\n'+
+  '\nBy default, tests will run for SMV, full scopes, classic strategy, simple range, mostTiming and fullCondition.\n',
 
   incorrectTool: '\nIncorrect option was given for the tool argument. Please see help for additional info.\n',
   incorrectRange: '\nIncorrect option was given for the range argument. Please see help for additional info.\n',
@@ -116,5 +122,6 @@ conditionSubs : {
   incorrectCondition: '\nIncorrect option was given for the condition argument. Please see help for additional info.\n',
     incorrectStrategy: '\nIncorrect option was given for the strategy argument. Please see help for additional info.\n',
     incorrectRandom: '\nRandom strategy was specified but either traceLength (-l) or numTests (-n) is not a number.\n',
-  incorrectSettings: '\nSettings strategy was specified but no file (-f) was given.\n'
+    incorrectSettings: '\nSettings strategy was specified but no file (-f) was given.\n',
+    incorrectScopes: '\nIncorrect option was given for the scopes argument. Please see help for additional info.\n'
 });

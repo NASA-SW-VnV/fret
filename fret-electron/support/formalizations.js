@@ -124,7 +124,7 @@ exports.getFormalization = (key, type, options = {sem:'finite', in:'afterUntil'}
   if (type == 'ft') {
     var form = formalizations_future.getFormalization(key, scopeRequiresNegation, endpoints[0],endpoints[1], options)
    if (form.includes(constants.undefined_semantics))
-       return 'TRUE'
+       return constants.undefined_semantics;
     else if (options.sem == 'infinite')
       return form.replace(/LAST/g, 'false')
     else {
@@ -135,7 +135,7 @@ exports.getFormalization = (key, type, options = {sem:'finite', in:'afterUntil'}
     if (type == 'pt') {
 	let formalization = formalizations_past.getFormalization(key, scopeRequiresNegation, endpoints[0],endpoints[1], options)
 	if (formalization.includes(constants.undefined_semantics))
-	    formalization = 'TRUE'
+	    formalization = constants.undefined_semantics;
         return formalization;
     }
 }

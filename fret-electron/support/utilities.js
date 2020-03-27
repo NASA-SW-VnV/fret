@@ -113,7 +113,7 @@ exports.replaceSubstring = (replacements, target) => {
 }
 
 
-// pattern and target are arrays of strngs.
+// pattern and target are arrays of strings.
 // Return whether pattern matches target, where wild cards in pattern
 // are denoted by a hyphen, and alternatives are separated by |, e.g. "null|regular".
  function match (pattern,target) {
