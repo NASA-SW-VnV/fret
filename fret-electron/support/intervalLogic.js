@@ -213,9 +213,9 @@ exports.memberW = (interval, point) => {
   return ((interval.left <= point) && (interval.right >= point))
 }
 
-
-exports.isEmpty = (interval) => {
-    return (interval.length === 0);
+// Is the array of intervals equal to []?
+exports.isEmpty = (intervals) => {
+    return (intervals.length === 0);
 }
 
 exports.removeEmptyIntervals = (intervals) => {

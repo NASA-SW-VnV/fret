@@ -183,7 +183,7 @@ function untilTiming(property,stopcond,endsScope='ENDSCOPE') {
     return disjunction(formula1,formula2)
 }
 
-function notUntilTiming(property,stopcond, endsScope='ENDSCOPE') {
+function notUntilTiming(property,stopcond,endsScope='ENDSCOPE') {
     return beforeTiming(negate(property),stopcond,endsScope)
 }
 

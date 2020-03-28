@@ -166,11 +166,17 @@ exports.activeScopeIntervals = (scope, traceInterval, modeIntervals) => {
 	         modesArray = [scopeInterval];
 	      else modesArray = [];
       }
-      if (scope == 'onlyAfter')
+      if (scope == 'onlyAfter') {
+	  if (false) //(testOptions.verboseOracle)
+	      console.log('activeScopeIntervals: traceInterval: '
+			  + intervalLogic.intervalsToString([traceInterval])
+			  + ' modesArray in: ' + intervalLogic.intervalsToString(modesArray))
             modesArray = intervalLogic.minusMultiple([traceInterval], modesArray);
-
+	  if (false) //(testOptions.verboseOracle)
+	  console.log(' modesArray out: ' + intervalLogic.intervalsToString(modesArray))
+      }
       break;
-    default: return result;
+  default: console.log('Error in oracle.activeScopeIntervals: unknown scope: ' + JSON.stringify(scope))
   }
     // make sure you remove all empty intervals potentially leading to []
     return intervalLogic.removeEmptyIntervals(modesArray);
@@ -375,15 +381,14 @@ function beforeTiming(scopeInterval,stopCondIntervals,responseIntervals,negate) 
 		+ '; stopCondIntervals: ' + intervalLogic.intervalsToString(stopCondIntervals)
 		+ '; stop: ' + JSON.stringify(stop)
 		+ '; responseIntervals: ' + intervalLogic.intervalsToString(responseIntervals))
-    /*
+
     // The stop happened immediately. Since response can't occur before stop, before 
     // should return false whereas until should return true.
-    */
-    //if (stop.point === scopeInterval.left) return negate;
-
     if (stop.point === -1) {
-	// If there was no stop in the interval, then we don't enforce it
-	return ! negate;
+	// If there was no stop in the interval, then non-negated before
+	// doesn't enforce it, so return true.
+	if (!negate) return true
+	else stop.scope = [scopeInterval];
     }
     let p = intervalLogic.overlapsMultiple(responseIntervals,stop.scope);
     if (testOptions.verboseOracle) console.log('p: ' + JSON.stringify(p));

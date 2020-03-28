@@ -82,12 +82,11 @@ else if (!options.conditionOptions.includes(args.c)) console.log(options.incorre
 else if (!options.strategyOptions.includes(args.s)) console.log(options.incorrectStrategy);
 else if (!options.scopeOptions.includes(args.p)) console.log(options.incorrectScopes);
 else if (args.s === 'random' && !(typeof(args.l) === 'number' && typeof(args.n)==='number')) console.log(options.incorrectRandom);
-else if (args.s === 'settings' && args.f === undefined) console.log(options.incorrectSettings);
 else {
   var range = args.r;
   var tool =  args.t;
   var strategy = args.s;
-  var settingsFile = args.f;
+    var settingsFile = args.f;
   var traceLength = args.l;
   var numTests = args.n;
   var Timings = options.timingSubs[args.i];

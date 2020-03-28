@@ -80,6 +80,7 @@ runtimeOptions : {
 	    l : 'traceLength', n : 'numTests', p : 'scope'},
     default: { tool : 'SMV', range : 'simple', timing : 'mostTiming',
 	       condition : 'fullCondition', scope : 'full',
+	       settingsFile : '/tmp/random_settings.json',
 	       strategy : 'classic'}
 },
 
