@@ -58,7 +58,7 @@ satisfaction : ['satisfaction'],
 scopeOptions: ['full','only','nonOnly', undefined],
 toolOptions: ['SMV', 'CoCoSpec', undefined],
 rangeOptions: ['simple', 'extended', undefined],
-timingOptions: ['nonMetricTiming', 'metricTiming', 'mostTiming', 'fullTiming', 'untilTiming','beforeTiming', undefined],
+timingOptions: ['nonMetricTiming', 'metricTiming', 'mostTiming', 'fullTiming', 'untilTiming','beforeTiming', 'untilBeforeTiming', undefined],
 conditionOptions: ['fullCondition', 'nullCondition', undefined],
 strategyOptions: ['classic','settings','random', undefined],
 
@@ -90,7 +90,10 @@ timingSubs : {
     mostTiming: ['immediately','always','never','eventually','within', 'for'],
     untilTiming: ['until'],
     beforeTiming: ['before'],
-    fullTiming: ['immediately','always','never','eventually','within', 'for', 'after'],
+    untilBeforeTiming : ['until','before'],
+    fullTiming: ['immediately','always','never','eventually',
+		 'within', 'for', 'after',
+		 'until','before'],
 },
 
 scopeSubs : {
@@ -107,7 +110,7 @@ conditionSubs : {
   help: '\nOptions: \n'+
   '\xa0 -h, --help:\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0 Print usage info\n'+
   '\xa0 -r, --range:\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0 Specify range (simple or extended)\n'+
-  '\xa0 -i, --timing:\xa0\xa0\xa0\xa0\xa0\xa0\xa0 Specify timing (nonMetricTiming or metricTiming or mostTiming or fullTiming or untilTiming or beforeTiming)\n'+
+  '\xa0 -i, --timing:\xa0\xa0\xa0\xa0\xa0\xa0\xa0 Specify timing (nonMetricTiming or metricTiming or mostTiming or fullTiming or untilTiming or beforeTiming or untilBeforeTiming)\n'+
 	'\xa0 -c, --condition:\xa0\xa0\xa0\xa0 Specify condition (fullCondition or nullCondition)\n'+
 	'\xa0 -s, --strategy:\xa0\xa0\xa0\xa0\xa0 Specify testing strategy (classic or settings or random)\n' +
 	'\xa0 -f, --settingsFile:\xa0 The settings filename to be used with strategy settings\n' +

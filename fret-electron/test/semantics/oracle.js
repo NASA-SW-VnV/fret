@@ -206,11 +206,9 @@ function findStop(scopeInterval,stopIntervals) {
 	    break;
 	}
     }
-    // If there wasn't a stop in the scope, the response must be over the whole scope
-    /*if (stopPoint === -1) {
-	right = scopeInterval.right;
-	} else { right = stopPoint -1 ; } */
-    let right = stopPoint - 1;
+    // If there wasn't a stop in the scope, the response when enforced
+    // must be over the whole scope
+    let right = (stopPoint === -1) ? scopeInterval.right : stopPoint - 1;
     let result =
 	{point: stopPoint,
 	 scope: (right < scopeInterval.left) ? 
@@ -349,19 +347,8 @@ function untilTiming(scopeInterval,stopCondIntervals,responseIntervals,negate) {
 		+ '; stop: ' + JSON.stringify(stop)
 		+ '; responseIntervals: ' + intervalLogic.intervalsToString(responseIntervals))
 
-
-    // The stop happened immediately so it is vacuously true
-    // Tom tried omitting this but when responseIntervals is [], then
-    // intervalLogic.contains(responseIntervals,[empty]) returns false.
-    //if (stop.point === scopeInterval.left) return ! negate; //null;
-
-    if (stop.point === -1) {
-	// stop was not found in scopeInterval. until must be enforced throughout
-	// the scopeInterval, but if negated, return true.
-	if (negate) return true;
-	stop.scope = [scopeInterval];
-    }
-
+    // When stop is not found in scopeInterval. until is not enforced when negated.
+    if (stop.point === -1 && negate) return true;
     let p = intervalLogic.contains(responseIntervals,stop.scope);
     if (testOptions.verboseOracle) console.log('p: ' + JSON.stringify(p));
     return (negate ? !p : p)
@@ -382,14 +369,9 @@ function beforeTiming(scopeInterval,stopCondIntervals,responseIntervals,negate) 
 		+ '; stop: ' + JSON.stringify(stop)
 		+ '; responseIntervals: ' + intervalLogic.intervalsToString(responseIntervals))
 
-    // The stop happened immediately. Since response can't occur before stop, before 
-    // should return false whereas until should return true.
-    if (stop.point === -1) {
-	// If there was no stop in the interval, then non-negated before
-	// doesn't enforce it, so return true.
-	if (!negate) return true
-	else stop.scope = [scopeInterval];
-    }
+   // If there was no stop in the interval, then non-negated before
+    // doesn't enforce it, so return true.
+    if (stop.point === -1 && !negate) return true;
     let p = intervalLogic.overlapsMultiple(responseIntervals,stop.scope);
     if (testOptions.verboseOracle) console.log('p: ' + JSON.stringify(p));
     return (negate ? !p : p)
