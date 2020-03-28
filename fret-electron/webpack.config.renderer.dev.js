@@ -1,7 +1,7 @@
 // *****************************************************************************
 // Notices:
 // 
-// Copyright © 2019 United States Government as represented by the Administrator
+// Copyright ï¿½ 2019 United States Government as represented by the Administrator
 // of the National Aeronautics and Space Administration.  All Rights Reserved.
 // 
 // Disclaimers
@@ -85,7 +85,7 @@ export default merge.smart(baseConfig, {
     rules: [
       {
         test: /\.jsx?$/,
-        exclude: /node_modules/,
+        include: /node_modules(\/|\\)slate-react/,
         use: {
           loader: 'babel-loader',
           options: {
