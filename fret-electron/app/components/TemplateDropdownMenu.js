@@ -27,7 +27,7 @@ function TemplateDropdownMenu(props) {
                 selected={i === selection} 
                 id={'Option_'+i}
                 button
-                onClick={onClick}>
+                onClick={onClick(i)}>
                 <TemplateDropdownOption option={option} selected={i === selection}/>
             </ListItem>
             ))}

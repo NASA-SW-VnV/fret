@@ -112,7 +112,13 @@ const isDev = require('electron-is-dev');
 var dbChangeListener = undefined;
 
 /**
- * Requirment Editor
+ * Template editor constants
+ */
+const fieldStartCharacter = ' ';
+const fieldEndCharacter = ' ';
+
+/**
+ * Requirement Editor
  * @type {Component}
  */
 
@@ -121,17 +127,18 @@ class SlateEditor2 extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      editorValue: initialValue,
+      editorValue: [],
       inputText: ' ',
       fieldColors: {},
       menuOptions: [],
-      menuIndex: 0
+      menuIndex: 0,
+      selectedField: undefined
     }  
 
     this.editor = withFields(withReact(createEditor()));
 
     this.handleEditorValueChange = this.handleEditorValueChange.bind(this);
-    this.handleFieldSelection = this.handleFieldSelection.bind(this);
+    this.handleDropdownSelection = this.handleDropdownSelection.bind(this);
     this.renderEditor = this.renderEditor.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
   }
@@ -226,51 +233,97 @@ class SlateEditor2 extends React.Component {
   }
 
   handleEditorValueChange = (editorValue) => {
-    const editorText = editor2Text(editorValue)
-    const {template} = this.props;
+    this.setState(prevState => {
+      const inputText = editor2Text(editorValue)
+      const {template} = this.props;
 
-    if (this.state.inputText != editorText) {
-      this.setContentInEditor(editorValue)
-    } else {  
-      this.setState({
-        editorValue,
-      })
-    }
+      let errors = prevState.errors;
+      let semantics = prevState.semantics;
+      if (prevState.inputText != inputText) {
+        const result = FretSemantics.compilePartialText(inputText);
+        errors = result.parseErrors;
+        semantics = result.collectedSemantics;
+      }
 
-    /* Handle changed selection (check whether menu should be opened)
-     * This needs to be done only when template fields are enabled */
-    if (template) {
-      const { selection } = this.editor;
-      if (selection && Range.isCollapsed(selection)) {
-        const [start] = Range.edges(selection)
-        const fieldText = getFieldText(this.editor);
-        const isDefault = isFieldDefault(this.editor);
-        const fieldNode = getParent(this.editor);
+      /* Handle changed selection (check whether menu should be opened)
+        * This needs to be done only when template fields are enabled */
+      if (template) {
+        const fieldNode = getFieldNode(this.editor);
+        const fieldName = fieldNode ? fieldNode.name : undefined;
+        let clonedValue = JSON.parse(JSON.stringify(editorValue));
+
+        /* Handle cases, where the current field is populated by a placeholder. 
+         * In this case, the placeholder flag is removed upon selection of the
+         * field in the editor */ 
+        const newField = getField(clonedValue, fieldName);
+        const newLeaf = newField && newField.children && newField.children[0];
+        const newText = newLeaf && newLeaf.text;
+        const oldField = getField(prevState.editorValue, fieldName);
+        const oldLeaf = oldField && oldField.children && oldField.children[0];
+        const oldText = oldLeaf && oldLeaf.text;
+        const emptyText = fieldStartCharacter+fieldEndCharacter;
+        const defaultText = fieldStartCharacter+fieldName+fieldEndCharacter;
+        if (newLeaf) {
+          newLeaf.isPlaceholder = !oldText || 
+          (newText === emptyText) || 
+          (oldLeaf.isPlaceholder && oldText === newText) ||
+          (oldLeaf.isPlaceholder && oldText === emptyText && newText === defaultText);
+        } 
 
         /* The dropdown menu should only be opened when the field is empty or 
          * populated with the default selection */
-        if (!fieldText || isDefault) {
-          const structure = template && template.structure;
-          const field = structure && structure.find(f => (f.field && f.field === fieldNode.name));
-          const menuOptions = this.getOptions(fieldNode.name);
-          if (field && menuOptions && menuOptions.length > 0) {
-            this.setState({ menuOptions, menuIndex: 0 })
-            return
-          }
-        }
-        this.setState({ menuOptions: [], menuIndex: 0 })
+        const menuOptions = (fieldNode && fieldName && newLeaf && (!newText || newLeaf.isPlaceholder)) ?
+                              this.getOptions(fieldName): [];
+        return {  editorValue: clonedValue, 
+                  inputText,
+                  errors,
+                  semantics,
+                  menuOptions, 
+                  menuIndex: 0, 
+                  selectedField: fieldName };
+      } else {
+        return {  editorValue, 
+                  inputText,
+                  errors,
+                  semantics };
       }
-    }
+    })
   }
 
-  handleFieldSelection(name, index)  {
-    const {template} = this.props;
-    const fields = template && template.fields;
-    const field = fields && fields[name];
-    const newValue = field && field.options[index].suggestion;
-    // const oldValue = this.props.values[name];
-    console.log(`Set ${name} to ${newValue}`);
+  handleDropdownSelection(index) {
+    const selection = this.editor.selection;
+    const start = selection && Range.start(selection);
+    const path = start && start.path;
+    Transforms.select(this.editor, {path, offset: 1});
+    this.setState(prevState => {
+      const {editorValue, menuOptions, menuIndex, selectedField} = prevState;
+      const selectedIndex = index ? index : menuIndex;
+      if (menuOptions && menuOptions.length > 0 && selectedField) {
+        const {template} = this.props;
+        const fields = template && template.fields;
+        const field = fields && fields[selectedField];
+        const newValue = field && field.options[selectedIndex].suggestion; 
+        let clonedValue = JSON.parse(JSON.stringify(editorValue));
+        const newField = getField(clonedValue, selectedField);
+        let newLeaf = newField && newField.children[0];
+        if (newLeaf) {
+          newLeaf.text = fieldStartCharacter + newValue + fieldEndCharacter;
+          newLeaf.isPlaceholder = false;
+        }
+        const inputText = editor2Text(clonedValue);
+        const result = FretSemantics.compilePartialText(inputText);
+
+        return {editorValue: clonedValue,
+                inputText,
+                errors: result.parseErrors,
+                semantics: result.collectedSemantics, 
+                menuIndex: 0, 
+                menuOptions: []}
+      }
+    })
   }
+
+  handleDropdownClick = (index) => (() => this.handleDropdownSelection(index));
 
   handleKeyDown = (event) => {
     const selection = this.editor.selection;
@@ -311,16 +364,7 @@ class SlateEditor2 extends React.Component {
     } else if (isKeyHotkey('enter', event)) {
       /* Enter is supressed */
       event.preventDefault();
-      this.setState(prevState => {
-        const {menuOptions, menuIndex} = prevState;
-        if (menuOptions && menuOptions.length > 0) {
-          const field = getFieldNode(this.editor);
-          if (field) {
-            this.handleFieldSelection(field.name, menuIndex);
-          }
-          return {menuIndex: 0, menuOptions: []}
-        }
-      })
+      this.handleDropdownSelection();
     } else if (isKeyHotkey('arrowup', event)) {
       /* Arrow up is supressed */
       event.preventDefault();
@@ -355,7 +399,7 @@ class SlateEditor2 extends React.Component {
           event.preventDefault();
           const field = getFieldNode(this.editor);
           if (field) {
-            this.handleFieldSelection(field.name, menuIndex);
+            this.handleDropdownSelection(field.name, menuIndex);
           }
           return {menuIndex: 0, menuOptions: []}
         }
@@ -406,7 +450,7 @@ class SlateEditor2 extends React.Component {
                 domNode.offsetLeft + window.pageXOffset];
       }
     } 
-    return null
+    return undefined
   }
 
   getOptions(currentField) {
@@ -473,7 +517,7 @@ class SlateEditor2 extends React.Component {
   renderConsole = () => {
     const {inputText, errors } = this.state
     const message = (inputText || inputText.length > 0)
-                      ? ((this.state.errors) ? 'Parse Errors: ' + this.state.errors : undefined)
+                      ? ((errors) ? 'Parse Errors: ' + errors : undefined)
                       : undefined
     return (
       <div style={{width: 600, height: 100}}>
@@ -590,28 +634,6 @@ class SlateEditor2 extends React.Component {
       })
     }
 
-    // texts.forEach((textNode) => {
-    //   // Find tokens in texts
-    //   const text = textNode.text
-    //   tokens.forEach((token) => {
-    //     let startOffset = text.indexOf(token.content) + blankOffset;
-    //     let endOffset = startOffset + token.content.length;
-    //     if (startOffset >= 0) {
-    //       const range = {
-    //         anchorKey: textNode.key,
-    //         anchorOffset: startOffset,
-    //         focusKey: textNode.key,
-    //         focusOffset: startOffset + token.content.length,
-    //         marks: [
-    //           {
-    //             type: token.type,
-    //             color: this.state.fieldColors[token.type.replace("TextRange", "")]
-    //           }],
-    //       }
-    //       decorations.push(range)
-    //     }
-    //   })
-    // })
     return decorations
   }
 
@@ -671,7 +693,7 @@ class SlateEditor2 extends React.Component {
 
   renderEditor = () => {
     const { template } = this.props;
-    const {menuOptions, menuIndex} = this.state;
+    const {menuOptions, menuIndex, editorValue, selectedField} = this.state;
     const hasFields = Boolean(template);
     this.editor.fieldsEnabled = hasFields;
 
@@ -679,12 +701,12 @@ class SlateEditor2 extends React.Component {
      * extract the field values from the previous editor value, apply them 
      * to the template structure and convert the structure back to an editor 
      * value. Otherwise, simply use the editor value from the component state.*/
-    let editorValue;
+    let slateValue;
     if (hasFields) {
-      const values = editor2Values(this.state.editorValue);
-      editorValue = structure2Editor(template.structure, values);
+      const values = editor2Values(editorValue, selectedField);
+      slateValue = structure2Editor(template.structure, values);
     } else {
-      editorValue = this.state.editorValue;
+      slateValue = unwrapEditorValue(editorValue);
     }
 
     /* Render the dropdown menu, if there are options for the current template field.
@@ -693,12 +715,12 @@ class SlateEditor2 extends React.Component {
      * (selection) in the editor */
     const position = this.getPosition();
     let menu = undefined;
-    if (menuOptions && menuOptions.length > 0 && position) {
+    if (hasFields && menuOptions && menuOptions.length > 0 && position) {
       menu = <TemplateDropdownMenu 
                 options={menuOptions} 
                 selection={menuIndex} 
                 position={position}
-                onClick={() => {console.log('Click')}}/>
+                onClick={this.handleDropdownClick}/>
     }
 
     return (
@@ -706,7 +728,7 @@ class SlateEditor2 extends React.Component {
       <div style={{border: 'solid 1px gray', padding: '10px', height: 100}}>
         <Slate 
           editor={this.editor} 
-          value={editorValue}
+          value={slateValue}
           onChange={this.handleEditorValueChange}>
           <Editable 
             onKeyDown={this.handleKeyDown}
@@ -872,15 +894,31 @@ function isField(editor) {
 
 function getFieldNode(editor) {
   let parent = getParent(editor);
-  return isMany(editor) ? false : parent && parent.type === 'field-element' ? parent : null;
+  return (isMany(editor) ? false : parent && parent.type === 'field-element') ? parent : undefined;
 }
+
+function getField(editorValue, fieldName) {
+  const paragraph = editorValue && editorValue[0];
+  return paragraph && paragraph.children
+    .find(child => (child.type && child.type === 'field-element' && child.name === fieldName));
+}
+
+// function getText(editorValue, fieldName) {
+//   const fieldNode = getField(editorValue, fieldName);
+//   const leaf = fieldNode && fieldNode.children && fieldNode.children[0];
+//   return leaf && leaf.text;
+// }
 
 function getParent(editor) {
   const selection = editor.selection;
   const start = selection && Range.start(selection);
   const path = start && start.path;
-  const parent = path && Node.parent(editor, path);
-  return parent;
+  let parent = undefined;
+  try {
+    parent = path && Node.parent(editor, path);
+  } finally {
+    return parent;
+  }
 }
 
 function getFirstLeaf(editor) {
@@ -890,16 +928,18 @@ function getFirstLeaf(editor) {
   return path && Node.leaf(editor, path);
 }
 
-function getFieldText(editor) {
-  const field = isField(editor);
-  const text = getFirstLeaf(editor).text;
-  return field ? text.substring(1, text.length-1) : "";
-}
-function isFieldDefault(editor) {
-  const field = isField(editor);
-  const isDefault = getFirstLeaf(editor).isPlaceholder;
-  return field ? isDefault : false;
-}
+// function getFieldText(editor) {
+//   const field = isField(editor);
+//   const leaf = getFirstLeaf(editor);
+//   const text = leaf && leaf.text;
+//   return text && field ? text.substring(1, text.length-1) : "";
+// }
+// function isFieldDefault(editor) {
+//   const field = isField(editor);
+//   const leaf = getFirstLeaf(editor);
+//   const isDefault = leaf && leaf.isPlaceholder;
+//   return field ? isDefault : false;
+// }
 
 function getLeftSibling(editor, oneUp) {
   let path = [...Range.start(editor.selection).path];
@@ -926,8 +966,13 @@ function getRightSibling(editor, oneUp) {
   return null
 }
 
-const fieldStartCharacter = ' ';
-const fieldEndCharacter = ' ';
+function unwrapEditorValue(editorValue) {
+  const editorText = editor2Text(editorValue);
+  return [{
+    type: 'paragraph',
+    children: [{text: editorText}]
+  }]
+}
 
 function structure2Editor(structure, values) {
   let editorValue = [];
@@ -945,14 +990,13 @@ function structure2Editor(structure, values) {
 function part2Editor(part, values) {
   if (part.field) {
     const value = values[part.field];
-    // const hasValue = (value && !value.isPlaceholder && value.text && value.text.length > 0);
-    const hasValue = (value && value.text && value.text.length > 0); 
+    const hasValue = (value && !value.isPlaceholder && value.text && value.text.length > 0);
     const text = hasValue ? value.text : part.field;
     return { 
       type: 'field-element', 
       name: part.field, 
       options: part.options,
-      children: [{text: fieldStartCharacter+text+fieldEndCharacter, isPlaceholder: !hasValue, }]}
+      children: [{text: fieldStartCharacter+text+fieldEndCharacter, isPlaceholder: !hasValue }]}
   }
   return {text: ((part.text && part.text.length) > 0 ? part.text : ' ')};
 }
@@ -965,7 +1009,7 @@ function editor2Values(editorValue) {
             const leaf = part.children && part.children[0];
             const text = leaf.text;
             const isPlaceholder =  leaf.isPlaceholder;
-            values[part.name] = {text: text.slice(1, text.length-1), isPlaceholder};
+            values[part.name] = {text: isPlaceholder ? '' : text.slice(1, text.length-1), isPlaceholder};
             return values;
           }, {});
 }
@@ -976,6 +1020,7 @@ SlateEditor2.propTypes = {
   updateSemantics: PropTypes.func.isRequired,
   inputFields: PropTypes.object,
   grammarRule: PropTypes.string,
+  template: PropTypes.object
 }
 /**
  * Export.
