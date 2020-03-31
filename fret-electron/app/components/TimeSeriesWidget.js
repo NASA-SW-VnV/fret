@@ -1,15 +1,15 @@
 // *****************************************************************************
 // Notices:
-// 
-// Copyright © 2019 United States Government as represented by the Administrator
+//
+// Copyright ï¿½ 2019 United States Government as represented by the Administrator
 // of the National Aeronautics and Space Administration.  All Rights Reserved.
-// 
+//
 // Disclaimers
-// 
+//
 // No Warranty: THE SUBJECT SOFTWARE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY OF
 // ANY KIND, EITHER EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED
-// TO, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL CONFORM TO SPECIFICATIONS, 
-// ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, 
+// TO, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL CONFORM TO SPECIFICATIONS,
+// ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE,
 // OR FREEDOM FROM INFRINGEMENT, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL BE
 // ERROR FREE, OR ANY WARRANTY THAT DOCUMENTATION, IF PROVIDED, WILL CONFORM TO
 // THE SUBJECT SOFTWARE. THIS AGREEMENT DOES NOT, IN ANY MANNER, CONSTITUTE AN
@@ -18,7 +18,7 @@
 // RESULTING FROM USE OF THE SUBJECT SOFTWARE.  FURTHER, GOVERNMENT AGENCY
 // DISCLAIMS ALL WARRANTIES AND LIABILITIES REGARDING THIRD-PARTY SOFTWARE, IF
 // PRESENT IN THE ORIGINAL SOFTWARE, AND DISTRIBUTES IT ''AS IS.''
-// 
+//
 // Waiver and Indemnity:  RECIPIENT AGREES TO WAIVE ANY AND ALL CLAIMS AGAINST
 // THE UNITED STATES GOVERNMENT, ITS CONTRACTORS AND SUBCONTRACTORS, AS WELL AS
 // ANY PRIOR RECIPIENT.  IF RECIPIENT'S USE OF THE SUBJECT SOFTWARE RESULTS IN
@@ -57,26 +57,26 @@ class TimeSeriesWidget extends Component {
 
     atomic2chart(key, atomic, fkey) {
         return ( (atomic === undefined) ? null :
-                    <TimeSeriesChart 
+                    <TimeSeriesChart
                         key={'chart-atomic-' + key + ((fkey) ? '-'+fkey : '')}
                         data={atomic.trace}
-                        name={key} 
-                        dataKey={key} 
+                        name={key}
+                        dataKey={key}
                         syncId={this.props.syncId}
                         canChange={true}
                         onChange={this.props.onChange}
                         onClick={this.props.onAtomicsChartClick}
-                    />  
+                    />
         );
     }
 
     formula2chart(key, formula) {
         return ( (formula === undefined) ? null :
                     <TimeSeriesChart
-                        key={'chart-formula-'+key} 
+                        key={'chart-formula-'+key}
                         data={formula.trace}
-                        name={key} 
-                        dataKey={key} 
+                        name={key}
+                        dataKey={key}
                         syncId={this.props.syncId}
                         canChange={false}
                         highlight={this.props.displayFormulaEvaluation}
@@ -102,13 +102,13 @@ class TimeSeriesWidget extends Component {
     }
 
     render() {
-        const { model, 
-                visibleAtomics, 
-                visibleFormulas, 
-                visibleSubformulas, 
+        const { model,
+                visibleAtomics,
+                visibleFormulas,
+                visibleSubformulas,
                 displaySubformulas } = this.props;
 
-        const atomicsCharts = this.props.displayAtomicsWithFormulas ? null : 
+        const atomicsCharts = this.props.displayAtomicsWithFormulas ? null :
         visibleAtomics.map((akey) => (
             this.atomic2chart(akey, LTLSimController.getAtomic(model, akey))
         ));
@@ -116,16 +116,16 @@ class TimeSeriesWidget extends Component {
         const formulasCharts = visibleFormulas
             .reduce((accumulator, fkey) => (
                 accumulator
-                    .concat( this.props.displayAtomicsWithFormulas ? 
+                    .concat( this.props.displayAtomicsWithFormulas ?
                         LTLSimController.getFormula(model, fkey).atomics
                             .map((akey) => (
                                 this.atomic2chart(akey, LTLSimController.getAtomic(model, akey), fkey)
                             )) : []
                     )
-                    .concat( this.props.displaySubformulas ? 
+                    .concat( this.props.displaySubformulas ?
                         LTLSimController.getFormula(model, fkey).subexpressions
                             .filter((s, i) => (
-                                (visibleSubformulas[fkey] === undefined) ? false : 
+                                (visibleSubformulas[fkey] === undefined) ? false :
                                     visibleSubformulas[fkey].indexOf(i) !== -1))
                             .map((s) => this.formula2chart(s.label, s)) : []
                     )
@@ -136,18 +136,18 @@ class TimeSeriesWidget extends Component {
 
         return (
             <Typography component="div" >
-                {(atomicsCharts && (atomicsCharts.length > 0) || 
+                {(atomicsCharts && (atomicsCharts.length > 0) ||
                 (formulasCharts && (formulasCharts.length > 0))) &&
-                <TimeLine 
-                    tStart={0} 
-                    tEnd={this.props.traceLength-1} 
+                <TimeLine
+                    tStart={0}
+                    tEnd={this.props.traceLength-1}
                     syncId={this.props.syncId}
                     orientation="top"
                     onClick={this.handleTraceDialogOpen}
                 />}
-                {atomicsCharts} 
+                {atomicsCharts}
                 {formulasCharts}
-                <TraceDialog 
+                <TraceDialog
                     open={this.state.traceDialogOpen}
                     model={model}
                     onCancel={this.handleTraceDialogCancel}
@@ -167,11 +167,12 @@ TimeSeriesWidget.propTypes = {
     displaySubformulas: PropTypes.bool.isRequired,
     displayAtomicsWithFormulas: PropTypes.bool.isRequired,
     displayFormulaEvaluation: PropTypes.bool.isRequired,
-    onChange: PropTypes.func.isRequired, 
+    onChange: PropTypes.func.isRequired,
     onTraceLengthChange: PropTypes.func.isRequired,
     onAtomicsChartClick: PropTypes.func,
     onFormulaChartClick: PropTypes.func,
-    selectedFormula : PropTypes.string
+    selectedFormula : PropTypes.string,
+    requirementID : PropTypes.string
 }
 
 TimeSeriesWidget.defaultProps = {

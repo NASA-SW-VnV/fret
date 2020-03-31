@@ -1,15 +1,15 @@
 // *****************************************************************************
 // Notices:
-// 
+//
 // Copyright � 2019 United States Government as represented by the Administrator
 // of the National Aeronautics and Space Administration.  All Rights Reserved.
-// 
+//
 // Disclaimers
-// 
+//
 // No Warranty: THE SUBJECT SOFTWARE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY OF
 // ANY KIND, EITHER EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED
-// TO, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL CONFORM TO SPECIFICATIONS, 
-// ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, 
+// TO, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL CONFORM TO SPECIFICATIONS,
+// ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE,
 // OR FREEDOM FROM INFRINGEMENT, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL BE
 // ERROR FREE, OR ANY WARRANTY THAT DOCUMENTATION, IF PROVIDED, WILL CONFORM TO
 // THE SUBJECT SOFTWARE. THIS AGREEMENT DOES NOT, IN ANY MANNER, CONSTITUTE AN
@@ -18,7 +18,7 @@
 // RESULTING FROM USE OF THE SUBJECT SOFTWARE.  FURTHER, GOVERNMENT AGENCY
 // DISCLAIMS ALL WARRANTIES AND LIABILITIES REGARDING THIRD-PARTY SOFTWARE, IF
 // PRESENT IN THE ORIGINAL SOFTWARE, AND DISTRIBUTES IT ''AS IS.''
-// 
+//
 // Waiver and Indemnity:  RECIPIENT AGREES TO WAIVE ANY AND ALL CLAIMS AGAINST
 // THE UNITED STATES GOVERNMENT, ITS CONTRACTORS AND SUBCONTRACTORS, AS WELL AS
 // ANY PRIOR RECIPIENT.  IF RECIPIENT'S USE OF THE SUBJECT SOFTWARE RESULTS IN
@@ -222,7 +222,7 @@ class Instructions extends React.Component {
   }
 
   renderFormula() {
-    const { classes} = this.props;
+    const { classes, requirement, rID} = this.props;
     var { ft, description, diagram, type } = this.props.formalization.semantics;
     var path = `../docs/`+this.props.formalization.semantics.diagram;
     var notationPath = `../docs/_media/user-interface/examples/svgDiagrams/Notation.svg`;
@@ -231,18 +231,20 @@ class Instructions extends React.Component {
       /* TODO: Currently, formalization.semantics contains HTML beautified expression
        * (i.e. including <b> and <i> tags). They are currently removed in LTLSimLauncher
        * (rewriteExpressionForLTLSIM) but this should probably be done before, such that
-       * the semantics object contains both, the plain and the HTML tagged expressions. 
-       * 
+       * the semantics object contains both, the plain and the HTML tagged expressions.
+       *
        * Currently the HTML tags are injected in SemanticsAnalyzer.replaceTemplateVarsWithArgs(),
-       * which has also a parameter noHTML to prevent injection of HTML, but it is always 
-       * called with noHMTL = false in SemanticsAnalyzer.semantics(). 
+       * which has also a parameter noHTML to prevent injection of HTML, but it is always
+       * called with noHMTL = false in SemanticsAnalyzer.semantics().
        */
-      var ltlsimLauncher = <LTLSimLauncher 
+      var ltlsimLauncher = <LTLSimLauncher
                             open={this.state.LTLSimDialogOpen}
                             semantics={this.props.formalization.semantics}
                             status={this.LTLSimStatus}
                             onOpen={this.openLTLSimDialog}
                             onClose={this.closeLTLSimDialog}
+                            requirement={requirement}
+                            rID={rID}
                             />;
     }
 
@@ -427,6 +429,8 @@ Instructions.propTypes = {
   field: PropTypes.string,
   grammarRule: PropTypes.string,
   formalization: PropTypes.object,
+  requirement: PropTypes.string.isRequired,
+  rID: PropTypes.string.isRequired
 };
 
 export default withStyles(styles)(Instructions);

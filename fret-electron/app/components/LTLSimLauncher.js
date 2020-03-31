@@ -4,10 +4,11 @@ import Tooltip from '@material-ui/core/Tooltip';
 import LTLSimDialog from './LTLSimDialog';
 
 export default function LTLSimLauncher(props) {
-    const {open, semantics, status, onOpen, onClose} = props;
+    const {open, semantics, status, onOpen, onClose, requirement,rID} = props;
 
     const ftExpression = rewriteExpressionForLTLSIM(semantics.ftExpanded);
     const ptExpression = rewriteExpressionForLTLSIM(semantics.ptExpanded);
+
 
     return (status.ltlsim && status.nusmv) ?
             (<div>
@@ -18,10 +19,12 @@ export default function LTLSimLauncher(props) {
                 </Tooltip>
                 <LTLSimDialog
                 open={open}
-                id="REQ"
+                id="REQ" //TODO: REMOVE THIS
                 ftExpression={ftExpression}
                 ptExpression={ptExpression}
                 onClose={onClose}
+                requirement={requirement}
+                rID={rID}
                 />
             </div>) :
             (<Tooltip title={status.ltlsim ?
@@ -35,11 +38,11 @@ export default function LTLSimLauncher(props) {
             </Tooltip>)
 }
 
-/** 
- * Tis function rewrites an expression produced by FRET formalization for LTLSIM. 
+/**
+ * Tis function rewrites an expression produced by FRET formalization for LTLSIM.
  * This includes removing html-tags (<b>, <i>) and replacing specific notations for
- * the bounds in bounded LTL operators ([<=t] -> [0, t], [=t] -> [t, t], 
- * [<t] -> [0, t-1], expressions containing "t+1" are rewritten such that "t+1" is 
+ * the bounds in bounded LTL operators ([<=t] -> [0, t], [=t] -> [t, t],
+ * [<t] -> [0, t-1], expressions containing "t+1" are rewritten such that "t+1" is
  * evaluated to an integer)
  * @param {string} expression the expression that should be modified
  * @returns {string} the modified expression
