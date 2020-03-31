@@ -75,6 +75,8 @@ const BaseForm = [ // negate, timing, condition
   ['true,after,null', notAfter('RES','BOUND')],
     ['false,until,null', untilTiming('RES','STOPCOND')],
     ['true,until,null', notUntilTiming('RES','STOPCOND')],
+    ['false,before,null', beforeTiming('RES','STOPCOND')],
+    ['true,before,null', notBeforeTiming('RES','STOPCOND')],
   // now with condition
   ['false,immediately,regular', immediately('RES','COND')],
   ['true,immediately,regular', notImmediately('RES','COND')],
@@ -91,7 +93,9 @@ const BaseForm = [ // negate, timing, condition
   ['false,after,regular', after('RES','BOUND','COND')],
   ['true,after,regular', notAfter('RES','BOUND','COND')],
     ['false,until,regular', untilTiming('RES','STOPCOND','COND')],
-    ['true,until,regular', notUntilTiming('RES','STOPCOND','COND')]
+    ['true,until,regular', notUntilTiming('RES','STOPCOND','COND')],
+    ['false,before,regular', beforeTiming('RES','STOPCOND','COND')],
+    ['true,before,regular', notBeforeTiming('RES','STOPCOND','COND')]
 ]
 
 function negate(str) {return utilities.negate(str)}
@@ -272,8 +276,29 @@ function untilTiming(property, stopcond, cond='null') {
 }
 
 function notUntilTiming(property,stopcond,cond='null') {
-    return constants.undefined_semantics;
+    return beforeTiming(negate(property),stopcond,cond)
 }
+
+	//implication(`((not(${stopcond})) since inclusive required LEFTEND)`,
+	//form = implication(stopcond, `previous (${innerImpl})`) + 'since LEFTEND'
+
+function beforeTiming(property, stopcond, cond='null') {
+    //return constants.undefined_semantics;
+    let form = null;
+    if (cond !== 'null') return constants.undefined_semantics;
+    else {
+	let basicForm = `(not((not(${property})) since inclusive required LEFTEND))`
+	let form = implication(stopcond,conjunction(negate('LEFTEND'),
+						    `previous ${basicForm}`))
+	return parenthesize(form + checkAllUpToLeft('LEFTEND'))
+    }
+}
+
+function notBeforeTiming(property, stopcond, cond='null') {
+    let form = untilTiming(negate(property),stopcond,cond)
+    return form;
+}
+    
 
 // The order here matters, because some substitutions are in terms of others.
 // Note for past time we have [LEFTEND, RIGHTEND)
