@@ -92,8 +92,9 @@ timingSubs : {
     beforeTiming: ['before'],
     untilBeforeTiming : ['until','before'],
     fullTiming: ['immediately','always','never','eventually',
-		 //'until','before',
-		 'within', 'for', 'after']
+		 'within', 'for', 'after',
+		 'until','before']
+		 
 },
 
 scopeSubs : {

@@ -150,7 +150,7 @@ function createSemantics(product,options,properties) {
     //Also updates FRETSemantics var
     var saltInfo = createSaltBatchString(product,options);
     if (constants.verboseCacheSemantics){
-    console.log('\nsaltInfo\n' + JSON.stringify(saltInfo));
+    console.log('\ncreateSemantics:saltInfo\n' + JSON.stringify(saltInfo));
     }
     var saltString = saltInfo.str;
     var semanticsMap = saltInfo.mp;

@@ -184,7 +184,9 @@ function get_LTL_from_old_SALT(SALT_string,SALT_env_var='SALT_HOME') {
   	    compilation = execSync(SALT_command).toString();
               stdout = execSync('/tmp/temp').toString();
   	} catch (error) {
-              console.log(error);
+	    console.log('SemanticsGenerator:get_LTL_from_old_SALT error:');
+            console.log(error);
+	    console.log('SALT_string:\n' + SALT_string);
   	}
 
     return stdout;

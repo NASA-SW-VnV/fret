@@ -285,13 +285,22 @@ function notUntilTiming(property,stopcond,cond='null') {
 function beforeTiming(property, stopcond, cond='null') {
     //return constants.undefined_semantics;
     let form = null;
-    if (cond !== 'null') return constants.undefined_semantics;
-    else {
-	let basicForm = `(not((not(${property})) since inclusive required LEFTEND))`
-	let form = implication(stopcond,conjunction(negate('LEFTEND'),
-						    `previous ${basicForm}`))
-	return parenthesize(form + checkAllUpToLeft('LEFTEND'))
+    if (cond !== 'null') {
+	let trigger = conditionTrigger(cond,'LEFTEND')
+	let propOccurs = `(not((not(${property})) since inclusive required ${trigger}))`
+	form = implication(
+	    stopcond,
+	    conjunction(
+		negate(trigger),
+		implication(`((not LEFTEND) since exclusive required ${trigger})`,
+			    `previous ${propOccurs}`)))
     }
+    else {
+	let propOccurs = `(not((not(${property})) since inclusive required LEFTEND))`
+	form = implication(stopcond,
+			   conjunction(negate('LEFTEND'),`previous ${propOccurs}`))
+    }
+    return parenthesize(form + checkAllUpToLeft('LEFTEND'))
 }
 
 function notBeforeTiming(property, stopcond, cond='null') {
