@@ -1,7 +1,7 @@
 // *****************************************************************************
 // Notices:
 // 
-// Copyright © 2019 United States Government as represented by the Administrator
+// Copyright ï¿½ 2019 United States Government as represented by the Administrator
 // of the National Aeronautics and Space Administration.  All Rights Reserved.
 // 
 // Disclaimers
@@ -43,40 +43,40 @@ module.exports = class LTLSimController {
         return new LTLSimModel(traceLength);
     }
 
-    static addAtomic(model, label) {
-        if (model.atomics.keys.indexOf(label) === -1) {
-            model.atomics.keys.push(label);
-            model.atomics.values[label] = new Atomic(label, model.traceLength);
+    static addAtomic(model, id) {
+        if (model.atomics.keys.indexOf(id) === -1) {
+            model.atomics.keys.push(id);
+            model.atomics.values[id] = new Atomic(id, model.traceLength);
             return true;
         }
         return false;
     }
 
-    static addFormula(model, label, expression) {
-        if (model.formulas.keys.indexOf(label) === -1) {
-            model.formulas.keys.push(label);
-            model.formulas.values[label] = new Formula(label, expression, model.traceLength);
+    static addFormula(model, id, expression) {
+        if (model.formulas.keys.indexOf(id) === -1) {
+            model.formulas.keys.push(id);
+            model.formulas.values[id] = new Formula(id, expression, model.traceLength);
 
             // Add this formula to the respective atomics and add missing atomics
-            model.formulas.values[label].atomics.forEach((a) => {
+            model.formulas.values[id].atomics.forEach((a) => {
                 if (model.atomics.keys.indexOf(a) === -1) {
                     LTLSimController.addAtomic(model, a);
                 } 
-                model.atomics.values[a].formulas.push(label);
+                model.atomics.values[a].formulas.push(id);
             }) 
 
             /* Explicitly set the expression via LTLSIMController to enforce formula update */
-            LTLSimController.setFormulaExpression(model, label, expression);
+            LTLSimController.setFormulaExpression(model, id, expression);
 
             return true;
         }
         return false;
     }
 
-    static addFormulaFromFile(model, label, formulaFile) {
+    static addFormulaFromFile(model, id, formulaFile) {
 	    var data = fs.readFileSync(formulaFile);
             var myformula = data.toString()
-	this.addFormula(model, label, myformula);
+	this.addFormula(model, id, myformula);
         return true;
     }
 
@@ -92,23 +92,19 @@ module.exports = class LTLSimController {
 		 });
 	    var mytraces = mycsv.slice(1);
 	    var myatomic_names = mycsv.slice(0,1);
- console.log(model.atomics);
 	    var target_id;
             var id=0;
             myatomic_names[0].forEach((a) => {
-                console.log("adding Trace for "+a);
 
 			//
 			// if atomic not yet defined, define it
 			//
         	if (model.atomics.keys.indexOf(a) === -1) {
-			console.log("atomic "+a+" not yet defined.")
             		model.atomics.keys.push(a);
             		model.atomics.values[a] = 
 				new Atomic(a, model.traceLength);
 			}
        		target_id = model.atomics.keys.indexOf(a);
-console.log("target-id="+target_id);
                 
 	    	var i=0;
             	while ((i < model.traceLength) && (i <mytraces.length-1)){
@@ -121,13 +117,13 @@ console.log("target-id="+target_id);
         return true;
     }
 
-    static removeFormula(model, label) {
-        if (model.formulas.keys.indexOf(label) !== -1) {
+    static removeFormula(model, id) {
+        if (model.formulas.keys.indexOf(id) !== -1) {
             
             /* Remove this formula from all referencing atomics */
-            model.formulas.values[label].atomics.forEach((a) => {
+            model.formulas.values[id].atomics.forEach((a) => {
                 if (model.atomics.keys.indexOf(a) !== -1) {
-                    let idx = model.atomics.values[a].formulas.indexOf(label);
+                    let idx = model.atomics.values[a].formulas.indexOf(id);
                     if (idx !== -1) {
                         model.atomics.values[a].formulas.splice(idx, 1);
                     }
@@ -135,8 +131,8 @@ console.log("target-id="+target_id);
             })
 
             /* Remove the formula */
-            delete model.formulas.values[label];
-            model.formulas.keys.splice(model.formulas.keys.indexOf(label), 1);
+            delete model.formulas.values[id];
+            model.formulas.keys.splice(model.formulas.keys.indexOf(id), 1);
 
             /* Remove atomics which do not influence anything */
             model.atomics.keys
@@ -151,31 +147,31 @@ console.log("target-id="+target_id);
         return false;
     }
 
-    static setAtomicTrace(model, label, trace) {
-        if (model.atomics.keys.indexOf(label) !== -1) {
-            model.atomics.values[label].trace = trace;
+    static setAtomicTrace(model, id, trace) {
+        if (model.atomics.keys.indexOf(id) !== -1) {
+            model.atomics.values[id].trace = trace;
             return true;
         }
         return false;
     }
     
-    static setAtomicLabel(model, label, newLabel) {
-        let oidx = model.atomics.keys.indexOf(label);
+    static setAtomicLabel(model, id, newLabel) {
+        let oidx = model.atomics.keys.indexOf(id);
         let nidx = model.atomics.keys.indexOf(newLabel);
         if (oidx !== -1 && nidx === -1) {
-            /* Change the label */
+            /* Change the id */
             model.atomics.keys[oidx] = newLabel;
-            model.atomics.values[newLabel] = model.atomics.values[label];
-            model.atomics.values[newLabel].label = newLabel;
-            delete model.atomics.values[label];
+            model.atomics.values[newLabel] = model.atomics.values[id];
+            model.atomics.values[newLabel].id = newLabel;
+            delete model.atomics.values[id];
             
-            /* Change the label and occurances of the atomic in all referencing formulas */
+            /* Change the id and occurances of the atomic in all referencing formulas */
             model.formulas.keys.forEach((f) => {
-                let fidx = model.formulas.values[f].atomics.indexOf(label);
+                let fidx = model.formulas.values[f].atomics.indexOf(id);
                 if (fidx !== -1) {
                     let formula = model.formulas.values[f];
                     let expression = formula.expression;
-                    let rgx = new RegExp(`\\b${label}\\b`, "g");
+                    let rgx = new RegExp(`\\b${id}\\b`, "g");
                     formula.atomics[fidx] = newLabel;
                     expression = formula.expression.replace(rgx, newLabel);
                     LTLSimController.setFormulaExpression(model, f, expression);
@@ -187,9 +183,9 @@ console.log("target-id="+target_id);
         return false;
     }
 
-    static setFormulaExpression(model, label, expression) {
-        if (model.formulas.keys.indexOf(label) !== -1) {
-            let formula = model.formulas.values[label];
+    static setFormulaExpression(model, id, expression) {
+        if (model.formulas.keys.indexOf(id) !== -1) {
+            let formula = model.formulas.values[id];
             formula.expression = expression;
 
             /* Parse the expression, set the subexpressions and render the formula tex */
@@ -199,7 +195,7 @@ console.log("target-id="+target_id);
             formula.atomics = [...result.atomics];
             formula.subexpressions = result.subexpressions
                                     .map((s, i) => ({
-                                        label: `${formula.label}_${i+1}`,
+                                        id: `${formula.id}_${i+1}`,
                                         expression: s,
                                         trace: new Array(model.traceLength).fill(0),
                                         tex: Formula.render(s),
@@ -208,22 +204,21 @@ console.log("target-id="+target_id);
 
             /* Remove this formula from atomics which do not influence it anymore */
             model.atomics.keys
-                .filter((a) => (model.atomics.values[a].formulas.indexOf(label) !== -1))
+                .filter((a) => (model.atomics.values[a].formulas.indexOf(id) !== -1))
                 .forEach((a) => {
                     if (formula.atomics.indexOf(a) === -1) {
                         model.atomics.values[a].formulas
-                            .splice(model.atomics.values[a].formulas.indexOf(label), 1);
+                            .splice(model.atomics.values[a].formulas.indexOf(id), 1);
                     }
                 });
 
             /* Add this formula to its atomics, if not already present and add missing atomics */
             formula.atomics.forEach((a) => {
                 if (model.atomics.keys.indexOf(a) === -1) {
-console.log('foo-191');
                     LTLSimController.addAtomic(model, a);
                 }
-                if (model.atomics.values[a].formulas.indexOf(label) === -1) {
-                    model.atomics.values[a].formulas.push(label);
+                if (model.atomics.values[a].formulas.indexOf(id) === -1) {
+                    model.atomics.values[a].formulas.push(id);
                 }
             })
 
@@ -246,28 +241,28 @@ console.log('foo-191');
         return false;
     }
 
-    static setFormulaLabel(model, label, newLabel) {
-        let oidx = model.formulas.keys.indexOf(label);
+    static setFormulaLabel(model, id, newLabel) {
+        let oidx = model.formulas.keys.indexOf(id);
         let nidx = model.formulas.keys.indexOf(newLabel);
         if (oidx!== -1 && nidx === -1) {
-            /* Change the label in all referencing atomics */
+            /* Change the id in all referencing atomics */
             model.atomics.keys.forEach((a) => {
-                let aidx = model.atomics.values[a].formulas.indexOf(label);
+                let aidx = model.atomics.values[a].formulas.indexOf(id);
                 if (aidx !== -1) {
                     model.atomics.values[a].formulas[aidx] = newLabel;
                 }
             })
 
-            /* Change the label */
+            /* Change the id */
             model.formulas.keys[oidx] = newLabel;
-            model.formulas.values[newLabel] = model.formulas.values[label];
-            model.formulas.values[newLabel].label = newLabel;
-            delete model.formulas.values[label];
+            model.formulas.values[newLabel] = model.formulas.values[id];
+            model.formulas.values[newLabel].id = newLabel;
+            delete model.formulas.values[id];
 
-            /* Change the label in the subexpressions */
+            /* Change the id in the subexpressions */
             model.formulas.values[newLabel].subexpressions
                 .forEach((s,i) => {
-                    s.label = `${newLabel}_${i+1}`;
+                    s.id = `${newLabel}_${i+1}`;
                 });
             
             return true;
@@ -275,37 +270,37 @@ console.log('foo-191');
         return false;
     }
 
-    static setFormulaTrace(model, label, slabel, trace) {
-        if (model.formulas.keys.indexOf(label) !== -1) {
+    static setFormulaTrace(model, id, slabel, trace) {
+        if (model.formulas.keys.indexOf(id) !== -1) {
             if (slabel) {
-                let sindex = model.formulas.values[label].subexpressions
-                        .findIndex((s) => (s.label === slabel));
+                let sindex = model.formulas.values[id].subexpressions
+                        .findIndex((s) => (s.id === slabel));
                 if (sindex !== -1) {
-                    model.formulas.values[label].subexpressions[sindex].trace = trace;
+                    model.formulas.values[id].subexpressions[sindex].trace = trace;
                 } else {
                     return false;
                 }
             } else {
-                model.formulas.values[label].trace = trace;
+                model.formulas.values[id].trace = trace;
             }
             return true;
         }
         return false;
     }
     
-    static setFormulaValue(model, label, slabel, value) {
-        if (model.formulas.keys.indexOf(label) !== -1) {
+    static setFormulaValue(model, id, slabel, value) {
+        if (model.formulas.keys.indexOf(id) !== -1) {
             if (slabel || Number.isInteger(slabel)) {
                 let sindex = (Number.isInteger(slabel)) ? slabel : 
-                        model.formulas.values[label].subexpressions
-                        .findIndex((s) => (s.label === slabel));
+                        model.formulas.values[id].subexpressions
+                        .findIndex((s) => (s.id === slabel));
                 if (sindex !== -1) {
-                    model.formulas.values[label].subexpressions[sindex].value = value;
+                    model.formulas.values[id].subexpressions[sindex].value = value;
                 } else {
                     return false;
                 }
             } else {
-                model.formulas.values[label].value = value;
+                model.formulas.values[id].value = value;
             }
             return true;
         }
@@ -340,8 +335,8 @@ console.log('foo-191');
         return model.atomics.values;
     }
 
-    static getAtomic(model, label) {
-        return (model.atomics.keys.indexOf(label) !== -1) ? model.atomics.values[label] : undefined;
+    static getAtomic(model, id) {
+        return (model.atomics.keys.indexOf(id) !== -1) ? model.atomics.values[id] : undefined;
     }
 
     static getAtomicKeys(model) {
@@ -352,18 +347,18 @@ console.log('foo-191');
         return model.formulas.values;
     }
 
-    static getFormula(model, label) {
-        return (model.formulas.keys.indexOf(label) !== -1) ? model.formulas.values[label] : undefined;
+    static getFormula(model, id) {
+        return (model.formulas.keys.indexOf(id) !== -1) ? model.formulas.values[id] : undefined;
     }
 
     static getFormulaKeys(model) {
         return model.formulas.keys;
     }
 
-    static getFilter(model, label, subformulas) {
-        let formula = LTLSimController.getFormula(model, label);
+    static getFilter(model, id, subformulas) {
+        let formula = LTLSimController.getFormula(model, id);
         let result = {
-            label: label,
+            id: id,
             subexpressions: []
         }
         if (formula && subformulas) {
@@ -372,7 +367,7 @@ console.log('foo-191');
             } else if (Array.isArray(subformulas)) {
                 result.subexpressions = subformulas;
             } else {
-                let subexpressions = subformulas[label];
+                let subexpressions = subformulas[id];
                 if (subexpressions) {
                     result.subexpressions = subexpressions;
                 }

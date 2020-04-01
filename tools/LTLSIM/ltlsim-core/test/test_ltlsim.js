@@ -1,7 +1,7 @@
 // *****************************************************************************
 // Notices:
 // 
-// Copyright © 2019 United States Government as represented by the Administrator
+// Copyright ï¿½ 2019 United States Government as represented by the Administrator
 // of the National Aeronautics and Space Administration.  All Rights Reserved.
 // 
 // Disclaimers
@@ -55,7 +55,7 @@ const onClose = (code) => {
 /* Display subexpressions */
 LTLSimController.getFormula(model, "F1").subexpressions
     .forEach((s) => {
-        console.log(`${s.label}: ${s.expression}`);
+        console.log(`${s.id}: ${s.expression}`);
     })
 
 /* Call simulation */
@@ -63,6 +63,3 @@ let filter = LTLSimController.getFilter(model, "F1", true);
 ltlsim.simulate(model, filter, false, onResult, onClose);
 ltlsim.simulate(model, "F2", false, onResult, onClose);
 
-
-/* Show resulting model */
-//console.log(JSON.stringify(model));

@@ -222,7 +222,7 @@ class Instructions extends React.Component {
   }
 
   renderFormula() {
-    const { classes, requirement, rID} = this.props;
+    const { classes, requirement, requirementID} = this.props;
     var { ft, description, diagram, type } = this.props.formalization.semantics;
     var path = `../docs/`+this.props.formalization.semantics.diagram;
     var notationPath = `../docs/_media/user-interface/examples/svgDiagrams/Notation.svg`;
@@ -244,7 +244,7 @@ class Instructions extends React.Component {
                             onOpen={this.openLTLSimDialog}
                             onClose={this.closeLTLSimDialog}
                             requirement={requirement}
-                            rID={rID}
+                            requirementID={requirementID}
                             />;
     }
 
@@ -430,7 +430,7 @@ Instructions.propTypes = {
   grammarRule: PropTypes.string,
   formalization: PropTypes.object,
   requirement: PropTypes.string.isRequired,
-  rID: PropTypes.string.isRequired
+  requirementID: PropTypes.string.isRequired
 };
 
 export default withStyles(styles)(Instructions);

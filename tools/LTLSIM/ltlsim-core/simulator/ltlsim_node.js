@@ -1,7 +1,7 @@
 // *****************************************************************************
 // Notices:
 // 
-// Copyright © 2019 United States Government as represented by the Administrator
+// Copyright ï¿½ 2019 United States Government as represented by the Administrator
 // of the National Aeronautics and Space Administration.  All Rights Reserved.
 // 
 // Disclaimers
@@ -108,23 +108,23 @@ function callLtlsim(model, atomicsFilter, formulaFilter,
     })
     formulaFilter
         .forEach((k) => {
-            let flabel = "";
+            let fid = "";
             let doSubexpression = false;
             if ((typeof k) == "string") {
-                flabel = k;
+                fid = k;
             } else {
-                flabel = k.label;
+                fid = k.id;
                 doSubexpression = true;
             }
-            let formula = model.formulas.values[flabel];
+            let formula = model.formulas.values[fid];
 
             if (formula !== undefined) {
-                ltlsim.stdin.write(`add-formula _${flabel}_ ${formula.parsedExpression}\n`);
+                ltlsim.stdin.write(`add-formula _${fid}_ ${formula.parsedExpression}\n`);
                 if (doSubexpression) {
                     k.subexpressions.forEach((s) => {
                         let subexpression = formula.subexpressions[s];
                         if (subexpression !== undefined) {
-                            ltlsim.stdin.write(`add-formula _${flabel}_SUB_${subexpression.label}_ ${subexpression.expression}\n`);
+                            ltlsim.stdin.write(`add-formula _${fid}_SUB_${subexpression.id}_ ${subexpression.expression}\n`);
                         }
                     })
                 }
@@ -155,11 +155,11 @@ exports.simulate = function simulate(model, filter, concurrent, onResult, onClos
     let formulaFilter = [];
 
     if (Array.isArray(filter)) {
-        formulaFilter = filter.map((f) => (typeof f === "string" ? {label: f, subexpressions: []} : f));
-        atomicsFilter = getAtomics(model.formulas, formulaFilter.map((f) => (f.label)));
+        formulaFilter = filter.map((f) => (typeof f === "string" ? {id: f, subexpressions: []} : f));
+        atomicsFilter = getAtomics(model.formulas, formulaFilter.map((f) => (f.id)));
     } else {
-        formulaFilter = (typeof filter === "string") ? [{label: filter, subexpressions: []}] : [filter];
-        atomicsFilter = model.formulas.values[formulaFilter[0].label].atomics;
+        formulaFilter = (typeof filter === "string") ? [{id: filter, subexpressions: []}] : [filter];
+        atomicsFilter = model.formulas.values[formulaFilter[0].id].atomics;
     }
 
     if (concurrent) {

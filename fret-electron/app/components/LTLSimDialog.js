@@ -74,7 +74,8 @@ class LTLSimDialog extends Component {
 
         const traceLength = 40;
         let model = LTLSimController.init(traceLength);
-        LTLSimController.addFormula(model, props.rID, props.ftExpression);
+        LTLSimController.addFormula(model, props.id, props.ftExpression);
+        LTLSimController.getFormula(model, props.id).label = props.requirementID;
 
         // Set the traces for "LAST" or "FTP" variables in the model, if any
         setMarginVariableTraces(model);
@@ -100,19 +101,23 @@ class LTLSimDialog extends Component {
         let { model } = this.state;
         let  traceLength  = LTLSimController.getTraceLength(model);
         /* If label or expression changed, initialize a new model */
-        if (this.props.rID !== prevProps.rID || this.props.ftExpression !== prevProps.ftExpression) {
+        if (this.props.id !== prevProps.id || this.props.ftExpression !== prevProps.ftExpression) {
             model = LTLSimController.init(traceLength);
-            LTLSimController.addFormula(model, this.props.rID, this.props.ftExpression);
+            LTLSimController.addFormula(model, this.props.id, this.props.ftExpression);
+            LTLSimController.getFormula(model, this.props.id).label = this.props.requirementID;
             this.setState({model});
         }
 
         /* If the dialog just became visible and the formula has a valid expression,
         simulate the formula if required (checked by this.update()) */
-        let formula = LTLSimController.getFormula(model, this.props.rID);
+        let formula = LTLSimController.getFormula(model, this.props.id);
         if (this.props.open && !prevProps.open &&
             formula && formula.parseErrors.length === 0) {
             this.update();
         }
+
+        /* Update the formula label, to always display the correct label on the y-axis */
+        formula.label = this.props.requirementID;
     }
 
     handleClickHighlight() {
@@ -124,11 +129,11 @@ class LTLSimDialog extends Component {
     handleClickLogics() {
         this.setState((prevState) => {
             let { model, logics } = prevState;
-            const { rID, ftExpression, ptExpression } = this.props;
+            const { id, ftExpression, ptExpression } = this.props;
             let tracelength = LTLSimController.getTraceLength(model);
 
             logics = (logics === "FT") ? "PT" : "FT";
-            LTLSimController.setFormulaExpression(model, rID, (logics === "FT") ? ftExpression : ptExpression);
+            LTLSimController.setFormulaExpression(model, id, (logics === "FT") ? ftExpression : ptExpression);
 
             return {
                 logics,
@@ -143,15 +148,15 @@ class LTLSimDialog extends Component {
     handleTraceDataChange(dataKey, dataIdx, trace) {
         this.setState((prevState) => {
             let { model } = prevState;
-            const { rID } = this.props;
+            const { id } = this.props;
             LTLSimController.setAtomicTrace(model, dataKey, trace);
 
             /* Change value of the affected formula */
-            LTLSimController.setFormulaValue(model, rID, "", EFormulaStates.UNKNOWN);
-            let formula = LTLSimController.getFormula(model, rID);
+            LTLSimController.setFormulaValue(model, id, "", EFormulaStates.UNKNOWN);
+            let formula = LTLSimController.getFormula(model, id);
             if (formula) {
                 formula.subexpressions.forEach((s, i) => {
-                    LTLSimController.setFormulaValue(model, rID, i, EFormulaStates.UNKNOWN);
+                    LTLSimController.setFormulaValue(model, id, i, EFormulaStates.UNKNOWN);
                 })
             }
 
@@ -167,7 +172,7 @@ class LTLSimDialog extends Component {
     handleTraceLengthChange(traceLength) {
         this.setState((prevState) => {
             let {model} = prevState;
-            const { rID } = this.props;
+            const { id } = this.props;
             LTLSimController.setTraceLength(model, traceLength);
 
             /* Set the traces for "LAST" or "FTP" variables in the model, if any
@@ -176,11 +181,11 @@ class LTLSimDialog extends Component {
             setMarginVariableTraces(model);
 
             /* Set the formula value to unknown */
-            LTLSimController.setFormulaValue(model, rID, "", EFormulaStates.UNKNOWN);
-            let formula = LTLSimController.getFormula(model, rID);
+            LTLSimController.setFormulaValue(model, id, "", EFormulaStates.UNKNOWN);
+            let formula = LTLSimController.getFormula(model, id);
             if (formula) {
                 formula.subexpressions.forEach((s, i) => {
-                    LTLSimController.setFormulaValue(model, rID, i, EFormulaStates.UNKNOWN);
+                    LTLSimController.setFormulaValue(model, id, i, EFormulaStates.UNKNOWN);
                 })
             }
             return {
@@ -195,20 +200,20 @@ class LTLSimDialog extends Component {
     handleLtlsimSimulate() {
         this.setState((prevState) => {
             let { model, visibleSubformulas } = prevState;
-            const { rID } = this.props;
+            const { id } = this.props;
 
             /* Set the simulated formula and subformulas to busy */
-            LTLSimController.setFormulaValue(model, rID, "", EFormulaStates.BUSY);
-            let formula = LTLSimController.getFormula(model, rID);
+            LTLSimController.setFormulaValue(model, id, "", EFormulaStates.BUSY);
+            let formula = LTLSimController.getFormula(model, id);
             if (formula) {
                 formula.subexpressions.forEach((s, i) => {
-                    LTLSimController.setFormulaValue(model, rID, i, EFormulaStates.BUSY);
+                    LTLSimController.setFormulaValue(model, id, i, EFormulaStates.BUSY);
                 })
             }
 
             /* Filter for simulate method */
             let filter = {
-                label: rID,
+                id: id,
                 subexpressions: visibleSubformulas
             }
 
@@ -226,12 +231,12 @@ class LTLSimDialog extends Component {
         })
     }
 
-    handleLtlsimResult(rID, sid, value, trace) {
+    handleLtlsimResult(id, sid, value, trace) {
         this.setState((prevState) => {
             let {model} = prevState;
-            if (LTLSimController.getFormulaKeys(model).indexOf(rID) !== -1) {
-                LTLSimController.setFormulaTrace(model, rID, sid, trace);
-                LTLSimController.setFormulaValue(model, rID, sid, value ?
+            if (LTLSimController.getFormulaKeys(model).indexOf(id) !== -1) {
+                LTLSimController.setFormulaTrace(model, id, sid, trace);
+                LTLSimController.setFormulaValue(model, id, sid, value ?
                                                     EFormulaStates.VALIDATED :
                                                     EFormulaStates.VIOLATED);
                 return { model };
@@ -243,8 +248,8 @@ class LTLSimDialog extends Component {
 
     update() {
         let { model, visibleSubformulas } = this.state;
-        const { rID } = this.props;
-        let formula = LTLSimController.getFormula(model, rID);
+        const { id } = this.props;
+        let formula = LTLSimController.getFormula(model, id);
         let doUpdate = false;
         if (formula !== undefined && formula !== null && formula.parseErrors.length === 0) {
             if (formula.value === EFormulaStates.UNKNOWN ||
@@ -263,9 +268,9 @@ class LTLSimDialog extends Component {
     }
 
     render () {
-        const { classes, open, onClose, requirement, rID } = this.props;
+        const { classes, open, onClose, requirement, id, requirementID } = this.props;
         let { model, visibleSubformulas, highlight, logics } = this.state;
-        let formula = LTLSimController.getFormula(model, rID);
+        let formula = LTLSimController.getFormula(model, id);
 
         if (formula !== undefined && formula !== null) {
             return (
@@ -313,8 +318,8 @@ class LTLSimDialog extends Component {
                     </Toolbar>
                 </AppBar>
                 <Typography variant="subtitle1" align='center' color='inherit' display='block'>
-                  {rID ?
-                    " "+ rID + ": " + requirement :
+                  {requirementID ?
+                    " "+ requirementID + ": " + requirement :
                     "  REQ: "+ requirement}
                 </Typography>
                     {LTLSimController.getFormulaKeys(model).length > 0 &&
@@ -322,7 +327,7 @@ class LTLSimDialog extends Component {
                             model={model}
                             visibleAtomics={LTLSimController.getAtomicKeys(model).filter(a => (a !== "LAST" && a !== "FTP"))}
                             visibleFormulas={LTLSimController.getFormulaKeys(model)}
-                            visibleSubformulas={{[rID]: visibleSubformulas}}
+                            visibleSubformulas={{[id]: visibleSubformulas}}
                             traceLength={LTLSimController.getTraceLength(model)}
                             onChange={this.handleTraceDataChange}
                             onTraceLengthChange={this.handleTraceLengthChange}
@@ -330,7 +335,7 @@ class LTLSimDialog extends Component {
                             displayAtomicsWithFormulas={false}
                             displaySubformulas={true}
                             selectedFormula=""
-                            requirementID={rID}
+                            requirementID={requirementID}
                         />}
                 </Dialog>
             )} else {
@@ -368,7 +373,7 @@ LTLSimDialog.propTypes = {
     ftExpression: PropTypes.string.isRequired,
     onClose: PropTypes.func.isRequired,
     requirement: PropTypes.string.isRequired,
-    rID: PropTypes.string.isRequired,
+    requirementID: PropTypes.string.isRequired,
 };
 
 export default withStyles(styles)(LTLSimDialog)

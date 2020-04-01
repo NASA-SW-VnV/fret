@@ -1,7 +1,7 @@
 // *****************************************************************************
 // Notices:
 // 
-// Copyright © 2019 United States Government as represented by the Administrator
+// Copyright ï¿½ 2019 United States Government as represented by the Administrator
 // of the National Aeronautics and Space Administration.  All Rights Reserved.
 // 
 // Disclaimers
@@ -34,8 +34,9 @@ const EFormulaStates = require("./EFormulaStates");
 
 module.exports = class Formula {
 
-    constructor(label, expression, traceLength) {
-        this.label = label;
+    constructor(id, expression, traceLength) {
+        this.id = id;
+        this.label = id;
         this.subexpressions = [];
         this.atomics = [];
         this.trace = new Array(traceLength).fill(0);

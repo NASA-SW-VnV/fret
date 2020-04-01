@@ -88,7 +88,7 @@ A NuSMV (see http://nusmv.fbk.eu/) installation is required to run the tool. The
 > ```javascript
 > LTLSimController.getFormula(model, "F1").subexpressions
 >     .forEach((s) => {
->         console.log(`${s.label}: ${s.expression}`);
+>         console.log(`${s.id}: ${s.expression}`);
 >     })
 > ```
 > This output shows the subexpressions of formula `F1`. Subexpressions are the subparts of the formula which are wrapped by parentheses.

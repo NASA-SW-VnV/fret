@@ -4,11 +4,10 @@ import Tooltip from '@material-ui/core/Tooltip';
 import LTLSimDialog from './LTLSimDialog';
 
 export default function LTLSimLauncher(props) {
-    const {open, semantics, status, onOpen, onClose, requirement,rID} = props;
+    const {open, semantics, status, onOpen, onClose, requirement,requirementID} = props;
 
     const ftExpression = rewriteExpressionForLTLSIM(semantics.ftExpanded);
     const ptExpression = rewriteExpressionForLTLSIM(semantics.ptExpanded);
-
 
     return (status.ltlsim && status.nusmv) ?
             (<div>
@@ -19,12 +18,12 @@ export default function LTLSimLauncher(props) {
                 </Tooltip>
                 <LTLSimDialog
                 open={open}
-                id="REQ" //TODO: REMOVE THIS
+                id="REQ" 
                 ftExpression={ftExpression}
                 ptExpression={ptExpression}
                 onClose={onClose}
                 requirement={requirement}
-                rID={rID}
+                requirementID={requirementID}
                 />
             </div>) :
             (<Tooltip title={status.ltlsim ?

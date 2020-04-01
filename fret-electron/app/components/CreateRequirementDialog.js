@@ -590,8 +590,8 @@ class CreateRequirementDialog extends React.Component {
                 field={this.state.focus}
                 grammarRule={this.getGrammarRuleOnFocus()}
                 formalization={this.state.formalization}
-                requirement = {fulltext}
-                rID = {this.state.reqid}/>
+                requirement = {fulltext ? fulltext : ''}
+                requirementID = {this.state.reqid}/>
               </div>
             </div>
           </Dialog>

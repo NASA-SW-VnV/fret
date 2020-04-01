@@ -75,7 +75,7 @@ class TimeSeriesWidget extends Component {
                     <TimeSeriesChart
                         key={'chart-formula-'+key}
                         data={formula.trace}
-                        name={key}
+                        name={formula.label ? formula.label : key}
                         dataKey={key}
                         syncId={this.props.syncId}
                         canChange={false}
