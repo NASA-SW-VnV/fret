@@ -65,8 +65,8 @@ const sentenceTime = [
   ['-,-,after,-', 'REQUIRES: for every trigger, RES must be false at all time points with distance <=$duration$ from the trigger; moreover, RES must hold at the point that is at distance $duration$+1 from the trigger, except if the end of the interval occurs earlier.'],
   ['-,-,for,-', 'REQUIRES: for every trigger, RES must remain true for $duration$ time points starting at the trigger, or to the end of the interval.'],
   ['-,-,null,-', 'REQUIRES: for every trigger, RES must hold at some time point between (and including) the trigger and the end of the interval.'],
-    ['-,-,until,-', 'REQUIRES: for every trigger, RES must remain true until (but not necessarily including) the point where the stop condition holds, or to the end of the interval.'],
-    ['-,-,before,-', 'REQUIRES: for every trigger, RES must hold at least once strictly before the state where stop condition holds. If stop condition never occurs, RES does not need to hold.']
+    ['-,-,until,-', 'REQUIRES: for every trigger, RES must remain true until (but not necessarily including) the point where the stop condition holds, or to the end of the interval. If the stop condition never occurs, RES must hold until the end of the scope, or forever.  If the stop condition holds at the trigger, the requirement is satisfied.'],
+    ['-,-,before,-', 'REQUIRES: for every trigger, RES must hold at least once strictly before the state where the stop condition holds. If the stop condition never occurs, RES does not need to hold. If the stop condition holds at the trigger, the requirement is not satisified.']
     ]
 
 const sentenceNegatedTime = [

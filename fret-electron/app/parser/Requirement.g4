@@ -98,6 +98,10 @@ pre_condition
 	: bool_expr
 	;
 
+stop_condition
+	: bool_expr
+	;
+
 //persist_condition : bool_expr ;
 
 //persist_duration : duration ;
@@ -114,6 +118,8 @@ timing
          : (',')? 'within' duration_upper (',')?
 	 | (',')? 'for' duration_upper (',')?
          | (',')? 'after' duration_lower (',')?
+	 | (',')? 'until' stop_condition (',')?
+ 	 | (',')? 'before' stop_condition (',')?
          | 'immediately'
          | 'eventually'
          | 'always'

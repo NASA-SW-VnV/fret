@@ -170,6 +170,11 @@ RequirementListener.prototype.exitQualified_condition2 = function(ctx) {
     else result.regular_condition = '(' + result.regular_condition + ' & ' + pre_condition + ')';
 }
 
+RequirementListener.prototype.enterStop_condition = function(ctx) {
+    result.stop_condition = '(' + antlrUtilities.getText(ctx).trim() + ')';
+}
+
+
 //RequirementListener.prototype.exitRegular_condition = function(ctx) {
 //   result.regular_condition = '(' + result.regular_condition + ')';
 // }
