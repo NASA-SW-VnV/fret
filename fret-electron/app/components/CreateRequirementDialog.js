@@ -61,7 +61,6 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import styles from './CreateRequirementDialog.css';
 import Instructions from './Instructions';
-//import TemplatePanel from './TemplatePanel'
 import SlateEditor2 from './SlateEditor2';
 import VariablesSortableTable from './VariablesSortableTable';
 
