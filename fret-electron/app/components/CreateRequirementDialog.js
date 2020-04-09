@@ -61,7 +61,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import styles from './CreateRequirementDialog.css';
 import Instructions from './Instructions';
-import TemplatePanel from './TemplatePanel'
+//import TemplatePanel from './TemplatePanel'
 import SlateEditor2 from './SlateEditor2';
 import VariablesSortableTable from './VariablesSortableTable';
 
@@ -133,23 +133,6 @@ class CreateRequirementDialog extends React.Component {
 
   handleSelectedPatternChange = (selectedPattern) => {
     this.setState({selectedPattern});
-    // this.setState(prevState => {
-    //   if (selectedPattern >= 0) {
-    //     const template = templates[selectedPattern];
-    //     let {values} = prevState;
-    //     if (template) syncValuesWithStructure(values, template.structure);
-    //     return {selectedPattern, values};
-    //   } else {
-    //     const prevSelected = prevState.selectedPattern;
-    //     const {values} = prevState;
-    //     if (prevSelected >= 0) {
-    //       const template = templates[prevSelected];
-    //       const editorText = instantiate(template, values);
-    //       return {selectedPattern, editorText}
-    //     }
-    //     return
-    //   }
-    // });
   }
 
   handleCreate = () => {
@@ -165,7 +148,6 @@ class CreateRequirementDialog extends React.Component {
     });
     var newReqId = this.state.reqid;
 
-    //var db = require('electron').remote.getGlobal('sharedObj').db;
     var dbid = edittingRequirement && Object.keys(edittingRequirement).length > 0 ? edittingRequirement._id : uuidv1()
     var dbrev = edittingRequirement && Object.keys(edittingRequirement).length > 0 ? edittingRequirement._rev : undefined
 
@@ -612,19 +594,16 @@ class CreateRequirementDialog extends React.Component {
               </DialogActions>
               </div>
               <div className={styles.instruction}>
-<<<<<<< HEAD
                 <Instructions
                 field={this.state.focus}
                 grammarRule={this.getGrammarRuleOnFocus()}
                 formalization={this.state.formalization}
                 requirement = {fulltext ? fulltext : ''}
-                requirementID = {this.state.reqid}/>
-=======
-                <TemplatePanel
+                requirementID = {this.state.reqid}
                 templates={templates}
                 selected={selectedPattern}
-                onChange={this.handleSelectedPatternChange}/>
->>>>>>> Templates Instructions added in the gray area. Connected it with the Requirements Editor.
+                handleSelectedPatternChange={this.handleSelectedPatternChange}
+                />
               </div>
             </div>
           </Dialog>
