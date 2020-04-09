@@ -443,8 +443,12 @@ class Instructions extends React.Component {
     } else {
       return (
         <div>
-          <Typography variant='h6' color='primary'>How to Use</Typography>
-          <Help />
+          <div style={{paddingBottom:20}}>
+            <Typography variant='subtitle1' color='primary'>Ready to speak FRETish?</Typography>
+          </div>
+          <div>
+            <Typography color='primary'>Please use the editor to write your requirement or pick a predefined template from the TEMPLATES tab.</Typography>
+          </div>
         </div>
 
       )
