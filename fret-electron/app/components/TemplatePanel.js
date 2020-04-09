@@ -151,7 +151,7 @@ class Example extends Component {
             return result;
         }, []);
         return (
-            <div style={{marginTop:8, backgroundColor: 'white'}}>
+            <div style={{marginTop:8, backgroundColor: 'white', padding:10}}>
                 <Typography>
                     {example}
                 </Typography>
