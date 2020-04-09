@@ -456,7 +456,7 @@ class Instructions extends React.Component {
   };
 
   render() {
-     const {field, classes, templates, selectedPattern, handleSelectedPatternChange} = this.props;
+     const {field, classes, templates, selected, handleSelectedPatternChange} = this.props;
      const {tabValue} = this.state;
      return (
        <div className={css.divider}>
@@ -467,7 +467,7 @@ class Instructions extends React.Component {
           </Tabs>
         </AppBar>
         {tabValue === 0 && <TabContainer>{this.renderInstruction(field)}</TabContainer>}
-        {tabValue === 1 && <TabContainer>{this.renderTemplate(templates, selectedPattern,handleSelectedPatternChange)}</TabContainer>}
+        {tabValue === 1 && <TabContainer>{this.renderTemplate(templates, selected,handleSelectedPatternChange)}</TabContainer>}
        </div>
      );
    }

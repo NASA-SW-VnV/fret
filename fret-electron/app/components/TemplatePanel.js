@@ -57,7 +57,7 @@ class TemplatePanel extends Component {
                 description={'Create a requirement from plain FRETish without applying a predfined template.'}
             />)
         return (
-            <div style={{paddingBottom:20}}>
+            <div style={{paddingBottom:10}}>
             <Grid container >
                 <Grid item xs={11}>
                     <Typography variant='subtitle1'><b>{title}</b></Typography>
@@ -92,11 +92,11 @@ class TemplateInfo extends Component {
     render() {
         const {template} = this.props;
         const patternDescription = (
-            <Typography variant='body1'>{template.description}</Typography>
+            <Typography>{template.description}</Typography>
         );
         const examplesList = ( template.examples &&
-            <div style={{marginTop:24}}>
-                <Typography variant='body1'>Examples:</Typography>
+            <div style={{marginTop:15}}>
+                <Typography>Examples:</Typography>
                 {template.examples
                     .map((example, index) => {
                         return <Example
@@ -120,15 +120,7 @@ class NoTemplateInfo extends Component {
     render() {
         return (
             <div style={{marginTop:24}}>
-                <Typography variant='body1'>You currently have not selected predefined template. Simply specify your requirement in plain FRETish.</Typography>
-                <div style={{marginTop:40}}>
-                    <div style={{marginTop:16}}>
-                        <Button color='primary' onClick={this.props.onClickPatternSelect}>Select a template</Button>
-                    </div>
-                    <div style={{marginTop:16}}>
-                        <Button color='primary'>Create a template from this requirement</Button>
-                    </div>
-                </div>
+                <Typography>You currently have not selected predefined template. Simply specify your requirement in plain FRETish.</Typography>
             </div>
         )
     }
@@ -159,8 +151,8 @@ class Example extends Component {
             return result;
         }, []);
         return (
-            <div style={{marginTop:8}}>
-                <Typography variant='body2'>
+            <div style={{marginTop:8, backgroundColor: 'white'}}>
+                <Typography>
                     {example}
                 </Typography>
             </div>
@@ -174,8 +166,8 @@ class MenuOption extends Component {
         return (
             <ListItem button onClick={this.props.onClick}>
                 <div>
-                <Typography variant='body1'>{this.props.title}</Typography>
-                <Typography variant='body2' ><i>{this.props.description}</i></Typography>
+                <Typography >{this.props.title}</Typography>
+                <Typography ><i>{this.props.description}</i></Typography>
                 </div>
             </ListItem>
         )
