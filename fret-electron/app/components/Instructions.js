@@ -48,10 +48,16 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ThumbUp from '@material-ui/icons/ThumbUp';
 import ThumbDown from '@material-ui/icons/ThumbDown';
 
+import AppBar from '@material-ui/core/AppBar';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+
 import css from './Instructions.css';
 import Help from './Help';
 import ColorPicker from './ColorPicker';
 import LTLSimLauncher from './LTLSimLauncher';
+
+import TemplatePanel from './TemplatePanel'
 
 import {scopeInstruction, conditionInstruction, componentInstruction, timingInstruction, responseInstruction } from 'examples'
 
@@ -73,6 +79,10 @@ var dbChangeListener = undefined;
 const ltlsim = require('ltlsim-core').ltlsim;
 
 const styles = theme => ({
+  tabs: {
+    flexGrow: 1,
+    backgroundColor: theme.palette.background.paper,
+  },
   button: {
     margin: theme.spacing.unit,
   },
@@ -134,6 +144,18 @@ const styles = theme => ({
   },
 });
 
+function TabContainer(props) {
+  return (
+    <Typography component="div" style={{ padding: 8 * 2 }}>
+      {props.children}
+    </Typography>
+  );
+}
+
+TabContainer.propTypes = {
+  children: PropTypes.node.isRequired,
+};
+
 class Instructions extends React.Component {
   constructor(props) {
     super(props);
@@ -146,7 +168,8 @@ class Instructions extends React.Component {
 
     this.state = {
       fieldColors : {},
-      LTLSimDialogOpen: false
+      LTLSimDialogOpen: false,
+      tabValue: 0,
     };
 
     this.openLTLSimDialog = this.openLTLSimDialog.bind(this);
@@ -212,6 +235,10 @@ class Instructions extends React.Component {
     });
 
   }
+
+  handleTabChange = (event, tabValue) => {
+    this.setState({ tabValue });
+  };
 
   openLTLSimDialog() {
     this.setState({LTLSimDialogOpen: true});
@@ -384,6 +411,17 @@ class Instructions extends React.Component {
     console.log(newRating)
   }
 
+  renderTemplate(templates, selectedPattern, handleSelectedPatternChange) {
+    return(
+      <div style={{display: 'block'}}>
+        <TemplatePanel
+        templates={templates}
+        selected={selectedPattern}
+        onChange={handleSelectedPatternChange}/>
+        </div>
+    )
+  }
+
   renderInstruction(field) {
     if (fieldsWithExplanation.includes(field)) {
       const mdsrc = instructions[field]
@@ -399,10 +437,7 @@ class Instructions extends React.Component {
     else if (field === 'semantics'){
       return(
         <div style={{display: 'block'}}>
-          <Typography variant='h6' color='primary'>Semantics</Typography>
-          <br />
           {this.renderFormula()}
-          <br /><br />
           </div>
         )
     } else {
@@ -415,11 +450,24 @@ class Instructions extends React.Component {
       )
     }
   }
+
+  handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
   render() {
-     const {field} = this.props;
+     const {field, classes, templates, selectedPattern, handleSelectedPatternChange} = this.props;
+     const {tabValue} = this.state;
      return (
        <div className={css.divider}>
-         {this.renderInstruction(field)}
+        <AppBar position="static">
+          <Tabs value={tabValue} onChange={this.handleTabChange}>
+            <Tab label="Semantics" />
+            <Tab label="Templates" />
+          </Tabs>
+        </AppBar>
+        {tabValue === 0 && <TabContainer>{this.renderInstruction(field)}</TabContainer>}
+        {tabValue === 1 && <TabContainer>{this.renderTemplate(templates, selectedPattern,handleSelectedPatternChange)}</TabContainer>}
        </div>
      );
    }
@@ -430,7 +478,9 @@ Instructions.propTypes = {
   grammarRule: PropTypes.string,
   formalization: PropTypes.object,
   requirement: PropTypes.string.isRequired,
-  requirementID: PropTypes.string.isRequired
+  requirementID: PropTypes.string.isRequired,
+  templates: PropTypes.array.isRequired,
+  handleSelectedPatternChange: PropTypes.func.isRequired,
 };
 
 export default withStyles(styles)(Instructions);
