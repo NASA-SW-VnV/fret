@@ -1,35 +1,3 @@
-// *****************************************************************************
-// Notices:
-// 
-// Copyright © 2019 United States Government as represented by the Administrator
-// of the National Aeronautics and Space Administration.  All Rights Reserved.
-// 
-// Disclaimers
-// 
-// No Warranty: THE SUBJECT SOFTWARE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY OF
-// ANY KIND, EITHER EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED
-// TO, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL CONFORM TO SPECIFICATIONS, 
-// ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, 
-// OR FREEDOM FROM INFRINGEMENT, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL BE
-// ERROR FREE, OR ANY WARRANTY THAT DOCUMENTATION, IF PROVIDED, WILL CONFORM TO
-// THE SUBJECT SOFTWARE. THIS AGREEMENT DOES NOT, IN ANY MANNER, CONSTITUTE AN
-// ENDORSEMENT BY GOVERNMENT AGENCY OR ANY PRIOR RECIPIENT OF ANY RESULTS,
-// RESULTING DESIGNS, HARDWARE, SOFTWARE PRODUCTS OR ANY OTHER APPLICATIONS
-// RESULTING FROM USE OF THE SUBJECT SOFTWARE.  FURTHER, GOVERNMENT AGENCY
-// DISCLAIMS ALL WARRANTIES AND LIABILITIES REGARDING THIRD-PARTY SOFTWARE, IF
-// PRESENT IN THE ORIGINAL SOFTWARE, AND DISTRIBUTES IT ''AS IS.''
-// 
-// Waiver and Indemnity:  RECIPIENT AGREES TO WAIVE ANY AND ALL CLAIMS AGAINST
-// THE UNITED STATES GOVERNMENT, ITS CONTRACTORS AND SUBCONTRACTORS, AS WELL AS
-// ANY PRIOR RECIPIENT.  IF RECIPIENT'S USE OF THE SUBJECT SOFTWARE RESULTS IN
-// ANY LIABILITIES, DEMANDS, DAMAGES, EXPENSES OR LOSSES ARISING FROM SUCH USE,
-// INCLUDING ANY DAMAGES FROM PRODUCTS BASED ON, OR RESULTING FROM, RECIPIENT'S
-// USE OF THE SUBJECT SOFTWARE, RECIPIENT SHALL INDEMNIFY AND HOLD HARMLESS THE
-// UNITED STATES GOVERNMENT, ITS CONTRACTORS AND SUBCONTRACTORS, AS WELL AS ANY
-// PRIOR RECIPIENT, TO THE EXTENT PERMITTED BY LAW.  RECIPIENT'S SOLE REMEDY FOR
-// ANY SUCH MATTER SHALL BE THE IMMEDIATE, UNILATERAL TERMINATION OF THIS
-// AGREEMENT.
-// *****************************************************************************
 const fretSupportPath = "./";
 const constants = require('../app/parser/Constants');
 const utilities = require(fretSupportPath + 'utilities');
@@ -44,8 +12,7 @@ const inPoints = [
   ['xScope', '145'],
   ['yScope', '75'],
   ['xTiming', '145'],
-  ['yTiming', '115'],
-  ['xCondition', '150']
+  ['yTiming', '115']
 ];
 
 /**
@@ -61,10 +28,22 @@ const inPointsWithCond = [
 ];
 
 /**
+ * x,y coordinates for diagrams with in scope and regular condition
+ * @type {Array}
+ */
+const onlyInPoints = [
+  ['xScopeOne', '10'],
+  ['yScopeOne', '75'],
+  ['xTimingOne', '10'],
+  ['yTimingOne', '115']
+];
+
+/**
  * x,y coordinates for diagrams with after scope
  * @type {Array}
  */
 const afterPoints = [
+
   ['xScope', '280'],
   ['yScope', '75'],
   ['xTiming', '280'],
@@ -142,7 +121,7 @@ const nullPointsWithCond = [
  * Each array element is a pair: 1. regular expression that defines the pattern of keys 2. SVG initial structure of code.
  * @type {Array}
  */
-const nullCondNoPersistsPatterns =[
+const patterns =[
   ['null,null,always|never|eventually|null,action|satisfaction',
   'NOSCOPE\nTIME\nINF\nNOMODE\nSTANDARD\n'],
 
@@ -171,13 +150,24 @@ const nullCondNoPersistsPatterns =[
   'NOSCOPE\nTIME\nREGULAR\nNOMODE\nSTANDARD\n'],
 
   ['after,regular,immediately|within|after|for,action|satisfaction',
-   'SCOPE\nTIME\nREGULAR\nINF\nMODE\nSTANDARD\n']
+   'SCOPE\nTIME\nREGULAR\nINF\nMODE\nSTANDARD\n'],
+
+  ['onlyAfter,null,always|eventually|never|immediately|within|after|null|for,action|satisfaction',
+  'SCOPE\nTIME\nSCOPE\nTIME\nMODE\nSTANDARD\n'],
+
+  ['onlyIn|onlyBefore|notin,null,always|eventually|never|immediately|within|after|null|for,action|satisfaction',
+  'SCOPE\nTIME\nSCOPE\nTIME\nINF\nMODE\nSTANDARD\n'],
+
+  ['onlyAfter,regular,always|eventually|never|immediately|within|after|null|for,action|satisfaction',
+  'SCOPE\nTIME\nSCOPE\nTIME\nREGULAR\nMODE\nSTANDARD\n'],
+
+  ['onlyIn|onlyBefore|notin,regular,always|eventually|never|immediately|within|after|null|for,action|satisfaction',
+  'SCOPE\nTIME\nSCOPE\nTIME\nREGULAR\nINF\nMODE\nSTANDARD\n']
 ];
 
 
-
 /**
- * Array with substitution pairs for all the words of the nullCondNoPersistsPatterns array.
+ * Array with substitution pairs for all the words of the patterns array.
  * @type {Array}
  */
 const firstLevelSubstitutionsSVG = [
@@ -195,7 +185,7 @@ const firstLevelSubstitutionsSVG = [
  * Array with the timings that need additional length for null scope
  * @type {Array}
  */
-const timingLength = ['always', 'eventually', 'never', 'null'];
+const timingLength = ['always', 'eventually', 'never', 'null', 'only_always'];
 
 /**
  * Creates SVG diagram for a specific key.
@@ -205,7 +195,7 @@ const timingLength = ['always', 'eventually', 'never', 'null'];
  * @return {String}        Svg diagram code for specific key or undefined
  */
 function createSvgString (key, scope, timing, condition){
-  var template = utilities.matchingBaseForSVG(key, nullCondNoPersistsPatterns, 'no_match');
+  var template = utilities.matchingBaseForSVG(key, patterns, 'no_match');
   if (template !== 'no_match') {
     var svgPattern = '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="500px" height="160px">\n';
     svgPattern += fs.readFileSync('../../docs/_media/user-interface/examples/svgDiagrams/svgTemplates.svg', 'utf8');
@@ -214,17 +204,84 @@ function createSvgString (key, scope, timing, condition){
     firstLevelSubstitutionsSVG.forEach(function(pair){
       svgPattern = svgPattern.replace(pair[0],pair[1]);
     });
-    if (timingLength.includes(timing) && scope === 'null' && condition === 'null'){
-      svgPattern = svgPattern.replace('TimeConstraint', timing+'_null_scope');
-    } else if ( timingLength.includes(timing) && scope !== 'null' && condition === 'regular'){
-      svgPattern = svgPattern.replace('TimeConstraint', timing+'_regular_condition');
-    } else {
-      svgPattern = svgPattern.replace('TimeConstraint', timing);
-    }
-    svgPattern = replaceForScope(svgPattern, scope, condition);
+    var timingsPattern = onlyTimings(scope, timing, condition, svgPattern);
+    svgPattern = replaceForScope(timingsPattern, scope, condition);
     return svgPattern;
   }
   else return constants.undefined_svg;
+}
+
+function replaceTiming (svgPattern, scope, timing, condition){
+  if (timingLength.includes(timing) && scope === 'null' && condition === 'null'){
+    svgPattern = svgPattern.replace('TimeConstraint', timing+'_null_scope');
+  } else if (timingLength.includes(timing) && scope !== 'null' && condition === 'regular'){
+    svgPattern = svgPattern.replace('TimeConstraint', timing+'_regular_condition');
+  } else {
+    svgPattern = svgPattern.replace('TimeConstraint', timing);
+  }
+   return svgPattern;
+}
+
+function onlyTimings (scope, timing, condition, svgPattern){
+  if (scope.includes('only') | scope === 'notin'){
+    firstLevelSubstitutionsSVG.forEach(function(pair){
+      svgPattern = svgPattern.replace(pair[0],pair[1]);
+    });
+    if (scope.includes('only')){
+      switch (timing){
+        case 'null':
+        case 'eventually':
+        svgPattern = replaceTiming(svgPattern, scope, 'never', condition);
+        svgPattern = replaceTiming(svgPattern, scope, 'never', 'null');
+        break;
+        case 'always':
+        svgPattern = replaceTiming(svgPattern, scope, 'only_always', condition);
+        svgPattern = replaceTiming(svgPattern, scope, 'only_always', 'null');
+        break;
+        case 'never':
+        svgPattern = replaceTiming(svgPattern, scope, 'null', condition);
+        svgPattern = replaceTiming(svgPattern, scope, 'null', 'null');
+        break;
+        case 'immediately':
+        svgPattern = replaceTiming(svgPattern, scope, 'only_immediately', condition);
+        if(condition === 'null' && scope.includes('In')){
+          svgPattern = replaceTiming(svgPattern, scope, 'only_immediately', 'null');
+        }
+        break;
+        case 'within':
+        svgPattern = replaceTiming(svgPattern, scope, 'only_within', condition);
+        if(condition === 'null'  && scope.includes('In')){
+          svgPattern = replaceTiming(svgPattern, scope, 'only_within', 'null');
+        }
+        break;
+        case 'after':
+        svgPattern = replaceTiming(svgPattern, scope, 'only_after', condition);
+        if(condition === 'null' && scope.includes('In')){
+          svgPattern = replaceTiming(svgPattern, scope, 'only_after', 'null');
+        }
+        break;
+        case 'for':
+        svgPattern = replaceTiming(svgPattern, scope, 'only_for', condition);
+        if(condition === 'null' && scope.includes('In')){
+          svgPattern = replaceTiming(svgPattern, scope, 'only_for', 'null');
+        }
+      }
+    }
+    else {
+       switch (condition){
+         case 'null':
+         svgPattern = replaceTiming(svgPattern, scope, timing, condition);
+         svgPattern = replaceTiming(svgPattern, scope, timing, 'null');
+         break;
+         case 'regular':
+         svgPattern = replaceTiming(svgPattern, scope, timing, condition);
+      }
+    }
+  }
+  else{
+    svgPattern = replaceTiming(svgPattern, scope, timing, condition);
+  }
+  return svgPattern;
 }
 
 /**
@@ -255,56 +312,60 @@ exports.getDiagram = (key, scope, timing, condition) => {
 
 /**
  * Replaces xScope, yScope, xTiming, yTiming, xInfinity, yInfinity with the specific coordinates
- * specified in inPoints, afterPoints, nullPoints, beforePoints arrays, depending on the
+ * specified in inPoints (withCond), afterPoints (withCond), nullPoints (withCond), beforePoints (withCond) arrays, depending on the
  * scope of the pattern.
  * @param  {String} svgPattern SVG code with variable coordinates
  * @param  {String} scope      Scope string of key
+ * @param  {String} condition  Condition string of key
  * @return {String}            SVG code with specific coordinated based on scope
  */
 function replaceForScope(svgPattern, scope, condition){
-  if (scope === 'in'){
-    if (condition === 'null'){
-      inPoints.forEach(function(pair){
-        svgPattern = svgPattern.replace(pair[0],pair[1]);
-      });
-    } else if (condition === 'regular'){
-      inPointsWithCond.forEach(function(pair){
-        svgPattern = svgPattern.replace(pair[0],pair[1]);
-      });
-    }
-  }
-  else if (scope === 'after'){
-    if (condition === 'null'){
-      afterPoints.forEach(function(pair){
-        svgPattern = svgPattern.replace(pair[0],pair[1]);
-      });
-    } else if (condition === 'regular'){
-      afterPointsWithCond.forEach(function(pair){
-        svgPattern = svgPattern.replace(pair[0],pair[1]);
-      });
-    }
-  }
-  else if (scope === 'before'){
-    if (condition === 'null'){
-      beforePoints.forEach(function(pair){
-        svgPattern = svgPattern.replace(pair[0],pair[1]);
-      });
-    } else if (condition === 'regular'){
-      beforePointsWithCond.forEach(function(pair){
-        svgPattern = svgPattern.replace(pair[0],pair[1]);
-      });
-    }
-  }
-  else if (scope === 'null') {
-    if (condition === 'null'){
-      nullPoints.forEach(function(pair){
-        svgPattern = svgPattern.replace(pair[0],pair[1]);
-      });
-    } else if (condition === 'regular'){
-      nullPointsWithCond.forEach(function(pair){
-        svgPattern = svgPattern.replace(pair[0],pair[1]);
-      });
-    }
+  switch (scope) {
+    case 'in':
+    svgPattern = replacePoints(inPoints, inPointsWithCond, svgPattern, condition);
+    break;
+    case 'after':
+    svgPattern = replacePoints(afterPoints, afterPointsWithCond, svgPattern, condition);
+    break;
+    case 'before':
+    svgPattern = replacePoints(beforePoints, beforePointsWithCond, svgPattern, condition);
+    break;
+    case 'null':
+    svgPattern = replacePoints(nullPoints, nullPointsWithCond, svgPattern, condition);
+    break;
+    case 'onlyIn':
+    case 'notin':
+    svgPattern = replacePoints(beforePoints, beforePointsWithCond, svgPattern, condition);
+    svgPattern = replacePoints(afterPoints, afterPointsWithCond, svgPattern, 'null');
+    break;
+    case 'onlyAfter':
+    svgPattern = replacePoints(beforePoints, beforePointsWithCond, svgPattern, condition);
+    svgPattern = replacePoints(inPoints, inPointsWithCond, svgPattern, 'null');
+    break;
+    case 'onlyBefore':
+    svgPattern = replacePoints(inPoints, inPointsWithCond, svgPattern, condition);
+    svgPattern = replacePoints(afterPoints, afterPointsWithCond, svgPattern, 'null');
   }
   return svgPattern;
+}
+
+/**
+ * Replaces based on the pattern pairs.
+ * @param  {Array}  points      x,y coordinates for a specific scope with null Condition
+ * @param  {Array}  pointsCond  x,y coordinates for a specific scope with regular Condition
+ * @param  {String} svgPattern  SVG code with variable coordinates
+ * @param  {String} condition   Condition string of key
+ * @return {String}             SVG code with specific coordinates based on scope
+ */
+function replacePoints(points, pointsCond, svgPattern, condition){
+  if (condition === 'null'){
+    points.forEach(function(pair){
+      svgPattern = svgPattern.replace(pair[0],pair[1]);
+    });
+  } else if (condition === 'regular'){
+    pointsCond.forEach(function(pair){
+      svgPattern = svgPattern.replace(pair[0],pair[1]);
+    });
+  }
+  return svgPattern
 }
