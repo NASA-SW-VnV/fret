@@ -8,7 +8,7 @@
 
 FRET allows you to write requirements in _free_ natural language by entering the sentence within quotes. However, if you use FRETish, you get the added benefit of having clear unambiguous semantics, that can then be exported in a variety of forms for sophisticated tools to analyze.
 
-Fretish semantics is defined in Real-Time Graphic Interval Logic (RTGIL): [FRETishSemantics.pdf](./fretishSemantics.pdf)
+FRETish semantics is defined in Real-Time Graphic Interval Logic (RTGIL): [FRETishSemantics.pdf](./fretishSemantics.pdf)
 
 
 FRET helps users understand semantics for the requirements they write. You can access the semantics of a requirement that is being created by selecting the _Semantics_ button, as shown in the screenshot above. This allows you to access the following descriptions:

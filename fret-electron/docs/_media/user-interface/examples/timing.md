@@ -2,13 +2,15 @@
 
 specifies the time points or time intervals, where a response has to occur once scope and condition(s) are satisfied. Supported options are
 
-* **within** DURATION
-* **for** DURATION
-* **after** DURATION
 * **immediately**
 * **eventually**
 * **always**
 * **never**
+* **within** DURATION
+* **for** DURATION
+* **after** DURATION
+* **until** STOP_CONDITION
+* **before** STOP_CONDITION
 
 DURATION is a non-negative integer number followed by a time-unit,
 for example 12 seconds or 5.5 minutes. Time units can be one of the following:
@@ -22,7 +24,20 @@ for example 12 seconds or 5.5 minutes. Time units can be one of the following:
 Note that the time units are not checked or converted by FRET. FRET exports verification code to analysis tools, which are in charge of interpreting the time
 units. Check the user manual under "Exporting for Analysis" for more details.
 
+STOP_CONDITION is a boolean expression. The timing **before** means that the
+response must happen at least once before the STOP_CONDITION holds.
+
 Examples:
-* **when in** landing FSM **shall within** 2 **seconds satisfy** is_stable
-* **after** 4 **minutes**
-* **never**
+* **immediately:** **When** currentOverload **the** circuitBreaker **shall immediately satisfy** shutoff
+* **eventually:** **In** landingMode **the** system **shall eventually satisfy**
+  LandingGearLowered
+* **always:** **The** autopilot **shall always satisfy if** allGood **then**
+  state = nominal
+* **never:** **In** drivingMode **the** system **shall never satisfy**
+  cellPhoneOn & !cellPhoneHandsFree
+* **for:** **When** errorCondition, **the** system **shall, for** 4 **seconds, satisfy** alarmOn
+* **within:** **In** landing **mode, the** the system **shall within** 2 **seconds satisfy** is_stable 
+* **after:** **When** input = 1, **the** integrator **shall, after** 10
+  **ticks, satisfy** output=10
+* **until:** **In** CountdownMode **the** system **shall, until** Count = 0, **satisfy** Count > 0
+* **before:** **The** system **shall, before** TakeOff, **satisfy** CheckListTasksCompleted
