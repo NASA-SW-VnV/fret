@@ -72,7 +72,7 @@ module.exports = Object.freeze({
   verboseCoCoSpecSemantics:true,
 
   //Configuration - generate svgSemantics
-  generateSvgSemantics: false,
+  generateSvgSemantics: true,
 
  // Configuration of testing procedure
   testKey: true,

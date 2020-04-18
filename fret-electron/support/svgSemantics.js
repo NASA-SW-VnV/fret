@@ -12,7 +12,9 @@ const inPoints = [
   ['xScope', '145'],
   ['yScope', '75'],
   ['xTiming', '145'],
-  ['yTiming', '115']
+  ['yTiming', '115'],
+    //tom
+    ['xStop','225']
 ];
 
 /**
@@ -24,7 +26,9 @@ const inPointsWithCond = [
   ['yScope', '75'],
   ['xTiming', '175'],
   ['yTiming', '115'],
-  ['xCondition', '150']
+  ['xCondition', '150'],
+    //tom
+  ['xStop','215']
 ];
 
 /**
@@ -35,7 +39,8 @@ const onlyInPoints = [
   ['xScopeOne', '10'],
   ['yScopeOne', '75'],
   ['xTimingOne', '10'],
-  ['yTimingOne', '115']
+    //tom
+    ['yTimingOne', '115'],
 ];
 
 /**
@@ -43,13 +48,14 @@ const onlyInPoints = [
  * @type {Array}
  */
 const afterPoints = [
-
   ['xScope', '280'],
   ['yScope', '75'],
   ['xTiming', '280'],
   ['yTiming', '115'],
   ['xInfinity', '395'],
-  ['yInfinity', '100']
+  ['yInfinity', '100'],
+    //tom
+    ['xStop', '360']
 ];
 
 /**
@@ -63,7 +69,9 @@ const afterPointsWithCond = [
   ['yTiming', '115'],
   ['xInfinity', '395'],
   ['yInfinity', '100'],
-  ['xCondition', '285']
+  ['xCondition', '285'],
+    //tom
+    ['xStop', '345']
 ];
 
 /**
@@ -74,7 +82,9 @@ const beforePoints = [
   ['xScope', '10'],
   ['yScope', '75'],
   ['xTiming', '10'],
-  ['yTiming', '115']
+  ['yTiming', '115'],
+    //tom
+    ['xStop', '90']
 ];
 
 /**
@@ -86,7 +96,9 @@ const beforePointsWithCond = [
   ['yScope', '75'],
   ['xTiming', '40'],
   ['yTiming', '115'],
-  ['xCondition', '15']
+  ['xCondition', '15'],
+    //tom
+    ['xStop','75']
 ];
 
 /**
@@ -99,7 +111,9 @@ const nullPoints = [
   ['xTiming', '100'],
   ['yTiming', '115'],
   ['xInfinity', '380'],
-  ['yInfinity', '100']
+  ['yInfinity', '100'],
+    //tom
+    ['xStop', '350']
 ];
 
 /**
@@ -113,7 +127,9 @@ const nullPointsWithCond = [
   ['yTiming', '115'],
   ['xInfinity', '380'],
   ['yInfinity', '100'],
-  ['xCondition', '240']
+    ['xCondition', '240'],
+    //tom
+    ['xStop', '305']
 ];
 
 /**
@@ -121,48 +137,97 @@ const nullPointsWithCond = [
  * Each array element is a pair: 1. regular expression that defines the pattern of keys 2. SVG initial structure of code.
  * @type {Array}
  */
-const patterns =[
+const patterns = [
+    // No condition
+
   ['null,null,always|never|eventually|null,action|satisfaction',
   'NOSCOPE\nTIME\nINF\nNOMODE\nSTANDARD\n'],
 
-  ['after,null,always|never|eventually|null,action|satisfaction',
-  'SCOPE\nTIME\nINF\nMODE\nSTANDARD\n'],
-
-  ['in|before,null,always|eventually|never|immediately|within|after|null|for,action|satisfaction',
-  'SCOPE\nTIME\nMODE\nSTANDARD\n'],
+    //tom
+    ['null,null,until|before,action|satisfaction',
+       'NOSCOPE\nTIME\nINF\nNOMODE\nSTOP\nSTANDARD\n'],
 
   ['null,null,immediately|within|after|for,action|satisfaction',
   'NOSCOPE\nTIME\nNOMODE\nSTANDARD\n'],
 
+  ['after,null,always|never|eventually|null,action|satisfaction',
+  'SCOPE\nTIME\nINF\nMODE\nSTANDARD\n'],
+
+    //tom
+    ['after,null,until|before,action|satisfaction',
+       'SCOPE\nTIME\nINF\nMODE\nSTOP\nSTANDARD\n'],
+
   ['after,null,immediately|within|after|for,action|satisfaction',
    'SCOPE\nTIME\nINF\nMODE\nSTANDARD\n'],
 
+  ['in|before,null,always|eventually|never|immediately|within|after|null|for,action|satisfaction',
+  'SCOPE\nTIME\nMODE\nSTANDARD\n'],
+
+    //tom
+    ['in|before,null,until|before,action|satisfaction',
+       'SCOPE\nTIME\nMODE\nSTOP\nSTANDARD\n'],
+
+    // ** Regular conditions **
+    
   ['null,regular,always|never|eventually|null,action|satisfaction',
-  'NOSCOPE\nTIME\nREGULAR\nINF\nNOMODE\nSTANDARD\n'],
+   'NOSCOPE\nTIME\nREGULAR\nINF\nNOMODE\nSTANDARD\n'],
 
-  ['after,regular,always|never|eventually|null,action|satisfaction',
-  'SCOPE\nTIME\nREGULAR\nINF\nMODE\nSTANDARD\n'],
-
-  ['in|before,regular,always|eventually|never|immediately|within|after|null|for,action|satisfaction',
-  'SCOPE\nTIME\nREGULAR\nMODE\nSTANDARD\n'],
+    //tom
+      ['null,regular,until|before,action|satisfaction',
+  'NOSCOPE\nTIME\nREGULAR\n\STOP\nINF\nNOMODE\nSTANDARD\n'],
 
   ['null,regular,immediately|within|after|for,action|satisfaction',
   'NOSCOPE\nTIME\nREGULAR\nNOMODE\nSTANDARD\n'],
 
+  ['after,regular,always|never|eventually|null,action|satisfaction',
+  'SCOPE\nTIME\nREGULAR\nINF\nMODE\nSTANDARD\n'],
+
   ['after,regular,immediately|within|after|for,action|satisfaction',
    'SCOPE\nTIME\nREGULAR\nINF\nMODE\nSTANDARD\n'],
+
+    //tom
+      ['after,regular,until|before,action|satisfaction',
+  'SCOPE\nTIME\nREGULAR\nSTOP\nINF\nMODE\nSTANDARD\n'],
+
+  ['in|before,regular,always|eventually|never|immediately|within|after|null|for,action|satisfaction',
+  'SCOPE\nTIME\nREGULAR\nMODE\nSTANDARD\n'],
+
+    //tom
+   ['in|before,regular,until|before,action|satisfaction',
+  'SCOPE\nTIME\nREGULAR\nSTOP\nMODE\nSTANDARD\n'],
+
+
+    // ** only Scopes, no condition
 
   ['onlyAfter,null,always|eventually|never|immediately|within|after|null|for,action|satisfaction',
   'SCOPE\nTIME\nSCOPE\nTIME\nMODE\nSTANDARD\n'],
 
+    //tom
+  ['onlyAfter,null,until|before,action|satisfaction',
+  'SCOPE\nTIME\nSCOPE\nTIME\nMODE\nSTOP\nSTANDARD\n'],
+
   ['onlyIn|onlyBefore|notin,null,always|eventually|never|immediately|within|after|null|for,action|satisfaction',
   'SCOPE\nTIME\nSCOPE\nTIME\nINF\nMODE\nSTANDARD\n'],
+
+   //tom
+  ['onlyIn|onlyBefore|notin,null,until|before,action|satisfaction',
+  'SCOPE\nTIME\nSCOPE\nTIME\nINF\nMODE\nSTOP\nSTANDARD\n'],
+
+    // ** only Scopes, regular condition
 
   ['onlyAfter,regular,always|eventually|never|immediately|within|after|null|for,action|satisfaction',
   'SCOPE\nTIME\nSCOPE\nTIME\nREGULAR\nMODE\nSTANDARD\n'],
 
+    // tom
+  ['onlyAfter,regular,until|before,action|satisfaction',
+  'SCOPE\nTIME\nSCOPE\nTIME\nREGULAR\nMODE\nSTOP\nSTANDARD\n'],
+
   ['onlyIn|onlyBefore|notin,regular,always|eventually|never|immediately|within|after|null|for,action|satisfaction',
-  'SCOPE\nTIME\nSCOPE\nTIME\nREGULAR\nINF\nMODE\nSTANDARD\n']
+   'SCOPE\nTIME\nSCOPE\nTIME\nREGULAR\nINF\nMODE\nSTANDARD\n'],
+
+    //tom
+      ['onlyIn|onlyBefore|notin,regular,until|before,action|satisfaction',
+  'SCOPE\nTIME\nSCOPE\nTIME\nREGULAR\nINF\nMODE\nSTOP\nSTANDARD\n']
 ];
 
 
@@ -178,14 +243,17 @@ const firstLevelSubstitutionsSVG = [
   ['NOSCOPE', '<use xlink:href="#ScopeForNullScope" x ="xScope" y="yScope"/>'],
   ['SCOPE', '<use xlink:href="#Scope" x ="xScope" y="yScope"/>'],
   ['TIME', '<use xlink:href="#Timing_TimeConstraint" x="xTiming" y="yTiming"/>'],
-  ['REGULAR', '<use xlink:href="#trigger_Condition" x="xCondition" y="30"/>']
+  ['REGULAR', '<use xlink:href="#trigger_Condition" x="xCondition" y="30"/>'],
+  ['STOP', '<use xlink:href="#stop_Condition" x="xStop" y="30"/>'],
 ];
 
 /**
  * Array with the timings that need additional length for null scope
  * @type {Array}
  */
-const timingLength = ['always', 'eventually', 'never', 'null', 'only_always'];
+
+//tom: added until
+const timingLength = ['always', 'eventually', 'never', 'null', 'until', 'only_always'];
 
 /**
  * Creates SVG diagram for a specific key.
@@ -195,7 +263,10 @@ const timingLength = ['always', 'eventually', 'never', 'null', 'only_always'];
  * @return {String}        Svg diagram code for specific key or undefined
  */
 function createSvgString (key, scope, timing, condition){
+    console.log('key: "' + key + '" scope: "' + scope + '" timing: "' + timing + '" condition: "' + condition + '"')
+    //console.log('patterns: ' + JSON.stringify(patterns));
   var template = utilities.matchingBaseForSVG(key, patterns, 'no_match');
+  //tom console.log('template = ' + template);
   if (template !== 'no_match') {
     var svgPattern = '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="500px" height="160px">\n';
     svgPattern += fs.readFileSync('../../docs/_media/user-interface/examples/svgDiagrams/svgTemplates.svg', 'utf8');
@@ -265,6 +336,13 @@ function onlyTimings (scope, timing, condition, svgPattern){
         if(condition === 'null' && scope.includes('In')){
           svgPattern = replaceTiming(svgPattern, scope, 'only_for', 'null');
         }
+	break;
+      case 'until':
+	  svgPattern = replaceTiming(svgPattern,scope,'only_until',condition);
+	  if(condition === 'null' && scope.includes('In')){
+          svgPattern = replaceTiming(svgPattern, scope, 'only_until', 'null');
+        } 
+	  break;    
       }
     }
     else {
@@ -288,8 +366,9 @@ function onlyTimings (scope, timing, condition, svgPattern){
  * Creates svg File corresponding to the key pattern and returns the path of the file.
  * If SVG file cannot be created it returns the constants.undefined_svg error message.
  * @param  {String} key    String of a pattern key e.g., in,null,after,satisfaction
- * @param  {String} scope  Scope string
- * @param  {String} timing Timing string
+ * @param  {String} scope  Scope string, redundant with key
+ * @param  {String} timing Timing string, redundant with key
+ * @param  {String} condition Condition string, redundant with key
  * @return {String}        path of created svg file or error message
  */
 exports.getDiagram = (key, scope, timing, condition) => {
@@ -369,3 +448,58 @@ function replacePoints(points, pointsCond, svgPattern, condition){
   }
   return svgPattern
 }
+
+console.log(this.getDiagram('null,null,until,satisfaction','null','until','null'));
+console.log(this.getDiagram('null,regular,until,satisfaction','null','until','regular'));
+console.log(this.getDiagram('in,null,until,satisfaction','in','until','null'));
+console.log(this.getDiagram('in,regular,until,satisfaction','in','until','regular'));
+
+console.log(this.getDiagram('notin,null,until,satisfaction','notin','until','null'));
+console.log(this.getDiagram('notin,regular,until,satisfaction','notin','until','regular'));
+
+console.log(this.getDiagram('onlyIn,null,until,satisfaction','onlyIn','until','null'));
+console.log(this.getDiagram('onlyIn,regular,until,satisfaction','onlyIn','until','regular'));
+
+
+console.log(this.getDiagram('before,null,until,satisfaction','before','until','null'));
+console.log(this.getDiagram('before,regular,until,satisfaction','before','until','regular'));
+
+console.log(this.getDiagram('onlyBefore,null,until,satisfaction','onlyBefore','until','null'));
+console.log(this.getDiagram('onlyBefore,regular,until,satisfaction','onlyBefore','until','regular'));
+
+
+console.log(this.getDiagram('after,null,until,satisfaction','after','until','null'));
+console.log(this.getDiagram('after,regular,until,satisfaction','after','until','regular'));
+
+console.log(this.getDiagram('onlyAfter,null,until,satisfaction','onlyAfter','until','null'));
+console.log(this.getDiagram('onlyAfter,regular,until,satisfaction','onlyAfter','until','regular'));
+
+
+
+/*
+console.log(this.getDiagram('null,null,within,satisfaction','null','within','null'));
+console.log(this.getDiagram('null,regular,within,satisfaction','null','within','regular'));
+console.log(this.getDiagram('in,null,within,satisfaction','in','within','null'));
+console.log(this.getDiagram('in,regular,within,satisfaction','in','within','regular'));
+
+console.log(this.getDiagram('notin,null,within,satisfaction','notin','within','null'));
+console.log(this.getDiagram('notin,regular,within,satisfaction','notin','within','regular'));
+
+console.log(this.getDiagram('onlyIn,null,within,satisfaction','onlyIn','within','null'));
+console.log(this.getDiagram('onlyIn,regular,within,satisfaction','onlyIn','within','regular'));
+
+
+console.log(this.getDiagram('before,null,within,satisfaction','before','within','null'));
+console.log(this.getDiagram('before,regular,within,satisfaction','before','within','regular'));
+
+console.log(this.getDiagram('onlyBefore,null,within,satisfaction','onlyBefore','within','null'));
+console.log(this.getDiagram('onlyBefore,regular,within,satisfaction','onlyBefore','within','regular'));
+
+
+console.log(this.getDiagram('after,null,within,satisfaction','after','within','null'));
+console.log(this.getDiagram('after,regular,within,satisfaction','after','within','regular'));
+
+console.log(this.getDiagram('onlyAfter,null,within,satisfaction','onlyAfter','within','null'));
+console.log(this.getDiagram('onlyAfter,regular,within,satisfaction','onlyAfter','within','regular'));
+
+*/

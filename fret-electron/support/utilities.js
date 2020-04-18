@@ -113,25 +113,27 @@ exports.replaceSubstring = (replacements, target) => {
 }
 
 
-// pattern and target are arrays of strings.
-// Return whether pattern matches target, where wild cards in pattern
-// are denoted by a hyphen, and alternatives are separated by |, e.g. "null|regular".
- function match (pattern,target) {
-    var matched = true;
-    for (var i = 0; i < pattern.length; i++) {
-      if (pattern[i].startsWith('!')) {
-          if (pattern[i].substr(1) === target[i]) {
-              matched = false
-              break }
-      } else if (pattern[i] != '-' && !(pattern[i].split('|').some((item) => item === target[i]))) {
-            matched = false;
-            break;
-      }
-    }
-    return matched;
+// return boolean as to whether pattern matched target
+// pattern is a restricted reg exp string: - or !a or a|b|c
+// wildcards are denoted by a hyphen,
+// alternatives are separated by |, e.g. "null|regular".
+// target is the string of what is being matched
+function matchRE(pattern,target) {
+    let result = (pattern === '-')
+	|| (pattern.startsWith('!') && pattern.substr(1) !== target)
+	|| pattern.split('|').some((item) => item === target)
+    return result;
 }
 
-// Return array (possibly empty) of matches (which are arrays).
+// patterns and targets are equal-length arrays of strings.
+// Return whether every pattern regexp matches its corresponding target
+function match (patterns,targets) {
+     let matched = patterns.every((re,i) => matchRE(re,targets[i]))
+     return matched;
+}
+
+// patterns is an array of arrays of regexp strings, target is an array of strings.
+// Return array (possibly empty) of those patterns that match target
 function matches (patterns,target) {
     return patterns.filter((pat) => match(pat,target));
 }
