@@ -2,17 +2,19 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
-
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
 import Typography from '@material-ui/core/Typography';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import Grid from '@material-ui/core/Grid';
 import Menu from '@material-ui/core/Menu';
-import ListItem from '@material-ui/core/ListItem';
 
-import MenuItem from '@material-ui/core/MenuItem';
-import TextField from '@material-ui/core/TextField';
+import ListItem from '@material-ui/core/ListItem';
 
 const styles = theme => ({
   container: {
@@ -33,141 +35,52 @@ const styles = theme => ({
 });
 
 class TemplatePanel extends React.Component {
-    // state = {
-    //   templateValue:'No Template',
-    // };
      constructor(props) {
          super(props)
-    //     this
           this.state = {
             template:'No Template'
-              // anchor:null
           };
-    //     //
-    //     // this.handleOpenMenu = this.handleOpenMenu.bind(this);
-    //     // this.handleCloseMenu = this.handleCloseMenu.bind(this);
      }
 
-    // handleOpenMenu(event) {
-    //     this.setState({anchor: event.currentTarget});
-    // }
-    //
-    // handleCloseMenu() {
-    //     this.setState({anchor:null})
-    // }
-    //
     handleMenuClick = index => ((event) => {
         this.props.onChange(index);
     })
 
-    handleChange = name => event => {
-        this.setState({ [name]: event.target.value });
-      };
+    handleChange = event => {
+        this.props.onChange(event.target.value)
+    };
 
     render() {
-        const {classes, templates, selected} = this.props;
-        const template = templates && templates[selected]
-        const patternSelected = Boolean(template);
-        //const {anchor} = this.state;
-        //const info = patternSelected ?
-            // <TemplateInfo template={template} onClickField={this.props.onClickField}/> :
-            // <NoTemplateInfo onClickPatternSelect={this.handleOpenMenu}/>;
-        const title = patternSelected ? template.title+' Template' : 'No Template Selected';
-        // const menuItems = templates && templates.map((template, index) => (
-        //     <MenuItem
-        //         key={template.title}
-        //         onChange={this.handleMenuClick(index)}
-        //         description={template.description}
-        //     />))
-        // if (menuItems != undefined)
-        //   menuItems.splice(0,0,
-        //     <MenuItem
-        //         key={'No template'}
-        //         onChange={this.handleMenuClick(-1)}
-        //         description={'Create a requirement from plain FRETish without applying a predefined template.'}
-        //     />)
-        //     console.log
+        const {classes, templates, selectedTemplate} = this.props;
+        const template = templates && templates[selectedTemplate]
+        const templateSelected = Boolean(template);
+        const info = templateSelected ?
+            <TemplateInfo template={template}/> :
+            <NoTemplateInfo/>;
         return(
-            <TextField
-            id="select-template"
-            select
-            label="Template"
-            className={classes.textField}
-            value={this.state.templateValue}
-            onChange={this.handleChange('templateValue')}
-            SelectProps={{
-              MenuProps: {
-                className: classes.menu,
-              },
-            }}
-            helperText="Please select a template"
-            margin="normal"
-          >
-            <MenuItem
-                key={'No template'} value={'No template'} onClick={this.handleMenuClick(-1)}>
-                {"No template"}
-            </MenuItem>
-            {templates && templates.map((template, index) => (
-              <MenuItem
-                key={template.title} value={template.title} onClick={this.handleMenuClick(index)}
+          <div style={{paddingTop:'24px'}}>
+            <FormControl fullWidth>
+              <InputLabel id="select-template-label">Template</InputLabel>
+              <Select
+                id="select-template"
+                value={selectedTemplate}
+                onChange={this.handleChange}
                 >
-                {template.title}
+                <MenuItem
+                  key={'key-no-template'} value={-1}>
+                  No template
                 </MenuItem>
-            ))}
-          </TextField>
-          // if (this.state.templateValue != 'No Template' && templates[this.state.templateValue]){
-          //   <div>
-          //   <TemplateInfo template={templates[this.state.templateValue]}/>
-          //   </div>
-          // }
+                {templates && templates.map((template, index) => (
+                <MenuItem key={`key-template-${index}`} value={index}>
+                  {template.title}
+                </MenuItem>
+                ))}
+              </Select>
+              <FormHelperText>Choose a predefined template</FormHelperText>
+            </FormControl>
+            {info}
+          </div>
       )
-
-
-    //     const menuItems = templates && templates.map((template, index) => (
-    //
-    //         <MenuOption
-    //             key={template.title}
-    //             onClick={this.handleMenuClick(index)}
-    //             title={template.title}
-    //             description={template.description}
-    //         />))
-    //     if (menuItems != undefined)
-    //       menuItems.splice(0,0,
-    //         <MenuOption
-    //             key={'none'}
-    //             onClick={this.handleMenuClick(-1)}
-    //             title={'No template'}
-    //             description={'Create a requirement from plain FRETish without applying a predefined template.'}
-    //         />)
-    //     return (
-    //         <div style={{paddingBottom:10}}>
-    //         <Grid container >
-    //             <Grid item xs={11}>
-    //                 <Typography variant='subtitle1'><b>{title}</b></Typography>
-    //                 <Menu
-    //                     id="templates-menu"
-    //                     anchorEl={anchor}
-    //                     keepMounted
-    //                     open={Boolean(anchor)}
-    //                     onClose={this.handleCloseMenu}
-    //                     PaperProps={{
-    //                       style: {
-    //                         maxHeight: 200,
-    //                         width: 600,
-    //                       },
-    //                     }}>
-    //                     {menuItems}
-    //                 </Menu>
-    //             </Grid>
-    //             <Grid item xs={1}>
-    //                 <IconButton size="small" color="primary" onClick={this.handleOpenMenu}>
-    //                     <ArrowDropDownIcon />
-    //                 </IconButton>
-    //             </Grid>
-    //         </Grid>
-    //         {info}
-    //         </div>
-    //     )
      }
 }
 
@@ -175,26 +88,26 @@ class TemplateInfo extends React.Component {
     render() {
         const {template} = this.props;
         const patternDescription = (
-            <Typography>{template.description}</Typography>
+          <Typography>{template.description}</Typography>
         );
         const examplesList = ( template.examples &&
-            <div style={{marginTop:15}}>
-                <Typography>Examples:</Typography>
-                {template.examples
-                    .map((example, index) => {
-                        return <Example
-                                template={template}
-                                values={example}
-                                index={index}
-                                key={`${template.name}-example-${index}`}/>
-                    })}
-            </div>
+          <div style={{marginTop:15}}>
+            <Typography>Examples:</Typography>
+            {template.examples
+              .map((example, index) => {
+                return <Example
+                  template={template}
+                  values={example}
+                  index={index}
+                  key={`${template.name}-example-${index}`}/>
+            })}
+          </div>
         )
         return (
-            <div style={{marginTop:24}}>
-                {patternDescription}
-                {examplesList}
-            </div>
+          <div style={{marginTop:24}}>
+            {patternDescription}
+            {examplesList}
+          </div>
         )
     }
 }
@@ -241,19 +154,6 @@ class Example extends React.Component {
             </div>
         )
 
-    }
-}
-
-class MenuOption extends React.Component {
-    render() {
-        return (
-            <ListItem button onClick={this.props.onClick}>
-                <div>
-                <Typography >{this.props.title}</Typography>
-                <Typography ><i>{this.props.description}</i></Typography>
-                </div>
-            </ListItem>
-        )
     }
 }
 

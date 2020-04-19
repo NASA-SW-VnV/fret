@@ -544,7 +544,7 @@ class SlateEditor2 extends React.Component {
             padding: '10px',
           }}>
           <div className={SlateEditor2Styles.showGrammarBtn}>
-          <IconButton onClick={this.openGrammarWindow}>
+          <IconButton onClick={this.openGrammarWindow} style={{padding:'2px'}}>
             <Tooltip title="See Grammar">
             <HelpIcon />
             </Tooltip>
@@ -703,6 +703,7 @@ class SlateEditor2 extends React.Component {
      * value. Otherwise, simply use the editor value from the component state.*/
     let slateValue;
     if (hasFields) {
+      console.log(editorValue)
       const values = editor2Values(editorValue, selectedField);
       slateValue = structure2Editor(template.structure, values);
     } else {
@@ -724,7 +725,7 @@ class SlateEditor2 extends React.Component {
     }
 
     return (
-    <div className="editor" style={{width: 750, height: 150}}>
+    <div className="editor" style={{height: 150}}>
       <div style={{border: 'solid 1px gray', padding: '10px', height: 100}}>
         <Slate 
           editor={this.editor} 
@@ -1003,7 +1004,7 @@ function part2Editor(part, values) {
 
 function editor2Values(editorValue) {
   let paragraph = editorValue[0];
-  return paragraph.children
+  return (paragraph && paragraph.children) ? paragraph.children
           .filter(part => (part.type && part.type === 'field-element'))
           .reduce((values, part) => {
             const leaf = part.children && part.children[0];
@@ -1011,7 +1012,7 @@ function editor2Values(editorValue) {
             const isPlaceholder =  leaf.isPlaceholder;
             values[part.name] = {text: isPlaceholder ? '' : text.slice(1, text.length-1), isPlaceholder};
             return values;
-          }, {});
+          }, {}) : {};
 }
 
 SlateEditor2.propTypes = {

@@ -110,7 +110,7 @@ class CreateRequirementDialog extends React.Component {
     rationale: '',
     comments:'',
     focus: '',
-   selectedPattern: -1,
+   selectedTemplate: -1,
   };
 
   handleTextFieldFocused = name => event => {
@@ -130,8 +130,8 @@ class CreateRequirementDialog extends React.Component {
     this.state.dialogCloseListener(false);
   };
 
-  handleSelectedPatternChange = (selectedPattern) => {
-    this.setState({selectedPattern});
+  handleSelectedTemplateChange = (selectedTemplate) => {
+    this.setState({selectedTemplate});
   }
 
   handleCreate = () => {
@@ -462,19 +462,19 @@ class CreateRequirementDialog extends React.Component {
     }
   }
 
-  renderEditor = (type, inputFields, selectedPattern) => {
+  renderEditor = (inputFields, selectedTemplate) => {
     return (
       <SlateEditor2
         onRef={ref => (this.stepper = ref)}
         updateInstruction={this.handleUpdateInstruction}
         updateSemantics={this.handleUpdateSemantics}
         inputFields={inputFields}
-        template={templates[selectedPattern]}/>
+        template={templates[selectedTemplate]}/>
     )
   }
 
   render() {
-    const { edittingRequirement, selectedPattern } = this.state
+    const { edittingRequirement, selectedTemplate } = this.state;
     const { classes, existingProjectNames, addChildRequirementToParent } = this.props;
     const isRequirementUpdate = !addChildRequirementToParent && (edittingRequirement && Object.keys(edittingRequirement).length > 0)
     const actionLabel = isRequirementUpdate ? 'Update' : 'Create'
@@ -483,20 +483,21 @@ class CreateRequirementDialog extends React.Component {
     const fulltext = isRequirementUpdate ? edittingRequirement.fulltext : undefined
     return (
       <div>
-              <Dialog
-                open={this.state.createDialogOpen}
-                onClose={this.handleClose}
-                aria-labelledby="form-dialog-title"
-                fullWidth={true}
-                maxWidth='lg'
-              >
-              <div className={styles.layout}>
-              <div className={styles.form}>
-              <GridList cols={2} cellHeight={'auto'} spacing={0}>
+        <Dialog
+          open={this.state.createDialogOpen}
+          onClose={this.handleClose}
+          aria-labelledby="form-dialog-title"
+          fullWidth={true}
+          maxWidth='lg'
+        >
+          <div className={styles.layout}>
+            <div className={styles.form}>
+              {/* <GridList cols={2} cellHeight={'auto'} spacing={0}>
                 <GridListTile>
                   <DialogTitle id="form-dialog-title">{dialogTitle}</DialogTitle>
                 </GridListTile>
-              </GridList>
+              </GridList> */}
+              <DialogTitle id="form-dialog-title">{dialogTitle}</DialogTitle>
               <Divider/>
               <DialogContent>
                     <DialogContentText>
@@ -579,9 +580,9 @@ class CreateRequirementDialog extends React.Component {
                         </ExpansionPanel>
                       </GridListTile>
                     </GridList>
-                    {this.renderEditor('slate2', {
+                    {this.renderEditor({
                       fulltext: fulltext
-                    }, selectedPattern)}
+                    }, selectedTemplate)}
               </DialogContent>
               <DialogActions>
                 <Button onClick={this.handleClose}>
@@ -591,21 +592,21 @@ class CreateRequirementDialog extends React.Component {
                   {commitButtonText}
                 </Button>
               </DialogActions>
-              </div>
-              <div className={styles.instruction}>
-                <Instructions
-                field={this.state.focus}
-                grammarRule={this.getGrammarRuleOnFocus()}
-                formalization={this.state.formalization}
-                requirement = {fulltext ? fulltext : ''}
-                requirementID = {this.state.reqid}
-                templates={templates}
-                selected={selectedPattern}
-                handleSelectedPatternChange={this.handleSelectedPatternChange}
-                />
-              </div>
             </div>
-          </Dialog>
+            <div className={styles.instruction}>
+              <Instructions
+              field={this.state.focus}
+              grammarRule={this.getGrammarRuleOnFocus()}
+              formalization={this.state.formalization}
+              requirement = {fulltext ? fulltext : ''}
+              requirementID = {this.state.reqid}
+              templates={templates}
+              selectedTemplate={selectedTemplate}
+              handleSelectedTemplateChange={this.handleSelectedTemplateChange}
+              />
+            </div>
+          </div>
+        </Dialog>
       </div>
     );
   }

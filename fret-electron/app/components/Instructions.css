@@ -14,16 +14,16 @@
 }
 
 .imgWrap {
-  width: 450px;
+  width: 420px;
   position: relative;
   display: inline-block;
   margin-top: -5%;
-  margin-left: 5%;
-  margin-right: 5%;
+  margin-left: 0;
+  margin-right: 0;
 }
 
 .notationWrap {
-  width: 400px;
+  width: 360px;
   position: relative;
  display: inline-block;
 }

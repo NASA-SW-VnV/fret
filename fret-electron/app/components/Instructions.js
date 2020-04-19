@@ -411,13 +411,13 @@ class Instructions extends React.Component {
     console.log(newRating)
   }
 
-  renderTemplate(templates, selectedPattern, handleSelectedPatternChange) {
+  renderTemplate(templates, selectedTemplate, handleSelectedTemplateChange) {
     return(
       <div style={{display: 'block'}}>
         <TemplatePanel
         templates={templates}
-        selected={selectedPattern}
-        onChange={handleSelectedPatternChange}/>
+        selectedTemplate={selectedTemplate}
+        onChange={handleSelectedTemplateChange}/>
         </div>
     )
   }
@@ -460,18 +460,27 @@ class Instructions extends React.Component {
   };
 
   render() {
-     const {field, classes, templates, selected, handleSelectedPatternChange} = this.props;
+     const {field, classes, templates, selectedTemplate, handleSelectedTemplateChange} = this.props;
      const {tabValue} = this.state;
      return (
-       <div className={css.divider}>
-        <AppBar position="static">
-          <Tabs value={tabValue} onChange={this.handleTabChange}>
+       <div>
+         <Tabs 
+          value={tabValue} 
+          onChange={this.handleTabChange}
+          indicatorColor="secondary" 
+          textColor="secondary"
+          centered >
             <Tab label="Semantics" />
             <Tab label="Templates" />
           </Tabs>
-        </AppBar>
+        {/* <AppBar position="static">
+          <Tabs value={tabValue} onChange={this.handleTabChange} variant="fullWidth">
+            <Tab label="Semantics" />
+            <Tab label="Templates" />
+          </Tabs>
+        </AppBar> */}
         {tabValue === 0 && <TabContainer>{this.renderInstruction(field)}</TabContainer>}
-        {tabValue === 1 && <TabContainer>{this.renderTemplate(templates, selected,handleSelectedPatternChange)}</TabContainer>}
+        {tabValue === 1 && <TabContainer>{this.renderTemplate(templates, selectedTemplate,handleSelectedTemplateChange)}</TabContainer>}
        </div>
      );
    }
@@ -484,7 +493,7 @@ Instructions.propTypes = {
   requirement: PropTypes.string.isRequired,
   requirementID: PropTypes.string.isRequired,
   templates: PropTypes.array.isRequired,
-  handleSelectedPatternChange: PropTypes.func.isRequired,
+  handleSelectedTemplateChange: PropTypes.func.isRequired,
 };
 
 export default withStyles(styles)(Instructions);

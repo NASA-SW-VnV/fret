@@ -4,6 +4,7 @@
 }
 
 .blueprintGrid {
+  position: relative;
   border: var(--main-grid-color) solid 1px;
   background-color: var(--main-bg-color);
   background-image:
@@ -16,8 +17,7 @@
 }
 
 .showGrammarBtn {
-  position: relative;
-  right: -49.5%;
-  top: 60px;
-  margin-top: -6%;
+  position: absolute;
+  right: 0px;
+  bottom: 0px;
 }
