@@ -871,10 +871,13 @@ const withFields = editor => {
     if (editor.fieldsEnabled) {
       if (!isMany(editor)) {
         let field = isField(editor);
-        let start = Range.start(editor.selection);
-        let end = Range.end(editor.selection);
         let leaf = getFirstLeaf(editor);
-        if (field && start.offset !== 0 && end.offset < leaf.text.length) {
+        let [start, end] = Range.edges(editor.selection);
+        if (field) {
+          let textlength = leaf.text.length;
+          let anchor = {path: start.path, offset : (start.offset > 0) ? start.offset : Math.min(textlength, 1)};
+          let focus = {path: end.path, offset: (end.offset < textlength) ? end.offset : Math.max(textlength-1, 0)};
+          Transforms.select(editor, {anchor, focus});
           deleteFragment()
         } 
       } 
