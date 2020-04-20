@@ -162,10 +162,16 @@ class SlateEditor2 extends React.Component {
       })
       if (this.props.inputFields) {
         const inputFields = this.props.inputFields
-        let clonedValue = JSON.parse(JSON.stringify(initialValue))
+        let editorValue = JSON.parse(JSON.stringify(initialValue))
         const text = inputFields.fulltext;
-        clonedValue[0].children[0].text = text ? text : '';
-        this.setContentInEditor(clonedValue)
+        const templateValues = inputFields.templateValues;
+        const {template} = this.props;
+        if (template && templateValues) {
+          editorValue = structure2Editor(template.structure, templateValues.values);
+        } else {
+          editorValue[0].children[0].text = text ? text : '';
+        }
+        this.setContentInEditor(editorValue)
       } else {
         this.setState({
           editorValue: initialValue,

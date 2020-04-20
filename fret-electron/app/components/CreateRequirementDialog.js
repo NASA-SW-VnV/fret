@@ -142,7 +142,6 @@ class CreateRequirementDialog extends React.Component {
 
     var requirementFields = this.stepper.getRequirementFields();
     var { fulltext, semantics, input, template } = requirementFields;
-    console.log(template)
     this.setState({
       createDialogOpen: false,
     });
@@ -437,19 +436,25 @@ class CreateRequirementDialog extends React.Component {
               rationale: '',
               comments: '',
               focus: '',
+              selectedTemplate: -1,
             }
           );
       } else if (props.editRequirement) {
-      this.setState(
-          {
-            project: props.editRequirement.project,
-            reqid: props.editRequirement.reqid,
-            parent_reqid: props.editRequirement.parent_reqid,
-            rationale: props.editRequirement.rationale,
-            comments: props.editRequirement.comments,
-            focus: '',
-          }
-        );
+        const template = props.editRequirement.template;
+        const templateIds = templates.map(t => t._id);
+        const selectedTemplate = template && template.id ? 
+                templateIds.indexOf(template.id) : -1; 
+        this.setState(
+            {
+              project: props.editRequirement.project,
+              reqid: props.editRequirement.reqid,
+              parent_reqid: props.editRequirement.parent_reqid,
+              rationale: props.editRequirement.rationale,
+              comments: props.editRequirement.comments,
+              focus: '',
+              selectedTemplate,
+            }
+          );
       } else {
         const { selectedProject, existingProjectNames } = props
         const defaultProject = existingProjectNames.includes(selectedProject) ? selectedProject : existingProjectNames[0]
@@ -459,6 +464,7 @@ class CreateRequirementDialog extends React.Component {
           rationale: '',
           comments: '',
           focus: '',
+          selectedTemplate: -1,
         })
       }
     }
@@ -483,6 +489,7 @@ class CreateRequirementDialog extends React.Component {
     const dialogTitle = actionLabel + ' Requirement'
     const commitButtonText = actionLabel
     const fulltext = isRequirementUpdate ? edittingRequirement.fulltext : undefined
+    const templateValues = isRequirementUpdate ? edittingRequirement.template : undefined
     return (
       <div>
         <Dialog
@@ -583,7 +590,8 @@ class CreateRequirementDialog extends React.Component {
                       </GridListTile>
                     </GridList>
                     {this.renderEditor({
-                      fulltext: fulltext
+                      fulltext, 
+                      templateValues
                     }, selectedTemplate)}
               </DialogContent>
               <DialogActions>
