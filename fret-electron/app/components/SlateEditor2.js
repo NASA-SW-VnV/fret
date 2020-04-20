@@ -208,10 +208,11 @@ class SlateEditor2 extends React.Component {
   }
 
   // Externally referenced by CreateRequirementDialog
-  getRequirementFields = () => {
+  getRequirementFields = () => { 
     return ({
       fulltext: this.getTextInEditor(),
       semantics: this.extractSemantics(),
+      template: this.extractTemplateValues()
     })
   }
 
@@ -497,6 +498,16 @@ class SlateEditor2 extends React.Component {
   }
 
   /**
+   * Templates
+   */
+  extractTemplateValues = () => {
+    const { template } = this.props;
+    const { editorValue } = this.state;
+    const values = editor2Values(editorValue);
+    return template ? {id: template._id, values} : {};
+  }
+
+  /**
    * Render.
    *
    * @return {Element}
@@ -693,7 +704,7 @@ class SlateEditor2 extends React.Component {
 
   renderEditor = () => {
     const { template } = this.props;
-    const {menuOptions, menuIndex, editorValue, selectedField} = this.state;
+    const {menuOptions, menuIndex, editorValue} = this.state;
     const hasFields = Boolean(template);
     this.editor.fieldsEnabled = hasFields;
 
@@ -703,8 +714,7 @@ class SlateEditor2 extends React.Component {
      * value. Otherwise, simply use the editor value from the component state.*/
     let slateValue;
     if (hasFields) {
-      console.log(editorValue)
-      const values = editor2Values(editorValue, selectedField);
+      const values = editor2Values(editorValue);
       slateValue = structure2Editor(template.structure, values);
     } else {
       slateValue = unwrapEditorValue(editorValue);

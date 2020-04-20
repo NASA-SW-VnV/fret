@@ -110,7 +110,7 @@ class CreateRequirementDialog extends React.Component {
     rationale: '',
     comments:'',
     focus: '',
-   selectedTemplate: -1,
+    selectedTemplate: -1,
   };
 
   handleTextFieldFocused = name => event => {
@@ -141,7 +141,8 @@ class CreateRequirementDialog extends React.Component {
 
 
     var requirementFields = this.stepper.getRequirementFields();
-    var { fulltext, semantics, input } = requirementFields;
+    var { fulltext, semantics, input, template } = requirementFields;
+    console.log(template)
     this.setState({
       createDialogOpen: false,
     });
@@ -265,6 +266,7 @@ class CreateRequirementDialog extends React.Component {
         comments : this.state.comments,
         fulltext : fulltext,
         semantics : semantics,
+        template : template,
         input : input
       }, (err, responses) => {
             if (err) {

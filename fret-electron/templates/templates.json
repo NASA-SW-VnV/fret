@@ -1,189 +1,233 @@
 [
-    {
-        "title": "Process Command",
-        "description": "This pattern describes how a command should be processed. The command may be identified by name or through an operation code. The response may have to be immediate, or eventual, or within some timeframe, as specified by the timing.",
-        "structure": [
-            {
-                "text": "Upon "
-            },
-            {
-                "field": "command"
-            },
-            {
-                "text": " the "
-            },
-            {
-                "field": "component"
-            },
-            {
-                "text": " shall "
-            },
-            {
-                "field": "timing"
-            },
-            {
-                "text": " satisfy "
-            },
-            {
-                "field": "response"
-            }
-        ],
-        "fields": {
-            "command": {
-                "description": "The command that triggers the desired reaction. The command may be identified by comparison to a command code or thorugh a boolean variable.",
-                "options": [
-                    {
-                        "description": "The response must be triggered when a command with the code given identifier is received",
-                        "suggestion": "command_opcode = X",
-                        "selection": [17,18]
-                    },
-                    {
-                        "description": "The response must be triggered when the specified command is received",
-                        "suggestion": "receipt_of_X_command",
-                        "selection": [11,12]
-                    },
-                    {
-                        "description": "The response must be triggered when the specified command is received and some action is completed",
-                        "suggestion": "receipt_of_X_command & something_done",
-                        "selection": [11,12]
-                    }
-                ]
-            },
-            "component": {
-                "description": "Specifies the component of the system that the requirement applies to.",
-                "options": [
-                    {
-                        "description": "Replace the text by the name of the target component",
-                        "suggestion": "component",
-                        "selection": []
-                    }
-                ]
-            },
-            "timing": {
-                "description": "Specifies the time points or intervals where the response has to occur after reception of the command. ",
-                "options": [
-                    {
-                        "description": "The response must always hold after reception of the command",
-                        "suggestion": "always",
-                        "selection": [0,6]
-                    },
-                    {
-                        "description": "The response must immediately occur after reception of the command",
-                        "suggestion": "immediately",
-                        "selection": [0,11]
-                    },
-                    {
-                        "description": "The reponse must occur within the specified time window after reception of the command",
-                        "suggestion": "within T seconds",
-                        "selection": [7,8]
-                    }
-                ]
-            },
-            "response":{
-                "description": "Specifies the response to the command that the component must provide to fulfill the requirement. The response is specified as a boolean expression.",
-                "options": [
-                    {
-                        "description": "After reception of the command, the specified action must be triggered",
-                        "suggestion": "action",
-                        "selection": [0,6]
-                    },
-                    {
-                        "description": "After reception of the command, the specified signal must be set to a given value",
-                        "suggestion": "signal = value",
-                        "selection": [0,6]
-                    },
-                    {
-                        "description": "After reception of the command, the sepcified responses must be triggered",
-                        "suggestion": "response_1 & response_2",
-                        "selection": [0,10]
-                    }
-                ]
-            }
-        },
-        "examples": [
-            {
-                "command": "command_opcode = 3 & impulses_scaled",
-                "component": "propulsion_software",
-                "timing": "immediately",
-                "response": "set_impulses_scaled_flag"
-            },
-            {
-                "command": "receipt_of_impulses_command",
-                "component": "propulsion_software",
-                "timing": "within 200 milliseconds",
-                "response": "set_impulses"
-            }
+  {
+    "_id": "template-process-command",
+    "title": "Process Command",
+    "description": "This pattern describes how a command should be processed. The command may be identified by name or through an operation code. The response may have to be immediate, or eventual, or within some timeframe, as specified by the timing.",
+    "structure": [
+      {
+        "text": "Upon "
+      },
+      {
+        "field": "command"
+      },
+      {
+        "text": " the "
+      },
+      {
+        "field": "component"
+      },
+      {
+        "text": " shall "
+      },
+      {
+        "field": "timing"
+      },
+      {
+        "text": " satisfy "
+      },
+      {
+        "field": "response"
+      }
+    ],
+    "fields": {
+      "command": {
+        "description": "The command that triggers the desired reaction. The command may be identified by comparison to a command code or thorugh a boolean variable.",
+        "options": [
+          {
+            "description": "The response must be triggered when a command with the code given identifier is received",
+            "suggestion": "command_opcode = X",
+            "selection": [
+              17,
+              18
+            ]
+          },
+          {
+            "description": "The response must be triggered when the specified command is received",
+            "suggestion": "receipt_of_X_command",
+            "selection": [
+              11,
+              12
+            ]
+          },
+          {
+            "description": "The response must be triggered when the specified command is received and some action is completed",
+            "suggestion": "receipt_of_X_command & something_done",
+            "selection": [
+              11,
+              12
+            ]
+          }
         ]
+      },
+      "component": {
+        "description": "Specifies the component of the system that the requirement applies to.",
+        "options": [
+          {
+            "description": "Replace the text by the name of the target component",
+            "suggestion": "component",
+            "selection": []
+          }
+        ]
+      },
+      "timing": {
+        "description": "Specifies the time points or intervals where the response has to occur after reception of the command. ",
+        "options": [
+          {
+            "description": "The response must always hold after reception of the command",
+            "suggestion": "always",
+            "selection": [
+              0,
+              6
+            ]
+          },
+          {
+            "description": "The response must immediately occur after reception of the command",
+            "suggestion": "immediately",
+            "selection": [
+              0,
+              11
+            ]
+          },
+          {
+            "description": "The reponse must occur within the specified time window after reception of the command",
+            "suggestion": "within T seconds",
+            "selection": [
+              7,
+              8
+            ]
+          }
+        ]
+      },
+      "response": {
+        "description": "Specifies the response to the command that the component must provide to fulfill the requirement. The response is specified as a boolean expression.",
+        "options": [
+          {
+            "description": "After reception of the command, the specified action must be triggered",
+            "suggestion": "action",
+            "selection": [
+              0,
+              6
+            ]
+          },
+          {
+            "description": "After reception of the command, the specified signal must be set to a given value",
+            "suggestion": "signal = value",
+            "selection": [
+              0,
+              6
+            ]
+          },
+          {
+            "description": "After reception of the command, the sepcified responses must be triggered",
+            "suggestion": "response_1 & response_2",
+            "selection": [
+              0,
+              10
+            ]
+          }
+        ]
+      }
     },
-    {
-        "title": "Check Bounds",
-        "description": "This pattern describes a signal that is constrained by bounds. The signal must always stay within or outside the specified bounds or be greater than or lower than a bound.",
-        "structure": [
-            {
-                "text": "The "
-            },
-            {
-                "field": "component"
-            },
-            {
-                "text": " shall "
-            },
-            {
-                "text": "always "
-            },
-            {
-                "text": "satisfy "
-            },
-            {
-                "field": "bounds"
-            }
-        ],
-        "fields": {
-            "component": {
-                "description": "Specifies the component of the system that the requirement applies to.",
-                "options": [
-                    {
-                        "description": "Replace the text by the name of the target component",
-                        "suggestion": "component",
-                        "selection": [0,9]
-                    }
-                ]
-            },
-            "bounds": {
-                "description": "Specifies the signal that must be bounded and the type of bounds. The bounds are specified as a single or a combination of relational expressions of the form signal RELOP bound, where RELOP is a relational operator (<, <=, >, >=).",
-                "options": [
-                    {
-                        "description": "The signal must always stay below the bound",
-                        "suggestion": "signal < bound",
-                        "selection": [0,6]
-                    },
-                    {
-                        "description": "The signal must always stay above the bound",
-                        "suggestion": "signal > bound",
-                        "selection": [0,6]
-                    },
-                    {
-                        "description": "The signal must always stay inside the bounds",
-                        "suggestion": "signal > lower && signal < upper",
-                        "selection": [0,6]
-                    },
-                    {
-                        "description": "The signal must always stay outside the bounds",
-                        "suggestion": "signal < lower || signal > upper",
-                        "selection": [0,6]
-                    }
-                ]
-            }
-        },
-        "examples": [
-            {
-                "component": "autopilot",
-                "bounds": "roll_angle < 60 && roll_angle > -60"
-            },
-            {
-                "component": "alpha_protection",
-                "bounds": "alpha <= 15"
-            }
+    "examples": [
+      {
+        "command": "command_opcode = 3 & impulses_scaled",
+        "component": "propulsion_software",
+        "timing": "immediately",
+        "response": "set_impulses_scaled_flag"
+      },
+      {
+        "command": "receipt_of_impulses_command",
+        "component": "propulsion_software",
+        "timing": "within 200 milliseconds",
+        "response": "set_impulses"
+      }
+    ]
+  },
+  {
+    "_id": "template-check-bounds",
+    "title": "Check Bounds",
+    "description": "This pattern describes a signal that is constrained by bounds. The signal must always stay within or outside the specified bounds or be greater than or lower than a bound.",
+    "structure": [
+      {
+        "text": "The "
+      },
+      {
+        "field": "component"
+      },
+      {
+        "text": " shall "
+      },
+      {
+        "text": "always "
+      },
+      {
+        "text": "satisfy "
+      },
+      {
+        "field": "bounds"
+      }
+    ],
+    "fields": {
+      "component": {
+        "description": "Specifies the component of the system that the requirement applies to.",
+        "options": [
+          {
+            "description": "Replace the text by the name of the target component",
+            "suggestion": "component",
+            "selection": [
+              0,
+              9
+            ]
+          }
         ]
-    }
+      },
+      "bounds": {
+        "description": "Specifies the signal that must be bounded and the type of bounds. The bounds are specified as a single or a combination of relational expressions of the form signal RELOP bound, where RELOP is a relational operator (<, <=, >, >=).",
+        "options": [
+          {
+            "description": "The signal must always stay below the bound",
+            "suggestion": "signal < bound",
+            "selection": [
+              0,
+              6
+            ]
+          },
+          {
+            "description": "The signal must always stay above the bound",
+            "suggestion": "signal > bound",
+            "selection": [
+              0,
+              6
+            ]
+          },
+          {
+            "description": "The signal must always stay inside the bounds",
+            "suggestion": "signal > lower && signal < upper",
+            "selection": [
+              0,
+              6
+            ]
+          },
+          {
+            "description": "The signal must always stay outside the bounds",
+            "suggestion": "signal < lower || signal > upper",
+            "selection": [
+              0,
+              6
+            ]
+          }
+        ]
+      }
+    },
+    "examples": [
+      {
+        "component": "autopilot",
+        "bounds": "roll_angle < 60 && roll_angle > -60"
+      },
+      {
+        "component": "alpha_protection",
+        "bounds": "alpha <= 15"
+      }
+    ]
+  }
 ]
