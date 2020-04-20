@@ -813,7 +813,14 @@ const withFields = editor => {
         let end = Range.end(editor.selection);
         let leaf = getFirstLeaf(editor);
         if (field) {
-          if (start.offset >= 1 && end.offset < leaf.text.length) {
+          let textlength = leaf.text.length;
+          if (start.offset >= 1 && end.offset < textlength) {
+            if (leaf.isPlaceholder) {
+              let anchor = {path: start.path, offset : Math.min(textlength, 1)};
+              let focus = {path: end.path, offset: Math.max(textlength-1, 0)};
+              Transforms.select(editor, {anchor, focus});
+              editor.deleteFragment();
+            }
             insertText(text)
           }
         } 
