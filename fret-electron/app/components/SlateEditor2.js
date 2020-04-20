@@ -213,6 +213,22 @@ class SlateEditor2 extends React.Component {
     this.props.onRef(undefined)
   }
 
+  componentWillReceiveProps(nextProps) {
+    const oldTemplate = this.props.template;
+    const newTemplate = nextProps.template;
+    if ((oldTemplate && !newTemplate) || 
+        (!oldTemplate && newTemplate) || 
+        (oldTemplate && newTemplate && 
+          oldTemplate._id !== newTemplate._id)) {
+            if (newTemplate) {
+              const {editorValue} = this.state;      
+              const values = editor2Values(editorValue);
+              const slateValue = structure2Editor(newTemplate.structure, values);
+              this.setContentInEditor(slateValue);
+            }
+          }
+  }
+
   // Externally referenced by CreateRequirementDialog
   getRequirementFields = () => { 
     return ({
