@@ -624,7 +624,7 @@
     "ptFinBtwExpanded": "(H ((H (! $stop_condition$)) -> $post_condition$))",
     "CoCoSpecCodeFinBtw": "(H((H( not $stop_condition$)) => $post_condition$))",
     "description": "ENFORCED: in the interval defined by the entire execution.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must remain true until (but not necessarily including) the point where the stop condition holds, or to the end of the interval. If the stop condition never occurs, RES must hold until the end of the scope, or forever.  If the stop condition holds at the trigger, the requirement is satisfied.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/null_null_until_satisfaction.svg"
   },
   "null,null,until,action": {
     "ft": "Under construction.",
@@ -643,7 +643,7 @@
     "ptFinBtwExpanded": "Under construction.",
     "CoCoSpecCodeFinBtw": "Under construction.",
     "description": "We are working on adding a description for this requirement. In the meanwhile, you can see its intended meaning in the diagram provided.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/null_null_until_action.svg"
   },
   "null,null,until,order": {
     "ft": "Under construction.",
@@ -700,7 +700,7 @@
     "ptFinBtwExpanded": "(H ($stop_condition$ -> ((Y TRUE) & (Y (O $post_condition$)))))",
     "CoCoSpecCodeFinBtw": "(H($stop_condition$ => (( not FTP) and (pre (O($post_condition$))))))",
     "description": "ENFORCED: in the interval defined by the entire execution.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must hold at least once strictly before the state where the stop condition holds. If the stop condition never occurs, RES does not need to hold. If the stop condition holds at the trigger, the requirement is not satisified.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/null_null_before_satisfaction.svg"
   },
   "null,null,before,action": {
     "ft": "Under construction.",
@@ -719,7 +719,7 @@
     "ptFinBtwExpanded": "Under construction.",
     "CoCoSpecCodeFinBtw": "Under construction.",
     "description": "We are working on adding a description for this requirement. In the meanwhile, you can see its intended meaning in the diagram provided.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/null_null_before_action.svg"
   },
   "null,null,before,order": {
     "ft": "Under construction.",
@@ -1384,7 +1384,7 @@
     "ptFinBtwExpanded": "(H ((((Y TRUE) S ($regular_condition$ & ((Y (! $regular_condition$)) | (! (Y TRUE))))) & ((! $stop_condition$) S ((! $stop_condition$) & ($regular_condition$ & ((Y (! $regular_condition$)) | (! (Y TRUE))))))) -> $post_condition$))",
     "CoCoSpecCodeFinBtw": "(H(((S( ($regular_condition$ and ((pre ( not $regular_condition$)) or FTP)), ( not FTP) )) and (SI( ($regular_condition$ and ((pre ( not $regular_condition$)) or FTP)), ( not $stop_condition$) ))) => $post_condition$))",
     "description": "ENFORCED: in the interval defined by the entire execution.\nTRIGGER: first point in the interval if $regular_condition$ is true and any point in the interval where $regular_condition$ becomes true (from false).\nREQUIRES: for every trigger, RES must remain true until (but not necessarily including) the point where the stop condition holds, or to the end of the interval. If the stop condition never occurs, RES must hold until the end of the scope, or forever.  If the stop condition holds at the trigger, the requirement is satisfied.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/null_regular_until_satisfaction.svg"
   },
   "null,regular,until,action": {
     "ft": "Under construction.",
@@ -1403,7 +1403,7 @@
     "ptFinBtwExpanded": "Under construction.",
     "CoCoSpecCodeFinBtw": "Under construction.",
     "description": "We are working on adding a description for this requirement. In the meanwhile, you can see its intended meaning in the diagram provided.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/null_regular_until_action.svg"
   },
   "null,regular,until,order": {
     "ft": "No meaning assigned.",
@@ -1460,7 +1460,7 @@
     "ptFinBtwExpanded": "(H ($stop_condition$ -> ((! ($regular_condition$ & ((Y (! $regular_condition$)) | (! (Y TRUE))))) & (((Y TRUE) S ($regular_condition$ & ((Y (! $regular_condition$)) | (! (Y TRUE))))) -> (Y (! ((! $post_condition$) S ((! $post_condition$) & ($regular_condition$ & ((Y (! $regular_condition$)) | (! (Y TRUE))))))))))))",
     "CoCoSpecCodeFinBtw": "(H($stop_condition$ => (( not ($regular_condition$ and ((pre ( not $regular_condition$)) or FTP))) and ((S( ($regular_condition$ and ((pre ( not $regular_condition$)) or FTP)), ( not FTP) )) => (pre ( not (SI( ($regular_condition$ and ((pre ( not $regular_condition$)) or FTP)), ( not $post_condition$) ))))))))",
     "description": "ENFORCED: in the interval defined by the entire execution.\nTRIGGER: first point in the interval if $regular_condition$ is true and any point in the interval where $regular_condition$ becomes true (from false).\nREQUIRES: for every trigger, RES must hold at least once strictly before the state where the stop condition holds. If the stop condition never occurs, RES does not need to hold. If the stop condition holds at the trigger, the requirement is not satisified.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/null_regular_before_satisfaction.svg"
   },
   "null,regular,before,action": {
     "ft": "Under construction.",
@@ -1479,7 +1479,7 @@
     "ptFinBtwExpanded": "Under construction.",
     "CoCoSpecCodeFinBtw": "Under construction.",
     "description": "We are working on adding a description for this requirement. In the meanwhile, you can see its intended meaning in the diagram provided.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/null_regular_before_action.svg"
   },
   "null,regular,before,order": {
     "ft": "No meaning assigned.",
@@ -2904,7 +2904,7 @@
     "ptFinBtwExpanded": "(H ((((! $scope_mode$) & (Y $scope_mode$)) & (Y TRUE)) -> (Y ((((! $stop_condition$) S ((! $stop_condition$) & ($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$)))))) -> $post_condition$) S ((((! $stop_condition$) S ((! $stop_condition$) & ($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$)))))) -> $post_condition$) & ($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$)))))))))",
     "CoCoSpecCodeFinBtw": "(H(((( not $scope_mode$) and (pre ($scope_mode$))) and ( not FTP)) => (pre (SI( ($scope_mode$ and (FTP or (pre ( not $scope_mode$)))), ((SI( ($scope_mode$ and (FTP or (pre ( not $scope_mode$)))), ( not $stop_condition$) )) => $post_condition$) )))))",
     "description": "ENFORCED: in every interval where $scope_mode$ holds.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must remain true until (but not necessarily including) the point where the stop condition holds, or to the end of the interval. If the stop condition never occurs, RES must hold until the end of the scope, or forever.  If the stop condition holds at the trigger, the requirement is satisfied.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/in_null_until_satisfaction.svg"
   },
   "in,null,until,action": {
     "ft": "Under construction.",
@@ -2923,7 +2923,7 @@
     "ptFinBtwExpanded": "Under construction.",
     "CoCoSpecCodeFinBtw": "Under construction.",
     "description": "We are working on adding a description for this requirement. In the meanwhile, you can see its intended meaning in the diagram provided.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/in_null_until_action.svg"
   },
   "in,null,until,order": {
     "ft": "Under construction.",
@@ -2980,7 +2980,7 @@
     "ptFinBtwExpanded": "(H ((((! $scope_mode$) & (Y $scope_mode$)) & (Y TRUE)) -> (Y (($stop_condition$ -> ((! ($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$))))) & (Y (! ((! $post_condition$) S ((! $post_condition$) & ($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$)))))))))) S (($stop_condition$ -> ((! ($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$))))) & (Y (! ((! $post_condition$) S ((! $post_condition$) & ($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$)))))))))) & ($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$)))))))))",
     "CoCoSpecCodeFinBtw": "(H(((( not $scope_mode$) and (pre ($scope_mode$))) and ( not FTP)) => (pre (SI( ($scope_mode$ and (FTP or (pre ( not $scope_mode$)))), ($stop_condition$ => (( not ($scope_mode$ and (FTP or (pre ( not $scope_mode$))))) and (pre ( not (SI( ($scope_mode$ and (FTP or (pre ( not $scope_mode$)))), ( not $post_condition$) )))))) )))))",
     "description": "ENFORCED: in every interval where $scope_mode$ holds.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must hold at least once strictly before the state where the stop condition holds. If the stop condition never occurs, RES does not need to hold. If the stop condition holds at the trigger, the requirement is not satisified.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/in_null_before_satisfaction.svg"
   },
   "in,null,before,action": {
     "ft": "Under construction.",
@@ -2999,7 +2999,7 @@
     "ptFinBtwExpanded": "Under construction.",
     "CoCoSpecCodeFinBtw": "Under construction.",
     "description": "We are working on adding a description for this requirement. In the meanwhile, you can see its intended meaning in the diagram provided.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/in_null_before_action.svg"
   },
   "in,null,before,order": {
     "ft": "Under construction.",
@@ -3664,7 +3664,7 @@
     "ptFinBtwExpanded": "(H ((((! $scope_mode$) & (Y $scope_mode$)) & (Y TRUE)) -> (Y (((((! ($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$))))) S ($regular_condition$ & ((Y (! $regular_condition$)) | ($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$))))))) & ((! $stop_condition$) S ((! $stop_condition$) & ($regular_condition$ & ((Y (! $regular_condition$)) | ($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$))))))))) -> $post_condition$) S (((((! ($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$))))) S ($regular_condition$ & ((Y (! $regular_condition$)) | ($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$))))))) & ((! $stop_condition$) S ((! $stop_condition$) & ($regular_condition$ & ((Y (! $regular_condition$)) | ($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$))))))))) -> $post_condition$) & ($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$)))))))))",
     "CoCoSpecCodeFinBtw": "(H(((( not $scope_mode$) and (pre ($scope_mode$))) and ( not FTP)) => (pre (SI( ($scope_mode$ and (FTP or (pre ( not $scope_mode$)))), (((S( ($regular_condition$ and ((pre ( not $regular_condition$)) or ($scope_mode$ and (FTP or (pre ( not $scope_mode$)))))), ( not ($scope_mode$ and (FTP or (pre ( not $scope_mode$))))) )) and (SI( ($regular_condition$ and ((pre ( not $regular_condition$)) or ($scope_mode$ and (FTP or (pre ( not $scope_mode$)))))), ( not $stop_condition$) ))) => $post_condition$) )))))",
     "description": "ENFORCED: in every interval where $scope_mode$ holds.\nTRIGGER: first point in the interval if $regular_condition$ is true and any point in the interval where $regular_condition$ becomes true (from false).\nREQUIRES: for every trigger, RES must remain true until (but not necessarily including) the point where the stop condition holds, or to the end of the interval. If the stop condition never occurs, RES must hold until the end of the scope, or forever.  If the stop condition holds at the trigger, the requirement is satisfied.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/in_regular_until_satisfaction.svg"
   },
   "in,regular,until,action": {
     "ft": "Under construction.",
@@ -3683,7 +3683,7 @@
     "ptFinBtwExpanded": "Under construction.",
     "CoCoSpecCodeFinBtw": "Under construction.",
     "description": "We are working on adding a description for this requirement. In the meanwhile, you can see its intended meaning in the diagram provided.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/in_regular_until_action.svg"
   },
   "in,regular,until,order": {
     "ft": "No meaning assigned.",
@@ -3740,7 +3740,7 @@
     "ptFinBtwExpanded": "(H ((((! $scope_mode$) & (Y $scope_mode$)) & (Y TRUE)) -> (Y (($stop_condition$ -> ((! ($regular_condition$ & ((Y (! $regular_condition$)) | ($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$))))))) & (((! ($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$))))) S ($regular_condition$ & ((Y (! $regular_condition$)) | ($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$))))))) -> (Y (! ((! $post_condition$) S ((! $post_condition$) & ($regular_condition$ & ((Y (! $regular_condition$)) | ($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$))))))))))))) S (($stop_condition$ -> ((! ($regular_condition$ & ((Y (! $regular_condition$)) | ($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$))))))) & (((! ($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$))))) S ($regular_condition$ & ((Y (! $regular_condition$)) | ($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$))))))) -> (Y (! ((! $post_condition$) S ((! $post_condition$) & ($regular_condition$ & ((Y (! $regular_condition$)) | ($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$))))))))))))) & ($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$)))))))))",
     "CoCoSpecCodeFinBtw": "(H(((( not $scope_mode$) and (pre ($scope_mode$))) and ( not FTP)) => (pre (SI( ($scope_mode$ and (FTP or (pre ( not $scope_mode$)))), ($stop_condition$ => (( not ($regular_condition$ and ((pre ( not $regular_condition$)) or ($scope_mode$ and (FTP or (pre ( not $scope_mode$))))))) and ((S( ($regular_condition$ and ((pre ( not $regular_condition$)) or ($scope_mode$ and (FTP or (pre ( not $scope_mode$)))))), ( not ($scope_mode$ and (FTP or (pre ( not $scope_mode$))))) )) => (pre ( not (SI( ($regular_condition$ and ((pre ( not $regular_condition$)) or ($scope_mode$ and (FTP or (pre ( not $scope_mode$)))))), ( not $post_condition$) ))))))) )))))",
     "description": "ENFORCED: in every interval where $scope_mode$ holds.\nTRIGGER: first point in the interval if $regular_condition$ is true and any point in the interval where $regular_condition$ becomes true (from false).\nREQUIRES: for every trigger, RES must hold at least once strictly before the state where the stop condition holds. If the stop condition never occurs, RES does not need to hold. If the stop condition holds at the trigger, the requirement is not satisified.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/in_regular_before_satisfaction.svg"
   },
   "in,regular,before,action": {
     "ft": "Under construction.",
@@ -3759,7 +3759,7 @@
     "ptFinBtwExpanded": "Under construction.",
     "CoCoSpecCodeFinBtw": "Under construction.",
     "description": "We are working on adding a description for this requirement. In the meanwhile, you can see its intended meaning in the diagram provided.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/in_regular_before_action.svg"
   },
   "in,regular,before,order": {
     "ft": "No meaning assigned.",
@@ -5184,7 +5184,7 @@
     "ptFinBtwExpanded": "(H (((((! $scope_mode$) & (Y $scope_mode$)) & (Y (H (! ((! $scope_mode$) & (Y $scope_mode$)))))) & (Y TRUE)) -> (Y (H ($stop_condition$ -> ((Y TRUE) & (Y (! (H $post_condition$)))))))))",
     "CoCoSpecCodeFinBtw": "(H((((( not $scope_mode$) and (pre ($scope_mode$))) and pre (H( not (( not $scope_mode$) and (pre ($scope_mode$)))))) and ( not FTP)) => (pre (H($stop_condition$ => (( not FTP) and (pre ( not (H($post_condition$))))))))))",
     "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and including) the first interval where $scope_mode$ holds.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must remain true until (but not necessarily including) the point where the stop condition holds, or to the end of the interval. If the stop condition never occurs, RES must hold until the end of the scope, or forever.  If the stop condition holds at the trigger, the requirement is satisfied.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/onlyAfter_null_until_satisfaction.svg"
   },
   "onlyAfter,null,until,action": {
     "ft": "Under construction.",
@@ -5203,7 +5203,7 @@
     "ptFinBtwExpanded": "Under construction.",
     "CoCoSpecCodeFinBtw": "Under construction.",
     "description": "We are working on adding a description for this requirement. In the meanwhile, you can see its intended meaning in the diagram provided.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/onlyAfter_null_until_action.svg"
   },
   "onlyAfter,null,until,order": {
     "ft": "Under construction.",
@@ -5260,7 +5260,7 @@
     "ptFinBtwExpanded": "(H (((((! $scope_mode$) & (Y $scope_mode$)) & (Y (H (! ((! $scope_mode$) & (Y $scope_mode$)))))) & (Y TRUE)) -> (Y (H ((H (! $stop_condition$)) -> (! $post_condition$))))))",
     "CoCoSpecCodeFinBtw": "(H((((( not $scope_mode$) and (pre ($scope_mode$))) and pre (H( not (( not $scope_mode$) and (pre ($scope_mode$)))))) and ( not FTP)) => (pre (H((H( not $stop_condition$)) => ( not $post_condition$))))))",
     "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and including) the first interval where $scope_mode$ holds.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must hold at least once strictly before the state where the stop condition holds. If the stop condition never occurs, RES does not need to hold. If the stop condition holds at the trigger, the requirement is not satisified.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/onlyAfter_null_before_satisfaction.svg"
   },
   "onlyAfter,null,before,action": {
     "ft": "Under construction.",
@@ -5279,7 +5279,7 @@
     "ptFinBtwExpanded": "Under construction.",
     "CoCoSpecCodeFinBtw": "Under construction.",
     "description": "We are working on adding a description for this requirement. In the meanwhile, you can see its intended meaning in the diagram provided.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/onlyAfter_null_before_action.svg"
   },
   "onlyAfter,null,before,order": {
     "ft": "Under construction.",
@@ -5944,7 +5944,7 @@
     "ptFinBtwExpanded": "(H (((((! $scope_mode$) & (Y $scope_mode$)) & (Y (H (! ((! $scope_mode$) & (Y $scope_mode$)))))) & (Y TRUE)) -> (Y (H ($stop_condition$ -> ((! ($regular_condition$ & ((Y (! $regular_condition$)) | (! (Y TRUE))))) & (((Y TRUE) S ($regular_condition$ & ((Y (! $regular_condition$)) | (! (Y TRUE))))) -> (Y (! ($post_condition$ S ($post_condition$ & ($regular_condition$ & ((Y (! $regular_condition$)) | (! (Y TRUE)))))))))))))))",
     "CoCoSpecCodeFinBtw": "(H((((( not $scope_mode$) and (pre ($scope_mode$))) and pre (H( not (( not $scope_mode$) and (pre ($scope_mode$)))))) and ( not FTP)) => (pre (H($stop_condition$ => (( not ($regular_condition$ and ((pre ( not $regular_condition$)) or FTP))) and ((S( ($regular_condition$ and ((pre ( not $regular_condition$)) or FTP)), ( not FTP) )) => (pre ( not (SI( ($regular_condition$ and ((pre ( not $regular_condition$)) or FTP)), $post_condition$ )))))))))))",
     "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and including) the first interval where $scope_mode$ holds.\nTRIGGER: first point in the interval if $regular_condition$ is true and any point in the interval where $regular_condition$ becomes true (from false).\nREQUIRES: for every trigger, RES must remain true until (but not necessarily including) the point where the stop condition holds, or to the end of the interval. If the stop condition never occurs, RES must hold until the end of the scope, or forever.  If the stop condition holds at the trigger, the requirement is satisfied.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/onlyAfter_regular_until_satisfaction.svg"
   },
   "onlyAfter,regular,until,action": {
     "ft": "Under construction.",
@@ -5963,7 +5963,7 @@
     "ptFinBtwExpanded": "Under construction.",
     "CoCoSpecCodeFinBtw": "Under construction.",
     "description": "We are working on adding a description for this requirement. In the meanwhile, you can see its intended meaning in the diagram provided.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/onlyAfter_regular_until_action.svg"
   },
   "onlyAfter,regular,until,order": {
     "ft": "No meaning assigned.",
@@ -6020,7 +6020,7 @@
     "ptFinBtwExpanded": "(H (((((! $scope_mode$) & (Y $scope_mode$)) & (Y (H (! ((! $scope_mode$) & (Y $scope_mode$)))))) & (Y TRUE)) -> (Y (H ((((Y TRUE) S ($regular_condition$ & ((Y (! $regular_condition$)) | (! (Y TRUE))))) & ((! $stop_condition$) S ((! $stop_condition$) & ($regular_condition$ & ((Y (! $regular_condition$)) | (! (Y TRUE))))))) -> (! $post_condition$))))))",
     "CoCoSpecCodeFinBtw": "(H((((( not $scope_mode$) and (pre ($scope_mode$))) and pre (H( not (( not $scope_mode$) and (pre ($scope_mode$)))))) and ( not FTP)) => (pre (H(((S( ($regular_condition$ and ((pre ( not $regular_condition$)) or FTP)), ( not FTP) )) and (SI( ($regular_condition$ and ((pre ( not $regular_condition$)) or FTP)), ( not $stop_condition$) ))) => ( not $post_condition$))))))",
     "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and including) the first interval where $scope_mode$ holds.\nTRIGGER: first point in the interval if $regular_condition$ is true and any point in the interval where $regular_condition$ becomes true (from false).\nREQUIRES: for every trigger, RES must hold at least once strictly before the state where the stop condition holds. If the stop condition never occurs, RES does not need to hold. If the stop condition holds at the trigger, the requirement is not satisified.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/onlyAfter_regular_before_satisfaction.svg"
   },
   "onlyAfter,regular,before,action": {
     "ft": "Under construction.",
@@ -6039,7 +6039,7 @@
     "ptFinBtwExpanded": "Under construction.",
     "CoCoSpecCodeFinBtw": "Under construction.",
     "description": "We are working on adding a description for this requirement. In the meanwhile, you can see its intended meaning in the diagram provided.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/onlyAfter_regular_before_action.svg"
   },
   "onlyAfter,regular,before,order": {
     "ft": "No meaning assigned.",
@@ -7464,7 +7464,7 @@
     "ptFinBtwExpanded": "((O (((! $scope_mode$) & (Y $scope_mode$)) & (Y (H (! ((! $scope_mode$) & (Y $scope_mode$))))))) -> ((((! $stop_condition$) S ((! $stop_condition$) & (((! $scope_mode$) & (Y $scope_mode$)) & (Y (H (! ((! $scope_mode$) & (Y $scope_mode$)))))))) -> $post_condition$) S ((((! $stop_condition$) S ((! $stop_condition$) & (((! $scope_mode$) & (Y $scope_mode$)) & (Y (H (! ((! $scope_mode$) & (Y $scope_mode$)))))))) -> $post_condition$) & (((! $scope_mode$) & (Y $scope_mode$)) & (Y (H (! ((! $scope_mode$) & (Y $scope_mode$)))))))))",
     "CoCoSpecCodeFinBtw": "((O((( not $scope_mode$) and (pre ($scope_mode$))) and pre (H( not (( not $scope_mode$) and (pre ($scope_mode$))))))) => (SI( ((( not $scope_mode$) and (pre ($scope_mode$))) and pre (H( not (( not $scope_mode$) and (pre ($scope_mode$)))))), ((SI( ((( not $scope_mode$) and (pre ($scope_mode$))) and pre (H( not (( not $scope_mode$) and (pre ($scope_mode$)))))), ( not $stop_condition$) )) => $post_condition$) )))",
     "description": "ENFORCED: in the interval (if defined) starting strictly after the first $scope_mode$ interval and spanning to the end of the execution.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must remain true until (but not necessarily including) the point where the stop condition holds, or to the end of the interval. If the stop condition never occurs, RES must hold until the end of the scope, or forever.  If the stop condition holds at the trigger, the requirement is satisfied.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/after_null_until_satisfaction.svg"
   },
   "after,null,until,action": {
     "ft": "Under construction.",
@@ -7483,7 +7483,7 @@
     "ptFinBtwExpanded": "Under construction.",
     "CoCoSpecCodeFinBtw": "Under construction.",
     "description": "We are working on adding a description for this requirement. In the meanwhile, you can see its intended meaning in the diagram provided.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/after_null_until_action.svg"
   },
   "after,null,until,order": {
     "ft": "Under construction.",
@@ -7540,7 +7540,7 @@
     "ptFinBtwExpanded": "((O (((! $scope_mode$) & (Y $scope_mode$)) & (Y (H (! ((! $scope_mode$) & (Y $scope_mode$))))))) -> (($stop_condition$ -> ((! (((! $scope_mode$) & (Y $scope_mode$)) & (Y (H (! ((! $scope_mode$) & (Y $scope_mode$))))))) & (Y (! ((! $post_condition$) S ((! $post_condition$) & (((! $scope_mode$) & (Y $scope_mode$)) & (Y (H (! ((! $scope_mode$) & (Y $scope_mode$)))))))))))) S (($stop_condition$ -> ((! (((! $scope_mode$) & (Y $scope_mode$)) & (Y (H (! ((! $scope_mode$) & (Y $scope_mode$))))))) & (Y (! ((! $post_condition$) S ((! $post_condition$) & (((! $scope_mode$) & (Y $scope_mode$)) & (Y (H (! ((! $scope_mode$) & (Y $scope_mode$)))))))))))) & (((! $scope_mode$) & (Y $scope_mode$)) & (Y (H (! ((! $scope_mode$) & (Y $scope_mode$)))))))))",
     "CoCoSpecCodeFinBtw": "((O((( not $scope_mode$) and (pre ($scope_mode$))) and pre (H( not (( not $scope_mode$) and (pre ($scope_mode$))))))) => (SI( ((( not $scope_mode$) and (pre ($scope_mode$))) and pre (H( not (( not $scope_mode$) and (pre ($scope_mode$)))))), ($stop_condition$ => (( not ((( not $scope_mode$) and (pre ($scope_mode$))) and pre (H( not (( not $scope_mode$) and (pre ($scope_mode$))))))) and (pre ( not (SI( ((( not $scope_mode$) and (pre ($scope_mode$))) and pre (H( not (( not $scope_mode$) and (pre ($scope_mode$)))))), ( not $post_condition$) )))))) )))",
     "description": "ENFORCED: in the interval (if defined) starting strictly after the first $scope_mode$ interval and spanning to the end of the execution.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must hold at least once strictly before the state where the stop condition holds. If the stop condition never occurs, RES does not need to hold. If the stop condition holds at the trigger, the requirement is not satisified.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/after_null_before_satisfaction.svg"
   },
   "after,null,before,action": {
     "ft": "Under construction.",
@@ -7559,7 +7559,7 @@
     "ptFinBtwExpanded": "Under construction.",
     "CoCoSpecCodeFinBtw": "Under construction.",
     "description": "We are working on adding a description for this requirement. In the meanwhile, you can see its intended meaning in the diagram provided.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/after_null_before_action.svg"
   },
   "after,null,before,order": {
     "ft": "Under construction.",
@@ -8224,7 +8224,7 @@
     "ptFinBtwExpanded": "((O (((! $scope_mode$) & (Y $scope_mode$)) & (Y (H (! ((! $scope_mode$) & (Y $scope_mode$))))))) -> (((((! (((! $scope_mode$) & (Y $scope_mode$)) & (Y (H (! ((! $scope_mode$) & (Y $scope_mode$))))))) S ($regular_condition$ & ((Y (! $regular_condition$)) | (((! $scope_mode$) & (Y $scope_mode$)) & (Y (H (! ((! $scope_mode$) & (Y $scope_mode$))))))))) & ((! $stop_condition$) S ((! $stop_condition$) & ($regular_condition$ & ((Y (! $regular_condition$)) | (((! $scope_mode$) & (Y $scope_mode$)) & (Y (H (! ((! $scope_mode$) & (Y $scope_mode$))))))))))) -> $post_condition$) S (((((! (((! $scope_mode$) & (Y $scope_mode$)) & (Y (H (! ((! $scope_mode$) & (Y $scope_mode$))))))) S ($regular_condition$ & ((Y (! $regular_condition$)) | (((! $scope_mode$) & (Y $scope_mode$)) & (Y (H (! ((! $scope_mode$) & (Y $scope_mode$))))))))) & ((! $stop_condition$) S ((! $stop_condition$) & ($regular_condition$ & ((Y (! $regular_condition$)) | (((! $scope_mode$) & (Y $scope_mode$)) & (Y (H (! ((! $scope_mode$) & (Y $scope_mode$))))))))))) -> $post_condition$) & (((! $scope_mode$) & (Y $scope_mode$)) & (Y (H (! ((! $scope_mode$) & (Y $scope_mode$)))))))))",
     "CoCoSpecCodeFinBtw": "((O((( not $scope_mode$) and (pre ($scope_mode$))) and pre (H( not (( not $scope_mode$) and (pre ($scope_mode$))))))) => (SI( ((( not $scope_mode$) and (pre ($scope_mode$))) and pre (H( not (( not $scope_mode$) and (pre ($scope_mode$)))))), (((S( ($regular_condition$ and ((pre ( not $regular_condition$)) or ((( not $scope_mode$) and (pre ($scope_mode$))) and pre (H( not (( not $scope_mode$) and (pre ($scope_mode$)))))))), ( not ((( not $scope_mode$) and (pre ($scope_mode$))) and pre (H( not (( not $scope_mode$) and (pre ($scope_mode$))))))) )) and (SI( ($regular_condition$ and ((pre ( not $regular_condition$)) or ((( not $scope_mode$) and (pre ($scope_mode$))) and pre (H( not (( not $scope_mode$) and (pre ($scope_mode$)))))))), ( not $stop_condition$) ))) => $post_condition$) )))",
     "description": "ENFORCED: in the interval (if defined) starting strictly after the first $scope_mode$ interval and spanning to the end of the execution.\nTRIGGER: first point in the interval if $regular_condition$ is true and any point in the interval where $regular_condition$ becomes true (from false).\nREQUIRES: for every trigger, RES must remain true until (but not necessarily including) the point where the stop condition holds, or to the end of the interval. If the stop condition never occurs, RES must hold until the end of the scope, or forever.  If the stop condition holds at the trigger, the requirement is satisfied.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/after_regular_until_satisfaction.svg"
   },
   "after,regular,until,action": {
     "ft": "Under construction.",
@@ -8243,7 +8243,7 @@
     "ptFinBtwExpanded": "Under construction.",
     "CoCoSpecCodeFinBtw": "Under construction.",
     "description": "We are working on adding a description for this requirement. In the meanwhile, you can see its intended meaning in the diagram provided.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/after_regular_until_action.svg"
   },
   "after,regular,until,order": {
     "ft": "No meaning assigned.",
@@ -8300,7 +8300,7 @@
     "ptFinBtwExpanded": "((O (((! $scope_mode$) & (Y $scope_mode$)) & (Y (H (! ((! $scope_mode$) & (Y $scope_mode$))))))) -> (($stop_condition$ -> ((! ($regular_condition$ & ((Y (! $regular_condition$)) | (((! $scope_mode$) & (Y $scope_mode$)) & (Y (H (! ((! $scope_mode$) & (Y $scope_mode$))))))))) & (((! (((! $scope_mode$) & (Y $scope_mode$)) & (Y (H (! ((! $scope_mode$) & (Y $scope_mode$))))))) S ($regular_condition$ & ((Y (! $regular_condition$)) | (((! $scope_mode$) & (Y $scope_mode$)) & (Y (H (! ((! $scope_mode$) & (Y $scope_mode$))))))))) -> (Y (! ((! $post_condition$) S ((! $post_condition$) & ($regular_condition$ & ((Y (! $regular_condition$)) | (((! $scope_mode$) & (Y $scope_mode$)) & (Y (H (! ((! $scope_mode$) & (Y $scope_mode$))))))))))))))) S (($stop_condition$ -> ((! ($regular_condition$ & ((Y (! $regular_condition$)) | (((! $scope_mode$) & (Y $scope_mode$)) & (Y (H (! ((! $scope_mode$) & (Y $scope_mode$))))))))) & (((! (((! $scope_mode$) & (Y $scope_mode$)) & (Y (H (! ((! $scope_mode$) & (Y $scope_mode$))))))) S ($regular_condition$ & ((Y (! $regular_condition$)) | (((! $scope_mode$) & (Y $scope_mode$)) & (Y (H (! ((! $scope_mode$) & (Y $scope_mode$))))))))) -> (Y (! ((! $post_condition$) S ((! $post_condition$) & ($regular_condition$ & ((Y (! $regular_condition$)) | (((! $scope_mode$) & (Y $scope_mode$)) & (Y (H (! ((! $scope_mode$) & (Y $scope_mode$))))))))))))))) & (((! $scope_mode$) & (Y $scope_mode$)) & (Y (H (! ((! $scope_mode$) & (Y $scope_mode$)))))))))",
     "CoCoSpecCodeFinBtw": "((O((( not $scope_mode$) and (pre ($scope_mode$))) and pre (H( not (( not $scope_mode$) and (pre ($scope_mode$))))))) => (SI( ((( not $scope_mode$) and (pre ($scope_mode$))) and pre (H( not (( not $scope_mode$) and (pre ($scope_mode$)))))), ($stop_condition$ => (( not ($regular_condition$ and ((pre ( not $regular_condition$)) or ((( not $scope_mode$) and (pre ($scope_mode$))) and pre (H( not (( not $scope_mode$) and (pre ($scope_mode$))))))))) and ((S( ($regular_condition$ and ((pre ( not $regular_condition$)) or ((( not $scope_mode$) and (pre ($scope_mode$))) and pre (H( not (( not $scope_mode$) and (pre ($scope_mode$)))))))), ( not ((( not $scope_mode$) and (pre ($scope_mode$))) and pre (H( not (( not $scope_mode$) and (pre ($scope_mode$))))))) )) => (pre ( not (SI( ($regular_condition$ and ((pre ( not $regular_condition$)) or ((( not $scope_mode$) and (pre ($scope_mode$))) and pre (H( not (( not $scope_mode$) and (pre ($scope_mode$)))))))), ( not $post_condition$) ))))))) )))",
     "description": "ENFORCED: in the interval (if defined) starting strictly after the first $scope_mode$ interval and spanning to the end of the execution.\nTRIGGER: first point in the interval if $regular_condition$ is true and any point in the interval where $regular_condition$ becomes true (from false).\nREQUIRES: for every trigger, RES must hold at least once strictly before the state where the stop condition holds. If the stop condition never occurs, RES does not need to hold. If the stop condition holds at the trigger, the requirement is not satisified.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/after_regular_before_satisfaction.svg"
   },
   "after,regular,before,action": {
     "ft": "Under construction.",
@@ -8319,7 +8319,7 @@
     "ptFinBtwExpanded": "Under construction.",
     "CoCoSpecCodeFinBtw": "Under construction.",
     "description": "We are working on adding a description for this requirement. In the meanwhile, you can see its intended meaning in the diagram provided.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/after_regular_before_action.svg"
   },
   "after,regular,before,order": {
     "ft": "No meaning assigned.",
@@ -9744,7 +9744,7 @@
     "ptFinBtwExpanded": "((O (($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$)))) & ((Y (H (! $scope_mode$))) | (! (Y TRUE))))) -> (($stop_condition$ -> ((! (($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$)))) & ((Y (H (! $scope_mode$))) | (! (Y TRUE))))) & (Y (! ($post_condition$ S ($post_condition$ & (($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$)))) & ((Y (H (! $scope_mode$))) | (! (Y TRUE)))))))))) S (($stop_condition$ -> ((! (($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$)))) & ((Y (H (! $scope_mode$))) | (! (Y TRUE))))) & (Y (! ($post_condition$ S ($post_condition$ & (($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$)))) & ((Y (H (! $scope_mode$))) | (! (Y TRUE)))))))))) & (($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$)))) & ((Y (H (! $scope_mode$))) | (! (Y TRUE)))))))",
     "CoCoSpecCodeFinBtw": "((O(($scope_mode$ and (FTP or (pre ( not $scope_mode$)))) and ((pre (H( not $scope_mode$))) or FTP))) => (SI( (($scope_mode$ and (FTP or (pre ( not $scope_mode$)))) and ((pre (H( not $scope_mode$))) or FTP)), ($stop_condition$ => (( not (($scope_mode$ and (FTP or (pre ( not $scope_mode$)))) and ((pre (H( not $scope_mode$))) or FTP))) and (pre ( not (SI( (($scope_mode$ and (FTP or (pre ( not $scope_mode$)))) and ((pre (H( not $scope_mode$))) or FTP)), $post_condition$ )))))) )))",
     "description": "ENFORCED: in the interval (if defined) starting at the first point where $scope_mode$ holds and spanning to the end of the execution.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must remain true until (but not necessarily including) the point where the stop condition holds, or to the end of the interval. If the stop condition never occurs, RES must hold until the end of the scope, or forever.  If the stop condition holds at the trigger, the requirement is satisfied.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/onlyBefore_null_until_satisfaction.svg"
   },
   "onlyBefore,null,until,action": {
     "ft": "Under construction.",
@@ -9763,7 +9763,7 @@
     "ptFinBtwExpanded": "Under construction.",
     "CoCoSpecCodeFinBtw": "Under construction.",
     "description": "We are working on adding a description for this requirement. In the meanwhile, you can see its intended meaning in the diagram provided.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/onlyBefore_null_until_action.svg"
   },
   "onlyBefore,null,until,order": {
     "ft": "Under construction.",
@@ -9820,7 +9820,7 @@
     "ptFinBtwExpanded": "((O (($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$)))) & ((Y (H (! $scope_mode$))) | (! (Y TRUE))))) -> ((((! $stop_condition$) S ((! $stop_condition$) & (($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$)))) & ((Y (H (! $scope_mode$))) | (! (Y TRUE)))))) -> (! $post_condition$)) S ((((! $stop_condition$) S ((! $stop_condition$) & (($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$)))) & ((Y (H (! $scope_mode$))) | (! (Y TRUE)))))) -> (! $post_condition$)) & (($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$)))) & ((Y (H (! $scope_mode$))) | (! (Y TRUE)))))))",
     "CoCoSpecCodeFinBtw": "((O(($scope_mode$ and (FTP or (pre ( not $scope_mode$)))) and ((pre (H( not $scope_mode$))) or FTP))) => (SI( (($scope_mode$ and (FTP or (pre ( not $scope_mode$)))) and ((pre (H( not $scope_mode$))) or FTP)), ((SI( (($scope_mode$ and (FTP or (pre ( not $scope_mode$)))) and ((pre (H( not $scope_mode$))) or FTP)), ( not $stop_condition$) )) => ( not $post_condition$)) )))",
     "description": "ENFORCED: in the interval (if defined) starting at the first point where $scope_mode$ holds and spanning to the end of the execution.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must hold at least once strictly before the state where the stop condition holds. If the stop condition never occurs, RES does not need to hold. If the stop condition holds at the trigger, the requirement is not satisified.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/onlyBefore_null_before_satisfaction.svg"
   },
   "onlyBefore,null,before,action": {
     "ft": "Under construction.",
@@ -9839,7 +9839,7 @@
     "ptFinBtwExpanded": "Under construction.",
     "CoCoSpecCodeFinBtw": "Under construction.",
     "description": "We are working on adding a description for this requirement. In the meanwhile, you can see its intended meaning in the diagram provided.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/onlyBefore_null_before_action.svg"
   },
   "onlyBefore,null,before,order": {
     "ft": "Under construction.",
@@ -10504,7 +10504,7 @@
     "ptFinBtwExpanded": "((O (($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$)))) & ((Y (H (! $scope_mode$))) | (! (Y TRUE))))) -> (($stop_condition$ -> ((! ($regular_condition$ & ((Y (! $regular_condition$)) | (($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$)))) & ((Y (H (! $scope_mode$))) | (! (Y TRUE))))))) & (((! (($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$)))) & ((Y (H (! $scope_mode$))) | (! (Y TRUE))))) S ($regular_condition$ & ((Y (! $regular_condition$)) | (($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$)))) & ((Y (H (! $scope_mode$))) | (! (Y TRUE))))))) -> (Y (! ($post_condition$ S ($post_condition$ & ($regular_condition$ & ((Y (! $regular_condition$)) | (($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$)))) & ((Y (H (! $scope_mode$))) | (! (Y TRUE))))))))))))) S (($stop_condition$ -> ((! ($regular_condition$ & ((Y (! $regular_condition$)) | (($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$)))) & ((Y (H (! $scope_mode$))) | (! (Y TRUE))))))) & (((! (($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$)))) & ((Y (H (! $scope_mode$))) | (! (Y TRUE))))) S ($regular_condition$ & ((Y (! $regular_condition$)) | (($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$)))) & ((Y (H (! $scope_mode$))) | (! (Y TRUE))))))) -> (Y (! ($post_condition$ S ($post_condition$ & ($regular_condition$ & ((Y (! $regular_condition$)) | (($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$)))) & ((Y (H (! $scope_mode$))) | (! (Y TRUE))))))))))))) & (($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$)))) & ((Y (H (! $scope_mode$))) | (! (Y TRUE)))))))",
     "CoCoSpecCodeFinBtw": "((O(($scope_mode$ and (FTP or (pre ( not $scope_mode$)))) and ((pre (H( not $scope_mode$))) or FTP))) => (SI( (($scope_mode$ and (FTP or (pre ( not $scope_mode$)))) and ((pre (H( not $scope_mode$))) or FTP)), ($stop_condition$ => (( not ($regular_condition$ and ((pre ( not $regular_condition$)) or (($scope_mode$ and (FTP or (pre ( not $scope_mode$)))) and ((pre (H( not $scope_mode$))) or FTP))))) and ((S( ($regular_condition$ and ((pre ( not $regular_condition$)) or (($scope_mode$ and (FTP or (pre ( not $scope_mode$)))) and ((pre (H( not $scope_mode$))) or FTP)))), ( not (($scope_mode$ and (FTP or (pre ( not $scope_mode$)))) and ((pre (H( not $scope_mode$))) or FTP))) )) => (pre ( not (SI( ($regular_condition$ and ((pre ( not $regular_condition$)) or (($scope_mode$ and (FTP or (pre ( not $scope_mode$)))) and ((pre (H( not $scope_mode$))) or FTP)))), $post_condition$ ))))))) )))",
     "description": "ENFORCED: in the interval (if defined) starting at the first point where $scope_mode$ holds and spanning to the end of the execution.\nTRIGGER: first point in the interval if $regular_condition$ is true and any point in the interval where $regular_condition$ becomes true (from false).\nREQUIRES: for every trigger, RES must remain true until (but not necessarily including) the point where the stop condition holds, or to the end of the interval. If the stop condition never occurs, RES must hold until the end of the scope, or forever.  If the stop condition holds at the trigger, the requirement is satisfied.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/onlyBefore_regular_until_satisfaction.svg"
   },
   "onlyBefore,regular,until,action": {
     "ft": "Under construction.",
@@ -10523,7 +10523,7 @@
     "ptFinBtwExpanded": "Under construction.",
     "CoCoSpecCodeFinBtw": "Under construction.",
     "description": "We are working on adding a description for this requirement. In the meanwhile, you can see its intended meaning in the diagram provided.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/onlyBefore_regular_until_action.svg"
   },
   "onlyBefore,regular,until,order": {
     "ft": "No meaning assigned.",
@@ -10580,7 +10580,7 @@
     "ptFinBtwExpanded": "((O (($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$)))) & ((Y (H (! $scope_mode$))) | (! (Y TRUE))))) -> (((((! (($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$)))) & ((Y (H (! $scope_mode$))) | (! (Y TRUE))))) S ($regular_condition$ & ((Y (! $regular_condition$)) | (($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$)))) & ((Y (H (! $scope_mode$))) | (! (Y TRUE))))))) & ((! $stop_condition$) S ((! $stop_condition$) & ($regular_condition$ & ((Y (! $regular_condition$)) | (($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$)))) & ((Y (H (! $scope_mode$))) | (! (Y TRUE))))))))) -> (! $post_condition$)) S (((((! (($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$)))) & ((Y (H (! $scope_mode$))) | (! (Y TRUE))))) S ($regular_condition$ & ((Y (! $regular_condition$)) | (($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$)))) & ((Y (H (! $scope_mode$))) | (! (Y TRUE))))))) & ((! $stop_condition$) S ((! $stop_condition$) & ($regular_condition$ & ((Y (! $regular_condition$)) | (($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$)))) & ((Y (H (! $scope_mode$))) | (! (Y TRUE))))))))) -> (! $post_condition$)) & (($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$)))) & ((Y (H (! $scope_mode$))) | (! (Y TRUE)))))))",
     "CoCoSpecCodeFinBtw": "((O(($scope_mode$ and (FTP or (pre ( not $scope_mode$)))) and ((pre (H( not $scope_mode$))) or FTP))) => (SI( (($scope_mode$ and (FTP or (pre ( not $scope_mode$)))) and ((pre (H( not $scope_mode$))) or FTP)), (((S( ($regular_condition$ and ((pre ( not $regular_condition$)) or (($scope_mode$ and (FTP or (pre ( not $scope_mode$)))) and ((pre (H( not $scope_mode$))) or FTP)))), ( not (($scope_mode$ and (FTP or (pre ( not $scope_mode$)))) and ((pre (H( not $scope_mode$))) or FTP))) )) and (SI( ($regular_condition$ and ((pre ( not $regular_condition$)) or (($scope_mode$ and (FTP or (pre ( not $scope_mode$)))) and ((pre (H( not $scope_mode$))) or FTP)))), ( not $stop_condition$) ))) => ( not $post_condition$)) )))",
     "description": "ENFORCED: in the interval (if defined) starting at the first point where $scope_mode$ holds and spanning to the end of the execution.\nTRIGGER: first point in the interval if $regular_condition$ is true and any point in the interval where $regular_condition$ becomes true (from false).\nREQUIRES: for every trigger, RES must hold at least once strictly before the state where the stop condition holds. If the stop condition never occurs, RES does not need to hold. If the stop condition holds at the trigger, the requirement is not satisified.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/onlyBefore_regular_before_satisfaction.svg"
   },
   "onlyBefore,regular,before,action": {
     "ft": "Under construction.",
@@ -10599,7 +10599,7 @@
     "ptFinBtwExpanded": "Under construction.",
     "CoCoSpecCodeFinBtw": "Under construction.",
     "description": "We are working on adding a description for this requirement. In the meanwhile, you can see its intended meaning in the diagram provided.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/onlyBefore_regular_before_action.svg"
   },
   "onlyBefore,regular,before,order": {
     "ft": "No meaning assigned.",
@@ -12024,7 +12024,7 @@
     "ptFinBtwExpanded": "(H (((($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$)))) & ((Y (H (! $scope_mode$))) | (! (Y TRUE)))) & (Y TRUE)) -> (Y (H ((H (! $stop_condition$)) -> $post_condition$)))))",
     "CoCoSpecCodeFinBtw": "(H(((($scope_mode$ and (FTP or (pre ( not $scope_mode$)))) and ((pre (H( not $scope_mode$))) or FTP)) and ( not FTP)) => (pre (H((H( not $stop_condition$)) => $post_condition$)))))",
     "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and exclusive of) the first point where $scope_mode$ holds.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must remain true until (but not necessarily including) the point where the stop condition holds, or to the end of the interval. If the stop condition never occurs, RES must hold until the end of the scope, or forever.  If the stop condition holds at the trigger, the requirement is satisfied.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/before_null_until_satisfaction.svg"
   },
   "before,null,until,action": {
     "ft": "Under construction.",
@@ -12043,7 +12043,7 @@
     "ptFinBtwExpanded": "Under construction.",
     "CoCoSpecCodeFinBtw": "Under construction.",
     "description": "We are working on adding a description for this requirement. In the meanwhile, you can see its intended meaning in the diagram provided.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/before_null_until_action.svg"
   },
   "before,null,until,order": {
     "ft": "Under construction.",
@@ -12100,7 +12100,7 @@
     "ptFinBtwExpanded": "(H (((($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$)))) & ((Y (H (! $scope_mode$))) | (! (Y TRUE)))) & (Y TRUE)) -> (Y (H ($stop_condition$ -> ((Y TRUE) & (Y (O $post_condition$))))))))",
     "CoCoSpecCodeFinBtw": "(H(((($scope_mode$ and (FTP or (pre ( not $scope_mode$)))) and ((pre (H( not $scope_mode$))) or FTP)) and ( not FTP)) => (pre (H($stop_condition$ => (( not FTP) and (pre (O($post_condition$)))))))))",
     "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and exclusive of) the first point where $scope_mode$ holds.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must hold at least once strictly before the state where the stop condition holds. If the stop condition never occurs, RES does not need to hold. If the stop condition holds at the trigger, the requirement is not satisified.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/before_null_before_satisfaction.svg"
   },
   "before,null,before,action": {
     "ft": "Under construction.",
@@ -12119,7 +12119,7 @@
     "ptFinBtwExpanded": "Under construction.",
     "CoCoSpecCodeFinBtw": "Under construction.",
     "description": "We are working on adding a description for this requirement. In the meanwhile, you can see its intended meaning in the diagram provided.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/before_null_before_action.svg"
   },
   "before,null,before,order": {
     "ft": "Under construction.",
@@ -12784,7 +12784,7 @@
     "ptFinBtwExpanded": "(H (((($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$)))) & ((Y (H (! $scope_mode$))) | (! (Y TRUE)))) & (Y TRUE)) -> (Y (H ((((Y TRUE) S ($regular_condition$ & ((Y (! $regular_condition$)) | (! (Y TRUE))))) & ((! $stop_condition$) S ((! $stop_condition$) & ($regular_condition$ & ((Y (! $regular_condition$)) | (! (Y TRUE))))))) -> $post_condition$)))))",
     "CoCoSpecCodeFinBtw": "(H(((($scope_mode$ and (FTP or (pre ( not $scope_mode$)))) and ((pre (H( not $scope_mode$))) or FTP)) and ( not FTP)) => (pre (H(((S( ($regular_condition$ and ((pre ( not $regular_condition$)) or FTP)), ( not FTP) )) and (SI( ($regular_condition$ and ((pre ( not $regular_condition$)) or FTP)), ( not $stop_condition$) ))) => $post_condition$)))))",
     "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and exclusive of) the first point where $scope_mode$ holds.\nTRIGGER: first point in the interval if $regular_condition$ is true and any point in the interval where $regular_condition$ becomes true (from false).\nREQUIRES: for every trigger, RES must remain true until (but not necessarily including) the point where the stop condition holds, or to the end of the interval. If the stop condition never occurs, RES must hold until the end of the scope, or forever.  If the stop condition holds at the trigger, the requirement is satisfied.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/before_regular_until_satisfaction.svg"
   },
   "before,regular,until,action": {
     "ft": "Under construction.",
@@ -12803,7 +12803,7 @@
     "ptFinBtwExpanded": "Under construction.",
     "CoCoSpecCodeFinBtw": "Under construction.",
     "description": "We are working on adding a description for this requirement. In the meanwhile, you can see its intended meaning in the diagram provided.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/before_regular_until_action.svg"
   },
   "before,regular,until,order": {
     "ft": "No meaning assigned.",
@@ -12860,7 +12860,7 @@
     "ptFinBtwExpanded": "(H (((($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$)))) & ((Y (H (! $scope_mode$))) | (! (Y TRUE)))) & (Y TRUE)) -> (Y (H ($stop_condition$ -> ((! ($regular_condition$ & ((Y (! $regular_condition$)) | (! (Y TRUE))))) & (((Y TRUE) S ($regular_condition$ & ((Y (! $regular_condition$)) | (! (Y TRUE))))) -> (Y (! ((! $post_condition$) S ((! $post_condition$) & ($regular_condition$ & ((Y (! $regular_condition$)) | (! (Y TRUE)))))))))))))))",
     "CoCoSpecCodeFinBtw": "(H(((($scope_mode$ and (FTP or (pre ( not $scope_mode$)))) and ((pre (H( not $scope_mode$))) or FTP)) and ( not FTP)) => (pre (H($stop_condition$ => (( not ($regular_condition$ and ((pre ( not $regular_condition$)) or FTP))) and ((S( ($regular_condition$ and ((pre ( not $regular_condition$)) or FTP)), ( not FTP) )) => (pre ( not (SI( ($regular_condition$ and ((pre ( not $regular_condition$)) or FTP)), ( not $post_condition$) )))))))))))",
     "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and exclusive of) the first point where $scope_mode$ holds.\nTRIGGER: first point in the interval if $regular_condition$ is true and any point in the interval where $regular_condition$ becomes true (from false).\nREQUIRES: for every trigger, RES must hold at least once strictly before the state where the stop condition holds. If the stop condition never occurs, RES does not need to hold. If the stop condition holds at the trigger, the requirement is not satisified.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/before_regular_before_satisfaction.svg"
   },
   "before,regular,before,action": {
     "ft": "Under construction.",
@@ -12879,7 +12879,7 @@
     "ptFinBtwExpanded": "Under construction.",
     "CoCoSpecCodeFinBtw": "Under construction.",
     "description": "We are working on adding a description for this requirement. In the meanwhile, you can see its intended meaning in the diagram provided.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/before_regular_before_action.svg"
   },
   "before,regular,before,order": {
     "ft": "No meaning assigned.",
@@ -14304,7 +14304,7 @@
     "ptFinBtwExpanded": "(H ((($scope_mode$ & (Y (! $scope_mode$))) & (Y TRUE)) -> (Y (($stop_condition$ -> ((! ((! $scope_mode$) & ((! (Y TRUE)) | (Y $scope_mode$)))) & (Y (! ($post_condition$ S ($post_condition$ & ((! $scope_mode$) & ((! (Y TRUE)) | (Y $scope_mode$))))))))) S (($stop_condition$ -> ((! ((! $scope_mode$) & ((! (Y TRUE)) | (Y $scope_mode$)))) & (Y (! ($post_condition$ S ($post_condition$ & ((! $scope_mode$) & ((! (Y TRUE)) | (Y $scope_mode$))))))))) & ((! $scope_mode$) & ((! (Y TRUE)) | (Y $scope_mode$))))))))",
     "CoCoSpecCodeFinBtw": "(H((($scope_mode$ and (pre ( not $scope_mode$))) and ( not FTP)) => (pre (SI( (( not $scope_mode$) and (FTP or (pre ($scope_mode$)))), ($stop_condition$ => (( not (( not $scope_mode$) and (FTP or (pre ($scope_mode$))))) and (pre ( not (SI( (( not $scope_mode$) and (FTP or (pre ($scope_mode$)))), $post_condition$ )))))) )))))",
     "description": "ENFORCED: in every interval where $scope_mode$ does NOT hold.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must remain true until (but not necessarily including) the point where the stop condition holds, or to the end of the interval. If the stop condition never occurs, RES must hold until the end of the scope, or forever.  If the stop condition holds at the trigger, the requirement is satisfied.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/onlyIn_null_until_satisfaction.svg"
   },
   "onlyIn,null,until,action": {
     "ft": "Under construction.",
@@ -14323,7 +14323,7 @@
     "ptFinBtwExpanded": "Under construction.",
     "CoCoSpecCodeFinBtw": "Under construction.",
     "description": "We are working on adding a description for this requirement. In the meanwhile, you can see its intended meaning in the diagram provided.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/onlyIn_null_until_action.svg"
   },
   "onlyIn,null,until,order": {
     "ft": "Under construction.",
@@ -14380,7 +14380,7 @@
     "ptFinBtwExpanded": "(H ((($scope_mode$ & (Y (! $scope_mode$))) & (Y TRUE)) -> (Y ((((! $stop_condition$) S ((! $stop_condition$) & ((! $scope_mode$) & ((! (Y TRUE)) | (Y $scope_mode$))))) -> (! $post_condition$)) S ((((! $stop_condition$) S ((! $stop_condition$) & ((! $scope_mode$) & ((! (Y TRUE)) | (Y $scope_mode$))))) -> (! $post_condition$)) & ((! $scope_mode$) & ((! (Y TRUE)) | (Y $scope_mode$))))))))",
     "CoCoSpecCodeFinBtw": "(H((($scope_mode$ and (pre ( not $scope_mode$))) and ( not FTP)) => (pre (SI( (( not $scope_mode$) and (FTP or (pre ($scope_mode$)))), ((SI( (( not $scope_mode$) and (FTP or (pre ($scope_mode$)))), ( not $stop_condition$) )) => ( not $post_condition$)) )))))",
     "description": "ENFORCED: in every interval where $scope_mode$ does NOT hold.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must hold at least once strictly before the state where the stop condition holds. If the stop condition never occurs, RES does not need to hold. If the stop condition holds at the trigger, the requirement is not satisified.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/onlyIn_null_before_satisfaction.svg"
   },
   "onlyIn,null,before,action": {
     "ft": "Under construction.",
@@ -14399,7 +14399,7 @@
     "ptFinBtwExpanded": "Under construction.",
     "CoCoSpecCodeFinBtw": "Under construction.",
     "description": "We are working on adding a description for this requirement. In the meanwhile, you can see its intended meaning in the diagram provided.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/onlyIn_null_before_action.svg"
   },
   "onlyIn,null,before,order": {
     "ft": "Under construction.",
@@ -15064,7 +15064,7 @@
     "ptFinBtwExpanded": "(H ((($scope_mode$ & (Y (! $scope_mode$))) & (Y TRUE)) -> (Y (($stop_condition$ -> ((! ($regular_condition$ & ((Y (! $regular_condition$)) | ((! $scope_mode$) & ((! (Y TRUE)) | (Y $scope_mode$)))))) & (((! ((! $scope_mode$) & ((! (Y TRUE)) | (Y $scope_mode$)))) S ($regular_condition$ & ((Y (! $regular_condition$)) | ((! $scope_mode$) & ((! (Y TRUE)) | (Y $scope_mode$)))))) -> (Y (! ($post_condition$ S ($post_condition$ & ($regular_condition$ & ((Y (! $regular_condition$)) | ((! $scope_mode$) & ((! (Y TRUE)) | (Y $scope_mode$)))))))))))) S (($stop_condition$ -> ((! ($regular_condition$ & ((Y (! $regular_condition$)) | ((! $scope_mode$) & ((! (Y TRUE)) | (Y $scope_mode$)))))) & (((! ((! $scope_mode$) & ((! (Y TRUE)) | (Y $scope_mode$)))) S ($regular_condition$ & ((Y (! $regular_condition$)) | ((! $scope_mode$) & ((! (Y TRUE)) | (Y $scope_mode$)))))) -> (Y (! ($post_condition$ S ($post_condition$ & ($regular_condition$ & ((Y (! $regular_condition$)) | ((! $scope_mode$) & ((! (Y TRUE)) | (Y $scope_mode$)))))))))))) & ((! $scope_mode$) & ((! (Y TRUE)) | (Y $scope_mode$))))))))",
     "CoCoSpecCodeFinBtw": "(H((($scope_mode$ and (pre ( not $scope_mode$))) and ( not FTP)) => (pre (SI( (( not $scope_mode$) and (FTP or (pre ($scope_mode$)))), ($stop_condition$ => (( not ($regular_condition$ and ((pre ( not $regular_condition$)) or (( not $scope_mode$) and (FTP or (pre ($scope_mode$))))))) and ((S( ($regular_condition$ and ((pre ( not $regular_condition$)) or (( not $scope_mode$) and (FTP or (pre ($scope_mode$)))))), ( not (( not $scope_mode$) and (FTP or (pre ($scope_mode$))))) )) => (pre ( not (SI( ($regular_condition$ and ((pre ( not $regular_condition$)) or (( not $scope_mode$) and (FTP or (pre ($scope_mode$)))))), $post_condition$ ))))))) )))))",
     "description": "ENFORCED: in every interval where $scope_mode$ does NOT hold.\nTRIGGER: first point in the interval if $regular_condition$ is true and any point in the interval where $regular_condition$ becomes true (from false).\nREQUIRES: for every trigger, RES must remain true until (but not necessarily including) the point where the stop condition holds, or to the end of the interval. If the stop condition never occurs, RES must hold until the end of the scope, or forever.  If the stop condition holds at the trigger, the requirement is satisfied.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/onlyIn_regular_until_satisfaction.svg"
   },
   "onlyIn,regular,until,action": {
     "ft": "Under construction.",
@@ -15083,7 +15083,7 @@
     "ptFinBtwExpanded": "Under construction.",
     "CoCoSpecCodeFinBtw": "Under construction.",
     "description": "We are working on adding a description for this requirement. In the meanwhile, you can see its intended meaning in the diagram provided.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/onlyIn_regular_until_action.svg"
   },
   "onlyIn,regular,until,order": {
     "ft": "No meaning assigned.",
@@ -15140,7 +15140,7 @@
     "ptFinBtwExpanded": "(H ((($scope_mode$ & (Y (! $scope_mode$))) & (Y TRUE)) -> (Y (((((! ((! $scope_mode$) & ((! (Y TRUE)) | (Y $scope_mode$)))) S ($regular_condition$ & ((Y (! $regular_condition$)) | ((! $scope_mode$) & ((! (Y TRUE)) | (Y $scope_mode$)))))) & ((! $stop_condition$) S ((! $stop_condition$) & ($regular_condition$ & ((Y (! $regular_condition$)) | ((! $scope_mode$) & ((! (Y TRUE)) | (Y $scope_mode$)))))))) -> (! $post_condition$)) S (((((! ((! $scope_mode$) & ((! (Y TRUE)) | (Y $scope_mode$)))) S ($regular_condition$ & ((Y (! $regular_condition$)) | ((! $scope_mode$) & ((! (Y TRUE)) | (Y $scope_mode$)))))) & ((! $stop_condition$) S ((! $stop_condition$) & ($regular_condition$ & ((Y (! $regular_condition$)) | ((! $scope_mode$) & ((! (Y TRUE)) | (Y $scope_mode$)))))))) -> (! $post_condition$)) & ((! $scope_mode$) & ((! (Y TRUE)) | (Y $scope_mode$))))))))",
     "CoCoSpecCodeFinBtw": "(H((($scope_mode$ and (pre ( not $scope_mode$))) and ( not FTP)) => (pre (SI( (( not $scope_mode$) and (FTP or (pre ($scope_mode$)))), (((S( ($regular_condition$ and ((pre ( not $regular_condition$)) or (( not $scope_mode$) and (FTP or (pre ($scope_mode$)))))), ( not (( not $scope_mode$) and (FTP or (pre ($scope_mode$))))) )) and (SI( ($regular_condition$ and ((pre ( not $regular_condition$)) or (( not $scope_mode$) and (FTP or (pre ($scope_mode$)))))), ( not $stop_condition$) ))) => ( not $post_condition$)) )))))",
     "description": "ENFORCED: in every interval where $scope_mode$ does NOT hold.\nTRIGGER: first point in the interval if $regular_condition$ is true and any point in the interval where $regular_condition$ becomes true (from false).\nREQUIRES: for every trigger, RES must hold at least once strictly before the state where the stop condition holds. If the stop condition never occurs, RES does not need to hold. If the stop condition holds at the trigger, the requirement is not satisified.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/onlyIn_regular_before_satisfaction.svg"
   },
   "onlyIn,regular,before,action": {
     "ft": "Under construction.",
@@ -15159,7 +15159,7 @@
     "ptFinBtwExpanded": "Under construction.",
     "CoCoSpecCodeFinBtw": "Under construction.",
     "description": "We are working on adding a description for this requirement. In the meanwhile, you can see its intended meaning in the diagram provided.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/onlyIn_regular_before_action.svg"
   },
   "onlyIn,regular,before,order": {
     "ft": "No meaning assigned.",
@@ -16584,7 +16584,7 @@
     "ptFinBtwExpanded": "(H ((($scope_mode$ & (Y (! $scope_mode$))) & (Y TRUE)) -> (Y ((((! $stop_condition$) S ((! $stop_condition$) & ((! $scope_mode$) & ((! (Y TRUE)) | (Y $scope_mode$))))) -> $post_condition$) S ((((! $stop_condition$) S ((! $stop_condition$) & ((! $scope_mode$) & ((! (Y TRUE)) | (Y $scope_mode$))))) -> $post_condition$) & ((! $scope_mode$) & ((! (Y TRUE)) | (Y $scope_mode$))))))))",
     "CoCoSpecCodeFinBtw": "(H((($scope_mode$ and (pre ( not $scope_mode$))) and ( not FTP)) => (pre (SI( (( not $scope_mode$) and (FTP or (pre ($scope_mode$)))), ((SI( (( not $scope_mode$) and (FTP or (pre ($scope_mode$)))), ( not $stop_condition$) )) => $post_condition$) )))))",
     "description": "ENFORCED: in every interval where $scope_mode$ does NOT hold.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must remain true until (but not necessarily including) the point where the stop condition holds, or to the end of the interval. If the stop condition never occurs, RES must hold until the end of the scope, or forever.  If the stop condition holds at the trigger, the requirement is satisfied.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/notin_null_until_satisfaction.svg"
   },
   "notin,null,until,action": {
     "ft": "Under construction.",
@@ -16603,7 +16603,7 @@
     "ptFinBtwExpanded": "Under construction.",
     "CoCoSpecCodeFinBtw": "Under construction.",
     "description": "We are working on adding a description for this requirement. In the meanwhile, you can see its intended meaning in the diagram provided.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/notin_null_until_action.svg"
   },
   "notin,null,until,order": {
     "ft": "Under construction.",
@@ -16660,7 +16660,7 @@
     "ptFinBtwExpanded": "(H ((($scope_mode$ & (Y (! $scope_mode$))) & (Y TRUE)) -> (Y (($stop_condition$ -> ((! ((! $scope_mode$) & ((! (Y TRUE)) | (Y $scope_mode$)))) & (Y (! ((! $post_condition$) S ((! $post_condition$) & ((! $scope_mode$) & ((! (Y TRUE)) | (Y $scope_mode$))))))))) S (($stop_condition$ -> ((! ((! $scope_mode$) & ((! (Y TRUE)) | (Y $scope_mode$)))) & (Y (! ((! $post_condition$) S ((! $post_condition$) & ((! $scope_mode$) & ((! (Y TRUE)) | (Y $scope_mode$))))))))) & ((! $scope_mode$) & ((! (Y TRUE)) | (Y $scope_mode$))))))))",
     "CoCoSpecCodeFinBtw": "(H((($scope_mode$ and (pre ( not $scope_mode$))) and ( not FTP)) => (pre (SI( (( not $scope_mode$) and (FTP or (pre ($scope_mode$)))), ($stop_condition$ => (( not (( not $scope_mode$) and (FTP or (pre ($scope_mode$))))) and (pre ( not (SI( (( not $scope_mode$) and (FTP or (pre ($scope_mode$)))), ( not $post_condition$) )))))) )))))",
     "description": "ENFORCED: in every interval where $scope_mode$ does NOT hold.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must hold at least once strictly before the state where the stop condition holds. If the stop condition never occurs, RES does not need to hold. If the stop condition holds at the trigger, the requirement is not satisified.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/notin_null_before_satisfaction.svg"
   },
   "notin,null,before,action": {
     "ft": "Under construction.",
@@ -16679,7 +16679,7 @@
     "ptFinBtwExpanded": "Under construction.",
     "CoCoSpecCodeFinBtw": "Under construction.",
     "description": "We are working on adding a description for this requirement. In the meanwhile, you can see its intended meaning in the diagram provided.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/notin_null_before_action.svg"
   },
   "notin,null,before,order": {
     "ft": "Under construction.",
@@ -17344,7 +17344,7 @@
     "ptFinBtwExpanded": "(H ((($scope_mode$ & (Y (! $scope_mode$))) & (Y TRUE)) -> (Y (((((! ((! $scope_mode$) & ((! (Y TRUE)) | (Y $scope_mode$)))) S ($regular_condition$ & ((Y (! $regular_condition$)) | ((! $scope_mode$) & ((! (Y TRUE)) | (Y $scope_mode$)))))) & ((! $stop_condition$) S ((! $stop_condition$) & ($regular_condition$ & ((Y (! $regular_condition$)) | ((! $scope_mode$) & ((! (Y TRUE)) | (Y $scope_mode$)))))))) -> $post_condition$) S (((((! ((! $scope_mode$) & ((! (Y TRUE)) | (Y $scope_mode$)))) S ($regular_condition$ & ((Y (! $regular_condition$)) | ((! $scope_mode$) & ((! (Y TRUE)) | (Y $scope_mode$)))))) & ((! $stop_condition$) S ((! $stop_condition$) & ($regular_condition$ & ((Y (! $regular_condition$)) | ((! $scope_mode$) & ((! (Y TRUE)) | (Y $scope_mode$)))))))) -> $post_condition$) & ((! $scope_mode$) & ((! (Y TRUE)) | (Y $scope_mode$))))))))",
     "CoCoSpecCodeFinBtw": "(H((($scope_mode$ and (pre ( not $scope_mode$))) and ( not FTP)) => (pre (SI( (( not $scope_mode$) and (FTP or (pre ($scope_mode$)))), (((S( ($regular_condition$ and ((pre ( not $regular_condition$)) or (( not $scope_mode$) and (FTP or (pre ($scope_mode$)))))), ( not (( not $scope_mode$) and (FTP or (pre ($scope_mode$))))) )) and (SI( ($regular_condition$ and ((pre ( not $regular_condition$)) or (( not $scope_mode$) and (FTP or (pre ($scope_mode$)))))), ( not $stop_condition$) ))) => $post_condition$) )))))",
     "description": "ENFORCED: in every interval where $scope_mode$ does NOT hold.\nTRIGGER: first point in the interval if $regular_condition$ is true and any point in the interval where $regular_condition$ becomes true (from false).\nREQUIRES: for every trigger, RES must remain true until (but not necessarily including) the point where the stop condition holds, or to the end of the interval. If the stop condition never occurs, RES must hold until the end of the scope, or forever.  If the stop condition holds at the trigger, the requirement is satisfied.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/notin_regular_until_satisfaction.svg"
   },
   "notin,regular,until,action": {
     "ft": "Under construction.",
@@ -17363,7 +17363,7 @@
     "ptFinBtwExpanded": "Under construction.",
     "CoCoSpecCodeFinBtw": "Under construction.",
     "description": "We are working on adding a description for this requirement. In the meanwhile, you can see its intended meaning in the diagram provided.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/notin_regular_until_action.svg"
   },
   "notin,regular,until,order": {
     "ft": "No meaning assigned.",
@@ -17420,7 +17420,7 @@
     "ptFinBtwExpanded": "(H ((($scope_mode$ & (Y (! $scope_mode$))) & (Y TRUE)) -> (Y (($stop_condition$ -> ((! ($regular_condition$ & ((Y (! $regular_condition$)) | ((! $scope_mode$) & ((! (Y TRUE)) | (Y $scope_mode$)))))) & (((! ((! $scope_mode$) & ((! (Y TRUE)) | (Y $scope_mode$)))) S ($regular_condition$ & ((Y (! $regular_condition$)) | ((! $scope_mode$) & ((! (Y TRUE)) | (Y $scope_mode$)))))) -> (Y (! ((! $post_condition$) S ((! $post_condition$) & ($regular_condition$ & ((Y (! $regular_condition$)) | ((! $scope_mode$) & ((! (Y TRUE)) | (Y $scope_mode$)))))))))))) S (($stop_condition$ -> ((! ($regular_condition$ & ((Y (! $regular_condition$)) | ((! $scope_mode$) & ((! (Y TRUE)) | (Y $scope_mode$)))))) & (((! ((! $scope_mode$) & ((! (Y TRUE)) | (Y $scope_mode$)))) S ($regular_condition$ & ((Y (! $regular_condition$)) | ((! $scope_mode$) & ((! (Y TRUE)) | (Y $scope_mode$)))))) -> (Y (! ((! $post_condition$) S ((! $post_condition$) & ($regular_condition$ & ((Y (! $regular_condition$)) | ((! $scope_mode$) & ((! (Y TRUE)) | (Y $scope_mode$)))))))))))) & ((! $scope_mode$) & ((! (Y TRUE)) | (Y $scope_mode$))))))))",
     "CoCoSpecCodeFinBtw": "(H((($scope_mode$ and (pre ( not $scope_mode$))) and ( not FTP)) => (pre (SI( (( not $scope_mode$) and (FTP or (pre ($scope_mode$)))), ($stop_condition$ => (( not ($regular_condition$ and ((pre ( not $regular_condition$)) or (( not $scope_mode$) and (FTP or (pre ($scope_mode$))))))) and ((S( ($regular_condition$ and ((pre ( not $regular_condition$)) or (( not $scope_mode$) and (FTP or (pre ($scope_mode$)))))), ( not (( not $scope_mode$) and (FTP or (pre ($scope_mode$))))) )) => (pre ( not (SI( ($regular_condition$ and ((pre ( not $regular_condition$)) or (( not $scope_mode$) and (FTP or (pre ($scope_mode$)))))), ( not $post_condition$) ))))))) )))))",
     "description": "ENFORCED: in every interval where $scope_mode$ does NOT hold.\nTRIGGER: first point in the interval if $regular_condition$ is true and any point in the interval where $regular_condition$ becomes true (from false).\nREQUIRES: for every trigger, RES must hold at least once strictly before the state where the stop condition holds. If the stop condition never occurs, RES does not need to hold. If the stop condition holds at the trigger, the requirement is not satisified.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/notin_regular_before_satisfaction.svg"
   },
   "notin,regular,before,action": {
     "ft": "Under construction.",
@@ -17439,7 +17439,7 @@
     "ptFinBtwExpanded": "Under construction.",
     "CoCoSpecCodeFinBtw": "Under construction.",
     "description": "We are working on adding a description for this requirement. In the meanwhile, you can see its intended meaning in the diagram provided.",
-    "diagram": "Undefined svg."
+    "diagram": "_media/user-interface/examples/svgDiagrams/notin_regular_before_action.svg"
   },
   "notin,regular,before,order": {
     "ft": "No meaning assigned.",

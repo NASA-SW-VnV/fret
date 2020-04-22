@@ -38,6 +38,12 @@
 <text x="15" y="15" font-family="sans-serif" font-size="18px" font-weight="normal" fill="black">TC</text>
 </g>
 
+<!--Creates the beginning of time line and text-->
+<g id="stop_Condition">
+<line x1="25" y1="20" x2="25" y2="180" stroke="black" stroke-width="3"></line>
+<text x="15" y="15" font-family="sans-serif" font-size="18px" font-weight="normal" fill="black">SC</text>
+</g>
+
 <!--Creates the gray area for scope-->
 <g id="Scope">
 <!--Defines the gray area-->
@@ -92,7 +98,7 @@
 <g id="Timing_after">
   <!--Defines the red box-->
   <rect width="60" height="23" style="fill:red" />
-  <!-- Defines the red box lenght-->
+  <!-- Defines the red box length-->
   <text x="25" y="18" font-family="sans-serif" font-size="18px" font-weight="normal" fill="black">n</text>
   <!--Defines the green box-->
   <rect x="60" width="30" height="23" style="fill:green"/>
@@ -127,6 +133,38 @@
 <g id="Timing_eventually_regular_condition">
   <!--Defines the orange box-->
   <rect width="105" height="23" style="fill:orange"/>
+</g>
+
+<g id="Timing_until">
+    <rect width="80" height="23" style="fill:green"/>
+</g>
+
+<g id="Timing_until_null_scope">
+    <rect width="250" height="23" style="fill:green"/>
+</g>
+
+<g id="Timing_until_regular_condition">
+  <rect width="65" height="23" style="fill:green"/>
+</g>
+
+<g id="Timing_only_until">
+    <rect width="65" height="23" style="fill:url(#myPattern);"/>
+</g>
+
+<g id="Timing_before">
+    <rect width="80" height="23" style="fill:orange;"/>
+</g>
+
+<g id="Timing_before_null_scope">
+    <rect width="250" height="23" style="fill:orange;"/>
+</g>
+
+<g id="Timing_before_regular_condition">
+  <rect width="65" height="23" style="fill:orange;"/>
+</g>
+
+<g id="Timing_only_before">
+    <rect width="65" height="23" style="fill:red;"/>
 </g>
 
 <g id="Timing_always">
@@ -194,7 +232,6 @@
 <use xlink:href="#Scope" x ="10" y="75"/>
 <use xlink:href="#Timing_only_for" x="10" y="115"/>
 <use xlink:href="#Scope" x ="145" y="75"/>
-<use xlink:href="#Timing_TimeConstraint" x="145" y="115"/>
 <use xlink:href="#with_Mode"/>
 <use xlink:href="#standard"/>
 </svg>

@@ -97,7 +97,7 @@
 <g id="Timing_after">
   <!--Defines the red box-->
   <rect width="60" height="23" style="fill:red" />
-  <!-- Defines the red box lenght-->
+  <!-- Defines the red box length-->
   <text x="25" y="18" font-family="sans-serif" font-size="18px" font-weight="normal" fill="black">n</text>
   <!--Defines the green box-->
   <rect x="60" width="30" height="23" style="fill:green"/>
@@ -147,7 +147,7 @@
 </g>
 
 <g id="Timing_only_until">
-    <rect width="80" height="23" style="fill:url(#myPattern);"/>
+    <rect width="65" height="23" style="fill:url(#myPattern);"/>
 </g>
 
 <g id="Timing_before">
@@ -163,7 +163,7 @@
 </g>
 
 <g id="Timing_only_before">
-    <rect width="80" height="23" style="fill:red;"/>
+    <rect width="65" height="23" style="fill:red;"/>
 </g>
 
 <g id="Timing_always">

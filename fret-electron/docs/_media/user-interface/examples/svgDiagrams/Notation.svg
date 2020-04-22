@@ -132,8 +132,10 @@
  </text>
  <text x="10" y="408" font-family="sans-serif" font-size="16px" font-weight="bold" fill="black"> Interval lengths </text>
  <use xlink:href="#Infinity" x ="250" y="417"/>
- <text x="280" y="432" font-family="sans-serif" font-size="16px" font-weight="normal" fill="black">: Infinite interval length </text>
+ <text x="280" y="432"  font-family="sans-serif" font-size="16px" font-weight="normal" fill="black">: Infinite interval length </text>
  <text x="15" y="432" font-family="sans-serif" font-size="16px" font-weight="normal" fill="black"> n : Bounded interval length </text>
  <text x="10" y="458" font-family="sans-serif" font-size="16px" font-weight="bold" fill="black"> Conditions </text>
- <text x="15" y="482" font-family="sans-serif" font-size="16px" font-weight="normal" fill="black"> TC : Triggering condition </text>
+ <text x="15" y="482" font-family="sans-serif" font-size="16px"
+       font-weight="normal" fill="black"> TC : Triggering condition SC :
+ Stop condition</text>
 </svg>

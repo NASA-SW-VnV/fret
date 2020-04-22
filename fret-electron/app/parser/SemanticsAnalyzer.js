@@ -281,7 +281,7 @@ function replaceTemplateVarsWithArgs(formula, noHTML, noClassicImplSymbol) {
     return ("Unexpected case - SemanticsAnalyzer replaceTemplateVarsWithArgs");
 }
 
-function createVariableDescription(scope, condition, timing, response) {
+function createVariableDescription(scope, condition, timing, response, stop_condition) {
   var description = '';
   if (scope.type !== 'null' && scope.type !== 'unhandled'){
     description += 'M = $scope_mode$, ';
@@ -292,6 +292,9 @@ function createVariableDescription(scope, condition, timing, response) {
 
   if (timing=== 'after' || timing == 'within' || timing == 'for'){
     description += ' n = $duration$, ';
+  }
+  if (timing === 'until' || timing === 'before'){
+      description += 'SC = $stop_condition$, ';
   }
   if (response === 'satisfaction')
     description += 'Response = $post_condition$.'
@@ -333,7 +336,7 @@ function replaceWithR2U2Substs(formula) {
 //----------------------------------------------------------------------
 SemanticsAnalyzer.prototype.semantics = () => {
   if (result.type === 'nasa'){
-    var variableDescription = createVariableDescription(result.scope, result.condition, result.timing, result.response);
+      var variableDescription = createVariableDescription(result.scope, result.condition, result.timing, result.response, result.stop_condition);
     var fetchedSemantics = fetchSemantics.getSemantics(result.scope, result.condition, result.timing, result.response);
     result.ft = replaceTemplateVarsWithArgs(fetchedSemantics.ft, false, true);
     result.pt = replaceTemplateVarsWithArgs(fetchedSemantics.pt, false, true);

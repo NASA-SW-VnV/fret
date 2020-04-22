@@ -13,8 +13,13 @@ const inPoints = [
   ['yScope', '75'],
   ['xTiming', '145'],
   ['yTiming', '115'],
-    //tom
-    ['xStop','225']
+    ['xStop','200'],
+    ['xStp2', '185'],
+    ['xStp3', '50'],
+    ['xStp4', '65'],
+    ['xStp5', '335'],
+    ['xStp6', '50'],
+    ['xStp7', '320']
 ];
 
 /**
@@ -27,21 +32,13 @@ const inPointsWithCond = [
   ['xTiming', '175'],
   ['yTiming', '115'],
   ['xCondition', '150'],
-    //tom
-  ['xStop','215']
+    ['xStop', '215'],
 ];
 
 /**
  * x,y coordinates for diagrams with in scope and regular condition
  * @type {Array}
  */
-const onlyInPoints = [
-  ['xScopeOne', '10'],
-  ['yScopeOne', '75'],
-  ['xTimingOne', '10'],
-    //tom
-    ['yTimingOne', '115'],
-];
 
 /**
  * x,y coordinates for diagrams with after scope
@@ -54,8 +51,11 @@ const afterPoints = [
   ['yTiming', '115'],
   ['xInfinity', '395'],
   ['yInfinity', '100'],
-    //tom
-    ['xStop', '360']
+    ['xStop', '335'],
+    ['xStp4', '65'],
+    ['xStp5', '335'],
+    ['xStp6', '50'],
+    ['xStp7', '320']
 ];
 
 /**
@@ -70,8 +70,7 @@ const afterPointsWithCond = [
   ['xInfinity', '395'],
   ['yInfinity', '100'],
   ['xCondition', '285'],
-    //tom
-    ['xStop', '345']
+    ['xStop', '350']
 ];
 
 /**
@@ -83,8 +82,13 @@ const beforePoints = [
   ['yScope', '75'],
   ['xTiming', '10'],
   ['yTiming', '115'],
-    //tom
-    ['xStop', '90']
+    ['xStop', '65'],
+    ['xStp4', '65'],
+    ['xStp5', '335'],
+    ['xStp6', '50'],
+    ['xStp7', '320']
+
+
 ];
 
 /**
@@ -97,8 +101,7 @@ const beforePointsWithCond = [
   ['xTiming', '40'],
   ['yTiming', '115'],
   ['xCondition', '15'],
-    //tom
-    ['xStop','75']
+    ['xStop','80']
 ];
 
 /**
@@ -112,8 +115,7 @@ const nullPoints = [
   ['yTiming', '115'],
   ['xInfinity', '380'],
   ['yInfinity', '100'],
-    //tom
-    ['xStop', '350']
+    ['xStop', '325']
 ];
 
 /**
@@ -128,8 +130,7 @@ const nullPointsWithCond = [
   ['xInfinity', '380'],
   ['yInfinity', '100'],
     ['xCondition', '240'],
-    //tom
-    ['xStop', '305']
+    ['xStop', '320']
 ];
 
 /**
@@ -143,7 +144,6 @@ const patterns = [
   ['null,null,always|never|eventually|null,action|satisfaction',
   'NOSCOPE\nTIME\nINF\nNOMODE\nSTANDARD\n'],
 
-    //tom
     ['null,null,until|before,action|satisfaction',
        'NOSCOPE\nTIME\nINF\nNOMODE\nSTOP\nSTANDARD\n'],
 
@@ -153,7 +153,6 @@ const patterns = [
   ['after,null,always|never|eventually|null,action|satisfaction',
   'SCOPE\nTIME\nINF\nMODE\nSTANDARD\n'],
 
-    //tom
     ['after,null,until|before,action|satisfaction',
        'SCOPE\nTIME\nINF\nMODE\nSTOP\nSTANDARD\n'],
 
@@ -163,7 +162,6 @@ const patterns = [
   ['in|before,null,always|eventually|never|immediately|within|after|null|for,action|satisfaction',
   'SCOPE\nTIME\nMODE\nSTANDARD\n'],
 
-    //tom
     ['in|before,null,until|before,action|satisfaction',
        'SCOPE\nTIME\nMODE\nSTOP\nSTANDARD\n'],
 
@@ -172,7 +170,6 @@ const patterns = [
   ['null,regular,always|never|eventually|null,action|satisfaction',
    'NOSCOPE\nTIME\nREGULAR\nINF\nNOMODE\nSTANDARD\n'],
 
-    //tom
       ['null,regular,until|before,action|satisfaction',
   'NOSCOPE\nTIME\nREGULAR\n\STOP\nINF\nNOMODE\nSTANDARD\n'],
 
@@ -185,14 +182,12 @@ const patterns = [
   ['after,regular,immediately|within|after|for,action|satisfaction',
    'SCOPE\nTIME\nREGULAR\nINF\nMODE\nSTANDARD\n'],
 
-    //tom
       ['after,regular,until|before,action|satisfaction',
   'SCOPE\nTIME\nREGULAR\nSTOP\nINF\nMODE\nSTANDARD\n'],
 
   ['in|before,regular,always|eventually|never|immediately|within|after|null|for,action|satisfaction',
   'SCOPE\nTIME\nREGULAR\nMODE\nSTANDARD\n'],
 
-    //tom
    ['in|before,regular,until|before,action|satisfaction',
   'SCOPE\nTIME\nREGULAR\nSTOP\nMODE\nSTANDARD\n'],
 
@@ -200,33 +195,44 @@ const patterns = [
     // ** only Scopes, no condition
 
   ['onlyAfter,null,always|eventually|never|immediately|within|after|null|for,action|satisfaction',
-  'SCOPE\nTIME\nSCOPE\nTIME\nMODE\nSTANDARD\n'],
+  'SCOPE\nTIME\nSCOPE\nMODE\nSTANDARD\n'],
 
-    //tom
   ['onlyAfter,null,until|before,action|satisfaction',
-  'SCOPE\nTIME\nSCOPE\nTIME\nMODE\nSTOP\nSTANDARD\n'],
+  'SCOPE\nTIME\nSCOPE\nMODE\nSTP3\nSTANDARD\n'],
 
-  ['onlyIn|onlyBefore|notin,null,always|eventually|never|immediately|within|after|null|for,action|satisfaction',
+  ['onlyBefore,null,always|eventually|never|immediately|within|after|null|for,action|satisfaction',
+   'SCOPE\nTIME\nSCOPE\nMODE\nINF\nSTANDARD\n'],
+
+  ['onlyBefore,null,until|before,action|satisfaction',
+  'SCOPE\nTIME\nSCOPE\nINF\nMODE\nSTP2\nSTANDARD\n'],    
+
+  ['onlyIn|notin,null,always|eventually|never|immediately|within|after|null|for,action|satisfaction',
   'SCOPE\nTIME\nSCOPE\nTIME\nINF\nMODE\nSTANDARD\n'],
 
-   //tom
-  ['onlyIn|onlyBefore|notin,null,until|before,action|satisfaction',
-  'SCOPE\nTIME\nSCOPE\nTIME\nINF\nMODE\nSTOP\nSTANDARD\n'],
+  ['notin,null,until|before,action|satisfaction',
+  'SCOPE\nTIME\nSCOPE\nTIME\nINF\nMODE\nSTP4\nSTP5\nSTANDARD\n'],
+
+  ['onlyIn,null,until|before,action|satisfaction',
+   'SCOPE\nTIME\nSCOPE\nTIME\nINF\nMODE\nSTP6\nSTP7\nSTANDARD\n'],
 
     // ** only Scopes, regular condition
 
   ['onlyAfter,regular,always|eventually|never|immediately|within|after|null|for,action|satisfaction',
-  'SCOPE\nTIME\nSCOPE\nTIME\nREGULAR\nMODE\nSTANDARD\n'],
+  'SCOPE\nTIME\nSCOPE\nREGULAR\nMODE\nSTANDARD\n'],
 
-    // tom
   ['onlyAfter,regular,until|before,action|satisfaction',
-  'SCOPE\nTIME\nSCOPE\nTIME\nREGULAR\nMODE\nSTOP\nSTANDARD\n'],
+  'SCOPE\nTIME\nSCOPE\nREGULAR\nMODE\nSTOP\nSTANDARD\n'],
 
-  ['onlyIn|onlyBefore|notin,regular,always|eventually|never|immediately|within|after|null|for,action|satisfaction',
+  ['onlyBefore,regular,always|eventually|never|immediately|within|after|null|for,action|satisfaction',
+   'SCOPE\nTIME\nSCOPE\nREGULAR\nINF\nMODE\nSTANDARD\n'],
+
+  ['onlyBefore,regular,until|before,action|satisfaction',
+   'SCOPE\nTIME\nSCOPE\nREGULAR\nSTOP\nINF\nMODE\nSTANDARD\n'],
+
+  ['onlyIn|notin,regular,always|eventually|never|immediately|within|after|null|for,action|satisfaction',
    'SCOPE\nTIME\nSCOPE\nTIME\nREGULAR\nINF\nMODE\nSTANDARD\n'],
 
-    //tom
-      ['onlyIn|onlyBefore|notin,regular,until|before,action|satisfaction',
+      ['onlyIn|notin,regular,until|before,action|satisfaction',
   'SCOPE\nTIME\nSCOPE\nTIME\nREGULAR\nINF\nMODE\nSTOP\nSTANDARD\n']
 ];
 
@@ -245,15 +251,19 @@ const firstLevelSubstitutionsSVG = [
   ['TIME', '<use xlink:href="#Timing_TimeConstraint" x="xTiming" y="yTiming"/>'],
   ['REGULAR', '<use xlink:href="#trigger_Condition" x="xCondition" y="30"/>'],
   ['STOP', '<use xlink:href="#stop_Condition" x="xStop" y="30"/>'],
+    ['STP2', '<use xlink:href="#stop_Condition" x="xStp2" y="30"/>'],
+    ['STP3', '<use xlink:href="#stop_Condition" x="xStp3" y="30"/>'],
+    ['STP4', '<use xlink:href="#stop_Condition" x="xStp4" y="30"/>'],
+    ['STP5', '<use xlink:href="#stop_Condition" x="xStp5" y="30"/>'],
+    ['STP6', '<use xlink:href="#stop_Condition" x="xStp6" y="30"/>'],
+    ['STP7', '<use xlink:href="#stop_Condition" x="xStp7" y="30"/>']
 ];
 
 /**
  * Array with the timings that need additional length for null scope
  * @type {Array}
  */
-
-//tom: added until
-const timingLength = ['always', 'eventually', 'never', 'null', 'until', 'only_always'];
+const timingLength = ['always', 'eventually', 'never', 'null', 'until', 'before', 'only_always'];
 
 /**
  * Creates SVG diagram for a specific key.
@@ -263,10 +273,9 @@ const timingLength = ['always', 'eventually', 'never', 'null', 'until', 'only_al
  * @return {String}        Svg diagram code for specific key or undefined
  */
 function createSvgString (key, scope, timing, condition){
-    console.log('key: "' + key + '" scope: "' + scope + '" timing: "' + timing + '" condition: "' + condition + '"')
-    //console.log('patterns: ' + JSON.stringify(patterns));
+   //console.log('key: "' + key + '" scope: "' + scope + '" timing: "' + timing + '" condition: "' + condition + '"')
   var template = utilities.matchingBaseForSVG(key, patterns, 'no_match');
-  //tom console.log('template = ' + template);
+  // console.log('template = ' + template);
   if (template !== 'no_match') {
     var svgPattern = '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="500px" height="160px">\n';
     svgPattern += fs.readFileSync('../../docs/_media/user-interface/examples/svgDiagrams/svgTemplates.svg', 'utf8');
@@ -342,7 +351,13 @@ function onlyTimings (scope, timing, condition, svgPattern){
 	  if(condition === 'null' && scope.includes('In')){
           svgPattern = replaceTiming(svgPattern, scope, 'only_until', 'null');
         } 
-	  break;    
+      break;    
+      case 'before':
+	  svgPattern = replaceTiming(svgPattern,scope,'only_before',condition);
+	  if(condition === 'null' && scope.includes('In')){
+          svgPattern = replaceTiming(svgPattern, scope, 'only_before', 'null');
+        } 
+      break;    
       }
     }
     else {
@@ -449,6 +464,9 @@ function replacePoints(points, pointsCond, svgPattern, condition){
   return svgPattern
 }
 
+/*
+// UNTIL
+
 console.log(this.getDiagram('null,null,until,satisfaction','null','until','null'));
 console.log(this.getDiagram('null,regular,until,satisfaction','null','until','regular'));
 console.log(this.getDiagram('in,null,until,satisfaction','in','until','null'));
@@ -474,9 +492,36 @@ console.log(this.getDiagram('after,regular,until,satisfaction','after','until','
 console.log(this.getDiagram('onlyAfter,null,until,satisfaction','onlyAfter','until','null'));
 console.log(this.getDiagram('onlyAfter,regular,until,satisfaction','onlyAfter','until','regular'));
 
+// BEFORE
+
+console.log(this.getDiagram('null,null,before,satisfaction','null','before','null'));
+console.log(this.getDiagram('null,regular,before,satisfaction','null','before','regular'));
+console.log(this.getDiagram('in,null,before,satisfaction','in','before','null'));
+console.log(this.getDiagram('in,regular,before,satisfaction','in','before','regular'));
+
+console.log(this.getDiagram('notin,null,before,satisfaction','notin','before','null'));
+console.log(this.getDiagram('notin,regular,before,satisfaction','notin','before','regular'));
+
+console.log(this.getDiagram('onlyIn,null,before,satisfaction','onlyIn','before','null'));
+console.log(this.getDiagram('onlyIn,regular,before,satisfaction','onlyIn','before','regular'));
 
 
-/*
+console.log(this.getDiagram('before,null,before,satisfaction','before','before','null'));
+console.log(this.getDiagram('before,regular,before,satisfaction','before','before','regular'));
+
+console.log(this.getDiagram('onlyBefore,null,before,satisfaction','onlyBefore','before','null'));
+console.log(this.getDiagram('onlyBefore,regular,before,satisfaction','onlyBefore','before','regular'));
+
+
+console.log(this.getDiagram('after,null,before,satisfaction','after','before','null'));
+console.log(this.getDiagram('after,regular,before,satisfaction','after','before','regular'));
+
+console.log(this.getDiagram('onlyAfter,null,before,satisfaction','onlyAfter','before','null'));
+console.log(this.getDiagram('onlyAfter,regular,before,satisfaction','onlyAfter','before','regular'));
+
+// WITHIN
+
+
 console.log(this.getDiagram('null,null,within,satisfaction','null','within','null'));
 console.log(this.getDiagram('null,regular,within,satisfaction','null','within','regular'));
 console.log(this.getDiagram('in,null,within,satisfaction','in','within','null'));
