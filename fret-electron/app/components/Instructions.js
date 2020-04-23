@@ -464,21 +464,15 @@ class Instructions extends React.Component {
      const {tabValue} = this.state;
      return (
        <div>
-         <Tabs 
-          value={tabValue} 
+         <Tabs
+          value={tabValue}
           onChange={this.handleTabChange}
-          indicatorColor="secondary" 
+          indicatorColor="secondary"
           textColor="secondary"
           centered >
-            <Tab label="Semantics" />
+            <Tab label="Assistant" />
             <Tab label="Templates" />
           </Tabs>
-        {/* <AppBar position="static">
-          <Tabs value={tabValue} onChange={this.handleTabChange} variant="fullWidth">
-            <Tab label="Semantics" />
-            <Tab label="Templates" />
-          </Tabs>
-        </AppBar> */}
         {tabValue === 0 && <TabContainer>{this.renderInstruction(field)}</TabContainer>}
         {tabValue === 1 && <TabContainer>{this.renderTemplate(templates, selectedTemplate,handleSelectedTemplateChange)}</TabContainer>}
        </div>

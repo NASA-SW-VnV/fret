@@ -181,7 +181,6 @@ class CreateRequirementDialog extends React.Component {
                     modelComponent: vdocOld.modelComponent,
                     modeldoc_id: vdocOld.modeldoc_id
                   }).then (function (response) {
-                  //console.log(response);
                   self.state.dialogCloseListener(true, newReqId);
                 }).catch(function (err) {
                       self.state.dialogCloseListener(false);
@@ -228,7 +227,6 @@ class CreateRequirementDialog extends React.Component {
                     modelComponent: vdoc.modelComponent,
                     modeldoc_id: vdoc.modeldoc_id
                   }).then (function (response) {
-                  //console.log(response);
                   self.state.dialogCloseListener(true, newReqId);
                 }).catch(function (err) {
                       self.state.dialogCloseListener(false);
@@ -442,8 +440,8 @@ class CreateRequirementDialog extends React.Component {
       } else if (props.editRequirement) {
         const template = props.editRequirement.template;
         const templateIds = templates.map(t => t._id);
-        const selectedTemplate = template && template.id ? 
-                templateIds.indexOf(template.id) : -1; 
+        const selectedTemplate = template && template.id ?
+                templateIds.indexOf(template.id) : -1;
         this.setState(
             {
               project: props.editRequirement.project,
@@ -501,11 +499,6 @@ class CreateRequirementDialog extends React.Component {
         >
           <div className={styles.layout}>
             <div className={styles.form}>
-              {/* <GridList cols={2} cellHeight={'auto'} spacing={0}>
-                <GridListTile>
-                  <DialogTitle id="form-dialog-title">{dialogTitle}</DialogTitle>
-                </GridListTile>
-              </GridList> */}
               <DialogTitle id="form-dialog-title">{dialogTitle}</DialogTitle>
               <Divider/>
               <DialogContent>
@@ -590,7 +583,7 @@ class CreateRequirementDialog extends React.Component {
                       </GridListTile>
                     </GridList>
                     {this.renderEditor({
-                      fulltext, 
+                      fulltext,
                       templateValues
                     }, selectedTemplate)}
               </DialogContent>

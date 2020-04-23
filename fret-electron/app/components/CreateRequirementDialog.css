@@ -22,20 +22,3 @@
   width:460px;
   position: relative;
 }
-
-/* .layout {
-  display: flex;
-  align-items: stretch;
-  flex-wrap: nowrap;
-  flex-direction: row;
-}
-
-.form {
-  flex: 0 1 auto;
-  min-width: 600px;
-}
-
-.instruction {
-  flex: 0 0 400px;
-  background: #ECEFF1;
-} */
