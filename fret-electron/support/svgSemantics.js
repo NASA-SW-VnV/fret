@@ -13,9 +13,9 @@ const inPoints = [
   ['yScope', '75'],
   ['xTiming', '145'],
   ['yTiming', '115'],
-    ['xStop','200'],
-    ['xStp2', '185'],
-    ['xStp3', '50']
+    ['xStop','200'],  
+    ['xStp2', '185'], // For after the mode
+    ['xStp3', '50']  // For before the mode
 ];
 
 /**
@@ -76,7 +76,10 @@ const beforePoints = [
   ['xTiming', '10'],
   ['yTiming', '115'],
     ['xStop', '65'],
-    ['xStp6', '50']
+    // onlyIn,null,until: uses Timing_only_before which has width 65 starting at 10
+    // and stop line starts 25 before,
+    // so 10 + 65 - 25 = 50
+    ['xStp6', '50'] 
 ];
 
 /**
