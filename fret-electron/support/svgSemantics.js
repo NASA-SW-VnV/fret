@@ -451,6 +451,8 @@ function replacePoints(points, pointsCond, svgPattern, condition){
 }
 
 
+
+/*
 // UNTIL
 
 console.log(this.getDiagram('null,null,until,satisfaction','null','until','null'));
@@ -504,8 +506,6 @@ console.log(this.getDiagram('after,regular,before,satisfaction','after','before'
 
 console.log(this.getDiagram('onlyAfter,null,before,satisfaction','onlyAfter','before','null'));
 console.log(this.getDiagram('onlyAfter,regular,before,satisfaction','onlyAfter','before','regular'));
-
-/*
 
 // WITHIN
 
