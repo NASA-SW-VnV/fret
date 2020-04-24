@@ -1,5 +1,4 @@
-[
-  {
+[   {
     "_id": "template-process-command",
     "title": "Process Command",
     "description": "This pattern describes how a command should be processed. The command may be identified by name or through an operation code. The response may have to be immediate, or eventual, or within some timeframe, as specified by the timing.",
@@ -120,10 +119,7 @@
           {
             "description": "After reception of the command, the sepcified responses must be triggered",
             "suggestion": "response_1 & response_2",
-            "selection": [
-              0,
-              10
-            ]
+            "selection": [0,10]
           }
         ]
       }
@@ -229,5 +225,155 @@
         "bounds": "alpha <= 15"
       }
     ]
-  }
+  },
+     {
+     "_id": "template-set-diagnostic-flag",
+    "title": "Set Diagnostic Flag",
+    "description": "This template relates to requirements that must set a diagnostic flag whenever some unexpected or unwanted conditions occur. Conditions are expressions involving system variables and relational or boolean operators. The response consists of setting some system flag. The response is typically expected to be immediate, but other timing operators may also be used.",
+    "structure": [
+        {
+            "field": "condition"
+        },
+        {
+            "text": " the "
+        },
+        {
+            "field": "component"
+        },
+        {
+            "text": " shall "
+        },
+        {
+            "field": "timing"
+        },
+        {
+            "text": " satisfy "
+        },
+        {
+            "field": "response"
+        }
+    ],
+    "fields": {
+        "condition": {
+            "description": "The condition that expresses the anomaly and which must set the diagnostic flag. The anomaly can be expressed by name, or The bounds are specified as a single or a combination of relational expressions of the form signal RELOP bound, where RELOP is a relational operator (<, <=, >, >=)",
+            "options": [
+                {
+                    "description": "Anomalous condition is described by name",
+                    "suggestion": "Upon anomalous_condition",
+                    "selection": [5,24]
+                },
+                {
+                    "description": "Anomalous condition is described by a variable being outside some bounds. The bounds are specified as a single or a combination of relational expressions of the form variable RELOP bound, where RELOP is a relational operator (<, <=, >, >=)",
+                    "suggestion": "If variable RELOP bound",
+                    "selection": [3,11]
+                }
+            ]
+        },
+        "component": {
+            "description": "Specifies the component of the system that the requirement applies to.",
+            "options": [
+                {
+                    "description": "Replace the text by the name of the target component",
+                    "suggestion": "component",
+                    "selection": []
+                }
+            ]
+        },
+        "timing": {
+            "description": "Specifies the time points or intervals where the response has to occur after anomalous condition is detected. In most cases this is expected to happen immediately.",
+            "options": [
+                {
+                    "description": "The response must immediately occur after anomalous condition is detected",
+                    "suggestion": "immediately",
+                    "selection": [0,11]
+                },
+                {
+                    "description": "The reponse must occur within the specified time window after anomalous condition is detected",
+                    "suggestion": "within T milliseconds/seconds/minutes",
+                    "selection": [7,24]
+                }
+            ]
+        },
+        "response":{
+            "description": "Describes the diagnostic flag that must be set.",
+            "options": [
+                {   "description": "Select the name of the flag to be set",
+                    "suggestion": "set_flagname_flag",
+                    "selection": [4,12]
+                },
+                {
+                    "description": "The specified flag must be set to a given value",
+                    "suggestion": "flag = value",
+                    "selection": [0,12]
+                }
+            ]
+        }
+    },
+    "examples": [
+        {
+            "condition": "Upon invalid_checksum",
+            "component": "propulsion_software",
+            "timing": "immediately",
+            "response": "set_checksum_err_flag"
+        },
+        {
+            "condition": "If pressure < min_tank_pressure",
+            "component": "propulsion_software",
+            "timing": "within 200 milliseconds",
+            "response": "set_pressure_below_range_flag"
+        }
+    ]
+},
+     {  "_id": "template-prescribe-format",
+         "title": "Prescribe Format",
+         "description": "This template defines the expected format of commands or messages, often referring to telemetry. The format typically refers to some standard or document, identified by name or abbreviation.",
+         "structure": [
+             {
+                 "field": "component"
+             },
+             {
+                 "text": " shall always satisfy "
+             },
+             {
+                 "field": "response"
+             }
+         ],
+         "fields": {
+             "component": {
+                 "description": "Specifies the component of the system that the requirement applies to.",
+                 "options": [
+                     {
+                         "description": "Replace the text by the name of the target component",
+                         "suggestion": "component",
+                         "selection": []
+                     }
+                 ]
+             },
+             "response":{
+                 "description": "Specifies the format that must be conformed to.",
+                 "options": [
+                     {
+                         "description": "Format of a message type specified by a document",
+                         "suggestion": "message_type_format in document_name",
+                         "selection": [0,11]
+                     },
+                     {
+                         "description": "Specifies value of field within a command or message",
+                         "suggestion": "message_field = value",
+                         "selection": [0,20]
+                     }
+                 ]
+             }
+         },
+         "examples": [
+             {
+                 "component": "The propulsion_software",
+                 "response": "telemetry_format in ST65"
+             },
+             {
+                 "component": "The telemetry_generator",
+                 "response": "message_seq = BE08"
+             }
+         ]
+     }
 ]
