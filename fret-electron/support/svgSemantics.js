@@ -15,11 +15,7 @@ const inPoints = [
   ['yTiming', '115'],
     ['xStop','200'],
     ['xStp2', '185'],
-    ['xStp3', '50'],
-    ['xStp4', '65'],
-    ['xStp5', '335'],
-    ['xStp6', '50'],
-    ['xStp7', '320']
+    ['xStp3', '50']
 ];
 
 /**
@@ -32,7 +28,7 @@ const inPointsWithCond = [
   ['xTiming', '175'],
   ['yTiming', '115'],
   ['xCondition', '150'],
-    ['xStop', '215'],
+    ['xStop', '215']
 ];
 
 /**
@@ -52,9 +48,6 @@ const afterPoints = [
   ['xInfinity', '395'],
   ['yInfinity', '100'],
     ['xStop', '335'],
-    ['xStp4', '65'],
-    ['xStp5', '335'],
-    ['xStp6', '50'],
     ['xStp7', '320']
 ];
 
@@ -83,12 +76,7 @@ const beforePoints = [
   ['xTiming', '10'],
   ['yTiming', '115'],
     ['xStop', '65'],
-    ['xStp4', '65'],
-    ['xStp5', '335'],
-    ['xStp6', '50'],
-    ['xStp7', '320']
-
-
+    ['xStp6', '50']
 ];
 
 /**
@@ -210,7 +198,7 @@ const patterns = [
   'SCOPE\nTIME\nSCOPE\nTIME\nINF\nMODE\nSTANDARD\n'],
 
   ['notin,null,until|before,action|satisfaction',
-  'SCOPE\nTIME\nSCOPE\nTIME\nINF\nMODE\nSTP4\nSTP5\nSTANDARD\n'],
+  'SCOPE\nTIME\nSCOPE\nTIME\nINF\nMODE\nSTOP\nSTOP\nSTANDARD\n'],
 
   ['onlyIn,null,until|before,action|satisfaction',
    'SCOPE\nTIME\nSCOPE\nTIME\nINF\nMODE\nSTP6\nSTP7\nSTANDARD\n'],
@@ -253,8 +241,6 @@ const firstLevelSubstitutionsSVG = [
   ['STOP', '<use xlink:href="#stop_Condition" x="xStop" y="30"/>'],
     ['STP2', '<use xlink:href="#stop_Condition" x="xStp2" y="30"/>'],
     ['STP3', '<use xlink:href="#stop_Condition" x="xStp3" y="30"/>'],
-    ['STP4', '<use xlink:href="#stop_Condition" x="xStp4" y="30"/>'],
-    ['STP5', '<use xlink:href="#stop_Condition" x="xStp5" y="30"/>'],
     ['STP6', '<use xlink:href="#stop_Condition" x="xStp6" y="30"/>'],
     ['STP7', '<use xlink:href="#stop_Condition" x="xStp7" y="30"/>']
 ];
@@ -464,7 +450,7 @@ function replacePoints(points, pointsCond, svgPattern, condition){
   return svgPattern
 }
 
-/*
+
 // UNTIL
 
 console.log(this.getDiagram('null,null,until,satisfaction','null','until','null'));
@@ -518,6 +504,8 @@ console.log(this.getDiagram('after,regular,before,satisfaction','after','before'
 
 console.log(this.getDiagram('onlyAfter,null,before,satisfaction','onlyAfter','before','null'));
 console.log(this.getDiagram('onlyAfter,regular,before,satisfaction','onlyAfter','before','regular'));
+
+/*
 
 // WITHIN
 
