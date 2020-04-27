@@ -111,6 +111,7 @@ class CreateRequirementDialog extends React.Component {
     comments:'',
     focus: '',
     selectedTemplate: -1,
+    tabValue: 0,
   };
 
   handleTextFieldFocused = name => event => {
@@ -126,13 +127,17 @@ class CreateRequirementDialog extends React.Component {
   };
 
   handleClose = () => {
-    this.setState({ createDialogOpen: false });
+    this.setState({ createDialogOpen: false, tabValue: 0 });
     this.state.dialogCloseListener(false);
   };
 
   handleSelectedTemplateChange = (selectedTemplate) => {
     this.setState({selectedTemplate});
   }
+
+  handleTabChange = (event, tabValue) => {
+    this.setState({ tabValue });
+  };
 
   handleCreate = () => {
     var self = this;
@@ -390,14 +395,16 @@ class CreateRequirementDialog extends React.Component {
 
   handleUpdateInstruction = (field) => {
     this.setState ({
-      focus: field
+      focus: field,
+      tabValue: 0 // for changing the tab to assistant (from template)
     });
   }
 
   handleUpdateSemantics = (f) => {
     this.setState ({
       focus: 'semantics',
-      formalization: f
+      formalization: f,
+      tabValue: 0 //for changing the tab to assistant (from template)
     });
   }
 
@@ -469,18 +476,20 @@ class CreateRequirementDialog extends React.Component {
   }
 
   renderEditor = (inputFields, selectedTemplate) => {
+    const {tabValue} = this.state;
     return (
       <SlateEditor2
         onRef={ref => (this.stepper = ref)}
         updateInstruction={this.handleUpdateInstruction}
         updateSemantics={this.handleUpdateSemantics}
         inputFields={inputFields}
-        template={templates[selectedTemplate]}/>
+        template={templates[selectedTemplate]}
+        />
     )
   }
 
   render() {
-    const { edittingRequirement, selectedTemplate } = this.state;
+    const { edittingRequirement, selectedTemplate, tabValue} = this.state;
     const { classes, existingProjectNames, addChildRequirementToParent } = this.props;
     const isRequirementUpdate = !addChildRequirementToParent && (edittingRequirement && Object.keys(edittingRequirement).length > 0)
     const actionLabel = isRequirementUpdate ? 'Update' : 'Create'
@@ -606,6 +615,8 @@ class CreateRequirementDialog extends React.Component {
               templates={templates}
               selectedTemplate={selectedTemplate}
               handleSelectedTemplateChange={this.handleSelectedTemplateChange}
+              tabValue={tabValue}
+              handleTabChange={this.handleTabChange}
               />
             </div>
           </div>

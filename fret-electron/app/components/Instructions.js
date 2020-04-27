@@ -169,7 +169,6 @@ class Instructions extends React.Component {
     this.state = {
       fieldColors : {},
       LTLSimDialogOpen: false,
-      tabValue: 0,
     };
 
     this.openLTLSimDialog = this.openLTLSimDialog.bind(this);
@@ -233,12 +232,7 @@ class Instructions extends React.Component {
     }).catch(function (err) {
       console.log(err);
     });
-
   }
-
-  handleTabChange = (event, tabValue) => {
-    this.setState({ tabValue });
-  };
 
   openLTLSimDialog() {
     this.setState({LTLSimDialogOpen: true});
@@ -407,10 +401,6 @@ class Instructions extends React.Component {
         </div>)
   }
 
-  ratingChanged = (newRating) => {
-    console.log(newRating)
-  }
-
   renderTemplate(templates, selectedTemplate, handleSelectedTemplateChange) {
     return(
       <div style={{display: 'block'}}>
@@ -455,18 +445,13 @@ class Instructions extends React.Component {
     }
   }
 
-  handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
-
   render() {
-     const {field, classes, templates, selectedTemplate, handleSelectedTemplateChange} = this.props;
-     const {tabValue} = this.state;
+     const {field, classes, templates, selectedTemplate, handleSelectedTemplateChange, tabValue, handleTabChange} = this.props;
      return (
        <div>
          <Tabs
           value={tabValue}
-          onChange={this.handleTabChange}
+          onChange={handleTabChange}
           indicatorColor="secondary"
           textColor="secondary"
           centered >
@@ -488,6 +473,8 @@ Instructions.propTypes = {
   requirementID: PropTypes.string.isRequired,
   templates: PropTypes.array.isRequired,
   handleSelectedTemplateChange: PropTypes.func.isRequired,
+  tabValue: PropTypes.number.isRequired,
+  handleTabChange: PropTypes.func.isRequired
 };
 
 export default withStyles(styles)(Instructions);
