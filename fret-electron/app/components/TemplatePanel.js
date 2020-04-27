@@ -116,7 +116,7 @@ class NoTemplateInfo extends React.Component {
     render() {
         return (
             <div style={{marginTop:24}}>
-                <Typography>You currently have not selected predefined template. Simply specify your requirement in plain FRETish.</Typography>
+                <Typography>You currently have not selected predefined template.</Typography>
             </div>
         )
     }

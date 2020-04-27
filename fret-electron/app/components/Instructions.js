@@ -437,7 +437,7 @@ class Instructions extends React.Component {
             <Typography variant='subtitle1' color='primary'>Ready to speak FRETish?</Typography>
           </div>
           <div>
-            <Typography color='primary'>Please use the editor to write your requirement or pick a predefined template from the TEMPLATES tab.</Typography>
+            <Typography color='primary'>Please use the editor on your left to write your requirement or pick a predefined template from the TEMPLATES tab.</Typography>
           </div>
         </div>
 
