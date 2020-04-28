@@ -31,7 +31,7 @@ ed.addOption('response', "action",
 ed.addOption('response', "signal = value",
 "After reception of the command, the specified signal must be set to a given value")
 ed.addOption('response', "response_1 & response_2",
-"After reception of the command, the sepcified responses must be triggered")
+"After reception of the command, the specified responses must be triggered")
 
 ed.addExample("Upon [command_opcode = 3 & impulses_scaled] the [propulsion_software] shall [immediately] satisfy [set_impulses_scaled_flag]")
 ed.addExample("Upon [receipt_of_impulses_command] the [propulsion_software] shall [within 200 milliseconds] satisfy [set_impulses]")
@@ -55,12 +55,12 @@ ed.addOption('bounds', "signal < bound",
 "The signal must always stay below the bound")
 ed.addOption('bounds', "signal > bound",
 "The signal must always stay inside the bounds")
-ed.addOption('bounds', "signal > lower && signal < upper",
+ed.addOption('bounds', "signal > lower & signal < upper",
 "The signal must always stay below the bound")
-ed.addOption('bounds', "signal < lower || signal > upper",
+ed.addOption('bounds', "signal < lower | signal > upper",
 "The signal must always stay outside the bounds")
 
-ed.addExample("The [autopilot] shall always satisfy [roll_angle < 60 && roll_angle > -60]")
+ed.addExample("The [autopilot] shall always satisfy [roll_angle < 60 & roll_angle > -60]")
 ed.addExample("The [alpha_protection] shall always satisfy [alpha <= 15]")
 
 
