@@ -497,6 +497,8 @@ class CreateRequirementDialog extends React.Component {
     const commitButtonText = actionLabel
     const fulltext = isRequirementUpdate ? edittingRequirement.fulltext : undefined
     const templateValues = isRequirementUpdate ? edittingRequirement.template : undefined
+    const requirementFields = this.stepper ? this.stepper.getRequirementFields() : undefined;
+    const requirementText = requirementFields ? requirementFields.fulltext : undefined;
     return (
       <div>
         <Dialog
@@ -610,7 +612,7 @@ class CreateRequirementDialog extends React.Component {
               field={this.state.focus}
               grammarRule={this.getGrammarRuleOnFocus()}
               formalization={this.state.formalization}
-              requirement = {fulltext ? fulltext : ''}
+              requirement = {requirementText ? requirementText : ''}
               requirementID = {this.state.reqid}
               templates={templates}
               selectedTemplate={selectedTemplate}
