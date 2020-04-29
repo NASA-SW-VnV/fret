@@ -45,8 +45,8 @@ import FormulaEvaluationIcon from '@material-ui/icons/Highlight';
 import FTLogicsIcon from '@material-ui/icons/ArrowForward';
 import PTLogicsIcon from '@material-ui/icons/ArrowBack';
 
-
 import TimeSeriesWidget from './TimeSeriesWidget';
+import RequirementDetails from './RequirementDetails';
 
 const ltlsim = require('ltlsim-core').ltlsim;
 const LTLSimController = require('ltlsim-core').LTLSimController;
@@ -271,6 +271,7 @@ class LTLSimDialog extends Component {
         const { classes, open, onClose, requirement, id, requirementID } = this.props;
         let { model, visibleSubformulas, highlight, logics } = this.state;
         let formula = LTLSimController.getFormula(model, id);
+        const displayID = requirementID ? requirementID : "REQ";
 
         if (formula !== undefined && formula !== null) {
             return (
@@ -317,12 +318,8 @@ class LTLSimDialog extends Component {
                     </Tooltip>
                     </Toolbar>
                 </AppBar>
-                <Typography variant="subtitle1" align='center' color='inherit' display='block'>
-                  {requirementID ?
-                    " "+ requirementID + ": " + requirement :
-                    "  REQ: "+ requirement}
-                </Typography>
-                    {LTLSimController.getFormulaKeys(model).length > 0 &&
+                    {LTLSimController.getFormulaKeys(model).length > 0 && 
+                      <div>
                         <TimeSeriesWidget
                             model={model}
                             visibleAtomics={LTLSimController.getAtomicKeys(model).filter(a => (a !== "LAST" && a !== "FTP"))}
@@ -335,8 +332,13 @@ class LTLSimDialog extends Component {
                             displayAtomicsWithFormulas={false}
                             displaySubformulas={true}
                             selectedFormula=""
-                            requirementID={requirementID}
-                        />}
+                            requirementID={displayID}
+                        />
+                        <RequirementDetails 
+                            requirementID={requirementID} 
+                            description={requirement} 
+                        />
+                      </div>}
                 </Dialog>
             )} else {
                 return null;
