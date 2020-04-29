@@ -251,7 +251,8 @@ class SlateEditor2 extends React.Component {
       editorValue,
       inputText,
       errors: result.parseErrors,
-      semantics: result.collectedSemantics
+      semantics: result.collectedSemantics,
+      menuOptions: []
     })
   }
 
