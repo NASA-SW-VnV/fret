@@ -273,6 +273,9 @@ class LTLSimDialog extends Component {
         let formula = LTLSimController.getFormula(model, id);
         const displayID = requirementID ? requirementID : "REQ";
 
+        console.log(requirementID)
+        console.log(displayID)
+
         if (formula !== undefined && formula !== null) {
             return (
                 <Dialog
@@ -332,10 +335,9 @@ class LTLSimDialog extends Component {
                             displayAtomicsWithFormulas={false}
                             displaySubformulas={true}
                             selectedFormula=""
-                            requirementID={displayID}
                         />
                         <RequirementDetails 
-                            requirementID={requirementID} 
+                            requirementID={displayID}
                             description={requirement} 
                         />
                       </div>}

@@ -648,24 +648,43 @@ class SlateEditor2 extends React.Component {
         return k.endsWith('TextRange')
       }).forEach(k => {
         const v = semantics[k]
+        
+        console.log(v)
         tokens.push({
           content: inputText.substring(v[0], v[1] + 1),
           type: k
         })
-      })
-  
-      tokens.forEach((token) => {
-        let startOffset = text.indexOf(token.content) + blankOffset;
-        let endOffset = startOffset + token.content.length;
+        
+        let startOffset = v[0] + blankOffset;
+        let endOffset = v[1] + 1 + blankOffset;
+        
         if (startOffset >= 0) {
           decorations.push({
             anchor: {path, offset: startOffset},
             focus: {path, offset: endOffset},
-            color: this.state.fieldColors[token.type.replace("TextRange", "")],
-            type: token.type
+            color: this.state.fieldColors[k.replace("TextRange", "")],
+            type: k
           })
         }
       })
+
+      console.log(text)
+      console.log(inputText)
+      console.log(blankOffset)
+  
+      // tokens.forEach((token) => {
+      //   let startOffset = text.indexOf(token.content) + blankOffset;
+      //   let endOffset = startOffset + token.content.length;
+      //   console.log(startOffset)
+      //   if (startOffset >= 0) {
+      //     decorations.push({
+      //       anchor: {path, offset: startOffset},
+      //       focus: {path, offset: endOffset},
+      //       color: this.state.fieldColors[token.type.replace("TextRange", "")],
+      //       type: token.type
+      //     })
+      //   }
+      // })
     }
 
     return decorations

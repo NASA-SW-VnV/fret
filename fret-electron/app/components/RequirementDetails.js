@@ -79,7 +79,7 @@ class RequirementDetails extends Component {
               <div className={classes.details}>
                 <CardContent className={classes.content}>
                   <Typography variant="subtitle1" color='inherit' display='block'>
-                    {requirementID + ": " + description}
+                    <b>{requirementID}</b>: {description}
                   </Typography>   
                 </CardContent>
               </div>
