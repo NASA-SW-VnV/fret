@@ -267,9 +267,15 @@ class SlateEditor2 extends React.Component {
     if (isKeyHotkey('mod+c', event)) {
       /* Copy hotkey. Handled by default event behavior */
     } else if (isKeyHotkey('mod+v', event)) {
-      /* Paste hotkey. Handled by default event behavior */
+      /* Paste hotkey. In this case the text from the system
+       * clipboard is read and inserted to the editor. */
+      event.preventDefault();
+      navigator.clipboard.readText()
+        .then(text => this.editor.insertText(text))
     } else if (isKeyHotkey('mod+x', event)) {
       /* Cut hotkey. Handled by default event behavior */
+    } else if (isKeyHotkey('mod+a', event)) {
+      /* Select all hotkey. Handled by default event behavior */
     } else if (isKeyHotkey('mod+z', event)) {
       /* Undo hotkey. Handled by default event behavior
        * (but not implemented by slate) */
@@ -691,6 +697,7 @@ class SlateEditor2 extends React.Component {
             decorate={hasFields ? undefined : this.decorateNode}
             renderElement={this.renderElement}
             renderLeaf={this.renderLeaf}
+            style={{height: '100%'}}
           />
           {menu}
         </Slate>
