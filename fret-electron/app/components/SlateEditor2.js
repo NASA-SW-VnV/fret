@@ -264,8 +264,20 @@ class SlateEditor2 extends React.Component {
     const selection = this.editor.selection;
     const isCollapsed = selection && Range.isCollapsed(selection);
 
-    if (event.key.length === 1) {
-      /* Regular character. All hotkeys have a length > 1.
+    if (isKeyHotkey('mod+c', event)) {
+      /* Copy hotkey. Handled by default event behavior */
+    } else if (isKeyHotkey('mod+v', event)) {
+      /* Paste hotkey. Handled by default event behavior */
+    } else if (isKeyHotkey('mod+x', event)) {
+      /* Cut hotkey. Handled by default event behavior */
+    } else if (isKeyHotkey('mod+z', event)) {
+      /* Undo hotkey. Handled by default event behavior
+       * (but not implemented by slate) */
+    } else if (isKeyHotkey('mod+y', event)) {
+      /* Redo hotkey. Handled by default event behavior
+       * (but not implemented by slate) */
+    } else if (event.key.length === 1) {
+      /* Regular character. All other hotkeys have a length > 1.
        * In this case the corresponding character is simply
        * inserted. */
       event.preventDefault();
@@ -329,13 +341,10 @@ class SlateEditor2 extends React.Component {
     } else if (isKeyHotkey('tab', event)) {
       /* Tab moves the focus to the next ui control, this is working fine */
       this.setState(prevState => {
-        const {menuOptions, menuIndex} = prevState;
+        const {menuOptions} = prevState;
         if (menuOptions && menuOptions.length > 0) {
           event.preventDefault();
-          const field = getFieldNode(this.editor);
-          if (field) {
-            this.handleDropdownSelection(field.name, menuIndex);
-          }
+          this.handleDropdownSelection();
           return {menuIndex: 0, menuOptions: []}
         }
       })
@@ -550,7 +559,6 @@ class SlateEditor2 extends React.Component {
 
     if (!semantics) return [];
 
-    const text = editor2Text(editorValue);
     const tokens = []
     const decorations = []
 
@@ -578,24 +586,6 @@ class SlateEditor2 extends React.Component {
           })
         }
       })
-
-      console.log(text)
-      console.log(inputText)
-      console.log(blankOffset)
-
-      // tokens.forEach((token) => {
-      //   let startOffset = text.indexOf(token.content) + blankOffset;
-      //   let endOffset = startOffset + token.content.length;
-      //   console.log(startOffset)
-      //   if (startOffset >= 0) {
-      //     decorations.push({
-      //       anchor: {path, offset: startOffset},
-      //       focus: {path, offset: endOffset},
-      //       color: this.state.fieldColors[token.type.replace("TextRange", "")],
-      //       type: token.type
-      //     })
-      //   }
-      // })
     }
 
     return decorations
@@ -688,13 +678,21 @@ class SlateEditor2 extends React.Component {
     }
 
     return (
-    <div className="editor" style={{width: 750, height: 150}}>
-      <div style={{border: 'solid 1px gray', padding: '10px', height: 100}}>
+    <div className="editor" style={{height: 150}}>
+      <div style={{border: 'solid 1px gray', padding: '10px', height: 100}}
+          onClick={() => console.log('Set Focus on Editor!')}>
         <Slate
           editor={this.editor}
-          value={this.state.value}
-          onChange={(value)=>{console.log(value); console.log(this.editor); this.setState({value})}}>
-          {/* <Editable /> */}
+          value={slateValue}
+          onChange={this.handleEditorValueChange} >
+          <Editable
+            onKeyDown={this.handleKeyDown}
+            autoFocus
+            decorate={hasFields ? undefined : this.decorateNode}
+            renderElement={this.renderElement}
+            renderLeaf={this.renderLeaf}
+          />
+          {menu}
         </Slate>
       </div>
       <GridList cols={3} cellHeight='auto' spacing={0}>
