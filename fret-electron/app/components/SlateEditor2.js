@@ -573,8 +573,6 @@ class SlateEditor2 extends React.Component {
         return k.endsWith('TextRange')
       }).forEach(k => {
         const v = semantics[k]
-
-        console.log(v)
         tokens.push({
           content: inputText.substring(v[0], v[1] + 1),
           type: k
@@ -685,8 +683,7 @@ class SlateEditor2 extends React.Component {
 
     return (
     <div className="editor" style={{height: 150}}>
-      <div style={{border: 'solid 1px gray', padding: '10px', height: 100}}
-          onClick={() => console.log('Set Focus on Editor!')}>
+      <div style={{border: 'solid 1px gray', padding: '10px', height: 100}}>
         <Slate
           editor={this.editor}
           value={slateValue}
