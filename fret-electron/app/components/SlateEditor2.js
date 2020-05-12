@@ -735,40 +735,46 @@ const withFields = editor => {
     return (element.type === 'field-element') && editor.fieldsEnabled ? true : isInline(element)
   }
 
-  // editor.normalizeNode = entry => {
-  //   if (editor.fieldsEnabled) {
-  //     let [node, path] = entry;
-  //     if (node.type === 'paragraph') {
-  //       for(const [child, childPath] of Node.children(editor, path)) {
-  //         if (Text.isText(child) && child.text.length === 0) {
-  //           Transforms.removeNodes(editor, {at: childPath})
-  //         }
-  //       }
-  //       return
-  //     }
-  //   }
-  //   normalizeNode(entry)
-  // }
+  editor.normalizeNode = entry => {
+    if (editor.fieldsEnabled) {
+      let [node, path] = entry;
+      if (node.type === 'paragraph') {
+        for(const [child, childPath] of Node.children(editor, path)) {
+          if (Text.isText(child) && child.text.length === 0) {
+            Transforms.removeNodes(editor, {at: childPath})
+          }
+        }
+        return
+      }
+    }
+    normalizeNode(entry)
+  }
 
-  // editor.insertText = text => {
-  //   if (editor.fieldsEnabled) {
-  //     if (!isMany(editor)) {
-  //       let field = isField(editor);
-  //       let start = Range.start(editor.selection);
-  //       let end = Range.end(editor.selection);
-  //       let leaf = getFirstLeaf(editor);
-  //       if (field) {
-  //         if (start.offset >= 1 && end.offset < leaf.text.length) {
-  //           insertText(text)
-  //         }
-  //       } else if (!editor.instantiate) {
-  //         insertText(text)
-  //       }
-  //     }
-  //   } else {
-  //     insertText(text)
-  //   }
-  // }
+  editor.insertText = text => {
+    let cleanText = text.replace(/[\n\r\t]/g, " ");
+    if (editor.fieldsEnabled) {
+      if (!isMany(editor)) {
+        let field = isField(editor);
+        let start = Range.start(editor.selection);
+        let end = Range.end(editor.selection);
+        let leaf = getFirstLeaf(editor);
+        if (field) {
+          let textlength = leaf.text.length;
+          if (start.offset >= 1 && end.offset < textlength) {
+            if (leaf.isPlaceholder) {
+              let anchor = {path: start.path, offset : Math.min(textlength, 1)};
+              let focus = {path: end.path, offset: Math.max(textlength-1, 0)};
+              Transforms.select(editor, {anchor, focus});
+              editor.deleteFragment();
+            }
+            insertText(cleanText)
+          }
+        }
+      }
+    } else {
+      insertText(cleanText)
+    }
+  }
 
   editor.insertBreak = () => {}
 
