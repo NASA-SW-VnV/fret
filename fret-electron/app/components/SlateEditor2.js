@@ -39,13 +39,9 @@ import React from 'react'
 import { isKeyHotkey } from 'is-hotkey'
 import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button';
-import Switch from '@material-ui/core/Switch';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { withStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
-import GridListTileBar from '@material-ui/core/GridListTileBar';
 
 import IconButton from '@material-ui/core/IconButton';
 import HelpIcon from '@material-ui/icons/HelpOutline';
@@ -682,8 +678,8 @@ class SlateEditor2 extends React.Component {
     }
 
     return (
-    <div className="editor" style={{height: 150}}>
-      <div style={{border: 'solid 1px gray', padding: '10px', height: 100}}>
+    <div className="editor" style={{minHeight: 150}}>
+      <div style={{border: 'solid 1px gray', padding: '10px'}}>
         <Slate
           editor={this.editor}
           value={slateValue}
@@ -694,7 +690,7 @@ class SlateEditor2 extends React.Component {
             decorate={hasFields ? undefined : this.decorateNode}
             renderElement={this.renderElement}
             renderLeaf={this.renderLeaf}
-            style={{height: '100%'}}
+            style={{minHeight: 100}}
           />
           {menu}
         </Slate>
@@ -861,6 +857,115 @@ function isEqualPath(start, end) {
     }
   }
   return result;
+}
+
+function isField(editor) {
+  let parent = getParent(editor);
+  return isMany(editor) ? false : parent && parent.type === 'field-element';
+}
+
+function getFieldNode(editor) {
+  let parent = getParent(editor);
+  return (isMany(editor) ? false : parent && parent.type === 'field-element') ? parent : undefined;
+}
+
+function getField(editorValue, fieldName) {
+  const paragraph = editorValue && editorValue[0];
+  return paragraph && paragraph.children
+    .find(child => (child.type && child.type === 'field-element' && child.name === fieldName));
+}
+
+
+function getParent(editor) {
+  const selection = editor.selection;
+  const start = selection && Range.start(selection);
+  const path = start && start.path;
+  let parent = undefined;
+  try {
+    parent = path && Node.parent(editor, path);
+  } finally {
+    return parent;
+  }
+}
+
+function getFirstLeaf(editor) {
+  const selection = editor.selection;
+  const start = selection && Range.start(selection);
+  const path = start && start.path;
+  return path && Node.leaf(editor, path);
+}
+
+function getLeftSibling(editor, oneUp) {
+  let path = [...Range.start(editor.selection).path];
+  if (oneUp) {
+    path.pop()
+  }
+  if (path[path.length-1] > 0) {
+    path[path.length-1] = path[path.length-1] - 1;
+    return Node.get(editor, path)
+  }
+  return null
+}
+
+function getRightSibling(editor, oneUp) {
+  let path = [...Range.start(editor.selection).path];
+  if (oneUp) {
+    path.pop()
+  }
+  let parent = Node.parent(editor, path);
+  if (path[path.length-1] < parent.children.length-1) {
+    path[path.length-1] = path[path.length-1] + 1;
+    return Node.get(editor, path)
+  }
+  return null
+}
+
+function unwrapEditorValue(editorValue) {
+  const editorText = editor2Text(editorValue);
+  return [{
+    type: 'paragraph',
+    children: [{text: editorText}]
+  }]
+}
+
+function structure2Editor(structure, values) {
+  let editorValue = [];
+  if (structure && values) {
+    editorValue = [{
+      type: 'paragraph',
+      children: structure.map(part => part2Editor(part, values))
+    }];
+  } else {
+    editorValue = text2Editor('');
+  }
+  return editorValue;
+}
+
+function part2Editor(part, values) {
+  if (part.field) {
+    const value = values[part.field];
+    const hasValue = (value && !value.isPlaceholder && value.text && value.text.length > 0);
+    const text = hasValue ? value.text : part.field;
+    return {
+      type: 'field-element',
+      name: part.field,
+      options: part.options,
+      children: [{text: fieldStartCharacter+text+fieldEndCharacter, isPlaceholder: !hasValue }]}
+  }
+  return {text: ((part.text && part.text.length) > 0 ? part.text : ' ')};
+}
+
+function editor2Values(editorValue) {
+  let paragraph = editorValue[0];
+  return (paragraph && paragraph.children) ? paragraph.children
+          .filter(part => (part.type && part.type === 'field-element'))
+          .reduce((values, part) => {
+            const leaf = part.children && part.children[0];
+            const text = leaf.text;
+            const isPlaceholder =  leaf.isPlaceholder;
+            values[part.name] = {text: isPlaceholder ? '' : text.slice(1, text.length-1), isPlaceholder};
+            return values;
+          }, {}) : {};
 }
 
 SlateEditor2.propTypes = {
