@@ -3,6 +3,7 @@
 specifies the time points or time intervals, where a response has to occur once scope and condition(s) are satisfied. Supported options are
 
 * **immediately**
+* **at the next timepoint**
 * **eventually**
 * **always**
 * **never**
@@ -29,6 +30,8 @@ response must happen at least once before the STOP_CONDITION holds.
 
 Examples:
 * **immediately:** **When** currentOverload **the** circuitBreaker **shall immediately satisfy** shutoff
+* **next:** **Upon** errorEvent **the** sw **shall at the next timepoint
+  satisfy** degradedCondition
 * **eventually:** **In** landingMode **the** system **shall eventually satisfy**
   LandingGearLowered
 * **always:** **The** autopilot **shall always satisfy if** allGood **then**

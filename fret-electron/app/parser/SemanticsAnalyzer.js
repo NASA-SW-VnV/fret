@@ -187,7 +187,7 @@ RequirementListener.prototype.enterPost_condition = function(ctx) {
 
 RequirementListener.prototype.enterTiming = function(ctx) {
   var text = antlrUtilities.getText(ctx).replace(',', '').trim().split(' ')[0]
-  result.timing = text;
+  result.timing = (text === 'at') ? 'next' : text;
 }
 
 RequirementListener.prototype.exitTiming = function(ctx) {

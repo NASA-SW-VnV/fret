@@ -120,6 +120,7 @@ timing
          | (',')? 'after' duration_lower (',')?
 	 | (',')? 'until' stop_condition (',')?
  	 | (',')? 'before' stop_condition (',')?
+	 | (',')? 'at' 'the' 'next' 'timepoint' (',')?
          | 'immediately'
          | 'eventually'
          | 'always'
