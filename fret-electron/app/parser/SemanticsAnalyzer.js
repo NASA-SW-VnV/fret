@@ -336,6 +336,7 @@ function replaceWithR2U2Substs(formula) {
 //----------------------------------------------------------------------
 SemanticsAnalyzer.prototype.semantics = () => {
   if (result.type === 'nasa'){
+      console.log('result: ' + JSON.stringify(result))
       var variableDescription = createVariableDescription(result.scope, result.condition, result.timing, result.response, result.stop_condition);
     var fetchedSemantics = fetchSemantics.getSemantics(result.scope, result.condition, result.timing, result.response);
     result.ft = replaceTemplateVarsWithArgs(fetchedSemantics.ft, false, true);

@@ -124,6 +124,8 @@ exports.parse = (text) => {
 // tests
 
 /*
+console.log(JSON.stringify(this.compile('When p the sw shall, at the next timepoint, satisfy post')))
+
 console.log(JSON.stringify(this.compile('The sw shall, until stop, satisfy post')))
 
 console.log(JSON.stringify(this.compile('the sw shall satisfy x > 0')));

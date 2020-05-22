@@ -91,6 +91,8 @@ var isNegated = scope.includes('only');
 switch (functionCase) {
   case 'immediately': constraints = immediately(scopeInterval, responseIntervals, isNegated); break;
   case 'immediatelyCond': constraints = immediatelyCond(responseIntervals, trigger, isNegated); break;
+  case 'next': constraints = next(scopeInterval, responseIntervals, isNegated); break;
+  case 'nextCond': constraints = nextCond(responseIntervals, trigger, isNegated); break;
   case 'always': constraints = always(scopeInterval, responseIntervals, isNegated); break;
   case 'alwaysCond': constraints = alwaysCond(responseIntervals, trigger, isNegated); break;
   case 'eventually': constraints = eventually(scopeInterval, responseIntervals, isNegated); break;
@@ -229,6 +231,20 @@ function immediatelyCond(responseIntervals, trigger, negate=false) {
 	return immediately(trigger.scope, responseIntervals, negate)
 }
 
+function next(scopeInterval, responseIntervals, negate=false) {
+    let pointAfter = scopeInterval.left + 1;
+    let pos = null
+    if (intervalLogic.includesPoint(scopeInterval, pointAfter)) {
+	pos = intervalLogic.includesPointMultiple(responseIntervals,
+						  pointAfter);
+	if (negate) pos = !pos;
+    }
+    return pos;
+}
+
+function nextCond(responseIntervals, trigger, negate=false) {
+    return next(trigger.scope,responseIntervals,negate)
+}
 
 
 // we need to make sure that sets of intervals are disjoint
@@ -380,3 +396,4 @@ function beforeTiming(scopeInterval,stopCondIntervals,responseIntervals,negate) 
 function beforeTimingCond(stopCondIntervals,responseIntervals,trigger,negate) {
     return beforeTiming(trigger.scope,stopCondIntervals,responseIntervals,negate);
 }
+

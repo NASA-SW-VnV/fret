@@ -55,7 +55,7 @@ module.exports = Object.freeze({
   // Consider some automatic check or generation with the grammar or SemanticsAnalyzer
   fullScope : /*['null'],//*/['null', 'in', 'onlyAfter', 'after', 'onlyBefore', 'before', 'onlyIn', 'notin'],
   fullCondition : /*['regular'],//*/['null', 'regular', 'only'],
-    fullTiming : /*['within'],//*/['always','null','immediately','eventually', 'never', 'for','within','after','until','before'],
+    fullTiming : /*['within'],//*/['always','null','immediately','eventually', 'never', 'for','within','after','until','before','next'],
   fullResponse : /*['satisfaction'],//*/['satisfaction','action','order','not_order'],
 
   // We want to test with Bamboo only the combinations of keys for which semantics has been defined and tested -- to get more meaningfull test results

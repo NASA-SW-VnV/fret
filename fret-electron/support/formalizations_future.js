@@ -65,6 +65,8 @@ const SpecialCases =
 const BaseForm = [ // negate,timing,condition
   ['false,immediately,null|regular', immediately('RES')],
   ['true,immediately,null|regular', notImmediately('RES')],
+  ['false,next,null|regular', next('RES')],
+  ['true,next,null|regular', notNext('RES')],
   ['false,eventually|null,null|regular', eventually('RES')],
   ['true,eventually|null,null|regular', notEventually('RES')],
   ['false,always,null|regular', always('RES')],
@@ -106,6 +108,14 @@ function immediately(property) {
 function notImmediately(property) {
                   return(immediately(negate(property)))
                 }
+
+function next(property, endsScope='ENDSCOPE') {
+            return parenthesize(`${endsScope} or (next (${property}))`);
+          }
+ 
+function notNext(property, endsScope='ENDSCOPE') {
+                return next(negate(property), endsScope)
+}
 
 function always(property) {
             return parenthesize(`always ${property}`);

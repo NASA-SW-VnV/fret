@@ -61,6 +61,8 @@ const SpecialCases =
 const BaseForm = [ // negate, timing, condition
   ['false,immediately,null', immediately('RES')],
   ['true,immediately,null', notImmediately('RES')],
+  ['false,next,null', next('RES')],
+  ['true,next,null', notNext('RES')],
   ['false,eventually|null,null', eventually('RES')],
   ['true,eventually|null,null', notEventually('RES')],
   ['false,always,null', always('RES')],
@@ -80,6 +82,8 @@ const BaseForm = [ // negate, timing, condition
   // now with condition
   ['false,immediately,regular', immediately('RES','COND')],
   ['true,immediately,regular', notImmediately('RES','COND')],
+  ['false,next,regular', next('RES','COND')],
+  ['true,next,regular', notNext('RES','COND')],
   ['false,eventually|null,regular', eventually('RES','COND')],
   ['true,eventually|null,regular', notEventually('RES','COND')],
   ['false,always,regular', always('RES','COND')],
@@ -130,6 +134,21 @@ function notImmediately(property, cond='null') {
                   return(immediately(negate(property), cond))
                 }
 
+function next(property, cond='null') {
+  var formula = 'undefined'
+ 
+  if (cond != 'null') {
+      formula = `((previous ${conditionTrigger(cond,'LEFTEND')}) implies  ((${property}) or LEFTEND))`
+  } else { // for null condition
+      formula = `(previous LEFTEND implies ${property})`
+  }
+  return parenthesize(parenthesize(formula) + checkAllUpToLeft('LEFTEND'))
+}
+ 
+function notNext(property, cond='null') {
+  return next(negate(property), cond)     
+}
+ 
 // we need checkAllUpToLeft here because at any point we may have no condition previously
 // in which case we dont check the property
 function always(property, cond='null') {
