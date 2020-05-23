@@ -138,9 +138,9 @@ function next(property, cond='null') {
   var formula = 'undefined'
  
   if (cond != 'null') {
-      formula = `((previous ${conditionTrigger(cond,'LEFTEND')}) implies  ((${property}) or LEFTEND))`
+      formula = `(previous ${conditionTrigger(cond,'LEFTEND')}) implies ((${property}) or LEFTEND)`
   } else { // for null condition
-      formula = `(previous LEFTEND implies ${property})`
+      formula = `previous LEFTEND implies (${property})`
   }
   return parenthesize(parenthesize(formula) + checkAllUpToLeft('LEFTEND'))
 }
