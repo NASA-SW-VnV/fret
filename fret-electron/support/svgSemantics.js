@@ -138,8 +138,8 @@ const patterns = [
     ['null,null,until|before,action|satisfaction',
        'NOSCOPE\nTIME\nINF\nNOMODE\nSTOP\nSTANDARD\n'],
 
-  ['null,null,immediately|within|after|for,action|satisfaction',
-  'NOSCOPE\nTIME\nNOMODE\nSTANDARD\n'],
+  ['null,null,immediately|next|within|after|for,action|satisfaction',
+  'NOSCOPE\nNOMODE\nTIME\nSTANDARD\n'],
 
   ['after,null,always|never|eventually|null,action|satisfaction',
   'SCOPE\nTIME\nINF\nMODE\nSTANDARD\n'],
@@ -147,11 +147,11 @@ const patterns = [
     ['after,null,until|before,action|satisfaction',
        'SCOPE\nTIME\nINF\nMODE\nSTOP\nSTANDARD\n'],
 
-  ['after,null,immediately|within|after|for,action|satisfaction',
-   'SCOPE\nTIME\nINF\nMODE\nSTANDARD\n'],
+  ['after,null,immediately|next|within|after|for,action|satisfaction',
+   'SCOPE\nINF\nMODE\nTIME\nSTANDARD\n'],
 
-  ['in|before,null,always|eventually|never|immediately|within|after|null|for,action|satisfaction',
-  'SCOPE\nTIME\nMODE\nSTANDARD\n'],
+  ['in|before,null,always|eventually|never|immediately|next|within|after|null|for,action|satisfaction',
+  'SCOPE\nMODE\nTIME\nSTANDARD\n'],
 
     ['in|before,null,until|before,action|satisfaction',
        'SCOPE\nTIME\nMODE\nSTOP\nSTANDARD\n'],
@@ -164,20 +164,20 @@ const patterns = [
       ['null,regular,until|before,action|satisfaction',
   'NOSCOPE\nTIME\nREGULAR\n\STOP\nINF\nNOMODE\nSTANDARD\n'],
 
-  ['null,regular,immediately|within|after|for,action|satisfaction',
-  'NOSCOPE\nTIME\nREGULAR\nNOMODE\nSTANDARD\n'],
+  ['null,regular,immediately|next|within|after|for,action|satisfaction',
+  'NOSCOPE\nNOMODE\nREGULAR\nTIME\nSTANDARD\n'],
 
   ['after,regular,always|never|eventually|null,action|satisfaction',
   'SCOPE\nTIME\nREGULAR\nINF\nMODE\nSTANDARD\n'],
 
-  ['after,regular,immediately|within|after|for,action|satisfaction',
-   'SCOPE\nTIME\nREGULAR\nINF\nMODE\nSTANDARD\n'],
+  ['after,regular,imemdiately|next|within|after|for,action|satisfaction',
+   'SCOPE\nREGULAR\nINF\nMODE\nTIME\nSTANDARD\n'],
 
       ['after,regular,until|before,action|satisfaction',
   'SCOPE\nTIME\nREGULAR\nSTOP\nINF\nMODE\nSTANDARD\n'],
 
-  ['in|before,regular,always|eventually|never|immediately|within|after|null|for,action|satisfaction',
-  'SCOPE\nTIME\nREGULAR\nMODE\nSTANDARD\n'],
+  ['in|before,regular,always|eventually|never|immediately|next|within|after|null|for,action|satisfaction',
+  'SCOPE\nREGULAR\nMODE\nTIME\nSTANDARD\n'],
 
    ['in|before,regular,until|before,action|satisfaction',
   'SCOPE\nTIME\nREGULAR\nSTOP\nMODE\nSTANDARD\n'],
@@ -185,20 +185,20 @@ const patterns = [
 
     // ** only Scopes, no condition
 
-  ['onlyAfter,null,always|eventually|never|immediately|within|after|null|for,action|satisfaction',
-  'SCOPE\nTIME\nSCOPE\nMODE\nSTANDARD\n'],
+  ['onlyAfter,null,always|eventually|never|immediately|next|within|after|null|for,action|satisfaction',
+  'SCOPE\nSCOPE\nMODE\nTIME\nSTANDARD\n'],
 
   ['onlyAfter,null,until|before,action|satisfaction',
   'SCOPE\nTIME\nSCOPE\nMODE\nSTP3\nSTANDARD\n'],
 
-  ['onlyBefore,null,always|eventually|never|immediately|within|after|null|for,action|satisfaction',
-   'SCOPE\nTIME\nSCOPE\nMODE\nINF\nSTANDARD\n'],
+  ['onlyBefore,null,always|eventually|never|immediately|next|within|after|null|for,action|satisfaction',
+   'SCOPE\nSCOPE\nMODE\nTIME\nINF\nSTANDARD\n'],
 
   ['onlyBefore,null,until|before,action|satisfaction',
   'SCOPE\nTIME\nSCOPE\nINF\nMODE\nSTP2\nSTANDARD\n'],    
 
-  ['onlyIn|notin,null,always|eventually|never|immediately|within|after|null|for,action|satisfaction',
-  'SCOPE\nTIME\nSCOPE\nTIME\nINF\nMODE\nSTANDARD\n'],
+  ['onlyIn|notin,null,always|eventually|never|immediately|next|within|after|null|for,action|satisfaction',
+  'SCOPE\nINF\nSCOPE\nMODE\nTIME\nTIME\nSTANDARD\n'],
 
   ['notin,null,until|before,action|satisfaction',
   'SCOPE\nTIME\nSCOPE\nTIME\nINF\nMODE\nSTOP\nSTOP\nSTANDARD\n'],
@@ -208,20 +208,20 @@ const patterns = [
 
     // ** only Scopes, regular condition
 
-  ['onlyAfter,regular,always|eventually|never|immediately|within|after|null|for,action|satisfaction',
-  'SCOPE\nTIME\nSCOPE\nREGULAR\nMODE\nSTANDARD\n'],
+  ['onlyAfter,regular,always|eventually|never|immediately|next|within|after|null|for,action|satisfaction',
+  'SCOPE\nSCOPE\nREGULAR\nMODE\nTIME\nSTANDARD\n'],
 
   ['onlyAfter,regular,until|before,action|satisfaction',
   'SCOPE\nTIME\nSCOPE\nREGULAR\nMODE\nSTOP\nSTANDARD\n'],
 
-  ['onlyBefore,regular,always|eventually|never|immediately|within|after|null|for,action|satisfaction',
-   'SCOPE\nTIME\nSCOPE\nREGULAR\nINF\nMODE\nSTANDARD\n'],
+  ['onlyBefore,regular,always|eventually|never|imemdiately|next|within|after|null|for,action|satisfaction',
+   'SCOPE\nSCOPE\nREGULAR\nINF\nMODE\nTIME\nSTANDARD\n'],
 
   ['onlyBefore,regular,until|before,action|satisfaction',
    'SCOPE\nTIME\nSCOPE\nREGULAR\nSTOP\nINF\nMODE\nSTANDARD\n'],
 
-  ['onlyIn|notin,regular,always|eventually|never|immediately|within|after|null|for,action|satisfaction',
-   'SCOPE\nTIME\nSCOPE\nTIME\nREGULAR\nINF\nMODE\nSTANDARD\n'],
+  ['onlyIn|notin,regular,always|eventually|never|immediately|next|within|after|null|for,action|satisfaction',
+   'SCOPE\nSCOPE\nREGULAR\nINF\nMODE\nTIME\nTIME\nSTANDARD\n'],
 
       ['onlyIn|notin,regular,until|before,action|satisfaction',
   'SCOPE\nTIME\nSCOPE\nTIME\nREGULAR\nINF\nMODE\nSTOP\nSTANDARD\n']
@@ -315,6 +315,12 @@ function onlyTimings (scope, timing, condition, svgPattern){
         svgPattern = replaceTiming(svgPattern, scope, 'only_immediately', condition);
         if(condition === 'null' && scope.includes('In')){
           svgPattern = replaceTiming(svgPattern, scope, 'only_immediately', 'null');
+        }
+        break;
+        case 'next':
+        svgPattern = replaceTiming(svgPattern, scope, 'only_next', condition);
+        if(condition === 'null' && scope.includes('In')){
+          svgPattern = replaceTiming(svgPattern, scope, 'only_next', 'null');
         }
         break;
         case 'within':
@@ -453,9 +459,91 @@ function replacePoints(points, pointsCond, svgPattern, condition){
   return svgPattern
 }
 
-
-
 /*
+
+// IMMEDIATELY
+
+console.log(this.getDiagram('null,null,immediately,satisfaction','null','immediately','null'));
+console.log(this.getDiagram('null,regular,immediately,satisfaction','null','immediately','regular'));
+console.log(this.getDiagram('in,null,immediately,satisfaction','in','immediately','null'));
+console.log(this.getDiagram('in,regular,immediately,satisfaction','in','immediately','regular'));
+
+console.log(this.getDiagram('notin,null,immediately,satisfaction','notin','immediately','null'));
+console.log(this.getDiagram('notin,regular,immediately,satisfaction','notin','immediately','regular'));
+
+console.log(this.getDiagram('onlyIn,null,immediately,satisfaction','onlyIn','immediately','null'));
+console.log(this.getDiagram('onlyIn,regular,immediately,satisfaction','onlyIn','immediately','regular'));
+
+
+console.log(this.getDiagram('before,null,immediately,satisfaction','before','immediately','null'));
+console.log(this.getDiagram('before,regular,immediately,satisfaction','before','immediately','regular'));
+
+console.log(this.getDiagram('onlyBefore,null,immediately,satisfaction','onlyBefore','immediately','null'));
+console.log(this.getDiagram('onlyBefore,regular,immediately,satisfaction','onlyBefore','immediately','regular'));
+
+
+console.log(this.getDiagram('after,null,immediately,satisfaction','after','immediately','null'));
+console.log(this.getDiagram('after,regular,immediately,satisfaction','after','immediately','regular'));
+
+console.log(this.getDiagram('onlyAfter,null,immediately,satisfaction','onlyAfter','immediately','null'));
+console.log(this.getDiagram('onlyAfter,regular,immediately,satisfaction','onlyAfter','immediately','regular'));
+
+// NEXT
+
+console.log(this.getDiagram('null,null,next,satisfaction','null','next','null'));
+console.log(this.getDiagram('null,regular,next,satisfaction','null','next','regular'));
+console.log(this.getDiagram('in,null,next,satisfaction','in','next','null'));
+console.log(this.getDiagram('in,regular,next,satisfaction','in','next','regular'));
+
+console.log(this.getDiagram('notin,null,next,satisfaction','notin','next','null'));
+console.log(this.getDiagram('notin,regular,next,satisfaction','notin','next','regular'));
+
+console.log(this.getDiagram('onlyIn,null,next,satisfaction','onlyIn','next','null'));
+console.log(this.getDiagram('onlyIn,regular,next,satisfaction','onlyIn','next','regular'));
+
+
+console.log(this.getDiagram('before,null,next,satisfaction','before','next','null'));
+console.log(this.getDiagram('before,regular,next,satisfaction','before','next','regular'));
+
+console.log(this.getDiagram('onlyBefore,null,next,satisfaction','onlyBefore','next','null'));
+console.log(this.getDiagram('onlyBefore,regular,next,satisfaction','onlyBefore','next','regular'));
+
+
+console.log(this.getDiagram('after,null,next,satisfaction','after','next','null'));
+console.log(this.getDiagram('after,regular,next,satisfaction','after','next','regular'));
+
+console.log(this.getDiagram('onlyAfter,null,next,satisfaction','onlyAfter','next','null'));
+console.log(this.getDiagram('onlyAfter,regular,next,satisfaction','onlyAfter','next','regular'));
+
+// AFTER
+
+console.log(this.getDiagram('null,null,after,satisfaction','null','after','null'));
+console.log(this.getDiagram('null,regular,after,satisfaction','null','after','regular'));
+console.log(this.getDiagram('in,null,after,satisfaction','in','after','null'));
+console.log(this.getDiagram('in,regular,after,satisfaction','in','after','regular'));
+
+console.log(this.getDiagram('notin,null,after,satisfaction','notin','after','null'));
+console.log(this.getDiagram('notin,regular,after,satisfaction','notin','after','regular'));
+
+console.log(this.getDiagram('onlyIn,null,after,satisfaction','onlyIn','after','null'));
+console.log(this.getDiagram('onlyIn,regular,after,satisfaction','onlyIn','after','regular'));
+
+
+console.log(this.getDiagram('before,null,after,satisfaction','before','after','null'));
+console.log(this.getDiagram('before,regular,after,satisfaction','before','after','regular'));
+
+console.log(this.getDiagram('onlyBefore,null,after,satisfaction','onlyBefore','after','null'));
+console.log(this.getDiagram('onlyBefore,regular,after,satisfaction','onlyBefore','after','regular'));
+
+
+console.log(this.getDiagram('after,null,after,satisfaction','after','after','null'));
+console.log(this.getDiagram('after,regular,after,satisfaction','after','after','regular'));
+
+console.log(this.getDiagram('onlyAfter,null,after,satisfaction','onlyAfter','after','null'));
+console.log(this.getDiagram('onlyAfter,regular,after,satisfaction','onlyAfter','after','regular'));
+
+
+
 // UNTIL
 
 console.log(this.getDiagram('null,null,until,satisfaction','null','until','null'));

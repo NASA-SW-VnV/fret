@@ -3,6 +3,29 @@
 
 <defs>
 
+<marker id="nextGreenArrowhead" markerWidth="5" markerHeight="2.67" orient="auto" 
+      refX="0" refY="1.33" >
+  <polygon points="0 0, 4 1.33, 0 2.67" fill="green"  />
+  <circle cx="3.7" cy="1.33" r="1" fill="black" />
+</marker>
+
+<marker id="greenArrowhead" markerWidth="4" markerHeight="2.67" orient="auto" 
+      refX="0" refY="1.33" >
+    <polygon points="0 0, 4 1.33, 0 2.67" fill="green"  />
+</marker>
+
+<marker id="nextRedArrowhead" markerWidth="5" markerHeight="2.67" orient="auto" 
+      refX="0" refY="1.33" >
+  <polygon points="0 0, 4 1.33, 0 2.67" fill="red"  />
+  <circle cx="3.7" cy="1.33" r="1" fill="black" />
+</marker>
+
+<marker id="redArrowhead" markerWidth="4" markerHeight="2.67" orient="auto" 
+      refX="0" refY="1.33" >
+    <polygon points="0 0, 4 1.33, 0 2.67" fill="red"  />
+</marker>
+
+
   <pattern id="myPattern"
            x="10" y="10" width="10" height="10" patternUnits="userSpaceOnUse" >
 <!-- start pattern-->
@@ -107,17 +130,11 @@
 </g>
 
 <g id="Timing_immediately">
-  <!--Defines the green box-->
-  <rect width="30" height="23" style="fill:green"/>
-  <!-- Defines the green box lenght-->
-  <text x="10" y="18" font-family="sans-serif" font-size="18px" font-weight="normal" fill="black">1</text>
+  <path d="m0 -17 v20" stroke="green" stroke-width="6" marker-end="url(#greenArrowhead)" />
 </g>
 
 <g id="Timing_only_immediately">
-  <!--Defines the green box-->
-  <rect width="30" height="23" style="fill:red"/>
-  <!-- Defines the green box length-->
-  <text x="10" y="18" font-family="sans-serif" font-size="18px" font-weight="normal" fill="black">1</text>
+  <path d="m0 -17 v20" stroke="red" stroke-width="6" marker-end="url(#redArrowhead)" />
 </g>
 
 <g id="Timing_eventually">
@@ -230,10 +247,10 @@
 </defs>
 </svg>
 <use xlink:href="#Scope" x ="145" y="75"/>
-<use xlink:href="#Timing_only_immediately" x="175" y="115"/>
 <use xlink:href="#Scope" x ="280" y="75"/>
 <use xlink:href="#trigger_Condition" x="150" y="30"/>
 <use xlink:href="#Infinity" x="395" y="100"/>
 <use xlink:href="#with_Mode"/>
+<use xlink:href="#Timing_only_immediately" x="175" y="115"/>
 <use xlink:href="#standard"/>
 </svg>

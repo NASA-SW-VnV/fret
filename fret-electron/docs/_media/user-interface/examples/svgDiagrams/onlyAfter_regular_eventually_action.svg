@@ -3,6 +3,29 @@
 
 <defs>
 
+<marker id="nextGreenArrowhead" markerWidth="5" markerHeight="2.67" orient="auto" 
+      refX="0" refY="1.33" >
+  <polygon points="0 0, 4 1.33, 0 2.67" fill="green"  />
+  <circle cx="3.7" cy="1.33" r="1" fill="black" />
+</marker>
+
+<marker id="nextRedArrowhead" markerWidth="5" markerHeight="2.67" orient="auto" 
+      refX="0" refY="1.33" >
+  <polygon points="0 0, 4 1.33, 0 2.67" fill="red"  />
+  <circle cx="3.7" cy="1.33" r="1" fill="black" />
+</marker>
+
+<marker id="greenArrowhead" markerWidth="4" markerHeight="2.67" orient="auto" 
+      refX="0" refY="1.33" >
+    <polygon points="0 0, 4 1.33, 0 2.67" fill="green"  />
+</marker>
+
+<marker id="redArrowhead" markerWidth="4" markerHeight="2.67" orient="auto" 
+      refX="0" refY="1.33" >
+    <polygon points="0 0, 4 1.33, 0 2.67" fill="red"  />
+</marker>
+
+
   <pattern id="myPattern"
            x="10" y="10" width="10" height="10" patternUnits="userSpaceOnUse" >
 <!-- start pattern-->
@@ -90,9 +113,15 @@
   <text x="25" y="18" font-family="sans-serif" font-size="18px" font-weight="normal" fill="black">n</text>
   <!--Defines the yellow box-->
   <text x="38" y="-4" font-family="sans-serif" font-size="12px" font-weight="normal" fill="black">OR</text>
-  <rect x="60" y="-22" width="30" height="23" style="fill:red"/>
+   <!-- This defines not holding at the next point -->
+   <circle cx="60" cy="0" r="6" fill="black"/>
+  <path d="m72 -42 v20" stroke="red" stroke-width="6" marker-end="url(#nextRedArrowhead)" />
+  
+
+  <!-- <rect x="60" y="-22" width="30" height="23" style="fill:red"/> -->
   <!-- Defines the yellow box length-->
-  <text x="70" y="-4" font-family="sans-serif" font-size="18px" font-weight="normal" fill="black">1</text>
+  <!--  <text x="70" y="-4" font-family="sans-serif" font-size="18px"
+  font-weight="normal" fill="black">1</text> -->
 </g>
 
 <g id="Timing_after">
@@ -100,25 +129,37 @@
   <rect width="60" height="23" style="fill:red" />
   <!-- Defines the red box length-->
   <text x="25" y="18" font-family="sans-serif" font-size="18px" font-weight="normal" fill="black">n</text>
+   <!-- Defines holding at the next point -->
+   <circle cx="60" cy="25" r="6" fill="black"/>
+  <path d="m72 -17 v20" stroke="green" stroke-width="6" marker-end="url(#nextGreenArrowhead)" />
   <!--Defines the green box-->
-  <rect x="60" width="30" height="23" style="fill:green"/>
+  <!--<rect x="60" width="30" height="23" style="fill:green"/> -->
   <!-- Defines the green box length-->
-  <text x="70" y="18" font-family="sans-serif" font-size="18px" font-weight="normal" fill="black">1</text>
+  <!-- <text x="70" y="18" font-family="sans-serif" font-size="18px"
+       font-weight="normal" fill="black">1</text> -->
+  
 </g>
 
 <g id="Timing_immediately">
-  <!--Defines the green box-->
-  <rect width="30" height="23" style="fill:green"/>
-  <!-- Defines the green box lenght-->
-  <text x="10" y="18" font-family="sans-serif" font-size="18px" font-weight="normal" fill="black">1</text>
+  <path d="m0 -17 v20" stroke="green" stroke-width="6" marker-end="url(#greenArrowhead)" />
 </g>
 
 <g id="Timing_only_immediately">
-  <!--Defines the green box-->
-  <rect width="30" height="23" style="fill:red"/>
-  <!-- Defines the green box length-->
-  <text x="10" y="18" font-family="sans-serif" font-size="18px" font-weight="normal" fill="black">1</text>
+  <path d="m0 -17 v20" stroke="red" stroke-width="6" marker-end="url(#redArrowhead)" />
 </g>
+
+<g id="Timing_next">
+  <circle cx="0" cy="25" r="6" fill="black"/>
+  <path d="m12 -17 v20" stroke="green" stroke-width="6" marker-end="url(#nextGreenArrowhead)" />
+</g>
+
+<g id="Timing_only_next">
+  <circle cx="0" cy="25" r="6" fill="black"/>
+  <path d="m12 -17 v20" stroke="red" stroke-width="6" marker-end="url(#nextRedArrowhead)" />
+</g>
+
+
+
 
 <g id="Timing_eventually">
   <!--Defines the orange box-->
@@ -230,9 +271,9 @@
 </defs>
 </svg>
 <use xlink:href="#Scope" x ="10" y="75"/>
-<use xlink:href="#Timing_never_regular_condition" x="40" y="115"/>
 <use xlink:href="#Scope" x ="145" y="75"/>
 <use xlink:href="#trigger_Condition" x="15" y="30"/>
 <use xlink:href="#with_Mode"/>
+<use xlink:href="#Timing_never_regular_condition" x="40" y="115"/>
 <use xlink:href="#standard"/>
 </svg>
