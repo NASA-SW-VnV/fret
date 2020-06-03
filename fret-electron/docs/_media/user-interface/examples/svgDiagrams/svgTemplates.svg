@@ -111,7 +111,7 @@
   <!-- Defines the red box lenght-->
   <text x="25" y="18" font-family="sans-serif" font-size="18px" font-weight="normal" fill="black">n</text>
   <!--Defines the yellow box-->
-  <text x="38" y="-4" font-family="sans-serif" font-size="12px" font-weight="normal" fill="black">OR</text>
+  <text x="36" y="-7" font-family="sans-serif" font-size="12px" font-weight="normal" fill="black">OR</text>
    <!-- This defines not holding at the next point -->
    <circle cx="60" cy="0" r="6" fill="black"/>
   <path d="m72 -42 v20" stroke="red" stroke-width="6" marker-end="url(#nextRedArrowhead)" />

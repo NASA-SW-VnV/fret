@@ -151,6 +151,8 @@ exports.mergePatterns = (patterns) => {
   return merged
   }
 
+// key is an array; patterns is an array of tuples, the 0th element of each tuple
+// is a key as a string
 exports.matchingBase = (key, patterns, returnfield=1, noMatchResult='no_match') => {
     var matches = patterns.filter((tuple) => match(tuple[0].split(','),key));
     if (matches.length > 1)

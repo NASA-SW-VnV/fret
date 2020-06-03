@@ -154,8 +154,8 @@
     <tspan x="180" dy="1.2em">anywhere in this interval</tspan>
  </text>
 
- <use xlink:href="#Timing_immediately" x="40" y="400"/>
- <use xlink:href="#Timing_only_immediately" x="100" y="400"/>
+ <use xlink:href="#Timing_immediately" x="40" y="405"/>
+ <use xlink:href="#Timing_only_immediately" x="100" y="405"/>
  <text y="385" font-family="sans-serif" font-size="16px" font-weight="normal" fill="black">
     <tspan x="180" dy="1.2em">Response must hold/must not hold </tspan>
     <tspan x="180" dy="1.2em">at the indicated timepoint</tspan>
@@ -173,6 +173,7 @@
  <text x="15" y="503" font-family="sans-serif" font-size="16px" font-weight="normal" fill="black"> n : Bounded interval length </text>
  <text x="10" y="529" font-family="sans-serif" font-size="16px" font-weight="bold" fill="black"> Conditions </text>
  <text x="15" y="555" font-family="sans-serif" font-size="16px"
-       font-weight="normal" fill="black"> TC : Triggering condition SC :
- Stop condition</text>
+       font-weight="normal" fill="black"> TC : Triggering condition</text>
+ <text x="250" y="555" font-family="sans-serif" font-size="16px"
+       font-weight="normal" fill="black"> SC : Stop condition</text>
 </svg>

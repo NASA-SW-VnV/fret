@@ -77,7 +77,7 @@ const sentenceNegatedTime = [
     ['-,-,never,-', 'REQUIRES: for every trigger, RES must hold at some time point between (and including) the trigger and the end of the interval.'],
     ['-,-,always,-', 'REQUIRES: for every trigger, RES must be false at some time point between (and including) the trigger and the end of the interval.'],
     ['-,-,within,-', 'REQUIRES: for every trigger, RES must be false at all time points with distance <=$duration$ from the trigger, or until the end of the interval.'],
-    ['-,-,after,-', 'REQUIRES: for every trigger, RES must hold at some point with distance <=$duration$ from the trigger; or RES must remain false for $duration$+1 time points starting at the trigger, or to the end of the interval.'],
+    ['-,-,after,-', 'REQUIRES: for every trigger, RES must either hold at some point with distance <=$duration$ from the trigger, or RES must remain false for $duration$+1 time points starting at the trigger, or to the end of the interval.'],
     ['-,-,for,-', 'REQUIRES: for every trigger, RES must be false at some point with distance <=$duration$ from the trigger, except if the end of the interval occurs sooner.'],
     ['-,-,until,-', 'REQUIRES: for every trigger, RES must be false at least once strictly before the state where the stop condition holds, or the end of the interval if the stop condition never holds.'],
     ['-,-,before,-', 'REQUIRES: for every trigger, RES must be false until, but not necessarily including, the state where the stop condition holds. If the stop condition never occurs, RES can occur.'],
@@ -112,6 +112,7 @@ const substitutionsGeneral = [
 ]
 
 
+// key is an array of four fields
 exports.getDescription = (key, options = {sem:'finite', in:'afterUntil'}) => {
 
   var scope = utilities.matchingBase(key, sentenceScope);
@@ -119,7 +120,7 @@ exports.getDescription = (key, options = {sem:'finite', in:'afterUntil'}) => {
   var negatedTiming = utilities.matchingBase(key, sentenceNegatedTime);
   var condition = utilities.matchingBase(key, sentenceCondition);
 
-  var timing = key.includes('only') ? negatedTiming : positiveTiming;
+  var timing = key[0].includes('only') ? negatedTiming : positiveTiming;
 
   if (scope == 'no_match' || condition == 'no_match' || timing == 'no_match')
     return 'Unexpected undefined description';
