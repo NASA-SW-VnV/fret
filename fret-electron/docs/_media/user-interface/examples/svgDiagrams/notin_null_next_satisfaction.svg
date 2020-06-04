@@ -1,0 +1,280 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="500px" height="160px">
+<svg>
+
+<defs>
+
+<marker id="nextGreenArrowhead" markerWidth="5" markerHeight="2.67" orient="auto" 
+      refX="0" refY="1.33" >
+  <polygon points="0 0, 4 1.33, 0 2.67" fill="green"  />
+  <circle cx="3.7" cy="1.33" r="1" fill="black" />
+</marker>
+
+<marker id="nextRedArrowhead" markerWidth="5" markerHeight="2.67" orient="auto" 
+      refX="0" refY="1.33" >
+  <polygon points="0 0, 4 1.33, 0 2.67" fill="red"  />
+  <circle cx="3.7" cy="1.33" r="1" fill="black" />
+</marker>
+
+<marker id="greenArrowhead" markerWidth="4" markerHeight="2.67" orient="auto" 
+      refX="0" refY="1.33" >
+    <polygon points="0 0, 4 1.33, 0 2.67" fill="green"  />
+</marker>
+
+<marker id="redArrowhead" markerWidth="4" markerHeight="2.67" orient="auto" 
+      refX="0" refY="1.33" >
+    <polygon points="0 0, 4 1.33, 0 2.67" fill="red"  />
+</marker>
+
+
+  <pattern id="myPattern"
+           x="10" y="10" width="10" height="10" patternUnits="userSpaceOnUse" >
+<!-- start pattern-->
+      <circle cx="6" cy="6" r="3" style="stroke: none; fill: orange" />
+<!-- end pattern -->
+  </pattern>
+
+<!--Creates the arrow of time -->
+<g id="standard">
+  <!--Defines the line-->
+  <path d="M10 140h 400" stroke="#000" stroke-width="3" fill="none" id="line"/>
+  <!--Defines the arrow (end)-->
+  <path d="M415 140l -14.26 4.64v -9.28z" stroke="#000" stroke-width="0" id="arrow-end"/>
+</g>
+
+<!--Creates the Mode box -->
+<g id="with_Mode">
+  <!--Defines the mode box-->
+  <rect x = "145" y="75" width="135" height="65" stroke="#000" stroke-width="3" fill="none" />
+  <!-- Defines the mode name -->
+  <text x="155" y="98" font-family="sans-serif" font-size="18px" font-weight="normal" fill="black">M</text>
+</g>
+
+<!--Creates the beginning of time line and text-->
+<g id="without_Mode">
+<line x1="100" y1="20" x2="100" y2="180" stroke="blue" stroke-width="3"></line>
+<text x="50" y="15" font-family="sans-serif" font-size="18px" font-weight="normal" fill="blue">beginning of time</text>
+</g>
+
+<!--Creates the beginning of time line and text-->
+<g id="trigger_Condition">
+<line x1="25" y1="20" x2="25" y2="180" stroke="black" stroke-width="3"></line>
+<text x="15" y="15" font-family="sans-serif" font-size="18px" font-weight="normal" fill="black">TC</text>
+</g>
+
+<!--Creates the beginning of time line and text-->
+<g id="stop_Condition">
+<line x1="25" y1="20" x2="25" y2="180" stroke="black" stroke-width="3"></line>
+<text x="15" y="15" font-family="sans-serif" font-size="18px" font-weight="normal" fill="black">SC</text>
+</g>
+
+<!--Creates the gray area for scope-->
+<g id="Scope">
+<!--Defines the gray area-->
+<rect width="135" height="65" style="fill:lightgray" />
+</g>
+
+<g id="ScopeForNullScope">
+<!--Defines the gray area-->
+<rect width="300" height="65" style="fill:lightgray" />
+</g>
+
+<g id="Timing_within">
+  <!--Defines the orange box-->
+  <rect width="60" height="23" style="fill:orange" />
+  <!-- Defines the n letter -->
+  <text x="25" y="18" font-family="sans-serif" font-size="18px" font-weight="normal" fill="black">n</text>
+</g>
+
+<g id="Timing_only_within">
+  <!--Defines the orange box-->
+  <rect width="60" height="23" style="fill:red" />
+  <!-- Defines the n letter -->
+  <text x="25" y="18" font-family="sans-serif" font-size="18px" font-weight="normal" fill="black">n</text>
+</g>
+
+<g id="Timing_for">
+  <!--Defines the orange box-->
+  <rect width="60" height="23" style="fill:green" />
+  <!-- Defines the n letter -->
+  <text x="25" y="18" font-family="sans-serif" font-size="18px" font-weight="normal" fill="black">n</text>
+</g>
+
+<g id="Timing_only_for">
+  <!--Defines the orange box-->
+  <rect width="60" height="23" style="fill: url(#myPattern);" />
+  <!-- Defines the n letter -->
+  <text x="25" y="18" font-family="sans-serif" font-size="18px" font-weight="normal" fill="black">n</text>
+</g>
+
+<g id="Timing_only_after">
+  <!--Defines the red box-->
+  <rect width="60" height="23" style="fill:orange" />
+  <!-- Defines the red box lenght-->
+  <text x="25" y="18" font-family="sans-serif" font-size="18px" font-weight="normal" fill="black">n</text>
+  <!--Defines the yellow box-->
+  <text x="36" y="-7" font-family="sans-serif" font-size="12px" font-weight="normal" fill="black">OR</text>
+   <!-- This defines not holding at the next point -->
+   <circle cx="60" cy="0" r="6" fill="black"/>
+  <path d="m72 -42 v20" stroke="red" stroke-width="6" marker-end="url(#nextRedArrowhead)" />
+  
+
+  <!-- <rect x="60" y="-22" width="30" height="23" style="fill:red"/> -->
+  <!-- Defines the yellow box length-->
+  <!--  <text x="70" y="-4" font-family="sans-serif" font-size="18px"
+  font-weight="normal" fill="black">1</text> -->
+</g>
+
+<g id="Timing_after">
+  <!--Defines the red box-->
+  <rect width="60" height="23" style="fill:red" />
+  <!-- Defines the red box length-->
+  <text x="25" y="18" font-family="sans-serif" font-size="18px" font-weight="normal" fill="black">n</text>
+   <!-- Defines holding at the next point -->
+   <circle cx="60" cy="25" r="6" fill="black"/>
+  <path d="m72 -17 v20" stroke="green" stroke-width="6" marker-end="url(#nextGreenArrowhead)" />
+  <!--Defines the green box-->
+  <!--<rect x="60" width="30" height="23" style="fill:green"/> -->
+  <!-- Defines the green box length-->
+  <!-- <text x="70" y="18" font-family="sans-serif" font-size="18px"
+       font-weight="normal" fill="black">1</text> -->
+  
+</g>
+
+<g id="Timing_immediately">
+  <path d="m0 -17 v20" stroke="green" stroke-width="6" marker-end="url(#greenArrowhead)" />
+</g>
+
+<g id="Timing_only_immediately">
+  <path d="m0 -17 v20" stroke="red" stroke-width="6" marker-end="url(#redArrowhead)" />
+</g>
+
+<g id="Timing_next">
+  <circle cx="0" cy="25" r="6" fill="black"/>
+  <path d="m12 -17 v20" stroke="green" stroke-width="6" marker-end="url(#nextGreenArrowhead)" />
+</g>
+
+<g id="Timing_only_next">
+  <circle cx="0" cy="25" r="6" fill="black"/>
+  <path d="m12 -17 v20" stroke="red" stroke-width="6" marker-end="url(#nextRedArrowhead)" />
+</g>
+
+
+
+
+<g id="Timing_eventually">
+  <!--Defines the orange box-->
+  <rect width="135" height="23" style="fill:orange"/>
+</g>
+
+<g id="Timing_eventually_null_scope">
+  <!--Defines the orange box-->
+  <rect width="300" height="23" style="fill:orange"/>
+</g>
+
+<g id="Timing_eventually_regular_condition">
+  <!--Defines the orange box-->
+  <rect width="105" height="23" style="fill:orange"/>
+</g>
+
+<g id="Timing_until">
+    <rect width="80" height="23" style="fill:green"/>
+</g>
+
+<g id="Timing_until_null_scope">
+    <rect width="250" height="23" style="fill:green"/>
+</g>
+
+<g id="Timing_until_regular_condition">
+  <rect width="65" height="23" style="fill:green"/>
+</g>
+
+<g id="Timing_only_until">
+    <rect width="65" height="23" style="fill:url(#myPattern);"/>
+</g>
+
+<g id="Timing_before">
+    <rect width="80" height="23" style="fill:orange;"/>
+</g>
+
+<g id="Timing_before_null_scope">
+    <rect width="250" height="23" style="fill:orange;"/>
+</g>
+
+<g id="Timing_before_regular_condition">
+  <rect width="65" height="23" style="fill:orange;"/>
+</g>
+
+<g id="Timing_only_before">
+    <rect width="65" height="23" style="fill:red;"/>
+</g>
+
+<g id="Timing_always">
+  <!--Defines the red box-->
+  <rect width="135" height="23" style="fill:green"/>
+</g>
+
+<g id="Timing_always_null_scope">
+  <!--Defines the red box-->
+  <rect width="300" height="23" style="fill:green"/>
+</g>
+
+<g id="Timing_always_regular_condition">
+  <!--Defines the red box-->
+  <rect width="105" height="23" style="fill:green"/>
+</g>
+
+<g id="Timing_never">
+  <!--Defines the red box-->
+  <rect width="135" height="23" style="fill:red"/>
+</g>
+
+<g id="Timing_never_null_scope">
+  <!--Defines the red box-->
+  <rect width="300" height="23" style="fill:red"/>
+</g>
+
+<g id="Timing_never_regular_condition">
+  <!--Defines the red box-->
+  <rect width="105" height="23" style="fill:red"/>
+</g>
+
+<g id="Timing_null">
+  <!--Defines the orange box-->
+  <rect width="135" height="23" style="fill:orange"/>
+</g>
+
+<g id="Timing_only_always">
+  <!--Defines the orange box-->
+  <rect width="135" height="23" style="fill: url(#myPattern);"/>
+</g>
+
+<g id="Timing_only_always_regular_condition">
+  <!--Defines the orange box-->
+  <rect width="105" height="23" style="fill: url(#myPattern);"/>
+</g>
+
+<g id="Timing_null_null_scope">
+  <!--Defines the orange box-->
+  <rect width="300" height="23" style="fill:orange"/>
+</g>
+
+<g id="Timing_null_regular_condition">
+  <!--Defines the orange box-->
+  <rect width="105" height="23" style="fill:orange"/>
+</g>
+
+<g id="Infinity">
+  <rect width="20" height="23" style="fill:yellow"/>
+  <!-- Defines the green box length-->
+  <text x="3" y="18" font-family="sans-serif" font-size="18px" font-weight="normal" fill="black">∞</text>
+</g>
+</defs>
+</svg>
+<use xlink:href="#Scope" x ="10" y="75"/>
+<use xlink:href="#Infinity" x="395" y="100"/>
+<use xlink:href="#Scope" x ="280" y="75"/>
+<use xlink:href="#with_Mode"/>
+<use xlink:href="#Timing_next" x="10" y="115"/>
+<use xlink:href="#Timing_next" x="280" y="115"/>
+<use xlink:href="#standard"/>
+</svg>
