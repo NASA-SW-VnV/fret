@@ -46,7 +46,7 @@ import FTLogicsIcon from '@material-ui/icons/ArrowForward';
 import PTLogicsIcon from '@material-ui/icons/ArrowBack';
 
 import TimeSeriesWidget from './TimeSeriesWidget';
-import RequirementDetails from './RequirementDetails';
+import LTLSimRequirementDetails from './LTLSimRequirementDetails';
 
 const ltlsim = require('ltlsim-core').ltlsim;
 const LTLSimController = require('ltlsim-core').LTLSimController;
@@ -273,9 +273,6 @@ class LTLSimDialog extends Component {
         let formula = LTLSimController.getFormula(model, id);
         const displayID = requirementID ? requirementID : "REQ";
 
-        console.log(requirementID)
-        console.log(displayID)
-
         if (formula !== undefined && formula !== null) {
             return (
                 <Dialog
@@ -321,26 +318,27 @@ class LTLSimDialog extends Component {
                     </Tooltip>
                     </Toolbar>
                 </AppBar>
-                    {LTLSimController.getFormulaKeys(model).length > 0 && 
-                      <div>
-                        <TimeSeriesWidget
-                            model={model}
-                            visibleAtomics={LTLSimController.getAtomicKeys(model).filter(a => (a !== "LAST" && a !== "FTP"))}
-                            visibleFormulas={LTLSimController.getFormulaKeys(model)}
-                            visibleSubformulas={{[id]: visibleSubformulas}}
-                            traceLength={LTLSimController.getTraceLength(model)}
-                            onChange={this.handleTraceDataChange}
-                            onTraceLengthChange={this.handleTraceLengthChange}
-                            displayFormulaEvaluation={highlight}
-                            displayAtomicsWithFormulas={false}
-                            displaySubformulas={true}
-                            selectedFormula=""
-                        />
-                        <RequirementDetails 
-                            requirementID={displayID}
-                            description={requirement} 
-                        />
-                      </div>}
+                <LTLSimRequirementDetails
+                    requirementID={displayID}
+                    description={requirement}
+                />
+                {LTLSimController.getFormulaKeys(model).length > 0 &&
+                  <div>
+                    <TimeSeriesWidget
+                        model={model}
+                        visibleAtomics={LTLSimController.getAtomicKeys(model).filter(a => (a !== "LAST" && a !== "FTP"))}
+                        visibleFormulas={LTLSimController.getFormulaKeys(model)}
+                        visibleSubformulas={{[id]: visibleSubformulas}}
+                        traceLength={LTLSimController.getTraceLength(model)}
+                        onChange={this.handleTraceDataChange}
+                        onTraceLengthChange={this.handleTraceLengthChange}
+                        displayFormulaEvaluation={highlight}
+                        displayAtomicsWithFormulas={false}
+                        displaySubformulas={true}
+                        selectedFormula=""
+                    />
+
+                  </div>}
                 </Dialog>
             )} else {
                 return null;
