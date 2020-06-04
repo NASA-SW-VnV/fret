@@ -58,10 +58,10 @@ module.exports = Object.freeze({
     fullTiming : /*['within'],//*/['always','null','immediately','eventually', 'never', 'for','within','after','until','before','next'],
   fullResponse : /*['satisfaction'],//*/['satisfaction','action','order','not_order'],
 
-  // We want to test with Bamboo only the combinations of keys for which semantics has been defined and tested -- to get more meaningfull test results
+  // We want to test with Bamboo only the combinations of keys for which semantics has been defined and tested -- to get more meaningful test results
   testScope : ['null', 'in', 'onlyAfter', 'after', 'onlyBefore', 'before', 'onlyIn', 'notin'],
   testCondition : ['null', 'regular', /*'only'*/],
-  testTiming : ['always','null','immediately','eventually', 'never', 'for','within','after'],
+    testTiming : ['always','null','immediately','eventually', 'never', 'for','within','after','until','before','next'],
   testResponse : ['satisfaction'/*,'action','order','not_order'*/],
 
 // Configuration - console logs
