@@ -66,7 +66,10 @@ var timingWords = {
   eventually: [' eventually'],
   always: [' always'],
   never: [' never'],
-  null: [' null'],
+    null: [' null'],
+    until: [' until stp'],
+    before: [' before stp'],
+    next: [' at the next timepoint']
 }
 
 var responseWords = {

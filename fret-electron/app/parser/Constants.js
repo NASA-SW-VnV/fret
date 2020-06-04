@@ -61,7 +61,8 @@ module.exports = Object.freeze({
   // We want to test with Bamboo only the combinations of keys for which semantics has been defined and tested -- to get more meaningful test results
   testScope : ['null', 'in', 'onlyAfter', 'after', 'onlyBefore', 'before', 'onlyIn', 'notin'],
   testCondition : ['null', 'regular', /*'only'*/],
-    testTiming : ['always','null','immediately','eventually', 'never', 'for','within','after','until','before','next'],
+  testTiming : ['always','null','immediately','eventually', 'never', 'for','within','after','until','before','next'],
+  //testTiming : ['always','null','immediately','eventually', 'never', 'for','within','after'],
   testResponse : ['satisfaction'/*,'action','order','not_order'*/],
 
 // Configuration - console logs
