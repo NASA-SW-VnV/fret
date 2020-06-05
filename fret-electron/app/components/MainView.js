@@ -447,16 +447,14 @@ class MainView extends React.Component {
                         onClick={() =>  this.handleSetProject('All Projects')}
                         dense
                         >
-                        <ListItemIcon><NotesIcon color="primary"/></ListItemIcon>
-                        <ListItemText inset primary = {'All Projects'} />
+                        <ListItemText primary = {<b>Show All Projects</b>} />
                       </MenuItem>
                       {
                         this.state.listOfProjects.map(name => {
                           return <MenuItem
                                     key={name}
                                     dense>
-                                    <ListItemIcon><NotesIcon color="secondary"/></ListItemIcon>
-                                    <ListItemText inset primary = {name} onClick={() => this.handleSetProject(name)}/>
+                                    <ListItemText primary = {name} onClick={() => this.handleSetProject(name)}/>
                                     <IconButton onClick={() => this.handleDeleteProject(name)} variant="flat" aria-label="delete" >
                                       <Tooltip id="tooltip-icon-delete" title="Delete Project">
                                       <DeleteIcon color='error'/>
@@ -465,7 +463,16 @@ class MainView extends React.Component {
                                   </MenuItem>
                         })
                       }
-                      <MenuItem onClick={this.handleNewProject} dense>New Project ...</MenuItem>
+                      <MenuItem dense>
+                      <Button
+                        color="secondary"
+                        size="small"
+                        onClick={this.handleNewProject}
+                        style={{ textTransform : 'none' }}
+                      >
+                        Create Project
+                      </Button>
+                      </MenuItem>
                     </Menu>
                     &nbsp;
                     <Button variant="contained" onClick={this.handleCreateDialogOpen} color="secondary" size="small" className={classes.button}>
