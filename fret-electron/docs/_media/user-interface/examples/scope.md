@@ -1,15 +1,24 @@
 #### Scope (optional)
 
-specifies intervals where the requirement must hold; intervals are defined with respect to a MODE, e.g.,
+specifies where the requirement must hold: either globally or in intervals
+defined with respect to a MODE, e.g.,
 
 * **before** MODE, **only before** MODE
-* **in** MODE, **not in** MODE, **when in** MODE, **during** MODE
-*  **after** MODE
+* **in** MODE, **not in** MODE,  **only in** MODE
+* **after** MODE, **only after** MODE
 
-These specifications can be negated (e.g., **when not in** MODE), and refined by constraints (strictly or only) and behavior on entering or leaving the mode.
 MODE is a string identifier starting with an upper- or lower-case letter, followed by letters, digits or underscores ‘_’.
+
+The **only** modes mean that when the system is not in the specified relationship to the mode
+(i.e., the system is not **in**/**after**/**before** the mode) the response must not occur.
 
 Examples:
 
-* **after** initialization
-* **when in** landing_mode_1
+* **global** The system shall always satisfy count >= 0
+* **After** boot mode the system shall immediately satisfy prompt_for_password
+* **Only after** arming mode shall the system eventually satisfy fired
+* **In** landing mode the system shall eventually satisfy decrease_speed
+* When **not in** initialization mode the system shall always satisfy commands_accepted
+* **Only in** landing mode shall the system eventually satisfy landing_gear_down
+* **Before** energized mode the system shall always satisfy energized_indicator_off
+* **Only before** energized mode shall the system eventually satisfy manually_touchable

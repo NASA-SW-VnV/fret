@@ -30,9 +30,10 @@ STOP_CONDITION is a boolean expression. The timing **before** means that the
 response must happen at least once before the STOP_CONDITION holds.
 
 Examples:
-* **immediately:** **When** currentOverload **the** circuitBreaker **shall immediately satisfy** shutoff
-* **next:** **Upon** errorEvent **the** sw **shall at the next timepoint
-  satisfy** degradedCondition
+* **immediately:** In roll_hold mode RollAutopilot shall immediately satisfy if (roll_angle
+  < 6.0 & roll_angle > -6.0) then roll_hold_reference = 0.0
+* **next:** **When** currentOverload **the** circuitBreaker **shall,
+  at the next timepoint, satisfy** shutoff
 * **eventually:** **In** landingMode **the** system **shall eventually satisfy**
   LandingGearLowered
 * **always:** **The** autopilot **shall always satisfy if** allGood **then**
