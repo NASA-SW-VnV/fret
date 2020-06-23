@@ -1,15 +1,15 @@
 // *****************************************************************************
 // Notices:
-// 
-// Copyright © 2019 United States Government as represented by the Administrator
+//
+// Copyright ï¿½ 2019 United States Government as represented by the Administrator
 // of the National Aeronautics and Space Administration.  All Rights Reserved.
-// 
+//
 // Disclaimers
-// 
+//
 // No Warranty: THE SUBJECT SOFTWARE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY OF
 // ANY KIND, EITHER EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED
-// TO, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL CONFORM TO SPECIFICATIONS, 
-// ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, 
+// TO, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL CONFORM TO SPECIFICATIONS,
+// ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE,
 // OR FREEDOM FROM INFRINGEMENT, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL BE
 // ERROR FREE, OR ANY WARRANTY THAT DOCUMENTATION, IF PROVIDED, WILL CONFORM TO
 // THE SUBJECT SOFTWARE. THIS AGREEMENT DOES NOT, IN ANY MANNER, CONSTITUTE AN
@@ -18,7 +18,7 @@
 // RESULTING FROM USE OF THE SUBJECT SOFTWARE.  FURTHER, GOVERNMENT AGENCY
 // DISCLAIMS ALL WARRANTIES AND LIABILITIES REGARDING THIRD-PARTY SOFTWARE, IF
 // PRESENT IN THE ORIGINAL SOFTWARE, AND DISTRIBUTES IT ''AS IS.''
-// 
+//
 // Waiver and Indemnity:  RECIPIENT AGREES TO WAIVE ANY AND ALL CLAIMS AGAINST
 // THE UNITED STATES GOVERNMENT, ITS CONTRACTORS AND SUBCONTRACTORS, AS WELL AS
 // ANY PRIOR RECIPIENT.  IF RECIPIENT'S USE OF THE SUBJECT SOFTWARE RESULTS IN
@@ -183,15 +183,18 @@ class CirclePacking extends React.Component {
           "children" in d.data
             ? "node"
             : (d.data.doc.semantics
-                  ? ((d.data.doc.semantics.ft && d.data.doc.semantics.ft !== constants.nonsense_semantics && d.data.doc.semantics.ft !== constants.undefined_semantics && d.data.doc.semantics.ft !== constants.unhandled_semantics)
+                  ? ((d.data.doc.semantics.ft &&
+                     d.data.doc.semantics.ft !== constants.nonsense_semantics &&
+                      d.data.doc.semantics.ft !== constants.undefined_semantics &&
+                       d.data.doc.semantics.ft !== constants.unhandled_semantics))
                       ? "node node--leaf"
-                      : "node node--leaf-unformalized")
-                  : "node node--leaf-unformalized")
-          :
-           "node node--root"; })
-        .style("fill", function(d) { return d.children ? color(d.depth) : null; })
+                      : d.data.doc.semantics.ft !== constants.unhandled_semantics
+                        ? "node node--leaf-unformalized"
+                        : "node node--leaf-unspecified"
+                  : "node node--leaf-unspcified")
+          :"node node--root"; })
+        .style("fill", function(d) {return d.children ? color(d.depth) : d.data.doc.semantics ? (d.data.doc.semantics.ft === constants.unhandled_semantics ? "white": null) :null })
         .on("click", function(d) {
-          console.log("click", d)
           if (focus !== d)
             zoom(d), d3.event.stopPropagation();
         })
@@ -207,8 +210,7 @@ class CirclePacking extends React.Component {
         .on("mouseover", function(d) {
           if (d.data.doc) {
             if (d.data.doc.semantics){
-            console.log("mouseover text", d)
-            d3.select(this).style("fill", "white");
+            d3.select(this).style("fill", "blue");
             tooltip
               .transition()
               .duration(200)
@@ -223,7 +225,7 @@ class CirclePacking extends React.Component {
                       + "<br/>"
                       + d.data.doc.fulltext
                       + "<br/><br/>"
-                      + "<u>Formalizaton</u>"
+                      + "<u>Formalization</u>"
                       + "<br/>"
                       + d.data.doc.semantics.ft
                     )
@@ -231,7 +233,7 @@ class CirclePacking extends React.Component {
               .style("top", (d3.event.pageY + 25) + "px")
             }
             else {
-              d3.select(this).style("fill", "white");
+              d3.select(this).style("fill", "blue");
               tooltip
                 .transition()
                 .duration(200)
@@ -246,7 +248,7 @@ class CirclePacking extends React.Component {
                         + "<br/>"
                         + d.data.doc.fulltext
                         + "<br/><br/>"
-                        + "<u>Formalizaton</u>"
+                        + "<u>Formalization</u>"
                         + "<br/>"
                         + "undefined"
                       )
@@ -311,7 +313,6 @@ class CirclePacking extends React.Component {
       include_docs: true
     }).on('change', (change) => {
       if (!system_dbkeys.includes(change.id)) {
-        console.log(change);
         this.synchStateWithDB();
       }
     }).on('complete', function(info) {
