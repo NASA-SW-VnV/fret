@@ -58,7 +58,7 @@ satisfaction : ['satisfaction'],
 scopeOptions: ['full','only','nonOnly', undefined],
 toolOptions: ['SMV', 'CoCoSpec', undefined],
 rangeOptions: ['simple', 'extended', undefined],
-    timingOptions: ['nonMetricTiming', 'metricTiming', 'mostTiming', 'fullTiming', 'untilTiming','beforeTiming', 'untilBeforeTiming', 'nextTiming', undefined],
+timingOptions: ['nonMetricTiming', 'metricTiming', 'mostTiming', 'fullTiming', 'untilTiming','beforeTiming', 'untilBeforeTiming', 'nextTiming', undefined],
 conditionOptions: ['fullCondition', 'nullCondition', undefined],
 strategyOptions: ['classic','settings','random', undefined],
 
@@ -78,15 +78,15 @@ runtimeOptions : {
     alias: {h : 'help', t : 'tool', r : 'range', i : 'timing', c : 'condition',
 	    s : 'strategy', d : 'duration', f : 'settingsFile',
 	    l : 'traceLength', n : 'numTests', p : 'scope'},
-    default: { tool : 'SMV', range : 'simple', timing : 'mostTiming',
+    default: { tool : 'SMV', range : 'simple', timing : 'fullTiming',
 	       condition : 'fullCondition', scope : 'full',
 	       settingsFile : '/tmp/random_settings.json',
-	       strategy : 'classic'}
+	       strategy : 'random', traceLength:12, numTests:10}
 },
 
 timingSubs : {
-    nonMetricTiming:  ['immediately','always','never','eventually'],
-    metricTiming: ['for','within','after'],
+    nonMetricTiming:  ['immediately','next','always','never','eventually','until','before'],
+    metricTiming: ['within','for','after'],
     mostTiming: ['immediately','always','never','eventually','within', 'for'],
     untilTiming: ['until'],
     beforeTiming: ['before'],
