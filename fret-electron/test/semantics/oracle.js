@@ -110,7 +110,7 @@ case 'untilCond' : constraints = untilTimingCond(stopCondIntervals,responseInter
 case 'before' : constraints = beforeTiming(scopeInterval,stopCondIntervals,responseIntervals,isNegated); break;
 case 'beforeCond' : constraints = beforeTimingCond(stopCondIntervals,responseIntervals,trigger,isNegated); break;
 
-default: { console.log('!! Unhandled functionCase ' + functionCase + 'in checkTimings');
+default: { console.log('!! oracle.js:checkTimings: Unhandled functionCase ' + functionCase);
 	   constraints = 'undefined'
 	 }
 }

@@ -49,19 +49,6 @@ const minimist = require('minimist');
 const maxNumRandIntervals = 3;
 const maxDuration = 9;
 
-//const config_testLength_duration = require('./config_testLength_duration.json')
-//const config_9_3 = require('./config_9_3.json'); // 11414 test cases
-//const config_7_2 = require('./config_7_2.json'); // 3911 test cases
-//const config_7_1 = require('./config_7_1.json'); // 2739 test cases
-//const config = config_7_1; // [config1[0],config1[1],config1[2],config1[3]];
-// Run a configuration, where duration is passed in the call to runConfiguration.
-//var res2 = runConfiguration(config,1,'SMV');
-//const settings = require('./settings_5_2.json');
-//const settings = require('./settings_9_4.json');
-//const settings = require('./settings_11_5.json');
-//const settings = require('./settings_12_4_2cond.json');  // 32718 test cases
-//const settings = require('./settings_random_60000.json');
-
 const reverseSubstitutions = [
   ['\\$scope_mode\\$', 'MODE'],
   ['\\$action\\$', 'RES'],
@@ -86,7 +73,7 @@ else {
   var range = args.r;
   var tool =  args.t;
   var strategy = args.s;
-    var settingsFile = args.f;
+  var settingsFile = args.f;
   var traceLength = args.l;
   var numTests = args.n;
   var Timings = options.timingSubs[args.i];
@@ -95,7 +82,7 @@ else {
   var Scopes = options.scopeSubs[args.p]
   var discrepancies = 0;
   var executed = 0;
-  var trace = {};
+  //  var trace = {};
   var res = {settings:0, failed:0};
   var res2 = undefined;
   if (strategy === 'classic')
@@ -109,12 +96,6 @@ else {
   else if (strategy === 'random')
 	res2 = runRandomSettings(traceLength,numTests,tool);
 
-  // Run random settings.
-  //var res2 = runRandomSettings(12,5,'SMV');
-  //var res2 = runRandomSettings(12,10000,'SMV');
-  //var res2 = runRandomSettings(12,23000,'SMV');
-  //var res2 = runRandomSettings(12,60000,'SMV');
-
   res.settings = res.settings + res2.settings;
   res.failed = res.failed + res2.failed;
 
@@ -127,41 +108,16 @@ function pairToInterval(pair) {
     return intervalLogic.createInterval(pair[0],pair[1]);
 }
 
-// Example of config = { testLength: 9, settings: [ [ [[1,3]], [[2,2]], [[3,9]] ], ... ] }
-// where settings is [ [ modeIntervalsEndpoints, conditionIntervalsEndpoints,
-//                       responseIntervalsEndpoints ], ...]
-/*
-function runConfiguration(config,duration,tool) {
-    var testLength = config.testLength;
-    console.log('testLength = ' + testLength + ' duration = ' + duration);
-    var settings = config.settings;
-    trace = intervalLogic.createInterval(0, testLength);
-    let testID = 0;
-    for (let i = 0; i < settings.length; i++) {
-	let setting = settings[i];
-	let modeIntervals = setting[0].map(pairToInterval);
-	let conditionIntervals = setting[1].map(pairToInterval);
-	let responseIntervals = setting[2].map(pairToInterval);
-	var testCase = generate_tests(modeIntervals,responseIntervals,duration,conditionIntervals,
-				      testID, testLength+1, tool);
-	executeTestCase(testCase, tool, testLength+1);
-	testID++;
-    }
-    return{settings:executed, failed:discrepancies};
-}
-*/
-
 // Example of settings: [9,4,[[4,4]],[[0,1],[3,4]],[[6,7]],[],[[3,6],[8,8]]]
 // where settings is
 // [[ testlength, duration, modeIntervalsEndpoints, conditionIntervalsEndpoints,
 //    responseIntervalsEndpoints, stopIntervalsEndpoints ], ...]
 // [max,dur,modes,conds,resps,stops];
 function runSettings(settings,tool) {
-    let testID = 0;
-    for (let i = 0; i < settings.length; i++) {
-	let setting = settings[i];
+    for (let testID = 0; testID < settings.length; testID++) {
+	let setting = settings[testID];
 	let testLength = setting[0];
-	trace = intervalLogic.createInterval(0, testLength);
+	let trace = intervalLogic.createInterval(0, testLength-1);
 	let duration = setting[1];
 	let modeIntervals = setting[2].map(pairToInterval);
 	let conditionIntervals = setting[3].map(pairToInterval);
@@ -169,14 +125,14 @@ function runSettings(settings,tool) {
 	let stopIntervals = setting[5].map(pairToInterval);
 	var testCase = generate_tests(modeIntervals,responseIntervals,duration,
 				      conditionIntervals, stopIntervals,
-				      testID, testLength+1, tool);
-	executeTestCase(testCase, tool, testLength+1);
-	testID++;
+				      testID, testLength, trace);
+	executeTestCase(testCase, tool);
     }
     return{settings:executed, failed:discrepancies};
 }
 
-function genRandomSetting(max) {
+function genRandomSetting(testLength) {
+    let max = testLength - 1;
     // e.g., for [0..max]  where max = 2, one cannot have more than the 2 intervals [0,0] and [2,2],
     // but don't go over 3 intervals.
     let maxNumIntervals = Math.min(maxNumRandIntervals,Math.floor(max / 2) + 1);
@@ -189,14 +145,17 @@ function genRandomSetting(max) {
     let conds = utils.genRandomIntervals(max,nConds);
     let resps = utils.genRandomIntervals(max,nResps);
     let stops = utils.genRandomIntervals(max,nStops);
-    return [max,dur,modes,conds,resps,stops];
+    let result = [testLength,dur,modes,conds,resps,stops];
+    //console.log('genRandomSetting ' + testLength + ' ' + JSON.stringify(result))
+    return result;
+    
 }
 
-function genRandomSettings(max,nSettings) {
+function genRandomSettings(testLength,nSettings) {
     let settings = [];
     let i = 0;
     while (i < nSettings) {
-	let newSetting = genRandomSetting(max);
+	let newSetting = genRandomSetting(testLength);
         if (settings.every((x) => !utils.isEqual(x,newSetting))) {
 	    settings.push(newSetting);
 	    i++;
@@ -216,92 +175,32 @@ function writeSettings(FileName,settings) {
 		      function(err){if(err) throw err;});
 }
 
-function runRandomSettings(max,nSettings,tool){
+function makeTestSuiteFilename(filePrefix,i,testlength,size) {
+  return filePrefix + '_' + i + '_' + testLength + '_' + size + '.json';
+}
+
+function genRandomTestSuite(testLength,sizes,filePrefix) {
+    let totalSize = sizes.reduce((a,x) => a + x,0);
+    let settings = genRandomSettings(testLength,totalSize);
+    let group;
+    let i = 0;
+    for (i = 0; i < sizes.length; i++) {
+	[group,settings] = utils.divide(sizes[i],settings);
+	let fileName = makeTestSuiteFilename(filePrefix,i,testLength,sizes[i]);
+	writeSettings(fileName,group);
+    }
+}
+
+function runRandomSettings(testLength,nSettings,tool){
     console.log('Generating random settings...');
-    let settings = genRandomSettings(max,nSettings);
+    let settings = genRandomSettings(testLength,nSettings);
     console.log('Writing random settings to /tmp/random_settings.json ...');
     writeSettings('/tmp/random_settings.json',settings);
     console.log('Running random settings...');
     return runSettings(settings,tool);
 }
 
-function generateAndRun() {
-  console.log('TraceLengthShort = ' + options.MAX_COMPLETE_EXPLORE);
-  console.log('TraceLengthLong = ' + options.TraceLength);
-  trace = intervalLogic.createInterval(0, options.MAX_COMPLETE_EXPLORE-1)
-  var testLength = options.MAX_COMPLETE_EXPLORE
-  var setting = generateSettingSimple()
-  if (range == 'extended') {
-    testLength = options.TraceLength
-    setting = generateSettingExtended(setting)
-    trace = intervalLogic.createInterval(0, options.TraceLength-1)  // -1 added by Dimitra March 15
-  }
-  var product = new ProductIterable(setting.sc,setting.res,setting.d, setting.cond);
-  var intervalIterator = product[Symbol.iterator]();
-  var it = intervalIterator.next();
-
-  var testID = 1;
-  while (!it.done) {
-      var v = it.value;
-      modeIntervals = v[0];
-      responseIntervals = v[1];
-      n = v[2];
-      conditionIntervals = v[3];
-      var testCase = generate_tests(modeIntervals,responseIntervals,n,conditionIntervals, testID, testLength, tool);
-      executeTestCase(testCase, tool, testLength);
-      testID++;
-      it = intervalIterator.next();
-  }
-  return{settings:executed, failed:discrepancies};
-}
-
-function generateSettingSimple() {
-  var scopes = generateAllIntervals(0, options.MAX_COMPLETE_EXPLORE, options.SCLength)
-  var responses = generateAllIntervals(0, options.MAX_COMPLETE_EXPLORE, options.RESLength)
-  var conditions = generateAllIntervals(0, options.MAX_COMPLETE_EXPLORE, options.CondLength)
-
-  // these are the durations for the timed formulas
-  var durations = [];
-  for (let j = 1; j <= options.N_RANGE; j++){
-    durations.push(j);
-  }
-
-  return {sc: scopes, res: responses, d: durations, cond: conditions}
-}
-
-function generateSettingExtended(setting) {
-  var newScope = intervalLogic.createInterval(Math.min(options.MAX_COMPLETE_EXPLORE+3,options.TraceLength),
-                                              Math.min(options.MAX_COMPLETE_EXPLORE+6,options.TraceLength))
-
-  setting.sc.forEach(function(element) {element.push(newScope)})
-    setting.sc.push([]) // previous got combined with newScope
-
-    var newCond = intervalLogic.createInterval(Math.min(options.MAX_COMPLETE_EXPLORE+2,options.TraceLength),
-                                              Math.min(options.MAX_COMPLETE_EXPLORE+3,options.TraceLength))
-
-  setting.cond.forEach(function(element) {element.push(newCond)})
-  setting.cond.push([]) // previous got combined with newResponse
-
-  var newResponse = intervalLogic.createInterval(Math.min(options.MAX_COMPLETE_EXPLORE+1,options.TraceLength),
-                                              Math.min(options.MAX_COMPLETE_EXPLORE+2,options.TraceLength))
-
-  setting.res.forEach(function(element) {element.push(newResponse)})
-  setting.res.push([]) // previous got combined with newResponse
-
-  return setting;
-}
-
-function generateAllIntervals(min, max, maxlength) {
-  var generated = [[]];
-  for (il=min; il < max; il++) {
-      for (ir = il; ir < Math.min(max,il+maxlength); ir++) {
-  	      generated.push([intervalLogic.createInterval(il,ir)]);
-      }
-  }
-  return generated
-}
-
-function generate_tests(modeIntervals, responseIntervals, n, conditionIntervals, stopIntervals, id, trlength, tool) {
+function generate_tests(modeIntervals, responseIntervals, n, conditionIntervals, stopIntervals, id, trlength, trace) {
   var testCase= {};
   var semantics = {};
   var product = new ProductIterable(Scopes,Conditions,Timings,Responses);
@@ -311,7 +210,8 @@ function generate_tests(modeIntervals, responseIntervals, n, conditionIntervals,
   var key = keyIterator.next();
 
   //console.log('generate_tests.modeIntervals: ' + JSON.stringify(modeIntervals))
-  testCase.TraceLength = trlength
+  testCase.TraceLength = trlength;
+  testCase.trace = trace;
   testCase.id = id;
   testCase.modeIntervals = modeIntervals
   testCase.responseIntervals = responseIntervals
@@ -340,7 +240,18 @@ function generate_tests(modeIntervals, responseIntervals, n, conditionIntervals,
 							 key.value[2], key.value[3],
 							 modeIntervals, conditionIntervals,
 							 stopIntervals,responseIntervals,
-							 trace, testCase.duration)
+							 trace, testCase.duration);
+	  /*
+      if (triple.key === 'null,regular,within,satisfaction') {
+	  console.log('!! ' + key.value[0] + ',' + key.value[1] + ',' + key.value[2]
+		      + ',' + key.value[3] + ': ' + JSON.stringify(modeIntervals)
+		      + ' ' + JSON.stringify(conditionIntervals) + ' '
+		      + JSON.stringify(stopIntervals) + ' '
+		      + JSON.stringify(responseIntervals) + ' '
+		      + intervalLogic.intervalToString(trace) + ' ' + n
+		     + ' ' + triple.expected)
+      }
+	  */
 	  if (triple.obtainedSemantics) {
             if (options.outputKeyandExpected)
 		  console.log('key = ' + triple.key + ' expected = ' + triple.expected);
@@ -424,7 +335,9 @@ function matchExpected(expected,calculated) {
     return ((expected === null) || (expected === calculated));
 }
 
-function executeTestCase(testCase, tool, testLength) {
+function executeTestCase(testCase, tool) {
+  testLength = testCase.TraceLength;
+  trace = testCase.trace;
   executed++;
   var n = testCase.duration;
   expected = [];
@@ -441,7 +354,9 @@ function executeTestCase(testCase, tool, testLength) {
       let stops = intervalLogic.intervalsToArray(testCase.stopIntervals)
       let theSetting = [testLength,n,modes,conds,resps,stops];
 
-    console.log("Test Case: " + testCase.id + "; Mode: " + 
+      console.log("Test Case: " + testCase.id + ': TraceInterval: ' +
+		  intervalLogic.intervalToString(trace) +
+		  "; Mode: " + 
 		intervalLogic.intervalsToString(testCase.modeIntervals) + "; Condition: " +
 		intervalLogic.intervalsToString(testCase.conditionIntervals)
 		+ "; Duration: "
@@ -571,4 +486,130 @@ function printDiscrepancy(FileNameBase,keys,Number,testCase,formulaTenses) {
 	}
     }
 
+}
+
+// **********************************************************************
+// Old stuff
+
+// Example of config = { testLength: 9, settings: [ [ [[1,3]], [[2,2]], [[3,9]] ], ... ] }
+// where settings is [ [ modeIntervalsEndpoints, conditionIntervalsEndpoints,
+//                       responseIntervalsEndpoints ], ...]
+/*
+function runConfiguration(config,duration,tool) {
+    var testLength = config.testLength;
+    console.log('testLength = ' + testLength + ' duration = ' + duration);
+    var settings = config.settings;
+    trace = intervalLogic.createInterval(0, testLength);
+    let testID = 0;
+    for (let i = 0; i < settings.length; i++) {
+	let setting = settings[i];
+	let modeIntervals = setting[0].map(pairToInterval);
+	let conditionIntervals = setting[1].map(pairToInterval);
+	let responseIntervals = setting[2].map(pairToInterval);
+	var testCase = generate_tests(modeIntervals,responseIntervals,duration,conditionIntervals,
+				      testID, testLength+1);
+	executeTestCase(testCase, tool, testLength+1);
+	testID++;
+    }
+    return{settings:executed, failed:discrepancies};
+}
+*/
+
+//const config_testLength_duration = require('./config_testLength_duration.json')
+//const config_9_3 = require('./config_9_3.json'); // 11414 test cases
+//const config_7_2 = require('./config_7_2.json'); // 3911 test cases
+//const config_7_1 = require('./config_7_1.json'); // 2739 test cases
+//const config = config_7_1; // [config1[0],config1[1],config1[2],config1[3]];
+// Run a configuration, where duration is passed in the call to runConfiguration.
+//var res2 = runConfiguration(config,1,'SMV');
+//const settings = require('./settings_5_2.json');
+//const settings = require('./settings_9_4.json');
+//const settings = require('./settings_11_5.json');
+//const settings = require('./settings_12_4_2cond.json');  // 32718 test cases
+//const settings = require('./settings_random_60000.json');
+
+  // Run random settings.
+  //var res2 = runRandomSettings(12,5,'SMV');
+  //var res2 = runRandomSettings(12,10000,'SMV');
+  //var res2 = runRandomSettings(12,23000,'SMV');
+  //var res2 = runRandomSettings(12,60000,'SMV');
+
+function generateAndRun() {
+  console.log('TraceLengthShort = ' + options.MAX_COMPLETE_EXPLORE);
+  console.log('TraceLengthLong = ' + options.TraceLength);
+  trace = intervalLogic.createInterval(0, options.MAX_COMPLETE_EXPLORE-1)
+  var testLength = options.MAX_COMPLETE_EXPLORE
+  var setting = generateSettingSimple()
+  if (range == 'extended') {
+    testLength = options.TraceLength
+    setting = generateSettingExtended(setting)
+    trace = intervalLogic.createInterval(0, options.TraceLength-1)  // -1 added by Dimitra March 15
+  }
+  var product = new ProductIterable(setting.sc,setting.res,setting.d, setting.cond);
+  var intervalIterator = product[Symbol.iterator]();
+  var it = intervalIterator.next();
+
+  var testID = 1;
+  while (!it.done) {
+      var v = it.value;
+      modeIntervals = v[0];
+      responseIntervals = v[1];
+      n = v[2];
+      conditionIntervals = v[3];
+      var testCase = generate_tests(modeIntervals,responseIntervals,n,conditionIntervals, testID, testLength);
+      executeTestCase(testCase, tool, testLength);
+      testID++;
+      it = intervalIterator.next();
+  }
+  return{settings:executed, failed:discrepancies};
+}
+
+function generateSettingSimple() {
+  var scopes = generateAllIntervals(0, options.MAX_COMPLETE_EXPLORE, options.SCLength)
+  var responses = generateAllIntervals(0, options.MAX_COMPLETE_EXPLORE, options.RESLength)
+  var conditions = generateAllIntervals(0, options.MAX_COMPLETE_EXPLORE, options.CondLength)
+
+  // these are the durations for the timed formulas
+  var durations = [];
+  for (let j = 1; j <= options.N_RANGE; j++){
+    durations.push(j);
+  }
+
+  return {sc: scopes, res: responses, d: durations, cond: conditions}
+}
+
+function generateSettingExtended(setting) {
+  var newScope = intervalLogic.createInterval(Math.min(options.MAX_COMPLETE_EXPLORE+3,options.TraceLength),
+                                              Math.min(options.MAX_COMPLETE_EXPLORE+6,options.TraceLength))
+
+  setting.sc.forEach(function(element) {element.push(newScope)})
+    setting.sc.push([]) // previous got combined with newScope
+
+    var newCond = intervalLogic.createInterval(Math.min(options.MAX_COMPLETE_EXPLORE+2,options.TraceLength),
+                                              Math.min(options.MAX_COMPLETE_EXPLORE+3,options.TraceLength))
+
+  setting.cond.forEach(function(element) {element.push(newCond)})
+  setting.cond.push([]) // previous got combined with newResponse
+
+  var newResponse = intervalLogic.createInterval(Math.min(options.MAX_COMPLETE_EXPLORE+1,options.TraceLength),
+                                              Math.min(options.MAX_COMPLETE_EXPLORE+2,options.TraceLength))
+
+  setting.res.forEach(function(element) {element.push(newResponse)})
+  setting.res.push([]) // previous got combined with newResponse
+
+  return setting;
+}
+
+function generateAllIntervals(min, max, maxlength) {
+  var generated = [[]];
+  for (il=min; il < max; il++) {
+      for (ir = il; ir < Math.min(max,il+maxlength); ir++) {
+  	      generated.push([intervalLogic.createInterval(il,ir)]);
+      }
+  }
+  return generated
+}
+
+module.exports = {
+    genRandomTestSuite,
 }

@@ -222,6 +222,26 @@ function compress(xs,bools,negate=false) {
     return r;
 }
 
+// take the first n elements from array a
+function take(n,a) {
+    let len = a.length;
+    if (len === n) return a;
+    else if (len < n) console.log("!! utils:take given too short (" + len + ") an array for taking " + n + " elements.");
+    else return a.slice(0,n);
+}
+
+// drop the first n elements from array a
+function drop(n,a) {
+    let len = a.length;
+    if (len >= n) return a.slice(n);
+    else console.log("!! utils:drop given to short (" + len + ") an array for dropping " + n + " elements.");
+}
+
+function divide(n,a) {
+    return [take(n,a), drop(n,a)];
+}
+
+
 module.exports = {
     arrayLast,
     getRandomIntBetween,
@@ -242,6 +262,9 @@ module.exports = {
     union,
     unionSets,
     compress,
+    take,
+    drop,
+    divide,
     salt2smv
 }
 

@@ -81,7 +81,7 @@ runtimeOptions : {
     default: { tool : 'SMV', range : 'simple', timing : 'fullTiming',
 	       condition : 'fullCondition', scope : 'full',
 	       settingsFile : '/tmp/random_settings.json',
-	       strategy : 'random', traceLength:12, numTests:10}
+	       strategy : 'random', traceLength:13, numTests:10}
 },
 
 timingSubs : {
@@ -121,7 +121,7 @@ conditionSubs : {
 	'\xa0 -n, --numTests:\xa0\xa0\xa0\xa0\xa0 The number of tests to be computed with strategy random.\n' +
   '\xa0 -t, --tool:\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0 Specify tool (SMV or CoCoSpec)\n'+
   '\xa0 -p, --scope:\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0 Specify scopes (full or nonOnly or Only)\n'+
-  '\nBy default, tests will run for SMV, full scopes, classic strategy, simple range, mostTiming and fullCondition.\n',
+  '\nBy default, tests will run for SMV, random strategy, full scopes, fullTiming and fullCondition, traceLength 13, numTests 10.\n',
 
   incorrectTool: '\nIncorrect option was given for the tool argument. Please see help for additional info.\n',
   incorrectRange: '\nIncorrect option was given for the range argument. Please see help for additional info.\n',
