@@ -108,12 +108,20 @@ function disjunction(str1, str2) {return utilities.disjunction([str1, str2])}
 function conjunction(str1, str2) {return utilities.conjunction([str1, str2])}
 function implication(str1, str2) {return utilities.implication(str1, str2)}
 
-function persistsTo(formula, start, inclusive = 'inclusive') {
-  return parenthesize(`${formula} since required ${inclusive} ${start}`);
+
+// All the persistsTo that refer to the general formula:
+// right implies previous (persistsTo(formula, left, inclusive))
+// should normally have 'optional' But it just so happens that
+// the endpoints of our intervals are such that if right exists it must be
+// preceded by left because they involve change of mode value.
+// The exception is when we start at LAST but then we add "once left"
+// so we take care of it.
+function persistsTo(formula, start, inclusive = 'inclusive', required = 'required') {
+  return parenthesize(`${formula} since ${required} ${inclusive} ${start}`);
 }
 
-function occursBy(formula, start, inclusive = 'inclusive') {
-  return negate(persistsTo(negate(formula), start, inclusive));
+function occursBy(formula, start, inclusive = 'inclusive', required = 'required') {
+  return negate(persistsTo(negate(formula), start, inclusive, required));
 }
 
 function occursWithinTime (duration, formula) {
@@ -307,6 +315,19 @@ function after(property, duration, cond='null') {
 }
 
 
+// The disjunction:
+// disjunction(throughout(negate(property), `${duration}PLUSONE`, cond),
+//            within(property, duration ,cond)); does not work well when we have conditions
+// does not work in the context of conditions for past time.
+// The reason is that different disjuncts may be applicable for each subinterval
+// defined between a condition and the end of the interval.
+// Alternatively, I removed persists from within and for and added it at the notAfter
+// level. This was also wrong. The reason is that the disjunction can also
+// not be applied pointwise.
+// So we define notAfter directly and apply it pointwise to points
+// that are exactly n+1 steps from conditions, thus implicitly selecting
+// the right intervals for each condition. This is not a problem when conditions
+// are not present, because there is a single LEFT point in each interval.
 function notAfter(property, duration, cond='null') {
   // focuspoint is at n+1 after the trigger; having the interval's left
   // between focuspoint and trigger ivalidates the check because

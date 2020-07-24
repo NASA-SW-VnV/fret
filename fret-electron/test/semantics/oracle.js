@@ -1,15 +1,15 @@
 // *****************************************************************************
 // Notices:
-// 
-// Copyright © 2019 United States Government as represented by the Administrator
+//
+// Copyright ï¿½ 2019 United States Government as represented by the Administrator
 // of the National Aeronautics and Space Administration.  All Rights Reserved.
-// 
+//
 // Disclaimers
-// 
+//
 // No Warranty: THE SUBJECT SOFTWARE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY OF
 // ANY KIND, EITHER EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED
-// TO, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL CONFORM TO SPECIFICATIONS, 
-// ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, 
+// TO, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL CONFORM TO SPECIFICATIONS,
+// ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE,
 // OR FREEDOM FROM INFRINGEMENT, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL BE
 // ERROR FREE, OR ANY WARRANTY THAT DOCUMENTATION, IF PROVIDED, WILL CONFORM TO
 // THE SUBJECT SOFTWARE. THIS AGREEMENT DOES NOT, IN ANY MANNER, CONSTITUTE AN
@@ -18,7 +18,7 @@
 // RESULTING FROM USE OF THE SUBJECT SOFTWARE.  FURTHER, GOVERNMENT AGENCY
 // DISCLAIMS ALL WARRANTIES AND LIABILITIES REGARDING THIRD-PARTY SOFTWARE, IF
 // PRESENT IN THE ORIGINAL SOFTWARE, AND DISTRIBUTES IT ''AS IS.''
-// 
+//
 // Waiver and Indemnity:  RECIPIENT AGREES TO WAIVE ANY AND ALL CLAIMS AGAINST
 // THE UNITED STATES GOVERNMENT, ITS CONTRACTORS AND SUBCONTRACTORS, AS WELL AS
 // ANY PRIOR RECIPIENT.  IF RECIPIENT'S USE OF THE SUBJECT SOFTWARE RESULTS IN
@@ -55,7 +55,7 @@ exports.applyConstraints =
     console.log('active intervals: ' + intervalLogic.intervalsToString(modesArray))
   }
   var resultArray = [];
-  
+
   for (let scopeInterval of modesArray) {
       if (condition == 'regular') {
 	  for (let conditionInterval of conditionIntervals) {
@@ -213,7 +213,7 @@ function findStop(scopeInterval,stopIntervals) {
     let right = (stopPoint === -1) ? scopeInterval.right : stopPoint - 1;
     let result =
 	{point: stopPoint,
-	 scope: (right < scopeInterval.left) ? 
+	 scope: (right < scopeInterval.left) ?
 	 [] : [intervalLogic.createInterval(scopeInterval.left,right)]
 	 }
     return result;
@@ -310,17 +310,15 @@ function withinCond (responseIntervals, trigger, duration, negate=false) {
 
 function forDuration  (scopeInterval, responseIntervals, duration, negate=false) {
 
-    var scopeIntervalTruncated =
-	intervalLogic.createInterval(scopeInterval.left,
-				     Math.min(scopeInterval.left+duration,
-					      scopeInterval.right));
-    //intervalLogic.print(scopeIntervalTruncated,'scopeIntervalTruncated');
-    var pos = intervalLogic.contains(responseIntervals,[scopeIntervalTruncated])
-    if (!negate || (intervalLogic.length(scopeIntervalTruncated) === duration))
-	return (negate?!pos:pos)
-    else {
-	return null // null is don't care
-    }
+  var scopeIntervalTruncated = intervalLogic.createInterval(scopeInterval.left,
+      Math.min(scopeInterval.left+duration, scopeInterval.right));
+      //intervalLogic.print(scopeIntervalTruncated,'scopeIntervalTruncated');
+  var pos = intervalLogic.contains(responseIntervals,[scopeIntervalTruncated]);
+  if (!negate || (intervalLogic.length(scopeIntervalTruncated) === duration))
+    return (negate?!pos:pos)
+  else {
+    return null // null is don't care
+  }
 }
 
 function forDurationCond (responseIntervals, trigger, duration, negate=false) {
@@ -396,4 +394,3 @@ function beforeTiming(scopeInterval,stopCondIntervals,responseIntervals,negate) 
 function beforeTimingCond(stopCondIntervals,responseIntervals,trigger,negate) {
     return beforeTiming(trigger.scope,stopCondIntervals,responseIntervals,negate);
 }
-
