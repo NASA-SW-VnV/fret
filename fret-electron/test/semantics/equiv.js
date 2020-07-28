@@ -45,23 +45,23 @@ const formalizations = require(fretParserPath + 'semantics.json');
 //const formalizations = require(fretParserPath + 'semantics_until_last.json');
 const constants = require(fretParserPath + 'Constants');
 
-const duration = '3';
 const nuXmvTempFile = '/tmp/ptftequiv.smv';
 
-const placeholderSubsts =
+var placeholderSubsts =
       [
 	  ['\\$regular_condition\\$','pre'],
 	  ['\\$post_condition\\$', 'post'],
 	  ['\\$stop_condition\\$', 'stop'],
 	  ['\\$scope_mode\\$', 'm'],
-	  ['\\$duration\\$', duration]
+	  ['\\$duration\\$', '0']
       ];
 
-function substitutePlaceholders (ltlspec) {
+function substitutePlaceholders (ltlspec,n) {
+    placeholderSubsts[4][1] = '' + n;
     return utilities.replaceStrings(placeholderSubsts,ltlspec);
 }
 
-function genLTLSPECs(formalizations) {
+function genLTLSPECs(formalizations,n) {
   let ltlspecs = [];
   let keysTested = [];
   let keynum = -1;
@@ -80,32 +80,32 @@ function genLTLSPECs(formalizations) {
     //let nothingAfterLast = "G(LAST -> (G (!pre & !post & !m)))";
     //let checkEquiv = `((G(LAST -> ${ptexp})) <-> ${ftexp})`;
     //let rawSaltSpec = nothingAfterLast + ' -> ' + checkEquiv;
-    let saltSpec = substitutePlaceholders(rawSaltSpec);
+    let saltSpec = substitutePlaceholders(rawSaltSpec,n);
     let smvSpec = utils.salt2smv(saltSpec);
     ltlspecs.push(`LTLSPEC NAME ${name} := ` + smvSpec + ';');
   }
   return {specs: ltlspecs, keys: keysTested};
 }
 
-function preamble() {
+function preamble(len) {
     return `MODULE main
 VAR
-  t : 0 .. 10;
+  t : 0 .. ` + len + `;
   m : boolean;
   pre : boolean;
   stop : boolean;
   post : boolean;
 ASSIGN
   init(t) := 0;
-  next(t) := (t >= 10) ? 10 : t + 1;
+  next(t) := (t >= ` + len +`) ? ` + len + ` : t + 1;
 DEFINE
-  LAST := (t = 9);
+  LAST := (t = ` + (len - 1) + `);
 `;
 }
 
-function callnuXmv (formalizations) {
-  let r = genLTLSPECs(formalizations);
-  let nuXmvCode = preamble() + r.specs.join('\n') + '\n';
+function callnuXmv (formalizations,len,n) {
+  let r = genLTLSPECs(formalizations,n);
+  let nuXmvCode = preamble(len) + r.specs.join('\n') + '\n'; // 
   fs.writeFileSync(nuXmvTempFile,nuXmvCode,function(err) {
     if (err) return console.log(err);
   });
@@ -117,8 +117,18 @@ function callnuXmv (formalizations) {
     different: utils.compress(r.keys,boolVec,true)}
   }
 
-const sames_diffs = callnuXmv(formalizations);
-const same = sames_diffs.same;
-const different = sames_diffs.different;
-console.log('same(' + same.length + '): ' + JSON.stringify(same));
-console.log('\ndifferent(' + different.length + '): ' + JSON.stringify(different));
+// len is the length of the trace; n is the duration as an integer.
+function equiv(len,n) {
+    console.log('\n***\nequiv with length: ' + len + ' duration: ' + n);
+    let sames_diffs = callnuXmv(formalizations,len,n);
+    let same = sames_diffs.same;
+    let different = sames_diffs.different;
+    console.log('same(' + same.length + '): ' + JSON.stringify(same));
+    console.log('\ndifferent(' + different.length + '): '
+		+ JSON.stringify(different));
+}
+
+let len = 11;
+for (n = 1; n < len; n++)
+    equiv(len,n)
+
