@@ -36,7 +36,7 @@ const constants = require(fretParserPath + 'Constants');
 const semanticsOracle = require("./oracle");
 const options = require('./testingOptions');
 
-const SettingsFile = './settings_random_4_13_5000.json';
+const SettingsFile = './settings_random_5_13_10000.json';
 const padLength = 15;
 
 function swapKV(obj) {
@@ -128,13 +128,14 @@ function genPVSRecord(testID,triple,setting) {
     str += scopeOptionsFRETtoPVS[keyAsArray[0]].padEnd(padLength,' ') + '% Scope\n';
     str += conditionOptionsFRETtoPVS[keyAsArray[1]].padEnd(padLength,' ') + '% Condition\n';
     str += timingOptionsFRETtoPVS[keyAsArray[2]].padEnd(padLength,' ') + '% Timing\n';
-    str += '% Trace (mode,condition,response)\n';
+    str += '% Trace (mode,condition,response,stopCondition)\n';
     str += pvsIntervals + '\n';
     str += '% Expected\n' + (triple.expected ? 'TRUE' : 'FALSE');
     return str;
 }
 
 /*
+// This created the entire file as a string and javascript ran out of space for 5000 tests.
 function genPVS() {
     let str = genPVSFileHeader();
     settings = require(SettingsFile);
@@ -199,7 +200,7 @@ create_pvs(test_case, setting)
 */
 
 // **********************************************************************
-// from SemanticsTestGeneration.js
+// modified from SemanticsTestGeneration.js
 // **********************************************************************
 
 function pairToInterval(pair) {
@@ -261,6 +262,3 @@ function generate_tests(modeIntervals, responseIntervals, n, conditionIntervals,
 //console.log(genPVS());
 genPVS2();
 
-module.exports = {
-    genPVS
-}    

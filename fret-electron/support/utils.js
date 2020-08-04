@@ -293,6 +293,8 @@ console.log(isEqual(3,3))
 console.log(isEqual('a','a'))
 console.log(isEqual(['a',3],['a',3]))
 console.log(isEqual(['a',{car : 3, cdr : 4}],['a',{car : 3, cdr : 4}]))
+console.log(isEqual(['a',{car : 3, cdr : 4}],['a',{cdr : 4, car : 3}]))
+console.log(isEqual([2,5,[1,2],[3,4]],[2,5,[1,2],[3,4]]))
 console.log(isVar('?x'))	
 console.log(isAtom(3))
 console.log(isAtom('a'))
@@ -301,4 +303,6 @@ let l1 = [1,2,3];
 let l2 = [4,5,6];
 console.log('union: ' + JSON.stringify(union(l1,l2)) + ' ' + JSON.stringify(l1));
 */
+
+
 

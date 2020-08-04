@@ -3,7 +3,6 @@
 specifies the time points or time intervals, where a response has to occur once scope and condition(s) are satisfied. Supported options are
 
 * **immediately**
-* **next**
 * **at the next timepoint**
 * **eventually**
 * **always**
@@ -30,8 +29,8 @@ STOP_CONDITION is a boolean expression. The timing **before** means that the
 response must happen at least once before the STOP_CONDITION holds.
 
 Examples:
-* **immediately:** In roll_hold mode RollAutopilot shall immediately satisfy if (roll_angle
-  < 6.0 & roll_angle > -6.0) then roll_hold_reference = 0.0
+* **immediately:** **In** roll_hold **mode RollAutopilot shall immediately satisfy if** (roll_angle
+  < 6.0 & roll_angle > -6.0) **then** roll_hold_reference = 0.0
 * **next:** **When** currentOverload **the** circuitBreaker **shall,
   at the next timepoint, satisfy** shutoff
 * **eventually:** **In** landingMode **the** system **shall eventually satisfy**

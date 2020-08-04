@@ -45,7 +45,7 @@ const formalizations = require(fretParserPath + 'semantics.json');
 //const formalizations = require(fretParserPath + 'semantics_until_last.json');
 const constants = require(fretParserPath + 'Constants');
 
-const nuXmvTempFile = '/tmp/ptftequiv.smv';
+const nuXmvTempFilePrefix = '/tmp/ptftequiv';
 
 var placeholderSubsts =
       [
@@ -106,6 +106,7 @@ DEFINE
 function callnuXmv (formalizations,len,n) {
   let r = genLTLSPECs(formalizations,n);
   let nuXmvCode = preamble(len) + r.specs.join('\n') + '\n'; // 
+  let nuXmvTempFile = nuXmvTempFilePrefix + '_' + len + '_' + n + '.smv'
   fs.writeFileSync(nuXmvTempFile,nuXmvCode,function(err) {
     if (err) return console.log(err);
   });

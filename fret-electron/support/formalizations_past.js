@@ -54,7 +54,9 @@ const SpecialCases =
 	  ['onlyIn,null,immediately,-', ((options) => options.in==='afterUntil'),
 	   'historically (FNiM implies (not RES))'],
 	  ['onlyIn,null,eventually,-', ((options) => options.in==='afterUntil'),
-	   'historically (RES implies MODE)']
+	   'historically (RES implies MODE)'],
+	  ['onlyAfter,null,immediately,-', ((options) => options.in==='afterUntil'),
+	   'historically (FTP implies (not RES))']
       ];
 
 
