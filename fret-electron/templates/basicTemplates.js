@@ -80,7 +80,7 @@ ed.fieldDescription('condition', "The condition that expresses the anomaly and w
 The anomaly can be expressed by name, or The bounds are specified as a single or a combination of relational \
 expressions of the form signal RELOP bound, where RELOP is a relational operator (<, <=, >, >=)")
 ed.addOption('condition', 'Upon anomalous_condition',"Anomalous condition is described by name")
-ed.addOption('condition', 'If variable RELOP bound',"Anomalous condition is described by a variable being outside some bounds. \
+ed.addOption('condition', 'If variable_RELOP_bound',"Anomalous condition is described by a variable being outside some bounds. \
 The bounds are specified as a single or a combination of relational expressions of the form variable RELOP bound, \
 where RELOP is a relational operator (<, <=, >, >=)")
 

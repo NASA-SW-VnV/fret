@@ -264,7 +264,7 @@
                 },
                 {
                     "description": "Anomalous condition is described by a variable being outside some bounds. The bounds are specified as a single or a combination of relational expressions of the form variable RELOP bound, where RELOP is a relational operator (<, <=, >, >=)",
-                    "suggestion": "If variable RELOP bound",
+                    "suggestion": "If variable_RELOP_bound",
                     "selection": [3,11]
                 }
             ]
