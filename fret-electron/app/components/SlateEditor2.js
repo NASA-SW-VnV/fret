@@ -31,8 +31,8 @@
 // AGREEMENT.
 // *****************************************************************************
 import PropTypes from 'prop-types';
-import { createEditor, Node } from 'slate';
-import { Slate, Editable, withReact } from 'slate-react';
+import { createEditor, Node, Range, Transforms, Text } from 'slate';
+import { Slate, Editable, withReact, ReactEditor } from 'slate-react';
 import initialValue from './slateConfigs2.json'
 
 import React from 'react'
@@ -123,15 +123,20 @@ class SlateEditor2 extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      value: initialValue,
+      editorValue: [],
       inputText: ' ',
-      fieldColors: {}
+      fieldColors: {},
+      menuOptions: [],
+      menuIndex: 0,
+      selectedField: undefined
     }
 
     this.editor = withFields(withReact(createEditor()));
 
     this.handleEditorValueChange = this.handleEditorValueChange.bind(this);
+    this.handleDropdownSelection = this.handleDropdownSelection.bind(this);
     this.renderEditor = this.renderEditor.bind(this);
+    this.handleKeyDown = this.handleKeyDown.bind(this);
   }
 
   componentWillUnmount() {
@@ -153,12 +158,19 @@ class SlateEditor2 extends React.Component {
       })
       if (this.props.inputFields) {
         const inputFields = this.props.inputFields
-        let clonedValue = JSON.parse(JSON.stringify(initialValue))
-        clonedValue[0].children[0].text = inputFields.fulltext
-        this.setContentInEditor(clonedValue)
+        let editorValue = JSON.parse(JSON.stringify(initialValue))
+        const text = inputFields.fulltext;
+        const templateValues = inputFields.templateValues;
+        const {template} = this.props;
+        if (template && templateValues) {
+          editorValue = structure2Editor(template.structure, templateValues.values);
+        } else {
+          editorValue[0].children[0].text = text ? text : '';
+        }
+        this.setContentInEditor(editorValue)
       } else {
         this.setState({
-          value: initialValue,
+          editorValue: initialValue,
         })
       }
     }).catch((err) => {
@@ -170,11 +182,11 @@ class SlateEditor2 extends React.Component {
       include_docs: true
     }).on('change', (change) => {
       if (change.id == 'FRET_PROPS') {
-        const updatedValue = this.state.value
+        const updatedValue = this.state.editorValue
         if (this.mounted) {
           this.setState({
             fieldColors: change.doc.fieldColors,
-            value: updatedValue
+            editorValue: updatedValue
           })
         }
       }
@@ -228,13 +240,11 @@ class SlateEditor2 extends React.Component {
    * @param {Change} change
    */
 
-  setContentInEditor = (value) => {
-    console.log('setContentInEditor:')
-    console.log(value)
-    const inputText = editor2Text(value);
+  setContentInEditor = (editorValue) => {
+    const inputText = editor2Text(editorValue);
     const result = FretSemantics.compilePartialText(inputText)
     this.setState({
-      value,
+      editorValue,
       inputText,
       errors: result.parseErrors,
       semantics: result.collectedSemantics,
@@ -242,15 +252,94 @@ class SlateEditor2 extends React.Component {
     })
   }
 
-  handleEditorValueChange = (value) => {
-    console.log('onChange:')
-    console.log(value)
-    const editorText = editor2Text(value)
-    // if (this.state.inputText != editorText) {
-    //   this.setContentInEditor(value)
-    // }
-    this.setState({
-      value,
+  handleEditorValueChange = (editorValue) => {
+    this.setState(prevState => {
+      const inputText = editor2Text(editorValue)
+      const {template} = this.props;
+
+      let errors = prevState.errors;
+      let semantics = prevState.semantics;
+      if (prevState.inputText != inputText) {
+        const result = FretSemantics.compilePartialText(inputText);
+        errors = result.parseErrors;
+        semantics = result.collectedSemantics;
+      }
+
+      /* Handle changed selection (check whether menu should be opened)
+        * This needs to be done only when template fields are enabled */
+      if (template) {
+        const fieldNode = getFieldNode(this.editor);
+        const fieldName = fieldNode ? fieldNode.name : undefined;
+        let clonedValue = JSON.parse(JSON.stringify(editorValue));
+
+        /* Handle cases, where the current field is populated by a placeholder.
+         * In this case, the placeholder flag is removed upon selection of the
+         * field in the editor */
+        const newField = getField(clonedValue, fieldName);
+        const newLeaf = newField && newField.children && newField.children[0];
+        const newText = newLeaf && newLeaf.text;
+        const oldField = getField(prevState.editorValue, fieldName);
+        const oldLeaf = oldField && oldField.children && oldField.children[0];
+        const oldText = oldLeaf && oldLeaf.text;
+        const emptyText = fieldStartCharacter+fieldEndCharacter;
+        const defaultText = fieldStartCharacter+fieldName+fieldEndCharacter;
+        if (newLeaf) {
+          newLeaf.isPlaceholder = !oldText ||
+          (newText === emptyText) ||
+          (oldLeaf.isPlaceholder && oldText === newText) ||
+          (oldLeaf.isPlaceholder && oldText === emptyText && newText === defaultText);
+        }
+
+        /* The dropdown menu should only be opened when the field is empty or
+         * populated with the default selection */
+        const menuOptions = (fieldNode && fieldName && newLeaf && (!newText || newLeaf.isPlaceholder)) ?
+                              this.getOptions(fieldName): [];
+        return {  editorValue: clonedValue,
+                  inputText,
+                  errors,
+                  semantics,
+                  menuOptions,
+                  menuIndex: 0,
+                  selectedField: fieldName };
+      } else {
+        return {  editorValue,
+                  inputText,
+                  errors,
+                  semantics };
+      }
+    })
+  }
+
+  handleDropdownSelection(index) {
+    const selection = this.editor.selection;
+    const start = selection && Range.start(selection);
+    const path = start && start.path;
+    Transforms.select(this.editor, {path, offset: 1});
+    this.setState(prevState => {
+      const {editorValue, menuOptions, menuIndex, selectedField} = prevState;
+      const selectedIndex = index ? index : menuIndex;
+      if (menuOptions && menuOptions.length > 0 && selectedField) {
+        const {template} = this.props;
+        const fields = template && template.fields;
+        const field = fields && fields[selectedField];
+        const newValue = field && field.options[selectedIndex].suggestion;
+        let clonedValue = JSON.parse(JSON.stringify(editorValue));
+        const newField = getField(clonedValue, selectedField);
+        let newLeaf = newField && newField.children[0];
+        if (newLeaf) {
+          newLeaf.text = fieldStartCharacter + newValue + fieldEndCharacter;
+          newLeaf.isPlaceholder = false;
+        }
+        const inputText = editor2Text(clonedValue);
+        const result = FretSemantics.compilePartialText(inputText);
+
+        return {editorValue: clonedValue,
+                inputText,
+                errors: result.parseErrors,
+                semantics: result.collectedSemantics,
+                menuIndex: 0,
+                menuOptions: []}
+      }
     })
   }
 
@@ -412,7 +501,7 @@ class SlateEditor2 extends React.Component {
    */
 
    getTextInEditor = () => {
-     return editor2Text(this.state.value);
+     return editor2Text(this.state.editorValue);
    }
 
    enableSemantics = () => {
@@ -723,9 +812,7 @@ const withFields = editor => {
           normalizeNode,
           insertText } = editor;
 
-  editor.instantiate = true;
   editor.fieldsEnabled = true;
-  // editor.onChange = (value) => {console.log(value)};
 
   editor.isInline = element => {
     return (element.type === 'field-element') && editor.fieldsEnabled ? true : isInline(element)
@@ -774,69 +861,66 @@ const withFields = editor => {
 
   editor.insertBreak = () => {}
 
-  // editor.deleteBackward = () => {
-  //   if (editor.fieldsEnabled) {
-  //     if (!isMany(editor)) {
-  //       let field = isField(editor);
-  //       let left = getLeftSibling(editor, field);
-  //       let start = Range.start(editor.selection);
-  //       let leaf = getFirstLeaf(editor);
-  //       if (start.offset === 0 && left && left.type === 'field-element') {
-  //         return
-  //       }
-  //       if (field) {
-  //         if (start.offset !== 1 && start.offset < leaf.text.length) {
-  //           deleteBackward()
-  //         }
-  //       } else if (!editor.instantiate) {
-  //         deleteBackward()
-  //       }
-  //     }
-  //   } else {
-  //     deleteBackward();
-  //   }
-  // }
+  editor.deleteBackward = () => {
+    if (editor.fieldsEnabled) {
+      if (!isMany(editor)) {
+        let field = isField(editor);
+        let left = getLeftSibling(editor, field);
+        let start = Range.start(editor.selection);
+        let leaf = getFirstLeaf(editor);
+        if (start.offset === 0 && left && left.type === 'field-element') {
+          return
+        }
+        if (field) {
+          if (start.offset !== 1 && start.offset < leaf.text.length) {
+            deleteBackward()
+          }
+        }
+      }
+    } else {
+      deleteBackward();
+    }
+  }
 
-  // editor.deleteForward = () => {
-  //   if (editor.fieldsEnabled) {
-  //     if (!isMany(editor)) {
-  //       let field = isField(editor);
-  //       let right = getRightSibling(editor, field);
-  //       let end = Range.end(editor.selection);
-  //       let leaf = getFirstLeaf(editor);
-  //       if (end.offset === leaf.text.length && right && right.type === 'field-element') {
-  //         return
-  //       }
-  //       if (field) {
-  //         if (end.offset !== 0 && end.offset < leaf.text.length-1) {
-  //           deleteForward()
-  //         }
-  //       } else if (!editor.instantiate) {
-  //         deleteForward()
-  //       }
-  //     }
-  //   } else {
-  //     deleteForward()
-  //   }
-  // }
+  editor.deleteForward = () => {
+    if (editor.fieldsEnabled) {
+      if (!isMany(editor)) {
+        let field = isField(editor);
+        let right = getRightSibling(editor, field);
+        let end = Range.end(editor.selection);
+        let leaf = getFirstLeaf(editor);
+        if (end.offset === leaf.text.length && right && right.type === 'field-element') {
+          return
+        }
+        if (field) {
+          if (end.offset !== 0 && end.offset < leaf.text.length-1) {
+            deleteForward()
+          }
+        }
+      }
+    } else {
+      deleteForward()
+    }
+  }
 
-  // editor.deleteFragment = () => {
-  //   if (editor.fieldsEnabled) {
-  //     if (!isMany(editor)) {
-  //       let field = isField(editor);
-  //       let start = Range.start(editor.selection);
-  //       let end = Range.end(editor.selection);
-  //       let leaf = getFirstLeaf(editor);
-  //       if (field && start.offset !== 0 && end.offset < leaf.text.length) {
-  //         deleteFragment()
-  //       } else if (!editor.instantiate) {
-  //         deleteFragment()
-  //       }
-  //     }
-  //   } else {
-  //     deleteFragment();
-  //   }
-  // }
+  editor.deleteFragment = () => {
+    if (editor.fieldsEnabled) {
+      if (!isMany(editor)) {
+        let field = isField(editor);
+        let leaf = getFirstLeaf(editor);
+        let [start, end] = Range.edges(editor.selection);
+        if (field) {
+          let textlength = leaf.text.length;
+          let anchor = {path: start.path, offset : (start.offset > 0) ? start.offset : Math.min(textlength, 1)};
+          let focus = {path: end.path, offset: (end.offset < textlength) ? end.offset : Math.max(textlength-1, 0)};
+          Transforms.select(editor, {anchor, focus});
+          deleteFragment()
+        }
+      }
+    } else {
+      deleteFragment();
+    }
+  }
   return editor;
 }
 
