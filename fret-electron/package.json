@@ -28,7 +28,10 @@
     "test": "cross-env NODE_ENV=test BABEL_DISABLE_CACHE=1 node --trace-warnings -r babel-register ./internals/scripts/RunTests.js",
     "test-all": "npm run lint && npm run flow && npm run build && npm run test && npm run test-e2e",
     "test-e2e": "cross-env NODE_ENV=test BABEL_DISABLE_CACHE=1 node --trace-warnings -r babel-register ./internals/scripts/RunTests.js e2e",
-    "test-watch": "npm test -- --watch"
+    "test-watch": "npm test -- --watch",
+    "clean": "rm -rf node_modules && rm -rf app/node_modules",
+    "fret-install": "npm install ../tools/LTLSIM/ltlsim-core && npm install",
+    "fret-reinstall": "npm run clean && npm install ../tools/LTLSIM/ltlsim-core && npm install"
   },
   "browserslist": "electron 1.6",
   "build": {
