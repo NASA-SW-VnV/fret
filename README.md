@@ -38,9 +38,8 @@ As you open the FRET distribution, you shall see the following directory structu
 Here are the steps to install and start FRET:
 
 1. cd fret-electron
-2. npm install ../tools/LTLSIM/ltlsim-core
-3. npm install
-4. npm start
+2. npm run fret-install (please do 'npm run fret-reinstall' if you already have a FRET installation)
+3. npm start
 
 It's as simple as that. Enjoy!
 
@@ -51,8 +50,6 @@ It's as simple as that. Enjoy!
 > __Note:__ FRET requires **python 2.x**. If your machine is running a newer version of python, e.g., 3.x, then please config FRET to search for a python2 executable. Run the following: `npm config set python /usr/bin/python2.x`
 
 > __Note:__ Compiling on Windows machines requires  **gcc** and the [node-gyp prerequisites](https://github.com/nodejs/node-gyp#on-windows).
-
-> __Note:__ If you would like to upgrade your nodejs version (and you have been using FRET before), please first remove node_modules under fret-electron/ and fret-electron/app/ and then do steps 2-4.
 
 >__Note:__ Recommended npm version 6.x (comes with nodejs v10.x)
 
