@@ -49,7 +49,7 @@ It's as simple as that. Enjoy!
 
 > __Note:__ FRET requires **python 2.x**. If your machine is running a newer version of python, e.g., 3.x, then please config FRET to search for a python2 executable. Run the following: `npm config set python /usr/bin/python2.x`
 
-> __Note:__ Compiling on Windows machines requires  **gcc** and the [node-gyp prerequisites](https://github.com/nodejs/node-gyp#on-windows).
+> __Note:__ Compiling on Windows machines requires [Cygwin](https://cygwin.com/index.html) and the [node-gyp prerequisites](https://github.com/nodejs/node-gyp#on-windows).
 
 >__Note:__ Recommended npm version 6.x (comes with nodejs v10.x)
 
