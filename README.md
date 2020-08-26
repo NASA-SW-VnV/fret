@@ -21,6 +21,7 @@ Installation
 
  * [nodejs v10.15.x](https://nodejs.org/download/release/v10.15.3/)
  * Python 2.x
+ * [Git](https://git-scm.com/) (must be available in PATH)
  * (Optional) [NuSMV](http://nusmv.fbk.eu/)
 
 ### Download and Install
