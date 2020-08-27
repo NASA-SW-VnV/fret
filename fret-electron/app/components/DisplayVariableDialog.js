@@ -585,10 +585,9 @@ class DisplayVariableDialog extends React.Component {
                     <em>None</em>
                   </MenuItem>
                   <MenuItem value="boolean" >boolean</MenuItem>
-                  <MenuItem value="int*" >int*</MenuItem>
-                  <MenuItem value="single">single</MenuItem>
-                  <MenuItem value="double">double</MenuItem>
-                  <MenuItem value="enum">enum</MenuItem>
+                  <MenuItem value="int*" >integer</MenuItem>
+                  <MenuItem value="single">unsigned integer</MenuItem>
+                  <MenuItem value="double">real</MenuItem>
                 </Select>
               </FormControl>
               <TextField

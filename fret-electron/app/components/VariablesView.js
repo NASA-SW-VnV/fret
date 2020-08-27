@@ -54,6 +54,12 @@ import SortableTable from './SortableTable';
 import VariablesSortableTable from './VariablesSortableTable';
 import ejsCache from '../../support/CoCoSpecTemplates/ejsCache';
 
+import FormHelperText from '@material-ui/core/FormHelperText';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+
 
 const sharedObj = require('electron').remote.getGlobal('sharedObj');
 const constants = require('../parser/Constants');
@@ -165,10 +171,26 @@ const styles = theme => ({
   heading: {
     fontSize: theme.typography.pxToRem(18),
     fontWeight: theme.typography.fontWeightRegular,
-  }
+  },
+  formControl: {
+    margin: theme.spacing.unit,
+    minWidth: 150,
+    marginTop: theme.spacing.unit * -1,
+  },
+  selectEmpty: {
+    marginTop: theme.spacing.unit * 2,
+  },
 });
 
 class ComponentSummary extends React.Component {
+
+  state = {
+    language: '',
+  }
+
+  handleChange = name => event => {
+    this.setState({ [name]: event.target.value });
+  };
 
   getContractInfo(result) {
     var self = this;
@@ -349,6 +371,7 @@ class ComponentSummary extends React.Component {
     const {classes, component, completed} = this.props;
     if (completed){
       return (
+        <div>
         <Typography className={classes.heading}>{component}
         <IconButton aria-label="Export CoCoSpec code" onClick={this.exportComponentCode}>
         <Tooltip title='Export CoCoSpec code.'>
@@ -356,16 +379,38 @@ class ComponentSummary extends React.Component {
           </Tooltip>
         </IconButton>
         </Typography>
+        </div>
       );
     } else {
       return (
-          <Typography className={classes.heading}>{component}
+        <div>
+        <Typography className={classes.heading}>{component}
           <IconButton  aria-label="Export CoCoSpec code">
             <Tooltip title='To export CoCoSpec code, please complete mandatory fields first.'>
               <ExportIcon color = "disabled"/>
             </Tooltip>
           </IconButton>
+          <FormControl required className={classes.formControl}>
+            <InputLabel htmlFor="language-export-required">Language</InputLabel>
+            <Select
+              value={this.state.language}
+              onChange={this.handleChange('language')}
+              inputProps={{
+                name: 'language',
+                id: 'language-export-required',
+              }}>
+              <MenuItem
+                value=""
+              >
+                <em>None</em>
+              </MenuItem>
+              <MenuItem value="lustre" >Lustre</MenuItem>
+              <MenuItem value="cocospec" >CoCoSpec</MenuItem>
+              <MenuItem value="copilot">CoPilot</MenuItem>
+            </Select>
+          </FormControl>
           </Typography>
+          </div>
       );
     }
   }
