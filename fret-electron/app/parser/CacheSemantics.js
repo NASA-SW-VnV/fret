@@ -1,15 +1,15 @@
 // *****************************************************************************
 // Notices:
-// 
-// Copyright © 2019 United States Government as represented by the Administrator
+//
+// Copyright ï¿½ 2019 United States Government as represented by the Administrator
 // of the National Aeronautics and Space Administration.  All Rights Reserved.
-// 
+//
 // Disclaimers
-// 
+//
 // No Warranty: THE SUBJECT SOFTWARE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY OF
 // ANY KIND, EITHER EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED
-// TO, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL CONFORM TO SPECIFICATIONS, 
-// ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, 
+// TO, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL CONFORM TO SPECIFICATIONS,
+// ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE,
 // OR FREEDOM FROM INFRINGEMENT, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL BE
 // ERROR FREE, OR ANY WARRANTY THAT DOCUMENTATION, IF PROVIDED, WILL CONFORM TO
 // THE SUBJECT SOFTWARE. THIS AGREEMENT DOES NOT, IN ANY MANNER, CONSTITUTE AN
@@ -18,7 +18,7 @@
 // RESULTING FROM USE OF THE SUBJECT SOFTWARE.  FURTHER, GOVERNMENT AGENCY
 // DISCLAIMS ALL WARRANTIES AND LIABILITIES REGARDING THIRD-PARTY SOFTWARE, IF
 // PRESENT IN THE ORIGINAL SOFTWARE, AND DISTRIBUTES IT ''AS IS.''
-// 
+//
 // Waiver and Indemnity:  RECIPIENT AGREES TO WAIVE ANY AND ALL CLAIMS AGAINST
 // THE UNITED STATES GOVERNMENT, ITS CONTRACTORS AND SUBCONTRACTORS, AS WELL AS
 // ANY PRIOR RECIPIENT.  IF RECIPIENT'S USE OF THE SUBJECT SOFTWARE RESULTS IN
@@ -36,9 +36,9 @@ const semanticsGenerator = new SemanticsGenerator();
 const constants = require(fretParserPath + 'Constants');
 const utilities = require('../../support/utilities');
 const formalizations = require('../../support/formalizations');
-const svgSemantics = require('../../support/svgSemantics');
 const astsem = require('../../support/ASTSemantics');
 const xform = require('../../support/xform');
+const {semanticDiagram} = require('../../support/semanticDiagramsLib.js')
 
 
 var ProductIterable = require('product-iterable');
@@ -93,6 +93,16 @@ var semanticsObjUndefined = {
   diagram: constants.undefined_svg
 }
 
+// HTML file to debug SVG diagrams
+var svgPath = '../../docs/_media/user-interface/examples/svgDiagrams/';
+var htmlHeader = `<html>
+  <body>
+  <h1>Produced SVG Diagrams</h1>`;
+var htmlShortcuts = "";
+var diagram_number = 1;
+var htmlBody = "";
+var htmlEnd = `</html>
+</body`;
 
 // allows us to Cache semantics for different ranges of values
 var envTestRange = process.env[constants.runtime_env_vars.envTestRangeName]
@@ -256,7 +266,57 @@ function createSemantics(product,options,properties) {
 	}
 
     }
+    if (constants.generateSvgSemantics) {
+    fs.writeFileSync(svgPath+"Diagrams.html", htmlHeader + htmlShortcuts + htmlBody + htmlEnd, function(err) {
+      if(err) {
+        return console.log(err);
+      }
+    })
+  }
 }
+
+/**
+ * Creates svg File corresponding to the key pattern and returns the path of the file.
+ * If SVG file cannot be created it returns the constants.undefined_svg error message.
+ * @param  {String} key    String of a pattern key e.g., in,null,after,satisfaction
+ * @param  {String} scope  Scope string
+ * @param  {String} condition Condition string
+ * @param  {String} timing Timing string
+ * @param  {String} response Response string
+ * @return {String}        path of created svg file or undefined_svg
+ */
+ function getSVGDiagram(key, scope, condition, timing, response) {
+   // first remove uncovered cases if they reach this point
+
+   if (condition == "only" || response == "order"
+        || response == "not\_order" || response == "action")
+        return constants.undefined_svg;
+   var diagramName = key.replace(/,/g , '_')+'.svg';
+   var filename = svgPath + diagramName;
+   if (constants.generateSvgSemantics){
+     var svgDiagram = new semanticDiagram(scope, condition, timing, response);
+     svgDiagram.draw(filename);
+
+     if (fs.existsSync(filename)){
+       // create a shortcut for this case
+       htmlShortcuts += `[<a href = "#${scope}${condition}${timing}${response}">
+       ${diagram_number}: ${scope} ${condition} ${timing} ${response}</a>]`
+
+       // attach diagram to html string
+       htmlBody += `<hr>
+       <h3>
+       <a name = "${scope}${condition}${timing}${response}"><a>
+       #${diagram_number}>  SC{${scope}}, CD{${condition}}, TM{${timing}}, RS{${response}}
+       </h3>
+       <img src = "./${diagramName}";
+       <hr>`
+       diagram_number++;
+       return filename.slice(11); // to do remove the docs from here
+     } else return constants.undefined_svg;
+   }
+ }
+
+
 
 // create string for semantics
 // descriptions are generated here for all cases except nonsense
@@ -291,12 +351,6 @@ function createSaltBatchString(product,options) {
 	  ((sltft== constants.nonsense_semantics) != (sltpt== constants.nonsense_semantics)))
 	  console.log("ERROR - meaningless semantics cases should match in future time and past time")
 
-      // future and past semantics have the same cases of nonsense semantics so I only do this for future
-      if (sltft != constants.nonsense_semantics) {
-	       FRETSemantics[key].description = formalizations.getDescription(iterator.value, iterator.value[1], iterator.value[2], iterator.value[3]);
-	       FRETSemantics[key].diagram = svgSemantics.getDiagram(key, scopeObj.type, iterator.value[2], iterator.value[1]);
-      }
-
       switch (sltft) {
       case constants.nonsense_semantics:
 	  // note they are all set to the SAME object but it is OK because they never change
@@ -305,6 +359,10 @@ function createSaltBatchString(product,options) {
       case constants.undefined_semantics: // already initialized to undefined
           break;
       default: // prepare string for batch salt
+          // set descriptions and svg diagrams
+          FRETSemantics[key].description = formalizations.getDescription(iterator.value, iterator.value[1], iterator.value[2], iterator.value[3]);
+          FRETSemantics[key].diagram = getSVGDiagram(key, scopeObj.type, iterator.value[1], iterator.value[2], iterator.value[3]);
+          // now prepare for salt
           saltStr = saltStr + ' ' + sltft  // add it for salt processing
           SemanticsMap[index] = {fields:key, tp:'ft'} // stores key and type located at this index
           index++
@@ -327,21 +385,3 @@ function createSaltBatchString(product,options) {
 
     return ({mp:SemanticsMap, str:saltStr})
 }
-
-/*
-function resolveAfter10Seconds() {
-  return new Promise(resolve => {
-    setTimeout(() => {
-      resolve('resolved');
-    }, 10000);
-  });
-}
-
-async function asyncCall(saltString) {
-    console.log('before');
-  var result = await resolveAfter10Seconds();
-    console.log('after');
-
-  // expected output: 'resolved'
-}
-*/

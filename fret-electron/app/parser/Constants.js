@@ -1,15 +1,15 @@
 // *****************************************************************************
 // Notices:
-// 
-// Copyright © 2019 United States Government as represented by the Administrator
+//
+// Copyright ï¿½ 2019 United States Government as represented by the Administrator
 // of the National Aeronautics and Space Administration.  All Rights Reserved.
-// 
+//
 // Disclaimers
-// 
+//
 // No Warranty: THE SUBJECT SOFTWARE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY OF
 // ANY KIND, EITHER EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED
-// TO, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL CONFORM TO SPECIFICATIONS, 
-// ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, 
+// TO, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL CONFORM TO SPECIFICATIONS,
+// ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE,
 // OR FREEDOM FROM INFRINGEMENT, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL BE
 // ERROR FREE, OR ANY WARRANTY THAT DOCUMENTATION, IF PROVIDED, WILL CONFORM TO
 // THE SUBJECT SOFTWARE. THIS AGREEMENT DOES NOT, IN ANY MANNER, CONSTITUTE AN
@@ -18,7 +18,7 @@
 // RESULTING FROM USE OF THE SUBJECT SOFTWARE.  FURTHER, GOVERNMENT AGENCY
 // DISCLAIMS ALL WARRANTIES AND LIABILITIES REGARDING THIRD-PARTY SOFTWARE, IF
 // PRESENT IN THE ORIGINAL SOFTWARE, AND DISTRIBUTES IT ''AS IS.''
-// 
+//
 // Waiver and Indemnity:  RECIPIENT AGREES TO WAIVE ANY AND ALL CLAIMS AGAINST
 // THE UNITED STATES GOVERNMENT, ITS CONTRACTORS AND SUBCONTRACTORS, AS WELL AS
 // ANY PRIOR RECIPIENT.  IF RECIPIENT'S USE OF THE SUBJECT SOFTWARE RESULTS IN
@@ -53,23 +53,23 @@ module.exports = Object.freeze({
 
   // All possible cases of requirements fields that need to be handled by the semantics
   // Consider some automatic check or generation with the grammar or SemanticsAnalyzer
-  fullScope : /*['null'],//*/['null', 'in', 'onlyAfter', 'after', 'onlyBefore', 'before', 'onlyIn', 'notin'],
-  fullCondition : /*['regular'],//*/['null', 'regular', 'only'],
-    fullTiming : /*['within'],//*/['always','null','immediately','eventually', 'never', 'for','within','after','until','before','next'],
-  fullResponse : /*['satisfaction'],//*/['satisfaction','action','order','not_order'],
+  fullScope : /*['null'],//*/['null', 'in', 'onlyAfter', 'after', 'onlyBefore', 'before', 'onlyIn', 'notin'].sort(),
+  fullCondition : /*['regular'],//*/['null', 'regular', 'only'].sort(),
+    fullTiming : /*['within'],//*/['always','null','immediately','eventually', 'never', 'for','within','after','until','before','next'].sort(),
+  fullResponse : /*['satisfaction'],//*/['satisfaction','action','order','not_order'].sort(),
 
   // We want to test with Bamboo only the combinations of keys for which semantics has been defined and tested -- to get more meaningful test results
-  testScope : ['null', 'in', 'onlyAfter', 'after', 'onlyBefore', 'before', 'onlyIn', 'notin'],
-  testCondition : ['null', 'regular', /*'only'*/],
-  testTiming : ['always','null','immediately','eventually', 'never', 'for','within','after','until','before','next'],
+  testScope : ['null', 'in', 'onlyAfter', 'after', 'onlyBefore', 'before', 'onlyIn', 'notin'].sort(),
+  testCondition : ['null', 'regular', /*'only'*/].sort(),
+  testTiming : ['always','null','immediately','eventually', 'never', 'for','within','after','until','before','next'].sort(),
   //testTiming : ['always','null','immediately','eventually', 'never', 'for','within','after'],
-  testResponse : ['satisfaction'/*,'action','order','not_order'*/],
+  testResponse : ['satisfaction'/*,'action','order','not_order'*/].sort(),
 
 // Configuration - console logs
   verboseTesting: false,
   verboseSemanticsAnalyzer: false,
   verboseSemanticsGenerator: false,
-  verboseCacheSemantics:true,
+  verboseCacheSemantics:false,
   verboseCoCoSpecSemantics:true,
 
   //Configuration - generate svgSemantics
