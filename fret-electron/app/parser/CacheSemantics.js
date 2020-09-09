@@ -94,6 +94,7 @@ var semanticsObjUndefined = {
 }
 
 // HTML file to debug SVG diagrams
+var svgGenerated = false;
 var svgPath = '../../docs/_media/user-interface/examples/svgDiagrams/';
 var htmlHeader = `<html>
   <body>
@@ -103,6 +104,7 @@ var diagram_number = 1;
 var htmlBody = "";
 var htmlEnd = `</html>
 </body`;
+var shortcutsNewLine = "";
 
 // allows us to Cache semantics for different ranges of values
 var envTestRange = process.env[constants.runtime_env_vars.envTestRangeName]
@@ -299,6 +301,8 @@ function createSemantics(product,options,properties) {
 
      if (fs.existsSync(filename)){
        // create a shortcut for this case
+       if (scope != shortcutsNewLine)
+          htmlShortcuts+= `<br><font size="+2" color="red">${scope}:</font>`
        htmlShortcuts += `[<a href = "#${scope}${condition}${timing}${response}">
        ${diagram_number}: ${scope} ${condition} ${timing} ${response}</a>]`
 
@@ -311,6 +315,7 @@ function createSemantics(product,options,properties) {
        <img src = "./${diagramName}";
        <hr>`
        diagram_number++;
+       shortcutsNewLine = scope;
        return filename.slice(11); // to do remove the docs from here
      } else return constants.undefined_svg;
    }
@@ -359,9 +364,12 @@ function createSaltBatchString(product,options) {
       case constants.undefined_semantics: // already initialized to undefined
           break;
       default: // prepare string for batch salt
-          // set descriptions and svg diagrams
-          FRETSemantics[key].description = formalizations.getDescription(iterator.value, iterator.value[1], iterator.value[2], iterator.value[3]);
-          FRETSemantics[key].diagram = getSVGDiagram(key, scopeObj.type, iterator.value[1], iterator.value[2], iterator.value[3]);
+          // set descriptions and svg diagrams but only once at the moment - although we may want to change that
+          // to differentiate between semantic nuances
+          if (!svgGenerated) {
+            FRETSemantics[key].description = formalizations.getDescription(iterator.value, iterator.value[1], iterator.value[2], iterator.value[3]);
+            FRETSemantics[key].diagram = getSVGDiagram(key, scopeObj.type, iterator.value[1], iterator.value[2], iterator.value[3]);
+          }
           // now prepare for salt
           saltStr = saltStr + ' ' + sltft  // add it for salt processing
           SemanticsMap[index] = {fields:key, tp:'ft'} // stores key and type located at this index
@@ -382,6 +390,7 @@ function createSaltBatchString(product,options) {
 
     iterator = keyIterator.next();
   }
+  svgGenerated = true;
 
     return ({mp:SemanticsMap, str:saltStr})
 }
