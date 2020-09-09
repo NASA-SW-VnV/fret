@@ -17,7 +17,7 @@ FRET is a framework for the elicitation, formalization and understanding of requ
 * [Writing Requirements](./_media/user-interface/examples/writingReqs.md)
 * [Semantics](./_media/semantics/semanticsOverview.md)
 * [Exporting for Analysis](./_media/exports/analysis.md)
-* [FRETish grammar](_media/rrd/index.html ':include width=100% height=800px')
+* [FRETish grammar](./_media/rrd/index.html ':include width=100% height=800px')
 
 ## FRET Team
 
