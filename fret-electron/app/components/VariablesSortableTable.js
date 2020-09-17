@@ -191,7 +191,7 @@ const tableComponentBarStyles = theme => ({
     flex: '1 1 100%',
   },
   formControl: {
-    minWidth: 1000,
+    minWidth: 300,
     paddingLeft: theme.spacing.unit *25,
     padding: theme.spacing.unit * -2,
 
@@ -199,7 +199,7 @@ const tableComponentBarStyles = theme => ({
 });
 
 let TableComponentBar = props => {
-  const {classes, handleModelChange, modelComponents, modelComponent, fretComponent, language, handleChange} = props;
+  const {classes, handleModelChange, modelComponents, modelComponent, fretComponent} = props;
   return(
     <Toolbar className={classNames(classes.root, classes.componentBar)}>
       <div className={classes.title}>
@@ -208,27 +208,8 @@ let TableComponentBar = props => {
         </Typography>
       </div>
       <div className={classes.spacer}>
-      <form className={classes.formControl}>
-        <FormControl className={classes.modelControl}>
-          <InputLabel htmlFor="language-export-required">Language</InputLabel>
-          <Select
-            value={language}
-            onChange={handleChange('language')}
-            inputProps={{
-              name: 'language',
-              id: 'language-export-required',
-            }}>
-            <MenuItem
-              value=""
-            >
-              <em>None</em>
-            </MenuItem>
-            <MenuItem value="lustre" >Lustre</MenuItem>
-            <MenuItem value="cocospec" >CoCoSpec</MenuItem>
-            <MenuItem value="copilot">CoPilot</MenuItem>
-          </Select>
-        </FormControl>
-        <FormControl className={classes.modelRoot} >
+      <form className={classes.formControl} autoComplete="off">
+        <FormControl className={classes.modelRoot}>
           <InputLabel htmlFor="component-helper">Corresponding Model Component</InputLabel>
           <Select
             key={fretComponent=== undefined ? '' : fretComponent}
@@ -259,9 +240,6 @@ TableComponentBar.propTypes = {
   handleModelChange: PropTypes.func.isRequired,
   modelComponents: PropTypes.array.isRequired,
   modelComponent: PropTypes.string.isRequired,
-  fretComponent: PropTypes.string.isRequired,
-  language: PropTypes.string.isRequired,
-  handleChange: PropTypes.func.isRequired
 }
 
 TableComponentBar = withStyles(tableComponentBarStyles)(TableComponentBar);
@@ -413,10 +391,6 @@ class VariablesSortableTable extends React.Component {
     })
   }
 
-  handleChange = name => event => {
-    this.setState({ [name]: event.target.value });
-  };
-
   handleModelChange = event => {
     const modelComponent = event.target.value;
     const {selectedProject, selectedComponent} = this.props;
@@ -465,7 +439,7 @@ class VariablesSortableTable extends React.Component {
 
   render() {
     const {classes, selectedProject, selectedComponent, modelComponents} = this.props;
-    const {data, order, orderBy, rowsPerPage, page, selectedVariable, modelComponent, language} = this.state;
+    const {data, order, orderBy, rowsPerPage, page, selectedVariable, modelComponent} = this.state;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
     return(
       <div>
@@ -475,9 +449,7 @@ class VariablesSortableTable extends React.Component {
             modelComponents={modelComponents}
             modelComponent={modelComponent}
             fretComponent={selectedComponent}
-            language={language}
             handleModelChange={this.handleModelChange}
-            handleChange={this.handleChange}
           />
           <Table className={classes.table} aria-labelledby="tableTitle" padding="dense">
             <VariablesSortableHead
