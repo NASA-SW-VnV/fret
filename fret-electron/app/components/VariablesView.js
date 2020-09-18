@@ -48,7 +48,10 @@ import ImportIcon from '@material-ui/icons/ArrowDownward';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import Divider from '@material-ui/core/Divider';
+import Button from '@material-ui/core/Button';
 
 import SortableTable from './SortableTable';
 import VariablesSortableTable from './VariablesSortableTable';
@@ -369,47 +372,63 @@ class ComponentSummary extends React.Component {
 
   render() {
     const {classes, component, completed} = this.props;
-    if (completed){
+    const {language} = this.state;
+    if (completed && language){
       return (
         <div>
-        <Typography className={classes.heading}>{component}
-        <IconButton aria-label="Export CoCoSpec code" onClick={this.exportComponentCode}>
-        <Tooltip title='Export CoCoSpec code.'>
-            <ExportIcon color='secondary' />
-          </Tooltip>
-        </IconButton>
-        </Typography>
+        <FormControl required className={classes.formControl}>
+          <InputLabel htmlFor="language-export-required">Language</InputLabel>
+          <Select
+            value={language}
+            onChange={this.handleChange('language')}
+            inputProps={{
+              name: 'language',
+              id: 'language-export-required',
+            }}>
+            <MenuItem value="lustre" >Lustre</MenuItem>
+            <MenuItem value="cocospec" >CoCoSpec</MenuItem>
+            <MenuItem value="copilot">CoPilot</MenuItem>
+          </Select>
+        </FormControl>
+        <Tooltip title='Export verification code.'>
+          <Button size="small" onClick={this.exportComponentCode} color="secondary" variant='contained'>
+            Export
+          </Button>
+        </Tooltip>
+          <IconButton aria-label="Export verification code" onClick={this.exportComponentCode}>
+            <Tooltip title='Export verification code.'>
+                <ExportIcon color='secondary' />
+            </Tooltip>
+          </IconButton>
         </div>
       );
     } else {
       return (
         <div>
-        <Typography className={classes.heading}>{component}
-          <IconButton  aria-label="Export CoCoSpec code">
-            <Tooltip title='To export CoCoSpec code, please complete mandatory fields first.'>
+        <FormControl required className={classes.formControl}>
+          <InputLabel htmlFor="language-export-required">Language</InputLabel>
+          <Select
+            value={language}
+            onChange={this.handleChange('language')}
+            inputProps={{
+              name: 'language',
+              id: 'language-export-required',
+            }}>
+            <MenuItem value="lustre" >Lustre</MenuItem>
+            <MenuItem value="cocospec" >CoCoSpec</MenuItem>
+            <MenuItem value="copilot">CoPilot</MenuItem>
+          </Select>
+        </FormControl>
+        <Tooltip title='To export verification code, please complete mandatory variable fields and export language first.'>
+          <Button size="small" onClick={this.exportComponentCode} color="disabled" variant='contained'>
+            Export
+          </Button>
+        </Tooltip>
+          <IconButton  aria-label="Export verification code">
+            <Tooltip title='To export verification code, please complete mandatory variable fields and export language first.'>
               <ExportIcon color = "disabled"/>
             </Tooltip>
           </IconButton>
-          <FormControl required className={classes.formControl}>
-            <InputLabel htmlFor="language-export-required">Language</InputLabel>
-            <Select
-              value={this.state.language}
-              onChange={this.handleChange('language')}
-              inputProps={{
-                name: 'language',
-                id: 'language-export-required',
-              }}>
-              <MenuItem
-                value=""
-              >
-                <em>None</em>
-              </MenuItem>
-              <MenuItem value="lustre" >Lustre</MenuItem>
-              <MenuItem value="cocospec" >CoCoSpec</MenuItem>
-              <MenuItem value="copilot">CoPilot</MenuItem>
-            </Select>
-          </FormControl>
-          </Typography>
           </div>
       );
     }
@@ -684,13 +703,17 @@ class VariablesView extends React.Component {
             return(
               <ExpansionPanel key={component}>
               <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography className={classes.heading}>{component}</Typography>
+              </ExpansionPanelSummary>
+              <Divider />
+              <ExpansionPanelActions>
               <ComponentSummary
                 component = {component}
                 classes = {classes}
                 completed = {completedComponents.includes(component)}
                 selectedProject={selectedProject}
               />
-              </ExpansionPanelSummary>
+              </ExpansionPanelActions>
                 <ExpansionPanelDetails>
                   <VariablesSortableTable
                     selectedProject={selectedProject}
