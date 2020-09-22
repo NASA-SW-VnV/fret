@@ -2,8 +2,8 @@
   background: #ECEFF1;
 }
 .divider{
-    padding-left: 2%;
-    padding-right: 2%;
+    padding-left: 5%;
+    padding-right: 5%;
     background: #ECEFF1;
 }
 
@@ -14,16 +14,16 @@
 }
 
 .imgWrap {
-  width: 420px;
+  width: 400px;
   position: relative;
   display: inline-block;
   margin-top: -5%;
-  margin-left: 0;
-  margin-right: 0;
+  margin-left: 5%;
+  margin-right: 5%;
 }
 
 .notationWrap {
-  width: 360px;
+  width: 400px;
   position: relative;
- display: inline-block;
+  display: inline-block;
 }

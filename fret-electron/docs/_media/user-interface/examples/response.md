@@ -2,8 +2,7 @@
 
 Specifies the response that the component must provide to fulfill the requirement.
 The current version of FRET supports the form:
-**satisfy** BEXPR (Boolean Expression). The keyword **satisfy** is
-optional.
+**satisfy** BEXPR (Boolean Expression). 
 
 Future versions will fully support
 * **increment the** ID **counter**
