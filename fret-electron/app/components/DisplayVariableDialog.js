@@ -52,6 +52,10 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
+
 const db = require('electron').remote.getGlobal('sharedObj').db;
 const modeldb = require('electron').remote.getGlobal('sharedObj').modeldb;
 
@@ -85,6 +89,15 @@ const styles = theme => ({
   },
 });
 
+// let InternalVariables = props => {
+//   const {} = props;
+// }
+//
+// InternalVariables.propTypes = {
+//   exportProjectCode: PropTypes.func.isRequired,
+//   projectCompleted: PropTypes.bool.isRequired
+// };
+
 class DisplayVariableDialog extends React.Component {
   state = {
     open: false,
@@ -98,8 +111,15 @@ class DisplayVariableDialog extends React.Component {
     modeldoc_id: '',
     modelComponent: '',
     errors: '',
-    variables: ''
+    variables: '',
+    checkLustre: false,
+    checkCoPilot: false,
+    checkFRETish: true
   }
+
+  handleCheckChange = name => event => {
+    this.setState({ [name]: event.target.checked });
+  };
 
   handleTextFieldFocused = name => event => {
     this.setState({
@@ -284,7 +304,7 @@ class DisplayVariableDialog extends React.Component {
 
   render(){
     const {classes, selectedVariable, modelVariables} = this.props;
-    const {dataType, idType, modeRequirement, assignment, errors} = this.state;
+    const {dataType, idType, modeRequirement, assignment, errors, checkLustre, checkFRETish, checkCoPilot} = this.state;
 
     if (idType === 'Input' || idType === 'Output'){
       return (
@@ -499,7 +519,7 @@ class DisplayVariableDialog extends React.Component {
           </Dialog>
         </div>
       );
-    } else if (idType === 'Internal' && errors == ''){
+    } else if (idType === 'Internal' && errors == '' && checkFRETish && !checkLustre && !checkCoPilot){
       return (
         <div>
           <Dialog
@@ -590,9 +610,10 @@ class DisplayVariableDialog extends React.Component {
                   <MenuItem value="double">real</MenuItem>
                 </Select>
               </FormControl>
+              <div>
               <TextField
                 id="assignment"
-                label="Variable Assignment*"
+                label="Variable Assignment in FRETish*"
                 type="text"
                 value={this.state.assignment}
                 margin="normal"
@@ -601,6 +622,1211 @@ class DisplayVariableDialog extends React.Component {
                 onChange={this.handleTextFieldChange('assignment')}
                 onFocus={this.handleTextFieldFocused('assignment')}
               />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={this.state.checkFRETish}
+                    onChange={this.handleCheckChange('checkFRETish')}
+                    value="checkFRETish"
+                    />
+                }
+                label="FRETish"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={this.state.checkLustre}
+                    onChange={this.handleCheckChange('checkLustre')}
+                    value="checkLustre"
+                    />
+                }
+                label="Lustre"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={this.state.checkCoPilot}
+                    onChange={this.handleCheckChange('checkCoPilot')}
+                    value="checkCoPilot"
+                    />
+                }
+                label="CoPilot"
+              />
+              </div>
+              <TextField
+                id="description"
+                label="Description"
+                type="text"
+                defaultValue={this.state.description}
+                margin="normal"
+                className={classes.descriptionField}
+                multiline
+                onChange={this.handleTextFieldChange('description')}
+                onFocus={this.handleTextFieldFocused('description')}
+              />
+            </form>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleClose}>
+              Cancel
+            </Button>
+            <Button onClick={this.handleUpdate} color="secondary" variant='contained'>
+              Update
+            </Button>
+          </DialogActions>
+          </Dialog>
+        </div>
+
+      );
+    } else if (idType === 'Internal' && errors == '' && !checkFRETish && checkLustre && !checkCoPilot){
+      return (
+        <div>
+          <Dialog
+          open={this.state.open}
+          onClose={this.handleClose}
+          aria-labelledby="form-dialog-title"
+          maxWidth='sm'
+          >
+          <DialogTitle id="form-dialog-title">Update Variable</DialogTitle>
+          <DialogContent>
+            <form className={classes.container} noValidate autoComplete="off">
+              <TextField
+                id="standard-read-only-input"
+                label="FRET Project"
+                defaultValue={selectedVariable.project}
+                className={classes.extendedTextField}
+                margin="normal"
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+              <TextField
+                id="standard-read-only-input"
+                label="FRET Component"
+                defaultValue={selectedVariable.component_name}
+                className={classes.extendedTextField}
+                margin="normal"
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+              <TextField
+                id="standard-read-only-input"
+                label="Model Component"
+                defaultValue={selectedVariable.modelComponent}
+                className={classes.descriptionField}
+                margin="normal"
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+              <TextField
+                id="standard-read-only-input"
+                label="FRET Variable"
+                defaultValue={selectedVariable.variable_name}
+                className={classes.extendedTextField}
+                margin="normal"
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+              <FormControl className={classes.formControl}>
+                <InputLabel htmlFor="idType-simple">Variable Type*</InputLabel>
+                <Select
+                  key={selectedVariable}
+                  value={this.state.idType}
+                  onChange={this.handleChange}
+                  inputProps={{
+                    name: 'idType',
+                    id: 'idType-simple',
+                  }}>
+                  <MenuItem value="" key={selectedVariable}>
+                    <em>None</em>
+                  </MenuItem>
+                  <MenuItem value="Input" >Input</MenuItem>
+                  <MenuItem value="Output">Output</MenuItem>
+                  <MenuItem value="Internal">Internal</MenuItem>
+                </Select>
+              </FormControl>
+              <FormControl className={classes.formControl}>
+                <InputLabel htmlFor="dataType-simple">Data Type*</InputLabel>
+                <Select
+                key={selectedVariable}
+                  value={this.state.dataType}
+                  onChange={this.handleChange}
+                  inputProps={{
+                    name: 'dataType',
+                    id: 'dataType-simple',
+                  }}>
+                  <MenuItem
+                    value=""
+                  >
+                    <em>None</em>
+                  </MenuItem>
+                  <MenuItem value="boolean" >boolean</MenuItem>
+                  <MenuItem value="int*" >integer</MenuItem>
+                  <MenuItem value="single">unsigned integer</MenuItem>
+                  <MenuItem value="double">real</MenuItem>
+                </Select>
+              </FormControl>
+              <div>
+              <TextField
+                id="assignment"
+                label="Variable Assignment in Lustre*"
+                type="text"
+                value={this.state.assignment}
+                margin="normal"
+                className={classes.descriptionField}
+                multiline
+                onChange={this.handleTextFieldChange('assignment')}
+                onFocus={this.handleTextFieldFocused('assignment')}
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={this.state.checkFRETish}
+                    onChange={this.handleCheckChange('checkFRETish')}
+                    value="checkFRETish"
+                    />
+                }
+                label="FRETish"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={this.state.checkLustre}
+                    onChange={this.handleCheckChange('checkLustre')}
+                    value="checkLustre"
+                    />
+                }
+                label="Lustre"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={this.state.checkCoPilot}
+                    onChange={this.handleCheckChange('checkCoPilot')}
+                    value="checkCoPilot"
+                    />
+                }
+                label="CoPilot"
+              />
+              </div>
+              <TextField
+                id="description"
+                label="Description"
+                type="text"
+                defaultValue={this.state.description}
+                margin="normal"
+                className={classes.descriptionField}
+                multiline
+                onChange={this.handleTextFieldChange('description')}
+                onFocus={this.handleTextFieldFocused('description')}
+              />
+            </form>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleClose}>
+              Cancel
+            </Button>
+            <Button onClick={this.handleUpdate} color="secondary" variant='contained'>
+              Update
+            </Button>
+          </DialogActions>
+          </Dialog>
+        </div>
+
+      );
+    } else if (idType === 'Internal' && errors == '' && !checkFRETish && !checkLustre && checkCoPilot){
+      return (
+        <div>
+          <Dialog
+          open={this.state.open}
+          onClose={this.handleClose}
+          aria-labelledby="form-dialog-title"
+          maxWidth='sm'
+          >
+          <DialogTitle id="form-dialog-title">Update Variable</DialogTitle>
+          <DialogContent>
+            <form className={classes.container} noValidate autoComplete="off">
+              <TextField
+                id="standard-read-only-input"
+                label="FRET Project"
+                defaultValue={selectedVariable.project}
+                className={classes.extendedTextField}
+                margin="normal"
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+              <TextField
+                id="standard-read-only-input"
+                label="FRET Component"
+                defaultValue={selectedVariable.component_name}
+                className={classes.extendedTextField}
+                margin="normal"
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+              <TextField
+                id="standard-read-only-input"
+                label="Model Component"
+                defaultValue={selectedVariable.modelComponent}
+                className={classes.descriptionField}
+                margin="normal"
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+              <TextField
+                id="standard-read-only-input"
+                label="FRET Variable"
+                defaultValue={selectedVariable.variable_name}
+                className={classes.extendedTextField}
+                margin="normal"
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+              <FormControl className={classes.formControl}>
+                <InputLabel htmlFor="idType-simple">Variable Type*</InputLabel>
+                <Select
+                  key={selectedVariable}
+                  value={this.state.idType}
+                  onChange={this.handleChange}
+                  inputProps={{
+                    name: 'idType',
+                    id: 'idType-simple',
+                  }}>
+                  <MenuItem value="" key={selectedVariable}>
+                    <em>None</em>
+                  </MenuItem>
+                  <MenuItem value="Input" >Input</MenuItem>
+                  <MenuItem value="Output">Output</MenuItem>
+                  <MenuItem value="Internal">Internal</MenuItem>
+                </Select>
+              </FormControl>
+              <FormControl className={classes.formControl}>
+                <InputLabel htmlFor="dataType-simple">Data Type*</InputLabel>
+                <Select
+                key={selectedVariable}
+                  value={this.state.dataType}
+                  onChange={this.handleChange}
+                  inputProps={{
+                    name: 'dataType',
+                    id: 'dataType-simple',
+                  }}>
+                  <MenuItem
+                    value=""
+                  >
+                    <em>None</em>
+                  </MenuItem>
+                  <MenuItem value="boolean" >boolean</MenuItem>
+                  <MenuItem value="int*" >integer</MenuItem>
+                  <MenuItem value="single">unsigned integer</MenuItem>
+                  <MenuItem value="double">real</MenuItem>
+                </Select>
+              </FormControl>
+              <div>
+              <TextField
+                id="assignment"
+                label="Variable Assignment in CoPilot*"
+                type="text"
+                value={this.state.assignment}
+                margin="normal"
+                className={classes.descriptionField}
+                multiline
+                onChange={this.handleTextFieldChange('assignment')}
+                onFocus={this.handleTextFieldFocused('assignment')}
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={this.state.checkFRETish}
+                    onChange={this.handleCheckChange('checkFRETish')}
+                    value="checkFRETish"
+                    />
+                }
+                label="FRETish"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={this.state.checkLustre}
+                    onChange={this.handleCheckChange('checkLustre')}
+                    value="checkLustre"
+                    />
+                }
+                label="Lustre"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={this.state.checkCoPilot}
+                    onChange={this.handleCheckChange('checkCoPilot')}
+                    value="checkCoPilot"
+                    />
+                }
+                label="CoPilot"
+              />
+              </div>
+              <TextField
+                id="description"
+                label="Description"
+                type="text"
+                defaultValue={this.state.description}
+                margin="normal"
+                className={classes.descriptionField}
+                multiline
+                onChange={this.handleTextFieldChange('description')}
+                onFocus={this.handleTextFieldFocused('description')}
+              />
+            </form>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleClose}>
+              Cancel
+            </Button>
+            <Button onClick={this.handleUpdate} color="secondary" variant='contained'>
+              Update
+            </Button>
+          </DialogActions>
+          </Dialog>
+        </div>
+      );
+    } else if (idType === 'Internal' && errors == '' && checkFRETish && !checkLustre && checkCoPilot){
+      return (
+        <div>
+          <Dialog
+          open={this.state.open}
+          onClose={this.handleClose}
+          aria-labelledby="form-dialog-title"
+          maxWidth='sm'
+          >
+          <DialogTitle id="form-dialog-title">Update Variable</DialogTitle>
+          <DialogContent>
+            <form className={classes.container} noValidate autoComplete="off">
+              <TextField
+                id="standard-read-only-input"
+                label="FRET Project"
+                defaultValue={selectedVariable.project}
+                className={classes.extendedTextField}
+                margin="normal"
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+              <TextField
+                id="standard-read-only-input"
+                label="FRET Component"
+                defaultValue={selectedVariable.component_name}
+                className={classes.extendedTextField}
+                margin="normal"
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+              <TextField
+                id="standard-read-only-input"
+                label="Model Component"
+                defaultValue={selectedVariable.modelComponent}
+                className={classes.descriptionField}
+                margin="normal"
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+              <TextField
+                id="standard-read-only-input"
+                label="FRET Variable"
+                defaultValue={selectedVariable.variable_name}
+                className={classes.extendedTextField}
+                margin="normal"
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+              <FormControl className={classes.formControl}>
+                <InputLabel htmlFor="idType-simple">Variable Type*</InputLabel>
+                <Select
+                  key={selectedVariable}
+                  value={this.state.idType}
+                  onChange={this.handleChange}
+                  inputProps={{
+                    name: 'idType',
+                    id: 'idType-simple',
+                  }}>
+                  <MenuItem value="" key={selectedVariable}>
+                    <em>None</em>
+                  </MenuItem>
+                  <MenuItem value="Input" >Input</MenuItem>
+                  <MenuItem value="Output">Output</MenuItem>
+                  <MenuItem value="Internal">Internal</MenuItem>
+                </Select>
+              </FormControl>
+              <FormControl className={classes.formControl}>
+                <InputLabel htmlFor="dataType-simple">Data Type*</InputLabel>
+                <Select
+                key={selectedVariable}
+                  value={this.state.dataType}
+                  onChange={this.handleChange}
+                  inputProps={{
+                    name: 'dataType',
+                    id: 'dataType-simple',
+                  }}>
+                  <MenuItem
+                    value=""
+                  >
+                    <em>None</em>
+                  </MenuItem>
+                  <MenuItem value="boolean" >boolean</MenuItem>
+                  <MenuItem value="int*" >integer</MenuItem>
+                  <MenuItem value="single">unsigned integer</MenuItem>
+                  <MenuItem value="double">real</MenuItem>
+                </Select>
+              </FormControl>
+              <div>
+              <TextField
+                id="assignment"
+                label="Variable Assignment in FRETish*"
+                type="text"
+                value={this.state.assignment}
+                margin="normal"
+                className={classes.descriptionField}
+                multiline
+                onChange={this.handleTextFieldChange('assignment')}
+                onFocus={this.handleTextFieldFocused('assignment')}
+              />
+              <TextField
+                id="assignment"
+                label="Variable Assignment in CoPilot*"
+                type="text"
+                value={this.state.assignment}
+                margin="normal"
+                className={classes.descriptionField}
+                multiline
+                onChange={this.handleTextFieldChange('assignment')}
+                onFocus={this.handleTextFieldFocused('assignment')}
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={this.state.checkFRETish}
+                    onChange={this.handleCheckChange('checkFRETish')}
+                    value="checkFRETish"
+                    />
+                }
+                label="FRETish"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={this.state.checkLustre}
+                    onChange={this.handleCheckChange('checkLustre')}
+                    value="checkLustre"
+                    />
+                }
+                label="Lustre"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={this.state.checkCoPilot}
+                    onChange={this.handleCheckChange('checkCoPilot')}
+                    value="checkCoPilot"
+                    />
+                }
+                label="CoPilot"
+              />
+              </div>
+              <TextField
+                id="description"
+                label="Description"
+                type="text"
+                defaultValue={this.state.description}
+                margin="normal"
+                className={classes.descriptionField}
+                multiline
+                onChange={this.handleTextFieldChange('description')}
+                onFocus={this.handleTextFieldFocused('description')}
+              />
+            </form>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleClose}>
+              Cancel
+            </Button>
+            <Button onClick={this.handleUpdate} color="secondary" variant='contained'>
+              Update
+            </Button>
+          </DialogActions>
+          </Dialog>
+        </div>
+      );
+    } else if (idType === 'Internal' && errors == '' && !checkFRETish && checkLustre && checkCoPilot){
+      return (
+        <div>
+          <Dialog
+          open={this.state.open}
+          onClose={this.handleClose}
+          aria-labelledby="form-dialog-title"
+          maxWidth='sm'
+          >
+          <DialogTitle id="form-dialog-title">Update Variable</DialogTitle>
+          <DialogContent>
+            <form className={classes.container} noValidate autoComplete="off">
+              <TextField
+                id="standard-read-only-input"
+                label="FRET Project"
+                defaultValue={selectedVariable.project}
+                className={classes.extendedTextField}
+                margin="normal"
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+              <TextField
+                id="standard-read-only-input"
+                label="FRET Component"
+                defaultValue={selectedVariable.component_name}
+                className={classes.extendedTextField}
+                margin="normal"
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+              <TextField
+                id="standard-read-only-input"
+                label="Model Component"
+                defaultValue={selectedVariable.modelComponent}
+                className={classes.descriptionField}
+                margin="normal"
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+              <TextField
+                id="standard-read-only-input"
+                label="FRET Variable"
+                defaultValue={selectedVariable.variable_name}
+                className={classes.extendedTextField}
+                margin="normal"
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+              <FormControl className={classes.formControl}>
+                <InputLabel htmlFor="idType-simple">Variable Type*</InputLabel>
+                <Select
+                  key={selectedVariable}
+                  value={this.state.idType}
+                  onChange={this.handleChange}
+                  inputProps={{
+                    name: 'idType',
+                    id: 'idType-simple',
+                  }}>
+                  <MenuItem value="" key={selectedVariable}>
+                    <em>None</em>
+                  </MenuItem>
+                  <MenuItem value="Input" >Input</MenuItem>
+                  <MenuItem value="Output">Output</MenuItem>
+                  <MenuItem value="Internal">Internal</MenuItem>
+                </Select>
+              </FormControl>
+              <FormControl className={classes.formControl}>
+                <InputLabel htmlFor="dataType-simple">Data Type*</InputLabel>
+                <Select
+                key={selectedVariable}
+                  value={this.state.dataType}
+                  onChange={this.handleChange}
+                  inputProps={{
+                    name: 'dataType',
+                    id: 'dataType-simple',
+                  }}>
+                  <MenuItem
+                    value=""
+                  >
+                    <em>None</em>
+                  </MenuItem>
+                  <MenuItem value="boolean" >boolean</MenuItem>
+                  <MenuItem value="int*" >integer</MenuItem>
+                  <MenuItem value="single">unsigned integer</MenuItem>
+                  <MenuItem value="double">real</MenuItem>
+                </Select>
+              </FormControl>
+              <div>
+              <TextField
+                id="assignment"
+                label="Variable Assignment in Lustre*"
+                type="text"
+                value={this.state.assignment}
+                margin="normal"
+                className={classes.descriptionField}
+                multiline
+                onChange={this.handleTextFieldChange('assignment')}
+                onFocus={this.handleTextFieldFocused('assignment')}
+              />
+              <TextField
+                id="assignment"
+                label="Variable Assignment in CoPilot*"
+                type="text"
+                value={this.state.assignment}
+                margin="normal"
+                className={classes.descriptionField}
+                multiline
+                onChange={this.handleTextFieldChange('assignment')}
+                onFocus={this.handleTextFieldFocused('assignment')}
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={this.state.checkFRETish}
+                    onChange={this.handleCheckChange('checkFRETish')}
+                    value="checkFRETish"
+                    />
+                }
+                label="FRETish"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={this.state.checkLustre}
+                    onChange={this.handleCheckChange('checkLustre')}
+                    value="checkLustre"
+                    />
+                }
+                label="Lustre"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={this.state.checkCoPilot}
+                    onChange={this.handleCheckChange('checkCoPilot')}
+                    value="checkCoPilot"
+                    />
+                }
+                label="CoPilot"
+              />
+              </div>
+              <TextField
+                id="description"
+                label="Description"
+                type="text"
+                defaultValue={this.state.description}
+                margin="normal"
+                className={classes.descriptionField}
+                multiline
+                onChange={this.handleTextFieldChange('description')}
+                onFocus={this.handleTextFieldFocused('description')}
+              />
+            </form>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleClose}>
+              Cancel
+            </Button>
+            <Button onClick={this.handleUpdate} color="secondary" variant='contained'>
+              Update
+            </Button>
+          </DialogActions>
+          </Dialog>
+        </div>
+      );
+    } else if (idType === 'Internal' && errors == '' && checkFRETish && checkLustre && !checkCoPilot){
+      return (
+        <div>
+          <Dialog
+          open={this.state.open}
+          onClose={this.handleClose}
+          aria-labelledby="form-dialog-title"
+          maxWidth='sm'
+          >
+          <DialogTitle id="form-dialog-title">Update Variable</DialogTitle>
+          <DialogContent>
+            <form className={classes.container} noValidate autoComplete="off">
+              <TextField
+                id="standard-read-only-input"
+                label="FRET Project"
+                defaultValue={selectedVariable.project}
+                className={classes.extendedTextField}
+                margin="normal"
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+              <TextField
+                id="standard-read-only-input"
+                label="FRET Component"
+                defaultValue={selectedVariable.component_name}
+                className={classes.extendedTextField}
+                margin="normal"
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+              <TextField
+                id="standard-read-only-input"
+                label="Model Component"
+                defaultValue={selectedVariable.modelComponent}
+                className={classes.descriptionField}
+                margin="normal"
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+              <TextField
+                id="standard-read-only-input"
+                label="FRET Variable"
+                defaultValue={selectedVariable.variable_name}
+                className={classes.extendedTextField}
+                margin="normal"
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+              <FormControl className={classes.formControl}>
+                <InputLabel htmlFor="idType-simple">Variable Type*</InputLabel>
+                <Select
+                  key={selectedVariable}
+                  value={this.state.idType}
+                  onChange={this.handleChange}
+                  inputProps={{
+                    name: 'idType',
+                    id: 'idType-simple',
+                  }}>
+                  <MenuItem value="" key={selectedVariable}>
+                    <em>None</em>
+                  </MenuItem>
+                  <MenuItem value="Input" >Input</MenuItem>
+                  <MenuItem value="Output">Output</MenuItem>
+                  <MenuItem value="Internal">Internal</MenuItem>
+                </Select>
+              </FormControl>
+              <FormControl className={classes.formControl}>
+                <InputLabel htmlFor="dataType-simple">Data Type*</InputLabel>
+                <Select
+                key={selectedVariable}
+                  value={this.state.dataType}
+                  onChange={this.handleChange}
+                  inputProps={{
+                    name: 'dataType',
+                    id: 'dataType-simple',
+                  }}>
+                  <MenuItem
+                    value=""
+                  >
+                    <em>None</em>
+                  </MenuItem>
+                  <MenuItem value="boolean" >boolean</MenuItem>
+                  <MenuItem value="int*" >integer</MenuItem>
+                  <MenuItem value="single">unsigned integer</MenuItem>
+                  <MenuItem value="double">real</MenuItem>
+                </Select>
+              </FormControl>
+              <div>
+              <TextField
+                id="assignment"
+                label="Variable Assignment in FRETish*"
+                type="text"
+                value={this.state.assignment}
+                margin="normal"
+                className={classes.descriptionField}
+                multiline
+                onChange={this.handleTextFieldChange('assignment')}
+                onFocus={this.handleTextFieldFocused('assignment')}
+              />
+              <TextField
+                id="assignment"
+                label="Variable Assignment in Lustre*"
+                type="text"
+                value={this.state.assignment}
+                margin="normal"
+                className={classes.descriptionField}
+                multiline
+                onChange={this.handleTextFieldChange('assignment')}
+                onFocus={this.handleTextFieldFocused('assignment')}
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={this.state.checkFRETish}
+                    onChange={this.handleCheckChange('checkFRETish')}
+                    value="checkFRETish"
+                    />
+                }
+                label="FRETish"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={this.state.checkLustre}
+                    onChange={this.handleCheckChange('checkLustre')}
+                    value="checkLustre"
+                    />
+                }
+                label="Lustre"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={this.state.checkCoPilot}
+                    onChange={this.handleCheckChange('checkCoPilot')}
+                    value="checkCoPilot"
+                    />
+                }
+                label="CoPilot"
+              />
+              </div>
+              <TextField
+                id="description"
+                label="Description"
+                type="text"
+                defaultValue={this.state.description}
+                margin="normal"
+                className={classes.descriptionField}
+                multiline
+                onChange={this.handleTextFieldChange('description')}
+                onFocus={this.handleTextFieldFocused('description')}
+              />
+            </form>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleClose}>
+              Cancel
+            </Button>
+            <Button onClick={this.handleUpdate} color="secondary" variant='contained'>
+              Update
+            </Button>
+          </DialogActions>
+          </Dialog>
+        </div>
+      );
+    } else if (idType === 'Internal' && errors == '' && !checkFRETish && checkLustre && checkCoPilot){
+      return (
+        <div>
+          <Dialog
+          open={this.state.open}
+          onClose={this.handleClose}
+          aria-labelledby="form-dialog-title"
+          maxWidth='sm'
+          >
+          <DialogTitle id="form-dialog-title">Update Variable</DialogTitle>
+          <DialogContent>
+            <form className={classes.container} noValidate autoComplete="off">
+              <TextField
+                id="standard-read-only-input"
+                label="FRET Project"
+                defaultValue={selectedVariable.project}
+                className={classes.extendedTextField}
+                margin="normal"
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+              <TextField
+                id="standard-read-only-input"
+                label="FRET Component"
+                defaultValue={selectedVariable.component_name}
+                className={classes.extendedTextField}
+                margin="normal"
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+              <TextField
+                id="standard-read-only-input"
+                label="Model Component"
+                defaultValue={selectedVariable.modelComponent}
+                className={classes.descriptionField}
+                margin="normal"
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+              <TextField
+                id="standard-read-only-input"
+                label="FRET Variable"
+                defaultValue={selectedVariable.variable_name}
+                className={classes.extendedTextField}
+                margin="normal"
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+              <FormControl className={classes.formControl}>
+                <InputLabel htmlFor="idType-simple">Variable Type*</InputLabel>
+                <Select
+                  key={selectedVariable}
+                  value={this.state.idType}
+                  onChange={this.handleChange}
+                  inputProps={{
+                    name: 'idType',
+                    id: 'idType-simple',
+                  }}>
+                  <MenuItem value="" key={selectedVariable}>
+                    <em>None</em>
+                  </MenuItem>
+                  <MenuItem value="Input" >Input</MenuItem>
+                  <MenuItem value="Output">Output</MenuItem>
+                  <MenuItem value="Internal">Internal</MenuItem>
+                </Select>
+              </FormControl>
+              <FormControl className={classes.formControl}>
+                <InputLabel htmlFor="dataType-simple">Data Type*</InputLabel>
+                <Select
+                key={selectedVariable}
+                  value={this.state.dataType}
+                  onChange={this.handleChange}
+                  inputProps={{
+                    name: 'dataType',
+                    id: 'dataType-simple',
+                  }}>
+                  <MenuItem
+                    value=""
+                  >
+                    <em>None</em>
+                  </MenuItem>
+                  <MenuItem value="boolean" >boolean</MenuItem>
+                  <MenuItem value="int*" >integer</MenuItem>
+                  <MenuItem value="single">unsigned integer</MenuItem>
+                  <MenuItem value="double">real</MenuItem>
+                </Select>
+              </FormControl>
+              <div>
+              <TextField
+                id="assignment"
+                label="Variable Assignment in Lustre*"
+                type="text"
+                value={this.state.assignment}
+                margin="normal"
+                className={classes.descriptionField}
+                multiline
+                onChange={this.handleTextFieldChange('assignment')}
+                onFocus={this.handleTextFieldFocused('assignment')}
+              />
+              <TextField
+                id="assignment"
+                label="Variable Assignment in CoPilot*"
+                type="text"
+                value={this.state.assignment}
+                margin="normal"
+                className={classes.descriptionField}
+                multiline
+                onChange={this.handleTextFieldChange('assignment')}
+                onFocus={this.handleTextFieldFocused('assignment')}
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={this.state.checkFRETish}
+                    onChange={this.handleCheckChange('checkFRETish')}
+                    value="checkFRETish"
+                    />
+                }
+                label="FRETish"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={this.state.checkLustre}
+                    onChange={this.handleCheckChange('checkLustre')}
+                    value="checkLustre"
+                    />
+                }
+                label="Lustre"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={this.state.checkCoPilot}
+                    onChange={this.handleCheckChange('checkCoPilot')}
+                    value="checkCoPilot"
+                    />
+                }
+                label="CoPilot"
+              />
+              </div>
+              <TextField
+                id="description"
+                label="Description"
+                type="text"
+                defaultValue={this.state.description}
+                margin="normal"
+                className={classes.descriptionField}
+                multiline
+                onChange={this.handleTextFieldChange('description')}
+                onFocus={this.handleTextFieldFocused('description')}
+              />
+            </form>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleClose}>
+              Cancel
+            </Button>
+            <Button onClick={this.handleUpdate} color="secondary" variant='contained'>
+              Update
+            </Button>
+          </DialogActions>
+          </Dialog>
+        </div>
+      );
+    } else if (idType === 'Internal' && errors == '' && checkFRETish && checkLustre && checkCoPilot){
+      return (
+        <div>
+          <Dialog
+          open={this.state.open}
+          onClose={this.handleClose}
+          aria-labelledby="form-dialog-title"
+          maxWidth='sm'
+          >
+          <DialogTitle id="form-dialog-title">Update Variable</DialogTitle>
+          <DialogContent>
+            <form className={classes.container} noValidate autoComplete="off">
+              <TextField
+                id="standard-read-only-input"
+                label="FRET Project"
+                defaultValue={selectedVariable.project}
+                className={classes.extendedTextField}
+                margin="normal"
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+              <TextField
+                id="standard-read-only-input"
+                label="FRET Component"
+                defaultValue={selectedVariable.component_name}
+                className={classes.extendedTextField}
+                margin="normal"
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+              <TextField
+                id="standard-read-only-input"
+                label="Model Component"
+                defaultValue={selectedVariable.modelComponent}
+                className={classes.descriptionField}
+                margin="normal"
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+              <TextField
+                id="standard-read-only-input"
+                label="FRET Variable"
+                defaultValue={selectedVariable.variable_name}
+                className={classes.extendedTextField}
+                margin="normal"
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+              <FormControl className={classes.formControl}>
+                <InputLabel htmlFor="idType-simple">Variable Type*</InputLabel>
+                <Select
+                  key={selectedVariable}
+                  value={this.state.idType}
+                  onChange={this.handleChange}
+                  inputProps={{
+                    name: 'idType',
+                    id: 'idType-simple',
+                  }}>
+                  <MenuItem value="" key={selectedVariable}>
+                    <em>None</em>
+                  </MenuItem>
+                  <MenuItem value="Input" >Input</MenuItem>
+                  <MenuItem value="Output">Output</MenuItem>
+                  <MenuItem value="Internal">Internal</MenuItem>
+                </Select>
+              </FormControl>
+              <FormControl className={classes.formControl}>
+                <InputLabel htmlFor="dataType-simple">Data Type*</InputLabel>
+                <Select
+                key={selectedVariable}
+                  value={this.state.dataType}
+                  onChange={this.handleChange}
+                  inputProps={{
+                    name: 'dataType',
+                    id: 'dataType-simple',
+                  }}>
+                  <MenuItem
+                    value=""
+                  >
+                    <em>None</em>
+                  </MenuItem>
+                  <MenuItem value="boolean" >boolean</MenuItem>
+                  <MenuItem value="int*" >integer</MenuItem>
+                  <MenuItem value="single">unsigned integer</MenuItem>
+                  <MenuItem value="double">real</MenuItem>
+                </Select>
+              </FormControl>
+              <div>
+              <TextField
+                id="assignment"
+                label="Variable Assignment in FRETish*"
+                type="text"
+                value={this.state.assignment}
+                margin="normal"
+                className={classes.descriptionField}
+                multiline
+                onChange={this.handleTextFieldChange('assignment')}
+                onFocus={this.handleTextFieldFocused('assignment')}
+              />
+              <TextField
+                id="assignment"
+                label="Variable Assignment in Lustre*"
+                type="text"
+                value={this.state.assignment}
+                margin="normal"
+                className={classes.descriptionField}
+                multiline
+                onChange={this.handleTextFieldChange('assignment')}
+                onFocus={this.handleTextFieldFocused('assignment')}
+              />
+              <TextField
+                id="assignment"
+                label="Variable Assignment in CoPilot*"
+                type="text"
+                value={this.state.assignment}
+                margin="normal"
+                className={classes.descriptionField}
+                multiline
+                onChange={this.handleTextFieldChange('assignment')}
+                onFocus={this.handleTextFieldFocused('assignment')}
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={this.state.checkFRETish}
+                    onChange={this.handleCheckChange('checkFRETish')}
+                    value="checkFRETish"
+                    />
+                }
+                label="FRETish"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={this.state.checkLustre}
+                    onChange={this.handleCheckChange('checkLustre')}
+                    value="checkLustre"
+                    />
+                }
+                label="Lustre"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={this.state.checkCoPilot}
+                    onChange={this.handleCheckChange('checkCoPilot')}
+                    value="checkCoPilot"
+                    />
+                }
+                label="CoPilot"
+              />
+              </div>
               <TextField
                 id="description"
                 label="Description"
@@ -712,10 +1938,9 @@ class DisplayVariableDialog extends React.Component {
                     <em>None</em>
                   </MenuItem>
                   <MenuItem value="boolean" >boolean</MenuItem>
-                  <MenuItem value="int*" >int*</MenuItem>
-                  <MenuItem value="single">single</MenuItem>
-                  <MenuItem value="double">double</MenuItem>
-                  <MenuItem value="enum">enum</MenuItem>
+                  <MenuItem value="int*" >integer</MenuItem>
+                  <MenuItem value="single">unsigned integer</MenuItem>
+                  <MenuItem value="double">real</MenuItem>
                 </Select>
               </FormControl>
               <TextField
