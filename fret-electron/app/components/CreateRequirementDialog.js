@@ -160,9 +160,10 @@ class CreateRequirementDialog extends React.Component {
 
     if (dbrev != undefined){
       db.get(dbid).then(function(doc){
-        if (doc.semantics.variables && doc.semantics.variables.regular){
-          oldVariables = oldVariables.concat(doc.semantics.variables.regular);
-        }
+        if (doc.semantics)
+          if (doc.semantics.variables && doc.semantics.variables.regular){
+            oldVariables = oldVariables.concat(doc.semantics.variables.regular);
+          }
         oldVariables.forEach(function(oldv){
           var modeldbidOld = project + semantics.component_name + oldv;
           if (!semantics.variables.regular.includes(oldv)){
