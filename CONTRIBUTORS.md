@@ -12,5 +12,6 @@ Alumni and Interns
 * David Bushnell
 * Tanja deJong
 * George Karamanolis
+* David Kooi
 * Julian Rhein
 * Nija Shi
