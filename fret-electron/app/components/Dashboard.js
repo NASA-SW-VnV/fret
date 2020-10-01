@@ -1,7 +1,7 @@
 // *****************************************************************************
 // Notices:
 // 
-// Copyright © 2019 United States Government as represented by the Administrator
+// Copyright Â© 2019 United States Government as represented by the Administrator
 // of the National Aeronautics and Space Administration.  All Rights Reserved.
 // 
 // Disclaimers
@@ -129,7 +129,7 @@ class Dashboard extends React.Component {
       .forEach(r => {
         const req = r.doc
         numOfRequirements++
-        bytesOfRequirements += req.fulltext.length
+        if (req.fulltext) bytesOfRequirements += req.fulltext.length
         if (req.semantics){
           if (req.semantics.ft && req.semantics.ft !== constants.nonsense_semantics && req.semantics.ft !== constants.undefined_semantics && req.semantics.ft !== constants.unhandled_semantics )
             numOfFormalizedRequirements += 1
