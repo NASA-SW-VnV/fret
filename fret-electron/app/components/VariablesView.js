@@ -582,6 +582,7 @@ class VariablesView extends React.Component {
     const {classes, selectedProject, existingProjectNames} = this.props;
     const {components, completedComponents, cocospecData, cocospecModes, language}= this.state;
 
+
     return (
       <div>
           <div className={classes.actions}>
