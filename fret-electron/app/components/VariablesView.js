@@ -308,6 +308,7 @@ class ComponentSummary extends React.Component {
       if (filepath) {
         // create a file to stream archive data to.
         var output = fs.createWriteStream(filepath);
+        console.log(output);
         var archive = archiver('zip', {
           zlib: { level: 9 } // Sets the compression level.
         });
