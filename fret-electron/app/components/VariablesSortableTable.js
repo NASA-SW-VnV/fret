@@ -1,15 +1,15 @@
 // *****************************************************************************
 // Notices:
-// 
-// Copyright © 2019 United States Government as represented by the Administrator
+//
+// Copyright ï¿½ 2019 United States Government as represented by the Administrator
 // of the National Aeronautics and Space Administration.  All Rights Reserved.
-// 
+//
 // Disclaimers
-// 
+//
 // No Warranty: THE SUBJECT SOFTWARE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY OF
 // ANY KIND, EITHER EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED
-// TO, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL CONFORM TO SPECIFICATIONS, 
-// ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, 
+// TO, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL CONFORM TO SPECIFICATIONS,
+// ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE,
 // OR FREEDOM FROM INFRINGEMENT, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL BE
 // ERROR FREE, OR ANY WARRANTY THAT DOCUMENTATION, IF PROVIDED, WILL CONFORM TO
 // THE SUBJECT SOFTWARE. THIS AGREEMENT DOES NOT, IN ANY MANNER, CONSTITUTE AN
@@ -18,7 +18,7 @@
 // RESULTING FROM USE OF THE SUBJECT SOFTWARE.  FURTHER, GOVERNMENT AGENCY
 // DISCLAIMS ALL WARRANTIES AND LIABILITIES REGARDING THIRD-PARTY SOFTWARE, IF
 // PRESENT IN THE ORIGINAL SOFTWARE, AND DISTRIBUTES IT ''AS IS.''
-// 
+//
 // Waiver and Indemnity:  RECIPIENT AGREES TO WAIVE ANY AND ALL CLAIMS AGAINST
 // THE UNITED STATES GOVERNMENT, ITS CONTRACTORS AND SUBCONTRACTORS, AS WELL AS
 // ANY PRIOR RECIPIENT.  IF RECIPIENT'S USE OF THE SUBJECT SOFTWARE RESULTS IN
@@ -191,9 +191,9 @@ const tableComponentBarStyles = theme => ({
     flex: '1 1 100%',
   },
   formControl: {
-    minWidth: 300,
-    paddingLeft: theme.spacing.unit *25,
+    minWidth: 400,
     padding: theme.spacing.unit * -2,
+    marginRight: theme.spacing.unit * 2
 
   },
 });
@@ -202,12 +202,6 @@ let TableComponentBar = props => {
   const {classes, handleModelChange, modelComponents, modelComponent, fretComponent} = props;
   return(
     <Toolbar className={classNames(classes.root, classes.componentBar)}>
-      <div className={classes.title}>
-        <Typography color="inherit" variant="subtitle1">
-           FRET Component: {fretComponent}
-        </Typography>
-      </div>
-      <div className={classes.spacer}>
       <form className={classes.formControl} autoComplete="off">
         <FormControl className={classes.modelRoot}>
           <InputLabel htmlFor="component-helper">Corresponding Model Component</InputLabel>
@@ -230,7 +224,11 @@ let TableComponentBar = props => {
           </Select>
         </FormControl>
       </form>
-      </div>
+      <Tooltip title='Import model information'>
+        <Button size="small" color="secondary" variant='contained' >
+          Import
+        </Button>
+      </Tooltip>
     </Toolbar>
   );
 };
@@ -418,6 +416,7 @@ class VariablesSortableTable extends React.Component {
             otherDeps: vdoc.otherDeps,
             description: vdoc.description,
             assignment: vdoc.assignment,
+            copilotAssignment: vdoc.copilotAssignment,
             modeRequirement: vdoc.modeRequirement,
             modeldoc: vdoc.modeldoc,
             modelComponent: modelComponent,

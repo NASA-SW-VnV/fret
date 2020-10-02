@@ -55,6 +55,7 @@ import Button from '@material-ui/core/Button';
 
 import VariablesSortableTable from './VariablesSortableTable';
 import ejsCache from '../../support/CoCoSpecTemplates/ejsCache';
+import ejsCacheCoPilot from '../../support/CoPilotTemplates/ejsCacheCoPilot';
 
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
@@ -134,9 +135,12 @@ const styles = theme => ({
     fontWeight: theme.typography.fontWeightRegular,
   },
   formControl: {
-    margin: theme.spacing.unit,
-    minWidth: 150,
-    marginTop: theme.spacing.unit * -1,
+    minWidth: 200,
+    marginBottom: theme.spacing.unit * 3,
+    marginRight: theme.spacing.unit * 2
+  },
+  buttonControl: {
+    marginTop: theme.spacing.unit * 2,
   },
   selectEmpty: {
     marginTop: theme.spacing.unit * 2,
@@ -271,6 +275,8 @@ class ComponentSummary extends React.Component {
 
   exportComponentCode = () => {
     const {component, selectedProject} = this.props;
+    const {language} = this.state;
+    console.log(language);
     const homeDir = app.getPath('home');
     const self = this;
     var filepath = dialog.showSaveDialog({
@@ -285,6 +291,7 @@ class ComponentSummary extends React.Component {
       if (filepath) {
         // create a file to stream archive data to.
         var output = fs.createWriteStream(filepath);
+        console.log(output);
         var archive = archiver('zip', {
           zlib: { level: 9 } // Sets the compression level.
         });
@@ -310,7 +317,9 @@ class ComponentSummary extends React.Component {
           contract.componentName = component+'Spec';
           var variableMapping = self.getMappingInfo(modelResult, contract.componentName);
           archive.pipe(output);
-          archive.append(JSON.stringify(variableMapping), {name: 'cocospecMapping'+component+'.json'});
+          if (language === 'cocospec')
+            archive.append(JSON.stringify(variableMapping), {name: 'cocospecMapping'+component+'.json'});
+
           db.find({
             selector: {
               project: selectedProject
@@ -318,9 +327,14 @@ class ComponentSummary extends React.Component {
           }).then(function (fretResult){
             contract.properties = self.getPropertyInfo(fretResult, contract.outputVariables, component);
             contract.delays = self.getDelayInfo(fretResult, component);
-            archive.append(ejsCache.renderContractCode().contract.complete(contract), {name: contract.componentName+'.lus'})
+            if (language === 'cocospec'){
+              archive.append(ejsCache.renderContractCode().contract.complete(contract), {name: contract.componentName+'.lus'})
+            } else if (language === 'copilot'){
+              archive.append(ejsCacheCoPilot.renderCoPilotSpec().contract.complete(contract), {name: contract.componentName+'.json'})
+            }
             // finalize the archive (ie we are done appending files but streams have to finish yet)
             archive.finalize();
+
           }).catch((err) => {
             console.log(err);
           })
@@ -343,13 +357,12 @@ class ComponentSummary extends React.Component {
               name: 'language',
               id: 'language-export-required',
             }}>
-            <MenuItem value="lustre" >Lustre</MenuItem>
-            <MenuItem value="cocospec" >CoCoSpec</MenuItem>
+            <MenuItem value="cocospec">CoCoSpec</MenuItem>
             <MenuItem value="copilot">CoPilot</MenuItem>
           </Select>
         </FormControl>
         <Tooltip title='Export verification code.'>
-          <Button size="small" onClick={this.exportComponentCode} color="secondary" variant='contained'>
+          <Button size="small" onClick={this.exportComponentCode} color="secondary" variant='contained' className={classes.buttonControl}>
             Export
           </Button>
         </Tooltip>
@@ -358,25 +371,25 @@ class ComponentSummary extends React.Component {
     } else {
       return (
         <div>
-        <FormControl required className={classes.formControl}>
-          <InputLabel htmlFor="language-export-required">Language</InputLabel>
-          <Select
-            value={language}
-            onChange={this.handleChange('language')}
-            inputProps={{
-              name: 'language',
-              id: 'language-export-required',
-            }}>
-            <MenuItem value="cocospec" >CoCoSpec</MenuItem>
-            <MenuItem value="copilot">CoPilot</MenuItem>
-          </Select>
-        </FormControl>
-        <Tooltip title='To export verification code, please complete mandatory variable fields and export language first.'>
-          <Button size="small" color="disabled" variant='contained'>
-            Export
-          </Button>
-        </Tooltip>
-          </div>
+          <FormControl required className={classes.formControl}>
+            <InputLabel htmlFor="language-export-required">Language</InputLabel>
+            <Select
+              value={language}
+              onChange={this.handleChange('language')}
+              inputProps={{
+                name: 'language',
+                id: 'language-export-required',
+              }}>
+              <MenuItem value="cocospec">CoCoSpec</MenuItem>
+              <MenuItem value="copilot">CoPilot</MenuItem>
+            </Select>
+          </FormControl>
+          <Tooltip title='To export verification code, please complete mandatory variable fields and export language first.'>
+            <Button size="small" color="secondary" disabled variant='contained' className={classes.buttonControl}>
+              Export
+            </Button>
+          </Tooltip>
+        </div>
       );
     }
   }
@@ -556,15 +569,6 @@ class VariablesView extends React.Component {
     });
   }
 
-  // exportProjectCode = () => {
-  //   const { selectedProject, completedComponents } = this.props;
-  //    if (selectedProject !== 'AllProjects'){
-  //   //   completedComponents.forEach(function(component){
-  //   //     exportComponentCode;
-  //   //   })
-  //    }
-  // }
-
   checkComponentCompleted(component_name, project) {
     const self = this;
     const {cocospecData, cocospecModes,completedComponents} = this.state;
@@ -606,17 +610,22 @@ class VariablesView extends React.Component {
         { name: "Documents", extensions: ['json'] }
       ],
       properties: ['openFile']})
-    if (filepaths && filepaths.length > 0) {
-      var content = utilities.replaceStrings([['\\"id\\"','\"_id\"']], fs.readFileSync(filepaths[0], 'utf8'));
-      var data = JSON.parse(content);
-      data.forEach((d) => {
-        d.project = selectedProject;
-      })
-      modeldb.bulkDocs(data)
-        .catch((err) => {
-          console.log(err);
-        });
-    }
+      if (filepaths && filepaths.length > 0) {
+      	  fs.readFile(filepaths[0], 'utf8',
+      		      function (err,buffer) {
+      			  if (err) throw err;
+              let content = utilities.replaceStrings([['\\"id\\"','\"_id\"']], buffer);
+      			  let data = JSON.parse(content);
+                    //console.log(data);
+              data.forEach((d) => {
+                d.project = selectedProject;
+              })
+              modeldb.bulkDocs(data)
+                .catch((err) => {
+                  console.log(err);
+                });
+      		  });
+         }
   }
 
   render() {
@@ -628,7 +637,6 @@ class VariablesView extends React.Component {
       <div>
           <div className={classes.actions}>
             <VariablesViewHeader
-              //exportProjectCode={this.exportProjectCode}
               importProjectModel={this.importProjectModel}
               projectCompleted={completedComponents.length === components.length}
               selectedProject={selectedProject}/>
@@ -642,21 +650,21 @@ class VariablesView extends React.Component {
                 <Typography className={classes.heading}>{component}</Typography>
               </ExpansionPanelSummary>
               <Divider />
-              <ExpansionPanelActions>
-              <ComponentSummary
-                component = {component}
-                classes = {classes}
-                completed = {completedComponents.includes(component)}
-                selectedProject={selectedProject}
-              />
-              </ExpansionPanelActions>
                 <ExpansionPanelDetails>
+                <div>
+                  <ComponentSummary
+                    component = {component}
+                    classes = {classes}
+                    completed = {completedComponents.includes(component)}
+                    selectedProject={selectedProject}
+                  />
                   <VariablesSortableTable
                     selectedProject={selectedProject}
                     selectedComponent={component}
                     modelComponents={modelComponents}
                     checkComponentCompleted={this.checkComponentCompleted}
                   />
+                </div>
                 </ExpansionPanelDetails>
               </ExpansionPanel>
             );

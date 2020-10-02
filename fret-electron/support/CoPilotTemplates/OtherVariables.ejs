@@ -1,0 +1,8 @@
+"Other_variables":
+[
+<%for (i=0; i < inputVariables.length; i++) {%>
+{"name":"<%-inputVariables[i].name %>", "type":"<%-inputVariables[i].type%>"},<%}%>
+
+<%for (i=0; i < outputVariables.length; i++) {%>
+{"name":"<%-outputVariables[i].name %>", "type":"<%-outputVariables[i].type%>"},<%}%>
+],
