@@ -1,15 +1,15 @@
 // *****************************************************************************
 // Notices:
-// 
-// Copyright © 2019 United States Government as represented by the Administrator
+//
+// Copyright ï¿½ 2019 United States Government as represented by the Administrator
 // of the National Aeronautics and Space Administration.  All Rights Reserved.
-// 
+//
 // Disclaimers
-// 
+//
 // No Warranty: THE SUBJECT SOFTWARE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY OF
 // ANY KIND, EITHER EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED
-// TO, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL CONFORM TO SPECIFICATIONS, 
-// ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, 
+// TO, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL CONFORM TO SPECIFICATIONS,
+// ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE,
 // OR FREEDOM FROM INFRINGEMENT, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL BE
 // ERROR FREE, OR ANY WARRANTY THAT DOCUMENTATION, IF PROVIDED, WILL CONFORM TO
 // THE SUBJECT SOFTWARE. THIS AGREEMENT DOES NOT, IN ANY MANNER, CONSTITUTE AN
@@ -18,7 +18,7 @@
 // RESULTING FROM USE OF THE SUBJECT SOFTWARE.  FURTHER, GOVERNMENT AGENCY
 // DISCLAIMS ALL WARRANTIES AND LIABILITIES REGARDING THIRD-PARTY SOFTWARE, IF
 // PRESENT IN THE ORIGINAL SOFTWARE, AND DISTRIBUTES IT ''AS IS.''
-// 
+//
 // Waiver and Indemnity:  RECIPIENT AGREES TO WAIVE ANY AND ALL CLAIMS AGAINST
 // THE UNITED STATES GOVERNMENT, ITS CONTRACTORS AND SUBCONTRACTORS, AS WELL AS
 // ANY PRIOR RECIPIENT.  IF RECIPIENT'S USE OF THE SUBJECT SOFTWARE RESULTS IN
@@ -53,7 +53,6 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Divider from '@material-ui/core/Divider';
 import Button from '@material-ui/core/Button';
 
-import SortableTable from './SortableTable';
 import VariablesSortableTable from './VariablesSortableTable';
 import ejsCache from '../../support/CoCoSpecTemplates/ejsCache';
 
@@ -84,32 +83,6 @@ function createData(vID, cID, project, description) {
   return {id ,vID, cID, project, description};
 }
 
-let ExportProjectCode = props => {
-  const {projectCompleted, exportProjectCode} = props;
-  if (projectCompleted){
-    return (
-      <IconButton aria-label="Export CoCoSpec code" onClick={() => exportProjectCode()}>
-        <Tooltip title='Export project CoCoSpec code.'>
-          <ExportIcon color='secondary' />
-        </Tooltip>
-      </IconButton>
-    );
-  } else {
-    return (
-      <IconButton  aria-label="Export CoCoSpec code">
-        <Tooltip title='To export CoCoSpec code, please complete mandatory fields first.'>
-          <ExportIcon color = "disabled"/>
-        </Tooltip>
-      </IconButton>
-    );
-  }
-}
-
-ExportProjectCode.propTypes = {
-  exportProjectCode: PropTypes.func.isRequired,
-  projectCompleted: PropTypes.bool.isRequired
-};
-
 let ImportProjectModel = props => {
   const {importProjectModel} = props;
   return (
@@ -126,40 +99,25 @@ ImportProjectModel.propTypes = {
 };
 
 let VariablesViewHeader = props => {
-  const {exitVariablesViewEnabler, projectCompleted, exportProjectCode, importProjectModel, selectedProject} = props;
+  const { projectCompleted, importProjectModel, selectedProject} = props;
   if (selectedProject === 'All Projects'){
     return(
       <Typography variant='subtitle1'>
       Please choose a specific project
-      <IconButton aria-label="Exit Verification Code Export" onClick={() => exitVariablesViewEnabler()}>
-        <Tooltip title="Exit Verification Code Export">
-          <CloseIcon color='secondary'/>
-        </Tooltip>
-      </IconButton>
       </Typography>
     );
   }
   return (
     <Typography variant='h6'>
       Requirement Variables to Model Mapping: {selectedProject}
-      <ExportProjectCode
-        exportProjectCode={exportProjectCode}
-        projectCompleted={projectCompleted}/>
       <ImportProjectModel
         importProjectModel={importProjectModel}/>
-       <IconButton aria-label="Exit Verification Code Export" onClick={() => exitVariablesViewEnabler()}>
-         <Tooltip title="Exit Verification Code Export">
-           <CloseIcon color='secondary'/>
-         </Tooltip>
-       </IconButton>
      </Typography>
   );
 };
 
 VariablesViewHeader.propTypes = {
-  exitVariablesViewEnabler: PropTypes.func.isRequired,
   projectCompleted: PropTypes.bool.isRequired,
-  exportProjectCode: PropTypes.func.isRequired,
   importProjectModel: PropTypes.func.isRequired,
   selectedProject: PropTypes.string.isRequired
 }
@@ -395,11 +353,6 @@ class ComponentSummary extends React.Component {
             Export
           </Button>
         </Tooltip>
-          <IconButton aria-label="Export verification code" onClick={this.exportComponentCode}>
-            <Tooltip title='Export verification code.'>
-                <ExportIcon color='secondary' />
-            </Tooltip>
-          </IconButton>
         </div>
       );
     } else {
@@ -414,21 +367,15 @@ class ComponentSummary extends React.Component {
               name: 'language',
               id: 'language-export-required',
             }}>
-            <MenuItem value="lustre" >Lustre</MenuItem>
             <MenuItem value="cocospec" >CoCoSpec</MenuItem>
             <MenuItem value="copilot">CoPilot</MenuItem>
           </Select>
         </FormControl>
         <Tooltip title='To export verification code, please complete mandatory variable fields and export language first.'>
-          <Button size="small" onClick={this.exportComponentCode} color="disabled" variant='contained'>
+          <Button size="small" color="disabled" variant='contained'>
             Export
           </Button>
         </Tooltip>
-          <IconButton  aria-label="Export verification code">
-            <Tooltip title='To export verification code, please complete mandatory variable fields and export language first.'>
-              <ExportIcon color = "disabled"/>
-            </Tooltip>
-          </IconButton>
           </div>
       );
     }
@@ -446,7 +393,6 @@ ComponentSummary.propTypes = {
 
 class VariablesView extends React.Component {
   state = {
-    exitVariablesView: false,
     components: [],
     completedComponents: [],
     cocospecData: {},
@@ -610,21 +556,14 @@ class VariablesView extends React.Component {
     });
   }
 
-
-  handleExitVariablesView = () => {
-    this.setState({
-      exitVariablesView : !this.state.exitVariablesView
-    })
-  }
-
-  exportProjectCode = () => {
-    const { selectedProject, completedComponents } = this.props;
-     if (selectedProject !== 'AllProjects'){
-    //   completedComponents.forEach(function(component){
-    //     exportComponentCode;
-    //   })
-     }
-  }
+  // exportProjectCode = () => {
+  //   const { selectedProject, completedComponents } = this.props;
+  //    if (selectedProject !== 'AllProjects'){
+  //   //   completedComponents.forEach(function(component){
+  //   //     exportComponentCode;
+  //   //   })
+  //    }
+  // }
 
   checkComponentCompleted(component_name, project) {
     const self = this;
@@ -683,16 +622,13 @@ class VariablesView extends React.Component {
   render() {
     const self = this;
     const {classes, selectedProject, existingProjectNames} = this.props;
-    const {exitVariablesView, components, completedComponents, cocospecData, cocospecModes, modelComponents}= this.state;
+    const {components, completedComponents, cocospecData, cocospecModes, modelComponents}= this.state;
 
-    if (exitVariablesView){
-      return <SortableTable selectedProject={selectedProject} existingProjectNames={existingProjectNames}/> };
     return (
       <div>
           <div className={classes.actions}>
             <VariablesViewHeader
-              exitVariablesViewEnabler={this.handleExitVariablesView}
-              exportProjectCode={this.exportProjectCode}
+              //exportProjectCode={this.exportProjectCode}
               importProjectModel={this.importProjectModel}
               projectCompleted={completedComponents.length === components.length}
               selectedProject={selectedProject}/>

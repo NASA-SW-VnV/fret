@@ -1,15 +1,15 @@
 // *****************************************************************************
 // Notices:
-// 
+//
 // Copyright � 2019 United States Government as represented by the Administrator
 // of the National Aeronautics and Space Administration.  All Rights Reserved.
-// 
+//
 // Disclaimers
-// 
+//
 // No Warranty: THE SUBJECT SOFTWARE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY OF
 // ANY KIND, EITHER EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED
-// TO, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL CONFORM TO SPECIFICATIONS, 
-// ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, 
+// TO, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL CONFORM TO SPECIFICATIONS,
+// ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE,
 // OR FREEDOM FROM INFRINGEMENT, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL BE
 // ERROR FREE, OR ANY WARRANTY THAT DOCUMENTATION, IF PROVIDED, WILL CONFORM TO
 // THE SUBJECT SOFTWARE. THIS AGREEMENT DOES NOT, IN ANY MANNER, CONSTITUTE AN
@@ -18,7 +18,7 @@
 // RESULTING FROM USE OF THE SUBJECT SOFTWARE.  FURTHER, GOVERNMENT AGENCY
 // DISCLAIMS ALL WARRANTIES AND LIABILITIES REGARDING THIRD-PARTY SOFTWARE, IF
 // PRESENT IN THE ORIGINAL SOFTWARE, AND DISTRIBUTES IT ''AS IS.''
-// 
+//
 // Waiver and Indemnity:  RECIPIENT AGREES TO WAIVE ANY AND ALL CLAIMS AGAINST
 // THE UNITED STATES GOVERNMENT, ITS CONTRACTORS AND SUBCONTRACTORS, AS WELL AS
 // ANY PRIOR RECIPIENT.  IF RECIPIENT'S USE OF THE SUBJECT SOFTWARE RESULTS IN
@@ -75,11 +75,9 @@ import MenuItem from '@material-ui/core/MenuItem';
 
 import ExportIcon from '@material-ui/icons/ArrowUpward';
 
-import VariablesView from './VariablesView';
 import * as d3 from "d3";
 import {getRequirementStyle} from "../utils/utilityFunctions";
 
-const constants = require('../parser/Constants');
 const sharedObj = require('electron').remote.getGlobal('sharedObj');
 
 const db = sharedObj.db;
@@ -223,7 +221,7 @@ const toolbarStyles = theme => ({
 });
 
 let TableToolbar = props => {
-  const { numSelected, classes, enableBulkChange, bulkChangeEnabler, deleteSelection, handleCoCoSpecWindow } = props;
+  const { numSelected, classes, enableBulkChange, bulkChangeEnabler, deleteSelection } = props;
 
   return (
     <Toolbar
@@ -255,11 +253,6 @@ let TableToolbar = props => {
                 <DeleteIcon />
               </IconButton>
             </Tooltip>
-            <IconButton onClick={() => handleCoCoSpecWindow()}>
-              <Tooltip title='Export Verification Code'>
-                <ExportIcon/>
-              </Tooltip>
-            </IconButton>
             <Tooltip title="Exit Bulk Change">
               <IconButton aria-label="Close Bulk Change" onClick={() => bulkChangeEnabler()}>
                 <CloseIcon />
@@ -268,16 +261,11 @@ let TableToolbar = props => {
           </div>
         ) : (
           <div className={classes.toolbar}>
-            <IconButton aria-label="Export Verification Code" onClick={() => handleCoCoSpecWindow()}>
-              <Tooltip title='Export Verification Code'>
-                <ExportIcon color='secondary'/>
-              </Tooltip>
-            </IconButton>
-            <IconButton aria-label="Bulk Change" onClick={() => bulkChangeEnabler()}>
-              <Tooltip title="Bulk Change">
-                <ListIcon color='secondary'/>
-              </Tooltip>
-            </IconButton>
+          <IconButton aria-label="Bulk Change" onClick={() => bulkChangeEnabler()}>
+            <Tooltip title="Bulk Change">
+            <ListIcon color='secondary'/>
+            </Tooltip>
+          </IconButton>
           </div>
         )}
       </div>
@@ -290,11 +278,7 @@ TableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
   enableBulkChange: PropTypes.bool.isRequired,
   bulkChangeEnabler: PropTypes.func.isRequired,
-  handleCoCoSpecWindow: PropTypes.func.isRequired
 };
-
-
-
 
 TableToolbar = withStyles(toolbarStyles)(TableToolbar);
 
@@ -313,7 +297,7 @@ const styles = theme => ({
   select: {
     borderStyle: 'None',
     borderWidth: 1,
-    borderRadius: 5,    
+    borderRadius: 5,
     width: 45,
     height: 30,
   }
@@ -343,8 +327,7 @@ class SortableTable extends React.Component {
     deleteDialogOpen: false,
     snackbarOpen: false,
     selectedProject: 'All Projects',
-    bulkChangeMode: false,
-    cocospecMode: false
+    bulkChangeMode: false
   };
 
   constructor(props){
@@ -396,7 +379,7 @@ class SortableTable extends React.Component {
     }).then((result) => {
       const data = result.rows
         .filter(r => !system_dbkeys.includes(r.key))
-        .filter(r => filterOff || r.doc.project == selectedProject)      
+        .filter(r => filterOff || r.doc.project == selectedProject)
         .map(r => {
           return createData(r.doc._id, r.doc._rev, r.doc.reqid, r.doc.fulltext, r.doc.project, r.doc.status, r.doc.semantics, r.doc.fulltext);
         });
@@ -406,13 +389,6 @@ class SortableTable extends React.Component {
     }).catch((err) => {
       console.log(err);
     });
-  }
-
-  handleCoCoSpecWindow = () => {
-    const { classes, selectedProject } = this.props;
-    this.setState({
-      cocospecMode : !this.state.cocospecMode
-    })
   }
 
   handleEnableBulkChange = () => {
@@ -560,9 +536,9 @@ class SortableTable extends React.Component {
 
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
-  // user select a status option from menu item 
+  // user select a status option from menu item
   handleChange = (event, row) => {
-    event.stopPropagation();    
+    event.stopPropagation();
     if (row.dbkey) {
       db.get(row.dbkey).then(function (doc) {
         return db.put({ ...doc, status: event.target.value }, err => {
@@ -576,13 +552,12 @@ class SortableTable extends React.Component {
 
   render() {
     const { classes, selectedProject, existingProjectNames } = this.props;
-    const { data, order, orderBy, selected, rowsPerPage, page, bulkChangeMode, cocospecMode, snackBarDisplayInfo, selectionBulkChange, selectedRequirement } = this.state;
+    const { data, order, orderBy, selected, rowsPerPage, page, bulkChangeMode,
+       snackBarDisplayInfo, selectionBulkChange, selectedRequirement } = this.state;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
     const title = 'Requirements: ' + selectedProject
     const selectionForDeletion = bulkChangeMode ? selectionBulkChange : [selectedRequirement]
 
-    if (this.state.cocospecMode){
-        return  <VariablesView selectedProject={selectedProject} existingProjectNames={existingProjectNames}/> };
     return (
       <div>
       <Typography variant='h6'>{title}
@@ -591,10 +566,8 @@ class SortableTable extends React.Component {
         <TableToolbar
           numSelected={selected.length}
           enableBulkChange={bulkChangeMode}
-          enableCoCoSpec={cocospecMode}
           bulkChangeEnabler={this.handleEnableBulkChange}
-          deleteSelection={this.handleDeleteSelectedRequirements}
-          handleCoCoSpecWindow={this.handleCoCoSpecWindow}/>
+          deleteSelection={this.handleDeleteSelectedRequirements}/>
         <div className={classes.tableWrapper}>
           <Table className={classes.table} aria-labelledby="tableTitle" padding="dense">
             <SortableTableHead
@@ -605,7 +578,6 @@ class SortableTable extends React.Component {
               onRequestSort={this.handleRequestSort}
               rowCount={data.length}
               enableBulkChange={bulkChangeMode}
-              enableCoCoSpec={cocospecMode}
             />
             <TableBody>{
                 stableSort(data, getSorting(order, orderBy))
@@ -676,7 +648,7 @@ class SortableTable extends React.Component {
                     );
                   } else {
                     return (
-                      <TableRow key={n.rowid}>                      
+                      <TableRow key={n.rowid}>
                         <TableCell >
                           <Select
                             className={`${classes.select} ${colorStyle}`}
@@ -701,7 +673,7 @@ class SortableTable extends React.Component {
                               <Tooltip title="Deprecated"><CloseIcon/></Tooltip>
                             </MenuItem>
                           </Select>
-                        </TableCell>                        
+                        </TableCell>
                         <TableCell>
                         <Button color='secondary' onClick={this.handleRequirementDialogOpen(n)}>
                               {label}

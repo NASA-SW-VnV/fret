@@ -53,6 +53,7 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 
 import MenuIcon from '@material-ui/icons/Menu';
+import CodeIcon from '@material-ui/icons/Code';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ImportIcon from '@material-ui/icons/ArrowDownward';
@@ -533,6 +534,12 @@ class MainView extends React.Component {
                     <ListIcon />
                   </ListItemIcon>
                   <ListItemText primary="Requirements" />
+                </ListItem>
+                <ListItem button onClick={() => this.setMainContent('analysis')}>
+                  <ListItemIcon>
+                    <CodeIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Analysis Portal" />
                 </ListItem>
               </div>
               </List>
