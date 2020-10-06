@@ -27,6 +27,8 @@ Here are the steps to install and start FRET:
 
 It's as simple as that. Enjoy!
 
+For the installation of FRET for Windows 10 see [Installation_Windows](installation_windows.md).
+
 ### Notes
 
 > __Note:__ To run the LTLSIM simulator, a NuSMV (see http://nusmv.fbk.eu/) installation is required. Please make sure that the NuSMV binaries directory is added to the PATH environment variable. Additionally, please add `$PATH_TO_FRET/fret/tools/LTLSIM/ltlsim-core/simulator` to the PATH environment variable.
