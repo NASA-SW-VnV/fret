@@ -190,10 +190,10 @@ class CirclePacking extends React.Component {
                       ? "node node--leaf"
                       : d.data.doc.semantics.ft !== constants.unhandled_semantics
                         ? "node node--leaf-unformalized"
-                        : "node node--leaf-unspecified"
-                  : "node node--leaf-unspcified")
+                        : "node--leaf-unspecified"
+                  : "node--leaf-unspecified")
           :"node node--root"; })
-        .style("fill", function(d) {return d.children ? color(d.depth) : d.data.doc.semantics ? (d.data.doc.semantics.ft === constants.unhandled_semantics ? "white": null) :null })
+        .style("fill", function(d) {return d.children ? color(d.depth) : d.data.doc.semantics ? ((d.data.doc.semantics.ft === constants.unhandled_semantics)  ? "white": "node node--leaf-unformalized") : "white" })
         .on("click", function(d) {
           if (focus !== d)
             zoom(d), d3.event.stopPropagation();

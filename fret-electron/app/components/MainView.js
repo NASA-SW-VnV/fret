@@ -447,7 +447,7 @@ class MainView extends React.Component {
                         onClick={() =>  this.handleSetProject('All Projects')}
                         dense
                         >
-                        <ListItemText primary = {<b>Show All Projects</b>} />
+                        <ListItemText primary = {<b>All Projects</b>} />
                       </MenuItem>
                       {
                         this.state.listOfProjects.map(name => {
@@ -470,7 +470,7 @@ class MainView extends React.Component {
                         onClick={this.handleNewProject}
                         style={{ textTransform : 'none' }}
                       >
-                        Create Project
+                        New Project...
                       </Button>
                       </MenuItem>
                     </Menu>
