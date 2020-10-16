@@ -68,14 +68,6 @@ const modeldb = sharedObj.modeldb;
 
 var dbChangeListener;
 
-const rows = [
-  {id: 'variable_name', numeric: false, disablePadding:false, label: 'FRET Variable Name'},
-  {id: 'modeldoc_id', numeric: false, disablePadding:false, label: 'Model Variable Name'},
-  {id: 'idType', numeric: false, disablePadding:false, label: 'Variable Type*'},
-  {id: 'dataType', numeric: false, disablePadding:false, label: 'Data Type*'},
-  {id: 'description', numeric: false, disablePadding:false, label: 'Description'}
-];
-
 let counter = 0;
 function createData(variable_name, modeldoc_id, idType, dataType, description) {
   counter += 1;
@@ -91,6 +83,7 @@ function desc(a, b, orderBy) {
     element_a = a[orderBy].toLowerCase().trim()
     element_b = b[orderBy].toLowerCase().trim()
   }
+
   if (element_b < element_a)
     return -1
   if (element_b > element_a)
@@ -112,13 +105,21 @@ function getSorting(order, orderBy) {
   return order === 'desc' ? (a, b) => desc(a, b, orderBy) : (a, b) => -desc(a, b, orderBy);
 }
 
+const rows = [
+  {id: 'variable_name', numeric: false, disablePadding:false, label: 'FRET Variable Name'},
+  {id: 'modeldoc_id', numeric: false, disablePadding:false, label: 'Model Variable Name'},
+  {id: 'idType', numeric: false, disablePadding:false, label: 'Variable Type'},
+  {id: 'dataType', numeric: false, disablePadding:false, label: 'Data Type'},
+  {id: 'description', numeric: false, disablePadding:false, label: 'Description'}
+];
+
 class VariablesSortableHead extends React.Component {
   createSortHandler = property => event => {
     this.props.onRequestSort(event, property);
   };
 
   render() {
-    const {order, orderBy, rowCount} = this.props;
+    const {order, orderBy} = this.props;
 
     return (
       <TableHead>
@@ -128,6 +129,7 @@ class VariablesSortableHead extends React.Component {
               <TableCell
                 key={row.id}
                 align={row.numeric?'right':'left'}
+                padding={row.disablePadding ? 'none' : 'default'}
                 sortDirection={orderBy === row.id ? order : false}
               >
                 <Tooltip
@@ -155,7 +157,6 @@ class VariablesSortableHead extends React.Component {
 VariablesSortableHead.propTypes = {
   order: PropTypes.string.isRequired,
   orderBy: PropTypes.string.isRequired,
-  rowCount: PropTypes.number.isRequired,
   onRequestSort: PropTypes.func.isRequired
 };
 
@@ -321,7 +322,6 @@ class VariablesSortableTable extends React.Component {
     }).then(function(result){
         self.setState({
           data: result.docs.map(r => {
-                  //console.log(r);
                   componentModel = r.modelComponent;
                   return createData(r.variable_name, r.modeldoc_id, r.dataType, r.idType, r.description)
                 }).sort((a, b) => {return a.variable_name > b.variable_name}),
@@ -470,8 +470,8 @@ class VariablesSortableTable extends React.Component {
                       </Button>
                     </TableCell>
                     <TableCell>{n.modeldoc_id}</TableCell>
-                    <TableCell>{n.dataType}</TableCell>
                     <TableCell>{n.idType}</TableCell>
+                    <TableCell>{n.dataType}</TableCell>
                     <TableCell>{n.description}</TableCell>
                   </TableRow>
                 )
