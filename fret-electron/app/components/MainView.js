@@ -284,8 +284,8 @@ class MainView extends React.Component {
         var filteredReqs = result.rows.filter(r => !system_dbkeys.includes(r.key))
         var filteredResult = []
         filteredReqs.forEach((r) => {
-          var doc = (({reqid, parent_reqid, project, rationale, fulltext, semantics, input}) =>
-                      ({reqid, parent_reqid, project, rationale, fulltext, semantics, input}))(r.doc)
+          var doc = (({reqid, parent_reqid, project, rationale, comments, fulltext, semantics, input}) =>
+                      ({reqid, parent_reqid, project, rationale, comments, fulltext, semantics, input}))(r.doc)
           doc._id = uuidv1()
           filteredResult.push(doc)
         })
