@@ -1,5 +1,5 @@
 "Internal_variables":
 [
 <%for (i=0; i < internalVariables.length; i++) {%>
-{"name":"<%-internalVariables[i].name %>", "type":"<%-internalVariables[i].type%>", "assignment": "<%- assignments[i] %>"},<%}%>
+{"name":"<%-internalVariables[i].name %>", "type":"<%-internalVariables[i].type%>", "assignmentLustre": "<%- assignments[i] %>", "assignmentCopilot": "<%- copilotAssignments[i] %>"},<%}%>
 ],

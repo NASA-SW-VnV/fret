@@ -165,6 +165,7 @@ class ComponentSummary extends React.Component {
       inputVariables: [],
       internalVariables: [],
       assignments: [],
+      copilotAssignments: [],
       modes: [],
       properties: []
     };
@@ -178,8 +179,10 @@ class ComponentSummary extends React.Component {
         contract.outputVariables.push(variable);
       } else if (doc.idType === 'Internal'){
         contract.internalVariables.push(variable);
-        if (doc.assignment !== '')
+        //if (doc.assignment !== '')
           contract.assignments.push(doc.assignment);
+        //if (doc.copilotAssignment !== '')
+          contract.copilotAssignments.push(doc.copilotAssignment);
       } else if (doc.idType === 'Mode'){
         if (doc.modeRequirement !== '')
           variable.assignment = doc.modeRequirement;
@@ -276,7 +279,6 @@ class ComponentSummary extends React.Component {
   exportComponentCode = () => {
     const {component, selectedProject} = this.props;
     const {language} = this.state;
-    console.log(language);
     const homeDir = app.getPath('home');
     const self = this;
     var filepath = dialog.showSaveDialog({
