@@ -1,15 +1,15 @@
 // *****************************************************************************
 // Notices:
-// 
-// Copyright © 2019 United States Government as represented by the Administrator
+//
+// Copyright ï¿½ 2019 United States Government as represented by the Administrator
 // of the National Aeronautics and Space Administration.  All Rights Reserved.
-// 
+//
 // Disclaimers
-// 
+//
 // No Warranty: THE SUBJECT SOFTWARE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY OF
 // ANY KIND, EITHER EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED
-// TO, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL CONFORM TO SPECIFICATIONS, 
-// ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, 
+// TO, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL CONFORM TO SPECIFICATIONS,
+// ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE,
 // OR FREEDOM FROM INFRINGEMENT, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL BE
 // ERROR FREE, OR ANY WARRANTY THAT DOCUMENTATION, IF PROVIDED, WILL CONFORM TO
 // THE SUBJECT SOFTWARE. THIS AGREEMENT DOES NOT, IN ANY MANNER, CONSTITUTE AN
@@ -18,7 +18,7 @@
 // RESULTING FROM USE OF THE SUBJECT SOFTWARE.  FURTHER, GOVERNMENT AGENCY
 // DISCLAIMS ALL WARRANTIES AND LIABILITIES REGARDING THIRD-PARTY SOFTWARE, IF
 // PRESENT IN THE ORIGINAL SOFTWARE, AND DISTRIBUTES IT ''AS IS.''
-// 
+//
 // Waiver and Indemnity:  RECIPIENT AGREES TO WAIVE ANY AND ALL CLAIMS AGAINST
 // THE UNITED STATES GOVERNMENT, ITS CONTRACTORS AND SUBCONTRACTORS, AS WELL AS
 // ANY PRIOR RECIPIENT.  IF RECIPIENT'S USE OF THE SUBJECT SOFTWARE RESULTS IN
@@ -73,37 +73,41 @@ RequirementListener.prototype.enterFreeform = function(ctx) {
 };
 
 SemanticsAnalyzer.prototype.enterScope = function(ctx) {
-  var text = antlrUtilities.getText(ctx).toLowerCase();
-  var excl = text.includes('strictly');
-
-  if (text.startsWith('when in ') || text.startsWith('in ') || text.startsWith('during ' )
-      || (text.startsWith('unless not in')))
-      result.scope.type = 'in'
-  else if (text.startsWith('globally'))  // added to handle this case
+  let text = antlrUtilities.getText(ctx).trim().toLowerCase();
+  let excl = text.includes('strictly');
+  let only = text.includes('only ');
+  let inM = text.startsWith('in ') || text.includes(' in ') ||
+            text.startsWith('while ') || text.includes(' while ') ||
+            text.startsWith('during ') || text.includes(' during ');
+  let parity = (text.includes(' not ') ? 1 : 0) + (text.includes('unless ') ? 1 : 0)
+                + (text.includes('except ') ? 1 : 0);
+  if (text.startsWith('globally'))  // added to handle this case
       result.scope.type = 'globally'
-  else if (text.includes('after'))
-         { if (text.includes('only'))
+  else if (text.includes('after '))
+         { if (only)
             result.scope = {type : 'onlyAfter', exclusive : excl, required : false};
            else result.scope = {type : 'after', exclusive : excl, required : false}; }
-  else if (text.includes('before'))
-         { if (text.includes('only'))
+  else if (text.includes('before '))
+         { if (only)
             result.scope = {type : 'onlyBefore', exclusive : excl, required : false};
            else result.scope = {type : 'before', exclusive : excl, required : false}; }
-  else if (text.startsWith('only when in') || text.startsWith('only in') ||
-           text.startsWith('only during'))
-      result.scope.type = 'onlyIn';
-    else if (text.includes(' in ') && (text.includes('not ') != text.includes('unless ')) && !text.includes('only'))
-      result.scope.type = 'notin';
+  else if (inM) {
+      if (parity === 1 || parity === 3) result.scope.type = only ? 'unhandled' : 'notin';
+      else if (parity === 0 || parity === 2) result.scope.type = only ? 'onlyIn' : 'in';
+      else result.scope.type = 'unhandled';
+  }
   else {
       if (constants.verboseSemanticsAnalyzer) console.log("*** Scope value '" + text + "' accepted by grammar but unhandled by semanticsAnalyzer enterScope *** " );
       result.scope.type = 'unhandled';
-    }
+  }
 }
 
+/*
 RequirementListener.prototype.enterScope_required = function(ctx) {
     var text = ctx.getText().toLowerCase();
     result.scope.required = !text.includes('not');
 }
+*/
 
 SemanticsAnalyzer.prototype.exitScope = function(ctx) {
   result.scopeTextRange = [ctx.start.start, ctx.stop.stop]
@@ -122,9 +126,18 @@ RequirementListener.prototype.exitComponent = function(ctx) {
 }
 
 RequirementListener.prototype.enterScope_mode = function(ctx) {
-    result.scope_mode = antlrUtilities.getText(ctx);
-    if (result.scope_mode && !result.variables.modes.includes(result.scope_mode))
-      result.variables.modes.push(result.scope_mode);
+    let sm = antlrUtilities.getText(ctx);
+    if (sm) {
+	let smt = sm.trim();
+	let smlc = smt.toLowerCase();
+	let m = '';
+	if (smlc.startsWith('mode ')) m = smt.slice(5).trim();
+	else if (smlc.endsWith(' mode')) m = smt.slice(0,-5).trim();
+	else m = smt;
+	result.scope_mode = m;
+	if (!result.variables.modes.includes(m))
+	    result.variables.modes.push(m);
+    }
 }
 
 RequirementListener.prototype.exitReqt_condition = function(ctx) {
@@ -136,7 +149,8 @@ RequirementListener.prototype.enterOnly_condition = function(ctx) {
 }
 
 RequirementListener.prototype.enterRegular_condition = function(ctx) {
-  if (result.condition == 'null') result.condition = 'regular'
+    if (result.condition == 'null') result.condition = 'regular'
+    console.log('enterReg_cond: ' + antlrUtilities.getText(ctx))
   result.regular_condition = antlrUtilities.getText(ctx).replace(',', '').trim()
 }
 
@@ -155,7 +169,8 @@ RequirementListener.prototype.enterPre_condition = function(ctx) {
 RequirementListener.prototype.exitQualified_condition1 = function(ctx) {
     var pre_condition = result.pre_condition;
     var text = antlrUtilities.getText(ctx).trim();
-    var neg_polarity = text.endsWith('is false') != result.qualifier_word.startsWith('unless');
+    var neg_polarity = text.toLowerCase().endsWith('is false') !=
+	               result.qualifier_word.toLowerCase().startsWith('unless');
     if (neg_polarity) result.regular_condition = '(! ' + pre_condition + ')';
     else result.regular_condition = pre_condition;
 }
@@ -174,6 +189,10 @@ RequirementListener.prototype.enterStop_condition = function(ctx) {
     result.stop_condition = '(' + antlrUtilities.getText(ctx).trim() + ')';
 }
 
+RequirementListener.prototype.enterScope_condition = function(ctx) {
+    result.scope_mode = '(' + antlrUtilities.getText(ctx).trim() + ')';
+}
+
 
 //RequirementListener.prototype.exitRegular_condition = function(ctx) {
 //   result.regular_condition = '(' + result.regular_condition + ')';
@@ -181,7 +200,7 @@ RequirementListener.prototype.enterStop_condition = function(ctx) {
 
 RequirementListener.prototype.enterPost_condition = function(ctx) {
     let pc = '(' + antlrUtilities.getText(ctx).trim() + ')';
-    let pc2 = pc.replace(/ then /g, ' => ').replace(/(\(| )if /g,((match,p1,offset,str) => p1));
+    let pc2 = pc.replace(/( then | THEN )/g, ' => ').replace(/(\(| )(if |IF )/g,((match,p1,offset,str) => p1));
     result.post_condition = pc2;
 }
 
@@ -313,13 +332,13 @@ function replaceWithCoCoSpecSubsts(formula) {
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
 function replaceWithVisualizationSubsts(formula) {
-  
+
   console.log("VIS-REPL: formula="+formula);
   var RS = utilities.replaceStrings(cocospecSemantics.CoCoSpecSubsts, formula);
   console.log("VIS-REPL: formula after repl="+RS);
 
   var RRS = cocospecSemantics.createCoCoSpecCode(formula);
-  
+
   console.log("VIS-REPL: formula after cocospec-create="+RRS);
 
   return RS;
@@ -336,8 +355,9 @@ function replaceWithR2U2Substs(formula) {
 //----------------------------------------------------------------------
 SemanticsAnalyzer.prototype.semantics = () => {
   if (result.type === 'nasa'){
-      console.log('result: ' + JSON.stringify(result))
-      var variableDescription = createVariableDescription(result.scope, result.condition, result.timing, result.response, result.stop_condition);
+    if (constants.verboseSemanticsAnalyzer)
+	  console.log('semantics result: ' + JSON.stringify(result));
+    var variableDescription = createVariableDescription(result.scope, result.condition, result.timing, result.response, result.stop_condition);
     var fetchedSemantics = fetchSemantics.getSemantics(result.scope, result.condition, result.timing, result.response);
     result.ft = replaceTemplateVarsWithArgs(fetchedSemantics.ft, false, true);
     result.pt = replaceTemplateVarsWithArgs(fetchedSemantics.pt, false, true);

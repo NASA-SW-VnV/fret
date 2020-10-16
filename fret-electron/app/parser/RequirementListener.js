@@ -65,15 +65,6 @@ RequirementListener.prototype.exitScope = function(ctx) {
 };
 
 
-// Enter a parse tree produced by RequirementParser#scope_word.
-RequirementListener.prototype.enterScope_word = function(ctx) {
-};
-
-// Exit a parse tree produced by RequirementParser#scope_word.
-RequirementListener.prototype.exitScope_word = function(ctx) {
-};
-
-
 // Enter a parse tree produced by RequirementParser#reqt_condition.
 RequirementListener.prototype.enterReqt_condition = function(ctx) {
 };
@@ -116,6 +107,24 @@ RequirementListener.prototype.enterQualified_condition2 = function(ctx) {
 
 // Exit a parse tree produced by RequirementParser#qualified_condition2.
 RequirementListener.prototype.exitQualified_condition2 = function(ctx) {
+};
+
+
+// Enter a parse tree produced by RequirementParser#scope_condition.
+RequirementListener.prototype.enterScope_condition = function(ctx) {
+};
+
+// Exit a parse tree produced by RequirementParser#scope_condition.
+RequirementListener.prototype.exitScope_condition = function(ctx) {
+};
+
+
+// Enter a parse tree produced by RequirementParser#scope_mode.
+RequirementListener.prototype.enterScope_mode = function(ctx) {
+};
+
+// Exit a parse tree produced by RequirementParser#scope_mode.
+RequirementListener.prototype.exitScope_mode = function(ctx) {
 };
 
 
@@ -173,6 +182,15 @@ RequirementListener.prototype.exitTiming = function(ctx) {
 };
 
 
+// Enter a parse tree produced by RequirementParser#timing_aux.
+RequirementListener.prototype.enterTiming_aux = function(ctx) {
+};
+
+// Exit a parse tree produced by RequirementParser#timing_aux.
+RequirementListener.prototype.exitTiming_aux = function(ctx) {
+};
+
+
 // Enter a parse tree produced by RequirementParser#duration_upper.
 RequirementListener.prototype.enterDuration_upper = function(ctx) {
 };
@@ -200,21 +218,12 @@ RequirementListener.prototype.exitComponent_name = function(ctx) {
 };
 
 
-// Enter a parse tree produced by RequirementParser#scope_mode.
-RequirementListener.prototype.enterScope_mode = function(ctx) {
+// Enter a parse tree produced by RequirementParser#mode_name.
+RequirementListener.prototype.enterMode_name = function(ctx) {
 };
 
-// Exit a parse tree produced by RequirementParser#scope_mode.
-RequirementListener.prototype.exitScope_mode = function(ctx) {
-};
-
-
-// Enter a parse tree produced by RequirementParser#new_mode.
-RequirementListener.prototype.enterNew_mode = function(ctx) {
-};
-
-// Exit a parse tree produced by RequirementParser#new_mode.
-RequirementListener.prototype.exitNew_mode = function(ctx) {
+// Exit a parse tree produced by RequirementParser#mode_name.
+RequirementListener.prototype.exitMode_name = function(ctx) {
 };
 
 
@@ -224,6 +233,15 @@ RequirementListener.prototype.enterDuration = function(ctx) {
 
 // Exit a parse tree produced by RequirementParser#duration.
 RequirementListener.prototype.exitDuration = function(ctx) {
+};
+
+
+// Enter a parse tree produced by RequirementParser#timeunit.
+RequirementListener.prototype.enterTimeunit = function(ctx) {
+};
+
+// Exit a parse tree produced by RequirementParser#timeunit.
+RequirementListener.prototype.exitTimeunit = function(ctx) {
 };
 
 
