@@ -287,8 +287,7 @@ class ComponentSummary extends React.Component {
 
   exportComponentCode = event => {
     event.stopPropagation();
-    const {component, selectedProject} = this.props;
-    const {language} = this.state;
+    const {component, selectedProject, language} = this.props;
     const homeDir = app.getPath('home');
     const self = this;
     var filepath = dialog.showSaveDialog({
