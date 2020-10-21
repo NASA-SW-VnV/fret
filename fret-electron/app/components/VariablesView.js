@@ -66,13 +66,13 @@ import MenuItem from '@material-ui/core/MenuItem';
 
 const sharedObj = require('electron').remote.getGlobal('sharedObj');
 const constants = require('../parser/Constants');
-const isDev = require('electron-is-dev');
-const utilities = require('../../support/utilities');
+// const isDev = require('electron-is-dev');
+// const utilities = require('../../support/utilities');
 const db = sharedObj.db;
-const fs = require('fs');
-const archiver = require('archiver');
-const app = require('electron').remote.app;
-const dialog = require('electron').remote.dialog;
+// const fs = require('fs');
+// const archiver = require('archiver');
+// const app = require('electron').remote.app;
+// const dialog = require('electron').remote.dialog;
 const modeldb = sharedObj.modeldb;
 const system_dbkeys = sharedObj.system_dbkeys;
 
@@ -84,23 +84,8 @@ function createData(vID, cID, project, description) {
   return {id ,vID, cID, project, description};
 }
 
-let ImportProjectModel = props => {
-  const {importProjectModel} = props;
-  return (
-    <IconButton aria-label="Import Model Information" onClick={() => importProjectModel()}>
-      <Tooltip title='Import Model Information.'>
-        <ImportIcon color='secondary' />
-      </Tooltip>
-    </IconButton>
-  );
-}
-
-ImportProjectModel.propTypes = {
-  importProjectModel: PropTypes.func.isRequired
-};
-
 let VariablesViewHeader = props => {
-  const { projectCompleted, importProjectModel, selectedProject} = props;
+  const {selectedProject} = props;
   if (selectedProject === 'All Projects'){
     return(
       <Typography variant='subtitle1'>
@@ -111,15 +96,11 @@ let VariablesViewHeader = props => {
   return (
     <Typography variant='h6'>
       Requirement Variables to Model Mapping: {selectedProject}
-      <ImportProjectModel
-        importProjectModel={importProjectModel}/>
      </Typography>
   );
 };
 
 VariablesViewHeader.propTypes = {
-  projectCompleted: PropTypes.bool.isRequired,
-  importProjectModel: PropTypes.func.isRequired,
   selectedProject: PropTypes.string.isRequired
 }
 
@@ -387,9 +368,11 @@ class ComponentSummary extends React.Component {
             </Select>
           </FormControl>
           <Tooltip title='To export verification code, please complete mandatory variable fields and export language first.'>
-            <Button size="small" color="secondary" disabled variant='contained' className={classes.buttonControl}>
-              Export
-            </Button>
+            <span>
+              <Button size="small" color="secondary" disabled variant='contained' className={classes.buttonControl}>
+                Export
+                </Button>
+            </span>
           </Tooltip>
         </div>
       );
@@ -411,8 +394,7 @@ class VariablesView extends React.Component {
     components: [],
     completedComponents: [],
     cocospecData: {},
-    cocospecModes: {},
-    modelComponents: []
+    cocospecModes: {}
   }
 
   constructor(props){
@@ -548,28 +530,9 @@ class VariablesView extends React.Component {
     })
   }
 
-  synchStateWithModelDB () {
-    if (!this.mounted) return;
-    var modelComponents= [];
-    const {selectedProject} = this.props,
-          self = this;
-    //TODO: Update here cocospec data
-    modeldb.find({
-      selector: {
-        project: selectedProject,
-        modeldoc: true
-      }
-    }).then(function (result){
-      result.docs.forEach(function(d){
-      if (!modelComponents.includes(d.component_name)) modelComponents.push(d.component_name);
-      })
-      self.setState({
-        modelComponents: modelComponents.sort((a, b) => {return a.toLowerCase().trim() > b.toLowerCase().trim()})
-      })
-    }).catch((err) => {
-      console.log(err);
-    });
-  }
+  // synchStateWithModelDB () {
+  //   if (!this.mounted) return;
+  // }
 
   checkComponentCompleted(component_name, project) {
     const self = this;
@@ -600,47 +563,15 @@ class VariablesView extends React.Component {
     })
   }
 
-  importProjectModel = () => {
-    const {selectedProject} = this.props;
-    var homeDir = app.getPath('home');
-    var modelComponents = this.state.modelComponents;
-    var filepaths = dialog.showOpenDialog({
-      defaultPath : homeDir,
-      title : 'Import Simulink Model Information',
-      buttonLabel : 'Import',
-      filters: [
-        { name: "Documents", extensions: ['json'] }
-      ],
-      properties: ['openFile']})
-      if (filepaths && filepaths.length > 0) {
-      	  fs.readFile(filepaths[0], 'utf8',
-      		      function (err,buffer) {
-      			  if (err) throw err;
-              let content = utilities.replaceStrings([['\\"id\\"','\"_id\"']], buffer);
-      			  let data = JSON.parse(content);
-                    //console.log(data);
-              data.forEach((d) => {
-                d.project = selectedProject;
-              })
-              modeldb.bulkDocs(data)
-                .catch((err) => {
-                  console.log(err);
-                });
-      		  });
-         }
-  }
-
   render() {
     const self = this;
     const {classes, selectedProject, existingProjectNames} = this.props;
-    const {components, completedComponents, cocospecData, cocospecModes, modelComponents}= this.state;
+    const {components, completedComponents, cocospecData, cocospecModes}= this.state;
 
     return (
       <div>
           <div className={classes.actions}>
             <VariablesViewHeader
-              importProjectModel={this.importProjectModel}
-              projectCompleted={completedComponents.length === components.length}
               selectedProject={selectedProject}/>
           </div>
           <div className={classes.root}>
@@ -663,7 +594,6 @@ class VariablesView extends React.Component {
                   <VariablesSortableTable
                     selectedProject={selectedProject}
                     selectedComponent={component}
-                    modelComponents={modelComponents}
                     checkComponentCompleted={this.checkComponentCompleted}
                   />
                 </div>

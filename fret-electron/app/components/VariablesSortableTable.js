@@ -66,6 +66,12 @@ import DisplayVariableDialog from './DisplayVariableDialog';
 const sharedObj = require('electron').remote.getGlobal('sharedObj');
 const modeldb = sharedObj.modeldb;
 
+const fs = require('fs');
+const archiver = require('archiver');
+const app = require('electron').remote.app;
+const dialog = require('electron').remote.dialog;
+const utilities = require('../../support/utilities');
+
 var dbChangeListener;
 
 let counter = 0;
@@ -200,7 +206,7 @@ const tableComponentBarStyles = theme => ({
 });
 
 let TableComponentBar = props => {
-  const {classes, handleModelChange, modelComponents, modelComponent, fretComponent} = props;
+  const {classes, handleModelChange, importedComponents, modelComponent, fretComponent, importComponentModel} = props;
   return(
     <Toolbar className={classNames(classes.root, classes.componentBar)}>
       <form className={classes.formControl} autoComplete="off">
@@ -217,7 +223,7 @@ let TableComponentBar = props => {
             >
               <em>None</em>
             </MenuItem>
-            {modelComponents.map(c => {
+            {importedComponents.map(c => {
               return (<MenuItem value={c} key={c}>
                         {c}
                       </MenuItem>)
@@ -226,7 +232,7 @@ let TableComponentBar = props => {
         </FormControl>
       </form>
       <Tooltip title='Import model information'>
-        <Button size="small" color="secondary" variant='contained' >
+        <Button size="small" onClick={importComponentModel} color="secondary" variant='contained' >
           Import
         </Button>
       </Tooltip>
@@ -237,8 +243,9 @@ let TableComponentBar = props => {
 TableComponentBar.propTypes = {
   classes: PropTypes.object.isRequired,
   handleModelChange: PropTypes.func.isRequired,
-  modelComponents: PropTypes.array.isRequired,
+  importedComponents: PropTypes.array.isRequired,
   modelComponent: PropTypes.string.isRequired,
+  importComponentModel: PropTypes.func.isRequired
 }
 
 TableComponentBar = withStyles(tableComponentBarStyles)(TableComponentBar);
@@ -272,7 +279,8 @@ class VariablesSortableTable extends React.Component {
     snackBarDisplayInfo: {},
     modelComponent: '',
     modelVariables: [],
-    language: ''
+    language: '',
+    importedComponents: []
   }
 
 
@@ -312,7 +320,25 @@ class VariablesSortableTable extends React.Component {
     const {selectedProject, selectedComponent} = this.props,
         self = this;
     var componentModel = '',
-        modelVariables = [];
+        modelVariables = [],
+        importedComponents = [];
+
+      modeldb.find({
+        selector: {
+          project: selectedProject,
+          fretComponent: selectedComponent,
+          modeldoc: true
+        }
+        }).then(function(result){
+          result.docs.forEach(function(v){
+            if (!importedComponents.includes(v.component_name)) importedComponents.push(v.component_name);
+          })
+          self.setState({
+            importedComponents: importedComponents.sort((a, b) => {return a.toLowerCase().trim() > b.toLowerCase().trim()})
+          })
+        }).catch((err) => {
+          console.log(err);
+        });
 
     modeldb.find({
       selector: {
@@ -338,7 +364,7 @@ class VariablesSortableTable extends React.Component {
             modelVariables.push(v);
           })
           self.setState({
-            modelVariables: modelVariables
+            modelVariables: modelVariables,
           })
         })
     }).catch((err) => {
@@ -429,6 +455,35 @@ class VariablesSortableTable extends React.Component {
     })
  };
 
+ importComponentModel = () => {
+   var homeDir = app.getPath('home');
+   const {selectedProject, selectedComponent} = this.props;
+   var filepaths = dialog.showOpenDialog({
+     defaultPath : homeDir,
+     title : 'Import Simulink Model Information',
+     buttonLabel : 'Import',
+     filters: [
+       { name: "Documents", extensions: ['json'] }
+     ],
+     properties: ['openFile']})
+     if (filepaths && filepaths.length > 0) {
+         fs.readFile(filepaths[0], 'utf8',
+               function (err,buffer) {
+             if (err) throw err;
+             let content = utilities.replaceStrings([['\\"id\\"','\"_id\"']], buffer);
+             let data = JSON.parse(content);
+             data.forEach((d) => {
+               d.project = selectedProject;
+               d.fretComponent = selectedComponent;
+             })
+             modeldb.bulkDocs(data)
+               .catch((err) => {
+                 console.log(err);
+               });
+           });
+        }
+ }
+
   handleSnackbarClose = (event, reason) => {
     if (reason === 'clickaway') {
       return;
@@ -437,18 +492,19 @@ class VariablesSortableTable extends React.Component {
   };
 
   render() {
-    const {classes, selectedProject, selectedComponent, modelComponents} = this.props;
-    const {data, order, orderBy, rowsPerPage, page, selectedVariable, modelComponent} = this.state;
+    const {classes, selectedProject, selectedComponent} = this.props;
+    const {data, order, orderBy, rowsPerPage, page, selectedVariable, modelComponent, importedComponents} = this.state;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
     return(
       <div>
         <Paper className={classes.root}>
         <div className={classes.tableWrapper}>
           <TableComponentBar
-            modelComponents={modelComponents}
+            importedComponents={importedComponents}
             modelComponent={modelComponent}
             fretComponent={selectedComponent}
             handleModelChange={this.handleModelChange}
+            importComponentModel={this.importComponentModel}
           />
           <Table className={classes.table} aria-labelledby="tableTitle" padding="dense">
             <VariablesSortableHead
@@ -540,7 +596,6 @@ VariablesSortableTable.propTypes = {
   classes: PropTypes.object.isRequired,
   selectedProject: PropTypes.string.isRequired,
   selectedComponent: PropTypes.string.isRequired,
-  modelComponents: PropTypes.array.isRequired,
   checkComponentCompleted: PropTypes.func.isRequired
 };
 
