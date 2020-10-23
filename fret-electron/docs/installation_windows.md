@@ -97,7 +97,7 @@ Finally, type `npm start` to launch FRET
 
 Notes:
 * if FRET fails to start up after a seemingly successful installation,
-do a `npm run fre-reinstall`.
+do a `npm run fret-reinstall`.
 
 ## Install NuSMV 
 
