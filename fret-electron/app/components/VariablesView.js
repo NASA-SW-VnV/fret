@@ -61,10 +61,16 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
-import ejsCache_realize from '../../support/RealizabilityTemplates/ejsCache_realize';
 
 /* Connected Component Analysis Imports */
 import * as cc_analysis from '../../analysis/connected_components';
+
+/* Realizability Analysis Imports */
+import ejsCache_realize from '../../support/RealizabilityTemplates/ejsCache_realize';
+import DisplayRealizabilityDialog from './DisplayRealizabilityDialog';
+import * as realizability from '../../analysis/realizabilityCheck';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import DiagnosisEngine from '../../analysis/DiagnosisEngine';
 
 const sharedObj = require('electron').remote.getGlobal('sharedObj');
 const constants = require('../parser/Constants');
@@ -166,7 +172,82 @@ const componentStyles = theme => ({
   },
 });
 
+function diagnoseSpec(contract) {
+  var filePath = './analysis/tmp/'+contract+'.lus';
+  if (fs.existsSync()) {
+    handleRealizabilityDialogOpen;
+  } else {
+    let engine = new DiagnosisEngine(contract, 'realizability');
+    engine.main();
+    handleRealizabilityDialogOpen;
+  }
+
+}
+
+class DiagnoseButton extends React.Component {
+  state = {
+    realizable: 'UNCHECKED',
+    buttonText: 'DiAGNOSE',
+    className: '',
+    contract: ''
+  }
+
+  componentWillReceiveProps = (props) => {
+    this.setState({
+      realizable: props.realizable,
+      className: props.className
+      contract: props.contract
+    })
+  }
+
+  render() {
+    console.log(this.state.realizable);
+    const {buttonText, className, contract} = this.state
+    if (this.state.realizable === "UNREALIZABLE") {
+      return (
+          <Tooltip title="See conflicts">
+            <Button size="small" onClick={diagnoseSpec(contract} color="secondary" variant='contained' className={className}>      
+              {buttonText === "PROCESSING" ? <CircularProgress size={22} /> : buttonText}
+            </Button>
+          </Tooltip>
+        )
+    } else {
+      //return no button. Perhaps we should return a button "see components"
+      return null
+    }    
+  }
+  // var diagnoseText='DIAGNOSE'
+  // if (props.realizable === "UNREALIZABLE") {
+  //   return (
+  //       <Tooltip title="See conflicts">
+  //         <Button size="small" onClick={diagnoseSpec(props.contract)} color="secondary" variant='contained' className={props.className}>      
+  //           {diagnoseText === "PROCESSING" ? <CircularProgress size={22} /> : diagnoseText}
+  //         </Button>
+  //       </Tooltip>
+  //     )
+  // } else {
+  //   //return no button. Perhaps we should return a button "see components"
+  //   return null
+  // }
+}
+
+DiagnoseButton.propTypes = {
+  realizable: PropTypes.string.isRequired,
+  className: PropTypes.string.isRequired
+  contract: PropTypes.object.isRequired
+}
+
 class ComponentSummary extends React.Component {
+
+  state = {
+    realizable: 'UNCHECKED',
+    displayRealizabilityOpen: false,
+  }
+
+  // handleChange = name => event => {
+  //   this.setState({ [name]: event.target.value });
+  // };
+
 
   getContractInfo(result) {
     var self = this;
@@ -294,6 +375,68 @@ class ComponentSummary extends React.Component {
     return properties;
   }
 
+  handleRealizabilityDialogOpen = () => {
+    this.setState({
+      displayRealizabilityOpen: true
+    })
+  }
+
+  handleRealizabilityDialogClose = () => {
+    this.setState({
+      displayRealizabilityOpen: false
+    })
+  }
+
+  checkRealizability = () => {
+    this.setState({
+      realizable: "PROCESSING"
+    })
+    const {component, selectedProject} = this.props;
+    const homeDir = app.getPath('home');
+    const self = this;
+    var filePath = './analysis/tmp/';
+    if (!fs.existsSync(filePath)) {
+      fs.mkdirSync(filePath);
+    }
+    filePath = filePath + component+'.lus';
+    var output = fs.createWriteStream(filePath);
+    modeldb.find({
+      selector: {
+        component_name: component,
+        project: selectedProject,
+        completed: true, //for modes that are not completed; these include the ones that correspond to unformalized requirements
+        modeldoc: false
+      }
+    }).then(function (modelResult){
+      var contract = self.getContractInfo(modelResult);
+      contract.componentName = component+'Spec';
+
+      db.find({
+        selector: {
+          project: selectedProject
+        }
+      }).then(function (fretResult){
+        contract.properties = self.getPropertyInfo(fretResult, contract.outputVariables, component);
+        contract.delays = self.getDelayInfo(fretResult, component);
+
+        var lustreContract = ejsCache_realize.renderRealizeCode().component.complete(contract);
+        output.write(lustreContract);
+        var checkOutput = realizability.checkRealizability(filePath, '-fixpoint');
+
+        //smallest match between newline and whitespace followed by |
+        //should only match the result string, i.e. {REALIZABLE, UNREALIZABLE, UNKNOWN, INCONSISTENT}
+        var result = checkOutput.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];
+        self.setState({
+          realizable: result
+        })
+        if (result === "UNREALIZABLE") {
+          // var fileContent = fs.readFileSync(filePath+'.json', 'utf8');
+          // var jsonOutput = JSON.parse(fileContent);
+          console.log(result);
+        }
+      })
+    })
+  }
   exportComponentCode = event => {
     event.stopPropagation();
     const {component, selectedProject, language} = this.props;
@@ -350,16 +493,16 @@ class ComponentSummary extends React.Component {
             if (language === 'cocospec'){
               archive.append(ejsCache.renderContractCode().contract.complete(contract), {name: contract.componentName+'.lus'})
             } else if (language === 'copilot'){
-              archive.append(ejsCacheCoPilot.renderCoPilotSpec().contract.complete(contract), {name: contract.componentName+'.json'})
+              archive.append(sejsCacheCoPilot.renderCoPilotSpec().contract.complete(contract), {name: contract.componentName+'.json'})
             } else {
               console.log(contract);
 
               /* Use contract to determined the output connected components
                * */
 
-              var mappings = compute_dependency_maps(contract);
+              var mappings = cc_analysis.compute_dependency_maps(contract);
               console.log(mappings);
-              var connected_components = compute_connected_components(contract, mappings['output']);
+              var connected_components = cc_analysis.compute_connected_components(contract, mappings['output']);
               console.log(contract);
            // console.log(contract);
             //var mappings = compute_dependency_maps(contract);
@@ -382,8 +525,24 @@ class ComponentSummary extends React.Component {
 
   render() {
     const {classes, component, completed, language} = this.props;
+    const {language, realizable} = this.state;
     if ((completed && language)|| language === 'copilot'){
       return (
+        <div>
+        <FormControl required className={classes.formControl}>
+          <InputLabel htmlFor="language-export-required">Language</InputLabel>
+          <Select
+            value={language}
+            onChange={this.handleChange('language')}
+            inputProps={{
+              name: 'language',
+              id: 'language-export-required',
+            }}>
+            <MenuItem value="cocospec">CoCoSpec</MenuItem>
+            <MenuItem value="copilot">CoPilot</MenuItem>
+            <MenuItem value="lustre">Lustre</MenuItem>
+          </Select>
+        </FormControl>
         <Tooltip title='Export verification code.'>
         <span>
           <Button size="small" onClick={this.exportComponentCode} color="secondary" variant='contained' className={classes.buttonControl}>
@@ -391,9 +550,37 @@ class ComponentSummary extends React.Component {
           </Button>
           </span>
         </Tooltip>
+        &nbsp;
+        <Tooltip title='Check Realizability'>
+          <Button size="small" onClick={this.checkRealizability} color="secondary" variant='contained' className={classes.buttonControl}>
+            {realizable === "PROCESSING" ? <CircularProgress size={22} /> : realizable}
+          </Button>
+        </Tooltip>
+        &nbsp;
+        <DiagnoseButton realizable={realizable} className={classes.buttonControl}/>
+
+        <DisplayRealizabilityDialog
+          open={this.state.displayRealizabilityOpen}
+          handleDialogClose={this.handleRealizabilityDialogClose}/>
+        </div>
       );
     } else {
       return (
+        <div>
+          <FormControl required className={classes.formControl}>
+            <InputLabel htmlFor="language-export-required">Language</InputLabel>
+            <Select
+              value={language}
+              onChange={this.handleChange('language')}
+              inputProps={{
+                name: 'language',
+                id: 'language-export-required',
+              }}>
+              <MenuItem value="cocospec">CoCoSpec</MenuItem>
+              <MenuItem value="copilot">CoPilot</MenuItem>
+              <MenuItem value="lustre">Lustre</MenuItem>
+            </Select>
+          </FormControl>
           <Tooltip title='To export verification code, please complete mandatory variable fields and export language first.'>
             <span>
               <Button size="small" color="secondary" disabled variant='contained' className={classes.buttonControl}>
@@ -401,6 +588,13 @@ class ComponentSummary extends React.Component {
                 </Button>
             </span>
           </Tooltip>
+          &nbsp;
+          <Tooltip title='To check realizability, please complete mandatory variable fields and export language first.'>
+            <Button size="small" color="secondary" disabled variant='contained' className={classes.buttonControl}>
+              {realizable}
+            </Button>
+          </Tooltip>
+        </div>
       );
     }
   }
