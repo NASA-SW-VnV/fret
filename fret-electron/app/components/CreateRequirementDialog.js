@@ -58,6 +58,12 @@ import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import InProgressIcon from '@material-ui/icons/MoreHoriz';
+import PauseIcon from '@material-ui/icons/Pause';
+import CompletedIcon from '@material-ui/icons/Done';
+import AttentionIcon from '@material-ui/icons/PriorityHigh';
+import TableCell from "@material-ui/core/TableCell";
+import DeprecatedIcon from "@material-ui/icons/Close";
 
 import styles from './CreateRequirementDialog.css';
 import Instructions from './Instructions';
@@ -98,7 +104,15 @@ const formStyles = theme => ({
   heading: {
   fontSize: theme.typography.pxToRem(16),
   fontWeight: theme.typography.fontWeightRegular,
-},
+  },
+  dialogTitle: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  selectRoot: {
+    width: 50
+  },  
 });
 
 class CreateRequirementDialog extends React.Component {
@@ -110,6 +124,7 @@ class CreateRequirementDialog extends React.Component {
     rationale: '',
     comments:'',
     focus: '',
+    status: 'None',
     selectedTemplate: -1,
     tabValue: 0,
   };
@@ -269,6 +284,7 @@ class CreateRequirementDialog extends React.Component {
         project : this.state.project,
         rationale : this.state.rationale,
         comments : this.state.comments,
+        status: this.state.status,        
         fulltext : fulltext,
         semantics : semantics,
         template : template,
@@ -443,6 +459,7 @@ class CreateRequirementDialog extends React.Component {
               parent_reqid: parentReqId,
               rationale: '',
               comments: '',
+              status: 'None',
               focus: '',
               selectedTemplate: -1,
             }
@@ -459,6 +476,7 @@ class CreateRequirementDialog extends React.Component {
               parent_reqid: props.editRequirement.parent_reqid,
               rationale: props.editRequirement.rationale,
               comments: props.editRequirement.comments,
+              status: props.editRequirement.status || '',
               focus: '',
               selectedTemplate,
             }
@@ -513,7 +531,42 @@ class CreateRequirementDialog extends React.Component {
         >
           <div className={styles.layout}>
             <div className={styles.form}>
-              <DialogTitle id="form-dialog-title">{dialogTitle}</DialogTitle>
+            <DialogTitle id="form-dialog-title">
+                <div className={classes.dialogTitle}>
+                  {dialogTitle}
+                  <FormControl >
+                    <InputLabel id="status">Status</InputLabel>
+                    <Select
+                      classes={{ root: classes.selectRoot }}
+                      value={this.state.status}
+                      onChange={this.handleTextFieldChange('status')}
+                    >
+                      <MenuItem value="  ">
+                        <Tooltip title="None">
+                          <div>
+                            None
+                          </div>
+                        </Tooltip>
+                      </MenuItem>
+                      <MenuItem value={'in progress'}>
+                        <Tooltip title="In progress"><InProgressIcon className={classes.inProgressIcon}/></Tooltip>
+                      </MenuItem>
+                      <MenuItem value={'paused'}>
+                        <Tooltip title="Paused"><PauseIcon className={classes.pauseIcon}/></Tooltip>
+                      </MenuItem>
+                      <MenuItem value={'completed'}>
+                        <Tooltip title="Completed"><CompletedIcon className={classes.completedIcon}/></Tooltip>
+                      </MenuItem>
+                      <MenuItem value={'attention'}>
+                        <Tooltip title="Attention"><AttentionIcon className={classes.attentionIcon}/></Tooltip>
+                      </MenuItem>
+                      <MenuItem value={'deprecated'}>
+                        <Tooltip title="Deprecated"><DeprecatedIcon/></Tooltip>
+                      </MenuItem>
+                    </Select>
+                  </FormControl>
+                </div>
+              </DialogTitle>
               <Divider/>
               <DialogContent>
                     <DialogContentText>
