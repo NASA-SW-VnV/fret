@@ -112,7 +112,7 @@ const formStyles = theme => ({
     alignItems: 'center',
   },
   selectRoot: {
-    width: 60
+    width: 50
   },
 });
 
@@ -125,7 +125,7 @@ class CreateRequirementDialog extends React.Component {
     rationale: '',
     comments:'',
     focus: '',
-    status: '',
+    status: 'None',
     selectedTemplate: -1,
     tabValue: 0,
   };
@@ -466,7 +466,7 @@ class CreateRequirementDialog extends React.Component {
               parent_reqid: parentReqId,
               rationale: '',
               comments: '',
-              status: '',
+              status: 'None',
               focus: '',
               selectedTemplate: -1,
             }
@@ -552,13 +552,16 @@ class CreateRequirementDialog extends React.Component {
                     <InputLabel id="status">Status</InputLabel>
                     <Select
                       classes={{ root: classes.selectRoot }}
-                      style={statusSelectStyle}
-                      disableUnderline
-                      className={colorStyle}
                       value={this.state.status}
                       onChange={this.handleTextFieldChange('status')}
                     >
-                      <MenuItem value="None"/>
+                      <MenuItem value="  ">
+                        <Tooltip title="None">
+                          <div>
+                            None
+                          </div>
+                        </Tooltip>
+                      </MenuItem>
                       <MenuItem value={'in progress'}>
                         <Tooltip title="In progress"><InProgressIcon className={classes.inProgressIcon}/></Tooltip>
                       </MenuItem>
