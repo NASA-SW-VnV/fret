@@ -75,13 +75,8 @@ import MenuItem from '@material-ui/core/MenuItem';
 
 import ExportIcon from '@material-ui/icons/ArrowUpward';
 
-<<<<<<< HEAD
-import * as d3 from "d3";
-import {getRequirementStyle} from "../utils/utilityFunctions";
-=======
 import VariablesView from './VariablesView';
 import * as d3 from "d3";
->>>>>>> status with fill background color no border
 
 const constants = require('../parser/Constants');
 const sharedObj = require('electron').remote.getGlobal('sharedObj');
@@ -95,11 +90,7 @@ let counter = 0;
 // status is also saved in database
 function createData(dbkey, rev, reqid, summary, project, status, semantics, fulltext) {
   counter += 1;
-<<<<<<< HEAD
   return { rowid: counter, dbkey, rev, reqid, summary, project, status: status || 'None', semantics, fulltext};
-=======
-  return { rowid: counter, dbkey, rev, reqid, summary, project, status: status || '', semantics, fulltext};
->>>>>>> status with fill background color no border
 }
 
 function desc(a, b, orderBy) {
@@ -271,24 +262,11 @@ let TableToolbar = props => {
           </div>
         ) : (
           <div className={classes.toolbar}>
-<<<<<<< HEAD
           <IconButton aria-label="Bulk Change" onClick={() => bulkChangeEnabler()}>
             <Tooltip title="Bulk Change">
             <ListIcon color='secondary'/>
             </Tooltip>
           </IconButton>
-=======
-            <IconButton aria-label="Export Verification Code" onClick={() => handleCoCoSpecWindow()}>
-              <Tooltip title='Export Verification Code'>
-                <ExportIcon color='secondary'/>
-              </Tooltip>
-            </IconButton>
-            <IconButton aria-label="Bulk Change" onClick={() => bulkChangeEnabler()}>
-              <Tooltip title="Bulk Change">
-                <ListIcon color='secondary'/>
-              </Tooltip>
-            </IconButton>
->>>>>>> status with fill background color no border
           </div>
         )}
       </div>
@@ -320,11 +298,7 @@ const styles = theme => ({
   select: {
     borderStyle: 'None',
     borderWidth: 1,
-<<<<<<< HEAD
     borderRadius: 5,
-=======
-    borderRadius: 5,
->>>>>>> status with fill background color no border
     width: 45,
     height: 30,
   }
@@ -395,7 +369,7 @@ class SortableTable extends React.Component {
         });
     }
   }
-
+// calculating depth of requirements
   createTree(r, root, data) {
     if (!data[r.doc.reqid]) {
       data[r.doc.reqid] = { children: [] }
@@ -425,19 +399,6 @@ class SortableTable extends React.Component {
 
     const { selectedProject } = this.props;
     const filterOff = selectedProject == 'All Projects'
-<<<<<<< HEAD
-    db.allDocs({
-      include_docs: true,
-    }).then((result) => {
-      const data = result.rows
-        .filter(r => !system_dbkeys.includes(r.key))
-        .filter(r => filterOff || r.doc.project == selectedProject)
-        .map(r => {
-          return createData(r.doc._id, r.doc._rev, r.doc.reqid, r.doc.fulltext, r.doc.project, r.doc.status, r.doc.semantics, r.doc.fulltext);
-        });
-      this.setState({
-        data,
-=======
     const root = [];
     const data = {}
     db.allDocs({
@@ -452,7 +413,6 @@ class SortableTable extends React.Component {
       this.calculDepth(root, data, 1);
       this.setState({
         data: Object.values(data).filter(elt => elt.reqid !== undefined),
->>>>>>> status with fill background color no border
       })
     }).catch((err) => {
       console.log(err);
@@ -655,16 +615,16 @@ class SortableTable extends React.Component {
                   const label = n.reqid ? n.reqid : 'NONE'
                   // getting requirement bubble color
                   const status = n.status;
-                  const color = 
+                  const colorStyle =
                     n.semantics
                     ? n.semantics.ft && [constants.nonsense_semantics,
                       constants.undefined_semantics,
                       constants.unhandled_semantics].indexOf(n.semantics.ft) < 0
-                      ? '#9CCC65'
+                      ? 'req-leaf'
                       : constants.unhandled_semantics !== n.semantics.ft && n.fulltext
-                        ? '#E57373'
-                        : '#eceff1'
-                    : '#E57373';
+                      ? 'req-unformalized'
+                      : 'req-grey'
+                    : 'req-unformalized';
                   if (this.state.bulkChangeMode) {
                     return (
                       <TableRow
@@ -681,20 +641,13 @@ class SortableTable extends React.Component {
                         </TableCell>
                         <TableCell >
                           <Select
-                            className={classes.select}
+                            className={[classes.select, colorStyle]}
                             disableUnderline
-                            style={{
-                              backgroundColor: color
-                            }}
                             value={status}
                             onChange={(event) => this.handleChange(event, n)}
                             onClick={event => event.stopPropagation()}
                           >
-                            <MenuItem value="None">
-                              <Tooltip title="None">
-                                <div>None</div>
-                              </Tooltip>
-                            </MenuItem>
+                            <MenuItem value="None"/>
                             <MenuItem value={'in progress'}>
                               <Tooltip title="In progress"><InProgressIcon/></Tooltip>
                             </MenuItem>
@@ -735,19 +688,12 @@ class SortableTable extends React.Component {
                       <TableRow key={n.rowid}>
                         <TableCell >
                           <Select
-                            className={classes.select}
+                            className={[classes.select, colorStyle]}
                             disableUnderline
-                            style={{
-                              backgroundColor: color
-                            }}
                             value={status}
                             onChange={(event) => this.handleChange(event, n)}
                           >
-                            <MenuItem value={'None'}>
-                              <Tooltip title="None">
-                                <div>None</div>
-                              </Tooltip>
-                            </MenuItem>
+                            <MenuItem value="None"/>
                             <MenuItem value={'in progress'}>
                               <Tooltip title="In progress"><InProgressIcon
                                 className={classes.inProgressIcon}/></Tooltip>

@@ -42,14 +42,6 @@ body {
   fill: #E57373;
 }
 
-.node--white {
-  fill: white;
-}
-
-.node--leaf-unspecified {
-  fill: white;
-}
-
 .req-unformalized {
   color: #E57373;
 }
