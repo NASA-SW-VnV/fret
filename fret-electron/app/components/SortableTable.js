@@ -90,7 +90,7 @@ let counter = 0;
 // status is also saved in database
 function createData(dbkey, rev, reqid, summary, project, status, semantics, fulltext) {
   counter += 1;
-  return { rowid: counter, dbkey, rev, reqid, summary, project, status: status || '', semantics, fulltext};
+  return { rowid: counter, dbkey, rev, reqid, summary, project, status: status || 'None', semantics, fulltext};
 }
 
 function desc(a, b, orderBy) {
@@ -384,7 +384,7 @@ class SortableTable extends React.Component {
         });
     }
   }
-
+// calculating depth of requirements
   createTree(r, root, data) {
     if (!data[r.doc.reqid]) {
       data[r.doc.reqid] = { children: [] }
@@ -641,16 +641,16 @@ class SortableTable extends React.Component {
                   const label = n.reqid ? n.reqid : 'NONE'
                   // getting requirement bubble color
                   const status = n.status;
-                  const color = 
+                  const colorStyle =
                     n.semantics
                     ? n.semantics.ft && [constants.nonsense_semantics,
                       constants.undefined_semantics,
                       constants.unhandled_semantics].indexOf(n.semantics.ft) < 0
-                      ? '#9CCC65'
+                      ? 'req-leaf'
                       : constants.unhandled_semantics !== n.semantics.ft && n.fulltext
-                        ? '#E57373'
-                        : '#eceff1'   
-                    : '#E57373';                  
+                      ? 'req-unformalized'
+                      : 'req-grey'
+                    : 'req-unformalized';    
                   if (this.state.bulkChangeMode) {
                     return (
                       <TableRow
@@ -667,20 +667,13 @@ class SortableTable extends React.Component {
                         </TableCell>
                         <TableCell >
                           <Select
-                            className={classes.select}
+                            className={[classes.select, colorStyle]}
                             disableUnderline
-                            style={{
-                              backgroundColor: color
-                            }}
                             value={status}
                             onChange={(event) => this.handleChange(event, n)}
                             onClick={event => event.stopPropagation()}
                           >
-                            <MenuItem value="None">
-                              <Tooltip title="None">
-                                <div>None</div>
-                              </Tooltip>
-                            </MenuItem>  
+                            <MenuItem value="None"/>
                             <MenuItem value={'in progress'}>
                               <Tooltip title="In progress"><InProgressIcon/></Tooltip>
                             </MenuItem>
@@ -721,19 +714,12 @@ class SortableTable extends React.Component {
                       <TableRow key={n.rowid}>                      
                         <TableCell >
                           <Select
-                            className={classes.select}
+                            className={[classes.select, colorStyle]}
                             disableUnderline
-                            style={{
-                              backgroundColor: color
-                            }}
                             value={status}
                             onChange={(event) => this.handleChange(event, n)}
                           >
-                            <MenuItem value={'None'}>
-                              <Tooltip title="None">
-                                <div>None</div>
-                              </Tooltip>
-                            </MenuItem>                   
+                            <MenuItem value="None"/>
                             <MenuItem value={'in progress'}>
                               <Tooltip title="In progress"><InProgressIcon
                                 className={classes.inProgressIcon}/></Tooltip>

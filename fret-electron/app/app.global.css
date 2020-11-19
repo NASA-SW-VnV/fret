@@ -26,8 +26,24 @@ body {
   fill: #9CCC65;
 }
 
+.req-grey {
+  background: #eceff1;
+}
+
+.req-leaf {
+  background: #9CCC65;
+}
+
+.req-unformalized {
+  background: #E57373;
+}
+
 .node--leaf-unformalized {
   fill: #E57373;
+}
+
+.req-unformalized {
+  color: #E57373;
 }
 
 .label {
