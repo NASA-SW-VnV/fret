@@ -245,26 +245,23 @@ class MainView extends React.Component {
 		      function (err,buffer) {
 			  if (err) throw err;
 			  let data = JSON.parse(buffer);
-			  //console.log('length = ' + data.length);
 			  db.bulkDocs(data).catch((err) => {console.log(err);});
         var projects = listOfProjects;
         data.forEach((d) => {
-          if (d.project && !projects.includes(d.project)){
+          if (d.project && !projects.includes(d.project)){;
             projects.push(d.project);
-            db.get('FRET_PROJECTS').then((doc) => {
-              const list = doc.names
-              list.push(d.project)
-              return db.put({
-                _id: 'FRET_PROJECTS',
-                _rev: doc._rev,
-                names: list
-              })
-            }).catch((err) => {
-              console.log(err);
-            });
           }
-
         })
+        //If new projects were introduced through the imported reqs, update FRET_PROJECTS in db
+        db.get('FRET_PROJECTS').then((doc) => {
+          return db.put({
+            _id: 'FRET_PROJECTS',
+            _rev: doc._rev,
+            names: projects
+          })
+        }).catch((err) => {
+          console.log(err);
+        });
 		      });
 
     }
