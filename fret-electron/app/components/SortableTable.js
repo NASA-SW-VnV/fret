@@ -222,7 +222,7 @@ const toolbarStyles = theme => ({
 });
 
 let TableToolbar = props => {
-  const { numSelected, classes, enableBulkChange, bulkChangeEnabler, deleteSelection } = props;
+  const { numSelected, classes, enableBulkChange, bulkChangeEnabler, deleteSelection, handleCoCoSpecWindow } = props;
 
   return (
     <Toolbar
@@ -254,6 +254,11 @@ let TableToolbar = props => {
                 <DeleteIcon />
               </IconButton>
             </Tooltip>
+            <IconButton onClick={() => handleCoCoSpecWindow()}>
+              <Tooltip title='Export Verification Code'>
+                <ExportIcon/>
+              </Tooltip>
+            </IconButton>
             <Tooltip title="Exit Bulk Change">
               <IconButton aria-label="Close Bulk Change" onClick={() => bulkChangeEnabler()}>
                 <CloseIcon />
@@ -262,11 +267,16 @@ let TableToolbar = props => {
           </div>
         ) : (
           <div className={classes.toolbar}>
-          <IconButton aria-label="Bulk Change" onClick={() => bulkChangeEnabler()}>
-            <Tooltip title="Bulk Change">
-            <ListIcon color='secondary'/>
-            </Tooltip>
-          </IconButton>
+            <IconButton aria-label="Export Verification Code" onClick={() => handleCoCoSpecWindow()}>
+              <Tooltip title='Export Verification Code'>
+                <ExportIcon color='secondary'/>
+              </Tooltip>
+            </IconButton>
+            <IconButton aria-label="Bulk Change" onClick={() => bulkChangeEnabler()}>
+              <Tooltip title="Bulk Change">
+                <ListIcon color='secondary'/>
+              </Tooltip>
+            </IconButton>
           </div>
         )}
       </div>
@@ -279,7 +289,11 @@ TableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
   enableBulkChange: PropTypes.bool.isRequired,
   bulkChangeEnabler: PropTypes.func.isRequired,
+  handleCoCoSpecWindow: PropTypes.func.isRequired
 };
+
+
+
 
 TableToolbar = withStyles(toolbarStyles)(TableToolbar);
 
@@ -328,7 +342,8 @@ class SortableTable extends React.Component {
     deleteDialogOpen: false,
     snackbarOpen: false,
     selectedProject: 'All Projects',
-    bulkChangeMode: false
+    bulkChangeMode: false,
+    cocospecMode: false
   };
 
   constructor(props){
@@ -369,54 +384,34 @@ class SortableTable extends React.Component {
         });
     }
   }
-// calculating depth of requirements
-  createTree(r, root, data) {
-    if (!data[r.doc.reqid]) {
-      data[r.doc.reqid] = { children: [] }
-    }
-    const req = createData(r.doc._id, r.doc._rev, r.doc.reqid, r.doc.fulltext, r.doc.project, r.doc.status, r.doc.semantics, r.doc.fulltext);
-    data[r.doc.reqid] = { ...data[r.doc.reqid], ...req };
-    if (r.doc.parent_reqid === '') {
-      root.push(data[r.doc.reqid])
-    } else {
-      if (!data[r.doc.parent_reqid]) {
-        data[r.doc.parent_reqid] = { children: [] }
-      }
-      data[r.doc.parent_reqid].children.push(data[r.doc.reqid]);
-    }
-  }
-
-  // calculating family depth of requirement
-  calculDepth(root, data, depth) {
-    root.forEach(req => {
-      data[req.reqid].depth = depth;
-      this.calculDepth(data[req.reqid].children, data, depth + 1)
-    })
-  }
 
   synchStateWithDB() {
     if (!this.mounted) return;
 
     const { selectedProject } = this.props;
     const filterOff = selectedProject == 'All Projects'
-    const root = [];
-    const data = {}
     db.allDocs({
       include_docs: true,
     }).then((result) => {
-      result.rows
+      const data = result.rows
         .filter(r => !system_dbkeys.includes(r.key))
         .filter(r => filterOff || r.doc.project == selectedProject)
-        .forEach(r => {
-          this.createTree(r, root, data)
+        .map(r => {
+          return createData(r.doc._id, r.doc._rev, r.doc.reqid, r.doc.fulltext, r.doc.project, r.doc.status, r.doc.semantics, r.doc.fulltext);
         });
-      this.calculDepth(root, data, 1);
       this.setState({
-        data: Object.values(data).filter(elt => elt.reqid !== undefined),
+        data,
       })
     }).catch((err) => {
       console.log(err);
     });
+  }
+
+  handleCoCoSpecWindow = () => {
+    const { classes, selectedProject } = this.props;
+    this.setState({
+      cocospecMode : !this.state.cocospecMode
+    })
   }
 
   handleEnableBulkChange = () => {
@@ -580,12 +575,13 @@ class SortableTable extends React.Component {
 
   render() {
     const { classes, selectedProject, existingProjectNames } = this.props;
-    const { data, order, orderBy, selected, rowsPerPage, page, bulkChangeMode,
-       snackBarDisplayInfo, selectionBulkChange, selectedRequirement } = this.state;
+    const { data, order, orderBy, selected, rowsPerPage, page, bulkChangeMode, cocospecMode, snackBarDisplayInfo, selectionBulkChange, selectedRequirement } = this.state;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
     const title = 'Requirements: ' + selectedProject
     const selectionForDeletion = bulkChangeMode ? selectionBulkChange : [selectedRequirement]
 
+    if (this.state.cocospecMode){
+        return  <VariablesView selectedProject={selectedProject} existingProjectNames={existingProjectNames}/> };
     return (
       <div>
       <Typography variant='h6'>{title}
@@ -594,8 +590,10 @@ class SortableTable extends React.Component {
         <TableToolbar
           numSelected={selected.length}
           enableBulkChange={bulkChangeMode}
+          enableCoCoSpec={cocospecMode}
           bulkChangeEnabler={this.handleEnableBulkChange}
-          deleteSelection={this.handleDeleteSelectedRequirements}/>
+          deleteSelection={this.handleDeleteSelectedRequirements}
+          handleCoCoSpecWindow={this.handleCoCoSpecWindow}/>
         <div className={classes.tableWrapper}>
           <Table className={classes.table} aria-labelledby="tableTitle" padding="dense">
             <SortableTableHead
@@ -606,6 +604,7 @@ class SortableTable extends React.Component {
               onRequestSort={this.handleRequestSort}
               rowCount={data.length}
               enableBulkChange={bulkChangeMode}
+              enableCoCoSpec={cocospecMode}
             />
             <TableBody>{
                 stableSort(data, getSorting(order, orderBy))
@@ -641,7 +640,7 @@ class SortableTable extends React.Component {
                         </TableCell>
                         <TableCell >
                           <Select
-                            className={[classes.select, colorStyle]}
+                            className={`${classes.select} ${colorStyle}`}
                             disableUnderline
                             value={status}
                             onChange={(event) => this.handleChange(event, n)}
@@ -688,15 +687,14 @@ class SortableTable extends React.Component {
                       <TableRow key={n.rowid}>
                         <TableCell >
                           <Select
-                            className={[classes.select, colorStyle]}
+                            className={`${classes.select} ${colorStyle}`}
                             disableUnderline
                             value={status}
                             onChange={(event) => this.handleChange(event, n)}
                           >
                             <MenuItem value="None"/>
                             <MenuItem value={'in progress'}>
-                              <Tooltip title="In progress"><InProgressIcon
-                                className={classes.inProgressIcon}/></Tooltip>
+                              <Tooltip title="In progress"><InProgressIcon/></Tooltip>
                             </MenuItem>
                             <MenuItem value={'paused'}>
                               <Tooltip title="Paused"><PauseIcon/></Tooltip>

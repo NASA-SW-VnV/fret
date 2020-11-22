@@ -71,7 +71,6 @@ import SlateEditor2 from './SlateEditor2';
 import VariablesSortableTable from './VariablesSortableTable';
 
 import templates from '../../templates/templates';
-import {getRequirementStyle} from "../utils/utilityFunctions";
 
 const db = require('electron').remote.getGlobal('sharedObj').db;
 const modeldb = require('electron').remote.getGlobal('sharedObj').modeldb;
@@ -112,13 +111,8 @@ const formStyles = theme => ({
     alignItems: 'center',
   },
   selectRoot: {
-<<<<<<< HEAD
-    width: 50
+    width: 60
   },
-=======
-    width: 70
-  },  
->>>>>>> merging from newUi to master for status functionality on SortableTable
 });
 
 class CreateRequirementDialog extends React.Component {
@@ -199,12 +193,7 @@ class CreateRequirementDialog extends React.Component {
                     project: project,
                     component_name: semantics.component_name,
                     variable_name: oldv,
-<<<<<<< HEAD
-                    reqs: vdocOld.reqs.splice(index,1),
-                    otherDeps: [],
-=======
                     reqs: vOld.reqs.splice(index,1),
->>>>>>> merging from newUi to master for status functionality on SortableTable
                     dataType: '',
                     idType: '',
                     description: '',
@@ -252,16 +241,9 @@ class CreateRequirementDialog extends React.Component {
                     project: project,
                     component_name: semantics.component_name,
                     variable_name: oldv,
-<<<<<<< HEAD
-                    reqs: vdocOld.reqs.splice(index,1),
-                    otherDeps: vdoc.otherDeps,
-                    dataType: vdoc.dataType,
-                    idType: vdoc.idType,
-=======
                     reqs: vOld.reqs.splice(index,1),
                     dataType: v.dataType,
                     idType: v.idType,
->>>>>>> merging from newUi to master for status functionality on SortableTable
                     description: '',
                     assignment: '',
                     modeRequirement: '',
@@ -331,7 +313,6 @@ class CreateRequirementDialog extends React.Component {
             component_name: semantics.component_name,
             variable_name: variable,
             reqs: oldReqs,
-            otherDeps: [],
             dataType: '',
             idType: '',
             description: '',
@@ -356,7 +337,6 @@ class CreateRequirementDialog extends React.Component {
               component_name: semantics.component_name,
               variable_name: variable,
               reqs: reqsAux,
-              otherDeps: [],
               dataType: '',
               idType: '',
               description: '',
@@ -387,18 +367,6 @@ class CreateRequirementDialog extends React.Component {
           component_name: semantics.component_name,
           variable_name: variable,
           reqs: oldReqs,
-<<<<<<< HEAD
-          otherDeps: vdoc.otherDeps,
-          dataType: vdoc.dataType,
-          tool: vdoc.tool,
-          idType: vdoc.idType,
-          description: vdoc.description,
-          assignment: vdoc.assignment,
-          modeRequirement: vdoc.modeRequirement,
-          modeldoc: vdoc.modeldoc,
-          modelComponent: vdoc.modelComponent,
-          modeldoc_id: vdoc.modeldoc_id
-=======
           dataType: v.dataType,
           tool: v.tool,
           idType: v.idType,
@@ -408,7 +376,6 @@ class CreateRequirementDialog extends React.Component {
           model: v.model,
           modelComponent: v.modelComponent,
           model_id: v.model_id
->>>>>>> merging from newUi to master for status functionality on SortableTable
         }).then(function (response) {
           console.log(response);
           self.state.dialogCloseListener(true, newReqId);
@@ -425,7 +392,6 @@ class CreateRequirementDialog extends React.Component {
             component_name: semantics.component_name,
             variable_name: variable,
             reqs: reqsAux,
-            otherDeps: [],
             dataType: 'boolean',
             idType: 'Mode',
             description: '',
@@ -560,7 +526,18 @@ class CreateRequirementDialog extends React.Component {
       borderWidth: 1,
       borderRadius: 5,
     }
-    const colorStyle = isRequirementUpdate ? getRequirementStyle({semantics, fulltext},false) : 'req-grey';
+    const colorStyle =
+      isRequirementUpdate ?
+        semantics
+        ? semantics.ft && [constants.nonsense_semantics,
+          constants.undefined_semantics,
+          constants.unhandled_semantics].indexOf(semantics.ft) < 0
+        ? 'req-leaf'
+        : constants.unhandled_semantics !== semantics.ft && fulltext
+          ? 'req-unformalized'
+          : 'req-grey'
+        : 'req-unformalized':
+        'req-grey';
     return (
       <div>
         <Dialog
@@ -579,6 +556,9 @@ class CreateRequirementDialog extends React.Component {
                     <InputLabel id="status">Status</InputLabel>
                     <Select
                       classes={{ root: classes.selectRoot }}
+                      style={statusSelectStyle}
+                      disableUnderline
+                      className={colorStyle}
                       value={this.state.status}
                       onChange={this.handleTextFieldChange('status')}
                     >
