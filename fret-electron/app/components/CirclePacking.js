@@ -33,6 +33,7 @@
 import React from 'react'
 import PropTypes from 'prop-types';
 import * as d3 from 'd3'
+import {getRequirementStyle} from "../utils/utilityFunctions";
 
 const sharedObj = require('electron').remote.getGlobal('sharedObj')
 const db = sharedObj.db;
@@ -178,21 +179,7 @@ class CirclePacking extends React.Component {
       .data(nodes)
       .enter().append("circle")
         .attr("class", function(d) {
-          return d.parent
-          ?
-          "children" in d.data
-            ? "node"
-            : (d.data.doc.semantics
-                  ? ((d.data.doc.semantics.ft &&
-                     d.data.doc.semantics.ft !== constants.nonsense_semantics &&
-                      d.data.doc.semantics.ft !== constants.undefined_semantics &&
-                       d.data.doc.semantics.ft !== constants.unhandled_semantics))
-                      ? "node node--leaf"
-                      : d.data.doc.semantics.ft !== constants.unhandled_semantics
-                        ? "node node--leaf-unformalized"
-                        : "node--leaf-unspecified"
-                  : "node--leaf-unspecified")
-          :"node node--root"; })
+          return getRequirementStyle(d, true)})
         .style("fill", function(d) {return d.children ? color(d.depth) : d.data.doc.semantics ? ((d.data.doc.semantics.ft === constants.unhandled_semantics || d.data.doc.fulltext === "")  ? "white": "node node--leaf-unformalized") : "white" })
         .on("click", function(d) {
           if (focus !== d)
