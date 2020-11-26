@@ -77,6 +77,7 @@ import ExportIcon from '@material-ui/icons/ArrowUpward';
 
 import VariablesView from './VariablesView';
 import * as d3 from "d3";
+import {getRequirementStyle} from "../utils/utilityFunctions";
 
 const constants = require('../parser/Constants');
 const sharedObj = require('electron').remote.getGlobal('sharedObj');
@@ -614,16 +615,7 @@ class SortableTable extends React.Component {
                   const label = n.reqid ? n.reqid : 'NONE'
                   // getting requirement bubble color
                   const status = n.status;
-                  const colorStyle =
-                    n.semantics
-                    ? n.semantics.ft && [constants.nonsense_semantics,
-                      constants.undefined_semantics,
-                      constants.unhandled_semantics].indexOf(n.semantics.ft) < 0
-                      ? 'req-leaf'
-                      : constants.unhandled_semantics !== n.semantics.ft && n.fulltext
-                      ? 'req-unformalized'
-                      : 'req-grey'
-                    : 'req-unformalized';
+                  const colorStyle = getRequirementStyle(n,false);
                   if (this.state.bulkChangeMode) {
                     return (
                       <TableRow
