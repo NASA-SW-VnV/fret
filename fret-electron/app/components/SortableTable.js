@@ -385,50 +385,23 @@ class SortableTable extends React.Component {
         });
     }
   }
-// calculating depth of requirements
-  createTree(r, root, data) {
-    if (!data[r.doc.reqid]) {
-      data[r.doc.reqid] = { children: [] }
-    }
-    const req = createData(r.doc._id, r.doc._rev, r.doc.reqid, r.doc.fulltext, r.doc.project, r.doc.status, r.doc.semantics, r.doc.fulltext);
-    data[r.doc.reqid] = { ...data[r.doc.reqid], ...req };
-    if (r.doc.parent_reqid === '') {
-      root.push(data[r.doc.reqid])
-    } else {
-      if (!data[r.doc.parent_reqid]) {
-        data[r.doc.parent_reqid] = { children: [] }
-      }
-      data[r.doc.parent_reqid].children.push(data[r.doc.reqid]);
-    }
-  }
-
-  // calculating family depth of requirement
-  calculDepth(root, data, depth) {
-    root.forEach(req => {
-      data[req.reqid].depth = depth;
-      this.calculDepth(data[req.reqid].children, data, depth + 1)
-    })
-  }
 
   synchStateWithDB() {
     if (!this.mounted) return;
 
     const { selectedProject } = this.props;
     const filterOff = selectedProject == 'All Projects'
-    const root = [];
-    const data = {}
     db.allDocs({
       include_docs: true,
     }).then((result) => {
-      result.rows
+      const data = result.rows
         .filter(r => !system_dbkeys.includes(r.key))
         .filter(r => filterOff || r.doc.project == selectedProject)      
-        .forEach(r => {
-          this.createTree(r, root, data)
+        .map(r => {
+          return createData(r.doc._id, r.doc._rev, r.doc.reqid, r.doc.fulltext, r.doc.project, r.doc.status, r.doc.semantics, r.doc.fulltext);
         });
-      this.calculDepth(root, data, 1);
       this.setState({
-        data: Object.values(data).filter(elt => elt.reqid !== undefined),
+        data,
       })
     }).catch((err) => {
       console.log(err);
@@ -659,7 +632,7 @@ class SortableTable extends React.Component {
                         </TableCell>
                         <TableCell >
                           <Select
-                            className={[classes.select, colorStyle]}
+                            className={`${classes.select} ${colorStyle}`}
                             disableUnderline
                             value={status}
                             onChange={(event) => this.handleChange(event, n)}
@@ -706,15 +679,14 @@ class SortableTable extends React.Component {
                       <TableRow key={n.rowid}>                      
                         <TableCell >
                           <Select
-                            className={[classes.select, colorStyle]}
+                            className={`${classes.select} ${colorStyle}`}
                             disableUnderline
                             value={status}
                             onChange={(event) => this.handleChange(event, n)}
                           >
                             <MenuItem value="None"/>
                             <MenuItem value={'in progress'}>
-                              <Tooltip title="In progress"><InProgressIcon
-                                className={classes.inProgressIcon}/></Tooltip>
+                              <Tooltip title="In progress"><InProgressIcon/></Tooltip>
                             </MenuItem>
                             <MenuItem value={'paused'}>
                               <Tooltip title="Paused"><PauseIcon/></Tooltip>
@@ -731,7 +703,7 @@ class SortableTable extends React.Component {
                           </Select>
                         </TableCell>                        
                         <TableCell>
-                            <Button color='secondary' onClick={() => this.handleRequirementDialogOpen(n)}>
+                        <Button color='secondary' onClick={this.handleRequirementDialogOpen(n)}>
                               {label}
                             </Button>
                           </TableCell>
