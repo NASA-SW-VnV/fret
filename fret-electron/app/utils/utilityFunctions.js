@@ -2,6 +2,7 @@ const constants = require('../parser/Constants');
 export const getRequirementStyle = (requirement, isNode) => {
   let style;
   if(!isNode) {
+    // SortableTable & CreateRequirementDialog
     style = requirement.semantics && requirement.fulltext
       ? (requirement.semantics.ft &&
         requirement.semantics.ft !== constants.nonsense_semantics &&
@@ -13,6 +14,7 @@ export const getRequirementStyle = (requirement, isNode) => {
           : 'req-grey'
       : 'req-grey';
   } else {
+    // CirclePacking
     style = !requirement.children ?
         requirement.data.doc.semantics && requirement.data.doc.fulltext
           ? ((requirement.data.doc.semantics.ft &&
@@ -25,7 +27,7 @@ export const getRequirementStyle = (requirement, isNode) => {
               : "node--leaf-unspecified"
           : "node--leaf-unspecified" :
     'node';
-    if(requirement.parent){
+    if(!requirement.parent){
       style = `node--root ${style}`
     }
   }
