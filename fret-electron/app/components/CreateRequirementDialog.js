@@ -71,10 +71,11 @@ import SlateEditor2 from './SlateEditor2';
 import VariablesSortableTable from './VariablesSortableTable';
 
 import templates from '../../templates/templates';
+import {getRequirementStyle} from "../utils/utilityFunctions";
 
 const db = require('electron').remote.getGlobal('sharedObj').db;
 const modeldb = require('electron').remote.getGlobal('sharedObj').modeldb;
-
+const constants = require('../parser/Constants');
 const uuidv1 = require('uuid/v1');
 
 const formStyles = theme => ({
@@ -111,8 +112,8 @@ const formStyles = theme => ({
     alignItems: 'center',
   },
   selectRoot: {
-    width: 70
-  },  
+    width: 60
+  },
 });
 
 class CreateRequirementDialog extends React.Component {
@@ -284,7 +285,7 @@ class CreateRequirementDialog extends React.Component {
         project : this.state.project,
         rationale : this.state.rationale,
         comments : this.state.comments,
-        status: this.state.status,        
+        status: this.state.status,
         fulltext : fulltext,
         semantics : semantics,
         template : template,
@@ -520,6 +521,13 @@ class CreateRequirementDialog extends React.Component {
     const templateValues = isRequirementUpdate ? edittingRequirement.template : undefined
     const requirementFields = this.stepper ? this.stepper.getRequirementFields() : undefined;
     const requirementText = requirementFields ? requirementFields.fulltext : undefined;
+    const semantics = isRequirementUpdate ? edittingRequirement.semantics : undefined;
+    const statusSelectStyle = {
+      borderStyle: 'None',
+      borderWidth: 1,
+      borderRadius: 5,
+    }
+    const colorStyle = isRequirementUpdate ? getRequirementStyle({semantics, fulltext},false) : 'req-grey';
     return (
       <div>
         <Dialog
@@ -538,6 +546,9 @@ class CreateRequirementDialog extends React.Component {
                     <InputLabel id="status">Status</InputLabel>
                     <Select
                       classes={{ root: classes.selectRoot }}
+                      style={statusSelectStyle}
+                      disableUnderline
+                      className={colorStyle}
                       value={this.state.status}
                       onChange={this.handleTextFieldChange('status')}
                     >
