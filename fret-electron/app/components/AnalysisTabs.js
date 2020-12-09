@@ -30,44 +30,96 @@
 // ANY SUCH MATTER SHALL BE THE IMMEDIATE, UNILATERAL TERMINATION OF THIS
 // AGREEMENT.
 // *****************************************************************************
-// @flow
 import React from 'react';
+import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
-import Dashboard from './Dashboard';
-import SortableTable from './SortableTable';
-import VariablesView from './VariablesView';
-import AnalysisTabs from './AnalysisTabs';
-import Settings from './Settings';
-import Help from './Help';
-import Grammar from './Grammar';
+import Typography from '@material-ui/core/Typography';
+
+import GridList from '@material-ui/core/GridList';
+import GridListTile from '@material-ui/core/GridListTile';
+import Divider from '@material-ui/core/Divider';
 
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 
-class AppMainContent extends React.Component {
+import VariablesView from './VariablesView';
+import AnalysisView from './AnalysisView';
+
+const styles = theme => ({
+  root: {
+    flexGrow: 1,
+    width: '100%',
+    backgroundColor: theme.palette.background.paper,
+  },
+});
+
+function TabContainer(props) {
+  return (
+    <Typography component="div" style={{ padding: 8 * 3 }}>
+      {props.children}
+    </Typography>
+  );
+}
+
+TabContainer.propTypes = {
+  children: PropTypes.node.isRequired,
+};
+
+class AnalysisTabs extends React.Component {
+  
+  state = {
+    value: 0,
+  };
+
+  constructor(props) {
+    super(props);
+  }
+
+  handleChange = (event, value) => {
+  this.setState({ value });
+};
+
+  componentWillReceiveProps = (props) => {
+  }
+
   render() {
-    const { content, selectedProject, existingProjectNames }  = this.props
-    if (content === 'dashboard')
-      return <Dashboard selectedProject={selectedProject} />
-    if (content === 'requirements')
-      return <SortableTable selectedProject={selectedProject} existingProjectNames={existingProjectNames}/>
-      if (content === 'analysis')
-        return <AnalysisTabs selectedProject={selectedProject} existingProjectNames={existingProjectNames}/>
-        // return <VariablesView selectedProject={selectedProject} existingProjectNames={existingProjectNames}/>
-    if (content === 'settings')
-      return <Settings />
-    if (content === 'help')
-      return <Help />
-    if (content === 'grammar')
-      return <Grammar />
+    const {classes, selectedProject, existingProjectNames} = this.props;
+    const {value} = this.state;
+    return (
+      <div className={classes.root}>
+        <AppBar position="static" color="default">
+          <Tabs
+            value={value}
+            onChange={this.handleChange}
+            indicatorColor="secondary"
+            textColor="primary"
+            variant="scrollable"
+            scrollButtons="auto"
+          >
+            <Tab label="Variable Mapping" />
+            <Tab label="Realizability" />
+          </Tabs>
+        </AppBar>
+        {value === 0 &&
+          <TabContainer>
+            <VariablesView selectedProject={selectedProject} existingProjectNames={existingProjectNames}/>
+          </TabContainer>
+        }
+        {value === 1 &&
+          <TabContainer>
+            <AnalysisView selectedProject={selectedProject} existingProjectNames={existingProjectNames}/>
+          </TabContainer>
+        }
+      </div>
+    );
   }
 }
 
-AppMainContent.propTypes = {
-  content: PropTypes.string.isRequired,
+AnalysisTabs.propTypes = {
+  classes: PropTypes.object.isRequired,
   selectedProject: PropTypes.string.isRequired,
   existingProjectNames: PropTypes.array.isRequired
 }
 
-export default AppMainContent;
+export default withStyles(styles)(AnalysisTabs);

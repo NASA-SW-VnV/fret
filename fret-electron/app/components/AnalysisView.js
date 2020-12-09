@@ -45,14 +45,15 @@ import ExportIcon from '@material-ui/icons/ArrowUpward';
 import ImportIcon from '@material-ui/icons/ArrowDownward';
 
 /* Accordion Imports */
-import Accordion from '@material-ui/core/Accordion';
-import AccordionSummary from '@material-ui/core/AccordionSummary';
-import AccordionDetails from '@material-ui/core/AccordionDetails';
+import ExpansionPanel from '@material-ui/core/ExpansionPanel';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Divider from '@material-ui/core/Divider';
 import Button from '@material-ui/core/Button';
 
-import VariablesSortableTable from './VariablesSortableTable';
+import AnalysisTable from './AnalysisTable';
 import ejsCache from '../../support/CoCoSpecTemplates/ejsCache';
 import ejsCacheCoPilot from '../../support/CoPilotTemplates/ejsCacheCoPilot';
 
@@ -94,25 +95,25 @@ function createData(vID, cID, project, description) {
 const styles = theme => ({
   root: {
     width: '100%',
-    marginTop: theme.spacing(3),
+    marginTop: theme.spacing.unit * 3,
     overflowX: 'auto',
     flexWrap: 'wrap',
   },
   heading: {
     fontSize: theme.typography.pxToRem(18),
     fontWeight: theme.typography.fontWeightRegular,
-    marginRight: theme.spacing(2),
+    marginRight: theme.spacing.unit * 2,
   },
   formControl: {
     minWidth: 200,
-    marginRight: theme.spacing(2)
+    marginRight: theme.spacing.unit * 2
   },
   selectEmpty: {
-    marginTop: theme.spacing(2),
+    marginTop: theme.spacing.unit * 2,
   },
 });
 
-let VariablesViewHeader = props => {
+let AnalysisViewHeader = props => {
   const {classes, selectedProject, language, handleChange} = props;
   if (selectedProject === 'All Projects'){
     return(
@@ -124,39 +125,26 @@ let VariablesViewHeader = props => {
   return (
     <div>
       <Typography variant='h6'>
-        Requirement Variables to Model Mapping: {selectedProject}
-       </Typography>
-       <FormControl required className={classes.formControl}>
-         <InputLabel htmlFor="language-export-required"> Export Language</InputLabel>
-         <Select
-           value={language}
-           onChange={handleChange('language')}
-           inputProps={{
-             name: 'language',
-             id: 'language-export-required',
-           }}>
-           <MenuItem value="cocospec">CoCoSpec</MenuItem>
-           <MenuItem value="copilot">CoPilot</MenuItem>
-         </Select>
-       </FormControl>
-     </div>
+        Results: {selectedProject}
+      </Typography>
+    </div>
   );
 };
 
-VariablesViewHeader.propTypes = {
+AnalysisViewHeader.propTypes = {
   selectedProject: PropTypes.string.isRequired,
   language: PropTypes.string.isRequired,
   handleChange: PropTypes.func.isRequired
 }
 
-VariablesViewHeader = withStyles(styles)(VariablesViewHeader);
+AnalysisViewHeader = withStyles(styles)(AnalysisViewHeader);
 
 
 
 const componentStyles = theme => ({
   root: {
     width: '100%',
-    marginTop: theme.spacing(3),
+    marginTop: theme.spacing.unit * 3,
     overflowX: 'auto',
     flexWrap: 'wrap',
   },
@@ -165,10 +153,10 @@ const componentStyles = theme => ({
     fontWeight: theme.typography.fontWeightRegular,
   },
   buttonControl: {
-    marginRight: theme.spacing(100),
+    marginRight: theme.spacing.unit,
   },
   selectEmpty: {
-    marginTop: theme.spacing(2),
+    marginTop: theme.spacing.unit * 2,
   },
 });
 
@@ -186,7 +174,6 @@ class ComponentSummary extends React.Component {
       outputVariables: [],
       inputVariables: [],
       internalVariables: [],
-      functions: [],
       assignments: [],
       copilotAssignments: [],
       modes: [],
@@ -195,24 +182,21 @@ class ComponentSummary extends React.Component {
     result.docs.forEach(function(doc){
       var variable ={};
       variable.name = doc.variable_name;
+      variable.type = self.getCoCoSpecDataType(doc.dataType);
       if (doc.idType === 'Input'){
-        variable.type = self.getCoCoSpecDataType(doc.dataType);
         contract.inputVariables.push(variable);
       } else if (doc.idType === 'Output'){
-        variable.type = self.getCoCoSpecDataType(doc.dataType);
         contract.outputVariables.push(variable);
       } else if (doc.idType === 'Internal'){
-        variable.type = self.getCoCoSpecDataType(doc.dataType);
         contract.internalVariables.push(variable);
-        contract.assignments.push(doc.assignment);
-        contract.copilotAssignments.push(doc.copilotAssignment);
+        //if (doc.assignment !== '')
+          contract.assignments.push(doc.assignment);
+        //if (doc.copilotAssignment !== '')
+          contract.copilotAssignments.push(doc.copilotAssignment);
       } else if (doc.idType === 'Mode'){
         if (doc.modeRequirement !== '')
           variable.assignment = doc.modeRequirement;
-          contract.modes.push(variable);
-      } else if (doc.idType === 'Function'){
-        variable.moduleName = doc.moduleName;
-        contract.functions.push(variable);
+        contract.modes.push(variable);
       }
     })
     return contract;
@@ -289,9 +273,6 @@ class ComponentSummary extends React.Component {
               property.value = doc.semantics.CoCoSpecCode;
               property.reqid = doc.reqid;
               property.fullText = "Req text: " + doc.fulltext;
-              property.fretish = doc.fulltext;
-              //TODO: remove HTLM-tags from ptExpanded
-              property.ptLTL = doc.semantics.ptExpanded.replace(/<b>/g, "").replace(/<i>/g, "").replace(/<\/b>/g, "").replace(/<\/i>/g, "");
               outputVariables.forEach(function(variable){
               if (property.value.includes(variable)){
                   property.allInput = true;
@@ -316,7 +297,59 @@ class ComponentSummary extends React.Component {
       displayRealizabilityOpen: false
     })
   }
-  
+
+  checkRealizability = (event) => {
+    event.stopPropagation()
+    this.setState({
+      realizable: "PROCESSING"
+    })
+    const {component, selectedProject} = this.props;
+    const homeDir = app.getPath('home');
+    const self = this;
+    var filePath = './analysis/tmp/';
+    if (!fs.existsSync(filePath)) {
+      fs.mkdirSync(filePath);
+    }
+    filePath = filePath + component+'.lus';
+    var output = fs.createWriteStream(filePath);
+    modeldb.find({
+      selector: {
+        component_name: component,
+        project: selectedProject,
+        completed: true, //for modes that are not completed; these include the ones that correspond to unformalized requirements
+        modeldoc: false
+      }
+    }).then(function (modelResult){
+      var contract = self.getContractInfo(modelResult);
+      contract.componentName = component+'Spec';
+
+      db.find({
+        selector: {
+          project: selectedProject
+        }
+      }).then(function (fretResult){
+        contract.properties = self.getPropertyInfo(fretResult, contract.outputVariables, component);
+        contract.delays = self.getDelayInfo(fretResult, component);
+
+        var lustreContract = ejsCache_realize.renderRealizeCode().component.complete(contract);
+        output.write(lustreContract);
+        var checkOutput = realizability.checkRealizability(filePath, '-fixpoint');
+
+        //smallest match between newline and whitespace followed by |
+        //should only match the result string, i.e. {REALIZABLE, UNREALIZABLE, UNKNOWN, INCONSISTENT}
+        var result = checkOutput.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];
+        self.setState({
+          realizable: result
+        })
+        if (result === "UNREALIZABLE") {
+          // var fileContent = fs.readFileSync(filePath+'.json', 'utf8');
+          // var jsonOutput = JSON.parse(fileContent);
+          console.log(result);
+        }
+      })
+    })
+  }
+
   exportComponentCode = event => {
     event.stopPropagation();
     const {component, selectedProject, language} = this.props;
@@ -334,7 +367,6 @@ class ComponentSummary extends React.Component {
       if (filepath) {
         // create a file to stream archive data to.
         var output = fs.createWriteStream(filepath);
-        console.log(output);
         var archive = archiver('zip', {
           zlib: { level: 9 } // Sets the compression level.
         });
@@ -441,20 +473,7 @@ class ComponentSummary extends React.Component {
     const {realizable} = this.state;
     if ((completed && language) || (language === 'copilot')){
       return (
-        <div>
-        <Tooltip title='Export verification code.'>
-        <span>
-          <Button size="small" onClick={this.exportComponentCode} color="secondary" variant='contained' className={classes.buttonControl}>
-            Export
-          </Button>
-          </span>
-        </Tooltip>
-        <Tooltip title='Check Realizability'>
-          <Button size="small" onClick={(event) => this.checkRealizability(event)} color="secondary" variant='contained' className={classes.buttonControl}>
-            {realizable === "PROCESSING" ? <CircularProgress size={22} /> : realizable}
-          </Button>
-        </Tooltip>
-        
+        <div>        
         {this.DiagnoseButton(realizable,classes.buttonControl)}
         <DisplayRealizabilityDialog
           open={this.state.displayRealizabilityOpen}
@@ -464,18 +483,6 @@ class ComponentSummary extends React.Component {
     } else if (completed) {
       return (
         <div>
-          <Tooltip title='To export verification code, please select export language first.'>
-            <span>
-              <Button size="small" color="secondary" disabled variant='contained' className={classes.buttonControl}>
-                Export
-                </Button>
-            </span>
-          </Tooltip>
-        <Tooltip title='Check Realizability'>
-          <Button size="small" onClick={this.checkRealizability} color="secondary" variant='contained' className={classes.buttonControl}>
-            {realizable === "PROCESSING" ? <CircularProgress size={22} /> : realizable}
-          </Button>
-        </Tooltip>
         {this.DiagnoseButton(realizable,classes.buttonControl)}
 
         <DisplayRealizabilityDialog
@@ -486,18 +493,6 @@ class ComponentSummary extends React.Component {
     } else {
       return (
         <div>
-          <Tooltip title='To export verification code, please complete mandatory variable fields and export language first.'>
-            <span>
-              <Button size="small" color="secondary" disabled variant='contained' className={classes.buttonControl}>
-                Export
-                </Button>
-            </span>
-          </Tooltip>
-          <Tooltip title='To check realizability, please complete mandatory variable fields and export language first.'>
-            <Button size="small" color="secondary" disabled variant='contained' className={classes.buttonControl}>
-              {realizable}
-            </Button>
-          </Tooltip>
         </div>
       );
     }
@@ -515,7 +510,7 @@ ComponentSummary.propTypes = {
 ComponentSummary = withStyles(componentStyles)(ComponentSummary);
 
 
-class VariablesView extends React.Component {
+class AnalysisView extends React.Component {
   state = {
     components: [],
     completedComponents: [],
@@ -598,7 +593,7 @@ class VariablesView extends React.Component {
                   if (!data.variablesData.includes(req.project + req.semantics.component_name + variable)){
                     if (!(req.semantics.component_name in data.cocospecData)){
                       data.cocospecData[req.semantics.component_name] = [];
-                      data.components.push(req.semantics.component_name);
+                      data.components.push({"component_name" : req.semantics.component_name, "result" : "UNCHECKED", "details" : "NONE"});
                     }
                     data.cocospecData[req.semantics.component_name].push(createData(variable, req.semantics.component_name, req.project, ''));
                     data.variablesData.push(req.project + req.semantics.component_name + variable);
@@ -666,24 +661,24 @@ class VariablesView extends React.Component {
     if (!this.mounted) return;
   }
 
-  checkComponentCompleted(component_name, project) {
+  checkComponentCompleted(component, project) {
     const self = this;
     const {cocospecData, cocospecModes,completedComponents} = this.state;
     var dataAndModesLength = 0;
-    cocospecModes[component_name] ? dataAndModesLength = cocospecData[component_name].length + cocospecModes[component_name].length : dataAndModesLength = cocospecData[component_name].length;
+    cocospecModes[component.component_name] ? dataAndModesLength = cocospecData[component.component_name].length + cocospecModes[component.component_name].length : dataAndModesLength = cocospecData[component.component_name].length;
     modeldb.find({
       selector: {
-        component_name: component_name,
+        component_name: component.component_name,
         project: project,
         completed: true,
         modeldoc: false
       }
     }).then(function (result) {
       if (result.docs.length >= dataAndModesLength && dataAndModesLength !== 0){
-        if (!completedComponents.includes(component_name))
-         completedComponents.push(component_name);
+        if (!completedComponents.includes(component.component_name))
+         completedComponents.push(component.component_name);
       } else {
-        var index = completedComponents.indexOf(component_name);
+        var index = completedComponents.indexOf(component.component_name);
         if (index > -1) completedComponents.splice(index, 1);
       }
       self.setState({
@@ -704,48 +699,30 @@ class VariablesView extends React.Component {
     return (
       <div>
           <div className={classes.actions}>
-            <VariablesViewHeader
+            <AnalysisViewHeader
               selectedProject={selectedProject}
               language={language}
               handleChange={this.handleChange}/>
           </div>
-          <div className={classes.root}>
-
           {components.map(component => {
-            return(
-              <Accordion key={component}>
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography className={classes.heading}>{component}</Typography>
-                <ComponentSummary
-                  component = {component}
-                  completed = {completedComponents.includes(component)}
-                  selectedProject={selectedProject}
-                  language={language}
-                />
-              </AccordionSummary>
-              <Divider />
-                <AccordionDetails>
-                <div>
-                  <VariablesSortableTable
-                    selectedProject={selectedProject}
-                    selectedComponent={component}
-                    checkComponentCompleted={this.checkComponentCompleted}
-                  />
-                </div>
-                </AccordionDetails>
-              </Accordion>
-            );
-          })}
-          </div>
+          return (
+            <div className={classes.root}>
+            <AnalysisTable
+              selectedProject={selectedProject}
+              components={components}
+              checkComponentCompleted={this.checkComponentCompleted}
+            />
+            </div>
+          )})}
       </div>
       );
     }
   }
 
-VariablesView.propTypes = {
+AnalysisView.propTypes = {
   classes: PropTypes.object.isRequired,
   selectedProject: PropTypes.string.isRequired,
   existingProjectNames: PropTypes.array.isRequired
 };
 
-export default withStyles(styles)(VariablesView);
+export default withStyles(styles)(AnalysisView);
