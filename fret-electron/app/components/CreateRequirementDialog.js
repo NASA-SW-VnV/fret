@@ -71,6 +71,7 @@ import SlateEditor2 from './SlateEditor2';
 import VariablesSortableTable from './VariablesSortableTable';
 
 import templates from '../../templates/templates';
+import {getRequirementStyle} from "../utils/utilityFunctions";
 
 const db = require('electron').remote.getGlobal('sharedObj').db;
 const modeldb = require('electron').remote.getGlobal('sharedObj').modeldb;
@@ -526,18 +527,7 @@ class CreateRequirementDialog extends React.Component {
       borderWidth: 1,
       borderRadius: 5,
     }
-    const colorStyle =
-      isRequirementUpdate ?
-        semantics
-        ? semantics.ft && [constants.nonsense_semantics,
-          constants.undefined_semantics,
-          constants.unhandled_semantics].indexOf(semantics.ft) < 0
-        ? 'req-leaf'
-        : constants.unhandled_semantics !== semantics.ft && fulltext
-          ? 'req-unformalized'
-          : 'req-grey'
-        : 'req-unformalized':
-        'req-grey';
+    const colorStyle = isRequirementUpdate ? getRequirementStyle({semantics, fulltext},false) : 'req-grey';
     return (
       <div>
         <Dialog
