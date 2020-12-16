@@ -54,9 +54,9 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import Tooltip from '@material-ui/core/Tooltip';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import Accordion from '@material-ui/core/Accordion';
+import AccordionSummary from '@material-ui/core/AccordionSummary';
+import AccordionDetails from '@material-ui/core/AccordionDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import InProgressIcon from '@material-ui/icons/MoreHoriz';
 import PauseIcon from '@material-ui/icons/Pause';
@@ -81,22 +81,22 @@ const uuidv1 = require('uuid/v1');
 const formStyles = theme => ({
   accordion: {
     width: '98%',
-    marginTop: theme.spacing.unit * 2,
-    marginBottom: theme.spacing.unit * 2,
-    marginLeft:  theme.spacing.unit
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(2),
+    marginLeft:  theme.spacing()
   },
   aux:{
-    marginTop: theme.spacing.unit * 2,
-    marginBottom: theme.spacing.unit * 2,
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(2),
   },
   list: {
     width: '100%',
   },
   text: {
-    marginBottom: theme.spacing.unit * 3,
+    marginBottom: theme.spacing(3),
   },
   button: {
-    margin: theme.spacing.unit,
+    margin: theme.spacing(),
   },
   gridList: {
     width: 600,
@@ -621,11 +621,11 @@ class CreateRequirementDialog extends React.Component {
                         </FormControl>
                       </GridListTile>
                       <GridListTile cols={3} className={classes.aux}>
-                        <ExpansionPanel className={classes.accordion}>
-                          <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                        <Accordion className={classes.accordion}>
+                          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                             <Typography className={classes.heading}>Rationale and Comments</Typography>
-                        </ExpansionPanelSummary>
-                        <ExpansionPanelDetails>
+                        </AccordionSummary>
+                        <AccordionDetails>
                         <div className={classes.list}>
                         <TextField
                           id="rationale"
@@ -650,8 +650,8 @@ class CreateRequirementDialog extends React.Component {
                           className={classes.text}
                         />
                         </div>
-                        </ExpansionPanelDetails>
-                        </ExpansionPanel>
+                        </AccordionDetails>
+                        </Accordion>
                       </GridListTile>
                     </GridList>
                     {this.renderEditor({

@@ -1,7 +1,7 @@
 // *****************************************************************************
 // Notices:
 // 
-// Copyright © 2019 United States Government as represented by the Administrator
+// Copyright ï¿½ 2019 United States Government as represented by the Administrator
 // of the National Aeronautics and Space Administration.  All Rights Reserved.
 // 
 // Disclaimers
@@ -433,4 +433,4 @@ TimeSeriesChart.defaultProps = {
     selected: false
 }
 
-export default withTheme()(withStyles(styles)(TimeSeriesChart));
+export default withTheme(withStyles(styles)(TimeSeriesChart));

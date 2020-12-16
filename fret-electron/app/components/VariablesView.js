@@ -45,10 +45,9 @@ import ExportIcon from '@material-ui/icons/ArrowUpward';
 import ImportIcon from '@material-ui/icons/ArrowDownward';
 
 /* Accordion Imports */
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions';
+import Accordion from '@material-ui/core/Accordion';
+import AccordionSummary from '@material-ui/core/AccordionSummary';
+import AccordionDetails from '@material-ui/core/AccordionDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Divider from '@material-ui/core/Divider';
 import Button from '@material-ui/core/Button';
@@ -148,7 +147,7 @@ VariablesViewHeader = withStyles(styles)(VariablesViewHeader);
 const componentStyles = theme => ({
   root: {
     width: '100%',
-    marginTop: theme.spacing.unit * 3,
+    marginTop: theme.spacing(3),
     overflowX: 'auto',
     flexWrap: 'wrap',
   },
@@ -587,30 +586,23 @@ class VariablesView extends React.Component {
 
           {components.map(component => {
             return(
-              <div>
-              <ExpansionPanel key={component}>
-              <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography className={classes.heading}>{component}</Typography>
-                <ComponentSummary
-                  component = {component}
-                  classes = {classes}
-                  completed = {completedComponents.includes(component)}
-                  selectedProject={selectedProject}
-                  language={language}
-                />
-              </ExpansionPanelSummary>
-              <Divider />
-                <ExpansionPanelDetails>
-                <div>
+              <Accordion key={component}>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <ComponentSummary
+                component = {component}
+                classes = {classes}
+                completed = {completedComponents.includes(component)}
+                selectedProject={selectedProject}
+              />
+              </AccordionSummary>
+                <AccordionDetails>
                   <VariablesSortableTable
                     selectedProject={selectedProject}
                     selectedComponent={component}
                     checkComponentCompleted={this.checkComponentCompleted}
                   />
-                </div>
-                </ExpansionPanelDetails>
-              </ExpansionPanel>
-              </div>
+                </AccordionDetails>
+              </Accordion>
             );
           })}
           </div>

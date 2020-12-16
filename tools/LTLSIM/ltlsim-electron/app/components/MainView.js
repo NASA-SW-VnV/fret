@@ -1,7 +1,7 @@
 // *****************************************************************************
 // Notices:
 // 
-// Copyright © 2019 United States Government as represented by the Administrator
+// Copyright ï¿½ 2019 United States Government as represented by the Administrator
 // of the National Aeronautics and Space Administration.  All Rights Reserved.
 // 
 // Disclaimers
@@ -175,7 +175,7 @@ const styles = theme => ({
     main: {
         flexGrow: 1,
         backgroundColor: theme.palette.background.default,
-        padding: theme.spacing.unit,
+        padding: theme.spacing(),
         height: '100vh',
         overflow: 'auto'
     },
@@ -198,7 +198,7 @@ const styles = theme => ({
         alignItems: 'flex-start'
     },
     errorIcon: {
-        margin: theme.spacing.unit *2
+        margin: theme.spacing(2)
     }
   });
 

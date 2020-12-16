@@ -169,7 +169,7 @@ VariablesSortableHead.propTypes = {
 
 const tableComponentBarStyles = theme => ({
   root: {
-    paddingRight: theme.spacing.unit,
+    paddingRight: theme.spacing(),
   },
   componentBar:
     theme.palette.type === 'light'
@@ -198,10 +198,9 @@ const tableComponentBarStyles = theme => ({
     flex: '1 1 100%',
   },
   formControl: {
-    minWidth: 400,
-    padding: theme.spacing.unit * -2,
-    marginRight: theme.spacing.unit * 2
-
+    paddingLeft: theme.spacing(25),
+    padding: theme.spacing(-2),
+    minWidth: 300,
   },
 });
 
@@ -254,7 +253,7 @@ TableComponentBar = withStyles(tableComponentBarStyles)(TableComponentBar);
 const styles = theme => ({
   root: {
     width: '100%',
-    marginTop: theme.spacing.unit *-1,
+    marginTop: theme.spacing(-1),
   },
   table: {
     minWidth: 1020,
@@ -506,7 +505,7 @@ class VariablesSortableTable extends React.Component {
             handleModelChange={this.handleModelChange}
             importComponentModel={this.importComponentModel}
           />
-          <Table className={classes.table} aria-labelledby="tableTitle" padding="dense">
+          <Table className={classes.table} aria-labelledby="tableTitle" size = "small">
             <VariablesSortableHead
               order={order}
               orderBy={orderBy}

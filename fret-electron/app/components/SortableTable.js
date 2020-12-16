@@ -195,7 +195,7 @@ SortableTableHead.propTypes = {
 
 const toolbarStyles = theme => ({
   root: {
-    paddingRight: theme.spacing.unit,
+    paddingRight: theme.spacing(),
   },
   highlight:
     theme.palette.type === 'light'
@@ -301,7 +301,7 @@ TableToolbar = withStyles(toolbarStyles)(TableToolbar);
 const styles = theme => ({
   root: {
     width: '100%',
-    marginTop: theme.spacing.unit * 3,
+    marginTop: theme.spacing(3),
   },
   table: {
     minWidth: 1020,
@@ -596,7 +596,7 @@ class SortableTable extends React.Component {
           deleteSelection={this.handleDeleteSelectedRequirements}
           handleCoCoSpecWindow={this.handleCoCoSpecWindow}/>
         <div className={classes.tableWrapper}>
-          <Table className={classes.table} aria-labelledby="tableTitle" padding="dense">
+          <Table className={classes.table} aria-labelledby="tableTitle" size = "small">
             <SortableTableHead
               numSelected={selected.length}
               order={order}

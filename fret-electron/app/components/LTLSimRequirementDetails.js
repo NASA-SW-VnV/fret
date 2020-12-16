@@ -40,16 +40,16 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { withStyles } from '@material-ui/core/styles';
 
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import Accordion from '@material-ui/core/Accordion';
+import AccordionSummary from '@material-ui/core/AccordionSummary';
+import AccordionDetails from '@material-ui/core/AccordionDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 const styles = theme => ({
     root: {
         position: 'sticky',
-        padding: theme.spacing.unit,
-        paddingTop: theme.spacing.unit*4,
+        padding: theme.spacing(),
+        paddingTop: theme.spacing(4),
         bottom: 0
     },
     details: {
@@ -65,7 +65,7 @@ const styles = theme => ({
     actions: {
         flex: '0 0 auto',
         position: 'relative',
-        right: theme.spacing.unit
+        right: theme.spacing()
     },
     heading: {
       fontSize: theme.typography.pxToRem(15),
@@ -79,18 +79,18 @@ class LTLSimRequirementDetails extends Component {
 
         return (
           <div className={classes.root}>
-            <ExpansionPanel>
-              <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+            <Accordion>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                 <Typography className={classes.heading}>Requirements in FRETish</Typography>
-              </ExpansionPanelSummary>
-              <ExpansionPanelDetails>
+              </AccordionSummary>
+              <AccordionDetails>
                 <div>
                   <Typography className={classes.heading}>
                     <b>{requirementID}</b>: {description}
                     </Typography>
                 </div>
-              </ExpansionPanelDetails>
-            </ExpansionPanel>
+              </AccordionDetails>
+            </Accordion>
           </div>
         )
     }

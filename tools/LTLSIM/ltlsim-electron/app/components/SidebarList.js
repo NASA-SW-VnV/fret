@@ -1,7 +1,7 @@
 // *****************************************************************************
 // Notices:
 // 
-// Copyright © 2019 United States Government as represented by the Administrator
+// Copyright ï¿½ 2019 United States Government as represented by the Administrator
 // of the National Aeronautics and Space Administration.  All Rights Reserved.
 // 
 // Disclaimers
@@ -54,10 +54,10 @@ import FormulaRenderer from './FormulaRenderer';
 
 const styles = theme => ({
     nested: {
-        paddingLeft: theme.spacing.unit * 4
+        paddingLeft: theme.spacing(4)
     },
     nestednested: {
-        paddingLeft: theme.spacing.unit * 6
+        paddingLeft: theme.spacing(6)
     },
     listCheckbox: {
         paddingTop: 0,

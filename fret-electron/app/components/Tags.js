@@ -1,7 +1,7 @@
 // *****************************************************************************
 // Notices:
 // 
-// Copyright © 2019 United States Government as represented by the Administrator
+// Copyright ï¿½ 2019 United States Government as represented by the Administrator
 // of the National Aeronautics and Space Administration.  All Rights Reserved.
 // 
 // Disclaimers
@@ -43,10 +43,10 @@ const styles = theme => ({
     display: 'flex',
     justifyContent: 'left',
     flexWrap: 'wrap',
-    padding: theme.spacing.unit / 2,
+    padding: theme.spacing(1/2),
   },
   chip: {
-    margin: theme.spacing.unit / 2,
+    margin: theme.spacing(1/2),
   },
 });
 

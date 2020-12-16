@@ -1,7 +1,7 @@
 // *****************************************************************************
 // Notices:
 // 
-// Copyright © 2019 United States Government as represented by the Administrator
+// Copyright ï¿½ 2019 United States Government as represented by the Administrator
 // of the National Aeronautics and Space Administration.  All Rights Reserved.
 // 
 // Disclaimers
@@ -117,4 +117,4 @@ TimeLine.defaultProps = {
     orientation: "top"
 }
 
-export default withTheme()(withStyles(styles)(TimeLine));
+export default withTheme(withStyles(styles)(TimeLine));
