@@ -134,6 +134,9 @@ class LTLSimDialog extends Component {
             logics = (logics === "FT") ? "PT" : "FT";
             LTLSimController.setFormulaExpression(model, id, (logics === "FT") ? ftExpression : ptExpression);
 
+            //JSC-12-09
+            setMarginVariableTraces(model);
+
             return {
                 logics,
                 model
