@@ -76,7 +76,7 @@ const styles = theme => ({
     // minHeight: 36,
   },
   tabsScrollable : {
-    overflowX: 'hidden',
+    // overflowX: 'hidden',
   }
 });
 
@@ -135,10 +135,10 @@ class DisplayRealizabilityDialog extends React.Component {
               value={value}
               onChange={this.handleChange}
               variant="scrollable"
-              scrollButtons="auto"
+              scrollButtons="on"
               indicatorColor="secondary"
               textColor="primary"
-              classes={{scrollable : classes.tabsScrollable}}                           
+              
             >
               <Tab classes={{root : classes.tabRoot}} label={<div>CC 1<ClearIcon style={{verticalAlign: 'bottom'}} color='error'/></div>}/>
               <Tab classes={{root : classes.tabRoot}} label={<div>CC 1<ClearIcon style={{verticalAlign: 'bottom'}} color='error'/></div>}/>
