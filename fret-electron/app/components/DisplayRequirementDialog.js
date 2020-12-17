@@ -114,7 +114,7 @@ class DisplayRequirementDialog extends React.Component {
         Semantic Description
         </Typography>
         <br />
-        <div className={classes.description} dangerouslySetInnerHTML={{ __html: ltlDescription}} />
+        <div color='primary' variant='body1' dangerouslySetInnerHTML={{ __html: ltlDescription}} />
         <br />
         <Typography variant='button'>
         Semantic Diagram
