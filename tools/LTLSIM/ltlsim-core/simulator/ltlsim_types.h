@@ -1,6 +1,6 @@
 /** \file ltlsim_types.h
  *  Datatypes and functions for creation and modification of ltlsim models.
- * 
+ *
  */
 #ifndef LTLSIM_TYPES_H
 #define LTLSIM_TYPES_H
@@ -19,8 +19,12 @@
 #define MAX_ATOMICS 128 //!< Maximum number of atomics
 #define MAX_TRACELENGTH 512 //!< Maximum length of traces
 
+
+#define FSM_TIME_PREFIX "ltlsim_"
+
+
 /** \brief Structure for a single trace.
- * 
+ *
  * A trace is a series of boolean values.
  */
 typedef struct {
@@ -29,9 +33,9 @@ typedef struct {
 } trace_t;
 
 /** \brief Structure for an atomic proposition.
- * 
- * An atomic proposition represents a propositional 
- * variable in the formulas expressions. An atomic is associated 
+ *
+ * An atomic proposition represents a propositional
+ * variable in the formulas expressions. An atomic is associated
  * with a trace of boolean valuesmm describing its valuation over time.
  */
 typedef struct {
@@ -40,11 +44,11 @@ typedef struct {
 } atomic_t;
 
 /** \brief Structure for a formula
- * 
- * A formula is represented by a LTL expression. When a formula is evaluated, 
+ *
+ * A formula is represented by a LTL expression. When a formula is evaluated,
  * its trace is calculated, representing the timed valuation of the formula.
- * Additionally, the overall valuation of the formula, i.e. whether of not 
- * the trace defined by the formulas atomics is consistent with the formula 
+ * Additionally, the overall valuation of the formula, i.e. whether of not
+ * the trace defined by the formulas atomics is consistent with the formula
  * expression, is determined
  */
 typedef struct {
@@ -69,9 +73,9 @@ typedef struct {
 } atomics_t;
 
 /** \brief Structure for an ltlsim model.
- * 
+ *
  * A ltlsim model is a collection of atomics and formulas.
- * Additionally, it has a tracelength property, which represents 
+ * Additionally, it has a tracelength property, which represents
  * the length of the traces of all associated atomics and formulas.
  */
 typedef struct {
@@ -83,29 +87,29 @@ typedef struct {
 } ltlsim_model_t;
 
 /** \brief Initialize a new ltlsim model.
- * 
+ *
  * Allocates memory for a new ltlsim model and returns a pointer to the model
- * 
+ *
  * \returns The new ltlsim model
  */
 ltlsim_model_t *initLTLSimModel();
 
 /** \brief Set the trace length of a ltlsim model.
- * 
+ *
  * \param m A pointer to the ltlsim model.
  * \param tl The trace length.
  */
 void setTraceLength(ltlsim_model_t *m, unsigned int tl);
 
 /** \brief Add an atomic to a ltlsim model.
- * 
+ *
  * \param m A pointer to the ltlsim model.
  * \param id The id of the new atomic.
  */
 void addAtomic(ltlsim_model_t *m,  const char *id);
 
 /** \brief Add a formula to a ltlsim model.
- * 
+ *
  * \param m A pointer to the ltlsim model.
  * \param id The id of the new formula.
  * \param expr The expression of the new formula.
@@ -113,7 +117,7 @@ void addAtomic(ltlsim_model_t *m,  const char *id);
 void addFormula(ltlsim_model_t *m,  const char *id, const char *expr);
 
 /** \brief Set the trace of an atomic.
- * 
+ *
  * \param m A pointer to the ltlsim model.
  * \param idx The index of the atomic in the ltlsim model atomics collection.
  * \param trace The trace.
@@ -122,7 +126,7 @@ void addFormula(ltlsim_model_t *m,  const char *id, const char *expr);
 void setAtomicTrace(ltlsim_model_t *m, unsigned int idx, const bool trace[], unsigned int tl);
 
 /** \brief Set the trace of a formula.
- * 
+ *
  * \param m A pointer to the ltlsim model.
  * \param idx The index of the formula in the ltlsim model formulas collection.
  * \param trace The trace.
@@ -131,7 +135,7 @@ void setAtomicTrace(ltlsim_model_t *m, unsigned int idx, const bool trace[], uns
 void setFormulaTrace(ltlsim_model_t *m, unsigned int idx, const bool trace[], unsigned int tl);
 
 /** \brief Set the trace of an atomic at a given time index.
- * 
+ *
  * \param m A pointer to the ltlsim model.
  * \param idx The index of the atomic in the ltlsim model atomics collection.
  * \param tidx The index where the trace should be set.
@@ -140,7 +144,7 @@ void setFormulaTrace(ltlsim_model_t *m, unsigned int idx, const bool trace[], un
 void setAtomicTraceAt(ltlsim_model_t *m, unsigned int idx, unsigned int tidx, bool v);
 
 /** \brief Set the trace of a formula at a given time index.
- * 
+ *
  * \param m A pointer to the ltlsim model.
  * \param idx The index of the formula in the ltlsim model formulas collection.
  * \param tidx The index where the trace should be set.
@@ -149,7 +153,7 @@ void setAtomicTraceAt(ltlsim_model_t *m, unsigned int idx, unsigned int tidx, bo
 void setFormulaTraceAt(ltlsim_model_t *m, unsigned int idx, unsigned int tidx, bool v);
 
 /** \brief Set the trace length of an atomic.
- * 
+ *
  * If the new trace length is greater than the old trace length, the atomics trace
  * is padded with zeros.
  * \param m A pointer to the ltlsim model.
@@ -159,7 +163,7 @@ void setFormulaTraceAt(ltlsim_model_t *m, unsigned int idx, unsigned int tidx, b
 void setAtomicTraceLength(ltlsim_model_t *m, unsigned int idx, unsigned int tl);
 
 /** \brief Set the trace length of a formula.
- * 
+ *
  * If the new trace length is greater than the old trace length, the atomics trace
  * is padded with zeros.
  * \param m A pointer to the ltlsim model.
@@ -169,7 +173,7 @@ void setAtomicTraceLength(ltlsim_model_t *m, unsigned int idx, unsigned int tl);
 void setFormulaTraceLength(ltlsim_model_t *m, unsigned int idx, unsigned int tl);
 
 /** \brief Set the expression of a formula.
- * 
+ *
  * \param m A pointer to the ltlsim model.
  * \param idx The index of the formula in the ltlsim model formulas collection.
  * \param expr The new expression.
@@ -177,8 +181,8 @@ void setFormulaTraceLength(ltlsim_model_t *m, unsigned int idx, unsigned int tl)
 void setFormulaExpression(ltlsim_model_t *m, unsigned int idx, const char *expr);
 
 /** \brief Print information related to an atomic.
- * 
- * If an index < 0 is specified, all atomics of the model are printed. 
+ *
+ * If an index < 0 is specified, all atomics of the model are printed.
  * \param m A pointer to the ltlsim model.
  * \param idx The index of the atomic in the ltlsim model atomics collection.
  * \param out The output stream the output should be directed to.
@@ -186,8 +190,8 @@ void setFormulaExpression(ltlsim_model_t *m, unsigned int idx, const char *expr)
 void printAtomic(ltlsim_model_t *m, int idx, FILE *out);
 
 /** \brief Print information related to  a formula.
- * 
- * If an index < 0 is specified, all formulas of the model are printed. 
+ *
+ * If an index < 0 is specified, all formulas of the model are printed.
  * \param m A pointer to the ltlsim model.
  * \param idx The index of the formula in the ltlsim model formulas collection.
  * \param out The output stream the output should be directed to.
@@ -195,9 +199,9 @@ void printAtomic(ltlsim_model_t *m, int idx, FILE *out);
 void printFormula(ltlsim_model_t *m, int idx, FILE *out);
 
 /** \brief Print the trace of an atomic.
- * 
- * If an index < 0 is specified, all the traces of all atomics of the model 
- * are printed, identified by the atomic ids. 
+ *
+ * If an index < 0 is specified, all the traces of all atomics of the model
+ * are printed, identified by the atomic ids.
  * \param m A pointer to the ltlsim model.
  * \param idx The index of the atomic in the ltlsim model atomics collection.
  * \param out The output stream the output should be directed to.
@@ -205,9 +209,9 @@ void printFormula(ltlsim_model_t *m, int idx, FILE *out);
 void printAtomicTrace(ltlsim_model_t *m, int idx, FILE *out);
 
 /** \brief Print the trace of a formula.
- * 
- * If an index < 0 is specified, all the traces of all formula of the model 
- * are printed, identified by the atomic ids. 
+ *
+ * If an index < 0 is specified, all the traces of all formula of the model
+ * are printed, identified by the atomic ids.
  * \param m A pointer to the ltlsim model.
  * \param idx The index of the formula in the ltlsim model formulas collection.
  * \param out The output stream the output should be directed to.
@@ -215,7 +219,7 @@ void printAtomicTrace(ltlsim_model_t *m, int idx, FILE *out);
 void printFormulaTrace(ltlsim_model_t *m, int idx, FILE *out);
 
 /** \brief Print information related to an ltlsim model.
- * 
+ *
  * This shows the atomics and formulas of the models, as well as all traces.
  * \param m A pointer to the ltlsim model.
  * \param out The output stream the output should be directed to.
@@ -223,7 +227,7 @@ void printFormulaTrace(ltlsim_model_t *m, int idx, FILE *out);
 void printModel(ltlsim_model_t *m, FILE *out);
 
 /** \brief Find an atomic by its id.
- * 
+ *
  * This finds an atomic by its id in the given ltlsim model and returns
  * a pointer to the atomic if successfull. Otherwise NULL is returned.
  * \param m A pointer to the ltlsim model.
@@ -233,7 +237,7 @@ void printModel(ltlsim_model_t *m, FILE *out);
 atomic_t *getAtomic(ltlsim_model_t *m, const char *id);
 
 /** \brief Find a formula by its id.
- * 
+ *
  * This finds an formula by its id in the given ltlsim model and returns
  * a pointer to the formula if successfull. Otherwise NULL is returned.
  * \param m A pointer to the ltlsim model.
@@ -243,9 +247,9 @@ atomic_t *getAtomic(ltlsim_model_t *m, const char *id);
 formula_t *getFormula(ltlsim_model_t *m, const char *id);
 
 /** \brief Get the index of an atomic by its id.
- * 
+ *
  * This finds an atomic by its id in the given ltlsim model and returns
- * its index in the ltlsim model atomics collection if successfull. 
+ * its index in the ltlsim model atomics collection if successfull.
  * Otherwise -1 is returned.
  * \param m A pointer to the ltlsim model.
  * \param id The id to look for.
@@ -254,9 +258,9 @@ formula_t *getFormula(ltlsim_model_t *m, const char *id);
 int getAtomicIdx(ltlsim_model_t *m, const char *id);
 
 /** \brief Get the index of a formula by its id.
- * 
+ *
  * This finds a formula by its id in the given ltlsim model and returns
- * its index in the ltlsim model formulas collection if successfull. 
+ * its index in the ltlsim model formulas collection if successfull.
  * Otherwise -1 is returned.
  * \param m A pointer to the ltlsim model.
  * \param id The id to look for.
