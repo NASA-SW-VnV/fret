@@ -1,15 +1,15 @@
 // *****************************************************************************
 // Notices:
-// 
-// Copyright © 2019 United States Government as represented by the Administrator
+//
+// Copyright ï¿½ 2019 United States Government as represented by the Administrator
 // of the National Aeronautics and Space Administration.  All Rights Reserved.
-// 
+//
 // Disclaimers
-// 
+//
 // No Warranty: THE SUBJECT SOFTWARE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY OF
 // ANY KIND, EITHER EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED
-// TO, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL CONFORM TO SPECIFICATIONS, 
-// ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, 
+// TO, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL CONFORM TO SPECIFICATIONS,
+// ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE,
 // OR FREEDOM FROM INFRINGEMENT, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL BE
 // ERROR FREE, OR ANY WARRANTY THAT DOCUMENTATION, IF PROVIDED, WILL CONFORM TO
 // THE SUBJECT SOFTWARE. THIS AGREEMENT DOES NOT, IN ANY MANNER, CONSTITUTE AN
@@ -18,7 +18,7 @@
 // RESULTING FROM USE OF THE SUBJECT SOFTWARE.  FURTHER, GOVERNMENT AGENCY
 // DISCLAIMS ALL WARRANTIES AND LIABILITIES REGARDING THIRD-PARTY SOFTWARE, IF
 // PRESENT IN THE ORIGINAL SOFTWARE, AND DISTRIBUTES IT ''AS IS.''
-// 
+//
 // Waiver and Indemnity:  RECIPIENT AGREES TO WAIVE ANY AND ALL CLAIMS AGAINST
 // THE UNITED STATES GOVERNMENT, ITS CONTRACTORS AND SUBCONTRACTORS, AS WELL AS
 // ANY PRIOR RECIPIENT.  IF RECIPIENT'S USE OF THE SUBJECT SOFTWARE RESULTS IN
@@ -60,6 +60,17 @@ const styles = theme => ({
     color: theme.palette.primary.main,
     fontFamily: 'San Serif',
     fontSize: 'medium'
+  },
+  variableDescription: {
+    color: theme.palette.primary.main,
+    fontFamily: 'sans-serif',
+    fontSize: '14px',
+    marginLeft: '7%'
+  },
+  imgWrap: {
+    width: '420px',
+    position: 'relative',
+    display: 'inline-block'
   }
 });
 
@@ -94,22 +105,37 @@ class DisplayRequirementDialog extends React.Component {
     })
   }
 
-  renderFormula(ltlFormula, ltlDescription) {
+  renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) {
     const { classes } = this.props;
-    if (ltlFormula)
+    if (ltlFormula || ltlFormulaPt)
     return(
       <div>
-        <Typography variant='button' color='primary'>
-        Formalization
-        </Typography>
-        <br />
-        <div className={classes.formula} dangerouslySetInnerHTML={{ __html: ltlFormula}} />
-        <br />
         <Typography variant='button'>
-        Description
+        Semantic Description
         </Typography>
         <br />
         <div className={classes.description} dangerouslySetInnerHTML={{ __html: ltlDescription}} />
+        <br />
+        <Typography variant='button'>
+        Semantic Diagram
+        </Typography>
+        <div className={classes.imgWrap}>
+        <img src= {path}/>
+        </div>
+        <div className={classes.variableDescription} dangerouslySetInnerHTML={{ __html: diagramVariables}} />
+        <br />
+        <Typography variant='button' color='primary'>
+        Future Time Formula
+        </Typography>
+        <br />
+        <div className={classes.formula} dangerouslySetInnerHTML={{ __html: ltlFormula}} />
+        <Typography variant='button' color='primary'>
+        <br />
+        Past Time Formula
+        </Typography>
+        <br />
+        <div className={classes.formula} dangerouslySetInnerHTML={{ __html: ltlFormulaPt}} />
+        <br />
       </div>)
     else
       return(
@@ -125,7 +151,10 @@ class DisplayRequirementDialog extends React.Component {
     var { project, reqid, parent_reqid, rationale, ltl, semantics, fulltext } = this.state.selectedRequirement
     const reqidLabel = (reqid ? reqid : "None")
     const projectLabel = project ? project : "None"
-    var ltlFormula = ltl ? ltl : (semantics ? semantics.ft : undefined)
+    var ltlFormula = ltl ? ltl : (semantics ? semantics.ft : undefined);
+    var ltlFormulaPt = (semantics ? semantics.pt : undefined);
+    var diagramVariables = (semantics ? semantics.diagramVariables : undefined);
+    var path = (semantics ? (`../docs/`+ semantics.diagram) : undefined);
     var ltlDescription = semantics ? (semantics.description ? semantics.description : "No description available.") : "No description available.";
     if (!rationale) rationale = 'Not specified'
     if (!parent_reqid) parent_reqid = 'Not specified'
@@ -165,15 +194,11 @@ class DisplayRequirementDialog extends React.Component {
                 <Typography color='primary' variant='body1'>{rationale}</Typography>
               </GridListTile>
               <GridListTile>
-                <Typography variant='button'>Implements</Typography><br/>
-                <Typography color='primary' variant='body1'>{parent_reqid}</Typography>
-              </GridListTile>
-              <GridListTile>
                 <Typography variant='button'>Requirement</Typography><br/>
                 <Typography color='primary' variant='body1'>{fulltext}</Typography>
               </GridListTile>
               <GridListTile>
-                {this.renderFormula(ltlFormula, ltlDescription)}
+                {this.renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path)}
               </GridListTile>
             </GridList>
           </DialogContent>
