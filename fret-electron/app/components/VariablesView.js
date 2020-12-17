@@ -67,7 +67,6 @@ import * as cc_analysis from '../../analysis/connected_components';
 
 /* Realizability Analysis Imports */
 import ejsCache_realize from '../../support/RealizabilityTemplates/ejsCache_realize';
-import DisplayRealizabilityDialog from './DisplayRealizabilityDialog';
 import * as realizability from '../../analysis/realizabilityCheck';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import DiagnosisEngine from '../../analysis/DiagnosisEngine';
@@ -173,11 +172,6 @@ const componentStyles = theme => ({
 });
 
 class ComponentSummary extends React.Component {
-
-  state = {
-    realizable: 'UNCHECKED',
-    displayRealizabilityOpen: false,
-  }
 
   getContractInfo(result) {
     var self = this;
@@ -304,18 +298,6 @@ class ComponentSummary extends React.Component {
     })
     return properties;
   }
-
-  handleRealizabilityDialogOpen = () => {
-    this.setState({
-      displayRealizabilityOpen: true
-    })
-  }
-
-  handleRealizabilityDialogClose = () => {
-    this.setState({
-      displayRealizabilityOpen: false
-    })
-  }
   
   exportComponentCode = event => {
     event.stopPropagation();
@@ -403,45 +385,10 @@ class ComponentSummary extends React.Component {
     }
   }
 
-  DiagnoseButton(props) {
-    const self = this;
-    function diagnoseSpec(event) {
-      event.stopPropagation()
-      buttonText = "PROCESSING";
-      var filePath = './analysis/tmp/'+contract+'.lus.json';
-      if (fs.existsSync()) {
-        handleRealizabilityDialogOpen();
-      } else {
-        // let engine = new DiagnosisEngine(contract, 'realizability');
-        // engine.main();
-        console.log(self);
-        self.handleRealizabilityDialogOpen();
-      }
-    }
-
-    var buttonText = "DIAGNOSE";
-    // const {buttonText, 
-    const {className, contract} = this.state
-    if (this.state.realizable === "UNREALIZABLE") {
-        return (
-            <Tooltip title="See conflicts">
-              <Button size="small" onClick={(event) => {diagnoseSpec(event)}} color="secondary" variant='contained' className={className}>      
-                {buttonText === "PROCESSING" ? <CircularProgress size={22} /> : buttonText}
-              </Button>
-            </Tooltip>
-          )
-      } else {
-        //return no button. Perhaps we should return a button "see components"
-        return null
-      }    
-  }
-
   render() {
     const {classes, component, completed, language} = this.props;
-    const {realizable} = this.state;
     if ((completed && language) || (language === 'copilot')){
       return (
-        <div>
         <Tooltip title='Export verification code.'>
         <span>
           <Button size="small" onClick={this.exportComponentCode} color="secondary" variant='contained' className={classes.buttonControl}>
@@ -449,56 +396,26 @@ class ComponentSummary extends React.Component {
           </Button>
           </span>
         </Tooltip>
-        <Tooltip title='Check Realizability'>
-          <Button size="small" onClick={(event) => this.checkRealizability(event)} color="secondary" variant='contained' className={classes.buttonControl}>
-            {realizable === "PROCESSING" ? <CircularProgress size={22} /> : realizable}
-          </Button>
-        </Tooltip>
-        
-        {this.DiagnoseButton(realizable,classes.buttonControl)}
-        <DisplayRealizabilityDialog
-          open={this.state.displayRealizabilityOpen}
-          handleDialogClose={this.handleRealizabilityDialogClose}/>
-        </div>
       );
     } else if (completed) {
       return (
-        <div>
-          <Tooltip title='To export verification code, please select export language first.'>
-            <span>
-              <Button size="small" color="secondary" disabled variant='contained' className={classes.buttonControl}>
-                Export
-                </Button>
-            </span>
-          </Tooltip>
-        <Tooltip title='Check Realizability'>
-          <Button size="small" onClick={this.checkRealizability} color="secondary" variant='contained' className={classes.buttonControl}>
-            {realizable === "PROCESSING" ? <CircularProgress size={22} /> : realizable}
-          </Button>
+        <Tooltip title='To export verification code, please select export language first.'>
+          <span>
+            <Button size="small" color="secondary" disabled variant='contained' className={classes.buttonControl}>
+              Export
+              </Button>
+          </span>
         </Tooltip>
-        {this.DiagnoseButton(realizable,classes.buttonControl)}
-
-        <DisplayRealizabilityDialog
-          open={this.state.displayRealizabilityOpen}
-          handleDialogClose={this.handleRealizabilityDialogClose}/>
-        </div>
       );
     } else {
       return (
-        <div>
-          <Tooltip title='To export verification code, please complete mandatory variable fields and export language first.'>
-            <span>
-              <Button size="small" color="secondary" disabled variant='contained' className={classes.buttonControl}>
-                Export
-                </Button>
-            </span>
-          </Tooltip>
-          <Tooltip title='To check realizability, please complete mandatory variable fields and export language first.'>
+        <Tooltip title='To export verification code, please complete mandatory variable fields and export language first.'>
+          <span>
             <Button size="small" color="secondary" disabled variant='contained' className={classes.buttonControl}>
-              {realizable}
-            </Button>
-          </Tooltip>
-        </div>
+              Export
+              </Button>
+          </span>
+        </Tooltip>
       );
     }
   }
@@ -641,7 +558,7 @@ class VariablesView extends React.Component {
         if (typeof data.cocospecModes[component] !== 'undefined'){
           data.cocospecModes[component] = data.cocospecModes[component].sort((a, b) => {return a.vID.toLowerCase().trim() > b.vID.toLowerCase().trim()});
         }
-      })
+      })      
       self.setState({
         cocospecData: data.cocospecData,
         cocospecModes: data.cocospecModes,

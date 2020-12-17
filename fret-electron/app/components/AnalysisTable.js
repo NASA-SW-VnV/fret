@@ -43,6 +43,8 @@ import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
+import Grid from '@material-ui/core/Grid';
+import Divider from '@material-ui/core/Divider';
 import Tooltip from '@material-ui/core/Tooltip';
 import Snackbar from '@material-ui/core/Snackbar';
 import Button from '@material-ui/core/Button';
@@ -55,6 +57,8 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+
 import Select from '@material-ui/core/Select';
 
 /* ComponentBar Imports */
@@ -62,6 +66,7 @@ import { lighten } from '@material-ui/core/styles/colorManipulator';
 import Toolbar from '@material-ui/core/Toolbar';
 
 import DisplayVariableDialog from './DisplayVariableDialog';
+import Checkbox from '@material-ui/core/Checkbox';
 
 /*analysis icons*/
 import CheckIcon from '@material-ui/icons/Check';
@@ -73,7 +78,17 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import DisplayRealizabilityDialog from './DisplayRealizabilityDialog';
 import ejsCache_realize from '../../support/RealizabilityTemplates/ejsCache_realize';
 import * as realizability from '../../analysis/realizabilityCheck';
-
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import Collapse from '@material-ui/core/Collapse';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+import Fab from '@material-ui/core/Fab';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 
 const sharedObj = require('electron').remote.getGlobal('sharedObj');
 const modeldb = sharedObj.modeldb;
@@ -126,9 +141,8 @@ function getSorting(order, orderBy) {
 }
 
 const rows = [
-  {id: 'runAnalysis', numeric: false, disablePadding :true, label: ''},
-  {id: 'component_name', numeric: false, disablePadding:false, label: 'Component'},
-  {id: 'result', numeric: false, disablePadding:false, label: 'Result (Click icon for details)'},
+  {id: 'component_name', numeric: false, disablePadding:true, label: 'Component'},
+  {id: 'checkButton', numeric: false, disablePadding:false, label: ''},
 ];
 
 class AnalysisHead extends React.Component {
@@ -178,134 +192,41 @@ AnalysisHead.propTypes = {
   onRequestSort: PropTypes.func.isRequired
 };
 
-
-const tableComponentBarStyles = theme => ({
-  root: {
-    paddingRight: theme.spacing.unit,
-  },
-  componentBar:
-    theme.palette.type === 'light'
-      ? {
-          color: theme.palette.secondary.main,
-          backgroundColor: lighten(theme.palette.secondary.light, 0.85),
-        }
-      : {
-          color: theme.palette.text.primary,
-          backgroundColor: theme.palette.secondary.dark,
-        },
-  spacer: {
-    flex: '1 1 100%',
-  },
-  actions: {
-    color: theme.palette.text.secondary,
-  },
-  title: {
-    flex: '0 0 auto',
-  },
-  modelRoot: {
-     display: 'flex',
-     flexWrap: 'wrap',
-  },
-  spacer: {
-    flex: '1 1 100%',
-  },
-  formControl: {
-    minWidth: 400,
-    padding: theme.spacing.unit * -2,
-    marginRight: theme.spacing.unit * 2
-
-  },
-});
-
-let TableComponentBar = props => {
-  const {classes, handleAnalysisChange, importedComponents, modelComponent, fretComponent, check, status, runAnalysis} = props;
-  var icon = '';
-  if (status === "PROCESSING") { 
-    icon = <CircularProgress size={22} />;
-  } else if (status === "REALIZABLE") {
-    icon = <CheckIcon/>;
-  } else if (status === "UNREALIZABLE") {
-    icon = <ClearIcon color='error'/>;
-  } else {
-    icon = <RemoveIcon/>;
-  }
-
-  return(
-    <Toolbar className={classNames(classes.root, classes.componentBar)}>
-      <form className={classes.formControl} autoComplete="off">
-        <FormControl className={classes.modelRoot}>
-          <InputLabel htmlFor="component-helper">Select Analysis</InputLabel>
-          <Select
-            key=''
-            value={check}
-            onChange={handleAnalysisChange}
-            input={<Input name="component" id="component-helper" />}
-          >
-            <MenuItem
-              value="Realizability"
-            >
-              Realizability
-            </MenuItem>            
-          </Select>
-        </FormControl>
-      </form>
-      <Tooltip title='Run Analysis'>
-        <Button size="small" onClick={(event) => runAnalysis(check, event)} color="secondary" variant='contained' >
-          Check
-        </Button>
-      </Tooltip>
-      &nbsp;
-      <Tooltip title={status}>
-        {icon}
-      </Tooltip>
-    </Toolbar>
-  );
-};
-
-TableComponentBar.propTypes = {
-  classes: PropTypes.object.isRequired,
-  handleAnalysisChange: PropTypes.func.isRequired,
-  importedComponents: PropTypes.array.isRequired,
-  check: PropTypes.string.isRequired,
-  status: PropTypes.string.isRequired,
-  runAnalysis: PropTypes.func.isRequired
-}
-
-TableComponentBar = withStyles(tableComponentBarStyles)(TableComponentBar);
-
-
 const styles = theme => ({
   root: {
-    width: '100%',
-    marginTop: theme.spacing.unit *-1,
+    // width: '100%',
+    display: 'flex',
+    flexDirection : 'column'    
   },
   table: {
   },
-  tableWrapper: {
-    overflowX: 'auto',
+  wrapper: {
+    display: 'block',
+  },
+  dv : {
+    display: 'inline-block',
+  },
+  section1: {
+    alignItems: 'flex-end',
+    marginBottom: `${theme.spacing.unit}px`,
+  },
+  formControl: {
+    minWidth: 200,
+    marginRight: theme.spacing.unit * 2
+  },
+  vAlign : {
+    verticalAlign : 'bottom'
   },
 });
 
-class AnalysisTableRow extends React.Component {
+class AnalysisTableRow extends React.Component {  
   state = {
+    componentCollapsed : true,
     status : 'UNCHECKED',
-    displayRealizabilityOpen: false
   }  
 
   constructor(props) {
     super(props)
-  }
-
-  handleRealizabilityDialogOpen = () => {
-    this.setState({
-      displayRealizabilityOpen: true
-    })
-  }
-
-  handleRealizabilityDialogClose = () => {
-    this.setState({
-      displayRealizabilityOpen: false
-    })
   }
 
 
@@ -454,75 +375,135 @@ class AnalysisTableRow extends React.Component {
     })
   }
 
+  handleComponentClick = (name) => () => {
+    event.stopPropagation();
+    this.setState((prevState) => ({componentCollapsed: {[name]: !!!prevState.componentCollapsed[name]}}))
+  }
+
+  isSelected = id => this.props.selected === id;
+  isCCSelected = id => this.props.ccSelected.indexOf(id) !== -1;
+
   render() {
-    const {status} = this.state;
-    const {component, selectedProject} = this.props;
+    const {status, componentCollapsed} = this.state;
+    const {classes, handleClick, handleCCClick, component, selectedProject} = this.props;
     const self = this;
-    
+    const connectedComponents = {
+      'FSM_Autopilot' : 
+        [{reqs: ['r1','r2','r3'], result : 'REALIZABLE'},
+         {reqs: ['r3','r4','r5'], result : 'REALIZABLE'},
+         {reqs: ['r6','r7','r8'], result : 'UNREALIZABLE'}],
+      'Autopilot': 
+        [{reqs: ['r1','r2','r3'], result : 'REALIZABLE'},
+         {reqs: ['r3','r4','r5'], result : 'UNREALIZABLE'},
+         {reqs: ['r6','r7','r8'], result : 'REALIZABLE'}]};
+    const isSelected = this.isSelected(component.component_name);    
+
     function diagnoseSpec(event) {
       event.stopPropagation()
       // buttonText = "PROCESSING";
       var filePath = './analysis/tmp/'+component.component_name+'.lus.json';
       console.log(filePath);
       if (fs.existsSync()) {
-        handleRealizabilityDialogOpen();
       } else {
         // let engine = new DiagnosisEngine(contract, 'realizability');
         // engine.main();
-        self.handleRealizabilityDialogOpen();
       }
     }
 
-    return(
-      <TableRow key={component.rowid}>
-        <TableCell width={10} align={'center'}>
+    let checkButton;
+    if (isSelected) {
+      checkButton =  
           <Tooltip title='Run Realizability Checking'>                      
-            <Button size="small" onClick={(event) => this.runAnalysis(component, event)} color="secondary" variant='contained' >
+            <Button style={{marginLeft : '25px'}} size="small" onClick={(event) => this.runAnalysis(component, event)} color="secondary" variant='contained' >
               Check
             </Button>
           </Tooltip>
-        </TableCell>
-        <TableCell align={'left'}>{component.component_name}</TableCell>
-        <TableCell align={'left'}>
-          <Tooltip title={status}>
-            <div>
-            <Button size="small" onClick={(event) => {diagnoseSpec(event)}} color='secondary'>
-            {
-              status === "PROCESSING" ? <CircularProgress size={22} /> : (
-                status === "REALIZABLE" ? <CheckIcon style={{color : "#68BC00"}}/> : (
-                  status === "UNREALIZABLE" ? <ClearIcon color='error'/> :
-                    <RemoveIcon/>))
-            }
-            </Button>
-            <DisplayRealizabilityDialog
-              selectedProject={selectedProject}
-              open={this.state.displayRealizabilityOpen}
-              handleDialogClose={this.handleRealizabilityDialogClose}/>
-            </div>
-          </Tooltip>          
-        </TableCell>
-      </TableRow>
+    }
+
+    let ccList;
+    if (connectedComponents[component.component_name] !== undefined && connectedComponents[component.component_name].length > 1) {
+      const reducer = (accumulator, currentValue) => 
+        (accumulator.result === 'UNREALIZABLE' || accumulator.result === 'UNKNOWN') ? 
+          {result : accumulator.result} : (currentValue.result === 'UNKNOWN' ? 
+              {result : 'UNKNOWN'} : {result : currentValue.result});
+      const componentResult = connectedComponents[component.component_name].reduce(reducer).result;
+      const componentResultIcon = (componentResult === 'REALIZABLE') ? <CheckIcon style={{color : "#68BC00"}}/> : <ClearIcon color = 'error'/>          
+
+      ccList =
+        <div>
+        </div>
+    }
+    return(
+      <ListItem>            
+      </ListItem>
     )
   }
 }
 
 class AnalysisTable extends React.Component {
   state = {
+    selected: '',
+    ccSelected: '',
     order: 'asc',
     orderBy: 'component_name',
     page: 0,
     rowsPerPage: 5,
     connectedComponents: [],
     selectedVariable: {},
-    displayVariableOpen: false,
     snackbarOpen: false,
     snackBarDisplayInfo: {},
     check: '',
     status: '',
     modelVariables: [],
     language: '',
-    importedComponents: []
+    importedComponents: [],
   }
+
+  // Use this for bulk check in the future
+  // handleClick = (event, id) => {
+  //   const { selected } = this.state;
+  //   const selectedIndex = selected.indexOf(id);
+  //   let newSelected = [];
+
+  //   if (selectedIndex === -1) {
+  //     newSelected = newSelected.concat(selected, id);
+  //   } else if (selectedIndex === 0) {
+  //     newSelected = newSelected.concat(selected.slice(1));
+  //   } else if (selectedIndex === selected.length - 1) {
+  //     newSelected = newSelected.concat(selected.slice(0, -1));
+  //   } else if (selectedIndex > 0) {
+  //     newSelected = newSelected.concat(
+  //       selected.slice(0, selectedIndex),
+  //       selected.slice(selectedIndex + 1),
+  //     );
+  //   }
+
+  //   this.setState({ selected: newSelected });
+  // };
+
+  handleClick = (event, id) => {
+    event.stopPropagation();
+    if (this.state.selected === id) {
+      this.setState({ selected: '' });  
+    } else {
+      this.setState({ 
+        selected: id,
+        ccSelected: ''
+       });
+    }
+  };
+
+  handleCCClick = (event, id) => {
+    event.stopPropagation();
+    if (this.state.ccSelected === id) {
+      this.setState({ ccSelected: '' });
+    } else {
+      this.setState({ 
+        selected: '',
+        ccSelected: id });
+    }
+  };
+
 
 
   constructor(props){
@@ -626,134 +607,92 @@ class AnalysisTable extends React.Component {
     this.setState({ rowsPerPage: event.target.value });
   };
 
-  handleVariableDialogOpen = (row) => {
-    const {selectedProject, selectedComponent} = this.props;
-    if (row.variable_name) {
-      const dbkey = selectedProject + selectedComponent + row.variable_name;
-      modeldb.get(dbkey).then((doc) => {
-        this.setState({
-          selectedVariable: doc,
-          displayVariableOpen: true
-        })
-      }).catch((err) => {
-        console.log(err);
-      });
-    }
-  }
-
-  handleVariableDialogClose = (variableUpdated, newVarId, actionLabel) => {
-    this.setState({
-      displayVariableOpen: false,
-      snackbarOpen: variableUpdated,
-      snackBarDisplayInfo: {
-        modefiedVarId: newVarId,
-        action: actionLabel
-      }
-    })
-  }
-
   handleAnalysisChange = event => {
     const check = event.target.value;
-
     this.setState({ check: check});
   }
 
+  handleChange = name => event => {
+    this.setState({ selected: event.target.value });
+  };
 
 
+  handleSnackbarClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    this.setState({ snackbarOpen: false });
+  };
 
+  render() {
+    const {classes, selectedProject, components} = this.props;
+    const {connectedComponents, order, orderBy, rowsPerPage, page, selectedVariable, status, importedComponents, selected, ccSelected} = this.state;
 
-handleSnackbarClose = (event, reason) => {
-  if (reason === 'clickaway') {
-    return;
-  }
-  this.setState({ snackbarOpen: false });
-};
+    let grid;
+    const ccTitle = 'Connected Components (CC)';
+    let selectedComponentDisplay; 
 
-render() {
-  const {classes, selectedProject, components} = this.props;
-  const {connectedComponents, order, orderBy, rowsPerPage, page, selectedVariable, status, importedComponents} = this.state;
-  const emptyRows = rowsPerPage - Math.min(rowsPerPage, components.length - page * rowsPerPage);
-
-  return(
-    <div>
-      <Paper className={classes.root}>
-      <div className={classes.tableWrapper}>
-        {
-          <Table className={classes.table} aria-labelledby="tableTitle" padding="dense">
-            <AnalysisHead
-              order={order}
-              orderBy={orderBy}
-              onRequestSort= {this.handleRequestSort}
-              rowCount={components.length}
-            />
-            <TableBody>{
-              stableSort(components, getSorting(order, orderBy))
-              .slice(page *rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map(n => {
-                const label = n.component_name ? n.component_name : 'NONE';
-                return (
-                  <AnalysisTableRow component={n} selectedProject={selectedProject}/>
-                )
-              })
-            }
-            {emptyRows > 0 && (
-              <TableRow style={{ height: 49 * emptyRows }}>
-                <TableCell colSpan={6} />
-              </TableRow>
-            )}
-            </TableBody>
-          </Table>          
-        }
+    if (selected !== '') {      
+      selectedComponentDisplay =
+        <div className={classes.root}>
+          &nbsp;
+          &nbsp;
+          &nbsp;
+          <Typography variant='h6'>
+            {ccTitle}
+          </Typography>
+          <Divider/>
+          <DisplayRealizabilityDialog selectedProject={this.state.selected}/>
         </div>
-        <TablePagination
-          component="div"
-          count={connectedComponents.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          backIconButtonProps={{
-            'aria-label': 'Previous Page',
-          }}
-          nextIconButtonProps={{
-            'aria-label': 'Next Page',
-          }}
-          onChangePage={this.handleChangePage}
-          onChangeRowsPerPage={this.handleChangeRowsPerPage}
-        />
-      </Paper>
-      <DisplayVariableDialog
-        selectedVariable={selectedVariable}
-        open={this.state.displayVariableOpen}
-        handleDialogClose={this.handleVariableDialogClose}
-        modelVariables= {this.state.modelVariables}
-        checkComponentCompleted={this.props.checkComponentCompleted}/>
-      <Snackbar
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'center',
-        }}
-        open={this.state.snackbarOpen}
-        autoHideDuration={6000}
-        onClose={this.handleSnackbarClose}
-        snackbarcontentprops={{
-          'aria-describedby': 'message-id',
-        }}
-        message={<span id="message-id">Variable Updated</span>}
-        action={[
-          <Button key="undo" color="secondary" size="small" onClick={this.handleSnackbarClose}>
-            {this.state.snackBarDisplayInfo.modifiedVarId}
-          </Button>,
-          <IconButton
-            key="close"
-            aria-label="Close"
-            color="inherit"
-            onClick={this.handleSnackbarClose}
-          >
-            <CloseIcon />
-          </IconButton>,
-        ]} />
-    </div>
-  );
-}
+    }
+
+    if (components.length !== 0) {
+      grid =
+        <div>
+          <Button className={classes.vAlign} style={{marginRight: '2%'}} color="secondary" variant='contained'>
+            Check
+            <PlayArrowIcon/>                
+          </Button>
+          <FormControl className={classes.formControl} required>
+            <InputLabel>System Component</InputLabel>
+            <Select                  
+              value={this.state.selected}
+              onChange={this.handleChange('selected')}
+            >
+              <MenuItem value=''/>
+              {stableSort(components, getSorting(order, orderBy))
+                .map(n => {
+                  return (
+                    <MenuItem value={n.component_name}> <div style={{alignContent: 'flex-end'}}> {n.component_name} <ClearIcon style={{verticalAlign: 'bottom'}} color='error'/> </div> </MenuItem>)
+                })}
+            </Select>
+          </FormControl>
+          <FormControlLabel
+            className={classes.vAlign}
+            control={
+              <Checkbox
+                checked={this.state.monolithic}
+                onChange={this.handleChange('monolithic')}
+                value="monolithic"
+                color="primary"
+                style={{paddingBottom: '0px'}}
+              />
+            }
+            style={{alignItems: 'flex-end', marginRight:'35%'}}
+            label="Monolithic"                
+          />
+          <Button className={classes.vAlign} style={{marginRight: '2%'}} variant="contained"> Project Summary </Button>              
+          <Button className={classes.vAlign} variant="contained"> Help </Button>
+          {selectedComponentDisplay}  
+        </div>
+    }
+    
+    return(
+      <div>
+        {grid}
+      </div>
+    );
+  }
 }
 
 AnalysisTable.propTypes = {

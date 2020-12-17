@@ -45,10 +45,10 @@ import Tab from '@material-ui/core/Tab';
 
 import VariablesView from './VariablesView';
 import AnalysisView from './AnalysisView';
+import Paper from '@material-ui/core/Paper';
 
 const styles = theme => ({
   root: {
-    flexGrow: 1,
     width: '100%',
     backgroundColor: theme.palette.background.paper,
   },
@@ -87,7 +87,7 @@ class AnalysisTabs extends React.Component {
     const {classes, selectedProject, existingProjectNames} = this.props;
     const {value} = this.state;
     return (
-      <div className={classes.root}>
+      <div>
         <AppBar position="static" color="default">
           <Tabs
             value={value}

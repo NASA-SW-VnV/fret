@@ -55,15 +55,29 @@ import ChordDiagram from './ChordDiagram';
 import DiagnosisRequirementsTable from './DiagnosisRequirementsTable';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import DiagnosisProvider from './DiagnosisProvider';
+import CheckIcon from '@material-ui/icons/Check';
+import ClearIcon from '@material-ui/icons/Clear';
+import RemoveIcon from '@material-ui/icons/Remove';
+import PlayArrowIcon from '@material-ui/icons/PlayArrow';
+import Paper from '@material-ui/core/Paper';
 
 const fs = require('fs');
 
 const styles = theme => ({
   root: {
-    flexGrow: 1,
+    // flex: 1,
     width: '100%',
     backgroundColor: theme.palette.background.paper,
   },
+  appbar: {
+    display: 'flex',
+  },
+  tabRoot : {
+    // minHeight: 36,
+  },
+  tabsScrollable : {
+    overflowX: 'hidden',
+  }
 });
 
 function TabContainer(props) {
@@ -80,28 +94,15 @@ TabContainer.propTypes = {
 
 class DisplayRealizabilityDialog extends React.Component {
   state = {
-    open: false,
     value: 0,
     status:''
   };
 
-  handleClose = (event) => {
-    event.stopPropagation();
-    this.setState({ open: false });
-    this.state.dialogCloseListener();
-  };
 
   handleChange = (event, value) => {
-  this.setState({ value });
-};
+    this.setState({ value });
+  };
 
-  componentWillReceiveProps = (props) => {
-    this.setState({
-      open: props.open,
-      dialogCloseListener : props.handleDialogClose,
-      openCreateDialog: props.handleCreateDialogOpen,
-    })
-  }
 
   diagnoseSpec(event) {
     event.stopPropagation()
@@ -122,66 +123,70 @@ class DisplayRealizabilityDialog extends React.Component {
     const {value, status} = this.state;
     return (
       <div>
-        <Dialog
-          open={this.state.open}
-          onClose={(event) => this.handleClose(event)}
-          aria-labelledby="form-dialog-title"
-          fullWidth={true}
-          maxWidth='lg'          
-          >
-          <div className={classes.root}>
-            <AppBar position="static" color="default">
-              <Tabs
-                value={value}
-                onChange={this.handleChange}
-                indicatorColor="secondary"
-                textColor="primary"
-                variant="scrollable"
-                scrollButtons="auto"
-              >
-                <Tab label="Component One" />
-                <Tab label="Component Two" />
-                <Tab label="Component Three" />
-                <Tab label="Component Four" />
-                <Tab label="Component Five" />
-                <Tab label="Component Six" />
-                <Tab label="Component Seven" />
-                <Tab label="Component Eight" />
-              </Tabs>
-            </AppBar>
-            {value === 0 &&
-              <TabContainer>
-                <DiagnosisProvider>
-                  <div>
-                  {status === 'DONE' ? (
-                    <ChordDiagram selectedComponent = {"../analysis/Infusion_Manager.lus.json"}/>) :
-                    (status === 'PROCESSING' ? <CircularProgress size={22} /> : 
-                      (<Button size="small" onClick={(event) => {this.diagnoseSpec(event)}} color="secondary" variant='contained'>
-                        Diagnose
-                        </Button>))}
-                  &nbsp;
-                  &nbsp;
-                  &nbsp;
-                  &nbsp;
-                  <DiagnosisRequirementsTable selectedProject={selectedProject} existingProjectNames={[selectedProject]}/>
-                  </div>
-                </DiagnosisProvider>
-              </TabContainer>
-            }
-            {value === 1 && <TabContainer>Component Two</TabContainer>}
-            {value === 2 && <TabContainer>Component Three</TabContainer>}
-            {value === 3 && <TabContainer>Component Four</TabContainer>}
-            {value === 4 && <TabContainer>Component Five</TabContainer>}
-            {value === 5 && <TabContainer>Component Six</TabContainer>}
-            {value === 6 && <TabContainer>Component Seven</TabContainer>}
-            {value === 7 && <TabContainer>Component Eight</TabContainer>}
-            <DialogActions>
-              <Button onClick={(event) => this.handleClose(event)} color="secondary">
-                Close
-              </Button>
-            </DialogActions>
+        {/* try this to appbar below : style={{height: '36px'}}*/}
+        <AppBar  position="static" color="default">
+        {/* try this to div below : className={classes.appbar}*/}
+          <div>
+            {/*<Button style={{paddingTop: '0px', paddingBottom: '0px'}} className={classes.buttons} color="secondary" variant='contained'>
+              Check
+              <PlayArrowIcon/>                
+            </Button>*/}
+            <Tabs              
+              value={value}
+              onChange={this.handleChange}
+              variant="scrollable"
+              scrollButtons="auto"
+              indicatorColor="secondary"
+              textColor="primary"
+              classes={{scrollable : classes.tabsScrollable}}                           
+            >
+              <Tab classes={{root : classes.tabRoot}} label={<div>CC 1<ClearIcon style={{verticalAlign: 'bottom'}} color='error'/></div>}/>
+              <Tab classes={{root : classes.tabRoot}} label={<div>CC 1<ClearIcon style={{verticalAlign: 'bottom'}} color='error'/></div>}/>
+              <Tab classes={{root : classes.tabRoot}} label={<div>CC 1<ClearIcon style={{verticalAlign: 'bottom'}} color='error'/></div>}/>
+              <Tab classes={{root : classes.tabRoot}} label={<div>CC 1<ClearIcon style={{verticalAlign: 'bottom'}} color='error'/></div>}/>
+              <Tab classes={{root : classes.tabRoot}} label={<div>CC 1<ClearIcon style={{verticalAlign: 'bottom'}} color='error'/></div>}/>
+              <Tab classes={{root : classes.tabRoot}} label={<div>CC 1<ClearIcon style={{verticalAlign: 'bottom'}} color='error'/></div>}/>
+              <Tab classes={{root : classes.tabRoot}} label={<div>CC 1<ClearIcon style={{verticalAlign: 'bottom'}} color='error'/></div>}/>
+              <Tab classes={{root : classes.tabRoot}} label={<div>CC 1<ClearIcon style={{verticalAlign: 'bottom'}} color='error'/></div>}/>
+              <Tab classes={{root : classes.tabRoot}} label={<div>CC 1<ClearIcon style={{verticalAlign: 'bottom'}} color='error'/></div>}/>
+              <Tab classes={{root : classes.tabRoot}} label={<div>CC 1<ClearIcon style={{verticalAlign: 'bottom'}} color='error'/></div>}/>
+              <Tab classes={{root : classes.tabRoot}} label={<div>CC 1<ClearIcon style={{verticalAlign: 'bottom'}} color='error'/></div>}/>
+              <Tab classes={{root : classes.tabRoot}} label={<div>CC 1<ClearIcon style={{verticalAlign: 'bottom'}} color='error'/></div>}/>
+              <Tab classes={{root : classes.tabRoot}} label={<div>CC 1<ClearIcon style={{verticalAlign: 'bottom'}} color='error'/></div>}/>
+              <Tab classes={{root : classes.tabRoot}} label={<div>CC 1<ClearIcon style={{verticalAlign: 'bottom'}} color='error'/></div>}/>
+              <Tab classes={{root : classes.tabRoot}} label={<div>CC 1<ClearIcon style={{verticalAlign: 'bottom'}} color='error'/></div>}/>
+              <Tab classes={{root : classes.tabRoot}} label={<div>CC 1<ClearIcon style={{verticalAlign: 'bottom'}} color='error'/></div>}/>
+              <Tab classes={{root : classes.tabRoot}} label={<div>CC 1<ClearIcon style={{verticalAlign: 'bottom'}} color='error'/></div>}/>
+              <Tab classes={{root : classes.tabRoot}} label={<div>CC 1<ClearIcon style={{verticalAlign: 'bottom'}} color='error'/></div>}/>
+              <Tab classes={{root : classes.tabRoot}} label={<div>CC 1<ClearIcon style={{verticalAlign: 'bottom'}} color='error'/></div>}/>
+              <Tab classes={{root : classes.tabRoot}} label={<div>CC 1<ClearIcon style={{verticalAlign: 'bottom'}} color='error'/></div>}/>
+              <Tab classes={{root : classes.tabRoot}} label={<div>CC 1<ClearIcon style={{verticalAlign: 'bottom'}} color='error'/></div>}/>
+              <Tab classes={{root : classes.tabRoot}} label={<div>CC 1<ClearIcon style={{verticalAlign: 'bottom'}} color='error'/></div>}/>
+              <Tab classes={{root : classes.tabRoot}} label={<div>CC 1<ClearIcon style={{verticalAlign: 'bottom'}} color='error'/></div>}/>              
+            </Tabs>
           </div>
-        </Dialog>
+        </AppBar>
+        {value === 0 &&
+          <TabContainer>
+            <DiagnosisProvider>
+              <div>
+              {status === 'DONE' ? (
+                <ChordDiagram selectedComponent = {"../analysis/Infusion_Manager.lus.json"}/>) :
+                (status === 'PROCESSING' ? <CircularProgress size={22} /> : 
+                  (<Button size="small" onClick={(event) => {this.diagnoseSpec(event)}} color="secondary" variant='contained'>
+                    Diagnose
+                    </Button>))}
+              &nbsp;
+              &nbsp;
+              &nbsp;
+              &nbsp;
+              <DiagnosisRequirementsTable selectedProject={selectedProject} existingProjectNames={[selectedProject]}/>
+              </div>
+            </DiagnosisProvider>
+          </TabContainer>
+        }
+        {/*{value === 1 && <TabContainer>Component Two</TabContainer>}
+        {value === 2 && <TabContainer>Component Three</TabContainer>}*/}
       </div>
     );
   }
@@ -189,8 +194,6 @@ class DisplayRealizabilityDialog extends React.Component {
 
 DisplayRealizabilityDialog.propTypes = {
   selectedProject: PropTypes.string.isRequired,
-  open: PropTypes.bool.isRequired,
-  handleDialogClose: PropTypes.func.isRequired,
   // selectedComponent: PropTypes.string.isRequired
 
   //TODO: add connectedComponent information

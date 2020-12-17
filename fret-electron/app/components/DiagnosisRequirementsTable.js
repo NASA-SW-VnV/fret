@@ -41,7 +41,6 @@ import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
-import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -169,53 +168,11 @@ DiagnosisRequirementsTableHead.propTypes = {
   rowCount: PropTypes.number.isRequired,
 };
 
-const toolbarStyles = theme => ({
-  root: {
-    paddingRight: theme.spacing.unit,
-  },
-  highlight:
-    theme.palette.type === 'light'
-      ? {
-          color: theme.palette.secondary.main,
-          backgroundColor: lighten(theme.palette.secondary.light, 0.85),
-        }
-      : {
-          color: theme.palette.text.primary,
-          backgroundColor: theme.palette.secondary.dark,
-        },
-  spacer: {
-    flex: '1 1 100%',
-  },
-  actions: {
-    color: theme.palette.text.secondary,
-  },
-  title: {
-    flex: '0 0 auto',
-  },
-  toolbar: {
-    display: 'flex',
-    flexWrap:'nowrap'
-  }
-});
-
 const styles = theme => ({
   root: {
-    width: '100%',
+    // width: '100%',
     marginTop: theme.spacing.unit * 3,
   },
-  table: {
-    minWidth: 1020,
-  },
-  tableWrapper: {
-    overflowX: 'auto',
-  },
-  // row: {
-  //   borderStyle: 'initial',
-  //   borderColor: 'initial'
-  // }
-  // rowInConflict: {
-
-  // }
 });
 
 class DiagnosisRequirementsTable extends React.Component {
@@ -279,10 +236,16 @@ class DiagnosisRequirementsTable extends React.Component {
     db.allDocs({
       include_docs: true,
     }).then((result) => {
+      console.log(result.rows.filter(r => !system_dbkeys.includes(r.key)));
+    })
+
+    db.allDocs({
+      include_docs: true,
+    }).then((result) => {
       this.setState({
         data: result.rows
                 .filter(r => !system_dbkeys.includes(r.key))
-                .filter(r => filterOff || r.doc.project == selectedProject)
+                .filter(r => filterOff || r.doc.semantics.component_name == selectedProject)
                 .map(r => {
                   return createData(r.doc._id, r.doc._rev, r.doc.reqid, r.doc.fulltext, r.doc.project)
                 })
@@ -345,11 +308,9 @@ class DiagnosisRequirementsTable extends React.Component {
     const title = 'Requirements: ' + selectedProject
     return (
       <div>
-      <Typography variant='h6'>{title}
-      </Typography>
-      <Paper className={classes.root}>
-        <div className={classes.tableWrapper}>
-          <Table className={classes.table} aria-labelledby="tableTitle" padding="dense">
+      <Paper>
+        <div>
+          <Table aria-labelledby="tableTitle" padding="dense">
             <DiagnosisRequirementsTableHead
               numSelected={selected.length}
               order={order}
@@ -402,7 +363,6 @@ class DiagnosisRequirementsTable extends React.Component {
 }
 
 DiagnosisRequirementsTable.propTypes = {
-  classes: PropTypes.object.isRequired,
   selectedProject: PropTypes.string.isRequired,
   existingProjectNames: PropTypes.array.isRequired
 };

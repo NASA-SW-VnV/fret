@@ -50,7 +50,6 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import Divider from '@material-ui/core/Divider';
 import Button from '@material-ui/core/Button';
 
 import AnalysisTable from './AnalysisTable';
@@ -62,6 +61,7 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
+import Paper from '@material-ui/core/Paper';
 
 /* Connected Component Analysis Imports */
 import * as cc_analysis from '../../analysis/connected_components';
@@ -72,6 +72,8 @@ import DisplayRealizabilityDialog from './DisplayRealizabilityDialog';
 import * as realizability from '../../analysis/realizabilityCheck';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import DiagnosisEngine from '../../analysis/DiagnosisEngine';
+
+
 
 const sharedObj = require('electron').remote.getGlobal('sharedObj');
 const constants = require('../parser/Constants');
@@ -94,19 +96,14 @@ function createData(vID, cID, project, description) {
 
 const styles = theme => ({
   root: {
-    width: '100%',
-    marginTop: theme.spacing.unit * 3,
-    overflowX: 'auto',
-    flexWrap: 'wrap',
+    // width: '100%',
+    marginTop: theme.spacing.unit,
+    // flexWrap: 'wrap',
   },
   heading: {
     fontSize: theme.typography.pxToRem(18),
     fontWeight: theme.typography.fontWeightRegular,
     marginRight: theme.spacing.unit * 2,
-  },
-  formControl: {
-    minWidth: 200,
-    marginRight: theme.spacing.unit * 2
   },
   selectEmpty: {
     marginTop: theme.spacing.unit * 2,
@@ -124,9 +121,6 @@ let AnalysisViewHeader = props => {
   }
   return (
     <div>
-      <Typography variant='h6'>
-        Results: {selectedProject}
-      </Typography>
     </div>
   );
 };
@@ -143,10 +137,10 @@ AnalysisViewHeader = withStyles(styles)(AnalysisViewHeader);
 
 const componentStyles = theme => ({
   root: {
-    width: '100%',
+    // width: '100%',
     marginTop: theme.spacing.unit * 3,
-    overflowX: 'auto',
-    flexWrap: 'wrap',
+    // overflowX: 'auto',
+    // flexWrap: 'wrap',
   },
   heading: {
     fontSize: theme.typography.pxToRem(18),
@@ -640,7 +634,7 @@ class AnalysisView extends React.Component {
       self.setState({
         cocospecData: data.cocospecData,
         cocospecModes: data.cocospecModes,
-        components: data.components.sort((a, b) => {return a.toLowerCase().trim() > b.toLowerCase().trim()})
+        components: data.components.sort((a, b) => {return a.component_name.toLowerCase().trim() > b.component_name.toLowerCase().trim()})
       })
       self.checkComponents();
     }).catch((err) => {
@@ -697,27 +691,24 @@ class AnalysisView extends React.Component {
 
 
     return (
-      <div>
-          <div className={classes.actions}>
-            <AnalysisViewHeader
-              selectedProject={selectedProject}
-              language={language}
-              handleChange={this.handleChange}/>
-          </div>
-          {components.map(component => {
-          return (
-            <div className={classes.root}>
-            <AnalysisTable
-              selectedProject={selectedProject}
-              components={components}
-              checkComponentCompleted={this.checkComponentCompleted}
-            />
-            </div>
-          )})}
+      <div className={classes.aView}>
+        <div>
+          <AnalysisViewHeader
+            selectedProject={selectedProject}
+            language={language}
+            handleChange={this.handleChange}/>
+        </div>
+        <div>
+          <AnalysisTable
+            selectedProject={selectedProject}
+            components={components}
+            checkComponentCompleted={this.checkComponentCompleted}
+          />
+        </div>
       </div>
-      );
-    }
+    );
   }
+}
 
 AnalysisView.propTypes = {
   classes: PropTypes.object.isRequired,

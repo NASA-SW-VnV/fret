@@ -35,7 +35,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Dashboard from './Dashboard';
 import SortableTable from './SortableTable';
-import VariablesView from './VariablesView';
 import AnalysisTabs from './AnalysisTabs';
 import Settings from './Settings';
 import Help from './Help';
@@ -54,7 +53,6 @@ class AppMainContent extends React.Component {
       return <SortableTable selectedProject={selectedProject} existingProjectNames={existingProjectNames}/>
       if (content === 'analysis')
         return <AnalysisTabs selectedProject={selectedProject} existingProjectNames={existingProjectNames}/>
-        // return <VariablesView selectedProject={selectedProject} existingProjectNames={existingProjectNames}/>
     if (content === 'settings')
       return <Settings />
     if (content === 'help')
