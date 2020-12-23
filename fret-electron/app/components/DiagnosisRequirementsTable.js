@@ -242,10 +242,12 @@ class DiagnosisRequirementsTable extends React.Component {
     db.allDocs({
       include_docs: true,
     }).then((result) => {
+      console.log(result.rows
+                .filter(r => !system_dbkeys.includes(r.key)))
       this.setState({
         data: result.rows
                 .filter(r => !system_dbkeys.includes(r.key))
-                .filter(r => filterOff || r.doc.semantics.component_name == selectedProject)
+                .filter(r => filterOff || r.doc.project == selectedProject)
                 .map(r => {
                   return createData(r.doc._id, r.doc._rev, r.doc.reqid, r.doc.fulltext, r.doc.project)
                 })
@@ -301,7 +303,7 @@ class DiagnosisRequirementsTable extends React.Component {
 
   render() {
     const { reqs, color } = this.context.state;
-    const { classes, selectedProject, existingProjectNames } = this.props;
+    const { diagnosed, classes, selectedProject, existingProjectNames } = this.props;
     const { data, order, orderBy, selected, rowsPerPage, page,
        snackBarDisplayInfo, selectedRequirement } = this.state;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
@@ -326,7 +328,10 @@ class DiagnosisRequirementsTable extends React.Component {
                   const label = n.reqid ? n.reqid : 'NONE'
                   var isInConflict = (reqs.length !== 0 && reqs.includes(label.toLowerCase())) ? true : false;                  
                   return (
-                      <TableRow key={n.rowid} style={{borderStyle: isInConflict ? 'solid' : 'initial', borderColor: isInConflict ? color : 'initial'}}>
+                      <TableRow key={n.rowid} style={{
+                          opacity : (isInConflict || !diagnosed) ? 1 : .6,
+                          borderStyle: isInConflict ? 'solid' : 'initial', 
+                          borderColor: isInConflict ? color : 'initial'}}>
                         <TableCell>
                             {label}
                           </TableCell>
@@ -363,6 +368,7 @@ class DiagnosisRequirementsTable extends React.Component {
 }
 
 DiagnosisRequirementsTable.propTypes = {
+  diagnosed: PropTypes.bool.isRequired,
   selectedProject: PropTypes.string.isRequired,
   existingProjectNames: PropTypes.array.isRequired
 };

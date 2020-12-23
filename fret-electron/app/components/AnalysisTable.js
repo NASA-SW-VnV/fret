@@ -46,7 +46,6 @@ import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
 import Tooltip from '@material-ui/core/Tooltip';
-import Snackbar from '@material-ui/core/Snackbar';
 import Button from '@material-ui/core/Button';
 import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
@@ -75,7 +74,7 @@ import RemoveIcon from '@material-ui/icons/Remove';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 /*Realizability checking*/
-import DisplayRealizabilityDialog from './DisplayRealizabilityDialog';
+// import DisplayConnectedComponents from './DisplayConnectedComponents';
 import ejsCache_realize from '../../support/RealizabilityTemplates/ejsCache_realize';
 import * as realizability from '../../analysis/realizabilityCheck';
 import List from '@material-ui/core/List';
@@ -85,10 +84,16 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Collapse from '@material-ui/core/Collapse';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
-import Fab from '@material-ui/core/Fab';
+
+/*DisplayConnectedComponents*/
+import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import PlayArrowIcon from '@material-ui/icons/PlayArrow';
+import ChordDiagram from './ChordDiagram';
+
+import DiagnosisRequirementsTable from './DiagnosisRequirementsTable';
+import DiagnosisProvider from './DiagnosisProvider';
+import Fade from '@material-ui/core/Fade';
 
 const sharedObj = require('electron').remote.getGlobal('sharedObj');
 const modeldb = sharedObj.modeldb;
@@ -104,6 +109,8 @@ const utilities = require('../../support/utilities');
 var dbChangeListener;
 
 let counter = 0;
+
+
 function createData(component_name, result, details) {
   counter += 1;
   return { rowid: component_name, result, details};
@@ -145,52 +152,6 @@ const rows = [
   {id: 'checkButton', numeric: false, disablePadding:false, label: ''},
 ];
 
-class AnalysisHead extends React.Component {
-  createSortHandler = property => event => {
-    this.props.onRequestSort(event, property);
-  };
-
-  render() {
-    const {order, orderBy} = this.props;
-
-    return (
-      <TableHead>
-        <TableRow>
-          {rows.map(row => {
-            return (
-              <TableCell
-                key={row.id}
-                align={'left'}
-                padding={row.disablePadding ? 'none' : 'default'}
-                sortDirection={orderBy === row.id ? order : false}
-              >
-                <Tooltip
-                  title="Sort"
-                  placement={row.numeric ? 'bottom-end' : 'bottom-start'}
-                  enterDelay={300}
-                >
-                  <TableSortLabel
-                    active={orderBy === row.id}
-                    direction={order}
-                    onClick={this.createSortHandler(row.id)}
-                  >
-                    {row.label}
-                  </TableSortLabel>
-                </Tooltip>
-              </TableCell>
-            );
-          }, this)}
-        </TableRow>
-      </TableHead>
-    );
-  }
-}
-
-AnalysisHead.propTypes = {
-  order: PropTypes.string.isRequired,
-  orderBy: PropTypes.string.isRequired,
-  onRequestSort: PropTypes.func.isRequired
-};
 
 const styles = theme => ({
   root: {
@@ -219,68 +180,233 @@ const styles = theme => ({
   },
 });
 
-class AnalysisTableRow extends React.Component {  
+
+const connectedComponentsStyles = theme => ({
+  root: {
+    // flex: 1,
+    backgroundColor: theme.palette.background.paper,
+  },
+  appbar: {
+    display: 'flex',
+  },
+  tabRoot : {
+    minHeight: 36,
+  },
+  tabsScrollable : {
+    overflowX: 'hidden',
+  }
+});
+
+function TabContainer(props) {
+  return (
+    <Typography component="div" style={{ padding: 8 * 3 }}>
+      {props.children}
+    </Typography>
+  );
+}
+
+TabContainer.propTypes = {
+  children: PropTypes.node.isRequired,
+};
+
+class DisplayConnectedComponents extends React.Component {
   state = {
-    componentCollapsed : true,
-    status : 'UNCHECKED',
-  }  
+    value: 0,
+    status:''
+  };
 
-  constructor(props) {
-    super(props)
+
+  handleChange = (event, value) => {
+    this.setState({ value });
+  };
+
+
+  diagnoseSpec(event) {
+    event.stopPropagation()
+    this.setState({status : 'PROCESSING'});
+    var filePath = './analysis/tmp/'+'Infusion_Manager.lus.json';
+    console.log(filePath);
+    if (fs.existsSync()) {
+      this.setState({status : 'DONE'});
+    } else {
+      // let engine = new DiagnosisEngine(contract, 'realizability');
+      // engine.main();
+      this.setState({status : 'DONE'});
+    }
   }
 
-
-  runAnalysis = (component, event) => {
-    event.stopPropagation();
-    this.checkRealizability(component);
-  }
-
-  getDelayInfo(result, component) {
-    var delays = [];
-    result.docs.forEach(function(doc){
-      if (doc.semantics.component_name === component){
-        if (typeof doc.semantics.CoCoSpecCode !== 'undefined'){
-          if (doc.semantics.CoCoSpecCode !== constants.nonsense_semantics &&
-            doc.semantics.CoCoSpecCode !== constants.undefined_semantics &&
-            doc.semantics.CoCoSpecCode !== constants.unhandled_semantics){
-              if (doc.semantics.duration){
-                doc.semantics.duration.forEach(function(duration){
-                  if (!delays.includes(duration)) {
-                    delays.push(duration);
-                  }
-                })
-             }
-          }
-        }
-      }
-    })
-    return delays;
-  }
-
-  getPropertyInfo(result, outputVariables, component) {
-    var properties = [];
-    result.docs.forEach(function(doc){
-      var property ={};
-      property.allInput = false;
-      if (doc.semantics.component_name === component){
-        if (typeof doc.semantics.CoCoSpecCode !== 'undefined'){
-          if (doc.semantics.CoCoSpecCode !== constants.nonsense_semantics &&
-            doc.semantics.CoCoSpecCode !== constants.undefined_semantics &&
-            doc.semantics.CoCoSpecCode !== constants.unhandled_semantics){
-              property.value = doc.semantics.CoCoSpecCode;
-              property.reqid = doc.reqid;
-              property.fullText = "Req text: " + doc.fulltext;
-              outputVariables.forEach(function(variable){
-              if (property.value.includes(variable)){
-                  property.allInput = true;
+  render() {
+    const {diagnosed, classes, selectedProject} = this.props;
+    const {value, status} = this.state;
+    return (
+      <div>
+        {/* try this to appbar below : style={{height: '36px'}}*/}
+        <AppBar style={{height: '36px'}} position="static" color="default">
+        {/* try this to div below : className={classes.appbar}*/}
+          <div className={classes.appbar}>
+            <Tabs              
+              value={value}
+              onChange={this.handleChange}
+              variant="scrollable"
+              scrollButtons="on"
+              indicatorColor="secondary"
+              textColor="primary"
+              classes={{scrollable : classes.tabsScrollable}}                           
+            >
+              <Tab classes={{root : classes.tabRoot}} label={<div>CC 1 {/*<ClearIcon style={{verticalAlign: 'bottom'}} color='error'/>*/}</div>}/>            
+            </Tabs>
+          </div>
+        </AppBar>
+        {value === 0 &&
+          <TabContainer>
+            <DiagnosisProvider>
+              <div>
+                {diagnosed && 
+                  <Fade in={diagnosed}>
+                  <ChordDiagram selectedComponent = {"../analysis/Infusion_Manager.lus.json"}/>
+                  </Fade>
                 }
-              })
-              properties.push(property);
-         }
-       }
+                {/*status === 'DONE' ? (
+                  <ChordDiagram selectedComponent = {"../analysis/Infusion_Manager.lus.json"}/>) :
+                  (status === 'PROCESSING' ? <CircularProgress size={22} /> : 
+                    (<Button size="small" onClick={(event) => {this.diagnoseSpec(event)}} color="secondary" variant='contained'>
+                      Diagnose
+                      </Button>))*/}
+                &nbsp;
+                &nbsp;
+                &nbsp;
+                &nbsp;
+                <DiagnosisRequirementsTable diagnosed={diagnosed} selectedProject={selectedProject} existingProjectNames={[selectedProject]}/>
+              </div>
+            </DiagnosisProvider>
+          </TabContainer>
+        }
+        {/*{value === 1 && <TabContainer>Component Two</TabContainer>}
+        {value === 2 && <TabContainer>Component Three</TabContainer>}*/}
+      </div>
+    );
+  }
+}
+
+DisplayConnectedComponents.propTypes = {
+  selectedProject: PropTypes.string.isRequired,
+  diagnosed : PropTypes.bool.isRequired
+  // selectedComponent: PropTypes.string.isRequired
+
+  //TODO: add connectedComponent information
+}
+
+DisplayConnectedComponents = withStyles(connectedComponentsStyles)(DisplayConnectedComponents);
+
+
+class AnalysisTable extends React.Component {
+  state = {
+    diagnosed : false,
+    selected: '',
+    ccSelected: '',
+    order: 'asc',
+    orderBy: 'component_name',
+    connectedComponents: [],
+    check: '',
+    status: {},
+    monolithic: false,
+    compositional: false
+  }
+
+  // Use this for bulk check in the future
+  // handleClick = (event, id) => {
+  //   const { selected } = this.state;
+  //   const selectedIndex = selected.indexOf(id);
+  //   let newSelected = [];
+
+  //   if (selectedIndex === -1) {
+  //     newSelected = newSelected.concat(selected, id);
+  //   } else if (selectedIndex === 0) {
+  //     newSelected = newSelected.concat(selected.slice(1));
+  //   } else if (selectedIndex === selected.length - 1) {
+  //     newSelected = newSelected.concat(selected.slice(0, -1));
+  //   } else if (selectedIndex > 0) {
+  //     newSelected = newSelected.concat(
+  //       selected.slice(0, selectedIndex),
+  //       selected.slice(selectedIndex + 1),
+  //     );
+  //   }
+
+  //   this.setState({ selected: newSelected });
+  // };
+
+  constructor(props){
+    super(props);
+    dbChangeListener = modeldb.changes({
+      since: 'now',
+      live: true,
+      include_docs: true
+    }).on('change', (change) => {
+        this.synchStateWithModelDB();
+    }).on('complete', function(info) {
+      console.log(info);
+    }).on('error', function (err) {
+      console.log(err);
+    });
+    
+    const componentsStatus = {}
+    props.components.forEach(component => componentsStatus[component.component_name] = "UNCHECKED")
+    this.setState({status : componentsStatus})
+  }
+
+  componentDidMount() {
+    this.mounted = true;
+    this.synchStateWithModelDB();
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
+    dbChangeListener.cancel();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.selectedProject !== prevProps.selectedProject) {
+      this.synchStateWithModelDB();
+    }
+  }
+
+  synchStateWithModelDB(){
+    if (!this.mounted) return;
+    const {selectedProject, selectedComponent} = this.props,
+        self = this;
+
+    modeldb.find({
+      selector: {
+        project : selectedProject,
+        component_name : selectedComponent
       }
-    })
-    return properties;
+    }).then(function(result){
+    }).catch((err) => {
+      console.log(err);
+    });
+  }
+
+  handleChange = name => event => {
+    if (name === 'selected') {
+      this.setState({selected: event.target.value, monolithic : false, compositional : false });
+    } else if (name === 'monolithic') {
+      this.setState({monolithic : !this.state.monolithic, compositional : false});
+    } else if (name === 'compositional') {
+      this.setState({monolithic : false, compositional : !this.state.compositional});
+    }
+  }
+
+  diagnoseSpec(component,event) {
+    event.stopPropagation()
+    // buttonText = "PROCESSING";
+    var filePath = './analysis/tmp/'+component+'.lus.json';
+    console.log(filePath);
+    if (fs.existsSync()) {
+    } else {
+      // let engine = new DiagnosisEngine(contract, 'realizability');
+      // engine.main();
+    }
+    this.setState({diagnosed : true})
   }
 
   getCoCoSpecDataType(dataType){
@@ -293,7 +419,7 @@ class AnalysisTableRow extends React.Component {
     } else if (dataType === 'enum'){
       return 'enum';
     }
-  }
+  }  
 
   getContractInfo(result) {
     var self = this;
@@ -330,366 +456,193 @@ class AnalysisTableRow extends React.Component {
     return contract;
   }
 
-  checkRealizability = (component) => {
-    this.setState({
-      status: "PROCESSING"
-    })
-    const {selectedProject} = this.props;
-    const homeDir = app.getPath('home');
-    const self = this;
-    var filePath = './analysis/tmp/';
-    if (!fs.existsSync(filePath)) {
-      fs.mkdirSync(filePath);
-    }
-    filePath = filePath + component.component_name+'.lus';
-    var output = fs.createWriteStream(filePath);
-    modeldb.find({
-      selector: {
-        component_name: component.component_name,
-        project: selectedProject,
-        completed: true, //for modes that are not completed; these include the ones that correspond to unformalized requirements
-        modeldoc: false
+  getPropertyInfo(result, outputVariables, component) {
+    var properties = [];
+    result.docs.forEach(function(doc){
+      var property ={};
+      property.allInput = false;
+      if (doc.semantics.component_name === component){
+        if (typeof doc.semantics.CoCoSpecCode !== 'undefined'){
+          if (doc.semantics.CoCoSpecCode !== constants.nonsense_semantics &&
+            doc.semantics.CoCoSpecCode !== constants.undefined_semantics &&
+            doc.semantics.CoCoSpecCode !== constants.unhandled_semantics){
+              property.value = doc.semantics.CoCoSpecCode;
+              property.reqid = doc.reqid;
+              property.fullText = "Req text: " + doc.fulltext;
+              outputVariables.forEach(function(variable){
+              if (property.value.includes(variable)){
+                  property.allInput = true;
+                }
+              })
+              properties.push(property);
+         }
+       }
       }
-    }).then(function (modelResult){
-      var contract = self.getContractInfo(modelResult);
-      contract.componentName = component.component_name+'Spec';
+    })
+    return properties;
+  }
 
-      db.find({
-        selector: {
-          project: selectedProject
+  getDelayInfo(result, component) {
+    var delays = [];
+    result.docs.forEach(function(doc){
+      if (doc.semantics.component_name === component){
+        if (typeof doc.semantics.CoCoSpecCode !== 'undefined'){
+          if (doc.semantics.CoCoSpecCode !== constants.nonsense_semantics &&
+            doc.semantics.CoCoSpecCode !== constants.undefined_semantics &&
+            doc.semantics.CoCoSpecCode !== constants.unhandled_semantics){
+              if (doc.semantics.duration){
+                doc.semantics.duration.forEach(function(duration){
+                  if (!delays.includes(duration)) {
+                    delays.push(duration);
+                  }
+                })
+             }
+          }
         }
-      }).then(function (fretResult){
-        contract.properties = self.getPropertyInfo(fretResult, contract.outputVariables, component.component_name);
-        contract.delays = self.getDelayInfo(fretResult, component.component_name);
-
-        var lustreContract = ejsCache_realize.renderRealizeCode().component.complete(contract);
-        output.write(lustreContract);
-        var checkOutput = realizability.checkRealizability(filePath, '-fixpoint');
-        //smallest match between newline and whitespace followed by |
-        //should only match the result string, i.e. {REALIZABLE, UNREALIZABLE, UNKNOWN, INCONSISTENT}
-        var result = checkOutput.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];
-        self.setState({
-          status: result
-        })
-      })
-    })
-  }
-
-  handleComponentClick = (name) => () => {
-    event.stopPropagation();
-    this.setState((prevState) => ({componentCollapsed: {[name]: !!!prevState.componentCollapsed[name]}}))
-  }
-
-  isSelected = id => this.props.selected === id;
-  isCCSelected = id => this.props.ccSelected.indexOf(id) !== -1;
-
-  render() {
-    const {status, componentCollapsed} = this.state;
-    const {classes, handleClick, handleCCClick, component, selectedProject} = this.props;
-    const self = this;
-    const connectedComponents = {
-      'FSM_Autopilot' : 
-        [{reqs: ['r1','r2','r3'], result : 'REALIZABLE'},
-         {reqs: ['r3','r4','r5'], result : 'REALIZABLE'},
-         {reqs: ['r6','r7','r8'], result : 'UNREALIZABLE'}],
-      'Autopilot': 
-        [{reqs: ['r1','r2','r3'], result : 'REALIZABLE'},
-         {reqs: ['r3','r4','r5'], result : 'UNREALIZABLE'},
-         {reqs: ['r6','r7','r8'], result : 'REALIZABLE'}]};
-    const isSelected = this.isSelected(component.component_name);    
-
-    function diagnoseSpec(event) {
-      event.stopPropagation()
-      // buttonText = "PROCESSING";
-      var filePath = './analysis/tmp/'+component.component_name+'.lus.json';
-      console.log(filePath);
-      if (fs.existsSync()) {
-      } else {
-        // let engine = new DiagnosisEngine(contract, 'realizability');
-        // engine.main();
       }
-    }
+    })
+    return delays;
+  }  
 
-    let checkButton;
-    if (isSelected) {
-      checkButton =  
-          <Tooltip title='Run Realizability Checking'>                      
-            <Button style={{marginLeft : '25px'}} size="small" onClick={(event) => this.runAnalysis(component, event)} color="secondary" variant='contained' >
-              Check
-            </Button>
-          </Tooltip>
-    }
-
-    let ccList;
-    if (connectedComponents[component.component_name] !== undefined && connectedComponents[component.component_name].length > 1) {
-      const reducer = (accumulator, currentValue) => 
-        (accumulator.result === 'UNREALIZABLE' || accumulator.result === 'UNKNOWN') ? 
-          {result : accumulator.result} : (currentValue.result === 'UNKNOWN' ? 
-              {result : 'UNKNOWN'} : {result : currentValue.result});
-      const componentResult = connectedComponents[component.component_name].reduce(reducer).result;
-      const componentResultIcon = (componentResult === 'REALIZABLE') ? <CheckIcon style={{color : "#68BC00"}}/> : <ClearIcon color = 'error'/>          
-
-      ccList =
-        <div>
-        </div>
-    }
-    return(
-      <ListItem>            
-      </ListItem>
-    )
-  }
-}
-
-class AnalysisTable extends React.Component {
-  state = {
-    selected: '',
-    ccSelected: '',
-    order: 'asc',
-    orderBy: 'component_name',
-    page: 0,
-    rowsPerPage: 5,
-    connectedComponents: [],
-    selectedVariable: {},
-    snackbarOpen: false,
-    snackBarDisplayInfo: {},
-    check: '',
-    status: '',
-    modelVariables: [],
-    language: '',
-    importedComponents: [],
-  }
-
-  // Use this for bulk check in the future
-  // handleClick = (event, id) => {
-  //   const { selected } = this.state;
-  //   const selectedIndex = selected.indexOf(id);
-  //   let newSelected = [];
-
-  //   if (selectedIndex === -1) {
-  //     newSelected = newSelected.concat(selected, id);
-  //   } else if (selectedIndex === 0) {
-  //     newSelected = newSelected.concat(selected.slice(1));
-  //   } else if (selectedIndex === selected.length - 1) {
-  //     newSelected = newSelected.concat(selected.slice(0, -1));
-  //   } else if (selectedIndex > 0) {
-  //     newSelected = newSelected.concat(
-  //       selected.slice(0, selectedIndex),
-  //       selected.slice(selectedIndex + 1),
-  //     );
-  //   }
-
-  //   this.setState({ selected: newSelected });
-  // };
-
-  handleClick = (event, id) => {
-    event.stopPropagation();
-    if (this.state.selected === id) {
-      this.setState({ selected: '' });  
-    } else {
-      this.setState({ 
-        selected: id,
-        ccSelected: ''
-       });
-    }
-  };
-
-  handleCCClick = (event, id) => {
-    event.stopPropagation();
-    if (this.state.ccSelected === id) {
-      this.setState({ ccSelected: '' });
-    } else {
-      this.setState({ 
-        selected: '',
-        ccSelected: id });
-    }
-  };
-
-
-
-  constructor(props){
-    super(props);
-    dbChangeListener = modeldb.changes({
-      since: 'now',
-      live: true,
-      include_docs: true
-    }).on('change', (change) => {
-        this.synchStateWithModelDB();
-    }).on('complete', function(info) {
-      console.log(info);
-    }).on('error', function (err) {
-      console.log(err);
-    });
-  }
-
-  componentDidMount() {
-    this.mounted = true;
-    this.synchStateWithModelDB();
-  }
-
-  componentWillUnmount() {
-    this.mounted = false;
-    dbChangeListener.cancel();
-  }
-
-  componentDidUpdate(prevProps) {
-    if (this.props.selectedProject !== prevProps.selectedProject) {
-      this.synchStateWithModelDB();
-    }
-  }
-
-  synchStateWithModelDB(){
-    if (!this.mounted) return;
-    const {selectedProject, selectedComponent} = this.props,
-        self = this;
-    var componentModel = '',
-        modelVariables = [],
-        importedComponents = [];
-
+  checkRealizability = () => {
+    const {selected, ccSelected, monolithic, compositional} = this.state;
+    console.log(selected)
+    if (monolithic || compositional) {      
+      this.setState( prevState => {
+        prevState.status[selected.component_name] = 'PROCESSING'
+        return(prevState)
+      })
+      const {selectedProject} = this.props;
+      const homeDir = app.getPath('home');
+      const self = this;
+      var filePath = './analysis/tmp/';
+      if (!fs.existsSync(filePath)) {
+        fs.mkdirSync(filePath);
+      }
+      filePath = filePath + selected.component_name+'.lus';
+      var output = fs.createWriteStream(filePath);
       modeldb.find({
         selector: {
+          component_name: selected.component_name,
           project: selectedProject,
-          fretComponent: selectedComponent,
-          modeldoc: true
+          completed: true, //for modes that are not completed; these include the ones that correspond to unformalized requirements
+          modeldoc: false
         }
-        }).then(function(result){
-          result.docs.forEach(function(v){
-            if (!importedComponents.includes(v.component_name)) importedComponents.push(v.component_name);
-          })
-          self.setState({
-            importedComponents: importedComponents.sort((a, b) => {return a.toLowerCase().trim() > b.toLowerCase().trim()})
-          })
-        }).catch((err) => {
-          console.log(err);
-        });
+      }).then(function (modelResult){
+        var contract = self.getContractInfo(modelResult);
+        contract.componentName = selected.component_name+'Spec';
 
-    modeldb.find({
-      selector: {
-        project : selectedProject,
-        component_name : selectedComponent
-      }
-    }).then(function(result){
-        self.setState({
-          modelComponent: componentModel
-        })
-        modeldb.find({
+        db.find({
           selector: {
-            project: selectedProject,
-            component_name: componentModel,
-            modeldoc: true
+            project: selectedProject
           }
-        }).then(function(result){
-          result.docs.forEach(function(v){
-            modelVariables.push(v);
-          })
-          self.setState({
-            modelVariables: modelVariables,
+        }).then(function (fretResult){
+          contract.properties = self.getPropertyInfo(fretResult, contract.outputVariables, selected.component_name);
+          contract.delays = self.getDelayInfo(fretResult, selected.component_name);
+          
+          var lustreContract = ejsCache_realize.renderRealizeCode().component.complete(contract);
+          output.write(lustreContract);
+          var checkOutput = realizability.checkRealizability(filePath, '-fixpoint');
+          //smallest match between newline and whitespace followed by |
+          //should only match the result string, i.e. {REALIZABLE, UNREALIZABLE, UNKNOWN, INCONSISTENT}
+          var result = checkOutput.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];
+          console.log(result)
+          self.setState(prevState => {
+            prevState.status[selected.component_name] = result
+            return(prevState)
           })
         })
-    }).catch((err) => {
-      console.log(err);
-    });
-  }
-
-  handleRequestSort = (event, property) => {
-    const orderBy = property;
-    let order = 'desc';
-    if (this.state.orderBy === property && this.state.order === 'desc') {
-      order = 'asc';
+      })
     }
-    this.setState({ order, orderBy });
-  };
-
-  handleChangePage = (event, page) => {
-    this.setState({ page });
-  };
-
-  handleChangeRowsPerPage = event => {
-    this.setState({ rowsPerPage: event.target.value });
-  };
-
-  handleAnalysisChange = event => {
-    const check = event.target.value;
-    this.setState({ check: check});
-  }
-
-  handleChange = name => event => {
-    this.setState({ selected: event.target.value });
-  };
-
-
-  handleSnackbarClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    this.setState({ snackbarOpen: false });
-  };
+  }  
 
   render() {
     const {classes, selectedProject, components} = this.props;
-    const {connectedComponents, order, orderBy, rowsPerPage, page, selectedVariable, status, importedComponents, selected, ccSelected} = this.state;
+    const {diagnosed, connectedComponents, order, orderBy, status, selected, ccSelected, monolithic, compositional} = this.state;
 
     let grid;
-    const ccTitle = 'Connected Components (CC)';
-    let selectedComponentDisplay; 
-
-    if (selected !== '') {      
-      selectedComponentDisplay =
-        <div className={classes.root}>
-          &nbsp;
-          &nbsp;
-          &nbsp;
-          <Typography variant='h6'>
-            {ccTitle}
-          </Typography>
-          <Divider/>
-          <DisplayRealizabilityDialog selectedProject={this.state.selected}/>
-        </div>
-    }
-
-    if (components.length !== 0) {
-      grid =
-        <div>
-          <Button className={classes.vAlign} style={{marginRight: '2%'}} color="secondary" variant='contained'>
-            Check
-            <PlayArrowIcon/>                
-          </Button>
-          <FormControl className={classes.formControl} required>
-            <InputLabel>System Component</InputLabel>
-            <Select                  
-              value={this.state.selected}
-              onChange={this.handleChange('selected')}
-            >
-              <MenuItem value=''/>
-              {stableSort(components, getSorting(order, orderBy))
-                .map(n => {
-                  return (
-                    <MenuItem value={n.component_name}> <div style={{alignContent: 'flex-end'}}> {n.component_name} <ClearIcon style={{verticalAlign: 'bottom'}} color='error'/> </div> </MenuItem>)
-                })}
-            </Select>
-          </FormControl>
-          <FormControlLabel
-            className={classes.vAlign}
-            control={
-              <Checkbox
-                checked={this.state.monolithic}
-                onChange={this.handleChange('monolithic')}
-                value="monolithic"
-                color="primary"
-                style={{paddingBottom: '0px'}}
-              />
-            }
-            style={{alignItems: 'flex-end', marginRight:'35%'}}
-            label="Monolithic"                
-          />
-          <Button className={classes.vAlign} style={{marginRight: '2%'}} variant="contained"> Project Summary </Button>              
-          <Button className={classes.vAlign} variant="contained"> Help </Button>
-          {selectedComponentDisplay}  
-        </div>
-    }
+    let selectedComponentDisplay;
     
     return(
       <div>
-        {grid}
+        {components.length !== 0 &&
+          <div>
+            <FormControl className={classes.formControl} required>
+              <InputLabel>System Component</InputLabel>
+              <Select                  
+                value={this.state.selected}
+                onChange={this.handleChange('selected')}
+              >
+                <MenuItem key='' value=''/>
+                {stableSort(components, getSorting(order, orderBy))
+                  .map(n => {
+                    return (
+                      <MenuItem key={n.component_name} value={n}>
+                        <div style={{alignContent: 'flex-end'}}>
+                          {n.component_name}
+                          &nbsp;
+                          &nbsp;
+                          {status[n.component_name] === 'REALIZABLE' ? 
+                            <CheckIcon style={{fontSize : '20px', verticalAlign : 'bottom'}} color='#68BC00'/> :
+                            status[n.component_name] === 'UNREALIZABLE' ? 
+                              <ClearIcon style={{fontSize : '20px', verticalAlign : 'bottom'}} color='error'/> :
+                              status[n.component_name] === 'PROCESSING' ?
+                                <CircularProgress style={{verticalAlign : 'bottom'}} size={15}/> : <div/>} 
+                        </div>
+                      </MenuItem>)
+                  })}
+              </Select>
+            </FormControl>
+            <FormControlLabel
+              disabled={selected === ''}
+              className={classes.vAlign}
+              control={
+                <Checkbox
+                  checked={monolithic}
+                  onChange={this.handleChange('monolithic')}
+                  value="monolithic"
+                  color="primary"
+                  style={{paddingBottom: '0px'}}
+                />
+              }
+              style={{alignItems: 'flex-end'}}
+              label="Monolithic"                
+            />
+            <FormControlLabel
+              disabled={selected === ''}
+              className={classes.vAlign}
+              control={
+                <Checkbox
+                  checked={compositional}
+                  onChange={this.handleChange('compositional')}
+                  value="compositional"
+                  color="primary"
+                  style={{paddingBottom: '0px'}}
+                />
+              }
+              style={{alignItems: 'flex-end', marginRight:'48%'}}
+              label="Compositional"                
+            />
+            <Button onClick={(event) => {this.checkRealizability(event)}} size="small" className={classes.vAlign} style={{marginRight: '1%'}} color="secondary" variant='contained' disabled={selected === ''}>
+              Check                              
+            </Button>
+            <Button onClick={(event) => {this.diagnoseSpec(selected, event)}} size="small" className={classes.vAlign} style={{marginRight: '1%'}} color="secondary" variant='contained' disabled={selected === '' || (selected !== '' && status[selected.component_name] !== 'UNREALIZABLE')}>
+              Diagnose                             
+            </Button>
+            <Button size="small" className={classes.vAlign} style={{marginRight: '1%'}} variant="contained"> Project Summary </Button>              
+            <Button size="small" className={classes.vAlign} variant="contained"> Help </Button>
+            
+            {selected !== '' &&
+              <div className={classes.root}>
+                &nbsp;
+                &nbsp;
+                &nbsp;
+                <Divider/>
+                <DisplayConnectedComponents diagnosed={diagnosed} selectedProject={selectedProject}/>
+              </div> 
+            }
+          </div>
+        }  
       </div>
     );
   }
