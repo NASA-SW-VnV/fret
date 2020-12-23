@@ -45,6 +45,7 @@ import GridListTile from '@material-ui/core/GridListTile';
 
 import IconButton from '@material-ui/core/IconButton';
 import HelpIcon from '@material-ui/icons/HelpOutline';
+import BookIcon from '@material-ui/icons/ImportContacts';
 import Tooltip from '@material-ui/core/Tooltip';
 
 const FretSemantics = require('../parser/FretSemantics');
@@ -131,7 +132,6 @@ class SlateEditor2 extends React.Component {
       selectedField: undefined
     }
 
-    this.editor = withFields(withReact(createEditor()));
 
     this.handleEditorValueChange = this.handleEditorValueChange.bind(this);
     this.handleDropdownSelection = this.handleDropdownSelection.bind(this);
@@ -268,7 +268,7 @@ class SlateEditor2 extends React.Component {
       /* Handle changed selection (check whether menu should be opened)
         * This needs to be done only when template fields are enabled */
       if (template) {
-        const fieldNode = getFieldNode(this.editor);
+        const fieldNode = getFieldNode(this.props.editor);
         const fieldName = fieldNode ? fieldNode.name : undefined;
         let clonedValue = JSON.parse(JSON.stringify(editorValue));
 
@@ -311,10 +311,10 @@ class SlateEditor2 extends React.Component {
   }
 
   handleDropdownSelection(index) {
-    const selection = this.editor.selection;
+    const selection = this.props.editor.selection;
     const start = selection && Range.start(selection);
     const path = start && start.path;
-    Transforms.select(this.editor, {path, offset: 1});
+    Transforms.select(this.props.editor, {path, offset: 1});
     this.setState(prevState => {
       const {editorValue, menuOptions, menuIndex, selectedField} = prevState;
       const selectedIndex = index ? index : menuIndex;
@@ -346,7 +346,7 @@ class SlateEditor2 extends React.Component {
   handleDropdownClick = (index) => (() => this.handleDropdownSelection(index));
 
   handleKeyDown = (event) => {
-    const selection = this.editor.selection;
+    const selection = this.props.editor.selection;
     const isCollapsed = selection && Range.isCollapsed(selection);
 
     if (isKeyHotkey('mod+c', event)) {
@@ -356,7 +356,7 @@ class SlateEditor2 extends React.Component {
        * clipboard is read and inserted to the editor. */
       event.preventDefault();
       navigator.clipboard.readText()
-        .then(text => this.editor.insertText(text))
+        .then(text => this.props.editor.insertText(text))
     } else if (isKeyHotkey('mod+x', event)) {
       /* Cut hotkey. Handled by default event behavior */
     } else if (isKeyHotkey('mod+a', event)) {
@@ -372,11 +372,11 @@ class SlateEditor2 extends React.Component {
        * In this case the corresponding character is simply
        * inserted. */
       event.preventDefault();
-      this.editor.insertText(event.key)
+      this.props.editor.insertText(event.key)
     } else if (isKeyHotkey('space', event)) {
       /* Space character is inserted */
       event.preventDefault();
-      this.editor.insertText(' ')
+      this.props.editor.insertText(' ')
     } else if (isKeyHotkey('delete', event)) {
       /* When the selection is collapsed (i.e. the cursor is at
        * a single position instead of a range of text being
@@ -384,9 +384,9 @@ class SlateEditor2 extends React.Component {
        * otherwise the entire selection is deleted. */
       event.preventDefault();
       if (isCollapsed) {
-        this.editor.deleteForward('character');
+        this.props.editor.deleteForward('character');
       } else {
-        this.editor.deleteFragment();
+        this.props.editor.deleteFragment();
       }
     } else if (isKeyHotkey('backspace', event)) {
       /* When the selection is collapsed (i.e. the cursor is at
@@ -395,9 +395,9 @@ class SlateEditor2 extends React.Component {
        * otherwise the entire selection is deleted. */
       event.preventDefault();
       if (isCollapsed) {
-        this.editor.deleteBackward('character');
+        this.props.editor.deleteBackward('character');
       } else {
-        this.editor.deleteFragment();
+        this.props.editor.deleteFragment();
       }
     } else if (isKeyHotkey('enter', event)) {
       /* Enter is supressed */
@@ -442,29 +442,29 @@ class SlateEditor2 extends React.Component {
     } else if (isKeyHotkey('mod+arrowleft', event)) {
       /* Ctrl/Cmd + left moves the cursor backwards by one word */
       event.preventDefault();
-      Transforms.move(this.editor, {distance: 1, unit: 'word', reverse: true})
+      Transforms.move(this.props.editor, {distance: 1, unit: 'word', reverse: true})
     } else if (isKeyHotkey('mod+arrowright', event)) {
       /* Ctrl/Cmd + right moves the cursor forward by one word */
       event.preventDefault();
-      Transforms.move(this.editor, {distance: 1, unit: 'word', reverse: false})
+      Transforms.move(this.props.editor, {distance: 1, unit: 'word', reverse: false})
     } else if (isKeyHotkey('mod+shift+arrowleft', event)) {
       /* Ctrl/Cmd + shift + left moves the focus of the
        * current selection backwards by one word */
       event.preventDefault();
-      const {anchor} = this.editor.selection;
+      const {anchor} = this.props.editor.selection;
       const oldAnchor = JSON.parse(JSON.stringify(anchor));
-      Transforms.move(this.editor, { distance: 1, unit: 'word', reverse: true})
-      const {focus} = this.editor.selection;
-      Transforms.select(this.editor, {focus, anchor: oldAnchor});
+      Transforms.move(this.props.editor, { distance: 1, unit: 'word', reverse: true})
+      const {focus} = this.props.editor.selection;
+      Transforms.select(this.props.editor, {focus, anchor: oldAnchor});
     } else if (isKeyHotkey('mod+shift+arrowright', event)) {
       /* Ctrl/Cmd + shift + right moves the focus of the
        * current selection forward by one word */
       event.preventDefault();
-      const {anchor} = this.editor.selection;
+      const {anchor} = this.props.editor.selection;
       const oldAnchor = JSON.parse(JSON.stringify(anchor));
-      Transforms.move(this.editor, { distance: 1, unit: 'word', reverse: false})
-      const {focus} = this.editor.selection;
-      Transforms.select(this.editor, {focus, anchor: oldAnchor});
+      Transforms.move(this.props.editor, { distance: 1, unit: 'word', reverse: false})
+      const {focus} = this.props.editor.selection;
+      Transforms.select(this.props.editor, {focus, anchor: oldAnchor});
     } else {
       event.preventDefault();
     }
@@ -478,9 +478,9 @@ class SlateEditor2 extends React.Component {
   getPosition() {
     const {menuOptions} = this.state;
     if (menuOptions && menuOptions.length > 0) {
-      const fieldNode = getFieldNode(this.editor);
+      const fieldNode = getFieldNode(this.props.editor);
       if (fieldNode) {
-        const domNode = ReactEditor.toDOMNode(this.editor, fieldNode);
+        const domNode = ReactEditor.toDOMNode(this.props.editor, fieldNode);
         return [domNode.offsetTop + window.pageYOffset + 12,
                 domNode.offsetLeft + window.pageXOffset];
       }
@@ -588,6 +588,13 @@ class SlateEditor2 extends React.Component {
             textAlign: 'center',
             padding: '10px',
           }}>
+          <div className={SlateEditor2Styles.showDictBtn}>
+          <IconButton onClick={() => { this.state.handleUpdateInstruction('dictField')}} style={{padding:'2px'}}>
+            <Tooltip title="dictionary">
+            <BookIcon />
+            </Tooltip>
+          </IconButton>
+          </div>
           <div className={SlateEditor2Styles.showGrammarBtn}>
           <IconButton onClick={this.openGrammarWindow} style={{padding:'2px'}}>
             <Tooltip title="See Grammar">
@@ -738,7 +745,7 @@ class SlateEditor2 extends React.Component {
     const { template } = this.props;
     const {menuOptions, menuIndex, editorValue} = this.state;
     const hasFields = Boolean(template);
-    this.editor.fieldsEnabled = hasFields;
+    this.props.editor.fieldsEnabled = hasFields;
 
     /* Construct the editor value: When the editor is used with a pattern,
      * extract the field values from the previous editor value, apply them
@@ -770,7 +777,7 @@ class SlateEditor2 extends React.Component {
     <div className="editor" style={{minHeight: 150}}>
       <div style={{border: 'solid 1px gray', padding: '10px'}}>
         <Slate
-          editor={this.editor}
+          editor={this.props.editor}
           value={slateValue}
           onChange={this.handleEditorValueChange} >
           <Editable
@@ -804,125 +811,6 @@ function editor2Text(editorValue) {
   return Node.string({children: editorValue})
 }
 
-const withFields = editor => {
-  const { isInline,
-          deleteBackward,
-          deleteForward,
-          deleteFragment,
-          normalizeNode,
-          insertText } = editor;
-
-  editor.fieldsEnabled = true;
-
-  editor.isInline = element => {
-    return (element.type === 'field-element') && editor.fieldsEnabled ? true : isInline(element)
-  }
-
-  editor.normalizeNode = entry => {
-    if (editor.fieldsEnabled) {
-      let [node, path] = entry;
-      if (node.type === 'paragraph') {
-        for(const [child, childPath] of Node.children(editor, path)) {
-          if (Text.isText(child) && child.text.length === 0) {
-            Transforms.removeNodes(editor, {at: childPath})
-          }
-        }
-        return
-      }
-    }
-    normalizeNode(entry)
-  }
-
-  editor.insertText = text => {
-    let cleanText = text.replace(/[\n\r\t]/g, " ");
-    if (editor.fieldsEnabled) {
-      if (!isMany(editor)) {
-        let field = isField(editor);
-        let start = Range.start(editor.selection);
-        let end = Range.end(editor.selection);
-        let leaf = getFirstLeaf(editor);
-        if (field) {
-          let textlength = leaf.text.length;
-          if (start.offset >= 1 && end.offset < textlength) {
-            if (leaf.isPlaceholder) {
-              let anchor = {path: start.path, offset : Math.min(textlength, 1)};
-              let focus = {path: end.path, offset: Math.max(textlength-1, 0)};
-              Transforms.select(editor, {anchor, focus});
-              editor.deleteFragment();
-            }
-            insertText(cleanText)
-          }
-        }
-      }
-    } else {
-      insertText(cleanText)
-    }
-  }
-
-  editor.insertBreak = () => {}
-
-  editor.deleteBackward = () => {
-    if (editor.fieldsEnabled) {
-      if (!isMany(editor)) {
-        let field = isField(editor);
-        let left = getLeftSibling(editor, field);
-        let start = Range.start(editor.selection);
-        let leaf = getFirstLeaf(editor);
-        if (start.offset === 0 && left && left.type === 'field-element') {
-          return
-        }
-        if (field) {
-          if (start.offset !== 1 && start.offset < leaf.text.length) {
-            deleteBackward()
-          }
-        }
-      }
-    } else {
-      deleteBackward();
-    }
-  }
-
-  editor.deleteForward = () => {
-    if (editor.fieldsEnabled) {
-      if (!isMany(editor)) {
-        let field = isField(editor);
-        let right = getRightSibling(editor, field);
-        let end = Range.end(editor.selection);
-        let leaf = getFirstLeaf(editor);
-        if (end.offset === leaf.text.length && right && right.type === 'field-element') {
-          return
-        }
-        if (field) {
-          if (end.offset !== 0 && end.offset < leaf.text.length-1) {
-            deleteForward()
-          }
-        }
-      }
-    } else {
-      deleteForward()
-    }
-  }
-
-  editor.deleteFragment = () => {
-    if (editor.fieldsEnabled) {
-      if (!isMany(editor)) {
-        let field = isField(editor);
-        let leaf = getFirstLeaf(editor);
-        let [start, end] = Range.edges(editor.selection);
-        if (field) {
-          let textlength = leaf.text.length;
-          let anchor = {path: start.path, offset : (start.offset > 0) ? start.offset : Math.min(textlength, 1)};
-          let focus = {path: end.path, offset: (end.offset < textlength) ? end.offset : Math.max(textlength-1, 0)};
-          Transforms.select(editor, {anchor, focus});
-          deleteFragment()
-        }
-      }
-    } else {
-      deleteFragment();
-    }
-  }
-  return editor;
-}
 
 function isMany(editor) {
   const selection = editor.selection;
@@ -943,10 +831,6 @@ function isEqualPath(start, end) {
   return result;
 }
 
-function isField(editor) {
-  let parent = getParent(editor);
-  return isMany(editor) ? false : parent && parent.type === 'field-element';
-}
 
 function getFieldNode(editor) {
   let parent = getParent(editor);
@@ -970,38 +854,6 @@ function getParent(editor) {
   } finally {
     return parent;
   }
-}
-
-function getFirstLeaf(editor) {
-  const selection = editor.selection;
-  const start = selection && Range.start(selection);
-  const path = start && start.path;
-  return path && Node.leaf(editor, path);
-}
-
-function getLeftSibling(editor, oneUp) {
-  let path = [...Range.start(editor.selection).path];
-  if (oneUp) {
-    path.pop()
-  }
-  if (path[path.length-1] > 0) {
-    path[path.length-1] = path[path.length-1] - 1;
-    return Node.get(editor, path)
-  }
-  return null
-}
-
-function getRightSibling(editor, oneUp) {
-  let path = [...Range.start(editor.selection).path];
-  if (oneUp) {
-    path.pop()
-  }
-  let parent = Node.parent(editor, path);
-  if (path[path.length-1] < parent.children.length-1) {
-    path[path.length-1] = path[path.length-1] + 1;
-    return Node.get(editor, path)
-  }
-  return null
 }
 
 function unwrapEditorValue(editorValue) {

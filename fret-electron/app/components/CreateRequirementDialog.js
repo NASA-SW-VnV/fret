@@ -11,7 +11,7 @@
 // TO, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL CONFORM TO SPECIFICATIONS,
 // ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE,
 // OR FREEDOM FROM INFRINGEMENT, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL BE
-// ERROR FREE, OR ANY WARRANTY THAT UMENTATION, IF PROVIDED, WILL CONFORM TO
+// ERROR FREE, OR ANY WARRANTY THAT DOCUMENTATION, IF PROVIDED, WILL CONFORM TO
 // THE SUBJECT SOFTWARE. THIS AGREEMENT DOES NOT, IN ANY MANNER, CONSTITUTE AN
 // ENDORSEMENT BY GOVERNMENT AGENCY OR ANY PRIOR RECIPIENT OF ANY RESULTS,
 // RESULTING DESIGNS, HARDWARE, SOFTWARE PRODUCTS OR ANY OTHER APPLICATIONS
@@ -72,6 +72,9 @@ import VariablesSortableTable from './VariablesSortableTable';
 
 import templates from '../../templates/templates';
 import {getRequirementStyle} from "../utils/utilityFunctions";
+import {withReact} from "slate-react";
+import {createEditor, Node, Range, Text, Transforms} from "slate";
+import withFields from "../utils/withFields";
 
 const db = require('electron').remote.getGlobal('sharedObj').db;
 const modeldb = require('electron').remote.getGlobal('sharedObj').modeldb;
@@ -116,6 +119,8 @@ const formStyles = theme => ({
   },
 });
 
+
+
 class CreateRequirementDialog extends React.Component {
   state = {
     createDialogOpen: false,
@@ -129,6 +134,9 @@ class CreateRequirementDialog extends React.Component {
     selectedTemplate: -1,
     tabValue: 0,
   };
+
+  editor = withFields(withReact(createEditor()));
+
 
   handleTextFieldFocused = name => event => {
     this.setState({
@@ -154,6 +162,12 @@ class CreateRequirementDialog extends React.Component {
   handleTabChange = (event, tabValue) => {
     this.setState({ tabValue });
   };
+
+  handleVariableClick = (variable) => event => {
+    event.preventDefault()
+    this.editor.insertText(variable);
+
+  }
 
   handleCreate = () => {
     var self = this;
@@ -501,11 +515,13 @@ class CreateRequirementDialog extends React.Component {
     const {tabValue} = this.state;
     return (
       <SlateEditor2
+        editor={this.editor}
         onRef={ref => (this.stepper = ref)}
         updateInstruction={this.handleUpdateInstruction}
         updateSemantics={this.handleUpdateSemantics}
         inputFields={inputFields}
         template={templates[selectedTemplate]}
+        variable={this.state.variable}
         />
     )
   }
@@ -680,6 +696,8 @@ class CreateRequirementDialog extends React.Component {
               handleSelectedTemplateChange={this.handleSelectedTemplateChange}
               tabValue={tabValue}
               handleTabChange={this.handleTabChange}
+              projectName={this.state.project}
+              handleVariableClick={this.handleVariableClick}
               />
             </div>
           </div>

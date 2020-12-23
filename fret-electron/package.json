@@ -206,6 +206,7 @@
   "dependencies": {
     "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.11.0",
+    "@material-ui/lab": "^4.0.0-alpha.57",
     "antlr4": "4.8.0",
     "archiver": "^3.0.0",
     "babel-plugin-flow-react-proptypes": "^24.1.2",
