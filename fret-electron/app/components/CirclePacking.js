@@ -34,6 +34,7 @@ import React from 'react'
 import PropTypes from 'prop-types';
 import * as d3 from 'd3'
 import {getRequirementStyle} from "../utils/utilityFunctions";
+import DisplayRequirementDialog from './DisplayRequirementDialog';
 
 const sharedObj = require('electron').remote.getGlobal('sharedObj')
 const db = sharedObj.db;
@@ -46,8 +47,13 @@ const COLOR_RANGE = ["hsl(0, 0%, 80%)", "hsl(0, 0%, 20%)"]
 
 class CirclePacking extends React.Component {
   state = {
-    graph : undefined
+    graph : undefined,
+    selectedRequirement: {},
+    displayRequirementOpen: false,
+    createDialogOpen: false,
+    deleteDialogOpen:false
   }
+
   synchStateWithDB = () => {
     if (!this.mounted) return;
 
@@ -122,7 +128,12 @@ class CirclePacking extends React.Component {
     })
   }
 
+
+
+
+
   createD3() {
+    const self = this;
     const { graph } = this.state
 
     if (!graph) return
@@ -175,6 +186,14 @@ class CirclePacking extends React.Component {
         .attr("class", "tooltip")
         .style("opacity", 0);
 
+    function handleRequirementDialogOpen (req) {
+        console.log('*******' + JSON.stringify(req));
+        self.setState({
+          selectedRequirement: req,
+          displayRequirementOpen: true,
+        })
+      }
+
     var circle = g.selectAll("circle")
       .data(nodes)
       .enter().append("circle")
@@ -186,7 +205,6 @@ class CirclePacking extends React.Component {
             zoom(d), d3.event.stopPropagation();
         })
 
-
     var text = g.selectAll("text")
       .data(nodes)
       .enter().append("text")
@@ -194,6 +212,10 @@ class CirclePacking extends React.Component {
         .style("fill-opacity", function(d) { return d.parent === global ? 1 : 0; })
         .style("display", function(d) { return d.parent === global ? "inline" : "none"; })
         .text(function(d) { return d.data.name; })
+        .on("click", function(d) {
+          handleRequirementDialogOpen(d.data.doc);
+          d3.event.stopPropagation();
+        })
         .on("mouseover", function(d) {
           if (d.data.doc) {
             if (d.data.doc.semantics){
@@ -317,10 +339,43 @@ class CirclePacking extends React.Component {
     }
   }
 
+  handleDeleteDialogClose = () => {
+    this.setState({
+      deleteDialogOpen: false
+    })
+  }
+
+  handleDeleteDialogOpen = () => {
+    this.setState({
+      deleteDialogOpen: true
+    })
+  }
+
+  handleRequirementDialogClose = () => {
+    this.setState({
+      displayRequirementOpen: false,
+    })
+  }
+
+  handleCreateDialogOpen = () => {
+    this.setState({
+      createDialogOpen: true
+    })
+  }
+
   render() {
     this.createD3()
     return(
-      <div ref="anchor" />
+      <div>
+        <div ref="anchor" />
+        <DisplayRequirementDialog
+          selectedRequirement={this.state.selectedRequirement}
+          open={this.state.displayRequirementOpen}
+          handleDialogClose={this.handleRequirementDialogClose}
+          handleCreateDialogOpen={this.handleCreateDialogOpen}
+          handleDeleteDialogClose={this.handleDeleteDialogClose}
+          handleDeleteDialogOpen={this.handleDeleteDialogOpen}/>
+      </div>
     )
   }
 }
