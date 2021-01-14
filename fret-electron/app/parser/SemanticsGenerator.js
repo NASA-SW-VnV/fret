@@ -104,11 +104,11 @@ function getBatchSemanticsFromSALT(saltStr,SALT_env_var='SALT_HOME') {
     if (constants.verboseSemanticsGenerator) console.log("Formulas for SALT\n" + saltStr);
     var LTLStr = constants.undefined_semantics;
 
-    if (process.env.SALT_VERSION === 'old') {
-  	LTLStr = get_LTL_from_old_SALT(saltStr,SALT_env_var);
+    //if (process.env.SALT_VERSION === 'old') {
+    LTLStr = get_LTL_from_old_SALT(saltStr,SALT_env_var);
       //LTLStr = utilities.replaceStrings(substitutionsCustomizeFret, LTLStr);
-    }
-    else console.log('\nUnsupported SALT_VERSION: "' + process.env.SALT_VERSION + '": must be "old".');
+    //}
+    //else console.log('\nUnsupported SALT_VERSION: "' + process.env.SALT_VERSION + '": must be "old".');
 
     if (constants.verboseSemanticsGenerator) console.log("\ngetBatchSemanticsFromSALT: LTLStr\n" + LTLStr);
 
@@ -182,7 +182,7 @@ function get_LTL_from_old_SALT(SALT_string,SALT_env_var='SALT_HOME') {
   	var stdout = '';
   	try {
   	    compilation = execSync(SALT_command).toString();
-              stdout = execSync('/tmp/temp').toString();
+              stdout = execSync('/tmp/salt_temp').toString();
   	} catch (error) {
 	    console.log('SemanticsGenerator:get_LTL_from_old_SALT error:');
             console.log(error);

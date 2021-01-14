@@ -149,9 +149,7 @@ RequirementListener.prototype.enterOnly_condition = function(ctx) {
 }
 
 RequirementListener.prototype.enterRegular_condition = function(ctx) {
-    if (result.condition == 'null') result.condition = 'regular'
-    console.log('enterReg_cond: ' + antlrUtilities.getText(ctx))
-  result.regular_condition = antlrUtilities.getText(ctx).replace(',', '').trim()
+  if (result.condition == 'null') result.condition = 'regular'
 }
 
 RequirementListener.prototype.enterQualifier_word = function(ctx) {
@@ -163,26 +161,31 @@ RequirementListener.prototype.enterQualifier_word = function(ctx) {
 //}
 
 RequirementListener.prototype.enterPre_condition = function(ctx) {
-    result.pre_condition = '(' + antlrUtilities.getText(ctx).trim() + ')';
+  let pc = '(' + antlrUtilities.getText(ctx).trim() + ')';
+  let pc2 = pc.replace(/ then /gi, ' => ').replace(/(\(| )(if )/gi,((match,p1,offset,str) => p1));
+  result.pre_condition = pc2;
 }
 
 RequirementListener.prototype.exitQualified_condition1 = function(ctx) {
-    var pre_condition = result.pre_condition;
-    var text = antlrUtilities.getText(ctx).trim();
-    var neg_polarity = text.toLowerCase().endsWith('is false') !=
-	               result.qualifier_word.toLowerCase().startsWith('unless');
+    let pre_condition = result.pre_condition;
+    let text = antlrUtilities.getText(ctx).trim();
+    let neg_polarity = text.toLowerCase().endsWith('is false') !=
+	               result.qualifier_word.startsWith('unless');
     if (neg_polarity) result.regular_condition = '(! ' + pre_condition + ')';
     else result.regular_condition = pre_condition;
 }
 
 RequirementListener.prototype.exitQualified_condition2 = function(ctx) {
-    var pre_condition = result.pre_condition;
-    var text = antlrUtilities.getText(ctx).trim();
-    var neg_polarity = text.endsWith('is false') != result.qualifier_word.startsWith('unless');
+    let pre_condition = result.pre_condition;
+    let text = antlrUtilities.getText(ctx).trim();
+    let textLC = text.toLowerCase();
+    let neg_polarity = textLC.endsWith('is false') != result.qualifier_word.startsWith('unless');
     if (neg_polarity) pre_condition = '(! ' + pre_condition + ')';
-    if (text.startsWith('or'))
+    if (textLC.startsWith('or'))
 	result.regular_condition = '(' + result.regular_condition + ' | ' + pre_condition + ')';
-    else result.regular_condition = '(' + result.regular_condition + ' & ' + pre_condition + ')';
+    else // either starts with 'and' or there is an implicit conjunction
+	//  (..when p, if q,..)
+	result.regular_condition = '(' + result.regular_condition + ' & ' + pre_condition + ')';
 }
 
 RequirementListener.prototype.enterStop_condition = function(ctx) {
@@ -194,13 +197,14 @@ RequirementListener.prototype.enterScope_condition = function(ctx) {
 }
 
 
+//don't need this, regular_condition will already have outer parens
 //RequirementListener.prototype.exitRegular_condition = function(ctx) {
 //   result.regular_condition = '(' + result.regular_condition + ')';
 // }
 
 RequirementListener.prototype.enterPost_condition = function(ctx) {
     let pc = '(' + antlrUtilities.getText(ctx).trim() + ')';
-    let pc2 = pc.replace(/( then | THEN )/g, ' => ').replace(/(\(| )(if |IF )/g,((match,p1,offset,str) => p1));
+    let pc2 = pc.replace(/ then /gi, ' => ').replace(/(\(| )(if )/gi,((match,p1,offset,str) => p1));
     result.post_condition = pc2;
 }
 
@@ -279,7 +283,8 @@ RequirementListener.prototype.enterBool_expr = function(ctx) {
 
 function replaceTemplateVarsWithArgs(formula, noHTML, noClassicImplSymbol) {
   if (formula) {
-    var args = formula.match(/\$\w+\d*\$/g)
+      var args = formula.match(/\$\w+\d*\$/g)
+      //console.log('replaceTemplateVarsWithArgs: ' + JSON.stringify(result))
     if (args) {
       if (noHTML){
        // Update formula with arguments
