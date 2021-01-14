@@ -29,6 +29,12 @@ While typing the body of a requirement, FRET parses the requirement and recogniz
 
 3. Timing. The optional *timing* field specifies when the response shall happen, relative to the scope and condition.  Timing can be *immediately*, *eventually*, *always*, *never*, *within N time units*,  *for N time units*, or *after N time units*. The latter means that the response happens _N_ time units from the beginning of the requirement's period, and does not happen before that; i.e., does not happen for *N-1* time units after the beginning of the period. [Timing Help Menu](./timing.md)
 
+**Note: Variable dictionary**
+
+Clicking on the dictionary icon will bring up a table showing variable dictionary per component in the Assistant pane. All components of the selected project will be listed under the table.  The components can be expanded to show existing variables. ![Variable Dictionary](./../screen_shots/VariableDictionary.png)
+
+When the variable dictionary is opened, you can click on an existing variable to input the variable in the requirement. This will insert the varialbe at the cursor or replace a selected string with the variable.
+
 **Note: Boolean expressions**
 
 The Boolean operators allowed in the Boolean expression condition and response fields are: ! (negation), & (conjunction), | (disjunction), xor (exclusive or),  -> (implication), <-> (equivalence). An alternative for implication is 'if p then q'. The numeric comparison operators are =, !=, <, >, <=, >=. The numeric operators are +, -, *, /, mod, and ^ (exponentiation). Numerical terms and predicates are in standard form; e.g., f(x,y),  p(x,y,z).

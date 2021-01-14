@@ -477,28 +477,36 @@ class Instructions extends React.Component {
           </div>
         )
     } else if (field === 'dictField') {
-      return (<TreeView
-        defaultCollapseIcon={<ExpandMoreIcon />}
-        defaultExpandIcon={<ChevronRightIcon />}
-      >
-        {Object.entries(this.state.components).map(([componentName, {variables}]) =>
-        <TreeItem  key={componentName}
-                   nodeId={componentName}
-                   label={componentName}
-                   classes={{group: classes.treeItemGroup}}
-                   onMouseDown={event => event.preventDefault()}
-                   onClick={event => event.preventDefault()}>
-          {variables.map(variableName =>
-            <TreeItem key={`${componentName}-${variableName}`}
-                      nodeId={`${componentName}-${variableName}`}
-                      label={variableName}
-                      onMouseDown={event => event.preventDefault()}
-                      onLabelClick={this.props.handleVariableClick(variableName)}/>
+      return (   
+        <div>  
+          <div style={{paddingBottom:5}}>
+            <Typography variant='subtitle1' color='primary'>Variable dictionary per component</Typography>
+          </div>        
+          <div>
+            <TreeView
+              defaultCollapseIcon={<ExpandMoreIcon />}
+              defaultExpandIcon={<ChevronRightIcon />}
+            >
+              {Object.entries(this.state.components).map(([componentName, {variables}]) =>
+              <TreeItem  key={componentName}
+                        nodeId={componentName}
+                        label={componentName}
+                        classes={{group: classes.treeItemGroup}}
+                        onMouseDown={event => event.preventDefault()}
+                        onClick={event => event.preventDefault()}>
+                {variables.map(variableName =>
+                  <TreeItem key={`${componentName}-${variableName}`}
+                            nodeId={`${componentName}-${variableName}`}
+                            label={variableName}
+                            onMouseDown={event => event.preventDefault()}
+                            onLabelClick={this.props.handleVariableClick(variableName)}/>
 
-            )}
-        </TreeItem>)
-      }
-      </TreeView>)
+                  )}
+              </TreeItem>)
+            }
+            </TreeView>
+          </div>
+        </div>   )
     }
     else
     {
