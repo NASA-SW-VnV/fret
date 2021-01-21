@@ -102,9 +102,6 @@ class RequirementDialogs extends React.Component {
   render(){
     const { classes, selectedProject, existingProjectNames, selectedRequirement, handleDialogClose } = this.props;
     const { snackBarDisplayInfo } = this.state;
-    //console.log('selectedRequirement: '+JSON.stringify(selectedRequirement))
-    //console.log('array: '+ [selectedRequirement]);
-
     return (
     <div>
       <DisplayRequirementDialog

@@ -188,6 +188,8 @@ class CirclePacking extends React.Component {
         .style("opacity", 0);
 
     function handleRequirementDialogOpen (req) {
+        req.dbkey = req._id;
+        req.rev = req._rev;
         self.setState({
           selectedRequirement: req,
           displayRequirementOpen: true
