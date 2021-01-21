@@ -116,7 +116,7 @@ class RequirementDialogs extends React.Component {
         handleCreateDialogClose={this.handleCreateDialogClose}
         selectedProject={selectedProject}
         editRequirement={selectedRequirement}
-        //TODO: Update
+        //TODO: Update eventually
         addChildRequirementToParent={null}
         existingProjectNames={existingProjectNames} />
       <DeleteRequirementDialog

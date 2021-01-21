@@ -274,13 +274,15 @@ class CirclePacking extends React.Component {
           }
         })
         .on("click", function(d) {
-          handleRequirementDialogOpen(d.data.doc);
-          if (d.data.doc) {
-            d3.select(this).style("fill", null);
-            tooltip
-              .transition()
-              .duration(0)
-              .style("opacity", 0);
+          if (d.data.doc){
+            handleRequirementDialogOpen(d.data.doc);
+            if (d.data.doc) {
+              d3.select(this).style("fill", null);
+              tooltip
+                .transition()
+                .duration(0)
+                .style("opacity", 0);
+            }
           }
         })
 
