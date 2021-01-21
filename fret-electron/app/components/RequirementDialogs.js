@@ -130,7 +130,7 @@ class RequirementDialogs extends React.Component {
           horizontal: 'center',
         }}
         open={this.state.snackbarOpen}
-        autoHideDuration={6000}
+        autoHideDuration={2000}
         onClose={this.handleSnackbarClose}
         snackbarcontentprops={{
           'aria-describedby': 'message-id',
