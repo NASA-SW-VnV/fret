@@ -34,7 +34,7 @@ import React from 'react'
 import PropTypes from 'prop-types';
 import * as d3 from 'd3'
 import {getRequirementStyle} from "../utils/utilityFunctions";
-import DisplayRequirementDialog from './DisplayRequirementDialog';
+import RequirementDialogs from './RequirementDialogs';
 
 const sharedObj = require('electron').remote.getGlobal('sharedObj')
 const db = sharedObj.db;
@@ -50,8 +50,12 @@ class CirclePacking extends React.Component {
     graph : undefined,
     selectedRequirement: {},
     displayRequirementOpen: false,
-    createDialogOpen: false,
-    deleteDialogOpen:false
+  }
+
+  handleRequirementDialogClose = () => {
+    this.setState({
+      displayRequirementOpen: false
+    })
   }
 
   synchStateWithDB = () => {
@@ -129,9 +133,6 @@ class CirclePacking extends React.Component {
   }
 
 
-
-
-
   createD3() {
     const self = this;
     const { graph } = this.state
@@ -187,10 +188,9 @@ class CirclePacking extends React.Component {
         .style("opacity", 0);
 
     function handleRequirementDialogOpen (req) {
-        console.log('*******' + JSON.stringify(req));
         self.setState({
           selectedRequirement: req,
-          displayRequirementOpen: true,
+          displayRequirementOpen: true
         })
       }
 
@@ -212,10 +212,7 @@ class CirclePacking extends React.Component {
         .style("fill-opacity", function(d) { return d.parent === global ? 1 : 0; })
         .style("display", function(d) { return d.parent === global ? "inline" : "none"; })
         .text(function(d) { return d.data.name; })
-        .on("click", function(d) {
-          handleRequirementDialogOpen(d.data.doc);
-          d3.event.stopPropagation();
-        })
+
         .on("mouseover", function(d) {
           if (d.data.doc) {
             if (d.data.doc.semantics){
@@ -270,7 +267,17 @@ class CirclePacking extends React.Component {
             d3.select(this).style("fill", null);
             tooltip
               .transition()
-              .duration(500)
+              .duration(100)
+              .style("opacity", 0);
+          }
+        })
+        .on("click", function(d) {
+          handleRequirementDialogOpen(d.data.doc);
+          if (d.data.doc) {
+            d3.select(this).style("fill", null);
+            tooltip
+              .transition()
+              .duration(0)
               .style("opacity", 0);
           }
         })
@@ -339,42 +346,23 @@ class CirclePacking extends React.Component {
     }
   }
 
-  handleDeleteDialogClose = () => {
-    this.setState({
-      deleteDialogOpen: false
-    })
-  }
 
-  handleDeleteDialogOpen = () => {
-    this.setState({
-      deleteDialogOpen: true
-    })
-  }
 
-  handleRequirementDialogClose = () => {
-    this.setState({
-      displayRequirementOpen: false,
-    })
-  }
 
-  handleCreateDialogOpen = () => {
-    this.setState({
-      createDialogOpen: true
-    })
-  }
 
   render() {
     this.createD3()
     return(
       <div>
         <div ref="anchor" />
-        <DisplayRequirementDialog
+        <RequirementDialogs
           selectedRequirement={this.state.selectedRequirement}
-          open={this.state.displayRequirementOpen}
+          selectedProject={this.props.selectedProject}
+          //TODO: Update
+          existingProjectNames={['AllProjects']}
+          displayRequirementOpen={this.state.displayRequirementOpen}
           handleDialogClose={this.handleRequirementDialogClose}
-          handleCreateDialogOpen={this.handleCreateDialogOpen}
-          handleDeleteDialogClose={this.handleDeleteDialogClose}
-          handleDeleteDialogOpen={this.handleDeleteDialogOpen}/>
+        />
       </div>
     )
   }
