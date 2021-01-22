@@ -86,6 +86,8 @@ const fs = require('fs');
 const uuidv1 = require('uuid/v1');
 const system_dbkeys = require('electron').remote.getGlobal('sharedObj').system_dbkeys;
 
+const csvRequirementsSupport = require('../../support/requirementsImport/convertCSVrequirements');
+
 const drawerWidth = 240;
 
 const styles = theme => ({
@@ -206,6 +208,9 @@ class MainView extends React.Component {
     exportRequirementsDialogOpen: false
   };
 
+  //Dialog is an electron module
+  //Filters specifies an array of file types that can be displayed or selected when
+  //limiting the user to a specific type
   handleImport = () => {
     var homeDir = app.getPath('home');
     const { listOfProjects } = this.state;
@@ -214,11 +219,18 @@ class MainView extends React.Component {
       title : 'Import Requirements',
       buttonLabel : 'Import',
       filters: [
-        { name: "Documents", extensions: ['json'] }
+        { name: "Documents",
+          extensions: ['json', 'csv']
+        }
       ],
-      properties: ['openFile' ]})
-      if (filepaths && filepaths.length > 0) {
-	  const filepath = filepaths[0];
+      properties: ['openFile']});
+    if (filepaths && filepaths.length > 0) {
+	     const filepath = filepaths[0];
+       //checking the extension of the file
+       if (filepath.split('.').pop() === 'csv'){
+         csvRequirementsSupport.csvToJsonConvert(filepath, 'csvProject', 'Requirement ID', 'Description');
+
+       }
 
 	  /*
 	  // Version using "require" causes error: Cannot find module "."
@@ -245,28 +257,28 @@ class MainView extends React.Component {
 	  */
 
 	  // Version using readFile, works.
-	  fs.readFile(filepath,
-		      function (err,buffer) {
-			  if (err) throw err;
-			  let data = JSON.parse(buffer);
-			  db.bulkDocs(data).catch((err) => {console.log(err);});
-        var projects = listOfProjects;
-        data.forEach((d) => {
-          if (d.project && !projects.includes(d.project)){;
-            projects.push(d.project);
-          }
-        })
-        //If new projects were introduced through the imported reqs, update FRET_PROJECTS in db
-        db.get('FRET_PROJECTS').then((doc) => {
-          return db.put({
-            _id: 'FRET_PROJECTS',
-            _rev: doc._rev,
-            names: projects
-          })
-        }).catch((err) => {
-          console.log(err);
-        });
-		      });
+	  // fs.readFile(filepath,
+		//       function (err,buffer) {
+		// 	  if (err) throw err;
+		// 	  let data = JSON.parse(buffer);
+		// 	  db.bulkDocs(data).catch((err) => {console.log(err);});
+    //     var projects = listOfProjects;
+    //     data.forEach((d) => {
+    //       if (d.project && !projects.includes(d.project)){;
+    //         projects.push(d.project);
+    //       }
+    //     })
+    //     //If new projects were introduced through the imported reqs, update FRET_PROJECTS in db
+    //     db.get('FRET_PROJECTS').then((doc) => {
+    //       return db.put({
+    //         _id: 'FRET_PROJECTS',
+    //         _rev: doc._rev,
+    //         names: projects
+    //       })
+    //     }).catch((err) => {
+    //       console.log(err);
+    //     });
+		//       });
 
     }
   }

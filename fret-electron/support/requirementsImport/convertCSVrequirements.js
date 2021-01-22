@@ -1,75 +1,98 @@
+// *****************************************************************************
+// Notices:
+//
+// Copyright � 2019 United States Government as represented by the Administrator
+// of the National Aeronautics and Space Administration.  All Rights Reserved.
+//
+// Disclaimers
+//
+// No Warranty: THE SUBJECT SOFTWARE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY OF
+// ANY KIND, EITHER EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED
+// TO, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL CONFORM TO SPECIFICATIONS,
+// ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE,
+// OR FREEDOM FROM INFRINGEMENT, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL BE
+// ERROR FREE, OR ANY WARRANTY THAT DOCUMENTATION, IF PROVIDED, WILL CONFORM TO
+// THE SUBJECT SOFTWARE. THIS AGREEMENT DOES NOT, IN ANY MANNER, CONSTITUTE AN
+// ENDORSEMENT BY GOVERNMENT AGENCY OR ANY PRIOR RECIPIENT OF ANY RESULTS,
+// RESULTING DESIGNS, HARDWARE, SOFTWARE PRODUCTS OR ANY OTHER APPLICATIONS
+// RESULTING FROM USE OF THE SUBJECT SOFTWARE.  FURTHER, GOVERNMENT AGENCY
+// DISCLAIMS ALL WARRANTIES AND LIABILITIES REGARDING THIRD-PARTY SOFTWARE, IF
+// PRESENT IN THE ORIGINAL SOFTWARE, AND DISTRIBUTES IT ''AS IS.''
+//
+// Waiver and Indemnity:  RECIPIENT AGREES TO WAIVE ANY AND ALL CLAIMS AGAINST
+// THE UNITED STATES GOVERNMENT, ITS CONTRACTORS AND SUBCONTRACTORS, AS WELL AS
+// ANY PRIOR RECIPIENT.  IF RECIPIENT'S USE OF THE SUBJECT SOFTWARE RESULTS IN
+// ANY LIABILITIES, DEMANDS, DAMAGES, EXPENSES OR LOSSES ARISING FROM SUCH USE,
+// INCLUDING ANY DAMAGES FROM PRODUCTS BASED ON, OR RESULTING FROM, RECIPIENT'S
+// USE OF THE SUBJECT SOFTWARE, RECIPIENT SHALL INDEMNIFY AND HOLD HARMLESS THE
+// UNITED STATES GOVERNMENT, ITS CONTRACTORS AND SUBCONTRACTORS, AS WELL AS ANY
+// PRIOR RECIPIENT, TO THE EXTENT PERMITTED BY LAW.  RECIPIENT'S SOLE REMEDY FOR
+// ANY SUCH MATTER SHALL BE THE IMMEDIATE, UNILATERAL TERMINATION OF THIS
+// AGREEMENT.
+// *****************************************************************************
+
 const csv2json=require("csvtojson");
 const fs=require("fs");
 
-let path = "../../../research/requirements/Applications/VIPER/"
-let fileInputName = 'ViperReqsDimitra.csv';
-let fileOutputName = 'ViperFret.json';
-var projectName = 'VIPER-L3L4s';
-var fretreqs = [];
-var fake = false;
-if (fake) fileOutputName = "fake" + fileOutputName;
+var projectName = 'CSVImport';
+var fretReqs = [];
 
+//Requirement ID and Description are the default values
+const defaultReqIdField = 'Requirement ID';
+const defaultFullName = 'Description';
 
 // change so that everything goes to rationale by default except what is in map
-const translate = new Map([
-  ['reqid', 'Requirement ID'],
-  ['fulltext', 'Description']
-]);
+var translationFields = {
+  reqid: defaultReqIdField,
+  fullname: defaultFullName
+};
 
-csv2json().fromFile(path+fileInputName).then(manipulate).catch(err => {
+//project, rid and text are provided as user input
+exports.csvToJsonConvert = (filepath, project, rid, text) => {
+  translateFields(rid, text);
+  projectName = project
+  csv2json().fromFile(filepath).then(manipulate).catch(err => {
         // log error if any
         console.log(err);
     });
+}
+
+// change so that everything goes to rationale by default except what is in map
+function translateFields (rid, text){
+  //TODO: we probably shouldnt accept empty strings as an input; apply this check at the UI level
+  if (rid !== defaultReqIdField && rid !== "" && rid !== undefined){
+    translationFields.reqid = rid
+  }
+  if (text !== defaultFullName && text !== "" && text !== undefined){
+    translationFields.fullname = text
+  }
+}
 
 function createFretObject(name) {
   return {project: name, reqid: "", fulltext: "", rationale: ""};
 }
 
-function manipulate(viperReqs) {
-  var viperFields = Object.keys(viperReqs[0]);
-
-  var count = 1;
-  for (req of viperReqs) {
-      if (count > 200) break;
-      var newFretReq = createFretObject(projectName);
-
-      for (var field of ['reqid', 'fulltext']) {
-        var mapsTo = translate.get(field);
-        if (mapsTo)
-          newFretReq[field] = (fake) ? `REQ${count}`: req[mapsTo];
-      }
-      // all fields except for reqId go to Rationale
-      var correspondsTo = 'rationale';
-      for (key of viperFields) {
-        if (key == translate.get('reqid')) continue; // we don't want this added again
-        if (req[key]) {
-          newFretReq[correspondsTo] += (`\n${key}: `.toUpperCase());
-          if (!fake)
-            newFretReq[correspondsTo] += (req[key]);
-          else
-            newFretReq[correspondsTo] += `Fake ${key}.`;
-        }
-      }
-
-      console.log(newFretReq);
-      fretreqs.push(newFretReq);
-      count++;
+function manipulate(importedReqs) {
+   let csvFields = Object.keys(importedReqs[0]);
+   for (let req of importedReqs) {
+     var newFretReq = createFretObject(projectName);
+     var correspondsTo = 'rationale';
+     for (let field of csvFields){
+       let mapsTo = getKeyByValue(translationFields, field);
+       if (mapsTo === 'reqid'){
+         newFretReq[mapsTo] = req[field];
+       } else {
+         newFretReq[correspondsTo] += (`\n${field}: `.toUpperCase());
+         newFretReq[correspondsTo] += (req[field]);
+       }
+     }
+     fretReqs.push(newFretReq);
+   }
   }
 
-  // now save fretreqs to a json file for fret to import
-  fs.writeFile(path+fileOutputName, JSON.stringify(fretreqs, null, 4), (err) => {
-    if (err) {
-        console.log("An error occured while writing JSON Object to File.");
-        return console.log(err);
-    }
-
-    console.log("JSON file has been saved.");
-});
-
-
+function getKeyByValue(object, value) {
+  return Object.keys(object).find(key => object[key] === value);
 }
-
-
 
 // sometimes the text we get has invalid JSON
 function cleanup (req) {
