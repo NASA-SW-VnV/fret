@@ -33,9 +33,15 @@
 
 const csv2json=require("csvtojson");
 const fs=require("fs");
+const db = require('electron').remote.getGlobal('sharedObj').db;
+const system_dbkeys = require('electron').remote.getGlobal('sharedObj').system_dbkeys;
 
 var projectName = 'CSVImport';
-var fretReqs = [];
+
+export {
+  importRequirements as importRequirements,
+  csvToJsonConvert as csvToJsonConvert
+}
 
 //Requirement ID and Description are the default values
 const defaultReqIdField = 'Requirement ID';
@@ -48,13 +54,38 @@ var translationFields = {
 };
 
 //project, rid and text are provided as user input
-exports.csvToJsonConvert = (filepath, project, rid, text) => {
+function csvToJsonConvert (filepath, project, rid, text, projects) {
+  let self = this;
   translateFields(rid, text);
   projectName = project
-  csv2json().fromFile(filepath).then(manipulate).catch(err => {
+
+ csv2json().fromFile(filepath).then((importedReqs)=>{
+   const reqs = manipulate(importedReqs)
+   importRequirements (reqs, projects);
+  })
+.catch(err => {
         // log error if any
         console.log(err);
     });
+}
+
+function importRequirements (data, projects) {
+  db.bulkDocs(data).catch((err) => {console.log(err);});
+  data.forEach((d) => {
+    if (d.project && !projects.includes(d.project)){;
+      projects.push(d.project);
+    }
+  })
+  //If new projects were introduced through the imported reqs, update FRET_PROJECTS in db
+  db.get('FRET_PROJECTS').then((doc) => {
+    return db.put({
+      _id: 'FRET_PROJECTS',
+      _rev: doc._rev,
+      names: projects
+    })
+  }).catch((err) => {
+    console.log(err);
+  });
 }
 
 // change so that everything goes to rationale by default except what is in map
@@ -72,7 +103,8 @@ function createFretObject(name) {
   return {project: name, reqid: "", fulltext: "", rationale: ""};
 }
 
-function manipulate(importedReqs) {
+ function manipulate(importedReqs) {
+   let fretReqs = [];
    let csvFields = Object.keys(importedReqs[0]);
    for (let req of importedReqs) {
      var newFretReq = createFretObject(projectName);
@@ -88,6 +120,7 @@ function manipulate(importedReqs) {
      }
      fretReqs.push(newFretReq);
    }
+   return fretReqs;
   }
 
 function getKeyByValue(object, value) {

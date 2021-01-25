@@ -86,7 +86,7 @@ const fs = require('fs');
 const uuidv1 = require('uuid/v1');
 const system_dbkeys = require('electron').remote.getGlobal('sharedObj').system_dbkeys;
 
-const csvRequirementsSupport = require('../../support/requirementsImport/convertCSVrequirements');
+const requirementsImport = require('../../support/requirementsImport/convertAndImportRequirements');
 
 const drawerWidth = 240;
 
@@ -192,6 +192,12 @@ function readTextFile(file, callback) {
     rawFile.send(null);
 }
 
+async function getCSVData(filepath) {
+  const data = await requirementsImport.csvToJsonConvert(filepath, 'csvProject', 'Requirement ID', 'Description');
+  console.log(data)
+  return data;
+}
+
 class MainView extends React.Component {
   state = {
     drawerOpen: false,
@@ -227,59 +233,35 @@ class MainView extends React.Component {
     if (filepaths && filepaths.length > 0) {
 	     const filepath = filepaths[0];
        //checking the extension of the file
-       if (filepath.split('.').pop() === 'csv'){
-         csvRequirementsSupport.csvToJsonConvert(filepath, 'csvProject', 'Requirement ID', 'Description');
+       const fileExtension = filepath.split('.').pop();
+       if (fileExtension === 'csv'){
+         requirementsImport.csvToJsonConvert(filepath, 'csvProject', 'Requirement ID', 'Description', listOfProjects);
+       } else if (fileExtension === 'json'){
+         /*
+         // Version using "require" causes error: Cannot find module "."
+         const filepathnoext = filepath.slice(0,-5); // The slice is to remove the .json suffix
+         console.log('*** filepathnoext = ' + JSON.stringify(filepathnoext));
+         data = require(filepathnoext);
 
+         // Version using "readFileSync" causes error: Cannot read property 'shift' of undefined
+         var content = fs.readFileSync(filepath);  // maybe add "utf8" to return a string instead of a buffer
+         var data = JSON.parse(content);
+
+         // Version using readTextFile defined above, works.
+         readTextFile(filepath, function (text) {
+             let data = JSON.parse(text);
+         })
+         */
+         // Version using readFile, works.
+         fs.readFile(filepath, function (err,buffer) {
+             if (err) throw err;
+             let data = JSON.parse(buffer);
+             requirementsImport.importRequirements(data, listOfProjects);
+              });
        }
-
-	  /*
-	  // Version using "require" causes error: Cannot find module "."
-	  const filepathnoext = filepath.slice(0,-5); // The slice is to remove the .json suffix
-	  console.log('*** filepathnoext = ' + JSON.stringify(filepathnoext));
-	  data = require(filepathnoext);
-	  db.bulkDocs(data).catch((err) => {console.log(err);});
-	  */
-
-	  /*
-	  // Version using "readFileSync" causes error: Cannot read property 'shift' of undefined
-	  var content = fs.readFileSync(filepath);  // maybe add "utf8" to return a string instead of a buffer
-	  var data = JSON.parse(content);
-	  db.bulkDocs(data).catch((err) => {console.log(err);});
-	  */
-
-	  /*
-	  // Version using readTextFile defined above, works.
-	  readTextFile(filepath, function (text) {
-	      let data = JSON.parse(text);
-	      console.log('length = ' + data.length);
-	      db.bulkDocs(data).catch((err) => {console.log(err);});
-	  })
-	  */
-
-	  // Version using readFile, works.
-	  // fs.readFile(filepath,
-		//       function (err,buffer) {
-		// 	  if (err) throw err;
-		// 	  let data = JSON.parse(buffer);
-		// 	  db.bulkDocs(data).catch((err) => {console.log(err);});
-    //     var projects = listOfProjects;
-    //     data.forEach((d) => {
-    //       if (d.project && !projects.includes(d.project)){;
-    //         projects.push(d.project);
-    //       }
-    //     })
-    //     //If new projects were introduced through the imported reqs, update FRET_PROJECTS in db
-    //     db.get('FRET_PROJECTS').then((doc) => {
-    //       return db.put({
-    //         _id: 'FRET_PROJECTS',
-    //         _rev: doc._rev,
-    //         names: projects
-    //       })
-    //     }).catch((err) => {
-    //       console.log(err);
-    //     });
-		//       });
-
+       else{
+         console.log("We do not support yet this file import")
+       }
     }
   }
 
