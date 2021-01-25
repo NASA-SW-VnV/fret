@@ -76,6 +76,7 @@ import CreateRequirementDialog from './CreateRequirementDialog';
 import CreateProjectDialog from './CreateProjectDialog';
 import DeleteProjectDialog from './DeleteProjectDialog';
 import AppMainContent from './AppMainContent';
+import RequirementImportDialogs from './RequirementImportDialogs';
 
 import ExportRequirementsDialog from './ExportRequirementsDialog';
 
@@ -192,12 +193,6 @@ function readTextFile(file, callback) {
     rawFile.send(null);
 }
 
-async function getCSVData(filepath) {
-  const data = await requirementsImport.csvToJsonConvert(filepath, 'csvProject', 'Requirement ID', 'Description');
-  console.log(data)
-  return data;
-}
-
 class MainView extends React.Component {
   state = {
     drawerOpen: false,
@@ -211,13 +206,15 @@ class MainView extends React.Component {
     listOfProjects: [],
     deleteProjectDialogOpen: false,
     projectTobeDeleted: '',
-    exportRequirementsDialogOpen: false
+    exportRequirementsDialogOpen: false,
+    requirementImportDialogOpen: false
   };
 
   //Dialog is an electron module
   //Filters specifies an array of file types that can be displayed or selected when
   //limiting the user to a specific type
   handleImport = () => {
+    const self = this;
     var homeDir = app.getPath('home');
     const { listOfProjects } = this.state;
     var filepaths = dialog.showOpenDialog({
@@ -235,6 +232,10 @@ class MainView extends React.Component {
        //checking the extension of the file
        const fileExtension = filepath.split('.').pop();
        if (fileExtension === 'csv'){
+         self.handleImportRequirements();
+         //TODO: Update
+         // let userInput = self.handleImportRequirements();
+         // console.log(userInput)
          requirementsImport.csvToJsonConvert(filepath, 'csvProject', 'Requirement ID', 'Description', listOfProjects);
        } else if (fileExtension === 'json'){
          /*
@@ -301,7 +302,6 @@ class MainView extends React.Component {
    */Ex
 
   handleNewProject = () => {
-
     // Close dropdown menu
     this.setState({ anchorEl: null });
     this.setState({ createProjectDialogOpen: true });
@@ -373,7 +373,6 @@ class MainView extends React.Component {
       projectTobeDeleted: name,
       anchorEl: null
     })
-
   }
 
   closeDeleteProjectDialog = () => {
@@ -396,6 +395,24 @@ class MainView extends React.Component {
   closeExportRequirementsDialog = () => {
     this.setState({
       exportRequirementsDialogOpen: false,
+      anchorEl: null
+    })
+  }
+
+  handleImportRequirements = () => {
+    this.openRequirementImportDialog()
+  }
+
+  openRequirementImportDialog = () => {
+    this.setState({
+      requirementImportDialogOpen: true,
+      anchorEl: null
+    })
+  }
+
+  closeRequirementImportDialog = () => {
+    this.setState({
+      requirementImportDialogOpen: false,
       anchorEl: null
     })
   }
@@ -574,6 +591,10 @@ class MainView extends React.Component {
             open={this.state.exportRequirementsDialogOpen}
             fretProjects={this.state.listOfProjects}
             handleDialogClose={this.closeExportRequirementsDialog}
+          />
+          <RequirementImportDialogs
+            open={this.state.requirementImportDialogOpen}
+            handleDialogClose={this.closeRequirementImportDialog}
           />
         </div>
         <Snackbar
