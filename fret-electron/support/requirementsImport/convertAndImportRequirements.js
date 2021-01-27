@@ -72,7 +72,7 @@ function csvToJsonConvert (filepath, project, rid, text, projects) {
 function importRequirements (data, projects) {
   db.bulkDocs(data).catch((err) => {console.log(err);});
   data.forEach((d) => {
-    if (d.project && !projects.includes(d.project)){;
+    if (d.project && !projects.includes(d.project)){
       projects.push(d.project);
     }
   })
@@ -127,19 +127,19 @@ function getKeyByValue(object, value) {
   return Object.keys(object).find(key => object[key] === value);
 }
 
-// sometimes the text we get has invalid JSON
-function cleanup (req) {
-  // preserve newlines, etc - use valid JSON
-//req = req.replace(/\\n/g, "\\n")
-               // .replace(/\\'/g, "\\'")
-               // .replace(/\\"/g, '\\"')
-               // .replace(/\\&/g, "\\&")
-               // .replace(/\\r/g, "\\r")
-               // .replace(/\\t/g, "\\t")
-               // .replace(/\\b/g, "\\b")
-               // .replace(/\\f/g, "\\f");
-// remove non-printable and other non-valid JSON chars
-req = req.replace(/\"/g,"*");
-req = req.replace(/[\u0000-\u0019]+/g,"");
-return req;
-}
+// // sometimes the text we get has invalid JSON
+// function cleanup (req) {
+//   // preserve newlines, etc - use valid JSON
+// //req = req.replace(/\\n/g, "\\n")
+//                // .replace(/\\'/g, "\\'")
+//                // .replace(/\\"/g, '\\"')
+//                // .replace(/\\&/g, "\\&")
+//                // .replace(/\\r/g, "\\r")
+//                // .replace(/\\t/g, "\\t")
+//                // .replace(/\\b/g, "\\b")
+//                // .replace(/\\f/g, "\\f");
+// // remove non-printable and other non-valid JSON chars
+// req = req.replace(/\"/g,"*");
+// req = req.replace(/[\u0000-\u0019]+/g,"");
+// return req;
+//}
