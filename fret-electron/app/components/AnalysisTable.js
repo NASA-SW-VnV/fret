@@ -73,6 +73,9 @@ import ClearIcon from '@material-ui/icons/Clear';
 import RemoveIcon from '@material-ui/icons/Remove';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
+/*Connected Components*/
+import * as cc_analysis from '../../analysis/connected_components';
+
 /*Realizability checking*/
 // import DisplayConnectedComponents from './DisplayConnectedComponents';
 import ejsCache_realize from '../../support/RealizabilityTemplates/ejsCache_realize';
@@ -101,11 +104,8 @@ const db = sharedObj.db;
 const constants = require('../parser/Constants');
 
 const fs = require('fs');
-const archiver = require('archiver');
-const app = require('electron').remote.app;
-const dialog = require('electron').remote.dialog;
-const utilities = require('../../support/utilities');
 
+const analysisPath = 'analysis/tmp/';
 var dbChangeListener;
 
 let counter = 0;
@@ -178,6 +178,20 @@ const styles = theme => ({
   vAlign : {
     verticalAlign : 'bottom'
   },
+  root: {
+    // flex: 1,
+    backgroundColor: theme.palette.background.paper,
+  },
+  appbar: {
+    display: 'flex',
+  },
+  tabRoot : {
+    minHeight: 36,
+  },
+  tabsScrollable : {
+    overflowX: 'hidden',
+  }
+
 });
 
 
@@ -217,7 +231,7 @@ class DisplayConnectedComponents extends React.Component {
 
 
   handleChange = (event, value) => {
-    this.setState({ value });
+    this.setState({ ccSelected : value });
   };
 
 
@@ -236,8 +250,20 @@ class DisplayConnectedComponents extends React.Component {
   }
 
   render() {
-    const {diagnosed, classes, selectedProject} = this.props;
+    const {diagnosed, classes, selectedProject, selectedComponent, connectedComponents} = this.props;
     const {value, status} = this.state;
+    const tabs = []
+    for (var cc in connectedComponents[selectedComponent.component_name]) {      
+      tabs.push(<Tab classes={{root : classes.tabRoot}} label={<div> {cc}{
+        connectedComponents[selectedComponent.component_name][cc]['result'] === 'REALIZABLE' ? 
+                            <CheckIcon style={{fontSize : '20px', verticalAlign : 'bottom', color : '#68BC00'}}/> :
+                            connectedComponents[selectedComponent.component_name][cc]['result'] === 'UNREALIZABLE' ? 
+                              <ClearIcon style={{fontSize : '20px', verticalAlign : 'bottom'}} color='error'/> :
+                              connectedComponents[selectedComponent.component_name][cc]['result'] === 'PROCESSING' ?
+                                <CircularProgress style={{verticalAlign : 'bottom'}} size={15}/> : <div/>}
+      
+        </div>}/>)            
+    }
     return (
       <div>
         {/* try this to appbar below : style={{height: '36px'}}*/}
@@ -253,7 +279,7 @@ class DisplayConnectedComponents extends React.Component {
               textColor="primary"
               classes={{scrollable : classes.tabsScrollable}}                           
             >
-              <Tab classes={{root : classes.tabRoot}} label={<div>CC 1 {/*<ClearIcon style={{verticalAlign: 'bottom'}} color='error'/>*/}</div>}/>            
+            {tabs}
             </Tabs>
           </div>
         </AppBar>
@@ -290,7 +316,8 @@ class DisplayConnectedComponents extends React.Component {
 
 DisplayConnectedComponents.propTypes = {
   selectedProject: PropTypes.string.isRequired,
-  diagnosed : PropTypes.bool.isRequired
+  diagnosed : PropTypes.bool.isRequired,
+  connectedComponents : PropTypes.object.isRequired
   // selectedComponent: PropTypes.string.isRequired
 
   //TODO: add connectedComponent information
@@ -301,12 +328,11 @@ DisplayConnectedComponents = withStyles(connectedComponentsStyles)(DisplayConnec
 
 class AnalysisTable extends React.Component {
   state = {
-    diagnosed : false,
     selected: '',
     ccSelected: '',
     order: 'asc',
     orderBy: 'component_name',
-    connectedComponents: [],
+    connectedComponents: {},
     check: '',
     status: {},
     monolithic: false,
@@ -348,10 +374,76 @@ class AnalysisTable extends React.Component {
     }).on('error', function (err) {
       console.log(err);
     });
-    
-    const componentsStatus = {}
-    props.components.forEach(component => componentsStatus[component.component_name] = "UNCHECKED")
-    this.setState({status : componentsStatus})
+
+    if (!fs.existsSync(analysisPath)) {
+      fs.mkdirSync(analysisPath);
+    }    
+  }
+
+  computeConnectedComponents(project, projectComponents) {
+    const {selectedProject} = this.props;
+    const {connectedComponents} = this.state
+    const self = this;
+
+    projectComponents.forEach(component => {
+      
+      connectedComponents[component.component_name] = {};
+
+      modeldb.find({
+        selector: {
+          component_name: component.component_name,
+          project: project,
+          completed: true, //for modes that are not completed; these include the ones that correspond to unformalized requirements
+          modeldoc: false
+        }
+      }).then(function (modelResult){
+        console.log(modelResult)
+        var contract = self.getContractInfo(modelResult);
+        contract.componentName = component.component_name+'Spec';
+
+        db.find({
+          selector: {
+            project: selectedProject
+          }
+        }).then(function (fretResult){
+          contract.properties = self.getPropertyInfo(fretResult, contract.outputVariables, component.component_name);
+          contract.delays = self.getDelayInfo(fretResult, component.component_name);
+          console.log(contract);
+
+            /* Use contract to determined the output connected components
+             * */
+
+          var mappings = cc_analysis.compute_dependency_maps(contract);
+          console.log(mappings);
+
+          var connected_components = cc_analysis.compute_connected_components(contract, mappings['output']);
+          connected_components.forEach(comp => {
+
+            connectedComponents[component.component_name]['cc'+connected_components.indexOf(comp)] = {result : 'UNCHECKED', properties : comp.properties}
+          })                  
+          console.log(connected_components)
+
+          console.log(contract);
+         // console.log(contract);
+          //var mappings = compute_dependency_maps(contract);
+          //console.log(mappings);
+          // var connected_components = compute_connected_components(contract, mappings['output']);
+
+//            archive.append(ejsCache.renderContractCode().contract.complete(contract), {name: contract.componentName+'.lus'})
+
+            // archive.append(ejsCache_realize.renderRealizeCode().component.complete(contract), {name: contract.componentName+'.lus'})
+
+//            archive.append(ejsCache.renderContractCode().contract.complete(contract), {name: contract.componentName+'.lus'})
+          // finalize the archive (ie we are done appending files but streams have to finish yet)
+          // archive.finalize();
+
+        }).catch((err) => {
+          console.log(err);
+        })
+    })
+    });
+    console.log(connectedComponents)
+    this.setState({connectedComponents : connectedComponents, ccSelected : 'cc0'})
   }
 
   componentDidMount() {
@@ -365,8 +457,15 @@ class AnalysisTable extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.selectedProject !== prevProps.selectedProject) {
+    const {selectedProject, components} = this.props;
+    const {connectedComponents, status} = this.state
+
+    if (selectedProject !== prevProps.selectedProject) {
       this.synchStateWithModelDB();
+    } else {
+      if (selectedProject !== 'All Projects' && components !== prevProps.components) {
+        this.computeConnectedComponents(selectedProject, components);
+      }
     }
   }
 
@@ -389,6 +488,7 @@ class AnalysisTable extends React.Component {
   handleChange = name => event => {
     if (name === 'selected') {
       this.setState({selected: event.target.value, monolithic : false, compositional : false });
+
     } else if (name === 'monolithic') {
       this.setState({monolithic : !this.state.monolithic, compositional : false});
     } else if (name === 'compositional') {
@@ -396,17 +496,20 @@ class AnalysisTable extends React.Component {
     }
   }
 
-  diagnoseSpec(component,event) {
-    event.stopPropagation()
+  handleCCChange = (event, value) => {
+    this.setState({ccSelected: value, monolithic : false, compositional : false });
+  };
+
+  diagnoseSpec(event) {    
+    const {selected, connectedComponents, ccSelected} = this.state;
+    connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'] = 'PROCESSING'
     // buttonText = "PROCESSING";
-    var filePath = './analysis/tmp/'+component+'.lus.json';
-    console.log(filePath);
-    if (fs.existsSync()) {
-    } else {
-      // let engine = new DiagnosisEngine(contract, 'realizability');
-      // engine.main();
-    }
-    this.setState({diagnosed : true})
+    var filePath = analysisPath+selected.component_name+"_"+ccSelected+".lus"
+    var runDiagnosis = realizability.checkRealizability(filePath, '-diagnose -fixpoint -json');
+    // let engine = new DiagnosisEngine(contract, 'realizability');
+    // engine.main();
+    connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'] = 'DIAGNOSED'    
+    this.setState({ connectedComponents : connectedComponents})
   }
 
   getCoCoSpecDataType(dataType){
@@ -505,64 +608,168 @@ class AnalysisTable extends React.Component {
   }  
 
   checkRealizability = () => {
-    const {selected, ccSelected, monolithic, compositional} = this.state;
-    console.log(selected)
-    if (monolithic || compositional) {      
-      this.setState( prevState => {
-        prevState.status[selected.component_name] = 'PROCESSING'
-        return(prevState)
-      })
-      const {selectedProject} = this.props;
-      const homeDir = app.getPath('home');
-      const self = this;
-      var filePath = './analysis/tmp/';
-      if (!fs.existsSync(filePath)) {
-        fs.mkdirSync(filePath);
+    
+    const {selected, ccSelected, monolithic, compositional, connectedComponents} = this.state;
+    const {selectedProject} = this.props;    
+    const self = this;
+    var checkOutput;
+    var ccResults = [];
+    self.setState(prevState => {
+      prevState.status[selected.component_name] = 'PROCESSING';
+      if(compositional) {
+        Object.keys(prevState.connectedComponents[selected.component_name]).map(cc => 
+          prevState.connectedComponents[selected.component_name][cc].result = 'PROCESSING');
       }
-      filePath = filePath + selected.component_name+'.lus';
-      var output = fs.createWriteStream(filePath);
-      modeldb.find({
-        selector: {
-          component_name: selected.component_name,
-          project: selectedProject,
-          completed: true, //for modes that are not completed; these include the ones that correspond to unformalized requirements
-          modeldoc: false
-        }
-      }).then(function (modelResult){
-        var contract = self.getContractInfo(modelResult);
-        contract.componentName = selected.component_name+'Spec';
+      return(prevState);
+    })                
+    modeldb.find({
+      selector: {
+        component_name: selected.component_name,
+        project: selectedProject,
+        completed: true, //for modes that are not completed; these include the ones that correspond to unformalized requirements
+        modeldoc: false
+      }
+    }).then(function (modelResult){
+      var contract = self.getContractInfo(modelResult);
+      contract.componentName = selected.component_name+'Spec';
 
-        db.find({
-          selector: {
-            project: selectedProject
-          }
-        }).then(function (fretResult){
-          contract.properties = self.getPropertyInfo(fretResult, contract.outputVariables, selected.component_name);
-          contract.delays = self.getDelayInfo(fretResult, selected.component_name);
-          
+      db.find({
+        selector: {
+          project: selectedProject
+        }
+      }).then(function (fretResult){
+        contract.properties = self.getPropertyInfo(fretResult, contract.outputVariables, selected.component_name);
+        contract.delays = self.getDelayInfo(fretResult, selected.component_name);
+        return contract;
+      }).then(function (contract){
+        if (monolithic) {                
+          var filePath = analysisPath + selected.component_name+'.lus';
+          var output = fs.createWriteStream(filePath);          
           var lustreContract = ejsCache_realize.renderRealizeCode().component.complete(contract);
+          
           output.write(lustreContract);
-          var checkOutput = realizability.checkRealizability(filePath, '-fixpoint');
-          //smallest match between newline and whitespace followed by |
-          //should only match the result string, i.e. {REALIZABLE, UNREALIZABLE, UNKNOWN, INCONSISTENT}
-          var result = checkOutput.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];
-          console.log(result)
-          self.setState(prevState => {
-            prevState.status[selected.component_name] = result
-            return(prevState)
-          })
-        })
-      })
-    }
+          output.end();
+          output.on('finish', () => {
+            checkOutput = realizability.checkRealizability(filePath, '-fixpoint');
+            var result = checkOutput.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];
+            console.log(result)
+            self.setState(prevState => {
+              prevState.status[selected.component_name] = result;
+              return(prevState);
+            })
+            return result;
+          });
+          output.on('error', (error) => {console.log(error)});          
+        } else if (compositional) {          
+          let computeCCResults = () => {
+            Object.keys(connectedComponents[selected.component_name]).forEach(cc => {
+              var filePath = analysisPath + selected.component_name+'_'+cc+'.lus';
+              var output = fs.createWriteStream(filePath);
+              var ccContract = JSON.parse(JSON.stringify(contract))
+              
+              var ccProperties = contract.properties.filter(p => connectedComponents[selected.component_name][cc].properties.has(p.reqid))
+
+              ccContract.properties = ccProperties
+              var lustreContract = ejsCache_realize.renderRealizeCode().component.complete(ccContract);
+              output.write(lustreContract);
+              output.end();
+              output.on('finish', () => {
+                checkOutput = realizability.checkRealizability(filePath, '-fixpoint');
+                var ccResult = checkOutput.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];
+                connectedComponents[selected.component_name][cc].result = ccResult
+                self.setState({
+                  connectedComponents : connectedComponents
+                });
+                // self.setState(prevState => {
+                //   prevState.connectedComponents[selected.component_name][cc].result = ccResult
+                //   return(prevState)
+                // });
+                ccResults.push(ccResult);
+
+                const reducer = (accumulator, currentValue) => accumulator && (currentValue === 'REALIZABLE');
+
+                if (ccResults.reduce(reducer)) {
+                  self.setState(prevState => {
+                    prevState.status[selected.component_name] = 'REALIZABLE';
+                    return(prevState);
+                  })
+                } else {
+                  if (ccResults.includes('UNKNOWN')) {
+                    self.setState(prevState => {
+                      prevState.status[selected.component_name] = 'UNKNOWN';
+                      return(prevState);
+                    })            
+                  } else if (ccResults.includes('UNREALIZABLE')) {                    
+                    self.setState(prevState => {
+                      prevState.status[selected.component_name] = 'UNREALIZABLE';
+                      return(prevState);
+                    })
+                  } else if (ccResults.includes('INCONSISTENT')) {
+                    self.setState(prevState => {
+                      prevState.status[selected.component_name] = 'INCONSISTENT';
+                      return(prevState);
+                    })            
+                  } else {
+                    console.log('Realizability check failed with an unexpected result. Run JKind check over '+filePath+' for more details.')
+                  } 
+                }
+              });              
+            });            
+            // const reducer = (accumulator, currentValue) => accumulator && (currentValue === 'REALIZABLE');
+
+            // if (ccResults.reduce(reducer)) {
+            //   self.setState(prevState => {
+            //     prevState.status[selected.component_name] = 'REALIZABLE';
+            //     return(prevState);
+            //   })
+            // } else {
+            //   if (ccResults.includes('UNKNOWN')) {
+            //     self.setState(prevState => {
+            //       prevState.status[selected.component_name] = 'UNKNOWN';
+            //       return(prevState);
+            //     })            
+            //   } else if (ccResults.includes('UNREALIZABLE')) {
+            //     self.setState(prevState => {
+            //       prevState.status[selected.component_name] = 'UNREALIZABLE';
+            //       return(prevState);
+            //     })
+            //   } else if (ccResults.includes('INCONSISTENT')) {
+            //     self.setState(prevState => {
+            //       prevState.status[selected.component_name] = 'INCONSISTENT';
+            //       return(prevState);
+            //     })            
+            //   } else {
+            //     console.log('Realizability check failed with an unexpected result. Run JKind check over '+filePath+' for more details.')
+            //   } 
+            // }
+     
+          }
+          computeCCResults();
+        }
+      });
+    });
   }  
 
   render() {
     const {classes, selectedProject, components} = this.props;
-    const {diagnosed, connectedComponents, order, orderBy, status, selected, ccSelected, monolithic, compositional} = this.state;
-
+    const {connectedComponents, order, orderBy, status, selected, ccSelected, monolithic, compositional} = this.state;
     let grid;
-    let selectedComponentDisplay;
-    
+
+    var tabs = [];
+    for (var cc in connectedComponents[selected.component_name]) {      
+      tabs.push(<Tab value={cc} classes={{root : classes.tabRoot}} label={
+        <div style={{alignContent: 'flex-end'}}> 
+        {cc}
+        {connectedComponents[selected.component_name][cc]['result'] === 'REALIZABLE' ? 
+                            <CheckIcon style={{fontSize : '20px', verticalAlign : 'bottom', color : '#68BC00'}}/> :
+                            connectedComponents[selected.component_name][cc]['result'] === 'UNREALIZABLE' ? 
+                              <ClearIcon style={{fontSize : '20px', verticalAlign : 'bottom'}} color='error'/> :
+                              connectedComponents[selected.component_name][cc]['result'] === 'PROCESSING' ?
+                                <CircularProgress style={{verticalAlign : 'bottom'}} size={15}/> : 
+                                <CheckIcon style={{fontSize : '20px', verticalAlign : 'bottom', opacity : 0}}/>}
+      
+        </div>}/>)            
+    }
     return(
       <div>
         {components.length !== 0 &&
@@ -570,7 +777,7 @@ class AnalysisTable extends React.Component {
             <FormControl className={classes.formControl} required>
               <InputLabel>System Component</InputLabel>
               <Select                  
-                value={this.state.selected}
+                value={selected}
                 onChange={this.handleChange('selected')}
               >
                 <MenuItem key='' value=''/>
@@ -583,7 +790,7 @@ class AnalysisTable extends React.Component {
                           &nbsp;
                           &nbsp;
                           {status[n.component_name] === 'REALIZABLE' ? 
-                            <CheckIcon style={{fontSize : '20px', verticalAlign : 'bottom'}} color='#68BC00'/> :
+                            <CheckIcon style={{fontSize : '20px', verticalAlign : 'bottom', color : '#68BC00'}}/> :
                             status[n.component_name] === 'UNREALIZABLE' ? 
                               <ClearIcon style={{fontSize : '20px', verticalAlign : 'bottom'}} color='error'/> :
                               status[n.component_name] === 'PROCESSING' ?
@@ -623,10 +830,10 @@ class AnalysisTable extends React.Component {
               style={{alignItems: 'flex-end', marginRight:'48%'}}
               label="Compositional"                
             />
-            <Button onClick={(event) => {this.checkRealizability(event)}} size="small" className={classes.vAlign} style={{marginRight: '1%'}} color="secondary" variant='contained' disabled={selected === ''}>
+            <Button onClick={(event) => {this.checkRealizability(event)}} size="small" className={classes.vAlign} style={{marginRight: '1%'}} color="secondary" variant='contained' disabled={selected === '' || (selected !== '' && !monolithic && !compositional)}>
               Check                              
             </Button>
-            <Button onClick={(event) => {this.diagnoseSpec(selected, event)}} size="small" className={classes.vAlign} style={{marginRight: '1%'}} color="secondary" variant='contained' disabled={selected === '' || (selected !== '' && status[selected.component_name] !== 'UNREALIZABLE')}>
+            <Button onClick={(event) => {this.diagnoseSpec(ccSelected, event)}} size="small" className={classes.vAlign} style={{marginRight: '1%'}} color="secondary" variant='contained' disabled={selected === '' || (selected !== '' && connectedComponents[selected.component_name][ccSelected]['result'] !== 'UNREALIZABLE')}>
               Diagnose                             
             </Button>
             <Button size="small" className={classes.vAlign} style={{marginRight: '1%'}} variant="contained"> Project Summary </Button>              
@@ -638,7 +845,42 @@ class AnalysisTable extends React.Component {
                 &nbsp;
                 &nbsp;
                 <Divider/>
-                <DisplayConnectedComponents diagnosed={diagnosed} selectedProject={selectedProject}/>
+                <div>
+                  {/* try this to appbar below : style={{height: '36px'}}*/}
+                  <AppBar style={{height: '36px'}} position="static" color="default">
+                  {/* try this to div below : className={classes.appbar}*/}
+                    <div className={classes.appbar}>
+                      <Tabs              
+                        value={ccSelected}
+                        onChange={this.handleCCChange}
+                        variant="scrollable"
+                        scrollButtons="on"
+                        indicatorColor="secondary"
+                        textColor="primary"
+                        classes={{scrollable : classes.tabsScrollable}}                           
+                      >
+                      {tabs}
+                      </Tabs>
+                    </div>
+                  </AppBar>
+                  <TabContainer>
+                    <DiagnosisProvider>
+                      <div>
+                        {connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'] === 'DIAGNOSED' ? 
+                          (<Fade in={connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'] === 'DIAGNOSED'}>
+                            <ChordDiagram selectedComponent = {"../analysis/tmp/"+selected.component_name+"_"+ccSelected+".lus.json"}/>
+                          </Fade>) : 
+                          (connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'] === 'PROCESSING' ? <CircularProgress style={{alignItems : center}} size={50}/> : <div/>)
+                        }
+                        &nbsp;
+                        &nbsp;
+                        &nbsp;
+                        &nbsp;
+                        <DiagnosisRequirementsTable selectedProject={selectedProject} existingProjectNames={[selectedProject]} connectedComponent={connectedComponents[selected.component_name][ccSelected]}/>
+                      </div>
+                    </DiagnosisProvider>
+                  </TabContainer>
+                </div>
               </div> 
             }
           </div>

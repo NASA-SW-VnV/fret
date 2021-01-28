@@ -44,43 +44,53 @@ export function compute_connected_components(contract, output_dep_map){
     var disjoint_list = new Array();
     var has_intersection = false;  
 
-    for(var prop of contract['properties']){
+    for(var prop of contract['properties']){        
+        if (!prop.reqid.includes('assumption')) {
+            var dep_set = output_dep_map[prop.reqid];
         
-        var dep_set = output_dep_map[prop.reqid];
- 
-        if(disjoint_list.length == 0){
+            if(disjoint_list.length == 0){
 
-            var connected_component = {"properties": new Set(), "outputs": dep_set};
-            connected_component.properties.add(prop.reqid); // Need to add because using a 
-                                                            // string in a Set constructor
-                                                            // will characterize the string.
-            disjoint_list.push(connected_component);
-                       
-        }else{
-
-            for(var connected_component of disjoint_list){
-
-                var intersection = set_intersection(connected_component['outputs'], dep_set);
-                if(intersection.size > 0 ){
-                    connected_component['properties'].add(prop.reqid);
-                    connected_component['outputs'] = set_union(dep_set, 
-                                                               connected_component['outputs']);
-                   
-                    has_intersection = true;
-                    break;
-                }
-            }
-
-            if(!has_intersection){
                 var connected_component = {"properties": new Set(), "outputs": dep_set};
-                connected_component.properties.add(prop.reqid);
-
+                connected_component.properties.add(prop.reqid); // Need to add because using a 
+                                                                // string in a Set constructor
+                                                                // will characterize the string.
                 disjoint_list.push(connected_component);
+                           
+            }else{
+
+                for(var connected_component of disjoint_list){
+
+                    var intersection = set_intersection(connected_component['outputs'], dep_set);
+                    if(intersection.size > 0 ){
+                        connected_component['properties'].add(prop.reqid);
+                        connected_component['outputs'] = set_union(dep_set, 
+                                                                   connected_component['outputs']);
+                        
+                        has_intersection = true;
+                        break;
+                    }
+                }
+
+                if(!has_intersection){
+                    var connected_component = {"properties": new Set(), "outputs": dep_set};
+                    connected_component.properties.add(prop.reqid);
+
+                    disjoint_list.push(connected_component);
+                }                
             }
         }
-
         has_intersection = false;
     }
+
+    //add the assumptions
+    for(var prop of contract['properties']){
+        if (prop.reqid.includes('assumption')) {
+            for (var connected_component of disjoint_list) {
+                connected_component['properties'].add(prop.reqid)
+            }
+        }
+    }
+
     return disjoint_list;
 }
 

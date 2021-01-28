@@ -41,28 +41,8 @@ import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
-import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
-import Checkbox from '@material-ui/core/Checkbox';
-import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
-import Snackbar from '@material-ui/core/Snackbar';
-import Button from '@material-ui/core/Button';
-import GridList from '@material-ui/core/GridList';
-import GridListTile from '@material-ui/core/GridListTile';
-
-import CloseIcon from '@material-ui/icons/Close';
-import DeleteIcon from '@material-ui/icons/Delete';
-import ListIcon from '@material-ui/icons/List';
-import EditIcon from '@material-ui/icons/Edit';
-import AddIcon from '@material-ui/icons/AddCircle';
-import { lighten } from '@material-ui/core/styles/colorManipulator';
-
-import DisplayRequirementDialog from './DisplayRequirementDialog';
-import CreateRequirementDialog from './CreateRequirementDialog';
-import DeleteRequirementDialog from './DeleteRequirementDialog';
-
-import ExportIcon from '@material-ui/icons/ArrowUpward';
 import { DiagnosisContext } from './DiagnosisProvider';
 
 const sharedObj = require('electron').remote.getGlobal('sharedObj');
@@ -95,19 +75,42 @@ function desc(a, b, orderBy) {
   return 0
 }
 
-function stableSort(array, conflictReqs, cmp) {
+function stableSort(array, conflictReqs, connectedComponent, cmp) {
+  
   if (conflictReqs.length === 0) {
-    const stabilizedThis = array.map((el, index) => [el, index]);
-    stabilizedThis.sort((a, b) => {
+    const ccData = array.filter(el => connectedComponent.properties.has(el.reqid));
+    const remainingData = array.filter(el => !connectedComponent.properties.has(el.reqid));    
+
+    const sortedRemaining = remainingData.map((el, index) => [el, index]);
+    sortedRemaining.sort((a, b) => {
       const order = cmp(a[0], b[0]);
       if (order !== 0) return order;
       return a[1] - b[1];
     });
-    return stabilizedThis.map(el => el[0]);
+
+    return ccData.concat(sortedRemaining.map(el => el[0]));
   } else {
-    const conflictData = array.filter(el => conflictReqs.includes(el.reqid.toLowerCase()));
-    const remainingData = array.filter(el => !conflictReqs.includes(el.reqid.toLowerCase()));
-    return conflictData.concat(stableSort(remainingData, [], cmp));
+    console.log(array)
+    const conflictData = array.filter(el => conflictReqs.includes(el.reqid.replace(/-/g,'')));
+    const assumptionData = array.filter(el => el.reqid.includes('assumption'));
+    const remainingData = array.filter(el => (!el.reqid.includes('assumption') &&
+      !conflictReqs.includes(el.reqid.replace(/-/g,''))));
+    
+    const sortedAssumptions = assumptionData.map((el, index) => [el, index]);
+    sortedAssumptions.sort((a, b) => {
+      const order = cmp(a[0], b[0]);
+      if (order !== 0) return order;
+      return a[1] - b[1];
+    });
+
+    const sortedRemaining = remainingData.map((el, index) => [el, index]);
+    sortedRemaining.sort((a, b) => {
+      const order = cmp(a[0], b[0]);
+      if (order !== 0) return order;
+      return a[1] - b[1];
+    });
+
+    return conflictData.concat(sortedAssumptions.map(el => el[0]).concat(sortedRemaining.map(el => el[0])));
   }
 }
 
@@ -217,11 +220,12 @@ class DiagnosisRequirementsTable extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.selectedProject !== prevProps.selectedProject) {
+    if (this.props.connectedComponent !== prevProps.connectedComponent) {
       this.synchStateWithDB()
       this.setState(
         {
           selected: [],
+          selectedRequirement: {},
           bulkChangeMode: false
         });
     }
@@ -303,11 +307,12 @@ class DiagnosisRequirementsTable extends React.Component {
 
   render() {
     const { reqs, color } = this.context.state;
-    const { diagnosed, classes, selectedProject, existingProjectNames } = this.props;
+    const { connectedComponent, classes, selectedProject, existingProjectNames } = this.props;
     const { data, order, orderBy, selected, rowsPerPage, page,
        snackBarDisplayInfo, selectedRequirement } = this.state;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
     const title = 'Requirements: ' + selectedProject
+    
     return (
       <div>
       <Paper>
@@ -321,15 +326,15 @@ class DiagnosisRequirementsTable extends React.Component {
               rowCount={data.length}
             />
             <TableBody>{
-                stableSort(data, reqs, getSorting(order, orderBy))
+                stableSort(data, reqs, connectedComponent, getSorting(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map(n => {
                   const isSelected = this.isSelected(n.dbkey);
-                  const label = n.reqid ? n.reqid : 'NONE'
-                  var isInConflict = (reqs.length !== 0 && reqs.includes(label.toLowerCase())) ? true : false;                  
+                  const label = n.reqid ? n.reqid.replace(/-/g,'') : 'NONE'
+                  var isInConflict = (reqs.length !== 0 && reqs.includes(label)) ? true : false;
                   return (
                       <TableRow key={n.rowid} style={{
-                          opacity : (isInConflict || !diagnosed) ? 1 : .6,
+                          opacity : (isInConflict || connectedComponent.properties.has(n.reqid)) ? 1 : .6,
                           borderStyle: isInConflict ? 'solid' : 'initial', 
                           borderColor: isInConflict ? color : 'initial'}}>
                         <TableCell>
@@ -368,9 +373,9 @@ class DiagnosisRequirementsTable extends React.Component {
 }
 
 DiagnosisRequirementsTable.propTypes = {
-  diagnosed: PropTypes.bool.isRequired,
   selectedProject: PropTypes.string.isRequired,
-  existingProjectNames: PropTypes.array.isRequired
+  existingProjectNames: PropTypes.array.isRequired,
+  connectedComponent : PropTypes.object.isRequired
 };
 
 export default withStyles(styles)(DiagnosisRequirementsTable);

@@ -5,7 +5,8 @@
 
 <%}%>
 <% for(i=0; i < properties.length; i++){%> 
-<%var newid = properties[i].reqid.replace(/-/g,'')%> --%PROPERTY <%- newid %>; <%}%>
+<%var newid = properties[i].reqid.replace(/-/g,'')%>
+<%var reqType = newid.includes('assumption') ? 'assert' : '--%PROPERTY'%> <%- reqType %> <%- newid %>; <%}%>
 <%for(i=0; i < inputVariables.length;i++){%><%if(i==0){%>--%REALIZABLE <%}%><%- inputVariables[i].name -%><%if(i<inputVariables.length-1){%>,<%}else{%>;<%}%> 
 <%}%> 
 

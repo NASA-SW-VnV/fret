@@ -8,3 +8,5 @@ tools/Scripts/.DS_Store
 
 # SMT files generated from JKind
 *.smt2
+# Lustre files generated
+*.lus

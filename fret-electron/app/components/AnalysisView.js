@@ -356,17 +356,23 @@ class AnalysisView extends React.Component {
     const self = this;
     const {classes, selectedProject, existingProjectNames} = this.props;
     const {components, completedComponents}= this.state;
-
-
-    return (
-      <div>
-        <AnalysisTable
-          selectedProject={selectedProject}
-          components={components}
-          checkComponentCompleted={this.checkComponentCompleted}
-        />
-      </div>
-    );
+    if (selectedProject === 'All Projects'){
+      return(
+        <Typography variant='subtitle1'>
+        Please choose a specific project
+        </Typography>
+      );
+    } else {
+      return (
+        <div>
+          <AnalysisTable
+            selectedProject={selectedProject}
+            components={components}
+            checkComponentCompleted={this.checkComponentCompleted}
+          />
+        </div>
+      );
+    }
   }
 }
 
