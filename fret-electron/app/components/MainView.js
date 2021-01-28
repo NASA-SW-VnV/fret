@@ -77,6 +77,8 @@ import CreateProjectDialog from './CreateProjectDialog';
 import DeleteProjectDialog from './DeleteProjectDialog';
 import AppMainContent from './AppMainContent';
 
+import ExportRequirementsDialog from './ExportRequirementsDialog';
+
 const app = require('electron').remote.app
 const dialog = require('electron').remote.dialog
 const db = require('electron').remote.getGlobal('sharedObj').db;
@@ -200,7 +202,8 @@ class MainView extends React.Component {
     anchorEl: null,
     listOfProjects: [],
     deleteProjectDialogOpen: false,
-    projectTobeDeleted: ''
+    projectTobeDeleted: '',
+    exportRequirementsDialogOpen: false
   };
 
   handleImport = () => {
@@ -284,43 +287,7 @@ class MainView extends React.Component {
   };
 
 
-  handleExport = () => {
-    var homeDir = app.getPath('home');
-    var filepath = dialog.showSaveDialog(
-      {
-        defaultPath : homeDir,
-        title : 'Export Requirements',
-        buttonLabel : 'Export',
-        filters: [
-          { name: "Documents", extensions: ['json'] }
-        ],
-      })
-    if (filepath) {
-      db.allDocs({
-        include_docs: true,
-      }).then((result) => {
-        var filteredReqs = result.rows.filter(r => !system_dbkeys.includes(r.key))
-        var filteredResult = []
-        filteredReqs.forEach((r) => {
-          var doc = (({reqid, parent_reqid, project, rationale, comments, fulltext, semantics, input}) =>
-                      ({reqid, parent_reqid, project, rationale, comments, fulltext, semantics, input}))(r.doc)
-          doc._id = uuidv1()
-          filteredResult.push(doc)
-        })
-        var content = JSON.stringify(filteredResult, null, 4)
-        console.log(content)
-        fs.writeFile(filepath, content, (err) => {
-            if(err) {
-                return console.log(err);
-            }
-            console.log("The file was saved!");
-        });
-      }).catch((err) => {
-        console.log(err);
-      });
-    }
 
-  }
 
   handleCreateDialogOpen = () => {
     this.setState({ createDialogOpen: true});
@@ -337,7 +304,7 @@ class MainView extends React.Component {
 
   /*
    * Handling project management BEGIN
-   */
+   */Ex
 
   handleNewProject = () => {
 
@@ -419,6 +386,25 @@ class MainView extends React.Component {
     this.setState({
       deleteProjectDialogOpen: false,
       projectTobeDeleted: '',
+      anchorEl: null
+    })
+  }
+
+  handleExportRequirements = () => {
+    this.openExportRequirementsDialog()
+  }
+
+  openExportRequirementsDialog = () => {
+    this.setState({
+      exportRequirementsDialogOpen: true,
+      anchorEl: null
+    })
+
+  }
+
+  closeExportRequirementsDialog = () => {
+    this.setState({
+      exportRequirementsDialogOpen: false,
       anchorEl: null
     })
   }
@@ -553,7 +539,7 @@ class MainView extends React.Component {
                     <ListItemText primary="Import" />
                   </ListItem>
                   <ListItem button>
-                    <ListItemIcon onClick={() => this.handleExport()}>
+                    <ListItemIcon onClick={() => this.handleExportRequirements()}>
                       <ExportIcon />
                     </ListItemIcon>
                     <ListItemText primary="Export" />
@@ -592,6 +578,11 @@ class MainView extends React.Component {
             open={this.state.deleteProjectDialogOpen}
             projectTobeDeleted={this.state.projectTobeDeleted}
             handleDialogClose={this.closeDeleteProjectDialog}
+          />
+          <ExportRequirementsDialog
+            open={this.state.exportRequirementsDialogOpen}
+            fretProjects={this.state.listOfProjects}
+            handleDialogClose={this.closeExportRequirementsDialog}
           />
         </div>
         <Snackbar
