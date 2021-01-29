@@ -48,7 +48,8 @@ const db = require('electron').remote.getGlobal('sharedObj').db;
 const app = require('electron').remote.app;
 const dialog = require('electron').remote.dialog;
 const fs = require('fs');
-const system_dbkeys = sharedObj.system_dbkeys;
+const system_dbkeys = require('electron').remote.getGlobal('sharedObj').system_dbkeys;
+const uuidv1 = require('uuid/v1');
 
 const styles = theme => ({
   container: {
@@ -85,22 +86,11 @@ class ExportRequirementsDialog extends React.Component {
     this.handleExport();
     this.setState({ open: false });
     this.state.dialogCloseListener();
-     //const { projects } = this.state
-    // const deleteList = []
-    // requirements.forEach(r => {
-    //   deleteList.push({
-    //     _id: r.dbkey,
-    //     _rev: r.rev,
-    //     _deleted: true
-    //   })
-    // })
-    // db.bulkDocs(deleteList)
-    //   .catch((err) => {
-    //     console.log(err)
-    //   })
   };
 
   handleExport = () => {
+    const {project} = this.state;
+    const filterOff = project == "All Projects";
     var homeDir = app.getPath('home');
     var filepath = dialog.showSaveDialog(
       {
@@ -115,7 +105,9 @@ class ExportRequirementsDialog extends React.Component {
       db.allDocs({
         include_docs: true,
       }).then((result) => {
-        var filteredReqs = result.rows.filter(r => !system_dbkeys.includes(r.key))
+        var filteredReqs = result.rows
+        .filter(r => !system_dbkeys.includes(r.key))
+        .filter(r => filterOff || r.doc.project == project)
         var filteredResult = []
         filteredReqs.forEach((r) => {
           var doc = (({reqid, parent_reqid, project, rationale, comments, fulltext, semantics, input}) =>
@@ -124,7 +116,6 @@ class ExportRequirementsDialog extends React.Component {
           filteredResult.push(doc)
         })
         var content = JSON.stringify(filteredResult, null, 4)
-        console.log(content)
         fs.writeFile(filepath, content, (err) => {
             if(err) {
                 return console.log(err);
@@ -165,7 +156,7 @@ class ExportRequirementsDialog extends React.Component {
           <DialogTitle id="alert-dialog-title">{"Export Requirements"}</DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              You can export all requirements by selecting All Projects.
+              Select specific project or export all requirements by selecting All Projects.
             </DialogContentText>
             <TextField
               id="standard-select-project"
@@ -182,7 +173,10 @@ class ExportRequirementsDialog extends React.Component {
               helperText="Please select a project"
               margin="normal"
             >
-              {this.state.projects.map(name => (
+            <MenuItem key={"All Projects"} value={"All Projects"}>
+                  {<b>All Projects</b>}
+                </MenuItem>
+            {this.state.projects.map(name => (
                 <MenuItem key={name} value={name}>
                   {name}
                 </MenuItem>
