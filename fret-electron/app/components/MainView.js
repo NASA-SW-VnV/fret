@@ -535,8 +535,8 @@ class MainView extends React.Component {
                     </ListItemIcon>
                     <ListItemText primary="Import" />
                   </ListItem>
-                  <ListItem button>
-                    <ListItemIcon onClick={() => this.openExportRequirementsDialog()}>
+                  <ListItem button onClick={() => this.openExportRequirementsDialog()}>
+                    <ListItemIcon>
                       <ExportIcon />
                     </ListItemIcon>
                     <ListItemText primary="Export" />
