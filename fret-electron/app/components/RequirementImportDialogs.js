@@ -117,10 +117,10 @@ class RequirementImportDialogs extends React.Component {
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
           >
-            <DialogTitle id="alert-dialog-title">{"Requirements Import "}</DialogTitle>
+            <DialogTitle id="alert-dialog-title">{"CSV Import Configuration"}</DialogTitle>
             <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              Please specify the following:
+              Please configure the requirement import:
             </DialogContentText>
             <form className={classes.container} noValidate autoComplete="off">
               <TextField
