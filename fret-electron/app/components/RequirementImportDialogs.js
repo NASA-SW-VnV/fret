@@ -123,8 +123,7 @@ class RequirementImportDialogs extends React.Component {
   };
 
   render() {
-    const {classes, csvFields} = this.props;
-    console.log(csvFields)
+    const {classes, csvFields, listOfProjects} = this.props;
       return (
         <div>
           <Dialog
@@ -136,7 +135,7 @@ class RequirementImportDialogs extends React.Component {
             <DialogTitle id="alert-dialog-title">{"CSV Import Configuration"}</DialogTitle>
             <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              Please configure the requirement import by picking the following fields:
+              Please configure the requirement import, by mapping the following fields:
             </DialogContentText>
             <div className={classes.root}>
               <FormControl required className={classes.formControl}>
@@ -157,15 +156,15 @@ class RequirementImportDialogs extends React.Component {
                 </Select>
                 <FormHelperText>Required</FormHelperText>
               </FormControl>
-              <FormControl required className={classes.formControl}>
-                <InputLabel htmlFor="age-native-required">Requirement Description</InputLabel>
+              <FormControl className={classes.formControl}>
+                <InputLabel htmlFor="age-native-simple">Requirement Description</InputLabel>
                 <Select
                   native
                   value={this.state.description}
                   onChange={this.handleChange('description')}
                   name="description"
                   inputProps={{
-                    id: 'age-native-required',
+                    id: 'age-native-simple',
                   }}
                 >
                 <option value="" />
@@ -173,7 +172,24 @@ class RequirementImportDialogs extends React.Component {
                     return(<option value={v}>{v}</option>)
                 })}
                 </Select>
-                <FormHelperText>Required</FormHelperText>
+              </FormControl>
+              <FormControl className={classes.formControl}>
+                <InputLabel htmlFor="age-native-simple">Project ID</InputLabel>
+                <Select
+                  native
+                  value={this.state.project}
+                  onChange={this.handleChange('project')}
+                  name="project"
+                  inputProps={{
+                    id: 'age-native-simple',
+                  }}
+                >
+                <option value="" />
+                {listOfProjects.map(p => {
+                    return(<option value={p}>{p}</option>)
+                })}
+                </Select>
+                <FormHelperText>If left blank</FormHelperText>
               </FormControl>
             </div>
             <form className={classes.container} noValidate autoComplete="off">
@@ -206,7 +222,8 @@ class RequirementImportDialogs extends React.Component {
     classes: PropTypes.object.isRequired,
     open: PropTypes.bool.isRequired,
     handleDialogClose: PropTypes.func.isRequired,
-    csvFields: PropTypes.array.isRequired
+    csvFields: PropTypes.array.isRequired,
+    listOfProjects: PropTypes.array.isRequired
   }
 
   export default withStyles(styles)(RequirementImportDialogs);
