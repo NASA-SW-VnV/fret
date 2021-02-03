@@ -31,7 +31,7 @@
 // AGREEMENT.
 // *****************************************************************************
 
-const csv2json=require("csvtojson");
+//const csv2json=require("csvtojson");
 const fs=require("fs");
 const db = require('electron').remote.getGlobal('sharedObj').db;
 const system_dbkeys = require('electron').remote.getGlobal('sharedObj').system_dbkeys;
@@ -57,16 +57,20 @@ var translationFields = {
 function csvToJsonConvert (filepath, project, rid, text, projects) {
   let self = this;
   translateFields(rid, text);
-  projectName = project
+  projectName = project;
 
- csv2json().fromFile(filepath).then((importedReqs)=>{
-   const reqs = manipulate(importedReqs)
-   importRequirements (reqs, projects);
-  })
-.catch(err => {
-        // log error if any
-        console.log(err);
-    });
+  const reqs = manipulate(importedReqs)
+  importRequirements (reqs, projects);
+
+//  csv2json().fromFile(filepath).then((importedReqs)=>{
+//    let csvFields = Object.keys(importedReqs[0]);
+//    const reqs = manipulate(importedReqs, csvFields)
+//    importRequirements (reqs, projects);
+//   })
+// .catch(err => {
+//         // log error if any
+//         console.log(err);
+//     });
 }
 
 function importRequirements (data, projects) {

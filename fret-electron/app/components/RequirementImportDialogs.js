@@ -32,16 +32,23 @@
 // *****************************************************************************
 import React from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
+import { withStyles } from '@material-ui/core/styles';
+
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import classNames from 'classnames';
-import { withStyles } from '@material-ui/core/styles';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
+
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
 
 const styles = theme => ({
 container: {
@@ -59,6 +66,13 @@ dense: {
 menu: {
   width: 200,
 },
+formControl: {
+    margin: theme.spacing.unit,
+    minWidth: 300,
+  },
+  selectEmpty: {
+    marginTop: theme.spacing.unit * 2,
+  }
 });
 
 class RequirementImportDialogs extends React.Component {
@@ -97,6 +111,7 @@ class RequirementImportDialogs extends React.Component {
   componentWillReceiveProps = (props) => {
     this.setState({
       open: props.open,
+      csvFields: props.csvFields,
       dialogCloseListener : props.handleDialogClose,
     })
   }
@@ -108,7 +123,8 @@ class RequirementImportDialogs extends React.Component {
   };
 
   render() {
-    const {classes} = this.props;
+    const {classes, csvFields} = this.props;
+    console.log(csvFields)
       return (
         <div>
           <Dialog
@@ -120,27 +136,47 @@ class RequirementImportDialogs extends React.Component {
             <DialogTitle id="alert-dialog-title">{"CSV Import Configuration"}</DialogTitle>
             <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              Please configure the requirement import:
+              Please configure the requirement import by picking the following fields:
             </DialogContentText>
+            <div className={classes.root}>
+              <FormControl required className={classes.formControl}>
+                <InputLabel htmlFor="age-native-required">Requirement ID</InputLabel>
+                <Select
+                  native
+                  value={this.state.reqID}
+                  onChange={this.handleChange('reqID')}
+                  name="reqID"
+                  inputProps={{
+                    id: 'age-native-required',
+                  }}
+                >
+                <option value="" />
+                {csvFields.map(v => {
+                    return(<option value={v}>{v}</option>)
+                })}
+                </Select>
+                <FormHelperText>Required</FormHelperText>
+              </FormControl>
+              <FormControl required className={classes.formControl}>
+                <InputLabel htmlFor="age-native-required">Requirement Description</InputLabel>
+                <Select
+                  native
+                  value={this.state.description}
+                  onChange={this.handleChange('description')}
+                  name="description"
+                  inputProps={{
+                    id: 'age-native-required',
+                  }}
+                >
+                <option value="" />
+                {csvFields.map(v => {
+                    return(<option value={v}>{v}</option>)
+                })}
+                </Select>
+                <FormHelperText>Required</FormHelperText>
+              </FormControl>
+            </div>
             <form className={classes.container} noValidate autoComplete="off">
-              <TextField
-                id="standard-helperText"
-                label="Helper text"
-                defaultValue="Requirement ID"
-                className={classes.textField}
-                helperText="Please specify 'Requirement ID' column name"
-                margin="normal"
-                onChange={this.handleTextFieldChange('reqID')}
-              />
-              <TextField
-                id="standard-helperText"
-                label="Helper text"
-                defaultValue="Description"
-                className={classes.textField}
-                helperText="Please specify 'Description' column name"
-                margin="normal"
-                onChange={this.handleTextFieldChange('description')}
-              />
               <TextField
                 id="standard-helperText"
                 label="Helper text"
@@ -170,6 +206,7 @@ class RequirementImportDialogs extends React.Component {
     classes: PropTypes.object.isRequired,
     open: PropTypes.bool.isRequired,
     handleDialogClose: PropTypes.func.isRequired,
+    csvFields: PropTypes.array.isRequired
   }
 
   export default withStyles(styles)(RequirementImportDialogs);
