@@ -50,6 +50,9 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 
+import Typography from '@material-ui/core/Typography';
+
+
 const styles = theme => ({
 container: {
   display: 'flex',
@@ -67,12 +70,18 @@ menu: {
   width: 200,
 },
 formControl: {
+    margin: theme.spacing.unit *2,
+    minWidth: 450,
+    marginTop: theme.spacing.unit * -.1
+  },
+  title: {
+    marginTop: theme.spacing.unit *2,
     margin: theme.spacing.unit,
-    minWidth: 300,
+    fontWeight: '500'
   },
   selectEmpty: {
-    marginTop: theme.spacing.unit * 2,
-  }
+    marginTop: theme.spacing.unit,
+  },
 });
 
 class RequirementImportDialogs extends React.Component {
@@ -135,74 +144,85 @@ class RequirementImportDialogs extends React.Component {
             <DialogTitle id="alert-dialog-title">{"CSV Import Configuration"}</DialogTitle>
             <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              Please configure the requirement import, by mapping the following fields:
+              Please configure the requirement import by mapping the following fields:
             </DialogContentText>
             <div className={classes.root}>
+              <Typography className={classes.title}>
+                Requirement Attribute Mapping
+              </Typography>
+              <form className={classes.root} autoComplete="off">
               <FormControl required className={classes.formControl}>
-                <InputLabel htmlFor="age-native-required">Requirement ID</InputLabel>
+                <InputLabel htmlFor="age-required">Requirement ID</InputLabel>
                 <Select
-                  native
                   value={this.state.reqID}
                   onChange={this.handleChange('reqID')}
                   name="reqID"
                   inputProps={{
-                    id: 'age-native-required',
+                    id: 'age-required',
                   }}
+                  className={classes.selectEmpty}
                 >
-                <option value="" />
                 {csvFields.map(v => {
-                    return(<option value={v}>{v}</option>)
+                    return(<MenuItem value={v}>{v}</MenuItem>)
                 })}
                 </Select>
-                <FormHelperText>Required</FormHelperText>
+                <FormHelperText>Required field.</FormHelperText>
               </FormControl>
               <FormControl className={classes.formControl}>
-                <InputLabel htmlFor="age-native-simple">Requirement Description</InputLabel>
+                <InputLabel htmlFor="age-simple">Requirement Description</InputLabel>
                 <Select
-                  native
                   value={this.state.description}
                   onChange={this.handleChange('description')}
                   name="description"
                   inputProps={{
-                    id: 'age-native-simple',
+                    id: 'age-simple',
                   }}
                 >
-                <option value="" />
+                  <MenuItem value="">
+                    <em>None</em>
+                  </MenuItem>
                 {csvFields.map(v => {
-                    return(<option value={v}>{v}</option>)
+                    return(<MenuItem value={v}>{v}</MenuItem>)
                 })}
                 </Select>
               </FormControl>
-              <FormControl className={classes.formControl}>
-                <InputLabel htmlFor="age-native-simple">Project ID</InputLabel>
+              <Typography className={classes.title}>
+                Project Mapping
+              </Typography>
+              <FormControl required className={classes.formControl}>
+                <InputLabel htmlFor="age-required">Project ID</InputLabel>
                 <Select
-                  native
                   value={this.state.project}
                   onChange={this.handleChange('project')}
                   name="project"
                   inputProps={{
-                    id: 'age-native-simple',
+                    id: 'age-required',
                   }}
+                  className={classes.selectEmpty}
                 >
-                <option value="" />
-                {listOfProjects.map(p => {
-                    return(<option value={p}>{p}</option>)
+                {csvFields.map(v => {
+                    return(<MenuItem value={v}>{v}</MenuItem>)
                 })}
+                {listOfProjects.map(p => {
+                    return(<MenuItem value={p}>Existing project ID: {p}</MenuItem>)
+                })}
+                <MenuItem value='CreateProject'>Create new project ID...</MenuItem>
                 </Select>
-                <FormHelperText>If left blank</FormHelperText>
+                <FormHelperText>Required field. Map to attribute or choose existing/create FRET project.</FormHelperText>
               </FormControl>
-            </div>
-            <form className={classes.container} noValidate autoComplete="off">
-              <TextField
-                id="standard-helperText"
-                label="Helper text"
-                defaultValue="csvProject"
-                className={classes.textField}
-                helperText="Please specify 'Project name' "
-                margin="normal"
-                onChange={this.handleTextFieldChange('project')}
-              />
+              {this.state.project === 'CreateProject' &&
+                <TextField
+                  required
+                  id="standard-required"
+                  label="Please specify new Project ID"
+                  defaultValue=""
+                  className={classes.formControl}
+                  margin="normal"
+                  onChange={this.handleChange('newProject')}
+                />
+            }
               </form>
+            </div>
             </DialogContent>
             <DialogActions>
               <Button onClick={this.handleClose} color="primary">
