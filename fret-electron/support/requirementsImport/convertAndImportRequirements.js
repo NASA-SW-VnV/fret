@@ -49,7 +49,7 @@ const defaultFullName = 'Description';
 // change so that everything goes to rationale by default except what is in map
 var translationFields = {
   reqid: defaultReqIdField,
-  fullname: defaultFullName
+  fulltext: defaultFullName
 };
 
 //project, rid and text are provided as user input
@@ -61,15 +61,6 @@ function csvToJsonConvert (importedReqs, project, rid, text, projects) {
   const reqs = manipulate(importedReqs)
   importRequirements (reqs, projects);
 
-//  csv2json().fromFile(filepath).then((importedReqs)=>{
-//    let csvFields = Object.keys(importedReqs[0]);
-//    const reqs = manipulate(importedReqs, csvFields)
-//    importRequirements (reqs, projects);
-//   })
-// .catch(err => {
-//         // log error if any
-//         console.log(err);
-//     });
 }
 
 function importRequirements (data, projects) {
@@ -98,7 +89,7 @@ function translateFields (rid, text){
     translationFields.reqid = rid
   }
   if (text !== defaultFullName && text !== "" && text !== undefined){
-    translationFields.fullname = text
+    translationFields.fulltext = text
   }
 }
 
@@ -114,11 +105,14 @@ function createFretObject(name) {
      var correspondsTo = 'rationale';
      for (let field of csvFields){
        let mapsTo = getKeyByValue(translationFields, field);
-       if (mapsTo === 'reqid'){
-         newFretReq[mapsTo] = req[field];
-       } else {
+       if (mapsTo === 'reqid' ){
+         newFretReq.reqid = req[field];
+       }
+       else {
          newFretReq[correspondsTo] += (`\n${field}: `.toUpperCase());
          newFretReq[correspondsTo] += (req[field]);
+         if (mapsTo === 'fulltext' ) {
+          newFretReq.fulltext = "\""+ req[field]+ "\"";}
        }
      }
      fretReqs.push(newFretReq);

@@ -53,6 +53,9 @@ import Select from '@material-ui/core/Select';
 import Typography from '@material-ui/core/Typography';
 
 
+const requirementsImport = require('../../support/requirementsImport/convertAndImportRequirements');
+
+
 const styles = theme => ({
 container: {
   display: 'flex',
@@ -89,7 +92,8 @@ class RequirementImportDialogs extends React.Component {
     open: false,
     description:'',
     reqID:'',
-    project:''
+    project:'',
+    newProject: ''
   };
 
   handleChange = name => event => {
@@ -112,7 +116,14 @@ class RequirementImportDialogs extends React.Component {
   //this.props.setUserInput(userInput);
   };
 
-  handleCloseUnsupported = () => {
+  handleCloseSupported = () => {
+    const {reqID, project, description, newProject, importedReqs} = this.state;
+    const {listOfProjects} = this.props;
+    if (project === 'CreateProject')
+      requirementsImport.csvToJsonConvert(importedReqs, newProject, reqID, description, listOfProjects);
+    else {
+      requirementsImport.csvToJsonConvert(importedReqs, project, reqID, description, listOfProjects);
+    }
     this.setState({ open: false });
     this.state.dialogCloseListener();
   }
@@ -122,6 +133,7 @@ class RequirementImportDialogs extends React.Component {
       open: props.open,
       csvFields: props.csvFields,
       dialogCloseListener : props.handleDialogClose,
+      importedReqs: props.importedReqs
     })
   }
 
@@ -228,7 +240,7 @@ class RequirementImportDialogs extends React.Component {
               <Button onClick={this.handleClose} color="primary">
                 Cancel
               </Button>
-              <Button onClick={this.handleCloseUnsupported} color="primary" autoFocus>
+              <Button onClick={this.handleCloseSupported} color="primary" autoFocus>
                 OK
               </Button>
             </DialogActions>
@@ -243,7 +255,8 @@ class RequirementImportDialogs extends React.Component {
     open: PropTypes.bool.isRequired,
     handleDialogClose: PropTypes.func.isRequired,
     csvFields: PropTypes.array.isRequired,
-    listOfProjects: PropTypes.array.isRequired
+    listOfProjects: PropTypes.array.isRequired,
+    importedReqs: PropTypes.array.isRequired
   }
 
   export default withStyles(styles)(RequirementImportDialogs);
