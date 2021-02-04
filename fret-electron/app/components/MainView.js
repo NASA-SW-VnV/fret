@@ -88,7 +88,6 @@ const uuidv1 = require('uuid/v1');
 const system_dbkeys = require('electron').remote.getGlobal('sharedObj').system_dbkeys;
 const csv2json=require("csvtojson");
 
-const requirementsImport = require('../../support/requirementsImport/convertAndImportRequirements');
 
 const drawerWidth = 240;
 
@@ -207,13 +206,10 @@ class MainView extends React.Component {
     listOfProjects: [],
     deleteProjectDialogOpen: false,
     projectTobeDeleted: '',
-<<<<<<< HEAD
     exportRequirementsDialogOpen: false,
-    requirementImportDialogOpen: false
-=======
     requirementImportDialogOpen: false,
-    csvFields: []
->>>>>>> Added dropdown menus for import fields
+    csvFields: [],
+    importedReqs: []
   };
 
   //Dialog is an electron module
@@ -240,20 +236,14 @@ class MainView extends React.Component {
        if (fileExtension === 'csv'){
 
          csv2json().fromFile(filepath).then((importedReqs)=>{
-           console.log(importedReqs)
+           //console.log(importedReqs);
            let csvFields = Object.keys(importedReqs[0]);
-           console.log(csvFields)
-           self.handleImportRequirements(csvFields);
-           //requirementsImport.csvToJsonConvert(filepath, 'csvProject', 'Requirement ID', 'Description', listOfProjects);
+           self.handleImportRequirements(csvFields, importedReqs);
           })
         .catch(err => {
                 // log error if any
                 console.log(err);
             });
-
-         //TODO: Update
-         // let userInput = self.handleImportRequirements();
-         // console.log(userInput)
 
 
        } else if (fileExtension === 'json'){
@@ -301,6 +291,40 @@ class MainView extends React.Component {
   };
 
 
+  handleExport = () => {
+    var homeDir = app.getPath('home');
+    var filepath = dialog.showSaveDialog(
+      {
+        defaultPath : homeDir,
+        title : 'Export Requirements',
+        buttonLabel : 'Export',
+        filters: [
+          { name: "Documents", extensions: ['json'] }
+        ],
+      })
+    if (filepath) {
+      db.allDocs({
+        include_docs: true,
+      }).then((result) => {
+        var filteredReqs = result.rows.filter(r => !system_dbkeys.includes(r.key))
+        var filteredResult = []
+        filteredReqs.forEach((r) => {
+          var doc = (({reqid, parent_reqid, project, rationale, comments, fulltext, semantics, input}) =>
+                      ({reqid, parent_reqid, project, rationale, comments, fulltext, semantics, input}))(r.doc)
+          doc._id = uuidv1()
+          filteredResult.push(doc)
+        })
+        var content = JSON.stringify(filteredResult, null, 4)
+        fs.writeFile(filepath, content, (err) => {
+            if(err) {
+                return console.log(err);
+            }
+            console.log("The file was saved!");
+        });
+      }).catch((err) => {
+        console.log(err);
+      });
+    }
 
 
   handleCreateDialogOpen = () => {
@@ -420,9 +444,9 @@ class MainView extends React.Component {
 
     handleImportRequirements = (csvFields) => {
       this.setState({
-        csvFields: csvFields
+        csvFields: csvFields,
+        importedReqs: importedReqs
       })
-      console.log(this.state.csvFields)
     this.openRequirementImportDialog()
   }
 
@@ -620,6 +644,7 @@ class MainView extends React.Component {
             handleDialogClose={this.closeRequirementImportDialog}
             csvFields={this.state.csvFields}
             listOfProjects={this.state.listOfProjects}
+            importedReqs={this.state.importedReqs}
           />
         </div>
         <Snackbar

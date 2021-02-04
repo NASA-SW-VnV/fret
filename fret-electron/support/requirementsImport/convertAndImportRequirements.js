@@ -31,7 +31,6 @@
 // AGREEMENT.
 // *****************************************************************************
 
-//const csv2json=require("csvtojson");
 const fs=require("fs");
 const db = require('electron').remote.getGlobal('sharedObj').db;
 const system_dbkeys = require('electron').remote.getGlobal('sharedObj').system_dbkeys;
@@ -54,7 +53,7 @@ var translationFields = {
 };
 
 //project, rid and text are provided as user input
-function csvToJsonConvert (filepath, project, rid, text, projects) {
+function csvToJsonConvert (importedReqs, project, rid, text, projects) {
   let self = this;
   translateFields(rid, text);
   projectName = project;
