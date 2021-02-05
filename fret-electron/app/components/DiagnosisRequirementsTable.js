@@ -75,7 +75,40 @@ function desc(a, b, orderBy) {
   return 0
 }
 
-function stableSort(array, conflictReqs, connectedComponent, cmp) {
+function stableSort(array, conflictReqs, cmp) {
+  if (conflictReqs.length === 0) {
+    const stabilizedThis = array.map((el, index) => [el, index]);
+    stabilizedThis.sort((a, b) => {
+      const order = cmp(a[0], b[0]);
+      if (order !== 0) return order;
+      return a[1] - b[1];
+    });
+    return stabilizedThis.map(el => el[0]);
+  } else {
+    console.log(array)
+    const conflictData = array.filter(el => conflictReqs.includes(el.reqid.replace(/-/g,'')));
+    const assumptionData = array.filter(el => el.reqid.includes('assumption'));
+    const remainingData = array.filter(el => (!el.reqid.includes('assumption') &&
+      !conflictReqs.includes(el.reqid.replace(/-/g,''))));
+    
+    const sortedAssumptions = assumptionData.map((el, index) => [el, index]);
+    sortedAssumptions.sort((a, b) => {
+      const order = cmp(a[0], b[0]);
+      if (order !== 0) return order;
+      return a[1] - b[1];
+    });
+
+    const sortedRemaining = remainingData.map((el, index) => [el, index]);
+    sortedRemaining.sort((a, b) => {
+      const order = cmp(a[0], b[0]);
+      if (order !== 0) return order;
+      return a[1] - b[1];
+    });
+    return conflictData.concat(sortedAssumptions.map(el => el[0]).concat(sortedRemaining.map(el => el[0])));
+  }
+}
+
+function ccStableSort(array, conflictReqs, connectedComponent, cmp) {
   
   if (conflictReqs.length === 0) {
     const ccData = array.filter(el => connectedComponent.properties.has(el.reqid));
@@ -90,7 +123,6 @@ function stableSort(array, conflictReqs, connectedComponent, cmp) {
 
     return ccData.concat(sortedRemaining.map(el => el[0]));
   } else {
-    console.log(array)
     const conflictData = array.filter(el => conflictReqs.includes(el.reqid.replace(/-/g,'')));
     const assumptionData = array.filter(el => el.reqid.includes('assumption'));
     const remainingData = array.filter(el => (!el.reqid.includes('assumption') &&
@@ -225,7 +257,6 @@ class DiagnosisRequirementsTable extends React.Component {
       this.setState(
         {
           selected: [],
-          selectedRequirement: {},
           bulkChangeMode: false
         });
     }
@@ -325,13 +356,14 @@ class DiagnosisRequirementsTable extends React.Component {
               onRequestSort={this.handleRequestSort}
               rowCount={data.length}
             />
-            <TableBody>{
-                stableSort(data, reqs, connectedComponent, getSorting(order, orderBy))
+            {Object.keys(connectedComponent).length !== 0 ?
+              (<TableBody>{
+                ccStableSort(data, reqs, connectedComponent, getSorting(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map(n => {
                   const isSelected = this.isSelected(n.dbkey);
                   const label = n.reqid ? n.reqid.replace(/-/g,'') : 'NONE'
-                  var isInConflict = (reqs.length !== 0 && reqs.includes(label)) ? true : false;
+                  var isInConflict = (reqs.length !== 0 && reqs.includes(label)) ? true : false;                  
                   return (
                       <TableRow key={n.rowid} style={{
                           opacity : (isInConflict || connectedComponent.properties.has(n.reqid)) ? 1 : .6,
@@ -344,12 +376,39 @@ class DiagnosisRequirementsTable extends React.Component {
                       </TableRow>
                     )
                 })}
-              {emptyRows > 0 && (
-                <TableRow style={{ height: 49 * emptyRows }}>
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
-            </TableBody>
+                {emptyRows > 0 && (
+                  <TableRow style={{ height: 49 * emptyRows }}>
+                    <TableCell colSpan={6} />
+                  </TableRow>
+                )}
+              </TableBody>) :
+              (<TableBody>{
+                stableSort(data, reqs, getSorting(order, orderBy))
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map(n => {
+                  const isSelected = this.isSelected(n.dbkey);
+                  const label = n.reqid ? n.reqid.replace(/-/g,'') : 'NONE'
+                  var isInConflict = (reqs.length !== 0 && reqs.includes(label)) ? true : false;
+                  var isAssumption = n.reqid.includes('assumption')
+                  return (
+                      <TableRow key={n.rowid} style={{
+                          opacity : (isInConflict || reqs.length === 0  || isAssumption) ? 1 : .6,
+                          borderStyle: isInConflict ? 'solid' : 'initial', 
+                          borderColor: isInConflict ? color : 'initial'}}>
+                        <TableCell>
+                            {label}
+                          </TableCell>
+                        <TableCell>{n.summary}</TableCell>
+                      </TableRow>
+                    )
+                })}
+                {emptyRows > 0 && (
+                  <TableRow style={{ height: 49 * emptyRows }}>
+                    <TableCell colSpan={6} />
+                  </TableRow>
+                )}
+              </TableBody>)
+            }
           </Table>
         </div>
         <TablePagination

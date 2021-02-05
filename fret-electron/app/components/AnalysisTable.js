@@ -254,15 +254,19 @@ class DisplayConnectedComponents extends React.Component {
     const {value, status} = this.state;
     const tabs = []
     for (var cc in connectedComponents[selectedComponent.component_name]) {      
-      tabs.push(<Tab classes={{root : classes.tabRoot}} label={<div> {cc}{
-        connectedComponents[selectedComponent.component_name][cc]['result'] === 'REALIZABLE' ? 
+      tabs.push(<Tab classes={{root : classes.tabRoot}} label={
+        <div>
+        {cc}
+        <Tooltip title={connectedComponents[selectedComponent.component_name][cc]['result']}>
+          {connectedComponents[selectedComponent.component_name][cc]['result'] === 'REALIZABLE' ? 
                             <CheckIcon style={{fontSize : '20px', verticalAlign : 'bottom', color : '#68BC00'}}/> :
                             connectedComponents[selectedComponent.component_name][cc]['result'] === 'UNREALIZABLE' ? 
                               <ClearIcon style={{fontSize : '20px', verticalAlign : 'bottom'}} color='error'/> :
                               connectedComponents[selectedComponent.component_name][cc]['result'] === 'PROCESSING' ?
                                 <CircularProgress style={{verticalAlign : 'bottom'}} size={15}/> : <div/>}
-      
-        </div>}/>)            
+        </Tooltip>      
+        </div>
+      }/>)            
     }
     return (
       <div>
@@ -335,6 +339,7 @@ class AnalysisTable extends React.Component {
     connectedComponents: {},
     check: '',
     status: {},
+    diagnosisStatus: {},
     monolithic: false,
     compositional: false
   }
@@ -486,8 +491,9 @@ class AnalysisTable extends React.Component {
   }
 
   handleChange = name => event => {
+    const {connectedComponents} = this.state;
     if (name === 'selected') {
-      this.setState({selected: event.target.value, monolithic : false, compositional : false });
+      this.setState({selected: event.target.value, monolithic : Object.keys(connectedComponents[event.target.value.component_name]).length === 1, compositional : Object.keys(connectedComponents[event.target.value.component_name]).length > 1});
 
     } else if (name === 'monolithic') {
       this.setState({monolithic : !this.state.monolithic, compositional : false});
@@ -501,15 +507,33 @@ class AnalysisTable extends React.Component {
   };
 
   diagnoseSpec(event) {    
-    const {selected, connectedComponents, ccSelected} = this.state;
-    connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'] = 'PROCESSING'
-    // buttonText = "PROCESSING";
-    var filePath = analysisPath+selected.component_name+"_"+ccSelected+".lus"
-    var runDiagnosis = realizability.checkRealizability(filePath, '-diagnose -fixpoint -json');
-    // let engine = new DiagnosisEngine(contract, 'realizability');
-    // engine.main();
-    connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'] = 'DIAGNOSED'    
-    this.setState({ connectedComponents : connectedComponents})
+    const {diagnosisStatus, selected, connectedComponents, ccSelected, compositional, monolithic} = this.state;
+
+    if (compositional) {
+      connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'] = 'PROCESSING'
+      // buttonText = "PROCESSING";
+      var filePath = analysisPath+selected.component_name+"_"+ccSelected+".lus"
+      var runDiagnosis = realizability.checkRealizability(filePath, '-diagnose -fixpoint -json');
+      // let engine = new DiagnosisEngine(contract, 'realizability');
+      // engine.main();
+      connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'] = 'DIAGNOSED'    
+      this.setState({ connectedComponents : connectedComponents})
+    } else if (monolithic) {      
+      // buttonText = "PROCESSING";
+      diagnosisStatus[selected.component_name] = 'PROCESSING'
+      this.setState({ diagnosisStatus : diagnosisStatus})
+      var filePath = analysisPath+selected.component_name+".lus"
+      var runDiagnosis = realizability.checkRealizability(filePath, '-timeout 1000 -diagnose -fixpoint -json');
+      // var result = runDiagnosis.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];
+      // // let engine = new DiagnosisEngine(contract, 'realizability');
+      // // engine.main();
+      // if (result === 'UNREALIZABLE') {
+      this.timer = setTimeout(() => {
+        diagnosisStatus[selected.component_name] = 'DIAGNOSED';
+        this.setState({ diagnosisStatus : diagnosisStatus});
+      }, 2000);
+      // }
+    }
   }
 
   getCoCoSpecDataType(dataType){
@@ -650,7 +674,7 @@ class AnalysisTable extends React.Component {
           output.write(lustreContract);
           output.end();
           output.on('finish', () => {
-            checkOutput = realizability.checkRealizability(filePath, '-fixpoint');
+            checkOutput = realizability.checkRealizability(filePath, '-timeout 1000 -fixpoint');
             var result = checkOutput.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];
             console.log(result)
             self.setState(prevState => {
@@ -752,23 +776,25 @@ class AnalysisTable extends React.Component {
 
   render() {
     const {classes, selectedProject, components} = this.props;
-    const {connectedComponents, order, orderBy, status, selected, ccSelected, monolithic, compositional} = this.state;
+    const {connectedComponents, order, orderBy, status, diagnosisStatus, selected, ccSelected, monolithic, compositional} = this.state;
     let grid;
 
     var tabs = [];
-    for (var cc in connectedComponents[selected.component_name]) {      
-      tabs.push(<Tab value={cc} classes={{root : classes.tabRoot}} label={
-        <div style={{alignContent: 'flex-end'}}> 
+    for (var cc in connectedComponents[selected.component_name]) {
+          tabs.push(<Tab value={cc} classes={{root : classes.tabRoot}} label={
+        <div style={{alignContent: 'flex-end'}}>
         {cc}
-        {connectedComponents[selected.component_name][cc]['result'] === 'REALIZABLE' ? 
+        <Tooltip title={connectedComponents[selected.component_name][cc]['result']}>
+          {connectedComponents[selected.component_name][cc]['result'] === 'REALIZABLE' ? 
                             <CheckIcon style={{fontSize : '20px', verticalAlign : 'bottom', color : '#68BC00'}}/> :
                             connectedComponents[selected.component_name][cc]['result'] === 'UNREALIZABLE' ? 
                               <ClearIcon style={{fontSize : '20px', verticalAlign : 'bottom'}} color='error'/> :
                               connectedComponents[selected.component_name][cc]['result'] === 'PROCESSING' ?
                                 <CircularProgress style={{verticalAlign : 'bottom'}} size={15}/> : 
                                 <CheckIcon style={{fontSize : '20px', verticalAlign : 'bottom', opacity : 0}}/>}
-      
-        </div>}/>)            
+        </Tooltip>      
+        </div>
+      }/>)                 
     }
     return(
       <div>
@@ -780,7 +806,6 @@ class AnalysisTable extends React.Component {
                 value={selected}
                 onChange={this.handleChange('selected')}
               >
-                <MenuItem key='' value=''/>
                 {stableSort(components, getSorting(order, orderBy))
                   .map(n => {
                     return (
@@ -789,17 +814,34 @@ class AnalysisTable extends React.Component {
                           {n.component_name}
                           &nbsp;
                           &nbsp;
-                          {status[n.component_name] === 'REALIZABLE' ? 
-                            <CheckIcon style={{fontSize : '20px', verticalAlign : 'bottom', color : '#68BC00'}}/> :
-                            status[n.component_name] === 'UNREALIZABLE' ? 
-                              <ClearIcon style={{fontSize : '20px', verticalAlign : 'bottom'}} color='error'/> :
-                              status[n.component_name] === 'PROCESSING' ?
-                                <CircularProgress style={{verticalAlign : 'bottom'}} size={15}/> : <div/>} 
+                          <Tooltip title={status[n.component_name]}>
+                            {status[n.component_name] === 'REALIZABLE' ? 
+                              <CheckIcon style={{fontSize : '20px', verticalAlign : 'bottom', color : '#68BC00'}}/> :
+                              status[n.component_name] === 'UNREALIZABLE' ? 
+                                <ClearIcon style={{fontSize : '20px', verticalAlign : 'bottom'}} color='error'/> :
+                                status[n.component_name] === 'PROCESSING' ?
+                                  <CircularProgress style={{verticalAlign : 'bottom'}} size={15}/> : <div/>}
+                          </Tooltip> 
                         </div>
                       </MenuItem>)
                   })}
               </Select>
             </FormControl>
+            <FormControlLabel
+              disabled={selected === '' || connectedComponents[selected.component_name].length === 1}
+              className={classes.vAlign}
+              control={
+                <Checkbox
+                  checked={compositional}
+                  onChange={this.handleChange('compositional')}
+                  value="compositional"
+                  color="primary"
+                  style={{paddingBottom: '0px'}}
+                />
+              }
+              style={{alignItems: 'flex-end'}}
+              label="Compositional"                
+            />
             <FormControlLabel
               disabled={selected === ''}
               className={classes.vAlign}
@@ -812,28 +854,14 @@ class AnalysisTable extends React.Component {
                   style={{paddingBottom: '0px'}}
                 />
               }
-              style={{alignItems: 'flex-end'}}
-              label="Monolithic"                
-            />
-            <FormControlLabel
-              disabled={selected === ''}
-              className={classes.vAlign}
-              control={
-                <Checkbox
-                  checked={compositional}
-                  onChange={this.handleChange('compositional')}
-                  value="compositional"
-                  color="primary"
-                  style={{paddingBottom: '0px'}}
-                />
-              }
               style={{alignItems: 'flex-end', marginRight:'48%'}}
-              label="Compositional"                
+              label="Monolithic"                
             />
             <Button onClick={(event) => {this.checkRealizability(event)}} size="small" className={classes.vAlign} style={{marginRight: '1%'}} color="secondary" variant='contained' disabled={selected === '' || (selected !== '' && !monolithic && !compositional)}>
               Check                              
             </Button>
-            <Button onClick={(event) => {this.diagnoseSpec(ccSelected, event)}} size="small" className={classes.vAlign} style={{marginRight: '1%'}} color="secondary" variant='contained' disabled={selected === '' || (selected !== '' && connectedComponents[selected.component_name][ccSelected]['result'] !== 'UNREALIZABLE')}>
+          {/*compositional ? this.diagnoseSpec(ccSelected, event) : this.diagnoseSpec(selected.component_name, event)*/}
+            <Button onClick={(event) => {this.diagnoseSpec(event)}} size="small" className={classes.vAlign} style={{marginRight: '1%'}} color="secondary" variant='contained' disabled={selected === '' || (selected !== '' && compositional && connectedComponents[selected.component_name][ccSelected]['result'] !== 'UNREALIZABLE') || (selected !== '' && monolithic && status[selected.component_name] !== 'UNREALIZABLE')}>
               Diagnose                             
             </Button>
             <Button size="small" className={classes.vAlign} style={{marginRight: '1%'}} variant="contained"> Project Summary </Button>              
@@ -847,39 +875,69 @@ class AnalysisTable extends React.Component {
                 <Divider/>
                 <div>
                   {/* try this to appbar below : style={{height: '36px'}}*/}
-                  <AppBar style={{height: '36px'}} position="static" color="default">
-                  {/* try this to div below : className={classes.appbar}*/}
-                    <div className={classes.appbar}>
-                      <Tabs              
-                        value={ccSelected}
-                        onChange={this.handleCCChange}
-                        variant="scrollable"
-                        scrollButtons="on"
-                        indicatorColor="secondary"
-                        textColor="primary"
-                        classes={{scrollable : classes.tabsScrollable}}                           
-                      >
-                      {tabs}
-                      </Tabs>
+                  {compositional && 
+                    <div>
+                    <AppBar style={{height: '36px'}} position="static" color="default">
+                    {/* try this to div below : className={classes.appbar}*/}
+                      <div className={classes.appbar}>
+                        <Tabs              
+                          value={ccSelected}
+                          onChange={this.handleCCChange}
+                          variant="scrollable"
+                          scrollButtons="on"
+                          indicatorColor="secondary"
+                          textColor="primary"
+                          classes={{scrollable : classes.tabsScrollable}}                           
+                        >
+                        {tabs}
+                        </Tabs>
+                      </div>
+                    </AppBar>
+                    <TabContainer>
+                      <DiagnosisProvider>
+                        <div>
+                          {connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'] === 'DIAGNOSED' ? 
+                            (<Fade in={connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'] === 'DIAGNOSED'}>
+                              <ChordDiagram selectedComponent = {"../analysis/tmp/"+selected.component_name+"_"+ccSelected+".lus.json"}/>
+                            </Fade>) : 
+                            (connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'] === 'PROCESSING' ? <CircularProgress style={{alignItems : 'center'}} size={50}/> : <div/>)
+                          }
+                          &nbsp;
+                          &nbsp;
+                          &nbsp;
+                          &nbsp;
+                          <DiagnosisRequirementsTable selectedProject={selectedProject} existingProjectNames={[selectedProject]} connectedComponent={connectedComponents[selected.component_name][ccSelected]}/>
+                        </div>
+                      </DiagnosisProvider>
+                    </TabContainer>
                     </div>
-                  </AppBar>
-                  <TabContainer>
+                  }
+                  {monolithic &&
                     <DiagnosisProvider>
                       <div>
-                        {connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'] === 'DIAGNOSED' ? 
-                          (<Fade in={connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'] === 'DIAGNOSED'}>
-                            <ChordDiagram selectedComponent = {"../analysis/tmp/"+selected.component_name+"_"+ccSelected+".lus.json"}/>
+                        {diagnosisStatus[selected.component_name] === 'DIAGNOSED' ? 
+                          (<Fade in={diagnosisStatus[selected.component_name] === 'DIAGNOSED'}>
+                            <ChordDiagram selectedComponent = {"../analysis/tmp/"+selected.component_name+".lus.json"}/>
                           </Fade>) : 
-                          (connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'] === 'PROCESSING' ? <CircularProgress style={{alignItems : center}} size={50}/> : <div/>)
+                          (diagnosisStatus[selected.component_name] === 'PROCESSING' ? 
+                            <Fade
+                            in={diagnosisStatus[selected.component_name] === 'PROCESSING'}
+                            style={{
+                              transitionDelay: diagnosisStatus[selected.component_name] === 'PROCESSING' ? '800ms' : '0ms',
+                            }}
+                            unmountOnExit
+                            >
+                              <CircularProgress style={{alignItems : 'center'}} size={50}/>
+                            </Fade> : <div/>)
                         }
                         &nbsp;
                         &nbsp;
                         &nbsp;
                         &nbsp;
-                        <DiagnosisRequirementsTable selectedProject={selectedProject} existingProjectNames={[selectedProject]} connectedComponent={connectedComponents[selected.component_name][ccSelected]}/>
-                      </div>
+                        <DiagnosisRequirementsTable selectedProject={selectedProject} existingProjectNames={[selectedProject]} connectedComponent={{}}/>
+                      </div>                                        
                     </DiagnosisProvider>
-                  </TabContainer>
+                  }
                 </div>
               </div> 
             }

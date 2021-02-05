@@ -14,7 +14,8 @@ const path = require("path")
 class ChordDiagram extends React.Component {
 	static contextType = DiagnosisContext;
 	state = {
-		conflicts : [],
+		allConflicts : [],
+		currentConflicts : [],
 		cexTableData : {},
 		colors : []
 	}
@@ -66,7 +67,8 @@ class ChordDiagram extends React.Component {
 					var data = requirementConflicts[requirementNames[nameoffset]];
 					const conflictColors = colors.filter(c => data.includes(conflictNames[colors.indexOf(c)]))
 					chordObj.setState({
-						conflicts : data,
+						allConflicts : conflictNames,
+						currentConflicts : data,
 						cexTableData : cexTables,
 						colors : conflictColors
 					})
@@ -76,7 +78,8 @@ class ChordDiagram extends React.Component {
 					var data = [conflictNames[i]];
 					const conflictColors = colors.filter(c => data.includes(conflictNames[colors.indexOf(c)]))
 					chordObj.setState({
-						conflicts : data,
+						allConflicts : conflictNames,
+						currentConflicts : data,
 						cexTableData : cexTables,
 						colors : conflictColors
 					})
@@ -313,8 +316,9 @@ class ChordDiagram extends React.Component {
 	    if (Object.keys(this.state.cexTableData).length !== 0) {
 	    	table = (
 	    		<Grid>
-	    			<CounterexampleTable 
-	    				conflicts={this.state.conflicts}
+	    			<CounterexampleTable
+	    				allConflicts={this.state.allConflicts} 
+	    				currentConflicts={this.state.currentConflicts}
 	    				cexTableData={this.state.cexTableData}
 	    				colors={this.state.colors}
     				/>

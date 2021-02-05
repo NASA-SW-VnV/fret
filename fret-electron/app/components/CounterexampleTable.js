@@ -51,7 +51,7 @@ const tableComponentBarStyles = theme => ({
      flexWrap: 'wrap',
   },
   formControl: {
-    minWidth: 400,
+    minWidth: 150,
     padding: theme.spacing.unit * -2,
     marginRight: theme.spacing.unit * 2
 
@@ -59,12 +59,13 @@ const tableComponentBarStyles = theme => ({
 });
 
 let TableComponentBar = props => {
-  const {classes, handleChange, cexConflictName, menuItems} = props;
+  const {classes, handleChange, cexConflictName, conflicts, menuItems} = props;  
+  
   return(
     <Toolbar className={classNames(classes.root, classes.componentBar)}>
       <form className={classes.formControl} autoComplete="off">
         <FormControl className={classes.modelRoot}>
-          <InputLabel htmlFor="component-helper">Counterexample For Conflict</InputLabel>
+          <InputLabel htmlFor="component-helper">Counterexample For</InputLabel>
           <Select
             key={cexConflictName=== undefined ? '' : cexConflictName}
             value={cexConflictName}
@@ -84,6 +85,7 @@ TableComponentBar.propTypes = {
   classes: PropTypes.object.isRequired,
   handleChange: PropTypes.func.isRequired,
   cexConflictName: PropTypes.string.isRequired,
+  conflicts: PropTypes.array.isRequired,
   menuItems: PropTypes.array.isRequired
 }
 
@@ -121,10 +123,10 @@ class CounterexampleTable extends React.Component {
   constructor(props) {
   	super(props);
   	this.state = { 
-  		numberOfSteps : this.props.cexTableData[this.props.conflicts[0]].K,
-		  cexConflictName : this.props.cexTableData[this.props.conflicts[0]].props,  		
-  		cex : this.props.cexTableData[this.props.conflicts[0]].Counterexample,
-      deps: this.props.cexTableData[this.props.conflicts[0]].Dependencies };
+  		numberOfSteps : this.props.cexTableData[this.props.currentConflicts[0]].K,
+		  cexConflictName : this.props.cexTableData[this.props.currentConflicts[0]].props,  		
+  		cex : this.props.cexTableData[this.props.currentConflicts[0]].Counterexample,
+      deps: this.props.cexTableData[this.props.currentConflicts[0]].Dependencies };
   }
 
   handleChange = event => {
@@ -137,30 +139,31 @@ class CounterexampleTable extends React.Component {
     })
     this.context.setMessage({
       reqs : event.target.value,
-      color : this.props.colors[this.props.conflicts.indexOf(event.target.value)]
+      color : this.props.colors[this.props.currentConflicts.indexOf(event.target.value)]
     });
   };
 
   componentDidUpdate(prevProps) {
-  	if (this.props.conflicts !== prevProps.conflicts) {
+  	if (this.props.currentConflicts !== prevProps.currentConflicts) {
   		this.setState({
-  			numberOfSteps : this.props.cexTableData[this.props.conflicts[0]].K,
-  			cexConflictName : this.props.cexTableData[this.props.conflicts[0]].props,
-  			cex : this.props.cexTableData[this.props.conflicts[0]].Counterexample,
-        deps : this.props.cexTableData[this.props.conflicts[0]].Dependencies
+  			numberOfSteps : this.props.cexTableData[this.props.currentConflicts[0]].K,
+  			cexConflictName : this.props.cexTableData[this.props.currentConflicts[0]].props,
+  			cex : this.props.cexTableData[this.props.currentConflicts[0]].Counterexample,
+        deps : this.props.cexTableData[this.props.currentConflicts[0]].Dependencies
   		});    
   	}
 
   }
 
   render() {
-  	const {classes, conflicts, cexTableData} = this.props;
+  	const {classes, allConflicts, currentConflicts, cexTableData} = this.props;
   	const {numberOfSteps, cex, cexConflictName, deps} = this.state;
   	var menuItems = [];
-  	for (var i = 0; i < conflicts.length; i++) {
+  	for (var i = 0; i < currentConflicts.length; i++) {
   		menuItems.push(
-		(<MenuItem key={i} value={conflicts[i]}>
-			{conflicts[i]}
+		(<MenuItem key={i} value={currentConflicts[i]}>
+			{/*currentConflicts[i]*/}
+      Conflict {allConflicts.indexOf(currentConflicts[i])+1}
 			</MenuItem>)
 		);
   	}
@@ -211,6 +214,7 @@ class CounterexampleTable extends React.Component {
         <TableComponentBar
           handleChange={this.handleChange}
           cexConflictName={cexConflictName}
+          conflicts={allConflicts}
           menuItems={menuItems}
         />
 				<Table className={classes.table}>
@@ -242,8 +246,9 @@ class CounterexampleTable extends React.Component {
       // </Select>
       // </FormControl>
 
-CounterexampleTable.propTypes = {  
-  conflicts: PropTypes.array.isRequired,
+CounterexampleTable.propTypes = {
+  allConflicts: PropTypes.array.isRequired,  
+  currentConflicts: PropTypes.array.isRequired,
   cexTableData: PropTypes.object.isRequired,
   colors: PropTypes.array.isRequired
 }
