@@ -87,7 +87,7 @@ const fs = require('fs');
 const uuidv1 = require('uuid/v1');
 const system_dbkeys = require('electron').remote.getGlobal('sharedObj').system_dbkeys;
 const csv2json=require("csvtojson");
-
+const requirementsImport = require('../../support/requirementsImport/convertAndImportRequirements');
 
 const drawerWidth = 240;
 

@@ -113,17 +113,29 @@ class RequirementImportDialogs extends React.Component {
     }
     this.setState({ open: false });
     this.state.dialogCloseListener();
-  //this.props.setUserInput(userInput);
   };
 
   handleCloseSupported = () => {
     const {reqID, project, description, newProject, importedReqs} = this.state;
     const {listOfProjects} = this.props;
-    if (project === 'CreateProject')
-      requirementsImport.csvToJsonConvert(importedReqs, newProject, reqID, description, listOfProjects);
-    else {
-      requirementsImport.csvToJsonConvert(importedReqs, project, reqID, description, listOfProjects);
+    let importedInfo = {};
+    importedInfo.reqID = reqID;
+    importedInfo.description = description;
+    importedInfo.listOfProjects = listOfProjects;
+    importedInfo.importedReqs = importedReqs;
+    if (project === 'CreateProject'){
+      importedInfo.project = newProject;
+      importedInfo.projectField = false;
     }
+    else if (listOfProjects.includes(project)){
+      importedInfo.project = project;
+      importedInfo.projectField = false;
+    }
+    else {
+      importedInfo.project = project;
+      importedInfo.projectField = true;
+    }
+    requirementsImport.csvToJsonConvert(importedInfo);
     this.setState({ open: false });
     this.state.dialogCloseListener();
   }

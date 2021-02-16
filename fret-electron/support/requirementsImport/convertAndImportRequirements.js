@@ -35,8 +35,6 @@ const fs=require("fs");
 const db = require('electron').remote.getGlobal('sharedObj').db;
 const system_dbkeys = require('electron').remote.getGlobal('sharedObj').system_dbkeys;
 
-var projectName = 'CSVImport';
-
 export {
   importRequirements as importRequirements,
   csvToJsonConvert as csvToJsonConvert
@@ -45,22 +43,21 @@ export {
 //Requirement ID and Description are the default values
 const defaultReqIdField = 'Requirement ID';
 const defaultFullName = 'Description';
+const defaultProjectName = 'Project';
 
 // change so that everything goes to rationale by default except what is in map
 var translationFields = {
   reqid: defaultReqIdField,
-  fulltext: defaultFullName
+  fulltext: defaultFullName,
+  project: defaultProjectName
 };
 
-//project, rid and text are provided as user input
-function csvToJsonConvert (importedReqs, project, rid, text, projects) {
-  let self = this;
-  translateFields(rid, text);
-  projectName = project;
-
-  const reqs = manipulate(importedReqs)
-  importRequirements (reqs, projects);
-
+//project, rid and text are provided as user input: importedReqs, project, rid, text, projects
+function csvToJsonConvert (importedInfo) {
+  console.log(importedInfo.project);
+  translateFields(importedInfo.reqID, importedInfo.description, importedInfo.projectField);
+  const reqs = manipulate(importedInfo.importedReqs, importedInfo.project, importedInfo.projectField)
+  importRequirements (reqs, importedInfo.listOfProjects);
 }
 
 function importRequirements (data, projects) {
@@ -83,7 +80,7 @@ function importRequirements (data, projects) {
 }
 
 // change so that everything goes to rationale by default except what is in map
-function translateFields (rid, text){
+function translateFields (rid, text, project, projectField){
   //TODO: we probably shouldnt accept empty strings as an input; apply this check at the UI level
   if (rid !== defaultReqIdField && rid !== "" && rid !== undefined){
     translationFields.reqid = rid
@@ -91,22 +88,33 @@ function translateFields (rid, text){
   if (text !== defaultFullName && text !== "" && text !== undefined){
     translationFields.fulltext = text
   }
+  if (project !== defaultProjectName && project !== "" && project !== undefined && projectField){
+    translationFields.project = project
+  }
 }
 
-function createFretObject(name) {
-  return {project: name, reqid: "", fulltext: "", rationale: ""};
+function createFretObject() {
+  return {project: "", reqid: "", fulltext: "", rationale: ""};
 }
 
- function manipulate(importedReqs) {
+ function manipulate(importedReqs, project, projectField) {
+   console.log(project)
+   console.log(projectField)
    let fretReqs = [];
    let csvFields = Object.keys(importedReqs[0]);
    for (let req of importedReqs) {
-     var newFretReq = createFretObject(projectName);
+     var newFretReq = createFretObject();
+     if (!projectField){
+       newFretReq.project = project;
+     }
      var correspondsTo = 'rationale';
      for (let field of csvFields){
        let mapsTo = getKeyByValue(translationFields, field);
        if (mapsTo === 'reqid' ){
          newFretReq.reqid = req[field];
+       }
+       else if(mapsTo === 'project' && projectField){
+         newFretReq.project = req[field];
        }
        else {
          newFretReq[correspondsTo] += (`\n${field}: `.toUpperCase());
