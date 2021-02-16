@@ -93,7 +93,7 @@ class RequirementImportDialogs extends React.Component {
     description:'',
     reqID:'',
     project:'',
-    newProject: ''
+    projectCategory: ''
   };
 
   handleChange = name => event => {
@@ -105,34 +105,29 @@ class RequirementImportDialogs extends React.Component {
     this.state.dialogCloseListener();
   };
 
-  handleCloseWithInfo = () => {
-    let userInput = {
-      reqID: this.state.reqID,
-      description: this.state.description,
-      project: this.state.project
-    }
-    this.setState({ open: false });
-    this.state.dialogCloseListener();
-  };
+  // handleCloseWithInfo = () => {
+  //   let userInput = {
+  //     reqID: this.state.reqID,
+  //     description: this.state.description,
+  //     project: this.state.project
+  //   }
+  //   this.setState({ open: false });
+  //   this.state.dialogCloseListener();
+  // };
 
   handleCloseSupported = () => {
-    const {reqID, project, description, newProject, importedReqs} = this.state;
+    const {reqID, project, description, projectCategory, importedReqs} = this.state;
     const {listOfProjects} = this.props;
     let importedInfo = {};
     importedInfo.reqID = reqID;
     importedInfo.description = description;
     importedInfo.listOfProjects = listOfProjects;
     importedInfo.importedReqs = importedReqs;
-    if (project === 'CreateProject'){
-      importedInfo.project = newProject;
-      importedInfo.projectField = false;
-    }
-    else if (listOfProjects.includes(project)){
-      importedInfo.project = project;
+    importedInfo.project = project;
+    if (projectCategory === 'CreateProject' || projectCategory === 'ExistingProject'){
       importedInfo.projectField = false;
     }
     else {
-      importedInfo.project = project;
       importedInfo.projectField = true;
     }
     requirementsImport.csvToJsonConvert(importedInfo);
@@ -216,25 +211,59 @@ class RequirementImportDialogs extends React.Component {
               <FormControl required className={classes.formControl}>
                 <InputLabel htmlFor="age-required">Project ID</InputLabel>
                 <Select
-                  value={this.state.project}
-                  onChange={this.handleChange('project')}
-                  name="project"
+                  value={this.state.projectCategory}
+                  onChange={this.handleChange('projectCategory')}
+                  name="projectCategory"
                   inputProps={{
                     id: 'age-required',
                   }}
                   className={classes.selectEmpty}
                 >
-                {csvFields.map(v => {
-                    return(<MenuItem value={v}>{v}</MenuItem>)
-                })}
-                {listOfProjects.map(p => {
-                    return(<MenuItem value={p}>Existing project ID: {p}</MenuItem>)
-                })}
-                <MenuItem value='CreateProject'>Create new project ID...</MenuItem>
+                <MenuItem value='CSVField'>Map to CSV field</MenuItem>
+                <MenuItem value='ExistingProject'>Pick existing FRET Project</MenuItem>
+                <MenuItem value='CreateProject'>Create new Project</MenuItem>
                 </Select>
-                <FormHelperText>Required field. Map to attribute or choose existing/create FRET project.</FormHelperText>
+                <FormHelperText>Required field. Map to csv field, choose existing or create new FRET project.</FormHelperText>
               </FormControl>
-              {this.state.project === 'CreateProject' &&
+              {this.state.projectCategory === 'ExistingProject' &&
+                <FormControl required className={classes.formControl}>
+                  <InputLabel htmlFor="age-required">Existing FRET Project</InputLabel>
+                  <Select
+                    value={this.state.project}
+                    onChange={this.handleChange('project')}
+                    name="project"
+                    inputProps={{
+                      id: 'age-required',
+                    }}
+                    className={classes.selectEmpty}
+                  >
+                  {listOfProjects.map(p => {
+                      return(<MenuItem value={p}>{p}</MenuItem>)
+                  })}
+                  </Select>
+                  <FormHelperText>Required field.</FormHelperText>
+                </FormControl>
+              }
+              {this.state.projectCategory === 'CSVField' &&
+                <FormControl required className={classes.formControl}>
+                  <InputLabel htmlFor="age-required">CSV File Field</InputLabel>
+                  <Select
+                    value={this.state.project}
+                    onChange={this.handleChange('project')}
+                    name="project"
+                    inputProps={{
+                      id: 'age-required',
+                    }}
+                    className={classes.selectEmpty}
+                  >
+                   {csvFields.map(v => {
+                       return(<MenuItem value={v}>{v}</MenuItem>)
+                   })}
+                  </Select>
+                  <FormHelperText>Required field.</FormHelperText>
+                </FormControl>
+              }
+              {this.state.projectCategory === 'CreateProject' &&
                 <TextField
                   required
                   id="standard-required"
@@ -242,7 +271,7 @@ class RequirementImportDialogs extends React.Component {
                   defaultValue=""
                   className={classes.formControl}
                   margin="normal"
-                  onChange={this.handleChange('newProject')}
+                  onChange={this.handleChange('project')}
                 />
             }
               </form>

@@ -54,7 +54,6 @@ var translationFields = {
 
 //project, rid and text are provided as user input: importedReqs, project, rid, text, projects
 function csvToJsonConvert (importedInfo) {
-  console.log(importedInfo.project);
   translateFields(importedInfo.reqID, importedInfo.description, importedInfo.projectField);
   const reqs = manipulate(importedInfo.importedReqs, importedInfo.project, importedInfo.projectField)
   importRequirements (reqs, importedInfo.listOfProjects);
