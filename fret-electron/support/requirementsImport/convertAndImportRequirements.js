@@ -97,8 +97,6 @@ function createFretObject() {
 }
 
  function manipulate(importedReqs, project, projectField) {
-   console.log(project)
-   console.log(projectField)
    let fretReqs = [];
    let csvFields = Object.keys(importedReqs[0]);
    for (let req of importedReqs) {

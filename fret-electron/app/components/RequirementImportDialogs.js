@@ -161,37 +161,31 @@ class RequirementImportDialogs extends React.Component {
               </Typography>
               <form className={classes.root} autoComplete="off">
               <FormControl required className={classes.formControl}>
-                <InputLabel htmlFor="age-required">Requirement ID</InputLabel>
+                <InputLabel>Requirement ID</InputLabel>
                 <Select
                   value={this.state.reqID}
                   onChange={this.handleChange('reqID')}
                   name="reqID"
-                  inputProps={{
-                    id: 'age-required',
-                  }}
                   className={classes.selectEmpty}
                 >
                 {csvFields.map(v => {
-                    return(<MenuItem value={v}>{v}</MenuItem>)
+                    return(<MenuItem key={v} value={v}>{v}</MenuItem>)
                 })}
                 </Select>
                 <FormHelperText>Required field.</FormHelperText>
               </FormControl>
               <FormControl className={classes.formControl}>
-                <InputLabel htmlFor="age-simple">Requirement Description</InputLabel>
+                <InputLabel>Requirement Description</InputLabel>
                 <Select
                   value={this.state.description}
                   onChange={this.handleChange('description')}
                   name="description"
-                  inputProps={{
-                    id: 'age-simple',
-                  }}
                 >
                   <MenuItem value="">
                     <em>None</em>
                   </MenuItem>
                 {csvFields.map(v => {
-                    return(<MenuItem value={v}>{v}</MenuItem>)
+                    return(<MenuItem key={v} value={v}>{v}</MenuItem>)
                 })}
                 </Select>
               </FormControl>
@@ -199,14 +193,11 @@ class RequirementImportDialogs extends React.Component {
                 Project Mapping
               </Typography>
               <FormControl required className={classes.formControl}>
-                <InputLabel htmlFor="age-required">Project ID</InputLabel>
+                <InputLabel>Project ID</InputLabel>
                 <Select
                   value={this.state.projectCategory}
                   onChange={this.handleChange('projectCategory')}
                   name="projectCategory"
-                  inputProps={{
-                    id: 'age-required',
-                  }}
                   className={classes.selectEmpty}
                 >
                 <MenuItem value='CSVField'>Map to CSV field</MenuItem>
@@ -217,18 +208,15 @@ class RequirementImportDialogs extends React.Component {
               </FormControl>
               {this.state.projectCategory === 'ExistingProject' &&
                 <FormControl required className={classes.formControl}>
-                  <InputLabel htmlFor="age-required">Existing FRET Project</InputLabel>
+                  <InputLabel>Existing FRET Project</InputLabel>
                   <Select
                     value={this.state.project}
                     onChange={this.handleChange('project')}
-                    name="project"
-                    inputProps={{
-                      id: 'age-required',
-                    }}
+                    name="existingProject"
                     className={classes.selectEmpty}
                   >
                   {listOfProjects.map(p => {
-                      return(<MenuItem value={p}>{p}</MenuItem>)
+                      return(<MenuItem key={p} value={p}>{p}</MenuItem>)
                   })}
                   </Select>
                   <FormHelperText>Required field.</FormHelperText>
@@ -236,18 +224,15 @@ class RequirementImportDialogs extends React.Component {
               }
               {this.state.projectCategory === 'CSVField' &&
                 <FormControl required className={classes.formControl}>
-                  <InputLabel htmlFor="age-required">CSV File Field</InputLabel>
+                  <InputLabel>CSV File Field</InputLabel>
                   <Select
                     value={this.state.project}
                     onChange={this.handleChange('project')}
-                    name="project"
-                    inputProps={{
-                      id: 'age-required',
-                    }}
+                    name="csvProject"
                     className={classes.selectEmpty}
                   >
                    {csvFields.map(v => {
-                       return(<MenuItem value={v}>{v}</MenuItem>)
+                       return(<MenuItem key={v} value={v}>{v}</MenuItem>)
                    })}
                   </Select>
                   <FormHelperText>Required field.</FormHelperText>
