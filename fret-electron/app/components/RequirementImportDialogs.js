@@ -105,16 +105,6 @@ class RequirementImportDialogs extends React.Component {
     this.state.dialogCloseListener();
   };
 
-  // handleCloseWithInfo = () => {
-  //   let userInput = {
-  //     reqID: this.state.reqID,
-  //     description: this.state.description,
-  //     project: this.state.project
-  //   }
-  //   this.setState({ open: false });
-  //   this.state.dialogCloseListener();
-  // };
-
   handleCloseSupported = () => {
     const {reqID, project, description, projectCategory, importedReqs} = this.state;
     const {listOfProjects} = this.props;
