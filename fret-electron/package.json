@@ -212,6 +212,7 @@
     "babel-plugin-flow-react-proptypes": "^24.1.2",
     "classnames": "^2.2.6",
     "csvtojson": "^2.0.10",
+    "command-exists": "^1.2.9",
     "d3": "^4.13.0",
     "d3-svg-annotation": "^2.2.0",
     "devtron": "^1.4.0",

@@ -57,7 +57,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-
+import TextField from '@material-ui/core/TextField';
 import Select from '@material-ui/core/Select';
 
 /* ComponentBar Imports */
@@ -87,6 +87,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Collapse from '@material-ui/core/Collapse';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+import ErrorIcon from '@material-ui/icons/Error';
 
 /*DisplayConnectedComponents*/
 import AppBar from '@material-ui/core/AppBar';
@@ -104,6 +105,7 @@ const db = sharedObj.db;
 const constants = require('../parser/Constants');
 
 const fs = require('fs');
+var commandExistsSync = require('command-exists').sync;
 
 const analysisPath = 'analysis/tmp/';
 var dbChangeListener;
@@ -341,7 +343,10 @@ class AnalysisTable extends React.Component {
     status: {},
     diagnosisStatus: {},
     monolithic: false,
-    compositional: false
+    compositional: false,
+    timeout: 900,
+    dependenciesExist: false,
+    missingDependencies: []
   }
 
   // Use this for bulk check in the future
@@ -451,9 +456,32 @@ class AnalysisTable extends React.Component {
     this.setState({connectedComponents : connectedComponents, ccSelected : 'cc0'})
   }
 
+  checkDependenciesExist() {
+    var missing = this.state.missingDependencies;
+    if (!commandExistsSync('jkind')) {
+      missing.push('jkind')
+    }
+    if (!commandExistsSync('aeval')) {
+      missing.push('aeval')
+    }
+    if (!commandExistsSync('z3')) {
+      missing.push('z3')
+    }
+    if (missing.length !== 0) {
+      this.setState({
+        missingDependencies: missing
+      });
+    } else {
+      this.setState({
+        dependenciesExist: true
+      });
+    }
+  }
+
   componentDidMount() {
     this.mounted = true;
     this.synchStateWithModelDB();
+    this.checkDependenciesExist();
   }
 
   componentWillUnmount() {
@@ -506,14 +534,18 @@ class AnalysisTable extends React.Component {
     this.setState({ccSelected: value, monolithic : false, compositional : false });
   };
 
+  handleTimeoutChange = (event, value) => {
+    this.setState({timeout: event.target.value});
+  };
+
   diagnoseSpec(event) {    
-    const {diagnosisStatus, selected, connectedComponents, ccSelected, compositional, monolithic} = this.state;
+    const {diagnosisStatus, selected, connectedComponents, ccSelected, compositional, monolithic, timeout} = this.state;
 
     if (compositional) {
       connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'] = 'PROCESSING'
       // buttonText = "PROCESSING";
       var filePath = analysisPath+selected.component_name+"_"+ccSelected+".lus"
-      var runDiagnosis = realizability.checkRealizability(filePath, '-diagnose -fixpoint -json');
+      var runDiagnosis = realizability.checkRealizability(filePath, '-diagnose -fixpoint -json -timeout '+timeout);
       // let engine = new DiagnosisEngine(contract, 'realizability');
       // engine.main();
       connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'] = 'DIAGNOSED'    
@@ -523,7 +555,7 @@ class AnalysisTable extends React.Component {
       diagnosisStatus[selected.component_name] = 'PROCESSING'
       this.setState({ diagnosisStatus : diagnosisStatus})
       var filePath = analysisPath+selected.component_name+".lus"
-      var runDiagnosis = realizability.checkRealizability(filePath, '-timeout 1000 -diagnose -fixpoint -json');
+      var runDiagnosis = realizability.checkRealizability(filePath, '-diagnose -fixpoint -json -timeout '+timeout);
       // var result = runDiagnosis.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];
       // // let engine = new DiagnosisEngine(contract, 'realizability');
       // // engine.main();
@@ -633,7 +665,7 @@ class AnalysisTable extends React.Component {
 
   checkRealizability = () => {
     
-    const {selected, ccSelected, monolithic, compositional, connectedComponents} = this.state;
+    const {selected, ccSelected, monolithic, compositional, connectedComponents, timeout} = this.state;
     const {selectedProject} = this.props;    
     const self = this;
     var checkOutput;
@@ -674,7 +706,7 @@ class AnalysisTable extends React.Component {
           output.write(lustreContract);
           output.end();
           output.on('finish', () => {
-            checkOutput = realizability.checkRealizability(filePath, '-timeout 1000 -fixpoint');
+            checkOutput = realizability.checkRealizability(filePath, '-fixpoint -timeout ' + timeout);
             var result = checkOutput.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];
             console.log(result)
             self.setState(prevState => {
@@ -698,7 +730,7 @@ class AnalysisTable extends React.Component {
               output.write(lustreContract);
               output.end();
               output.on('finish', () => {
-                checkOutput = realizability.checkRealizability(filePath, '-fixpoint');
+                checkOutput = realizability.checkRealizability(filePath, '-fixpoint -timeout '+timeout);
                 var ccResult = checkOutput.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];
                 connectedComponents[selected.component_name][cc].result = ccResult
                 self.setState({
@@ -776,7 +808,7 @@ class AnalysisTable extends React.Component {
 
   render() {
     const {classes, selectedProject, components} = this.props;
-    const {connectedComponents, order, orderBy, status, diagnosisStatus, selected, ccSelected, monolithic, compositional} = this.state;
+    const {connectedComponents, order, orderBy, status, diagnosisStatus, selected, ccSelected, monolithic, compositional, dependenciesExist, missingDependencies} = this.state;
     let grid;
 
     var tabs = [];
@@ -854,14 +886,28 @@ class AnalysisTable extends React.Component {
                   style={{paddingBottom: '0px'}}
                 />
               }
-              style={{alignItems: 'flex-end', marginRight:'48%'}}
+              style={{alignItems: 'flex-end', marginRight:'35%'}}
               label="Monolithic"                
             />
-            <Button onClick={(event) => {this.checkRealizability(event)}} size="small" className={classes.vAlign} style={{marginRight: '1%'}} color="secondary" variant='contained' disabled={selected === '' || (selected !== '' && !monolithic && !compositional)}>
+            {!dependenciesExist &&
+              <Tooltip title={"Dependencies missing for realizability checking : " + missingDependencies.toString()+'. See help for details.'}>
+                <ErrorIcon style={{verticalAlign : 'bottom', marginRight: '1%'}} color='error'/>
+              </Tooltip>
+            }
+            <TextField
+              disabled={selected === ''}
+              id="timeout-value"
+              label="Timeout (seconds)"
+              value={this.state.timeout}
+              onChange={this.handleTimeoutChange}
+              type="number"
+              style={{width:150, marginRight:'1%'}}              
+            />
+            <Button onClick={(event) => {this.checkRealizability(event)}} size="small" className={classes.vAlign} style={{marginRight: '1%'}} color="secondary" variant='contained' disabled={!dependenciesExist || (dependenciesExist && selected === '')}>
               Check                              
             </Button>
           {/*compositional ? this.diagnoseSpec(ccSelected, event) : this.diagnoseSpec(selected.component_name, event)*/}
-            <Button onClick={(event) => {this.diagnoseSpec(event)}} size="small" className={classes.vAlign} style={{marginRight: '1%'}} color="secondary" variant='contained' disabled={selected === '' || (selected !== '' && compositional && connectedComponents[selected.component_name][ccSelected]['result'] !== 'UNREALIZABLE') || (selected !== '' && monolithic && status[selected.component_name] !== 'UNREALIZABLE')}>
+            <Button onClick={(event) => {this.diagnoseSpec(event)}} size="small" className={classes.vAlign} style={{marginRight: '1%'}} color="secondary" variant='contained' disabled={!dependenciesExist || (dependenciesExist && selected === '') || (dependenciesExist && selected !== '' && compositional && connectedComponents[selected.component_name][ccSelected]['result'] !== 'UNREALIZABLE') || (selected !== '' && monolithic && status[selected.component_name] !== 'UNREALIZABLE')}>
               Diagnose                             
             </Button>
             <Button size="small" className={classes.vAlign} style={{marginRight: '1%'}} variant="contained"> Project Summary </Button>              
