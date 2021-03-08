@@ -1,7 +1,7 @@
 {
     "Runtime": {
         "unit": "sec",
-        "value": "72.359"
+        "value": "210.777"
     },
     "Answer": {
         "source": "base",
@@ -9,232 +9,181 @@
     },
     "Counterexamples": [
     {
-        "K": "1",
-        "props": "[g0, g1, g6]",
+        "K": "2",
+        "props": "[G1_3, G10, G11]",
         "Counterexample": [
-            {"name": "Commanded_Flow_Rate","type": "int","Step 0": 7},
-            {"name": "Current_System_Mode","type": "int","Step 0": 5},
-            {"name": "FTP","type": "bool","Step 0": true},
-            {"name": "Flow_Rate_KVO","type": "int","Step 0": 8},
-            {"name": "Highest_Level_Alarm","type": "int","Step 0": 3},
-            {"name": "H~4.X","type": "bool","Step 0": false},
-            {"name": "H~4.Y","type": "bool","Step 0": false},
-            {"name": "H~5.X","type": "bool","Step 0": false},
-            {"name": "H~5.Y","type": "bool","Step 0": false},
-            {"name": "H~8.X","type": "bool","Step 0": false},
-            {"name": "H~8.Y","type": "bool","Step 0": false},
-            {"name": "System_On","type": "bool","Step 0": true},
-            {"name": "g0","type": "bool","Step 0": false},
-            {"name": "g1","type": "bool","Step 0": false},
-            {"name": "g6","type": "bool","Step 0": false}
+            {"name": "Configured","type": "int","Step 0": 1,"Step 1": 0},
+            {"name": "Flow_Rate_KVO","type": "int","Step 0": 0,"Step 1": -1},
+            {"name": "Infusion_Inhibit","type": "bool","Step 0": false,"Step 1": true},
+            {"name": "System_On","type": "bool","Step 0": false,"Step 1": true},
+            {"name": "Commanded_Flow_Rate","type": "int","Step 0": 0,"Step 1": 0},
+            {"name": "Current_System_Mode_1","type": "bool","Step 0": false,"Step 1": false},
+            {"name": "FTP","type": "bool","Step 0": true,"Step 1": false},
+            {"name": "G1_3","type": "bool","Step 0": true,"Step 1": true},
+            {"name": "G10","type": "bool","Step 0": true,"Step 1": false},
+            {"name": "G11","type": "bool","Step 0": true,"Step 1": false}
         ]
     },
     {
         "K": "1",
-        "props": "[g0, g1, g9]",
+        "props": "[G1_3, G7, G11]",
         "Counterexample": [
-            {"name": "Commanded_Flow_Rate","type": "int","Step 0": -1},
-            {"name": "Current_System_Mode","type": "int","Step 0": 5},
-            {"name": "FTP","type": "bool","Step 0": true},
-            {"name": "Flow_Rate_KVO","type": "int","Step 0": -2},
-            {"name": "H~4.X","type": "bool","Step 0": false},
-            {"name": "H~4.Y","type": "bool","Step 0": false},
-            {"name": "H~5.X","type": "bool","Step 0": false},
-            {"name": "H~5.Y","type": "bool","Step 0": false},
-            {"name": "H~11.X","type": "bool","Step 0": false},
-            {"name": "H~11.Y","type": "bool","Step 0": false},
-            {"name": "Infusion_Inhibit","type": "bool","Step 0": true},
-            {"name": "System_On","type": "bool","Step 0": true},
-            {"name": "g0","type": "bool","Step 0": false},
-            {"name": "g1","type": "bool","Step 0": false},
-            {"name": "g9","type": "bool","Step 0": false}
-        ]
-    },
-    {
-        "K": "1",
-        "props": "[g0, g10, g9]",
-        "Counterexample": [
-            {"name": "Commanded_Flow_Rate","type": "int","Step 0": -1},
             {"name": "Configured","type": "int","Step 0": 0},
-            {"name": "Current_System_Mode","type": "int","Step 0": 5},
-            {"name": "FTP","type": "bool","Step 0": true},
-            {"name": "Flow_Rate_KVO","type": "int","Step 0": -2},
-            {"name": "H~4.X","type": "bool","Step 0": false},
-            {"name": "H~4.Y","type": "bool","Step 0": false},
-            {"name": "H~10.X","type": "bool","Step 0": false},
-            {"name": "H~10.Y","type": "bool","Step 0": false},
-            {"name": "H~11.X","type": "bool","Step 0": false},
-            {"name": "H~11.Y","type": "bool","Step 0": false},
-            {"name": "Infusion_Inhibit","type": "bool","Step 0": true},
-            {"name": "System_On","type": "bool","Step 0": true},
-            {"name": "g0","type": "bool","Step 0": false},
-            {"name": "g9","type": "bool","Step 0": false},
-            {"name": "g10","type": "bool","Step 0": false}
-        ]
-    },
-    {
-        "K": "1",
-        "props": "[g0, g6, g10]",
-        "Counterexample": [
-            {"name": "Commanded_Flow_Rate","type": "int","Step 0": 6},
-            {"name": "Configured","type": "int","Step 0": 0},
-            {"name": "Current_System_Mode","type": "int","Step 0": 5},
-            {"name": "FTP","type": "bool","Step 0": true},
-            {"name": "Flow_Rate_KVO","type": "int","Step 0": 7},
-            {"name": "Highest_Level_Alarm","type": "int","Step 0": 3},
-            {"name": "H~4.X","type": "bool","Step 0": false},
-            {"name": "H~4.Y","type": "bool","Step 0": false},
-            {"name": "H~8.X","type": "bool","Step 0": false},
-            {"name": "H~8.Y","type": "bool","Step 0": false},
-            {"name": "H~10.X","type": "bool","Step 0": false},
-            {"name": "H~10.Y","type": "bool","Step 0": false},
-            {"name": "System_On","type": "bool","Step 0": true},
-            {"name": "g0","type": "bool","Step 0": false},
-            {"name": "g6","type": "bool","Step 0": false},
-            {"name": "g10","type": "bool","Step 0": false}
-        ]
-    },
-    {
-        "K": "1",
-        "props": "[g0, g8, g6]",
-        "Counterexample": [
-            {"name": "Commanded_Flow_Rate","type": "int","Step 0": 7},
-            {"name": "Current_System_Mode","type": "int","Step 0": 5},
-            {"name": "FTP","type": "bool","Step 0": true},
-            {"name": "Flow_Rate_KVO","type": "int","Step 0": 8},
-            {"name": "Highest_Level_Alarm","type": "int","Step 0": 3},
-            {"name": "H~4.X","type": "bool","Step 0": false},
-            {"name": "H~4.Y","type": "bool","Step 0": false},
-            {"name": "H~6.X","type": "bool","Step 0": false},
-            {"name": "H~6.Y","type": "bool","Step 0": false},
-            {"name": "H~8.X","type": "bool","Step 0": false},
-            {"name": "H~8.Y","type": "bool","Step 0": false},
-            {"name": "Infusion_Cancel","type": "bool","Step 0": true},
-            {"name": "System_On","type": "bool","Step 0": true},
-            {"name": "g0","type": "bool","Step 0": false},
-            {"name": "g6","type": "bool","Step 0": false},
-            {"name": "g8","type": "bool","Step 0": false}
-        ]
-    },
-    {
-        "K": "1",
-        "props": "[g0, g8, g9]",
-        "Counterexample": [
-            {"name": "Commanded_Flow_Rate","type": "int","Step 0": -1},
-            {"name": "Current_System_Mode","type": "int","Step 0": 5},
-            {"name": "FTP","type": "bool","Step 0": true},
-            {"name": "Flow_Rate_KVO","type": "int","Step 0": -2},
-            {"name": "H~4.X","type": "bool","Step 0": false},
-            {"name": "H~4.Y","type": "bool","Step 0": false},
-            {"name": "H~6.X","type": "bool","Step 0": false},
-            {"name": "H~6.Y","type": "bool","Step 0": false},
-            {"name": "H~11.X","type": "bool","Step 0": false},
-            {"name": "H~11.Y","type": "bool","Step 0": false},
-            {"name": "Infusion_Cancel","type": "bool","Step 0": true},
-            {"name": "Infusion_Inhibit","type": "bool","Step 0": true},
-            {"name": "System_On","type": "bool","Step 0": true},
-            {"name": "g0","type": "bool","Step 0": false},
-            {"name": "g8","type": "bool","Step 0": false},
-            {"name": "g9","type": "bool","Step 0": false}
-        ]
-    },
-    {
-        "K": "1",
-        "props": "[g3, g2, g9]",
-        "Counterexample": [
-            {"name": "Commanded_Flow_Rate","type": "int","Step 0": -1},
-            {"name": "Current_System_Mode","type": "int","Step 0": 3},
-            {"name": "Current_System_Mode_pre","type": "int","Step 0": 0},
-            {"name": "FTP","type": "bool","Step 0": true},
-            {"name": "Flow_Rate_KVO","type": "int","Step 0": -2},
-            {"name": "H~1.X","type": "bool","Step 0": true},
-            {"name": "H~1.Y","type": "bool","Step 0": true},
-            {"name": "H~9.X","type": "bool","Step 0": false},
-            {"name": "H~9.Y","type": "bool","Step 0": false},
-            {"name": "H~11.X","type": "bool","Step 0": false},
-            {"name": "H~11.Y","type": "bool","Step 0": false},
-            {"name": "Infusion_Inhibit","type": "bool","Step 0": true},
-            {"name": "System_On","type": "bool","Step 0": true},
-            {"name": "g2","type": "bool","Step 0": false},
-            {"name": "g3","type": "bool","Step 0": true},
-            {"name": "g9","type": "bool","Step 0": false}
-        ]
-    },
-    {
-        "K": "1",
-        "props": "[g3, g6, g2]",
-        "Counterexample": [
-            {"name": "Commanded_Flow_Rate","type": "int","Step 0": 1},
-            {"name": "Current_System_Mode","type": "int","Step 0": 0},
-            {"name": "Current_System_Mode_pre","type": "int","Step 0": 0},
-            {"name": "FTP","type": "bool","Step 0": true},
             {"name": "Flow_Rate_KVO","type": "int","Step 0": 2},
             {"name": "Highest_Level_Alarm","type": "int","Step 0": 3},
-            {"name": "H~1.X","type": "bool","Step 0": true},
-            {"name": "H~1.Y","type": "bool","Step 0": true},
-            {"name": "H~8.X","type": "bool","Step 0": false},
-            {"name": "H~8.Y","type": "bool","Step 0": false},
-            {"name": "H~9.X","type": "bool","Step 0": false},
-            {"name": "H~9.Y","type": "bool","Step 0": false},
             {"name": "System_On","type": "bool","Step 0": true},
-            {"name": "g2","type": "bool","Step 0": false},
-            {"name": "g3","type": "bool","Step 0": true},
-            {"name": "g6","type": "bool","Step 0": false}
+            {"name": "Commanded_Flow_Rate","type": "int","Step 0": 1},
+            {"name": "Current_System_Mode_1","type": "bool","Step 0": false},
+            {"name": "G1_3","type": "bool","Step 0": true},
+            {"name": "G7","type": "bool","Step 0": false},
+            {"name": "G11","type": "bool","Step 0": false}
         ]
     },
     {
         "K": "1",
-        "props": "[g5, g9]",
+        "props": "[G1_3, G7, G2]",
         "Counterexample": [
-            {"name": "Commanded_Flow_Rate","type": "int","Step 0": -1},
-            {"name": "FTP","type": "bool","Step 0": true},
-            {"name": "Flow_Rate_KVO","type": "int","Step 0": -2},
-            {"name": "Highest_Level_Alarm","type": "int","Step 0": 4},
-            {"name": "H~7.X","type": "bool","Step 0": false},
-            {"name": "H~7.Y","type": "bool","Step 0": false},
-            {"name": "H~11.X","type": "bool","Step 0": false},
-            {"name": "H~11.Y","type": "bool","Step 0": false},
-            {"name": "Infusion_Inhibit","type": "bool","Step 0": true},
+            {"name": "Flow_Rate_KVO","type": "int","Step 0": 1},
+            {"name": "Highest_Level_Alarm","type": "int","Step 0": 3},
             {"name": "System_On","type": "bool","Step 0": true},
-            {"name": "g5","type": "bool","Step 0": false},
-            {"name": "g9","type": "bool","Step 0": false}
+            {"name": "Commanded_Flow_Rate","type": "int","Step 0": 0},
+            {"name": "Current_System_Mode_1","type": "bool","Step 0": false},
+            {"name": "FTP","type": "bool","Step 0": true},
+            {"name": "G1_3","type": "bool","Step 0": true},
+            {"name": "G2","type": "bool","Step 0": false},
+            {"name": "G7","type": "bool","Step 0": false}
+        ]
+    },
+    {
+        "K": "2",
+        "props": "[G1_3, G7, G9]",
+        "Counterexample": [
+            {"name": "Flow_Rate_KVO","type": "int","Step 0": 0,"Step 1": 2},
+            {"name": "Highest_Level_Alarm","type": "int","Step 0": 0,"Step 1": 3},
+            {"name": "Infusion_Cancel","type": "bool","Step 0": false,"Step 1": true},
+            {"name": "System_On","type": "bool","Step 0": false,"Step 1": true},
+            {"name": "Commanded_Flow_Rate","type": "int","Step 0": 0,"Step 1": 1},
+            {"name": "Current_System_Mode_1","type": "bool","Step 0": false,"Step 1": false},
+            {"name": "FTP","type": "bool","Step 0": true,"Step 1": false},
+            {"name": "G1_3","type": "bool","Step 0": true,"Step 1": true},
+            {"name": "G7","type": "bool","Step 0": true,"Step 1": false},
+            {"name": "G9","type": "bool","Step 0": true,"Step 1": false}
+        ]
+    },
+    {
+        "K": "2",
+        "props": "[G1_3, G9, G10]",
+        "Counterexample": [
+            {"name": "Flow_Rate_KVO","type": "int","Step 0": 0,"Step 1": -1},
+            {"name": "Infusion_Cancel","type": "bool","Step 0": false,"Step 1": true},
+            {"name": "Infusion_Inhibit","type": "bool","Step 0": false,"Step 1": true},
+            {"name": "System_On","type": "bool","Step 0": false,"Step 1": true},
+            {"name": "Commanded_Flow_Rate","type": "int","Step 0": 0,"Step 1": 0},
+            {"name": "Current_System_Mode_1","type": "bool","Step 0": false,"Step 1": false},
+            {"name": "FTP","type": "bool","Step 0": true,"Step 1": false},
+            {"name": "G1_3","type": "bool","Step 0": true,"Step 1": true},
+            {"name": "G9","type": "bool","Step 0": true,"Step 1": false},
+            {"name": "G10","type": "bool","Step 0": true,"Step 1": false}
+        ]
+    },
+    {
+        "K": "2",
+        "props": "[G3, G4, G10]",
+        "Counterexample": [
+            {"name": "Flow_Rate_KVO","type": "int","Step 0": 0,"Step 1": -2},
+            {"name": "Infusion_Inhibit","type": "bool","Step 0": false,"Step 1": true},
+            {"name": "System_On","type": "bool","Step 0": false,"Step 1": true},
+            {"name": "Commanded_Flow_Rate","type": "int","Step 0": 0,"Step 1": 0},
+            {"name": "Current_System_Mode_0","type": "bool","Step 0": true,"Step 1": false},
+            {"name": "Current_System_Mode_1","type": "bool","Step 0": false,"Step 1": true},
+            {"name": "Current_System_Mode_0_pre","type": "bool","Step 0": false,"Step 1": true},
+            {"name": "FTP","type": "bool","Step 0": true,"Step 1": false},
+            {"name": "G3","type": "bool","Step 0": true,"Step 1": true},
+            {"name": "G4","type": "bool","Step 0": true,"Step 1": true},
+            {"name": "G10","type": "bool","Step 0": true,"Step 1": false}
+        ]
+    },
+    {
+        "K": "2",
+        "props": "[G3, G4, G7]",
+        "Counterexample": [
+            {"name": "Flow_Rate_KVO","type": "int","Step 0": 0,"Step 1": 2},
+            {"name": "Highest_Level_Alarm","type": "int","Step 0": 0,"Step 1": 3},
+            {"name": "System_On","type": "bool","Step 0": false,"Step 1": true},
+            {"name": "Commanded_Flow_Rate","type": "int","Step 0": 0,"Step 1": 1},
+            {"name": "Current_System_Mode_0","type": "bool","Step 0": true,"Step 1": false},
+            {"name": "Current_System_Mode_1","type": "bool","Step 0": false,"Step 1": false},
+            {"name": "Current_System_Mode_0_pre","type": "bool","Step 0": false,"Step 1": true},
+            {"name": "FTP","type": "bool","Step 0": true,"Step 1": false},
+            {"name": "G3","type": "bool","Step 0": true,"Step 1": false},
+            {"name": "G4","type": "bool","Step 0": true,"Step 1": true},
+            {"name": "G7","type": "bool","Step 0": true,"Step 1": false}
+        ]
+    },
+    {
+        "K": "2",
+        "props": "[G6, G10]",
+        "Counterexample": [
+            {"name": "Flow_Rate_KVO","type": "int","Step 0": 0,"Step 1": -2},
+            {"name": "Highest_Level_Alarm","type": "int","Step 0": 0,"Step 1": 4},
+            {"name": "Infusion_Inhibit","type": "bool","Step 0": false,"Step 1": true},
+            {"name": "System_On","type": "bool","Step 0": false,"Step 1": true},
+            {"name": "Commanded_Flow_Rate","type": "int","Step 0": 0,"Step 1": -1},
+            {"name": "FTP","type": "bool","Step 0": true,"Step 1": false},
+            {"name": "G6","type": "bool","Step 0": true,"Step 1": false},
+            {"name": "G10","type": "bool","Step 0": true,"Step 1": false}
         ]
     }
     ],
     "Conflicts": [
-        {"Conflict": "[g0, g1, g6]"},
-        {"Conflict": "[g0, g1, g9]"},
-        {"Conflict": "[g0, g10, g9]"},
-        {"Conflict": "[g0, g6, g10]"},
-        {"Conflict": "[g0, g8, g6]"},
-        {"Conflict": "[g0, g8, g9]"},
-        {"Conflict": "[g3, g2, g9]"},
-        {"Conflict": "[g3, g6, g2]"},
-        {"Conflict": "[g5, g9]"}
+        {"Conflict": "[G1_3, G10, G11]"},
+        {"Conflict": "[G1_3, G7, G11]"},
+        {"Conflict": "[G1_3, G7, G2]"},
+        {"Conflict": "[G1_3, G7, G9]"},
+        {"Conflict": "[G1_3, G9, G10]"},
+        {"Conflict": "[G3, G4, G10]"},
+        {"Conflict": "[G3, G4, G7]"},
+        {"Conflict": "[G6, G10]"}
     ],
     "Diagnoses": [
-        {"Diagnosis": "[g6, g9]"},
-        {"Diagnosis": "[g0, g3, g5]"},
-        {"Diagnosis": "[g0, g2, g5]"},
-        {"Diagnosis": "[g0, g3, g9]"},
-        {"Diagnosis": "[g0, g2, g9]"},
-        {"Diagnosis": "[g1, g10, g3, g5, g8]"},
-        {"Diagnosis": "[g1, g10, g2, g5, g8]"},
-        {"Diagnosis": "[g1, g10, g3, g8, g9]"},
-        {"Diagnosis": "[g1, g10, g2, g8, g9]"}
+        {"Diagnosis": "[G10, G7]"},
+        {"Diagnosis": "[G1_3, G3, G6]"},
+        {"Diagnosis": "[G10, G1_3, G3]"},
+        {"Diagnosis": "[G1_3, G4, G6]"},
+        {"Diagnosis": "[G10, G1_3, G4]"},
+        {"Diagnosis": "[G10, G11, G2, G3, G9]"},
+        {"Diagnosis": "[G11, G3, G6, G7, G9]"},
+        {"Diagnosis": "[G11, G2, G3, G6, G9]"},
+        {"Diagnosis": "[G10, G11, G2, G4, G9]"},
+        {"Diagnosis": "[G11, G4, G6, G7, G9]"},
+        {"Diagnosis": "[G11, G2, G4, G6, G9]"}
     ],
     "Dependencies": {
-         "g7": {"inputs": ["Highest_Level_Alarm", "System_On"] , "locals": ["g7", "H~0.X", "H~0.Y"] , "outputs": ["Current_System_Mode"]},
-         "g8": {"inputs": ["Infusion_Cancel", "System_On"] , "locals": ["g8", "FTP", "H~6.X", "H~6.Y"] , "outputs": ["Current_System_Mode"]},
-         "g9": {"inputs": ["Flow_Rate_KVO", "Infusion_Inhibit", "System_On"] , "locals": ["g9", "FTP", "H~11.X", "H~11.Y"] , "outputs": ["Commanded_Flow_Rate"]},
-         "g11": {"inputs": ["Patient_Bolus_Request", "System_On"] , "locals": ["g11", "FTP", "H~2.X", "H~2.Y", "~flatten0"] , "outputs": ["Current_System_Mode"]},
-         "g10": {"inputs": ["Configured", "System_On"] , "locals": ["g10", "FTP", "H~10.X", "H~10.Y"] , "outputs": ["Current_System_Mode"]},
-         "g0": {"inputs": ["Flow_Rate_KVO"] , "locals": ["g0", "H~4.X", "H~4.Y"] , "outputs": ["Commanded_Flow_Rate", "Current_System_Mode"]},
-         "g1": {"inputs": ["System_On"] , "locals": ["g1", "FTP", "H~5.X", "H~5.Y"] , "outputs": ["Current_System_Mode"]},
-         "g2": {"inputs": ["System_On"] , "locals": ["Current_System_Mode_pre", "g2", "FTP", "H~9.X", "H~9.Y"] , "outputs": ["Commanded_Flow_Rate", "Current_System_Mode"]},
-         "g3": {"inputs": ["System_On"] , "locals": ["g3", "H~1.X", "H~1.Y"] , "outputs": ["Current_System_Mode"]},
-         "g4": {"inputs": ["System_On"] , "locals": ["g4", "H~3.X", "H~3.Y"] , "outputs": ["Commanded_Flow_Rate", "Current_System_Mode"]},
-         "g5": {"inputs": ["Highest_Level_Alarm", "System_On"] , "locals": ["g5", "H~7.X", "H~7.Y"] , "outputs": ["Commanded_Flow_Rate"]},
-         "g6": {"inputs": ["Flow_Rate_KVO", "Highest_Level_Alarm", "System_On"] , "locals": ["g6", "H~8.X", "H~8.Y"] , "outputs": ["Commanded_Flow_Rate"]}
+         "G2": {"inputs": ["System_On"] , "locals": ["G2", "FTP", "H~25.X", "H~25.Y"] , "outputs": ["Current_System_Mode_1"]},
+         "G3": {"inputs": ["System_On"] , "locals": ["Current_System_Mode_0_pre", "G3", "FTP", "H~1.X", "H~1.Y"] , "outputs": ["Commanded_Flow_Rate", "Current_System_Mode_0", "Current_System_Mode_1"]},
+         "G4": {"inputs": ["System_On"] , "locals": ["G4", "H~3.X", "H~3.Y"] , "outputs": ["Current_System_Mode_0"]},
+         "G6": {"inputs": ["Highest_Level_Alarm", "System_On"] , "locals": ["G6", "H~8.X", "H~8.Y"] , "outputs": ["Commanded_Flow_Rate"]},
+         "G7": {"inputs": ["Flow_Rate_KVO", "Highest_Level_Alarm", "System_On"] , "locals": ["G7", "H~10.X", "H~10.Y"] , "outputs": ["Commanded_Flow_Rate"]},
+         "G8": {"inputs": ["Highest_Level_Alarm", "System_On"] , "locals": ["G8", "H~12.X", "H~12.Y"] , "outputs": ["Current_System_Mode_3", "Current_System_Mode_4"]},
+         "G9": {"inputs": ["Infusion_Cancel", "System_On"] , "locals": ["G9", "FTP", "H~14.X", "H~14.Y", "H~26.X", "H~26.Y"] , "outputs": ["Current_System_Mode_1"]},
+         "G1_2": {"inputs": [] , "locals": ["G1_2", "H~2.X", "H~2.Y"] , "outputs": ["Commanded_Flow_Rate", "Current_System_Mode_0"]},
+         "G1_1": {"inputs": [] , "locals": ["G1_1", "H~21.X", "H~21.Y"] , "outputs": ["Current_System_Mode_0", "Current_System_Mode_1", "Current_System_Mode_2", "Current_System_Mode_3", "Current_System_Mode_4", "Current_System_Mode_6", "Current_System_Mode_7", "Current_System_Mode_8"]},
+         "G1_4": {"inputs": [] , "locals": ["G1_4", "H~7.X", "H~7.Y"] , "outputs": ["Commanded_Flow_Rate", "Current_System_Mode_6"]},
+         "G1_3": {"inputs": [] , "locals": ["G1_3", "H~5.X", "H~5.Y"] , "outputs": ["Commanded_Flow_Rate", "Current_System_Mode_1"]},
+         "G5_2": {"inputs": ["System_On"] , "locals": ["G5_2", "H~6.X", "H~6.Y"] , "outputs": ["Commanded_Flow_Rate", "Current_System_Mode_1"]},
+         "G1_6": {"inputs": ["Flow_Rate_KVO"] , "locals": ["G1_6", "H~11.X", "H~11.Y"] , "outputs": ["Commanded_Flow_Rate", "Current_System_Mode_8"]},
+         "G5_1": {"inputs": ["System_On"] , "locals": ["G5_1", "H~4.X", "H~4.Y"] , "outputs": ["Commanded_Flow_Rate", "Current_System_Mode_0"]},
+         "G1_5": {"inputs": ["Flow_Rate_KVO"] , "locals": ["G1_5", "H~9.X", "H~9.Y"] , "outputs": ["Commanded_Flow_Rate", "Current_System_Mode_7"]},
+         "G1_8": {"inputs": [] , "locals": ["G1_8", "H~18.X", "H~18.Y"] , "outputs": ["Current_System_Mode_0", "Current_System_Mode_1", "Current_System_Mode_2", "Current_System_Mode_3", "Current_System_Mode_4", "Current_System_Mode_6", "Current_System_Mode_7", "Current_System_Mode_8"]},
+         "G1_7": {"inputs": [] , "locals": ["G1_7", "H~17.X", "H~17.Y"] , "outputs": ["Current_System_Mode_0", "Current_System_Mode_1", "Current_System_Mode_2", "Current_System_Mode_3", "Current_System_Mode_4", "Current_System_Mode_6", "Current_System_Mode_7", "Current_System_Mode_8"]},
+         "G1_9": {"inputs": [] , "locals": ["G1_9", "H~19.X", "H~19.Y"] , "outputs": ["Current_System_Mode_0", "Current_System_Mode_1", "Current_System_Mode_2", "Current_System_Mode_3", "Current_System_Mode_4", "Current_System_Mode_6", "Current_System_Mode_7", "Current_System_Mode_8"]},
+         "G11": {"inputs": ["Configured", "System_On"] , "locals": ["G11", "H~16.X", "H~16.Y"] , "outputs": ["Current_System_Mode_1"]},
+         "G10": {"inputs": ["Flow_Rate_KVO", "Infusion_Inhibit", "System_On"] , "locals": ["G10", "FTP", "H~15.X", "H~15.Y", "H~26.X", "H~26.Y"] , "outputs": ["Commanded_Flow_Rate"]},
+         "G12": {"inputs": ["Patient_Bolus_Request", "System_On"] , "locals": ["Current_System_Mode_4_pre", "G12", "H~13.X", "H~13.Y"] , "outputs": ["Current_System_Mode_4"]},
+         "G1_10": {"inputs": [] , "locals": ["G1_10", "H~20.X", "H~20.Y"] , "outputs": ["Current_System_Mode_0", "Current_System_Mode_1", "Current_System_Mode_2", "Current_System_Mode_3", "Current_System_Mode_4", "Current_System_Mode_6", "Current_System_Mode_7", "Current_System_Mode_8"]},
+         "G1_11": {"inputs": [] , "locals": ["G1_11", "H~22.X", "H~22.Y"] , "outputs": ["Current_System_Mode_0", "Current_System_Mode_1", "Current_System_Mode_2", "Current_System_Mode_3", "Current_System_Mode_4", "Current_System_Mode_6", "Current_System_Mode_7", "Current_System_Mode_8"]},
+         "G1_12": {"inputs": [] , "locals": ["G1_12", "H~23.X", "H~23.Y"] , "outputs": ["Current_System_Mode_0", "Current_System_Mode_1", "Current_System_Mode_2", "Current_System_Mode_3", "Current_System_Mode_4", "Current_System_Mode_6", "Current_System_Mode_7", "Current_System_Mode_8"]},
+         "G1_13": {"inputs": [] , "locals": ["G1_13", "H~24.X", "H~24.Y"] , "outputs": ["Current_System_Mode_0", "Current_System_Mode_1", "Current_System_Mode_2", "Current_System_Mode_3", "Current_System_Mode_4", "Current_System_Mode_6", "Current_System_Mode_7", "Current_System_Mode_8"]},
+         "G1_14": {"inputs": [] , "locals": ["G1_14", "H~0.X", "H~0.Y"] , "outputs": ["Current_System_Mode_0", "Current_System_Mode_1", "Current_System_Mode_2", "Current_System_Mode_3", "Current_System_Mode_4", "Current_System_Mode_6", "Current_System_Mode_7", "Current_System_Mode_8"]}
     }
 }
