@@ -62,8 +62,8 @@ container: {
   flexWrap: 'wrap',
 },
 textField: {
-  marginLeft: theme.spacing.unit,
-  marginRight: theme.spacing.unit,
+  marginLeft: theme.spacing(),
+  marginRight: theme.spacing(),
   width: 200,
 },
 dense: {
@@ -73,17 +73,17 @@ menu: {
   width: 200,
 },
 formControl: {
-    margin: theme.spacing.unit *2,
+    margin: theme.spacing(2),
     minWidth: 450,
-    marginTop: theme.spacing.unit * -.1
+    marginTop: theme.spacing(-,1)
   },
   title: {
-    marginTop: theme.spacing.unit *2,
-    margin: theme.spacing.unit,
+    marginTop: theme.spacing(2),
+    margin: theme.spacing(),
     fontWeight: '500'
   },
   selectEmpty: {
-    marginTop: theme.spacing.unit,
+    marginTop: theme.spacing(),
   },
 });
 

@@ -85,7 +85,7 @@ function createData(vID, cID, project, description) {
 const styles = theme => ({
   root: {
     width: '100%',
-    marginTop: theme.spacing.unit * 3,
+    marginTop: theme.spacing.unit(3),
     overflowX: 'auto',
     flexWrap: 'wrap',
   },

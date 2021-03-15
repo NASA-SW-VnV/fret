@@ -168,12 +168,12 @@ const styles = theme => ({
       marginTop: 64,
     },
     snackbarClose: {
-      width: theme.spacing.unit * 2.5,
-      height: theme.spacing.unit * 2.5,
+      width: theme.spacing.unit(2.5),
+      height: theme.spacing.unit(2.5),
     },
   },
   formControl: {
-    margin: theme.spacing.unit,
+    margin: theme.spacing(),
     minWidth: 120,
   },
 });
@@ -514,7 +514,7 @@ class MainView extends React.Component {
                                     key={name}
                                     dense>
                                     <ListItemText primary = {name} onClick={() => this.handleSetProject(name)}/>
-                                    <IconButton onClick={() => this.handleDeleteProject(name)} variant="flat" aria-label="delete" >
+                                    <IconButton onClick={() => this.handleDeleteProject(name)} size="small" aria-label="delete" >
                                       <Tooltip id="tooltip-icon-delete" title="Delete Project">
                                       <DeleteIcon color='error'/>
                                       </Tooltip>

@@ -1,15 +1,15 @@
 // *****************************************************************************
 // Notices:
-// 
+//
 // Copyright � 2019 United States Government as represented by the Administrator
 // of the National Aeronautics and Space Administration.  All Rights Reserved.
-// 
+//
 // Disclaimers
-// 
+//
 // No Warranty: THE SUBJECT SOFTWARE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY OF
 // ANY KIND, EITHER EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED
-// TO, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL CONFORM TO SPECIFICATIONS, 
-// ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, 
+// TO, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL CONFORM TO SPECIFICATIONS,
+// ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE,
 // OR FREEDOM FROM INFRINGEMENT, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL BE
 // ERROR FREE, OR ANY WARRANTY THAT DOCUMENTATION, IF PROVIDED, WILL CONFORM TO
 // THE SUBJECT SOFTWARE. THIS AGREEMENT DOES NOT, IN ANY MANNER, CONSTITUTE AN
@@ -18,7 +18,7 @@
 // RESULTING FROM USE OF THE SUBJECT SOFTWARE.  FURTHER, GOVERNMENT AGENCY
 // DISCLAIMS ALL WARRANTIES AND LIABILITIES REGARDING THIRD-PARTY SOFTWARE, IF
 // PRESENT IN THE ORIGINAL SOFTWARE, AND DISTRIBUTES IT ''AS IS.''
-// 
+//
 // Waiver and Indemnity:  RECIPIENT AGREES TO WAIVE ANY AND ALL CLAIMS AGAINST
 // THE UNITED STATES GOVERNMENT, ITS CONTRACTORS AND SUBCONTRACTORS, AS WELL AS
 // ANY PRIOR RECIPIENT.  IF RECIPIENT'S USE OF THE SUBJECT SOFTWARE RESULTS IN
@@ -38,12 +38,12 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Nametip from '@material-ui/core/Tooltip';
 import classNames from 'classnames';
-import { ResponsiveContainer, 
-         LineChart, 
-         Line, 
-         CartesianGrid, 
-         XAxis, 
-         YAxis, 
+import { ResponsiveContainer,
+         LineChart,
+         Line,
+         CartesianGrid,
+         XAxis,
+         YAxis,
          ReferenceDot,
          ReferenceLine,
          Tooltip,
@@ -129,8 +129,8 @@ class TimeSeriesChart extends Component {
             dragActive: false,
             dragWasActive: false,
             dragStartIndex: undefined
-        }      
-        
+        }
+
         this.handleClick = this.handleClick.bind(this);
         this.handleMouseEnterLine = this.handleMouseEnterLine.bind(this);
         this.handleMouseLeaveLine = this.handleMouseLeaveLine.bind(this);
@@ -141,7 +141,7 @@ class TimeSeriesChart extends Component {
     }
 
     componentDidUpdate(prevProps) {
-        let {data} = this.props; 
+        let {data} = this.props;
         if (!TimeSeriesChart.equalTrace(prevProps.data, data)) {
             this.setState({
                 data
@@ -194,7 +194,7 @@ class TimeSeriesChart extends Component {
             const { dataKey } = this.props;
             const dataIndex = event.activeTooltipIndex;
             let data  = this.state.data.slice();
-            this.setState((prevState) => {  
+            this.setState((prevState) => {
                 if (!this.state.dragWasActive) {
                     data[dataIndex] = (data[dataIndex]) ? 0 : 1;
                 }
@@ -234,7 +234,7 @@ class TimeSeriesChart extends Component {
                         dragWasActive,
                         data
                     }
-                } 
+                }
             })
         } else {
             this.handleMouseLeave(event);
@@ -291,7 +291,7 @@ class TimeSeriesChart extends Component {
                                 'true': (t ? 'TRUE' : null),
                                 'TF': ((i === 0) ? 'FALSE' : 'TRUE')
                             }
-                        )) : 
+                        )) :
                         this.props.data.map((t, i) => (
                             {
                                 [this.props.dataKey]: (t ? 'TRUE' : 'FALSE'),
@@ -303,7 +303,7 @@ class TimeSeriesChart extends Component {
 
         let longName = this.props.name.length > maxNameLength;
         let name = (longName) ? this.props.name.slice(0, maxNameLength-1) + "..." : this.props.name;
-        let nameTip = (longName || expression) ? 
+        let nameTip = (longName || expression) ?
                         <div>
                             {((longName) ? this.props.name + ((expression) ? ": " : "") : "")}
                             {(expression) ? <FormulaRenderer tex={expression}/>: null}
@@ -313,21 +313,21 @@ class TimeSeriesChart extends Component {
             <div className={classNames(classes.wrapper, classes.unselectable)}>
 
             <ResponsiveContainer width="99%" height={75} debounce={0}>
-                <LineChart 
+                <LineChart
                     syncId={this.props.syncId}
-                    margin={{top: 10, right: 10, left: 0, bottom: 10}} 
+                    margin={{top: 10, right: 10, left: 0, bottom: 10}}
                     data={data}
                     onClick={(this.props.onClick) ? this.handleClick : undefined}
                     onMouseDown={(canChange) ? this.handleMouseDown : undefined}
                     onMouseUp={(canChange) ? this.handleMouseUp : undefined}
                     onMouseMove={(canChange) ? this.handleMouseMove : undefined}
                     onMouseLeave={(canChange) ? this.handleMouseLeave : undefined}>
-                    <Tooltip 
-                        cursor={{ 
-                                    stroke: primaryColor, 
-                                    strokeWidth: 4, 
+                    <Tooltip
+                        cursor={{
+                                    stroke: primaryColor,
+                                    strokeWidth: 4,
                                     strokeOpacity: 0.25,
-                                    fill: "none" }} 
+                                    fill: "none" }}
                         content={<EmptyTooltip />}
                     />
                     <CartesianGrid strokeDasharray="3 3" fill={fill} fillOpacity="0.4"/>
@@ -342,20 +342,20 @@ class TimeSeriesChart extends Component {
                         dataKey="TF">
                         <Label value={name}/>
                     </YAxis>
-                    <Line 
+                    <Line
                         name={this.props.name}
                         dataKey={this.props.dataKey}
                         type="step"
                         stroke={primaryColor}
-                        strokeWidth={this.state.hover || selected ? 
-                                        this.props.strokeWidth*2 : 
+                        strokeWidth={this.state.hover || selected ?
+                                        this.props.strokeWidth*2 :
                                         this.props.strokeWidth
                                     }
-                        isAnimationActive={false} 
+                        isAnimationActive={false}
                         onMouseEnter={this.handleMouseEnterLine}
                         onMouseLeave={this.handleMouseLeaveLine}
                     />
-                    <Line 
+                    <Line
                         name={this.props.name}
                         dataKey="false"
                         type="step"
@@ -367,11 +367,11 @@ class TimeSeriesChart extends Component {
                             fill: "tomato",
                             fillOpacity: 0.4
                         }}
-                        isAnimationActive={false} 
+                        isAnimationActive={false}
                         onMouseEnter={this.handleMouseEnterLine}
                         onMouseLeave={this.handleMouseLeaveLine}
                     />
-                    <Line 
+                    <Line
                         name={this.props.name}
                         dataKey="true"
                         type="step"
@@ -383,14 +383,14 @@ class TimeSeriesChart extends Component {
                             fill: "lightgreen",
                             fillOpacity: 0.4
                         }}
-                        isAnimationActive={false} 
+                        isAnimationActive={false}
                         onMouseEnter={this.handleMouseEnterLine}
                         onMouseLeave={this.handleMouseLeaveLine}
                     />
                 </LineChart>
             </ResponsiveContainer>
-            {nameTip !== null && 
-                <Nametip 
+            {nameTip !== null &&
+                <Nametip
                     title={nameTip}
                     placement="right"
                     classes={{tooltip: classes.nametip}}>
@@ -418,7 +418,7 @@ TimeSeriesChart.propTypes = {
     onMouseUp: PropTypes.func,
     onMouseMove: PropTypes.func,
     onMouseLeave: PropTypes.func,
-    onChange: PropTypes.func, 
+    onChange: PropTypes.func,
     chartState: PropTypes.number,
     selected: PropTypes.bool
 }

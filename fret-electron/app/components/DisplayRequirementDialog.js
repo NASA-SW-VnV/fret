@@ -169,12 +169,12 @@ class DisplayRequirementDialog extends React.Component {
           <GridList cellHeight='auto' cols={2}>
             <GridListTile>
                 <DialogTitle id="form-dialog-title">{reqidLabel}
-                  <IconButton onClick={this.handleUpdateRequirement} variant="flat" color="secondary" aria-label="edit" >
+                  <IconButton onClick={this.handleUpdateRequirement} size="small" color="secondary" aria-label="edit" >
                     <Tooltip id="tooltip-icon-edit" title="Edit Requirement">
                     <EditIcon />
                     </Tooltip>
                   </IconButton>
-                  <IconButton onClick={this.handleDeleteRequirement} variant="flat" aria-label="delete" >
+                  <IconButton onClick={this.handleDeleteRequirement} size="small" aria-label="delete" >
                     <Tooltip id="tooltip-icon-delete" title="Delete Requirement">
                     <DeleteIcon color='error'/>
                     </Tooltip>
