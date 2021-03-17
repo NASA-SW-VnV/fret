@@ -124,7 +124,7 @@ const formStyles = theme => ({
 class CreateRequirementDialog extends React.Component {
   state = {
     createDialogOpen: false,
-    project: '',
+    project: null,
     reqid: '',
     parent_reqid: '',
     rationale: '',
