@@ -62,10 +62,6 @@ const styles = theme => ({
   }
 });
 
-/*function Transition(props) {
-    return <Slide direction="right" {...props} />;
-}*/
-
 const Transition = React.forwardRef((props, ref) => (
     <Slide direction="right" {...props} ref={ref}/>
   ))
