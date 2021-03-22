@@ -79,6 +79,8 @@ import * as cc_analysis from '../../analysis/connected_components';
 /*Realizability checking*/
 import ejsCache_realize from '../../support/RealizabilityTemplates/ejsCache_realize';
 import * as realizability from '../../analysis/realizabilityCheck';
+import DiagnosisEngine from '../../analysis/DiagnosisEngine';
+
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -432,33 +434,85 @@ class AnalysisTable extends React.Component {
 
   diagnoseSpec(event) {    
     const {diagnosisStatus, selected, connectedComponents, ccSelected, compositional, monolithic, timeout} = this.state;
+    const {selectedProject} = this.props;    
+    const self = this;
 
-    if (compositional) {
-      connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'] = 'PROCESSING'
-      // buttonText = "PROCESSING";
-      var filePath = analysisPath+selected.component_name+"_"+ccSelected+".lus"
-      var runDiagnosis = realizability.checkRealizability(filePath, '-diagnose -fixpoint -json -timeout '+timeout);
-      // let engine = new DiagnosisEngine(contract, 'realizability');
-      // engine.main();
-      connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'] = 'DIAGNOSED'    
-      this.setState({ connectedComponents : connectedComponents})
-    } else if (monolithic) {      
-      // buttonText = "PROCESSING";
-      diagnosisStatus[selected.component_name] = 'PROCESSING'
-      this.setState({ diagnosisStatus : diagnosisStatus})
-      var filePath = analysisPath+selected.component_name+".lus"
-      var runDiagnosis = realizability.checkRealizability(filePath, '-diagnose -fixpoint -json -timeout '+timeout);
-      // var result = runDiagnosis.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];
-      // // let engine = new DiagnosisEngine(contract, 'realizability');
-      // // engine.main();
-      // if (result === 'UNREALIZABLE') {
-      this.timer = setTimeout(() => {
-        diagnosisStatus[selected.component_name] = 'DIAGNOSED';
-        this.setState({ diagnosisStatus : diagnosisStatus});
-      }, 2000);
-      // }
-    }
+    modeldb.find({
+      selector: {
+        component_name: selected.component_name,
+        project: selectedProject,
+        completed: true, //for modes that are not completed; these include the ones that correspond to unformalized requirements
+        modeldoc: false
+      }
+    }).then(function (modelResult){
+      var contract = self.getContractInfo(modelResult);
+      contract.componentName = selected.component_name+'Spec';
+
+      db.find({
+        selector: {
+          project: selectedProject
+        }
+      }).then(function (fretResult){
+        contract.properties = self.getPropertyInfo(fretResult, contract.outputVariables, selected.component_name);
+        contract.delays = self.getDelayInfo(fretResult, selected.component_name);
+        return contract;
+      }).then(function (contract){
+        if (compositional) {
+          connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'] = 'PROCESSING'
+          let engine = new DiagnosisEngine(contract, 'realizability');
+          var result = engine.main();
+          console.log(result);
+          connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'] = 'DIAGNOSED'    
+          this.setState({ connectedComponents : connectedComponents})
+        } else if (monolithic) {      
+          // buttonText = "PROCESSING";
+          diagnosisStatus[selected.component_name] = 'PROCESSING'
+          this.setState({ diagnosisStatus : diagnosisStatus})
+          var filePath = analysisPath+selected.component_name+".lus"
+          var runDiagnosis = realizability.checkRealizability(filePath, '-diagnose -fixpoint -json -timeout '+timeout);
+          // var result = runDiagnosis.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];
+          // // let engine = new DiagnosisEngine(contract, 'realizability');
+          // // engine.main();
+          // if (result === 'UNREALIZABLE') {
+          this.timer = setTimeout(() => {
+            diagnosisStatus[selected.component_name] = 'DIAGNOSED';
+            this.setState({ diagnosisStatus : diagnosisStatus});
+          }, 2000);
+          // }
+        }
+      })
+    })
   }
+
+  // diagnoseSpec(event) {    
+  //   const {diagnosisStatus, selected, connectedComponents, ccSelected, compositional, monolithic, timeout} = this.state;
+
+  //   if (compositional) {
+  //     connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'] = 'PROCESSING'
+  //     // buttonText = "PROCESSING";
+  //     var filePath = analysisPath+selected.component_name+"_"+ccSelected+".lus"
+  //     var runDiagnosis = realizability.checkRealizability(filePath, '-diagnose -fixpoint -json -timeout '+timeout);
+  //     // let engine = new DiagnosisEngine(contract, 'realizability');
+  //     // var result = engine.main();
+  //     connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'] = 'DIAGNOSED'    
+  //     this.setState({ connectedComponents : connectedComponents})
+  //   } else if (monolithic) {      
+  //     // buttonText = "PROCESSING";
+  //     diagnosisStatus[selected.component_name] = 'PROCESSING'
+  //     this.setState({ diagnosisStatus : diagnosisStatus})
+  //     var filePath = analysisPath+selected.component_name+".lus"
+  //     var runDiagnosis = realizability.checkRealizability(filePath, '-diagnose -fixpoint -json -timeout '+timeout);
+  //     // var result = runDiagnosis.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];
+  //     // // let engine = new DiagnosisEngine(contract, 'realizability');
+  //     // // engine.main();
+  //     // if (result === 'UNREALIZABLE') {
+  //     this.timer = setTimeout(() => {
+  //       diagnosisStatus[selected.component_name] = 'DIAGNOSED';
+  //       this.setState({ diagnosisStatus : diagnosisStatus});
+  //     }, 2000);
+  //     // }
+  //   }
+  // }
 
   getCoCoSpecDataType(dataType){
     if (dataType === 'boolean'){
@@ -517,6 +571,7 @@ class AnalysisTable extends React.Component {
           if (doc.semantics.CoCoSpecCode !== constants.nonsense_semantics &&
             doc.semantics.CoCoSpecCode !== constants.undefined_semantics &&
             doc.semantics.CoCoSpecCode !== constants.unhandled_semantics){
+            console.log(doc)
               property.value = doc.semantics.CoCoSpecCode;
               property.reqid = doc.reqid;
               property.fullText = "Req text: " + doc.fulltext;

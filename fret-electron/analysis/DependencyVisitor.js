@@ -1,3 +1,4 @@
+const LustreExprVisitor = require('../support/LustreExpressionsParser/visitors/LustreExpressionsVisitor.js');
 // const LustreExprVisitor = require('../support/LustreExpressionsParser/visitors/LustreExprVisitor.js');
 const ArrayAccessExpr = require('../support/LustreExpressionsParser/expr/ArrayAccessExpr.js');
 const ArrayExpr = require('../support/LustreExpressionsParser/expr/ArrayExpr.js');

@@ -2,11 +2,13 @@
 //Inputs : contract, check type (realizability currently supported only)
 
 // import ejsCache from '../../support/CoCoSpecTemplates/ejsCache';
-// const antlr4 = require('antlr4/index');
+const antlr4 = require('antlr4/index');
 const fs = require('fs');
 const mkdirp = require('mkdirp');
-const LustreExpressionsLexer = require('../support/LustreExpressionsParser/LustreExpressionsLexer');
-const LustreExpressionsParser = require('../support/LustreExpressionsParser/LustreExpressionsParser');
+const LTLLexer = require('../support/LTLParser/LTLLexer');
+const LTLParser = require('../support/LTLParser/LTLParser');
+// const LustreExpressionsLexer = require('../support/LustreExpressionsParser/LustreExpressionsLexer');
+// const LustreExpressionsParser = require('../support/LustreExpressionsParser/LustreExpressionsParser');
 const DependencyMap = require('./DependencyMap.js');
 const DependencySet = require('./DependencySet.js');
 const HSNode = require('./HSNode.js');
@@ -17,7 +19,8 @@ class DiagnosisEngine {
 
   constructor(contract, check) {
     this.contract = contract;
-    this.parsedContract = parseAssignments(contract);
+    this.parsedContract = this.parseAssignments(contract);
+    console.log(this.parsedContract)
     this.depMap = new DependencyMap(this.contract);
 
     //check is unused currently. The idea is for this class to be check-independent.
@@ -89,20 +92,26 @@ class DiagnosisEngine {
   // }
 
   parseAssignment(text) {
+    // var chars = new antlr4.InputStream(text.trim());
+    // var lexer = new LustreExpressionsLexer.LustreExpressionsLexer(chars);
+    // var tokens  = new antlr4.CommonTokenStream(lexer);
+    // var parser = new LustreExpressionsParser.LustreExpressionsParser(tokens);
+
     var chars = new antlr4.InputStream(text.trim());
-    var lexer = new LustreExpressionsLexer.LustreExpressionsLexer(chars);
+    var lexer = new LTLLexer.LTLLexer(chars);
     var tokens  = new antlr4.CommonTokenStream(lexer);
-    var parser = new LustreExpressionsParser.LustreExpressionsParser(tokens);
-    return parser.expr();
+    var parser = new LTLParser.LTLParser(tokens);
+    return parser.bool_expr();
   }
 
   parseAssignments(contract) {
     var parsedContract = contract;
-    for (var i = 0; i <= contract['assignments'].length; i++) {
-      parsedContract['assignments'][i] = parseAssignment(contract['assignments'][i]);
+    console.log(parsedContract);
+    for (var i = 0; i < contract['assignments'].length; i++) {
+      parsedContract['assignments'][i] = this.parseAssignment(contract['assignments'][i]);
     }
-    for (var i = 0; i <= contract['properties'].length; i++) {
-      parsedContract['properties'][i].value = parseAssignment(contract['properties'][i].value);
+    for (var i = 0; i < contract['properties'].length; i++) {
+      parsedContract['properties'][i].value = this.parseAssignment(contract['properties'][i].value);
     }
     return parsedContract;
   }
