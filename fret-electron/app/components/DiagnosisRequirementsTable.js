@@ -206,7 +206,7 @@ DiagnosisRequirementsTableHead.propTypes = {
 const styles = theme => ({
   root: {
     // width: '100%',
-    marginTop: theme.spacing.unit * 3,
+    marginTop: theme.spacing(3),
   },
 });
 
@@ -348,7 +348,7 @@ class DiagnosisRequirementsTable extends React.Component {
       <div>
       <Paper>
         <div>
-          <Table aria-labelledby="tableTitle" padding="dense">
+          <Table aria-labelledby="tableTitle" size="small">
             <DiagnosisRequirementsTableHead
               numSelected={selected.length}
               order={order}

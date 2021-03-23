@@ -28,7 +28,7 @@ import { DiagnosisContext } from './DiagnosisProvider';
 
 const tableComponentBarStyles = theme => ({
   root: {
-    paddingRight: theme.spacing.unit,
+    paddingRight: theme.spacing(1),
   },
   componentBar:
     theme.palette.type === 'light'
@@ -52,8 +52,8 @@ const tableComponentBarStyles = theme => ({
   },
   formControl: {
     minWidth: 150,
-    padding: theme.spacing.unit * -2,
-    marginRight: theme.spacing.unit * 2
+    padding: theme.spacing(-2),
+    marginRight: theme.spacing(2)
 
   },
 });
@@ -73,7 +73,6 @@ let TableComponentBar = props => {
             input={<Input name="component" id="component-helper" />}
           >
             {menuItems}
-            })}
           </Select>
         </FormControl>
       </form>
@@ -95,7 +94,7 @@ const styles = theme => ({
   root: {
     width: 600,
     height: 400,
-    marginTop: theme.spacing.unit * 3,
+    marginTop: theme.spacing(3),
     backgroundColor: theme.palette.background.paper,
     overflow: 'auto'
   },

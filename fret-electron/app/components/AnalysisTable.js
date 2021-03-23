@@ -170,11 +170,11 @@ const styles = theme => ({
   },
   section1: {
     alignItems: 'flex-end',
-    marginBottom: `${theme.spacing.unit}px`,
+    marginBottom: `${theme.spacing(1)}px`,
   },
   formControl: {
     minWidth: 200,
-    marginRight: theme.spacing.unit * 2
+    marginRight: theme.spacing(2)
   },
   vAlign : {
     verticalAlign : 'bottom'

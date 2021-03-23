@@ -213,7 +213,8 @@ let TableComponentBar = props => {
           <InputLabel htmlFor="component-helper">Corresponding Model Component</InputLabel>
           <Select
             key={fretComponent=== undefined ? '' : fretComponent}
-            value={modelComponent}
+            //value={modelComponent}
+            value={""}
             onChange={handleModelChange}
             input={<Input name="component" id="component-helper" />}
           >

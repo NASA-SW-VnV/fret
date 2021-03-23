@@ -72,16 +72,16 @@ function createData(vID, cID, project, description) {
 const styles = theme => ({
   root: {
     // width: '100%',
-    marginTop: theme.spacing.unit,
+    marginTop: theme.spacing(1),
     // flexWrap: 'wrap',
   },
   heading: {
     fontSize: theme.typography.pxToRem(18),
     fontWeight: theme.typography.fontWeightRegular,
-    marginRight: theme.spacing.unit * 2,
+    marginRight: theme.spacing(2),
   },
   selectEmpty: {
-    marginTop: theme.spacing.unit * 2,
+    marginTop: theme.spacing(2),
   },
 });
 
