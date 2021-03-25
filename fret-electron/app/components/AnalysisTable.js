@@ -64,7 +64,6 @@ import Select from '@material-ui/core/Select';
 import { lighten } from '@material-ui/core/styles/colorManipulator';
 import Toolbar from '@material-ui/core/Toolbar';
 
-import DisplayVariableDialog from './DisplayVariableDialog';
 import Checkbox from '@material-ui/core/Checkbox';
 
 /*analysis icons*/
@@ -236,6 +235,7 @@ class AnalysisTable extends React.Component {
     status: {},
     time: {},
     diagnosisStatus: {},
+    diagnosisReports: {},
     monolithic: false,
     compositional: false,
     timeout: 900,
@@ -317,7 +317,7 @@ class AnalysisTable extends React.Component {
             /* Use contract to determined the output connected components
              * */
 
-          var mappings = cc_analysis.compute_dependency_maps(contract);
+          var mappings = cc_analysis.compute_dependency_maps(contract);      
           console.log(mappings);
 
           var connected_components = cc_analysis.compute_connected_components(contract, mappings['output']);
@@ -433,7 +433,7 @@ class AnalysisTable extends React.Component {
   };
 
   diagnoseSpec(event) {    
-    const {diagnosisStatus, selected, connectedComponents, ccSelected, compositional, monolithic, timeout} = this.state;
+    const {diagnosisStatus, diagnosisReports, selected, connectedComponents, ccSelected, compositional, monolithic, timeout} = this.state;
     const {selectedProject} = this.props;    
     const self = this;
 
@@ -458,25 +458,37 @@ class AnalysisTable extends React.Component {
         return contract;
       }).then(function (contract){
         if (compositional) {
+          var ccContract = JSON.parse(JSON.stringify(contract))          
+          var ccProperties = contract.properties.filter(p => connectedComponents[selected.component_name][ccSelected].properties.has(p.reqid))
+          ccContract.properties = ccProperties          
           connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'] = 'PROCESSING'
-          let engine = new DiagnosisEngine(contract, 'realizability');
+          let engine = new DiagnosisEngine(ccContract, 'realizability');
           var result = engine.main();
+
           console.log(result);
-          connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'] = 'DIAGNOSED'    
-          this.setState({ connectedComponents : connectedComponents})
+          connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'] = 'DIAGNOSED'
+          connectedComponents[selected.component_name][ccSelected]['diagnosisReport'] = result[1];   
+    
+          self.setState({ connectedComponents : connectedComponents})
         } else if (monolithic) {      
           // buttonText = "PROCESSING";
           diagnosisStatus[selected.component_name] = 'PROCESSING'
-          this.setState({ diagnosisStatus : diagnosisStatus})
-          var filePath = analysisPath+selected.component_name+".lus"
-          var runDiagnosis = realizability.checkRealizability(filePath, '-diagnose -fixpoint -json -timeout '+timeout);
+          self.setState({ diagnosisStatus : diagnosisStatus})
+          let engine = new DiagnosisEngine(contract, 'realizability');
+          var result = engine.main();
+          // var filePath = analysisPath+selected.component_name+".lus"
+          // var runDiagnosis = realizability.checkRealizability(filePath, '-diagnose -fixpoint -json -timeout '+timeout);
           // var result = runDiagnosis.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];
           // // let engine = new DiagnosisEngine(contract, 'realizability');
           // // engine.main();
           // if (result === 'UNREALIZABLE') {
           this.timer = setTimeout(() => {
             diagnosisStatus[selected.component_name] = 'DIAGNOSED';
-            this.setState({ diagnosisStatus : diagnosisStatus});
+            diagnosisReports[selected.component_name] = result[1];            
+            self.setState({
+              diagnosisStatus : diagnosisStatus,
+              diagnosisReports : diagnosisReports
+            });
           }, 2000);
           // }
         }
@@ -571,7 +583,6 @@ class AnalysisTable extends React.Component {
           if (doc.semantics.CoCoSpecCode !== constants.nonsense_semantics &&
             doc.semantics.CoCoSpecCode !== constants.undefined_semantics &&
             doc.semantics.CoCoSpecCode !== constants.unhandled_semantics){
-            console.log(doc)
               property.value = doc.semantics.CoCoSpecCode;
               property.reqid = doc.reqid;
               property.fullText = "Req text: " + doc.fulltext;
@@ -759,7 +770,7 @@ class AnalysisTable extends React.Component {
 
   render() {
     const {classes, selectedProject, components} = this.props;
-    const {connectedComponents, order, orderBy, status, time, diagnosisStatus, selected, ccSelected, monolithic, compositional, dependenciesExist, missingDependencies} = this.state;
+    const {connectedComponents, order, orderBy, status, time, diagnosisStatus, diagnosisReports, selected, ccSelected, monolithic, compositional, dependenciesExist, missingDependencies} = this.state;
     let grid;
 
     var tabs = [];
@@ -895,7 +906,10 @@ class AnalysisTable extends React.Component {
                         <div>
                           {connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'] === 'DIAGNOSED' ? 
                             (<Fade in={connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'] === 'DIAGNOSED'}>
-                              <ChordDiagram selectedComponent = {"../analysis/tmp/"+selected.component_name+"_"+ccSelected+".lus.json"}/>
+                              <div>
+                                {/*<ChordDiagram selectedComponent = {"../analysis/tmp/"+selected.component_name+"_"+ccSelected+".lus.json"}/>*/}
+                                <ChordDiagram selectedReport = {connectedComponents[selected.component_name][ccSelected]['diagnosisReport']}/>
+                              </div>
                             </Fade>) : 
                             (connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'] === 'PROCESSING' ? <CircularProgress style={{alignItems : 'center'}} size={50}/> : <div/>)
                           }
@@ -914,7 +928,10 @@ class AnalysisTable extends React.Component {
                       <div>
                         {diagnosisStatus[selected.component_name] === 'DIAGNOSED' ? 
                           (<Fade in={diagnosisStatus[selected.component_name] === 'DIAGNOSED'}>
-                            <ChordDiagram selectedComponent = {"../analysis/tmp/"+selected.component_name+".lus.json"}/>
+                            <div>
+                              {/*<ChordDiagram selectedComponent = {"../analysis/tmp/"+selected.component_name+".lus.json"}/>*/}
+                              <ChordDiagram selectedReport = {diagnosisReports[selected.component_name]}/>
+                            </div>
                           </Fade>) : 
                           (diagnosisStatus[selected.component_name] === 'PROCESSING' ? 
                             <Fade

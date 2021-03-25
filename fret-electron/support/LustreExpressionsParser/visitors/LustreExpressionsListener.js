@@ -1,4 +1,4 @@
-// Generated from LustreExpressions.g4 by ANTLR 4.7.1
+// Generated from LustreExpressions.g4 by ANTLR 4.7.2
 // jshint ignore: start
 var antlr4 = require('antlr4/index');
 
@@ -71,6 +71,15 @@ LustreExpressionsListener.prototype.enterPreExpr = function(ctx) {
 
 // Exit a parse tree produced by LustreExpressionsParser#preExpr.
 LustreExpressionsListener.prototype.exitPreExpr = function(ctx) {
+};
+
+
+// Enter a parse tree produced by LustreExpressionsParser#nodeCallExpr.
+LustreExpressionsListener.prototype.enterNodeCallExpr = function(ctx) {
+};
+
+// Exit a parse tree produced by LustreExpressionsParser#nodeCallExpr.
+LustreExpressionsListener.prototype.exitNodeCallExpr = function(ctx) {
 };
 
 

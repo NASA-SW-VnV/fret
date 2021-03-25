@@ -1,6 +1,6 @@
 const antlr4 = require('antlr4/index');
-const LustreExpressionsLexer = require('./LustreExpressionsParser/LustreExpressionsLexer');
-const LustreExpressionsParser = require('./LustreExpressionsParser/LustreExpressionsParser');
+const LustreExpressionsLexer = require('./LustreExpressionsParser/visitors/LustreExpressionsLexer');
+const LustreExpressionsParser = require('./LustreExpressionsParser/visitors/LustreExpressionsParser');
 const AnnotatingErrorListener = require('../app/parser/AnnotatingErrorListener');
 const LustreExprAnalyzer = require('./lustreExprAnalyzer').lustreExprAnalyzer;
 const lustreExprAnalyzer = new LustreExprAnalyzer();
@@ -25,7 +25,8 @@ exports.compileLustreExpr = (text) => {
     lustreExprAnalyzer.clearVariables();
     antlr4.tree.ParseTreeWalker.DEFAULT.walk(lustreExprAnalyzer, tree);
     return ({
-      variables: lustreExprAnalyzer.variables()
+      variables: lustreExprAnalyzer.variables(),
+      tree: tree
     })
   }
 }

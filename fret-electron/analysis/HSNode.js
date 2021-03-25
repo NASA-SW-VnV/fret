@@ -4,18 +4,18 @@ class HSNode {
 	constructor(parent, parentEdge) {
 		this.parent = parent;
 		this.parentEdge = parentEdge;
-		this.hittingSet = computeHittingSet();
+		this.hittingSet = this.computeHittingSet();
 		this.label = [];
 		this.children = [];
 	}
 
 	computeHittingSet() {
-		var hitSet = new Set();
+		var hitSet = []
 		if (this.parent != null) {
 			var parent = this.parent;
-			hitSet.add(this.parentEdge);
+			hitSet.push(this.parentEdge);
 			while (parent.getParent() != null) {
-				hitSet.add(parent.getParentEdge());
+				hitSet.push(parent.getParentEdge());
 				parent = parent.getParent();
 			}
 		}
@@ -33,9 +33,9 @@ class HSNode {
 
 	setLabel(label) {
 		this.label = label;
-		var firstLabel = label[0];
-		if (firstLabel !== "done" && firstLabel !== "closed") {
-			generateChildren(this);
+		// var firstLabel = label[0];
+		if (label !== "done" && label !== "closed") {
+			this.generateChildren(this);
 		}
 	}
 

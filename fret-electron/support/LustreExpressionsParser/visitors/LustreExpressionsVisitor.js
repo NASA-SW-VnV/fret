@@ -1,4 +1,4 @@
-// Generated from LustreExpressions.g4 by ANTLR 4.7.1
+// Generated from LustreExpressions.g4 by ANTLR 4.7.2
 // jshint ignore: start
 var antlr4 = require('antlr4/index');
 
@@ -50,6 +50,12 @@ LustreExpressionsVisitor.prototype.visitBinaryExpr = function(ctx) {
 
 // Visit a parse tree produced by LustreExpressionsParser#preExpr.
 LustreExpressionsVisitor.prototype.visitPreExpr = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by LustreExpressionsParser#nodeCallExpr.
+LustreExpressionsVisitor.prototype.visitNodeCallExpr = function(ctx) {
   return this.visitChildren(ctx);
 };
 

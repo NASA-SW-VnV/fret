@@ -1,3 +1,4 @@
+//currently unused
 //assumptions are currently not being considered, but they should be
 //Essentially, variables that appear in assumptions are all interdependent
 const DependencyVisitor = require('./DependencyVisitor.js');
@@ -39,13 +40,13 @@ class DependencyMap {
 		}
 
 		for (var i = 0; i < contract['internalVariables'].length; i++) {
-			var deps = DependencyVisitor.get(contract['assignments'][0]);
+			var deps = DependencyVisitor.get(contract['assignments'][i]);
 			this.map.set(contract['internalVariables'][i].name, deps);
 		}
 
 		for (var i = 0; i < contract['properties'].length; i++) {
 			var prop = contract['properties'][i];
-			var deps = DependencyVisitor.get(prop.value);
+			var deps = DependencyVisitor.get(prop);
 			this.map.set(prop.reqid, deps);
 		}
 	}

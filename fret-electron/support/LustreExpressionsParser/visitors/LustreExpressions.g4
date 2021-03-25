@@ -7,6 +7,7 @@ expr:
     | INT                                                       #intExpr
     | REAL                                                      #realExpr
     | BOOL                                                      #boolExpr
+    | ID '(' (expr (',' expr)*)? ')'                            #nodeCallExpr    
     | expr '.' ID                                               #recordAccessExpr
     | expr '{' ID ':=' expr '}'                                 #recordUpdateExpr
     | expr '[' expr ']'                                         #arrayAccessExpr

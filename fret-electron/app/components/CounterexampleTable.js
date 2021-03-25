@@ -126,7 +126,8 @@ class CounterexampleTable extends React.Component {
   		numberOfSteps : this.props.cexTableData[this.props.currentConflicts[0]].K,
 		  cexConflictName : this.props.cexTableData[this.props.currentConflicts[0]].props,  		
   		cex : this.props.cexTableData[this.props.currentConflicts[0]].Counterexample,
-      deps: this.props.cexTableData[this.props.currentConflicts[0]].Dependencies };
+      // deps: this.props.cexTableData[this.props.currentConflicts[0]].Dependencies
+    };
   }
 
   handleChange = event => {
@@ -134,7 +135,7 @@ class CounterexampleTable extends React.Component {
     	numberOfSteps : this.props.cexTableData[event.target.value].K,
 		  cexConflictName : this.props.cexTableData[event.target.value].props,
     	cex : this.props.cexTableData[event.target.value].Counterexample,
-    	deps : this.props.cexTableData[event.target.value].Dependencies,
+    	// deps : this.props.cexTableData[event.target.value].Dependencies,
       [event.target.name]: event.target.value
     })
     this.context.setMessage({
@@ -149,7 +150,7 @@ class CounterexampleTable extends React.Component {
   			numberOfSteps : this.props.cexTableData[this.props.currentConflicts[0]].K,
   			cexConflictName : this.props.cexTableData[this.props.currentConflicts[0]].props,
   			cex : this.props.cexTableData[this.props.currentConflicts[0]].Counterexample,
-        deps : this.props.cexTableData[this.props.currentConflicts[0]].Dependencies
+        // deps : this.props.cexTableData[this.props.currentConflicts[0]].Dependencies
   		});    
   	}
 
@@ -175,15 +176,15 @@ class CounterexampleTable extends React.Component {
   		);
   	}
 
-  	var ents = Object.entries(deps)
-    const reducer = (accumulator, currentValue) => accumulator.concat(currentValue[1].locals.filter(l => l !== currentValue[0]));
-    var locs = [...new Set(ents.reduce(reducer, []))];
+  	// var ents = Object.entries(deps)
+    // const reducer = (accumulator, currentValue) => accumulator.concat(currentValue[1].locals.filter(l => l !== currentValue[0]));
+    // var locs = [...new Set(ents.reduce(reducer, []))];
 
   	var tableRows = [];
     
     //Filter out JKind local variables from cex data, then create table row for everything else
-    cex.filter(row => !locs.includes(row.name))
-       .map(row => (tableRows.push(
+    // cex.filter(row => !locs.includes(row.name)).map...
+    cex.map(row => (tableRows.push(
           <TableRow key={cex.indexOf(row)}>
             {Object.keys(row).map(function(key, index) {          
               return(<TableCell key={index} align="right"> {row[key].toString()} </TableCell>);

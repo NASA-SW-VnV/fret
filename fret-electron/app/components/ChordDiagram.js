@@ -22,7 +22,7 @@ class ChordDiagram extends React.Component {
 	createD3() {		
 		const {setMessage} = this.context;
 		var chordObj = this;		
-	    const { selectedComponent } = this.props
+	    const { selectedReport } = this.props
 
 
 		var width = 400,
@@ -41,7 +41,9 @@ class ChordDiagram extends React.Component {
 			    		.attr("transform", "translate(" + (200)  + "," + (250) + ")")
 
 		//parse JSON file and create diagram
-		d3.json(selectedComponent, function(error, content) {
+		var content = selectedReport;
+		console.log(content)
+		// d3.json(selectedReport, function(error, content) {
 
 			//used to align diagram in window
 			function startAngle(d) { return d.startAngle + offset; }
@@ -149,7 +151,8 @@ class ChordDiagram extends React.Component {
 		  	//populate these to make 2d matrix for diagram
 		  	var requirementNames = [];
 		  	var conflictNames = [];
-		  	var propNames = Object.keys(content.Dependencies);
+		  	// var propNames = Object.keys(content.Dependencies);
+		  	var propNames = content.Properties;
 		  	for (var i = 0; i < propNames.length; i++) {
 			    	var contains = false;
 			    	var propName = propNames[i];
@@ -191,7 +194,7 @@ class ChordDiagram extends React.Component {
 				var conflict = counterexamples[i].props;
 				// var conflict = conflictNames[i];
 				var cex = counterexamples[i];
-				cex.Dependencies = content.Dependencies;
+				// cex.Dependencies = content.Dependencies;
 				cexTables[conflict] = cex;
 				for (var j = 0; j < requirementNames.length; j++) {
 					if (conflict.includes(requirementNames[j])) {
@@ -292,7 +295,7 @@ class ChordDiagram extends React.Component {
 					.style("fill", function(d) { return fill(d.source.index); })
 					.style("opacity", function(d) { return (names[d.source.index] === "" ? 0 : 0.8); })
 					.attr("d", d3.ribbon().radius(innerRadius).startAngle(startAngle).endAngle(endAngle));
-		});
+		// });
 	}
 
 	componentDidUpdate(prevProps) {
@@ -335,6 +338,6 @@ class ChordDiagram extends React.Component {
 }
 
 ChordDiagram.propTypes = {
-  selectedComponent: PropTypes.string.isRequired,
+  selectedReport: PropTypes.object.isRequired,
 }
 export default ChordDiagram
