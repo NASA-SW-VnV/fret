@@ -122,6 +122,9 @@ const formStyles = theme => ({
 
 
 class CreateRequirementDialog extends React.Component {
+
+  dialogRef = React.createRef();
+
   state = {
     createDialogOpen: false,
     project: null,
@@ -133,9 +136,31 @@ class CreateRequirementDialog extends React.Component {
     status: '',
     selectedTemplate: -1,
     tabValue: 0,
+    editor: withFields(withReact(createEditor())),
+    dialogTop: 0,
+    dialogLeft: 0,
+    autoFillVariables: [],
   };
 
-  editor = withFields(withReact(createEditor()));
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (prevProps.open !== this.props.open) {
+      const editor = withFields(withReact(createEditor()));
+      this.setState({ editor })
+    }
+    this.setDialogPosition();
+  }
+
+  setDialogPosition = () => {
+    if(this.dialogRef && this.dialogRef.current) {
+      const { dialogTop, dialogLeft } = this.state;
+      const clientRect = this.dialogRef.current.getBoundingClientRect();
+      if (clientRect.top !== dialogTop || clientRect.left !== dialogLeft) {
+        this.setState({ dialogTop: clientRect.top, dialogLeft: clientRect.left })
+      }
+    }
+  }
+
 
 
   handleTextFieldFocused = name => event => {
@@ -163,15 +188,63 @@ class CreateRequirementDialog extends React.Component {
     this.setState({ tabValue });
   };
 
-  handleVariableClick = (variable) => event => {
-    event.preventDefault()
-    this.editor.insertText(variable);
+  createOrUpdateVariables = (variables, componentName, projectName, reqid , isRegular) => {
+    variables.map(function (variableName) {
+      var modeldbid = projectName + componentName + variableName;
+      modeldb.get(modeldbid).then(function (v) {
+        if(!v.reqs.includes(reqid)) {
+          modeldb.put({
+            ...v,
+            reqs: v.reqs.concat(reqid),
+          })
+        }
+      }).catch(function (err) {
+        if(err && err.message === 'missing') {
+          modeldb.put({
+            _id: modeldbid,
+            project: projectName,
+            component_name: componentName,
+            variable_name: variableName,
+            reqs: [reqid],
+            dataType: isRegular ? '' : 'boolean',
+            idType: isRegular ? '' : 'Mode',
+            description: '',
+            assignment: '',
+            modeRequirement: '',
+            model: false,
+            modelComponent: '',
+            model_id: ''
+          });
+        }
+      })
+    })
+  }
 
+  removeVariables = (oldVariables, newVariables, projectName, componentName, reqid) => {
+    oldVariables.map(function(variableName){
+      var modeldbidOld = projectName + componentName + variableName;
+      if (!newVariables.includes(variableName)){
+        modeldb.get(modeldbidOld).then(function(v) {
+          if (v.reqs.length > 1) {
+            var index = v.reqs.indexOf(reqid);
+            if (index > -1){
+              const newReqs = [...v.reqs];
+              newReqs.splice(index, 1)
+              modeldb.put({
+                ...v,
+                reqs: newReqs,
+              })
+            }
+          } else {
+            modeldb.remove(v);
+          }
+        })
+      }
+    })
   }
 
   handleCreate = () => {
     var self = this;
-    const { addChildRequirementToParent } = this.props;
     const { edittingRequirement, project, reqid, parent_reqid, rationale, comments} = this.state;
 
 
@@ -189,108 +262,30 @@ class CreateRequirementDialog extends React.Component {
     var oldModes = [];
 
     if (dbrev != undefined){
-      db.get(dbid).then(function(){
-        if (semantics){
-          if (semantics.variables && semantics.variables.regular){
-            oldVariables = oldVariables.concat(semantics.variables.regular);
-          }
+      db.get(dbid).then(function(req){
+        if (req.semantics && req.semantics.variables){
+            oldVariables = oldVariables.concat(req.semantics.variables.regular);
+            oldModes = oldModes.concat(req.semantics.variables.modes);
         }
-        oldVariables.forEach(function(oldv){
-          var modeldbidOld = project + semantics.component_name + oldv;
-          if (!semantics.variables.regular.includes(oldv)){
-            modeldb.get(modeldbidOld).then(function(vOld) {
-              if (vOld.reqs.length > 1) {
-                var index = vOld.reqs.indexOf(reqid);
-                if (index > -1){
-                  return modeldb.put({
-                    _id: modeldbidOld,
-                    _rev: vOld._rev,
-                    project: project,
-                    component_name: semantics.component_name,
-                    variable_name: oldv,
-                    reqs: vOld.reqs.splice(index,1),
-                    dataType: '',
-                    idType: '',
-                    description: '',
-                    assignment: '',
-                    modeRequirement: '',
-                    model: false,
-                    modelComponent: vOld.modelComponent,
-                    model_id: vOld.model_id
-                  }).then (function (response) {
-                  self.state.dialogCloseListener(true, newReqId);
-                }).catch(function (err) {
-                      self.state.dialogCloseListener(false);
-                      return console.log(err);
-                  })
-                }
-             } else {
-               modeldb.remove(vOld, function(err, response) {
-                 if (err) {
-                   self.state.dialogCloseListener(false);
-                   return console.log(err);
-                 }
-               })
-             }
-           }).catch(function (err){
-             self.state.dialogCloseListener(false);
-             return console.log(err);
-           })
-          }
-        })
-        if (semantics){
-          if (semantics.variables && semantics.variables.modes){
-            oldModes = oldModes.concat(semantics.variables.modes);
-          }
-        }
-        oldModes.forEach(function(oldv){
-          var modeldbidOld = project + semantics.component_name + oldv;
-          if (!semantics.variables.modes.includes(oldv)){
-            modeldb.get(modeldbidOld).then(function(vOld) {
-              if (vOld.reqs.length > 1) {
-                var index = vOld.reqs.indexOf(reqid);
-                if (index > -1){
-                  return modeldb.put({
-                    _id: modeldbidOld,
-                    _rev: vOld._rev,
-                    project: project,
-                    component_name: semantics.component_name,
-                    variable_name: oldv,
-                    reqs: vOld.reqs.splice(index,1),
-                    dataType: v.dataType,
-                    idType: v.idType,
-                    description: '',
-                    assignment: '',
-                    modeRequirement: '',
-                    model: false,
-                    modelComponent: v.modelComponent,
-                    model_id: v.model_id
-                  }).then (function (response) {
-                  self.state.dialogCloseListener(true, newReqId);
-                }).catch(function (err) {
-                      self.state.dialogCloseListener(false);
-                      return console.log(err);
-                  })
-                }
-             } else {
-               modeldb.remove(vOld, function(err, response) {
-                 if (err) {
-                   self.state.dialogCloseListener(false);
-                   return console.log(err);
-                 }
-               })
-             }
-           }).catch(function (err){
-             self.state.dialogCloseListener(false);
-             return console.log(err);
-           })
-          }
-        })
-      }).catch(function (err) {
-        self.state.dialogCloseListener(false);
-        return console.log(err);
-      });
+        // remove reqid From regular variables
+        self.removeVariables(oldVariables, semantics.variables ? semantics.variables.regular : [], project, semantics.component_name, reqid)
+
+
+        // remove reqid From modes variables
+        self.removeVariables(oldModes, semantics.variables ? semantics.variables.modes : [], project, semantics.component_name, reqid)
+      })
     }
+
+    if (semantics && semantics.variables){
+      // create or update regular variables
+      self.createOrUpdateVariables(semantics.variables.regular,semantics.component_name, project, reqid, true);
+
+      // create or update modes variables
+      self.createOrUpdateVariables(semantics.variables.modes,semantics.component_name, project, reqid, false);
+    }
+
+
+    // create req
     db.put({
         _id : dbid,
         _rev : dbrev,
@@ -305,126 +300,14 @@ class CreateRequirementDialog extends React.Component {
         template : template,
         input : input
       }, (err, responses) => {
-            if (err) {
-              self.state.dialogCloseListener(false);
-              return console.log(err);
-            }
-            console.log(responses);
-            self.state.dialogCloseListener(true, newReqId);
-          }
-    )
-
-    if (semantics && semantics.variables){
-      semantics.variables.regular.forEach(function(variable){
-        var modeldbid = project + semantics.component_name + variable;
-        modeldb.get(modeldbid).then(function (v){
-          var oldReqs = [];
-          oldReqs = oldReqs.concat(v.reqs);
-          if (oldReqs.indexOf(reqid) === -1) oldReqs.push(reqid);
-          return modeldb.put({
-            _id: modeldbid,
-            _rev: v._rev,
-            project: project,
-            component_name: semantics.component_name,
-            variable_name: variable,
-            reqs: oldReqs,
-            dataType: '',
-            idType: '',
-            description: '',
-            assignment: '',
-            modeRequirement: '',
-            model: false,
-            modelComponent: v.modelComponent,
-            model_id: v.model_id
-          }).then(function (response) {
-            console.log(response);
-            self.state.dialogCloseListener(true, newReqId);
-          }).catch(function (err){
-            self.state.dialogCloseListener(false);
-            return console.log(err);
-          })
-        }).catch(function (err){
-          var reqsAux = []
-          reqsAux.push(reqid);
-        return  modeldb.put({
-              _id: modeldbid,
-              project: project,
-              component_name: semantics.component_name,
-              variable_name: variable,
-              reqs: reqsAux,
-              dataType: '',
-              idType: '',
-              description: '',
-              assignment: '',
-              modeRequirement: '',
-              model: false,
-              modelComponent: '',
-              model_id: ''
-            }).then(function (response) {
-                console.log(response);
-                self.state.dialogCloseListener(true, newReqId);
-              }).catch(function (err){
-                self.state.dialogCloseListener(false);
-                return console.log(err);
-              })
-        })
-    })
-    semantics.variables.modes.forEach(function(variable){
-      var modeldbid = project + semantics.component_name + variable;
-      modeldb.get(modeldbid).then(function (v){
-        var oldReqs = [];
-        oldReqs = oldReqs.concat(v.reqs);
-        if (oldReqs.indexOf(reqid) === -1) oldReqs.push(reqid);
-        return modeldb.put({
-          _id: modeldbid,
-          _rev: v._rev,
-          project: project,
-          component_name: semantics.component_name,
-          variable_name: variable,
-          reqs: oldReqs,
-          dataType: v.dataType,
-          tool: v.tool,
-          idType: v.idType,
-          description: v.description,
-          assignment: v.assignment,
-          modeRequirement: v.modeRequirement,
-          model: v.model,
-          modelComponent: v.modelComponent,
-          model_id: v.model_id
-        }).then(function (response) {
-          console.log(response);
-          self.state.dialogCloseListener(true, newReqId);
-        }).catch(function (err){
+        if (err) {
           self.state.dialogCloseListener(false);
           return console.log(err);
-        })
-      }).catch(function (err){
-        var reqsAux = []
-        reqsAux.push(reqid);
-      return  modeldb.put({
-            _id: modeldbid,
-            project: project,
-            component_name: semantics.component_name,
-            variable_name: variable,
-            reqs: reqsAux,
-            dataType: 'boolean',
-            idType: 'Mode',
-            description: '',
-            assignment: '',
-            modeRequirement: '',
-            model: false,
-            modelComponent: '',
-            model_id: ''
-          }).then(function (response) {
-              console.log(response);
-              self.state.dialogCloseListener(true, newReqId);
-            }).catch(function (err){
-              self.state.dialogCloseListener(false);
-              return console.log(err);
-            })
-      })
-  })
-  }
+        }
+        console.log(responses);
+        self.state.dialogCloseListener(true, newReqId);
+      }
+    )
 };
 
   handleUpdateInstruction = (field) => {
@@ -451,6 +334,7 @@ class CreateRequirementDialog extends React.Component {
   }
 
   componentDidMount() {
+    window.addEventListener('resize', this.setDialogPosition);
     this.mounted = true;
   }
 
@@ -511,17 +395,23 @@ class CreateRequirementDialog extends React.Component {
     }
   }
 
+  setAutoFillVariables = (autoFillVariables) => {
+    this.setState({autoFillVariables})
+  }
+
   renderEditor = (inputFields, selectedTemplate) => {
-    const {tabValue} = this.state;
+    const {tabValue, dialogTop, dialogLeft} = this.state;
     return (
       <SlateEditor2
-        editor={this.editor}
+        editor={this.state.editor}
         onRef={ref => (this.stepper = ref)}
         updateInstruction={this.handleUpdateInstruction}
         updateSemantics={this.handleUpdateSemantics}
         inputFields={inputFields}
         template={templates[selectedTemplate]}
-        variable={this.state.variable}
+        autoFillVariables={this.state.autoFillVariables}
+        dialogTop={dialogTop}
+        dialogLeft={dialogLeft}
         />
     )
   }
@@ -555,7 +445,8 @@ class CreateRequirementDialog extends React.Component {
         >
           <div className={styles.layout}>
             <div className={styles.form}>
-            <DialogTitle id="form-dialog-title">
+            <DialogTitle id="form-dialog-title"
+                         ref={this.dialogRef}>
                 <div className={classes.dialogTitle}>
                   {dialogTitle}
                   <FormControl >
@@ -697,7 +588,7 @@ class CreateRequirementDialog extends React.Component {
               tabValue={tabValue}
               handleTabChange={this.handleTabChange}
               projectName={this.state.project}
-              handleVariableClick={this.handleVariableClick}
+              setAutoFillVariables={this.setAutoFillVariables}
               />
             </div>
           </div>

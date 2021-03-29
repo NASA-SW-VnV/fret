@@ -31,9 +31,29 @@ While typing the body of a requirement, FRET parses the requirement and recogniz
 
 **Note: Variable dictionary**
 
-Clicking on the dictionary icon will bring up a table showing variable dictionary per component in the Assistant pane. All components of the selected project will be listed under the table.  The components can be expanded to show existing variables. ![Variable Dictionary](./../screen_shots/VariableDictionary.png)
+You can access the *Dictionary* tab from the right pane on the *Create Requirement* or *Update Requirement* dialog.  After selecting a project, you can select a component in the selected project using the *Component* menu bar.  FRET then displays existing variables of the selected component.  These variables can be filtered by the variable type including *Mode*, *Inputs*, *Outputs* and *Internal* using check boxes under the *Component* menu bar.  
 
-When the variable dictionary is opened, you can click on an existing variable to input the variable in the requirement. This will insert the varialbe at the cursor or replace a selected string with the variable.
+***
+
+<img src="../screen_shots/dictionaryVariables.png">
+
+***
+
+You can expand a variable on the *Dictionary* tab to see more details.  The details include a list of requirements referencing this variable and show values of varialbe attributes that are defined.  Current attributes of a variable include *variable type*, *data type*, *assignment*, *modelComponent*, and *description*.
+
+***
+
+<img src="../screen_shots/dictionaryExtendedVariable.png">
+
+***
+
+The list of variables shown in the *Dictionary* tab is used to autocomplete when typing in the editor of the  *Create Requirement* and *Update Requirement* dialog.
+
+***
+
+<img src="../screen_shots/autocomplete.png">
+
+***
 
 **Note: Boolean expressions**
 

@@ -31,8 +31,8 @@
 // AGREEMENT.
 // *****************************************************************************
 import PropTypes from 'prop-types';
-import { createEditor, Node, Range, Transforms, Text } from 'slate';
-import { Slate, Editable, withReact, ReactEditor } from 'slate-react';
+import {Editor, Node, Range, Transforms, Text} from 'slate';
+import {Slate, Editable, withReact, ReactEditor} from 'slate-react';
 import initialValue from './slateConfigs2.json'
 
 import React from 'react'
@@ -45,12 +45,12 @@ import GridListTile from '@material-ui/core/GridListTile';
 
 import IconButton from '@material-ui/core/IconButton';
 import HelpIcon from '@material-ui/icons/HelpOutline';
-import BookIcon from '@material-ui/icons/ImportContacts';
 import Tooltip from '@material-ui/core/Tooltip';
 
 const FretSemantics = require('../parser/FretSemantics');
 import SlateEditor2Styles from './SlateEditor2.css'
 import TemplateDropdownMenu from './TemplateDropdownMenu';
+import VariablesDropdownMenu from "./VariablesDropDownMenu";
 
 const FIELDS = [
   {
@@ -119,6 +119,7 @@ const fieldEndCharacter = ' ';
  * @type {Component}
  */
 
+
 class SlateEditor2 extends React.Component {
 
   constructor(props) {
@@ -129,7 +130,11 @@ class SlateEditor2 extends React.Component {
       fieldColors: {},
       menuOptions: [],
       menuIndex: 0,
-      selectedField: undefined
+      selectedField: undefined,
+      search: '',
+      variables: [],
+      beforeRange: null,
+      position: null,
     }
 
 
@@ -203,6 +208,16 @@ class SlateEditor2 extends React.Component {
         handleUpdateSemantics: this.props.updateSemantics,
       }
     )
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (prevState.search !== this.state.search || prevProps.autoFillVariables !== this.props.autoFillVariables) {
+      const filterdVariables = this.props.autoFillVariables.filter(variable => this.state.search && variable.toLowerCase().startsWith(this.state.search.toLowerCase()))
+      this.setState({ variables: filterdVariables })
+    }
+    if (prevState.menuOptions !== this.state.menuOptions || prevState.variables !== this.state.variables) {
+      this.setState({ position: this.getPosition() })
+    }
   }
 
   componentWillUnmount() {
@@ -302,10 +317,43 @@ class SlateEditor2 extends React.Component {
                   menuIndex: 0,
                   selectedField: fieldName };
       } else {
-        return {  editorValue,
-                  inputText,
-                  errors,
-                  semantics };
+        const selection = this.props.editor.selection;
+        let search = '';
+        let beforeRange;
+        let start;
+        if (selection && Range.isCollapsed(selection)) {
+          [start] = Range.edges(selection);
+          let before = Editor.before(this.props.editor, start, { unit: 'offset' });
+          const charRange = before && Editor.range(this.props.editor, before, start)
+          let char = charRange && Editor.string(this.props.editor, charRange);
+          while (before && before.offset > 0 && char && char !== ' ') {
+            const beforePoint = Editor.before(this.props.editor, before, { unit: 'offset'})
+            const charRange =  beforePoint && Editor.range(this.props.editor, beforePoint, before);
+            char = charRange && Editor.string(this.props.editor, charRange);
+            before = beforePoint;
+          }
+          if(char === ' '){
+            before = Editor.after(this.props.editor, before, { unit: 'offset' });
+          }
+          beforeRange = before && Editor.range(this.props.editor, before, start)
+          const beforeText = beforeRange && Editor.string(this.props.editor, beforeRange)
+          const beforeMatch = beforeText && beforeText.match(/^(\w+)$/);
+          const after = Editor.after(this.props.editor, start)
+          const afterRange = Editor.range(this.props.editor, start, after)
+          const afterText = Editor.string(this.props.editor, afterRange)
+          const afterMatch = afterText.match(/^(\s|$)/)
+          if (beforeMatch && afterMatch) {
+            search = beforeMatch[1];
+          }
+        }
+        return {
+          editorValue,
+          inputText,
+          errors,
+          semantics,
+          search,
+          range: beforeRange,
+        };
       }
     })
   }
@@ -314,11 +362,11 @@ class SlateEditor2 extends React.Component {
     const selection = this.props.editor.selection;
     const start = selection && Range.start(selection);
     const path = start && start.path;
-    Transforms.select(this.props.editor, {path, offset: 1});
     this.setState(prevState => {
-      const {editorValue, menuOptions, menuIndex, selectedField} = prevState;
+      const { editorValue, menuOptions, menuIndex, selectedField, variables, search } = prevState;
       const selectedIndex = index ? index : menuIndex;
       if (menuOptions && menuOptions.length > 0 && selectedField) {
+        Transforms.select(this.props.editor, {path, offset: 1});
         const {template} = this.props;
         const fields = template && template.fields;
         const field = fields && fields[selectedField];
@@ -333,12 +381,37 @@ class SlateEditor2 extends React.Component {
         const inputText = editor2Text(clonedValue);
         const result = FretSemantics.compilePartialText(inputText);
 
-        return {editorValue: clonedValue,
-                inputText,
-                errors: result.parseErrors,
-                semantics: result.collectedSemantics,
-                menuIndex: 0,
-                menuOptions: []}
+        return {
+          editorValue: clonedValue,
+          inputText,
+          errors: result.parseErrors,
+          semantics: result.collectedSemantics,
+          menuIndex: 0,
+          menuOptions: []
+        }
+      } else if (variables.length > 0) {
+        const selectedIndex = index ? index : menuIndex;
+        Transforms.delete(this.props.editor, {at: this.state.range})
+        this.props.editor.insertText(variables[selectedIndex])
+        let after = Editor.after(this.props.editor, start, { unit: 'offset' });
+        const charRange = after && Editor.range(this.props.editor, start, after);
+        let char = charRange && Editor.string(this.props.editor, charRange);
+        while (after && char && char !== ' ') {
+          const afterPoint = Editor.after(this.props.editor, after, { unit: 'offset'})
+          const charRange =  afterPoint && Editor.range(this.props.editor, after, afterPoint);
+          char = charRange && Editor.string(this.props.editor, charRange);
+          after = afterPoint;
+        }
+        after = after && Editor.before(this.props.editor, after, { unit: 'offset' });
+        after && Transforms.select(this.props.editor, after);
+        return {
+          editorValue: this.props.editor.children,
+          search: '',
+          menuIndex: 0,
+          variables: [],
+          beforeRange: null,
+        }
+
       }
     })
   }
@@ -400,45 +473,57 @@ class SlateEditor2 extends React.Component {
         this.props.editor.deleteFragment();
       }
     } else if (isKeyHotkey('enter', event)) {
+      const {variables, menuOptions} = this.state;
       /* Enter is supressed */
       event.preventDefault();
-      this.handleDropdownSelection();
+      if(variables.length > 0 || menuOptions && menuOptions.length > 0){
+        this.handleDropdownSelection();
+      }
     } else if (isKeyHotkey('arrowup', event)) {
       /* Arrow up is supressed */
       event.preventDefault();
       let newIndex = -1;
       this.setState(prevState => {
-        const {menuIndex, menuOptions} = prevState;
+        const { menuIndex, menuOptions, variables } = prevState;
+        let newIndex;
         if (menuOptions && menuOptions.length > 0) {
-          newIndex = menuIndex <= 0 ? menuOptions.length-1 : menuIndex-1;
-          return { menuIndex: newIndex }
+          newIndex = menuIndex <= 0 ? menuOptions.length - 1 : menuIndex - 1;
+        } else if(variables.length > 0) {
+          newIndex = menuIndex <= 0 ? variables.length - 1 : menuIndex - 1;
         }
-      }, () => {if (newIndex >= 0) this.scrollToOption(newIndex)})
+        return { menuIndex: newIndex }
+
+      }, () => {
+        if (newIndex >= 0) this.scrollToOption(newIndex)
+      })
     } else if (isKeyHotkey('arrowdown', event)) {
       /* Arrow down is supressed */
       event.preventDefault();
       let newIndex = -1;
       this.setState(prevState => {
-        const {menuIndex, menuOptions} = prevState;
+        const { menuIndex, menuOptions, variables } = prevState;
+        let newIndex;
         if (menuOptions && menuOptions.length > 0) {
-          newIndex = menuIndex >= menuOptions.length-1 ? 0 : menuIndex+1;
-          return { menuIndex: newIndex }
+          newIndex = menuIndex >= menuOptions.length - 1 ? 0 : menuIndex + 1;
+        } else if(variables.length > 0) {
+          newIndex = menuIndex <= 0 ? variables.length - 1 : menuIndex + 1;
         }
-      }, () => {if (newIndex >= 0) this.scrollToOption(newIndex)})
+        return { menuIndex: newIndex }
+      }, () => {
+        if (newIndex >= 0) this.scrollToOption(newIndex)
+      })
     } else if (isKeyHotkey('arrowleft', event)) {
       /* Arrow left moves the cursor, this is working fine */
     } else if (isKeyHotkey('arrowright', event)) {
       /* Arrow right moves the cursor, this is working fine */
     } else if (isKeyHotkey('tab', event)) {
       /* Tab moves the focus to the next ui control, this is working fine */
-      this.setState(prevState => {
-        const {menuOptions} = prevState;
-        if (menuOptions && menuOptions.length > 0) {
-          event.preventDefault();
-          this.handleDropdownSelection();
-          return {menuIndex: 0, menuOptions: []}
-        }
-      })
+      const {menuOptions, variables} = this.state;
+      if(variables.length || menuOptions && menuOptions.length > 0){
+        event.preventDefault();
+        this.handleDropdownSelection(0);
+        // this.setState({menuIndex: 0, menuOptions: [], variables: []})
+      }
     } else if (isKeyHotkey('mod+arrowleft', event)) {
       /* Ctrl/Cmd + left moves the cursor backwards by one word */
       event.preventDefault();
@@ -476,20 +561,25 @@ class SlateEditor2 extends React.Component {
   }
 
   getPosition() {
-    const {menuOptions} = this.state;
+    const { menuOptions, variables, search, range } = this.state;
     if (menuOptions && menuOptions.length > 0) {
-      const fieldNode = getFieldNode(this.props.editor);
+      const fieldNode = getFieldNode(this.props.editor, search);
       if (fieldNode) {
         const domNode = ReactEditor.toDOMNode(this.props.editor, fieldNode);
         return [domNode.offsetTop + window.pageYOffset + 12,
                 domNode.offsetLeft + window.pageXOffset];
       }
+    } else if (variables.length > 0) {
+      const { dialogTop, dialogLeft } = this.props;
+
+      const domRange = ReactEditor.toDOMRange(this.props.editor, range);
+      const rect = domRange.getBoundingClientRect();
+      return [rect.top + window.pageYOffset - dialogTop + 12, rect.left + window.pageXOffset - dialogLeft];
     }
-    return undefined
   }
 
   getOptions(currentField) {
-    const {template} = this.props;
+    const { template } = this.props;
     const fields = template && template.fields;
     const field = fields && fields[currentField];
     return field ? field.options : [];
@@ -588,13 +678,6 @@ class SlateEditor2 extends React.Component {
             textAlign: 'center',
             padding: '10px',
           }}>
-          <div className={SlateEditor2Styles.showDictBtn}>
-          <IconButton onClick={() => { this.state.handleUpdateInstruction('dictField')}} style={{padding:'2px'}}>
-            <Tooltip title="dictionary">
-            <BookIcon />
-            </Tooltip>
-          </IconButton>
-          </div>
           <div className={SlateEditor2Styles.showGrammarBtn}>
           <IconButton onClick={this.openGrammarWindow} style={{padding:'2px'}}>
             <Tooltip title="See Grammar">
@@ -743,7 +826,7 @@ class SlateEditor2 extends React.Component {
 
   renderEditor = () => {
     const { template } = this.props;
-    const {menuOptions, menuIndex, editorValue} = this.state;
+    const { menuOptions, menuIndex, editorValue, variables, position } = this.state;
     const hasFields = Boolean(template);
     this.props.editor.fieldsEnabled = hasFields;
 
@@ -763,14 +846,19 @@ class SlateEditor2 extends React.Component {
      * The current options are stored the component state and set in
      * handleEditorValueChange, based on the current cursor position
      * (selection) in the editor */
-    const position = this.getPosition();
     let menu = undefined;
     if (hasFields && menuOptions && menuOptions.length > 0 && position) {
       menu = <TemplateDropdownMenu
-                options={menuOptions}
-                selection={menuIndex}
-                position={position}
-                onClick={this.handleDropdownClick}/>
+        options={menuOptions}
+        selection={menuIndex}
+        position={position}
+        onClick={this.handleDropdownClick}/>
+    } else if (!hasFields && variables.length > 0 && position) {
+      menu = <VariablesDropdownMenu
+        options={variables}
+        selection={menuIndex}
+        position={position}
+        onClick={this.handleDropdownClick}/>
     }
 
     return (
@@ -796,7 +884,7 @@ class SlateEditor2 extends React.Component {
         </GridListTile>
         <GridListTile>
           <div style={{textAlign:'right'}}>
-            <Button onClick={this.showSemantics} size='small' color='secondary' disabled={this.enableSemantics()}>
+            <Button onClick={this.showSemantics} size='small' color='secondary' disabled={false}>
               semantics
             </Button>
           </div>

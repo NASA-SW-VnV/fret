@@ -83,9 +83,11 @@ import ExportRequirementsDialog from './ExportRequirementsDialog';
 const app = require('electron').remote.app
 const dialog = require('electron').remote.dialog
 const db = require('electron').remote.getGlobal('sharedObj').db;
+const modeldb = require('electron').remote.getGlobal('sharedObj').modeldb;
 const fs = require('fs');
 const uuidv1 = require('uuid/v1');
 const system_dbkeys = require('electron').remote.getGlobal('sharedObj').system_dbkeys;
+const FretSemantics = require('../parser/FretSemantics');
 const csv2json=require("csvtojson");
 const requirementsImport = require('../../support/requirementsImport/convertAndImportRequirements');
 
@@ -168,8 +170,8 @@ const styles = theme => ({
       marginTop: 64,
     },
     snackbarClose: {
-      width: theme.spacing.unit(2.5),
-      height: theme.spacing.unit(2.5),
+      width: theme.spacing(2.5),
+      height: theme.spacing(2.5),
     },
   },
   formControl: {
@@ -190,6 +192,7 @@ function readTextFile(file, callback) {
             callback(rawFile.responseText);
         }
     }
+    rawFile.send(null);
     rawFile.send(null);
 }
 
@@ -212,9 +215,67 @@ class MainView extends React.Component {
     importedReqs: []
   };
 
-  //Dialog is an electron module
-  //Filters specifies an array of file types that can be displayed or selected when
-  //limiting the user to a specific type
+
+  populateVariables = () => {
+    db.allDocs({
+      include_docs: true,
+    }).then((result) => {
+      const rows = result.rows;
+      rows.forEach(r => {
+        const text = r.doc.fulltext;
+        if(text){
+          const semantics = this.extractSemantics(text);
+          if(semantics.variables) {
+            this.createOrUpdateVariables(semantics.variables.regular, semantics.component_name, r.doc.project, r.doc.reqid, true);
+            this.createOrUpdateVariables(semantics.variables.modes, semantics.component_name, r.doc.project, r.doc.reqid, false);
+          }
+        }
+      })
+    });
+  }
+
+  extractSemantics = (text) => {
+    const result = FretSemantics.compile(text)
+    if (result.parseErrors)
+      return {}
+    else if (result.collectedSemantics)
+      return result.collectedSemantics
+  }
+
+  createOrUpdateVariables = (variables, componentName, projectName, reqid , isRegular) => {
+    variables.map(function (variableName) {
+      var modeldbid = projectName + componentName + variableName;
+      modeldb.get(modeldbid).then(function (v) {
+        if(!v.reqs.includes(reqid)) {
+          modeldb.put({
+            ...v,
+            reqs: v.reqs.concat(reqid),
+          })
+        }
+      }).catch(function (err) {
+        if(err && err.message === 'missing') {
+          modeldb.put({
+            _id: modeldbid,
+            project: projectName,
+            component_name: componentName,
+            variable_name: variableName,
+            reqs: [reqid],
+            dataType: isRegular ? '' : 'boolean',
+            idType: isRegular ? '' : 'Mode',
+            description: '',
+            assignment: '',
+            modeRequirement: '',
+            model: false,
+            modelComponent: '',
+            model_id: ''
+          });
+        }
+      })
+    })
+  }
+
+
+
   handleImport = () => {
     const self = this;
     var homeDir = app.getPath('home');
@@ -239,12 +300,9 @@ class MainView extends React.Component {
            //console.log(importedReqs);
            let csvFields = Object.keys(importedReqs[0]);
            self.handleImportRequirements(csvFields, importedReqs);
-          })
-        .catch(err => {
-                // log error if any
-                console.log(err);
-            });
-
+        }).then(() => self.populateVariables()).catch((err) => {
+          console.log(err);
+        });
 
        } else if (fileExtension === 'json'){
          /*
@@ -385,6 +443,7 @@ class MainView extends React.Component {
   }
 
   componentDidMount = () => {
+    this.populateVariables();
     db.get('FRET_PROJECTS')
       .then((result) => {
       this.setState({

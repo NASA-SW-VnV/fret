@@ -1,5 +1,8 @@
+import {createEditor, Node, Range, Transforms, Text} from 'slate';
+import {withHistory} from "slate-history";
 
-const withFields = editor => {
+const withFields = editorWithoutHistory => {
+  const editor = withHistory(editorWithoutHistory);
   const { isInline,
     deleteBackward,
     deleteForward,
