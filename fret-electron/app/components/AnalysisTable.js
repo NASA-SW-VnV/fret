@@ -168,10 +168,6 @@ const styles = theme => ({
   dv : {
     display: 'inline-block',
   },
-  section1: {
-    alignItems: 'flex-end',
-    marginBottom: `${theme.spacing(1)}px`,
-  },
   formControl: {
     minWidth: 200,
     marginRight: theme.spacing(2)
@@ -267,6 +263,7 @@ class AnalysisTable extends React.Component {
 
   constructor(props){
     super(props);
+
     dbChangeListener = modeldb.changes({
       since: 'now',
       live: true,
@@ -297,11 +294,10 @@ class AnalysisTable extends React.Component {
         selector: {
           component_name: component.component_name,
           project: project,
-          completed: true, //for modes that are not completed; these include the ones that correspond to unformalized requirements
+          completed: true,
           modeldoc: false
         }
       }).then(function (modelResult){
-        console.log(modelResult)
         var contract = self.getContractInfo(modelResult);
         contract.componentName = component.component_name+'Spec';
 
@@ -312,41 +308,22 @@ class AnalysisTable extends React.Component {
         }).then(function (fretResult){
           contract.properties = self.getPropertyInfo(fretResult, contract.outputVariables, component.component_name);
           contract.delays = self.getDelayInfo(fretResult, component.component_name);
-          console.log(contract);
 
-            /* Use contract to determined the output connected components
+            /* Use contract to determine the output connected components
              * */
 
           var mappings = cc_analysis.compute_dependency_maps(contract);      
-          console.log(mappings);
 
           var connected_components = cc_analysis.compute_connected_components(contract, mappings['output']);
           connected_components.forEach(comp => {
 
             connectedComponents[component.component_name]['cc'+connected_components.indexOf(comp)] = {result : 'UNCHECKED', properties : comp.properties}
           })                  
-          console.log(connected_components)
-
-          console.log(contract);
-         // console.log(contract);
-          //var mappings = compute_dependency_maps(contract);
-          //console.log(mappings);
-          // var connected_components = compute_connected_components(contract, mappings['output']);
-
-//            archive.append(ejsCache.renderContractCode().contract.complete(contract), {name: contract.componentName+'.lus'})
-
-            // archive.append(ejsCache_realize.renderRealizeCode().component.complete(contract), {name: contract.componentName+'.lus'})
-
-//            archive.append(ejsCache.renderContractCode().contract.complete(contract), {name: contract.componentName+'.lus'})
-          // finalize the archive (ie we are done appending files but streams have to finish yet)
-          // archive.finalize();
-
         }).catch((err) => {
           console.log(err);
         })
     })
     });
-    console.log(connectedComponents)
     this.setState({connectedComponents : connectedComponents, ccSelected : 'cc0'})
   }
 
@@ -465,7 +442,6 @@ class AnalysisTable extends React.Component {
           let engine = new DiagnosisEngine(ccContract, 'realizability');
           var result = engine.main();
 
-          console.log(result);
           connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'] = 'DIAGNOSED'
           connectedComponents[selected.component_name][ccSelected]['diagnosisReport'] = result[1];   
     
@@ -667,7 +643,6 @@ class AnalysisTable extends React.Component {
             checkOutput = realizability.checkRealizability(filePath, '-fixpoint -timeout ' + timeout);
             var result = checkOutput.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];
             var time = checkOutput.match(new RegExp('(Time = )(.*?)\\n'))[2];
-            console.log(result)
             self.setState(prevState => {
               prevState.status[selected.component_name] = result;
               prevState.time[selected.component_name] = time;
@@ -766,14 +741,14 @@ class AnalysisTable extends React.Component {
         }
       });
     });
-  }  
+  }
 
   render() {
-    const {classes, selectedProject, components} = this.props;
+    const {classes, selectedProject, components, completedComponents, checkComponentCompleted} = this.props;
     const {connectedComponents, order, orderBy, status, time, diagnosisStatus, diagnosisReports, selected, ccSelected, monolithic, compositional, dependenciesExist, missingDependencies} = this.state;
     let grid;
-
     var tabs = [];
+    console.log(selected)
     for (var cc in connectedComponents[selected.component_name]) {
           tabs.push(<Tab value={cc} classes={{root : classes.tabRoot}} label={
         <div style={{alignContent: 'flex-end'}}>
@@ -791,7 +766,13 @@ class AnalysisTable extends React.Component {
         </div>
       }/>)                 
     }
-    
+    // defaultValue={stableSort(components, getSorting(order, orderBy))[0]}
+
+    function isComponentComplete(name) {
+      console.log(completedComponents)
+      return completedComponents.includes(name);
+    }
+
     return(
       <div>
         {components.length !== 0 &&
@@ -799,32 +780,40 @@ class AnalysisTable extends React.Component {
             <FormControl className={classes.formControl} required>
               <InputLabel>System Component</InputLabel>
               <Select                  
-                value={selected}
+                value={selected}                
                 onChange={this.handleChange('selected')}
               >
                 {stableSort(components, getSorting(order, orderBy))
                   .map(n => {
                     return (
-                      <MenuItem key={n.component_name} value={n}>
-                        <div style={{alignContent: 'flex-end'}}>
-                          {n.component_name}
-                          &nbsp;
-                          &nbsp;
-                          <Tooltip title={status[n.component_name] + (time[n.component_name] !== undefined && ' - '+time[n.component_name])}>
-                            {status[n.component_name] === 'REALIZABLE' ? 
-                              <CheckIcon style={{fontSize : '20px', verticalAlign : 'bottom', color : '#68BC00'}}/> :
-                              status[n.component_name] === 'UNREALIZABLE' ? 
-                                <ClearIcon style={{fontSize : '20px', verticalAlign : 'bottom'}} color='error'/> :
-                                status[n.component_name] === 'PROCESSING' ?
-                                  <CircularProgress style={{verticalAlign : 'bottom'}} size={15}/> : <div/>}                            
-                          </Tooltip> 
+                      <Tooltip 
+                        key={n.component_name}
+                        value={n} 
+                        title={!isComponentComplete(n.component_name) && 'Analysis is not enabled for this component. Please complete mandatory variable fields in Variable Mapping first.'}>
+                        <div>
+                          <MenuItem disabled={!isComponentComplete(n.component_name)}>                        
+                            <div style={{alignContent: 'flex-end'}}>
+                              {n.component_name}
+                              &nbsp;
+                              &nbsp;
+                              <Tooltip title={status[n.component_name] + (time[n.component_name] !== undefined && ' - '+time[n.component_name])}>
+                                {status[n.component_name] === 'REALIZABLE' ? 
+                                  <CheckIcon style={{fontSize : '20px', verticalAlign : 'bottom', color : '#68BC00'}}/> :
+                                  status[n.component_name] === 'UNREALIZABLE' ? 
+                                    <ClearIcon style={{fontSize : '20px', verticalAlign : 'bottom'}} color='error'/> :
+                                    status[n.component_name] === 'PROCESSING' ?
+                                      <CircularProgress style={{verticalAlign : 'bottom'}} size={15}/> : <div/>}                            
+                              </Tooltip> 
+                            </div>
+                          </MenuItem>
                         </div>
-                      </MenuItem>)
+                      </Tooltip>
+                      )
                   })}
               </Select>
             </FormControl>
             <FormControlLabel
-              disabled={selected === '' || connectedComponents[selected.component_name].length === 1}
+              disabled={selected === '' || Object.keys(connectedComponents[selected.component_name]).length === 1}
               className={classes.vAlign}
               control={
                 <Checkbox
@@ -859,6 +848,7 @@ class AnalysisTable extends React.Component {
               </Tooltip>
             }
             <TextField
+              className={classes.vAlign}
               disabled={selected === ''}
               id="timeout-value"
               label="Timeout (seconds)"
@@ -966,6 +956,7 @@ AnalysisTable.propTypes = {
   classes: PropTypes.object.isRequired,
   selectedProject: PropTypes.string.isRequired,
   components: PropTypes.array.isRequired,
+  completedComponents: PropTypes.array.isRequired,
   checkComponentCompleted: PropTypes.func.isRequired
 };
 

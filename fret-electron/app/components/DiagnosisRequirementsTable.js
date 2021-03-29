@@ -348,7 +348,7 @@ class DiagnosisRequirementsTable extends React.Component {
       <div>
       <Paper>
         <div>
-          <Table aria-labelledby="tableTitle" size="small">
+          <Table aria-labelledby="tableTitle" size="medium">
             <DiagnosisRequirementsTableHead
               numSelected={selected.length}
               order={order}

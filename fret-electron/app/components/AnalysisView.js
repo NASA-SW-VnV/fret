@@ -368,6 +368,7 @@ class AnalysisView extends React.Component {
           <AnalysisTable
             selectedProject={selectedProject}
             components={components}
+            completedComponents={completedComponents}
             checkComponentCompleted={this.checkComponentCompleted}
           />
         </div>
