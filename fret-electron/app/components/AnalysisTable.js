@@ -183,29 +183,12 @@ const styles = theme => ({
     display: 'flex',
   },
   tabRoot : {
-    minHeight: 36,
+    // minHeight: 36,
   },
   tabsScrollable : {
     overflowX: 'hidden',
   }
 
-});
-
-
-const connectedComponentsStyles = theme => ({
-  root: {
-    // flex: 1,
-    backgroundColor: theme.palette.background.paper,
-  },
-  appbar: {
-    display: 'flex',
-  },
-  tabRoot : {
-    minHeight: 36,
-  },
-  tabsScrollable : {
-    overflowX: 'hidden',
-  }
 });
 
 function TabContainer(props) {
@@ -748,13 +731,14 @@ class AnalysisTable extends React.Component {
     const {connectedComponents, order, orderBy, status, time, diagnosisStatus, diagnosisReports, selected, ccSelected, monolithic, compositional, dependenciesExist, missingDependencies} = this.state;
     let grid;
     var tabs = [];
-    console.log(selected)
+    
     for (var cc in connectedComponents[selected.component_name]) {
           tabs.push(<Tab value={cc} classes={{root : classes.tabRoot}} label={
         <div style={{alignContent: 'flex-end'}}>
         {cc}
-        <Tooltip title={connectedComponents[selected.component_name][cc]['result'] + 
-          (connectedComponents[selected.component_name][cc]['time'] !== undefined && ' - '+connectedComponents[selected.component_name][cc]['time'])}>
+        <Tooltip title={connectedComponents[selected.component_name][cc]['result'] === 'UNCHECKED' ? '' : 
+        connectedComponents[selected.component_name][cc]['result'] + 
+          (connectedComponents[selected.component_name][cc]['time'] !== undefined ? ' - '+connectedComponents[selected.component_name][cc]['time'] : '')}>
           {connectedComponents[selected.component_name][cc]['result'] === 'REALIZABLE' ? 
                             <CheckIcon style={{fontSize : '20px', verticalAlign : 'bottom', color : '#68BC00'}}/> :
                             connectedComponents[selected.component_name][cc]['result'] === 'UNREALIZABLE' ? 
@@ -769,7 +753,6 @@ class AnalysisTable extends React.Component {
     // defaultValue={stableSort(components, getSorting(order, orderBy))[0]}
 
     function isComponentComplete(name) {
-      console.log(completedComponents)
       return completedComponents.includes(name);
     }
 
@@ -789,14 +772,15 @@ class AnalysisTable extends React.Component {
                       <Tooltip 
                         key={n.component_name}
                         value={n} 
-                        title={!isComponentComplete(n.component_name) && 'Analysis is not enabled for this component. Please complete mandatory variable fields in Variable Mapping first.'}>
+                        title={!isComponentComplete(n.component_name) ? 'Analysis is not enabled for this component. Please complete mandatory variable fields in Variable Mapping first.' : ''}>
                         <div>
                           <MenuItem disabled={!isComponentComplete(n.component_name)}>                        
                             <div style={{alignContent: 'flex-end'}}>
                               {n.component_name}
                               &nbsp;
                               &nbsp;
-                              <Tooltip title={status[n.component_name] + (time[n.component_name] !== undefined && ' - '+time[n.component_name])}>
+                              <Tooltip title={status[n.component_name] + 
+                                (time[n.component_name] !== undefined ? ' - '+time[n.component_name] : '')}>
                                 {status[n.component_name] === 'REALIZABLE' ? 
                                   <CheckIcon style={{fontSize : '20px', verticalAlign : 'bottom', color : '#68BC00'}}/> :
                                   status[n.component_name] === 'UNREALIZABLE' ? 
@@ -876,7 +860,7 @@ class AnalysisTable extends React.Component {
                 <div>
                   {compositional && 
                     <div>
-                    <AppBar style={{height: '36px'}} position="static" color="default">                    
+                    <AppBar position="static" color="default">                    
                       <div className={classes.appbar}>
                         <Tabs              
                           value={ccSelected}
