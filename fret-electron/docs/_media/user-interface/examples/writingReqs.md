@@ -29,6 +29,32 @@ While typing the body of a requirement, FRET parses the requirement and recogniz
 
 3. Timing. The optional *timing* field specifies when the response shall happen, relative to the scope and condition.  Timing can be *immediately*, *next*, *eventually*, *always*, *never*, *within N time units*,  *for N time units*, *after N time units*, *until stopCondition*, and *before stopCondition*. The *after* timing means that the response happens _N_ time units from the beginning of the requirement's period, and does not happen before that; i.e., does not happen for *N-1* time units after the beginning of the period. [Timing Help Menu](./timing.md)
 
+**Note: Variable dictionary**
+
+You can access the *Dictionary* tab from the right pane on the *Create Requirement* or *Update Requirement* dialog.  After selecting a project, you can select a component in the selected project using the *Component* menu bar.  FRET then displays existing variables of the selected component.  These variables can be filtered by the variable type including *Mode*, *Inputs*, *Outputs* and *Internal* using check boxes under the *Component* menu bar.  
+
+***
+
+<img src="../../screen_shots/dictionaryVariables.png">
+
+***
+
+You can expand a variable on the *Dictionary* tab to see more details.  These details include a list of requirements referencing this variable and show values of *variable type*, *data type*, *assignment*, *modelComponent*, and *description* if these attributes are defined for the variable.
+
+***
+
+<img src="../../screen_shots/dictionaryExtendedVariable.png">
+
+***
+
+FRET has an autocomplete feature in the editor of the  *Create Requirement* and *Update Requirement* dialog.  The variables shown in the *Dictionary* tab are used as suggestions for the rest of a word a user is typing.  Press the tab key to accept the first suggestion on the suggestion list. 
+
+***
+
+<img src="../../screen_shots/autocomplete.png">
+
+***
+
 **Note: Boolean expressions**
 
 The boolean operators allowed in the boolean expression condition and response fields are: ! (negation), & (conjunction), | (disjunction), xor (exclusive or),  -> (implication), <-> (equivalence). An alternative for implication is 'if p then q'. The numeric comparison operators are =, !=, <, >, <=, >=. The numeric operators are +, -, *, /, mod, and ^ (exponentiation). Numerical terms and predicates are in standard form; e.g., f(x,y),  p(x,y,z).
