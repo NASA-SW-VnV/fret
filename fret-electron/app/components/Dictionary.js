@@ -121,7 +121,7 @@ class Dictionary extends React.Component {
         variable['description'] = comp.description;
       }
       if(comp.reqs){
-        variable['reqs'] = comp.reqs.join(' / ');
+        variable['reqs'] = comp.reqs.join(', ');
       }
       components_names[comp.component_name].push(variable);
     })
