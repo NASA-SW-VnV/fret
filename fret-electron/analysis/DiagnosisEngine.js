@@ -12,10 +12,10 @@ const realizabilityCheck = require('./realizabilityCheck.js');
 
 class DiagnosisEngine {
 
-  constructor(contract, check) {
+  constructor(contract, timeout, check) {
 
     this.contract = contract;
-
+    this.timeout = timeout;
     //check is unused currently. The idea is for this class to be check-independent.
     //In other words, diagnosis can be applied to more checks than just realizability.
     //well-separation and vacuity checking are two future applications.
@@ -34,38 +34,6 @@ class DiagnosisEngine {
     this.count = 0;
     this.tmppath = ('./analysis/tmp/');
   }
-
-  // get_test_contract(){
-
-  //             var test_contract = {"componentName":"TestComp",
-  //                              "assignments":["o_2 + i_2", "o_3 * i_3", "4*i_4", "10+o_4", "o_6 + i_6", "o_7 + 10"],
-  //                              "delays":[],
-  //                              "inputVariables":[],
-  //                              "internalVariables":[{"name":"i_1"},
-  //                                                   {"name":"i_2"},
-  //                                                   {"name":"i_3"},
-  //                                                   {"name":"i_4"},
-  //                                                   {"name":"i_5"},
-  //                                                   {"name":"i_6"}],
-  //                              "modes":[],
-  //                              "outputVariables":[{"name":"o_1"},
-  //                                                 {"name":"o_2"},
-  //                                                 {"name":"o_3"},
-  //                                                 {"name":"o_4"},
-  //                                                 {"name":"o_5"}, 
-  //                                                 {"name":"o_6"},
-  //                                                 {"name":"o_7"}],
-
-  //                              "properties": [{"reqid":"p_1", "value":"o_1 + i_1"},
-  //                                             {"reqid":"p_2", "value":"o_5 + i_5"},
-  //                                             {"reqid":"p_3", "value":"i_5 * 10"},
-  //                                             {"reqid":"p_4", "value":"5*i_6"},
-  //                                             {"reqid":"p_5", "value":"5*i_4"}]
-                     
-  //             }; 
-
-  // return test_contract;
-  // }
 
   getPartition(props, numParts, index, complement) {
     var partition = [];
@@ -128,7 +96,7 @@ class DiagnosisEngine {
       var lustreContract = ejsCache_realize.renderRealizeCode().component.complete(this.engines[eng]);
       fs.writeSync(output, lustreContract);
       if (minimal) {
-        checkOutput = realizabilityCheck.checkRealizability(filePath, '-json');
+        checkOutput = realizabilityCheck.checkRealizability(filePath, '-json -timeout ' + this.timeout);
         var result = checkOutput.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];
         localMap.set(propertyList, result);
         if (result === "UNREALIZABLE" && minimal) {
@@ -137,7 +105,7 @@ class DiagnosisEngine {
           this.counterExamples.set('['+propertyList.toString()+']', jsonOutput);
         }          
       } else {
-        checkOutput = realizabilityCheck.checkRealizability(filePath, '-fixpoint');
+        checkOutput = realizabilityCheck.checkRealizability(filePath, '-fixpoint -timeout ' + this.timeout);
         var result = checkOutput.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];
         localMap.set(propertyList, result);          
       }
