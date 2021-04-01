@@ -2,14 +2,10 @@
 
 FRET's main purpose is to facilitate the elicitation of unambiguous requirements. For analysis, it allows users to export requirements in formats that can be digested by other analysis tools.
 
-We are working on connecting FRET to [SMV](#smv), [Cocosim](#cocosim), and [R2U2](#r2u2).
+We have connected FRET with [SMV](#smv), [Cocosim](#cocosim), and [Copilot](#copilot). We are also working on connected FRET with the [R2U2](#r2u2) tool.
 
 [Back to FRET home page](../../userManual.md)
 
-## SMV
-
-TBD.
-___
 
 ## Cocosim
 
@@ -99,6 +95,18 @@ Once the export button is clicked, the generated code can be saved in the form o
 
 <img src="../screen_shots/CoCoSpecStep5.png">  
 
+___
+
+## Copilot
+
+[Copilot](https://copilot-language.github.io/) is a high-level runtime verification framework that produces hard real time C code. Among others, Copilot has been used by the Safety Critical Avionics Systems Branch of NASA Langley Research Center to monitor drone test flights.
+
+
+___
+
+## SMV
+
+TBD.
 ___
 
 ## R2U2
