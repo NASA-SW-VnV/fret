@@ -435,13 +435,16 @@ class CreateRequirementDialog extends React.Component {
     }
     const colorStyle = isRequirementUpdate ? getRequirementStyle({semantics, fulltext},false) : 'req-grey';
     return (
-      <div>
         <Dialog
           open={this.state.createDialogOpen}
           onClose={this.handleClose}
           aria-labelledby="form-dialog-title"
           fullWidth={true}
           maxWidth='lg'
+          // fox for autocomplete new bug
+          onScroll={this.setDialogPosition}
+          // possible fix for dialog resizing due to variable expansions
+          style={{height: '60%'}}
         >
           <div className={styles.layout}>
             <div className={styles.form}>
@@ -593,7 +596,6 @@ class CreateRequirementDialog extends React.Component {
             </div>
           </div>
         </Dialog>
-      </div>
     );
   }
 }
