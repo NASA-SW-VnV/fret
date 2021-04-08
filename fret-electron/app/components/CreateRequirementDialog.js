@@ -444,7 +444,7 @@ class CreateRequirementDialog extends React.Component {
           // fox for autocomplete new bug
           onScroll={this.setDialogPosition}
           // possible fix for dialog resizing due to variable expansions
-          style={{height: '60%'}}
+          style={{height: '95%'}}
         >
           <div className={styles.layout}>
             <div className={styles.form}>
