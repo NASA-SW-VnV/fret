@@ -33,7 +33,8 @@
 const component = require('ejs-compiled-loader!./component.ejs'),
       internalVariables = require('ejs-compiled-loader!./InternalVariables.ejs'),
       otherVariables = require('ejs-compiled-loader!./OtherVariables.ejs'),
-      requirementDefinitions = require('ejs-compiled-loader!./requirementDefinitions.ejs'),
+      functions = require('ejs-compiled-loader!./Functions.ejs'),
+      requirementDefinitions = require('ejs-compiled-loader!./RequirementDefinitions.ejs'),
       complete = require('ejs-compiled-loader!./Complete.ejs');
 
 exports.renderCoPilotSpec = () => {
@@ -42,7 +43,7 @@ exports.renderCoPilotSpec = () => {
       component: component,
       internalVariables: internalVariables,
       otherVariables: otherVariables,
-      internalVariables: internalVariables,
+      functions: functions,
       requirementDefinitions: requirementDefinitions,
       complete: complete
     }

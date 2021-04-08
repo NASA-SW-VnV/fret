@@ -271,6 +271,9 @@ class ComponentSummary extends React.Component {
               property.value = doc.semantics.CoCoSpecCode;
               property.reqid = doc.reqid;
               property.fullText = "Req text: " + doc.fulltext;
+              property.fretish = doc.fulltext;
+              //TODO: remove HTLM-tags from ptExpanded
+              property.ptLTL = doc.semantics.ptExpanded.replace(/<b>/g, "").replace(/<i>/g, "").replace(/<\/b>/g, "").replace(/<\/i>/g, "");
               outputVariables.forEach(function(variable){
               if (property.value.includes(variable)){
                   property.allInput = true;

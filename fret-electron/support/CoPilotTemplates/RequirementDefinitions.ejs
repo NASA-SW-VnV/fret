@@ -1,7 +1,7 @@
 "Requirements":
 [
 <% for (i=0; i < properties.length; i++) {%>
-{ "name": "<%-properties[i].reqid%>", "CoCoSpecCode": "<%- properties[i].value %>"},<%}%>
+{ "name": "<%- properties[i].reqid%>", "ptLTL": "<%- properties[i].ptLTL%>", "CoCoSpecCode": "<%- properties[i].value%>", "fretish": "<%- properties[i].fretish%>"},<%}%>
 
 ]
 }
