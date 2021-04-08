@@ -1,51 +1,22 @@
 # Exporting to Analysis tools
 
-FRET's main purpose is to facilitate the elicitation of unambiguous requirements. For analysis, it allows users to export requirements in formats that can be digested by other analysis tools.
+For analysis, FRET allows users to export requirements in formats that can be digested by other analysis tools. We have connected FRET with [CoCoSim](./cocosim.md) and [Copilot](./copilot.md) through the FRET analysis portal. We are also working on connected FRET with the [R2U2](./r2u2.md) tool.
 
-We have connected FRET with [SMV](#smv), [Cocosim](#cocosim), and [Copilot](#copilot). We are also working on connected FRET with the [R2U2](#r2u2) tool.
+Below we present a step-by-step guide of the [FRET analysis portal](#fretanalysisportal).
+
+Please click on the tool names to view brief summaries of the analysis tools: [CoCoSim](./cocosim.md) and [Copilot](#./copilot.md) tools.
 
 [Back to FRET home page](../../userManual.md)
 
 
-## Cocosim
+## FRET Analysis Portal
+To generate analysis code, additional information must be provided about the variables and modes of the component. To do that a user must follow the steps:
 
-To connect with the CoCoSim tool, we transform requirements into CoCoSpec code. The user, after providing additional variable information, can automatically generate CoCoSpec code and export it in the form of a Lustre file. The CoCoSpec code includes properties to be proven invariant and can be given as input to the SMT-based Kind2 model checker.
+**1. Switch to the FRET Analysis portal**
 
-### The Lustre and CoCoSpec languages
- CoCoSpec is an extension of the synchronous dataflow language Lustre. System components are expressed in Lustre as `nodes` with inputs and outputs. Variables are used to represent `input`, `output`, and locally defined (`internal`) streams. Basic variable data types include `real` numbers, `integer` numbers, and `Booleans`. Additionally, `structure` and `enumerated` data types are supported. For the user that is familiar with Simulink data types, we provide a mapping between Simulink and Lustre data types in the following table:
+Click the Analysis  to the Requirements table view by clicking the icon in the red box in the left hand side panel.
 
- | Simulink data types | Lustre data types |
- | ------------- |:-------------:|
- | boolean    | bool |
- | int* (e.g., int8, uint8, int16, etc.)      | int      |
- | double | real      |
- | single | real      |
- | enum | enum      |
- | bus | struct      |
-
-
-CoCoSpec extends Lustre by adding assume-guarantee contracts. Contract declarations are similar to Lustre nodes but are introduced with the `contract` keyword. The body of a contract may contain interval variable declarations, `assume` and `guarantee statements` and `mode declarations`. Modes consist of `require` and `ensure statements`. Statements can be any well-typed Lustre expressions of type _bool_.
-
-For the user that is familiar with Simulink port types, we provide a mapping between Simulink port types and CoCoSpec variable types in the following table:
-
-| CoCoSpec types | Simulink types |
-| ------------- |:-------------:|
-| Input    | Inport |
-| Output      | Outport      |
-| Mode | -      |
-| Internal | -      |
-
-CoCoSpec modes correspond to FRET scopes
-([see FRET Syntax](../user-interface/examples/writingReqs.md)). CoCoSpec internal variables are used to define auxiliary local-to-the-component streams. For instance, if an expression on a set of variables (e.g., `x or y`) is being used frequently in a set of requirements, then the user may declare it as an internal variable (e.g., `xOry = x or y;`).
-
-### A step-by-step guide for CoCoSpec code generation
-To generate the CoCoSpec code of a component, which is defined in a set of requirements, additional information must be provided about the variables and modes of the component. To do that a user must follow the steps:
-
-**1. Pick a project and switch to the Requirements table view**
-
-Pick a project from the drop down menu (Project button) and switch to the Requirements table view by clicking the icon in the red box in the left hand side panel.
-
-<img src="../screen_shots/CoCoSpecStep1.png">  
+<img src="../screen_shots/AnalysisPortalStep1.png">  
 
 
 **2. Click on the Export Verification Code button**
@@ -96,18 +67,3 @@ Once the export button is clicked, the generated code can be saved in the form o
 <img src="../screen_shots/CoCoSpecStep5.png">  
 
 ___
-
-## Copilot
-
-[Copilot](https://copilot-language.github.io/) is a high-level runtime verification framework that produces hard real time C code. Among others, Copilot has been used by the Safety Critical Avionics Systems Branch of NASA Langley Research Center to monitor drone test flights.
-
-
-___
-
-## SMV
-
-TBD.
-___
-
-## R2U2
-TBD.
