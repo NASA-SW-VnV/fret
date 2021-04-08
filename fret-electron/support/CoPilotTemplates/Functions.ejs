@@ -1,3 +1,5 @@
 "Functions":
 [
+<%for (i=0; i < functions.length; i++) {%>
+{"name":"<%-functions[i].name %>", "moduleName":"<%-functions[i].moduleName%>"},<%}%>
 ],

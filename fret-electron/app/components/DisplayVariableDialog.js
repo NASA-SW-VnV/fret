@@ -100,6 +100,7 @@ class DisplayVariableDialog extends React.Component {
     dataType: '',
     assignment: '',
     copilotAssignment: '',
+    moduleName: '',
     modeRequirement: '',
     modeldoc_id: '',
     modelComponent: '',
@@ -139,6 +140,10 @@ class DisplayVariableDialog extends React.Component {
         errorsCopilot: resultCopilot.parseErrors ? 'Parse Errors: '+ resultCopilot.parseErrors : '',
         //TODO: Update variables for Copilot
       });
+    } else if (name === 'moduleName'){
+      this.setState({
+        [name]: event.target.value,
+      });
     }
   };
 
@@ -152,7 +157,7 @@ class DisplayVariableDialog extends React.Component {
 
   handleUpdate = () => {
     const self = this;
-    const {selectedVariable, description, idType, dataType, assignment, copilotAssignment, modeRequirement, modeldoc_id, modelComponent, variables} = this.state;
+    const {selectedVariable, description, idType, dataType, assignment, copilotAssignment, modeRequirement, modeldoc_id, modelComponent, variables, moduleName} = this.state;
     var modeldbid = selectedVariable._id;
     var completedVariable = false;
 
@@ -176,6 +181,7 @@ class DisplayVariableDialog extends React.Component {
                   dataType: '',
                   idType: '',
                   description: '',
+                  moduleName: '',
                   assignment: '',
                   copilotAssignment: '',
                   modeRequirement: '',
@@ -204,6 +210,7 @@ class DisplayVariableDialog extends React.Component {
                     otherDeps: otherDeps,
                     dataType: doc.dataType,
                     idType: doc.idType,
+                    moduleName: doc.moduleName,
                     description: doc.description,
                     assignment: doc.assignment,
                     copilotAssignment: doc.copilotAssignment,
@@ -232,10 +239,11 @@ class DisplayVariableDialog extends React.Component {
       /*
        For each Variable Type we need the following:
         Mode -> Mode Requirement
-        Input/Output -> Model Variable
-        Internal => Data Type + Variable Assignment
+        Input/Output -> Model Variable or DataType
+        Internal -> Data Type + Variable Assignment
+        Function -> nothing (moduleName optionally)
       */
-      if (modeRequirement || modeldoc_id || (dataType && (assignment || copilotAssignment))){
+      if (modeRequirement || modeldoc_id || (dataType && (assignment || copilotAssignment)) || (idType === "Function")){
         completedVariable = true;
       }
 
@@ -250,6 +258,7 @@ class DisplayVariableDialog extends React.Component {
           otherDeps: vdoc.otherDeps,
           dataType: dataType,
           idType: idType,
+          moduleName: moduleName,
           description: description,
           assignment: assignment,
           copilotAssignment: copilotAssignment,
@@ -274,6 +283,7 @@ class DisplayVariableDialog extends React.Component {
       selectedVariable: props.selectedVariable,
       description: props.selectedVariable.description,
       idType: props.selectedVariable.idType,
+      moduleName: props.selectedVariable.moduleName,
       dataType: props.selectedVariable.dataType,
       assignment: props.selectedVariable.assignment,
       copilotAssignment: props.selectedVariable.copilotAssignment,
@@ -309,13 +319,14 @@ class DisplayVariableDialog extends React.Component {
         assignment: '',
         copilotAssignment: '',
         modeRequirement: '',
+        moduleName: ''
       });
     }
   }
 
   render(){
     const {classes, selectedVariable, modelVariables} = this.props;
-    const {dataType, idType, modeRequirement, assignment, copilotAssignment, errorsLustre, errorsCopilot, checkLustre, checkFRETish, checkCoPilot} = this.state;
+    const {dataType, idType, modeRequirement, assignment, copilotAssignment, errorsLustre, errorsCopilot, checkLustre, checkFRETish, checkCoPilot, moduleName} = this.state;
 
     if (idType === 'Input' || idType === 'Output'){
       return (
@@ -385,6 +396,7 @@ class DisplayVariableDialog extends React.Component {
                   <MenuItem value="Input" >Input</MenuItem>
                   <MenuItem value="Output">Output</MenuItem>
                   <MenuItem value="Internal">Internal</MenuItem>
+                  <MenuItem value="Function">Function</MenuItem>
                 </Select>
               </FormControl>
               <FormControl className={classes.formControl}>
@@ -433,6 +445,112 @@ class DisplayVariableDialog extends React.Component {
           </Dialog>
         </div>
       );
+    } else if (idType === 'Function'){
+        return (
+          <div>
+            <Dialog
+            open={this.state.open}
+            onClose={this.handleClose}
+            aria-labelledby="form-dialog-title"
+            maxWidth='sm'
+            >
+            <DialogTitle id="form-dialog-title">Update Variable</DialogTitle>
+            <DialogContent>
+              <form className={classes.container} noValidate autoComplete="off">
+                <TextField
+                  id="standard-read-only-input"
+                  label="FRET Project"
+                  defaultValue={selectedVariable.project}
+                  className={classes.extendedTextField}
+                  margin="normal"
+                  InputProps={{
+                    readOnly: true,
+                  }}
+                />
+                <TextField
+                  id="standard-read-only-input"
+                  label="FRET Component"
+                  defaultValue={selectedVariable.component_name}
+                  className={classes.extendedTextField}
+                  margin="normal"
+                  InputProps={{
+                    readOnly: true,
+                  }}
+                />
+                <TextField
+                  id="standard-read-only-input"
+                  label="Model Component"
+                  defaultValue={selectedVariable.modelComponent}
+                  className={classes.descriptionField}
+                  margin="normal"
+                  InputProps={{
+                    readOnly: true,
+                  }}
+                />
+                <TextField
+                  id="standard-read-only-input"
+                  label="FRET Variable"
+                  defaultValue={selectedVariable.variable_name}
+                  className={classes.extendedTextField}
+                  margin="normal"
+                  InputProps={{
+                    readOnly: true,
+                  }}
+                />
+                <FormControl className={classes.formControl}>
+                  <InputLabel htmlFor="idType-simple">Variable Type*</InputLabel>
+                  <Select
+                    key={selectedVariable}
+                    value={this.state.idType}
+                    onChange={this.handleChange}
+                    inputProps={{
+                      name: 'idType',
+                      id: 'idType-simple',
+                    }}>
+                    <MenuItem value="" key={selectedVariable}>
+                      <em>None</em>
+                    </MenuItem>
+                    <MenuItem value="Input" >Input</MenuItem>
+                    <MenuItem value="Output">Output</MenuItem>
+                    <MenuItem value="Internal">Internal</MenuItem>
+                    <MenuItem value="Function">Function</MenuItem>
+                  </Select>
+                </FormControl>
+                <TextField
+                  id="moduleName"
+                  label="Function Module Name"
+                  type="text"
+                  margin="normal"
+                  defaultValue={this.state.moduleName}
+                  className={classes.descriptionField}
+                  multiline
+                  onChange={this.handleTextFieldChange('moduleName')}
+                  onFocus={this.handleTextFieldFocused('moduleName')}
+                />
+                <TextField
+                  id="description"
+                  label="Description"
+                  type="text"
+                  defaultValue={this.state.description}
+                  margin="normal"
+                  className={classes.descriptionField}
+                  multiline
+                  onChange={this.handleTextFieldChange('description')}
+                  onFocus={this.handleTextFieldFocused('description')}
+                />
+              </form>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={this.handleClose}>
+                Cancel
+              </Button>
+              <Button onClick={this.handleUpdate} color="secondary" variant='contained'>
+                Update
+              </Button>
+            </DialogActions>
+            </Dialog>
+          </div>
+        );
     } else if (idType === 'Mode'){
       return (
         <div>
@@ -598,6 +716,7 @@ class DisplayVariableDialog extends React.Component {
                   <MenuItem value="Input" >Input</MenuItem>
                   <MenuItem value="Output">Output</MenuItem>
                   <MenuItem value="Internal">Internal</MenuItem>
+                  <MenuItem value="Function">Function</MenuItem>
                 </Select>
               </FormControl>
               <FormControl className={classes.formControl}>
@@ -736,6 +855,7 @@ class DisplayVariableDialog extends React.Component {
                   <MenuItem value="Input" >Input</MenuItem>
                   <MenuItem value="Output">Output</MenuItem>
                   <MenuItem value="Internal">Internal</MenuItem>
+                  <MenuItem value="Function">Function</MenuItem>
                 </Select>
               </FormControl>
               <FormControl className={classes.formControl}>
@@ -885,6 +1005,7 @@ class DisplayVariableDialog extends React.Component {
                   <MenuItem value="Input" >Input</MenuItem>
                   <MenuItem value="Output">Output</MenuItem>
                   <MenuItem value="Internal">Internal</MenuItem>
+                  <MenuItem value="Function">Function</MenuItem>
                 </Select>
               </FormControl>
               <FormControl className={classes.formControl}>
@@ -1033,6 +1154,7 @@ class DisplayVariableDialog extends React.Component {
                   <MenuItem value="Input" >Input</MenuItem>
                   <MenuItem value="Output">Output</MenuItem>
                   <MenuItem value="Internal">Internal</MenuItem>
+                  <MenuItem value="Function">Function</MenuItem>
                 </Select>
               </FormControl>
               <FormControl className={classes.formControl}>
@@ -1192,6 +1314,7 @@ class DisplayVariableDialog extends React.Component {
                   <MenuItem value="Input" >Input</MenuItem>
                   <MenuItem value="Output">Output</MenuItem>
                   <MenuItem value="Internal">Internal</MenuItem>
+                  <MenuItem value="Function">Function</MenuItem>
                 </Select>
               </FormControl>
               <FormControl className={classes.formControl}>
@@ -1343,6 +1466,7 @@ class DisplayVariableDialog extends React.Component {
                   <MenuItem value="Input" >Input</MenuItem>
                   <MenuItem value="Output">Output</MenuItem>
                   <MenuItem value="Internal">Internal</MenuItem>
+                  <MenuItem value="Function">Function</MenuItem>
                 </Select>
               </FormControl>
               <FormControl className={classes.formControl}>
@@ -1494,6 +1618,7 @@ class DisplayVariableDialog extends React.Component {
                   <MenuItem value="Input" >Input</MenuItem>
                   <MenuItem value="Output">Output</MenuItem>
                   <MenuItem value="Internal">Internal</MenuItem>
+                  <MenuItem value="Function">Function</MenuItem>
                 </Select>
               </FormControl>
               <FormControl className={classes.formControl}>
@@ -1656,6 +1781,7 @@ class DisplayVariableDialog extends React.Component {
                   <MenuItem value="Input" >Input</MenuItem>
                   <MenuItem value="Output">Output</MenuItem>
                   <MenuItem value="Internal">Internal</MenuItem>
+                  <MenuItem value="Function">Function</MenuItem>
                 </Select>
               </FormControl>
               <FormControl className={classes.formControl}>
@@ -1818,6 +1944,7 @@ class DisplayVariableDialog extends React.Component {
                   <MenuItem value="Input" >Input</MenuItem>
                   <MenuItem value="Output">Output</MenuItem>
                   <MenuItem value="Internal">Internal</MenuItem>
+                  <MenuItem value="Function">Function</MenuItem>
                 </Select>
               </FormControl>
               <FormControl className={classes.formControl}>
@@ -1982,6 +2109,7 @@ class DisplayVariableDialog extends React.Component {
                     <MenuItem value="Input" >Input</MenuItem>
                     <MenuItem value="Output">Output</MenuItem>
                     <MenuItem value="Internal">Internal</MenuItem>
+                    <MenuItem value="Function">Function</MenuItem>
                   </Select>
                 </FormControl>
                 <TextField

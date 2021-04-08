@@ -172,6 +172,7 @@ class ComponentSummary extends React.Component {
       outputVariables: [],
       inputVariables: [],
       internalVariables: [],
+      functions: [],
       assignments: [],
       copilotAssignments: [],
       modes: [],
@@ -180,21 +181,24 @@ class ComponentSummary extends React.Component {
     result.docs.forEach(function(doc){
       var variable ={};
       variable.name = doc.variable_name;
-      variable.type = self.getCoCoSpecDataType(doc.dataType);
       if (doc.idType === 'Input'){
+        variable.type = self.getCoCoSpecDataType(doc.dataType);
         contract.inputVariables.push(variable);
       } else if (doc.idType === 'Output'){
+        variable.type = self.getCoCoSpecDataType(doc.dataType);
         contract.outputVariables.push(variable);
       } else if (doc.idType === 'Internal'){
+        variable.type = self.getCoCoSpecDataType(doc.dataType);
         contract.internalVariables.push(variable);
-        //if (doc.assignment !== '')
-          contract.assignments.push(doc.assignment);
-        //if (doc.copilotAssignment !== '')
-          contract.copilotAssignments.push(doc.copilotAssignment);
+        contract.assignments.push(doc.assignment);
+        contract.copilotAssignments.push(doc.copilotAssignment);
       } else if (doc.idType === 'Mode'){
         if (doc.modeRequirement !== '')
           variable.assignment = doc.modeRequirement;
-        contract.modes.push(variable);
+          contract.modes.push(variable);
+      } else if (doc.idType === 'Function'){
+        variable.moduleName = doc.moduleName;
+        contract.functions.push(variable);
       }
     })
     return contract;
