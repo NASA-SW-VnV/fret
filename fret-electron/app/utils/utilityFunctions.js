@@ -16,7 +16,7 @@ export const getRequirementStyle = (requirement, isNode) => {
   } else {
     // CirclePacking
     style = !requirement.children ?
-        requirement.data.doc.semantics && requirement.data.doc.fulltext
+      requirement.data.doc && requirement.data.doc.semantics && requirement.data.doc.fulltext
           ? ((requirement.data.doc.semantics.ft &&
             requirement.data.doc.semantics.ft !== constants.nonsense_semantics &&
             requirement.data.doc.semantics.ft !== constants.undefined_semantics &&

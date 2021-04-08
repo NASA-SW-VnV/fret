@@ -513,7 +513,7 @@ class CreateRequirementDialog extends React.Component {
                         <FormControl fullWidth>
                           <InputLabel htmlFor="project-field">Project</InputLabel>
                           <Select
-                            value={this.state.project}
+                            value={this.state.project || ''}
                             onChange={this.handleTextFieldChange('project')}
                             inputProps={{
                               name: 'project',
