@@ -119,3 +119,5 @@ Once the export button is clicked, the generated code can be saved in the form o
 <img src="../screen_shots/AnalysisPortal5b.png">  
 
 ***
+
+[Back to FRET home page](../../userManual.md)

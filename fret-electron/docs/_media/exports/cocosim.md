@@ -38,7 +38,6 @@ CoCoSpec modes correspond to FRET scopes
 
 The figure below shows the workflow of our framework.  In Step 0, requirements written in FRETish are translated by FRET into pure Past Time Metric Linear Temporal Logic (pmLTL) formulas. In Step 1, data is used from the model under analysis to produce an architectural mapping between requirement propositions and Simulink signals. In Step 2, the pmLTL formulas and the architectural mapping are used to generate monitors in CoCoSpec, which is an extension of the synchronous dataflow language Lustre for the specification of assume-guarantee contracts. In Step 3, the generated CoCoSpec monitors and model traceability data are imported into CoCoSim along with the Simulink model under analysis. CoCoSim automatically generates and attaches monitors to the Simulink model. From the complete model (initial model and attached monitors), CoCoSim also generates equivalent Lustre code. As a result, the complete model can be analyzed by both Simulink-based (e.g., Simulink Design Verifier (SLDV)) and Lustre-based (e.g., Kind2, Zustre) verification tools in Step 4. Counterexamples generated during the analysis can be traced back to CoCoSim or FRET for simulation in Step 5.
 
-***
 
 <img src="../screen_shots/fret_coco_1.png"
 style="height: 600px; width:450px;"/>
@@ -48,3 +47,7 @@ style="height: 600px; width:450px;"/>
 * [Bridging the Gap Between Requirements and Simulink Model Analysis](https://ntrs.nasa.gov/citations/20200002240).
 
 ***
+
+[Back to Analysis Portal page](./analysis.md)
+
+[Back to FRET home page](../../userManual.md)
