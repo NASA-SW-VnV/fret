@@ -1,5 +1,10 @@
 "Internal_variables":
 [
 <%for (i=0; i < internalVariables.length; i++) {%>
-{"name":"<%-internalVariables[i].name %>", "type":"<%-internalVariables[i].type%>", "assignmentLustre": "<%- assignments[i] %>", "assignmentCopilot": "<%- copilotAssignments[i] %>"},<%}%>
+  <%if(i < internalVariables.length-1) {%>
+{"name":"<%-internalVariables[i].name %>", "type":"<%-internalVariables[i].type%>", "assignmentLustre": "<%- assignments[i] %>", "assignmentCopilot": "<%- copilotAssignments[i] %>"},
+<%} else {%>
+{"name":"<%-internalVariables[i].name %>", "type":"<%-internalVariables[i].type%>", "assignmentLustre": "<%- assignments[i] %>", "assignmentCopilot": "<%- copilotAssignments[i] %>"}
+ <%}%>
+<%}%>
 ],

@@ -1,5 +1,10 @@
 "Functions":
 [
 <%for (i=0; i < functions.length; i++) {%>
-{"name":"<%-functions[i].name %>", "moduleName":"<%-functions[i].moduleName%>"},<%}%>
+<%if(i < functions.length-1) {%>
+ {"name":"<%-functions[i].name %>", "moduleName":"<%-functions[i].moduleName%>"},
+ <%} else {%>
+{"name":"<%-functions[i].name %>", "moduleName":"<%-functions[i].moduleName%>"}
+  <%}%>
+<%}%>
 ],

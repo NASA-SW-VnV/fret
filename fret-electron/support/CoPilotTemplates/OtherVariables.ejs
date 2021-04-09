@@ -1,8 +1,17 @@
 "Other_variables":
 [
 <%for (i=0; i < inputVariables.length; i++) {%>
-{"name":"<%-inputVariables[i].name %>", "type":"<%-inputVariables[i].type%>"},<%}%>
-
+  <%if (i == inputVariables.length-1 && outputVariables.length == 0) {%>
+{"name":"<%-inputVariables[i].name %>", "type":"<%-inputVariables[i].type%>"}
+<%} else {%>
+  {"name":"<%-inputVariables[i].name %>", "type":"<%-inputVariables[i].type%>"},
+ <%}%>
+<%}%>
 <%for (i=0; i < outputVariables.length; i++) {%>
-{"name":"<%-outputVariables[i].name %>", "type":"<%-outputVariables[i].type%>"},<%}%>
+  <%if (i < outputVariables.length-1) {%>
+{"name":"<%-outputVariables[i].name %>", "type":"<%-outputVariables[i].type%>"},
+<%} else {%>
+  {"name":"<%-outputVariables[i].name %>", "type":"<%-outputVariables[i].type%>"}
+  <%}%>
+ <%}%>
 ],

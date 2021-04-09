@@ -1,8 +1,12 @@
 "Requirements":
 [
 <% for (i=0; i < properties.length; i++) {%>
-{ "name": "<%- properties[i].reqid%>", "ptLTL": "<%- properties[i].ptLTL%>", "CoCoSpecCode": "<%- properties[i].value%>", "fretish": "<%- properties[i].fretish%>"},<%}%>
-
+  <%if(i < properties.length-1) {%>
+{ "name": "<%- properties[i].reqid%>", "ptLTL": "<%- properties[i].ptLTL%>", "CoCoSpecCode": "<%- properties[i].value%>", "fretish": "<%- properties[i].fretish%>"},
+<%} else {%>
+{ "name": "<%- properties[i].reqid%>", "ptLTL": "<%- properties[i].ptLTL%>", "CoCoSpecCode": "<%- properties[i].value%>", "fretish": "<%- properties[i].fretish%>"}
+  <%}%>
+ <%}%>
 ]
 }
 }
