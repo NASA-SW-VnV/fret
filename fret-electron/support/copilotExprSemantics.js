@@ -2,7 +2,7 @@ const antlr4 = require('antlr4/index');
 const CopilotExpressionsLexer = require('./CopilotParser/CopilotLexer');
 const CopilotExpressionsParser = require('./CopilotParser/CopilotParser');
 const AnnotatingErrorListener = require('../app/parser/AnnotatingErrorListener');
-const CopilotExprAnalyzer = require('./CopilotExprAnalyzer').copilotExprAnalyzer;
+const CopilotExprAnalyzer = require('./copilotExprAnalyzer').copilotExprAnalyzer;
 const copilotExprAnalyzer = new CopilotExprAnalyzer();
 
 
