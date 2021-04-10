@@ -4,7 +4,7 @@ For analysis, FRET allows users to export requirements in formats that can be di
 
 Below we present a step-by-step guide of the [FRET analysis portal](#fretanalysisportal).
 
-Please click on the tool names to view brief summaries of the analysis tools: [CoCoSim](./cocosim.md) and [Copilot](#./copilot.md) tools.
+Please click on the tool names to view brief summaries of the analysis tools: [CoCoSim](./cocosim.md) and [Copilot](./copilot.md) tools.
 
 [Back to FRET home page](../../userManual.md)
 
