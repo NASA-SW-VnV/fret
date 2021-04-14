@@ -85,21 +85,21 @@ function createData(vID, cID, project, description) {
 const styles = theme => ({
   root: {
     width: '100%',
-    marginTop: theme.spacing.unit(3),
+    marginTop: theme.spacing(3),
     overflowX: 'auto',
     flexWrap: 'wrap',
   },
   heading: {
     fontSize: theme.typography.pxToRem(18),
     fontWeight: theme.typography.fontWeightRegular,
-    marginRight: theme.spacing.unit * 2,
+    marginRight: theme.spacing(2),
   },
   formControl: {
     minWidth: 200,
-    marginRight: theme.spacing.unit * 2
+    marginRight: theme.spacing(2)
   },
   selectEmpty: {
-    marginTop: theme.spacing.unit * 2,
+    marginTop: theme.spacing(2),
   },
 });
 
@@ -156,10 +156,10 @@ const componentStyles = theme => ({
     fontWeight: theme.typography.fontWeightRegular,
   },
   buttonControl: {
-    marginRight: theme.spacing.unit * 100,
+    marginRight: theme.spacing(100),
   },
   selectEmpty: {
-    marginTop: theme.spacing.unit * 2,
+    marginTop: theme.spacing(2),
   },
 });
 
@@ -595,19 +595,23 @@ class VariablesView extends React.Component {
             return(
               <Accordion key={component}>
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <ComponentSummary
-                component = {component}
-                classes = {classes}
-                completed = {completedComponents.includes(component)}
-                selectedProject={selectedProject}
-              />
+                <Typography className={classes.heading}>{component}</Typography>
+                <ComponentSummary
+                  component = {component}
+                  completed = {completedComponents.includes(component)}
+                  selectedProject={selectedProject}
+                  language={language}
+                />
               </AccordionSummary>
+              <Divider />
                 <AccordionDetails>
+                <div>
                   <VariablesSortableTable
                     selectedProject={selectedProject}
                     selectedComponent={component}
                     checkComponentCompleted={this.checkComponentCompleted}
                   />
+                </div>
                 </AccordionDetails>
               </Accordion>
             );
