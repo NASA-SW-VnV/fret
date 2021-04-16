@@ -242,18 +242,19 @@ class MainView extends React.Component {
       return result.collectedSemantics
   }
 
-  createOrUpdateVariables = (variables, componentName, projectName, reqid , isRegular) => {
-    variables.map(function (variableName) {
+  createOrUpdateVariables = async (variables, componentName, projectName, reqid, isRegular) => {
+    for (let i = 0; i < variables; i++) {
+      const variableName = variables[i]
       var modeldbid = projectName + componentName + variableName;
-      modeldb.get(modeldbid).then(function (v) {
-        if(!v.reqs.includes(reqid)) {
+      await modeldb.get(modeldbid).then(function (v) {
+        if (!v.reqs.includes(reqid)) {
           modeldb.put({
             ...v,
             reqs: v.reqs.concat(reqid),
           })
         }
       }).catch(function (err) {
-        if(err && err.message === 'missing') {
+        if (err && err.message === 'missing') {
           modeldb.put({
             _id: modeldbid,
             project: projectName,
@@ -271,10 +272,8 @@ class MainView extends React.Component {
           });
         }
       })
-    })
+    }
   }
-
-
 
   handleImport = () => {
     const self = this;
