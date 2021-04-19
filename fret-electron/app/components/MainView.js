@@ -215,23 +215,22 @@ class MainView extends React.Component {
     importedReqs: []
   };
 
-
-  populateVariables = () => {
-    db.allDocs({
+  populateVariables = async () => {
+    const result = await db.allDocs({
       include_docs: true,
-    }).then((result) => {
+    });
       const rows = result.rows;
-      rows.forEach(r => {
+      for(let i = 0; i < rows.length; i++){
+        const r = rows[i];
         const text = r.doc.fulltext;
-        if(text){
+        if (text) {
           const semantics = this.extractSemantics(text);
-          if(semantics.variables) {
-            this.createOrUpdateVariables(semantics.variables.regular, semantics.component_name, r.doc.project, r.doc.reqid, true);
-            this.createOrUpdateVariables(semantics.variables.modes, semantics.component_name, r.doc.project, r.doc.reqid, false);
+          if (semantics.variables) {
+            await this.createOrUpdateVariables(semantics.variables.regular, semantics.component_name, r.doc.project, r.doc.reqid, true);
+            await this.createOrUpdateVariables(semantics.variables.modes, semantics.component_name, r.doc.project, r.doc.reqid, false);
           }
         }
-      })
-    });
+      }
   }
 
   extractSemantics = (text) => {
@@ -243,19 +242,21 @@ class MainView extends React.Component {
   }
 
   createOrUpdateVariables = async (variables, componentName, projectName, reqid, isRegular) => {
-    for (let i = 0; i < variables; i++) {
+    for (let i = 0; i < variables.length; i++) {
       const variableName = variables[i]
-      var modeldbid = projectName + componentName + variableName;
-      await modeldb.get(modeldbid).then(function (v) {
+      const modeldbid = projectName + componentName + variableName;
+      let v;
+      try {
+        v = await modeldb.get(modeldbid);
         if (!v.reqs.includes(reqid)) {
-          modeldb.put({
+          const result = await modeldb.put({
             ...v,
             reqs: v.reqs.concat(reqid),
-          })
+          });
         }
-      }).catch(function (err) {
+      } catch (err) {
         if (err && err.message === 'missing') {
-          modeldb.put({
+          await modeldb.put({
             _id: modeldbid,
             project: projectName,
             component_name: componentName,
@@ -271,7 +272,7 @@ class MainView extends React.Component {
             model_id: ''
           });
         }
-      })
+      }
     }
   }
 
