@@ -34,18 +34,15 @@ import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
-
-import GridList from '@material-ui/core/GridList';
-import GridListTile from '@material-ui/core/GridListTile';
-import Divider from '@material-ui/core/Divider';
-
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-
+import Tooltip from '@material-ui/core/Tooltip';
 import VariablesView from './VariablesView';
 import AnalysisView from './AnalysisView';
-import Paper from '@material-ui/core/Paper';
+
+const process = require('process');
+
 
 const styles = theme => ({
   root: {
@@ -98,7 +95,11 @@ class AnalysisTabs extends React.Component {
             scrollButtons="auto"
           >
             <Tab label="Variable Mapping" />
-            <Tab label="Realizability" />
+            <Tooltip title={process.platform === "win32" ? 'Realizability checking is currently not supported in Windows OS' : ''}>
+              <span>
+                <Tab disabled={process.platform === "win32"} label="Realizability" />            
+              </span>              
+            </Tooltip>            
           </Tabs>
         </AppBar>
         {value === 0 &&
