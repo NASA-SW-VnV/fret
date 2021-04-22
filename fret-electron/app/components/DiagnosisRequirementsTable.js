@@ -31,7 +31,6 @@
 // AGREEMENT.
 // *****************************************************************************
 import React from 'react';
-import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -305,27 +304,6 @@ class DiagnosisRequirementsTable extends React.Component {
     this.setState({ order, orderBy });
   };
 
-  handleClick = (event, id) => {
-    const { selected } = this.state;
-    const selectedIndex = selected.indexOf(id);
-    let newSelected = [];
-
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, id);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1),
-      );
-    }
-
-    this.setState({ selected: newSelected });
-  };
-
   handleChangePage = (event, page) => {
     this.setState({ page });
   };
@@ -338,11 +316,9 @@ class DiagnosisRequirementsTable extends React.Component {
 
   render() {
     const { reqs, color } = this.context.state;
-    const { connectedComponent, classes, selectedProject, existingProjectNames } = this.props;
-    const { data, order, orderBy, selected, rowsPerPage, page,
-       snackBarDisplayInfo, selectedRequirement } = this.state;
+    const { connectedComponent } = this.props;
+    const { data, order, orderBy, selected, rowsPerPage, page } = this.state;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
-    const title = 'Requirements: ' + selectedProject
     
     return (
       <div>
@@ -361,7 +337,6 @@ class DiagnosisRequirementsTable extends React.Component {
                 ccStableSort(data, reqs, connectedComponent, getSorting(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map(n => {
-                  const isSelected = this.isSelected(n.dbkey);
                   const label = n.reqid ? n.reqid.replace(/-/g,'') : 'NONE'
                   var isInConflict = (reqs.length !== 0 && reqs.includes(label)) ? true : false;                  
                   return (
@@ -386,7 +361,6 @@ class DiagnosisRequirementsTable extends React.Component {
                 stableSort(data, reqs, getSorting(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map(n => {
-                  const isSelected = this.isSelected(n.dbkey);
                   const label = n.reqid ? n.reqid.replace(/-/g,'') : 'NONE'
                   var isInConflict = (reqs.length !== 0 && reqs.includes(label)) ? true : false;
                   var isAssumption = n.reqid.includes('assumption')

@@ -28,7 +28,7 @@ Pick a project from the drop down menu (Project button) and switch to the Analys
 
 <img src="../screen_shots/AnalysisPortal.png">
 
-**2. Pick component and complete necessary variable information**
+**2. Pick component and complete necessary variable information under Variable Mapping**
 
 You do not need to use the export option at this time.
 
@@ -47,7 +47,7 @@ Pick a System Component. The realizability tab should now update to show the fol
 * Compositional and Monolithic options. For components that can be decomposed into connected components, the compositional option is available to perform realizability checking per connected component. Otherwise, only the monolithic option is enabled.
 * Check button. Use this button to perform realizability checking (compositional or monolithic).
 * Diagnose button (unrealizable components only). If the component is unrealizable, use this button to identify minimal sets of conflicting requirements, as well as view their counterexamples (see also step "Diagnoe unrealizable requirements" below).
-* Project Summary and Help buttons. Currently disabled (non-functional).
+* Project Summary and Help buttons (Currently disabled features, coming soon).
 
 <img src="../screen_shots/Realizability.png">
 

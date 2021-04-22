@@ -1,0 +1,20 @@
+{
+    "Runtime": {
+        "unit": "sec",
+        "value": "0.2"
+    },
+    "Answer": {
+        "source": "base",
+        "text": "unrealizable"
+    },
+    "K": "1",
+        "Counterexample": [
+            {"name": "emergency_button","type": "bool","Step 0": true},
+            {"name": "liquid_level_1","type": "bool","Step 0": false},
+            {"name": "start_button","type": "bool","Step 0": true},
+            {"name": "valve_0","type": "bool","Step 0": false},
+            {"name": "FTP","type": "bool","Step 0": true},
+            {"name": "LM001","type": "bool","Step 0": false},
+            {"name": "LM009","type": "bool","Step 0": true}
+        ]
+}

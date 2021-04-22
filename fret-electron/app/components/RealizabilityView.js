@@ -31,22 +31,10 @@
 // AGREEMENT.
 // *****************************************************************************
 import React from 'react';
-import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import Tooltip from '@material-ui/core/Tooltip';
-import Button from '@material-ui/core/Button';
-import AnalysisTable from './AnalysisTable';
-
-/* Connected Component Analysis Imports */
-import * as cc_analysis from '../../analysis/connected_components';
-
-/* Realizability Analysis Imports */
-import ejsCache_realize from '../../support/RealizabilityTemplates/ejsCache_realize';
-import * as realizability from '../../analysis/realizabilityCheck';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import DiagnosisEngine from '../../analysis/DiagnosisEngine';
+import RealizabilityContent from './RealizabilityContent';
 
 
 
@@ -55,11 +43,6 @@ const constants = require('../parser/Constants');
 const db = sharedObj.db;
 const modeldb = sharedObj.modeldb;
 const system_dbkeys = sharedObj.system_dbkeys;
-
-const fs = require('fs');
-const archiver = require('archiver');
-const app = require('electron').remote.app;
-const dialog = require('electron').remote.dialog;
 
 var dbChangeListener, modeldbChangeListener;
 let id = 0;
@@ -85,95 +68,7 @@ const styles = theme => ({
   },
 });
 
-  // checkRealizability = (event) => {
-  //   event.stopPropagation()
-  //   this.setState({
-  //     realizable: "PROCESSING"
-  //   })
-  //   const {component, selectedProject} = this.props;
-  //   const homeDir = app.getPath('home');
-  //   const self = this;
-  //   var filePath = './analysis/tmp/';
-  //   if (!fs.existsSync(filePath)) {
-  //     fs.mkdirSync(filePath);
-  //   }
-  //   filePath = filePath + component+'.lus';
-  //   var output = fs.createWriteStream(filePath);
-  //   modeldb.find({
-  //     selector: {
-  //       component_name: component,
-  //       project: selectedProject,
-  //       completed: true, //for modes that are not completed; these include the ones that correspond to unformalized requirements
-  //       modeldoc: false
-  //     }
-  //   }).then(function (modelResult){
-  //     var contract = self.getContractInfo(modelResult);
-  //     contract.componentName = component+'Spec';
-
-  //     db.find({
-  //       selector: {
-  //         project: selectedProject
-  //       }
-  //     }).then(function (fretResult){
-  //       contract.properties = self.getPropertyInfo(fretResult, contract.outputVariables, component);
-  //       contract.delays = self.getDelayInfo(fretResult, component);
-
-  //       var lustreContract = ejsCache_realize.renderRealizeCode().component.complete(contract);
-  //       output.write(lustreContract);
-  //       var checkOutput = realizability.checkRealizability(filePath, '-fixpoint');
-
-  //       //smallest match between newline and whitespace followed by |
-  //       //should only match the result string, i.e. {REALIZABLE, UNREALIZABLE, UNKNOWN, INCONSISTENT}
-  //       var result = checkOutput.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];
-  //       self.setState({
-  //         realizable: result
-  //       })
-  //       if (result === "UNREALIZABLE") {
-  //         // var fileContent = fs.readFileSync(filePath+'.json', 'utf8');
-  //         // var jsonOutput = JSON.parse(fileContent);
-  //         console.log(result);
-  //       }
-  //     })
-  //   })
-  // }
-
-
-  // DiagnoseButton(props) {
-  //   const self = this;
-  //   function diagnoseSpec(event) {
-  //     event.stopPropagation()
-  //     buttonText = "PROCESSING";
-  //     var filePath = './analysis/tmp/'+contract+'.lus.json';
-  //     if (fs.existsSync()) {
-  //       handleRealizabilityDialogOpen();
-  //     } else {
-  //       // let engine = new DiagnosisEngine(contract, 'realizability');
-  //       // engine.main();
-  //       console.log(self);
-  //       self.handleRealizabilityDialogOpen();
-  //     }
-  //   }
-
-  //   var buttonText = "DIAGNOSE";
-  //   // const {buttonText, 
-  //   const {className, contract} = this.state
-  //   if (this.state.realizable === "UNREALIZABLE") {
-  //       return (
-  //           <Tooltip title="See conflicts">
-  //             <Button size="small" onClick={(event) => {diagnoseSpec(event)}} color="secondary" variant='contained' className={className}>      
-  //               {buttonText === "PROCESSING" ? <CircularProgress size={22} /> : buttonText}
-  //             </Button>
-  //           </Tooltip>
-  //         )
-  //     } else {
-  //       //return no button. Perhaps we should return a button "see components"
-  //       return null
-  //     }    
-  // }
-
-
-
-class AnalysisView extends React.Component {
+class RealizabilityView extends React.Component {
   state = {
     components: [],
     completedComponents: [],
@@ -365,7 +260,7 @@ class AnalysisView extends React.Component {
     } else {
       return (
         <div>
-          <AnalysisTable
+          <RealizabilityContent
             selectedProject={selectedProject}
             components={components}
             completedComponents={completedComponents}
@@ -377,10 +272,10 @@ class AnalysisView extends React.Component {
   }
 }
 
-AnalysisView.propTypes = {
+RealizabilityView.propTypes = {
   classes: PropTypes.object.isRequired,
   selectedProject: PropTypes.string.isRequired,
   existingProjectNames: PropTypes.array.isRequired
 };
 
-export default withStyles(styles)(AnalysisView);
+export default withStyles(styles)(RealizabilityView);

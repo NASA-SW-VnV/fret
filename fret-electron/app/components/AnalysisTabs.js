@@ -39,7 +39,7 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Tooltip from '@material-ui/core/Tooltip';
 import VariablesView from './VariablesView';
-import AnalysisView from './AnalysisView';
+import RealizabilityView from './RealizabilityView';
 
 const process = require('process');
 
@@ -112,7 +112,7 @@ class AnalysisTabs extends React.Component {
         }
         {value === 1 &&
           <TabContainer>
-            <AnalysisView selectedProject={selectedProject} existingProjectNames={existingProjectNames}/>
+            <RealizabilityView selectedProject={selectedProject} existingProjectNames={existingProjectNames}/>
           </TabContainer>
         }
       </div>
