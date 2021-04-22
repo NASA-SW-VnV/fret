@@ -6,22 +6,19 @@ Introduction
 
 FRET is a framework for the elicitation, formalization and understanding of requirements. Users enter system requirements in a specialized natural language. FRET helps understanding and review of semantics by utilizing a variety of forms for each requirement: natural language description, formal mathematical logics, and diagrams. Requirements can be defined in a hierarchical fashion and can be exported in a variety of forms to be used by analysis tools.
 
-Take a look at the [FRET demo](https://drive.google.com/open?id=142C-xIw6ar9rSgxz-wAXktYrTwAG0sKw).
-
 Contact
 -------
 
 Please contact <fret@lists.nasa.gov> for further information on
-FRET. Detailed information can be found at the [FRET manual](fret-electron/docs/userManual.md).
+FRET. Detailed information can be found at the [FRET manual](fret-electron/docs/_media/userManual.md).
 
 Installation
 ------------
 
 ### Dependencies
 
- * [nodejs v10.15.x](https://nodejs.org/download/release/v10.15.3/)
+ * [nodejs](https://nodejs.org/en/download/) [recommended v10.15.x]
  * Python 2.x
- * [Git](https://git-scm.com/) (must be available in PATH)
  * (Optional) [NuSMV](http://nusmv.fbk.eu/)
 
 ### Download and Install
@@ -44,20 +41,13 @@ Here are the steps to install and start FRET:
 
 It's as simple as that. Enjoy!
 
-
-For the installation of FRET for Windows 10 see the [Windows Installation Manual](fret-electron/docs/installation_windows.md).
-
-### Linux Executable
-
-Alternatively, you can run FRET on a Linux machine by using the [FRET-linux-x64](executables/) executable. Instructions are available [here](executables/README.md).
-
 ### Notes
 
 > __Note:__ To run the LTLSIM simulator, a NuSMV (see http://nusmv.fbk.eu/) installation is required. Please make sure that the NuSMV binaries directory is added to the PATH environment variable. Additionally, please add `$PATH_TO_FRET/fret/tools/LTLSIM/ltlsim-core/simulator` to the PATH environment variable.
 
 > __Note:__ FRET requires **python 2.x**. If your machine is running a newer version of python, e.g., 3.x, then please config FRET to search for a python2 executable. Run the following: `npm config set python /usr/bin/python2.x`
 
-> __Note:__ Using FRET on Windows machines requires [Cygwin](https://cygwin.com/index.html) and the [node-gyp prerequisites](https://github.com/nodejs/node-gyp#on-windows)
+> __Note:__ Compiling on Windows machines requires  **gcc** and the [node-gyp prerequisites](https://github.com/nodejs/node-gyp#on-windows).
 
 >__Note:__ Recommended npm version 6.x (comes with nodejs v10.x)
 

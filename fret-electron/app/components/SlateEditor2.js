@@ -151,9 +151,9 @@ class SlateEditor2 extends React.Component {
 
   componentDidMount() {
     this.mounted = true
-    var path = `file://${process.resourcesPath}/docs/_media/rrd/index.html`
+    var path = `file://${process.resourcesPath}/docs/_media/fretishGrammar/index.html`
     if (isDev)
-      path = `file://${__dirname}/../docs/_media/rrd/index.html`
+      path = `file://${__dirname}/../docs/_media/fretishGrammar/index.html`
     this.setState({
       grammarUrl: path
     })
@@ -272,7 +272,7 @@ class SlateEditor2 extends React.Component {
     this.setState(prevState => {
       const inputText = editor2Text(editorValue)
       const {template} = this.props;
-  
+
       let errors = prevState.errors;
       let semantics = prevState.semantics;
       if (prevState.inputText != inputText) {
@@ -289,7 +289,7 @@ class SlateEditor2 extends React.Component {
         const fieldNode = getFieldNode(this.props.editor);
         fieldName = fieldNode ? fieldNode.name : undefined;
         clonedValue = JSON.parse(JSON.stringify(editorValue));
-  
+
         /* Handle cases, where the current field is populated by a placeholder.
          * In this case, the placeholder flag is removed upon selection of the
          * field in the editor */
@@ -307,7 +307,7 @@ class SlateEditor2 extends React.Component {
             (oldLeaf.isPlaceholder && oldText === newText) ||
             (oldLeaf.isPlaceholder && oldText === emptyText && newText === defaultText);
         }
-  
+
         /* The dropdown menu should only be opened when the field is empty or
          * populated with the default selection */
         menuOptions = (fieldNode && fieldName && newLeaf && (!newText || newLeaf.isPlaceholder)) ?
@@ -344,7 +344,7 @@ class SlateEditor2 extends React.Component {
             before = Editor.after(this.props.editor, before, { unit: 'offset' });
           }
           beforeRange = before && Editor.range(this.props.editor, before, start)
-  
+
           const beforeText = beforeRange && Editor.string(this.props.editor, beforeRange)
           const beforeMatch = beforeText && beforeText.match(/^(\w+)$/);
           const after = Editor.after(this.props.editor, start)
@@ -392,7 +392,7 @@ class SlateEditor2 extends React.Component {
         }
         const inputText = editor2Text(clonedValue);
         const result = FretSemantics.compilePartialText(inputText);
-  
+
         return {
           editorValue: clonedValue,
           inputText,
@@ -434,7 +434,7 @@ class SlateEditor2 extends React.Component {
           variables: [],
           beforeRange: null,
         }
-  
+
       }
     })
   }

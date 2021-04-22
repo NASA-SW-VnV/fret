@@ -6,7 +6,7 @@
 
 ***
 
-A FRET requirement is an English (to be precise "FRETish") sentence containing up to six fields: *scope*, *condition*, *component*, *shall*, *timing* and *response*. Three fields are mandatory: component, shall, response. There is a [grammar](../../../_media/rrd/index.html ':include width=100% height=800px') for the allowable sentences. The grammar, displayed as "railroad diagrams", is accessible from this view by clicking on the question mark. Mind you, this is not for the faint-hearted.
+A FRET requirement is an English (to be precise "FRETish") sentence containing up to six fields: *scope*, *condition*, *component*, *shall*, *timing* and *response*. Three fields are mandatory: component, shall, response. There is a [grammar](../../../_media/fretishGrammar/index.html ':include width=100% height=800px') for the allowable sentences. The grammar, displayed as "railroad diagrams", is accessible from this view by clicking on the question mark. Mind you, this is not for the faint-hearted.
 
 Here is an example requirement:
 <span style="color:gray">**"In flight mode the battery shall always satisfy voltage > 9"** </span>
@@ -71,4 +71,4 @@ LAST
 
 
 
-[Back to FRET home page](../../../userManual.md)
+[Back to FRET home page](../userManual.md)

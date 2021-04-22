@@ -27,4 +27,4 @@ Let us look at our example requirement: <span style="color:blue">In flight mode 
 
 It corresponds to the template [in, null, always, satisfaction], and its semantics and formalizations can be seen in the screenshot above.
 
-[Back to FRET home page](../../userManual.md)   
+[Back to FRET home page](../userManual.md)   

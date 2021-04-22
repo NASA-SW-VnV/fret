@@ -17,4 +17,4 @@ On the right of each requirement id, the plus sign button allows you to create a
 
 The top right _list_ button allows you to enter a mode where you can select individual requirements in the table for exporting or other functions.
 
-[Back to FRET home page](../../../userManual.md)
+[Back to FRET home page](../../userManual.md)

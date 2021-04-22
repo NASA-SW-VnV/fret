@@ -21,7 +21,7 @@ As soon as you select a specific project, the dashboard filters the information 
 
 ## Writing requirements
 
-Select the **Create** button to create a new requirement. Fill in a unique requirement identifier, such as *ProjectName-ComponentName-Number*. You will be warned if that requirement ID is already in use. You can optionally specify the requirement ID of a parent requirement, and also a rationale for the requirement. Details on how to write requirements are available [here](./examples/writingReqs.md).
+Select the **Create** button to create a new requirement. Fill in a unique requirement identifier, such as *ProjectName-ComponentName-Number*. You will be warned if that requirement ID is already in use. You can optionally specify the requirement ID of a parent requirement, and also a rationale for the requirement. Details on how to write requirements are available [here](./writingReqs.md).
 
 ## Sortable table display
 
@@ -36,4 +36,4 @@ More information on how to export is available [here](./export&import/export.md)
 More information on how to import is available [here](./export&import/import.md).
 
 
-[Back to FRET home page](../../userManual.md)
+[Back to FRET home page](../userManual.md)
