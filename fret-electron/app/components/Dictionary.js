@@ -139,12 +139,20 @@ class Dictionary extends React.Component {
       return {checked: {...prevState.checked, [target.name]: target.checked}}});
   }
 
+
   filterVariables = () => {
     const {components, selectedComponent, checked} = this.state;
     const checkedVariableTypes = Object.keys(checked).filter(variableType => checked[variableType]);
-    const filteredVariables = selectedComponent ? components[selectedComponent].filter(variable => checked.Undefined && !variable['variable type'] || checkedVariableTypes.includes(variable['variable type'])): [];
+    const filteredVariables = selectedComponent ? components[selectedComponent].filter(variable => checked.Undefined && !variable['variable type'] || checkedVariableTypes.includes(variable['variable type'])).sort(this.sortFunction): [];
     this.setState({filteredVariables})
   }
+
+  sortFunction = (a, b) => {
+    if (a.name.toLowerCase() < b.name.toLowerCase()) return -1;
+    if (a.name.toLowerCase() > b.name.toLowerCase()) return 1;
+    return 0;
+  }
+  
 
 
   render() {
