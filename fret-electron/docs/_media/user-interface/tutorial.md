@@ -28,8 +28,12 @@ Select the **Create** button to create a new requirement. Fill in a unique requi
 To view and edit the requirements in your project in a tabular form, select the _list_ button on the left of the dashboard. More information on this view is available [here](./examples/table.md)
 
 
-## Other buttons
+## Exporting/Importing requirements
 
-Import and export buttons are available for saving your requirements or importing requirements written by other users in FRET. This quick tutorial can be accessed by clicking on the question mark button.
+Export and import buttons are available for saving/exporting your requirements or importing requirements written by other users in FRET.
+
+More information on how to export is available [here](./export&import/export.md).
+More information on how to import is available [here](./export&import/import.md).
+
 
 [Back to FRET home page](../../userManual.md)

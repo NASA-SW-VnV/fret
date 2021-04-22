@@ -2,7 +2,7 @@
 
 ***
 
-<img src="../../screen_shots/WriteRequirement.png">
+<img src="../screen_shots/WriteRequirement.png">
 
 ***
 
