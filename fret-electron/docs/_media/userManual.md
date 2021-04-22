@@ -2,7 +2,6 @@
 
 <img src="./icons/electric-guitar.png" height=25% width=100%>
 
-
 # FRET: Formal Requirements Elicitation Tool
 
 ## Welcome to FRET!
