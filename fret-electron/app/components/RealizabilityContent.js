@@ -429,7 +429,6 @@ function ProjectTableRow(props) {
   const {name, result, time, connectedComponentRows} = props;
   const [open, setOpen] = React.useState(false);
 
-  console.log(name);
   return (
     <React.Fragment>
       <TableRow>
@@ -485,7 +484,6 @@ ProjectTableRow.propTypes = {
 function ProjectSummary(props) {
   const {selectedProject, components, compositional, monolithicStatus, compositionalStatus, connectedComponents, time} = props;
   var results = compositional ? compositionalStatus : monolithicStatus;
-  console.log(connectedComponents)
   return(
     <div>
       &nbsp;
@@ -630,15 +628,14 @@ class RealizabilityContent extends React.Component {
             project: project
           }
         }).then(function (fretResult){
-          if (self.isComponentComplete(component.component_name)) {            
+          if (self.isComponentComplete(component.component_name)) {
+                        
             contract.properties = self.getPropertyInfo(fretResult, contract.outputVariables, component.component_name);
             contract.delays = self.getDelayInfo(fretResult, component.component_name);
 
               /* Use contract to determine the output connected components
                * */
-
             var mappings = cc_analysis.compute_dependency_maps(contract);      
-
             var connected_components = cc_analysis.compute_connected_components(contract, mappings['output']);
             connected_components.forEach(comp => {
               connectedComponents[component.component_name]['cc'+connected_components.indexOf(comp)] = {result : 'UNCHECKED', properties : comp.properties}
@@ -864,6 +861,41 @@ class RealizabilityContent extends React.Component {
     }
   }  
 
+  // getContractInfo(result) {
+  //   var self = this;
+  //   var contract = {
+  //     componentName: '',
+  //     outputVariables: [],
+  //     inputVariables: [],
+  //     internalVariables: [],
+  //     assignments: [],
+  //     copilotAssignments: [],
+  //     modes: [],
+  //     properties: []
+  //   };
+  //   result.docs.forEach(function(doc){
+  //     var variable ={};
+  //     variable.name = doc.variable_name;
+  //     variable.type = self.getCoCoSpecDataType(doc.dataType);
+  //     if (doc.idType === 'Input'){
+  //       contract.inputVariables.push(variable);
+  //     } else if (doc.idType === 'Output'){
+  //       contract.outputVariables.push(variable);
+  //     } else if (doc.idType === 'Internal'){
+  //       contract.internalVariables.push(variable);
+  //       //if (doc.assignment !== '')
+  //         contract.assignments.push(doc.assignment);
+  //       //if (doc.copilotAssignment !== '')
+  //         contract.copilotAssignments.push(doc.copilotAssignment);
+  //     } else if (doc.idType === 'Mode'){
+  //       if (doc.modeRequirement !== '')
+  //         variable.assignment = doc.modeRequirement;
+  //       contract.modes.push(variable);
+  //     }
+  //   })
+  //   return contract;
+  // }
+
   getContractInfo(result) {
     var self = this;
     var contract = {
@@ -871,6 +903,7 @@ class RealizabilityContent extends React.Component {
       outputVariables: [],
       inputVariables: [],
       internalVariables: [],
+      functions: [],
       assignments: [],
       copilotAssignments: [],
       modes: [],
@@ -879,25 +912,54 @@ class RealizabilityContent extends React.Component {
     result.docs.forEach(function(doc){
       var variable ={};
       variable.name = doc.variable_name;
-      variable.type = self.getCoCoSpecDataType(doc.dataType);
       if (doc.idType === 'Input'){
+        variable.type = self.getCoCoSpecDataType(doc.dataType);
         contract.inputVariables.push(variable);
       } else if (doc.idType === 'Output'){
+        variable.type = self.getCoCoSpecDataType(doc.dataType);
         contract.outputVariables.push(variable);
       } else if (doc.idType === 'Internal'){
+        variable.type = self.getCoCoSpecDataType(doc.dataType);
         contract.internalVariables.push(variable);
-        //if (doc.assignment !== '')
-          contract.assignments.push(doc.assignment);
-        //if (doc.copilotAssignment !== '')
-          contract.copilotAssignments.push(doc.copilotAssignment);
+        contract.assignments.push(doc.assignment);
+        contract.copilotAssignments.push(doc.copilotAssignment);
       } else if (doc.idType === 'Mode'){
         if (doc.modeRequirement !== '')
           variable.assignment = doc.modeRequirement;
-        contract.modes.push(variable);
+          contract.modes.push(variable);
+      } else if (doc.idType === 'Function'){
+        variable.moduleName = doc.moduleName;
+        contract.functions.push(variable);
       }
     })
     return contract;
   }
+
+  // getPropertyInfo(result, outputVariables, component) {
+  //   var properties = [];
+  //   result.docs.forEach(function(doc){
+  //     var property ={};
+  //     property.allInput = false;
+  //     if (doc.semantics.component_name === component){
+  //       if (typeof doc.semantics.CoCoSpecCode !== 'undefined'){
+  //         if (doc.semantics.CoCoSpecCode !== constants.nonsense_semantics &&
+  //           doc.semantics.CoCoSpecCode !== constants.undefined_semantics &&
+  //           doc.semantics.CoCoSpecCode !== constants.unhandled_semantics){
+  //             property.value = doc.semantics.CoCoSpecCode;
+  //             property.reqid = doc.reqid;
+  //             property.fullText = "Req text: " + doc.fulltext;
+  //             outputVariables.forEach(function(variable){
+  //             if (property.value.includes(variable)){
+  //                 property.allInput = true;
+  //               }
+  //             })
+  //             properties.push(property);
+  //        }
+  //      }
+  //     }
+  //   })
+  //   return properties;
+  // }
 
   getPropertyInfo(result, outputVariables, component) {
     var properties = [];
@@ -912,6 +974,9 @@ class RealizabilityContent extends React.Component {
               property.value = doc.semantics.CoCoSpecCode;
               property.reqid = doc.reqid;
               property.fullText = "Req text: " + doc.fulltext;
+              property.fretish = doc.fulltext;
+              //TODO: remove HTLM-tags from ptExpanded
+              property.ptLTL = doc.semantics.ptExpanded.replace(/<b>/g, "").replace(/<i>/g, "").replace(/<\/b>/g, "").replace(/<\/i>/g, "");
               outputVariables.forEach(function(variable){
               if (property.value.includes(variable)){
                   property.allInput = true;
@@ -1120,7 +1185,6 @@ class RealizabilityContent extends React.Component {
 
     var menuItems = [<MenuItem value='all'> All System Components </MenuItem>];
     var status = monolithic ? monolithicStatus : compositionalStatus;
-
     return(
       <div>
         {components.length !== 0 &&

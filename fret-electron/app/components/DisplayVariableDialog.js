@@ -2020,27 +2020,6 @@ class DisplayVariableDialog extends React.Component {
                 onFocus={this.handleTextFieldFocused('assignment')}
                 helperText={this.state.errorsLustre}
               />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={this.state.checkLustre}
-                    onChange={this.handleCheckChange('checkLustre')}
-                    value="checkLustre"
-                    />
-                }
-                label="Lustre"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={this.state.checkCoPilot}
-                    onChange={this.handleCheckChange('checkCoPilot')}
-                    value="checkCoPilot"
-                    />
-                }
-                label="CoPilot"
-              />
-              </div>
               <TextField
               error
                 id="assignment"

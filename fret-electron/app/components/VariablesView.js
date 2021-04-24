@@ -62,14 +62,6 @@ import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 
-/* Connected Component Analysis Imports */
-import * as cc_analysis from '../../analysis/connected_components';
-
-/* Realizability Analysis Imports */
-import ejsCache_realize from '../../support/RealizabilityTemplates/ejsCache_realize';
-import * as realizability from '../../analysis/realizabilityCheck';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import DiagnosisEngine from '../../analysis/DiagnosisEngine';
 
 const sharedObj = require('electron').remote.getGlobal('sharedObj');
 const constants = require('../parser/Constants');
@@ -298,7 +290,7 @@ class ComponentSummary extends React.Component {
     })
     return properties;
   }
-  
+
   exportComponentCode = event => {
     event.stopPropagation();
     const {component, selectedProject, language} = this.props;
@@ -316,7 +308,6 @@ class ComponentSummary extends React.Component {
       if (filepath) {
         // create a file to stream archive data to.
         var output = fs.createWriteStream(filepath);
-        console.log(output);
         var archive = archiver('zip', {
           zlib: { level: 9 } // Sets the compression level.
         });
@@ -355,26 +346,8 @@ class ComponentSummary extends React.Component {
             if (language === 'cocospec'){
               archive.append(ejsCache.renderContractCode().contract.complete(contract), {name: contract.componentName+'.lus'})
             } else if (language === 'copilot'){
-              archive.append(sejsCacheCoPilot.renderCoPilotSpec().contract.complete(contract), {name: contract.componentName+'.json'})
-            } else {
-              console.log(contract);
-
-              /* Use contract to determined the output connected components
-               * */
-
-              var mappings = cc_analysis.compute_dependency_maps(contract);
-              console.log(mappings);
-              var connected_components = cc_analysis.compute_connected_components(contract, mappings['output']);
-              console.log(contract);
-           // console.log(contract);
-            //var mappings = compute_dependency_maps(contract);
-            //console.log(mappings);
-            // var connected_components = compute_connected_components(contract, mappings['output']);
-
-//            archive.append(ejsCache.renderContractCode().contract.complete(contract), {name: contract.componentName+'.lus'})
-              archive.append(ejsCache_realize.renderRealizeCode().component.complete(contract), {name: contract.componentName+'.lus'})
+              archive.append(ejsCacheCoPilot.renderCoPilotSpec().contract.complete(contract), {name: contract.componentName+'.json'})
             }
-//            archive.append(ejsCache.renderContractCode().contract.complete(contract), {name: contract.componentName+'.lus'})
             // finalize the archive (ie we are done appending files but streams have to finish yet)
             archive.finalize();
 
@@ -387,7 +360,7 @@ class ComponentSummary extends React.Component {
 
   render() {
     const {classes, component, completed, language} = this.props;
-    if ((completed && language) || (language === 'copilot')){
+    if ((completed && language)|| language === 'copilot'){
       return (
         <Tooltip title='Export verification code.'>
         <span>
@@ -397,25 +370,15 @@ class ComponentSummary extends React.Component {
           </span>
         </Tooltip>
       );
-    } else if (completed) {
-      return (
-        <Tooltip title='To export verification code, please select export language first.'>
-          <span>
-            <Button size="small" color="secondary" disabled variant='contained' className={classes.buttonControl}>
-              Export
-              </Button>
-          </span>
-        </Tooltip>
-      );
     } else {
       return (
-        <Tooltip title='To export verification code, please complete mandatory variable fields and export language first.'>
-          <span>
-            <Button size="small" color="secondary" disabled variant='contained' className={classes.buttonControl}>
-              Export
-              </Button>
-          </span>
-        </Tooltip>
+          <Tooltip title='To export verification code, please complete mandatory variable fields and export language first.'>
+            <span>
+              <Button size="small" color="secondary" disabled variant='contained' className={classes.buttonControl}>
+                Export
+                </Button>
+            </span>
+          </Tooltip>
       );
     }
   }
@@ -430,6 +393,7 @@ ComponentSummary.propTypes = {
 };
 
 ComponentSummary = withStyles(componentStyles)(ComponentSummary);
+
 
 
 class VariablesView extends React.Component {
@@ -558,7 +522,7 @@ class VariablesView extends React.Component {
         if (typeof data.cocospecModes[component] !== 'undefined'){
           data.cocospecModes[component] = data.cocospecModes[component].sort((a, b) => {return a.vID.toLowerCase().trim() > b.vID.toLowerCase().trim()});
         }
-      })      
+      })
       self.setState({
         cocospecData: data.cocospecData,
         cocospecModes: data.cocospecModes,
@@ -616,7 +580,6 @@ class VariablesView extends React.Component {
     const self = this;
     const {classes, selectedProject, existingProjectNames} = this.props;
     const {components, completedComponents, cocospecData, cocospecModes, language}= this.state;
-
 
     return (
       <div>
