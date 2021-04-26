@@ -472,7 +472,7 @@ class Instructions extends React.Component {
           centered>
           <Tab label="Assistant"/>
           <Tab label="Templates"/>
-          <Tab label="Dictionary"/>
+          <Tab label="Glossary"/>
         </Tabs>
         {tabValue === 0 && <TabContainer>{this.renderInstruction(field)}</TabContainer>}
         {tabValue === 1 &&

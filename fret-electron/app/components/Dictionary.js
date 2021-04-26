@@ -167,7 +167,7 @@ class Dictionary extends React.Component {
             onChange={this.handleComponentChange}
             value={selectedComponent}
           >
-            {Object.keys(this.state.components).map(componentName =>
+            {Object.keys(this.state.components).sort().map(componentName =>
               <MenuItem key={componentName} value={componentName}>{componentName}</MenuItem>
             )
             }
