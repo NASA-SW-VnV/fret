@@ -4,6 +4,37 @@ var fs = require('fs');
 
 var all_templates = []
 
+//============ CHANGE STATE ============
+ed.newTemplate ("template-change-state","Change State");
+ed.templateSummary ("This template describes how the state of a finite-state-machine component changes. \
+It describes the input state and some conditions based on which the change must occur. \
+The corresponding output state must reflect the required change. \
+The input and output states have a pre - post- relationship")
+ed.templateStructure('[component] shall always satisfy if ([input_state] & [condition]) then [output_state]')
+
+ed.fieldDescription('component', "Specifies the component of the system that the requirement applies to.")
+ed.addOption('component', 'component',"Replace the text by the name of the target component")
+
+ed.fieldDescription('input_state', "Specifies the value of the input state that may need to change.")
+ed.addOption('input_state', 'state = value',"The input state value is determined")
+
+ed.fieldDescription('condition', "The condition under which the change is triggered. \
+Usually expressed in terms of a predicate, the negation of a predicate, or a conjunction. ")
+ed.addOption('condition', 'predicate',"Predicate is described by name")
+ed.addOption('condition', '! predicate', "Predicate should not hold")
+ed.addOption('condition', 'predicate1 & predicate2', "Conjunction")
+
+ed.fieldDescription('output_state', "Specifies the value of the output state, reflecting \
+the new value of the input state .")
+ed.addOption('output_state', 'STATE = value',"The output state value is determined")
+
+ed.addExample("[FSM_Autopilot] shall always satisfy \
+if ([state = ap_standby_state] & [! standby & ! apfail]) then [STATE = ap_transition_state]")
+
+var template_command = ed.createFinalTemplateObject()
+all_templates.push(template_command)
+
+
 //============ PROCESS COMMAND ============
 ed.newTemplate ("template-process-command","Process Command");
 ed.templateSummary ("This pattern describes how a command should be processed. The command may be identified by name or through an operation code. \
