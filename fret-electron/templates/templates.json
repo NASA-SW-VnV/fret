@@ -1,4 +1,111 @@
-[   {
+[
+  {
+    "_id": "template-change-state",
+    "title": "Change State",
+    "description": "This template describes how the state of a finite-state-machine component changes. It describes the input state and some conditions based on which the change must occur. The corresponding output state must reflect the required change. The input and output states have a pre - post- relationship",
+    "structure": [
+      {
+        "field": "component"
+      },
+      {
+        "text": " shall always satisfy if ("
+      },
+      {
+        "field": "input_state"
+      },
+      {
+        "text": " & "
+      },
+      {
+        "field": "condition"
+      },
+      {
+        "text": ") then "
+      },
+      {
+        "field": "output_state"
+      }
+    ],
+    "fields": {
+      "component": {
+        "options": [
+          {
+            "suggestion": "component",
+            "description": "Replace the text by the name of the target component",
+            "selection": [
+              0,
+              0
+            ]
+          }
+        ],
+        "description": "Specifies the component of the system that the requirement applies to."
+      },
+      "input_state": {
+        "options": [
+          {
+            "suggestion": "state = value",
+            "description": "The input state value is determined",
+            "selection": [
+              0,
+              0
+            ]
+          }
+        ],
+        "description": "Specifies the value of the input state that may need to change."
+      },
+      "condition": {
+        "options": [
+          {
+            "suggestion": "predicate",
+            "description": "Predicate is described by name",
+            "selection": [
+              0,
+              0
+            ]
+          },
+          {
+            "suggestion": "! predicate",
+            "description": "Predicate should not hold",
+            "selection": [
+              0,
+              0
+            ]
+          },
+          {
+            "suggestion": "predicate1 & predicate2",
+            "description": "Conjunction",
+            "selection": [
+              0,
+              0
+            ]
+          }
+        ],
+        "description": "The condition under which the change is triggered. Usually expressed in terms of a predicate, the negation of a predicate, or a conjunction. "
+      },
+      "output_state": {
+        "options": [
+          {
+            "suggestion": "STATE = value",
+            "description": "The output state value is determined",
+            "selection": [
+              0,
+              0
+            ]
+          }
+        ],
+        "description": "Specifies the value of the output state, reflecting the new value of the input state ."
+      }
+    },
+    "examples": [
+      {
+        "component": "FSM_Autopilot",
+        "input_state": "state = ap_standby_state",
+        "condition": "! standby & ! apfail",
+        "output_state": "STATE = ap_transition_state"
+      }
+    ]
+  },
+  {
     "_id": "template-process-command",
     "title": "Process Command",
     "description": "This pattern describes how a command should be processed. The command may be identified by name or through an operation code. The response may have to be immediate, or eventual, or within some timeframe, as specified by the timing.",
@@ -30,98 +137,104 @@
     ],
     "fields": {
       "command": {
-        "description": "The command that triggers the desired reaction. The command may be identified by comparison to a command code or thorugh a boolean variable.",
         "options": [
           {
-            "description": "The response must be triggered when a command with the code given identifier is received",
             "suggestion": "command_opcode = X",
+            "description": "The response must be triggered when a command with the code given identifier is received",
             "selection": [
-              17,
-              18
+              0,
+              0
             ]
           },
           {
-            "description": "The response must be triggered when the specified command is received",
             "suggestion": "receipt_of_X_command",
+            "description": "The response must be triggered when the specified command is received",
             "selection": [
-              11,
-              12
+              0,
+              0
             ]
           },
           {
-            "description": "The response must be triggered when the specified command is received and some action is completed",
             "suggestion": "receipt_of_X_command & something_done",
+            "description": "The response must be triggered when the specified command is received and some action is completed",
             "selection": [
-              11,
-              12
+              0,
+              0
             ]
           }
-        ]
+        ],
+        "description": "The command that triggers the desired reaction. The command may be identified by comparison to a command code or through a boolean variable."
       },
       "component": {
-        "description": "Specifies the component of the system that the requirement applies to.",
         "options": [
           {
-            "description": "Replace the text by the name of the target component",
             "suggestion": "component",
-            "selection": []
+            "description": "Replace the text by the name of the target component",
+            "selection": [
+              0,
+              0
+            ]
           }
-        ]
+        ],
+        "description": "Specifies the component of the system that the requirement applies to."
       },
       "timing": {
-        "description": "Specifies the time points or intervals where the response has to occur after reception of the command. ",
         "options": [
           {
-            "description": "The response must always hold after reception of the command",
             "suggestion": "always",
+            "description": "The response must always hold after reception of the command",
             "selection": [
               0,
-              6
+              0
             ]
           },
           {
-            "description": "The response must immediately occur after reception of the command",
             "suggestion": "immediately",
+            "description": "The response must occur immediately after reception of the command",
             "selection": [
               0,
-              11
+              0
             ]
           },
           {
-            "description": "The reponse must occur within the specified time window after reception of the command",
             "suggestion": "within T seconds",
+            "description": "The reponse must occur within the specified time window after reception of the command",
             "selection": [
-              7,
-              8
+              0,
+              0
             ]
           }
-        ]
+        ],
+        "description": "Specifies the time points or intervals where the response has to occur after reception of the command."
       },
       "response": {
-        "description": "Specifies the response to the command that the component must provide to fulfill the requirement. The response is specified as a boolean expression.",
         "options": [
           {
-            "description": "After reception of the command, the specified action must be triggered",
             "suggestion": "action",
+            "description": "After reception of the command, the specified action must be triggered",
             "selection": [
               0,
-              6
+              0
             ]
           },
           {
-            "description": "After reception of the command, the specified signal must be set to a given value",
             "suggestion": "signal = value",
+            "description": "After reception of the command, the specified signal must be set to a given value",
             "selection": [
               0,
-              6
+              0
             ]
           },
           {
-            "description": "After reception of the command, the sepcified responses must be triggered",
             "suggestion": "response_1 & response_2",
-            "selection": [0,10]
+            "description": "After reception of the command, the specified responses must be triggered",
+            "selection": [
+              0,
+              0
+            ]
           }
-        ]
+        ],
+        "description": "Specifies the response to the command that the component must provide to fulfill the requirement. The response is specified as a boolean expression."
       }
     },
     "examples": [
@@ -151,13 +264,7 @@
         "field": "component"
       },
       {
-        "text": " shall "
-      },
-      {
-        "text": "always "
-      },
-      {
-        "text": "satisfy "
+        "text": " shall always satisfy "
       },
       {
         "field": "bounds"
@@ -165,60 +272,60 @@
     ],
     "fields": {
       "component": {
-        "description": "Specifies the component of the system that the requirement applies to.",
         "options": [
           {
-            "description": "Replace the text by the name of the target component",
             "suggestion": "component",
+            "description": "Replace the text by the name of the target component",
             "selection": [
               0,
-              9
+              0
             ]
           }
-        ]
+        ],
+        "description": "Specifies the component of the system that the requirement applies to."
       },
       "bounds": {
-        "description": "Specifies the signal that must be bounded and the type of bounds. The bounds are specified as a single or a combination of relational expressions of the form signal RELOP bound, where RELOP is a relational operator (<, <=, >, >=).",
         "options": [
           {
-            "description": "The signal must always stay below the bound",
             "suggestion": "signal < bound",
+            "description": "The signal must always stay below the bound",
             "selection": [
               0,
-              6
+              0
             ]
           },
           {
-            "description": "The signal must always stay above the bound",
             "suggestion": "signal > bound",
-            "selection": [
-              0,
-              6
-            ]
-          },
-          {
             "description": "The signal must always stay inside the bounds",
-            "suggestion": "signal > lower && signal < upper",
             "selection": [
               0,
-              6
+              0
             ]
           },
           {
-            "description": "The signal must always stay outside the bounds",
-            "suggestion": "signal < lower || signal > upper",
+            "suggestion": "signal > lower & signal < upper",
+            "description": "The signal must always stay below the bound",
             "selection": [
               0,
-              6
+              0
+            ]
+          },
+          {
+            "suggestion": "signal < lower | signal > upper",
+            "description": "The signal must always stay outside the bounds",
+            "selection": [
+              0,
+              0
             ]
           }
-        ]
+        ],
+        "description": "Specifies the signal that must be bounded and the type of bounds. The bounds are specified as a single or a combination of relational expressions of the form signal RELOP bound, where RELOP is a relational operator (<, <=, >, >=)."
       }
     },
     "examples": [
       {
         "component": "autopilot",
-        "bounds": "roll_angle < 60 && roll_angle > -60"
+        "bounds": "roll_angle < 60 & roll_angle > -60"
       },
       {
         "component": "alpha_protection",
@@ -226,154 +333,186 @@
       }
     ]
   },
-     {
-     "_id": "template-set-diagnostic-flag",
+  {
+    "_id": "template-set-diagnostic-flag",
     "title": "Set Diagnostic Flag",
     "description": "This template relates to requirements that must set a diagnostic flag whenever some unexpected or unwanted conditions occur. Conditions are expressions involving system variables and relational or boolean operators. The response consists of setting some system flag. The response is typically expected to be immediate, but other timing operators may also be used.",
     "structure": [
-        {
-            "field": "condition"
-        },
-        {
-            "text": " the "
-        },
-        {
-            "field": "component"
-        },
-        {
-            "text": " shall "
-        },
-        {
-            "field": "timing"
-        },
-        {
-            "text": " satisfy "
-        },
-        {
-            "field": "response"
-        }
+      {
+        "field": "condition"
+      },
+      {
+        "text": " the "
+      },
+      {
+        "field": "component"
+      },
+      {
+        "text": " shall "
+      },
+      {
+        "field": "timing"
+      },
+      {
+        "text": " satisfy "
+      },
+      {
+        "field": "response"
+      }
     ],
     "fields": {
-        "condition": {
-            "description": "The condition that expresses the anomaly and which must set the diagnostic flag. The anomaly can be expressed by name, or The bounds are specified as a single or a combination of relational expressions of the form signal RELOP bound, where RELOP is a relational operator (<, <=, >, >=)",
-            "options": [
-                {
-                    "description": "Anomalous condition is described by name",
-                    "suggestion": "Upon anomalous_condition",
-                    "selection": [5,24]
-                },
-                {
-                    "description": "Anomalous condition is described by a variable being outside some bounds. The bounds are specified as a single or a combination of relational expressions of the form variable RELOP bound, where RELOP is a relational operator (<, <=, >, >=)",
-                    "suggestion": "If variable_RELOP_bound",
-                    "selection": [3,11]
-                }
+      "condition": {
+        "options": [
+          {
+            "suggestion": "Upon anomalous_condition",
+            "description": "Anomalous condition is described by name",
+            "selection": [
+              0,
+              0
             ]
-        },
-        "component": {
-            "description": "Specifies the component of the system that the requirement applies to.",
-            "options": [
-                {
-                    "description": "Replace the text by the name of the target component",
-                    "suggestion": "component",
-                    "selection": []
-                }
+          },
+          {
+            "suggestion": "If variable_RELOP_bound",
+            "description": "Anomalous condition is described by a variable being outside some bounds. The bounds are specified as a single or a combination of relational expressions of the form variable RELOP bound, where RELOP is a relational operator (<, <=, >, >=)",
+            "selection": [
+              0,
+              0
             ]
-        },
-        "timing": {
-            "description": "Specifies the time points or intervals where the response has to occur after anomalous condition is detected. In most cases this is expected to happen immediately.",
-            "options": [
-                {
-                    "description": "The response must immediately occur after anomalous condition is detected",
-                    "suggestion": "immediately",
-                    "selection": [0,11]
-                },
-                {
-                    "description": "The reponse must occur within the specified time window after anomalous condition is detected",
-                    "suggestion": "within T milliseconds/seconds/minutes",
-                    "selection": [7,24]
-                }
+          }
+        ],
+        "description": "The condition that expresses the anomaly and which must set the diagnostic flag. The anomaly can be expressed by name, or The bounds are specified as a single or a combination of relational expressions of the form signal RELOP bound, where RELOP is a relational operator (<, <=, >, >=)"
+      },
+      "component": {
+        "options": [
+          {
+            "suggestion": "component",
+            "description": "Replace the text by the name of the target component",
+            "selection": [
+              0,
+              0
             ]
-        },
-        "response":{
-            "description": "Describes the diagnostic flag that must be set.",
-            "options": [
-                {   "description": "Select the name of the flag to be set",
-                    "suggestion": "set_flagname_flag",
-                    "selection": [4,12]
-                },
-                {
-                    "description": "The specified flag must be set to a given value",
-                    "suggestion": "flag = value",
-                    "selection": [0,12]
-                }
+          }
+        ],
+        "description": "Specifies the component of the system that the requirement applies to."
+      },
+      "timing": {
+        "options": [
+          {
+            "suggestion": "immediately",
+            "description": "The response must occur immediately after anomalous condition is detected",
+            "selection": [
+              0,
+              0
             ]
-        }
+          },
+          {
+            "suggestion": "within T seconds",
+            "description": "The reponse must occur within the specified time window after after anomalous condition is detected",
+            "selection": [
+              0,
+              0
+            ]
+          }
+        ],
+        "description": "Specifies the time points or intervals where the response has to occur after anomalous condition is detected. In most cases this is expected to happen immediately."
+      },
+      "response": {
+        "options": [
+          {
+            "suggestion": "set_flagname_flag",
+            "description": "Select the name of the flag to be set",
+            "selection": [
+              0,
+              0
+            ]
+          },
+          {
+            "suggestion": "flag = value",
+            "description": "The specified flag must be set to a given value",
+            "selection": [
+              0,
+              0
+            ]
+          }
+        ],
+        "description": "Describes the diagnostic flag that must be set."
+      }
     },
     "examples": [
-        {
-            "condition": "Upon invalid_checksum",
-            "component": "propulsion_software",
-            "timing": "immediately",
-            "response": "set_checksum_err_flag"
-        },
-        {
-            "condition": "If pressure < min_tank_pressure",
-            "component": "propulsion_software",
-            "timing": "within 200 milliseconds",
-            "response": "set_pressure_below_range_flag"
-        }
+      {
+        "condition": "Upon invalid_checksum",
+        "component": "propulsion_software",
+        "timing": "immediately",
+        "response": "set_checksum_err_flag"
+      },
+      {
+        "condition": "If pressure < min_tank_pressure",
+        "component": "propulsion_software",
+        "timing": "within 200 milliseconds",
+        "response": "set_pressure_below_range_flag"
+      }
     ]
-},
-     {  "_id": "template-prescribe-format",
-         "title": "Prescribe Format",
-         "description": "This template defines the expected format of commands or messages, often referring to telemetry. The format typically refers to some standard or document, identified by name or abbreviation.",
-         "structure": [
-             {
-                 "field": "component"
-             },
-             {
-                 "text": " shall always satisfy "
-             },
-             {
-                 "field": "response"
-             }
-         ],
-         "fields": {
-             "component": {
-                 "description": "Specifies the component of the system that the requirement applies to.",
-                 "options": [
-                     {
-                         "description": "Replace the text by the name of the target component",
-                         "suggestion": "component",
-                         "selection": []
-                     }
-                 ]
-             },
-             "response":{
-                 "description": "Specifies the format that must be conformed to.",
-                 "options": [
-                     {
-                         "description": "Format of a message type specified by a document",
-                         "suggestion": "message_type_format in document_name",
-                         "selection": [0,11]
-                     },
-                     {
-                         "description": "Specifies value of field within a command or message",
-                         "suggestion": "message_field = value",
-                         "selection": [0,20]
-                     }
-                 ]
-             }
-         },
-         "examples": [
-             {
-                 "component": "The propulsion_software",
-                 "response": "telemetry_format in ST65"
-             },
-             {
-                 "component": "The telemetry_generator",
-                 "response": "message_seq = BE08"
-             }
-         ]
-     }
+  },
+  {
+    "_id": "template-prescribe-format",
+    "title": "Prescribe Format",
+    "description": "This template defines the expected format of commands or messages, often referring to telemetry. The format typically refers to some standard or document, identified by name or abbreviation.",
+    "structure": [
+      {
+        "field": "component"
+      },
+      {
+        "text": " shall always satisfy "
+      },
+      {
+        "field": "response"
+      }
+    ],
+    "fields": {
+      "component": {
+        "options": [
+          {
+            "suggestion": "component",
+            "description": "Replace the text by the name of the target component",
+            "selection": [
+              0,
+              0
+            ]
+          }
+        ],
+        "description": "Specifies the component of the system that the requirement applies to."
+      },
+      "response": {
+        "options": [
+          {
+            "suggestion": "message_type_format in document_name",
+            "description": "Format of a message type specified by a document",
+            "selection": [
+              0,
+              0
+            ]
+          },
+          {
+            "suggestion": "message_field = value",
+            "description": "Specifies value of field within a command or message",
+            "selection": [
+              0,
+              0
+            ]
+          }
+        ],
+        "description": "Specifies the format that must be conformed to."
+      }
+    },
+    "examples": [
+      {
+        "component": "The propulsion_software",
+        "response": "telemetry_format in ST65"
+      },
+      {
+        "component": "The telemetry_generator",
+        "response": "message_seq = BE08"
+      }
+    ]
+  }
 ]
