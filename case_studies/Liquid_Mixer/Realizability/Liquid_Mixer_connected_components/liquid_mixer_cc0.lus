@@ -1,0 +1,98 @@
+--Historically
+node H(X:bool) returns (Y:bool);
+let
+    Y = X -> (X and (pre Y));
+tel
+
+--Y since inclusive X
+node SI(X,Y: bool) returns (Z:bool);
+let
+Z = Y and (X or (false -> pre Z));
+tel
+
+--Y since X
+node S(X,Y: bool) returns (Z:bool);
+let
+Z = X or (Y and (false -> pre Z));
+tel
+
+--Once
+node O(X:bool) returns (Y:bool);
+let
+ Y = X or (false -> pre Y);
+tel
+
+--Timed Once: less than or equal to N
+node OTlore( N: int; X: bool) returns (Y: bool);
+    var C:int;
+let
+    C = if X then 0
+        else (-1 -> pre C + (if pre C <0 then 0 else 1));
+
+    Y = 0 <= C and C <= N;
+tel
+
+--Timed Once: general case
+node OT( L: int;  R: int; X: bool) returns (Y: bool);
+var  D:bool;
+let
+  D=delay(X, R);
+  Y=OTlore(L-R, D);
+tel
+
+-- Timed Historically: general case
+node HT( L: int;  R: int; X: bool) returns (Y: bool);
+let
+  Y = not OT(L, R, not X);
+tel
+
+-- Timed Since: general case
+node ST( L: int;  R: int; X: bool; Y: bool)  returns (Z: bool);
+let
+  Z = S(X, Y) and OT(L, R, X);
+tel
+
+-- Timed Since: general case
+node SIT( L: int;  R: int; X: bool; Y: bool) returns (Z: bool);
+let
+  Z = SI(X, Y) and OT(L, R, X);
+tel
+
+
+node delay(X:bool;  R:int) returns(Y:bool);
+let
+
+  Y = X;
+ 
+tel
+
+
+
+node liquid_mixerSpec( emergency_button:bool; liquid_level_1:bool; liquid_level_2:bool; start_button:bool; timer_120sec_expire:bool; timer_60sec_expire:bool; stirring_motor:bool ;  timer_120sec_start:bool ;  timer_60sec_start:bool ;  valve_0:bool ;  valve_1:bool ;  valve_2:bool   ) returns ( );
+
+var LM012:bool; LM006:bool; FTP: bool; 
+let
+
+
+FTP = true->false;
+
+
+
+
+
+ 
+(* Req text: when emergency_button the liquid_mixer shall immediately satisfy ! stirring_motor  *)
+LM012 = (H(((emergency_button) and ((pre ( not (emergency_button))) or FTP)) => (not stirring_motor)));  
+ 
+(* Req text: when liquid_level_2, the liquid_mixer shall until (timer_60sec_expire | emergency_button) satisfy stirring_motor  *)
+LM006 = (H((H( not (liquid_level_2))) or ((SI( ((liquid_level_2) and ((pre ( not (liquid_level_2))) or FTP)), ( not (( timer_60sec_expire or emergency_button ))) )) => (stirring_motor))));  
+
+ 
+
+ --%PROPERTY LM012;  
+
+ --%PROPERTY LM006; 
+--%REALIZABLE emergency_button, liquid_level_1, liquid_level_2, start_button, timer_120sec_expire, timer_60sec_expire;  
+
+tel
+

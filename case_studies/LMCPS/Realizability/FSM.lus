@@ -1,0 +1,233 @@
+--First Time Point
+node FTP() returns (X:bool);
+let
+  X = true -> false;
+tel
+
+--Historically
+node H(X:bool) returns (Y:bool);
+let
+    Y = X -> (X and (pre Y));
+tel
+
+--Y since inclusive X
+node SI(X,Y: bool) returns (Z:bool);
+let
+Z = Y and (X or (false -> pre Z));
+tel
+
+--Y since X
+node S(X,Y: bool) returns (Z:bool);
+let
+Z = X or (Y and (false -> pre Z));
+tel
+
+--Once
+node O(X:bool) returns (Y:bool);
+let
+ Y = X or (false -> pre Y);
+tel
+
+node First( X : bool ) returns ( Y : bool );
+let
+  Y = X -> pre Y;
+tel
+
+--Timed Once: less than or equal to N
+node OTlore( N: int; X: bool) returns (Y: bool);
+    var C:int;
+let
+    C = if X then 0
+        else (-1 -> pre C + (if pre C <0 then 0 else 1));
+
+    Y = First(X)
+        ->
+        (if C < 0  then false
+         else C <= N
+        );
+tel
+
+
+ --Timed Once: general case
+ node OT( L: int;  R: int; X: bool) returns (Y: bool);
+ 
+ let
+     Y=OTlore(L-R,X);
+ tel
+
+
+-- Timed Historically: general case
+node HT( L: int;  R: int; X: bool) returns (Y: bool);
+let
+    Y = not OT(L, R, not X);
+tel
+
+-- Timed Since: less than or equal to N
+node STlore( N: int; X: bool; Y: bool)  returns (Z: bool);
+let
+  Z = S(X, Y) and OTlore(N, X);
+tel
+
+-- Timed Since Inclusive: less than or equal to N
+node SITlore( N: int; X: bool; Y: bool)  returns (Z: bool);
+let
+  Z = SI(X,Y) and OTlore(N, X);
+tel
+
+
+node delay(X:bool;  R:int) returns(Y:bool);
+let
+
+  Y = X;
+ 
+tel
+
+
+
+node FSMSpec( apfail:bool; limits:bool; standby:bool; supported:bool;
+pullup:bool; MODE:bool; request:bool; senstate:real;
+SENSTATE:real; good:bool; state:real;
+STATE:real   ) returns ( );
+
+
+var autopilot:bool; htlore3autopilot:bool; htlore3notpreprelimits:bool;
+preautopilot:bool; prelimits:bool; FSM001v2:bool; FSM001v3:bool;
+FSM001v1:bool; FTP: bool; not_pre_pre_limits : bool; ap_maneuver_state:real;
+ap_nominal_state:real; ap_standby_state:real; ap_transition_state:real;
+FSM002:bool; FSM003:bool; FSM008v1:bool; FSM009:bool; FSM005:bool;
+FSM008v2:bool; FSM007:bool; FSM004:bool; FSM006:bool; 
+pre_senstate:real; sen_fault_state:real; sen_nominal_state:real;
+sen_transition_state:real; FSM011v1:bool; FSM012:bool; FSM010:bool;
+FSM013:bool; 
+
+
+
+let
+
+
+FTP = true->false;
+
+(*FSM Global*)
+not_pre_pre_limits = (false -> pre (false -> not prelimits));
+autopilot = (not standby) and supported and (not apfail);
+htlore3autopilot =  HT(3, 0, autopilot);
+htlore3notpreprelimits = HT(3, 0, not_pre_pre_limits);
+preautopilot = false -> pre autopilot;
+prelimits = false -> pre limits;
+
+(*FSM Autopilot*)
+ap_maneuver_state = 2.0;
+ap_nominal_state = 1.0;
+ap_standby_state = 3.0;
+ap_transition_state = 0.0;
+
+(*FSM Sensor*)
+pre_senstate = 0.0 -> pre senstate;
+sen_fault_state = 2.0;
+sen_nominal_state = 0.0;
+sen_transition_state = 1.0;
+
+
+
+
+
+
+
+
+ 
+(*FSM Global*)
+(* Req text: if autopilot & preautopilot & prelimits FSM shall immediately satisfy pullup  *)
+FSM001v2 = (H(((autopilot and preautopilot and prelimits) and ((pre ( not (autopilot and preautopilot and prelimits))) or FTP)) => (pullup)));  
+ 
+(* Req text: if  htlore3autopilot  &  htlore3notpreprelimits  &  prelimits  FSM  shall  immediately satisfy pullup  *)
+FSM001v3 = (H(((htlore3autopilot and htlore3notpreprelimits and prelimits) and ((pre ( not (htlore3autopilot and htlore3notpreprelimits and prelimits))) or FTP)) => (pullup)));  
+ 
+(* Req text: FSM  shall  always  satisfy(limits & !  standby & !  apfail &supported => pullup)  *)
+FSM001v1 = (H((( limits and not standby and not apfail and supported => pullup ))));  
+
+
+
+(*FSM Autopilot*)
+(* Req text: FSM_Autopilot shall always satisfy (standby & state = ap_transition_state)=> STATE = ap_standby_state  *)
+FSM002 = (H((( standby and state = ap_transition_state ) => STATE = ap_standby_state)));  
+ 
+(* Req text: FSM_Autopilot shall always satisfy state = ap_transition_state & good & supported => STATE = ap_nominal_state  *)
+FSM003 = H((state = ap_transition_state and good and supported => STATE = ap_nominal_state));  
+ 
+(* Req text:  FSM_Autopilot shall always satisfy (state = ap_standby_state & !standby) => STATE = ap_transition_state  *)
+FSM008v1 = (H((( state = ap_standby_state and not standby ) => STATE = ap_transition_state)));  
+ 
+(* Req text: FSM_Autopilot shall always satisfy (state = ap_standby_state & apfail )=> STATE = ap_maneuver_state  *)
+FSM009 = (H((( state = ap_standby_state and apfail ) => STATE = ap_maneuver_state)));  
+ 
+(* Req text: FSM_Autopilot shall always satisfy state = ap_nominal_state & !  good & !  standby => STATE = ap_maneuver_state  *)
+FSM005 = (H((state = ap_nominal_state and standby => STATE = ap_standby_state)));  
+ 
+(* Req text: FSM_Autopilot shall always satisfy (state = ap_standby_state & ! standby & ! apfail ) => STATE = ap_transition_state  *)
+FSM008v2 = true; 
+--H((( state = ap_standby_state and not standby and not apfail ) => STATE = ap_transition_state));  
+ 
+(* Req text: FSM_Autopilot shall always satisfy (state = ap_maneuver_state & supported & good) => STATE = ap_transition_state  *)
+FSM007 = H((( state = ap_maneuver_state and supported and good ) => STATE = ap_transition_state));  
+ 
+(* Req text: FSM_Autopilot shall always satisfy (! good & state = ap_nominal_state) => STATE = ap_maneuver_state  *)
+FSM004 = (H((( not good and state = ap_nominal_state ) => STATE = ap_maneuver_state)));  
+ 
+(* Req text: FSM_Autopilot shall always satisfy (state = ap_maneuver_state & standby & good) => STATE = ap_standby_state  *)
+FSM006 = (H((( state = ap_maneuver_state and standby and good ) => STATE = ap_standby_state)));  
+
+assert state=0.0 or state=1.0 or state=2.0 or state=3.0;
+assert STATE=0.0 or STATE=1.0 or STATE=2.0 or STATE=3.0;
+
+
+
+
+
+
+(*FSM Sensor*)
+(* Req text: FSM_Sensor shall always  satisfy (senstate = sen_nominal_state & !request) => SENSTATE = sen_transition_state  *)
+FSM011v1 = (H((( senstate = sen_nominal_state and not request ) => SENSTATE = sen_transition_state)));  
+ 
+(* Req text: FSM_Sensor shall  always  satisfy (pre_senstate = sen_fault_state & !request & !  limits) => SENSTATE = sen_transition_state  *)
+FSM012 = (H((( pre_senstate = sen_fault_state and not request and not limits ) => SENSTATE = sen_transition_state)));  
+ 
+(* Req text: FSM_Sensor shall always satisfy (senstate = sen_nominal_state & limits)=> SENSTATE = sen_fault_state  *)
+FSM010 = (H((( senstate = sen_nominal_state and limits ) => SENSTATE = sen_fault_state)));  
+ 
+(* Req text: FSM_Sensor shall always satisfy (senstate = sen_transition_state & request & MODE) => SENSTATE = sen_nominal_state  *)
+FSM013 = (H((( senstate = sen_transition_state and request and MODE ) => SENSTATE = sen_nominal_state)));  
+
+assert senstate = 0.0 or senstate = 1.0 or senstate = 2.0;
+assert SENSTATE = 0.0 or SENSTATE = 1.0 or SENSTATE = 2.0;
+
+
+ 
+(*FSM Global*)
+ --%PROPERTY FSM001v2;  
+ --%PROPERTY FSM001v3;  
+ --%PROPERTY FSM001v1; 
+
+(*FSM Autopilot*)
+ --%PROPERTY FSM002;  
+ --%PROPERTY FSM003;  
+ --%PROPERTY FSM008v1;  
+ --%PROPERTY FSM009;  
+ --%PROPERTY FSM005;  
+ --%PROPERTY FSM008v2;  
+ --%PROPERTY FSM007;  
+ --%PROPERTY FSM004;  
+ --%PROPERTY FSM006; 
+
+(*FSM Sensor*)
+ --%PROPERTY FSM011v1;  
+ --%PROPERTY FSM012;  
+ --%PROPERTY FSM010;  
+ --%PROPERTY FSM013; 
+
+
+
+--%REALIZABLE apfail, limits, standby, supported, good, state, senstate,
+request, MODE;  
+
+tel
+
