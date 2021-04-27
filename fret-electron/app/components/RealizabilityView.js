@@ -210,7 +210,7 @@ class RealizabilityView extends React.Component {
     const {components} = self.state;
     const {selectedProject} = self.props;
     components.forEach(function(component){
-        self.checkComponentCompleted(component, selectedProject);
+        self.checkComponentCompleted(component.component_name, selectedProject);
     })
   }
 

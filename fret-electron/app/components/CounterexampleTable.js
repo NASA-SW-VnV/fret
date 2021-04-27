@@ -65,9 +65,9 @@ let TableComponentBar = props => {
     <Toolbar className={classNames(classes.root, classes.componentBar)}>
       <form className={classes.formControl} autoComplete="off">
         <FormControl className={classes.modelRoot}>
-          <InputLabel htmlFor="component-helper">Counterexample For</InputLabel>
+          <InputLabel htmlFor="component-helper">Counterexample for</InputLabel>
           <Select
-            key={cexConflictName=== undefined ? '' : cexConflictName}
+            key={cexConflictName === undefined ? '' : cexConflictName}
             value={cexConflictName}
             onChange={handleChange}
             input={<Input name="component" id="component-helper" />}
@@ -162,7 +162,6 @@ class CounterexampleTable extends React.Component {
   	for (var i = 0; i < currentConflicts.length; i++) {
   		menuItems.push(
 		(<MenuItem key={i} value={currentConflicts[i]}>
-			{/*currentConflicts[i]*/}
       Conflict {allConflicts.indexOf(currentConflicts[i])+1}
 			</MenuItem>)
 		);
@@ -175,10 +174,6 @@ class CounterexampleTable extends React.Component {
   		);
   	}
 
-  	// var ents = Object.entries(deps)
-    // const reducer = (accumulator, currentValue) => accumulator.concat(currentValue[1].locals.filter(l => l !== currentValue[0]));
-    // var locs = [...new Set(ents.reduce(reducer, []))];
-
   	var tableRows = [];
     
     //Filter out JKind local variables from cex data, then create table row for everything else
@@ -188,26 +183,8 @@ class CounterexampleTable extends React.Component {
             {Object.keys(row).map(function(key, index) {          
               return(<TableCell key={index} align="right"> {row[key].toString()} </TableCell>);
             })}
-          </TableRow>))) 
-       
-    // cex.map(function(row) {
-    //   if (!locs.includes(row.name)) {
-    //     return (tableRows.push(
-    //     <TableRow key={cex.indexOf(row)}>
-    //       {Object.keys(row).map(function(key, index) {          
-    //         return(<TableCell key={index} align="right"> {row[key].toString()} </TableCell>);
-    //       })}
-    //     </TableRow>))
-    //   }
-    // })
-
-		// cex.map(row => (tableRows.push(
-		// <TableRow key={cex.indexOf(row)}>
-  //   		{Object.keys(row).map(function(key, index) {          
-  //     		return(<TableCell key={index} align="right"> {row[key].toString()} </TableCell>);
-  //   		})}
-  // 		</TableRow>)))  				 	
-
+          </TableRow>)))
+           
   	return (
   		<div>
       <Paper className={classes.root}>              

@@ -84,7 +84,6 @@ function stableSort(array, conflictReqs, cmp) {
     });
     return stabilizedThis.map(el => el[0]);
   } else {
-    console.log(array)
     const conflictData = array.filter(el => conflictReqs.includes(el.reqid.replace(/-/g,'')));
     const assumptionData = array.filter(el => el.reqid.includes('assumption'));
     const remainingData = array.filter(el => (!el.reqid.includes('assumption') &&

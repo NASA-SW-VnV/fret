@@ -215,8 +215,17 @@ export function check_assignment_include(assignment_value, vars_to_check, key, m
      * assignemnt_value
      * */
 
+    function escapeRegExp(string){
+     return string.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+    }
+
     for(var variable of vars_to_check){
-        if(assignment_value.includes(variable.name)){
+
+        var regex = '\\b';
+        regex += escapeRegExp(variable.name);
+        regex += '\\b';
+
+        if(new RegExp(regex, "i").test(assignment_value)) {
             map[key].add(variable.name);
         }
     }

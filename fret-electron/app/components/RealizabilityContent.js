@@ -628,7 +628,6 @@ class RealizabilityContent extends React.Component {
           }
         }).then(function (fretResult){
           if (self.isComponentComplete(component.component_name)) {
-            console.log("Component is complete")
             contract.properties = self.getPropertyInfo(fretResult, contract.outputVariables, component.component_name);
             contract.delays = self.getDelayInfo(fretResult, component.component_name);
 
@@ -690,6 +689,7 @@ class RealizabilityContent extends React.Component {
       this.computeConnectedComponents(selectedProject, components);
     } else {    
       if (selectedProject !== 'All Projects' && components !== prevProps.components) {
+        this.synchStateWithModelDB();
         this.setState({selected : ''})
         this.computeConnectedComponents(selectedProject, components);
       }
@@ -776,34 +776,17 @@ class RealizabilityContent extends React.Component {
             properties.has(p.reqid))
           ccContract.properties = ccProperties          
 
-          // connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'] = 'PROCESSING'
-
-          // const worker = new Worker('../analysis/DiagnosisWorker.js');
-          // worker.postMessage({ccContract : ccContract, timeout : timeout, check : 'realizability'});
-          // worker.onerror = (err) => err;
-          // worker.onmessage = (e) => {
-
-
           let engine = new DiagnosisEngine(ccContract, timeout, 'realizability');                    
           const result = engine.main();
-          // const {result} = e.data;
 
           connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'] = 'DIAGNOSED'
           connectedComponents[selected.component_name][ccSelected]['diagnosisReport'] = result[1];   
           self.setState({ connectedComponents : connectedComponents});
-          // }
-
         } else if (monolithic) {      
           diagnosisStatus[selected.component_name] = 'PROCESSING'
           self.setState({ diagnosisStatus : diagnosisStatus})
           let engine = new DiagnosisEngine(contract, timeout, 'realizability');
           var result = engine.main();
-          // var filePath = analysisPath+selected.component_name+".lus"
-          // var runDiagnosis = realizability.checkRealizability(filePath, '-diagnose -fixpoint -json -timeout '+timeout);
-          // var result = runDiagnosis.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];
-          // // let engine = new DiagnosisEngine(contract, 'realizability');
-          // // engine.main();
-          // if (result === 'UNREALIZABLE') {
           this.timer = setTimeout(() => {
             diagnosisStatus[selected.component_name] = 'DIAGNOSED';
             diagnosisReports[selected.component_name] = result[1];            
@@ -818,36 +801,6 @@ class RealizabilityContent extends React.Component {
     })
   }
 
-  // diagnoseSpec(event) {    
-  //   const {diagnosisStatus, selected, connectedComponents, ccSelected, compositional, monolithic, timeout} = this.state;
-
-  //   if (compositional) {
-  //     connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'] = 'PROCESSING'
-  //     // buttonText = "PROCESSING";
-  //     var filePath = analysisPath+selected.component_name+"_"+ccSelected+".lus"
-  //     var runDiagnosis = realizability.checkRealizability(filePath, '-diagnose -fixpoint -json -timeout '+timeout);
-  //     // let engine = new DiagnosisEngine(contract, 'realizability');
-  //     // var result = engine.main();
-  //     connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'] = 'DIAGNOSED'    
-  //     this.setState({ connectedComponents : connectedComponents})
-  //   } else if (monolithic) {      
-  //     // buttonText = "PROCESSING";
-  //     diagnosisStatus[selected.component_name] = 'PROCESSING'
-  //     this.setState({ diagnosisStatus : diagnosisStatus})
-  //     var filePath = analysisPath+selected.component_name+".lus"
-  //     var runDiagnosis = realizability.checkRealizability(filePath, '-diagnose -fixpoint -json -timeout '+timeout);
-  //     // var result = runDiagnosis.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];
-  //     // // let engine = new DiagnosisEngine(contract, 'realizability');
-  //     // // engine.main();
-  //     // if (result === 'UNREALIZABLE') {
-  //     this.timer = setTimeout(() => {
-  //       diagnosisStatus[selected.component_name] = 'DIAGNOSED';
-  //       this.setState({ diagnosisStatus : diagnosisStatus});
-  //     }, 2000);
-  //     // }
-  //   }
-  // }
-
   getCoCoSpecDataType(dataType){
     if (dataType === 'boolean'){
        return 'bool';
@@ -859,41 +812,6 @@ class RealizabilityContent extends React.Component {
       return 'enum';
     }
   }  
-
-  // getContractInfo(result) {
-  //   var self = this;
-  //   var contract = {
-  //     componentName: '',
-  //     outputVariables: [],
-  //     inputVariables: [],
-  //     internalVariables: [],
-  //     assignments: [],
-  //     copilotAssignments: [],
-  //     modes: [],
-  //     properties: []
-  //   };
-  //   result.docs.forEach(function(doc){
-  //     var variable ={};
-  //     variable.name = doc.variable_name;
-  //     variable.type = self.getCoCoSpecDataType(doc.dataType);
-  //     if (doc.idType === 'Input'){
-  //       contract.inputVariables.push(variable);
-  //     } else if (doc.idType === 'Output'){
-  //       contract.outputVariables.push(variable);
-  //     } else if (doc.idType === 'Internal'){
-  //       contract.internalVariables.push(variable);
-  //       //if (doc.assignment !== '')
-  //         contract.assignments.push(doc.assignment);
-  //       //if (doc.copilotAssignment !== '')
-  //         contract.copilotAssignments.push(doc.copilotAssignment);
-  //     } else if (doc.idType === 'Mode'){
-  //       if (doc.modeRequirement !== '')
-  //         variable.assignment = doc.modeRequirement;
-  //       contract.modes.push(variable);
-  //     }
-  //   })
-  //   return contract;
-  // }
 
   getContractInfo(result) {
     var self = this;
@@ -933,32 +851,6 @@ class RealizabilityContent extends React.Component {
     })
     return contract;
   }
-
-  // getPropertyInfo(result, outputVariables, component) {
-  //   var properties = [];
-  //   result.docs.forEach(function(doc){
-  //     var property ={};
-  //     property.allInput = false;
-  //     if (doc.semantics.component_name === component){
-  //       if (typeof doc.semantics.CoCoSpecCode !== 'undefined'){
-  //         if (doc.semantics.CoCoSpecCode !== constants.nonsense_semantics &&
-  //           doc.semantics.CoCoSpecCode !== constants.undefined_semantics &&
-  //           doc.semantics.CoCoSpecCode !== constants.unhandled_semantics){
-  //             property.value = doc.semantics.CoCoSpecCode;
-  //             property.reqid = doc.reqid;
-  //             property.fullText = "Req text: " + doc.fulltext;
-  //             outputVariables.forEach(function(variable){
-  //             if (property.value.includes(variable)){
-  //                 property.allInput = true;
-  //               }
-  //             })
-  //             properties.push(property);
-  //        }
-  //      }
-  //     }
-  //   })
-  //   return properties;
-  // }
 
   getPropertyInfo(result, outputVariables, component) {
     var properties = [];
@@ -1040,7 +932,7 @@ class RealizabilityContent extends React.Component {
         selector: {
           component_name: tC.component_name,
           project: selectedProject,
-          completed: true, //for modes that are not completed; these include the ones that correspond to unformalized requirements
+          completed: true,
           modeldoc: false
         }
       }).then(function (modelResult){
@@ -1092,34 +984,6 @@ class RealizabilityContent extends React.Component {
                   connectedComponents : connectedComponents
                 });
                 ccResults.push(ccResult);
-
-                // const reducer = (accumulator, currentValue) => accumulator && (currentValue === 'REALIZABLE');
-
-                // if (ccResults.reduce(reducer)) {
-                //   self.setState(prevState => {
-                //     prevState.status[selected.component_name] = 'REALIZABLE';
-                //     return(prevState);
-                //   })
-                // } else {
-                //   if (ccResults.includes('UNKNOWN')) {
-                //     self.setState(prevState => {
-                //       prevState.status[selected.component_name] = 'UNKNOWN';
-                //       return(prevState);
-                //     })            
-                //   } else if (ccResults.includes('UNREALIZABLE')) {                    
-                //     self.setState(prevState => {
-                //       prevState.status[selected.component_name] = 'UNREALIZABLE';
-                //       return(prevState);
-                //     })
-                //   } else if (ccResults.includes('INCONSISTENT')) {
-                //     self.setState(prevState => {
-                //       prevState.status[selected.component_name] = 'INCONSISTENT';
-                //       return(prevState);
-                //     })            
-                //   } else {
-                //     console.log('Realizability check failed with an unexpected result. Run JKind check over '+filePath+' for more details.')
-                //   } 
-                // }
               });     
             }
             computeCCResults();
@@ -1162,7 +1026,7 @@ class RealizabilityContent extends React.Component {
     let grid;
     var tabs = [];
     for (var cc in connectedComponents[selected.component_name]) {
-          tabs.push(<Tab value={cc} classes={{root : classes.tabRoot}} label={
+          tabs.push(<Tab key={cc} value={cc} classes={{root : classes.tabRoot}} label={
         <div style={{display : 'flex', alignItems : 'center', flexWrap : 'wrap'}}>
         {cc}
         <Tooltip title={connectedComponents[selected.component_name][cc]['result'] === 'UNCHECKED' ? '' : 
@@ -1182,7 +1046,7 @@ class RealizabilityContent extends React.Component {
       }/>)                 
     }
 
-    var menuItems = [<MenuItem value='all'> All System Components </MenuItem>];
+    var menuItems = [<MenuItem key='all' value='all'> All System Components </MenuItem>];
     var status = monolithic ? monolithicStatus : compositionalStatus;
     return(
       <div>
@@ -1274,7 +1138,6 @@ class RealizabilityContent extends React.Component {
             <Button onClick={(event) => {this.checkRealizability(event)}} size="small" className={classes.vAlign} style={{marginRight: '1%'}} color="secondary" variant='contained' disabled={!dependenciesExist || (dependenciesExist && selected === '')}>
               Check                              
             </Button>
-          {/*compositional ? this.diagnoseSpec(ccSelected, event) : this.diagnoseSpec(selected.component_name, event)*/}
             <Button 
               onClick={(event) => {this.diagnoseSpec(event)}}
               size="small" className={classes.vAlign}
@@ -1320,8 +1183,7 @@ class RealizabilityContent extends React.Component {
                               <div>                            
                                 <ChordDiagram selectedReport = {connectedComponents[selected.component_name][ccSelected]['diagnosisReport']}/>
                               </div>
-                            </Fade>) : 
-                            (connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'] === 'PROCESSING' ? <CircularProgress disableShrink style={{display : 'flex', alignItems : 'center', justifyContent : 'center'}} size={50}/> : <div/>)
+                            </Fade>) : <div/>
                           }
                           &nbsp;
                           &nbsp;
