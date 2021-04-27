@@ -620,16 +620,15 @@ class RealizabilityContent extends React.Component {
           modeldoc: false
         }
       }).then(function (modelResult){
-        var contract = self.getContractInfo(modelResult);
+        var contract = self.getContractInfo(modelResult);        
         contract.componentName = component.component_name+'Spec';
-
         db.find({
           selector: {
             project: project
           }
         }).then(function (fretResult){
           if (self.isComponentComplete(component.component_name)) {
-                        
+            console.log("Component is complete")
             contract.properties = self.getPropertyInfo(fretResult, contract.outputVariables, component.component_name);
             contract.delays = self.getDelayInfo(fretResult, component.component_name);
 

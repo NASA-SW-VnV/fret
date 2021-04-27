@@ -560,6 +560,7 @@ class VariablesView extends React.Component {
         modeldoc: false
       }
     }).then(function (result) {
+      console.log(result)
       if (result.docs.length >= dataAndModesLength && dataAndModesLength !== 0){
         if (!completedComponents.includes(component_name))
          completedComponents.push(component_name);

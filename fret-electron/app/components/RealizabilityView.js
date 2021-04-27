@@ -218,24 +218,54 @@ class RealizabilityView extends React.Component {
     if (!this.mounted) return;
   }
 
-  checkComponentCompleted(component, project) {
+  // checkComponentCompleted(component, project) {
+  //   const self = this;
+  //   const {cocospecData, cocospecModes,completedComponents} = this.state;
+  //   var dataAndModesLength = 0;
+  //   cocospecModes[component.component_name] ? dataAndModesLength = cocospecData[component.component_name].length + cocospecModes[component.component_name].length : dataAndModesLength = cocospecData[component.component_name].length;
+  //   modeldb.find({
+  //     selector: {
+  //       component_name: component.component_name,
+  //       project: project,
+  //       completed: true,
+  //       modeldoc: false
+  //     }
+  //   }).then(function (result) {
+  //     if (result.docs.length >= dataAndModesLength && dataAndModesLength !== 0){
+  //       if (!completedComponents.includes(component.component_name))
+  //        completedComponents.push(component.component_name);
+  //     } else {
+  //       var index = completedComponents.indexOf(component.component_name);
+  //       if (index > -1) completedComponents.splice(index, 1);
+  //     }
+  //     self.setState({
+  //       completedComponents : completedComponents
+  //     })
+  //   }).catch(function (err) {
+  //     console.log(err);
+  //     return false;
+  //   })
+  // }
+
+  checkComponentCompleted(component_name, project) {
     const self = this;
     const {cocospecData, cocospecModes,completedComponents} = this.state;
     var dataAndModesLength = 0;
-    cocospecModes[component.component_name] ? dataAndModesLength = cocospecData[component.component_name].length + cocospecModes[component.component_name].length : dataAndModesLength = cocospecData[component.component_name].length;
+    cocospecModes[component_name] ? dataAndModesLength = cocospecData[component_name].length + cocospecModes[component_name].length : dataAndModesLength = cocospecData[component_name].length;
     modeldb.find({
       selector: {
-        component_name: component.component_name,
+        component_name: component_name,
         project: project,
         completed: true,
         modeldoc: false
       }
     }).then(function (result) {
+      console.log(result)
       if (result.docs.length >= dataAndModesLength && dataAndModesLength !== 0){
-        if (!completedComponents.includes(component.component_name))
-         completedComponents.push(component.component_name);
+        if (!completedComponents.includes(component_name))
+         completedComponents.push(component_name);
       } else {
-        var index = completedComponents.indexOf(component.component_name);
+        var index = completedComponents.indexOf(component_name);
         if (index > -1) completedComponents.splice(index, 1);
       }
       self.setState({
@@ -251,6 +281,7 @@ class RealizabilityView extends React.Component {
     const self = this;
     const {classes, selectedProject, existingProjectNames} = this.props;
     const {components, completedComponents}= this.state;
+
     if (selectedProject === 'All Projects'){
       return(
         <Typography variant='subtitle1'>
