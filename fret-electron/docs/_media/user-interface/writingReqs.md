@@ -29,9 +29,19 @@ While typing the body of a requirement, FRET parses the requirement and recogniz
 
 3. Timing. The optional *timing* field specifies when the response shall happen, relative to the scope and condition.  Timing can be *immediately*, *eventually*, *always*, *never*, *within N time units*,  *for N time units*, or *after N time units*. The latter means that the response happens _N_ time units from the beginning of the requirement's period, and does not happen before that; i.e., does not happen for *N-1* time units after the beginning of the period. [Timing Help Menu](./examples/timing.md)
 
-**Note: Variable dictionary**
+### Templates tab
 
-You can access the *Dictionary* tab from the right pane on the *Create Requirement* or *Update Requirement* dialog.  After selecting a project, you can select a component in the selected project using the *Component* menu bar.  FRET then displays existing variables of the selected component.  These variables can be filtered by the variable type including *Mode*, *Inputs*, *Outputs* and *Internal* using check boxes under the *Component* menu bar.  
+Predefined templates simplify requirement writting to filling in required and optional fields.  You can access the *TEMPLATES* tab from the right pane on the *Create Requirement* or *Update Requirement* dialog.  Template for the following requirement types are available: *Change State*, *Process Command*, *Check Bounds*, *Set Diagnostic Flag*, and *Prescribe Format*.  Upon selecting a predefined template, a FRETish requirement appear in the editor with required and optional fields in bubles.  Replace the field bubles to define your requirement. An explanation of the predefined requirement type you selected and an example are shown in the *TEMPLATES* pane.  The following example is for the *Change State* template.
+
+***
+
+<img src="../screen_shots/change_state_template.png">
+
+***
+
+### Variable glossary tab
+
+You can access the *GLOSSARY* tab from the right pane on the *Create Requirement* or *Update Requirement* dialog.  After selecting a project, you can select a component in the selected project using the *Component* menu bar.  FRET then displays existing variables of the selected component.  These variables can be filtered by the variable type including *Mode*, *Inputs*, *Outputs* and *Internal* using check boxes under the *Component* menu bar.  
 
 ***
 
@@ -39,7 +49,7 @@ You can access the *Dictionary* tab from the right pane on the *Create Requireme
 
 ***
 
-You can expand a variable on the *Dictionary* tab to see more details.  The details include a list of requirements referencing this variable and show values of varialbe attributes that are defined.  Current attributes of a variable include *variable type*, *data type*, *assignment*, *modelComponent*, and *description*.
+You can expand a variable on the *GLOSSARY* tab to see more details.  The details include a list of requirements referencing this variable and show values of varialbe attributes that are defined.  Current attributes of a variable include *variable type*, *data type*, *assignment*, *modelComponent*, and *description*.
 
 ***
 
@@ -47,7 +57,7 @@ You can expand a variable on the *Dictionary* tab to see more details.  The deta
 
 ***
 
-The list of variables shown in the *Dictionary* tab is used to autocomplete when typing in the editor of the  *Create Requirement* and *Update Requirement* dialog.
+The list of variables shown in the *GLOSSARY* tab is used to autocomplete when typing in the editor of the  *Create Requirement* and *Update Requirement* dialog.
 
 ***
 
