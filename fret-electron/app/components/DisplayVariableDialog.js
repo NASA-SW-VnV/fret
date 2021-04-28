@@ -124,7 +124,7 @@ class DisplayVariableDialog extends React.Component {
   handleTextFieldChange = name => event => {
     let resultLustre;
     let resultCopilot;
-    //console.log(event.target.value);
+    console.log(event.target.value);
     if (name === 'assignment'){
       resultLustre = lustreExprSemantics.compileLustreExpr(event.target.value);
       this.setState({
@@ -140,7 +140,7 @@ class DisplayVariableDialog extends React.Component {
         errorsCopilot: resultCopilot.parseErrors ? 'Parse Errors: '+ resultCopilot.parseErrors : '',
         //TODO: Update variables for Copilot
       });
-    } else if (name === 'moduleName'){
+    } else if (name === 'moduleName' || name ==='description'){
       this.setState({
         [name]: event.target.value,
       });
