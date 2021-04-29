@@ -348,7 +348,7 @@ class VariablesSortableTable extends React.Component {
         self.setState({
           data: result.docs.map(r => {
                   componentModel = r.modelComponent;
-                  return createData(r.variable_name, r.modeldoc_id, r.dataType, r.idType, r.description)
+                  return createData(r.variable_name, r.modeldoc_id, r.idType, r.dataType, r.description)
                 }).sort((a, b) => {return a.variable_name > b.variable_name}),
           modelComponent: componentModel
         })
