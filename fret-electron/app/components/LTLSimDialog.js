@@ -88,7 +88,8 @@ class LTLSimDialog extends Component {
 
         this.handleClickLogics = this.handleClickLogics.bind(this);
         this.handleClickHighlight = this.handleClickHighlight.bind(this);
-        this.handleLtlsimResult = this.handleLtlsimResult.bind(this);
+        this.handleLtlsimResult_FT = this.handleLtlsimResult_FT.bind(this);
+        this.handleLtlsimResult_PT = this.handleLtlsimResult_PT.bind(this);
         this.handleLtlsimSimulate = this.handleLtlsimSimulate.bind(this);
         this.handleTraceDataChange = this.handleTraceDataChange.bind(this);
         this.handleTraceLengthChange = this.handleTraceLengthChange.bind(this);
@@ -201,7 +202,7 @@ class LTLSimDialog extends Component {
 
     handleLtlsimSimulate() {
         this.setState((prevState) => {
-            let { model, visibleSubformulas } = prevState;
+            let { model, logics, visibleSubformulas } = prevState;
             const { id } = this.props;
 
             /* Set the simulated formula and subformulas to busy */
@@ -223,7 +224,8 @@ class LTLSimDialog extends Component {
                 model,
                 filter,
                 true,
-                this.handleLtlsimResult,
+                (logics === "FT") ? this.handleLtlsimResult_FT :
+            		this.handleLtlsimResult_PT,
                 undefined,
                 undefined);
 
@@ -233,7 +235,7 @@ class LTLSimDialog extends Component {
         })
     }
 
-    handleLtlsimResult(id, sid, value, trace) {
+      handleLtlsimResult_FT(id, sid, value, trace) {
         this.setState((prevState) => {
             let {model} = prevState;
             if (LTLSimController.getFormulaKeys(model).indexOf(id) !== -1) {
@@ -247,6 +249,25 @@ class LTLSimDialog extends Component {
             }
         })
     }
+
+    handleLtlsimResult_PT(id, sid, value, trace) {
+        this.setState((prevState) => {
+            let {model} = prevState;
+            if (LTLSimController.getFormulaKeys(model).indexOf(id) !== -1) {
+                LTLSimController.setFormulaTrace(model, id, sid, trace);
+
+		// for PT: value is end of trace
+		value = trace[trace.length-1]
+                LTLSimController.setFormulaValue(model, id, sid, value ?
+                                                    EFormulaStates.VALIDATED :
+                                                    EFormulaStates.VIOLATED);
+                return { model };
+            } else {
+                return prevState;
+            }
+        })
+    }
+
 
     update() {
         let { model, visibleSubformulas } = this.state;
