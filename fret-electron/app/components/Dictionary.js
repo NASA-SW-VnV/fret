@@ -50,14 +50,14 @@ const styles = theme => ({
   }
 });
 
-const variableTypes = ['Mode', 'Inputs', 'Outputs', 'Internal', 'Undefined'];
+const variableTypes = ['Mode', 'Input', 'Output', 'Internal', 'Undefined'];
 
 class Dictionary extends React.Component {
 
   state = {
     components: [],
     selectedComponent: '',
-    checked: { Mode: true, Inputs: true, Outputs: true, Internal: true,  Undefined: true},
+    checked: { Mode: true, Input: true, Output: true, Internal: true,  Undefined: true},
     filteredVariables: []
   }
 
@@ -121,7 +121,7 @@ class Dictionary extends React.Component {
         variable['description'] = comp.description;
       }
       if(comp.reqs){
-        variable['reqs'] = comp.reqs.join(', ');
+        variable['reqs'] = comp.reqs.sort().join(', ');
       }
       components_names[comp.component_name].push(variable);
     })

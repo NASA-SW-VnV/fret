@@ -178,6 +178,7 @@ class CreateRequirementDialog extends React.Component {
   handleClose = () => {
     this.setState({ createDialogOpen: false, tabValue: 0 });
     this.state.dialogCloseListener(false);
+    this.setAutoFillVariables([]);
   };
 
   handleSelectedTemplateChange = (selectedTemplate) => {
