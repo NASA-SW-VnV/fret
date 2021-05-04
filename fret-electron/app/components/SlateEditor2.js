@@ -215,7 +215,8 @@ class SlateEditor2 extends React.Component {
       const filterdVariables = this.props.autoFillVariables.filter(variable => this.state.search && variable.toLowerCase().startsWith(this.state.search.toLowerCase()))
       this.setState({ variables: filterdVariables })
     }
-    if (prevState.menuOptions !== this.state.menuOptions || prevState.variables !== this.state.variables) {
+    if ((prevState.menuOptions !== this.state.menuOptions && this.state.menuOptions.length ) || (prevState.variables !== this.state.variables)) {
+    // bug 221 if (prevState.menuOptions !== this.state.menuOptions || prevState.variables !== this.state.variables) {
       this.setState({ position: this.getPosition() })
     }
   }
@@ -271,7 +272,7 @@ class SlateEditor2 extends React.Component {
     this.setState(prevState => {
       const inputText = editor2Text(editorValue)
       const {template} = this.props;
-
+  
       let errors = prevState.errors;
       let semantics = prevState.semantics;
       if (prevState.inputText != inputText) {
@@ -279,14 +280,16 @@ class SlateEditor2 extends React.Component {
         errors = result.parseErrors;
         semantics = result.collectedSemantics;
       }
-
+      let menuOptions = [];
+      let clonedValue;
+      let fieldName;
       /* Handle changed selection (check whether menu should be opened)
         * This needs to be done only when template fields are enabled */
       if (template) {
         const fieldNode = getFieldNode(this.props.editor);
-        const fieldName = fieldNode ? fieldNode.name : undefined;
-        let clonedValue = JSON.parse(JSON.stringify(editorValue));
-
+        fieldName = fieldNode ? fieldNode.name : undefined;
+        clonedValue = JSON.parse(JSON.stringify(editorValue));
+  
         /* Handle cases, where the current field is populated by a placeholder.
          * In this case, the placeholder flag is removed upon selection of the
          * field in the editor */
@@ -296,27 +299,32 @@ class SlateEditor2 extends React.Component {
         const oldField = getField(prevState.editorValue, fieldName);
         const oldLeaf = oldField && oldField.children && oldField.children[0];
         const oldText = oldLeaf && oldLeaf.text;
-        const emptyText = fieldStartCharacter+fieldEndCharacter;
-        const defaultText = fieldStartCharacter+fieldName+fieldEndCharacter;
+        const emptyText = fieldStartCharacter + fieldEndCharacter;
+        const defaultText = fieldStartCharacter + fieldName + fieldEndCharacter;
         if (newLeaf) {
           newLeaf.isPlaceholder = !oldText ||
-          (newText === emptyText) ||
-          (oldLeaf.isPlaceholder && oldText === newText) ||
-          (oldLeaf.isPlaceholder && oldText === emptyText && newText === defaultText);
+            (newText === emptyText) ||
+            (oldLeaf.isPlaceholder && oldText === newText) ||
+            (oldLeaf.isPlaceholder && oldText === emptyText && newText === defaultText);
         }
-
+  
         /* The dropdown menu should only be opened when the field is empty or
          * populated with the default selection */
-        const menuOptions = (fieldNode && fieldName && newLeaf && (!newText || newLeaf.isPlaceholder)) ?
-                              this.getOptions(fieldName): [];
-        return {  editorValue: clonedValue,
-                  inputText,
-                  errors,
-                  semantics,
-                  menuOptions,
-                  menuIndex: 0,
-                  selectedField: fieldName };
-      } else {
+        menuOptions = (fieldNode && fieldName && newLeaf && (!newText || newLeaf.isPlaceholder)) ?
+          this.getOptions(fieldName) : [];
+        if (menuOptions.length > 0) {
+          return {
+            editorValue: clonedValue,
+            inputText,
+            errors,
+            semantics,
+            menuOptions,
+            menuIndex: 0,
+            selectedField: fieldName
+          };
+        }
+      }
+      if(menuOptions.length === 0) {
         const selection = this.props.editor.selection;
         let search = '';
         let beforeRange;
@@ -336,6 +344,7 @@ class SlateEditor2 extends React.Component {
             before = Editor.after(this.props.editor, before, { unit: 'offset' });
           }
           beforeRange = before && Editor.range(this.props.editor, before, start)
+  
           const beforeText = beforeRange && Editor.string(this.props.editor, beforeRange)
           const beforeMatch = beforeText && beforeText.match(/^(\w+)$/);
           const after = Editor.after(this.props.editor, start)
@@ -347,18 +356,21 @@ class SlateEditor2 extends React.Component {
           }
         }
         return {
-          editorValue,
+          editorValue: template ? clonedValue: editorValue,
           inputText,
           errors,
           semantics,
           search,
           range: beforeRange,
+          menuOptions,
+          selectedField: fieldName
         };
       }
     })
   }
 
   handleDropdownSelection(index) {
+    const {template} = this.props;
     const selection = this.props.editor.selection;
     const start = selection && Range.start(selection);
     const path = start && start.path;
@@ -380,7 +392,7 @@ class SlateEditor2 extends React.Component {
         }
         const inputText = editor2Text(clonedValue);
         const result = FretSemantics.compilePartialText(inputText);
-
+  
         return {
           editorValue: clonedValue,
           inputText,
@@ -391,27 +403,38 @@ class SlateEditor2 extends React.Component {
         }
       } else if (variables.length > 0) {
         const selectedIndex = index ? index : menuIndex;
-        Transforms.delete(this.props.editor, {at: this.state.range})
-        this.props.editor.insertText(variables[selectedIndex])
-        let after = Editor.after(this.props.editor, start, { unit: 'offset' });
-        const charRange = after && Editor.range(this.props.editor, start, after);
-        let char = charRange && Editor.string(this.props.editor, charRange);
-        while (after && char && char !== ' ') {
-          const afterPoint = Editor.after(this.props.editor, after, { unit: 'offset'})
-          const charRange =  afterPoint && Editor.range(this.props.editor, after, afterPoint);
-          char = charRange && Editor.string(this.props.editor, charRange);
-          after = afterPoint;
+        const selectedVariable = variables[selectedIndex];
+        let clonedValue = JSON.parse(JSON.stringify(editorValue));
+        if(template && selectedField){
+          const newField = getField(clonedValue, selectedField);
+          let newLeaf = newField && newField.children[0];
+          if (newLeaf) {
+            newLeaf.text = fieldStartCharacter + selectedVariable + fieldEndCharacter;
+            newLeaf.isPlaceholder = false;
+          }
+        } else {
+          Transforms.delete(this.props.editor, { at: this.state.range })
+          this.props.editor.insertText(selectedVariable);
+          let after = Editor.after(this.props.editor, start, { unit: 'offset' });
+          const charRange = after && Editor.range(this.props.editor, start, after);
+          let char = charRange && Editor.string(this.props.editor, charRange);
+          while (after && char && char !== ' ') {
+            const afterPoint = Editor.after(this.props.editor, after, { unit: 'offset' })
+            const charRange = afterPoint && Editor.range(this.props.editor, after, afterPoint);
+            char = charRange && Editor.string(this.props.editor, charRange);
+            after = afterPoint;
+          }
+          after = after && Editor.before(this.props.editor, after, { unit: 'offset' });
+          after && Transforms.select(this.props.editor, after);
         }
-        after = after && Editor.before(this.props.editor, after, { unit: 'offset' });
-        after && Transforms.select(this.props.editor, after);
         return {
-          editorValue: this.props.editor.children,
+          editorValue: template ? clonedValue : this.props.editor.children,
           search: '',
           menuIndex: 0,
           variables: [],
           beforeRange: null,
         }
-
+  
       }
     })
   }
@@ -853,7 +876,7 @@ class SlateEditor2 extends React.Component {
         selection={menuIndex}
         position={position}
         onClick={this.handleDropdownClick}/>
-    } else if (!hasFields && variables.length > 0 && position) {
+    } else if (variables.length > 0 && position) {
       menu = <VariablesDropdownMenu
         options={variables}
         selection={menuIndex}

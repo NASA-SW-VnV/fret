@@ -215,22 +215,76 @@ class MainView extends React.Component {
     importedReqs: []
   };
 
-  populateVariables = async () => {
-    const result = await db.allDocs({
+  batchCreateOrUpdate = (variables) => {
+    modeldb.bulkDocs(variables).catch(err => {
+      console.log('error', err)
+    })
+  }
+
+  populateVariables = () => {
+    let rows = [];
+    let shouldUpdate = false;
+    db.allDocs({
       include_docs: true,
-    });
-      const rows = result.rows;
-      for(let i = 0; i < rows.length; i++){
-        const r = rows[i];
+    }).then((result) => {
+      rows = result.rows;
+      return modeldb.allDocs({
+        include_docs: true,
+      })
+    }).then(data => {
+      const variables = data.rows.map(row => row.doc);
+      const mapIdsToVariables = {};
+      variables.forEach(variable => {
+        mapIdsToVariables[variable._id] = variable;
+      });
+      rows.forEach(r => {
         const text = r.doc.fulltext;
         if (text) {
           const semantics = this.extractSemantics(text);
           if (semantics.variables) {
-            await this.createOrUpdateVariables(semantics.variables.regular, semantics.component_name, r.doc.project, r.doc.reqid, true);
-            await this.createOrUpdateVariables(semantics.variables.modes, semantics.component_name, r.doc.project, r.doc.reqid, false);
+            const regularVariables = semantics.variables.regular;
+            const modesVariables = semantics.variables.modes;
+            const projectName = r.doc.project;
+            const componentName = semantics.component_name;
+            const reqId = r.doc.reqid;
+            const concatVariables = regularVariables.concat(modesVariables);
+            for (let i = 0; i < concatVariables.length; i++) {
+              let isRegular = i < regularVariables.length;
+              const variableName = concatVariables[i]
+              const variableId = projectName + componentName + variableName;
+              if (mapIdsToVariables[variableId]) {
+                if (!mapIdsToVariables[variableId].reqs.includes(reqId)) {
+                  shouldUpdate = true;
+                  mapIdsToVariables[variableId].reqs.push(reqId);
+                }
+              } else {
+                shouldUpdate = true;
+                const newVariable = {
+                  _id: variableId,
+                  project: projectName,
+                  component_name: componentName,
+                  variable_name: variableName,
+                  reqs: [reqId],
+                  dataType: isRegular ? '' : 'boolean',
+                  idType: isRegular ? '' : 'Mode',
+                  description: '',
+                  assignment: '',
+                  modeRequirement: '',
+                  model: false,
+                  modelComponent: '',
+                  model_id: ''
+                };
+                mapIdsToVariables[variableId] = newVariable;
+              }
+  
+            }
           }
         }
+      });
+      if (shouldUpdate) {
+        this.batchCreateOrUpdate(Object.values(mapIdsToVariables));
       }
+    });
   }
 
   extractSemantics = (text) => {
@@ -239,41 +293,6 @@ class MainView extends React.Component {
       return {}
     else if (result.collectedSemantics)
       return result.collectedSemantics
-  }
-
-  createOrUpdateVariables = async (variables, componentName, projectName, reqid, isRegular) => {
-    for (let i = 0; i < variables.length; i++) {
-      const variableName = variables[i]
-      const modeldbid = projectName + componentName + variableName;
-      let v;
-      try {
-        v = await modeldb.get(modeldbid);
-        if (!v.reqs.includes(reqid)) {
-          const result = await modeldb.put({
-            ...v,
-            reqs: v.reqs.concat(reqid),
-          });
-        }
-      } catch (err) {
-        if (err && err.message === 'missing') {
-          await modeldb.put({
-            _id: modeldbid,
-            project: projectName,
-            component_name: componentName,
-            variable_name: variableName,
-            reqs: [reqid],
-            dataType: isRegular ? '' : 'boolean',
-            idType: isRegular ? '' : 'Mode',
-            description: '',
-            assignment: '',
-            modeRequirement: '',
-            modeldoc: false,
-            modelComponent: '',
-            model_id: ''
-          });
-        }
-      }
-    }
   }
 
   handleImport = () => {
