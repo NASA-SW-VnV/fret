@@ -1,22 +1,21 @@
-const execSync = require('child_process').execSync;
+const execSync = require('child_process').exec;
 
-export function checkRealizability(contract, options) {
-  var result = callJKind(contract, options);
-  return result;
-}
-
-export function callJKind(filePath, options) {
+export function checkRealizability(filePath, options, callback) {
   var jkindCommand = 'jrealizability '+ options + ' ' + filePath;
   var output
-  try {
-    output = execSync(jkindCommand).toString();
-  } catch (error) {    
-        console.log(error.status)
-    console.log(error.message)
-    console.log(error.stderr.toString())
-    console.log(error.stdout.toString())
-  }
-  return output;
+  // try {
+  //   output = execSync(jkindCommand).toString();
+  // } catch (error) {    
+  //       console.log(error.status)
+  //   console.log(error.message)
+  //   console.log(error.stderr.toString())
+  //   console.log(error.stdout.toString())
+  // }
+  // console.log(output);
+  // return output;
+  execSync(jkindCommand, function (err, stdout, stderr) {
+    callback(stdout)
+  })
 
 }
 

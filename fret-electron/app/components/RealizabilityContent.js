@@ -198,7 +198,7 @@ TabContainer.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-function determineResultIcon(name, result, time) {
+function determineResultIcon(result, time) {
   return(
     <Tooltip title={result + 
       (time !== undefined ? ' - '+time : '')}>
@@ -207,12 +207,71 @@ function determineResultIcon(name, result, time) {
         result === 'UNREALIZABLE' ? 
           <HighlightOffIcon style={{fontSize : '20px', verticalAlign : 'bottom'}} color='error'/> :
           result === 'PROCESSING' ?
-            <CircularProgress disableShrink style={{verticalAlign : 'bottom'}} size={15}/> : 
+            <CircularProgress style={{verticalAlign : 'bottom'}} size={15}/> : 
             result === 'UNKNOWN' ? 
             <HelpOutlineIcon style={{fontSize : '20px', verticalAlign : 'bottom', color : '#ff9900'}}/> : <div/>}                            
     </Tooltip>
   );
 }
+
+// class ErrorBoundary extends React.Component {
+//   constructor(props) {
+//     super(props);
+//     this.state = { error: null, errorInfo: null };
+//   }
+  
+//   componentDidCatch(error, errorInfo) {
+//     // Catch errors in any components below and re-render with error message
+//     this.setState({
+//       error: error,
+//       errorInfo: errorInfo
+//     })
+//     // You can also log error messages to an error reporting service here
+//   }
+  
+//   render() {
+//     if (this.state.errorInfo) {
+//       // Error path
+//       return (
+//         <div>
+//           <h2>Something went wrong.</h2>
+//           <details style={{ whiteSpace: 'pre-wrap' }}>
+//             {this.state.error && this.state.error.toString()}
+//             <br />
+//             {this.state.errorInfo.componentStack}
+//           </details>
+//         </div>
+//       );
+//     }
+//     // Normally, just render children
+//     return this.props.children;
+//   }  
+// }
+
+class ResultIcon extends React.Component {
+  render() {
+    const {result, time} = this.props;
+    return (
+    <Tooltip title={result + 
+      (time !== undefined ? ' - '+time : '')}>
+      {result === 'REALIZABLE' ? 
+        <CheckCircleOutlineIcon style={{fontSize : '20px', verticalAlign : 'bottom', color : '#68BC00'}}/> :
+        result === 'UNREALIZABLE' ? 
+          <HighlightOffIcon style={{fontSize : '20px', verticalAlign : 'bottom'}} color='error'/> :
+          result === 'PROCESSING' ?
+            <CircularProgress style={{verticalAlign : 'bottom'}} size={15}/> : 
+            result === 'UNKNOWN' ? 
+            <HelpOutlineIcon style={{fontSize : '20px', verticalAlign : 'bottom', color : '#ff9900'}}/> : <div/>}                            
+    </Tooltip>
+    )
+  }
+}
+
+ResultIcon.propTypes ={  
+  result: PropTypes.string.isRequired,
+  time: PropTypes.string.isRequired
+}
+
 
 class CCRequirementsTable extends React.Component {
   state = {
@@ -538,6 +597,7 @@ ProjectSummary.propTypes = {
   compositionalStatus: PropTypes.object.isRequired,
   connectedComponents: PropTypes.object.isRequired
 };
+
 
 class RealizabilityContent extends React.Component {
   state = {
@@ -903,6 +963,10 @@ class RealizabilityContent extends React.Component {
     return delays;
   }  
 
+  shouldComponentUpdate(nextProps, nextState) {
+  return true;
+  }
+
   checkRealizability = () => {
     
     const {selected, ccSelected, monolithic, compositional, connectedComponents, timeout} = this.state;
@@ -915,19 +979,26 @@ class RealizabilityContent extends React.Component {
       targetComponents = [selected];
     }
 
-    targetComponents.map(tC => {    
-      var checkOutput;
-      var ccResults = [];
+    targetComponents.forEach(tC => {    
+ 
       self.setState(prevState => {
         if(monolithic) {
           prevState.monolithicStatus[tC.component_name] = 'PROCESSING';
         } else {
-          Object.keys(prevState.connectedComponents[tC.component_name]).map(cc => 
+          Object.keys(prevState.connectedComponents[tC.component_name]).forEach(cc => 
             prevState.connectedComponents[tC.component_name][cc].result = 'PROCESSING');
           prevState.compositionalStatus[tC.component_name] = 'PROCESSING';
         }
         return(prevState);
-      })                
+      })
+
+      var checkOutput = '';
+      var ccResults = [];
+      var ccTimes = [];
+      var monolithicResult;
+      var monolithicTIme;      
+      var compositionalResult;
+                
       modeldb.find({
         selector: {
           component_name: tC.component_name,
@@ -938,7 +1009,6 @@ class RealizabilityContent extends React.Component {
       }).then(function (modelResult){
         var contract = self.getContractInfo(modelResult);
         contract.componentName = tC.component_name+'Spec';
-
         db.find({
           selector: {
             project: selectedProject
@@ -949,74 +1019,124 @@ class RealizabilityContent extends React.Component {
           return contract;
         }).then(function (contract){
           if (monolithic) {                
-            var filePath = analysisPath + tC.component_name+'.lus';
+            var filePath = analysisPath + tC.component_name+'.lus';            
             var output = fs.openSync(filePath, 'w');
             var lustreContract = ejsCache_realize.renderRealizeCode().component.complete(contract);
             
             fs.writeSync(output, lustreContract);
             checkOutput = realizability.checkRealizability(filePath, '-fixpoint -timeout ' + timeout);
+            
             var result = checkOutput.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];
             var time = checkOutput.match(new RegExp('(Time = )(.*?)\\n'))[2];
+            monolithicResult = result;
+            monolithicTime = time;
             self.setState(prevState => {
               prevState.monolithicStatus[tC.component_name] = result;
               prevState.time[tC.component_name] = time;
               return(prevState);
             })
-            return result;
+            // return result;
           } else if (compositional) {          
-            let computeCCResults = () => {
-              Object.keys(connectedComponents[tC.component_name]).forEach(cc => {
-                var filePath = analysisPath + tC.component_name+'_'+cc+'.lus';
-                var output = fs.openSync(filePath, 'w');
-                var ccContract = JSON.parse(JSON.stringify(contract))
-                
-                var ccProperties = contract.properties.filter(p => connectedComponents[tC.component_name][cc].properties.has(p.reqid))
+            Object.keys(connectedComponents[tC.component_name]).forEach((cc) => {
+              var filePath = analysisPath + tC.component_name+'_'+cc+'.lus';                
+              var output = fs.openSync(filePath, 'w');
+              // var output = fs.createWriteStream(filePath);
+              var ccContract = JSON.parse(JSON.stringify(contract))
+              
+              var ccProperties = contract.properties.filter(p => connectedComponents[tC.component_name][cc].properties.has(p.reqid))
 
-                ccContract.properties = ccProperties
-                var lustreContract = ejsCache_realize.renderRealizeCode().component.complete(ccContract);
-                fs.writeSync(output, lustreContract);
-                checkOutput = realizability.checkRealizability(filePath, '-fixpoint -timeout '+timeout);
+              ccContract.properties = ccProperties
+              var lustreContract = ejsCache_realize.renderRealizeCode().component.complete(ccContract);
+              fs.writeSync(output, lustreContract);
+              // output.write(lustreContract);
+              // output.end();
+              // output.on('finish', () => {
+              realizability.checkRealizability(filePath, '-fixpoint -timeout '+timeout, function(checkOutput) {   
+              console.log(checkOutput)           
+              if (checkOutput !== undefined) {
                 var ccResult = checkOutput.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];
-                var ccTime = checkOutput.match(new RegExp('(Time = )(.*?)\\n'))[2];
-                connectedComponents[tC.component_name][cc].result = ccResult
-                connectedComponents[tC.component_name][cc].time = ccTime
-                self.setState({
-                  connectedComponents : connectedComponents
-                });
-                ccResults.push(ccResult);
-              });     
-            }
-            computeCCResults();
-            const reducer = (accumulator, currentValue) => accumulator && (currentValue === 'REALIZABLE');
-
-            if (ccResults.reduce(reducer)) {
+              var ccTime = checkOutput.match(new RegExp('(Time = )(.*?)\\n'))[2];
+              connectedComponents[tC.component_name][cc].result = ccResult
+              connectedComponents[tC.component_name][cc].time = ccTime
               self.setState(prevState => {
-                prevState.compositionalStatus[tC.component_name] = 'REALIZABLE';
+                prevState.connectedComponents = connectedComponents
                 return(prevState);
               })
-            } else {
-              if (ccResults.includes('UNKNOWN')) {
-                self.setState(prevState => {
-                  prevState.compositionalStatus[tC.component_name] = 'UNKNOWN';
-                  return(prevState);
-                })            
-              } else if (ccResults.includes('UNREALIZABLE')) {                    
-                self.setState(prevState => {
-                  prevState.compositionalStatus[tC.component_name] = 'UNREALIZABLE';
-                  return(prevState);
-                })
-              } else if (ccResults.includes('INCONSISTENT')) {
-                self.setState(prevState => {
-                  prevState.compositionalStatus[tC.component_name] = 'INCONSISTENT';
-                  return(prevState);
-                })            
-              } else {
-                console.log('Realizability check failed with an unexpected result. Run JKind check over '+filePath+' for more details.')
-              } 
-            }
+              // self.setState({
+              //   connectedComponents : connectedComponents
+              // });
+              ccResults.push(ccResult);
+              // })
+              
+              if (ccResults.length === Object.keys(connectedComponents[tC.component_name]).length) {
+                const reducer = (accumulator, currentValue) => accumulator && (currentValue === 'REALIZABLE');
+    
+                if (ccResults.reduce(reducer)) {
+                  self.setState(prevState => {
+                    prevState.compositionalStatus[tC.component_name] = 'REALIZABLE';
+                    return(prevState);
+                  })
+                } else {
+                  if (ccResults.includes('UNKNOWN')) {
+                    self.setState(prevState => {
+                      prevState.compositionalStatus[tC.component_name] = 'UNKNOWN';
+                      return(prevState);
+                    })            
+                  } else if (ccResults.includes('UNREALIZABLE')) {                    
+                    self.setState(prevState => {
+                      prevState.compositionalStatus[tC.component_name] = 'UNREALIZABLE';
+                      return(prevState);
+                    })
+                  } else if (ccResults.includes('INCONSISTENT')) {
+                    self.setState(prevState => {
+                      prevState.compositionalStatus[tC.component_name] = 'INCONSISTENT';
+                      return(prevState);
+                    })            
+                  } else {
+                    console.log('Realizability check failed with an unexpected result. Run JKind check over '+filePath+' for more details.')
+                  } 
+                }
+              }
+
+              }
+              })
+            });     
+            // self.setState(prevState => {
+            //   prevState.connectedComponents = connectedComponents
+            //   return(prevState);
+            // })
+            // if (ccResults.length !== 0) {
+            // const reducer = (accumulator, currentValue) => accumulator && (currentValue === 'REALIZABLE');
+
+            // if (ccResults.reduce(reducer)) {
+            //   self.setState(prevState => {
+            //     prevState.compositionalStatus[tC.component_name] = 'REALIZABLE';
+            //     return(prevState);
+            //   })
+            // } else {
+            //   if (ccResults.includes('UNKNOWN')) {
+            //     self.setState(prevState => {
+            //       prevState.compositionalStatus[tC.component_name] = 'UNKNOWN';
+            //       return(prevState);
+            //     })            
+            //   } else if (ccResults.includes('UNREALIZABLE')) {                    
+            //     self.setState(prevState => {
+            //       prevState.compositionalStatus[tC.component_name] = 'UNREALIZABLE';
+            //       return(prevState);
+            //     })
+            //   } else if (ccResults.includes('INCONSISTENT')) {
+            //     self.setState(prevState => {
+            //       prevState.compositionalStatus[tC.component_name] = 'INCONSISTENT';
+            //       return(prevState);
+            //     })            
+            //   } else {
+            //     console.log('Realizability check failed with an unexpected result. Run JKind check over '+filePath+' for more details.')
+            //   } 
+            // }
+            // }
           }
         });
-      });
+      })
     })
   }
 
@@ -1029,10 +1149,12 @@ class RealizabilityContent extends React.Component {
           tabs.push(<Tab key={cc} value={cc} classes={{root : classes.tabRoot}} label={
         <div style={{display : 'flex', alignItems : 'center', flexWrap : 'wrap'}}>
         {cc}
-        <Tooltip title={connectedComponents[selected.component_name][cc]['result'] === 'UNCHECKED' ? '' : 
+        {/* <Tooltip title={connectedComponents[selected.component_name][cc]['result'] === 'UNCHECKED' ? '' : 
         connectedComponents[selected.component_name][cc]['result'] + 
-          (connectedComponents[selected.component_name][cc]['time'] !== undefined ? ' - '+connectedComponents[selected.component_name][cc]['time'] : '')}>
-          {connectedComponents[selected.component_name][cc]['result'] === 'REALIZABLE' ? 
+          (connectedComponents[selected.component_name][cc]['time'] !== undefined ? ' - '+connectedComponents[selected.component_name][cc]['time'] : '')}> */}
+          <ResultIcon result={connectedComponents[selected.component_name][cc]['result']}
+          time={connectedComponents[selected.component_name][cc]['time'] !== undefined ? ' - '+connectedComponents[selected.component_name][cc]['time'] : ''}/>
+          {/* {connectedComponents[selected.component_name][cc]['result'] === 'REALIZABLE' ? 
                             <CheckCircleOutlineIcon style={{fontSize : '20px', verticalAlign : 'bottom', color : '#68BC00'}}/> :
                             connectedComponents[selected.component_name][cc]['result'] === 'UNREALIZABLE' ? 
                               <HighlightOffIcon style={{fontSize : '20px', verticalAlign : 'bottom'}} color='error'/> :
@@ -1040,8 +1162,8 @@ class RealizabilityContent extends React.Component {
                                 <CircularProgress disableShrink style={{verticalAlign : 'bottom'}} size={15}/> :
                                 connectedComponents[selected.component_name][cc]['result'] === 'UNKNOWN' ?
                                 <HelpOutlineIcon style={{fontSize : '20px', verticalAlign : 'bottom', color : '#ff9900'}}/> :
-                                  <CheckCircleOutlineIcon style={{fontSize : '20px', verticalAlign : 'bottom', opacity : 0}}/>}
-        </Tooltip>      
+                                  <CheckCircleOutlineIcon style={{fontSize : '20px', verticalAlign : 'bottom', opacity : 0}}/>} */}
+        {/* </Tooltip>       */}
         </div>
       }/>)                 
     }
@@ -1078,7 +1200,7 @@ class RealizabilityContent extends React.Component {
                                   status[n.component_name] === 'UNREALIZABLE' ? 
                                     <HighlightOffIcon style={{fontSize : '20px', verticalAlign : 'bottom'}} color='error'/> :
                                     status[n.component_name] === 'PROCESSING' ?
-                                      <CircularProgress disableShrink style={{verticalAlign : 'bottom'}} size={15}/> : 
+                                      <CircularProgress style={{verticalAlign : 'bottom'}} size={15}/> : 
                                       status[n.component_name] === 'UNKNOWN' ? 
                                       <HelpOutlineIcon style={{fontSize : '20px', verticalAlign : 'bottom', color : '#ff9900'}}/> : <div/>}                            
                               </Tooltip> 
@@ -1213,7 +1335,7 @@ class RealizabilityContent extends React.Component {
                             }}
                             unmountOnExit
                             >
-                              <CircularProgress disableShrink style={{alignItems : 'center'}} size={50}/>
+                              <CircularProgress style={{alignItems : 'center'}} size={50}/>
                             </Fade> : <div/>)
                         }
                         &nbsp;
