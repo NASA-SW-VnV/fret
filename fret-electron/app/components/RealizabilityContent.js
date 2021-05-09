@@ -1024,17 +1024,18 @@ class RealizabilityContent extends React.Component {
             var lustreContract = ejsCache_realize.renderRealizeCode().component.complete(contract);
             
             fs.writeSync(output, lustreContract);
-            checkOutput = realizability.checkRealizability(filePath, '-fixpoint -timeout ' + timeout);
-            
+            // checkOutput = realizability.checkRealizability(filePath, '-fixpoint -timeout ' + timeout);
+            realizability.checkRealizability(filePath, '-fixpoint -timeout '+timeout, function(checkOutput) {
             var result = checkOutput.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];
             var time = checkOutput.match(new RegExp('(Time = )(.*?)\\n'))[2];
-            monolithicResult = result;
-            monolithicTime = time;
+            // monolithicResult = result;
+            // monolithicTime = time;
             self.setState(prevState => {
               prevState.monolithicStatus[tC.component_name] = result;
               prevState.time[tC.component_name] = time;
               return(prevState);
             })
+           })
             // return result;
           } else if (compositional) {          
             Object.keys(connectedComponents[tC.component_name]).forEach((cc) => {
@@ -1052,7 +1053,6 @@ class RealizabilityContent extends React.Component {
               // output.end();
               // output.on('finish', () => {
               realizability.checkRealizability(filePath, '-fixpoint -timeout '+timeout, function(checkOutput) {   
-              console.log(checkOutput)           
               if (checkOutput !== undefined) {
                 var ccResult = checkOutput.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];
               var ccTime = checkOutput.match(new RegExp('(Time = )(.*?)\\n'))[2];

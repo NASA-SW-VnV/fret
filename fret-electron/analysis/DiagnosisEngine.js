@@ -96,18 +96,26 @@ class DiagnosisEngine {
       var lustreContract = ejsCache_realize.renderRealizeCode().component.complete(this.engines[eng]);
       fs.writeSync(output, lustreContract);
       if (minimal) {
-        checkOutput = realizabilityCheck.checkRealizability(filePath, '-json -timeout ' + this.timeout);
+        checkOutput = realizabilityCheck.checkReal(filePath, '-json -timeout ' + this.timeout);
+        // checkOutput = realizabilityCheck.checkRealizability(filePath, '-json -timeout ' + this.timeout);
+        // realizabilityCheck.checkRealizability(filePath, '-json -timeout ' + this.timeout, function(checkOutput) {
+
+
         var result = checkOutput.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];
         localMap.set(propertyList, result);
         if (result === "UNREALIZABLE" && minimal) {
           var fileContent = fs.readFileSync(filePath+'.json', 'utf8');
           var jsonOutput = JSON.parse(fileContent);
           this.counterExamples.set('['+propertyList.toString()+']', jsonOutput);
-        }          
+        }
+        // })          
       } else {
-        checkOutput = realizabilityCheck.checkRealizability(filePath, '-fixpoint -timeout ' + this.timeout);
+        // checkOutput = realizabilityCheck.checkRealizability(filePath, '-fixpoint -timeout ' + this.timeout);
+        // realizabilityCheck.checkRealizability(filePath, '-fixpoint -timeout ' + this.timeout, function(checkOutput) {
+          checkOutput = realizabilityCheck.checkReal(filePath, '-fixpoint -timeout ' + this.timeout);
         var result = checkOutput.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];
-        localMap.set(propertyList, result);          
+        localMap.set(propertyList, result);
+        // })          
       }
     }
     this.engines = [];
