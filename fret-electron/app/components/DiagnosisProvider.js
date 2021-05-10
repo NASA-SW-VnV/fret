@@ -9,6 +9,7 @@ class DiagnosisProvider extends React.Component {
 			color : value.color
 		});
 	}
+
 	render() {
 	        return (
 	            <DiagnosisContext.Provider value={{ state: this.state, setMessage: this.setMessage}}>

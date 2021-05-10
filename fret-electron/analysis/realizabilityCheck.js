@@ -30,7 +30,6 @@ export function checkReal(filePath, options) {
     console.log(error.stderr.toString())
     console.log(error.stdout.toString())
   }
-  console.log(output);
   return output;
 }
 

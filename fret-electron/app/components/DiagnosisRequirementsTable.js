@@ -252,6 +252,8 @@ class DiagnosisRequirementsTable extends React.Component {
   componentDidUpdate(prevProps) {
     if (this.props.connectedComponent !== prevProps.connectedComponent) {
       this.synchStateWithDB()
+      const {setMessage} = this.context;
+      setMessage({reqs : '', color : ''})
       this.setState(
         {
           selected: [],
@@ -311,7 +313,6 @@ class DiagnosisRequirementsTable extends React.Component {
     this.setState({ rowsPerPage: event.target.value });
   };
 
-  isSelected = id => this.state.selected.indexOf(id) !== -1;
 
   render() {
     const { reqs, color } = this.context.state;
@@ -319,6 +320,9 @@ class DiagnosisRequirementsTable extends React.Component {
     const { data, order, orderBy, selected, rowsPerPage, page } = this.state;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
     
+
+    console.log(reqs)
+    console.log(color)
     return (
       <div>
       <Paper>
