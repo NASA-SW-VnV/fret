@@ -225,7 +225,7 @@
     "jest-each": "^23.5.0",
     "jest-junit": "^5.1.0",
     "ltlsim-core": "file:../tools/LTLSIM/ltlsim-core",
-    "mathjs": "^4.0.1",
+    "mathjs": "^7.5.1",
     "node-uuid": "^1.4.8",
     "product-iterable": "^3.0.1",
     "raw-loader": "^0.5.1",
