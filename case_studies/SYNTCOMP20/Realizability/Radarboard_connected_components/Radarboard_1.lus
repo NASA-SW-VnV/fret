@@ -1,0 +1,65 @@
+--Historically
+node H(X:bool) returns (Y:bool);
+let
+    Y = X -> (X and (pre Y));
+tel
+
+
+node Radarboard(p0p0eq0counter0f1dinc0f1denemycount1b1b, p0p0eq0xcoord0f1ddec0f1dsizex1b1b, p0p0eq0xcoord0f1dcartesianx0ramcosineout0bufferdradius1b, p0p0eq0ycoord0f1dcartesiany0ramsineout0bufferdradius1b, p0p0ismiddel0xcoord0ycoord, u0buffercolor0buffercolor, u0buffercolor0f1dgetenemycolor0enemies0counter1b, u0bufferdradius0bufferdradius, u0bufferdradius0f1dgetenemyradius0enemies0counter1b, u0color0color, u0color0tmpcolor, u0color0f1dwhitecolor1b, u0counter0counter, u0counter0f1dincmod0counter0f1dinc0f1dinc0f1denemycount1b1b1b1b, u0outx0outx, u0outx0xcoord, u0outy0outy, u0outy0ycoord, u0ramreqcosine0ramreqcosine, u0ramreqcosine0f1dsub0f1dgetenemyangle0enemies0counter1b0rotation1b, u0ramreqsine0ramreqsine, u0ramreqsine0f1dsub0f1dgetenemyangle0enemies0counter1b0rotation1b, u0tmpcolor0buffercolor, u0tmpcolor0tmpcolor, u0tmpcolor0f1dblackcolor1b, u0xcoord0xcoord, u0xcoord0f1dinccoord0xcoord1b, u0ycoord0ycoord, u0ycoord0f1dinccoord0ycoord1b : bool) returns();
+var
+  ok0 , ok1 , ok2 , ok3 , ok4 , ok5 , ok6 , ok7 , ok8 , ok9 , ok10 , ok11 , ok12 , ok13 , ok14 , ok15 , ok16 , ok17 , ok18 , ok19 , ok20 , ok21 , ok22 , ok23 : bool;
+let
+ok0 = (H( not (((u0buffercolor0buffercolor) and ( not (u0buffercolor0f1dgetenemycolor0enemies0counter1b))) = ((u0buffercolor0f1dgetenemycolor0enemies0counter1b) and ( not (u0buffercolor0buffercolor))))));
+ok1 = (H( not (((u0bufferdradius0bufferdradius) and ( not (u0bufferdradius0f1dgetenemyradius0enemies0counter1b))) = ((u0bufferdradius0f1dgetenemyradius0enemies0counter1b) and ( not (u0bufferdradius0bufferdradius))))));
+ok2 = (H( not (((u0color0tmpcolor) and ( not ((u0color0f1dwhitecolor1b) or (u0color0color)))) = (( not (((u0color0f1dwhitecolor1b) and ( not (u0color0color))) = ((u0color0color) and ( not (u0color0f1dwhitecolor1b))))) and ( not (u0color0tmpcolor))))));
+ok3 = (H( not (((u0counter0counter) and ( not (u0counter0f1dincmod0counter0f1dinc0f1dinc0f1denemycount1b1b1b1b))) = ((u0counter0f1dincmod0counter0f1dinc0f1dinc0f1denemycount1b1b1b1b) and ( not (u0counter0counter))))));
+ok4 = (H( not (((u0outx0outx) and ( not (u0outx0xcoord))) = ((u0outx0xcoord) and ( not (u0outx0outx))))));
+ok5 = (H( not (((u0outy0outy) and ( not (u0outy0ycoord))) = ((u0outy0ycoord) and ( not (u0outy0outy))))));
+ok6 = (H( not (((u0ramreqcosine0ramreqcosine) and ( not (u0ramreqcosine0f1dsub0f1dgetenemyangle0enemies0counter1b0rotation1b))) = ((u0ramreqcosine0f1dsub0f1dgetenemyangle0enemies0counter1b0rotation1b) and ( not (u0ramreqcosine0ramreqcosine))))));
+ok7 = (H( not (((u0ramreqsine0ramreqsine) and ( not (u0ramreqsine0f1dsub0f1dgetenemyangle0enemies0counter1b0rotation1b))) = ((u0ramreqsine0f1dsub0f1dgetenemyangle0enemies0counter1b0rotation1b) and ( not (u0ramreqsine0ramreqsine))))));
+ok8 = (H( not (((u0tmpcolor0tmpcolor) and ( not ((u0tmpcolor0f1dblackcolor1b) or (u0tmpcolor0buffercolor)))) = (( not (((u0tmpcolor0f1dblackcolor1b) and ( not (u0tmpcolor0buffercolor))) = ((u0tmpcolor0buffercolor) and ( not (u0tmpcolor0f1dblackcolor1b))))) and ( not (u0tmpcolor0tmpcolor))))));
+ok9 = (H( not (((u0xcoord0xcoord) and ( not (u0xcoord0f1dinccoord0xcoord1b))) = ((u0xcoord0f1dinccoord0xcoord1b) and ( not (u0xcoord0xcoord))))));
+ok10 = (H( not (((u0ycoord0ycoord) and ( not (u0ycoord0f1dinccoord0ycoord1b))) = ((u0ycoord0f1dinccoord0ycoord1b) and ( not (u0ycoord0ycoord))))));
+ok11 = (H(u0counter0f1dincmod0counter0f1dinc0f1dinc0f1denemycount1b1b1b1b));
+ok12 = (H((p0p0eq0counter0f1dinc0f1denemycount1b1b) = (u0xcoord0f1dinccoord0xcoord1b)));
+ok13 = (H(((p0p0eq0counter0f1dinc0f1denemycount1b1b) and (p0p0eq0xcoord0f1ddec0f1dsizex1b1b)) = (u0ycoord0f1dinccoord0ycoord1b)));
+ok14 = (H(u0bufferdradius0f1dgetenemyradius0enemies0counter1b));
+ok15 = (H(u0buffercolor0f1dgetenemycolor0enemies0counter1b));
+ok16 = (H(u0ramreqsine0f1dsub0f1dgetenemyangle0enemies0counter1b0rotation1b));
+ok17 = (H(u0ramreqcosine0f1dsub0f1dgetenemyangle0enemies0counter1b0rotation1b));
+ok18 = (H(( not (p0p0eq0counter0f1dinc0f1denemycount1b1b)) => (((p0p0eq0xcoord0f1dcartesianx0ramcosineout0bufferdradius1b) and (p0p0eq0ycoord0f1dcartesiany0ramsineout0bufferdradius1b)) = (u0tmpcolor0buffercolor))));
+ok19 = (H((p0p0eq0counter0f1dinc0f1denemycount1b1b) = (u0outx0xcoord)));
+ok20 = (H((p0p0eq0counter0f1dinc0f1denemycount1b1b) = (u0outy0ycoord)));
+ok21 = (H((p0p0eq0counter0f1dinc0f1denemycount1b1b) = (u0tmpcolor0f1dblackcolor1b)));
+ok22 = (H(((p0p0eq0counter0f1dinc0f1denemycount1b1b) and (p0p0ismiddel0xcoord0ycoord)) = (u0color0f1dwhitecolor1b)));
+ok23 = (H(((p0p0eq0counter0f1dinc0f1denemycount1b1b) and ( not (p0p0ismiddel0xcoord0ycoord))) = (u0color0tmpcolor)));
+
+--PROPERTY ok0;
+--%PROPERTY ok1;
+--PROPERTY ok2;
+--PROPERTY ok3;
+--PROPERTY ok4;
+--PROPERTY ok5;
+--PROPERTY ok6;
+--PROPERTY ok7;
+--PROPERTY ok8;
+--PROPERTY ok9;
+--PROPERTY ok10;
+--PROPERTY ok11;
+--PROPERTY ok12;
+--PROPERTY ok13;
+--%PROPERTY ok14;
+--PROPERTY ok15;
+--PROPERTY ok16;
+--PROPERTY ok17;
+--PROPERTY ok18;
+--PROPERTY ok19;
+--PROPERTY ok20;
+--PROPERTY ok21;
+--PROPERTY ok22;
+--PROPERTY ok23;
+
+
+
+  --%REALIZABLE p0p0eq0counter0f1dinc0f1denemycount1b1b, p0p0eq0xcoord0f1ddec0f1dsizex1b1b, p0p0eq0xcoord0f1dcartesianx0ramcosineout0bufferdradius1b, p0p0eq0ycoord0f1dcartesiany0ramsineout0bufferdradius1b, p0p0ismiddel0xcoord0ycoord;
+tel

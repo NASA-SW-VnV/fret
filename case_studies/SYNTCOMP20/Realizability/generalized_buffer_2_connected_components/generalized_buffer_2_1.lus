@@ -1,0 +1,43 @@
+--n = 2
+
+node O(i: bool) returns (o: bool);
+let
+  o = i -> i or (pre(o)); 
+tel; 
+
+node H(i : bool) returns (o: bool);
+let
+  o = i -> i and pre(o);
+tel;
+	 
+node W(i: bool; j: bool) returns (o: bool);
+let
+  o = H(i) or O(j);
+tel;
+
+node R(i, j : bool) returns (o : bool);
+let
+  o = i and W(i,j);
+tel;
+
+
+node generalized_buffer_2(s2b_req_0, s2b_req_1, r2b_ack_0, r2b_ack_1, b2s_ack_0, b2s_ack_1, b2r_req_0, b2r_req_1 : bool) returns();
+var
+ ok0, ok1, ok2, ok3, ok4 : bool;
+let
+  ok0 = ((((not (s2b_req_0)) and (H(pre((s2b_req_0) and (not (b2s_ack_0))) => ((s2b_req_0))))) and (H(pre(b2s_ack_0) => ((not (s2b_req_0)))))) => ((((H((pre(not (s2b_req_0)) and ((s2b_req_0))) => (((not (b2s_ack_0)) and (((b2s_ack_0))))))) and (H((pre(not (b2s_ack_0)) and ((not (s2b_req_0)))) => ((not (b2s_ack_0)))))) and (H((not (b2s_ack_0)) or (not (b2s_ack_1))))) and (not (b2s_ack_0))));
+
+  ok1 = ((((not (s2b_req_1)) and (H(pre((s2b_req_1) and (not (b2s_ack_1))) => ((s2b_req_1))))) and (H(pre(b2s_ack_1) => ((not (s2b_req_1)))))) => ((((H((pre(not (s2b_req_1)) and ((s2b_req_1))) => (((not (b2s_ack_1)) and (((b2s_ack_1))))))) and (H((pre(not (b2s_ack_1)) and ((not (s2b_req_1)))) => ((not (b2s_ack_1)))))) and (H((not (b2s_ack_0)) or (not (b2s_ack_1))))) and (not (b2s_ack_0))));
+
+  ok2 = ((((not (r2b_ack_0)) and (H(pre(not (b2r_req_0)) => ((not (r2b_ack_0)))))) and (H(pre(b2r_req_0) => (((r2b_ack_0)))))) => ((((H(pre(r2b_ack_0) => ((not (b2r_req_0))))) and (not (b2r_req_0))) and (H(pre((b2r_req_0) and (not (r2b_ack_0))) => ((b2r_req_0))))) and (H((pre(b2r_req_0) and ((not (b2r_req_0)))) => (W((not (b2r_req_0)), ((not (b2r_req_0)) and (b2r_req_1))))))));
+  ok3 = ((((not (r2b_ack_1)) and (H(pre(not (b2r_req_1)) => ((not (r2b_ack_1)))))) and (H(pre(b2r_req_1) => (((r2b_ack_1)))))) => ((((H(pre(r2b_ack_1) => ((not (b2r_req_1))))) and (not (b2r_req_1))) and (H(pre((b2r_req_1) and (not (r2b_ack_1))) => ((b2r_req_1))))) and (H((pre(b2r_req_1) and ((not (b2r_req_1)))) => (W((not (b2r_req_1)), ((not (b2r_req_1)) and (b2r_req_0))))))));
+
+  ok4 = (((((not (r2b_ack_0)) and (H(pre(not (b2r_req_0)) => ((not (r2b_ack_0)))))) and (H(pre(b2r_req_0) => (((r2b_ack_0)))))) or (((not (r2b_ack_1)) and (H(pre(not (b2r_req_1)) => ((not (r2b_ack_1)))))) and (H(pre(b2r_req_1) => (((r2b_ack_1))))))) => ((H(pre((s2b_req_0) or (s2b_req_1)) => ((((b2r_req_0) or (b2r_req_1)))))) and (H((not (b2r_req_0)) or (not (b2r_req_1))))));
+
+  --%PROPERTY ok0;
+  --%PROPERTY ok1;
+  --PROPERTY ok2;
+  --PROPERTY ok3;
+  --PROPERTY ok4;
+  --%REALIZABLE s2b_req_0, s2b_req_1, r2b_ack_0, r2b_ack_1;
+tel;

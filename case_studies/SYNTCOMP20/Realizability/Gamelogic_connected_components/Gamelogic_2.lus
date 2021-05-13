@@ -1,0 +1,104 @@
+node O(i: bool) returns (o: bool);
+let
+  o = i -> i or (pre(o)); 
+tel; 
+
+node H(i : bool) returns (o: bool);
+let
+  o = i -> i and pre(o);
+tel;
+	 
+node W(i: bool; j: bool) returns (o: bool);
+let
+  o = H(i) or O(j);
+tel;
+
+node Gamelogic(
+	p0p0gtz0shot2counter, p0p0isgameover0f1dgetenemyradius0enemies0counter1b,
+	p0p0on0gamestart, p0p0on0shot,
+	p0p0hitenemy0f1dgetenemyangle0enemies0counter1b0f1dgetenemyradius0enemies0counter1b0rotation,
+	u0counter0counter, u0counter0f1dincmod0counter0f1denemycount1b1b,
+	u0gameover0gameover, u0gameover0f1dbot1b, u0gameover0f1dtop1b,
+	u0movementclock0movementclock, u0movementclock0f1dincmoveclock0movementclock0score1b,
+	u0moveticks0moveticks, u0moveticks0f1dticknomove1b, u0moveticks0f1dtickmove0movementclock1b,
+	u0newangle0newangle, u0newangle0f1dnewrand0newangle1b, u0resets0resets,
+	u0resets0f1dtriggerresetnone1b, u0resets0f1dtriggerresetall0newangle1b,
+	u0resets0f1dtriggerreset0counter0newangle1b, u0score0score, u0score0f1dzero2score1b,
+	u0score0f1dinc0score1b, u0scorecolor0scorecolor, u0scorecolor0f1dfastestenemycolor0enemies1b,
+	u0shot2counter0shot2counter, u0shot2counter0f1denemycount1b, u0shot2counter0f1dzero1b,
+	u0shot2counter0f1ddec0shot2counter1b : bool) returns();
+var
+  ok0, ok1, ok2, ok3, ok4,
+  ok5, ok6, ok7, ok8, ok9,
+  ok10, ok11, ok12, ok13, ok14,
+  ok15, ok16, ok17, ok18, ok19,
+  ok20, ok21, ok22, ok23, ok24,
+  ok25, ok26, ok27, ok28, ok29 : bool;
+let
+
+  ok0 = H(u0resets0f1dtriggerresetall0newangle1b);
+  ok1 = W(u0gameover0f1dbot1b, p0p0isgameover0f1dgetenemyradius0enemies0counter1b);
+  ok2 = H(true -> ((p0p0on0gamestart) = (u0resets0f1dtriggerresetall0newangle1b)));
+  ok3 = H(true -> (((not (p0p0on0gamestart)) and (u0gameover0f1dbot1b)) => ((((p0p0gtz0shot2counter) = (u0shot2counter0f1ddec0shot2counter1b)) and (((p0p0gtz0shot2counter) and (p0p0hitenemy0f1dgetenemyangle0enemies0counter1b0f1dgetenemyradius0enemies0counter1b0rotation)) = (u0score0f1dinc0score1b))) and (((p0p0gtz0shot2counter) and (p0p0hitenemy0f1dgetenemyangle0enemies0counter1b0f1dgetenemyradius0enemies0counter1b0rotation)) = (u0resets0f1dtriggerreset0counter0newangle1b)))));
+  ok4 = H(true -> ((u0gameover0f1dtop1b) => (not (u0resets0f1dtriggerresetall0newangle1b))));
+  ok5 = H(((u0counter0counter) and (not (u0counter0f1dincmod0counter0f1denemycount1b1b))) = ((not (u0counter0f1dincmod0counter0f1denemycount1b1b)) or (u0counter0counter)));
+  ok6 = H((((u0gameover0f1dbot1b) and (not (u0gameover0f1dtop1b))) and (not (u0gameover0gameover))) = ((((u0gameover0f1dtop1b) and (not (u0gameover0gameover))) = ((u0gameover0gameover) and (not (u0gameover0f1dtop1b)))) or (u0gameover0f1dbot1b)));
+  ok7 = H(((u0movementclock0movementclock) and (not (u0movementclock0f1dincmoveclock0movementclock0score1b))) = ((not (u0movementclock0f1dincmoveclock0movementclock0score1b)) or (u0movementclock0movementclock)));
+  ok8 = H((((u0moveticks0f1dticknomove1b) and (not (u0moveticks0f1dtickmove0movementclock1b))) and (not (u0moveticks0moveticks))) = ((((u0moveticks0f1dtickmove0movementclock1b) and (not (u0moveticks0moveticks))) = ((u0moveticks0moveticks) and (not (u0moveticks0f1dtickmove0movementclock1b)))) or (u0moveticks0f1dticknomove1b)));
+  ok9 = H(((u0newangle0newangle) and (not (u0newangle0f1dnewrand0newangle1b))) = ((not (u0newangle0f1dnewrand0newangle1b)) or (u0newangle0newangle)));
+  ok10 = H((((((u0resets0f1dtriggerresetall0newangle1b) and (not (u0resets0resets))) = ((not (u0resets0resets)) or (u0resets0f1dtriggerresetall0newangle1b))) and (not (u0resets0f1dtriggerreset0counter0newangle1b))) and (not (u0resets0f1dtriggerresetnone1b))) = (((((u0resets0f1dtriggerreset0counter0newangle1b) and (not (u0resets0f1dtriggerresetnone1b))) = ((u0resets0f1dtriggerresetnone1b) and (not (u0resets0f1dtriggerreset0counter0newangle1b)))) or (u0resets0f1dtriggerresetall0newangle1b)) or (u0resets0resets)));
+  ok11 = H((((u0score0f1dzero2score1b) and (not (u0score0f1dinc0score1b))) and (not (u0score0score))) = ((((u0score0f1dinc0score1b) and (not (u0score0score))) = ((u0score0score) and (not (u0score0f1dinc0score1b)))) or (u0score0f1dzero2score1b)));
+  ok12 = H(((u0scorecolor0scorecolor) and (not (u0scorecolor0f1dfastestenemycolor0enemies1b))) = ((not (u0scorecolor0f1dfastestenemycolor0enemies1b)) or (u0scorecolor0scorecolor)));
+  ok13 = H((((((u0shot2counter0f1dzero1b) and (not (u0shot2counter0shot2counter))) = ((not (u0shot2counter0shot2counter)) or (u0shot2counter0f1dzero1b))) and (not (u0shot2counter0f1ddec0shot2counter1b))) and (not (u0shot2counter0f1denemycount1b))) = (((((u0shot2counter0f1ddec0shot2counter1b) and (not (u0shot2counter0f1denemycount1b))) = ((u0shot2counter0f1denemycount1b) and (not (u0shot2counter0f1ddec0shot2counter1b)))) or (u0shot2counter0f1dzero1b)) or (u0shot2counter0shot2counter)));
+  ok14 = H((u0gameover0f1dbot1b) or (u0gameover0f1dtop1b));
+  ok15 = H((p0p0on0gamestart) => W((u0gameover0f1dbot1b), p0p0isgameover0f1dgetenemyradius0enemies0counter1b));
+  ok16 = H((p0p0isgameover0f1dgetenemyradius0enemies0counter1b) => W((u0gameover0f1dtop1b), (p0p0on0gamestart)));
+  ok17 = H((p0p0on0gamestart) = (u0score0f1dzero2score1b));
+  ok18 = H((((u0gameover0f1dbot1b) and (p0p0on0shot)) and (not (p0p0gtz0shot2counter))) = (u0shot2counter0f1denemycount1b));
+  ok19 = H(u0counter0f1dincmod0counter0f1denemycount1b1b);
+  ok20 = H((u0gameover0f1dbot1b) => (u0movementclock0f1dincmoveclock0movementclock0score1b));
+  ok21 = H((u0gameover0f1dbot1b) => (u0moveticks0f1dtickmove0movementclock1b));
+  ok22 = H(u0newangle0f1dnewrand0newangle1b);
+  ok23 = H((u0gameover0f1dtop1b) => (u0shot2counter0f1dzero1b));
+  ok24 = H((u0gameover0f1dtop1b) => (not (u0moveticks0f1dtickmove0movementclock1b)));
+  ok25 = H(((u0gameover0f1dtop1b) and (not (p0p0on0gamestart))) => (u0score0score));
+  ok26 = H((u0gameover0f1dtop1b) => (not (u0resets0f1dtriggerreset0counter0newangle1b)));
+  ok27 = H(((u0resets0f1dtriggerreset0counter0newangle1b) or (u0resets0f1dtriggerresetall0newangle1b))or (u0resets0f1dtriggerresetnone1b));
+  ok28 = H((u0moveticks0f1dtickmove0movementclock1b) or (u0moveticks0f1dticknomove1b));
+  ok29 = H(u0scorecolor0f1dfastestenemycolor0enemies1b);
+
+  --PROPERTY ok0;
+  --PROPERTY ok1;
+  --PROPERTY ok2;
+  --PROPERTY ok3;
+  --PROPERTY ok4;
+  --PROPERTY ok5;
+  --PROPERTY ok6;
+  --PROPERTY ok7;
+  --PROPERTY ok8;
+  --%PROPERTY ok9;
+  --PROPERTY ok10;
+  --PROPERTY ok11;
+  --PROPERTY ok12;
+  --PROPERTY ok13;
+  --PROPERTY ok14;
+  --PROPERTY ok15;
+  --PROPERTY ok16;
+  --PROPERTY ok17;
+  --PROPERTY ok18;
+  --PROPERTY ok19;
+  --PROPERTY ok20;
+  --PROPERTY ok21;
+  --%PROPERTY ok22;
+  --PROPERTY ok23;
+  --PROPERTY ok24;
+  --PROPERTY ok25;
+  --PROPERTY ok26;
+  --PROPERTY ok27;
+  --PROPERTY ok28;
+  --PROPERTY ok29;
+
+  --%REALIZABLE p0p0gtz0shot2counter, p0p0isgameover0f1dgetenemyradius0enemies0counter1b,
+	p0p0on0gamestart, p0p0on0shot,
+	p0p0hitenemy0f1dgetenemyangle0enemies0counter1b0f1dgetenemyradius0enemies0counter1b0rotation;
+tel;

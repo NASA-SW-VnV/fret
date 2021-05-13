@@ -1,0 +1,56 @@
+--Historically
+node H(X:bool) returns (Y:bool);
+let
+    Y = X -> (X and (pre Y));
+tel
+
+node Cockpitboard(p0p0eqz0counter, p0p0eq0xcoord0f1ddec2size2x1b, p0p0eq0xcoord0f1dhairlinex1b, p0p0eq0ycoord0f1dhairliney1b, p0p0lt0f1dgetenemyradius0enemies0f1ddec0counter1b1b0tmpdist, p0p0hitcoord0xcoord0ycoord0f1dgetenemyradius0enemies0f1ddec0counter1b1b0f1dgetenemyangle0enemies0f1ddec0counter1b1b0rotation, u0bxcoord0bxcoord, u0bxcoord0xcoord, u0bycoord0bycoord, u0bycoord0ycoord, u0color0color, u0color0tmpcolor, u0color0f1dwhitecolor1b, u0counter0counter, u0counter0f1dincmod0counter0f1dinc0f1denemycount1b1b1b, u0tmpcolor0tmpcolor, u0tmpcolor0f1dblackcolor1b, u0tmpcolor0f1dgetenemycolor0enemies0f1ddec0counter1b1b, u0tmpdist0tmpdist, u0tmpdist0f1dstartradius1b, u0tmpdist0f1dgetenemyradius0enemies0f1ddec0counter1b1b, u0xcoord0xcoord, u0xcoord0f1dinc2coord0xcoord1b, u0ycoord0ycoord, u0ycoord0f1dinc2coord0ycoord1b : bool) returns();
+var
+ok0 , ok1 , ok2 , ok3 , ok4 , ok5 , ok6 , ok7 , ok8 , ok9 , ok10 , ok11 , ok12 , ok13 , ok14 , ok15 , ok16 , ok17 , ok18 , ok19 : bool;
+
+let
+
+ok0 = (H( not (((u0bxcoord0bxcoord) and ( not (u0bxcoord0xcoord))) = ((u0bxcoord0xcoord) and ( not (u0bxcoord0bxcoord))))));
+ok1 = (H( not (((u0bycoord0bycoord) and ( not (u0bycoord0ycoord))) = ((u0bycoord0ycoord) and ( not (u0bycoord0bycoord))))));
+ok2 = (H( not (((u0color0tmpcolor) and ( not ((u0color0f1dwhitecolor1b) or (u0color0color)))) = (( not (((u0color0f1dwhitecolor1b) and ( not (u0color0color))) = ((u0color0color) and ( not (u0color0f1dwhitecolor1b))))) and ( not (u0color0tmpcolor))))));
+ok3 = (H( not (((u0counter0counter) and ( not (u0counter0f1dincmod0counter0f1dinc0f1denemycount1b1b1b))) = ((u0counter0f1dincmod0counter0f1dinc0f1denemycount1b1b1b) and ( not (u0counter0counter))))));
+ok4 = (H( not (((u0tmpcolor0f1dblackcolor1b) and ( not ((u0tmpcolor0f1dgetenemycolor0enemies0f1ddec0counter1b1b) or (u0tmpcolor0tmpcolor)))) = (( not (((u0tmpcolor0f1dgetenemycolor0enemies0f1ddec0counter1b1b) and ( not (u0tmpcolor0tmpcolor))) = ((u0tmpcolor0tmpcolor) and ( not (u0tmpcolor0f1dgetenemycolor0enemies0f1ddec0counter1b1b))))) and ( not (u0tmpcolor0f1dblackcolor1b))))));
+ok5 = (H( not (((u0tmpdist0f1dstartradius1b) and ( not ((u0tmpdist0f1dgetenemyradius0enemies0f1ddec0counter1b1b) or (u0tmpdist0tmpdist)))) = (( not (((u0tmpdist0f1dgetenemyradius0enemies0f1ddec0counter1b1b) and ( not (u0tmpdist0tmpdist))) = ((u0tmpdist0tmpdist) and ( not (u0tmpdist0f1dgetenemyradius0enemies0f1ddec0counter1b1b))))) and ( not (u0tmpdist0f1dstartradius1b))))));
+ok6 = (H( not (((u0xcoord0xcoord) and ( not (u0xcoord0f1dinc2coord0xcoord1b))) = ((u0xcoord0f1dinc2coord0xcoord1b) and ( not (u0xcoord0xcoord))))));
+ok7 = (H( not (((u0ycoord0ycoord) and ( not (u0ycoord0f1dinc2coord0ycoord1b))) = ((u0ycoord0f1dinc2coord0ycoord1b) and ( not (u0ycoord0ycoord))))));
+ok8 = (H(u0counter0f1dincmod0counter0f1dinc0f1denemycount1b1b1b));
+ok9 = (H((p0p0eqz0counter) = (u0xcoord0f1dinc2coord0xcoord1b)));
+ok10 = (H(((p0p0eq0xcoord0f1ddec2size2x1b) and (p0p0eqz0counter)) = (u0ycoord0f1dinc2coord0ycoord1b)));
+ok11 = (H(((( not (p0p0eqz0counter)) and (p0p0lt0f1dgetenemyradius0enemies0f1ddec0counter1b1b0tmpdist)) and (p0p0hitcoord0xcoord0ycoord0f1dgetenemyradius0enemies0f1ddec0counter1b1b0f1dgetenemyangle0enemies0f1ddec0counter1b1b0rotation)) = (u0tmpcolor0f1dgetenemycolor0enemies0f1ddec0counter1b1b)));
+ok12 = (H(((( not (p0p0eqz0counter)) and (p0p0lt0f1dgetenemyradius0enemies0f1ddec0counter1b1b0tmpdist)) and (p0p0hitcoord0xcoord0ycoord0f1dgetenemyradius0enemies0f1ddec0counter1b1b0f1dgetenemyangle0enemies0f1ddec0counter1b1b0rotation)) = (u0tmpdist0f1dgetenemyradius0enemies0f1ddec0counter1b1b)));
+ok13 = (H((p0p0eqz0counter) = ((u0color0tmpcolor) or (u0color0f1dwhitecolor1b))));
+ok14 = (H((p0p0eqz0counter) = (u0tmpcolor0f1dblackcolor1b)));
+ok15 = (H((p0p0eqz0counter) = (u0tmpdist0f1dstartradius1b)));
+ok16 = (H((p0p0eqz0counter) = (u0bxcoord0xcoord)));
+ok17 = (H((p0p0eqz0counter) = (u0bycoord0ycoord)));
+ok18 = (H((u0color0f1dwhitecolor1b) => ((p0p0eq0xcoord0f1dhairlinex1b) and (p0p0eq0ycoord0f1dhairliney1b))));
+ok19 = (H((u0color0tmpcolor) => ( not ((p0p0eq0xcoord0f1dhairlinex1b) and (p0p0eq0ycoord0f1dhairliney1b)))));
+
+
+--%PROPERTY ok0;
+--PROPERTY ok1;
+--PROPERTY ok2;
+--PROPERTY ok3;
+--PROPERTY ok4;
+--PROPERTY ok5;
+--PROPERTY ok6;
+--PROPERTY ok7;
+--PROPERTY ok8;
+--PROPERTY ok9;
+--PROPERTY ok10;
+--PROPERTY ok11;
+--PROPERTY ok12;
+--PROPERTY ok13;
+--PROPERTY ok14;
+--PROPERTY ok15;
+--%PROPERTY ok16;
+--PROPERTY ok17;
+--PROPERTY ok18;
+--PROPERTY ok19;
+--%REALIZABLE p0p0eqz0counter, p0p0eq0xcoord0f1ddec2size2x1b, p0p0eq0xcoord0f1dhairlinex1b, p0p0eq0ycoord0f1dhairliney1b, p0p0lt0f1dgetenemyradius0enemies0f1ddec0counter1b1b0tmpdist, p0p0hitcoord0xcoord0ycoord0f1dgetenemyradius0enemies0f1ddec0counter1b1b0f1dgetenemyangle0enemies0f1ddec0counter1b1b0rotation;
+tel;

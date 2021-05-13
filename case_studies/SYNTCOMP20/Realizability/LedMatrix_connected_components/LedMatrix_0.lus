@@ -1,0 +1,135 @@
+node O(i: bool) returns (o: bool);
+let
+  o = i -> i or (pre(o)); 
+tel; 
+
+node H(i : bool) returns (o: bool);
+let
+  o = i -> i and pre(o);
+tel;
+	 
+node W(i: bool; j: bool) returns (o: bool);
+let
+  o = H(i) or O(j);
+tel;
+
+node R(i, j : bool) returns (o : bool);
+let
+  o = i and W(i,j);
+tel;
+
+node LedMatrix(
+	p0p0eqz0waitcounter,
+    p0p0on0write,
+    p0p0eq0coordx0f1ddec0f1dsizex1b1b,
+    u0buffer2pin0buffer2pin,
+    u0buffer2pin0f1dhigh1b,
+    u0buffer2pin0f1dlow1b,
+    u0color0color,
+    u0color0ramout,
+    u0color240color24,
+    u0color240ramout,
+    u0color250color25,
+    u0color250ramout,
+    u0coordx0coordx,
+    u0coordx0f1dinc2x0coordx1b,
+    u0coordy0coordy,
+    u0coordy0f1dinc2y0coordy1b,
+    u0driver2pin0driver2pin,
+    u0driver2pin0f1dlow1b,
+    u0extclock0extclock,
+    u0extclock0f1dhigh1b,
+    u0extclock0f1dlow1b,
+    u0rampos0rampos,
+    u0rampos0f1drampos240coordx0f1dinc2y0coordy1b1b,
+    u0rampos0f1drampos250coordx0f1dinc2y0coordy1b1b,
+    u0rampos0f1drampos2r0xcoordinate0ycoordinate1b,
+    u0ramwrite0ramwrite,
+    u0ramwrite0f1dwriteramnone1b,
+    u0ramwrite0f1dwriteram0writecolor0xcoordinate0ycoordinate1b,
+    u0waitcounter0waitcounter,
+    u0waitcounter0f1dinc0waitcounter1b : bool) returns();
+var
+  ok0, ok1, ok2, ok3, ok4, ok5, ok6, ok7, ok8, ok9, ok10, ok11,
+  ok12, ok13, ok14, ok15, ok16, ok17, ok18, ok19, ok20, ok21,
+  ok22, ok23, ok24, ok25, ok26, ok27, ok28, ok29, ok30, ok31,
+  ok32, ok33, ok34, ok35, ok36 : bool;
+let
+  ok0 = H(not (((u0buffer2pin0f1dhigh1b) and (not ((u0buffer2pin0f1dlow1b) or (u0buffer2pin0buffer2pin)))) = ((not (((u0buffer2pin0f1dlow1b) and (not (u0buffer2pin0buffer2pin))) = ((u0buffer2pin0buffer2pin) and (not (u0buffer2pin0f1dlow1b))))) and (not (u0buffer2pin0f1dhigh1b)))));
+  ok1 = H(not (((u0color0color) and (not (u0color0ramout))) = ((u0color0ramout) and (not (u0color0color)))));
+  ok2 = H(not (((u0color240color24) and (not (u0color240ramout))) = ((u0color240ramout) and (not (u0color240color24)))));
+  ok3 = H(not (((u0color250color25) and (not (u0color250ramout))) = ((u0color250ramout) and (not (u0color250color25)))));
+  ok4 = H(not (((u0coordx0coordx) and (not (u0coordx0f1dinc2x0coordx1b))) = ((u0coordx0f1dinc2x0coordx1b) and (not (u0coordx0coordx)))));
+  ok5 = H(not (((u0coordy0coordy) and (not (u0coordy0f1dinc2y0coordy1b))) = ((u0coordy0f1dinc2y0coordy1b) and (not (u0coordy0coordy)))));
+  ok6 = H(not (((u0driver2pin0driver2pin) and (not (u0driver2pin0f1dlow1b))) = ((u0driver2pin0f1dlow1b) and (not (u0driver2pin0driver2pin)))));
+  ok7 = H(not (((u0extclock0f1dhigh1b) and (not ((u0extclock0f1dlow1b) or (u0extclock0extclock)))) = ((not (((u0extclock0f1dlow1b) and (not (u0extclock0extclock))) = ((u0extclock0extclock) and (not (u0extclock0f1dlow1b))))) and (not (u0extclock0f1dhigh1b)))));
+  ok8 = H(not (((not (((u0rampos0f1drampos250coordx0f1dinc2y0coordy1b1b) and (not (u0rampos0rampos))) = ((u0rampos0rampos) and (not (u0rampos0f1drampos250coordx0f1dinc2y0coordy1b1b))))) and (not ((u0rampos0f1drampos2r0xcoordinate0ycoordinate1b) or (u0rampos0f1drampos240coordx0f1dinc2y0coordy1b1b)))) = ((not (((u0rampos0f1drampos2r0xcoordinate0ycoordinate1b) and (not (u0rampos0f1drampos240coordx0f1dinc2y0coordy1b1b))) = ((u0rampos0f1drampos240coordx0f1dinc2y0coordy1b1b) and (not (u0rampos0f1drampos2r0xcoordinate0ycoordinate1b))))) and (not ((u0rampos0f1drampos250coordx0f1dinc2y0coordy1b1b) or (u0rampos0rampos))))));
+  ok9 = H(not (((u0ramwrite0f1dwriteramnone1b) and (not ((u0ramwrite0f1dwriteram0writecolor0xcoordinate0ycoordinate1b) or (u0ramwrite0ramwrite)))) = ((not (((u0ramwrite0f1dwriteram0writecolor0xcoordinate0ycoordinate1b) and (not (u0ramwrite0ramwrite))) = ((u0ramwrite0ramwrite) and (not (u0ramwrite0f1dwriteram0writecolor0xcoordinate0ycoordinate1b))))) and (not (u0ramwrite0f1dwriteramnone1b)))));
+  ok10 = H(not (((u0waitcounter0waitcounter) and (not (u0waitcounter0f1dinc0waitcounter1b))) = ((u0waitcounter0f1dinc0waitcounter1b) and (not (u0waitcounter0waitcounter)))));
+  ok11 = (H((not (not (p0p0eqz0waitcounter))))) => (not (u0color240ramout));
+  ok12 = (H((not (not (p0p0eqz0waitcounter))))) => (not (u0color250ramout));
+  ok13 = (H((not (not (p0p0eqz0waitcounter))))) => (not (u0color0ramout));
+  ok14 = (H((not (not (p0p0eqz0waitcounter))))) => (u0extclock0f1dlow1b);
+  ok15 = (H((not (not (p0p0eqz0waitcounter))))) => (H(((u0color240ramout)) => (u0rampos0f1drampos240coordx0f1dinc2y0coordy1b1b)));
+  ok16 = (H((not (not (p0p0eqz0waitcounter))))) => (H(((u0color250ramout)) => (u0rampos0f1drampos250coordx0f1dinc2y0coordy1b1b)));
+  ok17 = (H((not (not (p0p0eqz0waitcounter))))) => (H(((u0color0ramout)) => (u0rampos0f1drampos2r0xcoordinate0ycoordinate1b)));
+  ok18 = (H((not (not (p0p0eqz0waitcounter))))) => (H((u0extclock0f1dlow1b)));
+  ok19 = (H((not (not (p0p0eqz0waitcounter))))) => (H((u0extclock0f1dhigh1b)));
+  ok20 = (H((not (not (p0p0eqz0waitcounter))))) => (H((u0color0ramout)));
+  ok21 = (H((not (not (p0p0eqz0waitcounter))))) => (H((u0coordx0f1dinc2x0coordx1b)));
+  ok22 = (H((not (not (p0p0eqz0waitcounter))))) => (H(W(((u0extclock0f1dhigh1b) => ((((u0color240color24) and (u0color250color25)) and (u0coordx0coordx)) and (u0coordy0coordy))), (u0extclock0f1dlow1b))));
+  ok23 = (H((not (not (p0p0eqz0waitcounter))))) => (H((u0extclock0f1dlow1b) => R((u0color240ramout), (not (u0extclock0f1dhigh1b)))));
+  ok24 = (H((not (not (p0p0eqz0waitcounter))))) => (H((u0extclock0f1dlow1b) => R((u0color250ramout), (not (u0extclock0f1dhigh1b)))));
+  ok25 = (H((not (not (p0p0eqz0waitcounter))))) => (H((u0extclock0f1dlow1b) => R((u0coordx0f1dinc2x0coordx1b), (not (((((u0color240ramout) or (u0color250ramout)) or (u0extclock0f1dhigh1b)) or (u0rampos0f1drampos240coordx0f1dinc2y0coordy1b1b)) or (u0rampos0f1drampos250coordx0f1dinc2y0coordy1b1b))))));
+  ok26 = (H((not (not (p0p0eqz0waitcounter))))) => (H((u0coordx0f1dinc2x0coordx1b) => (R((u0extclock0f1dhigh1b), (not (u0coordx0f1dinc2x0coordx1b))))));
+  ok27 = (H((not (not (p0p0eqz0waitcounter))))) => (H(((u0coordx0f1dinc2x0coordx1b) and (p0p0eq0coordx0f1ddec0f1dsizex1b1b)) = (u0coordy0f1dinc2y0coordy1b)));
+  ok28 = (H((not (not (p0p0eqz0waitcounter))))) => (H((p0p0on0write) => (u0ramwrite0f1dwriteram0writecolor0xcoordinate0ycoordinate1b)));
+  ok29 = (H((not (not (p0p0eqz0waitcounter))))) => (H((not (p0p0on0write)) => (u0ramwrite0f1dwriteramnone1b)));
+  ok30 = (H((not (not (p0p0eqz0waitcounter))))) => (H((u0buffer2pin0f1dhigh1b) = (((u0coordx0f1dinc2x0coordx1b)) and (p0p0eq0coordx0f1ddec0f1dsizex1b1b))));
+  ok31 = (H((not (not (p0p0eqz0waitcounter))))) => (H((u0buffer2pin0f1dhigh1b) or (u0buffer2pin0f1dlow1b)));
+  ok32 = (H((not (not (p0p0eqz0waitcounter))))) => (H(u0driver2pin0f1dlow1b));
+  ok33 = (H((not (not (p0p0eqz0waitcounter))))) => (H((u0extclock0f1dlow1b) => (W((not (u0coordx0f1dinc2x0coordx1b)), (not (not (p0p0eqz0waitcounter)))))));
+  ok34 = (H((not (not (p0p0eqz0waitcounter))))) => (H((u0extclock0f1dlow1b) => (u0waitcounter0f1dinc0waitcounter1b) and (not (u0coordx0f1dinc2x0coordx1b))));
+  ok35 = (H((not (not (p0p0eqz0waitcounter))))) => (H((not (p0p0eqz0waitcounter)) => (u0waitcounter0f1dinc0waitcounter1b)));
+  ok36 = (H((not (not (p0p0eqz0waitcounter))))) => (H((u0waitcounter0f1dinc0waitcounter1b) => ((not (p0p0eqz0waitcounter)) or (u0extclock0f1dlow1b))));
+
+  --%PROPERTY ok0;
+  --%PROPERTY ok1;
+  --%PROPERTY ok2;
+  --%PROPERTY ok3;
+  --%PROPERTY ok4;
+  --%PROPERTY ok5;
+  --PROPERTY ok6;
+  --%PROPERTY ok7;
+  --%PROPERTY ok8;
+  --PROPERTY ok9;
+  --%PROPERTY ok10;
+  --%PROPERTY ok11;
+  --%PROPERTY ok12;
+  --%PROPERTY ok13;
+  --%PROPERTY ok14;
+  --%PROPERTY ok15;
+  --%PROPERTY ok16;
+  --%PROPERTY ok17;
+  --%PROPERTY ok18;
+  --%PROPERTY ok19;
+  --%PROPERTY ok20;
+  --%PROPERTY ok21;
+  --%PROPERTY ok22;
+  --%PROPERTY ok23;
+  --%PROPERTY ok24;
+  --%PROPERTY ok25;
+  --%PROPERTY ok26;
+  --%PROPERTY ok27;
+  --PROPERTY ok28;
+  --PROPERTY ok29;
+  --%PROPERTY ok30;
+  --%PROPERTY ok31;
+  --PROPERTY ok32;
+  --%PROPERTY ok33;
+  --%PROPERTY ok34;
+  --%PROPERTY ok35;
+  --%PROPERTY ok36;
+  --%REALIZABLE p0p0eqz0waitcounter, p0p0on0write, p0p0eq0coordx0f1ddec0f1dsizex1b1b;
+
+tel;
