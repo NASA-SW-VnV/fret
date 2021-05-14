@@ -103,7 +103,8 @@ const constants = require('../parser/Constants');
 const fs = require('fs');
 var commandExistsSync = require('command-exists').sync;
 
-const analysisPath = 'analysis/tmp/';
+var analysisPath = require("os").homedir() + '/Documents/fret-analysis/';
+// const analysisPath = 'analysis/tmp/';
 var dbChangeListener;
 
 let counter = 0;

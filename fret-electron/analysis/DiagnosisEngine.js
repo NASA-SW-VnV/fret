@@ -9,6 +9,7 @@ const mkdirp = require('mkdirp');
 const HSNode = require('./HSNode.js');
 const ejsCache_realize = require('../support/RealizabilityTemplates/ejsCache_realize');
 const realizabilityCheck = require('./realizabilityCheck.js');
+var analysisPath = require("os").homedir() + '/Documents/fret-analysis/';
 
 class DiagnosisEngine {
 
@@ -32,7 +33,7 @@ class DiagnosisEngine {
     this.cexLengths = new Map();
     this.counter = 0;
     this.count = 0;
-    this.tmppath = ('./analysis/tmp/');
+    this.tmppath = analysisPath;
   }
 
   getPartition(props, numParts, index, complement) {
