@@ -1168,7 +1168,9 @@ class RealizabilityContent extends React.Component {
       }/>)                 
     }
 
-    var menuItems = [<MenuItem key='all' value='all'> All System Components </MenuItem>];
+    //disable until complete
+    // var menuItems = [<MenuItem key='all' value='all'> All System Components </MenuItem>];
+    var menuItems =[];
     var status = monolithic ? monolithicStatus : compositionalStatus;
     return(
       <div>
