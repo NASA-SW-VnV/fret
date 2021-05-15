@@ -243,7 +243,12 @@ class DisplayVariableDialog extends React.Component {
         Internal -> Data Type + Variable Assignment
         Function -> nothing (moduleName optionally)
       */
-      if (modeRequirement || modeldoc_id || (dataType && (assignment || copilotAssignment)) || (idType === "Function")){
+      if (idType === "Input" || idType === 'Output'){
+        if (modeldoc_id || dataType){
+          completedVariable = true;
+        }
+      }
+      else if (modeRequirement || (dataType && (assignment || copilotAssignment)) || (idType === "Function")){
         completedVariable = true;
       }
 
@@ -399,28 +404,54 @@ class DisplayVariableDialog extends React.Component {
                   <MenuItem value="Function">Function</MenuItem>
                 </Select>
               </FormControl>
-              <FormControl className={classes.formControl}>
-                <InputLabel htmlFor="modeldoc_id-simple">Model Variable*</InputLabel>
-                <Select
-                  key={selectedVariable}
-                  value={this.state.modeldoc_id}
-                  onChange={this.handleChange}
-                  inputProps={{
-                    name: 'modeldoc_id',
-                    id: 'modeldoc_id-simple',
-                  }}>
-                  <MenuItem value="">
-                    <em>None</em>
-                  </MenuItem>
-                  {modelVariables.map(v => {
-                    if ((this.state.idType === "Input" && v.portType === "Inport") || (this.state.idType === "Output" && v.portType === "Outport"))
-                    {
-                      return(<MenuItem value={v.variable_name} key={v.variable_name}>{v.variable_name}</MenuItem>)
-                    }
+              { (selectedVariable.modelComponent === undefined || selectedVariable.modelComponent === "")
+                  ?
+                  <FormControl className={classes.formControl}>
+                    <InputLabel htmlFor="dataType-simple">Data Type*</InputLabel>
+                    <Select
+                    key={selectedVariable}
+                      value={this.state.dataType}
+                      onChange={this.handleChange}
+                      inputProps={{
+                        name: 'dataType',
+                        id: 'dataType-simple',
+                      }}>
+                      <MenuItem
+                        value=""
+                      >
+                        <em>None</em>
+                      </MenuItem>
+                      <MenuItem value="boolean">boolean</MenuItem>
+                      <MenuItem value="int*">int*</MenuItem>
+                      <MenuItem value="single">single</MenuItem>
+                      <MenuItem value="double">double</MenuItem>
+                      <MenuItem value="enum">enum</MenuItem>
+                    </Select>
+                  </FormControl>
+                :
+                <FormControl className={classes.formControl}>
+                  <InputLabel htmlFor="modeldoc_id-simple">Model Variable*</InputLabel>
+                  <Select
+                    key={selectedVariable}
+                    value={this.state.modeldoc_id}
+                    onChange={this.handleChange}
+                    inputProps={{
+                      name: 'modeldoc_id',
+                      id: 'modeldoc_id-simple',
+                    }}>
+                    <MenuItem value="">
+                      <em>None</em>
+                    </MenuItem>
+                    {modelVariables.map(v => {
+                      if ((this.state.idType === "Input" && v.portType === "Inport") || (this.state.idType === "Output" && v.portType === "Outport"))
+                      {
+                        return(<MenuItem value={v.variable_name} key={v.variable_name}>{v.variable_name}</MenuItem>)
+                      }
 
-                  })}
-                </Select>
-              </FormControl>
+                    })}
+                  </Select>
+                </FormControl>
+               }
               <TextField
                 id="description"
                 label="Description"
