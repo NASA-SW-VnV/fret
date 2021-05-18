@@ -221,6 +221,7 @@ class MainView extends React.Component {
     })
   }
 
+//This function populates the model DB when a new requirement is added (imported) or updated
   populateVariables = () => {
     let rows = [];
     let shouldUpdate = false;
@@ -276,7 +277,7 @@ class MainView extends React.Component {
                 };
                 mapIdsToVariables[variableId] = newVariable;
               }
-  
+
             }
           }
         }
