@@ -34,6 +34,7 @@
 const fs=require("fs");
 const db = require('electron').remote.getGlobal('sharedObj').db;
 const system_dbkeys = require('electron').remote.getGlobal('sharedObj').system_dbkeys;
+const modelSupport = require('../modelDbSupport/populateVariables');
 
 export {
   importRequirements as importRequirements,
@@ -76,6 +77,7 @@ function importRequirements (data, projects) {
   }).catch((err) => {
     console.log(err);
   });
+  modelSupport.populateVariables();
 }
 
 // change so that everything goes to rationale by default except what is in map
