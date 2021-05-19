@@ -144,6 +144,13 @@ class DisplayVariableDialog extends React.Component {
       this.setState({
         [name]: event.target.value,
       });
+    } else if (name ==='modeRequirement'){
+      resultLustre = lustreExprSemantics.compileLustreExpr(event.target.value);
+      this.setState({
+        [name]: event.target.value,
+        //TODO: Show error message
+        errorsLustre: resultLustre.parseErrors ? 'Parse Errors: '+ resultLustre.parseErrors : ''
+      });
     }
   };
 
