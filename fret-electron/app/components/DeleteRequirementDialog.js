@@ -52,32 +52,13 @@ class DeleteRequirementDialog extends React.Component {
     this.state.dialogCloseListener();
   };
 
-  /*
-  handleCloseOKtoDelete = () => {
-    this.setState({ open: false });
-    this.state.dialogCloseListener();
-    const { requirements } = this.state
-    const deleteList = []
-    requirements.forEach(r => {
-      deleteList.push({
-        _id: r.dbkey,
-        _rev: r.rev,
-        _deleted: true
-      })
-    })
-    db.bulkDocs(deleteList)
-      .catch((err) => {
-        console.log(err)
-      })
-  };
-  */
-
   removeVariables = (mapVariablesToReqIds) => {
-    Object.entries(mapVariablesToReqIds).forEach(([variable, reqs]) =>{
-      console.log('variable', variable)
-      modeldb.get(variable).then(function(v) {
+    const docs = [];
+    // We want to do bulk db change.  Get all promises to be resolved before doing update
+    Promise.all(Object.entries(mapVariablesToReqIds).map(([variable, reqs]) => {
+      return modeldb.get(variable).then(function(v) {
         // if this variable is referenced by more requirements than the requirements to be removed
-        // then we keep this variable and populate the requirement list
+        // then we keep this variable and populate the requirement list        
         if (v.reqs.length > reqs.length) {
           // new requirement list
           const newReqs = [];
@@ -87,14 +68,15 @@ class DeleteRequirementDialog extends React.Component {
               newReqs.push(reqId);
             }
           });
-            modeldb.put({
-              ...v,
-              reqs: newReqs,
-            })
+          docs.push({...v, reqs: newReqs});
         } else {
           // remove variable if there is no requirement referencing it
-          modeldb.remove(v);
+          docs.push({...v, _deleted: true})
         }
+      })
+    })).then(() => {
+      modeldb.bulkDocs(docs).catch(err => {
+        console.log('error', err)
       })
     })
   }
