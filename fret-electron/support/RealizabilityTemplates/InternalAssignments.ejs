@@ -1,6 +1,8 @@
 FTP = true->false;
 
 <%for (i=0; i < internalVariables.length; i++) {%>
-<%- internalVariables[i].name %> = <%- assignments[i] %>;<%}%>
+<%var semiColon = assignments[i].endsWith(';') ? '' : ';'%>
+<%- internalVariables[i].name %> = <%- assignments[i] %> <%- semiColon -%><%}%>
 <%for (i=0; i < modes.length; i++) {%>
-<%- modes[i].name %> = <%- modes[i].assignment %>;<%}%>
+<%var semiColon = modes[i].assignment.endsWith(';') ? '' : ';'%>
+<%- modes[i].name %> = <%- modes[i].assignment %> <%- semiColon -%><%}%>

@@ -299,7 +299,7 @@ class ChordDiagram extends React.Component {
 	}
 
 	componentDidUpdate(prevProps) {
-		return this;
+		this.createD3()
 	}
 
 	componentDidMount() {

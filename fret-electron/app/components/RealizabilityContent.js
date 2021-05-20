@@ -1333,7 +1333,7 @@ class RealizabilityContent extends React.Component {
                           {connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'] === 'DIAGNOSED' ? 
                             (<Fade in={connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'] === 'DIAGNOSED'}>
                               <div>
-                                {[...Array(2)].map((e, i) => <div> &nbsp; </div>)}                                                         
+                                {[...Array(2)].map((e, i) => <div> &nbsp; </div>)}
                                 <ChordDiagram selectedReport = {connectedComponents[selected.component_name][ccSelected]['diagnosisReport']}/>
                                 &nbsp;
                               </div>
@@ -1352,7 +1352,6 @@ class RealizabilityContent extends React.Component {
                           (<Fade in={diagnosisStatus[selected.component_name] === 'DIAGNOSED'}>
                             <div>
                               {[...Array(2)].map((e, i) => <div> &nbsp; </div>)}
-                              {/*<ChordDiagram selectedComponent = {"../analysis/tmp/"+selected.component_name+".lus.json"}/>*/}
                               <ChordDiagram selectedReport = {diagnosisReports[selected.component_name]}/>
                               &nbsp;
                             </div>
