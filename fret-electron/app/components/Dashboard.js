@@ -175,7 +175,7 @@ class Dashboard extends React.Component {
             <ListSubheader color='primary' disableGutters={true}>Hierarchical Cluster</ListSubheader>
             </List>
             <Divider />
-            <CirclePacking selectedProject={selectedProject}/>
+            <CirclePacking selectedProject={selectedProject} projects={projects}/>
           </GridListTile>
           <GridListTile cols={2} rows={6}>
             <List>

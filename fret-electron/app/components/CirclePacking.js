@@ -362,8 +362,7 @@ class CirclePacking extends React.Component {
         <RequirementDialogs
           selectedRequirement={this.state.selectedRequirement}
           selectedProject={this.props.selectedProject}
-          //TODO: Update
-          existingProjectNames={['AllProjects']}
+          existingProjectNames={this.props.projects}
           displayRequirementOpen={this.state.displayRequirementOpen}
           handleDialogClose={this.handleRequirementDialogClose}
         />
@@ -373,6 +372,7 @@ class CirclePacking extends React.Component {
 }
 
 CirclePacking.propTypes = {
-  selectedProject: PropTypes.string.isRequired
+  selectedProject: PropTypes.string.isRequired,
+  projects: PropTypes.array.isRequired
 }
 export default CirclePacking
