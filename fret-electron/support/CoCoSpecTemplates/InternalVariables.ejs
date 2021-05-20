@@ -1,7 +1,9 @@
 let
 var FTP: bool = true -> false;
 <%for (i=0; i < internalVariables.length; i++) {%>
-var <%- internalVariables[i].name %>: <%- internalVariables[i].type %> = <%- assignments[i] %><%}%>
+<%var semiColon = assignments[i].endsWith(';') ? '' : ';'%>
+var <%- internalVariables[i].name %>: <%- internalVariables[i].type %> = <%- assignments[i] %> <%- semiColon -%><%}%>
 
 <%for (i=0; i < modes.length; i++) {%>
-var <%- modes[i].name %>: <%- modes[i].type %> = <%- modes[i].assignment %><%}%>
+<%var semiColon = modes.assignment.endsWith(';') ? '' : ';'%>
+var <%- modes[i].name %>: <%- modes[i].type %> = <%- modes[i].assignment %> <%- semiColon -%><%}%>
