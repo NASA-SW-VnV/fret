@@ -101,7 +101,9 @@ const db = sharedObj.db;
 const constants = require('../parser/Constants');
 
 const fs = require('fs');
-var commandExistsSync = require('command-exists').sync;
+// var commandExistsSync = require('command-exists').sync;
+const { execSync } = require('child_process');
+const process = require('process');
 
 var analysisPath = require("os").homedir() + '/Documents/fret-analysis/';
 // const analysisPath = 'analysis/tmp/';
@@ -708,25 +710,57 @@ class RealizabilityContent extends React.Component {
     this.setState({connectedComponents : connectedComponents, ccSelected : 'cc0'})
   }
 
+  // checkDependenciesExist() {
+  //   var missing = this.state.missingDependencies;
+  //   if (!commandExistsSync('jkind')) {
+  //     missing.push('jkind')
+  //   }
+  //   if (!commandExistsSync('aeval')) {
+  //     missing.push('aeval')
+  //   }
+  //   if (!commandExistsSync('z3')) {
+  //     missing.push('z3')
+  //   }
+  //   if (missing.length !== 0) {
+  //     this.setState({
+  //       missingDependencies: missing
+  //     });
+  //   } else {
+  //     this.setState({
+  //       dependenciesExist: true
+  //     });
+  //   }
+  // }
+
   checkDependenciesExist() {
     var missing = this.state.missingDependencies;
-    if (!commandExistsSync('jkind')) {
-      missing.push('jkind')
+    try {
+      execSync('jkind -help');
+    } catch(err) {
+      missing.push('jkind');
     }
-    if (!commandExistsSync('aeval')) {
-      missing.push('aeval')
+
+    //aeval currently returns with a segmentation fault signal when ran with no arguments.
+    try {
+      execSync('aeval');
+    } catch (err) {
+      if ((process.platform === "linux") && err.message !== 'Command failed: aeval\nSegmentation fault (core dumped)\n') {
+        missing.push('aeval');  
+      } else if ((process.platform === "darwin") && err.message !== 'Command failed: aeval\nSegmentation fault: 11\n') {
+        missing.push('aeval');
+      }
     }
-    if (!commandExistsSync('z3')) {
-      missing.push('z3')
+
+    try {
+      execSync('z3 -h');
+    } catch (err) {
+      missing.push('z3');
     }
+
     if (missing.length !== 0) {
-      this.setState({
-        missingDependencies: missing
-      });
+      this.setState({ missingDependencies : missing});
     } else {
-      this.setState({
-        dependenciesExist: true
-      });
+      this.setState({ dependenciesExist : true});
     }
   }
 
