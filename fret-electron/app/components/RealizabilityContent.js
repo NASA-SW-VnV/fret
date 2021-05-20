@@ -873,7 +873,6 @@ class RealizabilityContent extends React.Component {
 
           let engine = new DiagnosisEngine(ccContract, timeout, 'realizability');                    
           const result = engine.main();
-
           connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'] = 'DIAGNOSED'
           connectedComponents[selected.component_name][ccSelected]['diagnosisReport'] = result[1];   
           self.setState({ connectedComponents : connectedComponents});
@@ -882,15 +881,20 @@ class RealizabilityContent extends React.Component {
           self.setState({ diagnosisStatus : diagnosisStatus})
           let engine = new DiagnosisEngine(contract, timeout, 'realizability');
           var result = engine.main();
-          this.timer = setTimeout(() => {
+          // this.timer = setTimeout(() => {
             diagnosisStatus[selected.component_name] = 'DIAGNOSED';
             diagnosisReports[selected.component_name] = result[1];            
             self.setState({
               diagnosisStatus : diagnosisStatus,
               diagnosisReports : diagnosisReports
             });
-          }, 2000);
+          // }, 2000);
           // }
+        }
+
+        //delete intermediate files under homeDir/Documents/fret-analysis if not in dev mode
+        if (process.env.NODE_ENV !== 'development') {
+          self.deleteAnalysisFiles();
         }
       })
     })
@@ -1002,6 +1006,18 @@ class RealizabilityContent extends React.Component {
   return true;
   }
 
+  deleteAnalysisFiles() {
+    fs.readdir(analysisPath, (err, files) => {
+      if (err) throw err;    
+      for (const file of files) {
+        fs.unlink(analysisPath+file.toString(), err => {
+          console.log(err)
+          if (err) throw err;
+        });
+      }
+    });
+  }
+
   checkRealizability = () => {
     
     const {selected, ccSelected, monolithic, compositional, connectedComponents, timeout} = this.state;
@@ -1070,6 +1086,11 @@ class RealizabilityContent extends React.Component {
               prevState.time[tC.component_name] = time;
               return(prevState);
             })
+
+            //delete intermediate files under homeDir/Documents/fret-analysis if not in dev mode
+            if (process.env.NODE_ENV !== 'development') {
+              self.deleteAnalysisFiles();
+            }
            })
             // return result;
           } else if (compositional) {          
@@ -1090,85 +1111,57 @@ class RealizabilityContent extends React.Component {
               realizability.checkRealizability(filePath, '-fixpoint -timeout '+timeout, function(checkOutput) {   
               if (checkOutput !== undefined) {
                 var ccResult = checkOutput.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];
-              var ccTime = checkOutput.match(new RegExp('(Time = )(.*?)\\n'))[2];
-              connectedComponents[tC.component_name][cc].result = ccResult
-              connectedComponents[tC.component_name][cc].time = ccTime
-              self.setState(prevState => {
-                prevState.connectedComponents = connectedComponents
-                return(prevState);
-              })
-              // self.setState({
-              //   connectedComponents : connectedComponents
-              // });
-              ccResults.push(ccResult);
-              // })
+                var ccTime = checkOutput.match(new RegExp('(Time = )(.*?)\\n'))[2];
+                connectedComponents[tC.component_name][cc].result = ccResult
+                connectedComponents[tC.component_name][cc].time = ccTime
+                self.setState(prevState => {
+                  prevState.connectedComponents = connectedComponents
+                  return(prevState);
+                })
+                // self.setState({
+                //   connectedComponents : connectedComponents
+                // });
+                ccResults.push(ccResult);
+                // })
               
-              if (ccResults.length === Object.keys(connectedComponents[tC.component_name]).length) {
-                const reducer = (accumulator, currentValue) => accumulator && (currentValue === 'REALIZABLE');
+                if (ccResults.length === Object.keys(connectedComponents[tC.component_name]).length) {
+                  const reducer = (accumulator, currentValue) => accumulator && (currentValue === 'REALIZABLE');
     
-                if (ccResults.reduce(reducer)) {
-                  self.setState(prevState => {
-                    prevState.compositionalStatus[tC.component_name] = 'REALIZABLE';
-                    return(prevState);
-                  })
-                } else {
-                  if (ccResults.includes('UNKNOWN')) {
+                  if (ccResults.reduce(reducer)) {
                     self.setState(prevState => {
-                      prevState.compositionalStatus[tC.component_name] = 'UNKNOWN';
-                      return(prevState);
-                    })            
-                  } else if (ccResults.includes('UNREALIZABLE')) {                    
-                    self.setState(prevState => {
-                      prevState.compositionalStatus[tC.component_name] = 'UNREALIZABLE';
+                      prevState.compositionalStatus[tC.component_name] = 'REALIZABLE';
                       return(prevState);
                     })
-                  } else if (ccResults.includes('INCONSISTENT')) {
-                    self.setState(prevState => {
-                      prevState.compositionalStatus[tC.component_name] = 'INCONSISTENT';
-                      return(prevState);
-                    })            
                   } else {
-                    console.log('Realizability check failed with an unexpected result. Run JKind check over '+filePath+' for more details.')
-                  } 
+                    if (ccResults.includes('UNKNOWN')) {
+                      self.setState(prevState => {
+                        prevState.compositionalStatus[tC.component_name] = 'UNKNOWN';
+                        return(prevState);
+                      })            
+                    } else if (ccResults.includes('UNREALIZABLE')) {                    
+                        self.setState(prevState => {
+                          prevState.compositionalStatus[tC.component_name] = 'UNREALIZABLE';
+                          return(prevState);
+                        })
+                    } else if (ccResults.includes('INCONSISTENT')) {
+                        self.setState(prevState => {
+                          prevState.compositionalStatus[tC.component_name] = 'INCONSISTENT';
+                          return(prevState);
+                        })            
+                    } else {
+                      console.log('Realizability check failed with an unexpected result. Run JKind check over '+filePath+' for more details.')
+                    } 
+                  }
+
+                  //delete intermediate files under homeDir/Documents/fret-analysis if not in dev mode
+                  if (process.env.NODE_ENV !== 'development') {
+                    self.deleteAnalysisFiles();
+                  }
                 }
               }
 
-              }
               })
             });     
-            // self.setState(prevState => {
-            //   prevState.connectedComponents = connectedComponents
-            //   return(prevState);
-            // })
-            // if (ccResults.length !== 0) {
-            // const reducer = (accumulator, currentValue) => accumulator && (currentValue === 'REALIZABLE');
-
-            // if (ccResults.reduce(reducer)) {
-            //   self.setState(prevState => {
-            //     prevState.compositionalStatus[tC.component_name] = 'REALIZABLE';
-            //     return(prevState);
-            //   })
-            // } else {
-            //   if (ccResults.includes('UNKNOWN')) {
-            //     self.setState(prevState => {
-            //       prevState.compositionalStatus[tC.component_name] = 'UNKNOWN';
-            //       return(prevState);
-            //     })            
-            //   } else if (ccResults.includes('UNREALIZABLE')) {                    
-            //     self.setState(prevState => {
-            //       prevState.compositionalStatus[tC.component_name] = 'UNREALIZABLE';
-            //       return(prevState);
-            //     })
-            //   } else if (ccResults.includes('INCONSISTENT')) {
-            //     self.setState(prevState => {
-            //       prevState.compositionalStatus[tC.component_name] = 'INCONSISTENT';
-            //       return(prevState);
-            //     })            
-            //   } else {
-            //     console.log('Realizability check failed with an unexpected result. Run JKind check over '+filePath+' for more details.')
-            //   } 
-            // }
-            // }
           }
         });
       })
@@ -1339,15 +1332,13 @@ class RealizabilityContent extends React.Component {
                         <div>
                           {connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'] === 'DIAGNOSED' ? 
                             (<Fade in={connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'] === 'DIAGNOSED'}>
-                              <div>                            
+                              <div>
+                                {[...Array(2)].map((e, i) => <div> &nbsp; </div>)}                                                         
                                 <ChordDiagram selectedReport = {connectedComponents[selected.component_name][ccSelected]['diagnosisReport']}/>
+                                &nbsp;
                               </div>
                             </Fade>) : <div/>
                           }
-                          &nbsp;
-                          &nbsp;
-                          &nbsp;
-                          &nbsp;
                           <DiagnosisRequirementsTable selectedProject={selectedProject} existingProjectNames={[selectedProject]} connectedComponent={connectedComponents[selected.component_name][ccSelected]}/>
                         </div>
                       </DiagnosisProvider>
@@ -1360,8 +1351,10 @@ class RealizabilityContent extends React.Component {
                         {diagnosisStatus[selected.component_name] === 'DIAGNOSED' ? 
                           (<Fade in={diagnosisStatus[selected.component_name] === 'DIAGNOSED'}>
                             <div>
+                              {[...Array(2)].map((e, i) => <div> &nbsp; </div>)}
                               {/*<ChordDiagram selectedComponent = {"../analysis/tmp/"+selected.component_name+".lus.json"}/>*/}
                               <ChordDiagram selectedReport = {diagnosisReports[selected.component_name]}/>
+                              &nbsp;
                             </div>
                           </Fade>) : 
                           (diagnosisStatus[selected.component_name] === 'PROCESSING' ? 
@@ -1375,10 +1368,6 @@ class RealizabilityContent extends React.Component {
                               <CircularProgress style={{alignItems : 'center'}} size={50}/>
                             </Fade> : <div/>)
                         }
-                        &nbsp;
-                        &nbsp;
-                        &nbsp;
-                        &nbsp;
                         <DiagnosisRequirementsTable selectedProject={selectedProject} existingProjectNames={[selectedProject]} connectedComponent={{}}/>
                       </div>                                        
                     </DiagnosisProvider>

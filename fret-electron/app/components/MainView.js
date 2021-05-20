@@ -157,7 +157,7 @@ const styles = theme => ({
     ...theme.mixins.toolbar,
   },
   content: {
-    width: '90%',
+    width: '100%',
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
     padding: 24,
