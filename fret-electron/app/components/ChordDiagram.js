@@ -298,8 +298,12 @@ class ChordDiagram extends React.Component {
 		// });
 	}
 
-	componentDidUpdate(prevProps) {
-		this.createD3()
+	componentDidUpdate(prevProps, prevState) {
+		if(prevProps.selectedReport.Properties.toString() !== this.props.selectedReport.Properties.toString()) {
+			console.log(prevProps)
+			console.log(this.props)
+			this.createD3()
+		}
 	}
 
 	componentDidMount() {
