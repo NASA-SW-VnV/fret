@@ -742,12 +742,19 @@ class RealizabilityContent extends React.Component {
 
     //aeval currently returns with a segmentation fault signal when ran with no arguments.
     try {
-      execSync('aeval');
+      if ((process.platform === "linux") || (process.platform === "darwin")){
+        execSync('which aeval');  
+      } else if (process.platform === "win32") {
+        execSync('where aeval');
+      } else {
+        throw "Unknown_OS"
+      }
+      
     } catch (err) {
-      if ((process.platform === "linux") && err.message !== 'Command failed: aeval\nSegmentation fault (core dumped)\n') {
+      if (err !== "Unknown_OS"){
         missing.push('aeval');  
-      } else if ((process.platform === "darwin") && err.message !== 'Command failed: aeval\nSegmentation fault: 11\n') {
-        missing.push('aeval');
+      } else {
+        missing.push('aeval - Unknown OS detected');
       }
     }
 
