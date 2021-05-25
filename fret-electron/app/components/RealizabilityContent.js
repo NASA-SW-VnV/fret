@@ -625,8 +625,6 @@ class RealizabilityContent extends React.Component {
     monolithic: false,
     compositional: false,
     timeout: '',
-    timeoutHelperText: '',
-    timeoutError: false,
     dependenciesExist: false,
     missingDependencies: [],
 
@@ -858,13 +856,7 @@ class RealizabilityContent extends React.Component {
   handleTimeoutChange = (event, value) => {
     var reg = new RegExp('^([1-9])([0-9]*)$');
     if (reg.test(event.target.value) || event.target.value === '') {
-      // if (event.target.value !== '') {
-      this.setState({timeout: event.target.value, timeoutError : false, timeoutHelperText : ''});  
-      // } else {
-      //   this.setState({timeout: 900, timeoutError : false, timeoutHelperText : ''})
-      // }
-    } else {
-      this.setState({timeoutError : true, timeoutHelperText : 'Invalid format'});
+      this.setState({timeout: event.target.value});  
     }
   };
 
@@ -1336,8 +1328,6 @@ class RealizabilityContent extends React.Component {
               label="Timeout (seconds)"
               placeholder="900"
               value={this.state.timeout}
-              error={this.state.timeoutError}
-              helperText={this.state.timeoutHelperText}
               onChange={this.handleTimeoutChange}
               style={{width:150}}
               InputLabelProps={{
