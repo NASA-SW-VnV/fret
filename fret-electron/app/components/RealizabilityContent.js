@@ -161,14 +161,15 @@ const styles = theme => ({
   table: {
   },
   wrapper: {
-    display: 'block',
+    margin: theme.spacing(1),
+    position: 'relative',
   },
   dv : {
     display: 'inline-block',
   },
   formControl: {
     minWidth: 200,
-    marginRight: theme.spacing(2)
+    marginRight: theme.spacing(2),
   },
   vAlign : {
     verticalAlign : 'bottom'
@@ -185,6 +186,13 @@ const styles = theme => ({
   },
   tabsScrollable : {
     overflowX: 'hidden',
+  },
+  buttonProgress: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    marginTop: -12,
+    marginLeft: -12,
   }
 
 });
@@ -256,7 +264,7 @@ class ResultIcon extends React.Component {
     const {result, time} = this.props;
     return (
     <Tooltip title={result + 
-      (time !== undefined ? ' - '+time : '')}>
+      (time !== undefined ? time : '')}>
       {result === 'REALIZABLE' ? 
         <CheckCircleOutlineIcon style={{fontSize : '20px', verticalAlign : 'bottom', color : '#68BC00'}}/> :
         result === 'UNREALIZABLE' ? 
@@ -601,7 +609,6 @@ ProjectSummary.propTypes = {
   connectedComponents: PropTypes.object.isRequired
 };
 
-
 class RealizabilityContent extends React.Component {
   state = {
     selected: '',
@@ -617,9 +624,12 @@ class RealizabilityContent extends React.Component {
     diagnosisReports: {},
     monolithic: false,
     compositional: false,
-    timeout: 900,
+    timeout: '',
+    timeoutHelperText: '',
+    timeoutError: false,
     dependenciesExist: false,
-    missingDependencies: []
+    missingDependencies: [],
+
   }
 
   // Use this for bulk check in the future
@@ -670,10 +680,14 @@ class RealizabilityContent extends React.Component {
   }
 
   computeConnectedComponents(project, projectComponents) {
-    const {connectedComponents} = this.state
+    const {monolithicStatus, compositionalStatus, diagnosisStatus, diagnosisReports, connectedComponents} = this.state
     const self = this;
 
     projectComponents.forEach(component => {
+      monolithicStatus[component.component_name] = 'UNCHECKED';
+      compositionalStatus[component.component_name] = 'UNCHECKED';
+      diagnosisStatus[component.component_name] = '';
+      diagnosisReports[component.component_name] = '';
       connectedComponents[component.component_name] = {};
       modeldb.find({
         selector: {
@@ -699,7 +713,7 @@ class RealizabilityContent extends React.Component {
             var mappings = cc_analysis.compute_dependency_maps(contract);      
             var connected_components = cc_analysis.compute_connected_components(contract, mappings['output']);
             connected_components.forEach(comp => {
-              connectedComponents[component.component_name]['cc'+connected_components.indexOf(comp)] = {result : 'UNCHECKED', properties : comp.properties}
+              connectedComponents[component.component_name]['cc'+connected_components.indexOf(comp)] = {result : 'UNCHECKED', properties : comp.properties, diagnosisStatus : '', diagnosisReport : ''}
             })
           }                  
         }).catch((err) => {
@@ -707,7 +721,14 @@ class RealizabilityContent extends React.Component {
         })
       })
     });
-    this.setState({connectedComponents : connectedComponents, ccSelected : 'cc0'})
+    this.setState({
+      monolithicStatus : monolithicStatus,
+      compositionalStatus : compositionalStatus,
+      diagnosisStatus : diagnosisStatus,
+      diagnosisReports : diagnosisReports,
+      connectedComponents : connectedComponents,
+      ccSelected : 'cc0'
+    })
   }
 
   // checkDependenciesExist() {
@@ -835,7 +856,16 @@ class RealizabilityContent extends React.Component {
   };
 
   handleTimeoutChange = (event, value) => {
-    this.setState({timeout: event.target.value});
+    var reg = new RegExp('^([1-9])([0-9]*)$');
+    if (reg.test(event.target.value) || event.target.value === '') {
+      // if (event.target.value !== '') {
+      this.setState({timeout: event.target.value, timeoutError : false, timeoutHelperText : ''});  
+      // } else {
+      //   this.setState({timeout: 900, timeoutError : false, timeoutHelperText : ''})
+      // }
+    } else {
+      this.setState({timeoutError : true, timeoutHelperText : 'Invalid format'});
+    }
   };
 
   diagnoseSpec(event) {    
@@ -843,12 +873,13 @@ class RealizabilityContent extends React.Component {
     const {selectedProject} = this.props;    
     const self = this;
 
+    var actualTimeout = (timeout === '' ? 900 : timeout);
     if(compositional) {
       connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'] = 'PROCESSING'
       self.setState({ connectedComponents : connectedComponents});            
     } else {
       diagnosisStatus[selected.component_name] = 'PROCESSING'
-      self.setState({ connectedComponents : connectedComponents});            
+      self.setState({ diagnosisStatus : diagnosisStatus});            
     }
 
     modeldb.find({
@@ -878,31 +909,53 @@ class RealizabilityContent extends React.Component {
             properties.has(p.reqid))
           ccContract.properties = ccProperties          
 
-          let engine = new DiagnosisEngine(ccContract, timeout, 'realizability');                    
-          const result = engine.main();
-          connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'] = 'DIAGNOSED'
-          connectedComponents[selected.component_name][ccSelected]['diagnosisReport'] = result[1];   
-          self.setState({ connectedComponents : connectedComponents});
+          let engine = new DiagnosisEngine(ccContract, actualTimeout, 'realizability');                    
+          // const result = engine.main();
+          engine.main(function (result) {
+            connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'] = 'DIAGNOSED'
+            connectedComponents[selected.component_name][ccSelected]['diagnosisReport'] = result[1];   
+            self.setState({ connectedComponents : connectedComponents});
+
+            //delete intermediate files under homeDir/Documents/fret-analysis if not in dev mode
+            if (process.env.NODE_ENV !== 'development') {
+              self.deleteAnalysisFiles();
+            }            
+          });
+          // connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'] = 'DIAGNOSED'
+          // connectedComponents[selected.component_name][ccSelected]['diagnosisReport'] = result[1];   
+          // self.setState({ connectedComponents : connectedComponents});
         } else if (monolithic) {      
-          diagnosisStatus[selected.component_name] = 'PROCESSING'
-          self.setState({ diagnosisStatus : diagnosisStatus})
-          let engine = new DiagnosisEngine(contract, timeout, 'realizability');
-          var result = engine.main();
-          // this.timer = setTimeout(() => {
+          // diagnosisStatus[selected.component_name] = 'PROCESSING'
+          // self.setState({ diagnosisStatus : diagnosisStatus})
+          let engine = new DiagnosisEngine(contract, actualTimeout, 'realizability');
+          // var result = engine.main();
+          engine.main(function (result) {
             diagnosisStatus[selected.component_name] = 'DIAGNOSED';
             diagnosisReports[selected.component_name] = result[1];            
             self.setState({
               diagnosisStatus : diagnosisStatus,
               diagnosisReports : diagnosisReports
             });
-          // }, 2000);
-          // }
+
+            //delete intermediate files under homeDir/Documents/fret-analysis if not in dev mode
+            if (process.env.NODE_ENV !== 'development') {
+              self.deleteAnalysisFiles();
+            }            
+          });
+          
+            // diagnosisStatus[selected.component_name] = 'DIAGNOSED';
+            // diagnosisReports[selected.component_name] = result[1];            
+            // self.setState({
+            //   diagnosisStatus : diagnosisStatus,
+            //   diagnosisReports : diagnosisReports
+            // });
+          
         }
 
-        //delete intermediate files under homeDir/Documents/fret-analysis if not in dev mode
-        if (process.env.NODE_ENV !== 'development') {
-          self.deleteAnalysisFiles();
-        }
+        // //delete intermediate files under homeDir/Documents/fret-analysis if not in dev mode
+        // if (process.env.NODE_ENV !== 'development') {
+        //   self.deleteAnalysisFiles();
+        // }
       })
     })
   }
@@ -1030,6 +1083,8 @@ class RealizabilityContent extends React.Component {
     const {selected, ccSelected, monolithic, compositional, connectedComponents, timeout} = this.state;
     const {selectedProject, components} = this.props;    
     const self = this;
+
+    var actualTimeout = (timeout === '' ? 900 : timeout);
     var targetComponents;
     if (selected === 'all') {
       targetComponents = components;
@@ -1049,6 +1104,8 @@ class RealizabilityContent extends React.Component {
         }
         return(prevState);
       })
+
+
 
       var checkOutput = '';
       var ccResults = [];
@@ -1082,23 +1139,23 @@ class RealizabilityContent extends React.Component {
             var lustreContract = ejsCache_realize.renderRealizeCode().component.complete(contract);
             
             fs.writeSync(output, lustreContract);
-            // checkOutput = realizability.checkRealizability(filePath, '-fixpoint -timeout ' + timeout);
-            realizability.checkRealizability(filePath, '-fixpoint -timeout '+timeout, function(checkOutput) {
-            var result = checkOutput.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];
-            var time = checkOutput.match(new RegExp('(Time = )(.*?)\\n'))[2];
-            // monolithicResult = result;
-            // monolithicTime = time;
-            self.setState(prevState => {
-              prevState.monolithicStatus[tC.component_name] = result;
-              prevState.time[tC.component_name] = time;
-              return(prevState);
-            })
+            // checkOutput = realizability.checkRealizability(filePath, '-fixpoint -timeout ' + actualTimeout);
+            realizability.checkRealizability(filePath, '-fixpoint -timeout '+actualTimeout, function(checkOutput) {
+              var result = checkOutput.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];
+              var time = checkOutput.match(new RegExp('(Time = )(.*?)\\n'))[2];
+              // monolithicResult = result;
+              // monolithicTime = time;
+              self.setState(prevState => {
+                prevState.monolithicStatus[tC.component_name] = result;
+                prevState.time[tC.component_name] = time;
+                return(prevState);
+              })
 
-            //delete intermediate files under homeDir/Documents/fret-analysis if not in dev mode
-            if (process.env.NODE_ENV !== 'development') {
-              self.deleteAnalysisFiles();
-            }
-           })
+              //delete intermediate files under homeDir/Documents/fret-analysis if not in dev mode
+              if (process.env.NODE_ENV !== 'development') {
+                self.deleteAnalysisFiles();
+              }
+            })
             // return result;
           } else if (compositional) {          
             Object.keys(connectedComponents[tC.component_name]).forEach((cc) => {
@@ -1115,7 +1172,7 @@ class RealizabilityContent extends React.Component {
               // output.write(lustreContract);
               // output.end();
               // output.on('finish', () => {
-              realizability.checkRealizability(filePath, '-fixpoint -timeout '+timeout, function(checkOutput) {   
+              realizability.checkRealizability(filePath, '-fixpoint -timeout '+actualTimeout, function(checkOutput) {   
               if (checkOutput !== undefined) {
                 var ccResult = checkOutput.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];
                 var ccTime = checkOutput.match(new RegExp('(Time = )(.*?)\\n'))[2];
@@ -1183,22 +1240,10 @@ class RealizabilityContent extends React.Component {
     for (var cc in connectedComponents[selected.component_name]) {
           tabs.push(<Tab key={cc} value={cc} classes={{root : classes.tabRoot}} label={
         <div style={{display : 'flex', alignItems : 'center', flexWrap : 'wrap'}}>
-        {cc}
-        {/* <Tooltip title={connectedComponents[selected.component_name][cc]['result'] === 'UNCHECKED' ? '' : 
-        connectedComponents[selected.component_name][cc]['result'] + 
-          (connectedComponents[selected.component_name][cc]['time'] !== undefined ? ' - '+connectedComponents[selected.component_name][cc]['time'] : '')}> */}
+          {cc}
+          &nbsp;
           <ResultIcon result={connectedComponents[selected.component_name][cc]['result']}
           time={connectedComponents[selected.component_name][cc]['time'] !== undefined ? ' - '+connectedComponents[selected.component_name][cc]['time'] : ''}/>
-          {/* {connectedComponents[selected.component_name][cc]['result'] === 'REALIZABLE' ? 
-                            <CheckCircleOutlineIcon style={{fontSize : '20px', verticalAlign : 'bottom', color : '#68BC00'}}/> :
-                            connectedComponents[selected.component_name][cc]['result'] === 'UNREALIZABLE' ? 
-                              <HighlightOffIcon style={{fontSize : '20px', verticalAlign : 'bottom'}} color='error'/> :
-                              connectedComponents[selected.component_name][cc]['result'] === 'PROCESSING' ?
-                                <CircularProgress disableShrink style={{verticalAlign : 'bottom'}} size={15}/> :
-                                connectedComponents[selected.component_name][cc]['result'] === 'UNKNOWN' ?
-                                <HelpOutlineIcon style={{fontSize : '20px', verticalAlign : 'bottom', color : '#ff9900'}}/> :
-                                  <CheckCircleOutlineIcon style={{fontSize : '20px', verticalAlign : 'bottom', opacity : 0}}/>} */}
-        {/* </Tooltip>       */}
         </div>
       }/>)                 
     }
@@ -1207,10 +1252,123 @@ class RealizabilityContent extends React.Component {
     // var menuItems = [<MenuItem key='all' value='all'> All System Components </MenuItem>];
     var menuItems =[];
     var status = monolithic ? monolithicStatus : compositionalStatus;
+    var diagStatus, diagReport;
+    if (selected !== '' && selected !== 'all' && Object.keys(connectedComponents[selected.component_name]).length > 0) {
+      diagStatus = monolithic ? diagnosisStatus[selected.component_name] : connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'];
+      diagReport = monolithic ? diagnosisReports[selected.component_name] : connectedComponents[selected.component_name][ccSelected]['diagnosisReport'];
+    }
     return(
       <div>
         {components.length !== 0 &&
-          <div>
+          <div style={{alignItems: 'flex-end', display: 'flex', flexWrap :'wrap'}}>
+            <FormControl className={classes.formControl} required>
+              <InputLabel>System Component</InputLabel>
+              <Select                  
+                value={selected}                
+                onChange={this.handleChange('selected')}
+              > 
+                  {menuItems.concat(stableSort(components, getSorting(order, orderBy))
+                    .map(n => {
+                    return (
+                      <Tooltip 
+                        key={n.component_name}
+                        value={!this.isComponentComplete(n.component_name) ? '' : n} 
+                        title={!this.isComponentComplete(n.component_name) ? 'Analysis is not possible for this component. Please complete mandatory variable fields in Variable Mapping first.' : ''}>
+                          <span>
+                          <MenuItem disabled={!this.isComponentComplete(n.component_name)}>                        
+                            <div style={{display : 'flex', alignItems : 'center'}}>
+                              {n.component_name}
+                              &nbsp;
+                              <ResultIcon result={status[n.component_name] !== undefined ? status[n.component_name] : ''} time={(monolithic && time[n.component_name] !== undefined) ? ' - ' + time[n.component_name] : ''}/>
+                              {/*<Tooltip title={status[n.component_name] + 
+                                (time[n.component_name] !== undefined ? ' - '+time[n.component_name] : '')}>
+                                {status[n.component_name] === 'REALIZABLE' ? 
+                                  <CheckCircleOutlineIcon style={{fontSize : '20px', verticalAlign : 'bottom', color : '#68BC00'}}/> :
+                                  status[n.component_name] === 'UNREALIZABLE' ? 
+                                    <HighlightOffIcon style={{fontSize : '20px', verticalAlign : 'bottom'}} color='error'/> :
+                                    status[n.component_name] === 'PROCESSING' ?
+                                      <CircularProgress style={{verticalAlign : 'bottom'}} size={15}/> : 
+                                      status[n.component_name] === 'UNKNOWN' ? 
+                                      <HelpOutlineIcon style={{fontSize : '20px', verticalAlign : 'bottom', color : '#ff9900'}}/> : <div/>}                            
+                              </Tooltip>*/} 
+                            </div>
+                          </MenuItem>
+                          </span>
+                      </Tooltip>
+                      )
+                  }))}
+              </Select>
+            </FormControl>
+            <FormControlLabel
+              disabled={selected === '' || (selected !== 'all' && Object.keys(connectedComponents[selected.component_name]).length === 1)}
+              control={
+                <Checkbox
+                  checked={compositional}
+                  onChange={this.handleChange('compositional')}
+                  value="compositional"
+                  color="primary"
+                />
+              }
+              label="Compositional"                
+            />
+            <FormControlLabel
+              disabled={selected === ''}
+              control={
+                <Checkbox
+                  checked={monolithic}
+                  onChange={this.handleChange('monolithic')}
+                  value="monolithic"
+                  color="primary"
+                />
+              }
+              style={{marginRight: '35%'}}
+              label="Monolithic"                
+            />
+            {!dependenciesExist &&
+              <Tooltip title={"Dependencies missing for realizability checking : " + missingDependencies.toString()+'. See FRET documentation for details.'}>
+                <ErrorIcon className={classes.wrapper} style={{verticalAlign : 'bottom'}} color='error'/>
+              </Tooltip>
+            }
+            <TextField
+              className={classes.wrapper}
+              disabled={selected === ''}
+              id="timeout-value"
+              label="Timeout (seconds)"
+              placeholder="900"
+              value={this.state.timeout}
+              error={this.state.timeoutError}
+              helperText={this.state.timeoutHelperText}
+              onChange={this.handleTimeoutChange}
+              style={{width:150}}
+              InputLabelProps={{
+                shrink: true
+              }}            
+            />
+            <div className={classes.wrapper}>
+            <Button onClick={(event) => {this.checkRealizability(event)}} size="small" className={classes.vAlign} color="secondary" variant='contained' disabled={status[selected.component_name] === 'PROCESSING' || diagStatus === 'PROCESSING' || !dependenciesExist || (dependenciesExist && selected === '')}>
+              Check                              
+            </Button>
+            </div>
+            <div className={classes.wrapper}>
+              <Button 
+                onClick={(event) => {this.diagnoseSpec(event)}}
+                size="small" className={classes.vAlign}
+                color="secondary"
+                variant='contained'
+                disabled={status[selected.component_name] === 'PROCESSING' || diagStatus === 'PROCESSING' || !dependenciesExist || (dependenciesExist && (selected === '' || selected === 'all')) || 
+                  (dependenciesExist && selected !== '' && compositional && connectedComponents[selected.component_name][ccSelected]['result'] !== 'UNREALIZABLE') || 
+                    (selected !== '' && monolithic && status[selected.component_name] !== 'UNREALIZABLE')}>
+                Diagnose                             
+              </Button>
+              {diagStatus === 'PROCESSING' && <CircularProgress size={24} className={classes.buttonProgress}/>}
+            </div>
+            <div className={classes.wrapper}>
+              <Button disabled size="small" className={classes.vAlign} variant="contained"> Export </Button>
+            </div>
+            <div className={classes.wrapper}>
+            <Button size="small" className={classes.vAlign} variant="contained"> Help </Button>
+            </div>
+{/*
             <FormControl className={classes.formControl} required>
               <InputLabel>System Component</InputLabel>
               <Select                  
@@ -1230,17 +1388,7 @@ class RealizabilityContent extends React.Component {
                               {n.component_name}
                               &nbsp;
                               &nbsp;
-                              <Tooltip title={status[n.component_name] + 
-                                (time[n.component_name] !== undefined ? ' - '+time[n.component_name] : '')}>
-                                {status[n.component_name] === 'REALIZABLE' ? 
-                                  <CheckCircleOutlineIcon style={{fontSize : '20px', verticalAlign : 'bottom', color : '#68BC00'}}/> :
-                                  status[n.component_name] === 'UNREALIZABLE' ? 
-                                    <HighlightOffIcon style={{fontSize : '20px', verticalAlign : 'bottom'}} color='error'/> :
-                                    status[n.component_name] === 'PROCESSING' ?
-                                      <CircularProgress style={{verticalAlign : 'bottom'}} size={15}/> : 
-                                      status[n.component_name] === 'UNKNOWN' ? 
-                                      <HelpOutlineIcon style={{fontSize : '20px', verticalAlign : 'bottom', color : '#ff9900'}}/> : <div/>}                            
-                              </Tooltip> 
+                              <ResultIcon result={status[n.component_name] !== undefined ? status[n.component_name] : ''} time={(monolithic && time[n.component_name] !== undefined) ? ' - ' + time[n.component_name] : ''}/>
                             </div>
                           </MenuItem>
                           </span>
@@ -1294,22 +1442,26 @@ class RealizabilityContent extends React.Component {
               type="number"
               style={{width:150, marginRight:'1%'}}              
             />
-            <Button onClick={(event) => {this.checkRealizability(event)}} size="small" className={classes.vAlign} style={{marginRight: '1%'}} color="secondary" variant='contained' disabled={!dependenciesExist || (dependenciesExist && selected === '')}>
+            <Button onClick={(event) => {this.checkRealizability(event)}} size="small" className={classes.vAlign} style={{marginRight: '1%'}} color="secondary" variant='contained' disabled={status === 'PROCESSING' || !dependenciesExist || (dependenciesExist && selected === '')}>
               Check                              
             </Button>
-            <Button 
-              onClick={(event) => {this.diagnoseSpec(event)}}
-              size="small" className={classes.vAlign}
-              style={{marginRight: '1%'}}
-              color="secondary"
-              variant='contained'
-              disabled={!dependenciesExist || (dependenciesExist && (selected === '' || selected === 'all')) || 
-                (dependenciesExist && selected !== '' && compositional && connectedComponents[selected.component_name][ccSelected]['result'] !== 'UNREALIZABLE') || 
-                  (selected !== '' && monolithic && status[selected.component_name] !== 'UNREALIZABLE')}>
-              Diagnose                             
-            </Button>
+            <div>
+              <Button 
+                onClick={(event) => {this.diagnoseSpec(event)}}
+                size="small" className={classes.vAlign}
+                style={{marginRight: '1%'}}
+                color="secondary"
+                variant='contained'
+                disabled={diagStatus === 'PROCESSING' || !dependenciesExist || (dependenciesExist && (selected === '' || selected === 'all')) || 
+                  (dependenciesExist && selected !== '' && compositional && connectedComponents[selected.component_name][ccSelected]['result'] !== 'UNREALIZABLE') || 
+                    (selected !== '' && monolithic && status[selected.component_name] !== 'UNREALIZABLE')}>
+                Diagnose                             
+              </Button>
+              {diagStatus === 'PROCESSING' && <CircularProgress size={24} className={classes.buttonProgress}/>}
+            </div>
             <Button disabled size="small" className={classes.vAlign} style={{marginRight: '1%'}} variant="contained"> Export </Button>              
-            <Button size="small" className={classes.vAlign} variant="contained"> Help </Button>
+            <Button size="small" className={classes.vAlign} variant="contained"> Help </Button>*/}
+            <div style={{width : '100%'}}>
             {selected !== '' && selected !== 'all' &&
               <div className={classes.root}>
                 &nbsp;
@@ -1337,7 +1489,16 @@ class RealizabilityContent extends React.Component {
                     <TabContainer>
                       <DiagnosisProvider>
                         <div>
-                          {connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'] === 'DIAGNOSED' ? 
+                          {diagStatus === 'DIAGNOSED' ? 
+                            (<Fade in={diagStatus === 'DIAGNOSED'}>
+                              <div>
+                                {[...Array(2)].map((e, i) => <div> &nbsp; </div>)}
+                                <ChordDiagram selectedReport = {diagReport}/>
+                                &nbsp;
+                              </div>
+                            </Fade>) : <div/>
+                          }                        
+{/*                          {connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'] === 'DIAGNOSED' ? 
                             (<Fade in={connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'] === 'DIAGNOSED'}>
                               <div>
                                 {[...Array(2)].map((e, i) => <div> &nbsp; </div>)}
@@ -1345,7 +1506,7 @@ class RealizabilityContent extends React.Component {
                                 &nbsp;
                               </div>
                             </Fade>) : <div/>
-                          }
+                          }*/}
                           <DiagnosisRequirementsTable selectedProject={selectedProject} existingProjectNames={[selectedProject]} connectedComponent={connectedComponents[selected.component_name][ccSelected]}/>
                         </div>
                       </DiagnosisProvider>
@@ -1355,7 +1516,16 @@ class RealizabilityContent extends React.Component {
                   {monolithic &&
                     <DiagnosisProvider>
                       <div>
-                        {diagnosisStatus[selected.component_name] === 'DIAGNOSED' ? 
+                        {diagStatus === 'DIAGNOSED' ? 
+                          (<Fade in={diagStatus === 'DIAGNOSED'}>
+                            <div>
+                              {[...Array(2)].map((e, i) => <div> &nbsp; </div>)}
+                              <ChordDiagram selectedReport = {diagReport}/>
+                              &nbsp;
+                            </div>
+                          </Fade>) : <div/>
+                        }                      
+                        {/*{diagnosisStatus[selected.component_name] === 'DIAGNOSED' ? 
                           (<Fade in={diagnosisStatus[selected.component_name] === 'DIAGNOSED'}>
                             <div>
                               {[...Array(2)].map((e, i) => <div> &nbsp; </div>)}
@@ -1373,7 +1543,7 @@ class RealizabilityContent extends React.Component {
                             >
                               <CircularProgress style={{alignItems : 'center'}} size={50}/>
                             </Fade> : <div/>)
-                        }
+                        }*/}
                         <DiagnosisRequirementsTable selectedProject={selectedProject} existingProjectNames={[selectedProject]} connectedComponent={{}}/>
                       </div>                                        
                     </DiagnosisProvider>
@@ -1384,6 +1554,7 @@ class RealizabilityContent extends React.Component {
             {selected === 'all' &&
               <ProjectSummary selectedProject={selectedProject} components={components} compositional={compositional} monolithicStatus={monolithicStatus} compositionalStatus={compositionalStatus} connectedComponents={connectedComponents} time={time}/>
             }
+            </div>
           </div>
         }  
       </div>

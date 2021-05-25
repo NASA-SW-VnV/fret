@@ -87,9 +87,7 @@ class DiagnosisEngine {
     var checkOutput;
     var localMap = new Map();
     // try {
-    if (!fs.existsSync(this.tmppath)) {
-      fs.mkdirSync(this.tmppath);
-    }
+
     for (let eng in this.engines) {
       var propertyList = this.engines[eng].properties.map(p => p.reqid);
       var filePath = this.tmppath+this.engines[eng].componentName+'.lus';
@@ -385,7 +383,7 @@ class DiagnosisEngine {
     return combinedReport;
   }
 
-  main() {
+  main(callback) {
     this.labelRootNode();
     while(this.unlabeled.length !== 0) {
       var hsNode = this.reuseLabelorCloseNode(this.unlabeled[0]);
@@ -458,7 +456,8 @@ class DiagnosisEngine {
     // }
 
     if (this.minConflicts.length === 0) {
-      return ["REALIZABLE", []];
+      // return ["REALIZABLE", []];
+      callback(["REALIZABLE", []])
     } else {
       for (const [conflKey, conflValue] of this.minConflicts.entries()) {
         var confList = conflValue;
@@ -470,8 +469,8 @@ class DiagnosisEngine {
 
       this.runEnginesAndGatherResults(true);
       this.computeDiagnoses();
-      
-      return ["UNREALIZABLE", this.combineReports()];
+      callback(["UNREALIZABLE", this.combineReports()])
+      // return ["UNREALIZABLE", this.combineReports()];
     }
   }
 }
