@@ -298,7 +298,7 @@ class ComponentSummary extends React.Component {
     const self = this;
     var filepath = dialog.showSaveDialog({
           defaultPath : homeDir,
-          title : 'Export CoCoSpec code',
+          title : 'Export specification',
           buttonLabel : 'Export',
           filters: [
             { name: "Documents", extensions: ['zip'] }
