@@ -1358,99 +1358,6 @@ class RealizabilityContent extends React.Component {
             <div className={classes.wrapper}>
             <Button size="small" className={classes.vAlign} variant="contained"> Help </Button>
             </div>
-{/*
-            <FormControl className={classes.formControl} required>
-              <InputLabel>System Component</InputLabel>
-              <Select                  
-                value={selected}                
-                onChange={this.handleChange('selected')}
-              > 
-                  {menuItems.concat(stableSort(components, getSorting(order, orderBy))
-                    .map(n => {
-                    return (
-                      <Tooltip 
-                        key={n.component_name}
-                        value={!this.isComponentComplete(n.component_name) ? '' : n} 
-                        title={!this.isComponentComplete(n.component_name) ? 'Analysis is not possible for this component. Please complete mandatory variable fields in Variable Mapping first.' : ''}>
-                          <span>
-                          <MenuItem disabled={!this.isComponentComplete(n.component_name)}>                        
-                            <div style={{display : 'flex', alignItems : 'center', flexWrap : 'wrap'}}>
-                              {n.component_name}
-                              &nbsp;
-                              &nbsp;
-                              <ResultIcon result={status[n.component_name] !== undefined ? status[n.component_name] : ''} time={(monolithic && time[n.component_name] !== undefined) ? ' - ' + time[n.component_name] : ''}/>
-                            </div>
-                          </MenuItem>
-                          </span>
-                      </Tooltip>
-                      )
-                  }))}
-              </Select>
-            </FormControl>
-            <FormControlLabel
-              disabled={selected === '' || (selected !== 'all' && Object.keys(connectedComponents[selected.component_name]).length === 1)}
-              className={classes.vAlign}
-              control={
-                <Checkbox
-                  checked={compositional}
-                  onChange={this.handleChange('compositional')}
-                  value="compositional"
-                  color="primary"
-                  style={{paddingBottom: '0px'}}
-                />
-              }
-              style={{alignItems: 'flex-end'}}
-              label="Compositional"                
-            />
-            <FormControlLabel
-              disabled={selected === ''}
-              className={classes.vAlign}
-              control={
-                <Checkbox
-                  checked={monolithic}
-                  onChange={this.handleChange('monolithic')}
-                  value="monolithic"
-                  color="primary"
-                  style={{paddingBottom: '0px'}}
-                />
-              }
-              style={{alignItems: 'flex-end', marginRight: '41%'}}
-              label="Monolithic"                
-            />
-            {!dependenciesExist &&
-              <Tooltip title={"Dependencies missing for realizability checking : " + missingDependencies.toString()+'. See help for details.'}>
-                <ErrorIcon style={{verticalAlign : 'bottom', marginRight: '1%'}} color='error'/>
-              </Tooltip>
-            }
-            <TextField
-              className={classes.vAlign}
-              disabled={selected === ''}
-              id="timeout-value"
-              label="Timeout (seconds)"
-              value={this.state.timeout}
-              onChange={this.handleTimeoutChange}
-              type="number"
-              style={{width:150, marginRight:'1%'}}              
-            />
-            <Button onClick={(event) => {this.checkRealizability(event)}} size="small" className={classes.vAlign} style={{marginRight: '1%'}} color="secondary" variant='contained' disabled={status === 'PROCESSING' || !dependenciesExist || (dependenciesExist && selected === '')}>
-              Check                              
-            </Button>
-            <div>
-              <Button 
-                onClick={(event) => {this.diagnoseSpec(event)}}
-                size="small" className={classes.vAlign}
-                style={{marginRight: '1%'}}
-                color="secondary"
-                variant='contained'
-                disabled={diagStatus === 'PROCESSING' || !dependenciesExist || (dependenciesExist && (selected === '' || selected === 'all')) || 
-                  (dependenciesExist && selected !== '' && compositional && connectedComponents[selected.component_name][ccSelected]['result'] !== 'UNREALIZABLE') || 
-                    (selected !== '' && monolithic && status[selected.component_name] !== 'UNREALIZABLE')}>
-                Diagnose                             
-              </Button>
-              {diagStatus === 'PROCESSING' && <CircularProgress size={24} className={classes.buttonProgress}/>}
-            </div>
-            <Button disabled size="small" className={classes.vAlign} style={{marginRight: '1%'}} variant="contained"> Export </Button>              
-            <Button size="small" className={classes.vAlign} variant="contained"> Help </Button>*/}
             <div style={{width : '100%'}}>
             {selected !== '' && selected !== 'all' &&
               <div className={classes.root}>
@@ -1488,15 +1395,6 @@ class RealizabilityContent extends React.Component {
                               </div>
                             </Fade>) : <div/>
                           }                        
-{/*                          {connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'] === 'DIAGNOSED' ? 
-                            (<Fade in={connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'] === 'DIAGNOSED'}>
-                              <div>
-                                {[...Array(2)].map((e, i) => <div> &nbsp; </div>)}
-                                <ChordDiagram selectedReport = {connectedComponents[selected.component_name][ccSelected]['diagnosisReport']}/>
-                                &nbsp;
-                              </div>
-                            </Fade>) : <div/>
-                          }*/}
                           <DiagnosisRequirementsTable selectedProject={selectedProject} existingProjectNames={[selectedProject]} connectedComponent={connectedComponents[selected.component_name][ccSelected]}/>
                         </div>
                       </DiagnosisProvider>
@@ -1515,25 +1413,6 @@ class RealizabilityContent extends React.Component {
                             </div>
                           </Fade>) : <div/>
                         }                      
-                        {/*{diagnosisStatus[selected.component_name] === 'DIAGNOSED' ? 
-                          (<Fade in={diagnosisStatus[selected.component_name] === 'DIAGNOSED'}>
-                            <div>
-                              {[...Array(2)].map((e, i) => <div> &nbsp; </div>)}
-                              <ChordDiagram selectedReport = {diagnosisReports[selected.component_name]}/>
-                              &nbsp;
-                            </div>
-                          </Fade>) : 
-                          (diagnosisStatus[selected.component_name] === 'PROCESSING' ? 
-                            <Fade
-                            in={diagnosisStatus[selected.component_name] === 'PROCESSING'}
-                            style={{
-                              transitionDelay: diagnosisStatus[selected.component_name] === 'PROCESSING' ? '800ms' : '0ms',
-                            }}
-                            unmountOnExit
-                            >
-                              <CircularProgress style={{alignItems : 'center'}} size={50}/>
-                            </Fade> : <div/>)
-                        }*/}
                         <DiagnosisRequirementsTable selectedProject={selectedProject} existingProjectNames={[selectedProject]} connectedComponent={{}}/>
                       </div>                                        
                     </DiagnosisProvider>
