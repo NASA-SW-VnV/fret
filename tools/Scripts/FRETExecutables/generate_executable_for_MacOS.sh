@@ -12,7 +12,10 @@ cd fret
 cd fret-electron
 mv docs app
 mv ../tools app
-mv analysis app
+#analysis folder has been introduced with the realizability branch. Check if it exists.
+if [ -d "analysis" ]; then
+	mv analysis app;
+fi
 
 
 #When running sed in macOS I experienced the following error:
@@ -45,7 +48,7 @@ if test -f "$FILEDE"; then
  mv analysis/DiagnosisEngine.js x.js;
  sed -e 's+\./analysis/tmp/+app/analysis/tmp+' x.js > analysis/DiagnosisEngine.js
  rm x.js
-if
+fi
 
 mv package.json x.json;
 sed -e 's+\.\./\.\./tools/LTLSIM+tools/LTLSIM+' x.json >package.json
@@ -82,4 +85,4 @@ npx electron-packager .
 
 
 #Wrap MAC-OS executable
-tar zcvf ~/Desktop/FRET_PACK_05112021.tgz FRET-darwin-x64/
+tar zcvf ~/Desktop/FRET_PACK-darwin-x64/
