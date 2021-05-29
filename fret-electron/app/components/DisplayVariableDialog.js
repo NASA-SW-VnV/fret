@@ -139,6 +139,7 @@ class DisplayVariableDialog extends React.Component {
         [name]: event.target.value,
         errorsCopilot: resultCopilot.parseErrors ? 'Parse Errors: '+ resultCopilot.parseErrors : '',
         //TODO: Update variables for Copilot
+        variables: resultCopilot.variables ? resultCopilot.variables : ''
       });
     } else if (name === 'moduleName' || name ==='description'){
       this.setState({
@@ -149,7 +150,9 @@ class DisplayVariableDialog extends React.Component {
       this.setState({
         [name]: event.target.value,
         //TODO: Show error message
-        errorsLustre: resultLustre.parseErrors ? 'Parse Errors: '+ resultLustre.parseErrors : ''
+        //TODO: Copilot assignment?
+        errorsLustre: resultLustre.parseErrors ? 'Parse Errors: '+ resultLustre.parseErrors : '',
+        variables: resultLustre.variables ? resultLustre.variables : ''
       });
     }
   };
@@ -169,80 +172,80 @@ class DisplayVariableDialog extends React.Component {
     var completedVariable = false;
 
     //Check if variables are already in the model db. If yes, add modeldbid in the otherDeps array.
-    if(variables.length != 0){
-      variables.forEach(function(v){
-        modeldb.find({
-              selector: {
-                _id: selectedVariable.project + selectedVariable.component_name + v,
-              }
-            }).then(function(result){
-              if(result.docs.length == 0){
-                var otherDeps = [modeldbid];
-                modeldb.put({
-                  _id: selectedVariable.project + selectedVariable.component_name + v,
-                  project: selectedVariable.project,
-                  component_name: selectedVariable.component_name,
-                  variable_name: v,
-                  reqs: selectedVariable.reqs,
-                  otherDeps: [modeldbid],
-                  dataType: '',
-                  idType: '',
-                  description: '',
-                  moduleName: '',
-                  assignment: '',
-                  copilotAssignment: '',
-                  modeRequirement: '',
-                  modeldoc: false,
-                  modeldoc_id: '',
-                  modelComponent: '',
-                  completed: false
-                  }).then(function (response) {
-                    console.log(response);
-                  }).catch(function (err){
-                    console.log(err);
-                  })
-              } else if (result.docs.length == 1){
-                //If it already exists check if otherDeps contains the right dependencies
-                var doc = result.docs[0];
-                if(!doc.otherDeps.includes(modeldbid)){
-                  var otherDeps = doc.otherDeps;
-                  otherDeps.push(modeldbid);
-                  modeldb.put({
-                    _id: doc._id,
-                    _rev: doc._rev,
-                    project: doc.project,
-                    variable_name: doc.variable_name,
-                    component_name: doc.component_name,
-                    reqs: doc.reqs,
-                    otherDeps: otherDeps,
-                    dataType: doc.dataType,
-                    idType: doc.idType,
-                    moduleName: doc.moduleName,
-                    description: doc.description,
-                    assignment: doc.assignment,
-                    copilotAssignment: doc.copilotAssignment,
-                    modeRequirement: doc.modeRequirement,
-                    modeldoc: doc.modeldoc,
-                    modeldoc_id: doc.modeldoc_id,
-                    modelComponent: doc.modelComponent,
-                    completed: doc.completed
-                  }).then(function (response) {
-                    console.log(response);
-                  }).catch(function (err){
-                    console.log(err);
-                  })
-                  modeldb.find({
-                        selector: {
-                          _id: doc._id,
-                        }
-                      }).then(function(result){
-                        console.log(result);
-                  });
-                }
-              }
-            });
-        })
-    }
+    // if(variables.length != 0){
+    //   variables.forEach(function(v){
+    //     modeldb.find({
+    //           selector: {
+    //             _id: selectedVariable.project + selectedVariable.component_name + v,
+    //           }
+    //         }).then(function(result){
+    //           if(result.docs.length == 0){
+    //             var otherDeps = [modeldbid];
+    //             modeldb.put({
+    //               _id: selectedVariable.project + selectedVariable.component_name + v,
+    //               project: selectedVariable.project,
+    //               component_name: selectedVariable.component_name,
+    //               variable_name: v,
+    //               reqs: selectedVariable.reqs,
+    //               otherDeps: [modeldbid],
+    //               dataType: '',
+    //               idType: '',
+    //               description: '',
+    //               moduleName: '',
+    //               assignment: '',
+    //               copilotAssignment: '',
+    //               modeRequirement: '',
+    //               modeldoc: false,
+    //               modeldoc_id: '',
+    //               modelComponent: '',
+    //               completed: false
+    //               }).then(function (response) {
+    //                 console.log(response);
+    //               }).catch(function (err){
+    //                 console.log(err);
+    //               })
+    //           } else if (result.docs.length == 1){
+    //             //If it already exists check if otherDeps contains the right dependencies
+    //             var doc = result.docs[0];
+    //             if(!doc.otherDeps.includes(modeldbid)){
+    //               var otherDeps = doc.otherDeps;
+    //               otherDeps.push(modeldbid);
+    //               modeldb.put({
+    //                 _id: doc._id,
+    //                 _rev: doc._rev,
+    //                 project: doc.project,
+    //                 variable_name: doc.variable_name,
+    //                 component_name: doc.component_name,
+    //                 reqs: doc.reqs,
+    //                 otherDeps: otherDeps,
+    //                 dataType: doc.dataType,
+    //                 idType: doc.idType,
+    //                 moduleName: doc.moduleName,
+    //                 description: doc.description,
+    //                 assignment: doc.assignment,
+    //                 copilotAssignment: doc.copilotAssignment,
+    //                 modeRequirement: doc.modeRequirement,
+    //                 modeldoc: doc.modeldoc,
+    //                 modeldoc_id: doc.modeldoc_id,
+    //                 modelComponent: doc.modelComponent,
+    //                 completed: doc.completed
+    //               }).then(function (response) {
+    //                 console.log(response);
+    //               }).catch(function (err){
+    //                 console.log(err);
+    //               })
+    //               modeldb.find({
+    //                     selector: {
+    //                       _id: doc._id,
+    //                     }
+    //                   }).then(function(result){
+    //                     console.log(result);
+    //               });
+    //             }
+    //           }
+    //         });
+    //     })
+    // }
       /*
        For each Variable Type we need the following:
         Mode -> Mode Requirement
@@ -428,11 +431,11 @@ class DisplayVariableDialog extends React.Component {
                       >
                         <em>None</em>
                       </MenuItem>
-                      <MenuItem value="boolean">boolean</MenuItem>
-                      <MenuItem value="int*">int*</MenuItem>
+                      <MenuItem value="boolean" >boolean</MenuItem>
+                      <MenuItem value="integer" >integer</MenuItem>
+                      <MenuItem value="unsigned integer" >unsigned integer</MenuItem>
                       <MenuItem value="single">single</MenuItem>
                       <MenuItem value="double">double</MenuItem>
-                      <MenuItem value="enum">enum</MenuItem>
                     </Select>
                   </FormControl>
                 :
@@ -773,9 +776,10 @@ class DisplayVariableDialog extends React.Component {
                     <em>None</em>
                   </MenuItem>
                   <MenuItem value="boolean" >boolean</MenuItem>
-                  <MenuItem value="int*" >integer</MenuItem>
-                  <MenuItem value="single">unsigned integer</MenuItem>
-                  <MenuItem value="double">real</MenuItem>
+                  <MenuItem value="integer" >integer</MenuItem>
+                  <MenuItem value="unsigned integer" >unsigned integer</MenuItem>
+                  <MenuItem value="single">single</MenuItem>
+                  <MenuItem value="double">double</MenuItem>
                 </Select>
               </FormControl>
               <div>
@@ -912,9 +916,10 @@ class DisplayVariableDialog extends React.Component {
                     <em>None</em>
                   </MenuItem>
                   <MenuItem value="boolean" >boolean</MenuItem>
-                  <MenuItem value="int*" >integer</MenuItem>
-                  <MenuItem value="single">unsigned integer</MenuItem>
-                  <MenuItem value="double">real</MenuItem>
+                  <MenuItem value="integer" >integer</MenuItem>
+                  <MenuItem value="unsigned integer" >unsigned integer</MenuItem>
+                  <MenuItem value="single">single</MenuItem>
+                  <MenuItem value="double">double</MenuItem>
                 </Select>
               </FormControl>
               <div>
@@ -972,6 +977,11 @@ class DisplayVariableDialog extends React.Component {
             </Button>
           </DialogActions>
           </Dialog>
+          <NewVariableDialog
+            open={this.state.newVariableDialogOpen}
+            requirementsToBeDeleted={this.variables}
+            handleDialogClose={this.handleNewVariableDialogClose}
+          />
         </div>
 
       );
@@ -1062,9 +1072,10 @@ class DisplayVariableDialog extends React.Component {
                     <em>None</em>
                   </MenuItem>
                   <MenuItem value="boolean" >boolean</MenuItem>
-                  <MenuItem value="int*" >integer</MenuItem>
-                  <MenuItem value="single">unsigned integer</MenuItem>
-                  <MenuItem value="double">real</MenuItem>
+                  <MenuItem value="integer" >integer</MenuItem>
+                  <MenuItem value="unsigned integer" >unsigned integer</MenuItem>
+                  <MenuItem value="single">single</MenuItem>
+                  <MenuItem value="double">double</MenuItem>
                 </Select>
               </FormControl>
               <div>
@@ -1211,9 +1222,10 @@ class DisplayVariableDialog extends React.Component {
                     <em>None</em>
                   </MenuItem>
                   <MenuItem value="boolean" >boolean</MenuItem>
-                  <MenuItem value="int*" >integer</MenuItem>
-                  <MenuItem value="single">unsigned integer</MenuItem>
-                  <MenuItem value="double">real</MenuItem>
+                  <MenuItem value="integer" >integer</MenuItem>
+                  <MenuItem value="unsigned integer" >unsigned integer</MenuItem>
+                  <MenuItem value="single">single</MenuItem>
+                  <MenuItem value="double">double</MenuItem>
                 </Select>
               </FormControl>
               <div>
@@ -1371,9 +1383,10 @@ class DisplayVariableDialog extends React.Component {
                     <em>None</em>
                   </MenuItem>
                   <MenuItem value="boolean" >boolean</MenuItem>
-                  <MenuItem value="int*" >integer</MenuItem>
-                  <MenuItem value="single">unsigned integer</MenuItem>
-                  <MenuItem value="double">real</MenuItem>
+                  <MenuItem value="integer" >integer</MenuItem>
+                  <MenuItem value="unsigned integer" >unsigned integer</MenuItem>
+                  <MenuItem value="single">single</MenuItem>
+                  <MenuItem value="double">double</MenuItem>
                 </Select>
               </FormControl>
               <div>
@@ -1523,9 +1536,10 @@ class DisplayVariableDialog extends React.Component {
                     <em>None</em>
                   </MenuItem>
                   <MenuItem value="boolean" >boolean</MenuItem>
-                  <MenuItem value="int*" >integer</MenuItem>
-                  <MenuItem value="single">unsigned integer</MenuItem>
-                  <MenuItem value="double">real</MenuItem>
+                  <MenuItem value="integer" >integer</MenuItem>
+                  <MenuItem value="unsigned integer" >unsigned integer</MenuItem>
+                  <MenuItem value="single">single</MenuItem>
+                  <MenuItem value="double">double</MenuItem>
                 </Select>
               </FormControl>
               <div>
@@ -1675,9 +1689,10 @@ class DisplayVariableDialog extends React.Component {
                     <em>None</em>
                   </MenuItem>
                   <MenuItem value="boolean" >boolean</MenuItem>
-                  <MenuItem value="int*" >integer</MenuItem>
-                  <MenuItem value="single">unsigned integer</MenuItem>
-                  <MenuItem value="double">real</MenuItem>
+                  <MenuItem value="integer" >integer</MenuItem>
+                  <MenuItem value="unsigned integer" >unsigned integer</MenuItem>
+                  <MenuItem value="single">single</MenuItem>
+                  <MenuItem value="double">double</MenuItem>
                 </Select>
               </FormControl>
               <div>
@@ -1838,9 +1853,10 @@ class DisplayVariableDialog extends React.Component {
                     <em>None</em>
                   </MenuItem>
                   <MenuItem value="boolean" >boolean</MenuItem>
-                  <MenuItem value="int*" >integer</MenuItem>
-                  <MenuItem value="single">unsigned integer</MenuItem>
-                  <MenuItem value="double">real</MenuItem>
+                  <MenuItem value="integer" >integer</MenuItem>
+                  <MenuItem value="unsigned integer" >unsigned integer</MenuItem>
+                  <MenuItem value="single" >single</MenuItem>
+                  <MenuItem value="double" >double</MenuItem>
                 </Select>
               </FormControl>
               <div>
@@ -2001,9 +2017,10 @@ class DisplayVariableDialog extends React.Component {
                     <em>None</em>
                   </MenuItem>
                   <MenuItem value="boolean" >boolean</MenuItem>
-                  <MenuItem value="int*" >integer</MenuItem>
-                  <MenuItem value="single">unsigned integer</MenuItem>
-                  <MenuItem value="double">real</MenuItem>
+                  <MenuItem value="integer" >integer</MenuItem>
+                  <MenuItem value="unsigned integer" >unsigned integer</MenuItem>
+                  <MenuItem value="single" >single</MenuItem>
+                  <MenuItem value="double" >double</MenuItem>
                 </Select>
               </FormControl>
               <div>

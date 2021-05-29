@@ -257,8 +257,6 @@ class ComponentSummary extends React.Component {
       return 'int';
     } else if (dataType === 'double' || 'single'){
       return 'real';
-    } else if (dataType === 'enum'){
-      return 'enum';
     }
   }
 
@@ -329,13 +327,13 @@ class ComponentSummary extends React.Component {
             modeldoc: false
           }
         }).then(function (modelResult){
-          var contract = self.getContractInfo(modelResult);
+          let contract = self.getContractInfo(modelResult);
           contract.componentName = component+'Spec';
-          var variableMapping = self.getMappingInfo(modelResult, contract.componentName);
           archive.pipe(output);
-          if (language === 'cocospec')
+          if (language === 'cocospec'){
+            var variableMapping = self.getMappingInfo(modelResult, contract.componentName);
             archive.append(JSON.stringify(variableMapping), {name: 'cocospecMapping'+component+'.json'});
-
+          }
           db.find({
             selector: {
               project: selectedProject
@@ -560,7 +558,7 @@ class VariablesView extends React.Component {
         modeldoc: false
       }
     }).then(function (result) {
-      if (result.docs.length >= dataAndModesLength && dataAndModesLength !== 0){
+      if (result.docs.length === dataAndModesLength && dataAndModesLength !== 0){
         if (!completedComponents.includes(component_name))
          completedComponents.push(component_name);
       } else {
