@@ -29,13 +29,13 @@ While typing the body of a requirement, FRET parses the requirement and recogniz
 
 3. Timing. The optional *timing* field specifies when the response shall happen, relative to the scope and condition.  Timing can be *immediately*, *eventually*, *always*, *never*, *within N time units*,  *for N time units*, or *after N time units*. The latter means that the response happens _N_ time units from the beginning of the requirement's period, and does not happen before that; i.e., does not happen for *N-1* time units after the beginning of the period. [Timing Help Menu](./examples/timing.md)
 
-**Note: Boolean expressions**
-
-The Boolean operators allowed in the Boolean expression condition and response fields are: `!` (negation), `&` (conjunction), `|` (disjunction), `xor` (exclusive or),  `->` (implication), `<->` (equivalence). An alternative for implication is `if p then q`. The numeric comparison operators are `=, !=, <, >, <=, >=`. The numeric operators are `+, -, *, /, mod`, and `^` (exponentiation). Numerical terms and predicates are in standard form; e.g., `f(x,y)`,  `p(x,y,z)`.
+> __Note:__ The Boolean operators allowed in the Boolean expression condition and response fields are: `!` (negation), `&` (conjunction), `|` (disjunction), `xor` (exclusive or),  `->` (implication), `<->` (equivalence). An alternative for implication is `if p then q`. The numeric comparison operators are `=, !=, <, >, <=, >=`. The numeric operators are `+, -, *, /, mod`, and `^` (exponentiation). Numerical terms and predicates are in standard form; e.g., `f(x,y)`,  `p(x,y,z)`.
 
 ### Templates tab
 
-Predefined templates simplify requirement writting to filling in required and optional fields.  You can access the *TEMPLATES* tab from the right pane on the *Create Requirement* or *Update Requirement* dialog.  Template for the following requirement types are available: *Change State*, *Process Command*, *Check Bounds*, *Set Diagnostic Flag*, and *Prescribe Format*.  Upon selecting a predefined template, a FRETish requirement appear in the editor with required and optional fields in bubles.  Replace the field bubles to define your requirement. An explanation of the predefined requirement type you selected and an example are shown in the *TEMPLATES* pane.  The following example is for the *Change State* template.
+Predefined templates simplify requirement writing to just filling fields.  You can access the *TEMPLATES* tab from the right pane on the *Create Requirement* or *Update Requirement* dialog.  A number of templates are already available in FRET: *Change State*, *Process Command*, *Check Bounds*, *Set Diagnostic Flag*, and *Prescribe Format*. More templates can be added on demand by the user as explained in [createTemplate](../creatingTemplates/createTemplate.md).
+
+Upon selecting a predefined template, a FRETish requirement appears in the editor with fields that need to be completed. For example, in the screenshot shown below, the *component*, *input_state*, *condition*, and *output_state* fields must be completed so that the requirement parses successfully.  An explanation of the chosen template and examples of how to instantiate the required fields are shown in the *TEMPLATES* pane.  
 
 ***
 
@@ -45,7 +45,9 @@ Predefined templates simplify requirement writting to filling in required and op
 
 ### Variable glossary tab
 
-You can access the *GLOSSARY* tab from the right pane on the *Create Requirement* or *Update Requirement* dialog.  After selecting a project, you can select a component in the selected project using the *Component* menu bar.  FRET then displays existing variables of the selected component.  These variables can be filtered by the variable type including *Mode*, *Inputs*, *Outputs* and *Internal* using check boxes under the *Component* menu bar.  
+FRET provides help to the user when writing requirements. For example, if a user wants to reuse a set of variables amongst the requirements of a specific project and has already entered some requirements, then FRET lists the variable names that were already used for these requirements in the *GLOSSARY* tab.
+
+You can access the *GLOSSARY* tab from the right pane on the *Create Requirement* or *Update Requirement* dialog.  After selecting a project, you can select a component in the selected project using the *Component* menu bar.  FRET then displays existing variables of the selected component.  These variables can be filtered by the variable type including *Mode*, *Inputs*, *Outputs* and *Internal* using check boxes under the *Component* menu bar.  *Undefined* is used for variables with no existing assigned type. The variable types can  be assigned through the [FRET analysis portal](../ExportingForAnalysis/analysis.md).
 
 ***
 
