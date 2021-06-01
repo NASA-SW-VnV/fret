@@ -29,8 +29,10 @@ As you open the FRET distribution, you shall see the following directory structu
 .
 ├── fret-electron
 ├── tools
-├── README.md
-└── LICENSE.pdf
+├── CONTRIBUTORS.md
+├── FRETDemo.md
+├── LICENSE.pdf
+└── README.md
 ```
 
 Here are the steps to install and start FRET:

@@ -17,6 +17,10 @@ FRET is a framework for the elicitation, formalization and understanding of requ
 * [Exporting for analysis](./ExportingForAnalysis/analysis.md)
 * [FRETish grammar](./fretishGrammar/index.html ':include width=100% height=800px')
 
+#### FRET Example Requirements
+
+We provide a set of example requirements that can be directly [imported](./user-interface/export&import/import.md) in FRET  in [FRETDemo.json](../../../FRETDemo.json)
+
 ## FRET Team
 
 [Dimitra Giannakopoulou](https://ti.arc.nasa.gov/profile/dimitra/), [Anastasia Mavridou](http://amavridou.com/), [Tom Pressburger](https://ti.arc.nasa.gov/profile/ttp/), [Johann Schumann](https://ti.arc.nasa.gov/profile/schumann/)
