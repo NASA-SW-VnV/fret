@@ -1,0 +1,656 @@
+[
+    {
+        "reqid": "FSM-002",
+        "parent_reqid": "",
+        "project": "Demo-FSM",
+        "rationale": "The autopilot shall change states from TRANSITION to STANDBY when the pilot is in control (standby).",
+        "fulltext": "FSM shall always satisfy if (standby & state = ap_transition_state) then STATE = ap_standby_state",
+        "semantics": {
+            "type": "nasa",
+            "scope": {
+                "type": "null"
+            },
+            "condition": "null",
+            "timing": "always",
+            "response": "satisfaction",
+            "variables": {
+                "regular": [
+                    "standby",
+                    "state",
+                    "ap_transition_state",
+                    "STATE",
+                    "ap_standby_state"
+                ],
+                "modes": []
+            },
+            "component_name": "FSM",
+            "componentTextRange": [
+                0,
+                2
+            ],
+            "timingTextRange": [
+                10,
+                15
+            ],
+            "post_condition": "(( standby & state = ap_transition_state ) => STATE = ap_standby_state)",
+            "responseTextRange": [
+                17,
+                96
+            ],
+            "ft": "(LAST V <b><i>(( standby & state = ap_transition_state ) -> STATE = ap_standby_state)</i></b>)",
+            "pt": "(H <b><i>(( standby & state = ap_transition_state ) -> STATE = ap_standby_state)</i></b>)",
+            "ftExpanded": "(LAST V <b><i>(( standby & state = ap_transition_state ) -> STATE = ap_standby_state)</i></b>)",
+            "ptExpanded": "(H <b><i>(( standby & state = ap_transition_state ) -> STATE = ap_standby_state)</i></b>)",
+            "component": "<b><i>FSM</i></b>",
+            "CoCoSpecCode": "(H((( standby and state = ap_transition_state ) => STATE = ap_standby_state)))",
+            "diagramVariables": "Response = <b><i>(( standby & state = ap_transition_state ) => STATE = ap_standby_state)</i></b>.",
+            "description": "ENFORCED: in the interval defined by the entire execution.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must hold at all time points between (and including) the trigger and the end of the interval.",
+            "diagram": "_media/user-interface/examples/svgDiagrams/null_null_always_satisfaction.svg"
+        },
+        "_id": "9bd61cd0-a851-11eb-b618-a1b9aef9ccb2"
+    },
+    {
+        "reqid": "FSM-005",
+        "parent_reqid": "",
+        "project": "Demo-FSM",
+        "rationale": "The autopilot shall change states from NOMINAL to STANDBYwhen the pilot is in control (standby).",
+        "fulltext": "FSM shall always satisfy if (state=ap_nominal_state & standby)  then STATE = ap_standby_state",
+        "semantics": {
+            "type": "nasa",
+            "scope": {
+                "type": "null"
+            },
+            "condition": "null",
+            "timing": "always",
+            "response": "satisfaction",
+            "variables": {
+                "regular": [
+                    "state",
+                    "ap_nominal_state",
+                    "standby",
+                    "STATE",
+                    "ap_standby_state"
+                ],
+                "modes": []
+            },
+            "component_name": "FSM",
+            "componentTextRange": [
+                0,
+                2
+            ],
+            "timingTextRange": [
+                10,
+                15
+            ],
+            "post_condition": "(( state = ap_nominal_state & standby ) => STATE = ap_standby_state)",
+            "responseTextRange": [
+                17,
+                92
+            ],
+            "ft": "(LAST V <b><i>(( state = ap_nominal_state & standby ) -> STATE = ap_standby_state)</i></b>)",
+            "pt": "(H <b><i>(( state = ap_nominal_state & standby ) -> STATE = ap_standby_state)</i></b>)",
+            "ftExpanded": "(LAST V <b><i>(( state = ap_nominal_state & standby ) -> STATE = ap_standby_state)</i></b>)",
+            "ptExpanded": "(H <b><i>(( state = ap_nominal_state & standby ) -> STATE = ap_standby_state)</i></b>)",
+            "component": "<b><i>FSM</i></b>",
+            "CoCoSpecCode": "(H((( state = ap_nominal_state and standby ) => STATE = ap_standby_state)))",
+            "diagramVariables": "Response = <b><i>(( state = ap_nominal_state & standby ) => STATE = ap_standby_state)</i></b>.",
+            "description": "ENFORCED: in the interval defined by the entire execution.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must hold at all time points between (and including) the trigger and the end of the interval.",
+            "diagram": "_media/user-interface/examples/svgDiagrams/null_null_always_satisfaction.svg"
+        },
+        "_id": "9bd643e0-a851-11eb-b618-a1b9aef9ccb2"
+    },
+    {
+        "reqid": "FSM-003",
+        "parent_reqid": "",
+        "project": "Demo-FSM",
+        "rationale": "The autopilot shall change states from TRANSITION to NOMINAL when the system is supported and sensor data is good.",
+        "fulltext": "FSM shall always satisfy if (state = ap_transition_state & good & supported) then STATE = ap_nominal_state",
+        "semantics": {
+            "type": "nasa",
+            "scope": {
+                "type": "null"
+            },
+            "condition": "null",
+            "timing": "always",
+            "response": "satisfaction",
+            "variables": {
+                "regular": [
+                    "state",
+                    "ap_transition_state",
+                    "good",
+                    "supported",
+                    "STATE",
+                    "ap_nominal_state"
+                ],
+                "modes": []
+            },
+            "component_name": "FSM",
+            "componentTextRange": [
+                0,
+                2
+            ],
+            "timingTextRange": [
+                10,
+                15
+            ],
+            "post_condition": "(( state = ap_transition_state & good & supported ) => STATE = ap_nominal_state)",
+            "responseTextRange": [
+                17,
+                105
+            ],
+            "ft": "(LAST V <b><i>(( state = ap_transition_state & good & supported ) -> STATE = ap_nominal_state)</i></b>)",
+            "pt": "(H <b><i>(( state = ap_transition_state & good & supported ) -> STATE = ap_nominal_state)</i></b>)",
+            "ftExpanded": "(LAST V <b><i>(( state = ap_transition_state & good & supported ) -> STATE = ap_nominal_state)</i></b>)",
+            "ptExpanded": "(H <b><i>(( state = ap_transition_state & good & supported ) -> STATE = ap_nominal_state)</i></b>)",
+            "component": "<b><i>FSM</i></b>",
+            "CoCoSpecCode": "(H((( state = ap_transition_state and good and supported ) => STATE = ap_nominal_state)))",
+            "diagramVariables": "Response = <b><i>(( state = ap_transition_state & good & supported ) => STATE = ap_nominal_state)</i></b>.",
+            "description": "ENFORCED: in the interval defined by the entire execution.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must hold at all time points between (and including) the trigger and the end of the interval.",
+            "diagram": "_media/user-interface/examples/svgDiagrams/null_null_always_satisfaction.svg"
+        },
+        "_id": "9bd69200-a851-11eb-b618-a1b9aef9ccb2"
+    },
+    {
+        "reqid": "FSM-008",
+        "parent_reqid": "",
+        "project": "Demo-FSM",
+        "rationale": "The autopilot shall change states from STANDBY to TRANSITION when the pilot is not in control (not standby)",
+        "fulltext": " FSM shall always satisfy if (state = ap_standby_state & !standby) then STATE = ap_transition_state",
+        "semantics": {
+            "type": "nasa",
+            "scope": {
+                "type": "null"
+            },
+            "condition": "null",
+            "timing": "always",
+            "response": "satisfaction",
+            "variables": {
+                "regular": [
+                    "state",
+                    "ap_standby_state",
+                    "standby",
+                    "STATE",
+                    "ap_transition_state"
+                ],
+                "modes": []
+            },
+            "component_name": "FSM",
+            "componentTextRange": [
+                0,
+                2
+            ],
+            "timingTextRange": [
+                10,
+                15
+            ],
+            "post_condition": "(( state = ap_standby_state & ! standby ) => STATE = ap_transition_state)",
+            "responseTextRange": [
+                17,
+                97
+            ],
+            "ft": "(LAST V <b><i>(( state = ap_standby_state & ! standby ) -> STATE = ap_transition_state)</i></b>)",
+            "pt": "(H <b><i>(( state = ap_standby_state & ! standby ) -> STATE = ap_transition_state)</i></b>)",
+            "ftExpanded": "(LAST V <b><i>(( state = ap_standby_state & ! standby ) -> STATE = ap_transition_state)</i></b>)",
+            "ptExpanded": "(H <b><i>(( state = ap_standby_state & ! standby ) -> STATE = ap_transition_state)</i></b>)",
+            "component": "<b><i>FSM</i></b>",
+            "CoCoSpecCode": "(H((( state = ap_standby_state and not standby ) => STATE = ap_transition_state)))",
+            "diagramVariables": "Response = <b><i>(( state = ap_standby_state & ! standby ) => STATE = ap_transition_state)</i></b>.",
+            "description": "ENFORCED: in the interval defined by the entire execution.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must hold at all time points between (and including) the trigger and the end of the interval.",
+            "diagram": "_media/user-interface/examples/svgDiagrams/null_null_always_satisfaction.svg"
+        },
+        "_id": "9bd6e020-a851-11eb-b618-a1b9aef9ccb2"
+    },
+    {
+        "reqid": "FSM-011",
+        "parent_reqid": "",
+        "project": "Demo-FSM",
+        "rationale": "The sensor shall change states from NOMINAL to TRANSITION when the autopilot is not requesting support (not request)",
+        "fulltext": "FSM shall always  satisfy if (senstate = sen_nominal_state & !request) then SENSTATE = sen_transition_state",
+        "semantics": {
+            "type": "nasa",
+            "scope": {
+                "type": "null"
+            },
+            "condition": "null",
+            "timing": "always",
+            "response": "satisfaction",
+            "variables": {
+                "regular": [
+                    "senstate",
+                    "sen_nominal_state",
+                    "request",
+                    "SENSTATE",
+                    "sen_transition_state"
+                ],
+                "modes": []
+            },
+            "component_name": "FSM",
+            "componentTextRange": [
+                0,
+                2
+            ],
+            "timingTextRange": [
+                10,
+                15
+            ],
+            "post_condition": "(( senstate = sen_nominal_state & ! request ) => SENSTATE = sen_transition_state)",
+            "responseTextRange": [
+                18,
+                106
+            ],
+            "ft": "(LAST V <b><i>(( senstate = sen_nominal_state & ! request ) -> SENSTATE = sen_transition_state)</i></b>)",
+            "pt": "(H <b><i>(( senstate = sen_nominal_state & ! request ) -> SENSTATE = sen_transition_state)</i></b>)",
+            "ftExpanded": "(LAST V <b><i>(( senstate = sen_nominal_state & ! request ) -> SENSTATE = sen_transition_state)</i></b>)",
+            "ptExpanded": "(H <b><i>(( senstate = sen_nominal_state & ! request ) -> SENSTATE = sen_transition_state)</i></b>)",
+            "component": "<b><i>FSM</i></b>",
+            "CoCoSpecCode": "(H((( senstate = sen_nominal_state and not request ) => SENSTATE = sen_transition_state)))",
+            "diagramVariables": "Response = <b><i>(( senstate = sen_nominal_state & ! request ) => SENSTATE = sen_transition_state)</i></b>.",
+            "description": "ENFORCED: in the interval defined by the entire execution.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must hold at all time points between (and including) the trigger and the end of the interval.",
+            "diagram": "_media/user-interface/examples/svgDiagrams/null_null_always_satisfaction.svg"
+        },
+        "_id": "9bd72e40-a851-11eb-b618-a1b9aef9ccb2"
+    },
+    {
+        "reqid": "FSM-009",
+        "parent_reqid": "",
+        "project": "Demo-FSM",
+        "rationale": "The autopilot shall change states from STANDBY to MANEUVER when a failure occurs (apfail)",
+        "fulltext": "FSM shall always satisfy if (state = ap_standby_state & apfail ) then STATE = ap_maneuver_state",
+        "semantics": {
+            "type": "nasa",
+            "scope": {
+                "type": "null"
+            },
+            "condition": "null",
+            "timing": "always",
+            "response": "satisfaction",
+            "variables": {
+                "regular": [
+                    "state",
+                    "ap_standby_state",
+                    "apfail",
+                    "STATE",
+                    "ap_maneuver_state"
+                ],
+                "modes": []
+            },
+            "component_name": "FSM",
+            "componentTextRange": [
+                0,
+                2
+            ],
+            "timingTextRange": [
+                10,
+                15
+            ],
+            "post_condition": "(( state = ap_standby_state & apfail ) => STATE = ap_maneuver_state)",
+            "responseTextRange": [
+                17,
+                94
+            ],
+            "ft": "(LAST V <b><i>(( state = ap_standby_state & apfail ) -> STATE = ap_maneuver_state)</i></b>)",
+            "pt": "(H <b><i>(( state = ap_standby_state & apfail ) -> STATE = ap_maneuver_state)</i></b>)",
+            "ftExpanded": "(LAST V <b><i>(( state = ap_standby_state & apfail ) -> STATE = ap_maneuver_state)</i></b>)",
+            "ptExpanded": "(H <b><i>(( state = ap_standby_state & apfail ) -> STATE = ap_maneuver_state)</i></b>)",
+            "component": "<b><i>FSM</i></b>",
+            "CoCoSpecCode": "(H((( state = ap_standby_state and apfail ) => STATE = ap_maneuver_state)))",
+            "diagramVariables": "Response = <b><i>(( state = ap_standby_state & apfail ) => STATE = ap_maneuver_state)</i></b>.",
+            "description": "ENFORCED: in the interval defined by the entire execution.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must hold at all time points between (and including) the trigger and the end of the interval.",
+            "diagram": "_media/user-interface/examples/svgDiagrams/null_null_always_satisfaction.svg"
+        },
+        "_id": "9bd7a370-a851-11eb-b618-a1b9aef9ccb2"
+    },
+    {
+        "reqid": "FSM-012",
+        "parent_reqid": "",
+        "project": "Demo-FSM",
+        "rationale": "The sensor shall change states from FAULT to TRANSITION when the autopilot is not requesting support (not request) and limits are not exceeded (not limits)",
+        "fulltext": "FSM shall  always  satisfy if (senstate = sen_fault_state & !request & !limits) then SENSTATE = sen_transition_state",
+        "semantics": {
+            "type": "nasa",
+            "scope": {
+                "type": "null"
+            },
+            "condition": "null",
+            "timing": "always",
+            "response": "satisfaction",
+            "variables": {
+                "regular": [
+                    "senstate",
+                    "sen_fault_state",
+                    "request",
+                    "limits",
+                    "SENSTATE",
+                    "sen_transition_state"
+                ],
+                "modes": []
+            },
+            "component_name": "FSM",
+            "componentTextRange": [
+                0,
+                2
+            ],
+            "timingTextRange": [
+                11,
+                16
+            ],
+            "post_condition": "(( senstate = sen_fault_state & ! request & ! limits ) => SENSTATE = sen_transition_state)",
+            "responseTextRange": [
+                19,
+                115
+            ],
+            "ft": "(LAST V <b><i>(( senstate = sen_fault_state & ! request & ! limits ) -> SENSTATE = sen_transition_state)</i></b>)",
+            "pt": "(H <b><i>(( senstate = sen_fault_state & ! request & ! limits ) -> SENSTATE = sen_transition_state)</i></b>)",
+            "ftExpanded": "(LAST V <b><i>(( senstate = sen_fault_state & ! request & ! limits ) -> SENSTATE = sen_transition_state)</i></b>)",
+            "ptExpanded": "(H <b><i>(( senstate = sen_fault_state & ! request & ! limits ) -> SENSTATE = sen_transition_state)</i></b>)",
+            "component": "<b><i>FSM</i></b>",
+            "CoCoSpecCode": "(H((( senstate = sen_fault_state and not request and not limits ) => SENSTATE = sen_transition_state)))",
+            "diagramVariables": "Response = <b><i>(( senstate = sen_fault_state & ! request & ! limits ) => SENSTATE = sen_transition_state)</i></b>.",
+            "description": "ENFORCED: in the interval defined by the entire execution.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must hold at all time points between (and including) the trigger and the end of the interval.",
+            "diagram": "_media/user-interface/examples/svgDiagrams/null_null_always_satisfaction.svg"
+        },
+        "_id": "9bd7ca80-a851-11eb-b618-a1b9aef9ccb2"
+    },
+    {
+        "reqid": "FSM-010",
+        "parent_reqid": "",
+        "project": "Demo-FSM",
+        "rationale": "The sensor shall change states from NOMINAL to FAULT when limits are exceeded",
+        "fulltext": "FSM shall always satisfy if (senstate = sen_nominal_state & limits) then SENSTATE = sen_fault_state",
+        "semantics": {
+            "type": "nasa",
+            "scope": {
+                "type": "null"
+            },
+            "condition": "null",
+            "timing": "always",
+            "response": "satisfaction",
+            "variables": {
+                "regular": [
+                    "senstate",
+                    "sen_nominal_state",
+                    "limits",
+                    "SENSTATE",
+                    "sen_fault_state"
+                ],
+                "modes": []
+            },
+            "component_name": "FSM",
+            "componentTextRange": [
+                0,
+                2
+            ],
+            "timingTextRange": [
+                10,
+                15
+            ],
+            "post_condition": "(( senstate = sen_nominal_state & limits ) => SENSTATE = sen_fault_state)",
+            "responseTextRange": [
+                17,
+                98
+            ],
+            "ft": "(LAST V <b><i>(( senstate = sen_nominal_state & limits ) -> SENSTATE = sen_fault_state)</i></b>)",
+            "pt": "(H <b><i>(( senstate = sen_nominal_state & limits ) -> SENSTATE = sen_fault_state)</i></b>)",
+            "ftExpanded": "(LAST V <b><i>(( senstate = sen_nominal_state & limits ) -> SENSTATE = sen_fault_state)</i></b>)",
+            "ptExpanded": "(H <b><i>(( senstate = sen_nominal_state & limits ) -> SENSTATE = sen_fault_state)</i></b>)",
+            "component": "<b><i>FSM</i></b>",
+            "CoCoSpecCode": "(H((( senstate = sen_nominal_state and limits ) => SENSTATE = sen_fault_state)))",
+            "diagramVariables": "Response = <b><i>(( senstate = sen_nominal_state & limits ) => SENSTATE = sen_fault_state)</i></b>.",
+            "description": "ENFORCED: in the interval defined by the entire execution.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must hold at all time points between (and including) the trigger and the end of the interval.",
+            "diagram": "_media/user-interface/examples/svgDiagrams/null_null_always_satisfaction.svg"
+        },
+        "_id": "9bd818a0-a851-11eb-b618-a1b9aef9ccb2"
+    },
+    {
+        "reqid": "FSM-013",
+        "parent_reqid": "",
+        "project": "Demo-FSM",
+        "rationale": "The sensor shall change states from TRANSITION to NOMINAL when the autopilot is requesting support (request) and the autopilot reports the correct active mode (mode)",
+        "fulltext": "FSM shall always satisfy if (senstate = sen_transition_state & request) then SENSTATE = sen_nominal_state",
+        "semantics": {
+            "type": "nasa",
+            "scope": {
+                "type": "null"
+            },
+            "condition": "null",
+            "timing": "always",
+            "response": "satisfaction",
+            "variables": {
+                "regular": [
+                    "senstate",
+                    "sen_transition_state",
+                    "request",
+                    "SENSTATE",
+                    "sen_nominal_state"
+                ],
+                "modes": []
+            },
+            "component_name": "FSM",
+            "componentTextRange": [
+                0,
+                2
+            ],
+            "timingTextRange": [
+                10,
+                15
+            ],
+            "post_condition": "(( senstate = sen_transition_state & request ) => SENSTATE = sen_nominal_state)",
+            "responseTextRange": [
+                17,
+                104
+            ],
+            "ft": "(LAST V <b><i>(( senstate = sen_transition_state & request ) -> SENSTATE = sen_nominal_state)</i></b>)",
+            "pt": "(H <b><i>(( senstate = sen_transition_state & request ) -> SENSTATE = sen_nominal_state)</i></b>)",
+            "ftExpanded": "(LAST V <b><i>(( senstate = sen_transition_state & request ) -> SENSTATE = sen_nominal_state)</i></b>)",
+            "ptExpanded": "(H <b><i>(( senstate = sen_transition_state & request ) -> SENSTATE = sen_nominal_state)</i></b>)",
+            "component": "<b><i>FSM</i></b>",
+            "CoCoSpecCode": "(H((( senstate = sen_transition_state and request ) => SENSTATE = sen_nominal_state)))",
+            "diagramVariables": "Response = <b><i>(( senstate = sen_transition_state & request ) => SENSTATE = sen_nominal_state)</i></b>.",
+            "description": "ENFORCED: in the interval defined by the entire execution.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must hold at all time points between (and including) the trigger and the end of the interval.",
+            "diagram": "_media/user-interface/examples/svgDiagrams/null_null_always_satisfaction.svg"
+        },
+        "_id": "9bd83fb0-a851-11eb-b618-a1b9aef9ccb2"
+    },
+    {
+        "reqid": "FSM-007",
+        "parent_reqid": "",
+        "project": "Demo-FSM",
+        "rationale": "The autopilot shall change states from PULLUP to TRANSITION when the system is supported and sensor data is good",
+        "fulltext": "FSM shall always satisfy if (state = ap_maneuver_state & supported & good) then STATE = ap_transition_state",
+        "semantics": {
+            "type": "nasa",
+            "scope": {
+                "type": "null"
+            },
+            "condition": "null",
+            "timing": "always",
+            "response": "satisfaction",
+            "variables": {
+                "regular": [
+                    "state",
+                    "ap_maneuver_state",
+                    "supported",
+                    "good",
+                    "STATE",
+                    "ap_transition_state"
+                ],
+                "modes": []
+            },
+            "component_name": "FSM",
+            "componentTextRange": [
+                0,
+                2
+            ],
+            "timingTextRange": [
+                10,
+                15
+            ],
+            "post_condition": "(( state = ap_maneuver_state & supported & good ) => STATE = ap_transition_state)",
+            "responseTextRange": [
+                17,
+                106
+            ],
+            "ft": "(LAST V <b><i>(( state = ap_maneuver_state & supported & good ) -> STATE = ap_transition_state)</i></b>)",
+            "pt": "(H <b><i>(( state = ap_maneuver_state & supported & good ) -> STATE = ap_transition_state)</i></b>)",
+            "ftExpanded": "(LAST V <b><i>(( state = ap_maneuver_state & supported & good ) -> STATE = ap_transition_state)</i></b>)",
+            "ptExpanded": "(H <b><i>(( state = ap_maneuver_state & supported & good ) -> STATE = ap_transition_state)</i></b>)",
+            "component": "<b><i>FSM</i></b>",
+            "CoCoSpecCode": "(H((( state = ap_maneuver_state and supported and good ) => STATE = ap_transition_state)))",
+            "diagramVariables": "Response = <b><i>(( state = ap_maneuver_state & supported & good ) => STATE = ap_transition_state)</i></b>.",
+            "description": "ENFORCED: in the interval defined by the entire execution.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must hold at all time points between (and including) the trigger and the end of the interval.",
+            "diagram": "_media/user-interface/examples/svgDiagrams/null_null_always_satisfaction.svg"
+        },
+        "_id": "9bd88dd0-a851-11eb-b618-a1b9aef9ccb2"
+    },
+    {
+        "reqid": "FSM-004",
+        "parent_reqid": "",
+        "project": "Demo-FSM",
+        "rationale": "",
+        "fulltext": "FSM shall always satisfy if (! good & state = ap_nominal_state) then STATE = ap_maneuver_state",
+        "semantics": {
+            "type": "nasa",
+            "scope": {
+                "type": "null"
+            },
+            "condition": "null",
+            "timing": "always",
+            "response": "satisfaction",
+            "variables": {
+                "regular": [
+                    "good",
+                    "state",
+                    "ap_nominal_state",
+                    "STATE",
+                    "ap_maneuver_state"
+                ],
+                "modes": []
+            },
+            "component_name": "FSM",
+            "componentTextRange": [
+                0,
+                2
+            ],
+            "timingTextRange": [
+                10,
+                15
+            ],
+            "post_condition": "(( ! good & state = ap_nominal_state ) => STATE = ap_maneuver_state)",
+            "responseTextRange": [
+                17,
+                93
+            ],
+            "ft": "(LAST V <b><i>(( ! good & state = ap_nominal_state ) -> STATE = ap_maneuver_state)</i></b>)",
+            "pt": "(H <b><i>(( ! good & state = ap_nominal_state ) -> STATE = ap_maneuver_state)</i></b>)",
+            "ftExpanded": "(LAST V <b><i>(( ! good & state = ap_nominal_state ) -> STATE = ap_maneuver_state)</i></b>)",
+            "ptExpanded": "(H <b><i>(( ! good & state = ap_nominal_state ) -> STATE = ap_maneuver_state)</i></b>)",
+            "component": "<b><i>FSM</i></b>",
+            "CoCoSpecCode": "(H((( not good and state = ap_nominal_state ) => STATE = ap_maneuver_state)))",
+            "diagramVariables": "Response = <b><i>(( ! good & state = ap_nominal_state ) => STATE = ap_maneuver_state)</i></b>.",
+            "description": "ENFORCED: in the interval defined by the entire execution.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must hold at all time points between (and including) the trigger and the end of the interval.",
+            "diagram": "_media/user-interface/examples/svgDiagrams/null_null_always_satisfaction.svg"
+        },
+        "_id": "9bd8dbf0-a851-11eb-b618-a1b9aef9ccb2"
+    },
+    {
+        "reqid": "FSM-001",
+        "parent_reqid": "",
+        "project": "Demo-FSM",
+        "rationale": "Exceeding sensor limits shall latch an autopilot pullup when the pilot is not in control (not standby) and the system is supported without failures (not apfail).",
+        "fulltext": "FSM  shall  always  satisfy if (limits & !standby & !apfail & supported) then pullup",
+        "semantics": {
+            "type": "nasa",
+            "scope": {
+                "type": "null"
+            },
+            "condition": "null",
+            "timing": "always",
+            "response": "satisfaction",
+            "variables": {
+                "regular": [
+                    "limits",
+                    "standby",
+                    "apfail",
+                    "supported",
+                    "pullup"
+                ],
+                "modes": []
+            },
+            "component_name": "FSM",
+            "componentTextRange": [
+                0,
+                2
+            ],
+            "timingTextRange": [
+                12,
+                17
+            ],
+            "post_condition": "(( limits & ! standby & ! apfail & supported ) => pullup)",
+            "responseTextRange": [
+                20,
+                83
+            ],
+            "ft": "(LAST V <b><i>(( limits & ! standby & ! apfail & supported ) -> pullup)</i></b>)",
+            "pt": "(H <b><i>(( limits & ! standby & ! apfail & supported ) -> pullup)</i></b>)",
+            "ftExpanded": "(LAST V <b><i>(( limits & ! standby & ! apfail & supported ) -> pullup)</i></b>)",
+            "ptExpanded": "(H <b><i>(( limits & ! standby & ! apfail & supported ) -> pullup)</i></b>)",
+            "component": "<b><i>FSM</i></b>",
+            "CoCoSpecCode": "(H((( limits and not standby and not apfail and supported ) => pullup)))",
+            "diagramVariables": "Response = <b><i>(( limits & ! standby & ! apfail & supported ) => pullup)</i></b>.",
+            "description": "ENFORCED: in the interval defined by the entire execution.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must hold at all time points between (and including) the trigger and the end of the interval.",
+            "diagram": "_media/user-interface/examples/svgDiagrams/null_null_always_satisfaction.svg"
+        },
+        "_id": "9bd90300-a851-11eb-b618-a1b9aef9ccb2"
+    },
+    {
+        "reqid": "FSM-006",
+        "parent_reqid": "",
+        "project": "Demo-FSM",
+        "rationale": "The autopilot shall change states from MANEUVER to STANDBY when the pilot is in control (standby) and sensor data is good",
+        "fulltext": "FSM shall always satisfy if (state = ap_maneuver_state & standby & good) then STATE = ap_standby_state",
+        "semantics": {
+            "type": "nasa",
+            "scope": {
+                "type": "null"
+            },
+            "condition": "null",
+            "timing": "always",
+            "response": "satisfaction",
+            "variables": {
+                "regular": [
+                    "state",
+                    "ap_maneuver_state",
+                    "standby",
+                    "good",
+                    "STATE",
+                    "ap_standby_state"
+                ],
+                "modes": []
+            },
+            "component_name": "FSM",
+            "componentTextRange": [
+                0,
+                2
+            ],
+            "timingTextRange": [
+                10,
+                15
+            ],
+            "post_condition": "(( state = ap_maneuver_state & standby & good ) => STATE = ap_standby_state)",
+            "responseTextRange": [
+                17,
+                101
+            ],
+            "ft": "(LAST V <b><i>(( state = ap_maneuver_state & standby & good ) -> STATE = ap_standby_state)</i></b>)",
+            "pt": "(H <b><i>(( state = ap_maneuver_state & standby & good ) -> STATE = ap_standby_state)</i></b>)",
+            "ftExpanded": "(LAST V <b><i>(( state = ap_maneuver_state & standby & good ) -> STATE = ap_standby_state)</i></b>)",
+            "ptExpanded": "(H <b><i>(( state = ap_maneuver_state & standby & good ) -> STATE = ap_standby_state)</i></b>)",
+            "component": "<b><i>FSM</i></b>",
+            "CoCoSpecCode": "(H((( state = ap_maneuver_state and standby and good ) => STATE = ap_standby_state)))",
+            "diagramVariables": "Response = <b><i>(( state = ap_maneuver_state & standby & good ) => STATE = ap_standby_state)</i></b>.",
+            "description": "ENFORCED: in the interval defined by the entire execution.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must hold at all time points between (and including) the trigger and the end of the interval.",
+            "diagram": "_media/user-interface/examples/svgDiagrams/null_null_always_satisfaction.svg"
+        },
+        "_id": "9bd92a10-a851-11eb-b618-a1b9aef9ccb2"
+    }
+]

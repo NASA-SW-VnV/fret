@@ -29,6 +29,10 @@ While typing the body of a requirement, FRET parses the requirement and recogniz
 
 3. Timing. The optional *timing* field specifies when the response shall happen, relative to the scope and condition.  Timing can be *immediately*, *eventually*, *always*, *never*, *within N time units*,  *for N time units*, or *after N time units*. The latter means that the response happens _N_ time units from the beginning of the requirement's period, and does not happen before that; i.e., does not happen for *N-1* time units after the beginning of the period. [Timing Help Menu](./examples/timing.md)
 
+**Note: Boolean expressions**
+
+The Boolean operators allowed in the Boolean expression condition and response fields are: `!` (negation), `&` (conjunction), `|` (disjunction), `xor` (exclusive or),  `->` (implication), `<->` (equivalence). An alternative for implication is `if p then q`. The numeric comparison operators are `=, !=, <, >, <=, >=`. The numeric operators are `+, -, *, /, mod`, and `^` (exponentiation). Numerical terms and predicates are in standard form; e.g., `f(x,y)`,  `p(x,y,z)`.
+
 ### Templates tab
 
 Predefined templates simplify requirement writting to filling in required and optional fields.  You can access the *TEMPLATES* tab from the right pane on the *Create Requirement* or *Update Requirement* dialog.  Template for the following requirement types are available: *Change State*, *Process Command*, *Check Bounds*, *Set Diagnostic Flag*, and *Prescribe Format*.  Upon selecting a predefined template, a FRETish requirement appear in the editor with required and optional fields in bubles.  Replace the field bubles to define your requirement. An explanation of the predefined requirement type you selected and an example are shown in the *TEMPLATES* pane.  The following example is for the *Change State* template.
@@ -65,19 +69,6 @@ The list of variables shown in the *GLOSSARY* tab is used to autocomplete when t
 
 ***
 
-**Note: Boolean expressions**
-
-The Boolean operators allowed in the Boolean expression condition and response fields are: ! (negation), & (conjunction), | (disjunction), xor (exclusive or),  -> (implication), <-> (equivalence). An alternative for implication is 'if p then q'. The numeric comparison operators are =, !=, <, >, <=, >=. The numeric operators are +, -, *, /, mod, and ^ (exponentiation). Numerical terms and predicates are in standard form; e.g., f(x,y),  p(x,y,z).
-
-**Note: Limitations of the current simulator**
-
-* The simulator will not work if the response or condition Boolean formulas contain any comparisons or terms ; e.g., not allowed: "y < x"; "p(x,y)". In other words, the Boolean formulas must be over atomic propositions; e.g., p -> q & ! r.
-
-* The simulator will not work if any of the following uppercase atomic propositions are in the boolean formulas:  
-A E F G H O S T U V X Y Z  
-AF AG AX BU EF EG EX   
-ABF ABG EBF EBG MAX MIN  
-LAST
 
 
 
