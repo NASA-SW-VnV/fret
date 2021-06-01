@@ -18,10 +18,12 @@ The LTLSIM tool is started from the requirements editor using the
 Note that
 * the SIMULATE button is only active after the `SEMANTICS` button has
 generated the temporal logic formulas for the requirement, and
-* the LTLSIM simulator and its underlying tool nuXMV is [installed properly](./installingFRET/installationInstructions.md). 
+* the LTLSIM simulator and its underlying tool nuXMV is [installed properly](./installingFRET/installationInstructions.md).
 
+***
 <img src="../screen_shots/ltlsim_reqeditor.png">
 
+***
 
 ## The LTLSIM Window
 The LTLSIM simulator has four major elements:
@@ -29,11 +31,12 @@ The LTLSIM simulator has four major elements:
 * the requirements field,
 * the variable traces, and
 * the output trace.
-
+***
 <img src="../screen_shots/ltlsim_main.png">
 
-The variable and output traces depict temporal traces of variables
-of the requirement, and a valuation of the formula, respectively.
+***
+
+The variable and output traces depict temporal traces of variables of the requirement, and a valuation of the formula, respectively.
 A trace length of 40 time steps is set by default.
 
 The variable traces can be modified interactively. Moving over a signal
@@ -54,8 +57,7 @@ a few moments. With default settings, the output trace is colored according to t
 
 The ID and the requirement text can be shown by clicking the
 down-arrow at the top of the inner window, labeled "Requirements in FRETish".
-The translated future time or past time formula is visible, when hovering
-over the name of the requirement to the left of the bottom trace.
+The translated future time or past time formula is visible, when hovering over the name of the requirement to the left of the bottom trace.
 
 ## LTLSIM control
 The LTLSIM tool is, by default, visualizing the future time formalization
@@ -81,7 +83,11 @@ propositions are used as Boolean formulas:
 
 As an example, we use the requirement:
 `When in takeoff, the AC shall within 10 seconds satisfy TAKEOFF`.
+***
 <img src="../screen_shots/ltlsim_SC1.png">
+
+***
+
 The Requirements Editor shows the temporal diagrams and can display the
 future-time or past-time formulas.
 
@@ -89,24 +95,41 @@ After opening the LTLSIM with `SIMULATE`, we first set the
 mode `takeoff` to be true between time steps 5 and 30.
 The requirement is violated in this case, because no `TAKEOFF` signal
 is present during this mode.
+***
 <img src="../screen_shots/ltlsim_SC2.png">
+
+***
 
 We now set the response `TAKEOFF` to start at time point 13. This
 makes the formula true.
+***
 <img src="../screen_shots/ltlsim_SC4.png">
+
+***
 
 If, on the other hand, the response signal comes too late, the
 requirement is not fulfilled. Here, the `TAKEOFF` signal only starts
 at t=21s. In this screen shot, we also turned off the overall
 formula valuation, reported as coloring of the bottom trace.
+***
 <img src="../screen_shots/ltlsim_SC5.png">
+
+***
 
 The next two diagrams show the LTLSIM for past time logic. Changing between
 the two logics is accomplished by clicking the small blue arrow on the top right
 of the LTLSIM window.
+
+***
 <img src="../screen_shots/ltlsim_SC6.png">
 
+***
+
 Here the response is coming in time.
+
+***
 <img src="../screen_shots/ltlsim_SC7.png">
+
+***
 
 [Back to FRET home page](../userManual.md)

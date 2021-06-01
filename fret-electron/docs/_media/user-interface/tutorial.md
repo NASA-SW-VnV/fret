@@ -3,7 +3,6 @@
 FRET's dashboard summarizes the status of your projects and provides a hierarchical view of all the requirements, as shown below. Prior to creating any projects, the dashboard will not have anything to display and will be blank.  
 
 ***
-
 <img src="../screen_shots/Dashboard.png">
 
 ***
