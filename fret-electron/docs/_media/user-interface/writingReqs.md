@@ -33,7 +33,7 @@ While typing the body of a requirement, FRET parses the requirement and recogniz
 
 ### Templates tab
 
-Predefined templates simplify requirement writing to just filling fields.  You can access the *TEMPLATES* tab from the right pane on the *Create Requirement* or *Update Requirement* dialog.  A number of templates are already available in FRET: *Change State*, *Process Command*, *Check Bounds*, *Set Diagnostic Flag*, and *Prescribe Format*. More templates can be added on demand by the user as explained in [createTemplate](../creatingTemplates/createTemplate.md).
+Predefined templates simplify requirement writing to just filling necessary fields. You can access the *TEMPLATES* tab from the right pane on the *Create Requirement* or *Update Requirement* dialog.  A number of templates are already available in FRET: *Change State*, *Process Command*, *Check Bounds*, *Set Diagnostic Flag*, and *Prescribe Format*. More templates can be added on demand by the users as explained in [createTemplate](../creatingTemplates/createTemplate.md).
 
 Upon selecting a predefined template, a FRETish requirement appears in the editor with fields that need to be completed. For example, in the screenshot shown below, the *component*, *input_state*, *condition*, and *output_state* fields must be completed so that the requirement parses successfully.  An explanation of the chosen template and examples of how to instantiate the required fields are shown in the *TEMPLATES* pane.  
 
