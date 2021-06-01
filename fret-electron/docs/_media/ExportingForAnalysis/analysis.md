@@ -1,6 +1,6 @@
 # Exporting to Analysis tools
 
-For analysis, FRET allows users to export requirements in formats that can be digested by other analysis tools. We have connected FRET with [CoCoSim](./cocosim.md) and [Copilot](./copilot.md) through the FRET analysis portal. We are also working on connected FRET with the [R2U2](./r2u2.md) tool.
+For analysis, FRET allows users to export requirements in formats that can be digested by other analysis tools. We have connected FRET with [CoCoSim](./cocosim.md) and [Copilot](./copilot.md) through the FRET analysis portal. 
 
 Below we present a step-by-step guide of the [FRET analysis portal](#fretanalysisportal).
 
