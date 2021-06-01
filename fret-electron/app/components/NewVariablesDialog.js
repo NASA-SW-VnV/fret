@@ -75,7 +75,7 @@ class NewVariablesDialog extends React.Component {
           <DialogTitle id="alert-dialog-title">{"New variables were introduced in the assignment of the internal variable: " + vnames.join(', ') + "?"}</DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              Please update the assignment to include existing variables.
+              Please update the expression to only include existing variables.
             </DialogContentText>
           </DialogContent>
           <DialogActions>
