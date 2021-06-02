@@ -17,13 +17,14 @@ As shown in the above screenshot, a user can use the following functions to crea
 * `addOption`: Provides input options for each field that must be instantiated by the user. Notice that multiple options can be added for each such field, e.g., condition has three options.
 * `addExample`: Provides an example of an instantiated requirement.
 
-Once a user has created a new templatetype, then they must execute under `fret-electron` the following in a terminal:
+Once a user has created a new template type, then they must execute in a terminal under `fret-electron`:
 1. `cd templates`
 2. `node basicTemplates`
 
-to create an updated `templates.json` file that is given as input to FRET in order to display the new templates in the FRET UI.
+to create an updated `templates.json` file that is given as input to FRET.
 
 The following screenshot shows how the **Change State** template is displayed in FRET.
+
 ***
 <img src="../screen_shots/TemplateExampleAfterEditor.png">
 
