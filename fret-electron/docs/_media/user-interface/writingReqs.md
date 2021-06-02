@@ -47,7 +47,7 @@ Upon selecting a predefined template, a FRETish requirement appears in the edito
 
 FRET provides help to the user when writing requirements. For example, if a user wants to reuse a set of variables amongst the requirements of a specific project and has already entered some requirements, then FRET lists the variable names that were already used for these requirements in the *GLOSSARY* tab.
 
-You can access the *GLOSSARY* tab from the right pane on the *Create Requirement* or *Update Requirement* dialog.  After selecting a project, you can select a component in the selected project using the *Component* menu bar.  FRET then displays existing variables of the selected component.  These variables can be filtered by the variable type including *Mode*, *Inputs*, *Outputs* and *Internal* using check boxes under the *Component* menu bar.  *Undefined* is used for variables with no existing assigned type. The variable types can  be assigned through the [FRET analysis portal](../ExportingForAnalysis/analysis.md).
+You can access the *GLOSSARY* tab from the right pane in the *Create Requirement* or *Update Requirement* dialog.  After selecting a project, you can select a component in the selected project using the *Component* menu bar. FRET then displays existing variables of the selected component. These variables can be filtered by the variable type including *Mode*, *Inputs*, *Outputs* and *Internal* using check boxes under the *Component* menu bar.  *Undefined* is used for variables with no existing assigned type. The variable types can  be assigned through the [FRET analysis portal](../ExportingForAnalysis/analysis.md).
 
 ***
 
