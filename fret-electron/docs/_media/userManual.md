@@ -19,7 +19,7 @@ FRET is a framework for the elicitation, formalization and understanding of requ
 
 #### FRET Example Requirements
 
-We provide a set of example requirements that can be directly [imported](./user-interface/export&import/import.md) in FRET  in [FRETDemo.json](../../../FRETDemo.json)
+We provide a set of example requirements that can be directly [imported](./user-interface/export&import/import.md) in FRET  in [FRETDemo.json](../../../tutorialExamples/FRETDemo.json)
 
 ## FRET Team
 

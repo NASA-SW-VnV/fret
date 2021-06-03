@@ -2,7 +2,7 @@
 
 ### Dependencies
 
- * [nodejs](https://nodejs.org/en/download/) [recommended v10.15.x]
+ * [NodeJS](https://nodejs.org/en/download/) (version >= v10.15.x, tests are performed on versions 10.15.x and 14.15.x)
  * Python 2.x
  * (Optional) [NuSMV](http://nusmv.fbk.eu/)
 
@@ -14,8 +14,8 @@ As you open the FRET distribution, you shall see the following directory structu
 .
 ├── fret-electron
 ├── tools
+├── tutorialExamples
 ├── CONTRIBUTORS.md
-├── FRETDemo.md
 ├── LICENSE.pdf
 └── README.md
 ```
