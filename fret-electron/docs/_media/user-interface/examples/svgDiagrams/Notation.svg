@@ -124,41 +124,31 @@
 <use xlink:href="#Scope" x ="10" y="115"/>
 <text y="10" font-family="sans-serif" font-size="22px" font-weight="normal" fill="black">
    <tspan x="180" dy="1.2em">Mode of operation (mentioned in Scope)</tspan>
-   <!-- <tspan x="180" dy="1.2em">(mentioned in Scope)</tspan> -->
 </text>
-<!-- <text x="180" y="50" font-family="sans-serif" font-size="16px" font-weight="normal" fill="black"> Mode of operation (mentioned in Scope)</text> -->
 <text x="10" y="102" font-family="sans-serif" font-size="24px" font-weight="bold" fill="black"> Intervals </text>
 <text x="180" y="147" font-family="sans-serif" font-size="22px" font-weight="normal" fill="black"> Scope interval</text>
 <use xlink:href="#Timing_eventually" x ="10" y="200"/>
-<!-- <text x="75" y="217" font-family="sans-serif" font-size="16px" font-weight="normal" fill="black"> n</text> -->
 <text y="185" font-family="sans-serif" font-size="22px" font-weight="normal" fill="black">
    <tspan x="180" dy="1.2em">Response must hold at least somewhere in this interval</tspan>
-   <!--tspan x="180" dy="1.2em">somewhere in this interval</tspan> -->
  </text>
  <use xlink:href="#Timing_negation_eventually" x ="10" y="250"/>
- <!-- <text x="75" y="217" font-family="sans-serif" font-size="16px" font-weight="normal" fill="black"> n</text> -->
  <text y="235" font-family="sans-serif" font-size="22px" font-weight="normal" fill="black">
     <tspan x="180" dy="1.2em">Negation of response must hold at least somewhere in this interval </tspan>
-    <!--tspan x="180" dy="1.2em"></tspan> -->
   </text>
   <use xlink:href="#Timing_always" x ="10" y="300"/>
- <!-- <text x="75" y="266" font-family="sans-serif" font-size="16px" font-weight="normal" fill="black"> n</text> -->
  <text y="285" font-family="sans-serif" font-size="22px" font-weight="normal" fill="black">
     <tspan x="180" dy="1.2em">Response must hold everywhere in this interval</tspan>
-    <!--tspan x="180" dy="1.2em">everywhere in this interval</tspan>-->
  </text>
+
  <use xlink:href="#Timing_never" x ="10" y="350"/>
-  <!-- <text x="75" y="316" font-family="sans-serif" font-size="16px" font-weight="normal" fill="black"> n</text> -->
  <text y="335" font-family="sans-serif" font-size="22px" font-weight="normal" fill="black">
     <tspan x="180" dy="1.2em">Response must not hold anywhere in this interval</tspan>
-    <!--tspan x="180" dy="1.2em">anywhere in this interval</tspan>-->
  </text>
 
  <use xlink:href="#Timing_immediately" x="40" y="405"/>
  <use xlink:href="#Timing_only_immediately" x="100" y="405"/>
  <text y="385" font-family="sans-serif" font-size="22px" font-weight="normal" fill="black">
     <tspan x="180" dy="1.2em">Response must hold/must not hold at the indicated timepoint</tspan>
-    <!--tspan x="180" dy="1.2em">at the indicated timepoint</tspan> -->
  </text>
 
  <circle cx="70" cy="450" r="6" fill="black"/>
@@ -168,8 +158,6 @@
  </text>
 
  <text x="10" y="500" font-family="sans-serif" font-size="24px" font-weight="bold" fill="black"> Interval lengths </text>
- <!-- use xlink:href="#Infinity" x ="250" y="488"/>-->
- <!-- text x="280" y="503"  font-family="sans-serif" font-size="16px" font-weight="normal" fill="black">: Infinite interval length </text>-->
  <text x="15" y="525" font-family="sans-serif" font-size="22px" font-weight="normal" fill="black"> n : Bounded interval length </text>
  <text x="10" y="559" font-family="sans-serif" font-size="24px" font-weight="bold" fill="black"> Conditions </text>
  <text x="15" y="585" font-family="sans-serif" font-size="22px"
