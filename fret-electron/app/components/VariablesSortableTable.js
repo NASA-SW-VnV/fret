@@ -315,29 +315,29 @@ class VariablesSortableTable extends React.Component {
   }
 
   synchStateWithModelDB(){
-    if (!this.mounted) return;
+    if (! this.mounted) return;
     const {selectedProject, selectedComponent} = this.props,
         self = this;
     var componentModel = '',
         modelVariables = [],
         importedComponents = [];
 
-      modeldb.find({
-        selector: {
-          project: selectedProject,
-          fretComponent: selectedComponent,
-          modeldoc: true
-        }
-        }).then(function(result){
-          result.docs.forEach(function(v){
-            if (!importedComponents.includes(v.component_name)) importedComponents.push(v.component_name);
-          })
-          self.setState({
-            importedComponents: importedComponents.sort((a, b) => {return a.toLowerCase().trim() > b.toLowerCase().trim()})
-          })
-        }).catch((err) => {
-          console.log(err);
-        });
+      // modeldb.find({
+      //   selector: {
+      //     project: selectedProject,
+      //     fretComponent: selectedComponent,
+      //     modeldoc: true
+      //   }
+      //   }).then(function(result){
+      //     result.docs.forEach(function(v){
+      //       if (!importedComponents.includes(v.component_name)) importedComponents.push(v.component_name);
+      //     })
+      //     self.setState({
+      //       importedComponents: importedComponents.sort((a, b) => {return a.toLowerCase().trim() > b.toLowerCase().trim()})
+      //     })
+      //   }).catch((err) => {
+      //     console.log(err);
+      //   });
 
     modeldb.find({
       selector: {
@@ -352,20 +352,32 @@ class VariablesSortableTable extends React.Component {
                 }).sort((a, b) => {return a.variable_name > b.variable_name}),
           modelComponent: componentModel
         })
-        modeldb.find({
-          selector: {
-            project: selectedProject,
-            component_name: componentModel,
-            modeldoc: true
-          }
-        }).then(function(result){
-          result.docs.forEach(function(v){
+        result.docs.forEach(function(v){
+          if (v.modeldoc){
+            console.log("v.modeldoc"+ v.modeldoc)
+            if (!importedComponents.includes(v.component_name)) importedComponents.push(v.component_name);
             modelVariables.push(v);
-          })
-          self.setState({
-            modelVariables: modelVariables,
-          })
+          }
+
         })
+        self.setState({
+          importedComponents: importedComponents.sort((a, b) => {return a.toLowerCase().trim() > b.toLowerCase().trim()}),
+          modelVariables: modelVariables,
+        })
+    //     modeldb.find({
+    //       selector: {
+    //         project: selectedProject,
+    //         component_name: componentModel,
+    //         modeldoc: true
+    //       }
+    //     }).then(function(result){
+    //       result.docs.forEach(function(v){
+    //         modelVariables.push(v);
+    //       })
+    //       self.setState({
+    //         modelVariables: modelVariables,
+    //       })
+    //     })
     }).catch((err) => {
       console.log(err);
     });
