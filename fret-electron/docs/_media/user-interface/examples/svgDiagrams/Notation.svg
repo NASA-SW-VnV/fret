@@ -1,26 +1,26 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="550px" height="600px">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="850px" height="600px">
 <svg>
 
 <defs>
 
-<marker id="nextGreenArrowhead" markerWidth="5" markerHeight="2.67" orient="auto" 
+<marker id="nextGreenArrowhead" markerWidth="5" markerHeight="2.67" orient="auto"
       refX="0" refY="1.33" >
   <polygon points="0 0, 4 1.33, 0 2.67" fill="green"  />
   <circle cx="3.7" cy="1.33" r="1" fill="black" />
 </marker>
 
-<marker id="nextRedArrowhead" markerWidth="5" markerHeight="2.67" orient="auto" 
+<marker id="nextRedArrowhead" markerWidth="5" markerHeight="2.67" orient="auto"
       refX="0" refY="1.33" >
   <polygon points="0 0, 4 1.33, 0 2.67" fill="red"  />
   <circle cx="3.7" cy="1.33" r="1" fill="black" />
 </marker>
 
-<marker id="greenArrowhead" markerWidth="4" markerHeight="2.67" orient="auto" 
+<marker id="greenArrowhead" markerWidth="4" markerHeight="2.67" orient="auto"
       refX="0" refY="1.33" >
     <polygon points="0 0, 4 1.33, 0 2.67" fill="green"  />
 </marker>
 
-<marker id="redArrowhead" markerWidth="4" markerHeight="2.67" orient="auto" 
+<marker id="redArrowhead" markerWidth="4" markerHeight="2.67" orient="auto"
       refX="0" refY="1.33" >
     <polygon points="0 0, 4 1.33, 0 2.67" fill="red"  />
 </marker>
@@ -122,58 +122,58 @@
 
 <use xlink:href="#with_Mode" x ="-134" y="-70"/>
 <use xlink:href="#Scope" x ="10" y="115"/>
-<text y="10" font-family="sans-serif" font-size="16px" font-weight="normal" fill="black">
-   <tspan x="180" dy="1.2em">Mode of operation </tspan>
-   <tspan x="180" dy="1.2em">(mentioned in Scope)</tspan>
+<text y="10" font-family="sans-serif" font-size="22px" font-weight="normal" fill="black">
+   <tspan x="180" dy="1.2em">Mode of operation (mentioned in Scope)</tspan>
+   <!-- <tspan x="180" dy="1.2em">(mentioned in Scope)</tspan> -->
 </text>
 <!-- <text x="180" y="50" font-family="sans-serif" font-size="16px" font-weight="normal" fill="black"> Mode of operation (mentioned in Scope)</text> -->
-<text x="10" y="102" font-family="sans-serif" font-size="16px" font-weight="bold" fill="black"> Intervals </text>
-<text x="180" y="147" font-family="sans-serif" font-size="16px" font-weight="normal" fill="black"> Scope interval</text>
+<text x="10" y="102" font-family="sans-serif" font-size="24px" font-weight="bold" fill="black"> Intervals </text>
+<text x="180" y="147" font-family="sans-serif" font-size="22px" font-weight="normal" fill="black"> Scope interval</text>
 <use xlink:href="#Timing_eventually" x ="10" y="200"/>
 <!-- <text x="75" y="217" font-family="sans-serif" font-size="16px" font-weight="normal" fill="black"> n</text> -->
-<text y="185" font-family="sans-serif" font-size="16px" font-weight="normal" fill="black">
-   <tspan x="180" dy="1.2em">Response must hold at least </tspan>
-   <tspan x="180" dy="1.2em">somewhere in this interval</tspan>
+<text y="185" font-family="sans-serif" font-size="22px" font-weight="normal" fill="black">
+   <tspan x="180" dy="1.2em">Response must hold at least somewhere in this interval</tspan>
+   <!--tspan x="180" dy="1.2em">somewhere in this interval</tspan> -->
  </text>
  <use xlink:href="#Timing_negation_eventually" x ="10" y="250"/>
  <!-- <text x="75" y="217" font-family="sans-serif" font-size="16px" font-weight="normal" fill="black"> n</text> -->
- <text y="235" font-family="sans-serif" font-size="16px" font-weight="normal" fill="black">
-    <tspan x="180" dy="1.2em">Negation of response must hold at  </tspan>
-    <tspan x="180" dy="1.2em">least somewhere in this interval</tspan>
+ <text y="235" font-family="sans-serif" font-size="22px" font-weight="normal" fill="black">
+    <tspan x="180" dy="1.2em">Negation of response must hold at least somewhere in this interval </tspan>
+    <!--tspan x="180" dy="1.2em"></tspan> -->
   </text>
   <use xlink:href="#Timing_always" x ="10" y="300"/>
  <!-- <text x="75" y="266" font-family="sans-serif" font-size="16px" font-weight="normal" fill="black"> n</text> -->
- <text y="285" font-family="sans-serif" font-size="16px" font-weight="normal" fill="black">
-    <tspan x="180" dy="1.2em">Response must hold </tspan>
-    <tspan x="180" dy="1.2em">everywhere in this interval</tspan>
+ <text y="285" font-family="sans-serif" font-size="22px" font-weight="normal" fill="black">
+    <tspan x="180" dy="1.2em">Response must hold everywhere in this interval</tspan>
+    <!--tspan x="180" dy="1.2em">everywhere in this interval</tspan>-->
  </text>
  <use xlink:href="#Timing_never" x ="10" y="350"/>
   <!-- <text x="75" y="316" font-family="sans-serif" font-size="16px" font-weight="normal" fill="black"> n</text> -->
- <text y="335" font-family="sans-serif" font-size="16px" font-weight="normal" fill="black">
-    <tspan x="180" dy="1.2em">Response must not hold </tspan>
-    <tspan x="180" dy="1.2em">anywhere in this interval</tspan>
+ <text y="335" font-family="sans-serif" font-size="22px" font-weight="normal" fill="black">
+    <tspan x="180" dy="1.2em">Response must not hold anywhere in this interval</tspan>
+    <!--tspan x="180" dy="1.2em">anywhere in this interval</tspan>-->
  </text>
 
  <use xlink:href="#Timing_immediately" x="40" y="405"/>
  <use xlink:href="#Timing_only_immediately" x="100" y="405"/>
- <text y="385" font-family="sans-serif" font-size="16px" font-weight="normal" fill="black">
-    <tspan x="180" dy="1.2em">Response must hold/must not hold </tspan>
-    <tspan x="180" dy="1.2em">at the indicated timepoint</tspan>
+ <text y="385" font-family="sans-serif" font-size="22px" font-weight="normal" fill="black">
+    <tspan x="180" dy="1.2em">Response must hold/must not hold at the indicated timepoint</tspan>
+    <!--tspan x="180" dy="1.2em">at the indicated timepoint</tspan> -->
  </text>
 
  <circle cx="70" cy="450" r="6" fill="black"/>
  <circle cx="82" cy="450" r="6" fill="black"/>
- <text y="435" font-family="sans-serif" font-size="16px" font-weight="normal" fill="black">
+ <text y="435" font-family="sans-serif" font-size="22px" font-weight="normal" fill="black">
     <tspan x="180" dy="1.2em">Consecutive time points</tspan>
  </text>
 
- <text x="10" y="481" font-family="sans-serif" font-size="16px" font-weight="bold" fill="black"> Interval lengths </text>
- <use xlink:href="#Infinity" x ="250" y="488"/>
- <text x="280" y="503"  font-family="sans-serif" font-size="16px" font-weight="normal" fill="black">: Infinite interval length </text>
- <text x="15" y="503" font-family="sans-serif" font-size="16px" font-weight="normal" fill="black"> n : Bounded interval length </text>
- <text x="10" y="529" font-family="sans-serif" font-size="16px" font-weight="bold" fill="black"> Conditions </text>
- <text x="15" y="555" font-family="sans-serif" font-size="16px"
+ <text x="10" y="500" font-family="sans-serif" font-size="24px" font-weight="bold" fill="black"> Interval lengths </text>
+ <!-- use xlink:href="#Infinity" x ="250" y="488"/>-->
+ <!-- text x="280" y="503"  font-family="sans-serif" font-size="16px" font-weight="normal" fill="black">: Infinite interval length </text>-->
+ <text x="15" y="525" font-family="sans-serif" font-size="22px" font-weight="normal" fill="black"> n : Bounded interval length </text>
+ <text x="10" y="559" font-family="sans-serif" font-size="24px" font-weight="bold" fill="black"> Conditions </text>
+ <text x="15" y="585" font-family="sans-serif" font-size="22px"
        font-weight="normal" fill="black"> TC : Triggering condition</text>
- <text x="250" y="555" font-family="sans-serif" font-size="16px"
+ <text x="270" y="585" font-family="sans-serif" font-size="22px"
        font-weight="normal" fill="black"> SC : Stop condition</text>
 </svg>
