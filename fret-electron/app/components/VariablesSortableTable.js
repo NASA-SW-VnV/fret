@@ -322,62 +322,28 @@ class VariablesSortableTable extends React.Component {
         modelVariables = [],
         importedComponents = [];
 
-      // modeldb.find({
-      //   selector: {
-      //     project: selectedProject,
-      //     fretComponent: selectedComponent,
-      //     modeldoc: true
-      //   }
-      //   }).then(function(result){
-      //     result.docs.forEach(function(v){
-      //       if (!importedComponents.includes(v.component_name)) importedComponents.push(v.component_name);
-      //     })
-      //     self.setState({
-      //       importedComponents: importedComponents.sort((a, b) => {return a.toLowerCase().trim() > b.toLowerCase().trim()})
-      //     })
-      //   }).catch((err) => {
-      //     console.log(err);
-      //   });
-
     modeldb.find({
       selector: {
         project : selectedProject,
         component_name : selectedComponent
       }
     }).then(function(result){
-        self.setState({
-          data: result.docs.map(r => {
-                  componentModel = r.modelComponent;
-                  return createData(r.variable_name, r.modeldoc_id, r.idType, r.dataType, r.description)
-                }).sort((a, b) => {return a.variable_name > b.variable_name}),
-          modelComponent: componentModel
-        })
         result.docs.forEach(function(v){
           if (v.modeldoc){
-            console.log("v.modeldoc"+ v.modeldoc)
             if (!importedComponents.includes(v.component_name)) importedComponents.push(v.component_name);
             modelVariables.push(v);
           }
 
         })
-        self.setState({
-          importedComponents: importedComponents.sort((a, b) => {return a.toLowerCase().trim() > b.toLowerCase().trim()}),
-          modelVariables: modelVariables,
-        })
-    //     modeldb.find({
-    //       selector: {
-    //         project: selectedProject,
-    //         component_name: componentModel,
-    //         modeldoc: true
-    //       }
-    //     }).then(function(result){
-    //       result.docs.forEach(function(v){
-    //         modelVariables.push(v);
-    //       })
-    //       self.setState({
-    //         modelVariables: modelVariables,
-    //       })
-    //     })
+          self.setState({
+            data: result.docs.map(r => {
+                    componentModel = r.modelComponent;
+                    return createData(r.variable_name, r.modeldoc_id, r.idType, r.dataType, r.description)
+                  }).sort((a, b) => {return a.variable_name > b.variable_name}),
+            modelComponent: componentModel,
+            importedComponents: importedComponents.sort((a, b) => {return a.toLowerCase().trim() > b.toLowerCase().trim()}),
+            modelVariables: modelVariables,
+          })
     }).catch((err) => {
       console.log(err);
     });
@@ -487,10 +453,7 @@ class VariablesSortableTable extends React.Component {
                d.project = selectedProject;
                d.fretComponent = selectedComponent;
              })
-             modeldb.bulkDocs(data)
-               .catch((err) => {
-                 console.log(err);
-               });
+             modeldb.bulkDocs(data).catch((err) => {console.log(err);});
            });
         }
  }
