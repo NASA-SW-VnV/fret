@@ -55,7 +55,7 @@ import GridListTile from '@material-ui/core/GridListTile';
 import CloseIcon from '@material-ui/icons/Close';
 import DeleteIcon from '@material-ui/icons/Delete';
 import ListIcon from '@material-ui/icons/List';
-import EditIcon from '@material-ui/icons/Edit';
+// import EditIcon from '@material-ui/icons/Edit';
 import AddIcon from '@material-ui/icons/AddCircle';
 // status icons
 import InProgressIcon from '@material-ui/icons/MoreHoriz';
@@ -223,7 +223,7 @@ const toolbarStyles = theme => ({
 });
 
 let TableToolbar = props => {
-  const { numSelected, classes, enableBulkChange, bulkChangeEnabler, deleteSelection, handleCoCoSpecWindow } = props;
+  const { numSelected, classes, enableBulkChange, bulkChangeEnabler, deleteSelection } = props;
 
   return (
     <Toolbar
@@ -243,11 +243,6 @@ let TableToolbar = props => {
       <div className={classes.actions}>
         {numSelected > 0 ? (
           <div className={classes.toolbar}>
-            <Tooltip title="Bulk Edit">
-              <IconButton aria-label="Bulk Edit">
-                <EditIcon />
-              </IconButton>
-            </Tooltip>
             <Tooltip title="Delete">
               <IconButton
                 aria-label="Delete"
@@ -255,11 +250,6 @@ let TableToolbar = props => {
                 <DeleteIcon />
               </IconButton>
             </Tooltip>
-            <IconButton onClick={() => handleCoCoSpecWindow()}>
-              <Tooltip title='Export Verification Code'>
-                <ExportIcon/>
-              </Tooltip>
-            </IconButton>
             <Tooltip title="Exit Bulk Change">
               <IconButton aria-label="Close Bulk Change" onClick={() => bulkChangeEnabler()}>
                 <CloseIcon />
@@ -268,16 +258,11 @@ let TableToolbar = props => {
           </div>
         ) : (
           <div className={classes.toolbar}>
-            <IconButton aria-label="Export Verification Code" onClick={() => handleCoCoSpecWindow()}>
-              <Tooltip title='Export Verification Code'>
-                <ExportIcon color='secondary'/>
-              </Tooltip>
-            </IconButton>
-            <IconButton aria-label="Bulk Change" onClick={() => bulkChangeEnabler()}>
-              <Tooltip title="Bulk Change">
-                <ListIcon color='secondary'/>
-              </Tooltip>
-            </IconButton>
+          <IconButton aria-label="Bulk Change" onClick={() => bulkChangeEnabler()}>
+            <Tooltip title="Bulk Change">
+            <ListIcon color='secondary'/>
+            </Tooltip>
+          </IconButton>
           </div>
         )}
       </div>
@@ -290,11 +275,7 @@ TableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
   enableBulkChange: PropTypes.bool.isRequired,
   bulkChangeEnabler: PropTypes.func.isRequired,
-  handleCoCoSpecWindow: PropTypes.func.isRequired
 };
-
-
-
 
 TableToolbar = withStyles(toolbarStyles)(TableToolbar);
 
@@ -343,8 +324,7 @@ class SortableTable extends React.Component {
     deleteDialogOpen: false,
     snackbarOpen: false,
     selectedProject: 'All Projects',
-    bulkChangeMode: false,
-    cocospecMode: false
+    bulkChangeMode: false
   };
 
   constructor(props){
@@ -406,13 +386,6 @@ class SortableTable extends React.Component {
     }).catch((err) => {
       console.log(err);
     });
-  }
-
-  handleCoCoSpecWindow = () => {
-    const { classes, selectedProject } = this.props;
-    this.setState({
-      cocospecMode : !this.state.cocospecMode
-    })
   }
 
   handleEnableBulkChange = () => {
@@ -576,13 +549,12 @@ class SortableTable extends React.Component {
 
   render() {
     const { classes, selectedProject, existingProjectNames } = this.props;
-    const { data, order, orderBy, selected, rowsPerPage, page, bulkChangeMode, cocospecMode, snackBarDisplayInfo, selectionBulkChange, selectedRequirement } = this.state;
+    const { data, order, orderBy, selected, rowsPerPage, page, bulkChangeMode,
+       snackBarDisplayInfo, selectionBulkChange, selectedRequirement } = this.state;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
     const title = 'Requirements: ' + selectedProject
     const selectionForDeletion = bulkChangeMode ? selectionBulkChange : [selectedRequirement]
 
-    if (this.state.cocospecMode){
-        return  <VariablesView selectedProject={selectedProject} existingProjectNames={existingProjectNames}/> };
     return (
       <div>
       <Typography variant='h6'>{title}
@@ -591,12 +563,10 @@ class SortableTable extends React.Component {
         <TableToolbar
           numSelected={selected.length}
           enableBulkChange={bulkChangeMode}
-          enableCoCoSpec={cocospecMode}
           bulkChangeEnabler={this.handleEnableBulkChange}
-          deleteSelection={this.handleDeleteSelectedRequirements}
-          handleCoCoSpecWindow={this.handleCoCoSpecWindow}/>
+          deleteSelection={this.handleDeleteSelectedRequirements}/>
         <div className={classes.tableWrapper}>
-          <Table className={classes.table} aria-labelledby="tableTitle" size = "small">
+          <Table className={classes.table} aria-labelledby="tableTitle" size="small">
             <SortableTableHead
               numSelected={selected.length}
               order={order}
@@ -605,7 +575,6 @@ class SortableTable extends React.Component {
               onRequestSort={this.handleRequestSort}
               rowCount={data.length}
               enableBulkChange={bulkChangeMode}
-              enableCoCoSpec={cocospecMode}
             />
             <TableBody>{
                 stableSort(data, getSorting(order, orderBy))
