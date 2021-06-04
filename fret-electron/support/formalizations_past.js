@@ -415,7 +415,6 @@ exports.getFormalization = (key, neg, leftP, rightP, options) => {
   }
 
 
-// check where this is used - does not look good though...
 exports.EndPointsRewrite = (formula) => {
   return utilities.replaceStrings(EndPointRewriteRules, formula);
 }
