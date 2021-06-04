@@ -385,6 +385,7 @@ exports.getFormalization = (key, neg, leftP, rightP, options) => {
 
   // corresponds to baseform@ in the journal paper
   var baseform_at = determineBaseForm(neg, key[2], key[1]);
+  baseform_at = baseform_at.replace(/LEFTEND/g, leftP);
 
   if (baseform_at == 'no_match')
   return constants.undefined_semantics
