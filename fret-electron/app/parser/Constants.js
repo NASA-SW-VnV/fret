@@ -54,13 +54,13 @@ module.exports = Object.freeze({
   // All possible cases of requirements fields that need to be handled by the semantics
   // Consider some automatic check or generation with the grammar or SemanticsAnalyzer
   fullScope : /*['null'],//*/['null', 'in', 'onlyAfter', 'after', 'onlyBefore', 'before', 'onlyIn', 'notin'].sort(),
-  fullCondition : /*['regular'],//*/['null', 'regular', 'only'].sort(),
+  fullCondition : /*['regular'],//*/['null', 'regular'/*, 'only'*/].sort(),
     fullTiming : /*['within'],//*/['always','null','immediately','eventually', 'never', 'for','within','after','until','before','next'].sort(),
   fullResponse : ['satisfaction'],//*/['satisfaction','action','order','not_order'].sort(),
 
   // We want to test with Bamboo only the combinations of keys for which semantics has been defined and tested -- to get more meaningful test results
   testScope : ['null', 'in', 'onlyAfter', 'after', 'onlyBefore', 'before', 'onlyIn', 'notin'].sort(),
-  testCondition : ['null', 'regular', /*'only'*/].sort(),
+  testCondition : ['null', 'regular'].sort(),
   testTiming : ['always','null','immediately','eventually', 'never', 'for','within','after','until','before','next'].sort(),
   //testTiming : ['always','null','immediately','eventually', 'never', 'for','within','after'],
   testResponse : ['satisfaction'/*,'action','order','not_order'*/].sort(),

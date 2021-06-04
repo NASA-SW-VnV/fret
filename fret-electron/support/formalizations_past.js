@@ -407,5 +407,8 @@ exports.getFormalization = (key, neg, leftP, rightP, options) => {
   }
 
   return generalform;
+}
 
+  exports.EndPointsRewrite = (formula) => {
+    return utilities.replaceStrings(EndPointRewriteRules, formula);
   }
