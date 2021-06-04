@@ -230,7 +230,6 @@ function notNever(property, cond='null') { // eventually
   return eventually(property, cond)
 }
 
-// check with Tom
 function untilTiming(property, stopcond, cond='null') {
     var notStopped = persistsTo(negate(stopcond), left);
     var formula = implication(notStopped, property);
@@ -373,9 +372,9 @@ exports.getEndPointRewriteRules = () => {
 }
 
 
-// we use strong semantics to denote the fact that we enforce formulas
+// we use after-until semantics to denote the fact that we enforce formulas
 // when an interval opens but does not close by the end of the trace;
-// we use strong semantics as a default
+// we use after-until semantics as a default
 
 exports.getFormalization = (key, neg, leftP, rightP, options) => {
 
