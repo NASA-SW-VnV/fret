@@ -33,7 +33,7 @@
 const fretSupportPath = "./";
 const constants = require('../app/parser/Constants');
 const utilities = require(fretSupportPath + 'utilities');
-const requirementInterval = require(fretSupportPath + 'requirementInterval');
+//const requirementInterval = require(fretSupportPath + 'requirementInterval');
 
 
 const SpecialCases =
@@ -383,38 +383,29 @@ exports.getFormalization = (key, neg, leftP, rightP, options) => {
 
   if (options.sem === 'infinite') return constants.nonsense_semantics;
 
-  var main_formula = determineBaseForm(neg, key[2], key[1]);
+  // corresponds to baseform@ in the journal paper
+  var baseform_at = determineBaseForm(neg, key[2], key[1]);
 
-  if (main_formula == 'no_match')
+  if (baseform_at == 'no_match')
   return constants.undefined_semantics
 
-  //console.log('formalizations_past.getFormalization.formula: ' + main_formula);
+  // the main formula is the one that holds for abstract interval [left, right)
+  // now examine if right is LAST, in which case we have [left, right]
+  // for this case, there are also no differences between after-until and between semantics
+  // but we must ensure that there exists a left point that opens the interval
+  if (rightP.includes('LAST'))
+      return implication(('once ' + leftP), baseform_at);
 
-  var scopeInterval = requirementInterval.createInterval([leftP], [rightP], main_formula)
-  var eotInterval = null
-  var historically = ' '
+  // otherwise our right point is not the last point
+  // in this case we need to create two formulas depending on after-until or between
+  var baseform = implication(conjunction(rightP, 'FTP'), ('previous ' + baseform_at));
+  var generalform = 'historically ' + baseform;
 
-  if (!(rightP.includes('LAST'))) {
-    historically = 'historically ' // need to look for the trigger to scopeInterval
-
-    // eotInterval is an interval that expands to the end of the trace
-    eotInterval= requirementInterval.createInterval([leftP],
-      [persistsTo(negate(rightP), leftP)],
-      main_formula, false, false)
-
-      scopeInterval.rightEnd.push('not FTP')
-    }
-
-    //    console.log('formalizations_past.getFormalization.scopeInterval: ' + JSON.stringify(scopeInterval))
-    // Now we have all that we need, let's write the requirement
-    var part1 = requirementInterval.elaborateSimple(scopeInterval, historically)
-    var part2 = requirementInterval.elaborateSimple(eotInterval, '') // historically never needed
-
-    // is this taking care of before and in similarly to future time?
-    return (options.in == 'afterUntil' ? conjunction(part1, part2) : part1)
+  if (options.in == 'afterUntil') { // need to add part for interval that spans to end of execution
+      var eotInterval = implication(persistsTo(negate(rightP), leftP), baseform_at);
+      generalform = conjunction(generalform, eotInterval);
   }
 
+  return generalform;
 
-exports.EndPointsRewrite = (formula) => {
-  return utilities.replaceStrings(EndPointRewriteRules, formula);
-}
+  }
