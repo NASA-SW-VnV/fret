@@ -385,10 +385,10 @@ exports.getFormalization = (key, neg, leftP, rightP, options) => {
 
   // corresponds to baseform@ in the journal paper
   var baseform_at = determineBaseForm(neg, key[2], key[1]);
+  if (baseform_at == 'no_match')
+    return constants.undefined_semantics
   baseform_at = baseform_at.replace(/LEFTEND/g, leftP);
 
-  if (baseform_at == 'no_match')
-  return constants.undefined_semantics
 
   // the main formula is the one that holds for abstract interval [left, right)
   // now examine if right is LAST, in which case we have [left, right]
@@ -399,7 +399,7 @@ exports.getFormalization = (key, neg, leftP, rightP, options) => {
 
   // otherwise our right point is not the last point
   // in this case we need to create two formulas depending on after-until or between
-  var baseform = implication(conjunction(rightP, 'FTP'), ('previous ' + baseform_at));
+  var baseform = implication(conjunction(rightP, negate('FTP')), ('previous ' + baseform_at));
   var generalform = 'historically ' + baseform;
 
   if (options.in == 'afterUntil') { // need to add part for interval that spans to end of execution
