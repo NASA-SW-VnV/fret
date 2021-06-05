@@ -22,5 +22,5 @@ ID is a string identifier starting with an upper- or lower-case letter, followed
 
 Examples:
 
-* **satisfy (**alt – alt0**)** <= 35
-* **satisfy ((**TurnKnob <= -3.0 **|** TurnKnob >= 3.0**) ->** TurnKnob = rollRefCmd**)**
+* **satisfy** (alt – alt0) <= 35
+* **satisfy** ((TurnKnob <= -3.0 | TurnKnob >= 3.0) -> TurnKnob = rollRefCmd)

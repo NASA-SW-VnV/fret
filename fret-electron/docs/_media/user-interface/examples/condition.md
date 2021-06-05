@@ -33,5 +33,5 @@ possible to avoid mistakes and misunderstandings.
 
 Examples:
 
-* **if** **((**level(tank1) < 0.3**)** **&** **(**altitude > 1000**))** **is false**
-* **If** **(**limits **&** **!**standby **&** **!**apfail **&** supported**)**
+* **if** ((level(tank1) < 0.3) & (altitude > 1000)) **is false**
+* **If** (limits & !standby & !apfail & supported)

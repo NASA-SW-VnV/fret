@@ -12,7 +12,7 @@ FRET's dashboard summarizes the status of your projects and provides a hierarchi
 To get started, select the **Projects** menu pull down to select an existing project, or to create a new project, where your requirements belong.
 
 ## Dashboard displays
-The dashboard displays all your projects and their corresponding requirements in a hierarchical fashion. Red indicates requirements that cannot be formalized, as opposed to green. You can navigate within the bubble hierarchy, and view requirements summaries by hovering over a requirement bubble. Several statistics are displayed on top of the dashboard.
+The dashboard displays all your projects and their corresponding requirements in a hierarchical fashion. The red bubbles indicate requirements that aren't expressed in correct FRETish and therefore aren't formalized. Green bubbles have been correctly parsed in FRETish and formalized. White bubbles indicate requirements that are empty or that have been entered within quotes, indicating that parsing in FRETish has not been attempted. You can navigate within the bubble hierarchy, and view requirements summaries by hovering over a requirement bubble. Several statistics are displayed on the top of the dashboard.
 
 Recent activity is displayed on the right hand side of the dashboard, where a warning icon exists next to requirements that are not formalized.
 

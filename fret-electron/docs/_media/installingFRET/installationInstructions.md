@@ -8,7 +8,7 @@
 
 ### Download and Install
 
-As you open the FRET distribution, you shall see the following directory structure:
+When you open the FRET distribution, you will see the following directory structure:
 
 ```
 .

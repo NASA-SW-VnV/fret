@@ -4,13 +4,13 @@ FRET: Formal Requirements Elicitation Tool
 Introduction
 ------------
 
-FRET is a framework for the elicitation, formalization and understanding of requirements. Users enter system requirements in a specialized natural language. FRET helps understanding and review of semantics by utilizing a variety of forms for each requirement: natural language description, formal mathematical logics, and diagrams. Requirements can be defined in a hierarchical fashion and can be exported in a variety of forms to be used by analysis tools.
+FRET is a framework for the elicitation, specification, formalization and understanding of requirements. Users enter system requirements in a specialized natural language. FRET helps understanding and review of semantics by utilizing a variety of forms for each requirement: natural language description, formal mathematical logics, and diagrams. Requirements can be defined in a hierarchical fashion and can be exported in a variety of forms to be used by analysis tools.
 
 Contact
 -------
 
 Please contact <fret@lists.nasa.gov> for further information on
-FRET. Detailed information can be found at the [FRET manual](fret-electron/docs/_media/userManual.md).
+FRET. Detailed information can be found in the [FRET manual](fret-electron/docs/_media/userManual.md).
 
 Installation
 ------------

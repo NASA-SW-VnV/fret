@@ -6,7 +6,7 @@
 
 ***
 
-A FRET requirement is an English (to be precise "FRETish") sentence containing up to six fields: *scope*, *condition*, *component*, *shall*, *timing* and *response*. Three fields are mandatory: component, shall, response. There is a [grammar](../fretishGrammar/index.html ':include width=100% height=800px') for the allowable sentences. The grammar, displayed as "railroad diagrams", is accessible from this view by clicking on the question mark. Mind you, this is not for the faint-hearted.
+A FRET requirement is a "FRETish" sentence, which is an English sentence containing standard boolean expressions. The FRET requirement can contain up to six fields: *scope*, *condition*, *component*, *shall*, *timing* and *response*. Three fields are mandatory: component, shall, response. There is a [grammar](../fretishGrammar/index.html ':include width=100% height=800px') for the allowable sentences. The grammar, displayed as "railroad diagrams", is accessible from this view by clicking on the question mark. Mind you, this is not for the faint-hearted.
 
 Here is an example requirement:
 <span style="color:gray">**"In flight mode the battery shall always satisfy voltage > 9"** </span>
@@ -27,7 +27,7 @@ While typing the body of a requirement, FRET parses the requirement and recogniz
 
 2. Condition. The optional *condition* field is a boolean expression that further constrains when the requirement response is to occur.  The boolean expression is in terms of variables. [Condition Help Menu](./examples/condition.md)
 
-3. Timing. The optional *timing* field specifies when the response shall happen, relative to the scope and condition.  Timing can be *immediately*, *eventually*, *always*, *never*, *within N time units*,  *for N time units*, or *after N time units*. The latter means that the response happens _N_ time units from the beginning of the requirement's period, and does not happen before that; i.e., does not happen for *N-1* time units after the beginning of the period. [Timing Help Menu](./examples/timing.md)
+3. Timing. The optional *timing* field specifies when the response shall happen, relative to the scope and condition.  Timing can be *immediately*, *eventually*, *always*, *never*, *within N time units*,  *for N time units*, *after N time units*, *until*, or *before*. The timing *after* means that the response happens _N_ time units from the beginning of the requirement's period, and does not happen before that; i.e., does not happen for *N-1* time units after the beginning of the period. [Timing Help Menu](./examples/timing.md)
 
 > __Note:__ The Boolean operators allowed in the Boolean expression condition and response fields are: `!` (negation), `&` (conjunction), `|` (disjunction), `xor` (exclusive or),  `->` (implication), `<->` (equivalence). An alternative for implication is `if p then q`. The numeric comparison operators are `=, !=, <, >, <=, >=`. The numeric operators are `+, -, *, /, mod`, and `^` (exponentiation). Numerical terms and predicates are in standard form; e.g., `f(x,y)`,  `p(x,y,z)`.
 
@@ -55,7 +55,7 @@ You can access the *GLOSSARY* tab from the right pane in the *Create Requirement
 
 ***
 
-You can expand a variable on the *GLOSSARY* tab to see more details.  The details include a list of requirements referencing this variable and show values of varialbe attributes that are defined.  Current attributes of a variable include *variable type*, *data type*, *assignment*, *modelComponent*, and *description*.
+You can expand a variable on the *GLOSSARY* tab to see more details.  The details include a list of requirements referencing this variable and show values of variable attributes that are defined.  Current attributes of a variable include *variable type*, *data type*, *assignment*, *modelComponent*, and *description*.
 
 ***
 

@@ -18,7 +18,7 @@ The LTLSIM tool is started from the requirements editor using the
 Note that
 * the SIMULATE button is only active after the `SEMANTICS` button has
 generated the temporal logic formulas for the requirement, and
-* the LTLSIM simulator and its underlying tool nuXMV is [installed properly](./installingFRET/installationInstructions.md).
+* the LTLSIM simulator and its underlying tool nuXmv is [installed properly](./installingFRET/installationInstructions.md).
 
 ***
 <img src="../screen_shots/ltlsim_reqeditor.png">
