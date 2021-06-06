@@ -394,8 +394,12 @@ exports.getFormalization = (key, neg, leftP, rightP, options) => {
   // now examine if right is LAST, in which case we have [left, right]
   // for this case, there are also no differences between after-until and between semantics
   // but we must ensure that there exists a left point that opens the interval
-  if (rightP.includes('LAST'))
-      return implication(('once ' + leftP), baseform_at);
+  if (rightP.includes('LAST')) {
+      if (!leftP.includes('FTP'))
+        return implication(('once ' + leftP), baseform_at);
+      else
+        return baseform_at; // once FTP is always true so not needed
+  }
 
   // otherwise our right point is not the last point
   // in this case we need to create two formulas depending on after-until or between
