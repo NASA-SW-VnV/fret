@@ -14,8 +14,7 @@ function copilotExprAnalyzer() {
 copilotExprAnalyzer.prototype = Object.create(CopilotExpressionsListener.prototype);
 copilotExprAnalyzer.prototype.constructor = copilotExprAnalyzer;
 
-// Exit a parse tree produced by LustreExpressionsParser#proposition.
-copilotExprAnalyzer.prototype.exitProposition = function(ctx) {
+copilotExprAnalyzer.prototype.exitStreamIdent = function(ctx) {
     var variable = antlrUtilities.getText(ctx);
     if (variable && ! internalVariables.includes(variable))
       internalVariables.push(variable);
