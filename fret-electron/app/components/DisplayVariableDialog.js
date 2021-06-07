@@ -107,11 +107,12 @@ class DisplayVariableDialog extends React.Component {
     modelComponent: '',
     errorsCopilot: '',
     errorsLustre: '',
-    variables: '',
     checkLustre: true,
     checkCoPilot: false,
     newVariablesDialogOpen: false,
-    newVariables: []
+    newVariables: [],
+    copilotVariables: [],
+    lustreVariables: [],
   }
 
   handleNewVariables = (variables) => {
@@ -130,7 +131,12 @@ class DisplayVariableDialog extends React.Component {
     this.setState({
       newVariablesDialogOpen: false,
       newVariables: [],
-      anchorEl: null
+      copilotVariables: [],
+      lustreVariables: [],
+      anchorEl: null,
+      open: true,
+      assignment: '',
+      copilotAssignment: ''
     })
   }
 
@@ -148,21 +154,22 @@ class DisplayVariableDialog extends React.Component {
     let resultLustre;
     let resultCopilot;
     //console.log(event.target.value);
+
     if (name === 'assignment'){
       resultLustre = lustreExprSemantics.compileLustreExpr(event.target.value);
+      //console.log("result Lustre "+resultLustre.variables)
       this.setState({
         [name]: event.target.value,
         errorsLustre: resultLustre.parseErrors ? 'Parse Errors: '+ resultLustre.parseErrors : '',
-        //TODO: Update variables for Copilot
-        variables: resultLustre.variables ? resultLustre.variables : ''
+        lustreVariables: resultLustre.variables ? resultLustre.variables : []
       });
     } else if (name ==='copilotAssignment'){
       resultCopilot = copilotExprSemantics.compileCopilotExpr(event.target.value);
+      //console.log("result Copilot "+resultCopilot.variables)
       this.setState({
         [name]: event.target.value,
         errorsCopilot: resultCopilot.parseErrors ? 'Parse Errors: '+ resultCopilot.parseErrors : '',
-        //TODO: Update variables for Copilot
-        variables: resultCopilot.variables ? resultCopilot.variables : ''
+        copilotVariables: resultCopilot.variables ? resultCopilot.variables : []
       });
     } else if (name === 'moduleName' || name ==='description'){
       this.setState({
@@ -173,9 +180,7 @@ class DisplayVariableDialog extends React.Component {
       this.setState({
         [name]: event.target.value,
         //TODO: Show error message
-        //TODO: Copilot assignment?
-        errorsLustre: resultLustre.parseErrors ? 'Parse Errors: '+ resultLustre.parseErrors : '',
-        variables: resultLustre.variables ? resultLustre.variables : ''
+        //TODO: Check for variables
       });
     }
   };
@@ -188,14 +193,13 @@ class DisplayVariableDialog extends React.Component {
     });
   };
 
-
-
   handleUpdate = () => {
     const self = this;
-    const {selectedVariable, description, idType, dataType, assignment, copilotAssignment, modeRequirement, modeldoc_id, modelComponent, variables, moduleName} = this.state;
+    const {selectedVariable, description, idType, dataType, assignment, copilotAssignment, modeRequirement, modeldoc_id, modelComponent, lustreVariables, copilotVariables, moduleName} = this.state;
     var modeldbid = selectedVariable._id;
     var completedVariable = false;
     var newVariables = [];
+    var variables = lustreVariables.concat(copilotVariables);
 
     if(variables.length != 0){
       modeldb.find({
@@ -207,14 +211,18 @@ class DisplayVariableDialog extends React.Component {
           }).then(function(result){
             if(result.docs.length != 0){
               variables.forEach(function(v){
-                if (result.docs.some(r => r.variable_name === v.variable_name)){
+                //console.log("variable "+ v)
+                if (result.docs.some(r => r.variable_name === v)){
+                  //console.log("existing variable")
                   //this is an existing variable
                 }
                 else {
+                  //console.log("Non existing variable")
                   //this is not an existing variable
                   newVariables.push(v);
                 }
               })
+              //console.log("newVariables "+ newVariables)
               self.handleNewVariables(newVariables);
             }
           })
@@ -2206,6 +2214,11 @@ class DisplayVariableDialog extends React.Component {
               </Button>
             </DialogActions>
             </Dialog>
+            <NewVariablesDialog
+              open={this.state.newVariablesDialogOpen}
+              newVariables={this.state.newVariables}
+              handleDialogClose={this.closeNewVariablesDialog}
+            />
           </div>
         );
       }

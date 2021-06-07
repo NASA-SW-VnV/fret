@@ -62,7 +62,6 @@ class NewVariablesDialog extends React.Component {
   }
 
   render() {
-    //console.log(this.state.variables)
     if (this.state.variables === undefined || this.state.variables.length == 0) return null
 
     return (
@@ -73,10 +72,10 @@ class NewVariablesDialog extends React.Component {
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
-          <DialogTitle id="alert-dialog-title">{"The following new variables were introduced in the assignment: " + this.state.variables.join(", ")+"."}</DialogTitle>
+          <DialogTitle id="alert-dialog-title">{"The following new variables were introduced in the assignment(s): " + this.state.variables.join(", ")+"."}</DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              Please update the assignment to only include existing variables.
+              Please update the assignment(s) to only include existing variables.
             </DialogContentText>
           </DialogContent>
           <DialogActions>
