@@ -45,6 +45,7 @@ const modeldb = require('electron').remote.getGlobal('sharedObj').modeldb;
 class NewVariablesDialog extends React.Component {
   state = {
     open: false,
+    variables: []
   };
 
   handleClose = () => {
@@ -61,9 +62,9 @@ class NewVariablesDialog extends React.Component {
   }
 
   render() {
-    if (!this.state.variables) return null
+    //console.log(this.state.variables)
+    if (this.state.variables === undefined || this.state.variables.length == 0) return null
 
-    const vnames = this.state.variables.map(v => v.variable_name)
     return (
       <div>
         <Dialog
@@ -72,10 +73,10 @@ class NewVariablesDialog extends React.Component {
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
-          <DialogTitle id="alert-dialog-title">{"New variables were introduced in the assignment of the internal variable: " + vnames.join(', ') + "?"}</DialogTitle>
+          <DialogTitle id="alert-dialog-title">{"The following new variables were introduced in the assignment: " + this.state.variables.join(", ")+"."}</DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              Please update the expression to only include existing variables.
+              Please update the assignment to only include existing variables.
             </DialogContentText>
           </DialogContent>
           <DialogActions>
@@ -89,7 +90,7 @@ class NewVariablesDialog extends React.Component {
   }
 }
 
-DeleteRequirementDialog.propTypes = {
+NewVariablesDialog.propTypes = {
   open: PropTypes.bool.isRequired,
   newVariables: PropTypes.array.isRequired,
   handleDialogClose: PropTypes.func.isRequired,

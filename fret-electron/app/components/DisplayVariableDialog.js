@@ -55,7 +55,7 @@ import Select from '@material-ui/core/Select';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-import NewVariablesDialog from './NewVariableDialog';
+import NewVariablesDialog from './NewVariablesDialog';
 
 const db = require('electron').remote.getGlobal('sharedObj').db;
 const modeldb = require('electron').remote.getGlobal('sharedObj').modeldb;
@@ -109,7 +109,29 @@ class DisplayVariableDialog extends React.Component {
     errorsLustre: '',
     variables: '',
     checkLustre: true,
-    checkCoPilot: false
+    checkCoPilot: false,
+    newVariablesDialogOpen: false,
+    newVariables: []
+  }
+
+  handleNewVariables = (variables) => {
+    this.openNewVariablesDialog(variables);
+  }
+
+  openNewVariablesDialog = (variables) => {
+    this.setState({
+      newVariablesDialogOpen: true,
+      newVariables: variables,
+      anchorEl: null
+    })
+  }
+
+  closeNewVariablesDialog = () => {
+    this.setState({
+      newVariablesDialogOpen: false,
+      newVariables: [],
+      anchorEl: null
+    })
   }
 
   handleCheckChange = name => event => {
@@ -125,7 +147,7 @@ class DisplayVariableDialog extends React.Component {
   handleTextFieldChange = name => event => {
     let resultLustre;
     let resultCopilot;
-    console.log(event.target.value);
+    //console.log(event.target.value);
     if (name === 'assignment'){
       resultLustre = lustreExprSemantics.compileLustreExpr(event.target.value);
       this.setState({
@@ -166,87 +188,38 @@ class DisplayVariableDialog extends React.Component {
     });
   };
 
+
+
   handleUpdate = () => {
     const self = this;
     const {selectedVariable, description, idType, dataType, assignment, copilotAssignment, modeRequirement, modeldoc_id, modelComponent, variables, moduleName} = this.state;
     var modeldbid = selectedVariable._id;
     var completedVariable = false;
+    var newVariables = [];
 
-    //Check if variables are already in the model db. If yes, add modeldbid in the otherDeps array.
-    // if(variables.length != 0){
-    //   variables.forEach(function(v){
-    //     modeldb.find({
-    //           selector: {
-    //             _id: selectedVariable.project + selectedVariable.component_name + v,
-    //           }
-    //         }).then(function(result){
-    //           if(result.docs.length == 0){
-    //             var otherDeps = [modeldbid];
-    //             modeldb.put({
-    //               _id: selectedVariable.project + selectedVariable.component_name + v,
-    //               project: selectedVariable.project,
-    //               component_name: selectedVariable.component_name,
-    //               variable_name: v,
-    //               reqs: selectedVariable.reqs,
-    //               otherDeps: [modeldbid],
-    //               dataType: '',
-    //               idType: '',
-    //               description: '',
-    //               moduleName: '',
-    //               assignment: '',
-    //               copilotAssignment: '',
-    //               modeRequirement: '',
-    //               modeldoc: false,
-    //               modeldoc_id: '',
-    //               modelComponent: '',
-    //               completed: false
-    //               }).then(function (response) {
-    //                 console.log(response);
-    //               }).catch(function (err){
-    //                 console.log(err);
-    //               })
-    //           } else if (result.docs.length == 1){
-    //             //If it already exists check if otherDeps contains the right dependencies
-    //             var doc = result.docs[0];
-    //             if(!doc.otherDeps.includes(modeldbid)){
-    //               var otherDeps = doc.otherDeps;
-    //               otherDeps.push(modeldbid);
-    //               modeldb.put({
-    //                 _id: doc._id,
-    //                 _rev: doc._rev,
-    //                 project: doc.project,
-    //                 variable_name: doc.variable_name,
-    //                 component_name: doc.component_name,
-    //                 reqs: doc.reqs,
-    //                 otherDeps: otherDeps,
-    //                 dataType: doc.dataType,
-    //                 idType: doc.idType,
-    //                 moduleName: doc.moduleName,
-    //                 description: doc.description,
-    //                 assignment: doc.assignment,
-    //                 copilotAssignment: doc.copilotAssignment,
-    //                 modeRequirement: doc.modeRequirement,
-    //                 modeldoc: doc.modeldoc,
-    //                 modeldoc_id: doc.modeldoc_id,
-    //                 modelComponent: doc.modelComponent,
-    //                 completed: doc.completed
-    //               }).then(function (response) {
-    //                 console.log(response);
-    //               }).catch(function (err){
-    //                 console.log(err);
-    //               })
-    //               modeldb.find({
-    //                     selector: {
-    //                       _id: doc._id,
-    //                     }
-    //                   }).then(function(result){
-    //                     console.log(result);
-    //               });
-    //             }
-    //           }
-    //         });
-    //     })
-    // }
+    if(variables.length != 0){
+      modeldb.find({
+            selector: {
+              project: selectedVariable.project,
+              component_name: selectedVariable.component_name,
+              modeldoc: false
+            }
+          }).then(function(result){
+            if(result.docs.length != 0){
+              variables.forEach(function(v){
+                if (result.docs.some(r => r.variable_name === v.variable_name)){
+                  //this is an existing variable
+                }
+                else {
+                  //this is not an existing variable
+                  newVariables.push(v);
+                }
+              })
+              self.handleNewVariables(newVariables);
+            }
+          })
+    }
+
       /*
        For each Variable Type we need the following:
         Mode -> Mode Requirement
@@ -290,7 +263,10 @@ class DisplayVariableDialog extends React.Component {
               return console.log(err);
           })
       })
-      self.setState({open: false});
+      self.setState({
+        open: false
+      });
+
       self.state.dialogCloseListener();
   }
 
@@ -827,6 +803,11 @@ class DisplayVariableDialog extends React.Component {
             </Button>
           </DialogActions>
           </Dialog>
+          <NewVariablesDialog
+            open={this.state.newVariablesDialogOpen}
+            newVariables={this.state.newVariables}
+            handleDialogClose={this.closeNewVariablesDialog}
+          />
         </div>
 
       );
@@ -978,10 +959,10 @@ class DisplayVariableDialog extends React.Component {
             </Button>
           </DialogActions>
           </Dialog>
-          <NewVariableDialog
-            open={this.state.newVariableDialogOpen}
-            requirementsToBeDeleted={this.variables}
-            handleDialogClose={this.handleNewVariableDialogClose}
+          <NewVariablesDialog
+            open={this.state.newVariablesDialogOpen}
+            newVariables={this.state.newVariables}
+            handleDialogClose={this.closeNewVariablesDialog}
           />
         </div>
 
@@ -1134,6 +1115,11 @@ class DisplayVariableDialog extends React.Component {
             </Button>
           </DialogActions>
           </Dialog>
+          <NewVariablesDialog
+            open={this.state.newVariablesDialogOpen}
+            newVariables={this.state.newVariables}
+            handleDialogClose={this.closeNewVariablesDialog}
+          />
         </div>
       );
     } else if (idType === 'Internal' && (errorsLustre == '' && errorsCopilot == '')  && checkLustre && checkCoPilot){
@@ -1295,6 +1281,11 @@ class DisplayVariableDialog extends React.Component {
             </Button>
           </DialogActions>
           </Dialog>
+          <NewVariablesDialog
+            open={this.state.newVariablesDialogOpen}
+            newVariables={this.state.newVariables}
+            handleDialogClose={this.closeNewVariablesDialog}
+          />
         </div>
       );
     } else if (idType === 'Internal' && errorsLustre != '' && checkLustre && !checkCoPilot){
@@ -1447,6 +1438,11 @@ class DisplayVariableDialog extends React.Component {
             </Button>
           </DialogActions>
           </Dialog>
+          <NewVariablesDialog
+            open={this.state.newVariablesDialogOpen}
+            newVariables={this.state.newVariables}
+            handleDialogClose={this.closeNewVariablesDialog}
+          />
         </div>
 
       );
@@ -1600,6 +1596,11 @@ class DisplayVariableDialog extends React.Component {
             </Button>
           </DialogActions>
           </Dialog>
+          <NewVariablesDialog
+            open={this.state.newVariablesDialogOpen}
+            newVariables={this.state.newVariables}
+            handleDialogClose={this.closeNewVariablesDialog}
+          />
         </div>
 
       );
@@ -1764,6 +1765,11 @@ class DisplayVariableDialog extends React.Component {
             </Button>
           </DialogActions>
           </Dialog>
+          <NewVariablesDialog
+            open={this.state.newVariablesDialogOpen}
+            newVariables={this.state.newVariables}
+            handleDialogClose={this.closeNewVariablesDialog}
+          />
         </div>
 
       );
@@ -1928,6 +1934,11 @@ class DisplayVariableDialog extends React.Component {
             </Button>
           </DialogActions>
           </Dialog>
+          <NewVariablesDialog
+            open={this.state.newVariablesDialogOpen}
+            newVariables={this.state.newVariables}
+            handleDialogClose={this.closeNewVariablesDialog}
+          />
         </div>
 
       );
@@ -2094,6 +2105,11 @@ class DisplayVariableDialog extends React.Component {
             </Button>
           </DialogActions>
           </Dialog>
+          <NewVariablesDialog
+            open={this.state.newVariablesDialogOpen}
+            newVariables={this.state.newVariables}
+            handleDialogClose={this.closeNewVariablesDialog}
+          />
         </div>
 
       );
