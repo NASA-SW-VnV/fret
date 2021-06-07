@@ -81,6 +81,7 @@ const modeldb = require('electron').remote.getGlobal('sharedObj').modeldb;
 const constants = require('../parser/Constants');
 const uuidv1 = require('uuid/v1');
 
+
 const formStyles = theme => ({
   accordion: {
     width: '98%',
@@ -125,6 +126,7 @@ class CreateRequirementDialog extends React.Component {
 
   dialogRef = React.createRef();
 
+
   state = {
     createDialogOpen: false,
     project: null,
@@ -139,7 +141,7 @@ class CreateRequirementDialog extends React.Component {
     editor: withFields(withReact(createEditor())),
     dialogTop: 0,
     dialogLeft: 0,
-    autoFillVariables: [],
+    autoFillVariables: []
   };
 
 
@@ -244,18 +246,19 @@ class CreateRequirementDialog extends React.Component {
     })
   }
 
+
+
   handleCreate = () => {
+    if (! this.state.createDialogOpen){return;}
+    this.setState({
+      createDialogOpen: false
+    });
     var self = this;
     const { edittingRequirement, project, reqid, parent_reqid, rationale, comments} = this.state;
-
-
     var requirementFields = this.stepper.getRequirementFields();
     var { fulltext, semantics, input, template } = requirementFields;
-    this.setState({
-      createDialogOpen: false,
-    });
-    var newReqId = this.state.reqid;
 
+    var newReqId = this.state.reqid;
     var dbid = edittingRequirement && Object.keys(edittingRequirement).length > 0 ? edittingRequirement._id : uuidv1()
     var dbrev = edittingRequirement && Object.keys(edittingRequirement).length > 0 ? edittingRequirement._rev : undefined
 
@@ -284,7 +287,6 @@ class CreateRequirementDialog extends React.Component {
       // create or update modes variables
       self.createOrUpdateVariables(semantics.variables.modes,semantics.component_name, project, reqid, false);
     }
-
 
     // create req
     db.put({
@@ -434,6 +436,7 @@ class CreateRequirementDialog extends React.Component {
       borderWidth: 1,
       borderRadius: 5,
     }
+
     const colorStyle = isRequirementUpdate ? getRequirementStyle({semantics, fulltext},false) : 'req-grey';
     return (
         <Dialog
