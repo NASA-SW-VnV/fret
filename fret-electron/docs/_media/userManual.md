@@ -23,6 +23,12 @@ We provide a set of example requirements that can be directly [imported](./user-
 
 ## FRET Team
 
-[Dimitra Giannakopoulou](https://ti.arc.nasa.gov/profile/dimitra/), [Anastasia Mavridou](http://amavridou.com/), [Tom Pressburger](https://ti.arc.nasa.gov/profile/ttp/), [Johann Schumann](https://ti.arc.nasa.gov/profile/schumann/)
+[Dimitra Giannakopoulou](https://ti.arc.nasa.gov/profile/dimitra/),
+[Andreas Katis](https://andreaskatis.github.io/),
+[Anastasia Mavridou](http://amavridou.com/),
+[Tom Pressburger](https://ti.arc.nasa.gov/profile/ttp/),
+[Johann Schumann](https://ti.arc.nasa.gov/profile/schumann/),
+[Khanh Trinh]().
 
-*Alumni and Interns*: David Bushnell, Tanja deJong, Julian Rhein, Nija Shi
+*Alumni and Interns*: David Bushnell, Tanja deJong, Yorgo Giannakopoulou,
+David Kooi, Julian Rhein, Daniel Riley, Nija Shi.

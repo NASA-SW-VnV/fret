@@ -20,7 +20,10 @@ Detailed instructions can be found in [installation instructions](fret-electron/
 Platforms
 ---------
 
-FRET has been tested in a range of architecture/operating system combinations. It has been tested on PC Intel, Apple Mac and Sun architectures, with different versions and distributions of Linux, Windows and Mac OS X.
+FRET has been tested in a range of architecture/operating system
+combinations. It has been tested on PC Intel, Apple Mac and Sun
+architectures, with different versions and distributions of Windows, Mac OS
+X, and Linux.
 
 License
 -------

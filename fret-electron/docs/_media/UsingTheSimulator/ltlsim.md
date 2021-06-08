@@ -66,6 +66,19 @@ on the top of the LTLSIM window.
 Clicking it switches the representation to past time.
 Note that input traces that are interactively modified are not changed.
 
+When visualizing the future-time formalization, the bottom trace shows, at
+each timepoint, the evaluation of the formula on the trace starting at that
+timepoint and extending to the end of the trace. For example, with a
+tracelength of 40, the formula is evaluated forwards starting from timepoint
+0 to the end of the trace (timepoint 39), from timepoint 1 to the end of the
+trace, etc. The overall color is the evaluation at timepoint 0. When
+visualizing the past-time formalization, the bottom trace shows, at each
+timepoint, the evaluation of the trace starting at timepoint 0 and extending
+to the timepoint. For example, the formula is evaluated at timepoint 39 for
+the trace from timepoint 0 to timepoint 39, at timepoint 38 for the trace
+from timepoint 0 to timepoint 38, etc. The overall color is the evaluation
+at timepoint 39.
+
 The small "torch" symbol turns on (default) and off the coloring of the
 output trace according to its overall valuation.
 

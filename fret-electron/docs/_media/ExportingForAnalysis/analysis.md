@@ -53,21 +53,24 @@ Pick an export language for the generated specification/code. We currently offer
 
 **4. Complete necessary variable information**
 
-Depending on the chosen export language, there are different requirements for generating the corresponding specification code. In particular, for generating CoCoSpec code all variable information must be added/mapped in comparison with Copilot that there is no such requirement.
+Depending on the chosen export language, there are different requirements
+for generating the corresponding specification code. In particular, for
+generating CoCoSpec code, all variable information must be added/mapped, whereas
+there is no such requirement with Copilot.
 
 ***4a. Copilot code generation***
 
-No variable information is required for Copilot. Optionally, the user can follow the steps described below to add information about the data type, variable type, etc of each variable.
+No variable information is required for Copilot. Optionally, the user can follow the steps described below to add information about the data type, variable type, etc. of each variable.
 
 ***4b. CoCoSpec code generation***
 
-To generate CoCoSpec code, for each variable, the following information must be entered by the user, i.e.,:
+To generate CoCoSpec code, for each variable, the following information must be entered by the user; i.e.,
 * data type (i.e., bool, int, real, enum, struct),
-* type (i.e., input, output, internal, mode, function),
+* variable type (i.e., input, output, internal, mode, function),
 * internal variable assignments,
 * mode require statements.
 
-A user may optionally import information from a corresponding Simulink model and also make the mapping between the components/variables described in the requirements and the components/port types of the Simulink model. To do that, the user can optionally generate the model information in a compliant-to-FRET JSON format by using `fret_IR.m`. Then the JSON file can be imported into FRET by clicking the Import button.
+A user may optionally import information from a corresponding Simulink model and also make the mapping between the components/variables described in the requirements and the components/port types of the Simulink model. To do that, the user can optionally generate the model information in a compliant-to-FRET JSON format by using `fret/tools/Scripts/Matlab/fret_IR.m`. Then the JSON file can be imported into FRET by clicking the Import button.
 
 ***
 <img src="../screen_shots/AnalysisPortal4a.png">  
