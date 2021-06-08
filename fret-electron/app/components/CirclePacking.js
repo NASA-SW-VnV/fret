@@ -36,11 +36,6 @@ import * as d3 from 'd3'
 import {getRequirementStyle} from "../utils/utilityFunctions";
 import RequirementDialogs from './RequirementDialogs';
 
-const sharedObj = require('electron').remote.getGlobal('sharedObj')
-const db = sharedObj.db;
-const system_dbkeys = sharedObj.system_dbkeys;
-var dbChangeListener = undefined
-
 const constants = require('../parser/Constants');
 
 const COLOR_RANGE = ["hsl(0, 0%, 80%)", "hsl(0, 0%, 20%)"]
@@ -58,12 +53,8 @@ class CirclePacking extends React.Component {
     })
   }
 
-  synchStateWithDB = () => {
+  createGraph = () => {
     if (!this.mounted) return;
-
-    db.allDocs({
-      include_docs: true
-    }).then( result => {
       const data = {
         name: "root",
         children: [],
@@ -71,9 +62,7 @@ class CirclePacking extends React.Component {
       const projectRootMap = {}
       const parentChildMap = {}
       const nodeMap = {}
-      result.rows
-      .filter(r => !system_dbkeys.includes(r.key))
-      .forEach( r => {
+      this.props.requirements.forEach( r => {
         const req = r.doc
         var reqid = r.doc.reqid
         if (reqid == '' || reqid == undefined){ reqid = 'Undefined ReqID'}
@@ -129,9 +118,7 @@ class CirclePacking extends React.Component {
       this.setState({
         graph : data
       })
-    })
   }
-
 
   createD3() {
     const self = this;
@@ -214,7 +201,6 @@ class CirclePacking extends React.Component {
         .style("fill-opacity", function(d) { return d.parent === global ? 1 : 0; })
         .style("display", function(d) { return d.parent === global ? "inline" : "none"; })
         .text(function(d) { return d.data.name; })
-
         .on("mouseover", function(d) {
           if (d.data.doc) {
             if (d.data.doc.semantics){
@@ -322,37 +308,21 @@ class CirclePacking extends React.Component {
 
   componentWillUnmount() {
     this.mounted = false;
-    dbChangeListener.cancel()
   }
 
   componentDidMount = () => {
-    this.mounted = true
-    dbChangeListener= db.changes({
-      since: 'now',
-      live: true,
-      include_docs: true
-    }).on('change', (change) => {
-      if (!system_dbkeys.includes(change.id)) {
-        this.synchStateWithDB();
-      }
-    }).on('complete', function(info) {
-      console.log(info);
-    }).on('error', function (err) {
-      console.log(err);
-    });
-
-    this.synchStateWithDB()
+    this.mounted = true;
+    this.createGraph()
   }
 
   componentDidUpdate(prevProps) {
     if (this.props.selectedProject !== prevProps.selectedProject) {
       this.createD3()
     }
+    if(this.props.requirements !== prevProps.requirements) {
+      this.createGraph()
+    }    
   }
-
-
-
-
 
   render() {
     this.createD3()

@@ -54,14 +54,22 @@ var translationFields = {
 };
 
 //project, rid and text are provided as user input: importedReqs, project, rid, text, projects
-function csvToJsonConvert (importedInfo) {
+function csvToJsonConvert (importedInfo, setImporting) {
   translateFields(importedInfo.reqID, importedInfo.description, importedInfo.projectField);
   const reqs = manipulate(importedInfo.importedReqs, importedInfo.project, importedInfo.projectField)
-  importRequirements (reqs, importedInfo.listOfProjects);
+  importRequirements (reqs, importedInfo.listOfProjects, setImporting);
 }
 
-function importRequirements (data, projects) {
-  db.bulkDocs(data).catch((err) => {console.log(err);});
+function importRequirements (data, projects, setImporting) {
+
+  db.bulkDocs(data).then((data) => {
+    // because we get response before the changes are made
+    setTimeout(() => setImporting(false), 1000)
+  }).
+  catch((err) => {
+    console.log(err);
+  });
+
   data.forEach((d) => {
     if (d.project && !projects.includes(d.project)){
       projects.push(d.project);

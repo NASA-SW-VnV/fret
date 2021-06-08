@@ -41,11 +41,6 @@ import Typography from '@material-ui/core/Typography';
 import './DraggableClusters.css';
 const constants = require('../parser/Constants');
 
-const sharedObj = require('electron').remote.getGlobal('sharedObj')
-const db = sharedObj.db;
-const system_dbkeys = sharedObj.system_dbkeys;
-var dbChangeListener = undefined;
-
 const styles = theme => ({
   root: {
     flexGrow: 1,
@@ -67,12 +62,8 @@ class DraggableClusters extends React.Component {
     title : "Traceability and Clustering"
   }
 
-  synchStateWithDB() {
+  createGraph() {
     if (!this.mounted) return;
-
-    db.allDocs({
-      include_docs: true,
-    }).then((result) => {
       var graph = {
             "nodes" : [],
             "links" : []
@@ -80,15 +71,13 @@ class DraggableClusters extends React.Component {
 
       var groups = []
       var allReqIds = []
-      result.rows
-      .filter(r => !system_dbkeys.includes(r.key))
-      .forEach((r) => {
+      this.props.requirements.forEach((r) => {
         const project = r.doc.project
         if (project && project.length > 0) {
           var reqid = r.doc.reqid
           allReqIds.push(reqid)
           var parent_reqid = r.doc.parent_reqid
-          var isFormalized = r.doc.ltl || (r.doc.semantics.ft && r.doc.semantics.ft !== constants.nonsense_semantics && r.doc.semantics.ft !== constants.undefined_semantics && r.doc.semantics.ft !== constants.unhandled_semantics)
+          var isFormalized = r.doc.ltl || r.doc.semantics && (r.doc.semantics.ft && r.doc.semantics.ft !== constants.nonsense_semantics && r.doc.semantics.ft !== constants.undefined_semantics && r.doc.semantics.ft !== constants.unhandled_semantics)
           var group = project
           if (groups.indexOf(group) < 0) groups.push(group)
           graph["nodes"].push({
@@ -114,9 +103,6 @@ class DraggableClusters extends React.Component {
         graph : graph,
         groups : groups
       })
-    }).catch((err) => {
-      console.log(err);
-    });
   }
 
   createD3(graph, groups) {
@@ -256,27 +242,17 @@ class DraggableClusters extends React.Component {
 
   componentWillUnmount() {
     this.mounted = false;
-    dbChangeListener.cancel()
   }
 
   componentDidMount() {
     this.mounted = true;
-    this.synchStateWithDB();
+    this.createGraph();
+  }
 
-    dbChangeListener = db.changes({
-      since: 'now',
-      live: true,
-      include_docs: true
-    }).on('change', (change) => {
-      if (change.id != 'FRET_PROPS') {
-        console.log(change);
-        this.synchStateWithDB();
-      }
-    }).on('complete', function(info) {
-      console.log(info);
-    }).on('error', function (err) {
-      console.log(err);
-    });
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if(this.props.requirements !== prevProps.requirements ) {
+      this.createGraph()
+    }
   }
 
   render() {

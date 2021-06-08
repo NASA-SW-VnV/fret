@@ -210,13 +210,15 @@ class MainView extends React.Component {
     exportRequirementsDialogOpen: false,
     requirementImportDialogOpen: false,
     csvFields: [],
-    importedReqs: []
+    importedReqs: [],
+    importing: false,
   };
 
 
 
 
   handleImport = () => {
+    this.setState({importing: true});
     const self = this;
     var homeDir = app.getPath('home');
     const { listOfProjects } = this.state;
@@ -262,12 +264,17 @@ class MainView extends React.Component {
          fs.readFile(filepath, function (err,buffer) {
              if (err) throw err;
              let data = JSON.parse(buffer);
-             requirementsImport.importRequirements(data, listOfProjects);
+             requirementsImport.importRequirements(data, listOfProjects, self.setImporting);
               });
        }
        else{
+         // when we choose an unsupported file
+         this.setImporting(false);
          console.log("We do not support yet this file import")
        }
+    } else {
+      // when no file is selected
+      this.setImporting(false)
     }
   }
 
@@ -286,6 +293,9 @@ class MainView extends React.Component {
     this.setState({ anchorEl: null });
   };
 
+  setImporting = (importing) =>  {
+    this.setState({importing});
+  }
 
   handleExport = () => {
     var homeDir = app.getPath('home');
@@ -439,7 +449,7 @@ class MainView extends React.Component {
     })
   }
 
-    handleCSVImport = (csvFields, importedReqs) => {
+  handleCSVImport = (csvFields, importedReqs) => {
       this.setState({
         csvFields: csvFields,
         importedReqs: importedReqs
@@ -463,7 +473,7 @@ class MainView extends React.Component {
 
   render() {
     const { classes, theme } = this.props;
-    const { anchorEl } = this.state;
+    const { anchorEl, importing } = this.state;
 
     return (
       <div className={classes.root}>
@@ -606,7 +616,8 @@ class MainView extends React.Component {
             </div>
           </Drawer>
           <main className={classes.content}>
-          <AppMainContent content={this.state.mainContent} selectedProject={this.state.selectedProject} existingProjectNames={this.state.listOfProjects}/>
+          <AppMainContent content={this.state.mainContent} selectedProject={this.state.selectedProject} 
+          existingProjectNames={this.state.listOfProjects} importing={importing}/>            
           </main>
           <CreateRequirementDialog
             open={this.state.createDialogOpen}
@@ -636,6 +647,7 @@ class MainView extends React.Component {
             csvFields={this.state.csvFields}
             listOfProjects={this.state.listOfProjects}
             importedReqs={this.state.importedReqs}
+            setImporting={this.setImporting}
           />
         </div>
         <Snackbar

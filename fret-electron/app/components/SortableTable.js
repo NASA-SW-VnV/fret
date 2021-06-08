@@ -80,12 +80,6 @@ import * as d3 from "d3";
 import {getRequirementStyle} from "../utils/utilityFunctions";
 
 const constants = require('../parser/Constants');
-const sharedObj = require('electron').remote.getGlobal('sharedObj');
-
-const db = sharedObj.db;
-const app = require('electron').remote.app;
-const system_dbkeys = sharedObj.system_dbkeys;
-let dbChangeListener = undefined;
 
 let counter = 0;
 // status is also saved in database
@@ -329,63 +323,43 @@ class SortableTable extends React.Component {
 
   constructor(props){
     super(props);
-      dbChangeListener = db.changes({
-        since: 'now',
-        live: true,
-        include_docs: true
-      }).on('change', (change) => {
-        if (!system_dbkeys.includes(change.id)) {
-          console.log(change);
-          this.synchStateWithDB();
-        }
-      }).on('complete', function(info) {
-        console.log(info);
-      }).on('error', function (err) {
-        console.log(err);
-      });
   }
 
   componentDidMount() {
     this.mounted = true;
-    this.synchStateWithDB();
+    this.formatData();
   }
 
   componentWillUnmount() {
     this.mounted = false;
-    dbChangeListener.cancel();
   }
 
   componentDidUpdate(prevProps) {
     if (this.props.selectedProject !== prevProps.selectedProject) {
-      this.synchStateWithDB()
+      this.formatData()
       this.setState(
         {
           selected: [],
           bulkChangeMode: false
         });
     }
+    if(this.props.requirements !== prevProps.requirements) {
+      this.formatData()
+    }    
   }
 
-  synchStateWithDB() {
+  formatData() {
     if (!this.mounted) return;
 
-    const { selectedProject } = this.props;
+    const { selectedProject, requirements } = this.props;
     const filterOff = selectedProject == 'All Projects'
-    db.allDocs({
-      include_docs: true,
-    }).then((result) => {
-      const data = result.rows
-        .filter(r => !system_dbkeys.includes(r.key))
-        .filter(r => filterOff || r.doc.project == selectedProject)
+    const data = requirements.filter(r => filterOff || r.doc.project == selectedProject)
         .map(r => {
           return createData(r.doc._id, r.doc._rev, r.doc.reqid, r.doc.fulltext, r.doc.project, r.doc.status, r.doc.semantics, r.doc.fulltext);
         });
       this.setState({
         data,
       })
-    }).catch((err) => {
-      console.log(err);
-    });
   }
 
   handleEnableBulkChange = () => {

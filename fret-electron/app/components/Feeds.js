@@ -50,12 +50,6 @@ import Typography from '@material-ui/core/Typography';
 import UnformalizedIcon from '@material-ui/icons/Warning';
 import Tooltip from '@material-ui/core/Tooltip';
 import Divider from '@material-ui/core/Divider';
-
-const sharedObj = require('electron').remote.getGlobal('sharedObj')
-const db = sharedObj.db;
-const system_dbkeys = sharedObj.system_dbkeys;
-var dbChangeListener = undefined;
-
 const constants = require('../parser/Constants');
 
 const styles = theme => ({
@@ -76,58 +70,38 @@ class Feeds extends React.Component {
   state = {
     dense: false,
     secondary: false,
-    allRequirements: [],
+    recentRequirements: [],
   };
 
-  synchStateWithDB() {
+  getRecentRequirements() {
     if (!this.mounted) return;
-    var changes = db.allDocs({
-      since: '0',
-      include_docs: true,
-      descending: true,
-      limit: 10
-    }).then((result) => {
-      this.setState({
-        allRequirements: result.rows.filter(r => !system_dbkeys.includes(r.key))
-      })
-    }).catch((err) => {
-      console.log(err);
-    });
+    this.setState({
+      recentRequirements: this.props.requirements.slice(-10).reverse()
+    })
   }
 
   componentDidMount() {
     this.mounted = true;
-    this.synchStateWithDB();
+    this.getRecentRequirements();
 
-    dbChangeListener= db.changes({
-      since: 'now',
-      live: true,
-      include_docs: true
-    }).on('change', (change) => {
-      if (!system_dbkeys.includes(change.id)) {
-        console.log(change);
-        this.synchStateWithDB();
-      }
-    }).on('complete', function(info) {
-      console.log(info);
-    }).on('error', function (err) {
-      console.log(err);
-    });
+  }
 
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if(this.props.requirements !== prevProps.requirements) {
+      this.getRecentRequirements()
+    }
   }
 
   componentWillUnmount() {
     this.mounted = false;
-    dbChangeListener.cancel()
   }
 
   renderListItems() {
-    const { dense, secondary, allRequirements } = this.state;
+    const { dense, secondary, recentRequirements } = this.state;
     const { classes, selectedProject } = this.props
 
     var listitems = null;
-    if (allRequirements.length > 0) {
-      listitems = allRequirements.map((r) => {
+    listitems = recentRequirements.map((r) => {
         var title = r.doc.project + ' ' + r.doc.reqid
         var icon = (r.doc.ltl || (r.doc.semantics && r.doc.semantics.ft !== constants.nonsense_semantics && r.doc.semantics.ft !== constants.undefined_semantics && r.doc.semantics.ft !== constants.unhandled_semantics))  ? null : <UnformalizedIcon color='error' />
         const highlighterStyle =  r.doc.project == selectedProject ? classes.highlighter : {}
@@ -147,7 +121,6 @@ class Feeds extends React.Component {
           </ListItemSecondaryAction>
         </ListItem>
       )});
-    }
 
     return(
       <List dense={true} >

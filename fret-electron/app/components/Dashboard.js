@@ -47,11 +47,6 @@ import DraggableClusters from './DraggableClusters';
 import CirclePacking from './CirclePacking';
 import css from './Dashboard.css';
 
-const sharedObj = require('electron').remote.getGlobal('sharedObj')
-const db = sharedObj.db;
-const system_dbkeys = sharedObj.system_dbkeys;
-var dbChangeListener = undefined;
-
 const constants = require('../parser/Constants');
 
 const styles = theme => ({
@@ -68,52 +63,13 @@ const styles = theme => ({
 });
 
 class Dashboard extends React.Component {
-  state = {
-    allRequirements : [],
-  }
-
-  synchStateWithDB() {
-    if (!this.mounted) return;
-    var changes = db.allDocs({
-      since: '0',
-      include_docs: true,
-    }).then((result) => {
-      this.setState({
-        allRequirements : result.rows.filter(r => !system_dbkeys.includes(r.key))
-      })
-    }).catch((err) => {
-      console.log(err);
-    });
-  }
-
-  componentDidMount() {
-    this.mounted = true;
-    this.synchStateWithDB();
-
-    dbChangeListener = db.changes({
-      since: 'now',
-      live: true,
-      include_docs: true
-    }).on('change', (change) => {
-      if (!system_dbkeys.includes(change.id)) {
-        console.log(change);
-        this.synchStateWithDB();
-      }
-    }).on('complete', function(info) {
-      console.log(info);
-    }).on('error', function (err) {
-      console.log(err);
-    });
-  }
 
   componentWillUnmount() {
     this.mounted = false;
-    dbChangeListener.cancel()
   }
 
   render() {
-    const { classes, selectedProject } = this.props
-    const { allRequirements } = this.state
+    const { classes, selectedProject, requirements } = this.props
 
     var numOfRequirements = 0
     var numOfFormalizedRequirements = 0
@@ -122,7 +78,7 @@ class Dashboard extends React.Component {
     var projects = []
     var projectOverviewTitle, projectOverviewValue
 
-    allRequirements
+    requirements
       .filter(r => {
         return selectedProject == 'All Projects' || r.doc.project == selectedProject
       })
@@ -175,14 +131,14 @@ class Dashboard extends React.Component {
             <ListSubheader color='primary' disableGutters={true}>Hierarchical Cluster</ListSubheader>
             </List>
             <Divider />
-            <CirclePacking selectedProject={selectedProject} projects={projects}/>
+            <CirclePacking selectedProject={selectedProject} projects={projects} requirements={requirements}/>
           </GridListTile>
           <GridListTile cols={2} rows={6}>
             <List>
             <ListSubheader color='primary' disableGutters={false}>Recent Activity</ListSubheader>
             </List>
             <Divider />
-            <Feeds selectedProject={selectedProject}/>
+            <Feeds selectedProject={selectedProject} requirements={requirements}/>
           </GridListTile>
         </GridList>
       </div>
