@@ -403,7 +403,15 @@ exports.getFormalization = (key, neg, leftP, rightP, options) => {
 
   // otherwise our right point is not the last point
   // in this case we need to create two formulas depending on after-until or between
-  var baseform = implication(conjunction(rightP, negate('FTP')), ('previous ' + baseform_at));
+
+  // note that right=FTP can only happen with scope before
+  // previously, I made baseform always include (RIGHT and not FTP) implies ...
+  // Now I optimize to only add that when mode is before, with rightOpt
+  // This is NOT affecting eotInterval
+
+  var rightOpt =  (key[0] == 'before') ? conjunction(rightP, negate('FTP')) : rightP;
+
+  var baseform = implication(rightOpt, ('previous ' + baseform_at));
   var generalform = 'historically ' + baseform;
 
   if (options.in == 'afterUntil') { // need to add part for interval that spans to end of execution
