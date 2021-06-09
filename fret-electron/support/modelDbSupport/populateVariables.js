@@ -14,13 +14,29 @@ function extractSemantics (text) {
     return {}
   else if (result.collectedSemantics)
     return result.collectedSemantics
-}
+};
 
 function batchCreateOrUpdate (variables) {
   modeldb.bulkDocs(variables).catch(err => {
     console.log('error', err)
   })
-}
+};
+
+function checkforUnusedVariables() {
+  let variablesToDelete = []
+  modeldb.find({
+    selector: {
+      modeldoc: false,
+    }
+  }).then(function (result){
+    result.docs.forEach(r => {
+      if (r.reqs.length == 0 || (r.reqs.length === 1 && r.reqs[0]== '')) {
+        variablesToDelete.push({...r, _deleted: true})
+      }
+    });
+    batchCreateOrUpdate(variablesToDelete);
+  })
+};
 
 //This function populates the model DB when a new requirement is added (imported) or updated
   function populateVariables() {
@@ -72,7 +88,7 @@ function batchCreateOrUpdate (variables) {
                   description: '',
                   assignment: '',
                   modeRequirement: '',
-                  model: false,
+                  modeldoc: false,
                   modelComponent: '',
                   model_id: ''
                 };
@@ -86,5 +102,6 @@ function batchCreateOrUpdate (variables) {
       if (shouldUpdate) {
         batchCreateOrUpdate(Object.values(mapIdsToVariables));
       }
+      checkforUnusedVariables();
     });
   }

@@ -5,7 +5,7 @@ const system_dbkeys = require('electron').remote.getGlobal('sharedObj').system_d
 
 
 export {
-  removeVariables as removeVariables
+  removeVariablesInBulk as removeVariablesInBulk
 }
 
 function createVariableMappingToDeleteRequirements (requirements) {
@@ -32,7 +32,7 @@ function createVariableMappingToDeleteRequirements (requirements) {
 }
 
 
-function removeVariables (requirements) {
+function removeVariablesInBulk (requirements) {
   let docs = [];
   let mapVariablesToReqIds = createVariableMappingToDeleteRequirements(requirements);
   // We want to do bulk db change.  Get all promises to be resolved before doing update
