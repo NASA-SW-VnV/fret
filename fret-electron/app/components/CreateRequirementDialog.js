@@ -214,7 +214,7 @@ class CreateRequirementDialog extends React.Component {
             description: '',
             assignment: '',
             modeRequirement: '',
-            model: false,
+            modeldoc: false,
             modelComponent: '',
             model_id: ''
           });
