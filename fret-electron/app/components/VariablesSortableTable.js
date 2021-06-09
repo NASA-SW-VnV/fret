@@ -339,9 +339,9 @@ class VariablesSortableTable extends React.Component {
           })
           self.synchModelVariablesAndComponents(componentModel);
         }).catch((err) => {
-                console.log(err);
-          });
-  }
+          console.log(err);
+        })
+  };
 
   synchModelVariablesAndComponents(componentModel){
     const {selectedProject, selectedComponent} = this.props,
@@ -369,8 +369,8 @@ class VariablesSortableTable extends React.Component {
       })
     }).catch((err) => {
       console.log(err);
-    });
-  }
+    })
+  };
 
 
   handleRequestSort = (event, property) => {
@@ -439,7 +439,6 @@ class VariablesSortableTable extends React.Component {
             dataType: "",
             idType: "",
             tool: vdoc.tool,
-            otherDeps: "",
             description: "",
             assignment: "",
             copilotAssignment: "",

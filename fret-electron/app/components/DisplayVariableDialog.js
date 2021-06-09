@@ -252,7 +252,6 @@ class DisplayVariableDialog extends React.Component {
           component_name: vdoc.component_name,
           variable_name: vdoc.variable_name,
           reqs: vdoc.reqs,
-          otherDeps: vdoc.otherDeps,
           dataType: dataType,
           idType: idType,
           moduleName: moduleName,
