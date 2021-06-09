@@ -72,7 +72,7 @@ class DeleteRequirementDialog extends React.Component {
     // requirements to be removed
     let { requirements } = this.state;
     let deleteList = this.createRequirementDeleteList(requirements);
-    variableSupport.removeVariables(requirements);
+    variableSupport.removeVariablesInBulk(requirements);
     db.bulkDocs(deleteList)
       .catch((err) => {
         console.log(err)
