@@ -71,6 +71,7 @@ const archiver = require('archiver');
 const app = require('electron').remote.app;
 const dialog = require('electron').remote.dialog;
 const utilities = require('../../support/utilities');
+const uuidv1 = require('uuid/v1');
 
 var dbChangeListener;
 
@@ -316,38 +317,61 @@ class VariablesSortableTable extends React.Component {
 
   synchStateWithModelDB(){
     if (! this.mounted) return;
+    this.synchFRETvariables();
+  }
+
+  synchFRETvariables() {
     const {selectedProject, selectedComponent} = this.props,
         self = this;
-    var componentModel = '',
-        modelVariables = [],
-        importedComponents = [];
+    let componentModel = '';
+      modeldb.find({
+        selector: {
+          project : selectedProject,
+          component_name : selectedComponent,
+        }
+      }).then(function(result){
+          self.setState({
+            data: result.docs.map(r => {
+                componentModel = r.modelComponent;
+                return createData(r.variable_name, r.modeldoc_id, r.idType, r.dataType, r.description)
+              }).sort((a, b) => {return a.variable_name > b.variable_name}),
+            modelComponent: componentModel
+          })
+          self.synchModelVariablesAndComponents(componentModel);
+        }).catch((err) => {
+                console.log(err);
+          });
+  }
+
+  synchModelVariablesAndComponents(componentModel){
+    const {selectedProject, selectedComponent} = this.props,
+        self = this;
+    let modelVariables = [],
+        modelComponents = [];
 
     modeldb.find({
       selector: {
-        project : selectedProject,
-        component_name : selectedComponent
+        project: selectedProject,
+        modeldoc: true
       }
     }).then(function(result){
-        result.docs.forEach(function(v){
-          if (v.modeldoc){
-            if (!importedComponents.includes(v.component_name)) importedComponents.push(v.component_name);
-            modelVariables.push(v);
-          }
-
-        })
-          self.setState({
-            data: result.docs.map(r => {
-                    componentModel = r.modelComponent;
-                    return createData(r.variable_name, r.modeldoc_id, r.idType, r.dataType, r.description)
-                  }).sort((a, b) => {return a.variable_name > b.variable_name}),
-            modelComponent: componentModel,
-            importedComponents: importedComponents.sort((a, b) => {return a.toLowerCase().trim() > b.toLowerCase().trim()}),
-            modelVariables: modelVariables,
-          })
+      result.docs.forEach(function(v){
+        if (! modelComponents.includes(v.component_name)) {
+          modelComponents.push(v.component_name);
+        }
+        if (v.component_name === componentModel) {
+                  modelVariables.push(v);
+        }
+      })
+      self.setState({
+        modelVariables: modelVariables,
+        importedComponents: modelComponents.sort((a, b) => {return a.toLowerCase().trim() > b.toLowerCase().trim()})
+      })
     }).catch((err) => {
       console.log(err);
     });
   }
+
 
   handleRequestSort = (event, property) => {
     const orderBy = property;
@@ -386,7 +410,7 @@ class VariablesSortableTable extends React.Component {
       displayVariableOpen: false,
       snackbarOpen: variableUpdated,
       snackBarDisplayInfo: {
-        modefiedVarId: newVarId,
+        modifiedVarId: newVarId,
         action: actionLabel
       }
     })
@@ -412,18 +436,17 @@ class VariablesSortableTable extends React.Component {
             component_name: vdoc.component_name,
             variable_name: vdoc.variable_name,
             reqs: vdoc.reqs,
-            otherDeps: vdoc.otherDeps,
-            dataType: vdoc.dataType,
-            idType: vdoc.idType,
+            dataType: "",
+            idType: "",
             tool: vdoc.tool,
-            otherDeps: vdoc.otherDeps,
-            description: vdoc.description,
-            assignment: vdoc.assignment,
-            copilotAssignment: vdoc.copilotAssignment,
-            modeRequirement: vdoc.modeRequirement,
+            otherDeps: "",
+            description: "",
+            assignment: "",
+            copilotAssignment: "",
+            modeRequirement: "",
             modeldoc: vdoc.modeldoc,
             modelComponent: modelComponent,
-            modeldoc_id: vdoc.modeldoc_id
+            modeldoc_id: "",
           }).then(function (response){
           }).catch(function (err) {
              console.log(err);
@@ -434,6 +457,7 @@ class VariablesSortableTable extends React.Component {
 
  importComponentModel = () => {
    var homeDir = app.getPath('home');
+   const self = this;
    const {selectedProject, selectedComponent} = this.props;
    var filepaths = dialog.showOpenDialog({
      defaultPath : homeDir,
@@ -450,6 +474,7 @@ class VariablesSortableTable extends React.Component {
              let content = utilities.replaceStrings([['\\"id\\"','\"_id\"']], buffer);
              let data = JSON.parse(content);
              data.forEach((d) => {
+               d._id = uuidv1();
                d.project = selectedProject;
                d.fretComponent = selectedComponent;
              })
