@@ -80,6 +80,12 @@ import * as d3 from "d3";
 import {getRequirementStyle} from "../utils/utilityFunctions";
 
 const constants = require('../parser/Constants');
+const sharedObj = require('electron').remote.getGlobal('sharedObj');
+
+const db = sharedObj.db;
+const app = require('electron').remote.app;
+const system_dbkeys = sharedObj.system_dbkeys;
+
 
 let counter = 0;
 // status is also saved in database
@@ -345,7 +351,7 @@ class SortableTable extends React.Component {
     }
     if(this.props.requirements !== prevProps.requirements) {
       this.formatData()
-    }    
+    }
   }
 
   formatData() {

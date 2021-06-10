@@ -48,6 +48,10 @@ import CirclePacking from './CirclePacking';
 import css from './Dashboard.css';
 
 const constants = require('../parser/Constants');
+const sharedObj = require('electron').remote.getGlobal('sharedObj')
+const db = sharedObj.db;
+const system_dbkeys = sharedObj.system_dbkeys;
+
 
 const styles = theme => ({
   root: {

@@ -36,7 +36,11 @@ import * as d3 from 'd3'
 import {getRequirementStyle} from "../utils/utilityFunctions";
 import RequirementDialogs from './RequirementDialogs';
 
-const constants = require('../parser/Constants');
+const constants = require('../parser/Constants
+const sharedObj = require('electron').remote.getGlobal('sharedObj')
+const db = sharedObj.db;
+const system_dbkeys = sharedObj.system_dbkeys;
+
 
 const COLOR_RANGE = ["hsl(0, 0%, 80%)", "hsl(0, 0%, 20%)"]
 
@@ -321,7 +325,7 @@ class CirclePacking extends React.Component {
     }
     if(this.props.requirements !== prevProps.requirements) {
       this.createGraph()
-    }    
+    }
   }
 
   render() {
