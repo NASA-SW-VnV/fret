@@ -28,7 +28,7 @@ To check a system component's set of requirements for realizability, the user mu
 
 Pick a project from the drop down menu (Project button) and switch to the Analysis Portal by clicking the icon in the red box in the left hand side panel.
 
-<img src="../screen_shots/AnalysisPortal.png">
+![](AnalysisPortal.png)
 
 **2. Pick component and complete necessary variable information under Variable Mapping**
 
@@ -38,7 +38,7 @@ You do not need to use the export option at this time.
 
 Switch to the Realizability view by clicking the tab in the red box.
 
-<img src="../screen_shots/VariableMappingRealizability.png">
+![](VariableMappingRealizability.png)
 
 **4. Pick a component**
 
@@ -51,7 +51,7 @@ Pick a System Component. The realizability tab should now update to show the fol
 * Diagnose button (unrealizable components only). If the component is unrealizable, use this button to identify minimal sets of conflicting requirements, as well as view their counterexamples (see also step "Diagnoe unrealizable requirements" below).
 * Project Summary and Help buttons (Currently disabled features, coming soon).
 
-<img src="../screen_shots/Realizability.png">
+![](Realizability.png)
 
 **5. Check Realizability**
 
@@ -61,14 +61,13 @@ If applicable, select an option between compositional and monolithic checks and 
 
 When the check is complete, a result icon is displayed next to the name of the selected system component. Hover over the icon to view the time required for the analysis to complete. For unrealizable results, the Diagnose button should be now available.
 
-<img src="../screen_shots/RealizabilityMonolithic.png">
-
+![](RealizabilityMonolithic.png)
 
 **5.2 Compositional check**
 
 A check is performed per connected component. Once all checks are done, the results are displayed next to the name of the corresponding connected component, as well as the name of the system component. For unrealizable connected components, the Diagnose button becomes available when the corresponding tab is picked.
 
-<img src="../screen_shots/RealizabilityCompositional.png">
+![](RealizabilityCompositional.png)
 
 **6. Diagnose unrealizable requirements**
 
@@ -76,13 +75,12 @@ Unrealizable sets of requirements can now be diagnosed. The diagnosis procedure 
 
 Select an unrealizable component (or connected component) and click the Diagnose button. When the analysis is complete, the main window is updated with a chord diagram. The chord diagram is a visual representation of the minimal conflicts that exist in the component, and can be manipulated to focus on particular conflicts.
 
-<img src="../screen_shots/ChordDiagram.png">
+![](ChordDiagram.png)
 
 Select a conflict on the diagram by clicking on the corresponding conflict label to view the participating requirements, as well as its counterexample table. The counterexample displays a system execution where at least one requirement can be violated, given specific inputs from the environment.
 
-<img src="../screen_shots/ChordDiagramConflict.png">
+![](ChordDiagramConflict.png)
 
 The requirements table is also updated when a conflict is selected. The participating requirements are filtered to appear towards the top of the table, and are outlined by the corresponding color of the conflict in the diagram.
 
-<img src="../screen_shots/ChordDiagramRequirements.png">
-
+![](ChordDiagramRequirements.png)

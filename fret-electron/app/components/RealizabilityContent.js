@@ -33,6 +33,10 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+
+import ReactMarkdown from "react-markdown";
+import Dialog from '@material-ui/core/Dialog';
+
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
@@ -94,6 +98,8 @@ import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
+import realizabilityManual from '../../docs/_media/exports/realizability.md';
+
 const sharedObj = require('electron').remote.getGlobal('sharedObj');
 const modeldb = sharedObj.modeldb;
 const system_dbkeys = sharedObj.system_dbkeys;
@@ -106,6 +112,7 @@ const { execSync } = require('child_process');
 const process = require('process');
 
 var analysisPath = require("os").homedir() + '/Documents/fret-analysis/';
+
 // const analysisPath = 'analysis/tmp/';
 var dbChangeListener;
 
@@ -211,7 +218,7 @@ TabContainer.propTypes = {
 
 function determineResultIcon(result, time) {
   return(
-    <Tooltip title={result + 
+    <Tooltip title={(result === 'ERROR' ? 'Solver Error' : result) + 
       (time !== undefined ? ' - '+time : '')}>
       {result === 'REALIZABLE' ? 
         <CheckCircleOutlineIcon style={{fontSize : '20px', verticalAlign : 'bottom', color : '#68BC00'}}/> :
@@ -220,7 +227,9 @@ function determineResultIcon(result, time) {
           result === 'PROCESSING' ?
             <CircularProgress style={{verticalAlign : 'bottom'}} size={15}/> : 
             result === 'UNKNOWN' ? 
-            <HelpOutlineIcon style={{fontSize : '20px', verticalAlign : 'bottom', color : '#ff9900'}}/> : <div/>}                            
+            <HelpOutlineIcon style={{fontSize : '20px', verticalAlign : 'bottom', color : '#ff9900'}}/> : 
+              result === 'ERROR' ?
+              <ErrorIcon style={{fontSize : '20px', verticalAlign : 'bottom'}} color='error'/> : <div/>}
     </Tooltip>
   );
 }
@@ -263,7 +272,7 @@ class ResultIcon extends React.Component {
   render() {
     const {result, time} = this.props;
     return (
-    <Tooltip title={result + 
+    <Tooltip title={(result === 'ERROR' ? 'SOLVER ERROR' : result) + 
       (time !== undefined ? time : '')}>
       {result === 'REALIZABLE' ? 
         <CheckCircleOutlineIcon style={{fontSize : '20px', verticalAlign : 'bottom', color : '#68BC00'}}/> :
@@ -272,7 +281,9 @@ class ResultIcon extends React.Component {
           result === 'PROCESSING' ?
             <CircularProgress style={{verticalAlign : 'bottom'}} size={15}/> : 
             result === 'UNKNOWN' ? 
-            <HelpOutlineIcon style={{fontSize : '20px', verticalAlign : 'bottom', color : '#ff9900'}}/> : <div/>}                            
+            <HelpOutlineIcon style={{fontSize : '20px', verticalAlign : 'bottom', color : '#ff9900'}}/> :
+              result === 'ERROR' ?
+              <ErrorIcon style={{fontSize : '20px', verticalAlign : 'bottom'}} color='error'/> : <div/>}
     </Tooltip>
     )
   }
@@ -627,7 +638,7 @@ class RealizabilityContent extends React.Component {
     timeout: '',
     dependenciesExist: false,
     missingDependencies: [],
-
+    helpOpen : false
   }
 
   // Use this for bulk check in the future
@@ -1125,29 +1136,36 @@ class RealizabilityContent extends React.Component {
           contract.delays = self.getDelayInfo(fretResult, tC.component_name);
           return contract;
         }).then(function (contract){
-          if (monolithic) {                
-            var filePath = analysisPath + tC.component_name+'.lus';            
-            var output = fs.openSync(filePath, 'w');
-            var lustreContract = ejsCache_realize.renderRealizeCode().component.complete(contract);
-            
-            fs.writeSync(output, lustreContract);
-            // checkOutput = realizability.checkRealizability(filePath, '-fixpoint -timeout ' + actualTimeout);
-            realizability.checkRealizability(filePath, '-fixpoint -timeout '+actualTimeout, function(checkOutput) {
-              var result = checkOutput.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];
-              var time = checkOutput.match(new RegExp('(Time = )(.*?)\\n'))[2];
-              // monolithicResult = result;
-              // monolithicTime = time;
-              self.setState(prevState => {
-                prevState.monolithicStatus[tC.component_name] = result;
-                prevState.time[tC.component_name] = time;
-                return(prevState);
+          if (monolithic) { 
+                         
+              var filePath = analysisPath + tC.component_name+'.lus';            
+              var output = fs.openSync(filePath, 'w');
+              var lustreContract = ejsCache_realize.renderRealizeCode().component.complete(contract);
+              
+              fs.writeSync(output, lustreContract);
+              // checkOutput = realizability.checkRealizability(filePath, '-fixpoint -timeout ' + actualTimeout);             
+              realizability.checkRealizability(filePath, '-fixpoint -timeout '+actualTimeout, function(err, checkOutput) {
+                if (err) {
+                  self.setState(prevState => {
+                    prevState.monolithicStatus[tC.component_name] = 'ERROR';
+                    return(prevState);
+                  });
+                } else {
+                  var result = checkOutput.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];
+                  var time = checkOutput.match(new RegExp('(Time = )(.*?)\\n'))[2];
+                  // monolithicResult = result;
+                  // monolithicTime = time;
+                  self.setState(prevState => {
+                    prevState.monolithicStatus[tC.component_name] = result;
+                    prevState.time[tC.component_name] = time;
+                    return(prevState);
+                  })
+                }
+                //delete intermediate files under homeDir/Documents/fret-analysis if not in dev mode
+                if (process.env.NODE_ENV !== 'development') {
+                  self.deleteAnalysisFiles();
+                }
               })
-
-              //delete intermediate files under homeDir/Documents/fret-analysis if not in dev mode
-              if (process.env.NODE_ENV !== 'development') {
-                self.deleteAnalysisFiles();
-              }
-            })
             // return result;
           } else if (compositional) {          
             Object.keys(connectedComponents[tC.component_name]).forEach((cc) => {
@@ -1161,25 +1179,35 @@ class RealizabilityContent extends React.Component {
               ccContract.properties = ccProperties
               var lustreContract = ejsCache_realize.renderRealizeCode().component.complete(ccContract);
               fs.writeSync(output, lustreContract);
+
               // output.write(lustreContract);
               // output.end();
               // output.on('finish', () => {
-              realizability.checkRealizability(filePath, '-fixpoint -timeout '+actualTimeout, function(checkOutput) {   
-              if (checkOutput !== undefined) {
-                var ccResult = checkOutput.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];
-                var ccTime = checkOutput.match(new RegExp('(Time = )(.*?)\\n'))[2];
-                connectedComponents[tC.component_name][cc].result = ccResult
-                connectedComponents[tC.component_name][cc].time = ccTime
-                self.setState(prevState => {
-                  prevState.connectedComponents = connectedComponents
-                  return(prevState);
-                })
-                // self.setState({
-                //   connectedComponents : connectedComponents
-                // });
-                ccResults.push(ccResult);
-                // })
-              
+              realizability.checkRealizability(filePath, '-fixpoint -timeout '+actualTimeout, function(err, checkOutput) {
+                if (err) {
+                  connectedComponents[tC.component_name][cc].result = 'ERROR';
+                  self.setState(prevState => {
+                    prevState.connectedComponents = connectedComponents
+                    return(prevState);
+                  })
+                  ccResults.push('ERROR');
+                } else {
+                  // if (checkOutput !== undefined) {
+                  var ccResult = checkOutput.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];
+                  var ccTime = checkOutput.match(new RegExp('(Time = )(.*?)\\n'))[2];
+                  connectedComponents[tC.component_name][cc].result = ccResult
+                  connectedComponents[tC.component_name][cc].time = ccTime
+                  self.setState(prevState => {
+                    prevState.connectedComponents = connectedComponents
+                    return(prevState);
+                  })
+
+                  // self.setState({
+                  //   connectedComponents : connectedComponents
+                  // });
+                  ccResults.push(ccResult);
+                  // })
+                }              
                 if (ccResults.length === Object.keys(connectedComponents[tC.component_name]).length) {
                   const reducer = (accumulator, currentValue) => accumulator && (currentValue === 'REALIZABLE');
     
@@ -1189,7 +1217,12 @@ class RealizabilityContent extends React.Component {
                       return(prevState);
                     })
                   } else {
-                    if (ccResults.includes('UNKNOWN')) {
+                    if (ccResults.includes('ERROR')) {
+                      self.setState(prevState => {
+                        prevState.compositionalStatus[tC.component_name] = 'ERROR';
+                        return(prevState);
+                      })
+                    } else if (ccResults.includes('UNKNOWN')) {
                       self.setState(prevState => {
                         prevState.compositionalStatus[tC.component_name] = 'UNKNOWN';
                         return(prevState);
@@ -1214,8 +1247,6 @@ class RealizabilityContent extends React.Component {
                     self.deleteAnalysisFiles();
                   }
                 }
-              }
-
               })
             });     
           }
@@ -1223,6 +1254,14 @@ class RealizabilityContent extends React.Component {
       })
     })
   }
+
+  handleHelpOpen = () => {
+    this.setState({helpOpen : true});
+  };
+
+  handleHelpClose = () => {
+    this.setState({helpOpen : false});
+  };
 
   render() {
     const {classes, selectedProject, components, completedComponents, checkComponentCompleted} = this.props;
@@ -1272,17 +1311,6 @@ class RealizabilityContent extends React.Component {
                               {n.component_name}
                               &nbsp;
                               <ResultIcon result={status[n.component_name] !== undefined ? status[n.component_name] : ''} time={(monolithic && time[n.component_name] !== undefined) ? ' - ' + time[n.component_name] : ''}/>
-                              {/*<Tooltip title={status[n.component_name] + 
-                                (time[n.component_name] !== undefined ? ' - '+time[n.component_name] : '')}>
-                                {status[n.component_name] === 'REALIZABLE' ? 
-                                  <CheckCircleOutlineIcon style={{fontSize : '20px', verticalAlign : 'bottom', color : '#68BC00'}}/> :
-                                  status[n.component_name] === 'UNREALIZABLE' ? 
-                                    <HighlightOffIcon style={{fontSize : '20px', verticalAlign : 'bottom'}} color='error'/> :
-                                    status[n.component_name] === 'PROCESSING' ?
-                                      <CircularProgress style={{verticalAlign : 'bottom'}} size={15}/> : 
-                                      status[n.component_name] === 'UNKNOWN' ? 
-                                      <HelpOutlineIcon style={{fontSize : '20px', verticalAlign : 'bottom', color : '#ff9900'}}/> : <div/>}                            
-                              </Tooltip>*/} 
                             </div>
                           </MenuItem>
                           </span>
@@ -1356,7 +1384,7 @@ class RealizabilityContent extends React.Component {
               <Button disabled size="small" className={classes.vAlign} variant="contained"> Export </Button>
             </div>
             <div className={classes.wrapper}>
-            <Button size="small" className={classes.vAlign} variant="contained"> Help </Button>
+            <Button color="secondary" onClick={this.handleHelpOpen} size="small" className={classes.vAlign} variant="contained"> Help </Button>
             </div>
             <div style={{width : '100%'}}>
             {selected !== '' && selected !== 'all' &&
@@ -1426,6 +1454,9 @@ class RealizabilityContent extends React.Component {
             </div>
           </div>
         }  
+        <Dialog maxWidth='lg' onClose={this.handleHelpClose} open={this.state.helpOpen}>
+          <ReactMarkdown transformImageUri = {uri => `../docs/_media/screen_shots/${uri}`} linkTarget="_blank" source={realizabilityManual}/>
+        </Dialog>
       </div>
     );
   }

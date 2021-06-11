@@ -33,8 +33,8 @@ FILERC=components/RealizabilityContent.js;
 if test -f "$FILERC"; then
  mv components/RealizabilityContent.js x.js;
  sed -e 's+\.\./\.\./analysis/+analysis/+' x.js > components/RealizabilityContent.js;
+ sed -e 's+\.\./\.\./docs/+docs/+' x.js > components/RealizabilityContent.js;
  mv components/RealizabilityContent.js x.js;
- sed -e 's+analysis/tmp/+app/analysis/tmp/+' x.js > components/RealizabilityContent.js;
  rm x.js;
 fi
 
@@ -43,7 +43,6 @@ if test -f "$FILEDE"; then
  mv analysis/DiagnosisEngine.js x.js;
  sed -e 's+\.\./support/+../../support/+' x.js > analysis/DiagnosisEngine.js;
  mv analysis/DiagnosisEngine.js x.js;
- sed -e 's+\./analysis/tmp/+app/analysis/tmp+' x.js > analysis/DiagnosisEngine.js;
  rm x.js;
 fi
 

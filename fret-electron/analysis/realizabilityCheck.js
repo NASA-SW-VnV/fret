@@ -14,7 +14,11 @@ export function checkRealizability(filePath, options, callback) {
   // console.log(output);
   // return output;
   exec(jkindCommand, function (err, stdout, stderr) {
-    callback(stdout)
+    if (err) {
+      callback(err);
+    } else {
+      callback(null, stdout);
+    }
   })
 
 }
