@@ -24,23 +24,28 @@ Three dependencies exist for realizability checking:
 
 To check a system component's set of requirements for realizability, the user must follow the steps:
 
-**1. Pick a project and switch to the Analysis Portal**
+### **1. Pick a project and switch to the Analysis Portal**
 
 Pick a project from the drop down menu (Project button) and switch to the Analysis Portal by clicking the icon in the red box in the left hand side panel.
 
+&nbsp;&nbsp;&nbsp;&nbsp;
+
 ![](AnalysisPortal.png)
 
-**2. Pick component and complete necessary variable information under Variable Mapping**
+### **2. Pick component and complete necessary variable information under Variable Mapping**
 
 You do not need to use the export option at this time.
 
-**3. Switch to the Realizability view**
+### **3. Switch to the Realizability view**
 
 Switch to the Realizability view by clicking the tab in the red box.
 
+&nbsp;&nbsp;&nbsp;&nbsp;
+
 ![](VariableMappingRealizability.png)
 
-**4. Pick a component**
+
+### **4. Pick a component**
 
 Pick a System Component. The realizability tab should now update to show the following information:
 
@@ -49,38 +54,54 @@ Pick a System Component. The realizability tab should now update to show the fol
 * Compositional and Monolithic options. For components that can be decomposed into connected components, the compositional option is available to perform realizability checking per connected component. Otherwise, only the monolithic option is enabled.
 * Check button. Use this button to perform realizability checking (compositional or monolithic).
 * Diagnose button (unrealizable components only). If the component is unrealizable, use this button to identify minimal sets of conflicting requirements, as well as view their counterexamples (see also step "Diagnoe unrealizable requirements" below).
-* Project Summary and Help buttons (Currently disabled features, coming soon).
+* Help button. Use this button to display this documentation.
+
+&nbsp;&nbsp;&nbsp;&nbsp;
 
 ![](Realizability.png)
 
-**5. Check Realizability**
+### **5. Check Realizability**
 
 If applicable, select an option between compositional and monolithic checks and click on the Check button.
 
-**5.1 Monolithic check**
+#### **5.1 Monolithic check**
 
 When the check is complete, a result icon is displayed next to the name of the selected system component. Hover over the icon to view the time required for the analysis to complete. For unrealizable results, the Diagnose button should be now available.
 
+&nbsp;&nbsp;&nbsp;&nbsp;
+
 ![](RealizabilityMonolithic.png)
 
-**5.2 Compositional check**
+#### **5.2 Compositional check**
 
 A check is performed per connected component. Once all checks are done, the results are displayed next to the name of the corresponding connected component, as well as the name of the system component. For unrealizable connected components, the Diagnose button becomes available when the corresponding tab is picked.
 
+&nbsp;&nbsp;&nbsp;&nbsp;
+
 ![](RealizabilityCompositional.png)
 
-**6. Diagnose unrealizable requirements**
+### **6. Diagnose unrealizable requirements**
 
 Unrealizable sets of requirements can now be diagnosed. The diagnosis procedure identifies minimal sets of conflicting requirements. A graphic interface allows you to focus to specific minimal conflicts and observe their counterexample.
 
 Select an unrealizable component (or connected component) and click the Diagnose button. When the analysis is complete, the main window is updated with a chord diagram. The chord diagram is a visual representation of the minimal conflicts that exist in the component, and can be manipulated to focus on particular conflicts.
 
+&nbsp;&nbsp;&nbsp;&nbsp;
+
 ![](ChordDiagram.png)
+
+&nbsp;&nbsp;&nbsp;&nbsp;
 
 Select a conflict on the diagram by clicking on the corresponding conflict label to view the participating requirements, as well as its counterexample table. The counterexample displays a system execution where at least one requirement can be violated, given specific inputs from the environment.
 
+&nbsp;&nbsp;&nbsp;&nbsp;
+
 ![](ChordDiagramConflict.png)
 
+&nbsp;&nbsp;&nbsp;&nbsp;
+
 The requirements table is also updated when a conflict is selected. The participating requirements are filtered to appear towards the top of the table, and are outlined by the corresponding color of the conflict in the diagram.
+
+&nbsp;&nbsp;&nbsp;&nbsp;
 
 ![](ChordDiagramRequirements.png)

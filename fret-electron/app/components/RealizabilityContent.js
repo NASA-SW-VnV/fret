@@ -36,6 +36,9 @@ import PropTypes from 'prop-types';
 
 import ReactMarkdown from "react-markdown";
 import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import CloseIcon from '@material-ui/icons/Close';
 
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
@@ -200,7 +203,13 @@ const styles = theme => ({
     left: '50%',
     marginTop: -12,
     marginLeft: -12,
-  }
+  },
+  closeButton: {
+    position: 'absolute',
+    right: theme.spacing(1),
+    top: theme.spacing(1),
+    color: theme.palette.grey[500],
+  },
 
 });
 
@@ -1341,7 +1350,7 @@ class RealizabilityContent extends React.Component {
                   color="primary"
                 />
               }
-              style={{marginRight: '35%'}}
+              style={{marginRight: '45%'}}
               label="Monolithic"                
             />
             {!dependenciesExist &&
@@ -1380,9 +1389,9 @@ class RealizabilityContent extends React.Component {
               </Button>
               {diagStatus === 'PROCESSING' && <CircularProgress size={24} className={classes.buttonProgress}/>}
             </div>
-            <div className={classes.wrapper}>
+            {/*<div className={classes.wrapper}>
               <Button disabled size="small" className={classes.vAlign} variant="contained"> Export </Button>
-            </div>
+            </div>*/}
             <div className={classes.wrapper}>
             <Button color="secondary" onClick={this.handleHelpOpen} size="small" className={classes.vAlign} variant="contained"> Help </Button>
             </div>
@@ -1455,7 +1464,17 @@ class RealizabilityContent extends React.Component {
           </div>
         }  
         <Dialog maxWidth='lg' onClose={this.handleHelpClose} open={this.state.helpOpen}>
-          <ReactMarkdown transformImageUri = {uri => `../docs/_media/screen_shots/${uri}`} linkTarget="_blank" source={realizabilityManual}/>
+          <DialogTitle id="realizability-help">
+            <Typography>
+              Help
+            </Typography>
+            <IconButton className={classes.closeButton} aria-label="close" onClick={this.handleHelpClose}>
+              <CloseIcon />
+            </IconButton>
+          </DialogTitle>
+          <DialogContent dividers>
+            <ReactMarkdown renderers={{image: (props) => <img {...props} style={{maxHeight: '10%', width: '100%'}} />}} transformImageUri = {uri => `../docs/_media/screen_shots/${uri}`} linkTarget="_blank" source={realizabilityManual}/>
+          </DialogContent>
         </Dialog>
       </div>
     );
