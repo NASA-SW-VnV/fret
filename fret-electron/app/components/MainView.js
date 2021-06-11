@@ -561,12 +561,6 @@ class MainView extends React.Component {
                   </ListItemIcon>
                   <ListItemText primary="Dashboard" />
                 </ListItem>
-                <ListItem button onClick={() => this.setMainContent('graph')}>
-                  <ListItemIcon>
-                    <GraphIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Graph View" />
-                </ListItem>
                 <ListItem button onClick={() => this.setMainContent('requirements')}>
                   <ListItemIcon>
                     <ListIcon />

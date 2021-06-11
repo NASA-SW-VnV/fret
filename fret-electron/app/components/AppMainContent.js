@@ -34,7 +34,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Dashboard from './Dashboard';
-import DraggableClusters from './DraggableClusters';
 import SortableTable from './SortableTable';
 import VariablesView from './VariablesView';
 import Settings from './Settings';
@@ -46,8 +45,6 @@ class AppMainContent extends React.Component {
     const { content, selectedProject, existingProjectNames }  = this.props
     if (content === 'dashboard')
       return <Dashboard selectedProject={selectedProject} />
-    if (content === 'graph')
-      return <DraggableClusters />
     if (content === 'requirements')
       return <SortableTable selectedProject={selectedProject} existingProjectNames={existingProjectNames}/>
       if (content === 'analysis')
