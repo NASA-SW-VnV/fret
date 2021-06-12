@@ -1,6 +1,6 @@
 # Exporting to Analysis tools
 
-For analysis, FRET allows users to export requirements in formats that can be digested by other analysis tools. We have connected FRET with [CoCoSim](./cocosim.md) and [Copilot](./copilot.md) through the FRET analysis portal. 
+For analysis, FRET allows users to export requirements in formats that can be digested by other analysis tools. We have connected FRET with [CoCoSim](./cocosim.md) and [Copilot](./copilot.md) through the FRET analysis portal.
 
 Below we present a step-by-step guide of the [FRET analysis portal](#fretanalysisportal).
 
@@ -65,7 +65,7 @@ No variable information is required for Copilot. Optionally, the user can follow
 ***4b. CoCoSpec code generation***
 
 To generate CoCoSpec code, for each variable, the following information must be entered by the user; i.e.,
-* data type (i.e., bool, int, real, enum, struct),
+* data type (i.e., bool, int, real, etc),
 * variable type (i.e., input, output, internal, mode, function),
 * internal variable assignments,
 * mode require statements.

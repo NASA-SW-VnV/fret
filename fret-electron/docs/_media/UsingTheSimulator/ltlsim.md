@@ -86,7 +86,7 @@ The `X` closes the LTLSIM tool and leads back to the requirements editor.
 
 ## Restrictions
 
-Because LTLSIM is using the external tool nuXMV for formula valuation, there currently exist a number of syntactic restrictions:
+Because LTLSIM is using the external tool nuXmv for formula valuation, there currently exist a number of syntactic restrictions:
 * LTLSIM will not work if the response or condition Boolean formulas contain any comparisons or terms ; e.g., not allowed: `y < x`; `p(x,y)`. In other words, the Boolean formulas must be over atomic propositions; e.g., `p -> q & ! r`.
 * LTLSIM will not work if any of the following uppercase atomic
 propositions are used as Boolean formulas:
