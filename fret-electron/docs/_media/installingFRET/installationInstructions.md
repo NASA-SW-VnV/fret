@@ -26,7 +26,6 @@ Here are the steps to install and start FRET:
 2. npm run fret-install (please do 'npm run fret-reinstall' instead if you already have a FRET installation)
 3. npm start
 
-It's as simple as that. Enjoy!
 
 ### Notes
 
