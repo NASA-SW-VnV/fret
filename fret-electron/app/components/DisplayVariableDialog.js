@@ -153,7 +153,6 @@ class DisplayVariableDialog extends React.Component {
   handleTextFieldChange = name => event => {
     let resultLustre;
     let resultCopilot;
-    //console.log(event.target.value);
 
     if (name === 'assignment'){
       resultLustre = lustreExprSemantics.compileLustreExpr(event.target.value);
@@ -211,7 +210,6 @@ class DisplayVariableDialog extends React.Component {
           }).then(function(result){
             if(result.docs.length != 0){
               variables.forEach(function(v){
-                //console.log("variable "+ v)
                 if (result.docs.some(r => r.variable_name === v)){
                   //console.log("existing variable")
                   //this is an existing variable
@@ -222,7 +220,6 @@ class DisplayVariableDialog extends React.Component {
                   newVariables.push(v);
                 }
               })
-              //console.log("newVariables "+ newVariables)
               self.handleNewVariables(newVariables);
             }
           })
@@ -298,8 +295,9 @@ class DisplayVariableDialog extends React.Component {
   handleChange = event => {
     const self = this;
     const {selectedVariable, modelComponent} = this.state;
-    this.setState({ [event.target.name]: event.target.value
-                 });
+    this.setState({
+      [event.target.name]: event.target.value
+    });
     if (event.target.name === 'modeldoc_id'){
       modeldb.find({
         selector: {
@@ -311,9 +309,18 @@ class DisplayVariableDialog extends React.Component {
         //TODO:Update when higher dimensions allowed
         self.setState({dataType: result.docs[0].dataType[0]});
       });
-    } else if(event.target.name === 'idType'){
+    } else if(event.target.name === 'idType' && event.target.value !== 'Mode'){
       self.setState({
         dataType: '',
+        modeldoc_id: '',
+        assignment: '',
+        copilotAssignment: '',
+        modeRequirement: '',
+        moduleName: ''
+      });
+    } else if (event.target.name === 'idType' && event.target.value === 'Mode'){
+      self.setState({
+        dataType: 'boolean',
         modeldoc_id: '',
         assignment: '',
         copilotAssignment: '',
@@ -392,10 +399,11 @@ class DisplayVariableDialog extends React.Component {
                   <MenuItem value="" key={selectedVariable}>
                     <em>None</em>
                   </MenuItem>
-                  <MenuItem value="Input" >Input</MenuItem>
-                  <MenuItem value="Output">Output</MenuItem>
-                  <MenuItem value="Internal">Internal</MenuItem>
                   <MenuItem value="Function">Function</MenuItem>
+                  <MenuItem value="Input" >Input</MenuItem>
+                  <MenuItem value="Internal">Internal</MenuItem>
+                  <MenuItem value="Mode">Mode</MenuItem>
+                  <MenuItem value="Output">Output</MenuItem>
                 </Select>
               </FormControl>
               { (selectedVariable.modelComponent === undefined || selectedVariable.modelComponent === "")
@@ -535,10 +543,11 @@ class DisplayVariableDialog extends React.Component {
                     <MenuItem value="" key={selectedVariable}>
                       <em>None</em>
                     </MenuItem>
-                    <MenuItem value="Input" >Input</MenuItem>
-                    <MenuItem value="Output">Output</MenuItem>
-                    <MenuItem value="Internal">Internal</MenuItem>
                     <MenuItem value="Function">Function</MenuItem>
+                    <MenuItem value="Input" >Input</MenuItem>
+                    <MenuItem value="Internal">Internal</MenuItem>
+                    <MenuItem value="Mode">Mode</MenuItem>
+                    <MenuItem value="Output">Output</MenuItem>
                   </Select>
                 </FormControl>
                 <TextField
@@ -628,10 +637,30 @@ class DisplayVariableDialog extends React.Component {
                   readOnly: true,
                 }}
               />
+              <FormControl className={classes.formControl}>
+                <InputLabel htmlFor="idType-simple">Variable Type*</InputLabel>
+                <Select
+                  key={selectedVariable}
+                  value={this.state.idType}
+                  onChange={this.handleChange}
+                  inputProps={{
+                    name: 'idType',
+                    id: 'idType-simple',
+                  }}>
+                  <MenuItem value="" key={selectedVariable}>
+                    <em>None</em>
+                  </MenuItem>
+                  <MenuItem value="Function">Function</MenuItem>
+                  <MenuItem value="Input" >Input</MenuItem>
+                  <MenuItem value="Internal">Internal</MenuItem>
+                  <MenuItem value="Mode">Mode</MenuItem>
+                  <MenuItem value="Output">Output</MenuItem>
+                </Select>
+              </FormControl>
               <TextField
                 id="standard-read-only-input"
-                label="Variable Type*"
-                defaultValue={this.state.idType}
+                label="Data Type*"
+                defaultValue={this.state.dataType}
                 className={classes.extendedTextField}
                 margin="normal"
                 InputProps={{
@@ -738,10 +767,11 @@ class DisplayVariableDialog extends React.Component {
                   <MenuItem value="" key={selectedVariable}>
                     <em>None</em>
                   </MenuItem>
-                  <MenuItem value="Input" >Input</MenuItem>
-                  <MenuItem value="Output">Output</MenuItem>
-                  <MenuItem value="Internal">Internal</MenuItem>
                   <MenuItem value="Function">Function</MenuItem>
+                  <MenuItem value="Input" >Input</MenuItem>
+                  <MenuItem value="Internal">Internal</MenuItem>
+                  <MenuItem value="Mode">Mode</MenuItem>
+                  <MenuItem value="Output">Output</MenuItem>
                 </Select>
               </FormControl>
               <FormControl className={classes.formControl}>
@@ -883,10 +913,11 @@ class DisplayVariableDialog extends React.Component {
                   <MenuItem value="" key={selectedVariable}>
                     <em>None</em>
                   </MenuItem>
-                  <MenuItem value="Input" >Input</MenuItem>
-                  <MenuItem value="Output">Output</MenuItem>
-                  <MenuItem value="Internal">Internal</MenuItem>
                   <MenuItem value="Function">Function</MenuItem>
+                  <MenuItem value="Input" >Input</MenuItem>
+                  <MenuItem value="Internal">Internal</MenuItem>
+                  <MenuItem value="Mode">Mode</MenuItem>
+                  <MenuItem value="Output">Output</MenuItem>
                 </Select>
               </FormControl>
               <FormControl className={classes.formControl}>
@@ -1039,10 +1070,11 @@ class DisplayVariableDialog extends React.Component {
                   <MenuItem value="" key={selectedVariable}>
                     <em>None</em>
                   </MenuItem>
-                  <MenuItem value="Input" >Input</MenuItem>
-                  <MenuItem value="Output">Output</MenuItem>
-                  <MenuItem value="Internal">Internal</MenuItem>
                   <MenuItem value="Function">Function</MenuItem>
+                  <MenuItem value="Input" >Input</MenuItem>
+                  <MenuItem value="Internal">Internal</MenuItem>
+                  <MenuItem value="Mode">Mode</MenuItem>
+                  <MenuItem value="Output">Output</MenuItem>
                 </Select>
               </FormControl>
               <FormControl className={classes.formControl}>
@@ -1194,10 +1226,11 @@ class DisplayVariableDialog extends React.Component {
                   <MenuItem value="" key={selectedVariable}>
                     <em>None</em>
                   </MenuItem>
-                  <MenuItem value="Input" >Input</MenuItem>
-                  <MenuItem value="Output">Output</MenuItem>
-                  <MenuItem value="Internal">Internal</MenuItem>
                   <MenuItem value="Function">Function</MenuItem>
+                  <MenuItem value="Input" >Input</MenuItem>
+                  <MenuItem value="Internal">Internal</MenuItem>
+                  <MenuItem value="Mode">Mode</MenuItem>
+                  <MenuItem value="Output">Output</MenuItem>
                 </Select>
               </FormControl>
               <FormControl className={classes.formControl}>
@@ -1360,10 +1393,11 @@ class DisplayVariableDialog extends React.Component {
                   <MenuItem value="" key={selectedVariable}>
                     <em>None</em>
                   </MenuItem>
-                  <MenuItem value="Input" >Input</MenuItem>
-                  <MenuItem value="Output">Output</MenuItem>
-                  <MenuItem value="Internal">Internal</MenuItem>
                   <MenuItem value="Function">Function</MenuItem>
+                  <MenuItem value="Input" >Input</MenuItem>
+                  <MenuItem value="Internal">Internal</MenuItem>
+                  <MenuItem value="Mode">Mode</MenuItem>
+                  <MenuItem value="Output">Output</MenuItem>
                 </Select>
               </FormControl>
               <FormControl className={classes.formControl}>
@@ -1518,10 +1552,11 @@ class DisplayVariableDialog extends React.Component {
                   <MenuItem value="" key={selectedVariable}>
                     <em>None</em>
                   </MenuItem>
-                  <MenuItem value="Input" >Input</MenuItem>
-                  <MenuItem value="Output">Output</MenuItem>
-                  <MenuItem value="Internal">Internal</MenuItem>
                   <MenuItem value="Function">Function</MenuItem>
+                  <MenuItem value="Input" >Input</MenuItem>
+                  <MenuItem value="Internal">Internal</MenuItem>
+                  <MenuItem value="Mode">Mode</MenuItem>
+                  <MenuItem value="Output">Output</MenuItem>
                 </Select>
               </FormControl>
               <FormControl className={classes.formControl}>
@@ -1676,10 +1711,11 @@ class DisplayVariableDialog extends React.Component {
                   <MenuItem value="" key={selectedVariable}>
                     <em>None</em>
                   </MenuItem>
-                  <MenuItem value="Input" >Input</MenuItem>
-                  <MenuItem value="Output">Output</MenuItem>
-                  <MenuItem value="Internal">Internal</MenuItem>
                   <MenuItem value="Function">Function</MenuItem>
+                  <MenuItem value="Input" >Input</MenuItem>
+                  <MenuItem value="Internal">Internal</MenuItem>
+                  <MenuItem value="Mode">Mode</MenuItem>
+                  <MenuItem value="Output">Output</MenuItem>
                 </Select>
               </FormControl>
               <FormControl className={classes.formControl}>
@@ -1845,10 +1881,11 @@ class DisplayVariableDialog extends React.Component {
                   <MenuItem value="" key={selectedVariable}>
                     <em>None</em>
                   </MenuItem>
-                  <MenuItem value="Input" >Input</MenuItem>
-                  <MenuItem value="Output">Output</MenuItem>
-                  <MenuItem value="Internal">Internal</MenuItem>
                   <MenuItem value="Function">Function</MenuItem>
+                  <MenuItem value="Input" >Input</MenuItem>
+                  <MenuItem value="Internal">Internal</MenuItem>
+                  <MenuItem value="Mode">Mode</MenuItem>
+                  <MenuItem value="Output">Output</MenuItem>
                 </Select>
               </FormControl>
               <FormControl className={classes.formControl}>
@@ -2014,10 +2051,11 @@ class DisplayVariableDialog extends React.Component {
                   <MenuItem value="" key={selectedVariable}>
                     <em>None</em>
                   </MenuItem>
-                  <MenuItem value="Input" >Input</MenuItem>
-                  <MenuItem value="Output">Output</MenuItem>
-                  <MenuItem value="Internal">Internal</MenuItem>
                   <MenuItem value="Function">Function</MenuItem>
+                  <MenuItem value="Input" >Input</MenuItem>
+                  <MenuItem value="Internal">Internal</MenuItem>
+                  <MenuItem value="Mode">Mode</MenuItem>
+                  <MenuItem value="Output">Output</MenuItem>
                 </Select>
               </FormControl>
               <FormControl className={classes.formControl}>
@@ -2185,10 +2223,11 @@ class DisplayVariableDialog extends React.Component {
                     <MenuItem value="" key={selectedVariable}>
                       <em>None</em>
                     </MenuItem>
-                    <MenuItem value="Input" >Input</MenuItem>
-                    <MenuItem value="Output">Output</MenuItem>
-                    <MenuItem value="Internal">Internal</MenuItem>
                     <MenuItem value="Function">Function</MenuItem>
+                    <MenuItem value="Input" >Input</MenuItem>
+                    <MenuItem value="Internal">Internal</MenuItem>
+                    <MenuItem value="Mode">Mode</MenuItem>
+                    <MenuItem value="Output">Output</MenuItem>
                   </Select>
                 </FormControl>
                 <TextField

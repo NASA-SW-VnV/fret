@@ -52,10 +52,7 @@ function initialize(type) {
       condition: 'null',
       timing: 'null',
       response: 'action',
-      variables: {
-        regular: [],
-        modes: []
-      }
+      variables: []
   }
 }
 
@@ -135,8 +132,8 @@ RequirementListener.prototype.enterScope_mode = function(ctx) {
 	else if (smlc.endsWith(' mode')) m = smt.slice(0,-5).trim();
 	else m = smt;
 	result.scope_mode = m;
-	if (!result.variables.modes.includes(m))
-	    result.variables.modes.push(m);
+	if (!result.variables.includes(m))
+	    result.variables.push(m);
     }
 }
 
@@ -243,8 +240,8 @@ RequirementListener.prototype.enterAction = function(ctx) {
   result.action = antlrUtilities.getText(ctx)
   if(ctx.ID(0)){
     var variable = ctx.ID(0).toString();
-    if (variable && ! result.variables.regular.includes(variable))
-      result.variables.regular.push(variable);
+    if (variable && ! result.variables.includes(variable))
+      result.variables.push(variable);
   }
 }
 
@@ -260,23 +257,24 @@ RequirementListener.prototype.enterAction2 = function(ctx) {
 RequirementListener.prototype.enterNumeric_expr = function(ctx) {
   if(ctx.ID(0)){
     var variable = ctx.ID(0).toString();
-    if (variable && ! result.variables.regular.includes(variable))
-      result.variables.regular.push(variable);
+    if (variable && ! result.variables.includes(variable))
+      result.variables.push(variable);
   }
 };
 
-RequirementListener.prototype.enterNew_mode = function(ctx) {
-  var mode = antlrUtilities.getText(ctx);
-  if (mode && !result.variables.modes.includes(mode))
-    result.variables.modes.push(mode);
-};
+//we do not need this
+// RequirementListener.prototype.enterNew_mode = function(ctx) {
+//   var mode = antlrUtilities.getText(ctx);
+//   if (mode && !result.variables.includes(mode))
+//     result.variables.push(mode);
+// };
 
 
 RequirementListener.prototype.enterBool_expr = function(ctx) {
   if(ctx.ID(0)){
     var variable = ctx.ID(0).toString();
-    if (variable && ! result.variables.regular.includes(variable))
-      result.variables.regular.push(variable);
+    if (variable && ! result.variables.includes(variable))
+      result.variables.push(variable);
   }
 };
 

@@ -87,7 +87,7 @@ const formStyles = theme => ({
     width: '98%',
     marginTop: theme.spacing(2),
     marginBottom: theme.spacing(2),
-    marginLeft:  theme.spacing()
+    marginLeft:  theme.spacing(),
   },
   aux:{
     marginTop: theme.spacing(2),
@@ -191,7 +191,7 @@ class CreateRequirementDialog extends React.Component {
     this.setState({ tabValue });
   };
 
-  createOrUpdateVariables = (variables, componentName, projectName, reqid , isRegular) => {
+  createOrUpdateVariables = (variables, componentName, projectName, reqid) => {
     variables.map(function (variableName) {
       var modeldbid = projectName + componentName + variableName;
       modeldb.get(modeldbid).then(function (v) {
@@ -209,8 +209,8 @@ class CreateRequirementDialog extends React.Component {
             component_name: componentName,
             variable_name: variableName,
             reqs: [reqid],
-            dataType: isRegular ? '' : 'boolean',
-            idType: isRegular ? '' : 'Mode',
+            dataType: '',
+            idType: '',
             description: '',
             assignment: '',
             modeRequirement: '',
@@ -239,6 +239,7 @@ class CreateRequirementDialog extends React.Component {
               })
             }
           } else {
+            console.log("Remove "+ JSON.stringify(v));
             modeldb.remove(v);
           }
         })
@@ -261,31 +262,19 @@ class CreateRequirementDialog extends React.Component {
     var newReqId = this.state.reqid;
     var dbid = edittingRequirement && Object.keys(edittingRequirement).length > 0 ? edittingRequirement._id : uuidv1()
     var dbrev = edittingRequirement && Object.keys(edittingRequirement).length > 0 ? edittingRequirement._rev : undefined
-
     var oldVariables = [];
     var oldModes = [];
 
     if (dbrev != undefined){
       db.get(dbid).then(function(req){
         if (req.semantics && req.semantics.variables){
-            oldVariables = oldVariables.concat(req.semantics.variables.regular);
-            oldModes = oldModes.concat(req.semantics.variables.modes);
+            oldVariables = req.semantics.variables;
         }
-        // remove reqid From regular variables
-        self.removeVariables(oldVariables, semantics.variables ? semantics.variables.regular : [], project, semantics.component_name, reqid)
-
-
-        // remove reqid From modes variables
-        self.removeVariables(oldModes, semantics.variables ? semantics.variables.modes : [], project, semantics.component_name, reqid)
+        self.removeVariables(oldVariables, semantics.variables ? semantics.variables : [], project, semantics.component_name, reqid)
       })
     }
-
     if (semantics && semantics.variables){
-      // create or update regular variables
-      self.createOrUpdateVariables(semantics.variables.regular,semantics.component_name, project, reqid, true);
-
-      // create or update modes variables
-      self.createOrUpdateVariables(semantics.variables.modes,semantics.component_name, project, reqid, false);
+      self.createOrUpdateVariables(semantics.variables,semantics.component_name, project, reqid);
     }
 
     // create req
