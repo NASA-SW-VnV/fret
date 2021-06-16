@@ -32,5 +32,4 @@ We provide a set of example requirements that can be directly [imported](./user-
 [Johann Schumann](https://ti.arc.nasa.gov/profile/schumann/),
 [Khanh Trinh]().
 
-*Alumni and Interns*: David Bushnell, Tanja deJong, Yorgo Giannakopoulou,
-David Kooi, Julian Rhein, Daniel Riley, Nija Shi.
+*Alumni and Interns*: David Bushnell, Tanja de Jong, George (Yorgo) Karamanolis, David Kooi, Julian Rhein, Nija Shi.
