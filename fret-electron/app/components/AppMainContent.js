@@ -49,7 +49,7 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 
 class AppMainContent extends React.Component {
-  
+
   state = {
     requirements: [],
   };
@@ -99,13 +99,7 @@ class AppMainContent extends React.Component {
     const { content, selectedProject, existingProjectNames }  = this.props
     const { requirements }  = this.state
     if (content === 'dashboard')
-<<<<<<< HEAD
-      return <Dashboard selectedProject={selectedProject} />
-=======
       return <Dashboard selectedProject={selectedProject} requirements={requirements}/>
-    if (content === 'graph')
-      return <DraggableClusters requirements={requirements}/>
->>>>>>> remove dbChangeListener from various components except AppMainContent for Requirements
     if (content === 'requirements')
       return <SortableTable selectedProject={selectedProject} existingProjectNames={existingProjectNames} requirements={requirements}/>
       if (content === 'analysis')
