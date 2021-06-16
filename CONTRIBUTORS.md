@@ -13,9 +13,7 @@ Alumni and Interns
 
 * David Bushnell
 * Tanja deJong
-* Yorgo Giannakopoulou
-* George Karamanolis
+* George (Yorgo) Karamanolis
 * David Kooi
 * Julian Rhein
-* Daniel Riley
 * Nija Shi
