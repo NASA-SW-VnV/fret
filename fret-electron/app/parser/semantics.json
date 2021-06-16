@@ -452,7 +452,7 @@
     "ptFinBtw": "(H ((FFin_$scope_mode$ & (! FTP)) -> (Y (H $post_condition$))))",
     "ptFinBtwExpanded": "(H (((($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$)))) & ((Y (H (! $scope_mode$))) | (! (Y TRUE)))) & (Y TRUE)) -> (Y (H $post_condition$))))",
     "CoCoSpecCodeFinBtw": "(H(((($scope_mode$ and (FTP or (pre ( not $scope_mode$)))) and ((pre (H( not $scope_mode$))) or FTP)) and ( not FTP)) => (pre (H($post_condition$)))))",
-    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and exclusive of) the first point where $scope_mode$ holds.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must hold at all time points between (and including) the trigger and the end of the interval.",
+    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and exclusive of) the first point where $scope_mode$ holds. In the interval defined by the entire execution, if $scope_mode$ never holds.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must hold at all time points between (and including) the trigger and the end of the interval.",
     "diagram": "_media/user-interface/examples/svgDiagrams/before_null_always_satisfaction.svg"
   },
   "before,null,before,satisfaction": {
@@ -471,7 +471,7 @@
     "ptFinBtw": "(H ((FFin_$scope_mode$ & (! FTP)) -> (Y (H ($stop_condition$ -> ((! FTP) & (Y (O $post_condition$))))))))",
     "ptFinBtwExpanded": "(H (((($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$)))) & ((Y (H (! $scope_mode$))) | (! (Y TRUE)))) & (Y TRUE)) -> (Y (H ($stop_condition$ -> ((Y TRUE) & (Y (O $post_condition$))))))))",
     "CoCoSpecCodeFinBtw": "(H(((($scope_mode$ and (FTP or (pre ( not $scope_mode$)))) and ((pre (H( not $scope_mode$))) or FTP)) and ( not FTP)) => (pre (H($stop_condition$ => (( not FTP) and (pre (O($post_condition$)))))))))",
-    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and exclusive of) the first point where $scope_mode$ holds.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must hold at least once strictly before the state where the stop condition holds. If the stop condition never occurs, RES does not need to hold. If the stop condition holds at the trigger, the requirement is not satisified.",
+    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and exclusive of) the first point where $scope_mode$ holds. In the interval defined by the entire execution, if $scope_mode$ never holds.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must hold at least once strictly before the state where the stop condition holds. If the stop condition never occurs, RES does not need to hold. If the stop condition holds at the trigger, the requirement is not satisified.",
     "diagram": "_media/user-interface/examples/svgDiagrams/before_null_before_satisfaction.svg"
   },
   "before,null,eventually,satisfaction": {
@@ -490,7 +490,7 @@
     "ptFinBtw": "(H ((FFin_$scope_mode$ & (! FTP)) -> (Y (O $post_condition$))))",
     "ptFinBtwExpanded": "(H (((($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$)))) & ((Y (H (! $scope_mode$))) | (! (Y TRUE)))) & (Y TRUE)) -> (Y (O $post_condition$))))",
     "CoCoSpecCodeFinBtw": "(H(((($scope_mode$ and (FTP or (pre ( not $scope_mode$)))) and ((pre (H( not $scope_mode$))) or FTP)) and ( not FTP)) => (pre (O($post_condition$)))))",
-    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and exclusive of) the first point where $scope_mode$ holds.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must hold at some time point between (and including) the trigger and the end of the interval.",
+    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and exclusive of) the first point where $scope_mode$ holds. In the interval defined by the entire execution, if $scope_mode$ never holds.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must hold at some time point between (and including) the trigger and the end of the interval.",
     "diagram": "_media/user-interface/examples/svgDiagrams/before_null_eventually_satisfaction.svg"
   },
   "before,null,for,satisfaction": {
@@ -509,7 +509,7 @@
     "ptFinBtw": "(H ((FFin_$scope_mode$ & (! FTP)) -> (Y (H ((O[<=$duration$] FTP) -> $post_condition$)))))",
     "ptFinBtwExpanded": "(H (((($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$)))) & ((Y (H (! $scope_mode$))) | (! (Y TRUE)))) & (Y TRUE)) -> (Y (H ((O[<=$duration$] (! (Y TRUE))) -> $post_condition$)))))",
     "CoCoSpecCodeFinBtw": "(H(((($scope_mode$ and (FTP or (pre ( not $scope_mode$)))) and ((pre (H( not $scope_mode$))) or FTP)) and ( not FTP)) => (pre (H((OT($duration$,0,FTP)) => $post_condition$)))))",
-    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and exclusive of) the first point where $scope_mode$ holds.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must hold at the trigger and remain true for $duration$ time points past the trigger (i.e., trigger, trigger+1, ..., and trigger+$duration$), or to the end of the interval if the interval ends sooner than trigger+$duration$.",
+    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and exclusive of) the first point where $scope_mode$ holds. In the interval defined by the entire execution, if $scope_mode$ never holds.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must hold at the trigger and remain true for $duration$ time points past the trigger (i.e., trigger, trigger+1, ..., and trigger+$duration$), or to the end of the interval if the interval ends sooner than trigger+$duration$.",
     "diagram": "_media/user-interface/examples/svgDiagrams/before_null_for_satisfaction.svg"
   },
   "before,null,immediately,satisfaction": {
@@ -547,7 +547,7 @@
     "ptFinBtw": "(H ((FFin_$scope_mode$ & (! FTP)) -> (Y (H (! $post_condition$)))))",
     "ptFinBtwExpanded": "(H (((($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$)))) & ((Y (H (! $scope_mode$))) | (! (Y TRUE)))) & (Y TRUE)) -> (Y (H (! $post_condition$)))))",
     "CoCoSpecCodeFinBtw": "(H(((($scope_mode$ and (FTP or (pre ( not $scope_mode$)))) and ((pre (H( not $scope_mode$))) or FTP)) and ( not FTP)) => (pre (H( not $post_condition$)))))",
-    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and exclusive of) the first point where $scope_mode$ holds.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must be false at all time points between (and including) the trigger and the end of the interval.",
+    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and exclusive of) the first point where $scope_mode$ holds. In the interval defined by the entire execution, if $scope_mode$ never holds.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must be false at all time points between (and including) the trigger and the end of the interval.",
     "diagram": "_media/user-interface/examples/svgDiagrams/before_null_never_satisfaction.svg"
   },
   "before,null,next,satisfaction": {
@@ -566,7 +566,7 @@
     "ptFinBtw": "(H ((FFin_$scope_mode$ & (! FTP)) -> (Y (H ((Y FTP) -> $post_condition$)))))",
     "ptFinBtwExpanded": "(H (((($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$)))) & ((Y (H (! $scope_mode$))) | (! (Y TRUE)))) & (Y TRUE)) -> (Y (H ((Y (! (Y TRUE))) -> $post_condition$)))))",
     "CoCoSpecCodeFinBtw": "(H(((($scope_mode$ and (FTP or (pre ( not $scope_mode$)))) and ((pre (H( not $scope_mode$))) or FTP)) and ( not FTP)) => (pre (H((pre (FTP)) => $post_condition$)))))",
-    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and exclusive of) the first point where $scope_mode$ holds.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must hold at the next time step.",
+    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and exclusive of) the first point where $scope_mode$ holds. In the interval defined by the entire execution, if $scope_mode$ never holds.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must hold at the next time step.",
     "diagram": "_media/user-interface/examples/svgDiagrams/before_null_next_satisfaction.svg"
   },
   "before,null,null,satisfaction": {
@@ -585,7 +585,7 @@
     "ptFinBtw": "(H ((FFin_$scope_mode$ & (! FTP)) -> (Y (O $post_condition$))))",
     "ptFinBtwExpanded": "(H (((($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$)))) & ((Y (H (! $scope_mode$))) | (! (Y TRUE)))) & (Y TRUE)) -> (Y (O $post_condition$))))",
     "CoCoSpecCodeFinBtw": "(H(((($scope_mode$ and (FTP or (pre ( not $scope_mode$)))) and ((pre (H( not $scope_mode$))) or FTP)) and ( not FTP)) => (pre (O($post_condition$)))))",
-    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and exclusive of) the first point where $scope_mode$ holds.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must hold at some time point between (and including) the trigger and the end of the interval.",
+    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and exclusive of) the first point where $scope_mode$ holds. In the interval defined by the entire execution, if $scope_mode$ never holds.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must hold at some time point between (and including) the trigger and the end of the interval.",
     "diagram": "_media/user-interface/examples/svgDiagrams/before_null_null_satisfaction.svg"
   },
   "before,null,until,satisfaction": {
@@ -604,7 +604,7 @@
     "ptFinBtw": "(H ((FFin_$scope_mode$ & (! FTP)) -> (Y (H ((H (! $stop_condition$)) -> $post_condition$)))))",
     "ptFinBtwExpanded": "(H (((($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$)))) & ((Y (H (! $scope_mode$))) | (! (Y TRUE)))) & (Y TRUE)) -> (Y (H ((H (! $stop_condition$)) -> $post_condition$)))))",
     "CoCoSpecCodeFinBtw": "(H(((($scope_mode$ and (FTP or (pre ( not $scope_mode$)))) and ((pre (H( not $scope_mode$))) or FTP)) and ( not FTP)) => (pre (H((H( not $stop_condition$)) => $post_condition$)))))",
-    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and exclusive of) the first point where $scope_mode$ holds.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must remain true until (but not necessarily including) the point where the stop condition holds, or to the end of the interval. If the stop condition never occurs, RES must hold until the end of the scope, or forever.  If the stop condition holds at the trigger, the requirement is satisfied.",
+    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and exclusive of) the first point where $scope_mode$ holds. In the interval defined by the entire execution, if $scope_mode$ never holds.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must remain true until (but not necessarily including) the point where the stop condition holds, or to the end of the interval. If the stop condition never occurs, RES must hold until the end of the scope, or forever.  If the stop condition holds at the trigger, the requirement is satisfied.",
     "diagram": "_media/user-interface/examples/svgDiagrams/before_null_until_satisfaction.svg"
   },
   "before,null,within,satisfaction": {
@@ -661,7 +661,7 @@
     "ptFinBtw": "(H ((FFin_$scope_mode$ & (! FTP)) -> (Y (H ((H (! $regular_condition$)) | $post_condition$)))))",
     "ptFinBtwExpanded": "(H (((($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$)))) & ((Y (H (! $scope_mode$))) | (! (Y TRUE)))) & (Y TRUE)) -> (Y (H ((H (! $regular_condition$)) | $post_condition$)))))",
     "CoCoSpecCodeFinBtw": "(H(((($scope_mode$ and (FTP or (pre ( not $scope_mode$)))) and ((pre (H( not $scope_mode$))) or FTP)) and ( not FTP)) => (pre (H((H( not $regular_condition$)) or $post_condition$)))))",
-    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and exclusive of) the first point where $scope_mode$ holds.\nTRIGGER: first point in the interval if $regular_condition$ is true and any point in the interval where $regular_condition$ becomes true (from false).\nREQUIRES: for every trigger, RES must hold at all time points between (and including) the trigger and the end of the interval.",
+    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and exclusive of) the first point where $scope_mode$ holds. In the interval defined by the entire execution, if $scope_mode$ never holds.\nTRIGGER: first point in the interval if $regular_condition$ is true and any point in the interval where $regular_condition$ becomes true (from false).\nREQUIRES: for every trigger, RES must hold at all time points between (and including) the trigger and the end of the interval.",
     "diagram": "_media/user-interface/examples/svgDiagrams/before_regular_always_satisfaction.svg"
   },
   "before,regular,before,satisfaction": {
@@ -680,7 +680,7 @@
     "ptFinBtw": "(H ((FFin_$scope_mode$ & (! FTP)) -> (Y (H ($stop_condition$ -> ((H (! $regular_condition$)) | (((! FTP) & (! ($regular_condition$ & ((Y (! $regular_condition$)) | FTP)))) & (Y (! ((! $post_condition$) S ((! $post_condition$) & ($regular_condition$ & ((Y (! $regular_condition$)) | FTP)))))))))))))",
     "ptFinBtwExpanded": "(H (((($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$)))) & ((Y (H (! $scope_mode$))) | (! (Y TRUE)))) & (Y TRUE)) -> (Y (H ($stop_condition$ -> ((H (! $regular_condition$)) | (((Y TRUE) & (! ($regular_condition$ & ((Y (! $regular_condition$)) | (! (Y TRUE)))))) & (Y (! ((! $post_condition$) S ((! $post_condition$) & ($regular_condition$ & ((Y (! $regular_condition$)) | (! (Y TRUE)))))))))))))))",
     "CoCoSpecCodeFinBtw": "(H(((($scope_mode$ and (FTP or (pre ( not $scope_mode$)))) and ((pre (H( not $scope_mode$))) or FTP)) and ( not FTP)) => (pre (H($stop_condition$ => ((H( not $regular_condition$)) or ((( not FTP) and ( not ($regular_condition$ and ((pre ( not $regular_condition$)) or FTP)))) and (pre ( not (SI( ($regular_condition$ and ((pre ( not $regular_condition$)) or FTP)), ( not $post_condition$) )))))))))))",
-    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and exclusive of) the first point where $scope_mode$ holds.\nTRIGGER: first point in the interval if $regular_condition$ is true and any point in the interval where $regular_condition$ becomes true (from false).\nREQUIRES: for every trigger, RES must hold at least once strictly before the state where the stop condition holds. If the stop condition never occurs, RES does not need to hold. If the stop condition holds at the trigger, the requirement is not satisified.",
+    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and exclusive of) the first point where $scope_mode$ holds. In the interval defined by the entire execution, if $scope_mode$ never holds.\nTRIGGER: first point in the interval if $regular_condition$ is true and any point in the interval where $regular_condition$ becomes true (from false).\nREQUIRES: for every trigger, RES must hold at least once strictly before the state where the stop condition holds. If the stop condition never occurs, RES does not need to hold. If the stop condition holds at the trigger, the requirement is not satisified.",
     "diagram": "_media/user-interface/examples/svgDiagrams/before_regular_before_satisfaction.svg"
   },
   "before,regular,eventually,satisfaction": {
@@ -699,7 +699,7 @@
     "ptFinBtw": "(H ((FFin_$scope_mode$ & (! FTP)) -> (Y ((H (! $regular_condition$)) | (! ((! $post_condition$) S ((! $post_condition$) & ($regular_condition$ & ((Y (! $regular_condition$)) | FTP)))))))))",
     "ptFinBtwExpanded": "(H (((($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$)))) & ((Y (H (! $scope_mode$))) | (! (Y TRUE)))) & (Y TRUE)) -> (Y ((H (! $regular_condition$)) | (! ((! $post_condition$) S ((! $post_condition$) & ($regular_condition$ & ((Y (! $regular_condition$)) | (! (Y TRUE)))))))))))",
     "CoCoSpecCodeFinBtw": "(H(((($scope_mode$ and (FTP or (pre ( not $scope_mode$)))) and ((pre (H( not $scope_mode$))) or FTP)) and ( not FTP)) => (pre ((H( not $regular_condition$)) or ( not (SI( ($regular_condition$ and ((pre ( not $regular_condition$)) or FTP)), ( not $post_condition$) )))))))",
-    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and exclusive of) the first point where $scope_mode$ holds.\nTRIGGER: first point in the interval if $regular_condition$ is true and any point in the interval where $regular_condition$ becomes true (from false).\nREQUIRES: for every trigger, RES must hold at some time point between (and including) the trigger and the end of the interval.",
+    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and exclusive of) the first point where $scope_mode$ holds. In the interval defined by the entire execution, if $scope_mode$ never holds.\nTRIGGER: first point in the interval if $regular_condition$ is true and any point in the interval where $regular_condition$ becomes true (from false).\nREQUIRES: for every trigger, RES must hold at some time point between (and including) the trigger and the end of the interval.",
     "diagram": "_media/user-interface/examples/svgDiagrams/before_regular_eventually_satisfaction.svg"
   },
   "before,regular,for,satisfaction": {
@@ -718,7 +718,7 @@
     "ptFinBtw": "(H ((FFin_$scope_mode$ & (! FTP)) -> (Y (H ((O[<=$duration$] ($regular_condition$ & ((Y (! $regular_condition$)) | FTP))) -> ((H (! $regular_condition$)) | $post_condition$))))))",
     "ptFinBtwExpanded": "(H (((($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$)))) & ((Y (H (! $scope_mode$))) | (! (Y TRUE)))) & (Y TRUE)) -> (Y (H ((O[<=$duration$] ($regular_condition$ & ((Y (! $regular_condition$)) | (! (Y TRUE))))) -> ((H (! $regular_condition$)) | $post_condition$))))))",
     "CoCoSpecCodeFinBtw": "(H(((($scope_mode$ and (FTP or (pre ( not $scope_mode$)))) and ((pre (H( not $scope_mode$))) or FTP)) and ( not FTP)) => (pre (H((OT($duration$,0,($regular_condition$ and ((pre ( not $regular_condition$)) or FTP)))) => ((H( not $regular_condition$)) or $post_condition$))))))",
-    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and exclusive of) the first point where $scope_mode$ holds.\nTRIGGER: first point in the interval if $regular_condition$ is true and any point in the interval where $regular_condition$ becomes true (from false).\nREQUIRES: for every trigger, RES must hold at the trigger and remain true for $duration$ time points past the trigger (i.e., trigger, trigger+1, ..., and trigger+$duration$), or to the end of the interval if the interval ends sooner than trigger+$duration$.",
+    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and exclusive of) the first point where $scope_mode$ holds. In the interval defined by the entire execution, if $scope_mode$ never holds.\nTRIGGER: first point in the interval if $regular_condition$ is true and any point in the interval where $regular_condition$ becomes true (from false).\nREQUIRES: for every trigger, RES must hold at the trigger and remain true for $duration$ time points past the trigger (i.e., trigger, trigger+1, ..., and trigger+$duration$), or to the end of the interval if the interval ends sooner than trigger+$duration$.",
     "diagram": "_media/user-interface/examples/svgDiagrams/before_regular_for_satisfaction.svg"
   },
   "before,regular,immediately,satisfaction": {
@@ -756,7 +756,7 @@
     "ptFinBtw": "(H ((FFin_$scope_mode$ & (! FTP)) -> (Y (H ((H (! $regular_condition$)) | (! $post_condition$))))))",
     "ptFinBtwExpanded": "(H (((($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$)))) & ((Y (H (! $scope_mode$))) | (! (Y TRUE)))) & (Y TRUE)) -> (Y (H ((H (! $regular_condition$)) | (! $post_condition$))))))",
     "CoCoSpecCodeFinBtw": "(H(((($scope_mode$ and (FTP or (pre ( not $scope_mode$)))) and ((pre (H( not $scope_mode$))) or FTP)) and ( not FTP)) => (pre (H((H( not $regular_condition$)) or ( not $post_condition$))))))",
-    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and exclusive of) the first point where $scope_mode$ holds.\nTRIGGER: first point in the interval if $regular_condition$ is true and any point in the interval where $regular_condition$ becomes true (from false).\nREQUIRES: for every trigger, RES must be false at all time points between (and including) the trigger and the end of the interval.",
+    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and exclusive of) the first point where $scope_mode$ holds. In the interval defined by the entire execution, if $scope_mode$ never holds.\nTRIGGER: first point in the interval if $regular_condition$ is true and any point in the interval where $regular_condition$ becomes true (from false).\nREQUIRES: for every trigger, RES must be false at all time points between (and including) the trigger and the end of the interval.",
     "diagram": "_media/user-interface/examples/svgDiagrams/before_regular_never_satisfaction.svg"
   },
   "before,regular,next,satisfaction": {
@@ -775,7 +775,7 @@
     "ptFinBtw": "(H ((FFin_$scope_mode$ & (! FTP)) -> (Y (H ((Y ($regular_condition$ & ((Y (! $regular_condition$)) | FTP))) -> ($post_condition$ | FTP))))))",
     "ptFinBtwExpanded": "(H (((($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$)))) & ((Y (H (! $scope_mode$))) | (! (Y TRUE)))) & (Y TRUE)) -> (Y (H ((Y ($regular_condition$ & ((Y (! $regular_condition$)) | (! (Y TRUE))))) -> ($post_condition$ | (! (Y TRUE))))))))",
     "CoCoSpecCodeFinBtw": "(H(((($scope_mode$ and (FTP or (pre ( not $scope_mode$)))) and ((pre (H( not $scope_mode$))) or FTP)) and ( not FTP)) => (pre (H((pre ($regular_condition$ and ((pre ( not $regular_condition$)) or FTP))) => ($post_condition$ or FTP))))))",
-    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and exclusive of) the first point where $scope_mode$ holds.\nTRIGGER: first point in the interval if $regular_condition$ is true and any point in the interval where $regular_condition$ becomes true (from false).\nREQUIRES: for every trigger, RES must hold at the next time step.",
+    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and exclusive of) the first point where $scope_mode$ holds. In the interval defined by the entire execution, if $scope_mode$ never holds.\nTRIGGER: first point in the interval if $regular_condition$ is true and any point in the interval where $regular_condition$ becomes true (from false).\nREQUIRES: for every trigger, RES must hold at the next time step.",
     "diagram": "_media/user-interface/examples/svgDiagrams/before_regular_next_satisfaction.svg"
   },
   "before,regular,null,satisfaction": {
@@ -794,7 +794,7 @@
     "ptFinBtw": "(H ((FFin_$scope_mode$ & (! FTP)) -> (Y ((H (! $regular_condition$)) | (! ((! $post_condition$) S ((! $post_condition$) & ($regular_condition$ & ((Y (! $regular_condition$)) | FTP)))))))))",
     "ptFinBtwExpanded": "(H (((($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$)))) & ((Y (H (! $scope_mode$))) | (! (Y TRUE)))) & (Y TRUE)) -> (Y ((H (! $regular_condition$)) | (! ((! $post_condition$) S ((! $post_condition$) & ($regular_condition$ & ((Y (! $regular_condition$)) | (! (Y TRUE)))))))))))",
     "CoCoSpecCodeFinBtw": "(H(((($scope_mode$ and (FTP or (pre ( not $scope_mode$)))) and ((pre (H( not $scope_mode$))) or FTP)) and ( not FTP)) => (pre ((H( not $regular_condition$)) or ( not (SI( ($regular_condition$ and ((pre ( not $regular_condition$)) or FTP)), ( not $post_condition$) )))))))",
-    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and exclusive of) the first point where $scope_mode$ holds.\nTRIGGER: first point in the interval if $regular_condition$ is true and any point in the interval where $regular_condition$ becomes true (from false).\nREQUIRES: for every trigger, RES must hold at some time point between (and including) the trigger and the end of the interval.",
+    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and exclusive of) the first point where $scope_mode$ holds. In the interval defined by the entire execution, if $scope_mode$ never holds.\nTRIGGER: first point in the interval if $regular_condition$ is true and any point in the interval where $regular_condition$ becomes true (from false).\nREQUIRES: for every trigger, RES must hold at some time point between (and including) the trigger and the end of the interval.",
     "diagram": "_media/user-interface/examples/svgDiagrams/before_regular_null_satisfaction.svg"
   },
   "before,regular,until,satisfaction": {
@@ -813,7 +813,7 @@
     "ptFinBtw": "(H ((FFin_$scope_mode$ & (! FTP)) -> (Y (H ((H (! $regular_condition$)) | (((! $stop_condition$) S ((! $stop_condition$) & ($regular_condition$ & ((Y (! $regular_condition$)) | FTP)))) -> $post_condition$))))))",
     "ptFinBtwExpanded": "(H (((($scope_mode$ & ((! (Y TRUE)) | (Y (! $scope_mode$)))) & ((Y (H (! $scope_mode$))) | (! (Y TRUE)))) & (Y TRUE)) -> (Y (H ((H (! $regular_condition$)) | (((! $stop_condition$) S ((! $stop_condition$) & ($regular_condition$ & ((Y (! $regular_condition$)) | (! (Y TRUE)))))) -> $post_condition$))))))",
     "CoCoSpecCodeFinBtw": "(H(((($scope_mode$ and (FTP or (pre ( not $scope_mode$)))) and ((pre (H( not $scope_mode$))) or FTP)) and ( not FTP)) => (pre (H((H( not $regular_condition$)) or ((SI( ($regular_condition$ and ((pre ( not $regular_condition$)) or FTP)), ( not $stop_condition$) )) => $post_condition$))))))",
-    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and exclusive of) the first point where $scope_mode$ holds.\nTRIGGER: first point in the interval if $regular_condition$ is true and any point in the interval where $regular_condition$ becomes true (from false).\nREQUIRES: for every trigger, RES must remain true until (but not necessarily including) the point where the stop condition holds, or to the end of the interval. If the stop condition never occurs, RES must hold until the end of the scope, or forever.  If the stop condition holds at the trigger, the requirement is satisfied.",
+    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and exclusive of) the first point where $scope_mode$ holds. In the interval defined by the entire execution, if $scope_mode$ never holds.\nTRIGGER: first point in the interval if $regular_condition$ is true and any point in the interval where $regular_condition$ becomes true (from false).\nREQUIRES: for every trigger, RES must remain true until (but not necessarily including) the point where the stop condition holds, or to the end of the interval. If the stop condition never occurs, RES must hold until the end of the scope, or forever.  If the stop condition holds at the trigger, the requirement is satisfied.",
     "diagram": "_media/user-interface/examples/svgDiagrams/before_regular_until_satisfaction.svg"
   },
   "before,regular,within,satisfaction": {
@@ -2105,7 +2105,7 @@
     "ptFinBtw": "(H (FLin_$scope_mode$ -> (Y (H ((O[=$duration$+1] FTP) -> (((O[<=$duration$] FTP) | (! $post_condition$)) | (Y (O $post_condition$))))))))",
     "ptFinBtwExpanded": "(H ((((! $scope_mode$) & (Y $scope_mode$)) & (Y (H (! ((! $scope_mode$) & (Y $scope_mode$)))))) -> (Y (H ((O[=$duration$+1] (! (Y TRUE))) -> (((O[<=$duration$] (! (Y TRUE))) | (! $post_condition$)) | (Y (O $post_condition$))))))))",
     "CoCoSpecCodeFinBtw": "(H(((( not $scope_mode$) and (pre ($scope_mode$))) and pre (H( not (( not $scope_mode$) and (pre ($scope_mode$)))))) => (pre (H((OT($duration$+1,$duration$+1,FTP)) => (((OT($duration$,0,FTP)) or ( not $post_condition$)) or (pre (O($post_condition$)))))))))",
-    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and including) the first interval where $scope_mode$ holds.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must either hold at some point with distance <=$duration$ from the trigger (i.e., at trigger, trigger+1, ..., or trigger+$duration$), or RES must remain false for $duration$+1 time points starting at the trigger (i.e., at trigger, trigger+1, ..., and trigger+$duration$+1), or to the end of the interval if it ends sooner than trigger+$duration$+1.",
+    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and including) the first interval where $scope_mode$ holds. In the interval defined by the entire execution, if $scope_mode$ never holds.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must either hold at some point with distance <=$duration$ from the trigger (i.e., at trigger, trigger+1, ..., or trigger+$duration$), or RES must remain false for $duration$+1 time points starting at the trigger (i.e., at trigger, trigger+1, ..., and trigger+$duration$+1), or to the end of the interval if it ends sooner than trigger+$duration$+1.",
     "diagram": "_media/user-interface/examples/svgDiagrams/onlyAfter_null_after_satisfaction.svg"
   },
   "onlyAfter,null,always,satisfaction": {
@@ -2124,7 +2124,7 @@
     "ptFinBtw": "(H (FLin_$scope_mode$ -> (Y (! (H $post_condition$)))))",
     "ptFinBtwExpanded": "(H ((((! $scope_mode$) & (Y $scope_mode$)) & (Y (H (! ((! $scope_mode$) & (Y $scope_mode$)))))) -> (Y (! (H $post_condition$)))))",
     "CoCoSpecCodeFinBtw": "(H(((( not $scope_mode$) and (pre ($scope_mode$))) and pre (H( not (( not $scope_mode$) and (pre ($scope_mode$)))))) => (pre ( not (H($post_condition$))))))",
-    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and including) the first interval where $scope_mode$ holds.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must be false at some time point between (and including) the trigger and the end of the interval.",
+    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and including) the first interval where $scope_mode$ holds. In the interval defined by the entire execution, if $scope_mode$ never holds.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must be false at some time point between (and including) the trigger and the end of the interval.",
     "diagram": "_media/user-interface/examples/svgDiagrams/onlyAfter_null_always_satisfaction.svg"
   },
   "onlyAfter,null,before,satisfaction": {
@@ -2143,7 +2143,7 @@
     "ptFinBtw": "(H (FLin_$scope_mode$ -> (Y (H ((H (! $stop_condition$)) -> (! $post_condition$))))))",
     "ptFinBtwExpanded": "(H ((((! $scope_mode$) & (Y $scope_mode$)) & (Y (H (! ((! $scope_mode$) & (Y $scope_mode$)))))) -> (Y (H ((H (! $stop_condition$)) -> (! $post_condition$))))))",
     "CoCoSpecCodeFinBtw": "(H(((( not $scope_mode$) and (pre ($scope_mode$))) and pre (H( not (( not $scope_mode$) and (pre ($scope_mode$)))))) => (pre (H((H( not $stop_condition$)) => ( not $post_condition$))))))",
-    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and including) the first interval where $scope_mode$ holds.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must be false until, but not necessarily including, the state where the stop condition holds. If the stop condition never occurs, RES can occur.",
+    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and including) the first interval where $scope_mode$ holds. In the interval defined by the entire execution, if $scope_mode$ never holds.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must be false until, but not necessarily including, the state where the stop condition holds. If the stop condition never occurs, RES can occur.",
     "diagram": "_media/user-interface/examples/svgDiagrams/onlyAfter_null_before_satisfaction.svg"
   },
   "onlyAfter,null,eventually,satisfaction": {
@@ -2162,7 +2162,7 @@
     "ptFinBtw": "(H (FLin_$scope_mode$ -> (Y (H (! $post_condition$)))))",
     "ptFinBtwExpanded": "(H ((((! $scope_mode$) & (Y $scope_mode$)) & (Y (H (! ((! $scope_mode$) & (Y $scope_mode$)))))) -> (Y (H (! $post_condition$)))))",
     "CoCoSpecCodeFinBtw": "(H(((( not $scope_mode$) and (pre ($scope_mode$))) and pre (H( not (( not $scope_mode$) and (pre ($scope_mode$)))))) => (pre (H( not $post_condition$)))))",
-    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and including) the first interval where $scope_mode$ holds.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must be false at all time points between (and including) the trigger and the end of the interval.",
+    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and including) the first interval where $scope_mode$ holds. In the interval defined by the entire execution, if $scope_mode$ never holds.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must be false at all time points between (and including) the trigger and the end of the interval.",
     "diagram": "_media/user-interface/examples/svgDiagrams/onlyAfter_null_eventually_satisfaction.svg"
   },
   "onlyAfter,null,for,satisfaction": {
@@ -2181,7 +2181,7 @@
     "ptFinBtw": "(H (FLin_$scope_mode$ -> (Y (H ((H $post_condition$) -> (O[<$duration$] FTP))))))",
     "ptFinBtwExpanded": "(H ((((! $scope_mode$) & (Y $scope_mode$)) & (Y (H (! ((! $scope_mode$) & (Y $scope_mode$)))))) -> (Y (H ((H $post_condition$) -> (O[<$duration$] (! (Y TRUE))))))))",
     "CoCoSpecCodeFinBtw": "(H(((( not $scope_mode$) and (pre ($scope_mode$))) and pre (H( not (( not $scope_mode$) and (pre ($scope_mode$)))))) => (pre (H((H($post_condition$)) => (OT($duration$-1,0,FTP)))))))",
-    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and including) the first interval where $scope_mode$ holds.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must be false at some point with distance <=$duration$ from the trigger (i.e., at trigger, trigger+1, ..., or trigger+$duration$), except if the end of the interval occurs sooner.",
+    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and including) the first interval where $scope_mode$ holds. In the interval defined by the entire execution, if $scope_mode$ never holds.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must be false at some point with distance <=$duration$ from the trigger (i.e., at trigger, trigger+1, ..., or trigger+$duration$), except if the end of the interval occurs sooner.",
     "diagram": "_media/user-interface/examples/svgDiagrams/onlyAfter_null_for_satisfaction.svg"
   },
   "onlyAfter,null,immediately,satisfaction": {
@@ -2200,7 +2200,7 @@
     "ptFinBtw": "(H (FLin_$scope_mode$ -> (Y (H (FTP -> (! $post_condition$))))))",
     "ptFinBtwExpanded": "(H ((((! $scope_mode$) & (Y $scope_mode$)) & (Y (H (! ((! $scope_mode$) & (Y $scope_mode$)))))) -> (Y (H ((! (Y TRUE)) -> (! $post_condition$))))))",
     "CoCoSpecCodeFinBtw": "(H(((( not $scope_mode$) and (pre ($scope_mode$))) and pre (H( not (( not $scope_mode$) and (pre ($scope_mode$)))))) => (pre (H(FTP => ( not $post_condition$))))))",
-    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and including) the first interval where $scope_mode$ holds.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, trigger and RES cannot hold at the same time point.",
+    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and including) the first interval where $scope_mode$ holds. In the interval defined by the entire execution, if $scope_mode$ never holds.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, trigger and RES cannot hold at the same time point.",
     "diagram": "_media/user-interface/examples/svgDiagrams/onlyAfter_null_immediately_satisfaction.svg"
   },
   "onlyAfter,null,never,satisfaction": {
@@ -2219,7 +2219,7 @@
     "ptFinBtw": "(H (FLin_$scope_mode$ -> (Y (O $post_condition$))))",
     "ptFinBtwExpanded": "(H ((((! $scope_mode$) & (Y $scope_mode$)) & (Y (H (! ((! $scope_mode$) & (Y $scope_mode$)))))) -> (Y (O $post_condition$))))",
     "CoCoSpecCodeFinBtw": "(H(((( not $scope_mode$) and (pre ($scope_mode$))) and pre (H( not (( not $scope_mode$) and (pre ($scope_mode$)))))) => (pre (O($post_condition$)))))",
-    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and including) the first interval where $scope_mode$ holds.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must hold at some time point between (and including) the trigger and the end of the interval.",
+    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and including) the first interval where $scope_mode$ holds. In the interval defined by the entire execution, if $scope_mode$ never holds.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must hold at some time point between (and including) the trigger and the end of the interval.",
     "diagram": "_media/user-interface/examples/svgDiagrams/onlyAfter_null_never_satisfaction.svg"
   },
   "onlyAfter,null,next,satisfaction": {
@@ -2238,7 +2238,7 @@
     "ptFinBtw": "(H (FLin_$scope_mode$ -> (Y (H ((Y FTP) -> (! $post_condition$))))))",
     "ptFinBtwExpanded": "(H ((((! $scope_mode$) & (Y $scope_mode$)) & (Y (H (! ((! $scope_mode$) & (Y $scope_mode$)))))) -> (Y (H ((Y (! (Y TRUE))) -> (! $post_condition$))))))",
     "CoCoSpecCodeFinBtw": "(H(((( not $scope_mode$) and (pre ($scope_mode$))) and pre (H( not (( not $scope_mode$) and (pre ($scope_mode$)))))) => (pre (H((pre (FTP)) => ( not $post_condition$))))))",
-    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and including) the first interval where $scope_mode$ holds.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES cannot hold at the next time point.",
+    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and including) the first interval where $scope_mode$ holds. In the interval defined by the entire execution, if $scope_mode$ never holds.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES cannot hold at the next time point.",
     "diagram": "_media/user-interface/examples/svgDiagrams/onlyAfter_null_next_satisfaction.svg"
   },
   "onlyAfter,null,null,satisfaction": {
@@ -2257,7 +2257,7 @@
     "ptFinBtw": "(H (FLin_$scope_mode$ -> (Y (H (! $post_condition$)))))",
     "ptFinBtwExpanded": "(H ((((! $scope_mode$) & (Y $scope_mode$)) & (Y (H (! ((! $scope_mode$) & (Y $scope_mode$)))))) -> (Y (H (! $post_condition$)))))",
     "CoCoSpecCodeFinBtw": "(H(((( not $scope_mode$) and (pre ($scope_mode$))) and pre (H( not (( not $scope_mode$) and (pre ($scope_mode$)))))) => (pre (H( not $post_condition$)))))",
-    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and including) the first interval where $scope_mode$ holds.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must be false at all time points between (and including) the trigger and the end of the interval.",
+    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and including) the first interval where $scope_mode$ holds. In the interval defined by the entire execution, if $scope_mode$ never holds.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must be false at all time points between (and including) the trigger and the end of the interval.",
     "diagram": "_media/user-interface/examples/svgDiagrams/onlyAfter_null_null_satisfaction.svg"
   },
   "onlyAfter,null,until,satisfaction": {
@@ -2276,7 +2276,7 @@
     "ptFinBtw": "(H (FLin_$scope_mode$ -> (Y (H ($stop_condition$ -> ((! FTP) & (Y (! (H $post_condition$)))))))))",
     "ptFinBtwExpanded": "(H ((((! $scope_mode$) & (Y $scope_mode$)) & (Y (H (! ((! $scope_mode$) & (Y $scope_mode$)))))) -> (Y (H ($stop_condition$ -> ((Y TRUE) & (Y (! (H $post_condition$)))))))))",
     "CoCoSpecCodeFinBtw": "(H(((( not $scope_mode$) and (pre ($scope_mode$))) and pre (H( not (( not $scope_mode$) and (pre ($scope_mode$)))))) => (pre (H($stop_condition$ => (( not FTP) and (pre ( not (H($post_condition$))))))))))",
-    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and including) the first interval where $scope_mode$ holds.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must be false at least once strictly before the state where the stop condition holds, or the end of the interval if the stop condition never holds.",
+    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and including) the first interval where $scope_mode$ holds. In the interval defined by the entire execution, if $scope_mode$ never holds.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must be false at least once strictly before the state where the stop condition holds, or the end of the interval if the stop condition never holds.",
     "diagram": "_media/user-interface/examples/svgDiagrams/onlyAfter_null_until_satisfaction.svg"
   },
   "onlyAfter,null,within,satisfaction": {
@@ -2295,7 +2295,7 @@
     "ptFinBtw": "(H (FLin_$scope_mode$ -> (Y (H ((O[<=$duration$] FTP) -> (! $post_condition$))))))",
     "ptFinBtwExpanded": "(H ((((! $scope_mode$) & (Y $scope_mode$)) & (Y (H (! ((! $scope_mode$) & (Y $scope_mode$)))))) -> (Y (H ((O[<=$duration$] (! (Y TRUE))) -> (! $post_condition$))))))",
     "CoCoSpecCodeFinBtw": "(H(((( not $scope_mode$) and (pre ($scope_mode$))) and pre (H( not (( not $scope_mode$) and (pre ($scope_mode$)))))) => (pre (H((OT($duration$,0,FTP)) => ( not $post_condition$))))))",
-    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and including) the first interval where $scope_mode$ holds.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must be false at all time points with distance <=$duration$ from the trigger (i.e., at trigger, trigger+1, ..., and trigger+$duration$), or until the end of the interval.",
+    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and including) the first interval where $scope_mode$ holds. In the interval defined by the entire execution, if $scope_mode$ never holds.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must be false at all time points with distance <=$duration$ from the trigger (i.e., at trigger, trigger+1, ..., and trigger+$duration$), or until the end of the interval.",
     "diagram": "_media/user-interface/examples/svgDiagrams/onlyAfter_null_within_satisfaction.svg"
   },
   "onlyAfter,regular,after,satisfaction": {
@@ -2314,7 +2314,7 @@
     "ptFinBtw": "(H (FLin_$scope_mode$ -> (Y (H ((O[=$duration$+1] ($regular_condition$ & ((Y (! $regular_condition$)) | FTP))) -> (((O[<=$duration$] FTP) | (! $post_condition$)) | (Y (O[<=$duration$] $post_condition$))))))))",
     "ptFinBtwExpanded": "(H ((((! $scope_mode$) & (Y $scope_mode$)) & (Y (H (! ((! $scope_mode$) & (Y $scope_mode$)))))) -> (Y (H ((O[=$duration$+1] ($regular_condition$ & ((Y (! $regular_condition$)) | (! (Y TRUE))))) -> (((O[<=$duration$] (! (Y TRUE))) | (! $post_condition$)) | (Y (O[<=$duration$] $post_condition$))))))))",
     "CoCoSpecCodeFinBtw": "(H(((( not $scope_mode$) and (pre ($scope_mode$))) and pre (H( not (( not $scope_mode$) and (pre ($scope_mode$)))))) => (pre (H((OT($duration$+1,$duration$+1,($regular_condition$ and ((pre ( not $regular_condition$)) or FTP)))) => (((OT($duration$,0,FTP)) or ( not $post_condition$)) or (pre (OT($duration$,0,$post_condition$)))))))))",
-    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and including) the first interval where $scope_mode$ holds.\nTRIGGER: first point in the interval if $regular_condition$ is true and any point in the interval where $regular_condition$ becomes true (from false).\nREQUIRES: for every trigger, RES must either hold at some point with distance <=$duration$ from the trigger (i.e., at trigger, trigger+1, ..., or trigger+$duration$), or RES must remain false for $duration$+1 time points starting at the trigger (i.e., at trigger, trigger+1, ..., and trigger+$duration$+1), or to the end of the interval if it ends sooner than trigger+$duration$+1.",
+    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and including) the first interval where $scope_mode$ holds. In the interval defined by the entire execution, if $scope_mode$ never holds.\nTRIGGER: first point in the interval if $regular_condition$ is true and any point in the interval where $regular_condition$ becomes true (from false).\nREQUIRES: for every trigger, RES must either hold at some point with distance <=$duration$ from the trigger (i.e., at trigger, trigger+1, ..., or trigger+$duration$), or RES must remain false for $duration$+1 time points starting at the trigger (i.e., at trigger, trigger+1, ..., and trigger+$duration$+1), or to the end of the interval if it ends sooner than trigger+$duration$+1.",
     "diagram": "_media/user-interface/examples/svgDiagrams/onlyAfter_regular_after_satisfaction.svg"
   },
   "onlyAfter,regular,always,satisfaction": {
@@ -2333,7 +2333,7 @@
     "ptFinBtw": "(H (FLin_$scope_mode$ -> (Y ((H (! $regular_condition$)) | (! ($post_condition$ S ($post_condition$ & ($regular_condition$ & ((Y (! $regular_condition$)) | FTP)))))))))",
     "ptFinBtwExpanded": "(H ((((! $scope_mode$) & (Y $scope_mode$)) & (Y (H (! ((! $scope_mode$) & (Y $scope_mode$)))))) -> (Y ((H (! $regular_condition$)) | (! ($post_condition$ S ($post_condition$ & ($regular_condition$ & ((Y (! $regular_condition$)) | (! (Y TRUE)))))))))))",
     "CoCoSpecCodeFinBtw": "(H(((( not $scope_mode$) and (pre ($scope_mode$))) and pre (H( not (( not $scope_mode$) and (pre ($scope_mode$)))))) => (pre ((H( not $regular_condition$)) or ( not (SI( ($regular_condition$ and ((pre ( not $regular_condition$)) or FTP)), $post_condition$ )))))))",
-    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and including) the first interval where $scope_mode$ holds.\nTRIGGER: first point in the interval if $regular_condition$ is true and any point in the interval where $regular_condition$ becomes true (from false).\nREQUIRES: for every trigger, RES must be false at some time point between (and including) the trigger and the end of the interval.",
+    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and including) the first interval where $scope_mode$ holds. In the interval defined by the entire execution, if $scope_mode$ never holds.\nTRIGGER: first point in the interval if $regular_condition$ is true and any point in the interval where $regular_condition$ becomes true (from false).\nREQUIRES: for every trigger, RES must be false at some time point between (and including) the trigger and the end of the interval.",
     "diagram": "_media/user-interface/examples/svgDiagrams/onlyAfter_regular_always_satisfaction.svg"
   },
   "onlyAfter,regular,before,satisfaction": {
@@ -2352,7 +2352,7 @@
     "ptFinBtw": "(H (FLin_$scope_mode$ -> (Y (H ((H (! $regular_condition$)) | (((! $stop_condition$) S ((! $stop_condition$) & ($regular_condition$ & ((Y (! $regular_condition$)) | FTP)))) -> (! $post_condition$)))))))",
     "ptFinBtwExpanded": "(H ((((! $scope_mode$) & (Y $scope_mode$)) & (Y (H (! ((! $scope_mode$) & (Y $scope_mode$)))))) -> (Y (H ((H (! $regular_condition$)) | (((! $stop_condition$) S ((! $stop_condition$) & ($regular_condition$ & ((Y (! $regular_condition$)) | (! (Y TRUE)))))) -> (! $post_condition$)))))))",
     "CoCoSpecCodeFinBtw": "(H(((( not $scope_mode$) and (pre ($scope_mode$))) and pre (H( not (( not $scope_mode$) and (pre ($scope_mode$)))))) => (pre (H((H( not $regular_condition$)) or ((SI( ($regular_condition$ and ((pre ( not $regular_condition$)) or FTP)), ( not $stop_condition$) )) => ( not $post_condition$)))))))",
-    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and including) the first interval where $scope_mode$ holds.\nTRIGGER: first point in the interval if $regular_condition$ is true and any point in the interval where $regular_condition$ becomes true (from false).\nREQUIRES: for every trigger, RES must be false until, but not necessarily including, the state where the stop condition holds. If the stop condition never occurs, RES can occur.",
+    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and including) the first interval where $scope_mode$ holds. In the interval defined by the entire execution, if $scope_mode$ never holds.\nTRIGGER: first point in the interval if $regular_condition$ is true and any point in the interval where $regular_condition$ becomes true (from false).\nREQUIRES: for every trigger, RES must be false until, but not necessarily including, the state where the stop condition holds. If the stop condition never occurs, RES can occur.",
     "diagram": "_media/user-interface/examples/svgDiagrams/onlyAfter_regular_before_satisfaction.svg"
   },
   "onlyAfter,regular,eventually,satisfaction": {
@@ -2371,7 +2371,7 @@
     "ptFinBtw": "(H (FLin_$scope_mode$ -> (Y (H ((H (! $regular_condition$)) | (! $post_condition$))))))",
     "ptFinBtwExpanded": "(H ((((! $scope_mode$) & (Y $scope_mode$)) & (Y (H (! ((! $scope_mode$) & (Y $scope_mode$)))))) -> (Y (H ((H (! $regular_condition$)) | (! $post_condition$))))))",
     "CoCoSpecCodeFinBtw": "(H(((( not $scope_mode$) and (pre ($scope_mode$))) and pre (H( not (( not $scope_mode$) and (pre ($scope_mode$)))))) => (pre (H((H( not $regular_condition$)) or ( not $post_condition$))))))",
-    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and including) the first interval where $scope_mode$ holds.\nTRIGGER: first point in the interval if $regular_condition$ is true and any point in the interval where $regular_condition$ becomes true (from false).\nREQUIRES: for every trigger, RES must be false at all time points between (and including) the trigger and the end of the interval.",
+    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and including) the first interval where $scope_mode$ holds. In the interval defined by the entire execution, if $scope_mode$ never holds.\nTRIGGER: first point in the interval if $regular_condition$ is true and any point in the interval where $regular_condition$ becomes true (from false).\nREQUIRES: for every trigger, RES must be false at all time points between (and including) the trigger and the end of the interval.",
     "diagram": "_media/user-interface/examples/svgDiagrams/onlyAfter_regular_eventually_satisfaction.svg"
   },
   "onlyAfter,regular,for,satisfaction": {
@@ -2390,7 +2390,7 @@
     "ptFinBtw": "(H (FLin_$scope_mode$ -> (Y (H ((O[=$duration$] (($regular_condition$ & ((Y (! $regular_condition$)) | FTP)) & $post_condition$)) -> (O[<$duration$] (FTP | (! $post_condition$))))))))",
     "ptFinBtwExpanded": "(H ((((! $scope_mode$) & (Y $scope_mode$)) & (Y (H (! ((! $scope_mode$) & (Y $scope_mode$)))))) -> (Y (H ((O[=$duration$] (($regular_condition$ & ((Y (! $regular_condition$)) | (! (Y TRUE)))) & $post_condition$)) -> (O[<$duration$] ((! (Y TRUE)) | (! $post_condition$))))))))",
     "CoCoSpecCodeFinBtw": "(H(((( not $scope_mode$) and (pre ($scope_mode$))) and pre (H( not (( not $scope_mode$) and (pre ($scope_mode$)))))) => (pre (H((OT($duration$,$duration$,(($regular_condition$ and ((pre ( not $regular_condition$)) or FTP)) and $post_condition$))) => (OT($duration$-1,0,(FTP or ( not $post_condition$)))))))))",
-    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and including) the first interval where $scope_mode$ holds.\nTRIGGER: first point in the interval if $regular_condition$ is true and any point in the interval where $regular_condition$ becomes true (from false).\nREQUIRES: for every trigger, RES must be false at some point with distance <=$duration$ from the trigger (i.e., at trigger, trigger+1, ..., or trigger+$duration$), except if the end of the interval occurs sooner.",
+    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and including) the first interval where $scope_mode$ holds. In the interval defined by the entire execution, if $scope_mode$ never holds.\nTRIGGER: first point in the interval if $regular_condition$ is true and any point in the interval where $regular_condition$ becomes true (from false).\nREQUIRES: for every trigger, RES must be false at some point with distance <=$duration$ from the trigger (i.e., at trigger, trigger+1, ..., or trigger+$duration$), except if the end of the interval occurs sooner.",
     "diagram": "_media/user-interface/examples/svgDiagrams/onlyAfter_regular_for_satisfaction.svg"
   },
   "onlyAfter,regular,immediately,satisfaction": {
@@ -2409,7 +2409,7 @@
     "ptFinBtw": "(H (FLin_$scope_mode$ -> (Y (H (($regular_condition$ & ((Y (! $regular_condition$)) | FTP)) -> (! $post_condition$))))))",
     "ptFinBtwExpanded": "(H ((((! $scope_mode$) & (Y $scope_mode$)) & (Y (H (! ((! $scope_mode$) & (Y $scope_mode$)))))) -> (Y (H (($regular_condition$ & ((Y (! $regular_condition$)) | (! (Y TRUE)))) -> (! $post_condition$))))))",
     "CoCoSpecCodeFinBtw": "(H(((( not $scope_mode$) and (pre ($scope_mode$))) and pre (H( not (( not $scope_mode$) and (pre ($scope_mode$)))))) => (pre (H(($regular_condition$ and ((pre ( not $regular_condition$)) or FTP)) => ( not $post_condition$))))))",
-    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and including) the first interval where $scope_mode$ holds.\nTRIGGER: first point in the interval if $regular_condition$ is true and any point in the interval where $regular_condition$ becomes true (from false).\nREQUIRES: for every trigger, trigger and RES cannot hold at the same time point.",
+    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and including) the first interval where $scope_mode$ holds. In the interval defined by the entire execution, if $scope_mode$ never holds.\nTRIGGER: first point in the interval if $regular_condition$ is true and any point in the interval where $regular_condition$ becomes true (from false).\nREQUIRES: for every trigger, trigger and RES cannot hold at the same time point.",
     "diagram": "_media/user-interface/examples/svgDiagrams/onlyAfter_regular_immediately_satisfaction.svg"
   },
   "onlyAfter,regular,never,satisfaction": {
@@ -2428,7 +2428,7 @@
     "ptFinBtw": "(H (FLin_$scope_mode$ -> (Y ((H (! $regular_condition$)) | (! ((! $post_condition$) S ((! $post_condition$) & ($regular_condition$ & ((Y (! $regular_condition$)) | FTP)))))))))",
     "ptFinBtwExpanded": "(H ((((! $scope_mode$) & (Y $scope_mode$)) & (Y (H (! ((! $scope_mode$) & (Y $scope_mode$)))))) -> (Y ((H (! $regular_condition$)) | (! ((! $post_condition$) S ((! $post_condition$) & ($regular_condition$ & ((Y (! $regular_condition$)) | (! (Y TRUE)))))))))))",
     "CoCoSpecCodeFinBtw": "(H(((( not $scope_mode$) and (pre ($scope_mode$))) and pre (H( not (( not $scope_mode$) and (pre ($scope_mode$)))))) => (pre ((H( not $regular_condition$)) or ( not (SI( ($regular_condition$ and ((pre ( not $regular_condition$)) or FTP)), ( not $post_condition$) )))))))",
-    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and including) the first interval where $scope_mode$ holds.\nTRIGGER: first point in the interval if $regular_condition$ is true and any point in the interval where $regular_condition$ becomes true (from false).\nREQUIRES: for every trigger, RES must hold at some time point between (and including) the trigger and the end of the interval.",
+    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and including) the first interval where $scope_mode$ holds. In the interval defined by the entire execution, if $scope_mode$ never holds.\nTRIGGER: first point in the interval if $regular_condition$ is true and any point in the interval where $regular_condition$ becomes true (from false).\nREQUIRES: for every trigger, RES must hold at some time point between (and including) the trigger and the end of the interval.",
     "diagram": "_media/user-interface/examples/svgDiagrams/onlyAfter_regular_never_satisfaction.svg"
   },
   "onlyAfter,regular,next,satisfaction": {
@@ -2447,7 +2447,7 @@
     "ptFinBtw": "(H (FLin_$scope_mode$ -> (Y (H ((Y ($regular_condition$ & ((Y (! $regular_condition$)) | FTP))) -> ((! $post_condition$) | FTP))))))",
     "ptFinBtwExpanded": "(H ((((! $scope_mode$) & (Y $scope_mode$)) & (Y (H (! ((! $scope_mode$) & (Y $scope_mode$)))))) -> (Y (H ((Y ($regular_condition$ & ((Y (! $regular_condition$)) | (! (Y TRUE))))) -> ((! $post_condition$) | (! (Y TRUE))))))))",
     "CoCoSpecCodeFinBtw": "(H(((( not $scope_mode$) and (pre ($scope_mode$))) and pre (H( not (( not $scope_mode$) and (pre ($scope_mode$)))))) => (pre (H((pre ($regular_condition$ and ((pre ( not $regular_condition$)) or FTP))) => (( not $post_condition$) or FTP))))))",
-    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and including) the first interval where $scope_mode$ holds.\nTRIGGER: first point in the interval if $regular_condition$ is true and any point in the interval where $regular_condition$ becomes true (from false).\nREQUIRES: for every trigger, RES cannot hold at the next time point.",
+    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and including) the first interval where $scope_mode$ holds. In the interval defined by the entire execution, if $scope_mode$ never holds.\nTRIGGER: first point in the interval if $regular_condition$ is true and any point in the interval where $regular_condition$ becomes true (from false).\nREQUIRES: for every trigger, RES cannot hold at the next time point.",
     "diagram": "_media/user-interface/examples/svgDiagrams/onlyAfter_regular_next_satisfaction.svg"
   },
   "onlyAfter,regular,null,satisfaction": {
@@ -2466,7 +2466,7 @@
     "ptFinBtw": "(H (FLin_$scope_mode$ -> (Y (H ((H (! $regular_condition$)) | (! $post_condition$))))))",
     "ptFinBtwExpanded": "(H ((((! $scope_mode$) & (Y $scope_mode$)) & (Y (H (! ((! $scope_mode$) & (Y $scope_mode$)))))) -> (Y (H ((H (! $regular_condition$)) | (! $post_condition$))))))",
     "CoCoSpecCodeFinBtw": "(H(((( not $scope_mode$) and (pre ($scope_mode$))) and pre (H( not (( not $scope_mode$) and (pre ($scope_mode$)))))) => (pre (H((H( not $regular_condition$)) or ( not $post_condition$))))))",
-    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and including) the first interval where $scope_mode$ holds.\nTRIGGER: first point in the interval if $regular_condition$ is true and any point in the interval where $regular_condition$ becomes true (from false).\nREQUIRES: for every trigger, RES must be false at all time points between (and including) the trigger and the end of the interval.",
+    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and including) the first interval where $scope_mode$ holds. In the interval defined by the entire execution, if $scope_mode$ never holds.\nTRIGGER: first point in the interval if $regular_condition$ is true and any point in the interval where $regular_condition$ becomes true (from false).\nREQUIRES: for every trigger, RES must be false at all time points between (and including) the trigger and the end of the interval.",
     "diagram": "_media/user-interface/examples/svgDiagrams/onlyAfter_regular_null_satisfaction.svg"
   },
   "onlyAfter,regular,until,satisfaction": {
@@ -2485,7 +2485,7 @@
     "ptFinBtw": "(H (FLin_$scope_mode$ -> (Y (H ($stop_condition$ -> ((H (! $regular_condition$)) | (((! FTP) & (! ($regular_condition$ & ((Y (! $regular_condition$)) | FTP)))) & (Y (! ($post_condition$ S ($post_condition$ & ($regular_condition$ & ((Y (! $regular_condition$)) | FTP)))))))))))))",
     "ptFinBtwExpanded": "(H ((((! $scope_mode$) & (Y $scope_mode$)) & (Y (H (! ((! $scope_mode$) & (Y $scope_mode$)))))) -> (Y (H ($stop_condition$ -> ((H (! $regular_condition$)) | (((Y TRUE) & (! ($regular_condition$ & ((Y (! $regular_condition$)) | (! (Y TRUE)))))) & (Y (! ($post_condition$ S ($post_condition$ & ($regular_condition$ & ((Y (! $regular_condition$)) | (! (Y TRUE)))))))))))))))",
     "CoCoSpecCodeFinBtw": "(H(((( not $scope_mode$) and (pre ($scope_mode$))) and pre (H( not (( not $scope_mode$) and (pre ($scope_mode$)))))) => (pre (H($stop_condition$ => ((H( not $regular_condition$)) or ((( not FTP) and ( not ($regular_condition$ and ((pre ( not $regular_condition$)) or FTP)))) and (pre ( not (SI( ($regular_condition$ and ((pre ( not $regular_condition$)) or FTP)), $post_condition$ )))))))))))",
-    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and including) the first interval where $scope_mode$ holds.\nTRIGGER: first point in the interval if $regular_condition$ is true and any point in the interval where $regular_condition$ becomes true (from false).\nREQUIRES: for every trigger, RES must be false at least once strictly before the state where the stop condition holds, or the end of the interval if the stop condition never holds.",
+    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and including) the first interval where $scope_mode$ holds. In the interval defined by the entire execution, if $scope_mode$ never holds.\nTRIGGER: first point in the interval if $regular_condition$ is true and any point in the interval where $regular_condition$ becomes true (from false).\nREQUIRES: for every trigger, RES must be false at least once strictly before the state where the stop condition holds, or the end of the interval if the stop condition never holds.",
     "diagram": "_media/user-interface/examples/svgDiagrams/onlyAfter_regular_until_satisfaction.svg"
   },
   "onlyAfter,regular,within,satisfaction": {
@@ -2504,7 +2504,7 @@
     "ptFinBtw": "(H (FLin_$scope_mode$ -> (Y (H ((O[<=$duration$] ($regular_condition$ & ((Y (! $regular_condition$)) | FTP))) -> ((H (! $regular_condition$)) | (! $post_condition$)))))))",
     "ptFinBtwExpanded": "(H ((((! $scope_mode$) & (Y $scope_mode$)) & (Y (H (! ((! $scope_mode$) & (Y $scope_mode$)))))) -> (Y (H ((O[<=$duration$] ($regular_condition$ & ((Y (! $regular_condition$)) | (! (Y TRUE))))) -> ((H (! $regular_condition$)) | (! $post_condition$)))))))",
     "CoCoSpecCodeFinBtw": "(H(((( not $scope_mode$) and (pre ($scope_mode$))) and pre (H( not (( not $scope_mode$) and (pre ($scope_mode$)))))) => (pre (H((OT($duration$,0,($regular_condition$ and ((pre ( not $regular_condition$)) or FTP)))) => ((H( not $regular_condition$)) or ( not $post_condition$)))))))",
-    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and including) the first interval where $scope_mode$ holds.\nTRIGGER: first point in the interval if $regular_condition$ is true and any point in the interval where $regular_condition$ becomes true (from false).\nREQUIRES: for every trigger, RES must be false at all time points with distance <=$duration$ from the trigger (i.e., at trigger, trigger+1, ..., and trigger+$duration$), or until the end of the interval.",
+    "description": "ENFORCED: in the interval (if defined) from the start of the execution to (and including) the first interval where $scope_mode$ holds. In the interval defined by the entire execution, if $scope_mode$ never holds.\nTRIGGER: first point in the interval if $regular_condition$ is true and any point in the interval where $regular_condition$ becomes true (from false).\nREQUIRES: for every trigger, RES must be false at all time points with distance <=$duration$ from the trigger (i.e., at trigger, trigger+1, ..., and trigger+$duration$), or until the end of the interval.",
     "diagram": "_media/user-interface/examples/svgDiagrams/onlyAfter_regular_within_satisfaction.svg"
   },
   "onlyBefore,null,after,satisfaction": {
