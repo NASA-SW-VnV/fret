@@ -74,7 +74,7 @@ const archiver = require('archiver');
 const app = require('electron').remote.app;
 const dialog = require('electron').remote.dialog;
 
-var dbChangeListener, modeldbChangeListener;
+var dbChangeListener;
 let id = 0;
 
 function createData(vID, cID, project, description) {
@@ -424,35 +424,21 @@ class VariablesView extends React.Component {
     }).on('error', function (err) {
       console.log(err);
     });
-    modeldbChangeListener = modeldb.changes({
-      since: 'now',
-      live: true,
-      include_docs: true
-    }).on('change', (change) => {
-        this.synchStateWithModelDB();
-    }).on('complete', function(info) {
-      console.log(info);
-    }).on('error', function (err) {
-      console.log(err);
-    });
   }
 
   componentDidMount() {
     this.mounted = true;
     this.synchStateWithDB();
-    this.synchStateWithModelDB();
   }
 
   componentWillUnmount() {
     this.mounted = false;
     dbChangeListener.cancel();
-    modeldbChangeListener.cancel();
   }
 
   componentDidUpdate(prevProps) {
     if (this.props.selectedProject !== prevProps.selectedProject) {
       this.synchStateWithDB();
-      this.synchStateWithModelDB();
     }
   }
 
@@ -545,10 +531,6 @@ class VariablesView extends React.Component {
     components.forEach(function(component){
         self.checkComponentCompleted(component, selectedProject);
     })
-  }
-
-  synchStateWithModelDB () {
-    if (!this.mounted) return;
   }
 
   checkComponentCompleted(component_name, project) {

@@ -87,7 +87,6 @@ const fieldsWithExplanation = ['scopeField', 'conditionField', 'componentField',
 const isDev = require('electron-is-dev');
 const db = require('electron').remote.getGlobal('sharedObj').db;
 
-var dbChangeListener = undefined;
 const ltlsim = require('ltlsim-core').ltlsim;
 
 const styles = theme => ({
@@ -191,7 +190,6 @@ class Instructions extends React.Component {
 
   componentWillUnmount() {
     this.mounted = false
-    dbChangeListener.cancel()
   }
 
   componentDidMount = () => {
@@ -209,23 +207,6 @@ class Instructions extends React.Component {
     }).catch((err) => {
       console.log(err)
     })
-    dbChangeListener= db.changes({
-      since: 'now',
-      live: true,
-      include_docs: true
-    }).on('change', (change) => {
-      if (change.id == 'FRET_PROPS') {
-        if (this.mounted) {
-          this.setState({
-            fieldColors: change.doc.fieldColors,
-          })
-        }
-      }
-    }).on('complete', function(info) {
-      console.log(info);
-    }).on('error', function (err) {
-      console.log(err);
-    });
   }
 
   openDiagramNotationWindow = () => {
@@ -234,15 +215,19 @@ class Instructions extends React.Component {
 
   handleColorUpdate = (color) => {
     const fieldKey = this.props.field.toLowerCase().replace('field','')
-
+    let updatedFieldColors;
     db.get('FRET_PROPS').then((doc) => {
-      const updatedFieldColors = doc.fieldColors
+      updatedFieldColors = doc.fieldColors
       updatedFieldColors[fieldKey] = color.hex
       return db.put({
         _id: 'FRET_PROPS',
         _rev: doc._rev,
         fieldColors: updatedFieldColors
       });
+    }).then(() => {
+      this.setState({
+        fieldColors: updatedFieldColors,
+      })
     }).catch(function (err) {
       console.log(err);
     });
