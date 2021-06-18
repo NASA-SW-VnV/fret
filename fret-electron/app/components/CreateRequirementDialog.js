@@ -68,7 +68,6 @@ import DeprecatedIcon from "@material-ui/icons/Close";
 import styles from './CreateRequirementDialog.css';
 import Instructions from './Instructions';
 import SlateEditor2 from './SlateEditor2';
-import VariablesSortableTable from './VariablesSortableTable';
 
 import templates from '../../templates/templates';
 import {getRequirementStyle} from "../utils/utilityFunctions";
@@ -191,14 +190,14 @@ class CreateRequirementDialog extends React.Component {
     this.setState({ tabValue });
   };
 
-  createOrUpdateVariables = (variables, componentName, projectName, reqid) => {
+  createOrUpdateVariables = (variables, componentName, projectName, dbid) => {
     variables.map(function (variableName) {
       var modeldbid = projectName + componentName + variableName;
       modeldb.get(modeldbid).then(function (v) {
-        if(!v.reqs.includes(reqid)) {
+        if(!v.reqs.includes(dbid)) {
           modeldb.put({
             ...v,
-            reqs: v.reqs.concat(reqid),
+            reqs: v.reqs.concat(dbid),
           })
         }
       }).catch(function (err) {
@@ -208,7 +207,7 @@ class CreateRequirementDialog extends React.Component {
             project: projectName,
             component_name: componentName,
             variable_name: variableName,
-            reqs: [reqid],
+            reqs: [dbid],
             dataType: '',
             idType: '',
             description: '',
@@ -223,13 +222,13 @@ class CreateRequirementDialog extends React.Component {
     })
   }
 
-  removeVariables = (oldVariables, newVariables, projectName, componentName, reqid) => {
+  removeVariables = (oldVariables, newVariables, projectName, componentName, dbid) => {
     oldVariables.map(function(variableName){
       var modeldbidOld = projectName + componentName + variableName;
       if (!newVariables.includes(variableName)){
         modeldb.get(modeldbidOld).then(function(v) {
           if (v.reqs.length > 1) {
-            var index = v.reqs.indexOf(reqid);
+            var index = v.reqs.indexOf(dbid);
             if (index > -1){
               const newReqs = [...v.reqs];
               newReqs.splice(index, 1)
