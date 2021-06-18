@@ -270,11 +270,11 @@ class CreateRequirementDialog extends React.Component {
         if (req.semantics && req.semantics.variables){
             oldVariables = req.semantics.variables;
         }
-        self.removeVariables(oldVariables, semantics.variables ? semantics.variables : [], project, semantics.component_name, reqid)
+        self.removeVariables(oldVariables, semantics.variables ? semantics.variables : [], project, semantics.component_name, dbid)
       })
     }
     if (semantics && semantics.variables){
-      self.createOrUpdateVariables(semantics.variables,semantics.component_name, project, reqid);
+      self.createOrUpdateVariables(semantics.variables,semantics.component_name, project, dbid);
     }
 
     // create req
