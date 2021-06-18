@@ -222,7 +222,8 @@ class SlateEditor2 extends React.Component {
   }
 
   componentWillUnmount() {
-    this.props.onRef(undefined)
+    this.props.onRef(undefined);
+    dbChangeListener.cancel();
   }
 
   componentWillReceiveProps(nextProps) {
