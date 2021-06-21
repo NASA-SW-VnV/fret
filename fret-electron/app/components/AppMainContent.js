@@ -42,7 +42,6 @@ import Grammar from './Grammar';
 const sharedObj = require('electron').remote.getGlobal('sharedObj')
 const db = sharedObj.db;
 const system_dbkeys = sharedObj.system_dbkeys;
-let dbChangeListener = null;
 
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
@@ -50,54 +49,8 @@ import Tab from '@material-ui/core/Tab';
 
 class AppMainContent extends React.Component {
 
-  state = {
-    requirements: [],
-  };
-
-  synchStateWithDB() {
-    if (!this.mounted) return;
-    db.allDocs({
-      include_docs: true,
-    }).then((result) => {
-      this.setState({
-        requirements : result.rows.filter(r => !system_dbkeys.includes(r.key))
-      })
-    }).catch((err) => {
-      console.log(err);
-    });
-  }
-
-  componentDidMount() {
-    this.mounted = true;
-    this.synchStateWithDB();
-
-    dbChangeListener = db.changes({
-      since: 'now',
-      live: true,
-      include_docs: true
-    }).on('change', (change) => {
-      if (!system_dbkeys.includes(change.id) && !this.props.importing) {
-        this.synchStateWithDB();
-      }
-    }).on('error', function (err) {
-      console.log(err);
-    });
-  }
-
-  componentDidUpdate(prevProps) {
-    if(this.props.importing !== prevProps.importing && !this.props.importing) {
-      this.synchStateWithDB()
-    }
-  }
-
-  componentWillUnmount() {
-    this.mounted = false;
-    dbChangeListener.cancel()
-  }
-
   render() {
-    const { content, selectedProject, existingProjectNames }  = this.props
-    const { requirements }  = this.state
+    const { content, selectedProject, existingProjectNames, requirements }  = this.props
     if (content === 'dashboard')
       return <Dashboard selectedProject={selectedProject} requirements={requirements}/>
     if (content === 'requirements')

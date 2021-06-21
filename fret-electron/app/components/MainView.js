@@ -90,6 +90,7 @@ const csv2json=require("csvtojson");
 const requirementsImport = require('../../support/requirementsImport/convertAndImportRequirements');
 const modelSupport = require('../../support/modelDbSupport/populateVariables');
 const drawerWidth = 240;
+let dbChangeListener = null;
 
 const styles = theme => ({
   root: {
@@ -212,8 +213,58 @@ class MainView extends React.Component {
     csvFields: [],
     importedReqs: [],
     importing: false,
+    requirements: [],
   };
 
+  synchStateWithDB() {
+    db.allDocs({
+      include_docs: true,
+    }).then((result) => {
+      this.setState({
+        requirements : result.rows.filter(r => !system_dbkeys.includes(r.key))
+      })
+    }).catch((err) => {
+      console.log(err);
+    });
+  }
+
+  componentDidMount = () => {
+    modelSupport.populateVariables();
+    this.synchStateWithDB();
+    db.get('FRET_PROJECTS')
+      .then((result) => {
+      this.setState({
+        listOfProjects : result.names.sort()
+      })
+    }).catch((err) => {
+      console.log(err)
+    })
+
+    dbChangeListener = db.changes({
+      since: 'now',
+      live: true,
+      include_docs: true
+    }).on('change', (change) => {
+      if (change.id == 'FRET_PROJECTS') {
+        this.setState({
+          listOfProjects : change.doc.names.sort()
+        })
+      }
+      if (!system_dbkeys.includes(change.id) && !this.state.importing) {
+        this.synchStateWithDB();
+      }      
+    })
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if(this.state.importing !== prevState.importing && !this.state.importing) {
+      this.synchStateWithDB()
+    }
+  }
+
+  componentWillUnmount() {
+    dbChangeListener.cancel()
+  }
 
 
 
@@ -390,30 +441,6 @@ class MainView extends React.Component {
       )
   }
 
-  componentDidMount = () => {
-    modelSupport.populateVariables();
-    db.get('FRET_PROJECTS')
-      .then((result) => {
-      this.setState({
-        listOfProjects : result.names.sort()
-      })
-    }).catch((err) => {
-      console.log(err)
-    })
-
-    db.changes({
-      since: 'now',
-      live: true,
-      include_docs: true
-    }).on('change', (change) => {
-      if (change.id == 'FRET_PROJECTS') {
-        this.setState({
-          listOfProjects : change.doc.names.sort()
-        })
-      }
-    })
-  }
-
   handleDeleteProject = (name) => {
     this.openDeleteProjectDialog(name)
   }
@@ -473,7 +500,7 @@ class MainView extends React.Component {
 
   render() {
     const { classes, theme } = this.props;
-    const { anchorEl, importing } = this.state;
+    const { anchorEl, requirements } = this.state;
 
     return (
       <div className={classes.root}>
@@ -617,7 +644,7 @@ class MainView extends React.Component {
           </Drawer>
           <main className={classes.content}>
           <AppMainContent content={this.state.mainContent} selectedProject={this.state.selectedProject} 
-          existingProjectNames={this.state.listOfProjects} importing={importing}/>            
+          existingProjectNames={this.state.listOfProjects} requirements={requirements}/>            
           </main>
           <CreateRequirementDialog
             open={this.state.createDialogOpen}
