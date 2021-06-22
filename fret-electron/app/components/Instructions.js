@@ -465,7 +465,8 @@ class Instructions extends React.Component {
         {tabValue === 2 && <TabContainer>
           <Dictionary
             projectName={this.props.projectName}
-            setAutoFillVariables={this.props.setAutoFillVariables}/>
+            setAutoFillVariables={this.props.setAutoFillVariables}
+            requirements={this.props.requirements}/>
         </TabContainer>}
       </div>
     );
@@ -481,7 +482,8 @@ Instructions.propTypes = {
   templates: PropTypes.array.isRequired,
   handleSelectedTemplateChange: PropTypes.func.isRequired,
   tabValue: PropTypes.number.isRequired,
-  handleTabChange: PropTypes.func.isRequired
+  handleTabChange: PropTypes.func.isRequired,
+  requirements: PropTypes.array
 };
 
 export default withStyles(styles)(Instructions);

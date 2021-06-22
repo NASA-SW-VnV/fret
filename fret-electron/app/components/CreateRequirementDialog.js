@@ -584,6 +584,7 @@ class CreateRequirementDialog extends React.Component {
               handleTabChange={this.handleTabChange}
               projectName={this.state.project}
               setAutoFillVariables={this.setAutoFillVariables}
+              requirements={this.props.requirements}
               />
             </div>
           </div>
@@ -599,6 +600,7 @@ CreateRequirementDialog.propTypes = {
   addChildRequirementToParent: PropTypes.object,
   selectedProject: PropTypes.string.isRequired,
   existingProjectNames: PropTypes.array.isRequired,
+  requirements: PropTypes.array,
   classes: PropTypes.object.isRequired,
 }
 

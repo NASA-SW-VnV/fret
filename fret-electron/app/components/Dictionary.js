@@ -13,6 +13,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormLabel from "@material-ui/core/FormLabel";
 import CheckBoxIcon from "@material-ui/icons/CheckBox";
+import PropTypes from 'prop-types';
 import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
 const sharedObj = require('electron').remote.getGlobal('sharedObj');
 const modeldb = sharedObj.modeldb;
@@ -152,7 +153,7 @@ class Dictionary extends React.Component {
     if (a.name.toLowerCase() > b.name.toLowerCase()) return 1;
     return 0;
   }
-  
+
 
 
   render() {
@@ -226,7 +227,12 @@ class Dictionary extends React.Component {
         </div>
       </div>)
   }
-
 }
+
+Dictionary.propTypes = {
+  projectName:PropTypes.string.isRequired,
+  setAutoFillVariables: PropTypes.array.isRequired,
+  requirements: PropTypes.array
+};
 
 export default withStyles(styles)(Dictionary);
