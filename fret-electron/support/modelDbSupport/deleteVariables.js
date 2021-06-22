@@ -8,6 +8,8 @@ export {
   removeVariablesInBulk as removeVariablesInBulk
 }
 
+
+
 function createVariableMappingToDeleteRequirements (requirements) {
   // this map will be used in the function removeVariables to update requirement list in variables
   let mapVariablesToReqIds = {};

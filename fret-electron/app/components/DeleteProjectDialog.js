@@ -38,6 +38,8 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+const modelDbSupport = require('../../support/modelDbSupport/deleteVariables.js');
+const dbSupport = require('../../support/fretDbSupport/deleteRequirements.js');
 
 const db = require('electron').remote.getGlobal('sharedObj').db;
 
@@ -53,19 +55,18 @@ class DeleteProjectDialog extends React.Component {
   };
 
   handleCloseOKtoDelete = () => {
+    const self = this;
     const {project} = this.state;
-    this.setState({ open: false });
+    this.setState({ open: false});
     this.state.dialogCloseListener();
-    var deleteList = []
 
    db.find({
      selector: {
        project: this.state.project,
      }
    }).then(function (deleteReqsList){
-      deleteReqsList.docs.forEach(doc =>{
-        return db.remove(doc);
-      })
+     dbSupport.createRequirementDeleteList(deleteReqsList.docs);
+     modelDbSupport.removeVariablesInBulk(deleteReqsList.docs);
    })
 
    db.get('FRET_PROJECTS').then((doc) => {

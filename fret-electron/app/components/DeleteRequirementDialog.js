@@ -41,7 +41,8 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 
 const db = require('electron').remote.getGlobal('sharedObj').db;
 const modeldb = require('electron').remote.getGlobal('sharedObj').modeldb;
-const variableSupport = require('../../support/modelDbSupport/deleteVariables.js');
+const modelDbSupport = require('../../support/modelDbSupport/deleteVariables.js');
+const dbSupport = require('../../support/fretDbSupport/deleteRequirements.js');
 
 class DeleteRequirementDialog extends React.Component {
   state = {
@@ -53,30 +54,14 @@ class DeleteRequirementDialog extends React.Component {
     this.state.dialogCloseListener();
   };
 
-  createRequirementDeleteList = (requirements) => {
-    // delete from FRET db requirements in deleteList
-    let deleteList = []
-    requirements.forEach(r => {
-      deleteList.push({
-        _id: r.dbkey,
-        _rev: r.rev,
-        _deleted: true
-      })
-    })
-    return deleteList;
-  }
 
   handleCloseOKtoDelete = () => {
     this.setState({ open: false });
     this.state.dialogCloseListener();
     // requirements to be removed
     let { requirements } = this.state;
-    let deleteList = this.createRequirementDeleteList(requirements);
-    variableSupport.removeVariablesInBulk(requirements);
-    db.bulkDocs(deleteList)
-      .catch((err) => {
-        console.log(err)
-      })
+    dbSupport.createRequirementDeleteList(requirements);
+    modelDbSupport.removeVariablesInBulk(requirements);
   };
 
   componentWillReceiveProps = (props) => {
