@@ -65,7 +65,7 @@ class DeleteProjectDialog extends React.Component {
        project: this.state.project,
      }
    }).then(function (deleteReqsList){
-     dbSupport.createRequirementDeleteList(deleteReqsList.docs);
+     dbSupport.removeReqsInBulk(deleteReqsList.docs);
      modelDbSupport.removeVariablesInBulk(deleteReqsList.docs);
    })
 
