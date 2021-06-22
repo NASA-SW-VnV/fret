@@ -5,7 +5,7 @@ const system_dbkeys = require('electron').remote.getGlobal('sharedObj').system_d
 
 
 export {
-  createRequirementDeleteList as createRequirementDeleteList
+  removeReqsInBulk as removeReqsInBulk
 }
 
 function batchDelete (requirements) {
@@ -15,7 +15,7 @@ function batchDelete (requirements) {
 };
 
 
-function createRequirementDeleteList (requirements) {
+function removeReqsInBulk (requirements) {
   // delete from FRET db requirements in deleteList
   let deleteList = [];
   requirements.forEach(r => {

@@ -60,7 +60,7 @@ class DeleteRequirementDialog extends React.Component {
     this.state.dialogCloseListener();
     // requirements to be removed
     let { requirements } = this.state;
-    dbSupport.createRequirementDeleteList(requirements);
+    dbSupport.removeReqsInBulk(requirements);
     modelDbSupport.removeVariablesInBulk(requirements);
   };
 
