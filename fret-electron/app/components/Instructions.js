@@ -70,7 +70,7 @@ import {
   timingInstruction,
   responseInstruction
 } from 'examples'
-import Dictionary from "./Dictionary";
+import Glossary from "./Glossary";
 
 
 const instructions = {
@@ -463,7 +463,7 @@ class Instructions extends React.Component {
         {tabValue === 1 &&
         <TabContainer>{this.renderTemplate(templates, selectedTemplate, handleSelectedTemplateChange)}</TabContainer>}
         {tabValue === 2 && <TabContainer>
-          <Dictionary
+          <Glossary
             projectName={this.props.projectName}
             setAutoFillVariables={this.props.setAutoFillVariables}
             requirements={this.props.requirements}/>
@@ -483,7 +483,8 @@ Instructions.propTypes = {
   handleSelectedTemplateChange: PropTypes.func.isRequired,
   tabValue: PropTypes.number.isRequired,
   handleTabChange: PropTypes.func.isRequired,
-  requirements: PropTypes.array
+  requirements: PropTypes.array,
+  setAutoFillVariables: PropTypes.function
 };
 
 export default withStyles(styles)(Instructions);

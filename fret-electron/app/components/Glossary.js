@@ -53,7 +53,7 @@ const styles = theme => ({
 
 const variableTypes = ['Mode', 'Input', 'Output', 'Internal', 'Undefined'];
 
-class Dictionary extends React.Component {
+class Glossary extends React.Component {
 
   state = {
     components: [],
@@ -93,38 +93,43 @@ class Dictionary extends React.Component {
         components_names[component_name] = [];
       }
     });
-    const components = await modeldb.find({
+    const variables = await modeldb.find({
       selector: {
         project: projectName,
         component_name: { $in: Object.keys(components_names) }
       }
     });
-    components && components.docs && components.docs.forEach(comp => {
+    variables && variables.docs && variables.docs.forEach(v => {
       const variable = {
-        name: comp.variable_name || '',
+        name: v.variable_name || '',
       };
-      if(comp.idType){
-        variable['variable type'] = comp.idType;
+      if(v.idType){
+        variable['variable type'] = v.idType;
       }
-      if(comp.dataType){
-        variable['data type'] = comp.dataType;
+      if(v.dataType){
+        variable['data type'] = v.dataType;
       }
-      if(comp.assignment){
-        variable['assignment'] = comp.assignment;
+      if(v.assignment){
+        variable['assignment'] = v.assignment;
       }
-      if(comp.modelComponent){
-        variable['modelComponent'] = comp.modelComponent;
+      if(v.modelComponent){
+        variable['modelComponent'] = v.modelComponent;
       }
-      if(comp.modeldoc_id){
-        variable['modeldoc_Id'] = comp.modeldoc_id;
+      if(v.modeldoc_id){
+        variable['modelSignal'] = v.modeldoc_id;
       }
-      if(comp.description){
-        variable['description'] = comp.description;
+      if(v.description){
+        variable['description'] = v.description;
       }
-      if(comp.reqs){
-        variable['reqs'] = comp.reqs.sort().join(', ');
+      if(v.reqs){
+        let variableRequirements = []
+        v.reqs.forEach( req => {
+          let obj = this.props.requirements.find(r => (r.doc._id === req || r.doc.reqid === req))
+          variableRequirements.push(obj.doc.reqid);
+        })
+          variable['reqs'] = variableRequirements.sort().join(', ');
       }
-      components_names[comp.component_name].push(variable);
+      components_names[v.component_name].push(variable);
     })
     this.setState({ components: components_names})
   }
@@ -229,10 +234,10 @@ class Dictionary extends React.Component {
   }
 }
 
-Dictionary.propTypes = {
+Glossary.propTypes = {
   projectName:PropTypes.string.isRequired,
-  setAutoFillVariables: PropTypes.array.isRequired,
+  setAutoFillVariables: PropTypes.function,
   requirements: PropTypes.array
 };
 
-export default withStyles(styles)(Dictionary);
+export default withStyles(styles)(Glossary);
