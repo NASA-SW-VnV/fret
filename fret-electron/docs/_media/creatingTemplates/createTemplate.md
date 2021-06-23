@@ -1,6 +1,6 @@
 # How to create requirement templates in FRET
 
-FRET provides templates to users for assisting writing certain types of requirements in the *GLOSSARY* tab of the right pane in the *Create Requirement* or *Update Requirement* dialog. Instructions on how to use the FRET templates are provided [here](../user-interface/writingReqs.md).
+FRET provides templates to users for assisting writing certain types of requirements in the *TEMPLATES* tab of the right pane in the *Create Requirement* or *Update Requirement* dialog. Instructions on how to use the FRET templates are provided [here](../user-interface/writingReqs.md).
 
 Additionally, a user may create their own templates by using the templates editor of FRET. New templates can be added in **fret\fret-electron\templates\basicTemplates**. Here is an example of an existing FRET template:
 
