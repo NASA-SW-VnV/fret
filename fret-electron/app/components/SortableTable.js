@@ -707,7 +707,8 @@ class SortableTable extends React.Component {
         selectedProject={this.state.selectedProject}
         editRequirement={this.state.selectedRequirement}
         addChildRequirementToParent={this.state.addChildRequirementMode}
-        existingProjectNames={this.props.existingProjectNames} />
+        existingProjectNames={this.props.existingProjectNames} 
+        requirements = {this.props.requirements} />
       <DeleteRequirementDialog
         open={this.state.deleteDialogOpen}
         requirementsToBeDeleted={selectionForDeletion}

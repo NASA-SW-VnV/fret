@@ -41,7 +41,7 @@ const styles = theme => ({
     marginTop: theme.spacing(2),
   },
   formControl: {
-      marginTop: '0px !important',
+    marginTop: '0px !important',
   },
   checkBoxFont: {
     fontSize: 12,
@@ -59,11 +59,25 @@ class Glossary extends React.Component {
     components: [],
     selectedComponent: '',
     checked: { Mode: true, Input: true, Output: true, Internal: true,  Undefined: true},
-    filteredVariables: []
+    filteredVariables: [],
+    mapDbIdToReqId: {}
   }
 
   componentDidMount = () => {
     this.getComponents();
+    this.createMapDbIdToReqId();
+  }
+
+  createMapDbIdToReqId = () => {
+    const { requirements } = this.props;
+    if (requirements.length) {
+      const mapDbIdToReqId = {}
+      requirements.forEach(req => {
+        mapDbIdToReqId[req.doc._id] = req.doc.reqid;
+        mapDbIdToReqId[req.doc.reqid] = req.doc.reqid;
+      })
+      this.setState({mapDbIdToReqId})
+    }
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -76,6 +90,9 @@ class Glossary extends React.Component {
     }
     if(prevState.filteredVariables !== this.state.filteredVariables){
       this.props.setAutoFillVariables(this.state.filteredVariables.map(variable => variable.name));
+    }
+    if(this.props.requirements !== prevProps.requirements) {
+      this.createMapDbIdToReqId();
     }
   }
 
@@ -124,10 +141,11 @@ class Glossary extends React.Component {
       if(v.reqs){
         let variableRequirements = []
         v.reqs.forEach( req => {
-          let obj = this.props.requirements.find(r => (r.doc._id === req || r.doc.reqid === req))
-          variableRequirements.push(obj.doc.reqid);
+          if(this.state.mapDbIdToReqId[req]) {
+            variableRequirements.push(this.state.mapDbIdToReqId[req]);
+          }
         })
-          variable['reqs'] = variableRequirements.sort().join(', ');
+        variable['reqs'] = variableRequirements.sort().join(', ');
       }
       components_names[v.component_name].push(variable);
     })
@@ -180,26 +198,26 @@ class Glossary extends React.Component {
           </Select>
         </FormControl>
         <FormControl className={classes.variableTypesCheckboxes}>
-        <Typography>Variable type display</Typography>
-        <FormGroup row>
-          {variableTypes.map(variableType =>
-            <FormControlLabel
-              classes={{label: classes.checkBoxFont}}
-              key={variableType}
-              control={
-                <Checkbox
-                  checked={checked[variableType]}
-                  icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
-                  checkedIcon={<CheckBoxIcon fontSize="small" />}
-                  onChange={this.handleChange}
-                  name={variableType}
-                  color="primary"
-                />
-              }
-              label={variableType}
-            />)
-          }
-        </FormGroup>
+          <Typography>Variable type display</Typography>
+          <FormGroup row>
+            {variableTypes.map(variableType =>
+              <FormControlLabel
+                classes={{label: classes.checkBoxFont}}
+                key={variableType}
+                control={
+                  <Checkbox
+                    checked={checked[variableType]}
+                    icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
+                    checkedIcon={<CheckBoxIcon fontSize="small" />}
+                    onChange={this.handleChange}
+                    name={variableType}
+                    color="primary"
+                  />
+                }
+                label={variableType}
+              />)
+            }
+          </FormGroup>
         </FormControl>
         <div>
           <TreeView
@@ -212,17 +230,17 @@ class Glossary extends React.Component {
               delete variableAttributes.name;
               delete variableAttributes.modeldocId;
               return (<TreeItem key={name}
-                        nodeId={name}
-                        label={name}
-                        classes={{ group: classes.treeItemGroup, selected: classes.selected, label: classes.itemLabel, content: classes.content }}>
+                                nodeId={name}
+                                label={name}
+                                classes={{ group: classes.treeItemGroup, selected: classes.selected, label: classes.itemLabel, content: classes.content }}>
                 {Object.entries(variableAttributes).map(([key, value]) =>
                   <TreeItem nodeId={`${key}: ${value}`}
                             key={`${key}: ${value}`}
                             label={
                               <div style={{display: 'flex'}}>
-                              <Typography>{key}: </Typography>
-                              <Typography style={{marginLeft: 4}}>{value}</Typography>
-                            </div>}
+                                <Typography>{key}: </Typography>
+                                <Typography style={{marginLeft: 4}}>{value}</Typography>
+                              </div>}
                             classes={{ group: classes.treeItemGroup, label: classes.itemLabel, content: classes.content }}/>)
                 }
               </TreeItem>)
@@ -241,3 +259,4 @@ Glossary.propTypes = {
 };
 
 export default withStyles(styles)(Glossary);
+

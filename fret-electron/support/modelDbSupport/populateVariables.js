@@ -68,15 +68,15 @@ function checkforUnusedVariables() {
           if (semantics.variables) {
             const projectName = r.doc.project;
             const componentName = semantics.component_name;
-            const reqId = r.doc.reqid;
+            const dbId = r.doc._id;
             const variables = semantics.variables;
             for (let i = 0; i < variables.length; i++) {
               const variableName = variables[i]
               const variableId = projectName + componentName + variableName;
               if (mapIdsToVariables[variableId]) {
-                if (!mapIdsToVariables[variableId].reqs.includes(reqId)) {
+                if (!mapIdsToVariables[variableId].reqs.includes(dbId)) {
                   shouldUpdate = true;
-                  mapIdsToVariables[variableId].reqs.push(reqId);
+                  mapIdsToVariables[variableId].reqs.push(dbId);
                 }
               } else {
                 shouldUpdate = true;
@@ -85,7 +85,7 @@ function checkforUnusedVariables() {
                   project: projectName,
                   component_name: componentName,
                   variable_name: variableName,
-                  reqs: [reqId],
+                  reqs: [dbId],
                   dataType: '',
                   idType: '' ,
                   description: '',
