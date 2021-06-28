@@ -70,7 +70,7 @@ class Glossary extends React.Component {
 
   createMapDbIdToReqId = () => {
     const { requirements } = this.props;
-    if (requirements.length) {
+    if (requirements !== undefined ) {
       const mapDbIdToReqId = {}
       requirements.forEach(req => {
         mapDbIdToReqId[req.doc._id] = req.doc.reqid;
@@ -259,4 +259,3 @@ Glossary.propTypes = {
 };
 
 export default withStyles(styles)(Glossary);
-
