@@ -484,7 +484,7 @@ Instructions.propTypes = {
   tabValue: PropTypes.number.isRequired,
   handleTabChange: PropTypes.func.isRequired,
   requirements: PropTypes.array,
-  setAutoFillVariables: PropTypes.function
+  setAutoFillVariables: PropTypes.func
 };
 
 export default withStyles(styles)(Instructions);

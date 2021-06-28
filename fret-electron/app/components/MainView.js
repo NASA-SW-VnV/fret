@@ -246,11 +246,12 @@ class MainView extends React.Component {
       include_docs: true
     }).on('change', (change) => {
       if (change.id == 'FRET_PROJECTS') {
+        this.synchStateWithDB();
         this.setState({
           listOfProjects : change.doc.names.sort()
         })
       }
-      if (!system_dbkeys.includes(change.id) && !this.state.importing) {
+      if (!system_dbkeys.includes(change.id) && !this.state.importing && !change.deleted) {
         this.synchStateWithDB();
       }
     })

@@ -254,7 +254,7 @@ class Glossary extends React.Component {
 
 Glossary.propTypes = {
   projectName:PropTypes.string.isRequired,
-  setAutoFillVariables: PropTypes.function,
+  setAutoFillVariables: PropTypes.func,
   requirements: PropTypes.array
 };
 
