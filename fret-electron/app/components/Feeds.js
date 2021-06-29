@@ -148,7 +148,8 @@ class Feeds extends React.Component {
 
 Feeds.propTypes = {
   classes: PropTypes.object.isRequired,
-  selectedProject: PropTypes.string.isRequired
+  selectedProject: PropTypes.string.isRequired,
+  requirements: PropTypes.array.isRequired
 };
 
 export default withStyles(styles)(Feeds);

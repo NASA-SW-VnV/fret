@@ -707,7 +707,7 @@ class SortableTable extends React.Component {
         selectedProject={this.state.selectedProject}
         editRequirement={this.state.selectedRequirement}
         addChildRequirementToParent={this.state.addChildRequirementMode}
-        existingProjectNames={this.props.existingProjectNames} 
+        existingProjectNames={this.props.existingProjectNames}
         requirements = {this.props.requirements} />
       <DeleteRequirementDialog
         open={this.state.deleteDialogOpen}
@@ -747,7 +747,8 @@ class SortableTable extends React.Component {
 SortableTable.propTypes = {
   classes: PropTypes.object.isRequired,
   selectedProject: PropTypes.string.isRequired,
-  existingProjectNames: PropTypes.array.isRequired
+  existingProjectNames: PropTypes.array.isRequired,
+  requirements: PropTypes.array.isRequired
 };
 
 export default withStyles(styles)(SortableTable);

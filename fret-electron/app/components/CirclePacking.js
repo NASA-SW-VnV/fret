@@ -348,6 +348,7 @@ class CirclePacking extends React.Component {
 
 CirclePacking.propTypes = {
   selectedProject: PropTypes.string.isRequired,
-  projects: PropTypes.array.isRequired
+  projects: PropTypes.array.isRequired,
+  requirements: PropTypes.array.isRequired
 }
 export default CirclePacking

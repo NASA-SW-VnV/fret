@@ -69,7 +69,8 @@ class AppMainContent extends React.Component {
 AppMainContent.propTypes = {
   content: PropTypes.string.isRequired,
   selectedProject: PropTypes.string.isRequired,
-  existingProjectNames: PropTypes.array.isRequired
+  existingProjectNames: PropTypes.array.isRequired,
+  requirements: PropTypes.array.isRequired
 }
 
 export default AppMainContent;

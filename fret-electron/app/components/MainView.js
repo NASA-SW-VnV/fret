@@ -644,8 +644,11 @@ class MainView extends React.Component {
             </div>
           </Drawer>
           <main className={classes.content}>
-          <AppMainContent content={this.state.mainContent} selectedProject={this.state.selectedProject}
-          existingProjectNames={this.state.listOfProjects} requirements={requirements}/>
+          <AppMainContent
+          content={this.state.mainContent}
+          selectedProject={this.state.selectedProject}
+          existingProjectNames={this.state.listOfProjects}
+          requirements={requirements}/>
           </main>
           <CreateRequirementDialog
             open={this.state.createDialogOpen}
