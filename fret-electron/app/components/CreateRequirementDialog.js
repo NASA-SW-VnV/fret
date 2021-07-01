@@ -222,10 +222,10 @@ class CreateRequirementDialog extends React.Component {
     })
   }
 
-  removeVariables = (oldVariables, newVariables, projectName, componentName, dbid) => {
+  removeVariables = (oldVariables, newVariables, projectName, componentName, dbid, oldComponent, oldProject) => {
     oldVariables.map(function(variableName){
-      var modeldbidOld = projectName + componentName + variableName;
-      if (!newVariables.includes(variableName)){
+      var modeldbidOld = oldProject + oldComponent + variableName;
+      if (oldComponent !== componentName || projectName !== oldProject || !newVariables.includes(variableName)){
         modeldb.get(modeldbidOld).then(function(v) {
           if (v.reqs.length > 1) {
             var index = v.reqs.indexOf(dbid);
@@ -269,7 +269,8 @@ class CreateRequirementDialog extends React.Component {
         if (req.semantics && req.semantics.variables){
             oldVariables = req.semantics.variables;
         }
-        self.removeVariables(oldVariables, semantics.variables ? semantics.variables : [], project, semantics.component_name, dbid)
+        self.removeVariables(oldVariables, semantics.variables ? semantics.variables : [], project, 
+          semantics.component_name, dbid, req.semantics.component_name, req.project)
       })
     }
     if (semantics && semantics.variables){

@@ -20,7 +20,8 @@ function removeReqsInBulk (requirements) {
   let deleteList = [];
   requirements.forEach(r => {
      deleteList.push({
-       ...r,
+      _id: r.dbkey,
+      _rev: r.rev,
       _deleted: true
     });
   });

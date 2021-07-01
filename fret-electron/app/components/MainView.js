@@ -251,7 +251,7 @@ class MainView extends React.Component {
           listOfProjects : change.doc.names.sort()
         })
       }
-      if (!system_dbkeys.includes(change.id) && !this.state.importing && !change.deleted) {
+      if (!system_dbkeys.includes(change.id) && !this.state.importing ) {
         this.synchStateWithDB();
       }
     })

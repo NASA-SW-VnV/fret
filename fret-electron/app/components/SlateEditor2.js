@@ -145,6 +145,7 @@ class SlateEditor2 extends React.Component {
   }
 
   componentWillUnmount() {
+    this.props.onRef(undefined);
     this.mounted = false
     dbChangeListener.cancel()
   }
@@ -219,11 +220,6 @@ class SlateEditor2 extends React.Component {
     // bug 221 if (prevState.menuOptions !== this.state.menuOptions || prevState.variables !== this.state.variables) {
       this.setState({ position: this.getPosition() })
     }
-  }
-
-  componentWillUnmount() {
-    this.props.onRef(undefined);
-    dbChangeListener.cancel();
   }
 
   componentWillReceiveProps(nextProps) {
