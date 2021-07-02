@@ -239,16 +239,16 @@
     },
     "examples": [
       {
-        "command": "command_opcode = 3 & impulses_scaled",
-        "component": "propulsion_software",
+        "command": "command_opcode = 42 & landing_gear_down",
+        "component": "software",
         "timing": "immediately",
-        "response": "set_impulses_scaled_flag"
+        "response": "retract_landing_gear_command_received"
       },
       {
-        "command": "receipt_of_impulses_command",
-        "component": "propulsion_software",
-        "timing": "within 200 milliseconds",
-        "response": "set_impulses"
+        "command": "receipt_of_retract_command",
+        "component": "controller",
+        "timing": "within 2 minutes",
+        "response": "landing_gear_state = retracted & door_closed"
       }
     ]
   },
@@ -328,8 +328,8 @@
         "bounds": "roll_angle < 60 & roll_angle > -60"
       },
       {
-        "component": "alpha_protection",
-        "bounds": "alpha <= 15"
+        "component": "angle_of_attack_protection",
+        "bounds": "angle_of_attack <= 15"
       }
     ]
   },
@@ -441,15 +441,15 @@
     "examples": [
       {
         "condition": "Upon invalid_checksum",
-        "component": "propulsion_software",
+        "component": "communications_software",
         "timing": "immediately",
-        "response": "set_checksum_err_flag"
+        "response": "checksum_error_flag"
       },
       {
         "condition": "If pressure < min_tank_pressure",
-        "component": "propulsion_software",
-        "timing": "within 200 milliseconds",
-        "response": "set_pressure_below_range_flag"
+        "component": "control_software",
+        "timing": "within 10 milliseconds",
+        "response": "error_flag = low_pressure"
       }
     ]
   },
@@ -485,7 +485,7 @@
       "response": {
         "options": [
           {
-            "suggestion": "message_type_format in document_name",
+            "suggestion": "document_format_name",
             "description": "Format of a message type specified by a document",
             "selection": [
               0,
@@ -506,12 +506,12 @@
     },
     "examples": [
       {
-        "component": "The propulsion_software",
-        "response": "telemetry_format in ST65"
+        "component": "The communications_software",
+        "response": "telemetry_format = xml"
       },
       {
-        "component": "The telemetry_generator",
-        "response": "message_seq = BE08"
+        "component": "The communications_software",
+        "response": "CCSDS_format"
       }
     ]
   }

@@ -6,7 +6,7 @@ FRET Team
 * [Anastasia Mavridou](http://amavridou.com/)
 * [Tom Pressburger](https://ti.arc.nasa.gov/profile/ttp/)
 * [Johann Schumann](https://ti.arc.nasa.gov/profile/schumann/)
-* [Khanh Trinh]()
+* [Khanh Trinh](https://www.researchgate.net/profile/Khanh-Trinh-3)
 
 Alumni and Interns
 ------------------

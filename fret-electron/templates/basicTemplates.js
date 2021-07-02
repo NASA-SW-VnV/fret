@@ -64,8 +64,8 @@ ed.addOption('response', "signal = value",
 ed.addOption('response', "response_1 & response_2",
 "After reception of the command, the specified responses must be triggered")
 
-ed.addExample("Upon [command_opcode = 3 & impulses_scaled] the [propulsion_software] shall [immediately] satisfy [set_impulses_scaled_flag]")
-ed.addExample("Upon [receipt_of_impulses_command] the [propulsion_software] shall [within 200 milliseconds] satisfy [set_impulses]")
+ed.addExample("Upon [command_opcode = 42 & landing_gear_down] the [software] shall [immediately] satisfy [retract_landing_gear_command_received]")
+ed.addExample("Upon [receipt_of_retract_command] the [controller] shall [within 2 minutes] satisfy [landing_gear_state = retracted & door_closed]")
 
 var template_command = ed.createFinalTemplateObject()
 all_templates.push(template_command)
@@ -92,7 +92,7 @@ ed.addOption('bounds', "signal < lower | signal > upper",
 "The signal must always stay outside the bounds")
 
 ed.addExample("The [autopilot] shall always satisfy [roll_angle < 60 & roll_angle > -60]")
-ed.addExample("The [alpha_protection] shall always satisfy [alpha <= 15]")
+ed.addExample("The [angle_of_attack_protection] shall always satisfy [angle_of_attack <= 15]")
 
 
 var template_bounds = ed.createFinalTemplateObject()
@@ -129,8 +129,8 @@ ed.addOption('response', "set_flagname_flag",
 ed.addOption('response', "flag = value",
 "The specified flag must be set to a given value")
 
-ed.addExample("[Upon invalid_checksum] the [propulsion_software] shall [immediately] satisfy [set_checksum_err_flag]")
-ed.addExample("[If pressure < min_tank_pressure] the [propulsion_software] shall [within 200 milliseconds] satisfy [set_pressure_below_range_flag]")
+ed.addExample("[Upon invalid_checksum] the [communications_software] shall [immediately] satisfy [checksum_error_flag]")
+ed.addExample("[If pressure < min_tank_pressure] the [control_software] shall [within 10 milliseconds] satisfy [error_flag = low_pressure]")
 
 var template_flag = ed.createFinalTemplateObject()
 all_templates.push(template_flag)
@@ -146,13 +146,13 @@ ed.fieldDescription('component', "Specifies the component of the system that the
 ed.addOption('component', 'component',"Replace the text by the name of the target component")
 
 ed.fieldDescription('response', "Specifies the format that must be conformed to.")
-ed.addOption('response', "message_type_format in document_name",
+ed.addOption('response', "document_format_name",
 "Format of a message type specified by a document")
 ed.addOption('response', "message_field = value",
 "Specifies value of field within a command or message")
 
-ed.addExample("[The propulsion_software] shall always satisfy [telemetry_format in ST65]")
-ed.addExample("[The telemetry_generator] shall always satisfy [message_seq = BE08]")
+ed.addExample("[The communications_software] shall always satisfy [telemetry_format = xml]")
+ed.addExample("[The communications_software] shall always satisfy [CCSDS_format]")
 
 var template_format = ed.createFinalTemplateObject()
 all_templates.push(template_format)
