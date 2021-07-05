@@ -862,9 +862,9 @@ class RealizabilityContent extends React.Component {
         this.setState({selected: event.target.value, monolithic : Object.keys(connectedComponents[event.target.value.component_name]).length === 1, compositional : Object.keys(connectedComponents[event.target.value.component_name]).length > 1});
       }
 
-    } else if (name === 'monolithic') {
+    } else if (name === 'monolithic' && !this.state.monolithic) {
       this.setState({monolithic : !this.state.monolithic, compositional : false});
-    } else if (name === 'compositional') {
+    } else if (name === 'compositional' && !this.state.compositional) {
       this.setState({monolithic : false, compositional : !this.state.compositional});
     }
   }
@@ -921,8 +921,89 @@ class RealizabilityContent extends React.Component {
             properties.has(p.reqid))
           ccContract.properties = ccProperties          
 
+          // if (selected.component_name === 'FSM' && ccSelected === 'cc0') {
+          //   setTimeout(function(){
+          //   connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'] = 'DIAGNOSED'
+          //   connectedComponents[selected.component_name][ccSelected]['diagnosisReport'] = {
+          //   "Counterexamples": [
+          //   {
+          //       "K": "1",
+          //       "props": "[FSM002, FSM003]",
+          //       "Counterexample": [
+          //           {"name": "good","type": "bool","Step 0": true},
+          //           {"name": "standby","type": "bool","Step 0": true},
+          //           {"name": "state","type": "real","Step 0": 0},
+          //           {"name": "supported","type": "bool","Step 0": true},
+          //           {"name": "STATE","type": "real","Step 0": 2},
+          //           {"name": "FSM002","type": "bool","Step 0": false},
+          //           {"name": "FSM003","type": "bool","Step 0": false},
+          //           {"name": "ap_nominal_state","type": "real","Step 0": 1},
+          //           {"name": "ap_standby_state","type": "real","Step 0": 3},
+          //           {"name": "ap_transition_state","type": "real","Step 0": 0}
+          //       ]
+          //   },
+          //   {
+          //       "K": "1",
+          //       "props": "[FSM005, FSM004]",
+          //       "Counterexample": [
+          //           {"name": "good","type": "bool","Step 0": false},
+          //           {"name": "standby","type": "bool","Step 0": true},
+          //           {"name": "state","type": "real","Step 0": 1},
+          //           {"name": "STATE","type": "real","Step 0": 0},
+          //           {"name": "FSM004","type": "bool","Step 0": false},
+          //           {"name": "FSM005","type": "bool","Step 0": false},
+          //           {"name": "ap_maneuver_state","type": "real","Step 0": 2},
+          //           {"name": "ap_nominal_state","type": "real","Step 0": 1},
+          //           {"name": "ap_standby_state","type": "real","Step 0": 3}
+          //       ]
+          //   },
+          //   {
+          //       "K": "1",
+          //       "props": "[FSM007, FSM006]",
+          //       "Counterexample": [
+          //           {"name": "good","type": "bool","Step 0": true},
+          //           {"name": "standby","type": "bool","Step 0": true},
+          //           {"name": "state","type": "real","Step 0": 2},
+          //           {"name": "supported","type": "bool","Step 0": true},
+          //           {"name": "STATE","type": "real","Step 0": 1},
+          //           {"name": "FSM006","type": "bool","Step 0": false},
+          //           {"name": "FSM007","type": "bool","Step 0": false},
+          //           {"name": "ap_maneuver_state","type": "real","Step 0": 2},
+          //           {"name": "ap_standby_state","type": "real","Step 0": 3},
+          //           {"name": "ap_transition_state","type": "real","Step 0": 0}
+          //       ]
+          //   },
+          //   {
+          //       "K": "1",
+          //       "props": "[FSM008, FSM009]",
+          //       "Counterexample": [
+          //           {"name": "apfail","type": "bool","Step 0": true},
+          //           {"name": "standby","type": "bool","Step 0": false},
+          //           {"name": "state","type": "real","Step 0": 3},
+          //           {"name": "STATE","type": "real","Step 0": 1},
+          //           {"name": "FSM008","type": "bool","Step 0": false},
+          //           {"name": "FSM009","type": "bool","Step 0": false},
+          //           {"name": "ap_maneuver_state","type": "real","Step 0": 2},
+          //           {"name": "ap_standby_state","type": "real","Step 0": 3},
+          //           {"name": "ap_transition_state","type": "real","Step 0": 0}
+          //       ]
+          //   }
+          //   ],
+          //   "Conflicts": [
+          //       {"Conflict": "[FSM002, FSM003]"},
+          //       {"Conflict": "[FSM005, FSM004]"},
+          //       {"Conflict": "[FSM007, FSM006]"},
+          //       {"Conflict": "[FSM008, FSM009]"}
+          //   ],
+          //   "Properties": ["FSM002","FSM003","FSM004","FSM005","FSM006","FSM007","FSM008","FSM009"]
+          // }
+          // self.setState({ connectedComponents : connectedComponents});
+          // }, 10000)
+
+          // } else {
+
           let engine = new DiagnosisEngine(ccContract, actualTimeout, 'realizability');                    
-          // const result = engine.main();
+          // const result = engine.main();          
           engine.main(function (result) {
             connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'] = 'DIAGNOSED'
             connectedComponents[selected.component_name][ccSelected]['diagnosisReport'] = result[1];   
@@ -933,6 +1014,9 @@ class RealizabilityContent extends React.Component {
               self.deleteAnalysisFiles();
             }            
           });
+
+          // }
+
           // connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'] = 'DIAGNOSED'
           // connectedComponents[selected.component_name][ccSelected]['diagnosisReport'] = result[1];   
           // self.setState({ connectedComponents : connectedComponents});
@@ -1297,6 +1381,7 @@ class RealizabilityContent extends React.Component {
       diagStatus = monolithic ? diagnosisStatus[selected.component_name] : connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'];
       diagReport = monolithic ? diagnosisReports[selected.component_name] : connectedComponents[selected.component_name][ccSelected]['diagnosisReport'];
     }
+    console.log(diagReport)
     return(
       <div>
         {components.length !== 0 &&

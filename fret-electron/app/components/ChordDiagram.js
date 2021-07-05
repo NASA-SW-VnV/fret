@@ -302,6 +302,7 @@ class ChordDiagram extends React.Component {
 		if(prevProps.selectedReport.Properties.toString() !== this.props.selectedReport.Properties.toString()) {
 			console.log(prevProps)
 			console.log(this.props)
+			this.setState({cexTableData : []});
 			this.createD3()
 		}
 	}
@@ -321,6 +322,7 @@ class ChordDiagram extends React.Component {
 		);		
 	    let table;
 	    if (Object.keys(this.state.cexTableData).length !== 0) {
+	    	console.log(this.state.cexTableData);
 	    	table = (
 	    		<Grid>
 	    			<CounterexampleTable

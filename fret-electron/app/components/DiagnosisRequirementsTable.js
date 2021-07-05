@@ -133,14 +133,28 @@ function ccStableSort(array, conflictReqs, connectedComponent, cmp) {
       return a[1] - b[1];
     });
 
-    const sortedRemaining = remainingData.map((el, index) => [el, index]);
+    
+    const ccRemainingData = remainingData.filter(el => connectedComponent.properties.has(el.reqid));
+    const sortedCCRemainingData = ccRemainingData.map((el, index) => [el, index]);
+    sortedCCRemainingData.sort((a, b) => {
+      const order = cmp(a[0], b[0]);
+      if (order !== 0) return order;
+      return a[1] - b[1];
+    });
+
+
+    // const sortedRemaining = remainingData.map((el, index) => [el, index]);
+    //everything else that's not in a conflict or part of the CC
+    const finalRemainingData = remainingData.filter(el => !connectedComponent.properties.has(el.reqid));
+    const sortedRemaining = finalRemainingData.map((el, index) => [el, index]);
     sortedRemaining.sort((a, b) => {
       const order = cmp(a[0], b[0]);
       if (order !== 0) return order;
       return a[1] - b[1];
     });
 
-    return conflictData.concat(sortedAssumptions.map(el => el[0]).concat(sortedRemaining.map(el => el[0])));
+    // return conflictData.concat(sortedAssumptions.map(el => el[0]).concat(sortedRemaining.map(el => el[0])));
+    return conflictData.concat(sortedAssumptions.map(el => el[0]).concat(sortedCCRemainingData.map(el => el[0]).concat(sortedRemaining.map(el => el[0]))));
   }
 }
 
