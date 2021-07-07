@@ -1,3 +1,5 @@
+import { setChangeRequirementFlag } from "./changeRequirementFlag";
+
 const fs=require("fs");
 const db = require('electron').remote.getGlobal('sharedObj').db;
 const system_dbkeys = require('electron').remote.getGlobal('sharedObj').system_dbkeys;
@@ -20,10 +22,14 @@ function removeReqsInBulk (requirements) {
   let deleteList = [];
   requirements.forEach(r => {
      deleteList.push({
-      _id: r.dbkey,
-      _rev: r.rev,
+      _id: r.dbkey || r._id,
+      _rev: r.rev || r._rev,
       _deleted: true
     });
   });
-      batchDelete(deleteList);
+
+  setChangeRequirementFlag(true).
+  then(() => batchDelete(deleteList)).
+    then(() => setChangeRequirementFlag(false))
+
 }

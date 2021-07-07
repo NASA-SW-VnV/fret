@@ -212,11 +212,12 @@ class MainView extends React.Component {
     requirementImportDialogOpen: false,
     csvFields: [],
     importedReqs: [],
-    importing: false,
     requirements: [],
+    changingReqs: false,
   };
 
   synchStateWithDB() {
+    // this function update the requirements in state from database
     db.allDocs({
       include_docs: true,
     }).then((result) => {
@@ -246,31 +247,26 @@ class MainView extends React.Component {
       include_docs: true
     }).on('change', (change) => {
       if (change.id == 'FRET_PROJECTS') {
-        this.synchStateWithDB();
         this.setState({
           listOfProjects : change.doc.names.sort()
         })
       }
-      if (!system_dbkeys.includes(change.id) && !this.state.importing ) {
+      else if (change.id == 'REAL_TIME_CONFIG' ) {
+        this.setState({changingReqs: change.doc.changingReqs});
+        this.synchStateWithDB();
+      } else if (!system_dbkeys.includes(change.id) && !this.state.changingReqs) {
         this.synchStateWithDB();
       }
     })
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if(this.state.importing !== prevState.importing && !this.state.importing) {
-      this.synchStateWithDB()
-    }
-  }
 
   componentWillUnmount() {
     dbChangeListener.cancel()
   }
 
 
-
   handleImport = () => {
-    this.setState({importing: true});
     const self = this;
     var homeDir = app.getPath('home');
     const { listOfProjects } = this.state;
@@ -316,17 +312,13 @@ class MainView extends React.Component {
          fs.readFile(filepath, function (err,buffer) {
              if (err) throw err;
              let data = JSON.parse(buffer);
-             requirementsImport.importRequirements(data, listOfProjects, self.setImporting);
+             requirementsImport.importRequirements(data, listOfProjects);
               });
        }
        else{
          // when we choose an unsupported file
-         this.setImporting(false);
          console.log("We do not support yet this file import")
        }
-    } else {
-      // when no file is selected
-      this.setImporting(false)
     }
   }
 
@@ -344,10 +336,6 @@ class MainView extends React.Component {
   handleClose = () => {
     this.setState({ anchorEl: null });
   };
-
-  setImporting = (importing) =>  {
-    this.setState({importing});
-  }
 
   handleExport = () => {
     var homeDir = app.getPath('home');
@@ -679,7 +667,6 @@ class MainView extends React.Component {
             csvFields={this.state.csvFields}
             listOfProjects={this.state.listOfProjects}
             importedReqs={this.state.importedReqs}
-            setImporting={this.setImporting}
           />
         </div>
         <Snackbar

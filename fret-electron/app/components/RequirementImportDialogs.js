@@ -103,12 +103,11 @@ class RequirementImportDialogs extends React.Component {
   handleClose = () => {
     this.setState({ open: false });
     this.state.dialogCloseListener();
-    this.props.setImporting(false);
   };
 
   handleCloseSupported = () => {
     const {reqID, project, description, projectCategory, importedReqs} = this.state;
-    const {listOfProjects, setImporting} = this.props;
+    const {listOfProjects} = this.props;
     let importedInfo = {};
     importedInfo.reqID = reqID;
     importedInfo.description = description;
@@ -121,7 +120,7 @@ class RequirementImportDialogs extends React.Component {
     else {
       importedInfo.projectField = true;
     }
-    requirementsImport.csvToJsonConvert(importedInfo, setImporting);
+    requirementsImport.csvToJsonConvert(importedInfo);
     this.setState({ open: false });
     this.state.dialogCloseListener();
   }

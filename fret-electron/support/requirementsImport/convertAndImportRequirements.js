@@ -30,6 +30,7 @@
 // ANY SUCH MATTER SHALL BE THE IMMEDIATE, UNILATERAL TERMINATION OF THIS
 // AGREEMENT.
 // *****************************************************************************
+import { setChangeRequirementFlag } from "../fretDbSupport/changeRequirementFlag";
 
 const fs=require("fs");
 const db = require('electron').remote.getGlobal('sharedObj').db;
@@ -54,18 +55,17 @@ var translationFields = {
 };
 
 //project, rid and text are provided as user input: importedReqs, project, rid, text, projects
-function csvToJsonConvert (importedInfo, setImporting) {
+function csvToJsonConvert (importedInfo) {
   translateFields(importedInfo.reqID, importedInfo.description, importedInfo.projectField);
   const reqs = manipulate(importedInfo.importedReqs, importedInfo.project, importedInfo.projectField)
-  importRequirements (reqs, importedInfo.listOfProjects, setImporting);
+  importRequirements (reqs, importedInfo.listOfProjects);
 }
 
-function importRequirements (data, projects, setImporting) {
+function importRequirements (data, projects) {
 
-  db.bulkDocs(data).then((data) => {
-    // because we get response before the changes are made
-    setTimeout(() => setImporting(false), 1000)
-  }).
+  setChangeRequirementFlag(true).
+  then(() => db.bulkDocs(data)).
+    then(() => setChangeRequirementFlag(false)).
   catch((err) => {
     console.log(err);
   });

@@ -324,7 +324,8 @@ class SortableTable extends React.Component {
     deleteDialogOpen: false,
     snackbarOpen: false,
     selectedProject: 'All Projects',
-    bulkChangeMode: false
+    bulkChangeMode: false,
+    deleteUsingCheckBoxes: false,
   };
 
   constructor(props){
@@ -382,6 +383,7 @@ class SortableTable extends React.Component {
     const { selected, data } = this.state
     this.setState({
       deleteDialogOpen: true,
+      deleteUsingCheckBoxes: true,
       selectionBulkChange: data.filter(r => selected.includes(r.dbkey))
     })
   }
@@ -427,7 +429,8 @@ class SortableTable extends React.Component {
 
   handleDeleteDialogClose = () => {
     this.setState({
-      deleteDialogOpen: false
+      deleteDialogOpen: false,
+      deleteUsingCheckBoxes: false
     })
     // Clear selection when exiting bulk change mode
     if (this.state.bulkChangeMode) {
@@ -530,10 +533,10 @@ class SortableTable extends React.Component {
   render() {
     const { classes, selectedProject, existingProjectNames } = this.props;
     const { data, order, orderBy, selected, rowsPerPage, page, bulkChangeMode,
-       snackBarDisplayInfo, selectionBulkChange, selectedRequirement } = this.state;
+       snackBarDisplayInfo, selectionBulkChange, selectedRequirement, deleteUsingCheckBoxes } = this.state;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
     const title = 'Requirements: ' + selectedProject
-    const selectionForDeletion = bulkChangeMode ? selectionBulkChange : [selectedRequirement]
+    const selectionForDeletion = deleteUsingCheckBoxes ? selectionBulkChange : [selectedRequirement]
 
     return (
       <div>

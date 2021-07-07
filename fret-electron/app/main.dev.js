@@ -1,7 +1,7 @@
 // *****************************************************************************
 // Notices:
 // 
-// Copyright © 2019 United States Government as represented by the Administrator
+// Copyright ï¿½ 2019 United States Government as represented by the Administrator
 // of the National Aeronautics and Space Administration.  All Rights Reserved.
 // 
 // Disclaimers
@@ -114,11 +114,11 @@ leveldbDB.get(FRET_PROJECTS_DBKEY).catch((err) => {
   }
 })
 
-
+const FRET_REALTIME_CONFIG = 'REAL_TIME_CONFIG';
 global.sharedObj = {
   db: leveldbDB,
   modeldb: modelDB,
-  system_dbkeys: [ FRET_PROJECTS_DBKEY, FRET_PROPS_DBKEY ]
+  system_dbkeys: [ FRET_PROJECTS_DBKEY, FRET_PROPS_DBKEY, FRET_REALTIME_CONFIG ]
 };
 
 let mainWindow = null;
