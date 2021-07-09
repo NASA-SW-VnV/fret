@@ -213,7 +213,7 @@ class MainView extends React.Component {
     csvFields: [],
     importedReqs: [],
     requirements: [],
-    changingReqs: false,
+    changingReqsInBulk: false,
   };
 
   synchStateWithDB() {
@@ -252,9 +252,11 @@ class MainView extends React.Component {
         })
       }
       else if (change.id == 'REAL_TIME_CONFIG' ) {
-        this.setState({changingReqs: change.doc.changingReqs});
+        // synchStateWithDB after finishing importing/deleting and other bulk requirement changes operations
+        this.setState({changingReqsInBulk: change.doc.changingReqsInBulk});
         this.synchStateWithDB();
-      } else if (!system_dbkeys.includes(change.id) && !this.state.changingReqs) {
+        // !system_dbkeys.includes(change.id): requirement change
+      } else if (!system_dbkeys.includes(change.id) && !this.state.changingReqsInBulk) {
         this.synchStateWithDB();
       }
     })

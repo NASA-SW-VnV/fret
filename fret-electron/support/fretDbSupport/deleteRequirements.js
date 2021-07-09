@@ -11,7 +11,7 @@ export {
 }
 
 function batchDelete (requirements) {
-  db.bulkDocs(requirements).catch(err => {
+  return db.bulkDocs(requirements).catch(err => {
     console.log('error', err)
   })
 };
@@ -22,6 +22,7 @@ function removeReqsInBulk (requirements) {
   let deleteList = [];
   requirements.forEach(r => {
      deleteList.push({
+       // in dashboard: r.dbkey and r.rev, in sortableTable: r._id and r._rev       
       _id: r.dbkey || r._id,
       _rev: r.rev || r._rev,
       _deleted: true
