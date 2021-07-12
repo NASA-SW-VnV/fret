@@ -65,8 +65,19 @@ class DeleteProjectDialog extends React.Component {
        project: this.state.project,
      }
    }).then(function (deleteReqsList){
-     dbSupport.removeReqsInBulk(deleteReqsList.docs);
-     modelDbSupport.removeVariablesInBulk(deleteReqsList.docs);
+
+    /*
+      // if requirements is 2 arrays (regulars and modes), concatenate
+      const requirements = deleteReqsList.docs.map(r => {
+        if(r.semantics && typeof r.semantics.variables === "object") {
+          r.semantics.variables = r.semantics.variables.modes.concat(r.semantics.variables.regular);
+        }
+        return r;
+      })
+      */
+
+      dbSupport.removeReqsInBulk(deleteReqsList.docs);
+      modelDbSupport.removeVariablesInBulk(deleteReqsList.docs);
    })
 
    db.get('FRET_PROJECTS').then((doc) => {

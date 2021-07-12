@@ -442,12 +442,6 @@ class VariablesView extends React.Component {
     }
   }
 
-  checkVariableFormat(variables){
-    if (typeof variables === 'object' && ! Array.isArray(variables) ){
-      return (variables.regular).concat(variables.modes);
-    } else return variables;
-  }
-
   setVariablesAndModes(result){
     const self = this;
     var data = {
@@ -465,7 +459,7 @@ class VariablesView extends React.Component {
             && req.semantics.ft !== constants.undefined_semantics
             && req.semantics.ft !== constants.unhandled_semantics){
             if (typeof req.semantics.variables !== 'undefined') {
-                const variables = self.checkVariableFormat(req.semantics.variables);
+                const variables = req.semantics.variables;
                   variables.forEach(function(variable){
                   if (!data.variablesData.includes(req.project + req.semantics.component_name + variable)){
                     if (!(req.semantics.component_name in data.cocospecData)){

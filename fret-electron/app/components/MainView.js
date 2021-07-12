@@ -222,7 +222,13 @@ class MainView extends React.Component {
       include_docs: true,
     }).then((result) => {
       this.setState({
-        requirements : result.rows.filter(r => !system_dbkeys.includes(r.key))
+        requirements : result.rows.filter(r => !system_dbkeys.includes(r.key)).map(r => {
+          if(r.doc.semantics && typeof r.doc.semantics.variables === "object" && 
+            !Array.isArray(r.doc.semantics.variables) ) {
+            r.doc.semantics.variables = r.doc.semantics.variables.modes.concat(r.doc.semantics.variables.regular);
+          }
+          return r;
+        })
       })
     }).catch((err) => {
       console.log(err);
