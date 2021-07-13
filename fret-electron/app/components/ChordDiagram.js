@@ -66,7 +66,7 @@ class ChordDiagram extends React.Component {
 			    var reqs = '';
 				if (i > conflictNames.length -1) {
 					var nameoffset = i - conflictNames.length;
-					var data = requirementConflicts[requirementNames[nameoffset]];
+					var data = requirementConflicts[requirementNames[nameoffset]].sort();
 					const conflictColors = colors.filter(c => data.includes(conflictNames[colors.indexOf(c)]))
 					chordObj.setState({
 						allConflicts : conflictNames,
@@ -77,7 +77,7 @@ class ChordDiagram extends React.Component {
 					reqs = data[0];
 					setMessage({reqs : reqs, color : conflictColors[0]})
 				} else {
-					var data = [conflictNames[i]];
+					var data = [conflictNames[i]].sort();
 					const conflictColors = colors.filter(c => data.includes(conflictNames[colors.indexOf(c)]))
 					chordObj.setState({
 						allConflicts : conflictNames,

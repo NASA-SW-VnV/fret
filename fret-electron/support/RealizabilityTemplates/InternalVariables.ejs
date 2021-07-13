@@ -1,5 +1,5 @@
-var <%for (i=0; i < internalVariables.length; i++) {%><%-
-internalVariables[i].name %>:<%- internalVariables[i].type -%>; <%}%><%for (i=0;  i < modes.length;  i++) {%><%- modes[i].name %>:<%- modes[i].type -%>; <%}%><%for (i=0;  i < modes.length;  i++) {%><%- modes[i].name %>:<%- modes[i].type -%>; <%}%><%for (i=0;  i < properties.length;  i++) {%><%var newid = properties[i].reqid.replace(/-/g,'')%><%- newid %>:bool; <%}%>FTP: bool; 
+var <%for (i=0; i < internalVariables.length; i++) {%><%if (internalVariables[i].name !== 'FTP') {%><%-
+internalVariables[i].name %>:<%- internalVariables[i].type -%>; <%}%><%}%><%for (i=0;  i < modes.length;  i++) {%><%- modes[i].name %>:<%- modes[i].type -%>; <%}%><%for (i=0;  i < modes.length;  i++) {%><%- modes[i].name %>:<%- modes[i].type -%>; <%}%><%for (i=0;  i < properties.length;  i++) {%><%var newid = properties[i].reqid.replace(/-/g,'')%><%- newid %>:bool; <%}%>FTP: bool; 
 
 let
 
