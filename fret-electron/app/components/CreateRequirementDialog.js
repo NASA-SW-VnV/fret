@@ -238,7 +238,7 @@ class CreateRequirementDialog extends React.Component {
               })
             }
           } else {
-            console.log("Remove "+ JSON.stringify(v));
+            //console.log("Remove "+ JSON.stringify(v));
             modeldb.remove(v);
           }
         })
@@ -269,7 +269,7 @@ class CreateRequirementDialog extends React.Component {
         if (req.semantics && req.semantics.variables){
             oldVariables = req.semantics.variables;
         }
-        self.removeVariables(oldVariables, semantics.variables ? semantics.variables : [], project, 
+        self.removeVariables(oldVariables, semantics.variables ? semantics.variables : [], project,
           semantics.component_name, dbid, req.semantics.component_name, req.project)
       })
     }
