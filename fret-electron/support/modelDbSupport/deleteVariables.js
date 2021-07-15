@@ -2,7 +2,7 @@ const fs=require("fs");
 const db = require('electron').remote.getGlobal('sharedObj').db;
 const modeldb = require('electron').remote.getGlobal('sharedObj').modeldb;
 const system_dbkeys = require('electron').remote.getGlobal('sharedObj').system_dbkeys;
-
+const checkDbFormat = require('../fretDbSupport/checkDBFormat.js');
 
 export {
   removeVariablesInBulk as removeVariablesInBulk
@@ -15,10 +15,7 @@ function createVariableMappingToDeleteRequirements (requirements) {
   let mapVariablesToReqIds = {};
   requirements.forEach(r => {
     if (r.semantics && r.semantics.variables) {
-
-      const variables = typeof r.semantics.variables === "object" && !Array.isArray(r.semantics.variables) ? 
-      r.semantics.variables.modes.concat(r.semantics.variables.regular): 
-      r.semantics.variables
+      const variables = checkDbFormat.checkVariableFormat(r.semantics.variables);
 
       variables.forEach(variable => {
         // glossary id requires project name, component name and variable name
