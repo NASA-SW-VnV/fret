@@ -340,6 +340,7 @@ class CirclePacking extends React.Component {
           existingProjectNames={this.props.projects}
           displayRequirementOpen={this.state.displayRequirementOpen}
           handleDialogClose={this.handleRequirementDialogClose}
+          requirements={this.props.requirements}
         />
       </div>
     )

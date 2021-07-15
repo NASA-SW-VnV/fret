@@ -118,7 +118,8 @@ class RequirementDialogs extends React.Component {
         editRequirement={selectedRequirement}
         //TODO: Update eventually
         addChildRequirementToParent={null}
-        existingProjectNames={existingProjectNames} />
+        existingProjectNames={existingProjectNames}
+        requirements={this.props.requirements} />
       <DeleteRequirementDialog
         open={this.state.deleteDialogOpen}
         requirementsToBeDeleted={[selectedRequirement]}
@@ -161,7 +162,8 @@ RequirementDialogs.propTypes = {
   selectedRequirement: PropTypes.object.isRequired,
   existingProjectNames: PropTypes.array.isRequired,
   displayRequirementOpen: PropTypes.bool.isRequired,
-  handleDialogClose: PropTypes.func.isRequired
+  handleDialogClose: PropTypes.func.isRequired,
+  requirements: PropTypes.array.isRequired
 };
 
 export default withStyles(styles)(RequirementDialogs);

@@ -3,6 +3,7 @@ const db = require('electron').remote.getGlobal('sharedObj').db;
 const modeldb = require('electron').remote.getGlobal('sharedObj').modeldb;
 const system_dbkeys = require('electron').remote.getGlobal('sharedObj').system_dbkeys;
 const FretSemantics = require('../../app/parser/FretSemantics');
+const checkDbFormat = require('../fretDbSupport/checkDBFormat.js');
 
 export {
   populateVariables as populateVariables
@@ -14,9 +15,7 @@ function extractSemantics (text) {
     return {}
   else if (result.collectedSemantics){
     return result.collectedSemantics
-
   }
-
 };
 
 function batchCreateOrUpdate (variables) {
@@ -63,22 +62,22 @@ function checkforUnusedVariables() {
       variables.forEach(variable => {
         mapIdsToVariables[variable._id] = variable;
       });
-      // Loop through each db requirement and create or update variable array in modeldb 
+      // Loop through each db requirement and create or update variable array in modeldb
       rows.forEach(r => {
         const text = r.doc.fulltext;
         if (text) {
           const semantics = extractSemantics(text);
           if (semantics.variables) {
-            // if there are variables in db requirements, get projectName, component 
+            // if there are variables in db requirements, get projectName, component
             // name and unique machine generated ID for this requirement
             const projectName = r.doc.project;
             const componentName = semantics.component_name;
             const dbId = r.doc._id;
-            const variables = semantics.variables;
+            const variables = checkDbFormat.checkVariableFormat(semantics.variables);
             // loop through each variable in this db requirement
             for (let i = 0; i < variables.length; i++) {
               const variableName = variables[i]
-              // variableId is the key for the modeldb variable, it is defined 
+              // variableId is the key for the modeldb variable, it is defined
               //using project name, component name and variable name
               const variableId = projectName + componentName + variableName;
               // update the modeldb variable if it already existed
