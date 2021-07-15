@@ -89,6 +89,7 @@ const system_dbkeys = require('electron').remote.getGlobal('sharedObj').system_d
 const csv2json=require("csvtojson");
 const requirementsImport = require('../../support/requirementsImport/convertAndImportRequirements');
 const modelSupport = require('../../support/modelDbSupport/populateVariables');
+const checkDbFormat = require('../../support/fretDbSupport/checkDBFormat.js');
 const drawerWidth = 240;
 let dbChangeListener = null;
 
@@ -223,10 +224,7 @@ class MainView extends React.Component {
     }).then((result) => {
       this.setState({
         requirements : result.rows.filter(r => !system_dbkeys.includes(r.key)).map(r => {
-          if(r.doc.semantics && typeof r.doc.semantics.variables === "object" && 
-            !Array.isArray(r.doc.semantics.variables) ) {
-            r.doc.semantics.variables = r.doc.semantics.variables.modes.concat(r.doc.semantics.variables.regular);
-          }
+          r.doc.semantics.variables = checkDbFormat.checkVariableFormat(r.doc.semantics.variables);
           return r;
         })
       })
