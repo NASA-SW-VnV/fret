@@ -43,6 +43,7 @@ const constants = require('../parser/Constants');
 const db = sharedObj.db;
 const modeldb = sharedObj.modeldb;
 const system_dbkeys = sharedObj.system_dbkeys;
+const checkDbFormat = require('../../support/fretDbSupport/checkDBFormat.js');
 
 var dbChangeListener, modeldbChangeListener;
 let id = 0;
@@ -146,7 +147,7 @@ class RealizabilityView extends React.Component {
             && req.semantics.ft !== constants.unhandled_semantics){
             if (typeof req.semantics.variables !== 'undefined') {
 
-              const variables = req.semantics.variables;
+                const variables = checkDbFormat.checkVariableFormat(req.semantics.variables);
                 variables.forEach(function(variable){
                 if (!data.variablesData.includes(req.project + req.semantics.component_name + variable)){
                   if (!(req.semantics.component_name in data.cocospecData)){
@@ -211,7 +212,7 @@ class RealizabilityView extends React.Component {
     const {selectedProject} = self.props;
     components.forEach(function(component){
         self.checkComponentCompleted(component.component_name, selectedProject);
-        
+
     })
   }
 
