@@ -100,8 +100,8 @@ function desc(a, b, orderBy) {
     element_a = a[orderBy]
     element_b = b[orderBy]
   } else {
-    element_a = a[orderBy] ? a[orderBy].toLowerCase().trim(): '';
-    element_b = b[orderBy] ? b[orderBy].toLowerCase().trim(): '';
+    element_a = a[orderBy] ? a[orderBy].toLowerCase().trim(): 'NONE';
+    element_b = b[orderBy] ? b[orderBy].toLowerCase().trim(): 'NONE';
   }
 
   if (element_b < element_a)
@@ -565,6 +565,7 @@ class SortableTable extends React.Component {
                 .map(n => {
                   const isSelected = this.isSelected(n.dbkey);
                   const label = n.reqid ? n.reqid : 'NONE'
+                  const projectLabel = n.project ? n.project : 'NONE'
                   // getting requirement bubble color
                   const status = n.status;
                   const colorStyle = getRequirementStyle(n,false);
@@ -623,7 +624,7 @@ class SortableTable extends React.Component {
                           </Tooltip>
                         </TableCell>
                         <TableCell>{n.summary}</TableCell>
-                        <TableCell>{n.project}</TableCell>
+                        <TableCell>{projectLabel}</TableCell>
                       </TableRow>
                     );
                   } else {
@@ -669,7 +670,7 @@ class SortableTable extends React.Component {
                             </Tooltip>
                           </TableCell>
                         <TableCell>{n.summary}</TableCell>
-                        <TableCell>{n.project}</TableCell>
+                        <TableCell>{projectLabel}</TableCell>
                       </TableRow>
                     )
                   }
