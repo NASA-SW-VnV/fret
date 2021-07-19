@@ -100,8 +100,8 @@ function desc(a, b, orderBy) {
     element_a = a[orderBy]
     element_b = b[orderBy]
   } else {
-    element_a = a[orderBy].toLowerCase().trim();
-    element_b = b[orderBy].toLowerCase().trim();
+    element_a = a[orderBy] ? a[orderBy].toLowerCase().trim(): '';
+    element_b = b[orderBy] ? b[orderBy].toLowerCase().trim(): '';
   }
 
   if (element_b < element_a)
@@ -693,8 +693,8 @@ class SortableTable extends React.Component {
           nextIconButtonProps={{
             'aria-label': 'Next Page',
           }}
-          onChangePage={this.handleChangePage}
-          onChangeRowsPerPage={this.handleChangeRowsPerPage}
+          onPageChange={this.handleChangePage}
+          onRowsPerPageChange={this.handleChangeRowsPerPage}
         />
       </Paper>
       <DisplayRequirementDialog

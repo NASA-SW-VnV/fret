@@ -403,12 +403,8 @@ class SlateEditor2 extends React.Component {
         const selectedVariable = variables[selectedIndex];
         let clonedValue = JSON.parse(JSON.stringify(editorValue));
         if(template && selectedField){
-          const newField = getField(clonedValue, selectedField);
-          let newLeaf = newField && newField.children[0];
-          if (newLeaf) {
-            newLeaf.text = fieldStartCharacter + selectedVariable + fieldEndCharacter;
-            newLeaf.isPlaceholder = false;
-          }
+          Transforms.delete(this.props.editor, { at: this.state.range });
+          this.props.editor.insertText(selectedVariable);
         } else {
           Transforms.delete(this.props.editor, { at: this.state.range })
           this.props.editor.insertText(selectedVariable);
@@ -425,7 +421,7 @@ class SlateEditor2 extends React.Component {
           after && Transforms.select(this.props.editor, after);
         }
         return {
-          editorValue: template ? clonedValue : this.props.editor.children,
+          editorValue: this.props.editor.children,
           search: '',
           menuIndex: 0,
           variables: [],

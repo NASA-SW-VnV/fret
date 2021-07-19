@@ -413,8 +413,8 @@ class DiagnosisRequirementsTable extends React.Component {
           nextIconButtonProps={{
             'aria-label': 'Next Page',
           }}
-          onChangePage={this.handleChangePage}
-          onChangeRowsPerPage={this.handleChangeRowsPerPage}
+          onPageChange={this.handleChangePage}
+          onRowsPerPageChange={this.handleChangeRowsPerPage}
         />
       </Paper>
       </div>

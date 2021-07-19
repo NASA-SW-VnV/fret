@@ -8,7 +8,7 @@ const setChangeRequirementFlag = (isChangingInBulk) => {
         changingReqsInBulk: isChangingInBulk
       })
     }).catch((err) => {
-      if(err && err.message === 'missing') {
+      if(err && err.name === 'not_found') {
         return db.put({
           _id: 'REAL_TIME_CONFIG',
           changingReqsInBulk: isChangingInBulk

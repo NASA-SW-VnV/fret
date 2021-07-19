@@ -201,7 +201,7 @@ class CreateRequirementDialog extends React.Component {
           })
         }
       }).catch(function (err) {
-        if(err && err.message === 'missing') {
+        if(err && err.name === 'not_found') {
           modeldb.put({
             _id: modeldbid,
             project: projectName,

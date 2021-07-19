@@ -550,8 +550,8 @@ class VariablesSortableTable extends React.Component {
             nextIconButtonProps={{
               'aria-label': 'Next Page',
             }}
-            onChangePage={this.handleChangePage}
-            onChangeRowsPerPage={this.handleChangeRowsPerPage}
+            onPageChange={this.handleChangePage}
+            onRowsPerPageChange={this.handleChangeRowsPerPage}
           />
         </Paper>
         <DisplayVariableDialog

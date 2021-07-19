@@ -57,8 +57,8 @@ function removeVariablesInBulk (requirements) {
       }
     })
   })).then(() => {
-    modeldb.bulkDocs(docs).catch(err => {
-      console.log('error', err)
-    })
+    return modeldb.bulkDocs(docs)
+  }).catch(err => {
+    console.error('error', err)
   })
 }
