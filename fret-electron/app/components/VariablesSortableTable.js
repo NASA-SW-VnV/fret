@@ -519,7 +519,7 @@ class VariablesSortableTable extends React.Component {
                 return (
                   <TableRow key={n.rowid}>
                     <TableCell>
-                      <Button color='secondary' onClick={() => this.handleVariableDialogOpen(n)}>
+                      <Button style={{textTransform: 'none'}} color='secondary' onClick={() => this.handleVariableDialogOpen(n)}>
                         {label}
                       </Button>
                     </TableCell>
