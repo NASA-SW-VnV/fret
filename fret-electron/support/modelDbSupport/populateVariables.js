@@ -19,10 +19,9 @@ function extractSemantics (text) {
 };
 
 function batchCreateOrUpdate (variables) {
-  console.log(variables)
   modeldb.bulkDocs(variables).catch(err => {
     console.log('error', err)
-  })
+  });
 };
 
 //This function populates the model DB when a new requirement is added (imported) or updated
@@ -100,7 +99,8 @@ function batchCreateOrUpdate (variables) {
       });
     }).then(() => {
       Object.values(mapIdsToVariables).forEach(variable => {
-        mapIdsToVariables[variable._id].reqs = requirementVariables[variable._id];
+        if (requirementVariables[variable._id]){
+          mapIdsToVariables[variable._id].reqs = requirementVariables[variable._id].slice();
         if (mapIdsToVariables[variable._id].reqs){
           mapIdsToVariables[variable._id].reqs = variable.reqs.filter(item => item);
           if (mapIdsToVariables[variable._id].reqs.length === 0){
@@ -108,7 +108,7 @@ function batchCreateOrUpdate (variables) {
           }
         }
       }
-      );
-      batchCreateOrUpdate(Object.values(mapIdsToVariables));
-    })
+    })}).then(() => {
+          batchCreateOrUpdate(Object.values(mapIdsToVariables));
+    });
   }
