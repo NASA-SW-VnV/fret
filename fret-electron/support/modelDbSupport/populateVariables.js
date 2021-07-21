@@ -19,6 +19,7 @@ function extractSemantics (text) {
 };
 
 function batchCreateOrUpdate (variables) {
+  console.log(variables)
   modeldb.bulkDocs(variables).catch(err => {
     console.log('error', err)
   })
@@ -27,6 +28,7 @@ function batchCreateOrUpdate (variables) {
 //This function populates the model DB when a new requirement is added (imported) or updated
   function populateVariables() {
     let mapIdsToVariables = {};
+    let requirementVariables = {};
     let rows = [];
     //let shouldUpdate = false;
     db.allDocs({
@@ -38,19 +40,16 @@ function batchCreateOrUpdate (variables) {
         include_docs: true,
       })
     }).then(data => {
-      // data.rows are variable  data in modeldb
+      // data.rows are variable docs in modeldb
       var variableRows = data.rows.map(row => row.doc);
       variableRows.forEach(variable => {
-        //variable.reqs = variable.reqs.splice(0,variable.reqs.length);
         mapIdsToVariables[variable._id] = variable;
-        variable.reqs = variable.reqs.filter(item => item);
-        if (variable.reqs.length === 0){
-          mapIdsToVariables[variable._id] = {...variable, _deleted: true};
-        }
+        mapIdsToVariables[variable._id].reqs = [];
+        requirementVariables[variable._id] = [];
+
       });
       // Loop through each db requirement and create or update variable array in modeldb
       rows.forEach(r => {
-        let requirementVariables = [];
         const text = r.doc.fulltext;
         if (text) {
           const semantics = extractSemantics(text);
@@ -69,11 +68,12 @@ function batchCreateOrUpdate (variables) {
               //using project name, component name and variable name
               const variableId = projectName + componentName + variableName;
               // update the modeldb variable if it already existed
-              if (mapIdsToVariables[variableId]) {
-                if (!requirementVariables.includes(dbId)) {
-                  requirementVariables.push(dbId);
+
+              if (requirementVariables[variableId]) {
+                if (! requirementVariables[variableId].includes(dbId)) {
+                  requirementVariables[variableId].push(dbId);
                 }
-                mapIdsToVariables[variableId].reqs = requirementVariables;
+
               // otherwise create a new modeldb variable
               } else {
                 const newVariable = {
@@ -97,13 +97,15 @@ function batchCreateOrUpdate (variables) {
           }
         }
 
-
       });
     }).then(() => {
       Object.values(mapIdsToVariables).forEach(variable => {
-        if (variable.reqs.length === 0){
-          console.log(mapIdsToVariables[variable._id]);
-          mapIdsToVariables[variable._id] = {...variable, _deleted: true};
+        mapIdsToVariables[variable._id].reqs = requirementVariables[variable._id];
+        if (mapIdsToVariables[variable._id].reqs){
+          mapIdsToVariables[variable._id].reqs = variable.reqs.filter(item => item);
+          if (mapIdsToVariables[variable._id].reqs.length === 0){
+            mapIdsToVariables[variable._id] = {...variable, _deleted: true};
+          }
         }
       }
       );

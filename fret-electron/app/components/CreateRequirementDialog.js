@@ -229,7 +229,7 @@ class CreateRequirementDialog extends React.Component {
       var modeldbidOld = oldProject + oldComponent + variableName;
       if (oldComponent !== componentName || projectName !== oldProject || !newVariables.includes(variableName)){
         modeldb.get(modeldbidOld).then(function(v) {
-          if (v.reqs.length > 1) {
+          if (v.reqs && v.reqs.length > 1) {
             var index = v.reqs.indexOf(dbid);
             if (index > -1){
               const newReqs = [...v.reqs];
@@ -240,7 +240,6 @@ class CreateRequirementDialog extends React.Component {
               })
             }
           } else {
-            //console.log("Remove "+ JSON.stringify(v));
             modeldb.remove(v);
           }
         })
