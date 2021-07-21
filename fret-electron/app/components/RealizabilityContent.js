@@ -322,13 +322,13 @@ class CCRequirementsTable extends React.Component {
         include_docs: true
       }).on('change', (change) => {
         if (!system_dbkeys.includes(change.id)) {
-          console.log(change);
+          this.optLog(change);
           this.synchStateWithDB();
         }
       }).on('complete', function(info) {
-        console.log(info);
+        this.optLog(info);
       }).on('error', function (err) {
-        console.log(err);
+        this.optLog(err);
       });
   }
 
@@ -362,13 +362,13 @@ class CCRequirementsTable extends React.Component {
     db.allDocs({
       include_docs: true,
     }).then((result) => {
-      console.log(result.rows.filter(r => !system_dbkeys.includes(r.key)));
+      this.optLog(result.rows.filter(r => !system_dbkeys.includes(r.key)));
     })
 
     db.allDocs({
       include_docs: true,
     }).then((result) => {
-      console.log(result.rows
+      this.optLog(result.rows
                 .filter(r => !system_dbkeys.includes(r.key)))
       this.setState({
         data: result.rows
@@ -380,7 +380,7 @@ class CCRequirementsTable extends React.Component {
                 .sort((a, b) => {return a.reqid > b.reqid})
       })
     }).catch((err) => {
-      console.log(err);
+      this.optLog(err);
     });
   }
 
@@ -672,9 +672,11 @@ class RealizabilityContent extends React.Component {
   //   this.setState({ selected: newSelected });
   // };
 
+  optLog(str) {if (constants.verboseRealizabilityTesting) console.log(str)}
+
   constructor(props){
     super(props);
-
+    const self = this;
     dbChangeListener = modeldb.changes({
       since: 'now',
       live: true,
@@ -682,9 +684,9 @@ class RealizabilityContent extends React.Component {
     }).on('change', (change) => {
         this.synchStateWithModelDB();
     }).on('complete', function(info) {
-      console.log(info);
+      self.optLog(info);
     }).on('error', function (err) {
-      console.log(err);
+      self.optLog(err);
     });
 
     if (!fs.existsSync(analysisPath)) {
@@ -735,7 +737,7 @@ class RealizabilityContent extends React.Component {
             })
           }                  
         }).catch((err) => {
-          console.log(err);
+          self.optLog(err);
         })
       })
     });
@@ -849,7 +851,7 @@ class RealizabilityContent extends React.Component {
       }
     }).then(function(result){
     }).catch((err) => {
-      console.log(err);
+      self.optLog(err);
     });
   }
 
@@ -1167,7 +1169,7 @@ class RealizabilityContent extends React.Component {
       if (err) throw err;    
       for (const file of files) {
         fs.unlink(analysisPath+file.toString(), err => {
-          console.log(err)
+          this.optLog(err)
           if (err) throw err;
         });
       }
@@ -1331,7 +1333,7 @@ class RealizabilityContent extends React.Component {
                           return(prevState);
                         })            
                     } else {
-                      console.log('Realizability check failed with an unexpected result. Run JKind check over '+filePath+' for more details.')
+                      self.optLog('Realizability check failed with an unexpected result. Run JKind check over '+filePath+' for more details.')
                     } 
                   }
 
@@ -1381,7 +1383,7 @@ class RealizabilityContent extends React.Component {
       diagStatus = monolithic ? diagnosisStatus[selected.component_name] : connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'];
       diagReport = monolithic ? diagnosisReports[selected.component_name] : connectedComponents[selected.component_name][ccSelected]['diagnosisReport'];
     }
-    console.log(diagReport)
+    
     return(
       <div>
         {components.length !== 0 &&

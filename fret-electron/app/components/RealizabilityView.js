@@ -48,6 +48,8 @@ const checkDbFormat = require('../../support/fretDbSupport/checkDBFormat.js');
 var dbChangeListener, modeldbChangeListener;
 let id = 0;
 
+function optLog(str) {if (constants.verboseRealizabilityTesting) console.log(str)}
+
 function createData(vID, cID, project, description) {
   id += 1;
   return {id ,vID, cID, project, description};
@@ -94,9 +96,9 @@ class RealizabilityView extends React.Component {
         this.synchStateWithDB();
       }
     }).on('complete', function(info) {
-      console.log(info);
+      optLog(info);
     }).on('error', function (err) {
-      console.log(err);
+      optLog(err);
     });
     modeldbChangeListener = modeldb.changes({
       since: 'now',
@@ -105,9 +107,9 @@ class RealizabilityView extends React.Component {
     }).on('change', (change) => {
         this.synchStateWithModelDB();
     }).on('complete', function(info) {
-      console.log(info);
+      optLog(info);
     }).on('error', function (err) {
-      console.log(err);
+      optLog(err);
     });
   }
 
@@ -202,7 +204,7 @@ class RealizabilityView extends React.Component {
       })
       self.checkComponents();
     }).catch((err) => {
-      console.log(err);
+      optLog(err);
     });
   }
 
@@ -243,7 +245,7 @@ class RealizabilityView extends React.Component {
         completedComponents : completedComponents
       })
     }).catch(function (err) {
-      console.log(err);
+      optLog(err);
       return false;
     })
   }

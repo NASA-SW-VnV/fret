@@ -5,7 +5,7 @@ const antlr4 = require('antlr4/index');
 const fs = require('fs');
 const mkdirp = require('mkdirp');
 
-
+const constants = require('../app/parser/Constants');
 const HSNode = require('./HSNode.js');
 const ejsCache_realize = require('../support/RealizabilityTemplates/ejsCache_realize');
 const realizabilityCheck = require('./realizabilityCheck.js');
@@ -35,6 +35,8 @@ class DiagnosisEngine {
     this.count = 0;
     this.tmppath = analysisPath;
   }
+
+  optLog(str) {if (constants.verboseRealizabilityTesting) console.log(str)}
 
   getPartition(props, numParts, index, complement) {
     var partition = [];
@@ -227,7 +229,7 @@ class DiagnosisEngine {
           } else {
             var tmpConflicts = this.deltaDebug(slicedContract, 2);
             minConflicts = minConflicts.concat(tmpConflicts);
-            console.log(tmpConflicts);
+            this.optLog(tmpConflicts);
             this.addUniqueConflicts(tmpConflicts);
           }
         } else {
@@ -261,15 +263,15 @@ class DiagnosisEngine {
     }
 
     if (minConflicts.length === 0 && n < properties.length) {
-      // console.log('No minimal conflicts, but n < # of properties')
+      // this.optLog('No minimal conflicts, but n < # of properties')
       var tmpConflicts = this.deltaDebug(contract, Math.min(properties.length, 2*n));
-      // console.log(tmpConflicts);
+      // this.optLog(tmpConflicts);
       minConflicts = minConflicts.concat(tmpConflicts);
       this.addUniqueConflicts(tmpConflicts);      
     }
 
     if (minConflicts.length === 0 && !conflictExists) {
-      // console.log('No conflicts smaller than current found. Add current set of properties as minimal conflict')            
+      // this.optLog('No conflicts smaller than current found. Add current set of properties as minimal conflict')            
       minConflicts.push(properties);
       this.addUniqueConflicts([properties]);
     }
@@ -447,10 +449,10 @@ class DiagnosisEngine {
     // HS Tree print : Parent <-- Node --> List of children
     // for (let i in this.labeled) {
     //   if (this.labeled[i].getParent() !== null) {
-    //     console.log(JSON.stringify(this.labeled[i].getParent().getLabel()) + " <---- " + this.labeled[i].getParentEdge() +
+    //     this.optLog(JSON.stringify(this.labeled[i].getParent().getLabel()) + " <---- " + this.labeled[i].getParentEdge() +
     //      " ---- " + JSON.stringify(this.labeled[i].getLabel()) + " ----> " + JSON.stringify(this.labeled[i].getChildren().map(c => c.getLabel())))
     //   } else {
-    //     console.log("Root <---- " + JSON.stringify(this.labeled[i].getLabel()) + " ----> " + 
+    //     this.optLog("Root <---- " + JSON.stringify(this.labeled[i].getLabel()) + " ----> " + 
     //       JSON.stringify(this.labeled[i].getChildren().map(c => c.getLabel())))
     //   }
     // }

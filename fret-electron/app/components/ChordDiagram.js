@@ -9,7 +9,7 @@ import { DiagnosisContext } from './DiagnosisProvider';
 
 const fs = require('fs')
 const path = require("path")
-
+const constants = require('../parser/Constants');
 
 class ChordDiagram extends React.Component {
 	static contextType = DiagnosisContext;
@@ -19,6 +19,9 @@ class ChordDiagram extends React.Component {
 		cexTableData : {},
 		colors : []
 	}
+
+	optLog(str) {if (constants.verboseRealizabilityTesting) console.log(str)}
+
 	createD3() {		
 		const {setMessage} = this.context;
 		var chordObj = this;		
@@ -42,7 +45,7 @@ class ChordDiagram extends React.Component {
 
 		//parse JSON file and create diagram
 		var content = selectedReport;
-		console.log(content)
+		this.optLog(content)
 		// d3.json(selectedReport, function(error, content) {
 
 			//used to align diagram in window
@@ -300,8 +303,8 @@ class ChordDiagram extends React.Component {
 
 	componentDidUpdate(prevProps, prevState) {
 		if(prevProps.selectedReport.Properties.toString() !== this.props.selectedReport.Properties.toString()) {
-			console.log(prevProps)
-			console.log(this.props)
+			this.optLog(prevProps)
+			this.optLog(this.props)
 			this.setState({cexTableData : []});
 			this.createD3()
 		}
@@ -322,7 +325,7 @@ class ChordDiagram extends React.Component {
 		);		
 	    let table;
 	    if (Object.keys(this.state.cexTableData).length !== 0) {
-	    	console.log(this.state.cexTableData);
+	    	this.optLog(this.state.cexTableData);
 	    	table = (
 	    		<Grid>
 	    			<CounterexampleTable

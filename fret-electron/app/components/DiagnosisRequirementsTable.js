@@ -45,6 +45,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import { DiagnosisContext } from './DiagnosisProvider';
 
 const sharedObj = require('electron').remote.getGlobal('sharedObj');
+const constants = require('../parser/Constants');
 
 const db = sharedObj.db;
 const app = require('electron').remote.app;
@@ -52,6 +53,9 @@ const system_dbkeys = sharedObj.system_dbkeys;
 let dbChangeListener = undefined;
 
 let counter = 0;
+
+function optLog(str) {if (constants.verboseRealizabilityTesting) console.log(str)}
+
 function createData(dbkey, rev, reqid, summary, project) {
   counter += 1;
   return { rowid: counter, dbkey, rev, reqid, summary, project };
@@ -237,20 +241,21 @@ class DiagnosisRequirementsTable extends React.Component {
 
   constructor(props){
     super(props);
-      dbChangeListener = db.changes({
-        since: 'now',
-        live: true,
-        include_docs: true
-      }).on('change', (change) => {
-        if (!system_dbkeys.includes(change.id)) {
-          console.log(change);
-          this.synchStateWithDB();
-        }
-      }).on('complete', function(info) {
-        console.log(info);
-      }).on('error', function (err) {
-        console.log(err);
-      });
+    const self = this;
+    dbChangeListener = db.changes({
+      since: 'now',
+      live: true,
+      include_docs: true
+    }).on('change', (change) => {
+      if (!system_dbkeys.includes(change.id)) {
+        optLog(change);
+        this.synchStateWithDB();
+      }
+    }).on('complete', function(info) {
+      self.optLog(info);
+    }).on('error', function (err) {
+      self.optLog(err);
+    });
   }
 
   componentDidMount() {
@@ -285,13 +290,13 @@ class DiagnosisRequirementsTable extends React.Component {
     db.allDocs({
       include_docs: true,
     }).then((result) => {
-      console.log(result.rows.filter(r => !system_dbkeys.includes(r.key)));
+      optLog(result.rows.filter(r => !system_dbkeys.includes(r.key)));
     })
 
     db.allDocs({
       include_docs: true,
     }).then((result) => {
-      console.log(result.rows
+      optLog(result.rows
                 .filter(r => !system_dbkeys.includes(r.key)))
       this.setState({
         data: result.rows
@@ -303,7 +308,7 @@ class DiagnosisRequirementsTable extends React.Component {
                 .sort((a, b) => {return a.reqid > b.reqid})
       })
     }).catch((err) => {
-      console.log(err);
+      optLog(err);
     });
   }
 
@@ -335,8 +340,8 @@ class DiagnosisRequirementsTable extends React.Component {
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
     
 
-    console.log(reqs)
-    console.log(color)
+    optLog(reqs)
+    optLog(color)
     return (
       <div>
       <Paper>
