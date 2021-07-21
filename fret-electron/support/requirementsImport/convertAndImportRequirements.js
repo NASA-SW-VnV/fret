@@ -63,13 +63,6 @@ function csvToJsonConvert (importedInfo) {
 
 function importRequirements (data, projects) {
 
-  setChangeRequirementFlag(true).
-  then(() => db.bulkDocs(data)).
-    then(() => setChangeRequirementFlag(false)).
-  catch((err) => {
-    console.log(err);
-  });
-
   data.forEach((d) => {
     if (d.project && !projects.includes(d.project)){
       projects.push(d.project);
@@ -84,8 +77,18 @@ function importRequirements (data, projects) {
     })
   }).catch((err) => {
     console.log(err);
+  }).then(() => {
+    setChangeRequirementFlag(true)
+  }).
+  then(() => db.bulkDocs(data)
+    ).
+    then(() => {
+      setChangeRequirementFlag(false);
+      modelSupport.populateVariables();
+    }).
+  catch((err) => {
+    console.log(err);
   });
-  modelSupport.populateVariables();
 }
 
 // change so that everything goes to rationale by default except what is in map
