@@ -79,6 +79,7 @@ const db = require('electron').remote.getGlobal('sharedObj').db;
 const modeldb = require('electron').remote.getGlobal('sharedObj').modeldb;
 const constants = require('../parser/Constants');
 const uuidv1 = require('uuid/v1');
+const checkDbFormat = require('../../support/fretDbSupport/checkDBFormat.js');
 
 
 const formStyles = theme => ({
@@ -223,7 +224,8 @@ class CreateRequirementDialog extends React.Component {
   }
 
   removeVariables = (oldVariables, newVariables, projectName, componentName, dbid, oldComponent, oldProject) => {
-    oldVariables.map(function(variableName){
+    const oldvars = checkDbFormat.checkVariableFormat(oldVariables);
+    oldvars.map(function(variableName){
       var modeldbidOld = oldProject + oldComponent + variableName;
       if (oldComponent !== componentName || projectName !== oldProject || !newVariables.includes(variableName)){
         modeldb.get(modeldbidOld).then(function(v) {
