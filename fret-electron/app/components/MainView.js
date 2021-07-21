@@ -224,7 +224,7 @@ class MainView extends React.Component {
     }).then((result) => {
       this.setState({
         requirements : result.rows.filter(r => !system_dbkeys.includes(r.key)).map(r => {
-          if (r.doc.semantics.variables){
+          if (r.doc && r.doc.semantics && r.doc.semantics.variables){
             r.doc.semantics.variables = checkDbFormat.checkVariableFormat(r.doc.semantics.variables);
           }
           return r;
