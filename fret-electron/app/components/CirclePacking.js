@@ -139,10 +139,10 @@ class CirclePacking extends React.Component {
       focusGraph = filtered.length > 0 ? filtered[0] : []
     }
 
-    if (!focusGraph || !focusGraph.children || focusGraph.children.length == 0) return
-
     // To rerender remove previous svg
     d3.select(this.refs.anchor).selectAll("*").remove();
+
+    if (!focusGraph || !focusGraph.children || focusGraph.children.length == 0) return
 
     const width = 600
     const height = 600
