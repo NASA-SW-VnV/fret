@@ -24,29 +24,11 @@ function batchCreateOrUpdate (variables) {
   })
 };
 
-function checkforUnusedVariables() {
-  let variablesToDelete = []
-  modeldb.find({
-    selector: {
-      modeldoc: false,
-    }
-  }).then(function (result){
-    result.docs.forEach(r => {
-      if (r.reqs.length == 0 || (r.reqs.length === 1 && r.reqs[0]== '')) {
-        variablesToDelete.push({...r, _deleted: true})
-      }
-    });
-    batchCreateOrUpdate(variablesToDelete);
-  })
-};
-
-
-
-
 //This function populates the model DB when a new requirement is added (imported) or updated
   function populateVariables() {
+    let mapIdsToVariables = {};
     let rows = [];
-    let shouldUpdate = false;
+    //let shouldUpdate = false;
     db.allDocs({
       include_docs: true,
     }).then((result) => {
@@ -57,13 +39,18 @@ function checkforUnusedVariables() {
       })
     }).then(data => {
       // data.rows are variable  data in modeldb
-      const variables = data.rows.map(row => row.doc);
-      const mapIdsToVariables = {};
-      variables.forEach(variable => {
+      var variableRows = data.rows.map(row => row.doc);
+      variableRows.forEach(variable => {
+        //variable.reqs = variable.reqs.splice(0,variable.reqs.length);
         mapIdsToVariables[variable._id] = variable;
+        variable.reqs = variable.reqs.filter(item => item);
+        if (variable.reqs.length === 0){
+          mapIdsToVariables[variable._id] = {...variable, _deleted: true};
+        }
       });
       // Loop through each db requirement and create or update variable array in modeldb
       rows.forEach(r => {
+        let requirementVariables = [];
         const text = r.doc.fulltext;
         if (text) {
           const semantics = extractSemantics(text);
@@ -73,7 +60,8 @@ function checkforUnusedVariables() {
             const projectName = r.doc.project;
             const componentName = semantics.component_name;
             const dbId = r.doc._id;
-            const variables = checkDbFormat.checkVariableFormat(semantics.variables);
+            let variables = checkDbFormat.checkVariableFormat(semantics.variables);
+
             // loop through each variable in this db requirement
             for (let i = 0; i < variables.length; i++) {
               const variableName = variables[i]
@@ -82,13 +70,13 @@ function checkforUnusedVariables() {
               const variableId = projectName + componentName + variableName;
               // update the modeldb variable if it already existed
               if (mapIdsToVariables[variableId]) {
-                if (!mapIdsToVariables[variableId].reqs.includes(dbId)) {
-                  shouldUpdate = true;
-                  mapIdsToVariables[variableId].reqs.push(dbId);
+                console.log(dbId)
+                if (!requirementVariables.includes(dbId)) {
+                  requirementVariables.push(dbId);
                 }
-              // otherewise create a new modeldb variable
+                mapIdsToVariables[variableId].reqs = requirementVariables;
+              // otherwise create a new modeldb variable
               } else {
-                shouldUpdate = true;
                 const newVariable = {
                   _id: variableId,
                   project: projectName,
@@ -106,14 +94,13 @@ function checkforUnusedVariables() {
                 };
                 mapIdsToVariables[variableId] = newVariable;
               }
-
             }
           }
         }
+
+
       });
-      if (shouldUpdate) {
-        batchCreateOrUpdate(Object.values(mapIdsToVariables));
-      }
-      checkforUnusedVariables();
-    });
+    }).then(() => {
+      batchCreateOrUpdate(Object.values(mapIdsToVariables));
+    })
   }
