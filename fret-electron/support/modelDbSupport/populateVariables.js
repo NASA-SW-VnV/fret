@@ -70,7 +70,6 @@ function batchCreateOrUpdate (variables) {
               const variableId = projectName + componentName + variableName;
               // update the modeldb variable if it already existed
               if (mapIdsToVariables[variableId]) {
-                console.log(dbId)
                 if (!requirementVariables.includes(dbId)) {
                   requirementVariables.push(dbId);
                 }
@@ -101,6 +100,13 @@ function batchCreateOrUpdate (variables) {
 
       });
     }).then(() => {
+      Object.values(mapIdsToVariables).forEach(variable => {
+        if (variable.reqs.length === 0){
+          console.log(mapIdsToVariables[variable._id]);
+          mapIdsToVariables[variable._id] = {...variable, _deleted: true};
+        }
+      }
+      );
       batchCreateOrUpdate(Object.values(mapIdsToVariables));
     })
   }
