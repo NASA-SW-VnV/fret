@@ -597,7 +597,7 @@ function ProjectSummary(props) {
               <Accordion>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />} id={c.component_name}>
                   <Typography>
-                    <div style={{display : 'flex', alignItems : 'center', flexWrap : 'wrap'}}>
+                    <div key={ccKey} style={{display : 'flex', alignItems : 'center', flexWrap : 'wrap'}}>
                       {ccKey.toUpperCase()}
                       &nbsp;
                       &nbsp;
@@ -1365,10 +1365,10 @@ class RealizabilityContent extends React.Component {
     var tabs = [];
     for (var cc in connectedComponents[selected.component_name]) {
           tabs.push(<Tab key={cc} value={cc} classes={{root : classes.tabRoot}} label={
-        <div style={{display : 'flex', alignItems : 'center', flexWrap : 'wrap'}}>
+        <div key={cc} style={{display : 'flex', alignItems : 'center', flexWrap : 'wrap'}}>
           {cc}
           &nbsp;
-          <ResultIcon result={connectedComponents[selected.component_name][cc]['result']}
+          <ResultIcon key={cc} result={connectedComponents[selected.component_name][cc]['result']}
           time={connectedComponents[selected.component_name][cc]['time'] !== undefined ? ' - '+connectedComponents[selected.component_name][cc]['time'] : ''}/>
         </div>
       }/>)                 
@@ -1401,12 +1401,12 @@ class RealizabilityContent extends React.Component {
                         key={n.component_name}
                         value={!this.isComponentComplete(n.component_name) ? '' : n} 
                         title={!this.isComponentComplete(n.component_name) ? 'Analysis is not possible for this component. Please complete mandatory variable fields in Variable Mapping first.' : ''}>
-                          <span>
-                          <MenuItem disabled={!this.isComponentComplete(n.component_name)}>                        
-                            <div style={{display : 'flex', alignItems : 'center'}}>
+                          <span key={n.component_name}>
+                          <MenuItem key={n.component_name} disabled={!this.isComponentComplete(n.component_name)}>                        
+                            <div key={n.component_name} style={{display : 'flex', alignItems : 'center'}}>
                               {n.component_name}
                               &nbsp;
-                              <ResultIcon result={status[n.component_name] !== undefined ? status[n.component_name] : ''} time={(monolithic && time[n.component_name] !== undefined) ? ' - ' + time[n.component_name] : ''}/>
+                              <ResultIcon key={n.component_name} result={status[n.component_name] !== undefined ? status[n.component_name] : ''} time={(monolithic && time[n.component_name] !== undefined) ? ' - ' + time[n.component_name] : ''}/>
                             </div>
                           </MenuItem>
                           </span>
@@ -1513,7 +1513,7 @@ class RealizabilityContent extends React.Component {
                           {diagStatus === 'DIAGNOSED' ? 
                             (<Fade in={diagStatus === 'DIAGNOSED'}>
                               <div>
-                                {[...Array(2)].map((e, i) => <div> &nbsp; </div>)}
+                                {[...Array(2)].map((e, i) => <div key={i}> &nbsp; </div>)}
                                 <ChordDiagram selectedReport = {diagReport}/>
                                 &nbsp;
                               </div>
@@ -1531,7 +1531,7 @@ class RealizabilityContent extends React.Component {
                         {diagStatus === 'DIAGNOSED' ? 
                           (<Fade in={diagStatus === 'DIAGNOSED'}>
                             <div>
-                              {[...Array(2)].map((e, i) => <div> &nbsp; </div>)}
+                              {[...Array(2)].map((e, i) => <div key={i}> &nbsp; </div>)}
                               <ChordDiagram selectedReport = {diagReport}/>
                               &nbsp;
                             </div>

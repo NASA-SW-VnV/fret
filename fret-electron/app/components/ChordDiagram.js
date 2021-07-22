@@ -338,7 +338,7 @@ class ChordDiagram extends React.Component {
 	    }
 
 	    return(
-			<Grid container justify="space-evenly" spacing={10}>
+			<Grid container justifyContent="space-evenly" spacing={10}>
 				{diagram}
 				{table}
 			</Grid>					

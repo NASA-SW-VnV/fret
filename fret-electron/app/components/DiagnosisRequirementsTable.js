@@ -241,7 +241,7 @@ class DiagnosisRequirementsTable extends React.Component {
 
   constructor(props){
     super(props);
-    const self = this;
+    
     dbChangeListener = db.changes({
       since: 'now',
       live: true,
@@ -252,9 +252,9 @@ class DiagnosisRequirementsTable extends React.Component {
         this.synchStateWithDB();
       }
     }).on('complete', function(info) {
-      self.optLog(info);
+      optLog(info);
     }).on('error', function (err) {
-      self.optLog(err);
+      optLog(err);
     });
   }
 
