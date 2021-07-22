@@ -1,7 +1,7 @@
 // *****************************************************************************
 // Notices:
 // 
-// Copyright © 2019 United States Government as represented by the Administrator
+// Copyright ï¿½ 2019 United States Government as represented by the Administrator
 // of the National Aeronautics and Space Administration.  All Rights Reserved.
 // 
 // Disclaimers
@@ -32,7 +32,7 @@
 // *****************************************************************************
 // @flow
 import * as React from 'react';
-import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import { MuiThemeProvider, createTheme } from '@material-ui/core/styles';
 import secondaryColor from '@material-ui/core/colors/cyan';
 import primaryColor from '@material-ui/core/colors/blueGrey';
 
@@ -41,7 +41,7 @@ type Props = {
   children: React.Node
 };
 
-const theme = createMuiTheme({
+const theme = createTheme({
   palette: {
     primary: { main: primaryColor[800] },
     secondary: { main: secondaryColor['400'] },
