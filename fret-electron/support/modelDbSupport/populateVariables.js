@@ -35,20 +35,16 @@ function batchCreateOrUpdate (variables) {
     }).then((result) => {
       // rows are requirement data in db
       rows = result.rows;
-      console.log(rows)
       return modeldb.allDocs({
         include_docs: true,
       })
     }).then(data => {
       // data.rows are variable docs in modeldb
       var variableRows = data.rows.map(row => row.doc);
-      console.log(variableRows)
       variableRows.forEach(variable => {
         mapIdsToVariables[variable._id] = variable;
         mapIdsToVariables[variable._id].reqs = [];
         requirementVariables[variable._id] = [];
-        console.log(requirementVariables[variable._id]);
-        console.log(mapIdsToVariables);
 
       });
       // Loop through each db requirement and create or update variable array in modeldb
