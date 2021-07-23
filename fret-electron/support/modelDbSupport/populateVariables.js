@@ -35,16 +35,20 @@ function batchCreateOrUpdate (variables) {
     }).then((result) => {
       // rows are requirement data in db
       rows = result.rows;
+      console.log(rows)
       return modeldb.allDocs({
         include_docs: true,
       })
     }).then(data => {
       // data.rows are variable docs in modeldb
       var variableRows = data.rows.map(row => row.doc);
+      console.log(variableRows)
       variableRows.forEach(variable => {
         mapIdsToVariables[variable._id] = variable;
         mapIdsToVariables[variable._id].reqs = [];
         requirementVariables[variable._id] = [];
+        console.log(requirementVariables[variable._id]);
+        console.log(mapIdsToVariables);
 
       });
       // Loop through each db requirement and create or update variable array in modeldb
@@ -72,7 +76,6 @@ function batchCreateOrUpdate (variables) {
                 if (! requirementVariables[variableId].includes(dbId)) {
                   requirementVariables[variableId].push(dbId);
                 }
-
               // otherwise create a new modeldb variable
               } else {
                 const newVariable = {
@@ -80,7 +83,7 @@ function batchCreateOrUpdate (variables) {
                   project: projectName,
                   component_name: componentName,
                   variable_name: variableName,
-                  reqs: [dbId],
+                  reqs: [],
                   dataType: '',
                   idType: '' ,
                   description: '',
@@ -91,6 +94,7 @@ function batchCreateOrUpdate (variables) {
                   model_id: ''
                 };
                 mapIdsToVariables[variableId] = newVariable;
+                requirementVariables[variableId] = [dbId];
               }
             }
           }
@@ -101,12 +105,12 @@ function batchCreateOrUpdate (variables) {
       Object.values(mapIdsToVariables).forEach(variable => {
         if (requirementVariables[variable._id]){
           mapIdsToVariables[variable._id].reqs = requirementVariables[variable._id].slice();
-        if (mapIdsToVariables[variable._id].reqs){
-          mapIdsToVariables[variable._id].reqs = variable.reqs.filter(item => item);
-          if (mapIdsToVariables[variable._id].reqs.length === 0){
-            mapIdsToVariables[variable._id] = {...variable, _deleted: true};
+          if (mapIdsToVariables[variable._id].reqs){
+            mapIdsToVariables[variable._id].reqs = variable.reqs.filter(item => item);
+            if (mapIdsToVariables[variable._id].reqs.length === 0){
+              mapIdsToVariables[variable._id] = {...variable, _deleted: true};
+            }
           }
-        }
       }
     })}).then(() => {
           batchCreateOrUpdate(Object.values(mapIdsToVariables));
