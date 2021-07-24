@@ -38,7 +38,7 @@ function removeVariablesInBulk (requirements) {
   let mapVariablesToReqIds = createVariableMappingToDeleteRequirements(requirements);
   // We want to do bulk db change.  Get all promises to be resolved before doing update
   Promise.all(Object.entries(mapVariablesToReqIds).map(([variable, reqsToDelete]) => {
-     modeldb.get(variable).then(function(v) {
+     return modeldb.get(variable).then(function(v) {
       // if this variable is referenced by more requirements than the requirements to be removed
       // then we keep this variable and populate the requirement list
       if (v.reqs.length > reqsToDelete.length) {
@@ -70,7 +70,7 @@ function removeVariablesInBulk (requirements) {
       }
     })
   })).then(() => {
-     modeldb.bulkDocs(docs)
+     return modeldb.bulkDocs(docs)
     }).catch(function (err) {
       console.log(err);
     });
