@@ -78,7 +78,7 @@ function importRequirements (data, projects) {
   }).catch((err) => {
     console.log(err);
   }).then(() => {
-    setChangeRequirementFlag(true)
+    return setChangeRequirementFlag(true)
   }).
   then(() => db.bulkDocs(data)
     ).
