@@ -45,7 +45,7 @@ const modeldb = sharedObj.modeldb;
 const system_dbkeys = sharedObj.system_dbkeys;
 const checkDbFormat = require('../../support/fretDbSupport/checkDBFormat.js');
 
-var dbChangeListener, modeldbChangeListener;
+var dbChangeListener;
 let id = 0;
 
 function optLog(str) {if (constants.verboseRealizabilityTesting) console.log(str)}
@@ -100,35 +100,21 @@ class RealizabilityView extends React.Component {
     }).on('error', function (err) {
       optLog(err);
     });
-    modeldbChangeListener = modeldb.changes({
-      since: 'now',
-      live: true,
-      include_docs: true
-    }).on('change', (change) => {
-        this.synchStateWithModelDB();
-    }).on('complete', function(info) {
-      optLog(info);
-    }).on('error', function (err) {
-      optLog(err);
-    });
   }
 
   componentDidMount() {
     this.mounted = true;
     this.synchStateWithDB();
-    this.synchStateWithModelDB();
   }
 
   componentWillUnmount() {
     this.mounted = false;
     dbChangeListener.cancel();
-    modeldbChangeListener.cancel();
   }
 
   componentDidUpdate(prevProps) {
     if (this.props.selectedProject !== prevProps.selectedProject) {
       this.synchStateWithDB();
-      this.synchStateWithModelDB();
     }
   }
 
@@ -216,10 +202,6 @@ class RealizabilityView extends React.Component {
         self.checkComponentCompleted(component.component_name, selectedProject);
 
     })
-  }
-
-  synchStateWithModelDB () {
-    if (!this.mounted) return;
   }
 
   checkComponentCompleted(component_name, project) {
