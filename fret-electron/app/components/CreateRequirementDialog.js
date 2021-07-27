@@ -44,9 +44,9 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import IconButton from '@material-ui/core/IconButton';
 import HelpIcon from '@material-ui/icons/HelpOutline';
 import { withStyles } from '@material-ui/core/styles';
-import GridList from '@material-ui/core/GridList';
-import GridListTile from '@material-ui/core/GridListTile';
-import GridListTileBar from '@material-ui/core/GridListTileBar';
+import ImageList from '@material-ui/core/ImageList';
+import ImageListItem from '@material-ui/core/ImageListItem';
+import ImageListItemBar from '@material-ui/core/ImageListItemBar';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -102,7 +102,7 @@ const formStyles = theme => ({
   button: {
     margin: theme.spacing(),
   },
-  gridList: {
+  ImageList: {
     width: 600,
     height: 600,
   },
@@ -481,8 +481,8 @@ class CreateRequirementDialog extends React.Component {
                     <DialogContentText>
                     &nbsp;
                     </DialogContentText>
-                    <GridList cols={3} cellHeight={'auto'} >
-                      <GridListTile>
+                    <ImageList cols={3} rowHeight={'auto'} >
+                      <ImageListItem>
                         <TextField
                           autoFocus
                           id="reqid"
@@ -492,8 +492,8 @@ class CreateRequirementDialog extends React.Component {
                           fullWidth
                           onChange={this.handleTextFieldChange('reqid')}
                         />
-                      </GridListTile>
-                      <GridListTile>
+                      </ImageListItem>
+                      <ImageListItem>
                         <TextField
                           id="parent_reqid"
                           label="Parent Requirement ID"
@@ -502,8 +502,8 @@ class CreateRequirementDialog extends React.Component {
                           fullWidth
                           onChange={this.handleTextFieldChange('parent_reqid')}
                         />
-                      </GridListTile>
-                      <GridListTile >
+                      </ImageListItem>
+                      <ImageListItem >
                         <FormControl fullWidth>
                           <InputLabel htmlFor="project-field">Project</InputLabel>
                           <Select
@@ -523,8 +523,8 @@ class CreateRequirementDialog extends React.Component {
                             }
                           </Select>
                         </FormControl>
-                      </GridListTile>
-                      <GridListTile cols={3} className={classes.aux}>
+                      </ImageListItem>
+                      <ImageListItem cols={3} className={classes.aux}>
                         <Accordion className={classes.accordion}>
                           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                             <Typography className={classes.heading}>Rationale and Comments</Typography>
@@ -556,8 +556,8 @@ class CreateRequirementDialog extends React.Component {
                         </div>
                         </AccordionDetails>
                         </Accordion>
-                      </GridListTile>
-                    </GridList>
+                      </ImageListItem>
+                    </ImageList>
                     {this.renderEditor({
                       fulltext,
                       templateValues

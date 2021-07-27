@@ -45,9 +45,9 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import GridList from '@material-ui/core/GridList';
-import GridListTile from '@material-ui/core/GridListTile';
-import GridListTileBar from '@material-ui/core/GridListTileBar';
+import ImageList from '@material-ui/core/ImageList';
+import ImageListItem from '@material-ui/core/ImageListItem';
+import ImageListItemBar from '@material-ui/core/ImageListItemBar';
 import Tooltip from '@material-ui/core/Tooltip';
 
 const styles = theme => ({
@@ -166,8 +166,8 @@ class DisplayRequirementDialog extends React.Component {
           onClose={this.handleClose}
           aria-labelledby="form-dialog-title"
         >
-          <GridList cellHeight='auto' cols={2}>
-            <GridListTile>
+          <ImageList rowHeight='auto' cols={2}>
+            <ImageListItem>
                 <DialogTitle id="form-dialog-title">{reqidLabel}
                   <IconButton onClick={this.handleUpdateRequirement} size="small" color="secondary" aria-label="edit" >
                     <Tooltip id="tooltip-icon-edit" title="Edit Requirement">
@@ -180,27 +180,27 @@ class DisplayRequirementDialog extends React.Component {
                     </Tooltip>
                   </IconButton>
                 </DialogTitle>
-            </GridListTile>
-            <GridListTile>
+            </ImageListItem>
+            <ImageListItem>
               <DialogTitle style={{textAlign: 'right'}} id="form-dialog-title">{projectLabel}</DialogTitle>
-            </GridListTile>
-          </GridList>
+            </ImageListItem>
+          </ImageList>
           <Divider/>
           <DialogContent>
             <br/>
-            <GridList cols={1} cellHeight='auto' spacing={20}>
-              <GridListTile>
+            <ImageList cols={1} rowHeight='auto' gap={20}>
+              <ImageListItem>
                 <Typography variant='button'>Rationale</Typography><br/>
                 <Typography color='primary' variant='body1'>{rationale}</Typography>
-              </GridListTile>
-              <GridListTile>
+              </ImageListItem>
+              <ImageListItem>
                 <Typography variant='button'>Requirement</Typography><br/>
                 <Typography color='primary' variant='body1'>{fulltext}</Typography>
-              </GridListTile>
-              <GridListTile>
+              </ImageListItem>
+              <ImageListItem>
                 {this.renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path)}
-              </GridListTile>
-            </GridList>
+              </ImageListItem>
+            </ImageList>
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleClose} color="secondary">

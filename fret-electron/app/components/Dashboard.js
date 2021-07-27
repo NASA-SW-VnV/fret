@@ -34,8 +34,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import GridList from '@material-ui/core/GridList';
-import GridListTile from '@material-ui/core/GridListTile';
+import ImageList from '@material-ui/core/ImageList';
+import ImageListItem from '@material-ui/core/ImageListItem';
 import List from '@material-ui/core/List';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import Divider from '@material-ui/core/Divider';
@@ -114,37 +114,37 @@ class Dashboard extends React.Component {
 
     return (
       <div className={classes.root}>
-        <GridList cellHeight={120} className={classes.gridList} cols={5} spacing={4}>
-          <GridListTile cols={1}>
+        <ImageList rowHeight={120} className={classes.ImageList} cols={5} gap={4}>
+          <ImageListItem cols={1}>
             <Widget statistics={projectOverviewValue} title={projectOverviewTitle}/>
-          </GridListTile>
-          <GridListTile cols={1}>
+          </ImageListItem>
+          <ImageListItem cols={1}>
             <Widget statistics={numOfRequirements.toString()} title='Total Requirements'/>
-          </GridListTile>
-          <GridListTile cols={1}>
+          </ImageListItem>
+          <ImageListItem cols={1}>
             <Widget statistics={percentageOfFormalized} title='Formalized Requirements' unit='%'/>
-          </GridListTile>
-          <GridListTile cols={1}>
+          </ImageListItem>
+          <ImageListItem cols={1}>
             <Widget statistics={components.length.toString()} title='System Components'/>
-          </GridListTile>
-          <GridListTile cols={1}>
+          </ImageListItem>
+          <ImageListItem cols={1}>
             <Widget statistics={bytesOfRequirements.toString()} title='Requirement Size' unit='bytes'/>
-          </GridListTile>
-          <GridListTile cols={3} rows={6}>
+          </ImageListItem>
+          <ImageListItem cols={3} rows={6}>
             <List>
             <ListSubheader color='primary' disableGutters={true}>Hierarchical Cluster</ListSubheader>
             </List>
             <Divider />
             <CirclePacking selectedProject={selectedProject} projects={projects} requirements={requirements}/>
-          </GridListTile>
-          <GridListTile cols={2} rows={6}>
+          </ImageListItem>
+          <ImageListItem cols={2} rows={6}>
             <List>
             <ListSubheader color='primary' disableGutters={false}>Recent Activity</ListSubheader>
             </List>
             <Divider />
             <Feeds selectedProject={selectedProject} requirements={requirements}/>
-          </GridListTile>
-        </GridList>
+          </ImageListItem>
+        </ImageList>
       </div>
     );
   }
