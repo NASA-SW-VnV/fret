@@ -60,69 +60,83 @@ class CirclePacking extends React.Component {
 
   createGraph = () => {
     if (!this.mounted) return;
-      const data = {
-        name: "root",
-        children: [],
+    const data = {
+      name: "root",
+      children: [],
+    }
+    const projectRootMap = {}
+    const parentChildMap = {}
+    const nodeMap = {}
+    const mapReqIdsToProjects = {};
+    this.props.requirements.forEach(r => {
+      const reqid = r.doc.reqid;
+      const project = r.doc.project
+      if(!mapReqIdsToProjects[reqid]) {
+        mapReqIdsToProjects[reqid] = [];
       }
-      const projectRootMap = {}
-      const parentChildMap = {}
-      const nodeMap = {}
-      this.props.requirements.forEach( r => {
-        const req = r.doc
-        var reqid = r.doc.reqid
-        if (reqid == '' || reqid == undefined){ reqid = 'Undefined ReqID'}
-        var project = r.doc.project
-        if (project == '' || project == undefined){ project = 'Undefined ProjectID'}
-        const parent_reqid = req.parent_reqid
-
-        if (reqid && reqid.length > 0) {
-          nodeMap[reqid] = {
-            name: reqid,
-            size: 1,
-            doc: r.doc
-          }
+      mapReqIdsToProjects[reqid].push(project)
+    })
+    this.props.requirements.forEach( r => {
+      const req = r.doc
+      var reqid = r.doc.reqid
+      if (reqid == '' || reqid == undefined){ reqid = 'Undefined ReqID'}
+      var project = r.doc.project
+      if (project == '' || project == undefined){ project = 'Undefined ProjectID'}
+      const parent_reqid = req.parent_reqid
+  
+      if (reqid && reqid.length > 0) {
+        if(!(project in nodeMap)) {
+          nodeMap[project] = {}
         }
-        if (project && project.length > 0) {
-          if (!(project in projectRootMap)) {
-            projectRootMap[project] = []
-          }
-          if (!parent_reqid) {
-            projectRootMap[project].push(reqid)
-          } else if (parent_reqid && parent_reqid.length >  0){
-            if (!(parent_reqid in parentChildMap)) {
-              parentChildMap[parent_reqid] = []
-            }
-            parentChildMap[parent_reqid].push(reqid)
-          }
+        nodeMap[project][reqid] = {
+          name: reqid,
+          size: 1,
+          doc: r.doc
         }
-      })
-
-      for (var parent_reqid in parentChildMap) {
-        if (parent_reqid in nodeMap) {
-          nodeMap[parent_reqid]['children'] = []
-          parentChildMap[parent_reqid].forEach(child_reqid => {
-            nodeMap[parent_reqid].children.push(nodeMap[child_reqid])
+      }
+      if (project && project.length > 0) {
+        if (!(project in projectRootMap)) {
+          projectRootMap[project] = []
+        } if (parent_reqid && mapReqIdsToProjects[parent_reqid] && mapReqIdsToProjects[parent_reqid].some(proj => proj === project)){
+          if(!(project in parentChildMap)) {
+            parentChildMap[project] = {};
+          }
+          if (!(parent_reqid in parentChildMap[project])) {
+            parentChildMap[project][parent_reqid] = []
+          }
+          parentChildMap[project][parent_reqid].push(reqid)
+        } else {
+          projectRootMap[project].push(reqid)
+        }
+      }
+    })
+    for (var project in parentChildMap) {
+      for (var parent_reqid in parentChildMap[project]) {
+        if (parent_reqid in nodeMap[project]) {
+          nodeMap[project][parent_reqid]['children'] = []
+          parentChildMap[project][parent_reqid].forEach(child_reqid => {
+            nodeMap[project][parent_reqid].children.push(nodeMap[project][child_reqid])
           })
         }
       }
-
-      for (var project in projectRootMap) {
-        const root_reqids = projectRootMap[project]
-        const project_node = {
-          name: project,
-          size:1,
-          children: []
-        }
-        root_reqids.forEach( reqid => {
-          project_node.children.push(nodeMap[reqid])
-        })
-
-        data.children.push(project_node)
+    }
+  
+    for (var project in projectRootMap) {
+      const root_reqids = projectRootMap[project]
+      const project_node = {
+        name: project,
+        size:1,
+        children: []
       }
-
-      this.setState({
-        graph : data
+      root_reqids.forEach( reqid => {
+        project_node.children.push(nodeMap[project][reqid])
       })
+      data.children.push(project_node)
+    }
+    console.log('data', data)
+    this.setState({
+      graph : data
+    })
   }
 
   createD3() {
