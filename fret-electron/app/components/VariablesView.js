@@ -193,8 +193,11 @@ class ComponentSummary extends React.Component {
         contract.assignments.push(doc.assignment);
         contract.copilotAssignments.push(doc.copilotAssignment);
       } else if (doc.idType === 'Mode'){
-        if (doc.modeRequirement !== '')
-          variable.assignment = doc.modeRequirement;
+          variable.type = 'bool'
+          if (doc.modeRequirement !== ''){
+              variable.assignment = doc.modeRequirement;
+              variable.copilotAssignment = '';
+          }
           contract.modes.push(variable);
       } else if (doc.idType === 'Function'){
         variable.moduleName = doc.moduleName;
@@ -344,6 +347,10 @@ class ComponentSummary extends React.Component {
             if (language === 'cocospec'){
               archive.append(ejsCache.renderContractCode().contract.complete(contract), {name: contract.componentName+'.lus'})
             } else if (language === 'copilot'){
+              contract.internalVariables.push.apply(contract.internalVariables, contract.modes);
+              contract.modes.forEach(function(mode) {
+                contract.assignments.push(mode.assignment);
+              });
               archive.append(ejsCacheCoPilot.renderCoPilotSpec().contract.complete(contract), {name: contract.componentName+'.json'})
             }
             // finalize the archive (ie we are done appending files but streams have to finish yet)
