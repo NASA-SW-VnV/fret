@@ -96,12 +96,12 @@ const styles = theme => ({
   },
   checked: {
     color: theme.palette.secondary.main,
-  },
-  paper: theme.mixins.gutters({
+  },  
+  paper: {
     paddingBottom: 16,
     height: 106,
     background: theme.palette.background.paper2,
-  }),
+  },
 });
 
 const db = require('electron').remote.getGlobal('sharedObj').db;
