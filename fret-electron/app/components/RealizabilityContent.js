@@ -110,13 +110,11 @@ const db = sharedObj.db;
 const constants = require('../parser/Constants');
 
 const fs = require('fs');
-// var commandExistsSync = require('command-exists').sync;
 const { execSync } = require('child_process');
 const process = require('process');
 
 var analysisPath = require("os").homedir() + '/Documents/fret-analysis/';
 
-// const analysisPath = 'analysis/tmp/';
 var dbChangeListener;
 
 let counter = 0;
@@ -164,7 +162,6 @@ const rows = [
 
 const styles = theme => ({
   root: {
-    // width: '100%',
     display: 'flex',
     flexDirection : 'column'    
   },
@@ -242,40 +239,6 @@ function determineResultIcon(result, time) {
     </Tooltip>
   );
 }
-
-// class ErrorBoundary extends React.Component {
-//   constructor(props) {
-//     super(props);
-//     this.state = { error: null, errorInfo: null };
-//   }
-  
-//   componentDidCatch(error, errorInfo) {
-//     // Catch errors in any components below and re-render with error message
-//     this.setState({
-//       error: error,
-//       errorInfo: errorInfo
-//     })
-//     // You can also log error messages to an error reporting service here
-//   }
-  
-//   render() {
-//     if (this.state.errorInfo) {
-//       // Error path
-//       return (
-//         <div>
-//           <h2>Something went wrong.</h2>
-//           <details style={{ whiteSpace: 'pre-wrap' }}>
-//             {this.state.error && this.state.error.toString()}
-//             <br />
-//             {this.state.errorInfo.componentStack}
-//           </details>
-//         </div>
-//       );
-//     }
-//     // Normally, just render children
-//     return this.props.children;
-//   }  
-// }
 
 class ResultIcon extends React.Component {
   render() {
@@ -751,28 +714,6 @@ class RealizabilityContent extends React.Component {
     })
   }
 
-  // checkDependenciesExist() {
-  //   var missing = this.state.missingDependencies;
-  //   if (!commandExistsSync('jkind')) {
-  //     missing.push('jkind')
-  //   }
-  //   if (!commandExistsSync('aeval')) {
-  //     missing.push('aeval')
-  //   }
-  //   if (!commandExistsSync('z3')) {
-  //     missing.push('z3')
-  //   }
-  //   if (missing.length !== 0) {
-  //     this.setState({
-  //       missingDependencies: missing
-  //     });
-  //   } else {
-  //     this.setState({
-  //       dependenciesExist: true
-  //     });
-  //   }
-  // }
-
   checkDependenciesExist() {
     var missing = this.state.missingDependencies;
     try {
@@ -921,91 +862,9 @@ class RealizabilityContent extends React.Component {
           var ccContract = JSON.parse(JSON.stringify(contract))          
           var ccProperties = contract.properties.filter(p => connectedComponents[selected.component_name][ccSelected].
             properties.has(p.reqid))
-          ccContract.properties = ccProperties          
-
-          // if (selected.component_name === 'FSM' && ccSelected === 'cc0') {
-          //   setTimeout(function(){
-          //   connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'] = 'DIAGNOSED'
-          //   connectedComponents[selected.component_name][ccSelected]['diagnosisReport'] = {
-          //   "Counterexamples": [
-          //   {
-          //       "K": "1",
-          //       "props": "[FSM002, FSM003]",
-          //       "Counterexample": [
-          //           {"name": "good","type": "bool","Step 0": true},
-          //           {"name": "standby","type": "bool","Step 0": true},
-          //           {"name": "state","type": "real","Step 0": 0},
-          //           {"name": "supported","type": "bool","Step 0": true},
-          //           {"name": "STATE","type": "real","Step 0": 2},
-          //           {"name": "FSM002","type": "bool","Step 0": false},
-          //           {"name": "FSM003","type": "bool","Step 0": false},
-          //           {"name": "ap_nominal_state","type": "real","Step 0": 1},
-          //           {"name": "ap_standby_state","type": "real","Step 0": 3},
-          //           {"name": "ap_transition_state","type": "real","Step 0": 0}
-          //       ]
-          //   },
-          //   {
-          //       "K": "1",
-          //       "props": "[FSM005, FSM004]",
-          //       "Counterexample": [
-          //           {"name": "good","type": "bool","Step 0": false},
-          //           {"name": "standby","type": "bool","Step 0": true},
-          //           {"name": "state","type": "real","Step 0": 1},
-          //           {"name": "STATE","type": "real","Step 0": 0},
-          //           {"name": "FSM004","type": "bool","Step 0": false},
-          //           {"name": "FSM005","type": "bool","Step 0": false},
-          //           {"name": "ap_maneuver_state","type": "real","Step 0": 2},
-          //           {"name": "ap_nominal_state","type": "real","Step 0": 1},
-          //           {"name": "ap_standby_state","type": "real","Step 0": 3}
-          //       ]
-          //   },
-          //   {
-          //       "K": "1",
-          //       "props": "[FSM007, FSM006]",
-          //       "Counterexample": [
-          //           {"name": "good","type": "bool","Step 0": true},
-          //           {"name": "standby","type": "bool","Step 0": true},
-          //           {"name": "state","type": "real","Step 0": 2},
-          //           {"name": "supported","type": "bool","Step 0": true},
-          //           {"name": "STATE","type": "real","Step 0": 1},
-          //           {"name": "FSM006","type": "bool","Step 0": false},
-          //           {"name": "FSM007","type": "bool","Step 0": false},
-          //           {"name": "ap_maneuver_state","type": "real","Step 0": 2},
-          //           {"name": "ap_standby_state","type": "real","Step 0": 3},
-          //           {"name": "ap_transition_state","type": "real","Step 0": 0}
-          //       ]
-          //   },
-          //   {
-          //       "K": "1",
-          //       "props": "[FSM008, FSM009]",
-          //       "Counterexample": [
-          //           {"name": "apfail","type": "bool","Step 0": true},
-          //           {"name": "standby","type": "bool","Step 0": false},
-          //           {"name": "state","type": "real","Step 0": 3},
-          //           {"name": "STATE","type": "real","Step 0": 1},
-          //           {"name": "FSM008","type": "bool","Step 0": false},
-          //           {"name": "FSM009","type": "bool","Step 0": false},
-          //           {"name": "ap_maneuver_state","type": "real","Step 0": 2},
-          //           {"name": "ap_standby_state","type": "real","Step 0": 3},
-          //           {"name": "ap_transition_state","type": "real","Step 0": 0}
-          //       ]
-          //   }
-          //   ],
-          //   "Conflicts": [
-          //       {"Conflict": "[FSM002, FSM003]"},
-          //       {"Conflict": "[FSM005, FSM004]"},
-          //       {"Conflict": "[FSM007, FSM006]"},
-          //       {"Conflict": "[FSM008, FSM009]"}
-          //   ],
-          //   "Properties": ["FSM002","FSM003","FSM004","FSM005","FSM006","FSM007","FSM008","FSM009"]
-          // }
-          // self.setState({ connectedComponents : connectedComponents});
-          // }, 10000)
-
-          // } else {
+          ccContract.properties = ccProperties
 
           let engine = new DiagnosisEngine(ccContract, actualTimeout, 'realizability');                    
-          // const result = engine.main();          
           engine.main(function (result) {
             connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'] = 'DIAGNOSED'
             connectedComponents[selected.component_name][ccSelected]['diagnosisReport'] = result[1];   
@@ -1016,17 +875,8 @@ class RealizabilityContent extends React.Component {
               self.deleteAnalysisFiles();
             }            
           });
-
-          // }
-
-          // connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'] = 'DIAGNOSED'
-          // connectedComponents[selected.component_name][ccSelected]['diagnosisReport'] = result[1];   
-          // self.setState({ connectedComponents : connectedComponents});
         } else if (monolithic) {      
-          // diagnosisStatus[selected.component_name] = 'PROCESSING'
-          // self.setState({ diagnosisStatus : diagnosisStatus})
           let engine = new DiagnosisEngine(contract, actualTimeout, 'realizability');
-          // var result = engine.main();
           engine.main(function (result) {
             diagnosisStatus[selected.component_name] = 'DIAGNOSED';
             diagnosisReports[selected.component_name] = result[1];            
@@ -1039,21 +889,8 @@ class RealizabilityContent extends React.Component {
             if (process.env.NODE_ENV !== 'development') {
               self.deleteAnalysisFiles();
             }            
-          });
-          
-            // diagnosisStatus[selected.component_name] = 'DIAGNOSED';
-            // diagnosisReports[selected.component_name] = result[1];            
-            // self.setState({
-            //   diagnosisStatus : diagnosisStatus,
-            //   diagnosisReports : diagnosisReports
-            // });
-          
+          });          
         }
-
-        // //delete intermediate files under homeDir/Documents/fret-analysis if not in dev mode
-        // if (process.env.NODE_ENV !== 'development') {
-        //   self.deleteAnalysisFiles();
-        // }
       })
     })
   }
@@ -1248,8 +1085,6 @@ class RealizabilityContent extends React.Component {
                 } else {
                   var result = checkOutput.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];
                   var time = checkOutput.match(new RegExp('(Time = )(.*?)\\n'))[2];
-                  // monolithicResult = result;
-                  // monolithicTime = time;
                   self.setState(prevState => {
                     prevState.monolithicStatus[tC.component_name] = result;
                     prevState.time[tC.component_name] = time;
@@ -1261,7 +1096,6 @@ class RealizabilityContent extends React.Component {
                   self.deleteAnalysisFiles();
                 }
               })
-            // return result;
           } else if (compositional) {          
             Object.keys(connectedComponents[tC.component_name]).forEach((cc) => {
               var filePath = analysisPath + tC.component_name+'_'+cc+'.lus';                
@@ -1296,12 +1130,7 @@ class RealizabilityContent extends React.Component {
                     prevState.connectedComponents = connectedComponents
                     return(prevState);
                   })
-
-                  // self.setState({
-                  //   connectedComponents : connectedComponents
-                  // });
                   ccResults.push(ccResult);
-                  // })
                 }              
                 if (ccResults.length === Object.keys(connectedComponents[tC.component_name]).length) {
                   const reducer = (accumulator, currentValue) => accumulator && (currentValue === 'REALIZABLE');
@@ -1476,9 +1305,6 @@ class RealizabilityContent extends React.Component {
               </Button>
               {diagStatus === 'PROCESSING' && <CircularProgress size={24} className={classes.buttonProgress}/>}
             </div>
-            {/*<div className={classes.wrapper}>
-              <Button disabled size="small" className={classes.vAlign} variant="contained"> Export </Button>
-            </div>*/}
             <div className={classes.wrapper}>
             <Button color="secondary" onClick={this.handleHelpOpen} size="small" className={classes.vAlign} variant="contained"> Help </Button>
             </div>
