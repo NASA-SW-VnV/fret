@@ -37,6 +37,11 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 
+import ReactMarkdown from "react-markdown";
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+
 /* Icons Imports*/
 import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
@@ -74,6 +79,8 @@ const archiver = require('archiver');
 const app = require('electron').remote.app;
 const dialog = require('electron').remote.dialog;
 
+import analysisPortalManual from '../../docs/_media/ExportingForAnalysis/analysisInsideFRET.md';
+
 var dbChangeListener;
 let id = 0;
 
@@ -100,6 +107,12 @@ const styles = theme => ({
   },
   selectEmpty: {
     marginTop: theme.spacing(2),
+  },
+  closeButton: {
+    position: 'absolute',
+    right: theme.spacing(1),
+    top: theme.spacing(1),
+    color: theme.palette.grey[500],
   },
 });
 
@@ -408,11 +421,20 @@ class VariablesView extends React.Component {
     cocospecData: {},
     cocospecModes: {},
     language: '',
+    helpOpen : false
   }
 
   handleChange = name => event => {
     event.stopPropagation();
     this.setState({ [name]: event.target.value });
+  };
+
+  handleHelpOpen = () => {
+    this.setState({helpOpen : true});
+  };
+
+  handleHelpClose = () => {
+    this.setState({helpOpen : false});
   };
 
   constructor(props){
@@ -570,10 +592,27 @@ class VariablesView extends React.Component {
     return (
       <div>
           <div className={classes.actions}>
+          <div style={{alignItems: 'flex-end', display: 'flex', flexWrap :'wrap'}}>
             <VariablesViewHeader
               selectedProject={selectedProject}
               language={language}
               handleChange={this.handleChange}/>
+              &nbsp;&nbsp;&nbsp;
+              <Button color="secondary" onClick={this.handleHelpOpen} size="small" variant="contained"> Help </Button>
+            </div>
+              <Dialog maxWidth='lg' onClose={this.handleHelpClose} open={this.state.helpOpen}>
+                <DialogTitle id="analysisPortal-help">
+                  <Typography>
+                    Help
+                  </Typography>
+                  <IconButton className={classes.closeButton} aria-label="close" onClick={this.handleHelpClose}>
+                    <CloseIcon />
+                  </IconButton>
+                </DialogTitle>
+                <DialogContent dividers>
+                  <ReactMarkdown renderers={{image: (props) => <img {...props} style={{maxHeight: '15%', width: '90%'}} />}} transformImageUri = {uri => `../docs/_media/screen_shots/${uri}`} linkTarget="_blank" source={analysisPortalManual}/>
+                </DialogContent>
+              </Dialog>
           </div>
           <div className={classes.root}>
 
