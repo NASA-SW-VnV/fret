@@ -333,7 +333,7 @@ class ComponentSummary extends React.Component {
           let contract = self.getContractInfo(modelResult);
           contract.componentName = component+'Spec';
           archive.pipe(output);
-          if (language === 'cocospec'){
+          if (language === 'cocospec' && modelResult.docs[0].modelComponent != ""){
             var variableMapping = self.getMappingInfo(modelResult, contract.componentName);
             archive.append(JSON.stringify(variableMapping), {name: 'cocospecMapping'+component+'.json'});
           }
