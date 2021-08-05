@@ -133,7 +133,6 @@ class CirclePacking extends React.Component {
       })
       data.children.push(project_node)
     }
-    console.log('data', data)
     this.setState({
       graph : data
     })
