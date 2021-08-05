@@ -90,7 +90,11 @@ class DeleteProjectDialog extends React.Component {
        _id: 'FRET_PROJECTS',
        _rev: doc._rev,
        names: list
-     })
+     }).then(() => {
+      if(this.props.selectedProject === project) {
+        this.props.initializeSelectedProject();
+      }
+    })
    }).catch((err) => {
      console.log(err);
    });

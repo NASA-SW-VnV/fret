@@ -217,6 +217,12 @@ class MainView extends React.Component {
     changingReqsInBulk: false,
   };
 
+  initializeSelectedProject = () => {
+    this.setState({
+      selectedProject: 'All Projects',
+    })
+  }
+
   synchStateWithDB() {
     // this function update the requirements in state from database
     db.allDocs({
@@ -663,6 +669,8 @@ class MainView extends React.Component {
             open={this.state.deleteProjectDialogOpen}
             projectTobeDeleted={this.state.projectTobeDeleted}
             handleDialogClose={this.closeDeleteProjectDialog}
+            selectedProject={this.state.selectedProject}
+            initializeSelectedProject={this.initializeSelectedProject}
           />
           <ExportRequirementsDialog
             open={this.state.exportRequirementsDialogOpen}
