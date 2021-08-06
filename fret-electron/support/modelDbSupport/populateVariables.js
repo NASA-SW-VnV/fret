@@ -42,10 +42,11 @@ function batchCreateOrUpdate (variables) {
       // data.rows are variable docs in modeldb
       var variableRows = data.rows.map(row => row.doc);
       variableRows.forEach(variable => {
-        mapIdsToVariables[variable._id] = variable;
-        mapIdsToVariables[variable._id].reqs = [];
-        requirementVariables[variable._id] = [];
-
+        if (variable.modeldoc === false){
+          mapIdsToVariables[variable._id] = variable;
+          mapIdsToVariables[variable._id].reqs = [];
+          requirementVariables[variable._id] = [];
+        }
       });
       // Loop through each db requirement and create or update variable array in modeldb
       rows.forEach(r => {
