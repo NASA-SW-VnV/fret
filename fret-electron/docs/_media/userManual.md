@@ -17,6 +17,7 @@ FRET is a framework for the elicitation, specification, formalization and unders
 * [Semantics](./semantics/semanticsOverview.md)
 * [Using the simulator](./usingTheSimulator/ltlsim.md)
 * [Exporting for analysis](./ExportingForAnalysis/analysis.md)
+* [Realizability checking](./exports/realizabilityManual.md)
 * [FRETish grammar](./fretishGrammar/index.html ':include width=100% height=800px')
 
 #### FRET Example Requirements
