@@ -1,9 +1,0 @@
-dkooi@rse-mac-2:~/Workspace/fret/LM-casestudy/realizability_results/Modified/FSM$ jrealizability FSM_SensorSpec.lus --fixpoint
-
-==========================================
-  JRealizability 3.0.1
-==========================================
-
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-UNKNOWN || True for 0 steps || Time = 0.304s
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

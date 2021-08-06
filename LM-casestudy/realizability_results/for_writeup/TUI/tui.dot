@@ -1,5 +1,0 @@
-strict graph "" {
-	TUI001 -- yout;
-	TUI002 -- yout;
-	yout -- TUI003;
-}
