@@ -75,7 +75,7 @@ menu: {
 formControl: {
     margin: theme.spacing(2),
     minWidth: 450,
-    marginTop: theme.spacing(-,1)
+    marginTop: theme.spacing(-.1)
   },
   title: {
     marginTop: theme.spacing(2),
