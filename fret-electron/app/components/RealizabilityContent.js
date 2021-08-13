@@ -803,7 +803,7 @@ class RealizabilityContent extends React.Component {
       if (event.target.value === 'all') {
         this.setState({selected: 'all', monolithic : false, compositional : true});
       } else {
-        this.setState({selected: event.target.value, monolithic : Object.keys(connectedComponents[event.target.value.component_name]).length === 1, compositional : Object.keys(connectedComponents[event.target.value.component_name]).length > 1});
+        this.setState({selected: event.target.value, monolithic : Object.keys(connectedComponents[event.target.value.component_name]).length <= 1, compositional : Object.keys(connectedComponents[event.target.value.component_name]).length > 1});
       }
 
     } else if (name === 'monolithic' && !this.state.monolithic) {
@@ -1246,7 +1246,7 @@ class RealizabilityContent extends React.Component {
               </Select>
             </FormControl>
             <FormControlLabel
-              disabled={selected === '' || (selected !== 'all' && Object.keys(connectedComponents[selected.component_name]).length === 1)}
+              disabled={selected === '' || (selected !== 'all' && Object.keys(connectedComponents[selected.component_name]).length <= 1)}
               control={
                 <Checkbox
                   checked={compositional}
