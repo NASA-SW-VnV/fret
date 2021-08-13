@@ -199,9 +199,9 @@ const tableComponentBarStyles = theme => ({
     flex: '1 1 100%',
   },
   formControl: {
-    paddingLeft: theme.spacing(25),
+    minWidth: 400,
     padding: theme.spacing(-2),
-    minWidth: 300,
+    marginRight: theme.spacing(2)
   },
 });
 
