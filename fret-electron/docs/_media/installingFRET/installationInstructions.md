@@ -2,7 +2,7 @@
 
 ### Dependencies
 
- * [NodeJS](https://nodejs.org/en/download/) (version >= v10.15.x, tests are performed on versions 10.15.x and 14.15.x)
+ * [NodeJS](https://nodejs.org/en/download/) (use any version between v10.15.x - v14.x.x)
  * Python 2.x
  * (Optional) [NuSMV](http://nusmv.fbk.eu/)
 
