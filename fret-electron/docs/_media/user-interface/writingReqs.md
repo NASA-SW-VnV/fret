@@ -54,7 +54,7 @@ You can access the *GLOSSARY* tab from the right pane in the *Create Requirement
 
 ***
 
-<img src="../screen_shots/dictionaryVariables.png">
+<img src="../screen_shots/DictionaryVariables.png">
 
 ***
 
@@ -62,7 +62,7 @@ You can expand a variable on the *GLOSSARY* tab to see more details.  The detail
 
 ***
 
-<img src="../screen_shots/dictionaryExtendedVariable.png">
+<img src="../screen_shots/DictionaryExtendedVariable.png">
 
 ***
 
