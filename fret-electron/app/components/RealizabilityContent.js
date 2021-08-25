@@ -678,7 +678,6 @@ class RealizabilityContent extends React.Component {
     const {projectReport} = this.state;
     const self = this;
     projectComponents.forEach(component => {
-
       // monolithicStatus[component.component_name] = 'UNCHECKED';
       // monolithicError[component.component_name] = '';    
       // compositionalStatus[component.component_name] = 'UNCHECKED';
@@ -726,11 +725,6 @@ class RealizabilityContent extends React.Component {
       })
     });
     this.setState({
-      // monolithicStatus : monolithicStatus,
-      // compositionalStatus : compositionalStatus,
-      // diagnosisStatus : diagnosisStatus,
-      // diagnosisReports : diagnosisReports,
-      // connectedComponents : connectedComponents,
       ccSelected : 'cc0',
       projectReport: projectReport
     })
@@ -806,7 +800,7 @@ class RealizabilityContent extends React.Component {
       if (event.target.value === 'all') {
         this.setState({selected: 'all', monolithic : false, compositional : true});
       } else {
-        this.setState({selected: event.target.value, monolithic : Object.keys(projectReport['components'][event.target.value.component_name]['compositional']['connectedComponents']).length === 1, compositional : Object.keys(projectReport['components'][event.target.value.component_name]['compositional']['connectedComponents']).length > 1});
+        this.setState({selected: event.target.value, monolithic : Object.keys(projectReport['components'][event.target.value.component_name]['compositional']['connectedComponents']).length <= 1, compositional : Object.keys(projectReport['components'][event.target.value.component_name]['compositional']['connectedComponents']).length > 1});
       }
 
     } else if (name === 'monolithic' && !this.state.monolithic) {
@@ -1010,7 +1004,6 @@ class RealizabilityContent extends React.Component {
               var lustreContract = ejsCache_realize.renderRealizeCode().component.complete(contract);
 
               fs.writeSync(output, lustreContract);
-              // checkOutput = realizability.checkRealizability(filePath, '-fixpoint -timeout ' + actualTimeout);
               realizability.checkRealizability(filePath, '-fixpoint -timeout '+actualTimeout, function(err, checkOutput) {
                 if (err) {
                   self.setState(prevState => {
@@ -1024,9 +1017,7 @@ class RealizabilityContent extends React.Component {
                   var result = checkOutput.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];
                   var time = checkOutput.match(new RegExp('(Time = )(.*?)\\n'))[2];
                   self.setState(prevState => {
-                    // prevState.monolithicStatus[tC.component_name] = result;
                     prevState.projectReport['components'][tC.component_name]['monolithic']['result'] = result;
-                    // prevState.time[tC.component_name] = time;
                     prevState.projectReport['components'][tC.component_name]['monolithic']['time'] = time;
                     return(prevState);
                   })
@@ -1036,12 +1027,10 @@ class RealizabilityContent extends React.Component {
                   self.deleteAnalysisFiles();
                 }
               })
-            // return result;
           } else if (compositional) {          
             Object.keys(projectReport['components'][tC.component_name]['compositional']['connectedComponents']).forEach((cc) => {
               var filePath = analysisPath + tC.component_name+'_'+cc+'.lus';                
               var output = fs.openSync(filePath, 'w');
-              // var output = fs.createWriteStream(filePath);
               var ccContract = JSON.parse(JSON.stringify(contract))
               
               var ccProperties = contract.properties.filter(p => projectReport['components'][tC.component_name]['compositional']['connectedComponents'][cc]['properties'].includes(p.reqid));
@@ -1049,12 +1038,8 @@ class RealizabilityContent extends React.Component {
               var lustreContract = ejsCache_realize.renderRealizeCode().component.complete(ccContract);
               fs.writeSync(output, lustreContract);
 
-              // output.write(lustreContract);
-              // output.end();
-              // output.on('finish', () => {
               realizability.checkRealizability(filePath, '-fixpoint -timeout '+actualTimeout, function(err, checkOutput) {
                 if (err) {
-                  // connectedComponents[tC.component_name][cc].result = 'ERROR';
                   projectReport['components'][tC.component_name]['compositional']['connectedComponents'][cc]['result'] = 'ERROR';
                   projectReport['components'][tC.component_name]['compositional']['connectedComponents'][cc]['error'] = err.message;
                   self.setState(prevState => {
@@ -1065,15 +1050,11 @@ class RealizabilityContent extends React.Component {
                   })
                   ccResults.push('ERROR');
                 } else {
-                  // if (checkOutput !== undefined) {
                   var ccResult = checkOutput.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];
                   var ccTime = checkOutput.match(new RegExp('(Time = )(.*?)\\n'))[2];
-                  // connectedComponents[tC.component_name][cc].result = ccResult
-                  // connectedComponents[tC.component_name][cc].time = ccTime
                   projectReport['components'][tC.component_name]['compositional']['connectedComponents'][cc]['result'] = ccResult;
                   projectReport['components'][tC.component_name]['compositional']['connectedComponents'][cc]['time'] = ccTime;
                   self.setState(prevState => {
-                    // prevState.connectedComponents = connectedComponents
                     prevState.projectReport = projectReport
                     return(prevState);
                   })
@@ -1084,32 +1065,27 @@ class RealizabilityContent extends React.Component {
 
                   if (ccResults.reduce(reducer, true)) {
                     self.setState(prevState => {
-                      // prevState.compositionalStatus[tC.component_name] = 'REALIZABLE';
                       prevState.projectReport['components'][tC.component_name]['compositional']['result'] = 'REALIZABLE';
                       return(prevState);
                     })
                   } else {
                     if (ccResults.includes('ERROR')) {
                       self.setState(prevState => {
-                        // prevState.compositionalStatus[tC.component_name] = 'ERROR';
                         prevState.projectReport['components'][tC.component_name]['compositional']['result'] = 'ERROR';
                         return(prevState);
                       })
                     } else if (ccResults.includes('UNKNOWN')) {
                       self.setState(prevState => {
-                        // prevState.compositionalStatus[tC.component_name] = 'UNKNOWN';
                         prevState.projectReport['components'][tC.component_name]['compositional']['result'] = 'UNKNOWN';
                         return(prevState);
                       })
                     } else if (ccResults.includes('UNREALIZABLE')) {
                         self.setState(prevState => {
-                          // prevState.compositionalStatus[tC.component_name] = 'UNREALIZABLE';
                           prevState.projectReport['components'][tC.component_name]['compositional']['result'] = 'UNREALIZABLE';
                           return(prevState);
                         })
                     } else if (ccResults.includes('INCONSISTENT')) {
                         self.setState(prevState => {
-                          // prevState.compositionalStatus[tC.component_name] = 'INCONSISTENT';
                           prevState.projectReport['components'][tC.component_name]['compositional']['result'] = 'INCONSISTENT';
                           return(prevState);
                         })
@@ -1177,7 +1153,6 @@ class RealizabilityContent extends React.Component {
     //disable until complete
     // var menuItems = [<MenuItem key='all' value='all'> All System Components </MenuItem>];
     var menuItems =[];
-    // var status = monolithic ? monolithicStatus : compositionalStatus;
     var monolithicStatus = {};
     var compositionalStatus = {};
 
@@ -1201,10 +1176,8 @@ class RealizabilityContent extends React.Component {
 
     var diagStatus, diagReport;
     if (selected !== '' && selected !== 'all' && Object.keys(projectReport['components'][selected.component_name]['compositional']['connectedComponents']).length > 0) {
-      // diagStatus = monolithic ? diagnosisStatus[selected.component_name] : connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'];
       diagStatus = monolithic ? projectReport['components'][selected.component_name]['monolithic']['diagnosisStatus'] : projectReport['components'][selected.component_name]['compositional']['connectedComponents'][ccSelected]['diagnosisStatus'];
 
-      // diagReport = monolithic ? diagnosisReports[selected.component_name] : connectedComponents[selected.component_name][ccSelected]['diagnosisReport'];
       diagReport = monolithic ? projectReport['components'][selected.component_name]['monolithic']['diagnosisReport'] : projectReport['components'][selected.component_name]['compositional']['connectedComponents'][ccSelected]['diagnosisReport'];
     }
 
@@ -1245,7 +1218,7 @@ class RealizabilityContent extends React.Component {
               </Select>
             </FormControl>
             <FormControlLabel
-              disabled={selected === '' || (selected !== 'all' && Object.keys(projectReport['components'][selected.component_name]['compositional']['connectedComponents']).length === 1)}
+              disabled={selected === '' || (selected !== 'all' && Object.keys(projectReport['components'][selected.component_name]['compositional']['connectedComponents']).length <= 1)}
               control={
                 <Checkbox
                   id="qa_rlzCont_cb_compositional"
