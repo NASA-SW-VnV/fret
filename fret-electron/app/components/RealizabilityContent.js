@@ -1136,7 +1136,7 @@ class RealizabilityContent extends React.Component {
                 if (ccResults.length === Object.keys(connectedComponents[tC.component_name]).length) {
                   const reducer = (accumulator, currentValue) => accumulator && (currentValue === 'REALIZABLE');
 
-                  if (ccResults.reduce(reducer)) {
+                  if (ccResults.reduce(reducer, true)) {
                     self.setState(prevState => {
                       prevState.compositionalStatus[tC.component_name] = 'REALIZABLE';
                       return(prevState);
