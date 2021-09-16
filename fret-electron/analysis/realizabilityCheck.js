@@ -48,6 +48,10 @@ export function checkRealizability(filePath, options, callback) {
   exec(jkindCommand, function (err, stdout, stderr) {
     if (err) {
       callback(err);
+      console.log(error.status)
+      console.log(error.message)
+      console.log(error.stderr.toString())
+      console.log(error.stdout.toString())
     } else {
       callback(null, stdout);
     }
