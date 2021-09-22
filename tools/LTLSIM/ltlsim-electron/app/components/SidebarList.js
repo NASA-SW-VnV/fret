@@ -54,10 +54,10 @@ import FormulaRenderer from './FormulaRenderer';
 
 const styles = theme => ({
     nested: {
-        paddingLeft: theme.spacing(4)
+        paddingLeft: theme.spacing.unit * 4
     },
     nestednested: {
-        paddingLeft: theme.spacing(6)
+        paddingLeft: theme.spacing.unit * 6
     },
     listCheckbox: {
         paddingTop: 0,
@@ -169,6 +169,8 @@ class SidebarList extends Component {
                                         key={'sidebar-subformula-list-'+key} >
                                         {formula.subexpressions.map((s, i) => {
                                             let vs = visibleSubformulas[key];
+					 	// PATCH: JSC 082021
+					    s.label = s.id;
                                             return (
                                                 <div
                                                 key={'sidebar-subformula-'+s.label}>

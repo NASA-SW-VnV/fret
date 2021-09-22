@@ -36,7 +36,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import LTLSimDialog from './LTLSimDialog';
 
 export default function LTLSimLauncher(props) {
-    const {open, semantics, status, onOpen, onClose, requirement,requirementID} = props;
+    const {open, semantics, status, onOpen, onClose, project, requirement,requirementID} = props;
 
     const ftExpression = rewriteExpressionForLTLSIM(semantics.ftExpanded);
     const ptExpression = rewriteExpressionForLTLSIM(semantics.ptExpanded);
@@ -54,14 +54,15 @@ export default function LTLSimLauncher(props) {
                 ftExpression={ftExpression}
                 ptExpression={ptExpression}
                 onClose={onClose}
+		project={project}
                 requirement={requirement}
                 requirementID={requirementID}
                 />
             </div>) :
             (<Tooltip id="a_crtAst_btn_simulate_tooltip"
                 title={status.ltlsim ?
-                "Can't find a running NuSMV installation. Make sure to install NuSMV and add it to the PATH envinronment variable." :
-                "Can't find a running ltlsim installation. Make sure to install ltlsim-core and NuSMV as described in the installation instructions."}>
+                "Can't find a running NuSMV/nuXmv installation. Make sure to install NuSMV/nuXmv and add it to the PATH envinronment variable." :
+                "Can't find a running ltlsim installation. Make sure to install ltlsim-core and NuSMV/nuXmv as described in the installation instructions."}>
                 <div>
                     <Button id="qa_crtAst_btn_simulate_disabled" color="secondary" disabled>
                     Simulate
@@ -87,6 +88,13 @@ function rewriteExpressionForLTLSIM(expression) {
             .replace(/<i>/g, "")
             .replace(/<\/b>/g, "")
             .replace(/<\/i>/g, "")
+// arithmetic V0.0
+            .replace(/([0-9A-Za-z_]+) < ([0-9A-Za-z_]+)/g, "$1_lt_$2")
+            .replace(/([0-9A-Za-z_]+) > ([0-9A-Za-z_]+)/g, "$1_gt_$2")
+            .replace(/([0-9A-Za-z_]+) <= ([0-9A-Za-z_]+)/g, "$1_le_$2")
+            .replace(/([0-9A-Za-z_]+) >= ([0-9A-Za-z_]+)/g, "$1_ge_$2")
+            .replace(/([0-9A-Za-z_]+) = ([0-9A-Za-z_]+)/g, "$1_eq_$2")
+// end arithmetic
             .replace(/(\d+)\+1/g, (str, p1, offset, s) => (`${parseInt(p1)+1}`))
             .replace(/\[<=(\d+)\]/g, "[0, $1]")
             .replace(/\[=(\d+)\]/g, "[$1, $1]")

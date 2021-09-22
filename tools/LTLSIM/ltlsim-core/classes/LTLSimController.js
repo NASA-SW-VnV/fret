@@ -66,7 +66,7 @@ module.exports = class LTLSimController {
             }) 
 
             /* Explicitly set the expression via LTLSIMController to enforce formula update */
-            LTLSimController.setFormulaExpression(model, id, expression);
+            LTLSimController.setFormulaExpression(model, id, expression, true);
 
             return true;
         }
@@ -117,6 +117,140 @@ module.exports = class LTLSimController {
         return true;
     }
 
+//===========================================================
+// save traces to CSV file
+    static saveTrace(model, tracefile) {
+  
+        let writeStream = fs.createWriteStream(tracefile)
+
+		// header
+	try {
+	writeStream.write(model.atomics.keys.join(',')+ '\n', () => {
+        		// a line was written to stream
+    		        })
+	}catch(e){ console.log("ERRR",e)}
+ 	var V=model.atomics.keys;
+	var i=0;
+	for (i=0; i < model.traceLength; i++){
+		var c=0;
+		var NL=[];
+		for (c=0; c<V.length; c++){
+		    NL.push(LTLSimController.getAtomic(model,V[c]).trace[i]);
+		    }
+
+	try {
+		writeStream.write(NL.join(',')+ '\n', () => {
+        		// a line was written to stream
+    		        })
+	}catch(e){ console.log("ERRR",e)}
+	        }
+	writeStream.on('close', () => {
+    		console.log('finish write stream, moving along')
+		}).on('error', (err) => {
+    			console.log(err)
+		})
+    }
+
+//===========================================================
+// getTrace: return trace object
+    static getTrace(model) {
+  
+ 	var V=model.atomics.keys;
+	var i=0;
+	var NL=[];
+	for (i=0; i < model.traceLength; i++){
+		var c=0;
+		for (c=0; c<V.length; c++){
+		    NL.push(LTLSimController.getAtomic(model,V[c]).trace[i]);
+		    }
+		}
+	return {
+		keys: model.atomics.keys.slice(),
+		values: NL
+		};
+    }
+
+//===========================================================
+// add trace to the controller from object
+// NOTE: do not add LAST or FTP
+//
+    static setTrace(model, trace) {
+
+	console.log('set trace')
+	console.log(trace)
+	console.log('Keys:')
+	console.log(trace.keys.join(',')+ '\n');
+	console.log('values:')
+	console.log(trace.values.join(',')+ '\n');
+	console.log('/set trace')
+
+			//
+			// if atomic not yet defined, define it
+			// don't care about FTP or LAST
+			//
+            trace.keys.forEach((a) => {
+	      if (a != "LAST" && a != "FTP"){
+		console.log("setTrace: new key: "+a)
+        	if (model.atomics.keys.indexOf(a) === -1) {
+            		model.atomics.keys.push(a);
+            		model.atomics.values[a] = 
+				new Atomic(a, model.traceLength);
+			}
+		}
+	       });
+
+		//
+		// set values to 0 for all new and existing variables
+		// Note: this is necessary to load "partial" traces
+		// which contain subset of variables; other model vars
+		// are set to "0"
+		// leave FTP and LAST alone
+            var j=0;
+    	    while (j < model.traceLength){
+      	    	model.atomics.keys.forEach((a) => {
+	          if (a != "LAST" && a != "FTP"){
+			model.atomics.values[a].trace[j] = 0;
+			}
+		    });
+		j = j+1;
+		};
+
+		
+            let idx=0;
+	    let i = 0;
+    	    while (i < model.traceLength){
+      	    	trace.keys.forEach((a) => {
+	          if (a != "LAST" && a != "FTP"){
+			var val = trace.values[idx];
+			model.atomics.values[a].trace[i] = val;
+		        }
+		  idx = idx+1;
+		    });
+		i = i+1;
+		};
+        return true;
+    }
+
+//===========================================================
+// setEmptyTrace
+// set trace to all "0" except for FTP and LAST
+//
+    static setEmptyTrace(model) {
+
+	    let i = 0;
+    	    while (i < model.traceLength){
+      	    	model.atomics.keys.forEach((a) => {
+	          if (a != "LAST" && a != "FTP"){
+			model.atomics.values[a].trace[i] = 0;
+		        }
+		    });
+		i = i+1;
+		};
+        return true;
+    }
+
+
+//===========================================================
     static removeFormula(model, id) {
         if (model.formulas.keys.indexOf(id) !== -1) {
             
@@ -155,7 +289,7 @@ module.exports = class LTLSimController {
         return false;
     }
     
-    static setAtomicLabel(model, id, newLabel) {
+    static setAtomicLabel(model, id, newLabel, updateVars) {
         let oidx = model.atomics.keys.indexOf(id);
         let nidx = model.atomics.keys.indexOf(newLabel);
         if (oidx !== -1 && nidx === -1) {
@@ -174,7 +308,7 @@ module.exports = class LTLSimController {
                     let rgx = new RegExp(`\\b${id}\\b`, "g");
                     formula.atomics[fidx] = newLabel;
                     expression = formula.expression.replace(rgx, newLabel);
-                    LTLSimController.setFormulaExpression(model, f, expression);
+                    LTLSimController.setFormulaExpression(model, f, expression, updateVars);
                 }
             })
 
@@ -183,7 +317,7 @@ module.exports = class LTLSimController {
         return false;
     }
 
-    static setFormulaExpression(model, id, expression) {
+    static setFormulaExpression(model, id, expression, updateVars) {
         if (model.formulas.keys.indexOf(id) !== -1) {
             let formula = model.formulas.values[id];
             formula.expression = expression;
@@ -202,6 +336,8 @@ module.exports = class LTLSimController {
                                         value: EFormulaStates.UNKNOWN
                                     }));
 
+console.log("LTLSimController::setFormulaExpression: atomic keys: "+model.atomics.keys);
+
             /* Remove this formula from atomics which do not influence it anymore */
             model.atomics.keys
                 .filter((a) => (model.atomics.values[a].formulas.indexOf(id) !== -1))
@@ -212,6 +348,7 @@ module.exports = class LTLSimController {
                     }
                 });
 
+console.log("LTLSimController::setFormulaExpression: atomic keys: "+model.atomics.keys);
             /* Add this formula to its atomics, if not already present and add missing atomics */
             formula.atomics.forEach((a) => {
                 if (model.atomics.keys.indexOf(a) === -1) {
@@ -222,6 +359,8 @@ module.exports = class LTLSimController {
                 }
             })
 
+console.log("LTLSimController::setFormulaExpression: atomic keys: "+model.atomics.keys);
+	    if (updateVars){
             /* Remove atomics which do not influence anything */
             model.atomics.keys
                 .filter((a) => (model.atomics.values[a].formulas.length === 0))
@@ -229,6 +368,8 @@ module.exports = class LTLSimController {
                     delete model.atomics.values[a];
                     model.atomics.keys.splice(model.atomics.keys.indexOf(a), 1);
                 })
+	     }
+console.log("LTLSimController::setFormulaExpression: atomic keys: "+model.atomics.keys);
 
             /* Change this formulas value to unknown */
             formula.value = EFormulaStates.UNKNOWN;

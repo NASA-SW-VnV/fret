@@ -264,6 +264,7 @@ class Instructions extends React.Component {
                             onOpen={this.openLTLSimDialog}
                             onClose={this.closeLTLSimDialog}
                             requirement={requirement}
+            		    project={this.props.projectName}
                             requirementID={requirementID}
                             />;
     }
