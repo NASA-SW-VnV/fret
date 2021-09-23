@@ -286,7 +286,12 @@ class ChordDiagram extends React.Component {
 			    .startAngle(startAngle)
 			    .endAngle(endAngle);
 
-	        var g = svg
+			//Tooltip for arc labels
+			var div = d3.select("body").append("div")	
+			    .attr("class", "tooltip")				
+			    .style("opacity", 0);
+
+      var g = svg
 				.datum(chorddiag)
 				.append("g")
 				.selectAll("g")
@@ -303,6 +308,20 @@ class ChordDiagram extends React.Component {
 			//Labeling sections on the arcs
 			g.append("svg:text")
 				.each(function(d) { d.angle = ((d.startAngle + d.endAngle) / 2) + offset;})
+  			.on("mouseover", function(d, i) {		
+		      div.transition()		
+		          .duration(200)		
+		          .style("opacity", .9);		
+		      div	.text(names[i])	
+		          .style("left", (d3.event.pageX) + "px")		
+		          .style("top", (d3.event.pageY - 28) + "px")
+		          .style("width", "auto");	
+		    })
+				.on("mouseout", function(d) {		
+		      div.transition()		
+		          .duration(500)		
+		          .style("opacity", 0);	
+		  	})
 				.attr("dy", ".35em")
 				.style("font-size", "12px")
 				.style("cursor", "pointer")
