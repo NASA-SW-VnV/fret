@@ -248,10 +248,11 @@ describe('FRET E2E tests starting with test_1 DB, no DB modifications', function
             expect(reqText).toBe('Analysis Portal');
             
       });     
+
       //------------------------------------------------------------------
       //         test mv-7
       it('SELECT PROJECTS', async () => {
-            console.log('starting test: SELECT PROJECTS');
+            //console.log('starting test: SELECT PROJECTS');
 
             // wait for the Projects button to be visible            
             await app.client.$('#qa_db_btn_projects').isVisible();
@@ -609,6 +610,14 @@ describe('FRET E2E tests starting with test_1 DB, no DB modifications', function
  
       });           
 
+            // wait for 'project' element to be visible
+            await app.client.waitUntilWindowLoaded();
+            await app.client.$('#qa_db_ili_projects').isVisible();
+            const projectText = await app.client.$('#qa_db_ili_projects').getText();
+            //console.log('project text: ' + projectText);
+            expect(projectText).toContain('Total Projects');
+            expect(projectText).toContain('11');            
+      });    
 
       //------------------------------------------------------------------
       //               test Assistant Tab - Semantics
@@ -2027,7 +2036,12 @@ describe('FRET E2E tests starting with realizability DB, no DB modifications', f
 
       });
 
+      });
 
+  //------------------------------------------------------------------
+      //            test variable view
+      it('VARIABLE VIEW-DISPLAY VARIABLE-MODE', async () => {
+            console.log('starting test: VARIABLE VIEW-DISPLAY VARIABLE-MODE');
 
   //------------------------------------------------------------------
       //            test realizability view
@@ -2068,7 +2082,11 @@ describe('FRET E2E tests starting with realizability DB, no DB modifications', f
       });
 
 
+            await app.client.$('#qa_var_btn_FRETname_emergency_button').isVisible();
+            await app.client.$('#qa_var_btn_FRETname_emergency_button').click();
 
+            await app.client.$('#qa_disVar_sel_varType').isVisible();
+            await app.client.$('#qa_disVar_sel_varType').click();
 
 
 

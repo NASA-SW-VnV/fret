@@ -511,7 +511,7 @@ class MainView extends React.Component {
           <AppBar className={classNames(classes.appBar, this.state.drawerOpen && classes.appBarShift)}>
             <Toolbar disableGutters={!this.state.drawerOpen}>
               <IconButton
-                id="qa_db_ib_drawer"
+                id="qa_db_ib_openDrawer"
                 color="inherit"
                 aria-label="open drawer"
                 onClick={this.handleDrawerOpen}
