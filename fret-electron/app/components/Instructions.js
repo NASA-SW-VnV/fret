@@ -269,6 +269,10 @@ class Instructions extends React.Component {
                             />;
     }
 
+    //Check if FTP appears in the formulas to display clarification message.
+    var ftpInFT = this.props.formalization.semantics.ft.replace(/[()(<b>)(<i>)(</b>)(</i>)]/g,'').split(" ").includes("FTP");
+    var ftpInPT = this.props.formalization.semantics.pt.replace(/[()(<b>)(<i>)(</b>)(</i>)]/g,'').split(" ").includes("FTP")
+
     if ((ft !== constants.unhandled_semantics) && (ft !== constants.nonsense_semantics) && (ft !== constants.undefined_semantics) && (diagram !== constants.undefined_svg))
     return(
       <div>
@@ -304,8 +308,9 @@ class Instructions extends React.Component {
             <div id="qa_crtAst_sem_typ_futureTimeFormula" className={classes.formula} 
               dangerouslySetInnerHTML={{ __html: this.props.formalization.semantics.ft }} />
             <br />
-            <div id="qa_crtAst_sem_typ_futureTimeComp" className={classes.description} 
-              dangerouslySetInnerHTML={{ __html:' Target: '+ this.props.formalization.semantics.component + ' component.'}} />
+            <div id="qa_crtAst_sem_typ_futureTimeComp" className={classes.description} dangerouslySetInnerHTML={{ __html:' Target: '+ this.props.formalization.semantics.component + ' component.'}} />
+            {ftpInFT &&
+              <div className={classes.description} dangerouslySetInnerHTML={{ __html:' FTP: First Time Point. Used internally to identify initial states. Can also be used explicitly as a variable in Requirement Description.'}} />}
           </div>
         </AccordionDetails>
       </Accordion>
@@ -318,8 +323,9 @@ class Instructions extends React.Component {
           <div id="qa_crtAst_sem_typ_pastTimeFormula" className={classes.formula} 
             dangerouslySetInnerHTML={{ __html: this.props.formalization.semantics.pt}} />
           <br />
-          <div id="qa_crtAst_sem_typ_pastTimeComp" className={classes.description} 
-            dangerouslySetInnerHTML={{ __html:' Target: '+ this.props.formalization.semantics.component + ' component.'}} />
+          <div id="qa_crtAst_sem_typ_pastTimeComp" className={classes.description} dangerouslySetInnerHTML={{ __html:' Target: '+ this.props.formalization.semantics.component + ' component.'}} />
+          {ftpInPT &&
+              <div className={classes.description} dangerouslySetInnerHTML={{ __html:' FTP: First Time Point. Used internally to identify initial states. Can also be used explicitly as a variable in Requirement Description.'}} />}
         </div>
         </AccordionDetails>
       </Accordion>
@@ -344,7 +350,9 @@ class Instructions extends React.Component {
           <div>
             <div className={classes.formula} dangerouslySetInnerHTML={{ __html: this.props.formalization.semantics.ft}} />
             <br />
-            <div className={classes.description} dangerouslySetInnerHTML={{ __html:' Target: '+ this.props.formalization.semantics.component + ' component.'}} />
+            <div className={classes.description} dangerouslySetInnerHTML={{ __html:' Target: '+ this.props.formalization.semantics.component + ' component.'}} />            
+          {ftpInFT &&
+              <div className={classes.description} dangerouslySetInnerHTML={{ __html:' FTP: First Time Point. Used internally to identify initial states. Can also be used explicitly as a variable in Requirement Description.'}} />}
           </div>
           </AccordionDetails>
         </Accordion>
@@ -357,6 +365,8 @@ class Instructions extends React.Component {
             <div className={classes.formula} dangerouslySetInnerHTML={{ __html: this.props.formalization.semantics.pt}} />
             <br />
             <div className={classes.description} dangerouslySetInnerHTML={{ __html:' Target: '+ this.props.formalization.semantics.component + ' component.'}} />
+            {ftpInPT &&
+              <div className={classes.description} dangerouslySetInnerHTML={{ __html:' FTP: First Time Point. Used internally to identify initial states. Can also be used explicitly as a variable in Requirement Description.'}} />}
           </div>
           </AccordionDetails>
         </Accordion>
