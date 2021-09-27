@@ -810,7 +810,7 @@ describe('FRET E2E tests starting with test_1 DB, no DB modifications', function
       
       //------------------------------------------------------------------ 
       //            test Create/Update Requirement-6
-      it('CREATE NEW REQUIREMENT-REQUIREMENT ID', async () => {
+      it.only('CREATE NEW REQUIREMENT-REQUIREMENT ID', async () => {
             console.log('starting test: CREATE NEW REQUIREMENT-REQUIREMENT ID')
 
             // wait for the "CREATE" button to be visible
