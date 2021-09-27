@@ -310,7 +310,7 @@ class Instructions extends React.Component {
             <br />
             <div id="qa_crtAst_sem_typ_futureTimeComp" className={classes.description} dangerouslySetInnerHTML={{ __html:' Target: '+ this.props.formalization.semantics.component + ' component.'}} />
             {ftpInFT &&
-              <div className={classes.description} dangerouslySetInnerHTML={{ __html:' FTP: First Time Point. Used internally to identify initial states. Can also be used explicitly as a variable in Requirement Description.'}} />}
+              <div className={classes.description} dangerouslySetInnerHTML={{ __html:' FTP: First Time Point.'}} />}
           </div>
         </AccordionDetails>
       </Accordion>
@@ -325,7 +325,7 @@ class Instructions extends React.Component {
           <br />
           <div id="qa_crtAst_sem_typ_pastTimeComp" className={classes.description} dangerouslySetInnerHTML={{ __html:' Target: '+ this.props.formalization.semantics.component + ' component.'}} />
           {ftpInPT &&
-              <div className={classes.description} dangerouslySetInnerHTML={{ __html:' FTP: First Time Point. Used internally to identify initial states. Can also be used explicitly as a variable in Requirement Description.'}} />}
+              <div className={classes.description} dangerouslySetInnerHTML={{ __html:' FTP: First Time Point.'}} />}
         </div>
         </AccordionDetails>
       </Accordion>
@@ -352,7 +352,7 @@ class Instructions extends React.Component {
             <br />
             <div className={classes.description} dangerouslySetInnerHTML={{ __html:' Target: '+ this.props.formalization.semantics.component + ' component.'}} />            
           {ftpInFT &&
-              <div className={classes.description} dangerouslySetInnerHTML={{ __html:' FTP: First Time Point. Used internally to identify initial states. Can also be used explicitly as a variable in Requirement Description.'}} />}
+              <div className={classes.description} dangerouslySetInnerHTML={{ __html:' FTP: First Time Point.'}} />}
           </div>
           </AccordionDetails>
         </Accordion>
@@ -366,7 +366,7 @@ class Instructions extends React.Component {
             <br />
             <div className={classes.description} dangerouslySetInnerHTML={{ __html:' Target: '+ this.props.formalization.semantics.component + ' component.'}} />
             {ftpInPT &&
-              <div className={classes.description} dangerouslySetInnerHTML={{ __html:' FTP: First Time Point. Used internally to identify initial states. Can also be used explicitly as a variable in Requirement Description.'}} />}
+              <div className={classes.description} dangerouslySetInnerHTML={{ __html:' FTP: First Time Point.'}} />}
           </div>
           </AccordionDetails>
         </Accordion>
