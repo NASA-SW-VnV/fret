@@ -212,13 +212,14 @@ class CounterexampleTable extends React.Component {
 
   	var tableRows = [];
     
-    //Filter out JKind local variables from cex data, then create table row for everything else
-    // cex.filter(row => !locs.includes(row.name)).map...
     cex.map(row => (tableRows.push(
           <TableRow key={cex.indexOf(row)}>
-            {Object.keys(row).map(function(key, index) {          
-              return(<TableCell id={"qa_counterEx_tc_"+cex.indexOf(row)+"_"+index} 
-              key={index} align="right"> {row[key].toString()} </TableCell>);
+            {Object.keys(row).map(function(key, index) {
+              if (index === 0) {
+              return(<TableCell id={"qa_counterEx_tc_"+cex.indexOf(row)+"_"+index} key={index}> {row[key].toString()} </TableCell>);  
+              } else {
+              return(<TableCell id={"qa_counterEx_tc_"+cex.indexOf(row)+"_"+index} key={index} align="right"> {row[key].toString()} </TableCell>);  
+              }                        
             })}
           </TableRow>)))
            
@@ -231,10 +232,11 @@ class CounterexampleTable extends React.Component {
           conflicts={allConflicts}
           menuItems={menuItems}
         />
-				<Table className={classes.table}  id="qa_counterEx_table">
+				<Table className={classes.table} id="qa_counterEx_table">
+          <caption>FTP: First Time Point.</caption>
 				  <TableHead id="qa_counterEx_tableHead">
-				    <TableRow  id="qa_counterEx_tableRow">
-				      <TableCell className={classes.header} align="right">Variable name</TableCell>
+				    <TableRow id="qa_counterEx_tableRow">
+				      <TableCell className={classes.header}>Variable name</TableCell>
 				      <TableCell className={classes.header} align="right">Variable type</TableCell>
 				      {tableHeaders}
 				    </TableRow>
