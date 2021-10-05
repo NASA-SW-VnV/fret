@@ -483,6 +483,7 @@ Instructions.propTypes = {
   field: PropTypes.string,
   grammarRule: PropTypes.string,
   formalization: PropTypes.object,
+  projectName: PropTypes.string.isRequired,
   requirement: PropTypes.string.isRequired,
   requirementID: PropTypes.string.isRequired,
   templates: PropTypes.array.isRequired,

@@ -157,7 +157,8 @@ class LTLSimDialog extends Component {
 
         this.handleClickLogics = this.handleClickLogics.bind(this);
         this.handleClickHighlight = this.handleClickHighlight.bind(this);
-        this.handleLtlsimResult = this.handleLtlsimResult.bind(this);
+        this.handleLtlsimResult_FT = this.handleLtlsimResult_FT.bind(this);
+        this.handleLtlsimResult_PT = this.handleLtlsimResult_PT.bind(this);
         this.handleLtlsimSimulate = this.handleLtlsimSimulate.bind(this);
         this.handleTraceDataChange = this.handleTraceDataChange.bind(this);
         this.handleTraceLengthChange = this.handleTraceLengthChange.bind(this);
@@ -990,7 +991,7 @@ console.log("/reqID_data[..]")
     //============================================================
     handleLtlsimSimulate(formulaFilter) {
         this.setState((prevState) => {
-            let { model, visibleSubformulas, JSCReqID } = prevState;
+            let { model, visibleSubformulas, JSCReqID, logics } = prevState;
             const { id } = this.props;
 
             /* Set the simulated formula and subformulas to busy */
@@ -1047,7 +1048,8 @@ console.log("start simulation: formulaFilter.id="+formulaFilter);
                 model,
                 formulaFilter,
                 true,
-                this.handleLtlsimResult,
+                (logics === "FT") ? this.handleLtlsimResult_FT :
+            		this.handleLtlsimResult_PT,
                 undefined,
                 undefined);
 
@@ -1076,15 +1078,29 @@ console.log("start simulation: formulaFilter.id="+formulaFilter);
     }
 
 //==========================================================
-    handleLtlsimResult(id, sid, value, trace) {
-console.log("handle result ID="+ id);
-console.log(`${id}${sid ? ' ('+sid+')' : ''}: ${trace} (${value ? "VALIDATED" : "VIOLATED"})`)
-
-
+      handleLtlsimResult_FT(id, sid, value, trace) {
         this.setState((prevState) => {
             let {model} = prevState;
             if (LTLSimController.getFormulaKeys(model).indexOf(id) !== -1) {
                 LTLSimController.setFormulaTrace(model, id, sid, trace);
+                LTLSimController.setFormulaValue(model, id, sid, value ?
+                                                    EFormulaStates.VALIDATED :
+                                                    EFormulaStates.VIOLATED);
+                return { model };
+            } else {
+                return prevState;
+            }
+        })
+    }
+
+    handleLtlsimResult_PT(id, sid, value, trace) {
+        this.setState((prevState) => {
+            let {model} = prevState;
+            if (LTLSimController.getFormulaKeys(model).indexOf(id) !== -1) {
+                LTLSimController.setFormulaTrace(model, id, sid, trace);
+
+		// for PT: value is end of trace
+		value = trace[trace.length-1]
                 LTLSimController.setFormulaValue(model, id, sid, value ?
                                                     EFormulaStates.VALIDATED :
                                                     EFormulaStates.VIOLATED);
@@ -1102,6 +1118,7 @@ console.log(`${id}${sid ? ' ('+sid+')' : ''}: ${trace} (${value ? "VALIDATED" : 
             }
         })
     }
+
 
 //=========================================================
     update() {
@@ -1182,7 +1199,7 @@ console.log("UPDATE-before-SIM: formulaFilter="+formulaFilter)
                     <Typography
                         color="inherit"
                         >
-                        {"Trace: "+traceID+"     "}
+                        {"Trace:    "+traceID+"             "}
                     </Typography>
                     <Tooltip title="Show additional Requirements" >
                     <Button

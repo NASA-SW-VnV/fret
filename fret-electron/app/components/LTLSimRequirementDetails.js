@@ -53,9 +53,10 @@ const styles = theme => ({
         bottom: 0
     },
     details: {
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center'
+        flexDirection: 'row'
+//        display: 'flex',
+//        flexDirection: 'row',
+//        alignItems: 'center'
     },
     content: {
         color: theme.palette.primary.main,
@@ -75,7 +76,7 @@ const styles = theme => ({
 
 class LTLSimRequirementDetails extends Component {
     render() {
-        const {classes, requirementID, description} = this.props;
+        const {classes, requirementID, description, allreq, selreq} = this.props;
 
         return (
           <div className={classes.root}>
@@ -84,11 +85,37 @@ class LTLSimRequirementDetails extends Component {
                 <Typography className={classes.heading}>Requirements in FRETish</Typography>
               </AccordionSummary>
               <AccordionDetails>
-                <div>
-                  <Typography id="qa_ltlSim_typ_reqId" className={classes.heading}>
-                    <b>{requirementID}</b>: {description}
-                    </Typography>
-                </div>
+<div>
+      		{
+		selreq.map(R_ID => {
+		    let Desc="unknown"
+		    let ID=R_ID
+			//
+			// our "current" one
+			//
+                    if (R_ID == "REQ"){
+			Desc=description;
+			ID=requirementID
+			}
+		    else {
+			for (let i=0; i< allreq.length; i++){
+		            let reqID = allreq[i].reqID;
+		            let reqID_R = reqID.replace(/ /g,"_")
+			      .replace(/-/g,"_")
+			      .replace(/\./g,"_")
+			      .replace(/\+/g,"_")
+		            if (reqID_R == R_ID){
+				Desc=allreq[i].fulltext
+				ID=reqID;
+				break;
+				}
+			    }
+			}
+                  	return(<div key={ID}><Typography>
+                    		<b key={ID}>{ID}</b>: {Desc}
+                    	</Typography></div>)})
+                   }
+</div>
               </AccordionDetails>
             </Accordion>
           </div>

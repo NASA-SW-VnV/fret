@@ -11,6 +11,12 @@
 #include <string.h>
 #include "ltlsim_types.h"
 
+
+	//
+	// name of shell variable for the name/path of the SMV binary
+	//
+#define LTLSIM_BINARY		"LTLSIM_BINARY"
+
 //JSC #define SMV_BUFFER 512 //!< Length of the buffer for writing commands to call NuSMV and reading the NuSMV output 
 #define SMV_BUFFER 4096 //!< Length of the buffer for writing commands to call NuSMV and reading the NuSMV output 
 
