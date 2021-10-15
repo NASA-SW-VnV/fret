@@ -92,6 +92,10 @@ class ExportRequirementsDialog extends React.Component {
 	
 	return s;
 	}
+// REPLACE/Quote UTF-8 chars by \u BLA
+//  replace( /[\\\"\x00-\x1f\x7f-\uffff]/g, function (a) {
+//                return '\\u' + ('0000' + a.charCodeAt(0).toString(16)).slice(-4);
+//            })
 
   handleClose = () => {
     this.setState({ open: false });
