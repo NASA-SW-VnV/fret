@@ -85,8 +85,8 @@ class ExportRequirementsDialog extends React.Component {
         R.forEach((r) => {
 		s=s + "| " + r.reqid + 
 		     " | " + r.parent_reqid + 
-		     " | " + r.fulltext.replace(/\|/g,",").replace(/\n/g," ") +
-		     " | " + r.rationale.replace(/\|/g,",").replace(/\n/g," ");
+		     " | " + r.fulltext.replace(/\|/g,",").replace(/\n/g," ").replace(/\r/g,"") +
+		     " | " + r.rationale.replace(/\|/g,",").replace(/\n/g," ").replace(/\r/g,"");
 		s=s + "\n";
         	})
 	
