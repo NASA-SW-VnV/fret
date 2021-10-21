@@ -233,7 +233,9 @@ class ComponentSummary extends React.Component {
           componentMapping.model_path = doc.modelComponent;
         }
         var variable = {};
-        variable.variable_name = doc.modeldoc_id;
+        //Variable name in FRETish
+        variable.variable_name = doc.variable_name;
+        //Signal path in Simulink model
         variable.variable_path = componentMapping.model_path+'/'+doc.modeldoc_id;
         (doc.idType === 'Input') ? componentInputs.push(variable) : componentOutputs.push(variable);
       }
