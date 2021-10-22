@@ -38,7 +38,11 @@ const NuSMVParser = require('./NuSMVParser/NuSMVParser');
 const nuSMVAnalyzer = require('./nuSMVAnalyzer').nuSMVAnalyzer;
 const NuSMVAnalyzer = new nuSMVAnalyzer();
 
-exports.CoCoSpecSubsts = [['\\&', 'and'],
+exports.CoCoSpecSubsts = [
+												['\\<->', '<=>'],
+												['\\->', '=>'],
+												['\\!=', '<>'],
+												['\\&', 'and'],
 		                    ['\\|', 'or'],
                         ['\\!', 'not'],
 		                   ];
