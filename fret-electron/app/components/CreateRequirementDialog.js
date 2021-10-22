@@ -203,21 +203,28 @@ class CreateRequirementDialog extends React.Component {
         }
       }).catch(function (err) {
         if(err && err.name === 'not_found') {
-          modeldb.put({
-            _id: modeldbid,
-            project: projectName,
-            component_name: componentName,
-            variable_name: variableName,
-            reqs: [dbid],
-            dataType: '',
-            idType: '',
-            description: '',
-            assignment: '',
-            modeRequirement: '',
-            modeldoc: false,
-            modelComponent: '',
-            model_id: ''
-          });
+          modeldb.find({
+            selector: {project: projectName, component_name: componentName},
+            fields: ['modelComponent']
+          }).then(function(result){
+            modeldb.put({
+              _id: modeldbid,
+              project: projectName,
+              component_name: componentName,
+              variable_name: variableName,
+              reqs: [dbid],
+              dataType: '',
+              idType: '',
+              description: '',
+              assignment: '',
+              modeRequirement: '',
+              modeldoc: false,
+              modelComponent: result.docs[0].modelComponent,
+              model_id: ''
+            });
+          }).catch(function (err) {
+            console.log(err);
+        });
         }
       })
     })
