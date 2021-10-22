@@ -219,7 +219,7 @@ class CreateRequirementDialog extends React.Component {
               assignment: '',
               modeRequirement: '',
               modeldoc: false,
-              modelComponent: result.docs[0].modelComponent,
+              modelComponent: result.docs?result.docs[0].modelComponent:'',
               model_id: ''
             });
           }).catch(function (err) {
