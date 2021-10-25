@@ -36,8 +36,6 @@ import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import RealizabilityContent from './RealizabilityContent';
 
-
-
 const sharedObj = require('electron').remote.getGlobal('sharedObj');
 const constants = require('../parser/Constants');
 const db = sharedObj.db;
@@ -50,16 +48,9 @@ let id = 0;
 
 function optLog(str) {if (constants.verboseRealizabilityTesting) console.log(str)}
 
-function createData(vID, cID, project, description) {
-  id += 1;
-  return {id ,vID, cID, project, description};
-}
-
 const styles = theme => ({
   root: {
-    // width: '100%',
     marginTop: theme.spacing(1),
-    // flexWrap: 'wrap',
   },
   heading: {
     fontSize: theme.typography.pxToRem(18),
@@ -72,28 +63,17 @@ const styles = theme => ({
 });
 
 class RealizabilityView extends React.Component {
-  state = {
-    components: [],
-    completedComponents: [],
-    cocospecData: {},
-    cocospecModes: {},
-  }
-
-  handleChange = name => event => {
-    event.stopPropagation();
-    this.setState({ [name]: event.target.value });
-  };
 
   constructor(props){
     super(props);
-    this.checkComponentCompleted = this.checkComponentCompleted.bind(this);
     dbChangeListener = db.changes({
       since: 'now',
       live: true,
       include_docs: true
     }).on('change', (change) => {
       if (!system_dbkeys.includes(change.id)) {
-        this.synchStateWithDB();
+        this.props.synchStateWithDB();
+        console.log("synch finished");
       }
     }).on('complete', function(info) {
       optLog(info);
@@ -104,7 +84,7 @@ class RealizabilityView extends React.Component {
 
   componentDidMount() {
     this.mounted = true;
-    this.synchStateWithDB();
+    this.props.synchStateWithDB();
   }
 
   componentWillUnmount() {
@@ -114,128 +94,13 @@ class RealizabilityView extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (this.props.selectedProject !== prevProps.selectedProject) {
-      this.synchStateWithDB();
+      this.props.synchStateWithDB();
     }
-  }
-
-  setVariablesAndModes(result){
-    var data = {
-      cocospecData: {},
-      cocospecModes: {},
-      variablesData: [],
-      modesData: [],
-      components: []
-    };
-
-    result.docs.forEach(function(req){
-      if (typeof req.semantics !== 'undefined'){
-        if (typeof req.semantics.ft !== 'undefined'){
-          if (req.semantics.ft !== constants.nonsense_semantics
-            && req.semantics.ft !== constants.undefined_semantics
-            && req.semantics.ft !== constants.unhandled_semantics){
-            if (typeof req.semantics.variables !== 'undefined') {
-
-                const variables = checkDbFormat.checkVariableFormat(req.semantics.variables);
-                variables.forEach(function(variable){
-                if (!data.variablesData.includes(req.project + req.semantics.component_name + variable)){
-                  if (!(req.semantics.component_name in data.cocospecData)){
-                    data.cocospecData[req.semantics.component_name] = [];
-                    data.components.push({"component_name" : req.semantics.component_name, "result" : "UNCHECKED", "details" : "NONE"});
-                  }
-                  data.cocospecData[req.semantics.component_name].push(createData(variable, req.semantics.component_name, req.project, ''));
-                  data.variablesData.push(req.project + req.semantics.component_name + variable);
-                }
-              })
-            }
-          }
-        }
-        if (typeof req.semantics.scope_mode !== 'undefined'){
-          if (!data.modesData.includes(req.project + req.semantics.component_name + req.semantics.scope_mode)){
-            if (!(req.semantics.component_name in data.cocospecModes)){
-              data.cocospecModes[req.semantics.component_name] = [];
-            }
-            data.cocospecModes[req.semantics.component_name].push(createData(req.semantics.scope_mode, req.semantics.component_name, req.project, ''));
-            data.modesData.push(req.project + req.semantics.component_name + req.semantics.scope_mode);
-          }
-        }
-      }
-    })
-    return data;
-  }
-
-  synchStateWithDB () {
-    if (!this.mounted) return;
-    var data;
-    const {selectedProject} = this.props,
-          self = this;
-
-    db.find({
-      selector: {
-        project: selectedProject,
-      }
-    }).then(function (result){
-      data = self.setVariablesAndModes(result);
-      data.components.forEach(function(component){
-        if (typeof data.cocospecData[component] !== 'undefined'){
-          data.cocospecData[component] = data.cocospecData[component].sort((a, b) => {return a.vID.toLowerCase().trim() > b.vID.toLowerCase().trim()});
-        }
-        if (typeof data.cocospecModes[component] !== 'undefined'){
-          data.cocospecModes[component] = data.cocospecModes[component].sort((a, b) => {return a.vID.toLowerCase().trim() > b.vID.toLowerCase().trim()});
-        }
-      })
-      self.setState({
-        cocospecData: data.cocospecData,
-        cocospecModes: data.cocospecModes,
-        components: data.components.sort((a, b) => {return a.component_name.toLowerCase().trim() > b.component_name.toLowerCase().trim()})
-      })
-      self.checkComponents();
-    }).catch((err) => {
-      optLog(err);
-    });
-  }
-
-  checkComponents () {
-    const self = this;
-    const {components} = self.state;
-    const {selectedProject} = self.props;
-    components.forEach(function(component){
-        self.checkComponentCompleted(component.component_name, selectedProject);
-
-    })
-  }
-
-  checkComponentCompleted(component_name, project) {
-    const self = this;
-    const {cocospecData, cocospecModes,completedComponents} = this.state;
-    var dataAndModesLength = cocospecData[component_name] ? cocospecData[component_name].length : 0;
-    modeldb.find({
-      selector: {
-        component_name: component_name,
-        project: project,
-        completed: true,
-        modeldoc: false
-      }
-    }).then(function (result) {
-      if (result.docs.length === dataAndModesLength && dataAndModesLength !== 0){
-        if (!completedComponents.includes(component_name))
-         completedComponents.push(component_name);
-      } else {
-        var index = completedComponents.indexOf(component_name);
-        if (index > -1) completedComponents.splice(index, 1);
-      }
-      self.setState({
-        completedComponents : completedComponents
-      })
-    }).catch(function (err) {
-      optLog(err);
-      return false;
-    })
   }
 
   render() {
     const self = this;
-    const {classes, selectedProject, existingProjectNames} = this.props;
-    const {components, completedComponents}= this.state;
+    const {classes, selectedProject, existingProjectNames, components, completedComponents, getPropertyInfo, getDelayInfo, getContractInfo} = this.props;
 
     if (selectedProject === 'All Projects'){
       return(
@@ -250,7 +115,9 @@ class RealizabilityView extends React.Component {
             selectedProject={selectedProject}
             components={components}
             completedComponents={completedComponents}
-            checkComponentCompleted={this.checkComponentCompleted}
+            getPropertyInfo={getPropertyInfo}
+            getDelayInfo={getDelayInfo}
+            getContractInfo={getContractInfo}
           />
         </div>
       );
@@ -261,7 +128,15 @@ class RealizabilityView extends React.Component {
 RealizabilityView.propTypes = {
   classes: PropTypes.object.isRequired,
   selectedProject: PropTypes.string.isRequired,
-  existingProjectNames: PropTypes.array.isRequired
+  existingProjectNames: PropTypes.array.isRequired,
+  synchStateWithDB: PropTypes.func.isRequired,
+  cocospecData: PropTypes.object.isRequired,
+  cocospecModes: PropTypes.object.isRequired,
+  components: PropTypes.array.isRequired,
+  completedComponents: PropTypes.array.isRequired,
+  getPropertyInfo: PropTypes.func.isRequired,
+  getDelayInfo: PropTypes.func.isRequired,
+  getContractInfo: PropTypes.func.isRequired
 };
 
 export default withStyles(styles)(RealizabilityView);

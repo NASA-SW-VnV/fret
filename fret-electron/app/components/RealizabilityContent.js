@@ -646,7 +646,6 @@ class RealizabilityContent extends React.Component {
       live: true,
       include_docs: true
     }).on('change', (change) => {
-        this.synchStateWithModelDB();
     }).on('complete', function(info) {
       self.optLog(info);
     }).on('error', function (err) {
@@ -659,12 +658,13 @@ class RealizabilityContent extends React.Component {
   }
 
   isComponentComplete(name) {
-    const {completedComponents} = this.props;
+    const {completedComponents, getPropertyInfo, getDelayInfo} = this.props;
     return completedComponents.includes(name);
   }
 
   computeConnectedComponents(project, projectComponents) {
-    const {monolithicStatus, compositionalStatus, diagnosisStatus, diagnosisReports, connectedComponents} = this.state
+    const {monolithicStatus, compositionalStatus, diagnosisStatus, diagnosisReports, connectedComponents} = this.state;
+    const {getPropertyInfo, getDelayInfo, getContractInfo} = this.props;
     const self = this;
 
     projectComponents.forEach(component => {
@@ -681,7 +681,7 @@ class RealizabilityContent extends React.Component {
           modeldoc: false
         }
       }).then(function (modelResult){
-        var contract = self.getContractInfo(modelResult);
+        var contract = getContractInfo(modelResult);
         contract.componentName = component.component_name+'Spec';
         db.find({
           selector: {
@@ -689,8 +689,8 @@ class RealizabilityContent extends React.Component {
           }
         }).then(function (fretResult){
           if (self.isComponentComplete(component.component_name)) {
-            contract.properties = self.getPropertyInfo(fretResult, contract.outputVariables, component.component_name);
-            contract.delays = self.getDelayInfo(fretResult, component.component_name);
+            contract.properties = getPropertyInfo(fretResult, contract.outputVariables, component.component_name);
+            contract.delays = getDelayInfo(fretResult, component.component_name);
 
               /* Use contract to determine the output connected components
                * */
@@ -756,7 +756,6 @@ class RealizabilityContent extends React.Component {
 
   componentDidMount() {
     this.mounted = true;
-    this.synchStateWithModelDB();
     this.checkDependenciesExist();
   }
 
@@ -769,32 +768,14 @@ class RealizabilityContent extends React.Component {
     const {selectedProject, components} = this.props;
 
     if (selectedProject !== prevProps.selectedProject) {
-      this.synchStateWithModelDB();
-      this.setState({selected : ''})
+      this.setState({selected : '',  monolithic : false, compositional : false})
       this.computeConnectedComponents(selectedProject, components);
     } else {
       if (selectedProject !== 'All Projects' && components !== prevProps.components) {
-        this.synchStateWithModelDB();
-        this.setState({selected : ''})
+        this.setState({selected : '',  monolithic : false, compositional : false})
         this.computeConnectedComponents(selectedProject, components);
       }
     }
-  }
-
-  synchStateWithModelDB(){
-    if (!this.mounted) return;
-    const {selectedProject, selectedComponent} = this.props,
-        self = this;
-
-    modeldb.find({
-      selector: {
-        project : selectedProject,
-        component_name : selectedComponent
-      }
-    }).then(function(result){
-    }).catch((err) => {
-      self.optLog(err);
-    });
   }
 
   handleChange = name => event => {
@@ -802,7 +783,7 @@ class RealizabilityContent extends React.Component {
     if (name === 'selected') {
       if (event.target.value === 'all') {
         this.setState({selected: 'all', monolithic : false, compositional : true});
-      } else {
+      } else {    
         this.setState({selected: event.target.value, monolithic : Object.keys(connectedComponents[event.target.value.component_name]).length <= 1, compositional : Object.keys(connectedComponents[event.target.value.component_name]).length > 1});
       }
 
@@ -826,7 +807,7 @@ class RealizabilityContent extends React.Component {
 
   diagnoseSpec(event) {
     const {diagnosisStatus, diagnosisReports, selected, connectedComponents, ccSelected, compositional, monolithic, timeout} = this.state;
-    const {selectedProject} = this.props;
+    const {selectedProject, getPropertyInfo, getDelayInfo, getContractInfo} = this.props;
     const self = this;
 
     var actualTimeout = (timeout === '' ? 900 : timeout);
@@ -847,7 +828,7 @@ class RealizabilityContent extends React.Component {
       }
     }).then(function (modelResult){
 
-      var contract = self.getContractInfo(modelResult);
+      var contract = getContractInfo(modelResult);
       contract.componentName = selected.component_name+'Spec';
 
       db.find({
@@ -855,8 +836,8 @@ class RealizabilityContent extends React.Component {
           project: selectedProject
         }
       }).then(function (fretResult){
-        contract.properties = self.getPropertyInfo(fretResult, contract.outputVariables, selected.component_name);
-        contract.delays = self.getDelayInfo(fretResult, selected.component_name);
+        contract.properties = getPropertyInfo(fretResult, contract.outputVariables, selected.component_name);
+        contract.delays = getDelayInfo(fretResult, selected.component_name);
         return contract;
       }).then(function (contract){
         if (compositional) {
@@ -896,108 +877,6 @@ class RealizabilityContent extends React.Component {
     })
   }
 
-  getCoCoSpecDataType(dataType){
-    if (dataType === 'boolean'){
-       return 'bool';
-    } else if (dataType.includes('int') ){
-      return 'int';
-    } else if (dataType === 'double' || 'single'){
-      return 'real';
-    } else if (dataType === 'enum'){
-      return 'enum';
-    }
-  }
-
-  getContractInfo(result) {
-    var self = this;
-    var contract = {
-      componentName: '',
-      outputVariables: [],
-      inputVariables: [],
-      internalVariables: [],
-      functions: [],
-      assignments: [],
-      copilotAssignments: [],
-      modes: [],
-      properties: []
-    };
-    result.docs.forEach(function(doc){
-      var variable ={};
-      variable.name = doc.variable_name;
-      if (doc.idType === 'Input'){
-        variable.type = self.getCoCoSpecDataType(doc.dataType);
-        contract.inputVariables.push(variable);
-      } else if (doc.idType === 'Output'){
-        variable.type = self.getCoCoSpecDataType(doc.dataType);
-        contract.outputVariables.push(variable);
-      } else if (doc.idType === 'Internal'){
-        variable.type = self.getCoCoSpecDataType(doc.dataType);
-        contract.internalVariables.push(variable);
-        contract.assignments.push(doc.assignment);
-        contract.copilotAssignments.push(doc.copilotAssignment);
-      } else if (doc.idType === 'Mode'){
-        if (doc.modeRequirement !== '')
-          variable.assignment = doc.modeRequirement;
-          contract.modes.push(variable);
-      } else if (doc.idType === 'Function'){
-        variable.moduleName = doc.moduleName;
-        contract.functions.push(variable);
-      }
-    })
-    return contract;
-  }
-
-  getPropertyInfo(result, outputVariables, component) {
-    var properties = [];
-    result.docs.forEach(function(doc){
-      var property ={};
-      property.allInput = false;
-      if (doc.semantics.component_name === component){
-        if (typeof doc.semantics.CoCoSpecCode !== 'undefined'){
-          if (doc.semantics.CoCoSpecCode !== constants.nonsense_semantics &&
-            doc.semantics.CoCoSpecCode !== constants.undefined_semantics &&
-            doc.semantics.CoCoSpecCode !== constants.unhandled_semantics){
-              property.value = doc.semantics.CoCoSpecCode;
-              property.reqid = doc.reqid;
-              property.fullText = "Req text: " + doc.fulltext;
-              property.fretish = doc.fulltext;
-              //TODO: remove HTLM-tags from ptExpanded
-              property.ptLTL = doc.semantics.ptExpanded.replace(/<b>/g, "").replace(/<i>/g, "").replace(/<\/b>/g, "").replace(/<\/i>/g, "");
-              outputVariables.forEach(function(variable){
-              if (property.value.includes(variable)){
-                  property.allInput = true;
-                }
-              })
-              properties.push(property);
-         }
-       }
-      }
-    })
-    return properties;
-  }
-
-  getDelayInfo(result, component) {
-    var delays = [];
-    result.docs.forEach(function(doc){
-      if (doc.semantics.component_name === component){
-        if (typeof doc.semantics.CoCoSpecCode !== 'undefined'){
-          if (doc.semantics.CoCoSpecCode !== constants.nonsense_semantics &&
-            doc.semantics.CoCoSpecCode !== constants.undefined_semantics &&
-            doc.semantics.CoCoSpecCode !== constants.unhandled_semantics){
-              if (doc.semantics.duration){
-                doc.semantics.duration.forEach(function(duration){
-                  if (!delays.includes(duration)) {
-                    delays.push(duration);
-                  }
-                })
-             }
-          }
-        }
-      }
-    })
-    return delays;
-  }
-
   shouldComponentUpdate(nextProps, nextState) {
   return true;
   }
@@ -1017,7 +896,7 @@ class RealizabilityContent extends React.Component {
   checkRealizability = () => {
 
     const {selected, ccSelected, monolithic, compositional, connectedComponents, timeout} = this.state;
-    const {selectedProject, components} = this.props;
+    const {selectedProject, components, getPropertyInfo, getDelayInfo, getContractInfo} = this.props;
     const self = this;
 
     var actualTimeout = (timeout === '' ? 900 : timeout);
@@ -1058,7 +937,7 @@ class RealizabilityContent extends React.Component {
           modeldoc: false
         }
       }).then(function (modelResult){
-        var contract = self.getContractInfo(modelResult);
+        var contract = getContractInfo(modelResult);
         contract.componentName = tC.component_name+'Spec';
         db.find({
           selector: {
@@ -1066,7 +945,7 @@ class RealizabilityContent extends React.Component {
           }
         }).then(function (fretResult){
           contract.properties = self.getPropertyInfo(fretResult, contract.outputVariables, tC.component_name);
-          contract.delays = self.getDelayInfo(fretResult, tC.component_name);
+          contract.delays = getDelayInfo(fretResult, tC.component_name);
           return contract;
         }).then(function (contract){
           if (monolithic) {
@@ -1189,7 +1068,7 @@ class RealizabilityContent extends React.Component {
   };
 
   render() {
-    const {classes, selectedProject, components, completedComponents, checkComponentCompleted} = this.props;
+    const {classes, selectedProject, components, completedComponents} = this.props;
     const {connectedComponents, order, orderBy, monolithicStatus, compositionalStatus, time, diagnosisStatus, diagnosisReports, selected, ccSelected, monolithic, compositional, dependenciesExist, missingDependencies} = this.state;
     let grid;
     var tabs = [];
@@ -1400,7 +1279,9 @@ RealizabilityContent.propTypes = {
   selectedProject: PropTypes.string.isRequired,
   components: PropTypes.array.isRequired,
   completedComponents: PropTypes.array.isRequired,
-  checkComponentCompleted: PropTypes.func.isRequired
+  getPropertyInfo: PropTypes.func.isRequired,
+  getDelayInfo: PropTypes.func.isRequired,
+  getContractInfo: PropTypes.func.isRequired
 };
 
 export default withStyles(styles)(RealizabilityContent);

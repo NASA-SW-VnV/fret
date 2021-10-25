@@ -42,7 +42,11 @@ import VariablesView from './VariablesView';
 import RealizabilityView from './RealizabilityView';
 
 const process = require('process');
-
+const checkDbFormat = require('../../support/fretDbSupport/checkDBFormat.js');
+const sharedObj = require('electron').remote.getGlobal('sharedObj');
+const constants = require('../parser/Constants');
+const db = sharedObj.db;
+const modeldb = sharedObj.modeldb;
 
 const styles = theme => ({
   root: {
@@ -50,6 +54,14 @@ const styles = theme => ({
     backgroundColor: theme.palette.background.paper,
   },
 });
+
+var dbChangeListener;
+let id = 0;
+
+function createData(vID, cID, project, description) {
+  id += 1;
+  return {id ,vID, cID, project, description};
+}
 
 function TabContainer(props) {
   return (
@@ -67,22 +79,299 @@ class AnalysisTabs extends React.Component {
   
   state = {
     value: 0,
+    components: [],
+    completedComponents: [],
+    cocospecData: {},
+    cocospecModes: {},
   };
 
   constructor(props) {
     super(props);
+    this.synchStateWithDB = this.synchStateWithDB.bind(this);
+    this.checkComponentCompleted = this.checkComponentCompleted.bind(this);
+    dbChangeListener = db.changes({
+      since: 'now',
+      live: true,
+      include_docs: true
+    }).on('change', (change) => {
+      if (!system_dbkeys.includes(change.id)) {
+        this.synchStateWithDB();
+      }
+    }).on('complete', function(info) {
+      console.log(info);
+    }).on('error', function (err) {
+      console.log(err);
+    });
+  }
+
+  componentDidMount() {
+    this.mounted = true;
+    this.synchStateWithDB();
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
+    dbChangeListener.cancel();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.selectedProject !== prevProps.selectedProject) {
+      this.synchStateWithDB();
+    }
   }
 
   handleChange = (event, value) => {
   this.setState({ value });
-};
+  };
 
-  componentWillReceiveProps = (props) => {
+  setVariablesAndModes(result){
+    var data = {
+      cocospecData: {},
+      cocospecModes: {},
+      variablesData: [],
+      modesData: [],
+      components: []
+    };
+
+    result.docs.forEach(function(req){
+      if (typeof req.semantics !== 'undefined'){
+        if (typeof req.semantics.ft !== 'undefined'){
+          if (req.semantics.ft !== constants.nonsense_semantics
+            && req.semantics.ft !== constants.undefined_semantics
+            && req.semantics.ft !== constants.unhandled_semantics){
+            if (typeof req.semantics.variables !== 'undefined') {
+
+                const variables = checkDbFormat.checkVariableFormat(req.semantics.variables);
+                variables.forEach(function(variable){
+                if (!data.variablesData.includes(req.project + req.semantics.component_name + variable)){
+                  if (!(req.semantics.component_name in data.cocospecData)){
+                    data.cocospecData[req.semantics.component_name] = [];
+                    data.components.push({"component_name" : req.semantics.component_name, "result" : "UNCHECKED", "details" : "NONE"});
+                  }
+                  data.cocospecData[req.semantics.component_name].push(createData(variable, req.semantics.component_name, req.project, ''));
+                  data.variablesData.push(req.project + req.semantics.component_name + variable);
+                }
+              })
+            }
+          }
+        }
+        if (typeof req.semantics.scope_mode !== 'undefined'){
+          if (!data.modesData.includes(req.project + req.semantics.component_name + req.semantics.scope_mode)){
+            if (!(req.semantics.component_name in data.cocospecModes)){
+              data.cocospecModes[req.semantics.component_name] = [];
+            }
+            data.cocospecModes[req.semantics.component_name].push(createData(req.semantics.scope_mode, req.semantics.component_name, req.project, ''));
+            data.modesData.push(req.project + req.semantics.component_name + req.semantics.scope_mode);
+          }
+        }
+      }
+    })
+    return data;
+  }
+
+  checkComponents () {
+    const self = this;
+    const {components} = self.state;
+    const {selectedProject} = self.props;
+    components.forEach(function(component){
+        self.checkComponentCompleted(component.component_name, selectedProject);
+
+    })
+  }
+
+  synchStateWithDB () {
+    if (!this.mounted) return;
+    var data;
+    const {selectedProject} = this.props,
+          self = this;
+    db.find({
+      selector: {
+        project: selectedProject,
+      }
+    }).then(function (result){
+      data = self.setVariablesAndModes(result);
+      data.components.forEach(function(component){
+        if (typeof data.cocospecData[component] !== 'undefined'){
+          data.cocospecData[component] = data.cocospecData[component].sort((a, b) => {return a.vID.toLowerCase().trim() > b.vID.toLowerCase().trim()});
+        }
+        if (typeof data.cocospecModes[component] !== 'undefined'){
+          data.cocospecModes[component] = data.cocospecModes[component].sort((a, b) => {return a.vID.toLowerCase().trim() > b.vID.toLowerCase().trim()});
+        }
+      })
+      self.setState({
+        cocospecData: data.cocospecData,
+        cocospecModes: data.cocospecModes,
+        components: data.components.sort((a, b) => {return a.component_name.toLowerCase().trim() > b.component_name.toLowerCase().trim()})
+      })
+      self.checkComponents();
+    }).catch((err) => {
+      console.log(err);
+    });
+  }
+
+  //variablesview version in comments
+  // checkComponentCompleted(component_name, project) {
+  //   const self = this;
+  //   const {cocospecData, cocospecModes,completedComponents} = this.state;
+  //   var dataAndModesLength = cocospecData[component_name].length;
+  //   //cocospecModes[component_name] ? dataAndModesLength = cocospecData[component_name].length + cocospecModes[component_name].length : dataAndModesLength = cocospecData[component_name].length;
+  //   modeldb.find({
+  //     selector: {
+  //       component_name: component_name,
+  //       project: project,
+  //       completed: true,
+  //       modeldoc: false
+  //     }
+  //   }).then(function (result) {
+  //     if (result.docs.length === dataAndModesLength && dataAndModesLength !== 0){
+  //       if (!completedComponents.includes(component_name))
+  //        completedComponents.push(component_name);
+  //     } else {
+  //       var index = completedComponents.indexOf(component_name);
+  //       if (index > -1) completedComponents.splice(index, 1);
+  //     }
+  //     self.setState({
+  //       completedComponents : completedComponents
+  //     })
+  //   }).catch(function (err) {
+  //     console.log(err);
+  //     return false;
+  //   })
+  // }
+
+  checkComponentCompleted(component_name, project) {
+    const self = this;
+    const {cocospecData, cocospecModes,completedComponents} = this.state;
+    var dataAndModesLength = cocospecData[component_name] ? cocospecData[component_name].length : 0;
+    modeldb.find({
+      selector: {
+        component_name: component_name,
+        project: project,
+        completed: true,
+        modeldoc: false
+      }
+    }).then(function (result) {
+      if (result.docs.length === dataAndModesLength && dataAndModesLength !== 0){
+        if (!completedComponents.includes(component_name))
+         completedComponents.push(component_name);
+      } else {
+        var index = completedComponents.indexOf(component_name);
+        if (index > -1) completedComponents.splice(index, 1);
+      }
+      self.setState({
+        completedComponents : completedComponents
+      })
+    }).catch(function (err) {
+      console.log(err);
+      return false;
+    })
+  }
+
+  getPropertyInfo(result, outputVariables, component) {
+    var properties = [];
+    result.docs.forEach(function(doc){
+      var property ={};
+      property.allInput = false;
+      if (doc.semantics.component_name === component){
+        if (typeof doc.semantics.CoCoSpecCode !== 'undefined'){
+          if (doc.semantics.CoCoSpecCode !== constants.nonsense_semantics &&
+            doc.semantics.CoCoSpecCode !== constants.undefined_semantics &&
+            doc.semantics.CoCoSpecCode !== constants.unhandled_semantics){
+              property.value = doc.semantics.CoCoSpecCode;
+              property.reqid = doc.reqid;
+              property.fullText = "Req text: " + doc.fulltext;
+              property.fretish = doc.fulltext;
+              //TODO: remove HTLM-tags from ptExpanded
+              property.ptLTL = doc.semantics.ptExpanded.replace(/<b>/g, "").replace(/<i>/g, "").replace(/<\/b>/g, "").replace(/<\/i>/g, "");
+              outputVariables.forEach(function(variable){
+              if (property.value.includes(variable)){
+                  property.allInput = true;
+                }
+              })
+              properties.push(property);
+         }
+       }
+      }
+    })
+    return properties;
+  }
+
+  getDelayInfo(result, component) {
+    var delays = [];
+    result.docs.forEach(function(doc){
+      if (doc.semantics.component_name === component){
+        if (typeof doc.semantics.CoCoSpecCode !== 'undefined'){
+          if (doc.semantics.CoCoSpecCode !== constants.nonsense_semantics &&
+            doc.semantics.CoCoSpecCode !== constants.undefined_semantics &&
+            doc.semantics.CoCoSpecCode !== constants.unhandled_semantics){
+              if (doc.semantics.duration){
+                doc.semantics.duration.forEach(function(duration){
+                  if (!delays.includes(duration)) {
+                    delays.push(duration);
+                  }
+                })
+             }
+          }
+        }
+      }
+    })
+    return delays;
+  }
+
+
+
+  getContractInfo(result) {
+    function getCoCoSpecDataType(dataType){
+      if (dataType === 'boolean'){
+         return 'bool';
+      } else if (dataType.includes('int') ){
+        return 'int';
+      } else if (dataType === 'double' || 'single'){
+        return 'real';
+      }
+    }
+
+    var self = this;
+    var contract = {
+      componentName: '',
+      outputVariables: [],
+      inputVariables: [],
+      internalVariables: [],
+      functions: [],
+      assignments: [],
+      copilotAssignments: [],
+      modes: [],
+      properties: []
+    };
+    result.docs.forEach(function(doc){
+      var variable ={};
+      variable.name = doc.variable_name;
+      if (doc.idType === 'Input'){
+        variable.type = getCoCoSpecDataType(doc.dataType);
+        contract.inputVariables.push(variable);
+      } else if (doc.idType === 'Output'){
+        variable.type = getCoCoSpecDataType(doc.dataType);
+        contract.outputVariables.push(variable);
+      } else if (doc.idType === 'Internal'){
+        variable.type = getCoCoSpecDataType(doc.dataType);
+        contract.internalVariables.push(variable);
+        contract.assignments.push(doc.assignment);
+        contract.copilotAssignments.push(doc.copilotAssignment);
+      } else if (doc.idType === 'Mode'){
+        if (doc.modeRequirement !== '')
+          variable.assignment = doc.modeRequirement;
+          contract.modes.push(variable);
+      } else if (doc.idType === 'Function'){
+        variable.moduleName = doc.moduleName;
+        contract.functions.push(variable);
+      }
+    })
+    return contract;
   }
 
   render() {
     const {classes, selectedProject, existingProjectNames} = this.props;
-    const {value} = this.state;
+    const {value, components, completedComponents, cocospecData, cocospecModes} = this.state;
     return (
       <div>
         <AppBar position="static" color="default">
@@ -107,12 +396,12 @@ class AnalysisTabs extends React.Component {
         </AppBar>
         {value === 0 &&
           <TabContainer>
-            <VariablesView selectedProject={selectedProject} existingProjectNames={existingProjectNames}/>
+            <VariablesView selectedProject={selectedProject} existingProjectNames={existingProjectNames} synchStateWithDB={this.synchStateWithDB} checkComponentCompleted={this.checkComponentCompleted} getPropertyInfo={this.getPropertyInfo} getDelayInfo={this.getDelayInfo} getContractInfo={this.getContractInfo} components={components.map(e => e.component_name)} completedComponents={completedComponents} cocospecData={cocospecData} cocospecModes={cocospecModes}/>
           </TabContainer>
         }
         {value === 1 &&
           <TabContainer>
-            <RealizabilityView selectedProject={selectedProject} existingProjectNames={existingProjectNames}/>
+            <RealizabilityView selectedProject={selectedProject} existingProjectNames={existingProjectNames} synchStateWithDB={this.synchStateWithDB} getPropertyInfo={this.getPropertyInfo} getDelayInfo={this.getDelayInfo} getContractInfo={this.getContractInfo} components={components} completedComponents={completedComponents} cocospecData={cocospecData} cocospecModes={cocospecModes}/>
           </TabContainer>
         }
       </div>

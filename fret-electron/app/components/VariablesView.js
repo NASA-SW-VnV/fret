@@ -82,12 +82,6 @@ const dialog = require('electron').remote.dialog;
 import analysisPortalManual from '../../docs/_media/ExportingForAnalysis/analysisInsideFRET.md';
 
 var dbChangeListener;
-let id = 0;
-
-function createData(vID, cID, project, description) {
-  id += 1;
-  return {id ,vID, cID, project, description};
-}
 
 const styles = theme => ({
   root: {
@@ -178,48 +172,6 @@ const componentStyles = theme => ({
 
 class ComponentSummary extends React.Component {
 
-  getContractInfo(result) {
-    var self = this;
-    var contract = {
-      componentName: '',
-      outputVariables: [],
-      inputVariables: [],
-      internalVariables: [],
-      functions: [],
-      assignments: [],
-      copilotAssignments: [],
-      modes: [],
-      properties: []
-    };
-    result.docs.forEach(function(doc){
-      var variable ={};
-      variable.name = doc.variable_name;
-      if (doc.idType === 'Input'){
-        variable.type = self.getCoCoSpecDataType(doc.dataType);
-        contract.inputVariables.push(variable);
-      } else if (doc.idType === 'Output'){
-        variable.type = self.getCoCoSpecDataType(doc.dataType);
-        contract.outputVariables.push(variable);
-      } else if (doc.idType === 'Internal'){
-        variable.type = self.getCoCoSpecDataType(doc.dataType);
-        contract.internalVariables.push(variable);
-        contract.assignments.push(doc.assignment);
-        contract.copilotAssignments.push(doc.copilotAssignment);
-      } else if (doc.idType === 'Mode'){
-          variable.type = 'bool'
-          if (doc.modeRequirement !== ''){
-              variable.assignment = doc.modeRequirement;
-              variable.copilotAssignment = '';
-          }
-          contract.modes.push(variable);
-      } else if (doc.idType === 'Function'){
-        variable.moduleName = doc.moduleName;
-        contract.functions.push(variable);
-      }
-    })
-    return contract;
-  }
-
   getMappingInfo(result, contractName) {
     var mapping = {};
     var componentMapping = {};
@@ -246,70 +198,9 @@ class ComponentSummary extends React.Component {
     return mapping;
   }
 
-  getDelayInfo(result, component) {
-    var delays = [];
-    result.docs.forEach(function(doc){
-      if (doc.semantics.component_name === component){
-        if (typeof doc.semantics.CoCoSpecCode !== 'undefined'){
-          if (doc.semantics.CoCoSpecCode !== constants.nonsense_semantics &&
-            doc.semantics.CoCoSpecCode !== constants.undefined_semantics &&
-            doc.semantics.CoCoSpecCode !== constants.unhandled_semantics){
-              if (doc.semantics.duration){
-                doc.semantics.duration.forEach(function(duration){
-                  if (!delays.includes(duration)) {
-                    delays.push(duration);
-                  }
-                })
-             }
-          }
-        }
-      }
-    })
-    return delays;
-  }
-
-  getCoCoSpecDataType(dataType){
-    if (dataType === 'boolean'){
-       return 'bool';
-    } else if (dataType.includes('int') ){
-      return 'int';
-    } else if (dataType === 'double' || 'single'){
-      return 'real';
-    }
-  }
-
-  getPropertyInfo(result, outputVariables, component) {
-    var properties = [];
-    result.docs.forEach(function(doc){
-      var property ={};
-      property.allInput = false;
-      if (doc.semantics.component_name === component){
-        if (typeof doc.semantics.CoCoSpecCode !== 'undefined'){
-          if (doc.semantics.CoCoSpecCode !== constants.nonsense_semantics &&
-            doc.semantics.CoCoSpecCode !== constants.undefined_semantics &&
-            doc.semantics.CoCoSpecCode !== constants.unhandled_semantics){
-              property.value = doc.semantics.CoCoSpecCode;
-              property.reqid = doc.reqid;
-              property.fullText = "Req text: " + doc.fulltext;
-              property.fretish = doc.fulltext;
-              //TODO: remove HTLM-tags from ptExpanded
-              property.ptLTL = doc.semantics.ptExpanded.replace(/<b>/g, "").replace(/<i>/g, "").replace(/<\/b>/g, "").replace(/<\/i>/g, "");
-              outputVariables.forEach(function(variable){
-              if (property.value.includes(variable)){
-                  property.allInput = true;
-                }
-              })
-              properties.push(property);
-         }
-       }
-      }
-    })
-    return properties;
-  }
-
   exportComponentCode = event => {
     event.stopPropagation();
-    const {component, selectedProject, language} = this.props;
+    const {component, selectedProject, language, getPropertyInfo, getDelayInfo, getContractInfo} = this.props;
     const homeDir = app.getPath('home');
     const self = this;
     var filepath = dialog.showSaveDialog({
@@ -345,7 +236,7 @@ class ComponentSummary extends React.Component {
             modeldoc: false
           }
         }).then(function (modelResult){
-          let contract = self.getContractInfo(modelResult);
+          let contract = getContractInfo(modelResult);
           contract.componentName = component+'Spec';
           archive.pipe(output);
           if (language === 'cocospec' && modelResult.docs[0].modelComponent != ""){
@@ -357,8 +248,8 @@ class ComponentSummary extends React.Component {
               project: selectedProject
             }
           }).then(function (fretResult){
-            contract.properties = self.getPropertyInfo(fretResult, contract.outputVariables, component);
-            contract.delays = self.getDelayInfo(fretResult, component);
+            contract.properties = getPropertyInfo(fretResult, contract.outputVariables, component);
+            contract.delays = getDelayInfo(fretResult, component);
             if (language === 'cocospec'){
               archive.append(ejsCache.renderContractCode().contract.complete(contract), {name: contract.componentName+'.lus'})
             } else if (language === 'copilot'){
@@ -410,6 +301,9 @@ ComponentSummary.propTypes = {
   completed: PropTypes.bool.isRequired,
   selectedProject: PropTypes.string.isRequired,
   language: PropTypes.string.isRequired,
+  getPropertyInfo: PropTypes.func.isRequired,
+  getDelayInfo: PropTypes.func.isRequired,
+  getContractInfo: PropTypes.func.isRequired
 };
 
 ComponentSummary = withStyles(componentStyles)(ComponentSummary);
@@ -418,10 +312,6 @@ ComponentSummary = withStyles(componentStyles)(ComponentSummary);
 
 class VariablesView extends React.Component {
   state = {
-    components: [],
-    completedComponents: [],
-    cocospecData: {},
-    cocospecModes: {},
     language: '',
     helpOpen : false
   }
@@ -441,14 +331,14 @@ class VariablesView extends React.Component {
 
   constructor(props){
     super(props);
-    this.checkComponentCompleted = this.checkComponentCompleted.bind(this);
+    // this.checkComponentCompleted = this.checkComponentCompleted.bind(this);
     dbChangeListener = db.changes({
       since: 'now',
       live: true,
       include_docs: true
     }).on('change', (change) => {
       if (!system_dbkeys.includes(change.id)) {
-        this.synchStateWithDB();
+        this.props.synchStateWithDB();
       }
     }).on('complete', function(info) {
       console.log(info);
@@ -459,7 +349,7 @@ class VariablesView extends React.Component {
 
   componentDidMount() {
     this.mounted = true;
-    this.synchStateWithDB();
+    this.props.synchStateWithDB();
   }
 
   componentWillUnmount() {
@@ -469,127 +359,14 @@ class VariablesView extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (this.props.selectedProject !== prevProps.selectedProject) {
-      this.synchStateWithDB();
+      this.props.synchStateWithDB();
     }
-  }
-
-  setVariablesAndModes(result){
-    const self = this;
-    var data = {
-      cocospecData: {},
-      cocospecModes: {},
-      variablesData: [],
-      modesData: [],
-      components: []
-    };
-    result.docs.forEach(function(req){
-      if (typeof req.semantics !== 'undefined'){
-        if (typeof req.semantics.ft !== 'undefined'){
-          if (req.semantics.ft !== constants.nonsense_semantics
-            && req.semantics.ft !== constants.undefined_semantics
-            && req.semantics.ft !== constants.unhandled_semantics){
-            if (typeof req.semantics.variables !== 'undefined') {
-                const variables = checkDbFormat.checkVariableFormat(req.semantics.variables);
-                variables.forEach(function(variable){
-                if (!data.variablesData.includes(req.project + req.semantics.component_name + variable)){
-                  if (!(req.semantics.component_name in data.cocospecData)){
-                    data.cocospecData[req.semantics.component_name] = [];
-                    data.components.push(req.semantics.component_name);
-                  }
-                  data.cocospecData[req.semantics.component_name].push(createData(variable, req.semantics.component_name, req.project, ''));
-                  data.variablesData.push(req.project + req.semantics.component_name + variable);
-                }
-              })
-            }
-          }
-        }
-        if (typeof req.semantics.scope_mode !== 'undefined'){
-          if (!data.modesData.includes(req.project + req.semantics.component_name + req.semantics.scope_mode)){
-            if (!(req.semantics.component_name in data.cocospecModes)){
-              data.cocospecModes[req.semantics.component_name] = [];
-            }
-            data.cocospecModes[req.semantics.component_name].push(createData(req.semantics.scope_mode, req.semantics.component_name, req.project, ''));
-            data.modesData.push(req.project + req.semantics.component_name + req.semantics.scope_mode);
-          }
-        }
-      }
-    })
-    return data;
-  }
-
-  synchStateWithDB () {
-    if (!this.mounted) return;
-    var data;
-    const {selectedProject} = this.props,
-          self = this;
-
-    db.find({
-      selector: {
-        project: selectedProject,
-      }
-    }).then(function (result){
-      data = self.setVariablesAndModes(result);
-      data.components.forEach(function(component){
-        if (typeof data.cocospecData[component] !== 'undefined'){
-          data.cocospecData[component] = data.cocospecData[component].sort((a, b) => {return a.vID.toLowerCase().trim() > b.vID.toLowerCase().trim()});
-        }
-        if (typeof data.cocospecModes[component] !== 'undefined'){
-          data.cocospecModes[component] = data.cocospecModes[component].sort((a, b) => {return a.vID.toLowerCase().trim() > b.vID.toLowerCase().trim()});
-        }
-      })
-      self.setState({
-        cocospecData: data.cocospecData,
-        cocospecModes: data.cocospecModes,
-        components: data.components.sort((a, b) => {return a.toLowerCase().trim() > b.toLowerCase().trim()})
-      })
-      self.checkComponents();
-    }).catch((err) => {
-      console.log(err);
-    });
-  }
-
-  checkComponents () {
-    const self = this;
-    const {components} = self.state;
-    const {selectedProject} = self.props;
-    components.forEach(function(component){
-        self.checkComponentCompleted(component, selectedProject);
-    })
-  }
-
-  checkComponentCompleted(component_name, project) {
-    const self = this;
-    const {cocospecData, cocospecModes,completedComponents} = this.state;
-    var dataAndModesLength = cocospecData[component_name].length;
-    //cocospecModes[component_name] ? dataAndModesLength = cocospecData[component_name].length + cocospecModes[component_name].length : dataAndModesLength = cocospecData[component_name].length;
-    modeldb.find({
-      selector: {
-        component_name: component_name,
-        project: project,
-        completed: true,
-        modeldoc: false
-      }
-    }).then(function (result) {
-      if (result.docs.length === dataAndModesLength && dataAndModesLength !== 0){
-        if (!completedComponents.includes(component_name))
-         completedComponents.push(component_name);
-      } else {
-        var index = completedComponents.indexOf(component_name);
-        if (index > -1) completedComponents.splice(index, 1);
-      }
-      self.setState({
-        completedComponents : completedComponents
-      })
-    }).catch(function (err) {
-      console.log(err);
-      return false;
-    })
   }
 
   render() {
     const self = this;
-    const {classes, selectedProject, existingProjectNames} = this.props;
-    const {components, completedComponents, cocospecData, cocospecModes, language}= this.state;
+    const {classes, selectedProject, existingProjectNames, checkComponentCompleted, components, completedComponents, cocospecData, cocospecModes, getPropertyInfo, getDelayInfo, getContractInfo} = this.props;
+    const{language}= this.state;
 
     return (
       <div>
@@ -628,6 +405,10 @@ class VariablesView extends React.Component {
                   completed = {completedComponents.includes(component)}
                   selectedProject={selectedProject}
                   language={language}
+                  getPropertyInfo={getPropertyInfo}
+                  getDelayInfo={getDelayInfo}
+                  getContractInfo={getContractInfo}
+
                 />
               </AccordionSummary>
               <Divider />
@@ -636,7 +417,7 @@ class VariablesView extends React.Component {
                   <VariablesSortableTable
                     selectedProject={selectedProject}
                     selectedComponent={component}
-                    checkComponentCompleted={this.checkComponentCompleted}
+                    checkComponentCompleted={checkComponentCompleted}
                   />
                 </div>
                 </AccordionDetails>
@@ -652,7 +433,16 @@ class VariablesView extends React.Component {
 VariablesView.propTypes = {
   classes: PropTypes.object.isRequired,
   selectedProject: PropTypes.string.isRequired,
-  existingProjectNames: PropTypes.array.isRequired
+  existingProjectNames: PropTypes.array.isRequired,
+  synchStateWithDB: PropTypes.func.isRequired,
+  checkComponentCompleted:PropTypes.func.isRequired,
+  cocospecData: PropTypes.object.isRequired,
+  cocospecModes: PropTypes.object.isRequired,
+  components: PropTypes.array.isRequired,
+  completedComponents: PropTypes.array.isRequired,
+  getPropertyInfo: PropTypes.func.isRequired,
+  getDelayInfo: PropTypes.func.isRequired,
+  getContractInfo: PropTypes.func.isRequired
 };
 
 export default withStyles(styles)(VariablesView);
