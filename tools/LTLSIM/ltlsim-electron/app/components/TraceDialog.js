@@ -104,7 +104,7 @@ class TraceDialog extends Component {
                 <DialogContent>
                     <form>
                         <TextField 
-                            id="set-tracelength-input"
+                            id="qa_trace_tf_input"
                             label="Traceelength"
                             error={(this.state.error.length > 0)}
                             helperText={this.state.error}

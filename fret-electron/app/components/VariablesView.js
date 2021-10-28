@@ -114,27 +114,28 @@ let VariablesViewHeader = props => {
   const {classes, selectedProject, language, handleChange} = props;
   if (selectedProject === 'All Projects'){
     return(
-      <Typography variant='subtitle1'>
+      <Typography id="qa_var_typ_selProjectAllProjects" variant='subtitle1'>
       Please choose a specific project
       </Typography>
     );
   }
   return (
     <div>
-      <Typography variant='h6'>
+      <Typography id="qa_var_typ_selProj" variant='h6'>
         Requirement Variables to Model Mapping: {selectedProject}
        </Typography>
        <FormControl required className={classes.formControl}>
          <InputLabel htmlFor="language-export-required"> Export Language</InputLabel>
          <Select
+           id="qa_var_sel_exportLanguage" 
            value={language}
            onChange={handleChange('language')}
            inputProps={{
              name: 'language',
              id: 'language-export-required',
            }}>
-           <MenuItem value="cocospec">CoCoSpec</MenuItem>
-           <MenuItem value="copilot">CoPilot</MenuItem>
+           <MenuItem id="qa_var_mi_cocospec" value="cocospec">CoCoSpec</MenuItem>
+           <MenuItem id="qa_var_mi_copilot" value="copilot">CoPilot</MenuItem>
          </Select>
        </FormControl>
      </div>
@@ -185,9 +186,7 @@ class ComponentSummary extends React.Component {
           componentMapping.model_path = doc.modelComponent;
         }
         var variable = {};
-        //Variable name in FRETish
-        variable.variable_name = doc.variable_name;
-        //Signal path in Simulink model
+        variable.variable_name = doc.modeldoc_id;
         variable.variable_path = componentMapping.model_path+'/'+doc.modeldoc_id;
         (doc.idType === 'Input') ? componentInputs.push(variable) : componentOutputs.push(variable);
       }
@@ -275,8 +274,10 @@ class ComponentSummary extends React.Component {
       return (
         <Tooltip title='Export verification code.'>
         <span>
-          <Button size="small" onClick={this.exportComponentCode} color="secondary" variant='contained' className={classes.buttonControl}>
-            Export
+          <Button id="qa_var_btn_export" size="small" 
+            onClick={this.exportComponentCode} color="secondary" 
+            variant='contained' className={classes.buttonControl}>
+              Export
           </Button>
           </span>
         </Tooltip>
@@ -377,7 +378,7 @@ class VariablesView extends React.Component {
               language={language}
               handleChange={this.handleChange}/>
               &nbsp;&nbsp;&nbsp;
-              <Button color="secondary" onClick={this.handleHelpOpen} size="small" variant="contained"> Help </Button>
+              <Button id="qa_var_btn_help" color="secondary" onClick={this.handleHelpOpen} size="small" variant="contained"> Help </Button>
             </div>
               <Dialog maxWidth='lg' onClose={this.handleHelpClose} open={this.state.helpOpen}>
                 <DialogTitle id="analysisPortal-help">
@@ -388,7 +389,7 @@ class VariablesView extends React.Component {
                     <CloseIcon />
                   </IconButton>
                 </DialogTitle>
-                <DialogContent dividers>
+                <DialogContent id="qa_var_dc_helpPage" dividers>
                   <ReactMarkdown renderers={{image: (props) => <img {...props} style={{maxHeight: '15%', width: '90%'}} />}} transformImageUri = {uri => `../docs/_media/screen_shots/${uri}`} linkTarget="_blank" source={analysisPortalManual}/>
                 </DialogContent>
               </Dialog>
@@ -398,9 +399,10 @@ class VariablesView extends React.Component {
           {components.map(component => {
             return(
               <Accordion key={component}>
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <AccordionSummary id="qa_var_as_expandIcon" expandIcon={<ExpandMoreIcon />}>
                 <Typography className={classes.heading}>{component}</Typography>
                 <ComponentSummary
+                  id={"qa_var_cs_"+component}
                   component = {component}
                   completed = {completedComponents.includes(component)}
                   selectedProject={selectedProject}

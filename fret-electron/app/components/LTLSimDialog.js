@@ -240,8 +240,6 @@ class LTLSimDialog extends Component {
             let {model} = prevState;
             if (LTLSimController.getFormulaKeys(model).indexOf(id) !== -1) {
                 LTLSimController.setFormulaTrace(model, id, sid, trace);
-                //for FT: value is beggining of trace
-                value=trace[0]
                 LTLSimController.setFormulaValue(model, id, sid, value ?
                                                     EFormulaStates.VALIDATED :
                                                     EFormulaStates.VIOLATED);
@@ -317,6 +315,7 @@ class LTLSimDialog extends Component {
                         "Change the logics to past time LTL" :
                         "Change the logics to future time LTL"} >
                         <IconButton
+                            id="qa_ltlSim_ib_pastFutureTime"
                             color={"secondary"}
                             onClick={this.handleClickLogics}>
                             {(logics === "FT") ?
@@ -328,6 +327,7 @@ class LTLSimDialog extends Component {
                         "Turn off formula highlight (colors the formula according to the overall valuation)" :
                         "Turn on formula highlight (colors the formula according to the overall valuation)"} >
                         <IconButton
+                            id="qa_ltlSim_ib_highLight"
                             color={highlight ? "secondary" : "inherit"}
                             onClick={this.handleClickHighlight}>
                             <FormulaEvaluationIcon />
@@ -335,6 +335,7 @@ class LTLSimDialog extends Component {
                     </Tooltip>
                     <Tooltip title="Close simulation window" >
                         <IconButton
+                            id="qa_ltlSim_ib_close"
                             color="inherit"
                             onClick={onClose}
                             aria-label="Close">

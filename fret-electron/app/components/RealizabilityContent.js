@@ -390,6 +390,7 @@ class CCRequirementsTable extends React.Component {
                   {rows.map(row => {
                     return (
                       <TableCell
+                        id={"qa_rlzTbl_tc_head"+row.id}
                         key={row.id}
                         align={row.numeric?'right':'left'}
                         sortDirection={orderBy === row.id ? order : false}
@@ -400,6 +401,7 @@ class CCRequirementsTable extends React.Component {
                           enterDelay={300}
                         >
                           <TableSortLabel
+                            id={"qa_rlzTbl_tc_sort"+row.id}
                             active={orderBy === row.id}
                             direction={order}
                             onClick={this.handleRequestSort(row.id)}
@@ -420,10 +422,10 @@ class CCRequirementsTable extends React.Component {
                     const label = n.reqid ? n.reqid.replace(/-/g,'') : 'NONE'
                     return (
                         <TableRow key={n.rowid}>
-                            <TableCell>
+                            <TableCell id={"qa_rlzTbl_tc_id"+label}>
                               {label}
                             </TableCell>
-                          <TableCell>{n.summary}</TableCell>
+                          <TableCell id={"qa_rlzTbl_tc_sum"+label}>{n.summary}</TableCell>
                         </TableRow>
                       )
                   })}
@@ -1130,6 +1132,7 @@ class RealizabilityContent extends React.Component {
             <FormControl className={classes.formControl} required>
               <InputLabel>System Component</InputLabel>
               <Select
+                id="qa_rlzTbl_sel_sysComp"
                 value={selected}
                 onChange={this.handleChange('selected')}
               >
@@ -1141,7 +1144,9 @@ class RealizabilityContent extends React.Component {
                         value={!this.isComponentComplete(n.component_name) ? '' : n}
                         title={!this.isComponentComplete(n.component_name) ? 'Analysis is not possible for this component. Please complete mandatory variable fields in Variable Mapping first.' : ''}>
                           <span key={n.component_name}>
-                          <MenuItem key={n.component_name} disabled={!this.isComponentComplete(n.component_name)}>
+                          <MenuItem key={n.component_name} 
+                            id={"qa_rlzTbl_mi_sysComp_"+n.component_name}
+                            disabled={!this.isComponentComplete(n.component_name)}>
                             <div key={n.component_name} style={{display : 'flex', alignItems : 'center'}}>
                               {n.component_name}
                               &nbsp;
@@ -1159,6 +1164,7 @@ class RealizabilityContent extends React.Component {
               disabled={selected === '' || (selected !== 'all' && Object.keys(connectedComponents[selected.component_name]).length <= 1)}
               control={
                 <Checkbox
+                  id="qa_rlzTbl_cb_compositional"
                   checked={compositional}
                   onChange={this.handleChange('compositional')}
                   value="compositional"
@@ -1171,6 +1177,7 @@ class RealizabilityContent extends React.Component {
               disabled={selected === ''}
               control={
                 <Checkbox
+                  id="qa_rlzTbl_cb_monolithic"
                   checked={monolithic}
                   onChange={this.handleChange('monolithic')}
                   value="monolithic"
@@ -1186,9 +1193,9 @@ class RealizabilityContent extends React.Component {
               </Tooltip>
             }
             <TextField
+              id="qa_rlzTbl_tf_timeOut"
               className={classes.wrapper}
               disabled={selected === ''}
-              id="timeout-value"
               label="Timeout (seconds)"
               placeholder="900"
               value={this.state.timeout}
@@ -1199,12 +1206,16 @@ class RealizabilityContent extends React.Component {
               }}
             />
             <div className={classes.wrapper}>
-            <Button onClick={(event) => {this.checkRealizability(event)}} size="small" className={classes.vAlign} color="secondary" variant='contained' disabled={status[selected.component_name] === 'PROCESSING' || diagStatus === 'PROCESSING' || !dependenciesExist || (dependenciesExist && selected === '')}>
-              Check
+            <Button onClick={(event) => {this.checkRealizability(event)}} 
+              id="qa_rlzTbl_btn_check"
+              size="small" className={classes.vAlign} color="secondary" variant='contained' 
+              disabled={status[selected.component_name] === 'PROCESSING' || diagStatus === 'PROCESSING' || !dependenciesExist || (dependenciesExist && selected === '')}>
+                Check
             </Button>
             </div>
             <div className={classes.wrapper}>
               <Button
+                id="qa_rlzTbl_btn_diagnose"
                 onClick={(event) => {this.diagnoseSpec(event)}}
                 size="small" className={classes.vAlign}
                 color="secondary"
@@ -1217,7 +1228,8 @@ class RealizabilityContent extends React.Component {
               {diagStatus === 'PROCESSING' && <CircularProgress size={24} className={classes.buttonProgress}/>}
             </div>
             <div className={classes.wrapper}>
-            <Button color="secondary" onClick={this.handleHelpOpen} size="small" className={classes.vAlign} variant="contained"> Help </Button>
+            <Button color="secondary" onClick={this.handleHelpOpen} size="small" id="qa_rlzTbl_btn_help"
+              className={classes.vAlign} variant="contained"> Help </Button>
             </div>
             <div style={{width : '100%'}}>
             {selected !== '' && selected !== 'all' &&
@@ -1232,6 +1244,7 @@ class RealizabilityContent extends React.Component {
                     <AppBar position="static" color="default">
                       <div className={classes.appbar}>
                         <Tabs
+                          id={"qa_rlzTbl_tab_"+ccSelected}
                           value={ccSelected}
                           onChange={this.handleCCChange}
                           variant="scrollable"
@@ -1292,7 +1305,9 @@ class RealizabilityContent extends React.Component {
             <Typography>
               Help
             </Typography>
-            <IconButton className={classes.closeButton} aria-label="close" onClick={this.handleHelpClose}>
+            <IconButton className={classes.closeButton} 
+              id="qa_rlzTbl_ib_closeHelpPage"
+              aria-label="close" onClick={this.handleHelpClose}>
               <CloseIcon />
             </IconButton>
           </DialogTitle>

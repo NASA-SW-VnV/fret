@@ -449,13 +449,14 @@ class CreateRequirementDialog extends React.Component {
         >
           <div className={styles.layout}>
             <div className={styles.form}>
-            <DialogTitle id="form-dialog-title"
+            <DialogTitle id="qa_crt_title"
                          ref={this.dialogRef}>
                 <div className={classes.dialogTitle}>
                   {dialogTitle}
                   <FormControl >
                     <InputLabel id="status">Status</InputLabel>
                     <Select
+                      id="qa_crt_select_status"
                       classes={{ root: classes.selectRoot }}
                       style={statusSelectStyle}
                       disableUnderline
@@ -463,20 +464,20 @@ class CreateRequirementDialog extends React.Component {
                       value={this.state.status}
                       onChange={this.handleTextFieldChange('status')}
                     >
-                      <MenuItem value="None"/>
-                      <MenuItem value={'in progress'}>
+                      <MenuItem id ="qa_crt_mi_statusNone" value="None"/>
+                      <MenuItem id ="qa_crt_mi_statusInProgress" value={'in progress'}>
                         <Tooltip title="In progress"><InProgressIcon className={classes.inProgressIcon}/></Tooltip>
                       </MenuItem>
-                      <MenuItem value={'paused'}>
+                      <MenuItem id ="qa_crt_mi_statusPaused" value={'paused'}>
                         <Tooltip title="Paused"><PauseIcon className={classes.pauseIcon}/></Tooltip>
                       </MenuItem>
-                      <MenuItem value={'completed'}>
+                      <MenuItem id ="qa_crt_mi_statusCompleted" value={'completed'}>
                         <Tooltip title="Completed"><CompletedIcon className={classes.completedIcon}/></Tooltip>
                       </MenuItem>
-                      <MenuItem value={'attention'}>
+                      <MenuItem id ="qa_crt_mi_statusAttention" value={'attention'}>
                         <Tooltip title="Attention"><AttentionIcon className={classes.attentionIcon}/></Tooltip>
                       </MenuItem>
-                      <MenuItem value={'deprecated'}>
+                      <MenuItem id ="qa_crt_mi_statusDeprecated" value={'deprecated'}>
                         <Tooltip title="Deprecated"><DeprecatedIcon/></Tooltip>
                       </MenuItem>
                     </Select>
@@ -492,7 +493,7 @@ class CreateRequirementDialog extends React.Component {
                       <ImageListItem>
                         <TextField
                           autoFocus
-                          id="reqid"
+                          id="qa_crt_tf_reqid"
                           label="Requirement ID"
                           type="text"
                           defaultValue={this.state.reqid}
@@ -502,7 +503,7 @@ class CreateRequirementDialog extends React.Component {
                       </ImageListItem>
                       <ImageListItem>
                         <TextField
-                          id="parent_reqid"
+                          id="qa_crt_tf_parentReqid"
                           label="Parent Requirement ID"
                           type="text"
                           defaultValue={this.state.parent_reqid}
@@ -513,7 +514,7 @@ class CreateRequirementDialog extends React.Component {
                       <ImageListItem >
                         <FormControl fullWidth>
                           <InputLabel htmlFor="project-field">Project</InputLabel>
-                          <Select
+                          <Select id="qa_crt_select_project"
                             value={this.state.project || ''}
                             onChange={this.handleTextFieldChange('project')}
                             inputProps={{
@@ -524,7 +525,7 @@ class CreateRequirementDialog extends React.Component {
                             {
                               existingProjectNames.map(name => {
                                 return(
-                                  <MenuItem value={name} key={name}>{name}</MenuItem>
+                                  <MenuItem id={"qa_crt_select_project_"+name} value={name} key={name}>{name}</MenuItem>
                                 )
                               })
                             }
@@ -533,13 +534,13 @@ class CreateRequirementDialog extends React.Component {
                       </ImageListItem>
                       <ImageListItem cols={3} className={classes.aux}>
                         <Accordion className={classes.accordion}>
-                          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                            <Typography className={classes.heading}>Rationale and Comments</Typography>
+                          <AccordionSummary id="qa_crt_as_rationaleComments" expandIcon={<ExpandMoreIcon />}>
+                            <Typography id="qa_crt_as_rationaleComments_t" className={classes.heading}>Rationale and Comments</Typography>
                         </AccordionSummary>
                         <AccordionDetails>
                         <div className={classes.list}>
                         <TextField
-                          id="rationale"
+                          id="qa_crt_tf_rationale"
                           label="Rationale"
                           type="text"
                           defaultValue={this.state.rationale}
@@ -550,7 +551,7 @@ class CreateRequirementDialog extends React.Component {
                           className={classes.text}
                         />
                         <TextField
-                          id="comments"
+                          id="qa_crt_tf_comments"
                           label="Comments"
                           type="text"
                           defaultValue={this.state.comments}
@@ -571,10 +572,10 @@ class CreateRequirementDialog extends React.Component {
                     }, selectedTemplate)}
               </DialogContent>
               <DialogActions>
-                <Button onClick={this.handleClose}>
+                <Button id="qa_crt_btn_cancel" onClick={this.handleClose}>
                   Cancel
                 </Button>
-                <Button onClick={this.handleCreate} color="secondary" variant='contained'>
+                <Button id="CreateRequirement_Create" onClick={this.handleCreate} color="secondary" variant='contained'>
                   {commitButtonText}
                 </Button>
               </DialogActions>

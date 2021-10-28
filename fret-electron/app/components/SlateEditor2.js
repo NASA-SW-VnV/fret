@@ -695,7 +695,7 @@ class SlateEditor2 extends React.Component {
             padding: '10px',
           }}>
           <div className={SlateEditor2Styles.showGrammarBtn}>
-          <IconButton onClick={this.openGrammarWindow} style={{padding:'2px'}}>
+          <IconButton id="qa_crt_ib_question" onClick={this.openGrammarWindow} style={{padding:'2px'}}>
             <Tooltip title="See Grammar">
             <HelpIcon />
             </Tooltip>
@@ -707,6 +707,7 @@ class SlateEditor2 extends React.Component {
             return(
               <Button
                 disabled
+                id={"qa_crt_btn_1_"+title}
                 style={{
                   border: 'none',
                   backgroundColor: 'transparent',
@@ -721,6 +722,7 @@ class SlateEditor2 extends React.Component {
           } else {
             return(
               <Button
+                id={"qa_crt_btn_"+label}
                 onClick={ () => {this.state.handleUpdateInstruction(key + 'Field')} }
                 style={{
                   border: '2px solid',
@@ -885,6 +887,7 @@ class SlateEditor2 extends React.Component {
           value={slateValue}
           onChange={this.handleEditorValueChange} >
           <Editable
+            id="qa_crt_edt_editor"
             onKeyDown={this.handleKeyDown}
             autoFocus
             decorate={hasFields ? undefined : this.decorateNode}
@@ -900,7 +903,7 @@ class SlateEditor2 extends React.Component {
         </ImageListItem>
         <ImageListItem>
           <div style={{textAlign:'right'}}>
-            <Button onClick={this.showSemantics} size='small' color='secondary' disabled={false}>
+            <Button id="qa_crt_btn_semantics" onClick={this.showSemantics} size='small' color='secondary' disabled={false}>
               semantics
             </Button>
           </div>

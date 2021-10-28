@@ -148,6 +148,7 @@ class SortableTableHead extends React.Component {
             enableBulkChange &&
             <TableCell padding="checkbox">
               <Checkbox
+                id="qa_tbl_tc_headcheckbox"
                 indeterminate={numSelected > 0 && numSelected < rowCount}
                 checked={numSelected === rowCount}
                 onChange={onSelectAllClick}
@@ -157,6 +158,7 @@ class SortableTableHead extends React.Component {
           {rows.map(row => {
             return (
               <TableCell
+                id={"qa_tbl_tc_head"+row.id}
                 key={row.id}
                 align={row.numeric?'right':'left'}
                 sortDirection={orderBy === row.id ? order : false}
@@ -234,31 +236,32 @@ let TableToolbar = props => {
       <div className={classes.title}>
         {
           enableBulkChange &&
-          <Typography color="inherit" variant="subtitle1">
+          <Typography id="qa_tbl_typ_bulkNumSelected" color="inherit" variant="subtitle1">
             {numSelected} selected
           </Typography>
         }
       </div>
       <div className={classes.spacer} />
       <div className={classes.actions}>
-        {numSelected > 0 ? (
+        {numSelected > 0 ? (          
           <div className={classes.toolbar}>
             <Tooltip title="Delete">
               <IconButton
+                id="qa_tbl_ib_delete"
                 aria-label="Delete"
                 onClick={() =>  deleteSelection()}>
                 <DeleteIcon />
               </IconButton>
             </Tooltip>
             <Tooltip title="Exit Bulk Change">
-              <IconButton aria-label="Close Bulk Change" onClick={() => bulkChangeEnabler()}>
+              <IconButton id="qa_tbl_ib_bulk_exit" aria-label="Close Bulk Change" onClick={() => bulkChangeEnabler()}>
                 <CloseIcon />
               </IconButton>
-            </Tooltip>
+            </Tooltip>         
           </div>
         ) : (
           <div className={classes.toolbar}>
-          <IconButton aria-label="Bulk Change" onClick={() => bulkChangeEnabler()}>
+          <IconButton id="qa_tbl_ib_bulk" aria-label="Bulk Change" onClick={() => bulkChangeEnabler()}>
             <Tooltip title="Bulk Change">
             <ListIcon color='secondary'/>
             </Tooltip>
@@ -540,7 +543,7 @@ class SortableTable extends React.Component {
 
     return (
       <div>
-      <Typography variant='h6'>{title}
+      <Typography id="qa_tbl_title" variant='h6'>{title}
       </Typography>
       <Paper className={classes.root}>
         <TableToolbar
@@ -581,7 +584,7 @@ class SortableTable extends React.Component {
                         selected={isSelected}
                       >
                         <TableCell padding="checkbox">
-                          <Checkbox checked={isSelected} />
+                          <Checkbox id={"qa_tbl_cb_table_body_bulk_"+label} checked={isSelected} />
                         </TableCell>
                         <TableCell >
                           <Select
@@ -591,40 +594,40 @@ class SortableTable extends React.Component {
                             onChange={(event) => this.handleChange(event, n)}
                             onClick={event => event.stopPropagation()}
                           >
-                            <MenuItem value="None"/>
-                            <MenuItem value={'in progress'}>
+                            <MenuItem id={"qa_tbl_mi_body_bulk_status_None_"+label} value="None"/>
+                            <MenuItem id={"qa_tbl_mi_body_bulk_status_in_progress_"+label} value={'in progress'}>
                               <Tooltip title="In progress"><InProgressIcon/></Tooltip>
                             </MenuItem>
-                            <MenuItem value={'paused'}>
+                            <MenuItem id={"qa_tbl_mi_body_bulk_status_paused_"+label} value={'paused'}>
                               <Tooltip title="Paused"><PauseIcon/></Tooltip>
                             </MenuItem>
-                            <MenuItem value={'completed'}>
+                            <MenuItem id={"qa_tbl_mi_body_bulk_status_completed_"+label} value={'completed'}>
                               <Tooltip title="Completed"><CompletedIcon/></Tooltip>
                             </MenuItem>
-                            <MenuItem value={'attention'}>
+                            <MenuItem id={"qa_tbl_mi_body_bulk_status_attention_"+label} value={'attention'}>
                               <Tooltip title="Attention"><AttentionIcon/></Tooltip>
                             </MenuItem>
-                            <MenuItem value={'deprecated'}>
+                            <MenuItem id={"qa_tbl_mi_body_bulk_status_deprecated_"+label} value={'deprecated'}>
                               <Tooltip title="Deprecated"><CloseIcon/></Tooltip>
                             </MenuItem>
                           </Select>
                         </TableCell>
                         <TableCell>
-                        <Button color='secondary' onClick={this.handleRequirementDialogOpen(n)}>
+                        <Button id={"qa_tbl_btn_bulk_id_"+label}  color='secondary' onClick={this.handleRequirementDialogOpen(n)}>
                             {label}
                           </Button>
                         </TableCell>
                         <TableCell>
                           <Tooltip title="Add Child Requirement">
-                            <IconButton
+                            <IconButton id={"qa_tbl_ic_bulk_add_child_"+label} 
                               aria-label="Add Child Requirement"
                               onClick={this.handleAddChildRequirement(n.reqid, n.project)}>
                               <AddIcon/>
                             </IconButton>
                           </Tooltip>
                         </TableCell>
-                        <TableCell>{n.summary}</TableCell>
-                        <TableCell>{projectLabel}</TableCell>
+                        <TableCell id={"qa_tbl_tc_bulk_summary_"+label} >{n.summary}</TableCell>
+                        <TableCell id={"qa_tbl_tc_bulk_project_"+label} >{projectLabel}</TableCell>
                       </TableRow>
                     );
                   } else {
@@ -637,40 +640,40 @@ class SortableTable extends React.Component {
                             value={status}
                             onChange={(event) => this.handleChange(event, n)}
                           >
-                            <MenuItem value="None"/>
-                            <MenuItem value={'in progress'}>
+                            <MenuItem id={"qa_tbl_mi_not_bulk_status_None_"+label} value="None"/>
+                            <MenuItem id={"qa_tbl_mi_not_bulk_status_in_progress_"+label} value={'in progress'}>
                               <Tooltip title="In progress"><InProgressIcon/></Tooltip>
                             </MenuItem>
-                            <MenuItem value={'paused'}>
+                            <MenuItem id={"qa_tbl_mi_not_bulk_status_paused_"+label} value={'paused'}>
                               <Tooltip title="Paused"><PauseIcon/></Tooltip>
                             </MenuItem>
-                            <MenuItem value={'completed'}>
+                            <MenuItem id={"qa_tbl_mi_not_bulk_status_completed_"+label} value={'completed'}>
                               <Tooltip title="Completed"><CompletedIcon/></Tooltip>
                             </MenuItem>
-                            <MenuItem value={'attention'}>
+                            <MenuItem id={"qa_tbl_mi_not_bulk_status_attention_"+label} value={'attention'}>
                               <Tooltip title="Attention"><AttentionIcon/></Tooltip>
                             </MenuItem>
-                            <MenuItem value={'deprecated'}>
+                            <MenuItem id={"qa_tbl_mi_not_bulk_status_deprecated_"+label} value={'deprecated'}>
                               <Tooltip title="Deprecated"><CloseIcon/></Tooltip>
                             </MenuItem>
                           </Select>
                         </TableCell>
                         <TableCell>
-                        <Button color='secondary' onClick={this.handleRequirementDialogOpen(n)}>
+                        <Button id={"qa_tbl_btn_not_bulk_id_"+label} color='secondary' onClick={this.handleRequirementDialogOpen(n)}>
                               {label}
                             </Button>
                           </TableCell>
                           <TableCell>
                             <Tooltip title="Add Child Requirement">
-                              <IconButton
+                              <IconButton id={"qa_tbl_ib_not_bulk_add_child_"+label} 
                                 aria-label="Add Child Requirement"
                                 onClick={this.handleAddChildRequirement(n.reqid, n.project)}>
                                 <AddIcon />
                               </IconButton>
                             </Tooltip>
                           </TableCell>
-                        <TableCell>{n.summary}</TableCell>
-                        <TableCell>{projectLabel}</TableCell>
+                        <TableCell id={"qa_tbl_tc_not_bulk_summary_"+label} >{n.summary}</TableCell>
+                        <TableCell id={"qa_tbl_tc_not_bulk_project_"+label} >{projectLabel}</TableCell>
                       </TableRow>
                     )
                   }
@@ -684,6 +687,7 @@ class SortableTable extends React.Component {
           </Table>
         </div>
         <TablePagination
+          id="sortable_pagination"
           component="div"
           count={data.length}
           rowsPerPage={rowsPerPage}

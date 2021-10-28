@@ -314,6 +314,7 @@ class TimeSeriesChart extends Component {
 
             <ResponsiveContainer width="99%" height={75} debounce={0}>
                 <LineChart
+                    id={"qa_ltlSim_lc_"+name}
                     syncId={this.props.syncId}
                     margin={{top: 10, right: 10, left: 0, bottom: 10}}
                     data={data}
@@ -332,11 +333,13 @@ class TimeSeriesChart extends Component {
                     />
                     <CartesianGrid strokeDasharray="3 3" fill={fill} fillOpacity="0.4"/>
                     <XAxis
+                        id={"qa_ltlSim_xaxis_"+name}
                         hide
                         domain={[-0.5, this.props.data.length-0.5]}
                         dataKey="time"
                     />
                     <YAxis
+                        id={"qa_ltlSim_yaxis_"+name}
                         type="category"
                         minTickGap={0}
                         dataKey="TF">
@@ -344,6 +347,7 @@ class TimeSeriesChart extends Component {
                     </YAxis>
                     <Line
                         name={this.props.name}
+                        id={"qa_ltlSim_ln_"+name}
                         dataKey={this.props.dataKey}
                         type="step"
                         stroke={primaryColor}
@@ -357,6 +361,7 @@ class TimeSeriesChart extends Component {
                     />
                     <Line
                         name={this.props.name}
+                        id={"qa_ltlSim_ln_"+name}
                         dataKey="false"
                         type="step"
                         stroke={primaryColor}
@@ -373,6 +378,7 @@ class TimeSeriesChart extends Component {
                     />
                     <Line
                         name={this.props.name}
+                        id={"qa_ltlSim_ln_"+name}
                         dataKey="true"
                         type="step"
                         stroke={primaryColor}
@@ -391,12 +397,14 @@ class TimeSeriesChart extends Component {
             </ResponsiveContainer>
             {nameTip !== null &&
                 <Nametip
+                    id={"qa_ltlSim_nt_"+nameTip}
                     title={nameTip}
                     placement="right"
                     classes={{tooltip: classes.nametip}}>
                     <div className={classes.nametipAnchor} />
                 </Nametip>}
-            {chartState === EFormulaStates.BUSY && <CircularProgress size={24} className={classes.progress}/>}
+            {chartState === EFormulaStates.BUSY && 
+              <CircularProgress size={24} id="qa_ltlSim_cp_" className={classes.progress}/>}
             </div>
         )
     }

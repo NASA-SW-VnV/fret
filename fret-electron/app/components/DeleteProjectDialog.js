@@ -127,10 +127,10 @@ class DeleteProjectDialog extends React.Component {
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.handleClose} color="primary">
+            <Button id="qa_delProj_btn_cancel" onClick={this.handleClose} color="primary">
               Cancel
             </Button>
-            <Button onClick={this.handleCloseOKtoDelete} color="primary" autoFocus>
+            <Button id="qa_delProj_btn_ok" onClick={this.handleCloseOKtoDelete} color="primary" autoFocus>
               OK
             </Button>
           </DialogActions>

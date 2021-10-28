@@ -80,12 +80,12 @@ class LTLSimRequirementDetails extends Component {
         return (
           <div className={classes.root}>
             <Accordion>
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <AccordionSummary id="qa_ltlSim_ib_as_reqs" expandIcon={<ExpandMoreIcon />}>
                 <Typography className={classes.heading}>Requirements in FRETish</Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <div>
-                  <Typography className={classes.heading}>
+                  <Typography id="qa_ltlSim_typ_reqId" className={classes.heading}>
                     <b>{requirementID}</b>: {description}
                     </Typography>
                 </div>

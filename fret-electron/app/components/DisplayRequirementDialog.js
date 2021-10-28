@@ -114,7 +114,8 @@ class DisplayRequirementDialog extends React.Component {
         Semantic Description
         </Typography>
         <br />
-        <div color='primary' variant='body1' dangerouslySetInnerHTML={{ __html: ltlDescription}} />
+        <div id="qa_disReq_div_semDesc" color='primary' variant='body1' 
+        dangerouslySetInnerHTML={{ __html: ltlDescription}} />
         <br />
         <Typography variant='button'>
         Semantic Diagram
@@ -122,19 +123,22 @@ class DisplayRequirementDialog extends React.Component {
         <div className={classes.imgWrap}>
         <img src= {path}/>
         </div>
-        <div className={classes.variableDescription} dangerouslySetInnerHTML={{ __html: diagramVariables}} />
+        <div id="qa_disReq_div_semDiagram" className={classes.variableDescription} 
+        dangerouslySetInnerHTML={{ __html: diagramVariables}} />
         <br />
         <Typography variant='button' color='primary'>
         Future Time Formula
         </Typography>
         <br />
-        <div className={classes.formula} dangerouslySetInnerHTML={{ __html: ltlFormula}} />
+        <div id="qa_disReq_div_futureTime" className={classes.formula} 
+        dangerouslySetInnerHTML={{ __html: ltlFormula}} />
         <Typography variant='button' color='primary'>
         <br />
         Past Time Formula
         </Typography>
         <br />
-        <div className={classes.formula} dangerouslySetInnerHTML={{ __html: ltlFormulaPt}} />
+        <div id="qa_disReq_div_pastTime" className={classes.formula} 
+        dangerouslySetInnerHTML={{ __html: ltlFormulaPt}} />
         <br />
       </div>)
     else
@@ -168,13 +172,13 @@ class DisplayRequirementDialog extends React.Component {
         >
           <ImageList rowHeight='auto' cols={2}>
             <ImageListItem>
-                <DialogTitle id="form-dialog-title">{reqidLabel}
-                  <IconButton onClick={this.handleUpdateRequirement} size="small" color="secondary" aria-label="edit" >
+                <DialogTitle id="qa_disReq_dt_reqId">{reqidLabel}
+                  <IconButton id="qa_disReq_ic_edit" onClick={this.handleUpdateRequirement} size="small" color="secondary" aria-label="edit" >
                     <Tooltip id="tooltip-icon-edit" title="Edit Requirement">
                     <EditIcon />
                     </Tooltip>
                   </IconButton>
-                  <IconButton onClick={this.handleDeleteRequirement} size="small" aria-label="delete" >
+                  <IconButton id="qa_disReq_ic_delete" onClick={this.handleDeleteRequirement} size="small" aria-label="delete" >
                     <Tooltip id="tooltip-icon-delete" title="Delete Requirement">
                     <DeleteIcon color='error'/>
                     </Tooltip>
@@ -182,7 +186,7 @@ class DisplayRequirementDialog extends React.Component {
                 </DialogTitle>
             </ImageListItem>
             <ImageListItem>
-              <DialogTitle style={{textAlign: 'right'}} id="form-dialog-title">{projectLabel}</DialogTitle>
+              <DialogTitle style={{textAlign: 'right'}} id="qa_disReq_dt_project">{projectLabel}</DialogTitle>
             </ImageListItem>
           </ImageList>
           <Divider/>
@@ -191,11 +195,11 @@ class DisplayRequirementDialog extends React.Component {
             <ImageList cols={1} rowHeight='auto' gap={20}>
               <ImageListItem>
                 <Typography variant='button'>Rationale</Typography><br/>
-                <Typography color='primary' variant='body1'>{rationale}</Typography>
+                <Typography id="qa_disReq_typ_rationale" color='primary' variant='body1'>{rationale}</Typography>
               </ImageListItem>
               <ImageListItem>
                 <Typography variant='button'>Requirement</Typography><br/>
-                <Typography color='primary' variant='body1'>{fulltext}</Typography>
+                <Typography id="qa_disReq_typ_req" color='primary' variant='body1'>{fulltext}</Typography>
               </ImageListItem>
               <ImageListItem>
                 {this.renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path)}
@@ -203,7 +207,7 @@ class DisplayRequirementDialog extends React.Component {
             </ImageList>
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.handleClose} color="secondary">
+            <Button id="qa_disReq_btn_close" onClick={this.handleClose} color="secondary">
               Close
             </Button>
           </DialogActions>

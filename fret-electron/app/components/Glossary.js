@@ -219,12 +219,13 @@ class Glossary extends React.Component {
         <FormControl>
           <Typography>Component</Typography>
           <Select
+            id="qa_gls_sel_comp"
             classes={{ root: classes.selectRoot }}
             onChange={this.handleComponentChange}
             value={selectedComponent}
           >
             {Object.keys(this.state.components).sort().map(componentName =>
-              <MenuItem key={componentName} value={componentName}>{componentName}</MenuItem>
+              <MenuItem id={"qa_gls_mi_comp_"+componentName} key={componentName} value={componentName}>{componentName}</MenuItem>
             )
             }
           </Select>
@@ -236,6 +237,7 @@ class Glossary extends React.Component {
               <FormControlLabel
                 classes={{label: classes.checkBoxFont}}
                 key={variableType}
+                id = {"qa_gls_cb_" + variableType}
                 control={
                   <Checkbox
                     checked={checked[variableType]}
@@ -262,11 +264,13 @@ class Glossary extends React.Component {
               delete variableAttributes.name;
               delete variableAttributes.modeldocId;
               return (<TreeItem key={name}
+                                id={"qa_gls_ti_var_"+name}
                                 nodeId={name}
                                 label={name}
                                 classes={{ group: classes.treeItemGroup, selected: classes.selected, label: classes.itemLabel, content: classes.content }}>
                 {Object.entries(variableAttributes).map(([key, value]) =>
                   <TreeItem nodeId={`${key}: ${value}`}
+                            id={"qa_gls_ti_var_reqs_"+name}
                             key={`${key}: ${value}`}
                             label={
                               <div style={{display: 'flex'}}>

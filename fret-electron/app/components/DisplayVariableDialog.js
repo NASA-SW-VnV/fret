@@ -347,7 +347,7 @@ class DisplayVariableDialog extends React.Component {
           <DialogContent>
             <form className={classes.container} noValidate autoComplete="off">
               <TextField
-                id="standard-read-only-input"
+                id="qa_disVar_tf_FRETprojName"
                 label="FRET Project"
                 defaultValue={selectedVariable.project}
                 className={classes.extendedTextField}
@@ -357,7 +357,7 @@ class DisplayVariableDialog extends React.Component {
                 }}
               />
               <TextField
-                id="standard-read-only-input"
+                id="qa_disVar_tf_FRETcomp"
                 label="FRET Component"
                 defaultValue={selectedVariable.component_name}
                 className={classes.extendedTextField}
@@ -367,7 +367,7 @@ class DisplayVariableDialog extends React.Component {
                 }}
               />
               <TextField
-                id="standard-read-only-input"
+                id="qa_disVar_tf_modelComp"
                 label="Model Component"
                 defaultValue={selectedVariable.modelComponent}
                 className={classes.descriptionField}
@@ -377,7 +377,7 @@ class DisplayVariableDialog extends React.Component {
                 }}
               />
               <TextField
-                id="standard-read-only-input"
+                id="qa_disVar_tf_FRETvar"
                 label="FRET Variable"
                 defaultValue={selectedVariable.variable_name}
                 className={classes.extendedTextField}
@@ -388,7 +388,8 @@ class DisplayVariableDialog extends React.Component {
               />
               <FormControl className={classes.formControl}>
                 <InputLabel htmlFor="idType-simple">Variable Type*</InputLabel>
-                <Select
+                <Select id="qa_disVar_sel_varType"
+                  id="qa_disVar_sel_varType"
                   key={selectedVariable}
                   value={this.state.idType}
                   onChange={this.handleChange}
@@ -396,21 +397,21 @@ class DisplayVariableDialog extends React.Component {
                     name: 'idType',
                     id: 'idType-simple',
                   }}>
-                  <MenuItem value="" key={selectedVariable}>
+                  <MenuItem id="qa_disVar_mi_varType_None" value="" key={selectedVariable}>
                     <em>None</em>
                   </MenuItem>
-                  <MenuItem value="Function">Function</MenuItem>
-                  <MenuItem value="Input" >Input</MenuItem>
-                  <MenuItem value="Internal">Internal</MenuItem>
-                  <MenuItem value="Mode">Mode</MenuItem>
-                  <MenuItem value="Output">Output</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_funcion" value="Function">Function</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_input" value="Input" >Input</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_internal" value="Internal">Internal</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_Mode" value="Mode">Mode</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_Output" value="Output">Output</MenuItem>
                 </Select>
               </FormControl>
               { (selectedVariable.modelComponent === undefined || selectedVariable.modelComponent === "")
                   ?
                   <FormControl className={classes.formControl}>
                     <InputLabel htmlFor="dataType-simple">Data Type*</InputLabel>
-                    <Select
+                    <Select id="qa_disVar_sel_dataType"
                     key={selectedVariable}
                       value={this.state.dataType}
                       onChange={this.handleChange}
@@ -419,21 +420,23 @@ class DisplayVariableDialog extends React.Component {
                         id: 'dataType-simple',
                       }}>
                       <MenuItem
+                        id="qa_disVar_mi_dataType_none"
                         value=""
                       >
                         <em>None</em>
                       </MenuItem>
-                      <MenuItem value="boolean" >boolean</MenuItem>
-                      <MenuItem value="integer" >integer</MenuItem>
-                      <MenuItem value="unsigned integer" >unsigned integer</MenuItem>
-                      <MenuItem value="single">single</MenuItem>
-                      <MenuItem value="double">double</MenuItem>
+                      <MenuItem id="qa_disVar_mi_boolean" value="boolean" >boolean</MenuItem>
+                      <MenuItem id="qa_disVar_mi_integer" value="integer" >integer</MenuItem>
+                      <MenuItem id="qa_disVar_mi_unsignInt" value="unsigned integer" >unsigned integer</MenuItem>
+                      <MenuItem id="qa_disVar_mi_single" value="single">single</MenuItem>
+                      <MenuItem id="qa_disVar_mi_double" value="double">double</MenuItem>
                     </Select>
                   </FormControl>
                 :
                 <FormControl className={classes.formControl}>
                   <InputLabel htmlFor="modeldoc_id-simple">Model Variable*</InputLabel>
                   <Select
+                    id="qa_disVar_sel_modelVar"
                     key={selectedVariable}
                     value={this.state.modeldoc_id}
                     onChange={this.handleChange}
@@ -441,13 +444,14 @@ class DisplayVariableDialog extends React.Component {
                       name: 'modeldoc_id',
                       id: 'modeldoc_id-simple',
                     }}>
-                    <MenuItem value="">
+                    <MenuItem id="qa_disVar_mi_modelVar_none" value="">
                       <em>None</em>
                     </MenuItem>
                     {modelVariables.map(v => {
                       if ((this.state.idType === "Input" && v.portType === "Inport") || (this.state.idType === "Output" && v.portType === "Outport"))
                       {
-                        return(<MenuItem value={v.variable_name} key={v.variable_name}>{v.variable_name}</MenuItem>)
+                        return(<MenuItem id={"qa_disVar_mi_modelVar_"+v.variable_name} value={v.variable_name} 
+                          key={v.variable_name}>{v.variable_name}</MenuItem>)
                       }
 
                     })}
@@ -455,7 +459,7 @@ class DisplayVariableDialog extends React.Component {
                 </FormControl>
                }
               <TextField
-                id="description"
+                id="qa_disVar_tf_description"
                 label="Description"
                 type="text"
                 defaultValue={this.state.description}
@@ -468,10 +472,10 @@ class DisplayVariableDialog extends React.Component {
             </form>
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.handleClose}>
+            <Button id="qa_disVar_btn_cancel" onClick={this.handleClose}>
               Cancel
             </Button>
-            <Button onClick={this.handleUpdate} color="secondary" variant='contained'>
+            <Button id="qa_disVar_btn_update" onClick={this.handleUpdate} color="secondary" variant='contained'>
               Update
             </Button>
           </DialogActions>
@@ -491,7 +495,7 @@ class DisplayVariableDialog extends React.Component {
             <DialogContent>
               <form className={classes.container} noValidate autoComplete="off">
                 <TextField
-                  id="standard-read-only-input"
+                  id="qa_disVar_tf_FRETprojName"
                   label="FRET Project"
                   defaultValue={selectedVariable.project}
                   className={classes.extendedTextField}
@@ -501,7 +505,7 @@ class DisplayVariableDialog extends React.Component {
                   }}
                 />
                 <TextField
-                  id="standard-read-only-input"
+                  id="qa_disVar_tf_FRETcomp"
                   label="FRET Component"
                   defaultValue={selectedVariable.component_name}
                   className={classes.extendedTextField}
@@ -511,7 +515,7 @@ class DisplayVariableDialog extends React.Component {
                   }}
                 />
                 <TextField
-                  id="standard-read-only-input"
+                  id="qa_disVar_tf_modelComp"
                   label="Model Component"
                   defaultValue={selectedVariable.modelComponent}
                   className={classes.descriptionField}
@@ -521,7 +525,7 @@ class DisplayVariableDialog extends React.Component {
                   }}
                 />
                 <TextField
-                  id="standard-read-only-input"
+                  id="qa_disVar_tf_FRETvar"
                   label="FRET Variable"
                   defaultValue={selectedVariable.variable_name}
                   className={classes.extendedTextField}
@@ -532,7 +536,7 @@ class DisplayVariableDialog extends React.Component {
                 />
                 <FormControl className={classes.formControl}>
                   <InputLabel htmlFor="idType-simple">Variable Type*</InputLabel>
-                  <Select
+                  <Select id="qa_disVar_sel_varType"
                     key={selectedVariable}
                     value={this.state.idType}
                     onChange={this.handleChange}
@@ -540,18 +544,18 @@ class DisplayVariableDialog extends React.Component {
                       name: 'idType',
                       id: 'idType-simple',
                     }}>
-                    <MenuItem value="" key={selectedVariable}>
+                    <MenuItem id="qa_disVar_mi_selVar_None" value="" key={selectedVariable}>
                       <em>None</em>
                     </MenuItem>
-                    <MenuItem value="Function">Function</MenuItem>
-                    <MenuItem value="Input" >Input</MenuItem>
-                    <MenuItem value="Internal">Internal</MenuItem>
-                    <MenuItem value="Mode">Mode</MenuItem>
-                    <MenuItem value="Output">Output</MenuItem>
+                    <MenuItem id="qa_disVar_mi_varType_funcion" value="Function">Function</MenuItem>
+                    <MenuItem id="qa_disVar_mi_varType_input" value="Input" >Input</MenuItem>
+                    <MenuItem id="qa_disVar_mi_varType_internal" value="Internal">Internal</MenuItem>
+                    <MenuItem id="qa_disVar_mi_varType_Mode" value="Mode">Mode</MenuItem>
+                    <MenuItem id="qa_disVar_mi_varType_Output" value="Output">Output</MenuItem>
                   </Select>
                 </FormControl>
                 <TextField
-                  id="moduleName"
+                  id="qa_disVar_tf_funcModName"
                   label="Function Module Name"
                   type="text"
                   margin="normal"
@@ -562,7 +566,7 @@ class DisplayVariableDialog extends React.Component {
                   onFocus={this.handleTextFieldFocused('moduleName')}
                 />
                 <TextField
-                  id="description"
+                  id="qa_disVar_tf_description"
                   label="Description"
                   type="text"
                   defaultValue={this.state.description}
@@ -575,10 +579,10 @@ class DisplayVariableDialog extends React.Component {
               </form>
             </DialogContent>
             <DialogActions>
-              <Button onClick={this.handleClose}>
+              <Button id="qa_disVar_btn_cancel" onClick={this.handleClose}>
                 Cancel
               </Button>
-              <Button onClick={this.handleUpdate} color="secondary" variant='contained'>
+              <Button id="qa_disVar_btn_update" onClick={this.handleUpdate} color="secondary" variant='contained'>
                 Update
               </Button>
             </DialogActions>
@@ -598,7 +602,7 @@ class DisplayVariableDialog extends React.Component {
           <DialogContent>
             <form className={classes.container} noValidate autoComplete="off">
               <TextField
-                id="standard-read-only-input"
+                id="qa_disVar_tf_FRETprojName"
                 label="FRET Project"
                 defaultValue={selectedVariable.project}
                 className={classes.extendedTextField}
@@ -608,7 +612,7 @@ class DisplayVariableDialog extends React.Component {
                 }}
               />
               <TextField
-                id="standard-read-only-input"
+                id="qa_disVar_tf_FRETcomp"
                 label="FRET Component"
                 defaultValue={selectedVariable.component_name}
                 className={classes.extendedTextField}
@@ -618,7 +622,7 @@ class DisplayVariableDialog extends React.Component {
                 }}
               />
               <TextField
-                id="standard-read-only-input"
+                id="qa_disVar_tf_modelComp"
                 label="Model Component"
                 defaultValue={selectedVariable.modelComponent}
                 className={classes.descriptionField}
@@ -628,7 +632,7 @@ class DisplayVariableDialog extends React.Component {
                 }}
               />
               <TextField
-                id="standard-read-only-input"
+                id="qa_disVar_tf_FRETvar"
                 label="FRET Variable"
                 defaultValue={selectedVariable.variable_name}
                 className={classes.extendedTextField}
@@ -639,7 +643,7 @@ class DisplayVariableDialog extends React.Component {
               />
               <FormControl className={classes.formControl}>
                 <InputLabel htmlFor="idType-simple">Variable Type*</InputLabel>
-                <Select
+                <Select id="qa_disVar_sel_varType"
                   key={selectedVariable}
                   value={this.state.idType}
                   onChange={this.handleChange}
@@ -647,18 +651,18 @@ class DisplayVariableDialog extends React.Component {
                     name: 'idType',
                     id: 'idType-simple',
                   }}>
-                  <MenuItem value="" key={selectedVariable}>
+                  <MenuItem id="qa_disVar_mi_selVar_None" value="" key={selectedVariable}>
                     <em>None</em>
                   </MenuItem>
-                  <MenuItem value="Function">Function</MenuItem>
-                  <MenuItem value="Input" >Input</MenuItem>
-                  <MenuItem value="Internal">Internal</MenuItem>
-                  <MenuItem value="Mode">Mode</MenuItem>
-                  <MenuItem value="Output">Output</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_funcion" value="Function">Function</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_input" value="Input" >Input</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_internal" value="Internal">Internal</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_Mode" value="Mode">Mode</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_Output" value="Output">Output</MenuItem>
                 </Select>
               </FormControl>
               <TextField
-                id="standard-read-only-input"
+                id="qa_disVar_tf_dataType"
                 label="Data Type*"
                 defaultValue={this.state.dataType}
                 className={classes.extendedTextField}
@@ -668,7 +672,7 @@ class DisplayVariableDialog extends React.Component {
                 }}
               />
               <TextField
-                id="modeRequirement"
+                id="qa_disVar_tf_modelReq"
                 label="Mode Requirement*"
                 type="text"
                 value={this.state.modeRequirement}
@@ -679,7 +683,7 @@ class DisplayVariableDialog extends React.Component {
                 onFocus={this.handleTextFieldFocused('modeRequirement')}
               />
               <TextField
-                id="description"
+                id="qa_disVar_tf_description"
                 label="Description"
                 type="text"
                 defaultValue={this.state.description}
@@ -692,10 +696,10 @@ class DisplayVariableDialog extends React.Component {
             </form>
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.handleClose}>
+            <Button id="qa_disVar_btn_cancel" onClick={this.handleClose}>
               Cancel
             </Button>
-            <Button onClick={this.handleUpdate} color="secondary" variant='contained'>
+            <Button id="qa_disVar_btn_update" onClick={this.handleUpdate} color="secondary" variant='contained'>
               Update
             </Button>
           </DialogActions>
@@ -715,7 +719,7 @@ class DisplayVariableDialog extends React.Component {
           <DialogContent>
             <form className={classes.container} noValidate autoComplete="off">
               <TextField
-                id="standard-read-only-input"
+                id="qa_disVar_tf_FRETprojName"
                 label="FRET Project"
                 defaultValue={selectedVariable.project}
                 className={classes.extendedTextField}
@@ -725,7 +729,7 @@ class DisplayVariableDialog extends React.Component {
                 }}
               />
               <TextField
-                id="standard-read-only-input"
+                id="qa_disVar_tf_FRETcomp"
                 label="FRET Component"
                 defaultValue={selectedVariable.component_name}
                 className={classes.extendedTextField}
@@ -735,7 +739,7 @@ class DisplayVariableDialog extends React.Component {
                 }}
               />
               <TextField
-                id="standard-read-only-input"
+                id="qa_disVar_tf_modelComp"
                 label="Model Component"
                 defaultValue={selectedVariable.modelComponent}
                 className={classes.descriptionField}
@@ -745,7 +749,7 @@ class DisplayVariableDialog extends React.Component {
                 }}
               />
               <TextField
-                id="standard-read-only-input"
+                id="qa_disVar_tf_FRETvar"
                 label="FRET Variable"
                 defaultValue={selectedVariable.variable_name}
                 className={classes.extendedTextField}
@@ -756,7 +760,7 @@ class DisplayVariableDialog extends React.Component {
               />
               <FormControl className={classes.formControl}>
                 <InputLabel htmlFor="idType-simple">Variable Type*</InputLabel>
-                <Select
+                <Select id="qa_disVar_sel_varType"
                   key={selectedVariable}
                   value={this.state.idType}
                   onChange={this.handleChange}
@@ -764,42 +768,43 @@ class DisplayVariableDialog extends React.Component {
                     name: 'idType',
                     id: 'idType-simple',
                   }}>
-                  <MenuItem value="" key={selectedVariable}>
+                  <MenuItem id="qa_disVar_mi_selVar_None" value="" key={selectedVariable}>
                     <em>None</em>
                   </MenuItem>
-                  <MenuItem value="Function">Function</MenuItem>
-                  <MenuItem value="Input" >Input</MenuItem>
-                  <MenuItem value="Internal">Internal</MenuItem>
-                  <MenuItem value="Mode">Mode</MenuItem>
-                  <MenuItem value="Output">Output</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_funcion" value="Function">Function</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_input" value="Input" >Input</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_internal" value="Internal">Internal</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_Mode" value="Mode">Mode</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_Output" value="Output">Output</MenuItem>
                 </Select>
               </FormControl>
               <FormControl className={classes.formControl}>
                 <InputLabel htmlFor="dataType-simple">Data Type*</InputLabel>
-                <Select
-                key={selectedVariable}
+                <Select id="qa_disVar_sel_dataType"
+                  id="qa_disVar_sel_dataType"
+                  key={selectedVariable}
                   value={this.state.dataType}
                   onChange={this.handleChange}
                   inputProps={{
                     name: 'dataType',
                     id: 'dataType-simple',
                   }}>
-                  <MenuItem
+                  <MenuItem id="qa_disVar_mi_dataType_none"
                     value=""
                   >
                     <em>None</em>
                   </MenuItem>
-                  <MenuItem value="boolean" >boolean</MenuItem>
-                  <MenuItem value="integer" >integer</MenuItem>
-                  <MenuItem value="unsigned integer" >unsigned integer</MenuItem>
-                  <MenuItem value="single">single</MenuItem>
-                  <MenuItem value="double">double</MenuItem>
+                  <MenuItem id="qa_disVar_mi_boolean" value="boolean" >boolean</MenuItem>
+                  <MenuItem id="qa_disVar_mi_integer" value="integer" >integer</MenuItem>
+                  <MenuItem id="qa_disVar_mi_unsignInt" value="unsigned integer" >unsigned integer</MenuItem>
+                  <MenuItem id="qa_disVar_mi_single" value="single">single</MenuItem>
+                  <MenuItem id="qa_disVar_mi_double" value="double">double</MenuItem>
                 </Select>
               </FormControl>
               <div>
               <FormControlLabel
                 control={
-                  <Checkbox
+                  <Checkbox id="qa_disVar_cb_checkLustre"
                     checked={this.state.checkLustre}
                     onChange={this.handleCheckChange('checkLustre')}
                     value="checkLustre"
@@ -809,7 +814,7 @@ class DisplayVariableDialog extends React.Component {
               />
               <FormControlLabel
                 control={
-                  <Checkbox
+                  <Checkbox id="qa_disVar_cb_checkCoPilot"
                     checked={this.state.checkCoPilot}
                     onChange={this.handleCheckChange('checkCoPilot')}
                     value="checkCoPilot"
@@ -819,7 +824,7 @@ class DisplayVariableDialog extends React.Component {
               />
               </div>
               <TextField
-                id="description"
+                id="qa_disVar_tf_description"
                 label="Description"
                 type="text"
                 defaultValue={this.state.description}
@@ -832,10 +837,10 @@ class DisplayVariableDialog extends React.Component {
             </form>
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.handleClose}>
+            <Button id="qa_disVar_btn_cancel" onClick={this.handleClose}>
               Cancel
             </Button>
-            <Button onClick={this.handleUpdate} color="secondary" variant='contained'>
+            <Button id="qa_disVar_btn_update" onClick={this.handleUpdate} color="secondary" variant='contained'>
               Update
             </Button>
           </DialogActions>
@@ -861,7 +866,7 @@ class DisplayVariableDialog extends React.Component {
           <DialogContent>
             <form className={classes.container} noValidate autoComplete="off">
               <TextField
-                id="standard-read-only-input"
+                id="qa_disVar_tf_FRETprojName"
                 label="FRET Project"
                 defaultValue={selectedVariable.project}
                 className={classes.extendedTextField}
@@ -871,7 +876,7 @@ class DisplayVariableDialog extends React.Component {
                 }}
               />
               <TextField
-                id="standard-read-only-input"
+                id="qa_disVar_tf_FRETcomp"
                 label="FRET Component"
                 defaultValue={selectedVariable.component_name}
                 className={classes.extendedTextField}
@@ -881,7 +886,7 @@ class DisplayVariableDialog extends React.Component {
                 }}
               />
               <TextField
-                id="standard-read-only-input"
+                id="qa_disVar_tf_modelComp"
                 label="Model Component"
                 defaultValue={selectedVariable.modelComponent}
                 className={classes.descriptionField}
@@ -891,7 +896,7 @@ class DisplayVariableDialog extends React.Component {
                 }}
               />
               <TextField
-                id="standard-read-only-input"
+                id="qa_disVar_tf_FRETvar"
                 label="FRET Variable"
                 defaultValue={selectedVariable.variable_name}
                 className={classes.extendedTextField}
@@ -902,7 +907,7 @@ class DisplayVariableDialog extends React.Component {
               />
               <FormControl className={classes.formControl}>
                 <InputLabel htmlFor="idType-simple">Variable Type*</InputLabel>
-                <Select
+                <Select id="qa_disVar_sel_varType"
                   key={selectedVariable}
                   value={this.state.idType}
                   onChange={this.handleChange}
@@ -910,19 +915,19 @@ class DisplayVariableDialog extends React.Component {
                     name: 'idType',
                     id: 'idType-simple',
                   }}>
-                  <MenuItem value="" key={selectedVariable}>
+                  <MenuItem id="qa_disVar_mi_selVar_None" value="" key={selectedVariable}>
                     <em>None</em>
                   </MenuItem>
-                  <MenuItem value="Function">Function</MenuItem>
-                  <MenuItem value="Input" >Input</MenuItem>
-                  <MenuItem value="Internal">Internal</MenuItem>
-                  <MenuItem value="Mode">Mode</MenuItem>
-                  <MenuItem value="Output">Output</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_funcion" value="Function">Function</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_input" value="Input" >Input</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_internal" value="Internal">Internal</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_Mode" value="Mode">Mode</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_Output" value="Output">Output</MenuItem>
                 </Select>
               </FormControl>
               <FormControl className={classes.formControl}>
                 <InputLabel htmlFor="dataType-simple">Data Type*</InputLabel>
-                <Select
+                <Select id="qa_disVar_sel_dataType"
                 key={selectedVariable}
                   value={this.state.dataType}
                   onChange={this.handleChange}
@@ -930,21 +935,21 @@ class DisplayVariableDialog extends React.Component {
                     name: 'dataType',
                     id: 'dataType-simple',
                   }}>
-                  <MenuItem
+                  <MenuItem  id="qa_disVar_mi_dataType_none"
                     value=""
                   >
                     <em>None</em>
                   </MenuItem>
-                  <MenuItem value="boolean" >boolean</MenuItem>
-                  <MenuItem value="integer" >integer</MenuItem>
-                  <MenuItem value="unsigned integer" >unsigned integer</MenuItem>
-                  <MenuItem value="single">single</MenuItem>
-                  <MenuItem value="double">double</MenuItem>
+                  <MenuItem id="qa_disVar_mi_boolean" value="boolean" >boolean</MenuItem>
+                  <MenuItem id="qa_disVar_mi_integer" value="integer" >integer</MenuItem>
+                  <MenuItem id="qa_disVar_mi_unsignInt" value="unsigned integer" >unsigned integer</MenuItem>
+                  <MenuItem id="qa_disVar_mi_single" value="single">single</MenuItem>
+                  <MenuItem id="qa_disVar_mi_double" value="double">double</MenuItem>
                 </Select>
               </FormControl>
               <div>
               <TextField
-                id="assignment"
+                id="qa_disVar_tf_varAssignLustre"
                 label="Variable Assignment in Lustre*"
                 type="text"
                 value={this.state.assignment}
@@ -956,7 +961,8 @@ class DisplayVariableDialog extends React.Component {
               />
               <FormControlLabel
                 control={
-                  <Checkbox
+                  <Checkbox id="qa_disVar_cb_checkLustre"
+                    id="qa_disVar_cb_Lustre"
                     checked={this.state.checkLustre}
                     onChange={this.handleCheckChange('checkLustre')}
                     value="checkLustre"
@@ -966,7 +972,8 @@ class DisplayVariableDialog extends React.Component {
               />
               <FormControlLabel
                 control={
-                  <Checkbox
+                  <Checkbox id="qa_disVar_cb_checkCoPilot"
+                    id="qa_disVar_cb_CoPilot"
                     checked={this.state.checkCoPilot}
                     onChange={this.handleCheckChange('checkCoPilot')}
                     value="checkCoPilot"
@@ -976,7 +983,7 @@ class DisplayVariableDialog extends React.Component {
               />
               </div>
               <TextField
-                id="description"
+                id="qa_disVar_tf_description"
                 label="Description"
                 type="text"
                 defaultValue={this.state.description}
@@ -989,10 +996,10 @@ class DisplayVariableDialog extends React.Component {
             </form>
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.handleClose}>
+            <Button id="qa_disVar_btn_cancel" onClick={this.handleClose}>
               Cancel
             </Button>
-            <Button onClick={this.handleUpdate} color="secondary" variant='contained'>
+            <Button id="qa_disVar_btn_update" onClick={this.handleUpdate} color="secondary" variant='contained'>
               Update
             </Button>
           </DialogActions>
@@ -1018,7 +1025,7 @@ class DisplayVariableDialog extends React.Component {
           <DialogContent>
             <form className={classes.container} noValidate autoComplete="off">
               <TextField
-                id="standard-read-only-input"
+                id="qa_disVar_tf_FRETprojName"
                 label="FRET Project"
                 defaultValue={selectedVariable.project}
                 className={classes.extendedTextField}
@@ -1028,7 +1035,7 @@ class DisplayVariableDialog extends React.Component {
                 }}
               />
               <TextField
-                id="standard-read-only-input"
+                id="qa_disVar_tf_FRETcomp"
                 label="FRET Component"
                 defaultValue={selectedVariable.component_name}
                 className={classes.extendedTextField}
@@ -1038,7 +1045,7 @@ class DisplayVariableDialog extends React.Component {
                 }}
               />
               <TextField
-                id="standard-read-only-input"
+                id="qa_disVar_tf_modelComp"
                 label="Model Component"
                 defaultValue={selectedVariable.modelComponent}
                 className={classes.descriptionField}
@@ -1048,7 +1055,7 @@ class DisplayVariableDialog extends React.Component {
                 }}
               />
               <TextField
-                id="standard-read-only-input"
+                id="qa_disVar_tf_FRETvar"
                 label="FRET Variable"
                 defaultValue={selectedVariable.variable_name}
                 className={classes.extendedTextField}
@@ -1059,7 +1066,7 @@ class DisplayVariableDialog extends React.Component {
               />
               <FormControl className={classes.formControl}>
                 <InputLabel htmlFor="idType-simple">Variable Type*</InputLabel>
-                <Select
+                <Select id="qa_disVar_sel_varType"
                   key={selectedVariable}
                   value={this.state.idType}
                   onChange={this.handleChange}
@@ -1067,19 +1074,19 @@ class DisplayVariableDialog extends React.Component {
                     name: 'idType',
                     id: 'idType-simple',
                   }}>
-                  <MenuItem value="" key={selectedVariable}>
+                  <MenuItem id="qa_disVar_mi_selVar_None" value="" key={selectedVariable}>
                     <em>None</em>
                   </MenuItem>
-                  <MenuItem value="Function">Function</MenuItem>
-                  <MenuItem value="Input" >Input</MenuItem>
-                  <MenuItem value="Internal">Internal</MenuItem>
-                  <MenuItem value="Mode">Mode</MenuItem>
-                  <MenuItem value="Output">Output</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_funcion" value="Function">Function</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_input" value="Input" >Input</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_internal" value="Internal">Internal</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_Mode" value="Mode">Mode</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_Output" value="Output">Output</MenuItem>
                 </Select>
               </FormControl>
               <FormControl className={classes.formControl}>
                 <InputLabel htmlFor="dataType-simple">Data Type*</InputLabel>
-                <Select
+                <Select id="qa_disVar_sel_dataType"
                 key={selectedVariable}
                   value={this.state.dataType}
                   onChange={this.handleChange}
@@ -1087,16 +1094,16 @@ class DisplayVariableDialog extends React.Component {
                     name: 'dataType',
                     id: 'dataType-simple',
                   }}>
-                  <MenuItem
+                  <MenuItem id="qa_disVar_mi_dataType_none"
                     value=""
                   >
                     <em>None</em>
                   </MenuItem>
-                  <MenuItem value="boolean" >boolean</MenuItem>
-                  <MenuItem value="integer" >integer</MenuItem>
-                  <MenuItem value="unsigned integer" >unsigned integer</MenuItem>
-                  <MenuItem value="single">single</MenuItem>
-                  <MenuItem value="double">double</MenuItem>
+                  <MenuItem id="qa_disVar_mi_boolean" value="boolean" >boolean</MenuItem>
+                  <MenuItem id="qa_disVar_mi_integer" value="integer" >integer</MenuItem>
+                  <MenuItem id="qa_disVar_mi_unsignInt" value="unsigned integer" >unsigned integer</MenuItem>
+                  <MenuItem id="qa_disVar_mi_single" value="single">single</MenuItem>
+                  <MenuItem id="qa_disVar_mi_double" value="double">double</MenuItem>
                 </Select>
               </FormControl>
               <div>
@@ -1113,7 +1120,7 @@ class DisplayVariableDialog extends React.Component {
               />
               <FormControlLabel
                 control={
-                  <Checkbox
+                  <Checkbox id="qa_disVar_cb_checkLustre"
                     checked={this.state.checkLustre}
                     onChange={this.handleCheckChange('checkLustre')}
                     value="checkLustre"
@@ -1123,7 +1130,7 @@ class DisplayVariableDialog extends React.Component {
               />
               <FormControlLabel
                 control={
-                  <Checkbox
+                  <Checkbox id="qa_disVar_cb_checkCoPilot"
                     checked={this.state.checkCoPilot}
                     onChange={this.handleCheckChange('checkCoPilot')}
                     value="checkCoPilot"
@@ -1133,7 +1140,7 @@ class DisplayVariableDialog extends React.Component {
               />
               </div>
               <TextField
-                id="description"
+                id="qa_disVar_tf_description"
                 label="Description"
                 type="text"
                 defaultValue={this.state.description}
@@ -1146,10 +1153,10 @@ class DisplayVariableDialog extends React.Component {
             </form>
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.handleClose}>
+            <Button id="qa_disVar_btn_cancel" onClick={this.handleClose}>
               Cancel
             </Button>
-            <Button onClick={this.handleUpdate} color="secondary" variant='contained'>
+            <Button id="qa_disVar_btn_update" onClick={this.handleUpdate} color="secondary" variant='contained'>
               Update
             </Button>
           </DialogActions>
@@ -1174,7 +1181,7 @@ class DisplayVariableDialog extends React.Component {
           <DialogContent>
             <form className={classes.container} noValidate autoComplete="off">
               <TextField
-                id="standard-read-only-input"
+                id="qa_disVar_tf_FRETprojName"
                 label="FRET Project"
                 defaultValue={selectedVariable.project}
                 className={classes.extendedTextField}
@@ -1184,7 +1191,7 @@ class DisplayVariableDialog extends React.Component {
                 }}
               />
               <TextField
-                id="standard-read-only-input"
+                id="qa_disVar_tf_FRETcomp"
                 label="FRET Component"
                 defaultValue={selectedVariable.component_name}
                 className={classes.extendedTextField}
@@ -1194,7 +1201,7 @@ class DisplayVariableDialog extends React.Component {
                 }}
               />
               <TextField
-                id="standard-read-only-input"
+                id="qa_disVar_tf_modelComp"
                 label="Model Component"
                 defaultValue={selectedVariable.modelComponent}
                 className={classes.descriptionField}
@@ -1204,7 +1211,7 @@ class DisplayVariableDialog extends React.Component {
                 }}
               />
               <TextField
-                id="standard-read-only-input"
+                id="qa_disVar_tf_FRETvar"
                 label="FRET Variable"
                 defaultValue={selectedVariable.variable_name}
                 className={classes.extendedTextField}
@@ -1215,7 +1222,7 @@ class DisplayVariableDialog extends React.Component {
               />
               <FormControl className={classes.formControl}>
                 <InputLabel htmlFor="idType-simple">Variable Type*</InputLabel>
-                <Select
+                <Select id="qa_disVar_sel_varType"
                   key={selectedVariable}
                   value={this.state.idType}
                   onChange={this.handleChange}
@@ -1223,19 +1230,19 @@ class DisplayVariableDialog extends React.Component {
                     name: 'idType',
                     id: 'idType-simple',
                   }}>
-                  <MenuItem value="" key={selectedVariable}>
+                  <MenuItem id="qa_disVar_mi_selVar_None" value="" key={selectedVariable}>
                     <em>None</em>
                   </MenuItem>
-                  <MenuItem value="Function">Function</MenuItem>
-                  <MenuItem value="Input" >Input</MenuItem>
-                  <MenuItem value="Internal">Internal</MenuItem>
-                  <MenuItem value="Mode">Mode</MenuItem>
-                  <MenuItem value="Output">Output</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_funcion" value="Function">Function</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_input" value="Input" >Input</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_internal" value="Internal">Internal</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_Mode" value="Mode">Mode</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_Output" value="Output">Output</MenuItem>
                 </Select>
               </FormControl>
               <FormControl className={classes.formControl}>
                 <InputLabel htmlFor="dataType-simple">Data Type*</InputLabel>
-                <Select
+                <Select id="qa_disVar_sel_dataType"
                 key={selectedVariable}
                   value={this.state.dataType}
                   onChange={this.handleChange}
@@ -1243,16 +1250,16 @@ class DisplayVariableDialog extends React.Component {
                     name: 'dataType',
                     id: 'dataType-simple',
                   }}>
-                  <MenuItem
+                  <MenuItem id="qa_disVar_mi_dataType_none"
                     value=""
                   >
                     <em>None</em>
                   </MenuItem>
-                  <MenuItem value="boolean" >boolean</MenuItem>
-                  <MenuItem value="integer" >integer</MenuItem>
-                  <MenuItem value="unsigned integer" >unsigned integer</MenuItem>
-                  <MenuItem value="single">single</MenuItem>
-                  <MenuItem value="double">double</MenuItem>
+                  <MenuItem id="qa_disVar_mi_boolean" value="boolean" >boolean</MenuItem>
+                  <MenuItem id="qa_disVar_mi_integer" value="integer" >integer</MenuItem>
+                  <MenuItem id="qa_disVar_mi_unsignInt" value="unsigned integer" >unsigned integer</MenuItem>
+                  <MenuItem id="qa_disVar_mi_single" value="single">single</MenuItem>
+                  <MenuItem id="qa_disVar_mi_double" value="double">double</MenuItem>
                 </Select>
               </FormControl>
               <div>
@@ -1280,7 +1287,7 @@ class DisplayVariableDialog extends React.Component {
               />
               <FormControlLabel
                 control={
-                  <Checkbox
+                  <Checkbox id="qa_disVar_cb_checkLustre"
                     checked={this.state.checkLustre}
                     onChange={this.handleCheckChange('checkLustre')}
                     value="checkLustre"
@@ -1290,7 +1297,7 @@ class DisplayVariableDialog extends React.Component {
               />
               <FormControlLabel
                 control={
-                  <Checkbox
+                  <Checkbox id="qa_disVar_cb_checkCoPilot"
                     checked={this.state.checkCoPilot}
                     onChange={this.handleCheckChange('checkCoPilot')}
                     value="checkCoPilot"
@@ -1300,7 +1307,7 @@ class DisplayVariableDialog extends React.Component {
               />
               </div>
               <TextField
-                id="description"
+                id="qa_disVar_tf_description"
                 label="Description"
                 type="text"
                 defaultValue={this.state.description}
@@ -1313,10 +1320,10 @@ class DisplayVariableDialog extends React.Component {
             </form>
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.handleClose}>
+            <Button id="qa_disVar_btn_cancel" onClick={this.handleClose}>
               Cancel
             </Button>
-            <Button onClick={this.handleUpdate} color="secondary" variant='contained'>
+            <Button id="qa_disVar_btn_update" onClick={this.handleUpdate} color="secondary" variant='contained'>
               Update
             </Button>
           </DialogActions>
@@ -1341,7 +1348,7 @@ class DisplayVariableDialog extends React.Component {
           <DialogContent>
             <form className={classes.container} noValidate autoComplete="off">
               <TextField
-                id="standard-read-only-input"
+                id="qa_disVar_tf_FRETprojName"
                 label="FRET Project"
                 defaultValue={selectedVariable.project}
                 className={classes.extendedTextField}
@@ -1351,7 +1358,7 @@ class DisplayVariableDialog extends React.Component {
                 }}
               />
               <TextField
-                id="standard-read-only-input"
+                id="qa_disVar_tf_FRETcomp"
                 label="FRET Component"
                 defaultValue={selectedVariable.component_name}
                 className={classes.extendedTextField}
@@ -1361,7 +1368,7 @@ class DisplayVariableDialog extends React.Component {
                 }}
               />
               <TextField
-                id="standard-read-only-input"
+                id="qa_disVar_tf_modelComp"
                 label="Model Component"
                 defaultValue={selectedVariable.modelComponent}
                 className={classes.descriptionField}
@@ -1371,7 +1378,7 @@ class DisplayVariableDialog extends React.Component {
                 }}
               />
               <TextField
-                id="standard-read-only-input"
+                id="qa_disVar_tf_FRETvar"
                 label="FRET Variable"
                 defaultValue={selectedVariable.variable_name}
                 className={classes.extendedTextField}
@@ -1382,7 +1389,7 @@ class DisplayVariableDialog extends React.Component {
               />
               <FormControl className={classes.formControl}>
                 <InputLabel htmlFor="idType-simple">Variable Type*</InputLabel>
-                <Select
+                <Select id="qa_disVar_sel_varType"
                   key={selectedVariable}
                   value={this.state.idType}
                   onChange={this.handleChange}
@@ -1390,19 +1397,19 @@ class DisplayVariableDialog extends React.Component {
                     name: 'idType',
                     id: 'idType-simple',
                   }}>
-                  <MenuItem value="" key={selectedVariable}>
+                  <MenuItem id="qa_disVar_mi_selVar_None" value="" key={selectedVariable}>
                     <em>None</em>
                   </MenuItem>
-                  <MenuItem value="Function">Function</MenuItem>
-                  <MenuItem value="Input" >Input</MenuItem>
-                  <MenuItem value="Internal">Internal</MenuItem>
-                  <MenuItem value="Mode">Mode</MenuItem>
-                  <MenuItem value="Output">Output</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_funcion" value="Function">Function</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_input" value="Input" >Input</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_internal" value="Internal">Internal</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_Mode" value="Mode">Mode</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_Output" value="Output">Output</MenuItem>
                 </Select>
               </FormControl>
               <FormControl className={classes.formControl}>
                 <InputLabel htmlFor="dataType-simple">Data Type*</InputLabel>
-                <Select
+                <Select id="qa_disVar_sel_dataType"
                 key={selectedVariable}
                   value={this.state.dataType}
                   onChange={this.handleChange}
@@ -1410,16 +1417,16 @@ class DisplayVariableDialog extends React.Component {
                     name: 'dataType',
                     id: 'dataType-simple',
                   }}>
-                  <MenuItem
+                  <MenuItem id="qa_disVar_mi_dataType_none"
                     value=""
                   >
                     <em>None</em>
                   </MenuItem>
-                  <MenuItem value="boolean" >boolean</MenuItem>
-                  <MenuItem value="integer" >integer</MenuItem>
-                  <MenuItem value="unsigned integer" >unsigned integer</MenuItem>
-                  <MenuItem value="single">single</MenuItem>
-                  <MenuItem value="double">double</MenuItem>
+                  <MenuItem id="qa_disVar_mi_boolean" value="boolean" >boolean</MenuItem>
+                  <MenuItem id="qa_disVar_mi_integer" value="integer" >integer</MenuItem>
+                  <MenuItem id="qa_disVar_mi_unsignInt" value="unsigned integer" >unsigned integer</MenuItem>
+                  <MenuItem id="qa_disVar_mi_single" value="single">single</MenuItem>
+                  <MenuItem id="qa_disVar_mi_double" value="double">double</MenuItem>
                 </Select>
               </FormControl>
               <div>
@@ -1438,7 +1445,7 @@ class DisplayVariableDialog extends React.Component {
               />
               <FormControlLabel
                 control={
-                  <Checkbox
+                  <Checkbox id="qa_disVar_cb_checkLustre"
                     checked={this.state.checkLustre}
                     onChange={this.handleCheckChange('checkLustre')}
                     value="checkLustre"
@@ -1448,7 +1455,7 @@ class DisplayVariableDialog extends React.Component {
               />
               <FormControlLabel
                 control={
-                  <Checkbox
+                  <Checkbox id="qa_disVar_cb_checkCoPilot"
                     checked={this.state.checkCoPilot}
                     onChange={this.handleCheckChange('checkCoPilot')}
                     value="checkCoPilot"
@@ -1458,7 +1465,7 @@ class DisplayVariableDialog extends React.Component {
               />
               </div>
               <TextField
-                id="description"
+                id="qa_disVar_tf_description"
                 label="Description"
                 type="text"
                 defaultValue={this.state.description}
@@ -1471,7 +1478,7 @@ class DisplayVariableDialog extends React.Component {
             </form>
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.handleClose}>
+            <Button id="qa_disVar_btn_cancel" onClick={this.handleClose}>
               Cancel
             </Button>
             <Button disabled color="secondary" variant='contained'>
@@ -1500,7 +1507,7 @@ class DisplayVariableDialog extends React.Component {
           <DialogContent>
             <form className={classes.container} noValidate autoComplete="off">
               <TextField
-                id="standard-read-only-input"
+                id="qa_disVar_tf_FRETprojName"
                 label="FRET Project"
                 defaultValue={selectedVariable.project}
                 className={classes.extendedTextField}
@@ -1510,7 +1517,7 @@ class DisplayVariableDialog extends React.Component {
                 }}
               />
               <TextField
-                id="standard-read-only-input"
+                id="qa_disVar_tf_FRETcomp"
                 label="FRET Component"
                 defaultValue={selectedVariable.component_name}
                 className={classes.extendedTextField}
@@ -1520,7 +1527,7 @@ class DisplayVariableDialog extends React.Component {
                 }}
               />
               <TextField
-                id="standard-read-only-input"
+                id="qa_disVar_tf_modelComp"
                 label="Model Component"
                 defaultValue={selectedVariable.modelComponent}
                 className={classes.descriptionField}
@@ -1530,7 +1537,7 @@ class DisplayVariableDialog extends React.Component {
                 }}
               />
               <TextField
-                id="standard-read-only-input"
+                id="qa_disVar_tf_FRETvar"
                 label="FRET Variable"
                 defaultValue={selectedVariable.variable_name}
                 className={classes.extendedTextField}
@@ -1541,7 +1548,7 @@ class DisplayVariableDialog extends React.Component {
               />
               <FormControl className={classes.formControl}>
                 <InputLabel htmlFor="idType-simple">Variable Type*</InputLabel>
-                <Select
+                <Select id="qa_disVar_sel_varType"
                   key={selectedVariable}
                   value={this.state.idType}
                   onChange={this.handleChange}
@@ -1549,19 +1556,19 @@ class DisplayVariableDialog extends React.Component {
                     name: 'idType',
                     id: 'idType-simple',
                   }}>
-                  <MenuItem value="" key={selectedVariable}>
+                  <MenuItem id="qa_disVar_mi_selVar_None" value="" key={selectedVariable}>
                     <em>None</em>
                   </MenuItem>
-                  <MenuItem value="Function">Function</MenuItem>
-                  <MenuItem value="Input" >Input</MenuItem>
-                  <MenuItem value="Internal">Internal</MenuItem>
-                  <MenuItem value="Mode">Mode</MenuItem>
-                  <MenuItem value="Output">Output</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_funcion" value="Function">Function</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_input" value="Input" >Input</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_internal" value="Internal">Internal</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_Mode" value="Mode">Mode</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_Output" value="Output">Output</MenuItem>
                 </Select>
               </FormControl>
               <FormControl className={classes.formControl}>
                 <InputLabel htmlFor="dataType-simple">Data Type*</InputLabel>
-                <Select
+                <Select id="qa_disVar_sel_dataType"
                 key={selectedVariable}
                   value={this.state.dataType}
                   onChange={this.handleChange}
@@ -1569,16 +1576,16 @@ class DisplayVariableDialog extends React.Component {
                     name: 'dataType',
                     id: 'dataType-simple',
                   }}>
-                  <MenuItem
+                  <MenuItem id="qa_disVar_mi_dataType_none"
                     value=""
                   >
                     <em>None</em>
                   </MenuItem>
-                  <MenuItem value="boolean" >boolean</MenuItem>
-                  <MenuItem value="integer" >integer</MenuItem>
-                  <MenuItem value="unsigned integer" >unsigned integer</MenuItem>
-                  <MenuItem value="single">single</MenuItem>
-                  <MenuItem value="double">double</MenuItem>
+                  <MenuItem id="qa_disVar_mi_boolean" value="boolean" >boolean</MenuItem>
+                  <MenuItem id="qa_disVar_mi_integer" value="integer" >integer</MenuItem>
+                  <MenuItem id="qa_disVar_mi_unsignInt" value="unsigned integer" >unsigned integer</MenuItem>
+                  <MenuItem id="qa_disVar_mi_single" value="single">single</MenuItem>
+                  <MenuItem id="qa_disVar_mi_double" value="double">double</MenuItem>
                 </Select>
               </FormControl>
               <div>
@@ -1597,7 +1604,7 @@ class DisplayVariableDialog extends React.Component {
               />
               <FormControlLabel
                 control={
-                  <Checkbox
+                  <Checkbox id="qa_disVar_cb_checkLustre"
                     checked={this.state.checkLustre}
                     onChange={this.handleCheckChange('checkLustre')}
                     value="checkLustre"
@@ -1607,7 +1614,7 @@ class DisplayVariableDialog extends React.Component {
               />
               <FormControlLabel
                 control={
-                  <Checkbox
+                  <Checkbox id="qa_disVar_cb_checkCoPilot"
                     checked={this.state.checkCoPilot}
                     onChange={this.handleCheckChange('checkCoPilot')}
                     value="checkCoPilot"
@@ -1617,7 +1624,7 @@ class DisplayVariableDialog extends React.Component {
               />
               </div>
               <TextField
-                id="description"
+                id="qa_disVar_tf_description"
                 label="Description"
                 type="text"
                 defaultValue={this.state.description}
@@ -1630,7 +1637,7 @@ class DisplayVariableDialog extends React.Component {
             </form>
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.handleClose}>
+            <Button id="qa_disVar_btn_cancel" onClick={this.handleClose}>
               Cancel
             </Button>
             <Button disabled color="secondary" variant='contained'>
@@ -1659,7 +1666,7 @@ class DisplayVariableDialog extends React.Component {
           <DialogContent>
             <form className={classes.container} noValidate autoComplete="off">
               <TextField
-                id="standard-read-only-input"
+                id="qa_disVar_tf_FRETprojName"
                 label="FRET Project"
                 defaultValue={selectedVariable.project}
                 className={classes.extendedTextField}
@@ -1669,7 +1676,7 @@ class DisplayVariableDialog extends React.Component {
                 }}
               />
               <TextField
-                id="standard-read-only-input"
+                id="qa_disVar_tf_FRETcomp"
                 label="FRET Component"
                 defaultValue={selectedVariable.component_name}
                 className={classes.extendedTextField}
@@ -1679,7 +1686,7 @@ class DisplayVariableDialog extends React.Component {
                 }}
               />
               <TextField
-                id="standard-read-only-input"
+                id="qa_disVar_tf_modelComp"
                 label="Model Component"
                 defaultValue={selectedVariable.modelComponent}
                 className={classes.descriptionField}
@@ -1689,7 +1696,7 @@ class DisplayVariableDialog extends React.Component {
                 }}
               />
               <TextField
-                id="standard-read-only-input"
+                id="qa_disVar_tf_FRETvar"
                 label="FRET Variable"
                 defaultValue={selectedVariable.variable_name}
                 className={classes.extendedTextField}
@@ -1700,7 +1707,7 @@ class DisplayVariableDialog extends React.Component {
               />
               <FormControl className={classes.formControl}>
                 <InputLabel htmlFor="idType-simple">Variable Type*</InputLabel>
-                <Select
+                <Select id="qa_disVar_sel_varType"
                   key={selectedVariable}
                   value={this.state.idType}
                   onChange={this.handleChange}
@@ -1708,19 +1715,19 @@ class DisplayVariableDialog extends React.Component {
                     name: 'idType',
                     id: 'idType-simple',
                   }}>
-                  <MenuItem value="" key={selectedVariable}>
+                  <MenuItem id="qa_disVar_mi_selVar_None" value="" key={selectedVariable}>
                     <em>None</em>
                   </MenuItem>
-                  <MenuItem value="Function">Function</MenuItem>
-                  <MenuItem value="Input" >Input</MenuItem>
-                  <MenuItem value="Internal">Internal</MenuItem>
-                  <MenuItem value="Mode">Mode</MenuItem>
-                  <MenuItem value="Output">Output</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_funcion" value="Function">Function</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_input" value="Input" >Input</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_internal" value="Internal">Internal</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_Mode" value="Mode">Mode</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_Output" value="Output">Output</MenuItem>
                 </Select>
               </FormControl>
               <FormControl className={classes.formControl}>
                 <InputLabel htmlFor="dataType-simple">Data Type*</InputLabel>
-                <Select
+                <Select id="qa_disVar_sel_dataType"
                 key={selectedVariable}
                   value={this.state.dataType}
                   onChange={this.handleChange}
@@ -1728,16 +1735,16 @@ class DisplayVariableDialog extends React.Component {
                     name: 'dataType',
                     id: 'dataType-simple',
                   }}>
-                  <MenuItem
+                  <MenuItem id="qa_disVar_mi_dataType_none"
                     value=""
                   >
                     <em>None</em>
                   </MenuItem>
-                  <MenuItem value="boolean" >boolean</MenuItem>
-                  <MenuItem value="integer" >integer</MenuItem>
-                  <MenuItem value="unsigned integer" >unsigned integer</MenuItem>
-                  <MenuItem value="single">single</MenuItem>
-                  <MenuItem value="double">double</MenuItem>
+                  <MenuItem id="qa_disVar_mi_boolean" value="boolean" >boolean</MenuItem>
+                  <MenuItem id="qa_disVar_mi_integer" value="integer" >integer</MenuItem>
+                  <MenuItem id="qa_disVar_mi_unsignInt" value="unsigned integer" >unsigned integer</MenuItem>
+                  <MenuItem id="qa_disVar_mi_single" value="single">single</MenuItem>
+                  <MenuItem id="qa_disVar_mi_double" value="double">double</MenuItem>
                 </Select>
               </FormControl>
               <div>
@@ -1767,7 +1774,7 @@ class DisplayVariableDialog extends React.Component {
               />
               <FormControlLabel
                 control={
-                  <Checkbox
+                  <Checkbox id="qa_disVar_cb_checkLustre"
                     checked={this.state.checkLustre}
                     onChange={this.handleCheckChange('checkLustre')}
                     value="checkLustre"
@@ -1777,7 +1784,7 @@ class DisplayVariableDialog extends React.Component {
               />
               <FormControlLabel
                 control={
-                  <Checkbox
+                  <Checkbox id="qa_disVar_cb_checkCoPilot"
                     checked={this.state.checkCoPilot}
                     onChange={this.handleCheckChange('checkCoPilot')}
                     value="checkCoPilot"
@@ -1787,7 +1794,7 @@ class DisplayVariableDialog extends React.Component {
               />
               </div>
               <TextField
-                id="description"
+                id="qa_disVar_tf_description"
                 label="Description"
                 type="text"
                 defaultValue={this.state.description}
@@ -1800,7 +1807,7 @@ class DisplayVariableDialog extends React.Component {
             </form>
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.handleClose}>
+            <Button id="qa_disVar_btn_cancel" onClick={this.handleClose}>
               Cancel
             </Button>
             <Button disabled color="secondary" variant='contained'>
@@ -1829,7 +1836,7 @@ class DisplayVariableDialog extends React.Component {
           <DialogContent>
             <form className={classes.container} noValidate autoComplete="off">
               <TextField
-                id="standard-read-only-input"
+                id="qa_disVar_tf_FRETprojName"
                 label="FRET Project"
                 defaultValue={selectedVariable.project}
                 className={classes.extendedTextField}
@@ -1839,7 +1846,7 @@ class DisplayVariableDialog extends React.Component {
                 }}
               />
               <TextField
-                id="standard-read-only-input"
+                id="qa_disVar_tf_FRETcomp"
                 label="FRET Component"
                 defaultValue={selectedVariable.component_name}
                 className={classes.extendedTextField}
@@ -1849,7 +1856,7 @@ class DisplayVariableDialog extends React.Component {
                 }}
               />
               <TextField
-                id="standard-read-only-input"
+                id="qa_disVar_tf_modelComp"
                 label="Model Component"
                 defaultValue={selectedVariable.modelComponent}
                 className={classes.descriptionField}
@@ -1859,7 +1866,7 @@ class DisplayVariableDialog extends React.Component {
                 }}
               />
               <TextField
-                id="standard-read-only-input"
+                id="qa_disVar_tf_FRETvar"
                 label="FRET Variable"
                 defaultValue={selectedVariable.variable_name}
                 className={classes.extendedTextField}
@@ -1870,7 +1877,7 @@ class DisplayVariableDialog extends React.Component {
               />
               <FormControl className={classes.formControl}>
                 <InputLabel htmlFor="idType-simple">Variable Type*</InputLabel>
-                <Select
+                <Select id="qa_disVar_sel_varType"
                   key={selectedVariable}
                   value={this.state.idType}
                   onChange={this.handleChange}
@@ -1878,19 +1885,19 @@ class DisplayVariableDialog extends React.Component {
                     name: 'idType',
                     id: 'idType-simple',
                   }}>
-                  <MenuItem value="" key={selectedVariable}>
+                  <MenuItem id="qa_disVar_mi_selVar_None" value="" key={selectedVariable}>
                     <em>None</em>
                   </MenuItem>
-                  <MenuItem value="Function">Function</MenuItem>
-                  <MenuItem value="Input" >Input</MenuItem>
-                  <MenuItem value="Internal">Internal</MenuItem>
-                  <MenuItem value="Mode">Mode</MenuItem>
-                  <MenuItem value="Output">Output</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_funcion" value="Function">Function</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_input" value="Input" >Input</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_internal" value="Internal">Internal</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_Mode" value="Mode">Mode</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_Output" value="Output">Output</MenuItem>
                 </Select>
               </FormControl>
               <FormControl className={classes.formControl}>
                 <InputLabel htmlFor="dataType-simple">Data Type*</InputLabel>
-                <Select
+                <Select id="qa_disVar_sel_dataType"
                 key={selectedVariable}
                   value={this.state.dataType}
                   onChange={this.handleChange}
@@ -1898,14 +1905,14 @@ class DisplayVariableDialog extends React.Component {
                     name: 'dataType',
                     id: 'dataType-simple',
                   }}>
-                  <MenuItem
+                  <MenuItem id="qa_disVar_mi_dataType_none"
                     value=""
                   >
                     <em>None</em>
                   </MenuItem>
-                  <MenuItem value="boolean" >boolean</MenuItem>
-                  <MenuItem value="integer" >integer</MenuItem>
-                  <MenuItem value="unsigned integer" >unsigned integer</MenuItem>
+                  <MenuItem id="qa_disVar_mi_boolean" value="boolean" >boolean</MenuItem>
+                  <MenuItem id="qa_disVar_mi_integer" value="integer" >integer</MenuItem>
+                  <MenuItem id="qa_disVar_mi_unsignInt" value="unsigned integer" >unsigned integer</MenuItem>
                   <MenuItem value="single" >single</MenuItem>
                   <MenuItem value="double" >double</MenuItem>
                 </Select>
@@ -1937,7 +1944,7 @@ class DisplayVariableDialog extends React.Component {
               />
               <FormControlLabel
                 control={
-                  <Checkbox
+                  <Checkbox id="qa_disVar_cb_checkLustre"
                     checked={this.state.checkLustre}
                     onChange={this.handleCheckChange('checkLustre')}
                     value="checkLustre"
@@ -1947,7 +1954,7 @@ class DisplayVariableDialog extends React.Component {
               />
               <FormControlLabel
                 control={
-                  <Checkbox
+                  <Checkbox id="qa_disVar_cb_checkCoPilot"
                     checked={this.state.checkCoPilot}
                     onChange={this.handleCheckChange('checkCoPilot')}
                     value="checkCoPilot"
@@ -1957,7 +1964,7 @@ class DisplayVariableDialog extends React.Component {
               />
               </div>
               <TextField
-                id="description"
+                id="qa_disVar_tf_description"
                 label="Description"
                 type="text"
                 defaultValue={this.state.description}
@@ -1970,7 +1977,7 @@ class DisplayVariableDialog extends React.Component {
             </form>
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.handleClose}>
+            <Button id="qa_disVar_btn_cancel" onClick={this.handleClose}>
               Cancel
             </Button>
             <Button disabled color="secondary" variant='contained'>
@@ -1999,7 +2006,7 @@ class DisplayVariableDialog extends React.Component {
           <DialogContent>
             <form className={classes.container} noValidate autoComplete="off">
               <TextField
-                id="standard-read-only-input"
+                id="qa_disVar_tf_FRETprojName"
                 label="FRET Project"
                 defaultValue={selectedVariable.project}
                 className={classes.extendedTextField}
@@ -2009,7 +2016,7 @@ class DisplayVariableDialog extends React.Component {
                 }}
               />
               <TextField
-                id="standard-read-only-input"
+                id="qa_disVar_tf_FRETcomp"
                 label="FRET Component"
                 defaultValue={selectedVariable.component_name}
                 className={classes.extendedTextField}
@@ -2019,7 +2026,7 @@ class DisplayVariableDialog extends React.Component {
                 }}
               />
               <TextField
-                id="standard-read-only-input"
+                id="qa_disVar_tf_modelComp"
                 label="Model Component"
                 defaultValue={selectedVariable.modelComponent}
                 className={classes.descriptionField}
@@ -2029,7 +2036,7 @@ class DisplayVariableDialog extends React.Component {
                 }}
               />
               <TextField
-                id="standard-read-only-input"
+                id="qa_disVar_tf_FRETvar"
                 label="FRET Variable"
                 defaultValue={selectedVariable.variable_name}
                 className={classes.extendedTextField}
@@ -2040,7 +2047,7 @@ class DisplayVariableDialog extends React.Component {
               />
               <FormControl className={classes.formControl}>
                 <InputLabel htmlFor="idType-simple">Variable Type*</InputLabel>
-                <Select
+                <Select id="qa_disVar_sel_varType"
                   key={selectedVariable}
                   value={this.state.idType}
                   onChange={this.handleChange}
@@ -2048,19 +2055,19 @@ class DisplayVariableDialog extends React.Component {
                     name: 'idType',
                     id: 'idType-simple',
                   }}>
-                  <MenuItem value="" key={selectedVariable}>
+                  <MenuItem id="qa_disVar_mi_selVar_None" value="" key={selectedVariable}>
                     <em>None</em>
                   </MenuItem>
-                  <MenuItem value="Function">Function</MenuItem>
-                  <MenuItem value="Input" >Input</MenuItem>
-                  <MenuItem value="Internal">Internal</MenuItem>
-                  <MenuItem value="Mode">Mode</MenuItem>
-                  <MenuItem value="Output">Output</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_funcion" value="Function">Function</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_input" value="Input" >Input</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_internal" value="Internal">Internal</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_Mode" value="Mode">Mode</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_Output" value="Output">Output</MenuItem>
                 </Select>
               </FormControl>
               <FormControl className={classes.formControl}>
                 <InputLabel htmlFor="dataType-simple">Data Type*</InputLabel>
-                <Select
+                <Select id="qa_disVar_sel_dataType"
                 key={selectedVariable}
                   value={this.state.dataType}
                   onChange={this.handleChange}
@@ -2068,14 +2075,14 @@ class DisplayVariableDialog extends React.Component {
                     name: 'dataType',
                     id: 'dataType-simple',
                   }}>
-                  <MenuItem
+                  <MenuItem id="qa_disVar_mi_dataType_none"
                     value=""
                   >
                     <em>None</em>
                   </MenuItem>
-                  <MenuItem value="boolean" >boolean</MenuItem>
-                  <MenuItem value="integer" >integer</MenuItem>
-                  <MenuItem value="unsigned integer" >unsigned integer</MenuItem>
+                  <MenuItem id="qa_disVar_mi_boolean" value="boolean" >boolean</MenuItem>
+                  <MenuItem id="qa_disVar_mi_integer" value="integer" >integer</MenuItem>
+                  <MenuItem id="qa_disVar_mi_unsignInt" value="unsigned integer" >unsigned integer</MenuItem>
                   <MenuItem value="single" >single</MenuItem>
                   <MenuItem value="double" >double</MenuItem>
                 </Select>
@@ -2109,7 +2116,7 @@ class DisplayVariableDialog extends React.Component {
               />
               <FormControlLabel
                 control={
-                  <Checkbox
+                  <Checkbox id="qa_disVar_cb_checkLustre"
                     checked={this.state.checkLustre}
                     onChange={this.handleCheckChange('checkLustre')}
                     value="checkLustre"
@@ -2119,7 +2126,7 @@ class DisplayVariableDialog extends React.Component {
               />
               <FormControlLabel
                 control={
-                  <Checkbox
+                  <Checkbox id="qa_disVar_cb_checkCoPilot"
                     checked={this.state.checkCoPilot}
                     onChange={this.handleCheckChange('checkCoPilot')}
                     value="checkCoPilot"
@@ -2129,7 +2136,7 @@ class DisplayVariableDialog extends React.Component {
               />
               </div>
               <TextField
-                id="description"
+                id="qa_disVar_tf_description"
                 label="Description"
                 type="text"
                 defaultValue={this.state.description}
@@ -2142,7 +2149,7 @@ class DisplayVariableDialog extends React.Component {
             </form>
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.handleClose}>
+            <Button id="qa_disVar_btn_cancel" onClick={this.handleClose}>
               Cancel
             </Button>
             <Button disabled color="secondary" variant='contained'>
@@ -2171,7 +2178,7 @@ class DisplayVariableDialog extends React.Component {
             <DialogContent>
               <form className={classes.container} noValidate autoComplete="off">
                 <TextField
-                  id="standard-read-only-input"
+                  id="qa_disVar_tf_FRETprojName"
                   label="FRET Project"
                   defaultValue={selectedVariable.project}
                   className={classes.extendedTextField}
@@ -2181,7 +2188,7 @@ class DisplayVariableDialog extends React.Component {
                   }}
                 />
                 <TextField
-                  id="standard-read-only-input"
+                  id="qa_disVar_tf_FRETcomp"
                   label="FRET Component"
                   defaultValue={selectedVariable.component_name}
                   className={classes.extendedTextField}
@@ -2191,7 +2198,7 @@ class DisplayVariableDialog extends React.Component {
                   }}
                 />
                 <TextField
-                  id="standard-read-only-input"
+                  id="qa_disVar_tf_modelComp"
                   label="Model Component"
                   defaultValue={selectedVariable.modelComponent}
                   className={classes.descriptionField}
@@ -2201,7 +2208,7 @@ class DisplayVariableDialog extends React.Component {
                   }}
                 />
                 <TextField
-                  id="standard-read-only-input"
+                  id="qa_disVar_tf_FRETvar"
                   label="FRET Variable"
                   defaultValue={selectedVariable.variable_name}
                   className={classes.extendedTextField}
@@ -2212,7 +2219,7 @@ class DisplayVariableDialog extends React.Component {
                 />
                 <FormControl className={classes.formControl}>
                   <InputLabel htmlFor="idType-simple">Variable Type*</InputLabel>
-                  <Select
+                  <Select id="qa_disVar_sel_varType"
                     key={selectedVariable}
                     value={this.state.idType}
                     onChange={this.handleChange}
@@ -2220,18 +2227,18 @@ class DisplayVariableDialog extends React.Component {
                       name: 'idType',
                       id: 'idType-simple',
                     }}>
-                    <MenuItem value="" key={selectedVariable}>
+                    <MenuItem id="qa_disVar_mi_selVar_None" value="" key={selectedVariable}>
                       <em>None</em>
                     </MenuItem>
-                    <MenuItem value="Function">Function</MenuItem>
-                    <MenuItem value="Input" >Input</MenuItem>
-                    <MenuItem value="Internal">Internal</MenuItem>
-                    <MenuItem value="Mode">Mode</MenuItem>
-                    <MenuItem value="Output">Output</MenuItem>
+                    <MenuItem id="qa_disVar_mi_varType_funcion" value="Function">Function</MenuItem>
+                    <MenuItem id="qa_disVar_mi_varType_input" value="Input" >Input</MenuItem>
+                    <MenuItem id="qa_disVar_mi_varType_internal" value="Internal">Internal</MenuItem>
+                    <MenuItem id="qa_disVar_mi_varType_Mode" value="Mode">Mode</MenuItem>
+                    <MenuItem id="qa_disVar_mi_varType_Output" value="Output">Output</MenuItem>
                   </Select>
                 </FormControl>
                 <TextField
-                  id="description"
+                  id="qa_disVar_tf_description"
                   label="Description"
                   type="text"
                   defaultValue={this.state.description}
@@ -2244,10 +2251,10 @@ class DisplayVariableDialog extends React.Component {
               </form>
             </DialogContent>
             <DialogActions>
-              <Button onClick={this.handleClose}>
+              <Button id="qa_disVar_btn_cancel" onClick={this.handleClose}>
                 Cancel
               </Button>
-              <Button onClick={this.handleUpdate} color="secondary" variant='contained'>
+              <Button id="qa_disVar_btn_update" onClick={this.handleUpdate} color="secondary" variant='contained'>
                 Update
               </Button>
             </DialogActions>

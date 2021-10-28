@@ -213,6 +213,7 @@ let TableComponentBar = props => {
         <FormControl className={classes.modelRoot}>
           <InputLabel htmlFor="component-helper">Corresponding Model Component</InputLabel>
           <Select
+            id="qa_var_sel_corresModComp"
             key={fretComponent=== undefined ? '' : fretComponent}
             value={modelComponent}
             onChange={handleModelChange}
@@ -224,7 +225,7 @@ let TableComponentBar = props => {
               <em>None</em>
             </MenuItem>
             {importedComponents.map(c => {
-              return (<MenuItem value={c} key={c}>
+              return (<MenuItem id={"qa_var_mi_corresModComp_"+c} value={c} key={c}>
                         {c}
                       </MenuItem>)
             })}
@@ -232,7 +233,9 @@ let TableComponentBar = props => {
         </FormControl>
       </form>
       <Tooltip title='Import model information'>
-        <Button size="small" onClick={importComponentModel} color="secondary" variant='contained' >
+        <Button size="small" onClick={importComponentModel} 
+          id="qa_var_btn_import"
+          color="secondary" variant='contained' >
           Import
         </Button>
       </Tooltip>
@@ -505,8 +508,9 @@ class VariablesSortableTable extends React.Component {
             handleModelChange={this.handleModelChange}
             importComponentModel={this.importComponentModel}
           />
-          <Table className={classes.table} aria-labelledby="tableTitle" size="small">
+          <Table className={classes.table} aria-labelledby="tableTitle" size = "small">
             <VariablesSortableHead
+              id="qa_var_sort_FRETname"
               order={order}
               orderBy={orderBy}
               onRequestSort= {this.handleRequestSort}
@@ -520,14 +524,14 @@ class VariablesSortableTable extends React.Component {
                 return (
                   <TableRow key={n.rowid}>
                     <TableCell>
-                      <Button style={{textTransform: 'none'}} color='secondary' onClick={() => this.handleVariableDialogOpen(n)}>
+                      <Button  id={"qa_var_btn_FRETname_"+label} style={{textTransform: 'none'}} color='secondary' onClick={() => this.handleVariableDialogOpen(n)}>
                         {label}
                       </Button>
                     </TableCell>
-                    <TableCell>{n.modeldoc_id}</TableCell>
-                    <TableCell>{n.idType}</TableCell>
-                    <TableCell>{n.dataType}</TableCell>
-                    <TableCell>{n.description}</TableCell>
+                    <TableCell id={"qa_var_tc_modelName_"+label}>{n.modeldoc_id}</TableCell>
+                    <TableCell id={"qa_var_tc_modelType_"+label}>{n.idType}</TableCell>
+                    <TableCell id={"qa_var_tc_dataType_"+label}>{n.dataType}</TableCell>
+                    <TableCell id={"qa_var_tc_description_"+label}>{n.description}</TableCell>
                   </TableRow>
                 )
               })
@@ -578,6 +582,7 @@ class VariablesSortableTable extends React.Component {
               {this.state.snackBarDisplayInfo.modifiedVarId}
             </Button>,
             <IconButton
+              id="qa_var_ib_snackbarClose"
               key="close"
               aria-label="Close"
               color="inherit"

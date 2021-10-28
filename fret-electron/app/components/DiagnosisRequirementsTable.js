@@ -185,6 +185,7 @@ class DiagnosisRequirementsTableHead extends React.Component {
           {rows.map(row => {
             return (
               <TableCell
+                id={"qa_rlzTbl_tc_head_"+row.id}
                 key={row.id}
                 align={row.numeric?'right':'left'}
                 sortDirection={orderBy === row.id ? order : false}
@@ -366,10 +367,10 @@ class DiagnosisRequirementsTable extends React.Component {
                           opacity : (isInConflict || connectedComponent.properties.has(n.reqid)) ? 1 : .6,
                           borderStyle: isInConflict ? 'solid' : 'initial', 
                           borderColor: isInConflict ? color : 'initial'}}>
-                        <TableCell>
+                        <TableCell id={"qa_rlzTbl_tc_body_id_"+label}>
                             {label}
                           </TableCell>
-                        <TableCell>{n.summary}</TableCell>
+                        <TableCell id={"qa_rlzTbl_tc_body_summary_"+label}>{n.summary}</TableCell>
                       </TableRow>
                     )
                 })}
@@ -391,10 +392,10 @@ class DiagnosisRequirementsTable extends React.Component {
                           opacity : (isInConflict || reqs.length === 0  || isAssumption) ? 1 : .6,
                           borderStyle: isInConflict ? 'solid' : 'initial', 
                           borderColor: isInConflict ? color : 'initial'}}>
-                        <TableCell>
+                        <TableCell id={"qa_rlzTbl_tc_body_id_"+label}>
                             {label}
                           </TableCell>
-                        <TableCell>{n.summary}</TableCell>
+                        <TableCell id={"qa_rlzTbl_tc_body_summary_"+label}>{n.summary}</TableCell>
                       </TableRow>
                     )
                 })}

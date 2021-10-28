@@ -168,6 +168,10 @@ app.on('ready', async () => {
   }
 
   mainWindow = new BrowserWindow({
+
+    webPreferences: {
+      nodeIntegration: true
+    },
     show: false,
     width: 1200,
     height: 1050

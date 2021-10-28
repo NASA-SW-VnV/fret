@@ -353,14 +353,14 @@ class AnalysisTabs extends React.Component {
             variant="scrollable"
             scrollButtons="auto"
           >
-            <Tab label="Variable Mapping" />
+            <Tab id="qa_var_tab" label="Variable Mapping" />
             {process.platform === "win32" ? 
               <Tooltip title={'Realizability checking is currently not supported in Windows OS'}>
                 <span>
-                  <Tab disabled label="Realizability" />            
+                  <Tab id="qa_rlz_tab_win" disabled label="Realizability" />            
                 </span>              
               </Tooltip> :
-              <Tab label="Realizability"/>
+              <Tab id="qa_rlz_tab" label="Realizability"/>
             }            
           </Tabs>
         </AppBar>

@@ -281,11 +281,11 @@ class Instructions extends React.Component {
         <br />
         <Accordion>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography className={classes.heading}>Diagram Semantics</Typography>
+          <Typography id="qa_crtAst_sem_typ_diagramSem" className={classes.heading}>Diagram Semantics</Typography>
         </AccordionSummary>
         <AccordionDetails>
         <div className={css.notationWrap}>
-        <img src= {notationPath}/>
+        <img id="qa_crtAst_sem_img_diagramSem" src= {notationPath}/>
         </div>
         </AccordionDetails>
       </Accordion>
@@ -296,25 +296,29 @@ class Instructions extends React.Component {
         <br />
         <Accordion>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography className={classes.heading}>Future Time LTL</Typography>
+          <Typography id="qa_crtAst_sem_typ_futureTime" className={classes.heading}>Future Time LTL</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <div>
-            <div className={classes.formula} dangerouslySetInnerHTML={{ __html: this.props.formalization.semantics.ft }} />
+            <div id="qa_crtAst_sem_typ_futureTimeFormula" className={classes.formula} 
+              dangerouslySetInnerHTML={{ __html: this.props.formalization.semantics.ft }} />
             <br />
-            <div className={classes.description} dangerouslySetInnerHTML={{ __html:' Target: '+ this.props.formalization.semantics.component + ' component.'}} />
+            <div id="qa_crtAst_sem_typ_futureTimeComp" className={classes.description} 
+              dangerouslySetInnerHTML={{ __html:' Target: '+ this.props.formalization.semantics.component + ' component.'}} />
           </div>
         </AccordionDetails>
       </Accordion>
       <Accordion>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography className={classes.heading}>Past Time LTL</Typography>
+          <Typography id="qa_crtAst_sem_typ_pastTime" className={classes.heading}>Past Time LTL</Typography>
         </AccordionSummary>
         <AccordionDetails>
         <div>
-          <div className={classes.formula} dangerouslySetInnerHTML={{ __html: this.props.formalization.semantics.pt}} />
+          <div id="qa_crtAst_sem_typ_pastTimeFormula" className={classes.formula} 
+            dangerouslySetInnerHTML={{ __html: this.props.formalization.semantics.pt}} />
           <br />
-          <div className={classes.description} dangerouslySetInnerHTML={{ __html:' Target: '+ this.props.formalization.semantics.component + ' component.'}} />
+          <div id="qa_crtAst_sem_typ_pastTimeComp" className={classes.description} 
+            dangerouslySetInnerHTML={{ __html:' Target: '+ this.props.formalization.semantics.component + ' component.'}} />
         </div>
         </AccordionDetails>
       </Accordion>
@@ -416,7 +420,7 @@ class Instructions extends React.Component {
     if (fieldsWithExplanation.includes(field)) {
       const mdsrc = instructions[field]
       return(
-        <div>
+        <div id="qa_crtAst_div_explanations">
           <ReactMarkdown source={mdsrc} />
           <ColorPicker
             initialColorInHex={this.state.fieldColors[field.replace('Field', '').toLowerCase()]}
@@ -426,7 +430,7 @@ class Instructions extends React.Component {
     }
     else if (field === 'semantics'){
       return(
-        <div style={{display: 'block'}}>
+        <div id="qa_crtAst_div_semanticPanel" style={{display: 'block'}}>
           {this.renderFormula()}
         </div>
       )
@@ -434,7 +438,7 @@ class Instructions extends React.Component {
       return (
         <div>
           <div style={{paddingBottom:20}}>
-            <Typography variant='subtitle1' color='primary'>Ready to speak FRETish?</Typography>
+            <Typography id="qa_ast_typ_speakFRETish" variant='subtitle1' color='primary'>Ready to speak FRETish?</Typography>
           </div>
           <div>
             <Typography color='primary'>Please use the editor on your left to write your requirement or pick a predefined template from the TEMPLATES tab.</Typography>
@@ -455,15 +459,16 @@ class Instructions extends React.Component {
           indicatorColor="secondary"
           textColor="secondary"
           centered>
-          <Tab label="Assistant"/>
-          <Tab label="Templates"/>
-          <Tab label="Glossary"/>
+          <Tab id="qa_crt_tab_assistant" label="Assistant"/>
+          <Tab id="qa_crt_tab_templates" label="Templates"/>
+          <Tab id="qa_crt_tab_glossary" label="Glossary"/>
         </Tabs>
         {tabValue === 0 && <TabContainer>{this.renderInstruction(field)}</TabContainer>}
         {tabValue === 1 &&
         <TabContainer>{this.renderTemplate(templates, selectedTemplate, handleSelectedTemplateChange)}</TabContainer>}
         {tabValue === 2 && <TabContainer>
           <Glossary
+            id = "Glossary"
             projectName={this.props.projectName}
             setAutoFillVariables={this.props.setAutoFillVariables}
             requirements={this.props.requirements}/>

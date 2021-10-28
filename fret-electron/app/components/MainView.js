@@ -511,6 +511,7 @@ class MainView extends React.Component {
           <AppBar className={classNames(classes.appBar, this.state.drawerOpen && classes.appBarShift)}>
             <Toolbar disableGutters={!this.state.drawerOpen}>
               <IconButton
+                id="qa_db_ib_openDrawer"
                 color="inherit"
                 aria-label="open drawer"
                 onClick={this.handleDrawerOpen}
@@ -523,6 +524,7 @@ class MainView extends React.Component {
                   <div className={css.logo_content}>FRET</div>
                   <div style={{paddingLeft: '30px'}}>
                     <Button
+                      id="qa_db_btn_projects"
                       color="secondary"
                       size="small"
                       aria-owns={anchorEl ? 'simple-menu' : null}
@@ -547,12 +549,12 @@ class MainView extends React.Component {
                       </MenuItem>
                       {
                         this.state.listOfProjects.map(name => {
-                          return <MenuItem
+                          return <MenuItem                                    
                                     key={name}
                                     dense>
-                                    <ListItemText primary = {name} onClick={() => this.handleSetProject(name)}/>
-                                    <IconButton onClick={() => this.handleDeleteProject(name)} size="small" aria-label="delete" >
-                                      <Tooltip id="tooltip-icon-delete" title="Delete Project">
+                                    <ListItemText id={"qa_proj_select_"+name} primary = {name} onClick={() => this.handleSetProject(name)}/>
+                                    <IconButton id={"qa_proj_del_"+name} onClick={() => this.handleDeleteProject(name)} size="small" aria-label="delete" >
+                                      <Tooltip id="project-tooltip-icon-delete" title="Delete Project">
                                       <DeleteIcon color='error'/>
                                       </Tooltip>
                                     </IconButton>
@@ -561,6 +563,7 @@ class MainView extends React.Component {
                       }
                       <MenuItem dense>
                       <Button
+                        id="qa_db_btn_newProject"
                         color="secondary"
                         size="small"
                         onClick={this.handleNewProject}
@@ -571,7 +574,7 @@ class MainView extends React.Component {
                       </MenuItem>
                     </Menu>
                     &nbsp;
-                    <Button variant="contained" onClick={this.handleCreateDialogOpen} color="secondary" size="small" className={classes.button}>
+                    <Button id="qa_db_btn_create" variant="contained" onClick={this.handleCreateDialogOpen} color="secondary" size="small" className={classes.button}>
                       Create
                     </Button>
                   </div>
@@ -588,43 +591,43 @@ class MainView extends React.Component {
           >
             <div className={classes.drawerInner}>
               <div className={classes.drawerHeader}>
-                <IconButton onClick={this.handleDrawerClose}>
+                <IconButton id="qa_db_ib_closeDrawer" onClick={this.handleDrawerClose}>
                   {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
                 </IconButton>
               </div>
               <Divider />
               <List>
               <div>
-                <ListItem button onClick={() => this.setMainContent('dashboard')}>
+                <ListItem id="qa_db_li_dashboard" button onClick={() => this.setMainContent('dashboard')}>
                   <ListItemIcon>
                     <DashboardIcon />
                   </ListItemIcon>
                   <ListItemText primary="Dashboard" />
                 </ListItem>
-                <ListItem button onClick={() => this.setMainContent('requirements')}>
+                <ListItem id="qa_db_li_table" button onClick={() => this.setMainContent('requirements')}>
                   <ListItemIcon>
                     <ListIcon />
                   </ListItemIcon>
                   <ListItemText primary="Requirements" />
                 </ListItem>
-                <ListItem button onClick={() => this.setMainContent('analysis')}>
+                <ListItem id="qa_db_li_analysis" button onClick={() => this.setMainContent('analysis')}>
                   <ListItemIcon>
                     <CodeIcon />
                   </ListItemIcon>
-                  <ListItemText primary="Analysis Portal" />
+                  <ListItemText id="qa_db_li_analysis_portal_text" primary="Analysis Portal" />
                 </ListItem>
               </div>
               </List>
               <Divider />
                 <List>
                 <div>
-                  <ListItem button onClick={() => this.handleImport()}>
+                  <ListItem id="qa_db_li_import" button onClick={() => this.handleImport()}>
                     <ListItemIcon>
                       <ImportIcon />
                     </ListItemIcon>
                     <ListItemText primary="Import" />
                   </ListItem>
-                  <ListItem button onClick={() => this.openExportRequirementsDialog()}>
+                  <ListItem id="qa_db_li_export" button onClick={() => this.openExportRequirementsDialog()}>
                     <ListItemIcon>
                       <ExportIcon />
                     </ListItemIcon>
@@ -635,7 +638,7 @@ class MainView extends React.Component {
               <Divider />
               <List>
               <div>
-              <ListItem button onClick={() => this.setMainContent('help')}>
+              <ListItem id="qa_db_li_help" button onClick={() => this.setMainContent('help')}>
                 <ListItemIcon>
                   <HelpIcon />
                 </ListItemIcon>

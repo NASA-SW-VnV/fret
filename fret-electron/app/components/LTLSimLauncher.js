@@ -44,13 +44,13 @@ export default function LTLSimLauncher(props) {
     return (status.ltlsim && status.nusmv) ?
             (<div>
                 <Tooltip title="Launch interactive simulation" >
-                <Button color="secondary" onClick={onOpen}>
+                <Button id="qa_crtAst_btn_simulate" color="secondary" onClick={onOpen}>
                     Simulate
                 </Button>
                 </Tooltip>
                 <LTLSimDialog
                 open={open}
-                id="REQ"
+                id="REQ" 
                 ftExpression={ftExpression}
                 ptExpression={ptExpression}
                 onClose={onClose}
@@ -62,7 +62,7 @@ export default function LTLSimLauncher(props) {
                 "Can't find a running NuSMV installation. Make sure to install NuSMV and add it to the PATH envinronment variable." :
                 "Can't find a running ltlsim installation. Make sure to install ltlsim-core and NuSMV as described in the installation instructions."}>
                 <div>
-                    <Button color="secondary" disabled>
+                    <Button id="qa_crtAst_btn_simulate_disabled" color="secondary" disabled>
                     Simulate
                     </Button>
                 </div>

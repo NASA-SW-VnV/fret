@@ -102,6 +102,7 @@ let TableComponentBar = props => {
             key={cexConflictName === undefined ? '' : cexConflictName}
             value={cexConflictName}
             onChange={handleChange}
+            id="qa_counterEx_sel"
             input={<Input name="component" id="component-helper" />}
           >
             {menuItems}
@@ -193,7 +194,9 @@ class CounterexampleTable extends React.Component {
   	var menuItems = [];
   	for (var i = 0; i < currentConflicts.length; i++) {
   		menuItems.push(
-		(<MenuItem key={i} value={currentConflicts[i]}>
+		(<MenuItem key={i}
+      id={"qa_counterEx_mi_"+i}
+      value={currentConflicts[i]} >
       Conflict {allConflicts.indexOf(currentConflicts[i])+1}
 			</MenuItem>)
 		);
@@ -213,7 +216,8 @@ class CounterexampleTable extends React.Component {
     cex.map(row => (tableRows.push(
           <TableRow key={cex.indexOf(row)}>
             {Object.keys(row).map(function(key, index) {          
-              return(<TableCell key={index} align="right"> {row[key].toString()} </TableCell>);
+              return(<TableCell id={"qa_counterEx_tc_"+cex.indexOf(row)+"_"+index} 
+              key={index} align="right"> {row[key].toString()} </TableCell>);
             })}
           </TableRow>)))
            
