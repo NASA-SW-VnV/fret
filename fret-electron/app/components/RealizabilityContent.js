@@ -944,7 +944,7 @@ class RealizabilityContent extends React.Component {
             project: selectedProject
           }
         }).then(function (fretResult){
-          contract.properties = self.getPropertyInfo(fretResult, contract.outputVariables, tC.component_name);
+          contract.properties = getPropertyInfo(fretResult, contract.outputVariables, tC.component_name);
           contract.delays = getDelayInfo(fretResult, tC.component_name);
           return contract;
         }).then(function (contract){
