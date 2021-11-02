@@ -209,36 +209,6 @@ class AnalysisTabs extends React.Component {
     });
   }
 
-  //variablesview version in comments
-  // checkComponentCompleted(component_name, project) {
-  //   const self = this;
-  //   const {cocospecData, cocospecModes,completedComponents} = this.state;
-  //   var dataAndModesLength = cocospecData[component_name].length;
-  //   //cocospecModes[component_name] ? dataAndModesLength = cocospecData[component_name].length + cocospecModes[component_name].length : dataAndModesLength = cocospecData[component_name].length;
-  //   modeldb.find({
-  //     selector: {
-  //       component_name: component_name,
-  //       project: project,
-  //       completed: true,
-  //       modeldoc: false
-  //     }
-  //   }).then(function (result) {
-  //     if (result.docs.length === dataAndModesLength && dataAndModesLength !== 0){
-  //       if (!completedComponents.includes(component_name))
-  //        completedComponents.push(component_name);
-  //     } else {
-  //       var index = completedComponents.indexOf(component_name);
-  //       if (index > -1) completedComponents.splice(index, 1);
-  //     }
-  //     self.setState({
-  //       completedComponents : completedComponents
-  //     })
-  //   }).catch(function (err) {
-  //     console.log(err);
-  //     return false;
-  //   })
-  // }
-
   checkComponentCompleted(component_name, project) {
     const self = this;
     const {cocospecData, cocospecModes,completedComponents} = this.state;
