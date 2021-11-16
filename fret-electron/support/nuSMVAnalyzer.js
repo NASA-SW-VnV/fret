@@ -109,7 +109,7 @@ nuSMVAnalyzer.prototype.visitSimpleltl = function(ctx) {
 nuSMVAnalyzer.prototype.visitUnaryPastOp = function(ctx) {
   let operator = antlrUtilities.getText(ctx.pastUnaryOp(0));
   if (operator === 'Y'){
-    operator = 'pre ';
+    operator = 'YtoPre';
   }
   if (antlrUtilities.getText(ctx.ltlExpr(0)).match(/^\(/)) {
     return operator + this.visit(ctx.ltlExpr(0));
