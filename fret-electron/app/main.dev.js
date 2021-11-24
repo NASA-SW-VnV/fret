@@ -170,7 +170,8 @@ app.on('ready', async () => {
   mainWindow = new BrowserWindow({
 
     webPreferences: {
-      nodeIntegration: true
+      nodeIntegration: true,
+      enableRemoteModule: true
     },
     show: false,
     width: 1200,

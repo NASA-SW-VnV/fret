@@ -49,14 +49,15 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import Snackbar from '@material-ui/core/Snackbar';
 import Button from '@material-ui/core/Button';
-import ImageList from '@material-ui/core/ImageList';
-import ImageListItem from '@material-ui/core/ImageListItem';
+import Input from '@material-ui/core/Input';
+import InputAdornment from '@material-ui/core/InputAdornment';
 
 import CloseIcon from '@material-ui/icons/Close';
 import DeleteIcon from '@material-ui/icons/Delete';
 import ListIcon from '@material-ui/icons/List';
-// import EditIcon from '@material-ui/icons/Edit';
+import SearchIcon from '@material-ui/icons/Search';
 import AddIcon from '@material-ui/icons/AddCircle';
+import TuneIcon from '@material-ui/icons/Tune';
 // status icons
 import InProgressIcon from '@material-ui/icons/MoreHoriz';
 import RemoveIcon from '@material-ui/icons/Remove';
@@ -68,6 +69,7 @@ import { lighten } from '@material-ui/core/styles/colorManipulator';
 import DisplayRequirementDialog from './DisplayRequirementDialog';
 import CreateRequirementDialog from './CreateRequirementDialog';
 import DeleteRequirementDialog from './DeleteRequirementDialog';
+import SearchSortableTableDialog from './SearchSortableTableDialog';
 
 // select and menu for status column
 import Select from '@material-ui/core/Select';
@@ -85,7 +87,7 @@ const sharedObj = require('electron').remote.getGlobal('sharedObj');
 const db = sharedObj.db;
 const app = require('electron').remote.app;
 const system_dbkeys = sharedObj.system_dbkeys;
-
+const statusType = ['None', 'In Progress', 'Paused', 'Completed', 'Attention', 'Deprecated'];
 
 let counter = 0;
 // status is also saved in database
@@ -158,7 +160,7 @@ class SortableTableHead extends React.Component {
           {rows.map(row => {
             return (
               <TableCell
-                id={"qa_tbl_tc_head"+row.id}
+              id={"qa_tbl_tc_head"+row.id}
                 key={row.id}
                 align={row.numeric?'right':'left'}
                 sortDirection={orderBy === row.id ? order : false}
@@ -221,11 +223,17 @@ const toolbarStyles = theme => ({
   toolbar: {
     display: 'flex',
     flexWrap:'nowrap'
+  },
+  searchInput: {
+    width: 600,
   }
 });
 
 let TableToolbar = props => {
-  const { numSelected, classes, enableBulkChange, bulkChangeEnabler, deleteSelection } = props;
+  const { numSelected, classes, enableBulkChange, bulkChangeEnabler,
+    deleteSelection, handleSearchKeyChange, handleSearchInputChange, clearSearchInput,
+    handleSearchTableDialogOpen, searchInputString } = props;
+
 
   return (
     <Toolbar
@@ -243,7 +251,7 @@ let TableToolbar = props => {
       </div>
       <div className={classes.spacer} />
       <div className={classes.actions}>
-        {numSelected > 0 ? (          
+        {numSelected > 0 ? (
           <div className={classes.toolbar}>
             <Tooltip title="Delete">
               <IconButton
@@ -257,15 +265,56 @@ let TableToolbar = props => {
               <IconButton id="qa_tbl_ib_bulk_exit" aria-label="Close Bulk Change" onClick={() => bulkChangeEnabler()}>
                 <CloseIcon />
               </IconButton>
-            </Tooltip>         
+            </Tooltip>
           </div>
         ) : (
           <div className={classes.toolbar}>
-          <IconButton id="qa_tbl_ib_bulk" aria-label="Bulk Change" onClick={() => bulkChangeEnabler()}>
-            <Tooltip title="Bulk Change">
-            <ListIcon color='secondary'/>
-            </Tooltip>
-          </IconButton>
+            <Input
+              className={classes.searchInput}
+              id="qa_tbl_inp_searchRequirements"
+              type = "text"
+              placeholder = "Search requirements"
+              value={searchInputString}
+              onChange={handleSearchInputChange}
+              startAdornment={
+                <Tooltip title="Search requirements">
+                  <InputAdornment position="start">
+                    <SearchIcon id="qa_tbl_ib_searchReq"
+                      color='secondary'
+                      cursor="pointer"
+                      onClick={handleSearchKeyChange}
+                    />
+                  </InputAdornment>
+                </Tooltip>
+              }
+              endAdornment={
+                  <InputAdornment position="end">
+
+                    {searchInputString.length === 0 ? null :
+                      <Tooltip title="Clear search options">
+                        <CloseIcon  id="qa_tbl_ib_clearSearch"
+                          color='secondary'
+                          cursor="pointer"
+                          onClick={() =>  clearSearchInput()}/>
+                      </Tooltip>
+                    }
+
+                    <Tooltip title="Show search options">
+                        <TuneIcon id="qa_tbl_ib_moreSearch"
+                          color='secondary'
+                          cursor="pointer"
+                          onClick={() =>  handleSearchTableDialogOpen()}/>
+                    </Tooltip>
+                  </InputAdornment>
+
+              }
+            />
+
+            <IconButton aria-label="Bulk Change" onClick={() => bulkChangeEnabler()}>
+              <Tooltip title="Bulk Change">
+              <ListIcon color='secondary'/>
+              </Tooltip>
+            </IconButton>
           </div>
         )}
       </div>
@@ -278,6 +327,11 @@ TableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
   enableBulkChange: PropTypes.bool.isRequired,
   bulkChangeEnabler: PropTypes.func.isRequired,
+  searchInputString: PropTypes.string.isRequired,
+  handleSearchKeyChange: PropTypes.func.isRequired,
+  handleSearchInputChange: PropTypes.func.isRequired,
+  clearSearchInput: PropTypes.func.isRequired,
+  handleSearchTableDialogOpen: PropTypes.func.isRequired,
 };
 
 TableToolbar = withStyles(toolbarStyles)(TableToolbar);
@@ -329,6 +383,13 @@ class SortableTable extends React.Component {
     selectedProject: 'All Projects',
     bulkChangeMode: false,
     deleteUsingCheckBoxes: false,
+    statusChkBx: { None: true, 'In Progress': true, Paused: true, Completed: true, Attention: true, Deprecated: true},
+    searchId: [],
+    searchSummary: [],      // array of string
+    searchStatus: [],      // array of string
+    searchHasWords: [],
+    searchInputString: '',
+    searchTableDialogOpen: false,
   };
 
   constructor(props){
@@ -344,32 +405,92 @@ class SortableTable extends React.Component {
     this.mounted = false;
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
     if (this.props.selectedProject !== prevProps.selectedProject) {
-      this.formatData()
+      this.formatData();
       this.setState(
         {
           selected: [],
-          bulkChangeMode: false
+          bulkChangeMode: false,
         });
     }
-    if(this.props.requirements !== prevProps.requirements) {
-      this.formatData()
+    if(this.props.requirements !== prevProps.requirements ||
+      this.state.searchStatus !== prevState.searchStatus ||
+      this.state.searchId !== prevState.searchId ||
+      this.state.searchSummary !== prevState.searchSummary ||
+      this.state.searchHasWords !== prevState.searchHasWords) {
+        this.formatData()
     }
   }
 
   formatData() {
     if (!this.mounted) return;
-
     const { selectedProject, requirements } = this.props;
+    const { searchId, searchSummary, searchStatus, searchHasWords} = this.state;
     const filterOff = selectedProject == 'All Projects'
-    const data = requirements.filter(r => filterOff || r.doc.project == selectedProject)
-        .map(r => {
-          return createData(r.doc._id, r.doc._rev, r.doc.reqid, r.doc.fulltext, r.doc.project, r.doc.status, r.doc.semantics, r.doc.fulltext);
-        });
-      this.setState({
-        data,
-      })
+    const searchStatusLowerCase = searchStatus.map(status => status.toLowerCase());
+    const data = requirements.filter(r => {
+      const idFilter = searchId.length > 0 ? searchId.every(elt => r.doc.reqid.toLowerCase().includes(elt.toLowerCase())) : true;
+      const summaryFilter = searchSummary.length > 0 ? searchSummary.every(elt => r.doc.fulltext.toLowerCase().includes(elt.toLowerCase())): true;
+      const hasWordsFilter = searchHasWords.length > 0 ? searchHasWords.every(elt => r.doc.fulltext.toLowerCase().includes(elt.toLowerCase()) || r.doc.reqid.toLowerCase().includes(elt.toLowerCase())): true;
+      const statusFilter = searchStatusLowerCase.length ? r.doc.status ? searchStatusLowerCase.includes(r.doc.status.toLowerCase()) : searchStatusLowerCase.includes('none'): true;
+      return (filterOff || r.doc.project == selectedProject) && idFilter && summaryFilter && statusFilter && hasWordsFilter;
+    }).map(r => {
+      return createData(r.doc._id, r.doc._rev, r.doc.reqid, r.doc.fulltext, r.doc.project, r.doc.status, r.doc.semantics, r.doc.fulltext);
+    });
+    this.setState({
+      data,
+    });
+  }
+
+  setSearch = (idString, summaryString, statusChkBx, hasWordsString) => {
+    const searchId = idString.length ? idString.split(',').map(function(x){return x.trim()}) : [];
+    const searchSummary = summaryString.length ? summaryString.split(',').map(function(x){return x.trim()}) : [];
+    const searchHasWords = hasWordsString.length ? hasWordsString.split(',').map(function(x){return x.trim()}) : [];
+    const searchStatus = Object.keys(statusChkBx).filter(key => statusChkBx[key]);
+
+    // status string
+    let statusString = ' status:';
+    let excludeStatusString = ' -status:';
+    let numTrues = 0;
+    let numStatus = 0;
+    let numNotStatus = 0;
+
+    Object.keys(statusChkBx).forEach(statusType =>{
+      if (statusChkBx[statusType]===true){
+
+        statusString = (numStatus===0)?
+          statusString+statusType:statusString+','+statusType;
+        numTrues = numTrues + 1;
+        numStatus = numStatus +1;
+      }  else {
+        excludeStatusString=(numNotStatus===0)?
+          excludeStatusString+statusType:
+          excludeStatusString+','+statusType;
+        numNotStatus = numNotStatus + 1;
+      }    
+    });
+
+    if (numTrues===Object.keys(statusChkBx).length){
+      statusString = ''
+    } else {
+      statusString=(statusString.length<excludeStatusString.length)?
+      statusString:excludeStatusString;
+    }    
+    // status string
+
+    const searchInputString = (searchHasWords.length ? hasWordsString+' ' : '') + 
+      (searchId.length ? 'id:'+ idString.trim()+' ' : '') + 
+      (searchSummary.length ? 'summary:'+summaryString.trim()+' ' : '') + 
+      statusString; //(searchStatus.length ? 'status:'+ (searchStatus.length > 1 ? searchStatus.join(','): searchStatus[0]) : '') ;
+    this.setState({
+      searchId,
+      searchSummary,
+      searchStatus,
+      searchHasWords,
+      searchInputString,
+    })
+
   }
 
   handleEnableBulkChange = () => {
@@ -446,6 +567,18 @@ class SortableTable extends React.Component {
   handleDeleteDialogOpen = () => {
     this.setState({
       deleteDialogOpen: true
+    })
+  }
+
+  handleSearchTableDialogClose = () => {
+    this.setState({
+      searchTableDialogOpen: false,
+    })
+  }
+
+  handleSearchTableDialogOpen = () => {
+    this.setState({
+      searchTableDialogOpen: true
     })
   }
 
@@ -533,10 +666,96 @@ class SortableTable extends React.Component {
     }
   };
 
+  clearSearchInput = () => {
+    this.setState({ searchSummary: [],
+                    searchHasWords: [],
+                    searchId: [],
+                    searchInputString: '',
+                    statusChkBx: { None: true, 'In Progress': true, Paused: true, Completed: true, Attention: true, Deprecated: true},
+                  });
+  };
+
+  handleSearchInputChange = event => {
+    const {value} = event.target
+    this.setState({searchInputString: value})
+
+  }
+
+  // parsing seach string into search criteria
+  handleSearchKeyChange = event => {
+    const value = this.state.searchInputString
+    const keyWordsIndexes = [];
+    const indexOfId = value.toLowerCase().indexOf('id:');
+    const indexOfSummary = value.toLowerCase().indexOf('summary:');
+    let indexOfStatus = value.toLowerCase().indexOf('status:');
+    let mstatus = false;
+    if (value.toLowerCase().includes('-status:')){
+      indexOfStatus = indexOfStatus - 1;
+      mstatus = true;
+    }
+    let searchId = [];
+    let searchSummary = [];
+    let searchStatus = [];
+    keyWordsIndexes.push(indexOfId, indexOfSummary, indexOfStatus)
+    if(indexOfId > -1) {
+      let i = indexOfId + 3
+      let searchIdString = '';
+      while (i !== indexOfSummary && i !== indexOfStatus && i < value.length) {
+        searchIdString += value[i];
+        i++;
+      }
+      searchId = searchIdString.split(',').map(elt => elt.trim());
+    }
+    if(indexOfSummary > -1) {
+      let i = indexOfSummary + 8
+      let searchSummaryString = '';
+      while (i >= 0 && i !== indexOfId && i !== indexOfStatus && i < value.length) {
+        searchSummaryString += value[i];
+        i++;
+      }
+      searchSummary = searchSummaryString.split(',').map(elt => elt.trim());
+    }
+    if(indexOfStatus > -1) {
+      let i = mstatus ? indexOfStatus + 8 : indexOfStatus + 7;
+      let searchStatusString = '';
+      while (i >= 0 && i !== indexOfId && i !== indexOfSummary && i < value.length) {
+        searchStatusString += value[i];
+        i++;
+      }
+      if (mstatus) {
+        const excludeStatus = searchStatusString.split(',').map(elt => elt.trim().toLowerCase());
+        //let fullSearchArray = [{ None: true, 'In Progress': true, Paused: true, Completed: true, Attention: true, Deprecated: true},]
+        let searchArray = ['none','in progress','paused','completed','attention','deprecated'];
+        for (let j = 0; j < excludeStatus.length; j++) {
+          if (searchArray.includes(excludeStatus[j])){
+            searchArray = searchArray.filter(e => e !== excludeStatus[j]); 
+
+          }
+          searchStatus = searchArray;
+        }
+      } else {
+        searchStatus = searchStatusString.split(',').map(elt => elt.trim());
+      }
+    }
+    let hasWordsString = ''
+    if(indexOfId >= 0 || indexOfSummary >= 0 || indexOfStatus >= 0) {
+      const minFrom = [];
+      indexOfId > -1 && minFrom.push(indexOfId);
+      indexOfSummary > -1 && minFrom.push(indexOfSummary);
+      indexOfStatus > -1 && minFrom.push(indexOfStatus);
+      hasWordsString = value.substring(0, Math.min(...minFrom))
+    } else {
+      hasWordsString = value;
+    }
+    const searchHasWords = hasWordsString.trim().length ? hasWordsString.split(',').map(elt => elt.trim()) : [];
+    this.setState({searchId, searchStatus, searchSummary, searchHasWords})
+  }
+
   render() {
     const { classes, selectedProject, existingProjectNames } = this.props;
     const { data, order, orderBy, selected, rowsPerPage, page, bulkChangeMode,
-       snackBarDisplayInfo, selectionBulkChange, selectedRequirement, deleteUsingCheckBoxes } = this.state;
+       snackBarDisplayInfo, selectionBulkChange, selectedRequirement,
+       deleteUsingCheckBoxes, statusChkBx, searchHasWords, searchId, searchStatus, searchSummary,searchInputString } = this.state;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
     const title = 'Requirements: ' + selectedProject
     const selectionForDeletion = deleteUsingCheckBoxes ? selectionBulkChange : [selectedRequirement]
@@ -550,7 +769,12 @@ class SortableTable extends React.Component {
           numSelected={selected.length}
           enableBulkChange={bulkChangeMode}
           bulkChangeEnabler={this.handleEnableBulkChange}
-          deleteSelection={this.handleDeleteSelectedRequirements}/>
+          deleteSelection={this.handleDeleteSelectedRequirements}
+          searchInputString={searchInputString}
+          handleSearchKeyChange={this.handleSearchKeyChange}
+          handleSearchInputChange={this.handleSearchInputChange}
+          clearSearchInput={this.clearSearchInput}
+          handleSearchTableDialogOpen={this.handleSearchTableDialogOpen}/>
         <div className={classes.tableWrapper}>
           <Table className={classes.table} aria-labelledby="tableTitle" size="small">
             <SortableTableHead
@@ -665,7 +889,7 @@ class SortableTable extends React.Component {
                           </TableCell>
                           <TableCell>
                             <Tooltip title="Add Child Requirement">
-                              <IconButton id={"qa_tbl_ib_not_bulk_add_child_"+label} 
+                            <IconButton id={"qa_tbl_ib_not_bulk_add_child_"+label} 
                                 aria-label="Add Child Requirement"
                                 onClick={this.handleAddChildRequirement(n.reqid, n.project)}>
                                 <AddIcon />
@@ -721,6 +945,17 @@ class SortableTable extends React.Component {
         open={this.state.deleteDialogOpen}
         requirementsToBeDeleted={selectionForDeletion}
         handleDialogClose={this.handleDeleteDialogClose}
+      />
+      <SearchSortableTableDialog
+        open={this.state.searchTableDialogOpen}
+        handleSearchTableDialogOpen={this.handleSearchTableDialogOpen}
+        handleSearchTableDialogClose={this.handleSearchTableDialogClose}
+        handleSearchAction={this.setSearch}
+        searchHasWords={this.state.searchHasWords}
+        searchId={searchId}
+        searchStatus={searchStatus}
+        searchSummary={searchSummary}
+        searchHasWords={searchHasWords}
       />
       <Snackbar
         anchorOrigin={{
