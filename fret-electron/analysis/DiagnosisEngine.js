@@ -132,8 +132,7 @@ class DiagnosisEngine {
         checkOutput = realizabilityCheck.checkReal(filePath, '-json -timeout ' + this.timeout);
         // checkOutput = realizabilityCheck.checkRealizability(filePath, '-json -timeout ' + this.timeout);
         // realizabilityCheck.checkRealizability(filePath, '-json -timeout ' + this.timeout, function(checkOutput) {
-
-
+        
         var result = checkOutput.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];
         localMap.set(propertyList, result);
         if (result === "UNREALIZABLE" && minimal) {
@@ -145,16 +144,13 @@ class DiagnosisEngine {
       } else {
         // checkOutput = realizabilityCheck.checkRealizability(filePath, '-fixpoint -timeout ' + this.timeout);
         // realizabilityCheck.checkRealizability(filePath, '-fixpoint -timeout ' + this.timeout, function(checkOutput) {
-          checkOutput = realizabilityCheck.checkReal(filePath, '-fixpoint -timeout ' + this.timeout);
-        var result = checkOutput.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];
+        checkOutput = realizabilityCheck.checkReal(filePath, '-fixpoint -timeout ' + this.timeout);
+        var result = checkOutput.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];        
         localMap.set(propertyList, result);
         // })          
       }
     }
     this.engines = [];
-    // } catch (err) {
-    //   console.log(err);
-    // }
     return localMap;
   }
 
@@ -186,6 +182,15 @@ class DiagnosisEngine {
     }
     if (partitionMap.size === 0) {
       partitionMap = this.runEnginesAndGatherResults(false);
+      if (Array.from(partitionMap.values()).includes("UNKNOWN")) {
+        const unknownSets = []
+        for (let [key, val] of partitionMap) {
+          if (val === "UNKNOWN") {
+            unknownSets.push(key);
+          }
+        }
+        return "UNKNOWN - Requirements: " + unknownSets;
+      }
     }
     for (const [partKey, partValue] of partitionMap.entries()) {
       if(!this.realizableMap.has(partKey.join(''))) {
@@ -223,6 +228,15 @@ class DiagnosisEngine {
 
     if (complementsMap.size === 0) {
       complementsMap = this.runEnginesAndGatherResults(false);
+      if (Array.from(complementsMap.values()).includes("UNKNOWN")) {
+        const unknownSets = []
+        for (let [key, val] of complementsMap) {
+          if (val === "UNKNOWN") {
+            unknownSets.push(key);
+          }
+        }
+        return "UNKNOWN - Requirements: " + unknownSets;
+      }
     }
 
     for (const [complKey, complValue] of complementsMap.entries()) {
@@ -260,6 +274,9 @@ class DiagnosisEngine {
             minConflicts.push(unrealKey);
           } else {
             var tmpConflicts = this.deltaDebug(slicedContract, 2);
+            if (tmpConflicts.toString().startsWith("UNKNOWN")) {
+              return tmpConflicts;
+            }
             minConflicts = minConflicts.concat(tmpConflicts);
             this.optLog(tmpConflicts);
             this.addUniqueConflicts(tmpConflicts);
@@ -288,6 +305,9 @@ class DiagnosisEngine {
           minConflicts.push(unrealKey);
         } else {
           var tmpConflicts = this.deltaDebug(slicedContract, Math.max(n -1, 2));
+          if (tmpConflicts.toString().startsWith("UNKNOWN")) {
+            return tmpConflicts;
+          }
           minConflicts = minConflicts.concat(tmpConflicts);
           this.addUniqueConflicts(tmpConflicts);
         }
@@ -297,6 +317,9 @@ class DiagnosisEngine {
     if (minConflicts.length === 0 && n < properties.length) {
       // this.optLog('No minimal conflicts, but n < # of properties')
       var tmpConflicts = this.deltaDebug(contract, Math.min(properties.length, 2*n));
+      if (tmpConflicts.toString().startsWith("UNKNOWN")) {
+            return tmpConflicts;
+      }
       // this.optLog(tmpConflicts);
       minConflicts = minConflicts.concat(tmpConflicts);
       this.addUniqueConflicts(tmpConflicts);      
@@ -354,6 +377,9 @@ class DiagnosisEngine {
 
   labelRootNode() {
     var conflicts = this.deltaDebug(this.contract, 2);
+    if (conflicts.toString().startsWith("UNKNOWN")) {
+      return conflicts;
+    }
     if (conflicts.length !== 0) {
       this.root.setLabel(conflicts[0]);
       this.unlabeled = this.unlabeled.concat(this.root.children);
@@ -362,18 +388,27 @@ class DiagnosisEngine {
     } else {
       this.registerPartitionProcess(this.contract);
       var resMap = this.runEnginesAndGatherResults(false);
+      if (Array.from(resMap.values()).includes("UNKNOWN")) {
+        const unknownSets = []
+        for (let [key, val] of resMap) {
+          if (val === "UNKNOWN") {
+            unknownSets.push(key);
+          }
+        }
+        return "UNKNOWN - Requirements: " + unknownSets;        
+      }
       var propList = this.contract.properties.map(p => p.reqid); 
       var propID = propList.join('')
       for (const [resKey, resValue] of resMap.entries()){
         if (resKey.join('') === propID && resValue === "REALIZABLE") {
-          return;
+          return "DONE";
         }
       }      
       this.root.setLabel(propList);
       this.labeled.push(this.root);
       conflicts.push(propList);
       this.addUniqueConflicts(conflicts);
-      return;
+      return "DONE";
     }
   }
 
@@ -418,93 +453,125 @@ class DiagnosisEngine {
   }
 
   main(callback) {
-    this.labelRootNode();
-    while(this.unlabeled.length !== 0) {
-      var hsNode = this.reuseLabelorCloseNode(this.unlabeled[0]);
-      if (hsNode.getLabel().length === 0) {
-        var hittingSet = hsNode.getHittingSet();
-        if (!this.labelNode(hsNode)) {
-          var properties = this.contract.properties.map(p => p.reqid);
-          
-          var slicedContract = JSON.parse(JSON.stringify(this.contract));
-          slicedContract.properties = this.contract.properties.filter(x => !hittingSet.includes(x.reqid));
-          slicedContract.componentName = this.contract.componentName + '_' + properties.join('').replace(/-/g,'');        
-          
-          var propID = slicedContract.properties.map(p => p. reqid).join('');
-          if (this.realizableMap.has(propID)) {
-            if (this.realizableMap.get(propID) === "REALIZABLE") {
-              var label = ['done'];
-              hsNode.setLabel(label);
-              this.labeled.push(hsNode);
-              this.unlabeled.shift();
-              continue;
-            }
-          }
-          this.registerPartitionProcess(slicedContract);
-          var localMap = this.runEnginesAndGatherResults(false);
-          var result;
-          for (const [localKey, localValue] of localMap.entries()) {
-            if (localKey.join('') === propID) {
-              result = localValue;
-              break;
-            }
-          }
+    try {
+      
+      var rootResult = this.labelRootNode();
+      if (rootResult && rootResult.toString().startsWith("UNKNOWN")) {
+        return callback("Something went wrong during diagnosis.\n" + rootResult);
+      } else {
+        while(this.unlabeled.length !== 0) {
+          var hsNode = this.reuseLabelorCloseNode(this.unlabeled[0]);
+          if (hsNode.getLabel().length === 0) {
+            var hittingSet = hsNode.getHittingSet();
+            if (!this.labelNode(hsNode)) {
+              var properties = this.contract.properties.map(p => p.reqid);
+              
+              var slicedContract = JSON.parse(JSON.stringify(this.contract));
+              slicedContract.properties = this.contract.properties.filter(x => !hittingSet.includes(x.reqid));
+              slicedContract.componentName = this.contract.componentName + '_' + properties.join('').replace(/-/g,'');        
+              
+              var propID = slicedContract.properties.map(p => p. reqid).join('');
+              if (this.realizableMap.has(propID)) {
+                if (this.realizableMap.get(propID) === "REALIZABLE") {
+                  var label = ['done'];
+                  hsNode.setLabel(label);
+                  this.labeled.push(hsNode);
+                  this.unlabeled.shift();
+                  continue;
+                }
+              }
+              this.registerPartitionProcess(slicedContract);
+              var localMap = this.runEnginesAndGatherResults(false);
+              if (Array.from(localMap.values()).includes("UNKNOWN")) {
+                const unknownSets = []
+                for (let [key, val] of localMap) {
+                  if (val === "UNKNOWN") {
+                    unknownSets.push(key);
+                  }
+                }
+                return callback("Something went wrong during diagnosis. Requirements: " + unknownSets);                                
+              }            
+              var result;
+              for (const [localKey, localValue] of localMap.entries()) {
+                if (localKey.join('') === propID) {
+                  result = localValue;
+                  break;
+                }
+              }
 
-          if (result === "REALIZABLE" || result === "UNKNOWN") {
-            var label = ['done'];
-            hsNode.setLabel(label);
-            this.labeled.push(hsNode);
-            this.unlabeled.shift();
-            continue;
-          }
+              if (result === "REALIZABLE" || result === "UNKNOWN") {
+                var label = ['done'];
+                hsNode.setLabel(label);
+                this.labeled.push(hsNode);
+                this.unlabeled.shift();
+                continue;
+              }
 
-          var conflicts = this.deltaDebug(slicedContract, 2);
-          if (conflicts.length === 0) {
-            var label = ['done'];
-            hsNode.setLabel(label);
-            this.labeled.push(hsNode);
+              var conflicts = this.deltaDebug(slicedContract, 2);
+              if (conflicts.toString().startsWith("UNKNOWN")) {
+                return callback("Something went wrong during diagnosis. Requirements: " + slicedContract.properties.map(p => p.reqid));
+              } else {
+                if (conflicts.length === 0) {
+                  var label = ['done'];
+                  hsNode.setLabel(label);
+                  this.labeled.push(hsNode);
+                  this.unlabeled.shift();
+                } else {
+                  this.addUniqueConflicts(conflicts);
+                  this.labelNode(hsNode);
+                }
+              }
+            }
+          } else if (hsNode.getLabel()[0] === 'closed') {
             this.unlabeled.shift();
           } else {
-            this.addUniqueConflicts(conflicts);
-            this.labelNode(hsNode);
+            this.labeled.push(hsNode);
+            this.unlabeled.shift();
+            this.unlabeled = this.unlabeled.concat(hsNode.getChildren());
           }
         }
-      } else if (hsNode.getLabel()[0] === 'closed') {
-        this.unlabeled.shift();
+      }
+
+      // HS Tree print : Parent <-- Node --> List of children
+      // for (let i in this.labeled) {
+      //   if (this.labeled[i].getParent() !== null) {
+      //     this.optLog(JSON.stringify(this.labeled[i].getParent().getLabel()) + " <---- " + this.labeled[i].getParentEdge() +
+      //      " ---- " + JSON.stringify(this.labeled[i].getLabel()) + " ----> " + JSON.stringify(this.labeled[i].getChildren().map(c => c.getLabel())))
+      //   } else {
+      //     this.optLog("Root <---- " + JSON.stringify(this.labeled[i].getLabel()) + " ----> " + 
+      //       JSON.stringify(this.labeled[i].getChildren().map(c => c.getLabel())))
+      //   }
+      // }
+
+      if (this.minConflicts.length === 0) {
+        // return ["REALIZABLE", []];
+        return callback(null, ["REALIZABLE", []])
       } else {
-        this.labeled.push(hsNode);
-        this.unlabeled.shift();
-        this.unlabeled = this.unlabeled.concat(hsNode.getChildren());
+        for (const [conflKey, conflValue] of this.minConflicts.entries()) {
+          var confList = conflValue;
+          var slicedContract = JSON.parse(JSON.stringify(this.contract));
+          slicedContract.properties = this.contract.properties.filter(p => confList.includes(p.reqid));
+          slicedContract.componentName = this.contract.componentName + '_' + confList.join('').replace(/-/g,'');
+          this.registerPartitionProcess(slicedContract);
+        }
+        const results = this.runEnginesAndGatherResults(true);
+        if (Array.from(results.values()).includes("UNKNOWN")) {
+          const unknownSets = []
+          for (let [key, val] of results) {
+            if (val === "UNKNOWN") {
+              unknownSets.push(key);
+            }
+          }
+          return callback("Something went wrong during diagnosis.\nRequirements: " + unknownSets);
+        } else {
+        this.computeDiagnoses();
+        return callback(null, ["UNREALIZABLE", this.combineReports()])
+        // return ["UNREALIZABLE", this.combineReports()];
+        }
       }
-    }
-
-    // HS Tree print : Parent <-- Node --> List of children
-    // for (let i in this.labeled) {
-    //   if (this.labeled[i].getParent() !== null) {
-    //     this.optLog(JSON.stringify(this.labeled[i].getParent().getLabel()) + " <---- " + this.labeled[i].getParentEdge() +
-    //      " ---- " + JSON.stringify(this.labeled[i].getLabel()) + " ----> " + JSON.stringify(this.labeled[i].getChildren().map(c => c.getLabel())))
-    //   } else {
-    //     this.optLog("Root <---- " + JSON.stringify(this.labeled[i].getLabel()) + " ----> " + 
-    //       JSON.stringify(this.labeled[i].getChildren().map(c => c.getLabel())))
-    //   }
-    // }
-
-    if (this.minConflicts.length === 0) {
-      // return ["REALIZABLE", []];
-      callback(["REALIZABLE", []])
-    } else {
-      for (const [conflKey, conflValue] of this.minConflicts.entries()) {
-        var confList = conflValue;
-        var slicedContract = JSON.parse(JSON.stringify(this.contract));
-        slicedContract.properties = this.contract.properties.filter(p => confList.includes(p.reqid));
-        slicedContract.componentName = this.contract.componentName + '_' + confList.join('').replace(/-/g,'');
-        this.registerPartitionProcess(slicedContract);
-      }
-
-      this.runEnginesAndGatherResults(true);
-      this.computeDiagnoses();
-      callback(["UNREALIZABLE", this.combineReports()])
-      // return ["UNREALIZABLE", this.combineReports()];
+    } catch (error) {
+      this.optLog(error)
+      return callback(error);
     }
   }
 }

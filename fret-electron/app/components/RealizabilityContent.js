@@ -243,10 +243,13 @@ function determineResultIcon(result, time) {
 
 class ResultIcon extends React.Component {
   render() {
-    const {result, time} = this.props;
+    const {result, time, error} = this.props;
+    {/*<Tooltip title={(result === 'ERROR' ? ("The following error occured at the solver level:\n" + error) : result) +
+      (time !== undefined ? time : '')}>*/}
     return (
-    <Tooltip title={(result === 'ERROR' ? 'SOLVER ERROR' : result) +
-      (time !== undefined ? time : '')}>
+    
+    <Tooltip title={<span style={{ whiteSpace: 'pre-line' }}> {(result === 'ERROR' ? ("The following error(s) occured at the solver level:\n" + error) : result) +
+      (time !== undefined ? time : '')} </span>}>
       {result === 'REALIZABLE' ?
         <CheckCircleOutlineIcon style={{fontSize : '20px', verticalAlign : 'bottom', color : '#68BC00'}}/> :
         result === 'UNREALIZABLE' ?
@@ -603,6 +606,8 @@ class RealizabilityContent extends React.Component {
     check: '',
     monolithicStatus: {},
     compositionalStatus: {},
+    monolithicError : {},
+    compositionalError : {},
     time: {},
     diagnosisStatus: {},
     diagnosisReports: {},
@@ -663,13 +668,15 @@ class RealizabilityContent extends React.Component {
   }
 
   computeConnectedComponents(project, projectComponents) {
-    const {monolithicStatus, compositionalStatus, diagnosisStatus, diagnosisReports, connectedComponents} = this.state;
+    const {monolithicStatus, monolithicError, compositionalStatus, compositionalError, diagnosisStatus, diagnosisReports, connectedComponents} = this.state;
     const {getPropertyInfo, getDelayInfo, getContractInfo} = this.props;
     const self = this;
 
     projectComponents.forEach(component => {
       monolithicStatus[component.component_name] = 'UNCHECKED';
+      monolithicError[component.component_name] = '';    
       compositionalStatus[component.component_name] = 'UNCHECKED';
+      compositionalError[component.component_name] = {};
       diagnosisStatus[component.component_name] = '';
       diagnosisReports[component.component_name] = '';
       connectedComponents[component.component_name] = {};
@@ -806,7 +813,7 @@ class RealizabilityContent extends React.Component {
   };
 
   diagnoseSpec(event) {
-    const {diagnosisStatus, diagnosisReports, selected, connectedComponents, ccSelected, compositional, monolithic, timeout} = this.state;
+    const {diagnosisStatus, diagnosisReports, selected, connectedComponents, ccSelected, compositional, compositionalError, monolithic, monolithicStatus, monolithicError, timeout} = this.state;
     const {selectedProject, getPropertyInfo, getDelayInfo, getContractInfo} = this.props;
     const self = this;
 
@@ -847,29 +854,49 @@ class RealizabilityContent extends React.Component {
           ccContract.properties = ccProperties
 
           let engine = new DiagnosisEngine(ccContract, actualTimeout, 'realizability');
-          engine.main(function (result) {
-            connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'] = 'DIAGNOSED'
-            connectedComponents[selected.component_name][ccSelected]['diagnosisReport'] = result[1];
-            self.setState({ connectedComponents : connectedComponents});
+          engine.main(function (err, result) {
+            if (err) {              
+              connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'] = 'ERROR';
+              compositionalError[selected.component_name][ccSelected] = err.message;
+              self.setState({
+                connectedComponents : connectedComponents,
+                compositionalError : compositionalError
+              });
+            } else {
+              connectedComponents[selected.component_name][ccSelected]['diagnosisStatus'] = 'DIAGNOSED'
+              connectedComponents[selected.component_name][ccSelected]['diagnosisReport'] = result[1];
+              self.setState({ connectedComponents : connectedComponents});
 
-            //delete intermediate files under homeDir/Documents/fret-analysis if not in dev mode
-            if (process.env.NODE_ENV !== 'development') {
-              self.deleteAnalysisFiles();
+              //delete intermediate files under homeDir/Documents/fret-analysis if not in dev mode
+              if (process.env.NODE_ENV !== 'development') {
+                self.deleteAnalysisFiles();
+              }
             }
           });
         } else if (monolithic) {
           let engine = new DiagnosisEngine(contract, actualTimeout, 'realizability');
-          engine.main(function (result) {
-            diagnosisStatus[selected.component_name] = 'DIAGNOSED';
-            diagnosisReports[selected.component_name] = result[1];
-            self.setState({
-              diagnosisStatus : diagnosisStatus,
-              diagnosisReports : diagnosisReports
-            });
+          engine.main(function (err, result) {
+            if (err) {            
+              diagnosisStatus[selected.component_name] = 'ERROR';
+              monolithicStatus[selected.component_name] = 'ERROR';
+              monolithicError[selected.component_name] = err;
+              self.setState({
+                diagnosisStatus : diagnosisStatus,
+                monolithicStatus : monolithicStatus,
+                monolithicError : monolithicError
+              });
+            } else {
+              diagnosisStatus[selected.component_name] = 'DIAGNOSED';
+              diagnosisReports[selected.component_name] = result[1];
+              self.setState({
+                diagnosisStatus : diagnosisStatus,
+                diagnosisReports : diagnosisReports
+              });
 
-            //delete intermediate files under homeDir/Documents/fret-analysis if not in dev mode
-            if (process.env.NODE_ENV !== 'development') {
-              self.deleteAnalysisFiles();
+              //delete intermediate files under homeDir/Documents/fret-analysis if not in dev mode
+              if (process.env.NODE_ENV !== 'development') {
+                self.deleteAnalysisFiles();
+              }              
             }
           });
         }
@@ -960,6 +987,7 @@ class RealizabilityContent extends React.Component {
                 if (err) {
                   self.setState(prevState => {
                     prevState.monolithicStatus[tC.component_name] = 'ERROR';
+                    prevState.monolithicError[tC.component_name] = err.message;
                     return(prevState);
                   });
                 } else {
@@ -996,7 +1024,8 @@ class RealizabilityContent extends React.Component {
                 if (err) {
                   connectedComponents[tC.component_name][cc].result = 'ERROR';
                   self.setState(prevState => {
-                    prevState.connectedComponents = connectedComponents
+                    prevState.connectedComponents = connectedComponents;
+                    prevState.compositionalError[tC.component_name][cc] = err.message;
                     return(prevState);
                   })
                   ccResults.push('ERROR');
@@ -1069,7 +1098,7 @@ class RealizabilityContent extends React.Component {
 
   render() {
     const {classes, selectedProject, components, completedComponents} = this.props;
-    const {connectedComponents, order, orderBy, monolithicStatus, compositionalStatus, time, diagnosisStatus, diagnosisReports, selected, ccSelected, monolithic, compositional, dependenciesExist, missingDependencies} = this.state;
+    const {connectedComponents, order, orderBy, monolithicStatus, monolithicError, compositionalStatus, compositionalError, time, diagnosisStatus, diagnosisReports, selected, ccSelected, monolithic, compositional, dependenciesExist, missingDependencies} = this.state;
     let grid;
     var tabs = [];
     for (var cc in connectedComponents[selected.component_name]) {
@@ -1078,7 +1107,8 @@ class RealizabilityContent extends React.Component {
           {cc}
           &nbsp;
           <ResultIcon key={cc} result={connectedComponents[selected.component_name][cc]['result']}
-          time={connectedComponents[selected.component_name][cc]['time'] !== undefined ? ' - '+connectedComponents[selected.component_name][cc]['time'] : ''}/>
+          time={connectedComponents[selected.component_name][cc]['time'] !== undefined ? ' - '+connectedComponents[selected.component_name][cc]['time'] : ''}
+          error={compositionalError[selected.component_name][cc]}/>
         </div>
       }/>)
     }
@@ -1115,7 +1145,8 @@ class RealizabilityContent extends React.Component {
                             <div key={n.component_name} style={{display : 'flex', alignItems : 'center'}}>
                               {n.component_name}
                               &nbsp;
-                              <ResultIcon key={n.component_name} result={status[n.component_name] !== undefined ? status[n.component_name] : ''} time={(monolithic && time[n.component_name] !== undefined) ? ' - ' + time[n.component_name] : ''}/>
+                              <ResultIcon key={n.component_name} result={status[n.component_name] !== undefined ? status[n.component_name] : ''} time={(monolithic && time[n.component_name] !== undefined) ? ' - ' + time[n.component_name] : ''}
+                                error={monolithicError[n.component_name]}/>
                             </div>
                           </MenuItem>
                           </span>

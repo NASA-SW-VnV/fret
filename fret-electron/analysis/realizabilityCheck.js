@@ -48,10 +48,10 @@ export function checkRealizability(filePath, options, callback) {
   exec(jkindCommand, function (err, stdout, stderr) {
     if (err) {
       callback(err);
-      console.log(error.status)
-      console.log(error.message)
-      console.log(error.stderr.toString())
-      console.log(error.stdout.toString())
+      console.log(err.status)
+      console.log(err.message)
+      console.log(stderr.toString())
+      console.log(stdout.toString())
     } else {
       callback(null, stdout);
     }
@@ -64,13 +64,11 @@ export function checkReal(filePath, options) {
   var output
   try {
     output = execSync(jkindCommand).toString();
+    return output;
   } catch (error) {    
-        console.log(error.status)
-    console.log(error.message)
-    console.log(error.stderr.toString())
-    console.log(error.stdout.toString())
+    return error.stdout.toString();
   }
-  return output;
+  
 }
 
 // console.log(checkRealizability('tmp/liquid_mixer.lus', ''));
