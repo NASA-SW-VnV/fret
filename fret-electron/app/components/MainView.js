@@ -284,7 +284,7 @@ class MainView extends React.Component {
     const self = this;
     var homeDir = app.getPath('home');
     const { listOfProjects } = this.state;
-    var filepaths = dialog.showOpenDialog({
+    var filepaths = dialog.showOpenDialogSync({
       defaultPath : homeDir,
       title : 'Import Requirements',
       buttonLabel : 'Import',

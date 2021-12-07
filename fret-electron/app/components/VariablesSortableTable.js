@@ -461,7 +461,7 @@ class VariablesSortableTable extends React.Component {
    var homeDir = app.getPath('home');
    const self = this;
    const {selectedProject, selectedComponent} = this.props;
-   var filepaths = dialog.showOpenDialog({
+   var filepaths = dialog.showOpenDialogSync({
      defaultPath : homeDir,
      title : 'Import Simulink Model Information',
      buttonLabel : 'Import',
