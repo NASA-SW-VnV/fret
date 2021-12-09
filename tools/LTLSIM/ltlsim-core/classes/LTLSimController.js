@@ -5,11 +5,11 @@
 // of the National Aeronautics and Space Administration. All Rights Reserved.
 //
 // Disclaimers
-//
+// 
 // No Warranty: THE SUBJECT SOFTWARE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY OF
 // ANY KIND, EITHER EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED
-// TO, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL CONFORM TO SPECIFICATIONS,
-// ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE,
+// TO, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL CONFORM TO SPECIFICATIONS, 
+// ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, 
 // OR FREEDOM FROM INFRINGEMENT, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL BE
 // ERROR FREE, OR ANY WARRANTY THAT DOCUMENTATION, IF PROVIDED, WILL CONFORM TO
 // THE SUBJECT SOFTWARE. THIS AGREEMENT DOES NOT, IN ANY MANNER, CONSTITUTE AN
@@ -18,7 +18,7 @@
 // RESULTING FROM USE OF THE SUBJECT SOFTWARE.  FURTHER, GOVERNMENT AGENCY
 // DISCLAIMS ALL WARRANTIES AND LIABILITIES REGARDING THIRD-PARTY SOFTWARE, IF
 // PRESENT IN THE ORIGINAL SOFTWARE, AND DISTRIBUTES IT ''AS IS.''
-//
+// 
 // Waiver and Indemnity:  RECIPIENT AGREES TO WAIVE ANY AND ALL CLAIMS AGAINST
 // THE UNITED STATES GOVERNMENT, ITS CONTRACTORS AND SUBCONTRACTORS, AS WELL AS
 // ANY PRIOR RECIPIENT.  IF RECIPIENT'S USE OF THE SUBJECT SOFTWARE RESULTS IN
@@ -43,10 +43,12 @@ module.exports = class LTLSimController {
         return new LTLSimModel(traceLength);
     }
 
-    static addAtomic(model, id) {
+    static addAtomic(model, id, atType, canChange) {
         if (model.atomics.keys.indexOf(id) === -1) {
             model.atomics.keys.push(id);
             model.atomics.values[id] = new Atomic(id, model.traceLength);
+            model.atomics.type[id] = atType;
+            model.atomics.canChange[id] = canChange;
             return true;
         }
         return false;
@@ -60,7 +62,10 @@ module.exports = class LTLSimController {
             // Add this formula to the respective atomics and add missing atomics
             model.formulas.values[id].atomics.forEach((a) => {
                 if (model.atomics.keys.indexOf(a) === -1) {
-                    LTLSimController.addAtomic(model, a);
+			// TODO: JSC determine Type and canchange
+              	    var atomicType = "category";
+		    var canChange = true;
+                    LTLSimController.addAtomic(model, a, atomicType, canChange);
                 } 
                 model.atomics.values[a].formulas.push(id);
             }) 
@@ -92,10 +97,20 @@ module.exports = class LTLSimController {
 		 });
 	    var mytraces = mycsv.slice(1);
 	    var myatomic_names = mycsv.slice(0,1);
-	    var target_id;
+//NOT USED	    var target_id;
             var id=0;
             myatomic_names[0].forEach((a) => {
 
+			//
+			// if name starts with "*"
+			// it is a dependent variable (canChange=false)
+			//
+		var canChange = true
+		if (a[0] === "*"){
+			a = a.substring(1)
+			canChange = false
+			}
+		
 			//
 			// if atomic not yet defined, define it
 			//
@@ -104,14 +119,31 @@ module.exports = class LTLSimController {
             		model.atomics.values[a] = 
 				new Atomic(a, model.traceLength);
 			}
-       		target_id = model.atomics.keys.indexOf(a);
+//NOT USED	target_id = model.atomics.keys.indexOf(a);
+
+		console.log("addTrace: a=" + a)
                 
 	    	var i=0;
+		var isBoolean = true;
             	while ((i < model.traceLength) && (i <mytraces.length-1)){
-			var val = parseInt(mytraces[i][id],10);
+			var val = parseFloat(mytraces[i][id],10);
+			console.log("value="+val)
+			if ((val != 0.0) && (val != 1.0)){
+				console.log("Boolean=false")
+				isBoolean = false;
+				}
 			model.atomics.values[a].trace[i] = val;
 			i = i+1;
 			}
+		if (isBoolean){
+			model.atomics.type[a]="category";
+			}
+		else {
+			model.atomics.type[a]="number";
+			}
+
+		model.atomics.canChange[a]=canChange;
+			
 		id = id+1;
             }) 
         return true;
@@ -352,7 +384,10 @@ console.log("LTLSimController::setFormulaExpression: atomic keys: "+model.atomic
             /* Add this formula to its atomics, if not already present and add missing atomics */
             formula.atomics.forEach((a) => {
                 if (model.atomics.keys.indexOf(a) === -1) {
-                    LTLSimController.addAtomic(model, a);
+			// TODO: JSC determine Type and canchange
+              	    var atomicType = "category";
+		    var canChange = true;
+                    LTLSimController.addAtomic(model, a, atomicType, canChange);
                 }
                 if (model.atomics.values[a].formulas.indexOf(id) === -1) {
                     model.atomics.values[a].formulas.push(id);
@@ -478,6 +513,14 @@ console.log("LTLSimController::setFormulaExpression: atomic keys: "+model.atomic
 
     static getAtomic(model, id) {
         return (model.atomics.keys.indexOf(id) !== -1) ? model.atomics.values[id] : undefined;
+    }
+
+    static getAtomic_type(model, id) {
+        return (model.atomics.keys.indexOf(id) !== -1) ? model.atomics.type[id] : undefined;
+    }
+
+    static getAtomic_canChange(model, id) {
+        return (model.atomics.keys.indexOf(id) !== -1) ? model.atomics.canChange[id] : undefined;
     }
 
     static getAtomicKeys(model) {

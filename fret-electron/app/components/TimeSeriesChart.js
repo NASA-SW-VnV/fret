@@ -30,7 +30,7 @@
 // ANY SUCH MATTER SHALL BE THE IMMEDIATE, UNILATERAL TERMINATION OF THIS
 // AGREEMENT.
 // *****************************************************************************
-import React, { Component } from 'react';
+import React, { Component, FunctionComponent } from 'react';
 import PropTypes from 'prop-types';
 import {  withStyles, withTheme } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -46,6 +46,7 @@ import { ResponsiveContainer,
          YAxis,
          ReferenceDot,
          ReferenceLine,
+	 LabelList,
          Tooltip,
          Label } from 'recharts';
 
@@ -191,12 +192,20 @@ class TimeSeriesChart extends Component {
 
     handleMouseUp(event) {
         if (event) {
-            const { dataKey } = this.props;
+            const { dataKey, chart_type } = this.props;
             const dataIndex = event.activeTooltipIndex;
             let data  = this.state.data.slice();
             this.setState((prevState) => {
                 if (!this.state.dragWasActive) {
-                    data[dataIndex] = (data[dataIndex]) ? 0 : 1;
+		    if (chart_type == "category"){
+	                    data[dataIndex] = (data[dataIndex]) ? 0 : 1;
+			    }
+		    else {
+                    	data[dataIndex] = data[dataIndex] + 0.1
+		    	if (data[dataIndex] > 1.0){
+			 	data[dataIndex] = 0.0
+				}
+			}
                 }
                 return {
                     data
@@ -257,10 +266,39 @@ class TimeSeriesChart extends Component {
 
     }
 
+    handleMouseOverDot(event) {
+	console.log("over-dot")
+	console.log(event)
+	console.log("over-dot1")
+        if (event) {
+	    console.log("over-dot + event")
+            const { dataKey } = this.props;
+            const dataIndex = event.activeTooltipIndex;
+            let data  = this.state.data.slice();
+	    console.log("OVER: "+ dataIndex)
+        }
+    }
+
     render() {
-        const { classes, theme, canChange, chartState, highlight, expression, selected } = this.props;
+        const { chart_type, classes, theme, canChange, chartState, highlight, expression, selected } = this.props;
         const primaryColor = theme.palette.primary.main;
         const secondaryColor = theme.palette.secondary.main;
+
+	const JSCEmptyTooltip = ({ active, payload, label }) => {
+	if (active) {
+	   if (this.props.chart_type == "category"){
+		return null;
+		}
+	   else {
+		return (
+			<div className="custom-tooltip">
+				<p className="label">{payload[0].value}</p>
+			</div>
+		);
+		}
+	    }
+	return null;
+        };
 
         let fill = "none";
         switch (chartState) {
@@ -282,8 +320,22 @@ class TimeSeriesChart extends Component {
             default:
                 fill = "none";
         }
+		//
+		// fill the background of the dependent
+		// Boolean variables
+		//
+	if (fill === "none" && chart_type === "category" && !canChange){
+                fill = "lightblue";
+		}
 
-        let data = (this.props.canChange) ?
+        var data = []
+        var dataKey=""
+	var lineType="step"
+	if (chart_type === "category"){
+		//
+		// Boolean variables
+		//
+            data = (this.props.canChange) ?
                         this.state.data.map((t, i) => (
                             {
                                 [this.props.dataKey]: (t ? 'TRUE' : 'FALSE'),
@@ -300,6 +352,47 @@ class TimeSeriesChart extends Component {
                                 'TF': ((i === 0) ? 'FALSE' : 'TRUE')
                             }
                         ));
+	    dataKey="TF"
+	    }
+	else {
+            data = 
+                        this.state.data.map((t, i) => (
+                            {
+                                [this.props.dataKey]: t,
+                                'false': t,
+                                'true': t,
+                                'VAL': t 
+                            }
+                        ))
+	    dataKey="VAL"
+	    lineType="linear"
+	     }
+//	console.log(data)
+//                    <YAxis
+//                        type="category"
+//                        minTickGap={0}
+//                        dataKey="VAL">
+//                        <Label value={name}/>
+//                    </YAxis>
+//-------------------customizedlabel----------------
+const CustomizedLabel: FunctionComponent<any> = (props: any) => {
+  const { x, y, stroke, value, chart_type } = props;
+
+  console.log("CUST-LABEL=" + chart_type)
+
+  if (chart_type == "category"){
+    return null;
+    }
+  else {
+    return (
+    <text x={x} y={y} dy={-4} fill={stroke} fontSize={10} textAnchor="middle">
+      {value}
+    </text>
+    );
+    }
+};
+
+//-------------------customizedlabel----------------
 
         let longName = this.props.name.length > maxNameLength;
         let name = (longName) ? this.props.name.slice(0, maxNameLength-1) + "..." : this.props.name;
@@ -328,8 +421,8 @@ class TimeSeriesChart extends Component {
                                     stroke: primaryColor,
                                     strokeWidth: 4,
                                     strokeOpacity: 0.25,
-                                    fill: "none" }}
-                        content={<EmptyTooltip />}
+                                    fill: "none" }} 
+                        content={<JSCEmptyTooltip />}
                     />
                     <CartesianGrid strokeDasharray="3 3" fill={fill} fillOpacity="0.4"/>
                     <XAxis
@@ -340,16 +433,18 @@ class TimeSeriesChart extends Component {
                     />
                     <YAxis
                         id={"qa_ltlSim_yaxis_"+this.props.name.slice(0, 4)}
-                        type="category"
+			type={chart_type}
+			domain={[0,1]}
                         minTickGap={0}
-                        dataKey="TF">
+                        dataKey={dataKey}
+                        >
                         <Label value={name}/>
                     </YAxis>
                     <Line
                         name={this.props.name}
                         id={"qa_ltlSim_ln_1_"+this.props.name.slice(0, 4)}
                         dataKey={this.props.dataKey}
-                        type="step"
+                        type={lineType}
                         stroke={primaryColor}
                         strokeWidth={this.state.hover || selected ?
                                         this.props.strokeWidth*2 :
@@ -357,13 +452,14 @@ class TimeSeriesChart extends Component {
                                     }
                         isAnimationActive={false}
                         onMouseEnter={this.handleMouseEnterLine}
-                        onMouseLeave={this.handleMouseLeaveLine}
-                    />
-                    <Line
+                        onMouseLeave={this.handleMouseLeaveLine} >
+			<LabelList content={<CustomizedLabel chart_type={chart_type} />} />
+		    </Line>
+                    <Line 
                         name={this.props.name}
                         id={"qa_ltlSim_ln_2_"+this.props.name.slice(0, 4)}
                         dataKey="false"
-                        type="step"
+                        type={lineType}
                         stroke={primaryColor}
                         strokeWidth={0}
                         dot={{
@@ -380,7 +476,7 @@ class TimeSeriesChart extends Component {
                         name={this.props.name}
                         id={"qa_ltlSim_ln_3_"+this.props.name.slice(0, 4)}
                         dataKey="true"
-                        type="step"
+                        type={lineType}
                         stroke={primaryColor}
                         strokeWidth={0}
                         dot={{
@@ -428,6 +524,7 @@ TimeSeriesChart.propTypes = {
     onMouseLeave: PropTypes.func,
     onChange: PropTypes.func,
     chartState: PropTypes.number,
+    chart_type: PropTypes.string,
     selected: PropTypes.bool
 }
 

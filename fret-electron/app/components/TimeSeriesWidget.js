@@ -55,16 +55,18 @@ class TimeSeriesWidget extends Component {
         this.handleTraceDialogOpen= this.handleTraceDialogOpen.bind(this);
     }
 
-    atomic2chart(key, atomic, fkey) {
+    atomic2chart(key, atomic, fkey, chart_type, canChange) {
+	console.log("atomic2chart: " + key + " " + chart_type + " " + canChange)
         return ( (atomic === undefined) ? null :
                     <TimeSeriesChart
+			chart_type={chart_type}
                         key={'chart-atomic-' + key + ((fkey) ? '-'+fkey : '')}
                         id = {"qa_timeSeries_atomic_"+key}
                         data={atomic.trace}
                         name={key}
                         dataKey={key}
                         syncId={this.props.syncId}
-                        canChange={true}
+                        canChange={canChange}
                         onChange={this.props.onChange}
                         onClick={this.props.onAtomicsChartClick}
                     />
@@ -74,10 +76,11 @@ class TimeSeriesWidget extends Component {
     formula2chart(key, formula) {
         return ( (formula === undefined) ? null :
                     <TimeSeriesChart
+			chart_type="category"
                         key={'chart-formula-'+key}
                         id = {"qa_timeSeries_formula_"+key}
                         data={formula.trace}
-                        name={formula.label ? formula.label : key}
+                        name={key}
                         dataKey={key}
                         syncId={this.props.syncId}
                         canChange={false}
@@ -112,7 +115,11 @@ class TimeSeriesWidget extends Component {
 
         const atomicsCharts = this.props.displayAtomicsWithFormulas ? null :
         visibleAtomics.map((akey) => (
-            this.atomic2chart(akey, LTLSimController.getAtomic(model, akey))
+            this.atomic2chart(akey, LTLSimController.getAtomic(model, akey),
+		null,
+            	LTLSimController.getAtomic_type(model, akey),
+            	LTLSimController.getAtomic_canChange(model, akey)
+		)
         ));
 
         const formulasCharts = visibleFormulas
@@ -121,7 +128,12 @@ class TimeSeriesWidget extends Component {
                     .concat( this.props.displayAtomicsWithFormulas ?
                         LTLSimController.getFormula(model, fkey).atomics
                             .map((akey) => (
-                                this.atomic2chart(akey, LTLSimController.getAtomic(model, akey), fkey)
+                                this.atomic2chart(akey,
+				   LTLSimController.getAtomic(model, akey),
+				   fkey,
+            			   LTLSimController.getAtomic_type(model, akey),
+            			   LTLSimController.getAtomic_canChange(model, akey)
+				   )
                             )) : []
                     )
                     .concat( this.props.displaySubformulas ?
