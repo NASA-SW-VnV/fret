@@ -285,7 +285,7 @@ class MainView extends React.Component {
 
   handleExport = () => {
     var homeDir = app.getPath('home');
-    var filepath = dialog.showSaveDialog(
+    var filepath = dialog.showSaveDialogSync(
       {
         defaultPath : homeDir,
         title : 'Export Requirements',

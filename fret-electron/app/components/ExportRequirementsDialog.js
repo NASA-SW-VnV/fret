@@ -92,7 +92,7 @@ class ExportRequirementsDialog extends React.Component {
     const {project} = this.state;
     const filterOff = project == "All Projects";
     var homeDir = app.getPath('home');
-    var filepath = dialog.showSaveDialog(
+    var filepath = dialog.showSaveDialogSync(
       {
         defaultPath : homeDir,
         title : 'Export Requirements',

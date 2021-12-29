@@ -202,7 +202,7 @@ class ComponentSummary extends React.Component {
     const {component, selectedProject, language, getPropertyInfo, getDelayInfo, getContractInfo} = this.props;
     const homeDir = app.getPath('home');
     const self = this;
-    var filepath = dialog.showSaveDialog({
+    var filepath = dialog.showSaveDialogSync({
           defaultPath : homeDir,
           title : 'Export specification',
           buttonLabel : 'Export',
