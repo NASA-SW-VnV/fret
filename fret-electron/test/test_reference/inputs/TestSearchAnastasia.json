@@ -1,0 +1,551 @@
+[
+    {
+        "reqid": "AP-002SP",
+        "parent_reqid": "",
+        "project": "SemanticsPaper",
+        "rationale": "",
+        "fulltext": "In roll_hold mode, Autopilot shall always satisfy autopilot_engaged & no_other_lateral_mode",
+        "semantics": {
+            "scope": {
+                "type": "in"
+            },
+            "condition": "null",
+            "timing": "always",
+            "response": "satisfaction",
+            "variables": {
+                "regular": [
+                    "autopilot_engaged",
+                    "no_other_lateral_mode"
+                ],
+                "modes": [
+                    "roll_hold"
+                ]
+            },
+            "scope_mode": "roll_hold",
+            "scopeTextRange": [
+                0,
+                17
+            ],
+            "component_name": "Autopilot",
+            "componentTextRange": [
+                19,
+                27
+            ],
+            "timingTextRange": [
+                35,
+                40
+            ],
+            "post_condition": "(autopilot_engaged & no_other_lateral_mode)",
+            "responseTextRange": [
+                42,
+                90
+            ],
+            "ft": "(G ((!Fin_<b><i>roll_hold</i></b>) | (Fin_<b><i>roll_hold</i></b> & (X ((F (Lin_<b><i>roll_hold</i></b> | LAST)) -> ((Lin_<b><i>roll_hold</i></b> | LAST) V <b><i>(autopilot_engaged & no_other_lateral_mode)</i></b>)))))) & (<b><i>roll_hold</i></b> -> ((F (Lin_<b><i>roll_hold</i></b> | LAST)) -> ((Lin_<b><i>roll_hold</i></b> | LAST) V <b><i>(autopilot_engaged & no_other_lateral_mode)</i></b>)))",
+            "pt": "(H ((Lin_<b><i>roll_hold</i></b> & (!FTP)) -> (Y (<b><i>(autopilot_engaged & no_other_lateral_mode)</i></b> S (<b><i>(autopilot_engaged & no_other_lateral_mode)</i></b> & Fin_<b><i>roll_hold</i></b>))))) & (((!Lin_<b><i>roll_hold</i></b>) S ((!Lin_<b><i>roll_hold</i></b>) & Fin_<b><i>roll_hold</i></b>)) -> (<b><i>(autopilot_engaged & no_other_lateral_mode)</i></b> S (<b><i>(autopilot_engaged & no_other_lateral_mode)</i></b> & Fin_<b><i>roll_hold</i></b>)))",
+            "ftExpanded": "(G ((!((! <b><i>roll_hold</i></b>) & X <b><i>roll_hold</i></b>)) | (((! <b><i>roll_hold</i></b>) & X <b><i>roll_hold</i></b>) & (X ((F ((<b><i>roll_hold</i></b> & X (! <b><i>roll_hold</i></b>)) | LAST)) -> (((<b><i>roll_hold</i></b> & X (! <b><i>roll_hold</i></b>)) | LAST) V <b><i>(autopilot_engaged & no_other_lateral_mode)</i></b>)))))) & (<b><i>roll_hold</i></b> -> ((F ((<b><i>roll_hold</i></b> & X (! <b><i>roll_hold</i></b>)) | LAST)) -> (((<b><i>roll_hold</i></b> & X (! <b><i>roll_hold</i></b>)) | LAST) V <b><i>(autopilot_engaged & no_other_lateral_mode)</i></b>)))",
+            "ptExpanded": "(H ((((! <b><i>roll_hold</i></b>) & (Y <b><i>roll_hold</i></b>)) & (!(! Y TRUE))) -> (Y (<b><i>(autopilot_engaged & no_other_lateral_mode)</i></b> S (<b><i>(autopilot_engaged & no_other_lateral_mode)</i></b> & (<b><i>roll_hold</i></b> & ((! Y TRUE) | (Y ! <b><i>roll_hold</i></b>)))))))) & (((!((! <b><i>roll_hold</i></b>) & (Y <b><i>roll_hold</i></b>))) S ((!((! <b><i>roll_hold</i></b>) & (Y <b><i>roll_hold</i></b>))) & (<b><i>roll_hold</i></b> & ((! Y TRUE) | (Y ! <b><i>roll_hold</i></b>))))) -> (<b><i>(autopilot_engaged & no_other_lateral_mode)</i></b> S (<b><i>(autopilot_engaged & no_other_lateral_mode)</i></b> & (<b><i>roll_hold</i></b> & ((! Y TRUE) | (Y ! <b><i>roll_hold</i></b>))))))",
+            "component": "<b><i>Autopilot</i></b>",
+            "CoCoSpecCode": "(H(((( not roll_hold) and (pre ( roll_hold ))) and ( not FTP())) => (pre (S( ((autopilot_engaged and no_other_lateral_mode) and (roll_hold and (FTP() or (pre (  not roll_hold ))))), (autopilot_engaged and no_other_lateral_mode) ))))) and ((S( (( not (( not roll_hold) and (pre ( roll_hold )))) and (roll_hold and (FTP() or (pre (  not roll_hold ))))), ( not (( not roll_hold) and (pre ( roll_hold )))) )) => (S( ((autopilot_engaged and no_other_lateral_mode) and (roll_hold and (FTP() or (pre (  not roll_hold ))))), (autopilot_engaged and no_other_lateral_mode) )))",
+            "diagramVariables": "M = <b><i>roll_hold</i></b>, Response = <b><i>(autopilot_engaged & no_other_lateral_mode)</i></b>.",
+            "description": "Always, the component \"<b><i>Autopilot</i></b>\" shall satisfy <b><i>(autopilot_engaged & no_other_lateral_mode)</i></b>. This is only enforced when \"<b><i>Autopilot</i></b>\" is in mode <b><i>roll_hold</i></b>.",
+            "diagram": "_media/user-interface/examples/svgDiagrams/in_null_always_satisfaction.svg"
+        },
+        "_id": "28488430-691a-11ec-9460-7d2c3af37271"
+    },
+    {
+        "reqid": "NN-004SP",
+        "parent_reqid": "",
+        "project": "SemanticsPaper",
+        "rationale": "",
+        "fulltext": "NeuralNetwork shall for 200 sec satisfy (x = xt & y = yt) => abs_error(zt - z) <= 0.01",
+        "semantics": {
+            "scope": {
+                "type": "null"
+            },
+            "condition": "null",
+            "timing": "for",
+            "response": "satisfaction",
+            "variables": {
+                "regular": [
+                    "x",
+                    "xt",
+                    "y",
+                    "yt",
+                    "abs_error",
+                    "zt",
+                    "z"
+                ],
+                "modes": []
+            },
+            "component_name": "NeuralNetwork",
+            "componentTextRange": [
+                0,
+                12
+            ],
+            "duration": "200 sec",
+            "timingTextRange": [
+                20,
+                30
+            ],
+            "post_condition": "(( x = xt & y = yt ) => abs_error ( zt - z ) <= 0.01)",
+            "responseTextRange": [
+                32,
+                85
+            ],
+            "ft": "(G[<=<b><i>200 sec</i></b>] <b><i>(( x = xt & y = yt ) => abs_error ( zt - z ) <= 0.01)</i></b>) | (<b><i>(( x = xt & y = yt ) => abs_error ( zt - z ) <= 0.01)</i></b> U (<b><i>(( x = xt & y = yt ) => abs_error ( zt - z ) <= 0.01)</i></b> & (LAST | LAST)))",
+            "pt": "((O[<=<b><i>200 sec</i></b>] FTP) -> <b><i>(( x = xt & y = yt ) => abs_error ( zt - z ) <= 0.01)</i></b>) S (((O[<=<b><i>200 sec</i></b>] FTP) -> <b><i>(( x = xt & y = yt ) => abs_error ( zt - z ) <= 0.01)</i></b>) & FTP)",
+            "ftExpanded": "(G[<=<b><i>200 sec</i></b>] <b><i>(( x = xt & y = yt ) => abs_error ( zt - z ) <= 0.01)</i></b>) | (<b><i>(( x = xt & y = yt ) => abs_error ( zt - z ) <= 0.01)</i></b> U (<b><i>(( x = xt & y = yt ) => abs_error ( zt - z ) <= 0.01)</i></b> & (LAST | LAST)))",
+            "ptExpanded": "((O[<=<b><i>200 sec</i></b>] (! Y TRUE)) -> <b><i>(( x = xt & y = yt ) => abs_error ( zt - z ) <= 0.01)</i></b>) S (((O[<=<b><i>200 sec</i></b>] (! Y TRUE)) -> <b><i>(( x = xt & y = yt ) => abs_error ( zt - z ) <= 0.01)</i></b>) & (! Y TRUE))",
+            "component": "<b><i>NeuralNetwork</i></b>",
+            "CoCoSpecCode": "S( (((OTlore(200 sec, FTP() )) => (( x = xt and y = yt ) => abs_error ( zt - z ) <= 0.01)) and FTP()), ((OTlore(200 sec, FTP() )) => (( x = xt and y = yt ) => abs_error ( zt - z ) <= 0.01)) )",
+            "diagramVariables": " n = <b><i>200 sec</i></b>, Response = <b><i>(( x = xt & y = yt ) => abs_error ( zt - z ) <= 0.01)</i></b>.",
+            "description": "TIME, the component \"<b><i>NeuralNetwork</i></b>\" shall satisfy <b><i>(( x = xt & y = yt ) => abs_error ( zt - z ) <= 0.01)</i></b>.",
+            "diagram": "Undefined svg."
+        },
+        "_id": "2848ab40-691a-11ec-9460-7d2c3af37271"
+    },
+    {
+        "reqid": "AP-004SP",
+        "parent_reqid": "",
+        "project": "SemanticsPaper",
+        "rationale": "",
+        "fulltext": "When in roll_hold mode when steady_state Autopilot shall always satisfy abs(roll_err) <= 1.0",
+        "semantics": {
+            "scope": {
+                "type": "in"
+            },
+            "condition": "regular",
+            "timing": "always",
+            "response": "satisfaction",
+            "variables": {
+                "regular": [
+                    "steady_state",
+                    "abs",
+                    "roll_err"
+                ],
+                "modes": [
+                    "roll_hold"
+                ]
+            },
+            "scope_mode": "roll_hold",
+            "scopeTextRange": [
+                0,
+                21
+            ],
+            "regular_condition": "(steady_state)",
+            "qualifier_word": "when",
+            "pre_condition": "(steady_state)",
+            "conditionTextRange": [
+                23,
+                39
+            ],
+            "component_name": "Autopilot",
+            "componentTextRange": [
+                41,
+                49
+            ],
+            "timingTextRange": [
+                57,
+                62
+            ],
+            "post_condition": "(abs ( roll_err ) <= 1.0)",
+            "responseTextRange": [
+                64,
+                91
+            ],
+            "ft": "(G ((!Fin_<b><i>roll_hold</i></b>) | (Fin_<b><i>roll_hold</i></b> & (X ((F (Lin_<b><i>roll_hold</i></b> | LAST)) -> (((Lin_<b><i>roll_hold</i></b> | LAST) V (((!<b><i>(steady_state)</i></b>) & ((X <b><i>(steady_state)</i></b>) & (!(Lin_<b><i>roll_hold</i></b> | LAST)))) -> ((X ((Lin_<b><i>roll_hold</i></b> | LAST) V <b><i>(abs ( roll_err ) <= 1.0)</i></b>)) & (!(Lin_<b><i>roll_hold</i></b> | LAST))))) & (<b><i>(steady_state)</i></b> -> ((Lin_<b><i>roll_hold</i></b> | LAST) V <b><i>(abs ( roll_err ) <= 1.0)</i></b>)))))))) & (<b><i>roll_hold</i></b> -> ((F (Lin_<b><i>roll_hold</i></b> | LAST)) -> (((Lin_<b><i>roll_hold</i></b> | LAST) V (((!<b><i>(steady_state)</i></b>) & ((X <b><i>(steady_state)</i></b>) & (!(Lin_<b><i>roll_hold</i></b> | LAST)))) -> ((X ((Lin_<b><i>roll_hold</i></b> | LAST) V <b><i>(abs ( roll_err ) <= 1.0)</i></b>)) & (!(Lin_<b><i>roll_hold</i></b> | LAST))))) & (<b><i>(steady_state)</i></b> -> ((Lin_<b><i>roll_hold</i></b> | LAST) V <b><i>(abs ( roll_err ) <= 1.0)</i></b>)))))",
+            "pt": "(H ((Lin_<b><i>roll_hold</i></b> & (!FTP)) -> (Y ((((!<b><i>(steady_state)</i></b>) S ((!<b><i>(steady_state)</i></b>) & Fin_<b><i>roll_hold</i></b>)) | (<b><i>(abs ( roll_err ) <= 1.0)</i></b> S (<b><i>(abs ( roll_err ) <= 1.0)</i></b> & ((<b><i>(steady_state)</i></b> & (Y (!<b><i>(steady_state)</i></b>))) | (<b><i>(steady_state)</i></b> & Fin_<b><i>roll_hold</i></b>))))) S ((((!<b><i>(steady_state)</i></b>) S ((!<b><i>(steady_state)</i></b>) & Fin_<b><i>roll_hold</i></b>)) | (<b><i>(abs ( roll_err ) <= 1.0)</i></b> S (<b><i>(abs ( roll_err ) <= 1.0)</i></b> & ((<b><i>(steady_state)</i></b> & (Y (!<b><i>(steady_state)</i></b>))) | (<b><i>(steady_state)</i></b> & Fin_<b><i>roll_hold</i></b>))))) & Fin_<b><i>roll_hold</i></b>))))) & (((!Lin_<b><i>roll_hold</i></b>) S ((!Lin_<b><i>roll_hold</i></b>) & Fin_<b><i>roll_hold</i></b>)) -> ((((!<b><i>(steady_state)</i></b>) S ((!<b><i>(steady_state)</i></b>) & Fin_<b><i>roll_hold</i></b>)) | (<b><i>(abs ( roll_err ) <= 1.0)</i></b> S (<b><i>(abs ( roll_err ) <= 1.0)</i></b> & ((<b><i>(steady_state)</i></b> & (Y (!<b><i>(steady_state)</i></b>))) | (<b><i>(steady_state)</i></b> & Fin_<b><i>roll_hold</i></b>))))) S ((((!<b><i>(steady_state)</i></b>) S ((!<b><i>(steady_state)</i></b>) & Fin_<b><i>roll_hold</i></b>)) | (<b><i>(abs ( roll_err ) <= 1.0)</i></b> S (<b><i>(abs ( roll_err ) <= 1.0)</i></b> & ((<b><i>(steady_state)</i></b> & (Y (!<b><i>(steady_state)</i></b>))) | (<b><i>(steady_state)</i></b> & Fin_<b><i>roll_hold</i></b>))))) & Fin_<b><i>roll_hold</i></b>)))",
+            "ftExpanded": "(G ((!((! <b><i>roll_hold</i></b>) & X <b><i>roll_hold</i></b>)) | (((! <b><i>roll_hold</i></b>) & X <b><i>roll_hold</i></b>) & (X ((F ((<b><i>roll_hold</i></b> & X (! <b><i>roll_hold</i></b>)) | LAST)) -> ((((<b><i>roll_hold</i></b> & X (! <b><i>roll_hold</i></b>)) | LAST) V (((!<b><i>(steady_state)</i></b>) & ((X <b><i>(steady_state)</i></b>) & (!((<b><i>roll_hold</i></b> & X (! <b><i>roll_hold</i></b>)) | LAST)))) -> ((X (((<b><i>roll_hold</i></b> & X (! <b><i>roll_hold</i></b>)) | LAST) V <b><i>(abs ( roll_err ) <= 1.0)</i></b>)) & (!((<b><i>roll_hold</i></b> & X (! <b><i>roll_hold</i></b>)) | LAST))))) & (<b><i>(steady_state)</i></b> -> (((<b><i>roll_hold</i></b> & X (! <b><i>roll_hold</i></b>)) | LAST) V <b><i>(abs ( roll_err ) <= 1.0)</i></b>)))))))) & (<b><i>roll_hold</i></b> -> ((F ((<b><i>roll_hold</i></b> & X (! <b><i>roll_hold</i></b>)) | LAST)) -> ((((<b><i>roll_hold</i></b> & X (! <b><i>roll_hold</i></b>)) | LAST) V (((!<b><i>(steady_state)</i></b>) & ((X <b><i>(steady_state)</i></b>) & (!((<b><i>roll_hold</i></b> & X (! <b><i>roll_hold</i></b>)) | LAST)))) -> ((X (((<b><i>roll_hold</i></b> & X (! <b><i>roll_hold</i></b>)) | LAST) V <b><i>(abs ( roll_err ) <= 1.0)</i></b>)) & (!((<b><i>roll_hold</i></b> & X (! <b><i>roll_hold</i></b>)) | LAST))))) & (<b><i>(steady_state)</i></b> -> (((<b><i>roll_hold</i></b> & X (! <b><i>roll_hold</i></b>)) | LAST) V <b><i>(abs ( roll_err ) <= 1.0)</i></b>)))))",
+            "ptExpanded": "(H ((((! <b><i>roll_hold</i></b>) & (Y <b><i>roll_hold</i></b>)) & (!(! Y TRUE))) -> (Y ((((!<b><i>(steady_state)</i></b>) S ((!<b><i>(steady_state)</i></b>) & (<b><i>roll_hold</i></b> & ((! Y TRUE) | (Y ! <b><i>roll_hold</i></b>))))) | (<b><i>(abs ( roll_err ) <= 1.0)</i></b> S (<b><i>(abs ( roll_err ) <= 1.0)</i></b> & ((<b><i>(steady_state)</i></b> & (Y (!<b><i>(steady_state)</i></b>))) | (<b><i>(steady_state)</i></b> & (<b><i>roll_hold</i></b> & ((! Y TRUE) | (Y ! <b><i>roll_hold</i></b>)))))))) S ((((!<b><i>(steady_state)</i></b>) S ((!<b><i>(steady_state)</i></b>) & (<b><i>roll_hold</i></b> & ((! Y TRUE) | (Y ! <b><i>roll_hold</i></b>))))) | (<b><i>(abs ( roll_err ) <= 1.0)</i></b> S (<b><i>(abs ( roll_err ) <= 1.0)</i></b> & ((<b><i>(steady_state)</i></b> & (Y (!<b><i>(steady_state)</i></b>))) | (<b><i>(steady_state)</i></b> & (<b><i>roll_hold</i></b> & ((! Y TRUE) | (Y ! <b><i>roll_hold</i></b>)))))))) & (<b><i>roll_hold</i></b> & ((! Y TRUE) | (Y ! <b><i>roll_hold</i></b>)))))))) & (((!((! <b><i>roll_hold</i></b>) & (Y <b><i>roll_hold</i></b>))) S ((!((! <b><i>roll_hold</i></b>) & (Y <b><i>roll_hold</i></b>))) & (<b><i>roll_hold</i></b> & ((! Y TRUE) | (Y ! <b><i>roll_hold</i></b>))))) -> ((((!<b><i>(steady_state)</i></b>) S ((!<b><i>(steady_state)</i></b>) & (<b><i>roll_hold</i></b> & ((! Y TRUE) | (Y ! <b><i>roll_hold</i></b>))))) | (<b><i>(abs ( roll_err ) <= 1.0)</i></b> S (<b><i>(abs ( roll_err ) <= 1.0)</i></b> & ((<b><i>(steady_state)</i></b> & (Y (!<b><i>(steady_state)</i></b>))) | (<b><i>(steady_state)</i></b> & (<b><i>roll_hold</i></b> & ((! Y TRUE) | (Y ! <b><i>roll_hold</i></b>)))))))) S ((((!<b><i>(steady_state)</i></b>) S ((!<b><i>(steady_state)</i></b>) & (<b><i>roll_hold</i></b> & ((! Y TRUE) | (Y ! <b><i>roll_hold</i></b>))))) | (<b><i>(abs ( roll_err ) <= 1.0)</i></b> S (<b><i>(abs ( roll_err ) <= 1.0)</i></b> & ((<b><i>(steady_state)</i></b> & (Y (!<b><i>(steady_state)</i></b>))) | (<b><i>(steady_state)</i></b> & (<b><i>roll_hold</i></b> & ((! Y TRUE) | (Y ! <b><i>roll_hold</i></b>)))))))) & (<b><i>roll_hold</i></b> & ((! Y TRUE) | (Y ! <b><i>roll_hold</i></b>))))))",
+            "component": "<b><i>Autopilot</i></b>",
+            "CoCoSpecCode": "(H(((( not roll_hold) and (pre ( roll_hold ))) and ( not FTP())) => (pre (S( (((S( (( not (steady_state)) and (roll_hold and (FTP() or (pre (  not roll_hold ))))), ( not (steady_state)) )) or (S( ((abs ( roll_err ) <= 1.0) and (((steady_state) and (pre ( not (steady_state)))) or ((steady_state) and (roll_hold and (FTP() or (pre (  not roll_hold ))))))), (abs ( roll_err ) <= 1.0) ))) and (roll_hold and (FTP() or (pre (  not roll_hold ))))), ((S( (( not (steady_state)) and (roll_hold and (FTP() or (pre (  not roll_hold ))))), ( not (steady_state)) )) or (S( ((abs ( roll_err ) <= 1.0) and (((steady_state) and (pre ( not (steady_state)))) or ((steady_state) and (roll_hold and (FTP() or (pre (  not roll_hold ))))))), (abs ( roll_err ) <= 1.0) ))) ))))) and ((S( (( not (( not roll_hold) and (pre ( roll_hold )))) and (roll_hold and (FTP() or (pre (  not roll_hold ))))), ( not (( not roll_hold) and (pre ( roll_hold )))) )) => (S( (((S( (( not (steady_state)) and (roll_hold and (FTP() or (pre (  not roll_hold ))))), ( not (steady_state)) )) or (S( ((abs ( roll_err ) <= 1.0) and (((steady_state) and (pre ( not (steady_state)))) or ((steady_state) and (roll_hold and (FTP() or (pre (  not roll_hold ))))))), (abs ( roll_err ) <= 1.0) ))) and (roll_hold and (FTP() or (pre (  not roll_hold ))))), ((S( (( not (steady_state)) and (roll_hold and (FTP() or (pre (  not roll_hold ))))), ( not (steady_state)) )) or (S( ((abs ( roll_err ) <= 1.0) and (((steady_state) and (pre ( not (steady_state)))) or ((steady_state) and (roll_hold and (FTP() or (pre (  not roll_hold ))))))), (abs ( roll_err ) <= 1.0) ))) )))",
+            "diagramVariables": "M = <b><i>roll_hold</i></b>, Response = <b><i>(abs ( roll_err ) <= 1.0)</i></b>.",
+            "description": "Always, the component \"<b><i>Autopilot</i></b>\" shall satisfy <b><i>(abs ( roll_err ) <= 1.0)</i></b>. This is only enforced when \"<b><i>Autopilot</i></b>\" is in mode <b><i>roll_hold</i></b> and <b><i>(steady_state)</i></b> is satisfied.",
+            "diagram": "Undefined svg."
+        },
+        "_id": "2848d250-691a-11ec-9460-7d2c3af37271"
+    },
+    {
+        "reqid": "",
+        "parent_reqid": "",
+        "project": "SemanticsPaper",
+        "rationale": "sdskdasjkdhaksdskdasjkdhakssdskdasjkdhaksdskdasjkdhakssdskdasjkdhaksdskdasjkdhakssdskdasjkdhaksdskdasjkdhakssdskdasjkdhaksdskdasjkdhakssdskdasjkdhaksdskdasjkdhakssdskdasjkdhaksdskdasjkdhakssdskdasjkdhaksdskdasjkdhakssdskdasjkdhaksdskdasjkdhakssdskdasjkdhaksdskdasjkdhakssdskdasjkdhaksdskdasjkdhakssdskdasjkdhaksdskdasjkdhakssdskdasjkdhaksdskdasjkdhaks",
+        "fulltext": "TriplexSignalMonitor shall always satisfy b & !a",
+        "semantics": {
+            "type": "nasa",
+            "scope": {
+                "type": "null"
+            },
+            "condition": "null",
+            "timing": "always",
+            "response": "satisfaction",
+            "variables": [
+                "b",
+                "a"
+            ],
+            "component_name": "TriplexSignalMonitor",
+            "componentTextRange": [
+                0,
+                19
+            ],
+            "timingTextRange": [
+                27,
+                32
+            ],
+            "post_condition": "(b & ! a)",
+            "responseTextRange": [
+                34,
+                47
+            ],
+            "ft": "(LAST V <b><i>(b & ! a)</i></b>)",
+            "pt": "(H <b><i>(b & ! a)</i></b>)",
+            "ftExpanded": "(LAST V <b><i>(b & ! a)</i></b>)",
+            "ptExpanded": "(H <b><i>(b & ! a)</i></b>)",
+            "component": "<b><i>TriplexSignalMonitor</i></b>",
+            "CoCoSpecCode": "(H((b and not a)))",
+            "diagramVariables": "Response = <b><i>(b & ! a)</i></b>.",
+            "description": "ENFORCED: in the interval defined by the entire execution.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must hold at all time points between (and including) the trigger and the end of the interval.",
+            "diagram": "_media/user-interface/examples/svgDiagrams/null_null_always_satisfaction.svg"
+        },
+        "_id": "2848d251-691a-11ec-9460-7d2c3af37271"
+    },
+    {
+        "reqid": "AP-003b",
+        "parent_reqid": "",
+        "project": "SemanticsPaper",
+        "rationale": "",
+        "fulltext": "In roll_hold mode RollHoldReference shall immediately satisfy abs_roll_angle < 6 => roll_hold_reference = 0",
+        "semantics": {
+            "scope": {
+                "type": "in"
+            },
+            "condition": "null",
+            "timing": "immediately",
+            "response": "satisfaction",
+            "variables": {
+                "regular": [
+                    "abs_roll_angle",
+                    "roll_hold_reference"
+                ],
+                "modes": [
+                    "roll_hold"
+                ]
+            },
+            "scope_mode": "roll_hold",
+            "scopeTextRange": [
+                0,
+                16
+            ],
+            "component_name": "RollHoldReference",
+            "componentTextRange": [
+                18,
+                34
+            ],
+            "timingTextRange": [
+                42,
+                52
+            ],
+            "post_condition": "(abs_roll_angle < 6 => roll_hold_reference = 0)",
+            "responseTextRange": [
+                54,
+                106
+            ],
+            "ft": "(G ((!Fin_<b><i>roll_hold</i></b>) | (Fin_<b><i>roll_hold</i></b> & (X ((F (Lin_<b><i>roll_hold</i></b> | LAST)) -> <b><i>(abs_roll_angle < 6 => roll_hold_reference = 0)</i></b>))))) & (<b><i>roll_hold</i></b> -> ((F (Lin_<b><i>roll_hold</i></b> | LAST)) -> <b><i>(abs_roll_angle < 6 => roll_hold_reference = 0)</i></b>))",
+            "pt": "(H ((Lin_<b><i>roll_hold</i></b> & (!FTP)) -> (Y ((Fin_<b><i>roll_hold</i></b> -> <b><i>(abs_roll_angle < 6 => roll_hold_reference = 0)</i></b>) S ((Fin_<b><i>roll_hold</i></b> -> <b><i>(abs_roll_angle < 6 => roll_hold_reference = 0)</i></b>) & Fin_<b><i>roll_hold</i></b>))))) & (((!Lin_<b><i>roll_hold</i></b>) S ((!Lin_<b><i>roll_hold</i></b>) & Fin_<b><i>roll_hold</i></b>)) -> ((Fin_<b><i>roll_hold</i></b> -> <b><i>(abs_roll_angle < 6 => roll_hold_reference = 0)</i></b>) S ((Fin_<b><i>roll_hold</i></b> -> <b><i>(abs_roll_angle < 6 => roll_hold_reference = 0)</i></b>) & Fin_<b><i>roll_hold</i></b>)))",
+            "ftExpanded": "(G ((!((! <b><i>roll_hold</i></b>) & X <b><i>roll_hold</i></b>)) | (((! <b><i>roll_hold</i></b>) & X <b><i>roll_hold</i></b>) & (X ((F ((<b><i>roll_hold</i></b> & X (! <b><i>roll_hold</i></b>)) | LAST)) -> <b><i>(abs_roll_angle < 6 => roll_hold_reference = 0)</i></b>))))) & (<b><i>roll_hold</i></b> -> ((F ((<b><i>roll_hold</i></b> & X (! <b><i>roll_hold</i></b>)) | LAST)) -> <b><i>(abs_roll_angle < 6 => roll_hold_reference = 0)</i></b>))",
+            "ptExpanded": "(H ((((! <b><i>roll_hold</i></b>) & (Y <b><i>roll_hold</i></b>)) & (!(! Y TRUE))) -> (Y (((<b><i>roll_hold</i></b> & ((! Y TRUE) | (Y ! <b><i>roll_hold</i></b>))) -> <b><i>(abs_roll_angle < 6 => roll_hold_reference = 0)</i></b>) S (((<b><i>roll_hold</i></b> & ((! Y TRUE) | (Y ! <b><i>roll_hold</i></b>))) -> <b><i>(abs_roll_angle < 6 => roll_hold_reference = 0)</i></b>) & (<b><i>roll_hold</i></b> & ((! Y TRUE) | (Y ! <b><i>roll_hold</i></b>)))))))) & (((!((! <b><i>roll_hold</i></b>) & (Y <b><i>roll_hold</i></b>))) S ((!((! <b><i>roll_hold</i></b>) & (Y <b><i>roll_hold</i></b>))) & (<b><i>roll_hold</i></b> & ((! Y TRUE) | (Y ! <b><i>roll_hold</i></b>))))) -> (((<b><i>roll_hold</i></b> & ((! Y TRUE) | (Y ! <b><i>roll_hold</i></b>))) -> <b><i>(abs_roll_angle < 6 => roll_hold_reference = 0)</i></b>) S (((<b><i>roll_hold</i></b> & ((! Y TRUE) | (Y ! <b><i>roll_hold</i></b>))) -> <b><i>(abs_roll_angle < 6 => roll_hold_reference = 0)</i></b>) & (<b><i>roll_hold</i></b> & ((! Y TRUE) | (Y ! <b><i>roll_hold</i></b>))))))",
+            "component": "<b><i>RollHoldReference</i></b>",
+            "CoCoSpecCode": "(H(((( not roll_hold) and (pre ( roll_hold ))) and ( not FTP())) => (pre (S( (((roll_hold and (FTP() or (pre (  not roll_hold )))) => (abs_roll_angle < 6 => roll_hold_reference = 0)) and (roll_hold and (FTP() or (pre (  not roll_hold ))))), ((roll_hold and (FTP() or (pre (  not roll_hold )))) => (abs_roll_angle < 6 => roll_hold_reference = 0)) ))))) and ((S( (( not (( not roll_hold) and (pre ( roll_hold )))) and (roll_hold and (FTP() or (pre (  not roll_hold ))))), ( not (( not roll_hold) and (pre ( roll_hold )))) )) => (S( (((roll_hold and (FTP() or (pre (  not roll_hold )))) => (abs_roll_angle < 6 => roll_hold_reference = 0)) and (roll_hold and (FTP() or (pre (  not roll_hold ))))), ((roll_hold and (FTP() or (pre (  not roll_hold )))) => (abs_roll_angle < 6 => roll_hold_reference = 0)) )))",
+            "diagramVariables": "M = <b><i>roll_hold</i></b>, Response = <b><i>(abs_roll_angle < 6 => roll_hold_reference = 0)</i></b>.",
+            "description": "Immediately, the component \"<b><i>RollHoldReference</i></b>\" shall satisfy <b><i>(abs_roll_angle < 6 => roll_hold_reference = 0)</i></b>. This is only enforced when \"<b><i>RollHoldReference</i></b>\" is in mode <b><i>roll_hold</i></b>.",
+            "diagram": "_media/user-interface/examples/svgDiagrams/in_null_immediately_satisfaction.svg"
+        },
+        "_id": "2848f960-691a-11ec-9460-7d2c3af37271"
+    },
+    {
+        "reqid": "SIM-001SP",
+        "parent_reqid": "",
+        "project": "SemanticsPaper",
+        "rationale": "",
+        "fulltext": "After phase_1 the simulation shall always satisfy VelDiff < 5 feet per minute",
+        "semantics": {
+            "scope": {
+                "type": "after",
+                "exclusive": false,
+                "required": false
+            },
+            "condition": "null",
+            "timing": "always",
+            "response": "satisfaction",
+            "variables": {
+                "regular": [
+                    "VelDiff"
+                ],
+                "modes": [
+                    "phase_1"
+                ]
+            },
+            "scope_mode": "phase_1",
+            "scopeTextRange": [
+                0,
+                12
+            ],
+            "component_name": "simulation",
+            "componentTextRange": [
+                14,
+                27
+            ],
+            "timingTextRange": [
+                35,
+                40
+            ],
+            "post_condition": "(VelDiff < 5)",
+            "responseTextRange": [
+                42,
+                60
+            ],
+            "ft": "((!Lin_<b><i>phase_1</i></b>) U (Lin_<b><i>phase_1</i></b> & (X (G <b><i>(VelDiff < 5)</i></b>)))) | (G (!Lin_<b><i>phase_1</i></b>))",
+            "pt": "(O FLin_<b><i>phase_1</i></b>) -> (<b><i>(VelDiff < 5)</i></b> S (<b><i>(VelDiff < 5)</i></b> & FLin_<b><i>phase_1</i></b>))",
+            "ftExpanded": "((!(<b><i>phase_1</i></b> & X (! <b><i>phase_1</i></b>))) U ((<b><i>phase_1</i></b> & X (! <b><i>phase_1</i></b>)) & (X (G <b><i>(VelDiff < 5)</i></b>)))) | (G (!(<b><i>phase_1</i></b> & X (! <b><i>phase_1</i></b>))))",
+            "ptExpanded": "(O (((! <b><i>phase_1</i></b>) & (Y <b><i>phase_1</i></b>)) & Y (H (! ((! <b><i>phase_1</i></b>) & (Y <b><i>phase_1</i></b>)))))) -> (<b><i>(VelDiff < 5)</i></b> S (<b><i>(VelDiff < 5)</i></b> & (((! <b><i>phase_1</i></b>) & (Y <b><i>phase_1</i></b>)) & Y (H (! ((! <b><i>phase_1</i></b>) & (Y <b><i>phase_1</i></b>)))))))",
+            "component": "<b><i>simulation</i></b>",
+            "CoCoSpecCode": "(O((( not phase_1) and (pre ( phase_1 ))) and pre (H( not (( not phase_1) and (pre ( phase_1 ))))))) => (S( ((VelDiff < 5) and ((( not phase_1) and (pre ( phase_1 ))) and pre (H( not (( not phase_1) and (pre ( phase_1 ))))))), (VelDiff < 5) ))",
+            "diagramVariables": "M = <b><i>phase_1</i></b>, Response = <b><i>(VelDiff < 5)</i></b>.",
+            "description": "Always, the component \"<b><i>simulation</i></b>\" shall satisfy <b><i>(VelDiff < 5)</i></b>. This is only enforced strictly after the first occurence of <b><i>phase_1</i></b> (if <b><i>phase_1</i></b> ever occurs).",
+            "diagram": "_media/user-interface/examples/svgDiagrams/after_null_always_satisfaction.svg"
+        },
+        "_id": "2848f961-691a-11ec-9460-7d2c3af37271"
+    },
+    {
+        "reqid": "NN-004SP",
+        "parent_reqid": "",
+        "project": "SemanticsPaper",
+        "rationale": "",
+        "fulltext": "NeuralNetwork shall for 200 sec satisfy (x = xt & y = yt) => abs_error(zt - z) <= 0.01",
+        "semantics": {
+            "scope": {
+                "type": "null"
+            },
+            "condition": "null",
+            "timing": "for",
+            "response": "satisfaction",
+            "variables": {
+                "regular": [
+                    "x",
+                    "xt",
+                    "y",
+                    "yt",
+                    "abs_error",
+                    "zt",
+                    "z"
+                ],
+                "modes": []
+            },
+            "component_name": "NeuralNetwork",
+            "componentTextRange": [
+                0,
+                12
+            ],
+            "duration": "200 sec",
+            "timingTextRange": [
+                20,
+                30
+            ],
+            "post_condition": "(( x = xt & y = yt ) => abs_error ( zt - z ) <= 0.01)",
+            "responseTextRange": [
+                32,
+                85
+            ],
+            "ft": "(G[<=<b><i>200 sec</i></b>] <b><i>(( x = xt & y = yt ) => abs_error ( zt - z ) <= 0.01)</i></b>) | (<b><i>(( x = xt & y = yt ) => abs_error ( zt - z ) <= 0.01)</i></b> U (<b><i>(( x = xt & y = yt ) => abs_error ( zt - z ) <= 0.01)</i></b> & (LAST | LAST)))",
+            "pt": "((O[<=<b><i>200 sec</i></b>] FTP) -> <b><i>(( x = xt & y = yt ) => abs_error ( zt - z ) <= 0.01)</i></b>) S (((O[<=<b><i>200 sec</i></b>] FTP) -> <b><i>(( x = xt & y = yt ) => abs_error ( zt - z ) <= 0.01)</i></b>) & FTP)",
+            "ftExpanded": "(G[<=<b><i>200 sec</i></b>] <b><i>(( x = xt & y = yt ) => abs_error ( zt - z ) <= 0.01)</i></b>) | (<b><i>(( x = xt & y = yt ) => abs_error ( zt - z ) <= 0.01)</i></b> U (<b><i>(( x = xt & y = yt ) => abs_error ( zt - z ) <= 0.01)</i></b> & (LAST | LAST)))",
+            "ptExpanded": "((O[<=<b><i>200 sec</i></b>] (! Y TRUE)) -> <b><i>(( x = xt & y = yt ) => abs_error ( zt - z ) <= 0.01)</i></b>) S (((O[<=<b><i>200 sec</i></b>] (! Y TRUE)) -> <b><i>(( x = xt & y = yt ) => abs_error ( zt - z ) <= 0.01)</i></b>) & (! Y TRUE))",
+            "component": "<b><i>NeuralNetwork</i></b>",
+            "CoCoSpecCode": "S( (((OTlore(200 sec, FTP() )) => (( x = xt and y = yt ) => abs_error ( zt - z ) <= 0.01)) and FTP()), ((OTlore(200 sec, FTP() )) => (( x = xt and y = yt ) => abs_error ( zt - z ) <= 0.01)) )",
+            "diagramVariables": " n = <b><i>200 sec</i></b>, Response = <b><i>(( x = xt & y = yt ) => abs_error ( zt - z ) <= 0.01)</i></b>.",
+            "description": "TIME, the component \"<b><i>NeuralNetwork</i></b>\" shall satisfy <b><i>(( x = xt & y = yt ) => abs_error ( zt - z ) <= 0.01)</i></b>.",
+            "diagram": "Undefined svg."
+        },
+        "_id": "28492070-691a-11ec-9460-7d2c3af37271"
+    },
+    {
+        "reqid": "FSMforPaper",
+        "parent_reqid": "",
+        "project": "SemanticsPaper",
+        "rationale": "",
+        "fulltext": "FSM shall always satisfy (sensorLimits & autopilot) => pullup",
+        "semantics": {
+            "type": "nasa",
+            "scope": {
+                "type": "null"
+            },
+            "condition": "null",
+            "timing": "always",
+            "response": "satisfaction",
+            "variables": {
+                "regular": [
+                    "sensorLimits",
+                    "autopilot",
+                    "pullup"
+                ],
+                "modes": []
+            },
+            "component_name": "FSM",
+            "componentTextRange": [
+                0,
+                2
+            ],
+            "timingTextRange": [
+                10,
+                15
+            ],
+            "post_condition": "(( sensorLimits & autopilot ) => pullup)",
+            "responseTextRange": [
+                17,
+                60
+            ],
+            "ft": "(LAST V <b><i>(( sensorLimits & autopilot ) -> pullup)</i></b>)",
+            "pt": "(H <b><i>(( sensorLimits & autopilot ) -> pullup)</i></b>)",
+            "ftExpanded": "(LAST V <b><i>(( sensorLimits & autopilot ) -> pullup)</i></b>)",
+            "ptExpanded": "(H <b><i>(( sensorLimits & autopilot ) -> pullup)</i></b>)",
+            "component": "<b><i>FSM</i></b>",
+            "CoCoSpecCode": "(H((( sensorLimits and autopilot ) => pullup)))",
+            "diagramVariables": "Response = <b><i>(( sensorLimits & autopilot ) => pullup)</i></b>.",
+            "description": "ENFORCED: in the interval defined by the entire execution.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must hold at all time points between (and including) the trigger and the end of the interval.",
+            "diagram": "_media/user-interface/examples/svgDiagrams/null_null_always_satisfaction.svg"
+        },
+        "_id": "28494780-691a-11ec-9460-7d2c3af37271"
+    },
+    {
+        "reqid": "test1",
+        "parent_reqid": "",
+        "project": "SemanticsPaper",
+        "rationale": "",
+        "fulltext": "\"This is a requirement\"",
+        "semantics": {
+            "type": "freeForm",
+            "scope": {
+                "type": "null"
+            },
+            "condition": "null",
+            "timing": "null",
+            "response": "action",
+            "variables": {
+                "regular": [],
+                "modes": []
+            },
+            "ft": "Unhandled.",
+            "description": "FRET only speaks FRETish but as a courtesy will save this requirement. "
+        },
+        "_id": "28496e90-691a-11ec-9460-7d2c3af37271"
+    },
+    {
+        "reqid": "AP-003b",
+        "parent_reqid": "",
+        "project": "SemanticsPaper",
+        "rationale": "",
+        "fulltext": "in roll_hold mode RollAutopilot shall immediately satisfy abs(roll_angle) < 6.0 => roll_hold_reference = 0.0",
+        "semantics": {
+            "type": "nasa",
+            "scope": {
+                "type": "in"
+            },
+            "condition": "null",
+            "timing": "immediately",
+            "response": "satisfaction",
+            "variables": {
+                "regular": [
+                    "abs",
+                    "roll_angle",
+                    "roll_hold_reference"
+                ],
+                "modes": [
+                    "roll_hold"
+                ]
+            },
+            "scope_mode": "roll_hold",
+            "scopeTextRange": [
+                0,
+                16
+            ],
+            "component_name": "RollAutopilot",
+            "componentTextRange": [
+                18,
+                30
+            ],
+            "timingTextRange": [
+                38,
+                48
+            ],
+            "post_condition": "(abs ( roll_angle ) < 6.0 => roll_hold_reference = 0.0)",
+            "responseTextRange": [
+                50,
+                107
+            ],
+            "ft": "((LAST V ((! (Fin_<b><i>roll_hold</i></b> & (! LAST))) | (X <b><i>(abs ( roll_angle ) < 6.0 -> roll_hold_reference = 0.0)</i></b>))) & (<b><i>roll_hold</i></b> -> <b><i>(abs ( roll_angle ) < 6.0 -> roll_hold_reference = 0.0)</i></b>))",
+            "pt": "((H ((Lin_<b><i>roll_hold</i></b> & (! FTP)) -> (Y ((Fin_<b><i>roll_hold</i></b> -> <b><i>(abs ( roll_angle ) < 6.0 -> roll_hold_reference = 0.0)</i></b>) S ((Fin_<b><i>roll_hold</i></b> -> <b><i>(abs ( roll_angle ) < 6.0 -> roll_hold_reference = 0.0)</i></b>) & Fin_<b><i>roll_hold</i></b>))))) & (((! Lin_<b><i>roll_hold</i></b>) S ((! Lin_<b><i>roll_hold</i></b>) & Fin_<b><i>roll_hold</i></b>)) -> ((Fin_<b><i>roll_hold</i></b> -> <b><i>(abs ( roll_angle ) < 6.0 -> roll_hold_reference = 0.0)</i></b>) S ((Fin_<b><i>roll_hold</i></b> -> <b><i>(abs ( roll_angle ) < 6.0 -> roll_hold_reference = 0.0)</i></b>) & Fin_<b><i>roll_hold</i></b>))))",
+            "ftExpanded": "((LAST V ((! ((((! <b><i>roll_hold</i></b>) & (! LAST)) & (X <b><i>roll_hold</i></b>)) & (! LAST))) | (X <b><i>(abs ( roll_angle ) < 6.0 -> roll_hold_reference = 0.0)</i></b>))) & (<b><i>roll_hold</i></b> -> <b><i>(abs ( roll_angle ) < 6.0 -> roll_hold_reference = 0.0)</i></b>))",
+            "ptExpanded": "((H ((((! <b><i>roll_hold</i></b>) & (Y <b><i>roll_hold</i></b>)) & (Y TRUE)) -> (Y (((<b><i>roll_hold</i></b> & ((! (Y TRUE)) | (Y (! <b><i>roll_hold</i></b>)))) -> <b><i>(abs ( roll_angle ) < 6.0 -> roll_hold_reference = 0.0)</i></b>) S (((<b><i>roll_hold</i></b> & ((! (Y TRUE)) | (Y (! <b><i>roll_hold</i></b>)))) -> <b><i>(abs ( roll_angle ) < 6.0 -> roll_hold_reference = 0.0)</i></b>) & (<b><i>roll_hold</i></b> & ((! (Y TRUE)) | (Y (! <b><i>roll_hold</i></b>))))))))) & (((! ((! <b><i>roll_hold</i></b>) & (Y <b><i>roll_hold</i></b>))) S ((! ((! <b><i>roll_hold</i></b>) & (Y <b><i>roll_hold</i></b>))) & (<b><i>roll_hold</i></b> & ((! (Y TRUE)) | (Y (! <b><i>roll_hold</i></b>)))))) -> (((<b><i>roll_hold</i></b> & ((! (Y TRUE)) | (Y (! <b><i>roll_hold</i></b>)))) -> <b><i>(abs ( roll_angle ) < 6.0 -> roll_hold_reference = 0.0)</i></b>) S (((<b><i>roll_hold</i></b> & ((! (Y TRUE)) | (Y (! <b><i>roll_hold</i></b>)))) -> <b><i>(abs ( roll_angle ) < 6.0 -> roll_hold_reference = 0.0)</i></b>) & (<b><i>roll_hold</i></b> & ((! (Y TRUE)) | (Y (! <b><i>roll_hold</i></b>))))))))",
+            "component": "<b><i>RollAutopilot</i></b>",
+            "CoCoSpecCode": "((H(((( not roll_hold) and (pre (roll_hold))) and ( not FTP)) => (pre (SI( (roll_hold and (FTP or (pre ( not roll_hold)))), ((roll_hold and (FTP or (pre ( not roll_hold)))) => (abs ( roll_angle ) < 6.0 => roll_hold_reference = 0.0)) ))))) and ((SI( (roll_hold and (FTP or (pre ( not roll_hold)))), ( not (( not roll_hold) and (pre (roll_hold)))) )) => (SI( (roll_hold and (FTP or (pre ( not roll_hold)))), ((roll_hold and (FTP or (pre ( not roll_hold)))) => (abs ( roll_angle ) < 6.0 => roll_hold_reference = 0.0)) ))))",
+            "diagramVariables": "M = <b><i>roll_hold</i></b>, Response = <b><i>(abs ( roll_angle ) < 6.0 => roll_hold_reference = 0.0)</i></b>.",
+            "description": "Immediately, the component \"<b><i>RollAutopilot</i></b>\" shall satisfy <b><i>(abs ( roll_angle ) < 6.0 => roll_hold_reference = 0.0)</i></b>. This is only enforced when \"<b><i>RollAutopilot</i></b>\" is in mode <b><i>roll_hold</i></b>.",
+            "diagram": "_media/user-interface/examples/svgDiagrams/in_null_immediately_satisfaction.svg"
+        },
+        "_id": "284995a0-691a-11ec-9460-7d2c3af37271"
+    },
+    {
+        "reqid": "SIM-001SP",
+        "parent_reqid": "",
+        "project": "SemanticsPaper",
+        "rationale": "",
+        "fulltext": "After phase_1 the simulation shall always satisfy VelDiff < 5 feet per minute",
+        "semantics": {
+            "scope": {
+                "type": "after",
+                "exclusive": false,
+                "required": false
+            },
+            "condition": "null",
+            "timing": "always",
+            "response": "satisfaction",
+            "variables": {
+                "regular": [
+                    "VelDiff"
+                ],
+                "modes": [
+                    "phase_1"
+                ]
+            },
+            "scope_mode": "phase_1",
+            "scopeTextRange": [
+                0,
+                12
+            ],
+            "component_name": "simulation",
+            "componentTextRange": [
+                14,
+                27
+            ],
+            "timingTextRange": [
+                35,
+                40
+            ],
+            "post_condition": "(VelDiff < 5)",
+            "responseTextRange": [
+                42,
+                60
+            ],
+            "ft": "((!Lin_<b><i>phase_1</i></b>) U (Lin_<b><i>phase_1</i></b> & (X (G <b><i>(VelDiff < 5)</i></b>)))) | (G (!Lin_<b><i>phase_1</i></b>))",
+            "pt": "(O FLin_<b><i>phase_1</i></b>) -> (<b><i>(VelDiff < 5)</i></b> S (<b><i>(VelDiff < 5)</i></b> & FLin_<b><i>phase_1</i></b>))",
+            "ftExpanded": "((!(<b><i>phase_1</i></b> & X (! <b><i>phase_1</i></b>))) U ((<b><i>phase_1</i></b> & X (! <b><i>phase_1</i></b>)) & (X (G <b><i>(VelDiff < 5)</i></b>)))) | (G (!(<b><i>phase_1</i></b> & X (! <b><i>phase_1</i></b>))))",
+            "ptExpanded": "(O (((! <b><i>phase_1</i></b>) & (Y <b><i>phase_1</i></b>)) & Y (H (! ((! <b><i>phase_1</i></b>) & (Y <b><i>phase_1</i></b>)))))) -> (<b><i>(VelDiff < 5)</i></b> S (<b><i>(VelDiff < 5)</i></b> & (((! <b><i>phase_1</i></b>) & (Y <b><i>phase_1</i></b>)) & Y (H (! ((! <b><i>phase_1</i></b>) & (Y <b><i>phase_1</i></b>)))))))",
+            "component": "<b><i>simulation</i></b>",
+            "CoCoSpecCode": "(O((( not phase_1) and (pre ( phase_1 ))) and pre (H( not (( not phase_1) and (pre ( phase_1 ))))))) => (S( ((VelDiff < 5) and ((( not phase_1) and (pre ( phase_1 ))) and pre (H( not (( not phase_1) and (pre ( phase_1 ))))))), (VelDiff < 5) ))",
+            "diagramVariables": "M = <b><i>phase_1</i></b>, Response = <b><i>(VelDiff < 5)</i></b>.",
+            "description": "Always, the component \"<b><i>simulation</i></b>\" shall satisfy <b><i>(VelDiff < 5)</i></b>. This is only enforced strictly after the first occurence of <b><i>phase_1</i></b> (if <b><i>phase_1</i></b> ever occurs).",
+            "diagram": "_media/user-interface/examples/svgDiagrams/after_null_always_satisfaction.svg"
+        },
+        "_id": "284995a1-691a-11ec-9460-7d2c3af37271"
+    }
+]

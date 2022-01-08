@@ -1,0 +1,473 @@
+[
+    {
+        "reqid": "testWithKhanh",
+        "parent_reqid": "",
+        "project": "TestRequirements",
+        "rationale": "",
+        "comments": "",
+        "fulltext": "\"this is a test\"",
+        "semantics": {
+            "type": "freeForm",
+            "scope": {
+                "type": "null"
+            },
+            "condition": "null",
+            "timing": "null",
+            "response": "action",
+            "variables": {
+                "regular": [],
+                "modes": []
+            },
+            "ft": "Unhandled.",
+            "description": "FRET only speaks FRETish but as a courtesy will save this requirement. "
+        },
+        "_id": "225add10-f549-11eb-91b3-6d6d0a882cf0"
+    },
+    {
+        "reqid": "Meaningless_One",
+        "parent_reqid": "",
+        "project": "TestRequirements",
+        "rationale": "",
+        "fulltext": "Before initialization UAV shall immediately satisfy yout > 0",
+        "semantics": {
+            "scope": {
+                "type": "before",
+                "exclusive": false,
+                "required": false
+            },
+            "condition": "null",
+            "timing": "immediately",
+            "response": "satisfaction",
+            "variables": {
+                "regular": [
+                    "yout"
+                ],
+                "modes": [
+                    "initialization"
+                ]
+            },
+            "scope_mode": "initialization",
+            "scopeTextRange": [
+                0,
+                20
+            ],
+            "component_name": "UAV",
+            "componentTextRange": [
+                22,
+                24
+            ],
+            "timingTextRange": [
+                32,
+                42
+            ],
+            "post_condition": "(yout > 0)",
+            "responseTextRange": [
+                44,
+                59
+            ],
+            "ft": "No meaning assigned.",
+            "pt": "No meaning assigned.",
+            "ftExpanded": "No meaning assigned.",
+            "ptExpanded": "No meaning assigned.",
+            "component": "<b><i>UAV</i></b>",
+            "CoCoSpecCode": "No meaning assigned.",
+            "diagramVariables": "M = <b><i>initialization</i></b>, Response = <b><i>(yout > 0)</i></b>.",
+            "description": "Unclear requirement. We are not sure how to interpret this requirement.",
+            "diagram": "Undefined svg."
+        },
+        "_id": "225b2b30-f549-11eb-91b3-6d6d0a882cf0"
+    },
+    {
+        "reqid": "VariablesTest",
+        "parent_reqid": "",
+        "project": "TestRequirements",
+        "rationale": "",
+        "fulltext": "in m if xA > 0 UAV shall satisfy yB > 0 & xin > 0",
+        "semantics": {
+            "scope": {
+                "type": "in"
+            },
+            "condition": "regular",
+            "timing": "null",
+            "response": "satisfaction",
+            "variables": {
+                "regular": [
+                    "xA",
+                    "yB",
+                    "xin"
+                ],
+                "modes": [
+                    "m"
+                ]
+            },
+            "scope_mode": "m",
+            "scopeTextRange": [
+                0,
+                3
+            ],
+            "regular_condition": "(xA > 0)",
+            "qualifier_word": "if",
+            "pre_condition": "(xA > 0)",
+            "conditionTextRange": [
+                5,
+                13
+            ],
+            "component_name": "UAV",
+            "componentTextRange": [
+                15,
+                17
+            ],
+            "post_condition": "(yB > 0 & xin > 0)",
+            "responseTextRange": [
+                25,
+                48
+            ],
+            "ft": "(G ((!Fin_<b><i>m</i></b>) | (Fin_<b><i>m</i></b> & (X ((F (Lin_<b><i>m</i></b> | LAST)) -> ((Lin_<b><i>m</i></b> | LAST) V (<b><i>(xA > 0)</i></b> -> ((!(Lin_<b><i>m</i></b> | LAST)) U <b><i>(yB > 0 & xin > 0)</i></b>)))))))) & (<b><i>m</i></b> -> ((F (Lin_<b><i>m</i></b> | LAST)) -> ((Lin_<b><i>m</i></b> | LAST) V (<b><i>(xA > 0)</i></b> -> ((!(Lin_<b><i>m</i></b> | LAST)) U <b><i>(yB > 0 & xin > 0)</i></b>)))))",
+            "pt": "(H (Lin_<b><i>m</i></b> -> (Y (((!<b><i>(xA > 0)</i></b>) S ((!<b><i>(xA > 0)</i></b>) & Fin_<b><i>m</i></b>)) | (!((!<b><i>(yB > 0 & xin > 0)</i></b>) S ((!<b><i>(yB > 0 & xin > 0)</i></b>) & <b><i>(xA > 0)</i></b>))))))) & (((!Lin_<b><i>m</i></b>) S ((!Lin_<b><i>m</i></b>) & Fin_<b><i>m</i></b>)) -> (((!<b><i>(xA > 0)</i></b>) S ((!<b><i>(xA > 0)</i></b>) & Fin_<b><i>m</i></b>)) | (!((!<b><i>(yB > 0 & xin > 0)</i></b>) S ((!<b><i>(yB > 0 & xin > 0)</i></b>) & <b><i>(xA > 0)</i></b>)))))",
+            "ftExpanded": "(G ((!((! <b><i>m</i></b>) & X <b><i>m</i></b>)) | (((! <b><i>m</i></b>) & X <b><i>m</i></b>) & (X ((F ((<b><i>m</i></b> & X (! <b><i>m</i></b>)) | LAST)) -> (((<b><i>m</i></b> & X (! <b><i>m</i></b>)) | LAST) V (<b><i>(xA > 0)</i></b> -> ((!((<b><i>m</i></b> & X (! <b><i>m</i></b>)) | LAST)) U <b><i>(yB > 0 & xin > 0)</i></b>)))))))) & (<b><i>m</i></b> -> ((F ((<b><i>m</i></b> & X (! <b><i>m</i></b>)) | LAST)) -> (((<b><i>m</i></b> & X (! <b><i>m</i></b>)) | LAST) V (<b><i>(xA > 0)</i></b> -> ((!((<b><i>m</i></b> & X (! <b><i>m</i></b>)) | LAST)) U <b><i>(yB > 0 & xin > 0)</i></b>)))))",
+            "ptExpanded": "(H (((! <b><i>m</i></b>) & (Y <b><i>m</i></b>)) -> (Y (((!<b><i>(xA > 0)</i></b>) S ((!<b><i>(xA > 0)</i></b>) & (<b><i>m</i></b> & ((! Y TRUE) | (Y ! <b><i>m</i></b>))))) | (!((!<b><i>(yB > 0 & xin > 0)</i></b>) S ((!<b><i>(yB > 0 & xin > 0)</i></b>) & <b><i>(xA > 0)</i></b>))))))) & (((!((! <b><i>m</i></b>) & (Y <b><i>m</i></b>))) S ((!((! <b><i>m</i></b>) & (Y <b><i>m</i></b>))) & (<b><i>m</i></b> & ((! Y TRUE) | (Y ! <b><i>m</i></b>))))) -> (((!<b><i>(xA > 0)</i></b>) S ((!<b><i>(xA > 0)</i></b>) & (<b><i>m</i></b> & ((! Y TRUE) | (Y ! <b><i>m</i></b>))))) | (!((!<b><i>(yB > 0 & xin > 0)</i></b>) S ((!<b><i>(yB > 0 & xin > 0)</i></b>) & <b><i>(xA > 0)</i></b>)))))",
+            "component": "<b><i>UAV</i></b>",
+            "CoCoSpecCode": "(H((( not m) and (pre ( m ))) => (pre ((S( (( not (xA > 0)) and (m and (FTP(_) or (pre (  not m ))))), ( not (xA > 0)) )) or ( not (S( (( not (yB > 0 and xin > 0)) and (xA > 0)), ( not (yB > 0 and xin > 0)) ))))))) and ((S( (( not (( not m) and (pre ( m )))) and (m and (FTP(_) or (pre (  not m ))))), ( not (( not m) and (pre ( m )))) )) => ((S( (( not (xA > 0)) and (m and (FTP(_) or (pre (  not m ))))), ( not (xA > 0)) )) or ( not (S( (( not (yB > 0 and xin > 0)) and (xA > 0)), ( not (yB > 0 and xin > 0)) )))))",
+            "diagramVariables": "M = <b><i>m</i></b>, Response = <b><i>(yB > 0 & xin > 0)</i></b>.",
+            "description": "At some future point, the component \"<b><i>UAV</i></b>\" shall satisfy <b><i>(yB > 0 & xin > 0)</i></b>. This is only enforced when \"<b><i>UAV</i></b>\" is in mode <b><i>m</i></b> and <b><i>(xA > 0)</i></b> is satisfied.",
+            "diagram": "Undefined svg."
+        },
+        "_id": "225b2b31-f549-11eb-91b3-6d6d0a882cf0"
+    },
+    {
+        "reqid": "Kandy2",
+        "parent_reqid": "",
+        "project": "TestRequirements",
+        "rationale": "",
+        "fulltext": "The AVAPrototype shall achieve a reasonable flight path angle",
+        "semantics": {},
+        "_id": "225b5240-f549-11eb-91b3-6d6d0a882cf0"
+    },
+    {
+        "reqid": "TestRequirement",
+        "parent_reqid": "",
+        "project": "TestRequirements",
+        "rationale": "",
+        "fulltext": "In m1 AUTOPILOT shall satisfy p",
+        "semantics": {
+            "scope": {
+                "type": "in"
+            },
+            "condition": "null",
+            "timing": "null",
+            "response": "satisfaction",
+            "variables": {
+                "regular": [
+                    "p"
+                ],
+                "modes": [
+                    "m1"
+                ]
+            },
+            "scope_mode": "m1",
+            "scopeTextRange": [
+                0,
+                4
+            ],
+            "component_name": "AUTOPILOT",
+            "componentTextRange": [
+                6,
+                14
+            ],
+            "post_condition": "(p)",
+            "responseTextRange": [
+                22,
+                30
+            ],
+            "ft": "(G ((!Fin_<b><i>m1</i></b>) | (Fin_<b><i>m1</i></b> & (X ((F (Lin_<b><i>m1</i></b> | LAST)) -> ((!(Lin_<b><i>m1</i></b> | LAST)) U <b><i>(p)</i></b>)))))) & (<b><i>m1</i></b> -> ((F (Lin_<b><i>m1</i></b> | LAST)) -> ((!(Lin_<b><i>m1</i></b> | LAST)) U <b><i>(p)</i></b>)))",
+            "pt": "(H (Lin_<b><i>m1</i></b> -> (Y (!((!<b><i>(p)</i></b>) S ((!<b><i>(p)</i></b>) & Fin_<b><i>m1</i></b>)))))) & (((!Lin_<b><i>m1</i></b>) S ((!Lin_<b><i>m1</i></b>) & Fin_<b><i>m1</i></b>)) -> (!((!<b><i>(p)</i></b>) S ((!<b><i>(p)</i></b>) & Fin_<b><i>m1</i></b>))))",
+            "ftExpanded": "(G ((!((! <b><i>m1</i></b>) & X <b><i>m1</i></b>)) | (((! <b><i>m1</i></b>) & X <b><i>m1</i></b>) & (X ((F ((<b><i>m1</i></b> & X (! <b><i>m1</i></b>)) | LAST)) -> ((!((<b><i>m1</i></b> & X (! <b><i>m1</i></b>)) | LAST)) U <b><i>(p)</i></b>)))))) & (<b><i>m1</i></b> -> ((F ((<b><i>m1</i></b> & X (! <b><i>m1</i></b>)) | LAST)) -> ((!((<b><i>m1</i></b> & X (! <b><i>m1</i></b>)) | LAST)) U <b><i>(p)</i></b>)))",
+            "ptExpanded": "(H (((! <b><i>m1</i></b>) & (Y <b><i>m1</i></b>)) -> (Y (!((!<b><i>(p)</i></b>) S ((!<b><i>(p)</i></b>) & (<b><i>m1</i></b> & ((! Y TRUE) | (Y ! <b><i>m1</i></b>))))))))) & (((!((! <b><i>m1</i></b>) & (Y <b><i>m1</i></b>))) S ((!((! <b><i>m1</i></b>) & (Y <b><i>m1</i></b>))) & (<b><i>m1</i></b> & ((! Y TRUE) | (Y ! <b><i>m1</i></b>))))) -> (!((!<b><i>(p)</i></b>) S ((!<b><i>(p)</i></b>) & (<b><i>m1</i></b> & ((! Y TRUE) | (Y ! <b><i>m1</i></b>)))))))",
+            "component": "<b><i>AUTOPILOT</i></b>",
+            "CoCoSpecCode": "(H((( not m1) and (pre ( m1 ))) => (pre ( not (S( (( not (p)) and (m1 and (FTP(_) or (pre (  not m1 ))))), ( not (p)) )))))) and ((S( (( not (( not m1) and (pre ( m1 )))) and (m1 and (FTP(_) or (pre (  not m1 ))))), ( not (( not m1) and (pre ( m1 )))) )) => ( not (S( (( not (p)) and (m1 and (FTP(_) or (pre (  not m1 ))))), ( not (p)) ))))",
+            "diagramVariables": "M = <b><i>m1</i></b>, Response = <b><i>(p)</i></b>.",
+            "description": "At some future point, the component \"<b><i>AUTOPILOT</i></b>\" shall satisfy <b><i>(p)</i></b>. This is only enforced when \"<b><i>AUTOPILOT</i></b>\" is in mode <b><i>m1</i></b>.",
+            "diagram": "_media/user-interface/examples/svgDiagrams/in_null_null_satisfaction.svg"
+        },
+        "_id": "225b7950-f549-11eb-91b3-6d6d0a882cf0"
+    },
+    {
+        "reqid": "MetricTemporalProperty",
+        "parent_reqid": "",
+        "project": "TestRequirements",
+        "rationale": "",
+        "fulltext": "When not in M and when C the software shall within 3 secs satisfy P",
+        "semantics": {
+            "scope": {
+                "type": "notin"
+            },
+            "condition": "regular",
+            "timing": "within",
+            "response": "satisfaction",
+            "variables": {
+                "regular": [
+                    "C",
+                    "P"
+                ],
+                "modes": [
+                    "M"
+                ]
+            },
+            "scope_mode": "M",
+            "scopeTextRange": [
+                0,
+                12
+            ],
+            "regular_condition": "(C)",
+            "qualifier_word": "when",
+            "pre_condition": "(C)",
+            "conditionTextRange": [
+                14,
+                23
+            ],
+            "component_name": "software",
+            "componentTextRange": [
+                25,
+                36
+            ],
+            "duration": "3 secs",
+            "timingTextRange": [
+                44,
+                56
+            ],
+            "post_condition": "(P)",
+            "responseTextRange": [
+                58,
+                66
+            ],
+            "ft": "(G ((!Lin_<b><i>M</i></b>) | (Lin_<b><i>M</i></b> & (X ((F (Fin_<b><i>M</i></b> | LAST)) -> (((Fin_<b><i>M</i></b> | LAST) V (((!<b><i>(C)</i></b>) & ((X <b><i>(C)</i></b>) & (!(Fin_<b><i>M</i></b> | LAST)))) -> ((X ((F[<=<b><i>3 secs</i></b>] <b><i>(P)</i></b>) | (F[<<b><i>3 secs</i></b>] (Fin_<b><i>M</i></b> | LAST)))) & (!(Fin_<b><i>M</i></b> | LAST))))) & (<b><i>(C)</i></b> -> ((F[<=<b><i>3 secs</i></b>] <b><i>(P)</i></b>) | (F[<<b><i>3 secs</i></b>] (Fin_<b><i>M</i></b> | LAST)))))))))) & ((!<b><i>M</i></b>) -> ((F (Fin_<b><i>M</i></b> | LAST)) -> (((Fin_<b><i>M</i></b> | LAST) V (((!<b><i>(C)</i></b>) & ((X <b><i>(C)</i></b>) & (!(Fin_<b><i>M</i></b> | LAST)))) -> ((X ((F[<=<b><i>3 secs</i></b>] <b><i>(P)</i></b>) | (F[<<b><i>3 secs</i></b>] (Fin_<b><i>M</i></b> | LAST)))) & (!(Fin_<b><i>M</i></b> | LAST))))) & (<b><i>(C)</i></b> -> ((F[<=<b><i>3 secs</i></b>] <b><i>(P)</i></b>) | (F[<<b><i>3 secs</i></b>] (Fin_<b><i>M</i></b> | LAST)))))))",
+            "pt": "(H ((LNin_<b><i>M</i></b> & (!FTP)) -> (Y (((O[=<b><i>3 secs</i></b>] (((<b><i>(C)</i></b> & (Y (!<b><i>(C)</i></b>))) | (<b><i>(C)</i></b> & FNin_<b><i>M</i></b>)) & (!<b><i>(P)</i></b>))) -> (O[<<b><i>3 secs</i></b>] (FNin_<b><i>M</i></b> | <b><i>(P)</i></b>))) S (((O[=<b><i>3 secs</i></b>] (((<b><i>(C)</i></b> & (Y (!<b><i>(C)</i></b>))) | (<b><i>(C)</i></b> & FNin_<b><i>M</i></b>)) & (!<b><i>(P)</i></b>))) -> (O[<<b><i>3 secs</i></b>] (FNin_<b><i>M</i></b> | <b><i>(P)</i></b>))) & FNin_<b><i>M</i></b>))))) & (((!LNin_<b><i>M</i></b>) S ((!LNin_<b><i>M</i></b>) & FNin_<b><i>M</i></b>)) -> (((O[=<b><i>3 secs</i></b>] (((<b><i>(C)</i></b> & (Y (!<b><i>(C)</i></b>))) | (<b><i>(C)</i></b> & FNin_<b><i>M</i></b>)) & (!<b><i>(P)</i></b>))) -> (O[<<b><i>3 secs</i></b>] (FNin_<b><i>M</i></b> | <b><i>(P)</i></b>))) S (((O[=<b><i>3 secs</i></b>] (((<b><i>(C)</i></b> & (Y (!<b><i>(C)</i></b>))) | (<b><i>(C)</i></b> & FNin_<b><i>M</i></b>)) & (!<b><i>(P)</i></b>))) -> (O[<<b><i>3 secs</i></b>] (FNin_<b><i>M</i></b> | <b><i>(P)</i></b>))) & FNin_<b><i>M</i></b>)))",
+            "ftExpanded": "(G ((!(<b><i>M</i></b> & X (! <b><i>M</i></b>))) | ((<b><i>M</i></b> & X (! <b><i>M</i></b>)) & (X ((F (((! <b><i>M</i></b>) & X <b><i>M</i></b>) | LAST)) -> (((((! <b><i>M</i></b>) & X <b><i>M</i></b>) | LAST) V (((!<b><i>(C)</i></b>) & ((X <b><i>(C)</i></b>) & (!(((! <b><i>M</i></b>) & X <b><i>M</i></b>) | LAST)))) -> ((X ((F[<=<b><i>3 secs</i></b>] <b><i>(P)</i></b>) | (F[<<b><i>3 secs</i></b>] (((! <b><i>M</i></b>) & X <b><i>M</i></b>) | LAST)))) & (!(((! <b><i>M</i></b>) & X <b><i>M</i></b>) | LAST))))) & (<b><i>(C)</i></b> -> ((F[<=<b><i>3 secs</i></b>] <b><i>(P)</i></b>) | (F[<<b><i>3 secs</i></b>] (((! <b><i>M</i></b>) & X <b><i>M</i></b>) | LAST)))))))))) & ((!<b><i>M</i></b>) -> ((F (((! <b><i>M</i></b>) & X <b><i>M</i></b>) | LAST)) -> (((((! <b><i>M</i></b>) & X <b><i>M</i></b>) | LAST) V (((!<b><i>(C)</i></b>) & ((X <b><i>(C)</i></b>) & (!(((! <b><i>M</i></b>) & X <b><i>M</i></b>) | LAST)))) -> ((X ((F[<=<b><i>3 secs</i></b>] <b><i>(P)</i></b>) | (F[<<b><i>3 secs</i></b>] (((! <b><i>M</i></b>) & X <b><i>M</i></b>) | LAST)))) & (!(((! <b><i>M</i></b>) & X <b><i>M</i></b>) | LAST))))) & (<b><i>(C)</i></b> -> ((F[<=<b><i>3 secs</i></b>] <b><i>(P)</i></b>) | (F[<<b><i>3 secs</i></b>] (((! <b><i>M</i></b>) & X <b><i>M</i></b>) | LAST)))))))",
+            "ptExpanded": "(H (((<b><i>M</i></b> & (Y ! <b><i>M</i></b>)) & (!(! Y TRUE))) -> (Y (((O[=<b><i>3 secs</i></b>] (((<b><i>(C)</i></b> & (Y (!<b><i>(C)</i></b>))) | (<b><i>(C)</i></b> & ((! <b><i>M</i></b>) & ((! Y TRUE) | (Y <b><i>M</i></b>))))) & (!<b><i>(P)</i></b>))) -> (O[<<b><i>3 secs</i></b>] (((! <b><i>M</i></b>) & ((! Y TRUE) | (Y <b><i>M</i></b>))) | <b><i>(P)</i></b>))) S (((O[=<b><i>3 secs</i></b>] (((<b><i>(C)</i></b> & (Y (!<b><i>(C)</i></b>))) | (<b><i>(C)</i></b> & ((! <b><i>M</i></b>) & ((! Y TRUE) | (Y <b><i>M</i></b>))))) & (!<b><i>(P)</i></b>))) -> (O[<<b><i>3 secs</i></b>] (((! <b><i>M</i></b>) & ((! Y TRUE) | (Y <b><i>M</i></b>))) | <b><i>(P)</i></b>))) & ((! <b><i>M</i></b>) & ((! Y TRUE) | (Y <b><i>M</i></b>)))))))) & (((!(<b><i>M</i></b> & (Y ! <b><i>M</i></b>))) S ((!(<b><i>M</i></b> & (Y ! <b><i>M</i></b>))) & ((! <b><i>M</i></b>) & ((! Y TRUE) | (Y <b><i>M</i></b>))))) -> (((O[=<b><i>3 secs</i></b>] (((<b><i>(C)</i></b> & (Y (!<b><i>(C)</i></b>))) | (<b><i>(C)</i></b> & ((! <b><i>M</i></b>) & ((! Y TRUE) | (Y <b><i>M</i></b>))))) & (!<b><i>(P)</i></b>))) -> (O[<<b><i>3 secs</i></b>] (((! <b><i>M</i></b>) & ((! Y TRUE) | (Y <b><i>M</i></b>))) | <b><i>(P)</i></b>))) S (((O[=<b><i>3 secs</i></b>] (((<b><i>(C)</i></b> & (Y (!<b><i>(C)</i></b>))) | (<b><i>(C)</i></b> & ((! <b><i>M</i></b>) & ((! Y TRUE) | (Y <b><i>M</i></b>))))) & (!<b><i>(P)</i></b>))) -> (O[<<b><i>3 secs</i></b>] (((! <b><i>M</i></b>) & ((! Y TRUE) | (Y <b><i>M</i></b>))) | <b><i>(P)</i></b>))) & ((! <b><i>M</i></b>) & ((! Y TRUE) | (Y <b><i>M</i></b>))))))",
+            "component": "<b><i>software</i></b>",
+            "CoCoSpecCode": "S( (((,,( ( ( (C) and (pre ( not (C)))) or ((C) and (( not M) and (FTP() or (pre ( M )))))) and ( not (P)), (H(((M and (pre (  not M ))) and ( not FTP())) => (pre (((,,( ( ( (C) and (pre ( not (C)))) or ((C) and (( not M) and (FTP() or (pre ( M )))))) and ( not (P)))) => (OTlore(3 secs-1, ((( not M) and (FTP() or (pre ( M )))) or (P)) ))) )",
+            "diagramVariables": "M = <b><i>M</i></b>,  n = <b><i>3 secs</i></b>, Response = <b><i>(P)</i></b>.",
+            "description": "We are working on formalizing this requirement. In the meanwhile, you can see its intended meaning in the diagram provided.",
+            "diagram": "Undefined svg."
+        },
+        "_id": "225ba060-f549-11eb-91b3-6d6d0a882cf0"
+    },
+    {
+        "reqid": "Testing after",
+        "parent_reqid": "",
+        "project": "TestRequirements",
+        "rationale": "",
+        "fulltext": "after initialization mode AUTOPILOT  shall after 3 seconds satisfy xin > 0",
+        "semantics": {
+            "scope": {
+                "type": "after",
+                "exclusive": false,
+                "required": false
+            },
+            "condition": "null",
+            "timing": "after",
+            "response": "satisfaction",
+            "variables": {
+                "regular": [
+                    "xin"
+                ],
+                "modes": [
+                    "initialization"
+                ]
+            },
+            "scope_mode": "initialization",
+            "scopeTextRange": [
+                0,
+                24
+            ],
+            "component_name": "AUTOPILOT",
+            "componentTextRange": [
+                26,
+                34
+            ],
+            "duration": "3 seconds",
+            "timingTextRange": [
+                43,
+                57
+            ],
+            "post_condition": "(xin > 0)",
+            "responseTextRange": [
+                59,
+                73
+            ],
+            "ft": "((!Lin_<b><i>initialization</i></b>) U (Lin_<b><i>initialization</i></b> & (X ((!(F[<=<b><i>3 seconds</i></b>] (!(!<b><i>(xin > 0)</i></b>)))) & (F[<=<b><i>3 seconds</i></b>+1] <b><i>(xin > 0)</i></b>))))) | (G (!Lin_<b><i>initialization</i></b>))",
+            "pt": "Under construction.",
+            "ftExpanded": "((!(<b><i>initialization</i></b> & X (! <b><i>initialization</i></b>))) U ((<b><i>initialization</i></b> & X (! <b><i>initialization</i></b>)) & (X ((!(F[<=<b><i>3 seconds</i></b>] (!(!<b><i>(xin > 0)</i></b>)))) & (F[<=<b><i>3 seconds</i></b>+1] <b><i>(xin > 0)</i></b>))))) | (G (!(<b><i>initialization</i></b> & X (! <b><i>initialization</i></b>))))",
+            "ptExpanded": "Under construction.",
+            "component": "<b><i>AUTOPILOT</i></b>",
+            "CoCoSpecCode": "Under construction.",
+            "diagramVariables": "M = <b><i>initialization</i></b>,  n = <b><i>3 seconds</i></b>, Response = <b><i>(xin > 0)</i></b>.",
+            "description": "After <b><i>3 seconds</i></b>, the component \"<b><i>AUTOPILOT</i></b>\" shall satisfy <b><i>(xin > 0)</i></b>. This is only enforced strictly after the first occurence of <b><i>initialization</i></b> (if <b><i>initialization</i></b> ever occurs).",
+            "diagram": "_media/user-interface/examples/svgDiagrams/after_null_after_satisfaction.svg"
+        },
+        "_id": "225bee80-f549-11eb-91b3-6d6d0a882cf0"
+    },
+    {
+        "reqid": "Kandy1",
+        "parent_reqid": "",
+        "project": "TestRequirements",
+        "rationale": "In reality we want to check it within 1-sigma which is 70% of the time (?)",
+        "fulltext": "when GPSavailable the AVAprototype shall always satisfy difference(measured, actual) <1",
+        "semantics": {
+            "scope": {
+                "type": "null"
+            },
+            "condition": "regular",
+            "timing": "always",
+            "response": "satisfaction",
+            "variables": {
+                "regular": [
+                    "GPSavailable",
+                    "difference",
+                    "measured",
+                    "actual"
+                ],
+                "modes": []
+            },
+            "regular_condition": "(GPSavailable)",
+            "qualifier_word": "when",
+            "pre_condition": "(GPSavailable)",
+            "conditionTextRange": [
+                0,
+                16
+            ],
+            "component_name": "AVAprototype",
+            "componentTextRange": [
+                18,
+                33
+            ],
+            "timingTextRange": [
+                41,
+                46
+            ],
+            "post_condition": "(difference ( measured , actual ) < 1)",
+            "responseTextRange": [
+                48,
+                86
+            ],
+            "ft": "(G (((!<b><i>(GPSavailable)</i></b>) & (X <b><i>(GPSavailable)</i></b>)) -> (X (G <b><i>(difference ( measured , actual ) < 1)</i></b>)))) & (<b><i>(GPSavailable)</i></b> -> (G <b><i>(difference ( measured , actual ) < 1)</i></b>))",
+            "pt": "(((!<b><i>(GPSavailable)</i></b>) S ((!<b><i>(GPSavailable)</i></b>) & FTP)) | (<b><i>(difference ( measured , actual ) < 1)</i></b> S (<b><i>(difference ( measured , actual ) < 1)</i></b> & ((<b><i>(GPSavailable)</i></b> & (Y (!<b><i>(GPSavailable)</i></b>))) | (<b><i>(GPSavailable)</i></b> & FTP))))) S ((((!<b><i>(GPSavailable)</i></b>) S ((!<b><i>(GPSavailable)</i></b>) & FTP)) | (<b><i>(difference ( measured , actual ) < 1)</i></b> S (<b><i>(difference ( measured , actual ) < 1)</i></b> & ((<b><i>(GPSavailable)</i></b> & (Y (!<b><i>(GPSavailable)</i></b>))) | (<b><i>(GPSavailable)</i></b> & FTP))))) & FTP)",
+            "ftExpanded": "(G (((!<b><i>(GPSavailable)</i></b>) & (X <b><i>(GPSavailable)</i></b>)) -> (X (G <b><i>(difference ( measured , actual ) < 1)</i></b>)))) & (<b><i>(GPSavailable)</i></b> -> (G <b><i>(difference ( measured , actual ) < 1)</i></b>))",
+            "ptExpanded": "(((!<b><i>(GPSavailable)</i></b>) S ((!<b><i>(GPSavailable)</i></b>) & (! Y TRUE))) | (<b><i>(difference ( measured , actual ) < 1)</i></b> S (<b><i>(difference ( measured , actual ) < 1)</i></b> & ((<b><i>(GPSavailable)</i></b> & (Y (!<b><i>(GPSavailable)</i></b>))) | (<b><i>(GPSavailable)</i></b> & (! Y TRUE)))))) S ((((!<b><i>(GPSavailable)</i></b>) S ((!<b><i>(GPSavailable)</i></b>) & (! Y TRUE))) | (<b><i>(difference ( measured , actual ) < 1)</i></b> S (<b><i>(difference ( measured , actual ) < 1)</i></b> & ((<b><i>(GPSavailable)</i></b> & (Y (!<b><i>(GPSavailable)</i></b>))) | (<b><i>(GPSavailable)</i></b> & (! Y TRUE)))))) & (! Y TRUE))",
+            "component": "<b><i>AVAprototype</i></b>",
+            "CoCoSpecCode": "S( (((S( (( not (GPSavailable)) and FTP()), ( not (GPSavailable)) )) or (S( ((difference ( measured , actual ) < 1) and (((GPSavailable) and (pre ( not (GPSavailable)))) or ((GPSavailable) and FTP()))), (difference ( measured , actual ) < 1) ))) and FTP()), ((S( (( not (GPSavailable)) and FTP()), ( not (GPSavailable)) )) or (S( ((difference ( measured , actual ) < 1) and (((GPSavailable) and (pre ( not (GPSavailable)))) or ((GPSavailable) and FTP()))), (difference ( measured , actual ) < 1) ))) )",
+            "diagramVariables": "Response = <b><i>(difference ( measured , actual ) < 1)</i></b>.",
+            "description": "Upon <b><i>(GPSavailable)</i></b> becoming true, always, the component \"<b><i>AVAprototype</i></b>\" shall satisfy <b><i>(difference ( measured , actual ) < 1)</i></b>.",
+            "diagram": "Undefined svg."
+        },
+        "_id": "225c1590-f549-11eb-91b3-6d6d0a882cf0"
+    },
+    {
+        "reqid": "Kandy2a",
+        "parent_reqid": "Kandy2",
+        "project": "TestRequirements",
+        "rationale": "This is required to achieve the desired orbit of the payloads. It should happen within 1-sigma (70% of time)?",
+        "fulltext": "After BoostCompleted the AvaPrototype shall always satisfy flightPathAngleDiff < 0.5",
+        "semantics": {
+            "scope": {
+                "type": "after",
+                "exclusive": false,
+                "required": false
+            },
+            "condition": "null",
+            "timing": "always",
+            "response": "satisfaction",
+            "variables": {
+                "regular": [
+                    "flightPathAngleDiff"
+                ],
+                "modes": [
+                    "BoostCompleted"
+                ]
+            },
+            "scope_mode": "BoostCompleted",
+            "scopeTextRange": [
+                0,
+                19
+            ],
+            "component_name": "AvaPrototype",
+            "componentTextRange": [
+                21,
+                36
+            ],
+            "timingTextRange": [
+                44,
+                49
+            ],
+            "post_condition": "(flightPathAngleDiff < 0.5)",
+            "responseTextRange": [
+                51,
+                83
+            ],
+            "ft": "((!Lin_<b><i>BoostCompleted</i></b>) U (Lin_<b><i>BoostCompleted</i></b> & (X (G <b><i>(flightPathAngleDiff < 0.5)</i></b>)))) | (G (!Lin_<b><i>BoostCompleted</i></b>))",
+            "pt": "(O FLin_<b><i>BoostCompleted</i></b>) -> (<b><i>(flightPathAngleDiff < 0.5)</i></b> S (<b><i>(flightPathAngleDiff < 0.5)</i></b> & FLin_<b><i>BoostCompleted</i></b>))",
+            "ftExpanded": "((!(<b><i>BoostCompleted</i></b> & X (! <b><i>BoostCompleted</i></b>))) U ((<b><i>BoostCompleted</i></b> & X (! <b><i>BoostCompleted</i></b>)) & (X (G <b><i>(flightPathAngleDiff < 0.5)</i></b>)))) | (G (!(<b><i>BoostCompleted</i></b> & X (! <b><i>BoostCompleted</i></b>))))",
+            "ptExpanded": "(O (((! <b><i>BoostCompleted</i></b>) & (Y <b><i>BoostCompleted</i></b>)) & Y (H (! ((! <b><i>BoostCompleted</i></b>) & (Y <b><i>BoostCompleted</i></b>)))))) -> (<b><i>(flightPathAngleDiff < 0.5)</i></b> S (<b><i>(flightPathAngleDiff < 0.5)</i></b> & (((! <b><i>BoostCompleted</i></b>) & (Y <b><i>BoostCompleted</i></b>)) & Y (H (! ((! <b><i>BoostCompleted</i></b>) & (Y <b><i>BoostCompleted</i></b>)))))))",
+            "component": "<b><i>AvaPrototype</i></b>",
+            "CoCoSpecCode": "(O((( not BoostCompleted) and (pre ( BoostCompleted ))) and pre (H( not (( not BoostCompleted) and (pre ( BoostCompleted ))))))) => (S( ((flightPathAngleDiff < 0.5) and ((( not BoostCompleted) and (pre ( BoostCompleted ))) and pre (H( not (( not BoostCompleted) and (pre ( BoostCompleted ))))))), (flightPathAngleDiff < 0.5) ))",
+            "diagramVariables": "M = <b><i>BoostCompleted</i></b>, Response = <b><i>(flightPathAngleDiff < 0.5)</i></b>.",
+            "description": "Always, the component \"<b><i>AvaPrototype</i></b>\" shall satisfy <b><i>(flightPathAngleDiff < 0.5)</i></b>. This is only enforced strictly after the first occurence of <b><i>BoostCompleted</i></b> (if <b><i>BoostCompleted</i></b> ever occurs).",
+            "diagram": "_media/user-interface/examples/svgDiagrams/after_null_always_satisfaction.svg"
+        },
+        "_id": "225c3ca0-f549-11eb-91b3-6d6d0a882cf0"
+    },
+    {
+        "reqid": "Kandy2b",
+        "parent_reqid": "Kandy2",
+        "project": "TestRequirements",
+        "rationale": "This is the goal (and Kandy2a is what is the least expected)",
+        "fulltext": "After BoostCompleted the AvaPrototype shall always satisfy flightPathAngleDiff < 0.1",
+        "semantics": {
+            "scope": {
+                "type": "after",
+                "exclusive": false,
+                "required": false
+            },
+            "condition": "null",
+            "timing": "always",
+            "response": "satisfaction",
+            "variables": {
+                "regular": [
+                    "flightPathAngleDiff"
+                ],
+                "modes": [
+                    "BoostCompleted"
+                ]
+            },
+            "scope_mode": "BoostCompleted",
+            "scopeTextRange": [
+                0,
+                19
+            ],
+            "component_name": "AvaPrototype",
+            "componentTextRange": [
+                21,
+                36
+            ],
+            "timingTextRange": [
+                44,
+                49
+            ],
+            "post_condition": "(flightPathAngleDiff < 0.1)",
+            "responseTextRange": [
+                51,
+                83
+            ],
+            "ft": "((!Lin_<b><i>BoostCompleted</i></b>) U (Lin_<b><i>BoostCompleted</i></b> & (X (G <b><i>(flightPathAngleDiff < 0.1)</i></b>)))) | (G (!Lin_<b><i>BoostCompleted</i></b>))",
+            "pt": "(O FLin_<b><i>BoostCompleted</i></b>) -> (<b><i>(flightPathAngleDiff < 0.1)</i></b> S (<b><i>(flightPathAngleDiff < 0.1)</i></b> & FLin_<b><i>BoostCompleted</i></b>))",
+            "ftExpanded": "((!(<b><i>BoostCompleted</i></b> & X (! <b><i>BoostCompleted</i></b>))) U ((<b><i>BoostCompleted</i></b> & X (! <b><i>BoostCompleted</i></b>)) & (X (G <b><i>(flightPathAngleDiff < 0.1)</i></b>)))) | (G (!(<b><i>BoostCompleted</i></b> & X (! <b><i>BoostCompleted</i></b>))))",
+            "ptExpanded": "(O (((! <b><i>BoostCompleted</i></b>) & (Y <b><i>BoostCompleted</i></b>)) & Y (H (! ((! <b><i>BoostCompleted</i></b>) & (Y <b><i>BoostCompleted</i></b>)))))) -> (<b><i>(flightPathAngleDiff < 0.1)</i></b> S (<b><i>(flightPathAngleDiff < 0.1)</i></b> & (((! <b><i>BoostCompleted</i></b>) & (Y <b><i>BoostCompleted</i></b>)) & Y (H (! ((! <b><i>BoostCompleted</i></b>) & (Y <b><i>BoostCompleted</i></b>)))))))",
+            "component": "<b><i>AvaPrototype</i></b>",
+            "CoCoSpecCode": "(O((( not BoostCompleted) and (pre ( BoostCompleted ))) and pre (H( not (( not BoostCompleted) and (pre ( BoostCompleted ))))))) => (S( ((flightPathAngleDiff < 0.1) and ((( not BoostCompleted) and (pre ( BoostCompleted ))) and pre (H( not (( not BoostCompleted) and (pre ( BoostCompleted ))))))), (flightPathAngleDiff < 0.1) ))",
+            "diagramVariables": "M = <b><i>BoostCompleted</i></b>, Response = <b><i>(flightPathAngleDiff < 0.1)</i></b>.",
+            "description": "Always, the component \"<b><i>AvaPrototype</i></b>\" shall satisfy <b><i>(flightPathAngleDiff < 0.1)</i></b>. This is only enforced strictly after the first occurence of <b><i>BoostCompleted</i></b> (if <b><i>BoostCompleted</i></b> ever occurs).",
+            "diagram": "_media/user-interface/examples/svgDiagrams/after_null_always_satisfaction.svg"
+        },
+        "_id": "225c63b0-f549-11eb-91b3-6d6d0a882cf0"
+    }
+]

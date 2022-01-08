@@ -1,0 +1,1 @@
+{"tableSpec":{"contract_name":"tableSpec","model_path":"test_table","Inputs":[{"variable_name":"input01","variable_path":"test_table/input01"},{"variable_name":"input02","variable_path":"test_table/input02"}],"Outputs":[{"variable_name":"out1","variable_path":"test_table/out1"},{"variable_name":"out2","variable_path":"test_table/out2"}]}}
