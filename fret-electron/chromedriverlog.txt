@@ -1,0 +1,951 @@
+[1643305346.423][INFO]: Starting ChromeDriver 87.0.4280.60 (1ff2c62e3efc30d32826086b7674a29dd30c72dd-refs/heads/master@{#818831}) on port 9515
+[1643305346.423][INFO]: Please see https://chromedriver.chromium.org/security-considerations for suggestions on keeping ChromeDriver safe.
+[1643305346.455][INFO]: [d7e520bbdbbe57fdce108e17a185e498] COMMAND InitSession {
+   "capabilities": {
+      "alwaysMatch": {
+         "goog:chromeOptions": {
+            "args": [ "spectron-path=/Users/ktrinh/fret/sqa8/fret-electron/node_modules/electron/dist/Electron.app/Contents/MacOS/Electron", "spectron-arg0=--require", "spectron-arg1=/Users/ktrinh/fret/sqa8/fret-electron/node_modules/spectron-fake-dialog/preload.js", "spectron-arg2=/Users/ktrinh/fret/sqa8/fret-electron/app" ],
+            "binary": "/Users/ktrinh/fret/sqa8/fret-electron/node_modules/spectron/lib/launcher.js",
+            "windowTypes": [ "app", "webview" ]
+         }
+      },
+      "firstMatch": [ {
+
+      } ]
+   },
+   "desiredCapabilities": {
+      "goog:chromeOptions": {
+         "args": [ "spectron-path=/Users/ktrinh/fret/sqa8/fret-electron/node_modules/electron/dist/Electron.app/Contents/MacOS/Electron", "spectron-arg0=--require", "spectron-arg1=/Users/ktrinh/fret/sqa8/fret-electron/node_modules/spectron-fake-dialog/preload.js", "spectron-arg2=/Users/ktrinh/fret/sqa8/fret-electron/app" ],
+         "binary": "/Users/ktrinh/fret/sqa8/fret-electron/node_modules/spectron/lib/launcher.js",
+         "windowTypes": [ "app", "webview" ]
+      }
+   }
+}
+[1643305346.456][INFO]: Populating Preferences file: {
+   "alternate_error_pages": {
+      "enabled": false
+   },
+   "autofill": {
+      "enabled": false
+   },
+   "browser": {
+      "check_default_browser": false
+   },
+   "distribution": {
+      "import_bookmarks": false,
+      "import_history": false,
+      "import_search_engine": false,
+      "make_chrome_default_for_user": false,
+      "skip_first_run_ui": true
+   },
+   "dns_prefetching": {
+      "enabled": false
+   },
+   "profile": {
+      "content_settings": {
+         "pattern_pairs": {
+            "https://*,*": {
+               "media-stream": {
+                  "audio": "Default",
+                  "video": "Default"
+               }
+            }
+         }
+      },
+      "default_content_setting_values": {
+         "geolocation": 1
+      },
+      "default_content_settings": {
+         "geolocation": 1,
+         "mouselock": 1,
+         "notifications": 1,
+         "popups": 1,
+         "ppapi-broker": 1
+      },
+      "password_manager_enabled": false
+   },
+   "safebrowsing": {
+      "enabled": false
+   },
+   "search": {
+      "suggest_enabled": false
+   },
+   "translate": {
+      "enabled": false
+   }
+}
+[1643305346.456][INFO]: Populating Local State file: {
+   "background_mode": {
+      "enabled": false
+   },
+   "ssl": {
+      "rev_checking": {
+         "enabled": false
+      }
+   }
+}
+[1643305346.457][INFO]: Launching chrome: /Users/ktrinh/fret/sqa8/fret-electron/node_modules/spectron/lib/launcher.js --disable-background-networking --disable-client-side-phishing-detection --disable-default-apps --disable-hang-monitor --disable-popup-blocking --disable-prompt-on-repost --disable-sync --enable-automation --enable-blink-features=ShadowDOMV0 --enable-logging --log-level=0 --no-first-run --no-service-autorun --password-store=basic --remote-debugging-port=0 --spectron-arg0=--require --spectron-arg1=/Users/ktrinh/fret/sqa8/fret-electron/node_modules/spectron-fake-dialog/preload.js --spectron-arg2=/Users/ktrinh/fret/sqa8/fret-electron/app --spectron-path=/Users/ktrinh/fret/sqa8/fret-electron/node_modules/electron/dist/Electron.app/Contents/MacOS/Electron --test-type=webdriver --use-mock-keychain --user-data-dir=/var/folders/q1/yx47_vl51lxc9h3b9kgbf6khw7vmhx/T/.org.chromium.Chromium.hHTuJ2 data:,
+[1643305346.811][DEBUG]: DevTools HTTP Request: http://localhost:53981/json/version
+[1643305346.923][DEBUG]: DevTools HTTP Response: {
+   "Browser": "Chrome/87.0.4280.141",
+   "Protocol-Version": "1.3",
+   "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_6_3) AppleWebKit/537.36 (KHTML, like Gecko) FRET/0.0.1 Chrome/87.0.4280.141 Electron/11.5.0 Safari/537.36",
+   "V8-Version": "8.7.220.31",
+   "WebKit-Version": "537.36 (@479457a11c1253905080e29ddd154743901918f9)",
+   "webSocketDebuggerUrl": "ws://localhost:53981/devtools/browser/b669a21e-fa89-472b-89ac-af1181123ff1"
+}
+
+[1643305346.923][DEBUG]: DevTools HTTP Request: http://localhost:53981/json/list
+[1643305346.924][DEBUG]: DevTools HTTP Response: [ {
+   "description": "",
+   "devtoolsFrontendUrl": "/devtools/inspector.html?ws=localhost:53981/devtools/page/C7909987C9B790BFB0CB39D6075A6A2D",
+   "id": "C7909987C9B790BFB0CB39D6075A6A2D",
+   "title": "",
+   "type": "page",
+   "url": "file:///Users/ktrinh/fret/sqa8/fret-electron/app/app.html",
+   "webSocketDebuggerUrl": "ws://localhost:53981/devtools/page/C7909987C9B790BFB0CB39D6075A6A2D"
+} ]
+
+[1643305346.925][DEBUG]: DevTools HTTP Request: http://localhost:53981/json/list
+[1643305346.928][DEBUG]: DevTools HTTP Response: [ {
+   "description": "",
+   "devtoolsFrontendUrl": "/devtools/inspector.html?ws=localhost:53981/devtools/page/C7909987C9B790BFB0CB39D6075A6A2D",
+   "id": "C7909987C9B790BFB0CB39D6075A6A2D",
+   "title": "",
+   "type": "page",
+   "url": "file:///Users/ktrinh/fret/sqa8/fret-electron/app/app.html",
+   "webSocketDebuggerUrl": "ws://localhost:53981/devtools/page/C7909987C9B790BFB0CB39D6075A6A2D"
+} ]
+
+[1643305346.929][INFO]: resolved localhost to ["::1","127.0.0.1"]
+[1643305346.930][DEBUG]: DevTools WebSocket Command: Page.addScriptToEvaluateOnNewDocument (id=1) C7909987C9B790BFB0CB39D6075A6A2D {
+   "source": "(function () {window.cdc_adoQpoasnfa76pfcZLmcfl_Array = window.Array;window.cdc_adoQpoasnfa76pfcZLmcfl_Promise = window.Promise;window.cdc_adoQpoasnfa76pfcZLmcfl_Symbol = window.Symbol;}) ();"
+}
+[1643305346.930][DEBUG]: DevTools WebSocket Command: Runtime.evaluate (id=2) C7909987C9B790BFB0CB39D6075A6A2D {
+   "expression": "(function () {window.cdc_adoQpoasnfa76pfcZLmcfl_Array = window.Array;window.cdc_adoQpoasnfa76pfcZLmcfl_Promise = window.Promise;window.cdc_adoQpoasnfa76pfcZLmcfl_Symbol = window.Symbol;}) ();"
+}
+[1643305346.930][DEBUG]: DevTools WebSocket Command: Log.enable (id=3) C7909987C9B790BFB0CB39D6075A6A2D {
+
+}
+[1643305346.930][DEBUG]: DevTools WebSocket Command: DOM.getDocument (id=4) C7909987C9B790BFB0CB39D6075A6A2D {
+
+}
+[1643305346.930][DEBUG]: DevTools WebSocket Command: Target.setAutoAttach (id=5) C7909987C9B790BFB0CB39D6075A6A2D {
+   "autoAttach": true,
+   "flatten": true,
+   "waitForDebuggerOnStart": false
+}
+[1643305346.931][DEBUG]: DevTools WebSocket Command: Page.enable (id=6) C7909987C9B790BFB0CB39D6075A6A2D {
+
+}
+[1643305346.931][DEBUG]: DevTools WebSocket Command: Page.enable (id=7) C7909987C9B790BFB0CB39D6075A6A2D {
+
+}
+[1643305346.961][DEBUG]: DevTools WebSocket Response: Page.addScriptToEvaluateOnNewDocument (id=1) C7909987C9B790BFB0CB39D6075A6A2D {
+   "identifier": "1"
+}
+[1643305347.004][DEBUG]: DevTools WebSocket Response: Runtime.evaluate (id=2) C7909987C9B790BFB0CB39D6075A6A2D {
+   "result": {
+      "type": "undefined"
+   }
+}
+[1643305347.004][DEBUG]: DevTools WebSocket Response: Log.enable (id=3) C7909987C9B790BFB0CB39D6075A6A2D {
+
+}
+[1643305347.004][DEBUG]: DevTools WebSocket Response: DOM.getDocument (id=4) C7909987C9B790BFB0CB39D6075A6A2D {
+   "root": {
+      "backendNodeId": 1,
+      "baseURL": "about:blank",
+      "childNodeCount": 1,
+      "children": [ {
+         "attributes": [  ],
+         "backendNodeId": 2,
+         "childNodeCount": 2,
+         "children": [ {
+            "attributes": [  ],
+            "backendNodeId": 3,
+            "childNodeCount": 0,
+            "localName": "head",
+            "nodeId": 3,
+            "nodeName": "HEAD",
+            "nodeType": 1,
+            "nodeValue": "",
+            "parentId": 2
+         }, {
+            "attributes": [  ],
+            "backendNodeId": 4,
+            "childNodeCount": 0,
+            "localName": "body",
+            "nodeId": 4,
+            "nodeName": "BODY",
+            "nodeType": 1,
+            "nodeValue": "",
+            "parentId": 2
+         } ],
+         "frameId": "C7909987C9B790BFB0CB39D6075A6A2D",
+         "localName": "html",
+         "nodeId": 2,
+         "nodeName": "HTML",
+         "nodeType": 1,
+         "nodeValue": "",
+         "parentId": 1
+      } ],
+      "documentURL": "",
+      "localName": "",
+      "nodeId": 1,
+      "nodeName": "#document",
+      "nodeType": 9,
+      "nodeValue": "",
+      "xmlVersion": ""
+   }
+}
+[1643305347.004][DEBUG]: DevTools WebSocket Response: Target.setAutoAttach (id=5) C7909987C9B790BFB0CB39D6075A6A2D {
+
+}
+[1643305347.004][DEBUG]: DevTools WebSocket Response: Page.enable (id=6) C7909987C9B790BFB0CB39D6075A6A2D {
+
+}
+[1643305347.004][DEBUG]: DevTools WebSocket Response: Page.enable (id=7) C7909987C9B790BFB0CB39D6075A6A2D {
+
+}
+[1643305347.004][DEBUG]: DevTools WebSocket Command: Runtime.enable (id=8) C7909987C9B790BFB0CB39D6075A6A2D {
+
+}
+[1643305347.005][DEBUG]: DevTools WebSocket Event: Page.frameStartedLoading C7909987C9B790BFB0CB39D6075A6A2D {
+   "frameId": "C7909987C9B790BFB0CB39D6075A6A2D"
+}
+[1643305347.031][DEBUG]: DevTools WebSocket Event: Page.frameNavigated C7909987C9B790BFB0CB39D6075A6A2D {
+   "frame": {
+      "adFrameType": "none",
+      "crossOriginIsolatedContextType": "NotIsolated",
+      "domainAndRegistry": "",
+      "id": "C7909987C9B790BFB0CB39D6075A6A2D",
+      "loaderId": "FFBC537216F5055BAB7684DAC4C142FD",
+      "mimeType": "text/html",
+      "secureContextType": "Secure",
+      "securityOrigin": "file://",
+      "url": "file:///Users/ktrinh/fret/sqa8/fret-electron/app/app.html"
+   }
+}
+[1643305347.031][DEBUG]: DevTools WebSocket Event: DOM.documentUpdated C7909987C9B790BFB0CB39D6075A6A2D {
+
+}
+[1643305347.031][DEBUG]: DevTools WebSocket Command: DOM.getDocument (id=9) C7909987C9B790BFB0CB39D6075A6A2D {
+
+}
+[1643305347.074][DEBUG]: DevTools WebSocket Event: Runtime.executionContextCreated C7909987C9B790BFB0CB39D6075A6A2D {
+   "context": {
+      "auxData": {
+         "frameId": "C7909987C9B790BFB0CB39D6075A6A2D",
+         "isDefault": true,
+         "type": "default"
+      },
+      "id": 2,
+      "name": "",
+      "origin": "file://"
+   }
+}
+[1643305347.075][DEBUG]: DevTools WebSocket Response: Runtime.enable (id=8) C7909987C9B790BFB0CB39D6075A6A2D {
+
+}
+[1643305347.075][DEBUG]: DevTools WebSocket Command: Page.enable (id=10) C7909987C9B790BFB0CB39D6075A6A2D {
+
+}
+[1643305347.075][DEBUG]: DevTools WebSocket Response: DOM.getDocument (id=9) C7909987C9B790BFB0CB39D6075A6A2D {
+   "root": {
+      "backendNodeId": 5,
+      "baseURL": "file:///Users/ktrinh/fret/sqa8/fret-electron/app/app.html",
+      "childNodeCount": 0,
+      "children": [  ],
+      "documentURL": "file:///Users/ktrinh/fret/sqa8/fret-electron/app/app.html",
+      "localName": "",
+      "nodeId": 5,
+      "nodeName": "#document",
+      "nodeType": 9,
+      "nodeValue": "",
+      "xmlVersion": ""
+   }
+}
+[1643305347.076][DEBUG]: DevTools WebSocket Event: DOM.childNodeInserted C7909987C9B790BFB0CB39D6075A6A2D {
+   "node": {
+      "backendNodeId": 6,
+      "localName": "",
+      "nodeId": 6,
+      "nodeName": "html",
+      "nodeType": 10,
+      "nodeValue": "",
+      "publicId": "",
+      "systemId": ""
+   },
+   "parentNodeId": 5,
+   "previousNodeId": 0
+}
+[1643305347.076][DEBUG]: DevTools WebSocket Event: DOM.childNodeInserted C7909987C9B790BFB0CB39D6075A6A2D {
+   "node": {
+      "attributes": [  ],
+      "backendNodeId": 7,
+      "childNodeCount": 0,
+      "frameId": "C7909987C9B790BFB0CB39D6075A6A2D",
+      "localName": "html",
+      "nodeId": 7,
+      "nodeName": "HTML",
+      "nodeType": 1,
+      "nodeValue": ""
+   },
+   "parentNodeId": 5,
+   "previousNodeId": 6
+}
+[1643305347.076][DEBUG]: DevTools WebSocket Event: DOM.childNodeCountUpdated C7909987C9B790BFB0CB39D6075A6A2D {
+   "childNodeCount": 1,
+   "nodeId": 7
+}
+[1643305347.076][DEBUG]: DevTools WebSocket Event: DOM.childNodeCountUpdated C7909987C9B790BFB0CB39D6075A6A2D {
+   "childNodeCount": 2,
+   "nodeId": 7
+}
+[1643305347.076][DEBUG]: DevTools WebSocket Response: Page.enable (id=10) C7909987C9B790BFB0CB39D6075A6A2D {
+
+}
+[1643305347.076][DEBUG]: DevTools WebSocket Command: Runtime.enable (id=11) C7909987C9B790BFB0CB39D6075A6A2D {
+
+}
+[1643305347.079][DEBUG]: DevTools WebSocket Response: Runtime.enable (id=11) C7909987C9B790BFB0CB39D6075A6A2D {
+
+}
+[1643305347.080][DEBUG]: DevTools WebSocket Command: Runtime.evaluate (id=12) C7909987C9B790BFB0CB39D6075A6A2D {
+   "awaitPromise": true,
+   "expression": "(function() { // Copyright (c) 2012 The Chromium Authors. All rights reserved.\n// Use of this source code is governed by a BSD-style license that can be\n// found in the LICENSE file.\n\n/**\n * Enum f...",
+   "returnByValue": true
+}
+[1643305347.081][DEBUG]: DevTools WebSocket Response: Runtime.evaluate (id=12) C7909987C9B790BFB0CB39D6075A6A2D {
+   "result": {
+      "type": "object",
+      "value": {
+         "status": 0,
+         "value": 1
+      }
+   }
+}
+[1643305347.081][INFO]: [d7e520bbdbbe57fdce108e17a185e498] RESPONSE InitSession {
+   "capabilities": {
+      "acceptInsecureCerts": false,
+      "browserName": "chrome",
+      "browserVersion": "87.0.4280.141",
+      "chrome": {
+         "chromedriverVersion": "87.0.4280.60 (1ff2c62e3efc30d32826086b7674a29dd30c72dd-refs/heads/master@{#818831})",
+         "userDataDir": "/var/folders/q1/yx47_vl51lxc9h3b9kgbf6khw7vmhx/T/.org.chromium.Chromium.hHTuJ2"
+      },
+      "goog:chromeOptions": {
+         "debuggerAddress": "localhost:53981"
+      },
+      "networkConnectionEnabled": false,
+      "pageLoadStrategy": "normal",
+      "platformName": "mac os x",
+      "proxy": {
+
+      },
+      "setWindowRect": true,
+      "strictFileInteractability": false,
+      "timeouts": {
+         "implicit": 0,
+         "pageLoad": 300000,
+         "script": 30000
+      },
+      "unhandledPromptBehavior": "dismiss and notify",
+      "webauthn:virtualAuthenticators": true
+   },
+   "sessionId": "d7e520bbdbbe57fdce108e17a185e498"
+}
+[1643305347.085][INFO]: [d7e520bbdbbe57fdce108e17a185e498] COMMAND ExecuteScript {
+   "args": [ "require" ],
+   "script": "return (function (requireName) {\n    return typeof window[requireName] === 'function';\n  }).apply(null, arguments)"
+}
+[1643305347.085][INFO]: Waiting for pending navigations...
+[1643305347.085][DEBUG]: DevTools WebSocket Command: Runtime.evaluate (id=13) C7909987C9B790BFB0CB39D6075A6A2D {
+   "expression": "1"
+}
+[1643305347.085][DEBUG]: DevTools WebSocket Response: Runtime.evaluate (id=13) C7909987C9B790BFB0CB39D6075A6A2D {
+   "result": {
+      "description": "1",
+      "type": "number",
+      "value": 1
+   }
+}
+[1643305347.586][DEBUG]: DevTools WebSocket Command: Runtime.evaluate (id=14) C7909987C9B790BFB0CB39D6075A6A2D {
+   "expression": "1"
+}
+[1643305347.702][DEBUG]: DevTools WebSocket Event: DOM.documentUpdated C7909987C9B790BFB0CB39D6075A6A2D {
+
+}
+[1643305347.702][DEBUG]: DevTools WebSocket Command: DOM.getDocument (id=15) C7909987C9B790BFB0CB39D6075A6A2D {
+
+}
+[1643305347.702][DEBUG]: DevTools WebSocket Event: Page.domContentEventFired C7909987C9B790BFB0CB39D6075A6A2D {
+   "timestamp": 6362.437871
+}
+[1643305347.725][DEBUG]: DevTools WebSocket Response: Runtime.evaluate (id=14) C7909987C9B790BFB0CB39D6075A6A2D {
+   "result": {
+      "description": "1",
+      "type": "number",
+      "value": 1
+   }
+}
+[1643305347.741][DEBUG]: DevTools WebSocket Response: DOM.getDocument (id=15) C7909987C9B790BFB0CB39D6075A6A2D {
+   "root": {
+      "backendNodeId": 5,
+      "baseURL": "file:///Users/ktrinh/fret/sqa8/fret-electron/app/app.html",
+      "childNodeCount": 2,
+      "children": [ {
+         "backendNodeId": 6,
+         "localName": "",
+         "nodeId": 9,
+         "nodeName": "html",
+         "nodeType": 10,
+         "nodeValue": "",
+         "parentId": 8,
+         "publicId": "",
+         "systemId": ""
+      }, {
+         "attributes": [  ],
+         "backendNodeId": 7,
+         "childNodeCount": 2,
+         "children": [ {
+            "attributes": [  ],
+            "backendNodeId": 24,
+            "childNodeCount": 36,
+            "localName": "head",
+            "nodeId": 11,
+            "nodeName": "HEAD",
+            "nodeType": 1,
+            "nodeValue": "",
+            "parentId": 10
+         }, {
+            "attributes": [  ],
+            "backendNodeId": 25,
+            "childNodeCount": 3,
+            "localName": "body",
+            "nodeId": 12,
+            "nodeName": "BODY",
+            "nodeType": 1,
+            "nodeValue": "",
+            "parentId": 10
+         } ],
+         "frameId": "C7909987C9B790BFB0CB39D6075A6A2D",
+         "localName": "html",
+         "nodeId": 10,
+         "nodeName": "HTML",
+         "nodeType": 1,
+         "nodeValue": "",
+         "parentId": 8
+      } ],
+      "documentURL": "file:///Users/ktrinh/fret/sqa8/fret-electron/app/app.html",
+      "localName": "",
+      "nodeId": 8,
+      "nodeName": "#document",
+      "nodeType": 9,
+      "nodeValue": "",
+      "xmlVersion": ""
+   }
+}
+[1643305347.741][DEBUG]: DevTools WebSocket Command: Runtime.evaluate (id=16) C7909987C9B790BFB0CB39D6075A6A2D {
+   "expression": "1"
+}
+[1643305347.759][DEBUG]: DevTools WebSocket Response: Runtime.evaluate (id=16) C7909987C9B790BFB0CB39D6075A6A2D {
+   "result": {
+      "description": "1",
+      "type": "number",
+      "value": 1
+   }
+}
+[1643305347.862][DEBUG]: DevTools WebSocket Event: Page.loadEventFired C7909987C9B790BFB0CB39D6075A6A2D {
+   "timestamp": 6362.511045
+}
+[1643305347.862][DEBUG]: DevTools WebSocket Command: Runtime.evaluate (id=17) C7909987C9B790BFB0CB39D6075A6A2D {
+   "awaitPromise": false,
+   "expression": "document.readyState",
+   "returnByValue": true
+}
+[1643305347.862][DEBUG]: DevTools WebSocket Event: Page.frameStoppedLoading C7909987C9B790BFB0CB39D6075A6A2D {
+   "frameId": "C7909987C9B790BFB0CB39D6075A6A2D"
+}
+[1643305347.862][DEBUG]: DevTools WebSocket Event: Runtime.consoleAPICalled C7909987C9B790BFB0CB39D6075A6A2D {
+   "args": [ {
+      "type": "string",
+      "value": "%cElectron Security Warning (Insecure Content-Security-Policy)"
+   }, {
+      "type": "string",
+      "value": "font-weight: bold;"
+   }, {
+      "type": "string",
+      "value": "This renderer process has either no Content Security\n    Policy set or a policy with \"unsafe-eval\" enabled. This exposes users of\n    this app to unnecessary security risks.\n\nFor more information a..."
+   } ],
+   "executionContextId": 2,
+   "stackTrace": {
+      "callFrames": [ {
+         "columnNumber": 3370,
+         "functionName": "",
+         "lineNumber": 110,
+         "scriptId": "147",
+         "url": "electron/js2c/renderer_init.js"
+      } ]
+   },
+   "timestamp": 1.64330534777775e+12,
+   "type": "warning"
+}
+[1643305347.863][DEBUG]: DevTools WebSocket Response: Runtime.evaluate (id=17) C7909987C9B790BFB0CB39D6075A6A2D {
+   "result": {
+      "type": "string",
+      "value": "complete"
+   }
+}
+[1643305347.863][DEBUG]: DevTools WebSocket Command: Runtime.evaluate (id=18) C7909987C9B790BFB0CB39D6075A6A2D {
+   "expression": "1"
+}
+[1643305347.864][DEBUG]: DevTools WebSocket Response: Runtime.evaluate (id=18) C7909987C9B790BFB0CB39D6075A6A2D {
+   "result": {
+      "description": "1",
+      "type": "number",
+      "value": 1
+   }
+}
+[1643305347.864][INFO]: Done waiting for pending navigations. Status: ok
+[1643305347.864][DEBUG]: DevTools WebSocket Command: Runtime.evaluate (id=19) C7909987C9B790BFB0CB39D6075A6A2D {
+   "awaitPromise": true,
+   "expression": "(function() { // Copyright (c) 2012 The Chromium Authors. All rights reserved.\n// Use of this source code is governed by a BSD-style license that can be\n// found in the LICENSE file.\n\n/**\n * Enum f...",
+   "returnByValue": true
+}
+[1643305347.866][DEBUG]: DevTools WebSocket Response: Runtime.evaluate (id=19) C7909987C9B790BFB0CB39D6075A6A2D {
+   "result": {
+      "type": "object",
+      "value": {
+         "status": 0,
+         "value": true
+      }
+   }
+}
+[1643305347.866][INFO]: Waiting for pending navigations...
+[1643305347.866][DEBUG]: DevTools WebSocket Command: Runtime.evaluate (id=20) C7909987C9B790BFB0CB39D6075A6A2D {
+   "expression": "1"
+}
+[1643305347.866][DEBUG]: DevTools WebSocket Response: Runtime.evaluate (id=20) C7909987C9B790BFB0CB39D6075A6A2D {
+   "result": {
+      "description": "1",
+      "type": "number",
+      "value": 1
+   }
+}
+[1643305347.866][INFO]: Done waiting for pending navigations. Status: ok
+[1643305347.866][INFO]: [d7e520bbdbbe57fdce108e17a185e498] RESPONSE ExecuteScript true
+[1643305347.867][INFO]: [d7e520bbdbbe57fdce108e17a185e498] COMMAND ExecuteScript {
+   "args": [ "require" ],
+   "script": "return (function (requireName) {\n    const process = window[requireName]('process');\n    if (process != null && process.versions != null) {\n      return process.versions.electron;\n    }\n  }).apply(null, arguments)"
+}
+[1643305347.867][INFO]: Waiting for pending navigations...
+[1643305347.867][DEBUG]: DevTools WebSocket Command: Runtime.evaluate (id=21) C7909987C9B790BFB0CB39D6075A6A2D {
+   "expression": "1"
+}
+[1643305347.868][DEBUG]: DevTools WebSocket Response: Runtime.evaluate (id=21) C7909987C9B790BFB0CB39D6075A6A2D {
+   "result": {
+      "description": "1",
+      "type": "number",
+      "value": 1
+   }
+}
+[1643305347.868][INFO]: Done waiting for pending navigations. Status: ok
+[1643305347.868][DEBUG]: DevTools WebSocket Command: Runtime.evaluate (id=22) C7909987C9B790BFB0CB39D6075A6A2D {
+   "awaitPromise": true,
+   "expression": "(function() { // Copyright (c) 2012 The Chromium Authors. All rights reserved.\n// Use of this source code is governed by a BSD-style license that can be\n// found in the LICENSE file.\n\n/**\n * Enum f...",
+   "returnByValue": true
+}
+[1643305347.870][DEBUG]: DevTools WebSocket Response: Runtime.evaluate (id=22) C7909987C9B790BFB0CB39D6075A6A2D {
+   "result": {
+      "type": "object",
+      "value": {
+         "status": 0,
+         "value": "11.5.0"
+      }
+   }
+}
+[1643305347.870][INFO]: Waiting for pending navigations...
+[1643305347.870][DEBUG]: DevTools WebSocket Command: Runtime.evaluate (id=23) C7909987C9B790BFB0CB39D6075A6A2D {
+   "expression": "1"
+}
+[1643305347.870][DEBUG]: DevTools WebSocket Response: Runtime.evaluate (id=23) C7909987C9B790BFB0CB39D6075A6A2D {
+   "result": {
+      "description": "1",
+      "type": "number",
+      "value": 1
+   }
+}
+[1643305347.870][INFO]: Done waiting for pending navigations. Status: ok
+[1643305347.870][INFO]: [d7e520bbdbbe57fdce108e17a185e498] RESPONSE ExecuteScript "11.5.0"
+[1643305347.883][INFO]: [d7e520bbdbbe57fdce108e17a185e498] COMMAND SetTimeouts {
+   "implicit": 5000,
+   "pageLoad": 5000,
+   "script": 5000
+}
+[1643305347.883][INFO]: [d7e520bbdbbe57fdce108e17a185e498] RESPONSE SetTimeouts
+[1643305347.886][INFO]: [d7e520bbdbbe57fdce108e17a185e498] COMMAND ExecuteScript {
+   "args": [ "isLoading", [  ], "require" ],
+   "script": "return (function callWebContentsApi(name, args, requireName) {\n  const webContents = window[requireName](\n    'electron'\n  ).remote.getCurrentWebContents();\n  return webContents[name].apply(webContents, args);\n}).apply(null, arguments)"
+}
+[1643305347.886][INFO]: Waiting for pending navigations...
+[1643305347.886][DEBUG]: DevTools WebSocket Command: Runtime.evaluate (id=24) C7909987C9B790BFB0CB39D6075A6A2D {
+   "expression": "1"
+}
+[1643305347.887][DEBUG]: DevTools WebSocket Response: Runtime.evaluate (id=24) C7909987C9B790BFB0CB39D6075A6A2D {
+   "result": {
+      "description": "1",
+      "type": "number",
+      "value": 1
+   }
+}
+[1643305347.887][INFO]: Done waiting for pending navigations. Status: ok
+[1643305347.887][DEBUG]: DevTools WebSocket Command: Runtime.evaluate (id=25) C7909987C9B790BFB0CB39D6075A6A2D {
+   "awaitPromise": true,
+   "expression": "(function() { // Copyright (c) 2012 The Chromium Authors. All rights reserved.\n// Use of this source code is governed by a BSD-style license that can be\n// found in the LICENSE file.\n\n/**\n * Enum f...",
+   "returnByValue": true
+}
+[1643305347.891][DEBUG]: DevTools WebSocket Response: Runtime.evaluate (id=25) C7909987C9B790BFB0CB39D6075A6A2D {
+   "result": {
+      "type": "object",
+      "value": {
+         "status": 0,
+         "value": false
+      }
+   }
+}
+[1643305347.891][INFO]: Waiting for pending navigations...
+[1643305347.891][DEBUG]: DevTools WebSocket Command: Runtime.evaluate (id=26) C7909987C9B790BFB0CB39D6075A6A2D {
+   "expression": "1"
+}
+[1643305347.892][DEBUG]: DevTools WebSocket Response: Runtime.evaluate (id=26) C7909987C9B790BFB0CB39D6075A6A2D {
+   "result": {
+      "description": "1",
+      "type": "number",
+      "value": 1
+   }
+}
+[1643305347.892][INFO]: Done waiting for pending navigations. Status: ok
+[1643305347.892][INFO]: [d7e520bbdbbe57fdce108e17a185e498] RESPONSE ExecuteScript false
+[1643305347.895][INFO]: [d7e520bbdbbe57fdce108e17a185e498] COMMAND GetTitle {
+
+}
+[1643305347.895][INFO]: Waiting for pending navigations...
+[1643305347.895][DEBUG]: DevTools WebSocket Command: Runtime.evaluate (id=27) C7909987C9B790BFB0CB39D6075A6A2D {
+   "expression": "1"
+}
+[1643305347.896][DEBUG]: DevTools WebSocket Response: Runtime.evaluate (id=27) C7909987C9B790BFB0CB39D6075A6A2D {
+   "result": {
+      "description": "1",
+      "type": "number",
+      "value": 1
+   }
+}
+[1643305347.896][INFO]: Done waiting for pending navigations. Status: ok
+[1643305347.896][DEBUG]: DevTools WebSocket Command: Runtime.evaluate (id=28) C7909987C9B790BFB0CB39D6075A6A2D {
+   "awaitPromise": true,
+   "expression": "(function() { // Copyright (c) 2012 The Chromium Authors. All rights reserved.\n// Use of this source code is governed by a BSD-style license that can be\n// found in the LICENSE file.\n\n/**\n * Enum f...",
+   "returnByValue": true
+}
+[1643305347.897][DEBUG]: DevTools WebSocket Response: Runtime.evaluate (id=28) C7909987C9B790BFB0CB39D6075A6A2D {
+   "result": {
+      "type": "object",
+      "value": {
+         "status": 0,
+         "value": "FRET"
+      }
+   }
+}
+[1643305347.897][INFO]: Waiting for pending navigations...
+[1643305347.897][DEBUG]: DevTools WebSocket Command: Runtime.evaluate (id=29) C7909987C9B790BFB0CB39D6075A6A2D {
+   "expression": "1"
+}
+[1643305347.898][DEBUG]: DevTools WebSocket Response: Runtime.evaluate (id=29) C7909987C9B790BFB0CB39D6075A6A2D {
+   "result": {
+      "description": "1",
+      "type": "number",
+      "value": 1
+   }
+}
+[1643305347.898][INFO]: Done waiting for pending navigations. Status: ok
+[1643305347.898][INFO]: [d7e520bbdbbe57fdce108e17a185e498] RESPONSE GetTitle "FRET"
+[1643305347.914][INFO]: [d7e520bbdbbe57fdce108e17a185e498] COMMAND ExecuteScript {
+   "args": [  ],
+   "script": "!function(t,e){\"object\"==typeof exports&&\"object\"==typeof module?module.exports=e():\"function\"==typeof define&&define.amd?define([],e):\"object\"==typeof exports?exports.resq=e():(t.window=t.window||{},t.window.resq=e())}(window,(function(){return function(t){var e={};function r(n){if(e[n])return e[n].exports;var o=e[n]={i:n,l:!1,exports:{}};return t[n].call(o.exports,o,o.exports,r),o.l=!0,o.exports}return r.m=t,r.c=e,r.d=function(t,e,n){r.o(t,e)||Object.defineProperty(t,e,{enumerable:!0,get:n})},r.r=function(t){\"undefined\"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(t,Symbol.toStringTag,{value:\"Module\"}),Object.defineProperty(t,\"__esModule\",{value:!0})},r.t=function(t,e){if(1&e&&(t=r(t)),8&e)return t;if(4&e&&\"object\"==typeof t&&t&&t.__esModule)return t;var n=Object.create(null);if(r.r(n),Object.defineProperty(n,\"default\",{enumerable:!0,value:t}),2&e&&\"string\"!=typeof t)for(var o in t)r.d(n,o,function(e){return t[e]}.bind(null,o));return n},r.n=function(t){var e=t&&t.__esModule?function(){return t.default}:function(){return t};return r.d(e,\"a\",e),e},r.o=function(t,e){return Object.prototype.hasOwnProperty.call(t,e)},r.p=\"\",r(r.s=16)}([function(t,e,r){\"use strict\";r.d(e,\"a\",(function(){return m})),r.d(e,\"d\",(function(){return j})),r.d(e,\"b\",(function(){return M})),r.d(e,\"c\",(function(){return P}));var n=r(1),o=r.n(n),u=r(14),i=r.n(u),c=r(2),f=r.n(c),s=r(15),a=r.n(s);function l(t,e){var r=Object.keys(t);if(Object.getOwnPropertySymbols){var n=Object.getOwnPropertySymbols(t);e&&(n=n.filter((function(e){return Object.getOwnPropertyDescriptor(t,e).enumerable}))),r.push.apply(r,n)}return r}var p=Array.isArray,d=Object.keys;function x(t){return\"function\"==typeof t}function y(t){return t instanceof HTMLElement||t instanceof Text}function h(t){return\"object\"===f()(t)&&!p(t)}function b(t){if(!t||\"string\"==typeof t)return t;var e=function(t){for(var e=1;e\u003Carguments.length;e++){var r=null!=arguments[e]?arguments[e]:{};e%2?l(Object(r),!0).forEach((function(e){i()(t,e,r[e])})):Object.getOwnPropertyDescriptors?Object.defineProperties(t,Object.getOwnPropertyDescriptors(r)):l(Object(r)).forEach((function(e){Object.defineProperty(t,e,Object.getOwnPropertyDescriptor(r,e))}))}return t}({},t);return delete e.children,e}function v(t,e){var r=arguments.length>2&&void 0!==arguments[2]&&arguments[2];return!(!p(t)||!p(e))&&(r?t.length===e.length&&!t.find((function(t){return!e.includes(t)})):t.some((function(t){return e.includes(t)})))}function _(){var t=arguments.length>0&&void 0!==arguments[0]?arguments[0]:{},e=arguments.length>1&&void 0!==arguments[1]?arguments[1]:{},r=arguments.length>2&&void 0!==arguments[2]&&arguments[2],n=[];if(!d(t).length)return!0;if(null===e||!d(e).length)return!1;if(r)return a()(t,e);var o=d(t).filter((function(t){return d(e).includes(t)}));return o.forEach((function(r){h(t[r])&&h(e[r])&&(n=n.concat(_(t[r],e[r]))),(t[r]===e[r]||v(t[r],e[r]))&&n.push(e)})),n.length>0&&n.filter((function(t){return t})).length===o.length}function m(t){var e,r={children:[]};if(!t)return r;r.name=x(e=t.type)?e.displayName||e.name:e,r.props=b(t.memoizedProps),r.state=function(t){if(t){var e=t.baseState;return e||t}}(t.memoizedState);var n=t.child;if(n)for(r.children.push(n);n.sibling;)r.children.push(n.sibling),n=n.sibling;return r.children=r.children.map((function(t){return m(t)})),x(t.type)&&function(t){return t.children.length>1}(r)?(r.node=function(t){return t.children.map((function(t){return t.node})).filter((function(t){return!!t}))}(r),r.isFragment=!0):r.node=function(t){return y(t.stateNode)?t.stateNode:t.child&&y(t.child.stateNode)?t.child.stateNode:null}(t),r}function g(t){for(;t.length;){var e=t.shift();if(e.node)return e.node;e.children&&Array.isArray(e.children)&&t.push.apply(t,o()(e.children))}}function O(t,e){for(var r=[];t.length;){var n=t.shift().children;n&&Array.isArray(n)&&n.forEach((function(n){e(n)&&(!n.node&&Array.isArray(n.children)&&(n.node=g(n.children.concat([]))),r.push(n)),t.push(n)}))}return r}function w(t,e){var r=function(t){if(t){var e=t.split(\"(\");return 1===e.length?t:e.find((function(t){return t.includes(\")\")})).replace(/\\)*/g,\"\")}}(e);return new RegExp(\"^\"+t.split(\"*\").map((function(t){return t.replace(/([.*+?^=!:${}()|[\\]/\\\\])/g,\"\\\\$1\")})).join(\".+\")+\"$\").test(r)}function j(t,e){var r=arguments.length>3?arguments[3]:void 0;return t.reduce((function(t,e){return t.concat(O(t,r&&\"function\"==typeof r?r:function(t){return\"string\"==typeof t.name?w(e,t.name):null!==t.name&&\"object\"===f()(t.name)&&w(e,t.name.displayName)}))}),[e])}function M(t,e,r){var n=arguments.length>3&&void 0!==arguments[3]&&arguments[3];return x(r)?(console.warn(\"Functions are not supported as filter matchers\"),[]):t.filter((function(t){return h(r)&&_(r,t[e],n)||p(r)&&v(r,t[e],n)||t[e]===r}))}function P(t){if(t.hasOwnProperty(\"_reactRootContainer\"))return t._reactRootContainer._internalRoot.current;var e=Object.keys(t).find((function(t){return t.startsWith(\"__reactInternalInstance\")||t.startsWith(\"__reactFiber\")}));return e?t[e]:void 0}},function(t,e,r){var n=r(17),o=r(18),u=r(19),i=r(20);t.exports=function(t){return n(t)||o(t)||u(t)||i()},t.exports.default=t.exports,t.exports.__esModule=!0},function(t,e){function r(e){return\"function\"==typeof Symbol&&\"symbol\"==typeof Symbol.iterator?(t.exports=r=function(t){return typeof t},t.exports.default=t.exports,t.exports.__esModule=!0):(t.exports=r=function(t){return t&&\"function\"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?\"symbol\":typeof t},t.exports.default=t.exports,t.exports.__esModule=!0),r(e)}t.exports=r,t.exports.default=t.exports,t.exports.__esModule=!0},function(t,e){function r(e){return t.exports=r=Object.setPrototypeOf?Object.getPrototypeOf:function(t){return t.__proto__||Object.getPrototypeOf(t)},t.exports.default=t.exports,t.exports.__esModule=!0,r(e)}t.exports=r,t.exports.default=t.exports,t.exports.__esModule=!0},function(t,e){t.exports=function(t,e){if(!(t instanceof e))throw new TypeError(\"Cannot call a class as a function\")},t.exports.default=t.exports,t.exports.__esModule=!0},function(t,e){function r(t,e){for(var r=0;r\u003Ce.length;r++){var n=e[r];n.enumerable=n.enumerable||!1,n.configurable=!0,\"value\"in n&&(n.writable=!0),Object.defineProperty(t,n.key,n)}}t.exports=function(t,e,n){return e&&r(t.prototype,e),n&&r(t,n),t},t.exports.default=t.exports,t.exports.__esModule=!0},function(t,e){function r(e,n){return t.exports=r=Object.setPrototypeOf||function(t,e){return t.__proto__=e,t},t.exports.default=t.exports,t.exports.__esModule=!0,r(e,n)}t.exports=r,t.exports.default=t.exports,t.exports.__esModule=!0},function(t,e,r){var n=r(6);t.exports=function(t,e){if(\"function\"!=typeof e&&null!==e)throw new TypeError(\"Super expression must either be null or a function\");t.prototype=Object.create(e&&e.prototype,{constructor:{value:t,writable:!0,configurable:!0}}),e&&n(t,e)},t.exports.default=t.exports,t.exports.__esModule=!0},function(t,e,r){var n=r(3),o=r(6),u=r(22),i=r(23);function c(e){var r=\"function\"==typeof Map?new Map:void 0;return t.exports=c=function(t){if(null===t||!u(t))return t;if(\"function\"!=typeof t)throw new TypeError(\"Super expression must either be null or a function\");if(void 0!==r){if(r.has(t))return r.get(t);r.set(t,e)}function e(){return i(t,arguments,n(this).constructor)}return e.prototype=Object.create(t.prototype,{constructor:{value:e,enumerable:!1,writable:!0,configurable:!0}}),o(e,t)},t.exports.default=t.exports,t.exports.__esModule=!0,c(e)}t.exports=c,t.exports.default=t.exports,t.exports.__esModule=!0},function(t,e){var r;r=function(){return this}();try{r=r||new Function(\"return this\")()}catch(t){\"object\"==typeof window&&(r=window)}t.exports=r},function(t,e){t.exports=function(t,e){(null==e||e>t.length)&&(e=t.length);for(var r=0,n=new Array(e);r\u003Ce;r++)n[r]=t[r];return n},t.exports.default=t.exports,t.exports.__esModule=!0},function(t,e,r){\"use strict\";(function(t){r.d(e,\"a\",(function(){return o}));var n=r(0);function o(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:5e3,r=arguments.length>1?arguments[1]:void 0;if(t.isReactLoaded)return Promise.resolve(\"React already loaded\");var o=function(){var t=document.createTreeWalker(document);if(r)return document.querySelector(r);for(;t.nextNode();)if(t.currentNode.hasOwnProperty(\"_reactRootContainer\"))return t.currentNode};return new Promise((function(r,u){var i=!1;!function e(){var u=o();if(u)return t.isReactLoaded=!0,t.rootReactElement=Object(n.c)(u),r();i||setTimeout(e,200)}(),setTimeout((function(){i=!0,u(\"Timed out\")}),e)}))}}).call(this,r(9))},function(t,e,r){\"use strict\";r.d(e,\"a\",(function(){return g}));var n=r(1),o=r.n(n),u=r(4),i=r.n(u),c=r(5),f=r.n(c),s=r(7),a=r.n(s),l=r(13),p=r.n(l),d=r(3),x=r.n(d),y=r(8),h=r.n(y),b=r(0);function v(t){var e=function(){if(\"undefined\"==typeof Reflect||!Reflect.construct)return!1;if(Reflect.construct.sham)return!1;if(\"function\"==typeof Proxy)return!0;try{return Boolean.prototype.valueOf.call(Reflect.construct(Boolean,[],(function(){}))),!0}catch(t){return!1}}();return function(){var r,n=x()(t);if(e){var o=x()(this).constructor;r=Reflect.construct(n,arguments,o)}else r=n.apply(this,arguments);return p()(this,r)}}var _=function(t){a()(r,t);var e=v(r);function r(t){return i()(this,r),t||(t=[]),e.call.apply(e,[this].concat(o()(t)))}return f()(r,[{key:\"byProps\",value:function(t){var e=arguments.length>1&&void 0!==arguments[1]?arguments[1]:{exact:!1},n=e.exact,o=Object(b.b)(this,\"props\",t,n);return new r(o)}},{key:\"byState\",value:function(t){var e=arguments.length>1&&void 0!==arguments[1]?arguments[1]:{exact:!1},n=e.exact,o=Object(b.b)(this,\"state\",t,n);return new r(o)}}]),r}(h()(Array)),m=function(t){a()(r,t);var e=v(r);function r(t,n){var o;for(var u in i()(this,r),(o=e.call(this,t))._nodes=n,t)o[u]=t[u];return o}return f()(r,[{key:\"byProps\",value:function(t){var e=arguments.length>1&&void 0!==arguments[1]?arguments[1]:{exact:!1},n=e.exact,o=Object(b.b)(this._nodes,\"props\",t,n)[0];return new r(o,this._nodes)}},{key:\"byState\",value:function(t){var e=arguments.length>1&&void 0!==arguments[1]?arguments[1]:{exact:!1},n=e.exact,o=Object(b.b)(this._nodes,\"state\",t,n)[0];return new r(o,this._nodes)}}]),r}(h()(Object)),g=function(){function t(e,r){i()(this,t),this.selectors=e.split(\" \").filter((function(t){return!!t})).map((function(t){return t.trim()})),this.rootComponent=r,this.tree=Object(b.a)(this.rootComponent)}return f()(t,[{key:\"find\",value:function(){return this.nodes=new _(Object(b.d)(this.selectors,this.tree,!0)),new m(this.nodes[0],this.nodes)}},{key:\"findAll\",value:function(){return new _(Object(b.d)(this.selectors,this.tree))}}]),t}()},function(t,e,r){var n=r(2).default,o=r(21);t.exports=function(t,e){return!e||\"object\"!==n(e)&&\"function\"!=typeof e?o(t):e},t.exports.default=t.exports,t.exports.__esModule=!0},function(t,e){t.exports=function(t,e,r){return e in t?Object.defineProperty(t,e,{value:r,enumerable:!0,configurable:!0,writable:!0}):t[e]=r,t},t.exports.default=t.exports,t.exports.__esModule=!0},function(t,e,r){\"use strict\";var n=Array.isArray,o=Object.keys,u=Object.prototype.hasOwnProperty;t.exports=function t(e,r){if(e===r)return!0;if(e&&r&&\"object\"==typeof e&&\"object\"==typeof r){var i,c,f,s=n(e),a=n(r);if(s&&a){if((c=e.length)!=r.length)return!1;for(i=c;0!=i--;)if(!t(e[i],r[i]))return!1;return!0}if(s!=a)return!1;var l=e instanceof Date,p=r instanceof Date;if(l!=p)return!1;if(l&&p)return e.getTime()==r.getTime();var d=e instanceof RegExp,x=r instanceof RegExp;if(d!=x)return!1;if(d&&x)return e.toString()==r.toString();var y=o(e);if((c=y.length)!==o(r).length)return!1;for(i=c;0!=i--;)if(!u.call(r,y[i]))return!1;for(i=c;0!=i--;)if(!t(e[f=y[i]],r[f]))return!1;return!0}return e!=e&&r!=r}},function(t,e,r){\"use strict\";r.r(e),function(t){r.d(e,\"resq$\",(function(){return c})),r.d(e,\"resq$$\",(function(){return f}));var n=r(12),o=r(11);r.d(e,\"waitToLoadReact\",(function(){return o.a}));var u=r(0);function i(e,r,o){if(!o&&!t.isReactLoaded)throw new Error(\"Could not find the root element of your application\");var i=t.rootReactElement;if(o instanceof HTMLElement&&(i=Object(u.c)(o)),!i)throw new Error(\"Could not find instance of React in given element\");return new n.a(e,i)[r]()}function c(t,e){return i(t,\"find\",e)}function f(t,e){return i(t,\"findAll\",e)}}.call(this,r(9))},function(t,e,r){var n=r(10);t.exports=function(t){if(Array.isArray(t))return n(t)},t.exports.default=t.exports,t.exports.__esModule=!0},function(t,e){t.exports=function(t){if(\"undefined\"!=typeof Symbol&&null!=t[Symbol.iterator]||null!=t[\"@@iterator\"])return Array.from(t)},t.exports.default=t.exports,t.exports.__esModule=!0},function(t,e,r){var n=r(10);t.exports=function(t,e){if(t){if(\"string\"==typeof t)return n(t,e);var r=Object.prototype.toString.call(t).slice(8,-1);return\"Object\"===r&&t.constructor&&(r=t.constructor.name),\"Map\"===r||\"Set\"===r?Array.from(t):\"Arguments\"===r||/^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(r)?n(t,e):void 0}},t.exports.default=t.exports,t.exports.__esModule=!0},function(t,e){t.exports=function(){throw new TypeError(\"Invalid attempt to spread non-iterable instance.\\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.\")},t.exports.default=t.exports,t.exports.__esModule=!0},function(t,e){t.exports=function(t){if(void 0===t)throw new ReferenceError(\"this hasn't been initialised - super() hasn't been called\");return t},t.exports.default=t.exports,t.exports.__esModule=!0},function(t,e){t.exports=function(t){return-1!==Function.toString.call(t).indexOf(\"[native code]\")},t.exports.default=t.exports,t.exports.__esModule=!0},function(t,e,r){var n=r(6),o=r(24);function u(e,r,i){return o()?(t.exports=u=Reflect.construct,t.exports.default=t.exports,t.exports.__esModule=!0):(t.exports=u=function(t,e,r){var o=[null];o.push.apply(o,e);var u=new(Function.bind.apply(t,o));return r&&n(u,r.prototype),u},t.exports.default=t.exports,t.exports.__esModule=!0),u.apply(null,arguments)}t.exports=u,t.exports.default=t.exports,t.exports.__esModule=!0},function(t,e){t.exports=function(){if(\"undefined\"==typeof Reflect||!Reflect.construct)return!1;if(Reflect.construct.sham)return!1;if(\"function\"==typeof Proxy)return!0;try{return Boolean.prototype.valueOf.call(Reflect.construct(Boolean,[],(function(){}))),!0}catch(t){return!1}},t.exports.default=t.exports,t.exports.__esModule=!0}])}));"
+}
+[1643305347.914][INFO]: Waiting for pending navigations...
+[1643305347.914][DEBUG]: DevTools WebSocket Command: Runtime.evaluate (id=30) C7909987C9B790BFB0CB39D6075A6A2D {
+   "expression": "1"
+}
+[1643305347.915][DEBUG]: DevTools WebSocket Response: Runtime.evaluate (id=30) C7909987C9B790BFB0CB39D6075A6A2D {
+   "result": {
+      "description": "1",
+      "type": "number",
+      "value": 1
+   }
+}
+[1643305347.915][INFO]: Done waiting for pending navigations. Status: ok
+[1643305347.916][DEBUG]: DevTools WebSocket Command: Runtime.evaluate (id=31) C7909987C9B790BFB0CB39D6075A6A2D {
+   "awaitPromise": true,
+   "expression": "(function() { // Copyright (c) 2012 The Chromium Authors. All rights reserved.\n// Use of this source code is governed by a BSD-style license that can be\n// found in the LICENSE file.\n\n/**\n * Enum f...",
+   "returnByValue": true
+}
+[1643305347.919][DEBUG]: DevTools WebSocket Response: Runtime.evaluate (id=31) C7909987C9B790BFB0CB39D6075A6A2D {
+   "result": {
+      "type": "object",
+      "value": {
+         "status": 0,
+         "value": null
+      }
+   }
+}
+[1643305347.919][INFO]: Waiting for pending navigations...
+[1643305347.919][DEBUG]: DevTools WebSocket Command: Runtime.evaluate (id=32) C7909987C9B790BFB0CB39D6075A6A2D {
+   "expression": "1"
+}
+[1643305347.919][DEBUG]: DevTools WebSocket Response: Runtime.evaluate (id=32) C7909987C9B790BFB0CB39D6075A6A2D {
+   "result": {
+      "description": "1",
+      "type": "number",
+      "value": 1
+   }
+}
+[1643305347.919][INFO]: Done waiting for pending navigations. Status: ok
+[1643305347.919][INFO]: [d7e520bbdbbe57fdce108e17a185e498] RESPONSE ExecuteScript null
+[1643305347.920][INFO]: [d7e520bbdbbe57fdce108e17a185e498] COMMAND ExecuteScript {
+   "args": [  ],
+   "script": "return (function waitToLoadReact() {\n    window.resq.waitToLoadReact();\n}).apply(null, arguments)"
+}
+[1643305347.920][INFO]: Waiting for pending navigations...
+[1643305347.920][DEBUG]: DevTools WebSocket Command: Runtime.evaluate (id=33) C7909987C9B790BFB0CB39D6075A6A2D {
+   "expression": "1"
+}
+[1643305347.921][DEBUG]: DevTools WebSocket Response: Runtime.evaluate (id=33) C7909987C9B790BFB0CB39D6075A6A2D {
+   "result": {
+      "description": "1",
+      "type": "number",
+      "value": 1
+   }
+}
+[1643305347.921][INFO]: Done waiting for pending navigations. Status: ok
+[1643305347.921][DEBUG]: DevTools WebSocket Command: Runtime.evaluate (id=34) C7909987C9B790BFB0CB39D6075A6A2D {
+   "awaitPromise": true,
+   "expression": "(function() { // Copyright (c) 2012 The Chromium Authors. All rights reserved.\n// Use of this source code is governed by a BSD-style license that can be\n// found in the LICENSE file.\n\n/**\n * Enum f...",
+   "returnByValue": true
+}
+[1643305347.922][DEBUG]: DevTools WebSocket Response: Runtime.evaluate (id=34) C7909987C9B790BFB0CB39D6075A6A2D {
+   "result": {
+      "type": "object",
+      "value": {
+         "status": 0,
+         "value": null
+      }
+   }
+}
+[1643305347.922][INFO]: Waiting for pending navigations...
+[1643305347.922][DEBUG]: DevTools WebSocket Command: Runtime.evaluate (id=35) C7909987C9B790BFB0CB39D6075A6A2D {
+   "expression": "1"
+}
+[1643305347.922][DEBUG]: DevTools WebSocket Response: Runtime.evaluate (id=35) C7909987C9B790BFB0CB39D6075A6A2D {
+   "result": {
+      "description": "1",
+      "type": "number",
+      "value": 1
+   }
+}
+[1643305347.923][INFO]: Done waiting for pending navigations. Status: ok
+[1643305347.923][INFO]: [d7e520bbdbbe57fdce108e17a185e498] RESPONSE ExecuteScript null
+[1643305347.924][INFO]: [d7e520bbdbbe57fdce108e17a185e498] COMMAND ExecuteScript {
+   "args": [ "MainView", {
+
+   }, {
+
+   } ],
+   "script": "return (function react$(selector, props, state, reactElement) {\n    props = props || {};\n    state = state || {};\n    let element = window.resq.resq$(selector, reactElement);\n    if (Object.keys(props).length) {\n        element = element.byProps(props);\n    }\n    if (Object.keys(state).length) {\n        element = element.byState(state);\n    }\n    if (!element.name) {\n        return { message: `React element with selector \"${selector}\" wasn't found` };\n    }\n    return element.isFragment && element.node\n        ? element.node[0]\n        : element.node;\n}).apply(null, arguments)"
+}
+[1643305347.924][INFO]: Waiting for pending navigations...
+[1643305347.924][DEBUG]: DevTools WebSocket Command: Runtime.evaluate (id=36) C7909987C9B790BFB0CB39D6075A6A2D {
+   "expression": "1"
+}
+[1643305347.924][DEBUG]: DevTools WebSocket Response: Runtime.evaluate (id=36) C7909987C9B790BFB0CB39D6075A6A2D {
+   "result": {
+      "description": "1",
+      "type": "number",
+      "value": 1
+   }
+}
+[1643305347.924][INFO]: Done waiting for pending navigations. Status: ok
+[1643305347.924][DEBUG]: DevTools WebSocket Command: Runtime.evaluate (id=37) C7909987C9B790BFB0CB39D6075A6A2D {
+   "awaitPromise": true,
+   "expression": "(function() { // Copyright (c) 2012 The Chromium Authors. All rights reserved.\n// Use of this source code is governed by a BSD-style license that can be\n// found in the LICENSE file.\n\n/**\n * Enum f...",
+   "returnByValue": true
+}
+[1643305347.929][DEBUG]: DevTools WebSocket Response: Runtime.evaluate (id=37) C7909987C9B790BFB0CB39D6075A6A2D {
+   "result": {
+      "type": "object",
+      "value": {
+         "status": 0,
+         "value": {
+            "element-6066-11e4-a52e-4f735466cecf": "fd5cd1b9-1f90-41f5-b7ee-bfef6accf6a2"
+         }
+      }
+   }
+}
+[1643305347.929][INFO]: Waiting for pending navigations...
+[1643305347.929][DEBUG]: DevTools WebSocket Command: Runtime.evaluate (id=38) C7909987C9B790BFB0CB39D6075A6A2D {
+   "expression": "1"
+}
+[1643305347.930][DEBUG]: DevTools WebSocket Response: Runtime.evaluate (id=38) C7909987C9B790BFB0CB39D6075A6A2D {
+   "result": {
+      "description": "1",
+      "type": "number",
+      "value": 1
+   }
+}
+[1643305347.930][INFO]: Done waiting for pending navigations. Status: ok
+[1643305347.930][INFO]: [d7e520bbdbbe57fdce108e17a185e498] RESPONSE ExecuteScript {
+   "element-6066-11e4-a52e-4f735466cecf": "fd5cd1b9-1f90-41f5-b7ee-bfef6accf6a2"
+}
+[1643305347.947][INFO]: [d7e520bbdbbe57fdce108e17a185e498] COMMAND FindElement {
+   "using": "css selector",
+   "value": "#qa_db_ili_projects"
+}
+[1643305347.947][INFO]: Waiting for pending navigations...
+[1643305347.947][DEBUG]: DevTools WebSocket Command: Runtime.evaluate (id=39) C7909987C9B790BFB0CB39D6075A6A2D {
+   "expression": "1"
+}
+[1643305347.948][DEBUG]: DevTools WebSocket Response: Runtime.evaluate (id=39) C7909987C9B790BFB0CB39D6075A6A2D {
+   "result": {
+      "description": "1",
+      "type": "number",
+      "value": 1
+   }
+}
+[1643305347.948][INFO]: Done waiting for pending navigations. Status: ok
+[1643305347.949][DEBUG]: DevTools WebSocket Command: Runtime.evaluate (id=40) C7909987C9B790BFB0CB39D6075A6A2D {
+   "awaitPromise": true,
+   "expression": "(function() { // Copyright (c) 2012 The Chromium Authors. All rights reserved.\n// Use of this source code is governed by a BSD-style license that can be\n// found in the LICENSE file.\n\n/**\n * Enum f...",
+   "returnByValue": true
+}
+[1643305347.955][DEBUG]: DevTools WebSocket Response: Runtime.evaluate (id=40) C7909987C9B790BFB0CB39D6075A6A2D {
+   "result": {
+      "type": "object",
+      "value": {
+         "status": 0,
+         "value": {
+            "element-6066-11e4-a52e-4f735466cecf": "c0ff7f04-5489-472e-a4a2-eb504ed02ca7"
+         }
+      }
+   }
+}
+[1643305347.955][INFO]: Waiting for pending navigations...
+[1643305347.955][DEBUG]: DevTools WebSocket Command: Runtime.evaluate (id=41) C7909987C9B790BFB0CB39D6075A6A2D {
+   "expression": "1"
+}
+[1643305347.956][DEBUG]: DevTools WebSocket Response: Runtime.evaluate (id=41) C7909987C9B790BFB0CB39D6075A6A2D {
+   "result": {
+      "description": "1",
+      "type": "number",
+      "value": 1
+   }
+}
+[1643305347.956][INFO]: Done waiting for pending navigations. Status: ok
+[1643305347.956][INFO]: [d7e520bbdbbe57fdce108e17a185e498] RESPONSE FindElement {
+   "element-6066-11e4-a52e-4f735466cecf": "c0ff7f04-5489-472e-a4a2-eb504ed02ca7"
+}
+[1643305347.960][INFO]: [d7e520bbdbbe57fdce108e17a185e498] COMMAND GetElementText {
+   "id": "c0ff7f04-5489-472e-a4a2-eb504ed02ca7"
+}
+[1643305347.960][INFO]: Waiting for pending navigations...
+[1643305347.960][DEBUG]: DevTools WebSocket Command: Runtime.evaluate (id=42) C7909987C9B790BFB0CB39D6075A6A2D {
+   "expression": "1"
+}
+[1643305347.960][DEBUG]: DevTools WebSocket Response: Runtime.evaluate (id=42) C7909987C9B790BFB0CB39D6075A6A2D {
+   "result": {
+      "description": "1",
+      "type": "number",
+      "value": 1
+   }
+}
+[1643305347.961][INFO]: Done waiting for pending navigations. Status: ok
+[1643305347.962][DEBUG]: DevTools WebSocket Command: Runtime.evaluate (id=43) C7909987C9B790BFB0CB39D6075A6A2D {
+   "awaitPromise": true,
+   "expression": "(function() { // Copyright (c) 2012 The Chromium Authors. All rights reserved.\n// Use of this source code is governed by a BSD-style license that can be\n// found in the LICENSE file.\n\n/**\n * Enum f...",
+   "returnByValue": true
+}
+[1643305347.969][DEBUG]: DevTools WebSocket Response: Runtime.evaluate (id=43) C7909987C9B790BFB0CB39D6075A6A2D {
+   "result": {
+      "type": "object",
+      "value": {
+         "status": 0,
+         "value": "Total Projects\n0"
+      }
+   }
+}
+[1643305347.969][INFO]: Waiting for pending navigations...
+[1643305347.969][DEBUG]: DevTools WebSocket Command: Runtime.evaluate (id=44) C7909987C9B790BFB0CB39D6075A6A2D {
+   "expression": "1"
+}
+[1643305347.970][DEBUG]: DevTools WebSocket Response: Runtime.evaluate (id=44) C7909987C9B790BFB0CB39D6075A6A2D {
+   "result": {
+      "description": "1",
+      "type": "number",
+      "value": 1
+   }
+}
+[1643305347.970][INFO]: Done waiting for pending navigations. Status: ok
+[1643305347.970][INFO]: [d7e520bbdbbe57fdce108e17a185e498] RESPONSE GetElementText "Total Projects\n0"
+[1643305347.974][INFO]: [d7e520bbdbbe57fdce108e17a185e498] COMMAND ExecuteScript {
+   "args": [ "app", "quit", [  ], "require" ],
+   "script": "return (function callMainApi(moduleName, api, args, requireName) {\n  let module = window[requireName]('electron').remote;\n  if (moduleName) {\n    module = module[moduleName];\n  }\n  if (typeof module[api] === 'function') {\n    return module[api].apply(module, args);\n  } else {\n    return module[api];\n  }\n}).apply(null, arguments)"
+}
+[1643305347.974][INFO]: Waiting for pending navigations...
+[1643305347.974][DEBUG]: DevTools WebSocket Command: Runtime.evaluate (id=45) C7909987C9B790BFB0CB39D6075A6A2D {
+   "expression": "1"
+}
+[1643305347.975][DEBUG]: DevTools WebSocket Response: Runtime.evaluate (id=45) C7909987C9B790BFB0CB39D6075A6A2D {
+   "result": {
+      "description": "1",
+      "type": "number",
+      "value": 1
+   }
+}
+[1643305347.975][INFO]: Done waiting for pending navigations. Status: ok
+[1643305347.975][DEBUG]: DevTools WebSocket Command: Runtime.evaluate (id=46) C7909987C9B790BFB0CB39D6075A6A2D {
+   "awaitPromise": true,
+   "expression": "(function() { // Copyright (c) 2012 The Chromium Authors. All rights reserved.\n// Use of this source code is governed by a BSD-style license that can be\n// found in the LICENSE file.\n\n/**\n * Enum f...",
+   "returnByValue": true
+}
+[1643305348.051][DEBUG]: DevTools WebSocket Response: Runtime.evaluate (id=46) C7909987C9B790BFB0CB39D6075A6A2D {
+   "result": {
+      "type": "object",
+      "value": {
+         "status": 0,
+         "value": null
+      }
+   }
+}
+[1643305348.051][INFO]: Waiting for pending navigations...
+[1643305348.051][DEBUG]: DevTools WebSocket Command: Runtime.evaluate (id=47) C7909987C9B790BFB0CB39D6075A6A2D {
+   "expression": "1"
+}
+[1643305348.066][DEBUG]: DevTools WebSocket Response: Runtime.evaluate (id=47) C7909987C9B790BFB0CB39D6075A6A2D {
+   "result": {
+      "description": "1",
+      "type": "number",
+      "value": 1
+   }
+}
+[1643305348.066][INFO]: Done waiting for pending navigations. Status: ok
+[1643305348.066][INFO]: [d7e520bbdbbe57fdce108e17a185e498] RESPONSE ExecuteScript null
+_stream_readable.js:628
+    dest.end();
+         ^
+
+TypeError: dest.end is not a function
+    at Socket.onend (_stream_readable.js:628:10)
+    at Object.onceWrapper (events.js:273:13)
+    at Socket.emit (events.js:187:15)
+    at endReadableNT (_stream_readable.js:1094:12)
+    at process._tickCallback (internal/process/next_tick.js:63:19)
