@@ -32,20 +32,26 @@
 // *****************************************************************************
 const exec = require('child_process').exec;
 const execSync = require('child_process').execSync;
-export function checkRealizability(filePath, options, callback) {
-  var jkindCommand = 'jrealizability '+ options + ' ' + filePath;
-  var output
-  // try {
-  //   output = exec(jkindCommand).toString();
-  // } catch (error) {    
-  //       console.log(error.status)
-  //   console.log(error.message)
-  //   console.log(error.stderr.toString())
-  //   console.log(error.stdout.toString())
-  // }
-  // console.log(output);
-  // return output;
-  exec(jkindCommand, function (err, stdout, stderr) {
+export function checkRealizability(filePath, engine, options, callback) {
+  let command;
+  if (engine === 'jkind'){
+    command = 'jrealizability '+ options + ' ' + filePath;
+    // var output
+    // try {
+    //   output = exec(jkindCommand).toString();
+    // } catch (error) {    
+    //       console.log(error.status)
+    //   console.log(error.message)
+    //   console.log(error.stderr.toString())
+    //   console.log(error.stdout.toString())
+    // }
+    // console.log(output);
+    // return output;    
+  } else if (engine === 'kind2'){
+    command = 'kind2 ' + options + ' ' + filePath;
+  }
+
+  exec(command, function (err, stdout, stderr) {
     if (err) {
       callback(err);
       console.log(err.status)
@@ -53,6 +59,7 @@ export function checkRealizability(filePath, options, callback) {
       console.log(stderr.toString())
       console.log(stdout.toString())
     } else {
+      console.log(stdout.toString())
       callback(null, stdout);
     }
   })

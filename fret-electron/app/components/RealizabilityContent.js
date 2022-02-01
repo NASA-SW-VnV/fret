@@ -75,8 +75,10 @@ import * as cc_analysis from '../../analysis/connected_components';
 import ejsCache_realize from '../../support/RealizabilityTemplates/ejsCache_realize';
 import * as realizability from '../../analysis/realizabilityCheck';
 import DiagnosisEngine from '../../analysis/DiagnosisEngine';
+
 import ChordDiagram from './ChordDiagram';
 import SaveRealizabilityReport from './SaveRealizabilityReport';
+import RealizabilitySettingsDialog from './RealizabilitySettingsDialog';
 
 import Collapse from '@material-ui/core/Collapse';
 import ErrorIcon from '@material-ui/icons/Error';
@@ -91,18 +93,16 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import TablePagination from '@material-ui/core/TablePagination';
-
 import DiagnosisRequirementsTable from './DiagnosisRequirementsTable';
 import DiagnosisProvider from './DiagnosisProvider';
 import Fade from '@material-ui/core/Fade';
-
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-
 import Grid from '@material-ui/core/Grid';
 import Switch from '@material-ui/core/Switch'
+import SettingsIcon from '@material-ui/icons/Settings';
 
 import realizabilityManual from '../../docs/_media/exports/realizability.md';
 
@@ -168,9 +168,7 @@ const styles = theme => ({
   root: {
     display: 'flex',
     flexDirection : 'column'
-  },
-  table: {
-  },
+  },  
   wrapper: {
     margin: theme.spacing(1),
     position: 'relative',
@@ -188,9 +186,6 @@ const styles = theme => ({
   root: {
     // flex: 1,
     backgroundColor: theme.palette.background.paper,
-  },
-  appbar: {
-    display: 'flex',
   },
   tabRoot : {
     // minHeight: 36,
@@ -629,6 +624,9 @@ class RealizabilityContent extends React.Component {
     missingDependencies: [],
     helpOpen : false,
     projectReport: {projectName: '', systemComponents: []}
+    settingsOpen: false,
+    selectedEngine: 0,
+    retainFiles: false
   }
 
   // Use this for bulk check in the future
@@ -863,17 +861,16 @@ class RealizabilityContent extends React.Component {
     this.setState({ccSelected: value});
   };
 
-  handleTimeoutChange = (event, value) => {
-    var reg = new RegExp('^([1-9])([0-9]*)$');
-    if (reg.test(event.target.value) || event.target.value === '') {
-      this.setState({timeout: event.target.value});
-    }
+  handleTimeoutChange = (value) => {
+    // var reg = new RegExp('^([1-9])([0-9]*)$');
+    // if (reg.test(event.target.value) || event.target.value === '') {
+      this.setState({timeout: value});
+    // }
   };
 
   diagnoseSpec(event) {    
-    const {selected, ccSelected, compositional, monolithic, timeout, projectReport} = this.state;
+    const {selected, ccSelected, compositional, monolithic, timeout, projectReport, retainFiles} = this.state;
     const {selectedProject, getPropertyInfo, getDelayInfo, getContractInfo} = this.props
-
     const self = this;
 
     var actualTimeout = (timeout === '' ? 900 : timeout);
@@ -936,7 +933,10 @@ class RealizabilityContent extends React.Component {
               });
 
               //delete intermediate files under homeDir/Documents/fret-analysis if not in dev mode
-              if (process.env.NODE_ENV !== 'development') {
+              // if (process.env.NODE_ENV !== 'development') {
+              //   self.deleteAnalysisFiles();
+              // }
+              if (!retainFiles) {
                 self.deleteAnalysisFiles();
               }
             }
@@ -959,9 +959,12 @@ class RealizabilityContent extends React.Component {
               });
 
               //delete intermediate files under homeDir/Documents/fret-analysis if not in dev mode
-              if (process.env.NODE_ENV !== 'development') {
+              // if (process.env.NODE_ENV !== 'development') {
+              //   self.deleteAnalysisFiles();
+              // }
+              if (!retainFiles) {
                 self.deleteAnalysisFiles();
-              }              
+              }
             }
           });
         }
@@ -986,12 +989,37 @@ class RealizabilityContent extends React.Component {
   }
 
   checkRealizability = () => {    
-    const {selected, ccSelected, monolithic, compositional, connectedComponents, timeout, projectReport} = this.state;
+    const {selected, ccSelected, monolithic, compositional, connectedComponents, timeout, projectReport, retainFiles} = this.state;
     const {selectedProject, components, getPropertyInfo, getDelayInfo, getContractInfo} = this.props;    
 
     const self = this;
 
     var actualTimeout = (timeout === '' ? 900 : timeout);
+
+    let engineName, engineOptions;
+    switch (selectedEngine) {
+      case 0:
+      //JKind without MBP
+        engineName = 'jkind';
+        engineOptions = '-fixpoint -timeout '+actualTimeout;
+        break;      
+      case 1:
+      //JKind+AEVAL (MBP)
+        engineName = 'jkind';
+        engineOptions = '-fixpoint -solver aeval -timeout '+actualTimeout
+        break;
+      case 2:
+      //Kind 2 without MBP
+        engineName = 'kind2';
+        engineOptions = '--enable CONTRACTCK --timeout '+actualTimeout;
+        break;        
+      case 3:
+      //Kind 2 (MBP)
+        engineName = 'kind2';
+        engineOptions = '--enable CONTRACTCK --ae_val_use_ctx false --timeout ' + actualTimeout;
+        break;
+    }
+    
     var targetComponents;
     if (selected === 'all') {
       targetComponents = components;
@@ -1058,10 +1086,11 @@ class RealizabilityContent extends React.Component {
 
               var filePath = analysisPath + tC.component_name+'.lus';
               var output = fs.openSync(filePath, 'w');
-              var lustreContract = ejsCache_realize.renderRealizeCode().component.complete(contract);
+              var lustreContract = ejsCache_realize.renderRealizeCode(engineName).component.complete(contract);
 
               fs.writeSync(output, lustreContract);
-              realizability.checkRealizability(filePath, '-fixpoint -timeout '+actualTimeout, function(err, checkOutput) {
+
+              realizability.checkRealizability(filePath, engineName, engineOptions, function(err, checkOutput) {
                 if (err) {
                   self.setState(prevState => {
                     prevState.projectReport.systemComponents[systemComponentIndex].monolithic.result = '';
@@ -1079,9 +1108,12 @@ class RealizabilityContent extends React.Component {
                   })
                 }
                 //delete intermediate files under homeDir/Documents/fret-analysis if not in dev mode
-                if (process.env.NODE_ENV !== 'development') {
+                // if (process.env.NODE_ENV !== 'development') {
+                //   self.deleteAnalysisFiles();
+                // }
+                if (!retainFiles) {
                   self.deleteAnalysisFiles();
-                }
+                }                
               })
           } else if (compositional) {          
             projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents.forEach(cc => {
@@ -1092,10 +1124,13 @@ class RealizabilityContent extends React.Component {
               var ccProperties = contract.properties.filter(p => cc.requirements.includes(p.reqid));
 
               ccContract.properties = ccProperties
-              var lustreContract = ejsCache_realize.renderRealizeCode().component.complete(ccContract);
+              var lustreContract = ejsCache_realize.renderRealizeCode(engineName).component.complete(ccContract);
               fs.writeSync(output, lustreContract);
 
-              realizability.checkRealizability(filePath, '-fixpoint -timeout '+actualTimeout, function(err, checkOutput) {
+              // output.write(lustreContract);
+              // output.end();
+              // output.on('finish', () => {
+              realizability.checkRealizability(filePath, engineName, engineOptions, function(err, checkOutput) {
                 if (err) {
                   cc.result = 'ERROR';
                   cc.error = err.message;
@@ -1153,9 +1188,12 @@ class RealizabilityContent extends React.Component {
                   }
 
                   //delete intermediate files under homeDir/Documents/fret-analysis if not in dev mode
-                  if (process.env.NODE_ENV !== 'development') {
+                  // if (process.env.NODE_ENV !== 'development') {
+                  //   self.deleteAnalysisFiles();
+                  // }
+                  if (!retainFiles) {
                     self.deleteAnalysisFiles();
-                  }
+                  }                  
                 }
               })
             });
@@ -1172,6 +1210,23 @@ class RealizabilityContent extends React.Component {
   handleHelpClose = () => {
     this.setState({helpOpen : false});
   };
+
+  handleSettingsOpen = () => {
+    this.setState({settingsOpen : true});
+  };
+
+
+  handleSettingsClose = () => {
+    this.setState({settingsOpen : false});
+  };
+
+  handleSettingsEngineChange = (engine) => {
+    this.setState({selectedEngine : engine});
+  }
+
+  handleRetainFilesChange = (value) => {
+    this.setState({retainFiles: value});
+  }
 
   render() {
     const {classes, selectedProject, components, completedComponents, checkComponentCompleted} = this.props;
@@ -1232,7 +1287,6 @@ class RealizabilityContent extends React.Component {
         diagReport = monolithic ? projectReport.systemComponents[systemComponentIndex].monolithic.diagnosisReport : projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].diagnosisReport;
       }
     }
-
     return(
       <div>
         {components.length !== 0 &&
@@ -1298,7 +1352,8 @@ class RealizabilityContent extends React.Component {
                   color="primary"
                 />
               }
-              style={{marginRight: '40%'}}              
+
+              style={{marginRight: '48%'}}
               label="Monolithic"
             />
             {/*Disable this for now.
@@ -1318,7 +1373,8 @@ class RealizabilityContent extends React.Component {
                 <ErrorIcon id="qa_rlzCont_icon_depMissing" className={classes.wrapper} style={{verticalAlign : 'bottom'}} color='error'/>
               </Tooltip>
             }
-            <TextField
+
+{/*            <TextField
               id="qa_rlzCont_tf_timeOut"
               className={classes.wrapper}
               disabled={selected === ''}
@@ -1330,7 +1386,7 @@ class RealizabilityContent extends React.Component {
               InputLabelProps={{
                 shrink: true
               }}
-            />
+            />*/}
             <div className={classes.wrapper}>
             <Button onClick={(event) => {this.checkRealizability(event)}} 
               id="qa_rlzCont_btn_check"
@@ -1356,12 +1412,22 @@ class RealizabilityContent extends React.Component {
               {diagStatus === 'PROCESSING' && <CircularProgress size={24} className={classes.buttonProgress}/>}
             </div>
             <div className={classes.wrapper}>
+
             <SaveRealizabilityReport classes={{vAlign: classes.vAlign}} enabled={
               projectReport.systemComponents.length > 0 && status[selected.component_name] !== 'PROCESSING' && diagStatus !== 'PROCESSING'
             } projectReport={projectReport}/>
             </div>
             <div className={classes.wrapper}>
-            <Button color="secondary" onClick={this.handleHelpOpen} size="small" id="qa_rlzCont_btn_help" className={classes.vAlign} variant="contained"> Help </Button>
+            <Button color="secondary" onClick={this.handleHelpOpen} size="small" id="qa_rlzTbl_btn_help" className={classes.vAlign} variant="contained"> Help </Button>
+              <Tooltip title={'Settings'}>
+                <Button color="secondary" onClick={() => this.handleSettingsOpen()} size="small" className={classes.vAlign} variant="contained"> 
+                  {/*<SettingsIcon/>*/}
+                  Settings
+                </Button>
+              </Tooltip>
+            </div>
+            <div className={classes.wrapper}>
+              <Button color="secondary" onClick={this.handleHelpOpen} size="small" className={classes.vAlign} variant="contained"> Help </Button>
             </div>
             </Grid>
             <div style={{width : '100%'}}>
@@ -1441,6 +1507,7 @@ class RealizabilityContent extends React.Component {
             </div>
           </div>
         }
+        <RealizabilitySettingsDialog className={classes} selectedEngine={this.state.selectedEngine} retainFiles={this.state.retainFiles} open={this.state.settingsOpen} handleSettingsClose={this.handleSettingsClose} handleSettingsEngineChange={this.handleSettingsEngineChange} handleTimeoutChange={this.handleTimeoutChange} handleRetainFilesChange={this.handleRetainFilesChange}/>
         <Dialog maxWidth='lg' onClose={this.handleHelpClose} open={this.state.helpOpen}>
           <DialogTitle id="realizability-help">
             <Typography>
@@ -1455,7 +1522,7 @@ class RealizabilityContent extends React.Component {
           <DialogContent dividers>
             <ReactMarkdown renderers={{image: (props) => <img {...props} style={{maxHeight: '10%', width: '100%'}} />}} transformImageUri = {uri => `../docs/_media/screen_shots/${uri}`} linkTarget="_blank" source={realizabilityManual}/>
           </DialogContent>
-        </Dialog>
+        </Dialog>        
       </div>
     );
   }

@@ -45,7 +45,7 @@ var analysisPath = require("os").homedir() + '/Documents/fret-analysis/';
 
 class DiagnosisEngine {
 
-  constructor(contract, timeout, check) {
+  constructor(contract, timeout, check, solver) {
 
     this.contract = contract;
     this.timeout = timeout;
@@ -53,7 +53,7 @@ class DiagnosisEngine {
     //In other words, diagnosis can be applied to more checks than just realizability.
     //well-separation and vacuity checking are two future applications.
     this.check = check;
-    
+    this.solver = solver;
     this.engines = [];
     this.realizableMap = new Map();
     this.root = new HSNode(null, null);
@@ -126,7 +126,7 @@ class DiagnosisEngine {
       var propertyList = this.engines[eng].properties.map(p => p.reqid);
       var filePath = this.tmppath+this.engines[eng].componentName+'.lus';
       var output = fs.openSync(filePath, 'w');      
-      var lustreContract = ejsCache_realize.renderRealizeCode().component.complete(this.engines[eng]);
+      var lustreContract = ejsCache_realize.renderRealizeCode(this.solver).component.complete(this.engines[eng]);
       fs.writeSync(output, lustreContract);
       if (minimal) {
         checkOutput = realizabilityCheck.checkReal(filePath, '-json -timeout ' + this.timeout);
