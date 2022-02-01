@@ -874,9 +874,13 @@ class RealizabilityContent extends React.Component {
     const self = this;
 
     var actualTimeout = (timeout === '' ? 900 : timeout);
+
     var systemComponentIndex = projectReport.systemComponents.findIndex( sc => sc.name === selected.component_name);
     var connectedComponentIndex = monolithic ? 0 : projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents.findIndex(cc => cc.ccName === ccSelected);
 
+    let nameAndEngine = self.getEngineNameAndOptions();
+    let engineName = nameAndEngine.name;
+    let engineOptions = nameAndEngine.options + actualTimeout;    
 
     if(compositional) {
       projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].diagnosisStatus = 'PROCESSING';
@@ -916,7 +920,7 @@ class RealizabilityContent extends React.Component {
           var ccProperties = contract.properties.filter(p => projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].requirements.includes(p.reqid));
           ccContract.properties = ccProperties          
 
-          let engine = new DiagnosisEngine(ccContract, actualTimeout, 'realizability');
+          let engine = new DiagnosisEngine(ccContract, actualTimeout, 'realizability', engineName, engineOptions);
           engine.main(function (err, result) {
             if (err) {              
               projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].diagnosisStatus = 'ERROR';
@@ -942,11 +946,12 @@ class RealizabilityContent extends React.Component {
             }
           });
         } else if (monolithic) {
-          let engine = new DiagnosisEngine(contract, actualTimeout, 'realizability');
+          let engine = new DiagnosisEngine(contract, actualTimeout, 'realizability', engineName, engineOptions);
           engine.main(function (err, result) {
             if (err) {
               projectReport.systemComponents[systemComponentIndex].monolithic.diagnosisStatus = 'ERROR';
               projectReport.systemComponents[systemComponentIndex].monolithic.error = err;                        
+
               self.setState({
                 projectReport: projectReport
               });
@@ -997,28 +1002,68 @@ class RealizabilityContent extends React.Component {
     var actualTimeout = (timeout === '' ? 900 : timeout);
 
     let engineName, engineOptions;
+
+  getEngineNameAndOptions() {
+    const {selectedEngine} = this.state;
+    let name, options;
     switch (selectedEngine) {
       case 0:
       //JKind without MBP
-        engineName = 'jkind';
-        engineOptions = '-fixpoint -timeout '+actualTimeout;
+        name = 'jkind';
+        options = '-fixpoint -timeout '
         break;      
       case 1:
       //JKind+AEVAL (MBP)
-        engineName = 'jkind';
-        engineOptions = '-fixpoint -solver aeval -timeout '+actualTimeout
+        name = 'jkind';
+        options = '-fixpoint -solver aeval -timeout '
         break;
       case 2:
       //Kind 2 without MBP
-        engineName = 'kind2';
-        engineOptions = '--enable CONTRACTCK --timeout '+actualTimeout;
+        name = 'kind2';
+        options = '--enable CONTRACTCK --timeout '
         break;        
       case 3:
       //Kind 2 (MBP)
-        engineName = 'kind2';
-        engineOptions = '--enable CONTRACTCK --ae_val_use_ctx false --timeout ' + actualTimeout;
+        name = 'kind2';
+        engineOptions = '--enable CONTRACTCK --ae_val_use_ctx false --timeout '
         break;
     }
+    return {name, options};
+  }
+
+  checkRealizability = () => {
+
+    const {selected, ccSelected, monolithic, compositional, connectedComponents, timeout, retainFiles} = this.state;
+    const {selectedProject, components, getPropertyInfo, getDelayInfo, getContractInfo} = this.props;
+    const self = this;
+
+    var actualTimeout = (timeout === '' ? 900 : timeout);
+
+    let nameAndEngine = self.getEngineNameAndOptions();
+    let engineName = nameAndEngine.name;
+    let engineOptions = nameAndEngine.options + actualTimeout;
+    // switch (selectedEngine) {
+    //   case 0:
+    //   //JKind without MBP
+    //     engineName = 'jkind';
+    //     engineOptions = '-fixpoint -timeout '+actualTimeout;
+    //     break;      
+    //   case 1:
+    //   //JKind+AEVAL (MBP)
+    //     engineName = 'jkind';
+    //     engineOptions = '-fixpoint -solver aeval -timeout '+actualTimeout
+    //     break;
+    //   case 2:
+    //   //Kind 2 without MBP
+    //     engineName = 'kind2';
+    //     engineOptions = '--enable CONTRACTCK --timeout '+actualTimeout;
+    //     break;        
+    //   case 3:
+    //   //Kind 2 (MBP)
+    //     engineName = 'kind2';
+    //     engineOptions = '--enable CONTRACTCK --ae_val_use_ctx false --timeout ' + actualTimeout;
+    //     break;
+    // }
     
     var targetComponents;
     if (selected === 'all') {
@@ -1089,8 +1134,10 @@ class RealizabilityContent extends React.Component {
               var lustreContract = ejsCache_realize.renderRealizeCode(engineName).component.complete(contract);
 
               fs.writeSync(output, lustreContract);
+              // checkOutput = realizability.checkRealizability(filePath, '-fixpoint -timeout ' + actualTimeout);
+              // realizability.checkRealizability(filePath, engineName, engineOptions, function(err, checkOutput) {
+                realizability.checkRealizability(filePath, engineName, engineOptions, function(err, result, time, cex) {
 
-              realizability.checkRealizability(filePath, engineName, engineOptions, function(err, checkOutput) {
                 if (err) {
                   self.setState(prevState => {
                     prevState.projectReport.systemComponents[systemComponentIndex].monolithic.result = '';
@@ -1098,8 +1145,8 @@ class RealizabilityContent extends React.Component {
                     return(prevState);
                   });
                 } else {
-                  var result = checkOutput.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];
-                  var time = checkOutput.match(new RegExp('(Time = )(.*?)\\n'))[2];
+                  // var result = checkOutput.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];
+                  // var time = checkOutput.match(new RegExp('(Time = )(.*?)\\n'))[2];
                   self.setState(prevState => {
                     prevState.projectReport.systemComponents[systemComponentIndex].monolithic.result = result;
                     prevState.projectReport.systemComponents[systemComponentIndex].monolithic.time = time;
@@ -1130,7 +1177,8 @@ class RealizabilityContent extends React.Component {
               // output.write(lustreContract);
               // output.end();
               // output.on('finish', () => {
-              realizability.checkRealizability(filePath, engineName, engineOptions, function(err, checkOutput) {
+              // realizability.checkRealizability(filePath, engineName, engineOptions, function(err, checkOutput) {
+              realizability.checkRealizability(filePath, engineName, engineOptions, function(err, result, time, cex) {                
                 if (err) {
                   cc.result = 'ERROR';
                   cc.error = err.message;

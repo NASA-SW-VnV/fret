@@ -48,7 +48,7 @@ export function checkRealizability(filePath, engine, options, callback) {
     // console.log(output);
     // return output;    
   } else if (engine === 'kind2'){
-    command = 'kind2 ' + options + ' ' + filePath;
+    command = 'kind2 -json ' + options + ' ' + filePath;
   }
 
   exec(command, function (err, stdout, stderr) {
@@ -59,18 +59,42 @@ export function checkRealizability(filePath, engine, options, callback) {
       console.log(stderr.toString())
       console.log(stdout.toString())
     } else {
-      console.log(stdout.toString())
-      callback(null, stdout);
+      let result, time, cex;
+      if (engine === 'jkind') {
+        result = stdout.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];
+        time = stdout.match(new RegExp('(Time = )(.*?)\\n'))[2];
+
+        callback(null, result, time, null); 
+        // callback(null, stdout); 
+      } else {
+        var kind2Output = JSON.parse(stdout);
+
+        var realizabilityResults = kind2Output.filter(e => e.objectType === "realizabilityCheck")[0];
+        var consistencyResults = kind2Output.filter(e => e.objectType === "satisfiabilityCheck")[0];
+        result = consistencyResults.result === "unsatisfiable" ? "INCONSISTENT" : realizabilityResults.result.toUpperCase();
+        time = (realizabilityResults.runtime['value'] + consistencyResults.runtime['value']).toString() + realizabilityResults.runtime['unit'];
+        cex = realizabilityResults.deadlockingTrace ? realizabilityResults.deadlockingTrace : null;
+        callback(null, result, time, cex);
+        // callback(null, kind2Output);
+      }
+      
     }
   })
 
 }
 
-export function checkReal(filePath, options) {
-  var jkindCommand = 'jrealizability '+ options + ' ' + filePath;
+export function checkReal(filePath, engine, options) {
+  let command;
+  if (engine === 'jkind'){
+    command = 'jrealizability ' + options + ' ' + filePath;
+  } else {
+    command = 'kind2' + '-json --enable CONTRACTCK ' + filePath;
+  }
+  // var jkindCommand = 'jrealizability '+ options + ' ' + filePath;
   var output
   try {
-    output = execSync(jkindCommand).toString();
+    // output = execSync(jkindCommand).toString();
+    output = execSync(command).toString();
     return output;
   } catch (error) {    
     return error.stdout.toString();
