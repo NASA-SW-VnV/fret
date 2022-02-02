@@ -144,7 +144,7 @@ const installExtensions = async () => {
   ];
 
   return Promise
-    .all(extensions.map(name => installer.default(installer[name], forceDownload)))
+    .all(extensions.map(name => installer.default(installer[name], {loadExtensionOptions: {allowFileAccess: true}, forceDownload: forceDownload})))
     .catch(console.log);
 };
 

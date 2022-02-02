@@ -142,6 +142,7 @@ class SearchSortableTableDialog extends React.Component {
                 key={statusType}
                 control={
                   <Checkbox
+                    id={'qa_srchTbl_cb_'+statusType.replace(/ /g,"_")}
                     checked = {statusChkBx[statusType]}
                     icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
                     checkedIcon={<CheckBoxIcon fontSize="small" />}
@@ -220,10 +221,12 @@ class SearchSortableTableDialog extends React.Component {
             </DialogContent>
 
             <DialogActions>
-              <Button onClick={this.handleClose} color="primary">
+              <Button id = "qa_srchTbl_btn_Cancel"
+                onClick={this.handleClose} color="primary">
                 Cancel
               </Button>
-              <Button onClick={this.handleApply} color="secondary" autoFocus variant='contained'>
+              <Button id = "qa_srchTbl_btn_Search"
+                onClick={this.handleApply} color="secondary" autoFocus variant='contained'>
                 Search
               </Button>
             </DialogActions>
