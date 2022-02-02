@@ -21,9 +21,9 @@ const fakeDialog = require('spectron-fake-dialog');
 
 const curDir = process.cwd();
 const subdirNames = curDir.split(path.sep);
-const testTempDir = '/'+path.join(subdirNames[1],subdirNames[2],'Documents','FRET_tests');
-const fretDB_dirName = path.join(testTempDir ,'/fret-db');
-const modelDB_dirName = path.join(testTempDir ,'/model-db');
+const testTempDir = '/'+path.join(subdirNames[1],subdirNames[2],'Documents');
+const fretDB_dirName = path.join(testTempDir ,'fret-db');
+const modelDB_dirName = path.join(testTempDir ,'model-db');
 
 console.log('Current directory: ' + curDir);
 console.log('__dirname: ' + __dirname);
@@ -118,7 +118,7 @@ describe('FRET GUI E2E tests ', function () {
   //       clickable elements from dashboard (db)
   //------------------------------------------------------------------
 
-      it.only('I/E - 1', async () => {
+      it('I/E - 1', async () => {
             console.log('starting test: I/E - 1');
             await startWithJsonFileImport('MyDBAM113.json');
           
@@ -212,7 +212,7 @@ describe('FRET GUI E2E tests ', function () {
       });      
 
       //------------------------------------------------------------------
-      it.only('SELECT MENU OPEN DRAWER', async () => {
+      it('SELECT MENU OPEN DRAWER', async () => {
             console.log('starting test: SELECT MENU OPEN DRAWER');
             await startWithJsonFileImport('MyDBAM113.json');
             
@@ -528,16 +528,16 @@ describe('FRET GUI E2E tests ', function () {
             await futureTime.click();      
 
             const futureTimeFor = await app.client.$('#qa_crtAst_sem_typ_futureTimeFormula')
-            var reqText = futureTimeFor.getTitle();
+            var reqText = await futureTimeFor.getTitle();
             //console.log('semantics: '+reqText);
-            reqText = futureTimeFor.getValue();
+            reqText = await futureTimeFor.getValue();
             //console.log('semantics: '+reqText);
             //reqText = futureTimeFor.getSelectedText();
             //console.log('semantics: '+reqText);
             //expect(reqText).toContain('ENFORCED: in the interval defined by the entire execution');
 
             const ftc = await app.client.$('#qa_crtAst_sem_typ_futureTimeComp');
-            reqText = ftc.getText();
+            reqText = await ftc.getText();
             //console.log('semantics: '+reqText);
             //expect(reqText).toContain('Target: Autopilot component');            
             //// await app.client.pause(3000);
@@ -623,7 +623,7 @@ describe('FRET GUI E2E tests ', function () {
             const astTab = await app.client.$('#qa_crt_tab_assistant');
             await astTab.click();
             const speakFret = await app.client.$('#qa_ast_typ_speakFRETish');
-            const reqText = speakFret.getText();    
+            const reqText = await speakFret.getText();    
             //console.log('template 1: '+ reqText);
             //expect(reqText).toBe('Ready to speak FRETish?');
             
@@ -665,7 +665,7 @@ describe('FRET GUI E2E tests ', function () {
             await startWithJsonFileImport('MyDBAM113.json');
 
             const createBtn = await app.client.$('#qa_db_btn_create');
-            createBtn.click();
+            await createBtn.click();
             //const createBtn = await app.client.$('#qa_db_btn_create');            
             //await createBtn.click();
 
@@ -1270,7 +1270,7 @@ describe('FRET GUI E2E tests ', function () {
             //await  app.client.pause(2000);
             //await  app.client.$('#qa_newProj_tf_projectName').setValue('abc');    
                          
-            newProj = projName.getText();
+            newProj = await projName.getText();
             //console.log('nameInput is : '+   newProj);
             
             /*
@@ -1488,15 +1488,15 @@ describe('FRET GUI E2E tests ', function () {
             //console.log('selected project: '+reqText);
             //expect(reqText).toContain('emergencybutton');   
             const mt = await app.client.$('#qa_var_tc_modelType_liquid_level_1');
-            reqText = mt.getText();
+            reqText = await mt.getText();
             console.log('selected project: '+reqText);
             //expect(reqText).toContain('Input');  
             const dt =  await app.client.$('#qa_var_tc_dataType_liquid_level_2');
-            reqText = dt.getText();
+            reqText = await dt.getText();
             console.log('selected project: '+reqText);
             //expect(reqText).toContain('boolean');   
             const desc = await app.client.$('#qa_var_tc_description_start_button');
-            reqText = desc.getText();
+            reqText = await desc.getText();
             console.log('selected project: '+reqText);
             //expect(reqText).toContain('');                           
       });
@@ -1566,7 +1566,7 @@ describe('FRET GUI E2E tests ', function () {
             await varTypeFunc.click();
             ////// await app.client.pause(1000);
             const funcMod = await app.client.$('#qa_disVar_tf_funcModName');
-            let reqText = funcMod.getText();
+            let reqText = await funcMod.getText();
             console.log('qa_var_tf_funcModName project: '+reqText);
             //expect(reqText).toContain('');  
 
@@ -1979,7 +1979,7 @@ describe('FRET GUI E2E tests ', function () {
 
             // Requirement ID
             const reqIDSel = await app.client.$('#qa_csvImp_sel_reqID');
-            reqIDSel.click();
+            await reqIDSel.click();
             /*
             const reqIDmi = await app.client.$('#qa_csvImp_mi_id_Requirement ID');
             reqIDmi.click();
@@ -2010,7 +2010,7 @@ describe('FRET GUI E2E tests ', function () {
 
             // Requirement ID
             const reqIDSel = await app.client.$('#qa_csvImp_sel_reqID');
-            reqIDSel.click();
+            await reqIDSel.click();
             /*
             const reqIDmi = await app.client.$('#qa_csvImp_mi_id_Requirement ID');
             reqIDmi.click();
