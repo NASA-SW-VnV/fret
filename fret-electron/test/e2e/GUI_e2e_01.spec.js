@@ -21,13 +21,13 @@ const fakeDialog = require('spectron-fake-dialog');
 
 const curDir = process.cwd();
 const subdirNames = curDir.split(path.sep);
-const userDocumentsFolder = '/'+path.join(subdirNames[1],subdirNames[2],'Documents');
-const fretDB_dirName = path.join(userDocumentsFolder ,'/fret-db');
-const modelDB_dirName = path.join(userDocumentsFolder ,'/model-db');
+const testTempDir = '/'+path.join(subdirNames[1],subdirNames[2],'Documents','FRET_tests');
+const fretDB_dirName = path.join(testTempDir ,'/fret-db');
+const modelDB_dirName = path.join(testTempDir ,'/model-db');
 
 console.log('Current directory: ' + curDir);
 console.log('__dirname: ' + __dirname);
-console.log('userDocumentsFolder: ' +userDocumentsFolder);
+console.log('testTempDir: ' +testTempDir);
 console.log('fretDB_dirName: '+fretDB_dirName);
 console.log('modelDB_dirName: ' + modelDB_dirName);
 
@@ -118,7 +118,7 @@ describe('FRET GUI E2E tests ', function () {
   //       clickable elements from dashboard (db)
   //------------------------------------------------------------------
 
-      it('I/E - 1', async () => {
+      it.only('I/E - 1', async () => {
             console.log('starting test: I/E - 1');
             await startWithJsonFileImport('MyDBAM113.json');
           
