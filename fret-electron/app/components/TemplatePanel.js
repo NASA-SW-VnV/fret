@@ -103,7 +103,7 @@ class TemplatePanel extends React.Component {
                   No template
                 </MenuItem>
                 {templates && templates.map((template, index) => (
-                <MenuItem id={"qa_tpl_mi_"+template.title} key={`key-template-${index}`} value={index}>
+                <MenuItem id={"qa_tpl_mi_"+template.title.replace(/\s+/g, '_')} key={`key-template-${index}`} value={index}>
                   {template.title}
                 </MenuItem>
                 ))}

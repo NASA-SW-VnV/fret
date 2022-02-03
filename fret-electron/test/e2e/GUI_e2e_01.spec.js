@@ -100,7 +100,6 @@ describe('FRET GUI E2E tests ', function () {
             await rmDB();
       });
 
-      //Stop the electron app after completion of each test
       afterEach(async () => {
             if (app && app.isRunning()) {
                   return await app.stop();
@@ -157,7 +156,6 @@ describe('FRET GUI E2E tests ', function () {
             await tableBtn.click();
             const tblTitle = await app.client.$('#qa_tbl_title');
             const reqText = await tblTitle.getText();
-            //console.log('SortableTable Title: '+ reqText);
             expect(reqText).toBe('Requirements: All Projects');     
                   
       });
@@ -170,7 +168,6 @@ describe('FRET GUI E2E tests ', function () {
             const anaBtn = await app.client.$('#qa_db_li_analysis');
             await anaBtn.click();
 
-            // variable and realizability tabs should be visisble
             const varTab = await app.client.$('#qa_var_tab');
 
             const selAllProjects = await app.client.$('#qa_var_typ_selProjectAllProjects');
@@ -178,7 +175,6 @@ describe('FRET GUI E2E tests ', function () {
             expect(reqText).toBe('Please choose a specific project');
 
             const dashboardBtn = await app.client.$('#qa_db_li_dashboard');
-            // click dashboard button
             await dashboardBtn.click();
             
             const reqField = await app.client.$('#qa_db_ili_requirements');
@@ -194,7 +190,6 @@ describe('FRET GUI E2E tests ', function () {
             await startWithJsonFileImport('MyDBAM113.json');
              
             const helpBtn = await app.client.$('#qa_db_li_help');
-            // click help button
             await helpBtn.click();
             const setupLab = await app.client.$('#qa_help_label_Setup');
             const reqText = await setupLab.getText();
@@ -215,7 +210,7 @@ describe('FRET GUI E2E tests ', function () {
 
             const anaText = await app.client.$('#qa_db_li_analysis_portal_text');
             const reqText = await anaText.getText();
-            console.log('qa_db_li_analysis_portal_text: '+ reqText);
+            //console.log('qa_db_li_analysis_portal_text: '+ reqText);
             expect(reqText).toBe('Analysis Portal');
 
             // click close drawer
@@ -238,7 +233,7 @@ describe('FRET GUI E2E tests ', function () {
             
             const prjcts = await app.client.$('#qa_db_ili_projects');
             const projectText = await prjcts.getText();
-            console.log('project text: ' + projectText);
+            //console.log('project text: ' + projectText);
             expect(projectText).toContain('Hanfor');            
 
       });     
@@ -247,9 +242,9 @@ describe('FRET GUI E2E tests ', function () {
       it('READING FEEDS', async () => {
             console.log('starting test: READING FEEDS')
             await startWithJsonFileImport('MyDBAM113.json');
+            await app.client.pause(500);
 
             const feedsLm = await app.client.$('#qa_db_lit_feeds_Liquid_mixer_LM-009');
-
             var reqText = await feedsLm.getText();
             expect(reqText).toContain('when emergency_button, the liquid_mixer shall at the next timepoint satisfy ! valve_0');
 
@@ -263,7 +258,6 @@ describe('FRET GUI E2E tests ', function () {
             const createBtn = await app.client.$('#qa_db_btn_create');           
             await createBtn.click();
 
-            // click on Templates
             const astTab = await app.client.$('#qa_crt_tab_assistant');
             await astTab.click();
 
@@ -273,7 +267,7 @@ describe('FRET GUI E2E tests ', function () {
 
             const expln = await app.client.$('#qa_crtAst_div_explanations');
             var reqText = await expln.getText();
-            console.log('scope: '+reqText);
+            //console.log('scope: '+reqText);
             expect(reqText).toContain('specifies where the requirement must hold: in intervals defined with respect to a MODE, e.g.');
  
       });           
@@ -283,11 +277,9 @@ describe('FRET GUI E2E tests ', function () {
             console.log('starting test: ASSISTANT TAB - CONDITIONS')
             await startWithJsonFileImport('MyDBAM113.json');
                        
-            const createBtn = await app.client.$('#qa_db_btn_create');
-            
+            const createBtn = await app.client.$('#qa_db_btn_create');            
             await createBtn.click();
 
-            // click on Templates
             const astTab = await app.client.$('#qa_crt_tab_assistant');
             await astTab.click();
 
@@ -296,7 +288,7 @@ describe('FRET GUI E2E tests ', function () {
 
             const crtAstEx = await app.client.$('#qa_crtAst_div_explanations');
             var reqText = await crtAstEx.getText();
-            console.log('Conditions: '+reqText);
+            //console.log('Conditions: '+reqText);
             expect(reqText).toContain('Condition (optional)');
             expect(reqText).toContain('Specifies the conditions under which the requirement shall be true');
  
@@ -310,7 +302,6 @@ describe('FRET GUI E2E tests ', function () {
             const createBtn = await app.client.$('#qa_db_btn_create');
             await createBtn.click();
 
-            // click on Templates
             const astTab = await app.client.$('#qa_crt_tab_assistant');;
             await astTab.click();
 
@@ -319,7 +310,7 @@ describe('FRET GUI E2E tests ', function () {
 
             const crtAst = await app.client.$('#qa_crtAst_div_explanations');
             var reqText = await crtAst.getText();
-            console.log('Component: '+reqText);
+            //console.log('Component: '+reqText);
             expect(reqText).toContain('Component (mandatory)');
             expect(reqText).toContain('Specifies the component of the system that the requirement applies to');
  
@@ -333,7 +324,6 @@ describe('FRET GUI E2E tests ', function () {
             const createBtn = await app.client.$('#qa_db_btn_create');
             await createBtn.click();
 
-            // click on Templates
             const astTab = await app.client.$('#qa_crt_tab_assistant');;
             await astTab.click();
 
@@ -342,7 +332,7 @@ describe('FRET GUI E2E tests ', function () {
 
             const crtAstEx = await app.client.$('#qa_crtAst_div_explanations');
             var reqText = await crtAstEx.getText();
-            console.log('Timing: '+reqText);
+            //console.log('Timing: '+reqText);
             expect(reqText).toContain('Timing (optional)');
             expect(reqText).toContain('specifies the time points or time intervals, where a');
  
@@ -356,7 +346,6 @@ describe('FRET GUI E2E tests ', function () {
             const createBtn = await app.client.$('#qa_db_btn_create');
             await createBtn.click();
 
-            // click on Templates
             const astTab = await app.client.$('#qa_crt_tab_assistant');
             await astTab.click();
 
@@ -365,7 +354,7 @@ describe('FRET GUI E2E tests ', function () {
 
             const crtAstEx = await app.client.$('#qa_crtAst_div_explanations');
             var reqText = await crtAstEx.getText();
-            console.log('Responses: '+reqText);
+            //console.log('Responses: '+reqText);
             expect(reqText).toContain('Response (mandatory)');
             expect(reqText).toContain('Specifies the response that the component must provide to fulfill the requirement');
  
@@ -379,8 +368,6 @@ describe('FRET GUI E2E tests ', function () {
             const liTable = await app.client.$('#qa_db_li_table');            
             await liTable.click();
 
-            // await app.client.pause(3100);
-            console.log('test 1');
             const notBulk = await app.client.$('#qa_tbl_btn_not_bulk_id_AP-000');
             await notBulk.click();      
             
@@ -407,7 +394,6 @@ describe('FRET GUI E2E tests ', function () {
             const liTable = await app.client.$('#qa_db_li_table');
             await liTable.click();
 
-            // await app.client.pause(3000);
             const notBulk = await app.client.$('#qa_tbl_btn_not_bulk_id_AP-000');
             await notBulk.click();      
             
@@ -429,8 +415,7 @@ describe('FRET GUI E2E tests ', function () {
       it('ASSISTANT TAB - SEMANTICS DIAGRAM', async () => {
             console.log('starting test: ASSISTANT TAB - SEMANTICS DIAGRAM')
             await startWithJsonFileImport('MyDBAM113.json');
-            
-            
+                        
             const liTable = await app.client.$('#qa_db_li_table');
             await liTable.click();
 
@@ -454,8 +439,7 @@ describe('FRET GUI E2E tests ', function () {
       it('ASSISTANT TAB - SEMANTICS PAST TIME', async () => {
             console.log('starting test: ASSISTANT TAB - SEMANTICS PAST TIME')
             await startWithJsonFileImport('MyDBAM113.json');
-            
-            
+                       
             const liTable = await app.client.$('#qa_db_li_table');
             await liTable.click();
 
@@ -473,16 +457,16 @@ describe('FRET GUI E2E tests ', function () {
 
             const pastTimeFor = await app.client.$('#qa_crtAst_sem_typ_pastTimeFormula');
             var reqText = await pastTimeFor.getTitle();
-            //console.log('semantics: '+reqText);
+            console.log('semantics: '+reqText);
             reqText = await pastTimeFor.getValue();
-            //console.log('semantics: '+reqText);
-            //reqText = await pastTimeFor.getSelectedText();
-            //console.log('semantics: '+reqText);
+            console.log('semantics: '+reqText);
+            reqText = await pastTimeFor.getText();
+            console.log('semantics: '+reqText);
             //expect(reqText).toContain('ENFORCED: in the interval defined by the entire execution');
 
             const pastTimeComp = await app.client.$('#qa_crtAst_sem_typ_pastTimeComp');
             reqText = pastTimeComp.getText();
-            //console.log('semantics: '+reqText);
+            console.log('semantics: '+reqText);
             //expect(reqText).toContain('Target: Autopilot component');            
             //// await app.client.pause(3000);
  
@@ -510,51 +494,29 @@ describe('FRET GUI E2E tests ', function () {
 
             const futureTimeFor = await app.client.$('#qa_crtAst_sem_typ_futureTimeFormula')
             var reqText = await futureTimeFor.getTitle();
-            //console.log('semantics: '+reqText);
+            console.log('semantics: '+reqText);
             reqText = await futureTimeFor.getValue();
-            //console.log('semantics: '+reqText);
-            //reqText = futureTimeFor.getSelectedText();
-            //console.log('semantics: '+reqText);
+            console.log('semantics: '+reqText);
+            reqText = futureTimeFor.getText();
+            console.log('semantics: '+reqText);
             //expect(reqText).toContain('ENFORCED: in the interval defined by the entire execution');
 
             const ftc = await app.client.$('#qa_crtAst_sem_typ_futureTimeComp');
             reqText = await ftc.getText();
-            //console.log('semantics: '+reqText);
+            console.log('semantics: '+reqText);
             //expect(reqText).toContain('Target: Autopilot component');            
             //// await app.client.pause(3000);
  
       });           
 
-  //------------------------------------------------------------------
-  //       clickable elements from create or Create/Update requirement
-  //------------------------------------------------------------------
-      it('CREATE NEW REQUIREMENT-GLOSSARY CB', async () => {
-            console.log('starting test: CREATE NEW REQUIREMENT-GLOSSARY CB')
-            await startWithJsonFileImport('MyDBAM113.json');
-                    
-            
-            const createBtn = await app.client.$('#qa_db_btn_create');
-            await createBtn.click();
-
-            // click on Glossary
-            const glos = await app.client.$('#qa_crt_tab_glossary');
-            await glos.click();
-
-            //click on undefined check box
-            const glsUnd = await app.client.$('#qa_gls_cb_Undefined');
-            await glsUnd.click();
-
-      });
       //------------------------------------------------------------------
       it('CREATE NEW REQUIREMENT-GLOSSARY', async () => {
             console.log('starting test: CREATE NEW REQUIREMENT-GLOSSARY')
             await startWithJsonFileImport('MyDBAM113.json');
-                      
-            
+                                 
             const createBtn = await app.client.$('#qa_db_btn_create');
             await createBtn.click();
 
-            // click on Glossary
             const glos = await app.client.$('#qa_crt_tab_glossary');
             await glos.click();
 
@@ -568,23 +530,22 @@ describe('FRET GUI E2E tests ', function () {
       it('CREATE NEW REQUIREMENT-TEMPLATES', async () => {
             console.log('starting test: CREATE NEW REQUIREMENT-TEMPLATES')
             await startWithJsonFileImport('MyDBAM113.json');
-            
-            
+                        
             const createBtn = await app.client.$('#qa_db_btn_create');
             await createBtn.click();
 
-            // click on Templates
             const templates = await app.client.$('#qa_crt_tab_templates');
             await templates.click();
             const select = await app.client.$('#qa_tpl_select');
             await select.click();      
-            //await app.client.$('#qa_tpl_mi_Change State').click();      
+            const chgSt = await app.client.$('#qa_tpl_mi_Change_State');
+            await chgSt.click();      
+
             //// await app.client.pause(1000);    
-            //const desText = await app.client.$('#qa_tpl_typ_description').getText();
-            ////console.log('description: '+ desText);            
-            const reqText = await select.getText();
+            const desText = await app.client.$('#qa_tpl_typ_description');   
+            const reqText = await desText.getText();
             //console.log('template: '+ reqText);
-            expect(reqText).toBe('No template');
+            expect(reqText).toContain('This template describes how the state of a finite-state-machine component changes');
             
       });
 
@@ -592,18 +553,16 @@ describe('FRET GUI E2E tests ', function () {
       it('CREATE NEW REQUIREMENT-ASSISTANT', async () => {
             console.log('starting test: CREATE NEW REQUIREMENT-ASSISTANT')
             await startWithJsonFileImport('MyDBAM113.json');
-                      
-            
+                                  
             const createBtn = await app.client.$('#qa_db_btn_create');
             await createBtn.click();
 
-            // click on Templates
             const astTab = await app.client.$('#qa_crt_tab_assistant');
             await astTab.click();
             const speakFret = await app.client.$('#qa_ast_typ_speakFRETish');
             const reqText = await speakFret.getText();    
             //console.log('template 1: '+ reqText);
-            //expect(reqText).toBe('Ready to speak FRETish?');
+            expect(reqText).toBe('Ready to speak FRETish?');
             
       });
 
@@ -616,70 +575,46 @@ describe('FRET GUI E2E tests ', function () {
             const createBtn = await app.client.$('#qa_db_btn_create');
             await createBtn.click();
 
-            // click on status option
             const selStat = await app.client.$('#qa_crt_select_status');
             await selStat.click();
             ////// await app.client.pause(1000);    
             const statAtt = await app.client.$('#qa_crt_mi_statusAttention');
             await statAtt.click();
-            // await app.client.pause(5000);    
-            //const statAtt = await app.client.$('#qa_crt_mi_statusAttention');
-            //const reqText = await statAtt.get();    
-            //console.log('getValue: '+ await statAtt.getValue());
-            //console.log('getTitle: '+ await statAtt.getTitle());
-            //console.log('getText: '+ await statAtt.getText());
-            //console.log('getSelectedText: '+ await statAtt.getSelectedText());
-            //console.log('status: '+ reqText);
-            //expect(reqText).toBe('attention');            
+        
       });
       
       //------------------------------------------------------------------ 
       it('CREATE NEW REQUIREMENT-REQUIREMENT ID', async () => {
-            console.log('starting test: CREATE NEW REQUIREMENT-REQUIREMENT ID')
-            
+            console.log('starting test: CREATE NEW REQUIREMENT-REQUIREMENT ID')            
             await startWithJsonFileImport('MyDBAM113.json');
 
             const createBtn = await app.client.$('#qa_db_btn_create');
             await createBtn.click();
-            //const createBtn = await app.client.$('#qa_db_btn_create');            
-            //await createBtn.click();
 
-            //await app.client.$('#qa_crt_tf_reqid').click();
             const txtInput = await app.client.$('#qa_crt_tf_reqid');
             await txtInput.isEnabled();
-            await txtInput.setValue('no');
-            //// await app.client.pause(20000);
-            
-            // set text of CR_ReqrierementID to test_id_001
-            //console.log('Requirement ID: ' + await app.client.$('#qa_crt_tf_reqid').getText());
+            await txtInput.setValue('a_new_requirement');
 
       });
 
       //------------------------------------------------------------------ 
       it('CREATE NEW REQUIREMENT-PARENT REQUIREMENT ID', async () => {
-            console.log('starting test: CREATE NEW REQUIREMENT-PARENT REQUIREMENT ID')
-            
+            console.log('starting test: CREATE NEW REQUIREMENT-PARENT REQUIREMENT ID')            
             await startWithJsonFileImport('MyDBAM113.json');
             
             const createBtn = await app.client.$('#qa_db_btn_create');           
             await createBtn.click();
 
-            // check the Requirement ID text field is visisble
             const parentId = await app.client.$('#qa_crt_tf_parentReqid');
             await parentId.click();
-            
-            //await app.client.$('#qa_crt_tf_parentReqid').setValue()
-            
-            // set text of CR_ReqrierementID to test_id_
-            //console.log('Requirement ID: ' + await app.client.$('#qa_crt_tf_parentReqid').getText());
+
             await parentId.setValue('test_id_001');
 
       });
 
       //------------------------------------------------------------------ 
       it('CREATE NEW REQUIREMENT-PROJECT MENU', async () => {
-            console.log('starting test: CREATE NEW REQUIREMENT-PROJECT MENU')
-            
+            console.log('starting test: CREATE NEW REQUIREMENT-PROJECT MENU')            
             await startWithJsonFileImport('MyDBAM113.json');
 
             const createBtn = await app.client.$('#qa_db_btn_create');            
@@ -694,21 +629,18 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------ 
       it('CREATE NEW REQUIREMENT-RATIONAL AMD COMMENTS', async () => {
-            console.log('starting test: CREATE NEW REQUIREMENT-RATIONAL AMD COMMENTS')
-             
+            console.log('starting test: CREATE NEW REQUIREMENT-RATIONAL AMD COMMENTS')             
              await startWithJsonFileImport('MyDBAM113.json');
 
             const createBtn = await app.client.$('#qa_db_btn_create');            
             await createBtn.click();
 
-            // click on Rationale and Comments 
             const rationaleCom = await app.client.$('#qa_crt_as_rationaleComments');
             await rationaleCom.click();   
-            //// await app.client.pause(1000);    
-            // click on rationale   
+ 
             const ration = await app.client.$('#qa_crt_tf_rationale');
             await ration.click();   
-            // click on comments   
+
             const comments = await app.client.$('#qa_crt_tf_comments');
             await comments.click();   
 
@@ -716,8 +648,7 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------ 
       it('CREATE NEW REQUIREMENT-SCOPE BUBLE', async () => {
-            console.log('starting test: CREATE NEW REQUIREMENT-SCOPE BUBLE')
-            
+            console.log('starting test: CREATE NEW REQUIREMENT-SCOPE BUBLE')            
             await startWithJsonFileImport('MyDBAM113.json');
 
             const createBtn = await app.client.$('#qa_db_btn_create');            
@@ -827,20 +758,15 @@ describe('FRET GUI E2E tests ', function () {
    
             const createBtn = await app.client.$('#qa_db_btn_create');            
             await createBtn.click();
-      
-            // Check that theform dialog is the Create Requirement dialog
+
             const title = await app.client.$('#qa_crt_title');
             const dText = await title.getText();
-            //console.log('text= '+dText);  
 
-            // check the cancel button is visible
             const CR_cancel_visible = await app.client.$('#qa_crt_btn_cancel');
-            // click cancel button
             await CR_cancel_visible.click();
 
             const projs = await app.client.$('#qa_db_ili_projects');
             const projectText = await projs.getText();
-            //console.log('project text: ' + projectText);
             expect(projectText).toContain('Total Projects');
             expect(projectText).toContain('11');            
       });    
@@ -877,7 +803,6 @@ describe('FRET GUI E2E tests ', function () {
 
       });
 
-
       //------------------------------------------------------------------ 
       it('SORTABLE TABLE-ADD HEAD', async () => {
             console.log('starting test: SORTABLE TABLE-ADD HEAD')            
@@ -895,13 +820,11 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------ 
       it('SORTABLE TABLE-SUMMARY HEAD', async () => {
-            console.log('starting test: SORTABLE TABLE-SUMMARY HEAD')
-            
+            console.log('starting test: SORTABLE TABLE-SUMMARY HEAD')            
             await startWithJsonFileImport('MyDBAM113.json');
             const liTable = await app.client.$('#qa_db_li_table');            
             await liTable.click();
 
-            // look for table head status and click
             const headSum = await app.client.$('#qa_tbl_tc_headsummary');
             await headSum.click();
 
@@ -915,7 +838,6 @@ describe('FRET GUI E2E tests ', function () {
             const liTable = await app.client.$('#qa_db_li_table');            
             await liTable.click();
 
-            // look for table head status and click
             const headProj = await app.client.$('#qa_tbl_tc_headproject');
             await headProj.click();
 
@@ -929,11 +851,9 @@ describe('FRET GUI E2E tests ', function () {
             const liTable = await app.client.$('#qa_db_li_table');            
             await liTable.click();
 
-            // look for table head status and click
             const bulk = await app.client.$('#qa_tbl_ib_bulkChange');
             await bulk.click();
 
-            // look for checkbox
             const headCb = await app.client.$('#qa_tbl_tc_headcheckbox');
             await headCb.click();      
             ////// await app.client.pause(1000);     
@@ -949,25 +869,23 @@ describe('FRET GUI E2E tests ', function () {
             console.log('starting test: SORTABLE TABLE-BULK CHANGE REVERSE')            
             await startWithJsonFileImport('MyDBAM113.json');
 
-            // wait for the "table" button to be visible
             const liTable = await app.client.$('#qa_db_li_table');
             await liTable.click();
-
-            // look for table head status and click
+ 
             const bulk = await app.client.$('#qa_tbl_ib_bulkChange');
             await bulk.click();
-            ////// await app.client.pause(1000);    
+            //await app.client.pause(1000);    
 
-            // look for checkbox
             const headCB = await app.client.$('#qa_tbl_tc_headcheckbox');
-            //await app.client.$('#qa_tbl_tc_headcheckbox').click();      
-            ////// await app.client.pause(1000);          
-
-            await bulk.click();
-            ////// await app.client.pause(1000);    
+            await headCB.click();    
+            //await app.client.pause(1000);     
+            
+            const bulkExit = await app.client.$('#qa_tbl_ib_bulk_exit');
+            await bulkExit.click();
+            await app.client.pause(1000);  
 
             // check box should not be visible
-            //const cbVis = const headCB = await app.client.$('#qa_tbl_tc_headcheckbox');
+            const cbVis = await app.client.$('#qa_tbl_tc_headcheckbox');
             //expect(cbVis).toBeFalsy();
       });
 
@@ -979,7 +897,7 @@ describe('FRET GUI E2E tests ', function () {
             const projBtn = await app.client.$('#qa_db_btn_projects');
             await projBtn.click();
             // await app.client.pause(1000);
-            //click on a delete icon 
+
             const cmonitors = await app.client.$('#qa_proj_del_CMonitors');
             await cmonitors.click();
             //click on cancel button
@@ -1052,20 +970,13 @@ describe('FRET GUI E2E tests ', function () {
             
             const disReqEdit = await app.client.$('#qa_disReq_ic_edit');
             await disReqEdit.click();              
-         
-            //console.log('qa_crt_edt_editor is isVisible: '+ await app.client.$('#qa_crt_edt_editor').isVisible());
-            //console.log('qa_crt_edt_editor text: ' + await app.client.$('#qa_crt_edt_editor').getText());
-            //console.log('qa_crt_edt_editor: value ' + await app.client.$('#qa_crt_edt_editor').getValue());
-            ////console.log('qa_crt_edt_editor: property' + await app.client.$('#qa_crt_edt_editor').getProperty());  // not a function
-            //console.log('nameInput is isEnabled: '+ await app.client.$('#qa_crt_edt_editor').isEnabled());
+
             const edt = await app.client.$('#qa_crt_edt_editor');
             await edt.click();
-            //console.log('nameInput is selected: '+ await app.client.$('#qa_crt_edt_editor').isSelected());
-            //// await app.client.pause(3000);
-            //await app.client.$('#qa_crt_edt_editor').waitForEnabled();              
-            //await app.client.$('#qa_crt_edt_editor').setValue('test');            
-            
-            // set text of CR_ReqrierementID to test_id_001            
+            var text = await edt.getText();
+            //console.log('edt text: '+ text);
+            expect(text).toContain('Autopilot shall always satisfy altitude_hold => absOf_alt_minus_altIC <= 35.0');
+     
       });
 
       //------------------------------------------------------------------
@@ -1074,75 +985,33 @@ describe('FRET GUI E2E tests ', function () {
             await startWithJsonFileImport('MyDBAM113.json');
 
             const projBtn = await app.client.$('#qa_db_btn_projects');
-            // click  project button
             await projBtn.click();
             //// await app.client.pause(1000);
 
-            //click on a new project icon 
             const newProj = await app.client.$('#qa_db_btn_newProject');
             await newProj.click();
-            //enter new project name
-
-            //const input = await $('.input');
-            //await input.setValue('test123');
-            //await app.browserWindow.capturePage().then(function (imageBuffer) {
-            //      fs.writeFile('/Users/ktrinh/fret/hub_qa/fret-electron/test/pageKhanh.png', imageBuffer)
-            //    });
-
-            await app.rendererProcess.env().then(function (env) {
-                  console.log('renderer process env variables: ' + env)
-                });
-
-            await    app.client.getMainProcessLogs().then(function (logs) {
-                  logs.forEach(function (log) {
-                    console.log(log)
-                  })
-                });
-            
-            await app.client.getRenderProcessLogs().then(function (logs) {
-                  logs.forEach(function (log) {
-                    console.log(log.message)
-                    console.log(log.source)
-                    console.log(log.level)
-                  })
-                });
-                
+            await app.client.pause(500);
             
             const nameInput = await app.client.$('#qa_newProj_tf_projectName');
-            //await app.client.$('#qa_newProj_tf_projectName').setValue('test123');
+            await nameInput.setValue('test123');
 
-              //console.log('nameInput is isDisplayedInViewport: '+ await app.client.$('#qa_newProj_tf_projectName').isDisplayedInViewport());  // not a function
-            await nameInput.click();
- 
             // click on cancel button
-            const newProjOk = await app.client.$('#qa_newProj_btn_ok');
-            await newProjOk.click();   
-            
-            //// await app.client.pause(1000);
-
-            //const projBtn = await app.client.$('#qa_db_btn_projects');
-            // click  project button
-            await projBtn.click();
-            //// await app.client.pause(1000);
+            const newProjCancel = await app.client.$('#qa_newProj_btn_cancel');
+            await newProjCancel.click();   
  
       });  
 
       //------------------------------------------------------------------
       it('SELECTING A PROJECT', async () => {
-            console.log('starting test: SELECTING A PROJECT')
-
-            
+            console.log('starting test: SELECTING A PROJECT')            
             await startWithJsonFileImport('MyDBAM113.json');
 
-            // wait for the "Projects" button to be visible
             const projBtn = await app.client.$('#qa_db_btn_projects');
             
             await projBtn.click();
-            //// await app.client.pause(1000);
-            //click on a select 
             const hanfor = await app.client.$('#qa_proj_select_Hanfor');
             await hanfor.click();
-            //
+            
             const projs = await app.client.$('#qa_db_ili_projects');
             const projectText = await projs.getText();
             //console.log('project text: ' + projectText);
@@ -1178,89 +1047,52 @@ describe('FRET GUI E2E tests ', function () {
       it('CREATE A NEW PROJECT-OK', async () => {
             console.log('starting test: CREATE A NEW PROJECT-OK')            
             await startWithJsonFileImport('MyDBAM113.json');
-            
-            // wait for the "Projects" button to be visible
+
             const projBtn = await app.client.$('#qa_db_btn_projects');
             await  projBtn.click();
-            
-            //click on a new project icon 
+
             let newProj = await  app.client.$('#qa_db_btn_newProject');
             await  newProj.click();
+            await app.client.pause(500);
 
             const projName = await  app.client.$('#qa_newProj_tf_projectName');
-            //await  app.client.pause(2000);
-            //enter new project name
-            //const newProj = 
-            await projName.getValue();
-            //console.log('nameInput is : '+   newProj);
-            //console.log('nameInput is isEnabled: '+ await  app.client.$('#qa_newProj_btn_ok').isEnabled());
-            //console.log('nameInput is selected: '+  await app.client.$('#qa_newProj_tf_projectName').isSelected());
-            
-            //await  app.client.pause(2000);
-            //await  app.client.$('#qa_newProj_tf_projectName').setValue('abc');    
-                         
-            newProj = await projName.getText();
-            //console.log('nameInput is : '+   newProj);
-            
-            /*
-            //console.log('nameInput is isVisible: '+   app.client.$('#qa_newProj_btn_ok').isVisible());
-            await  app.client.$('#qa_newProj_btn_ok').click();
+            await projName.setValue('A new project');
 
-            // wait for the "Projects" button to be visible
-            await  app.client.$('#qa_db_btn_projects').isVisible();
-            // click  project button
-            await  projBtn.click();
-
-            
-            */
+            const okBtn = await app.client.$('#qa_newProj_btn_ok');
+            await okBtn.click();
  
       });   
  
       //------------------------------------------------------------------
       it('SELECT THE LM_requirements PROJECT', async () => {
-            console.log('starting test: SELECT THE HANFORD PROJECT');
-            
+            console.log('starting test: SELECT THE HANFORD PROJECT');            
             await startWithJsonFileImport('MyDBAM113.json');
-            
-            
-            // wait for the "Projects" button to be visible
-            const projBtn = await app.client.$('//*[@id="qa_db_btn_projects"]');
-            
+                        
+            const projBtn = await app.client.$('#qa_db_btn_projects');            
             await projBtn.click();
-            //// await app.client.pause(1000);
-            //click on the Hanford dropdown menu option 
+
             const lmReq = await app.client.$('#simple-menu*=LM_requirements');
             await lmReq.click();
-            //// await app.client.pause(1000);
-            if (app && app.isRunning()) {
-                  await app.stop();
-            }        
+  
       });    
-
 
   //------------------------------------------------------------------
   //       clickable elements from dashboard (db)
   //------------------------------------------------------------------
       //            test variable view 
       it('VARIABLE VIEW-SELECTED PROJECT', async () => {
-            console.log('starting test: VARIABLE VIEW-SELECTED PROJECT');
-            
+            console.log('starting test: VARIABLE VIEW-SELECTED PROJECT');            
             await startWithJsonFileImport('realizability_sqa1.json');
                         
             const projBtn = await app.client.$('#qa_db_btn_projects');            
             await projBtn.click();
 
-            // await app.client.pause(1000);
-            //click on the Liquid_mixer dropdown menu option 
             const liquidMixer = await app.client.$('#qa_proj_select_Liquid_mixer');
             await liquidMixer.click();
 
-            //// await app.client.pause(1000);
-            // wait for the "Analysis portal" button to be visible
             const anaBtn = await app.client.$('#qa_db_li_analysis');
             await anaBtn.click();
 
-            // variable and realizability tabs should be visisble
             const selProj = await app.client.$('#qa_var_typ_selProj');
             let reqText = await selProj.getText();
             //console.log('selected project: '+reqText);
@@ -1273,20 +1105,15 @@ describe('FRET GUI E2E tests ', function () {
   //------------------------------------------------------------------
       //            test variable view 
       it('VARIABLE VIEW-HELP', async () => {
-            console.log('starting test: VARIABLE VIEW-HELP');
-            
+            console.log('starting test: VARIABLE VIEW-HELP');            
             await startWithJsonFileImport('realizability_sqa1.json');
 
             const projBtn = await app.client.$('#qa_db_btn_projects');            
             await projBtn.click();
 
-            //// await app.client.pause(1000);
-            //click on the Liquid_mixer dropdown menu option 
             const liquidMixer = await app.client.$('#qa_proj_select_Liquid_mixer');
             await liquidMixer.click();
 
-            //// await app.client.pause(1000);
-            // wait for the "Analysis portal" button to be visible
             const anaBtn = await app.client.$('#qa_db_li_analysis');
             await anaBtn.click();
 
@@ -1294,253 +1121,196 @@ describe('FRET GUI E2E tests ', function () {
             await help.click();
 
             const helpPage = await app.client.$('#qa_var_dc_helpPage');
-
             let reqText = await helpPage.getText();
             //console.log('selected project: '+reqText);
             expect(reqText).toContain('Exporting to Analysis tools');            
-            //// await app.client.pause(1000);
 
       });
 
   //------------------------------------------------------------------
       //            test variable view 
       it('VARIABLE VIEW-EXPANDICON', async () => {
-            console.log('starting test: VARIABLE VIEW-EXPANDICON');
-            
+            console.log('starting test: VARIABLE VIEW-EXPANDICON');            
             await startWithJsonFileImport('realizability_sqa1.json');
 
             const projBtn = await app.client.$('#qa_db_btn_projects');            
             await projBtn.click();
 
-            //// await app.client.pause(1000);
-            //click on the Liquid_mixer dropdown menu option 
             const liquidMixer = await app.client.$('#qa_proj_select_Liquid_mixer');
             await liquidMixer.click();
 
-            //// await app.client.pause(1000);
-            // wait for the "Analysis portal" button to be visible
             const anaBtn = await app.client.$('#qa_db_li_analysis');
             await anaBtn.click();
-            //// await app.client.pause(1000);
+
             const expandIcon = await app.client.$('#qa_var_as_expandIcon');
             await expandIcon.click();
-          
-            //// await app.client.pause(1000);
 
       });
 
   //------------------------------------------------------------------
       //            test variable view 
       it('VARIABLE VIEW-EXPORT LANGUAGE CoPilot', async () => {
-            console.log('starting test: VARIABLE VIEW-EXPORT LANGUAGE CoPilot');
-            
+            console.log('starting test: VARIABLE VIEW-EXPORT LANGUAGE CoPilot');            
             await startWithJsonFileImport('realizability_sqa1.json');
  
             const projBtn = await app.client.$('#qa_db_btn_projects');            
             await projBtn.click();
 
-            //// await app.client.pause(1000);
-            //click on the Liquid_mixer dropdown menu option 
             const liquidMixer = await app.client.$('#qa_proj_select_Liquid_mixer');
             await liquidMixer.click();
 
-            //// await app.client.pause(1000);
-            // wait for the "Analysis portal" button to be visible
             const anaBtn = await app.client.$('#qa_db_li_analysis');
             await anaBtn.click();
-            //// await app.client.pause(1000);
 
             const expLang = await app.client.$('#qa_var_sel_exportLanguage');
             await expLang.click();
-            //// await app.client.pause(1000);
+
             const copilot = await app.client.$('#qa_var_mi_copilot');
             await copilot.click();          
-            //// await app.client.pause(1000);
+
       });
 
 
   //------------------------------------------------------------------
       it('VARIABLE VIEW-SORTABLE TABLE', async () => {
-            console.log('starting test: VARIABLE VIEW-SORTABLE TABLE');
-            
+            console.log('starting test: VARIABLE VIEW-SORTABLE TABLE');            
             await startWithJsonFileImport('realizability_sqa1.json');
 
             const projBtn = await app.client.$('#qa_db_btn_projects');
             await projBtn.click();
 
-            //// await app.client.pause(1000);
-            //click on the Liquid_mixer dropdown menu option 
             const liquidMixer = await app.client.$('#qa_proj_select_Liquid_mixer');
             await liquidMixer.click();
 
-            //// await app.client.pause(1000);
-            // wait for the "Analysis portal" button to be visible
             const anaBtn = await app.client.$('#qa_db_li_analysis');
             await anaBtn.click();
-            //// await app.client.pause(1000);
-
+      
             const expandIcon = await app.client.$('#qa_var_as_expandIcon');
             await expandIcon.click();
-            // await app.client.pause(3000);
+
             const emerg = await app.client.$('#qa_var_tc_modelName_emergency_button');
             let reqText = await emerg.getText();
             //console.log('selected project: '+reqText);
             //expect(reqText).toContain('emergencybutton');   
             const mt = await app.client.$('#qa_var_tc_modelType_liquid_level_1');
             reqText = await mt.getText();
-            console.log('selected project: '+reqText);
-            //expect(reqText).toContain('Input');  
+            //console.log('selected project: '+reqText);
+
             const dt =  await app.client.$('#qa_var_tc_dataType_liquid_level_2');
             reqText = await dt.getText();
-            console.log('selected project: '+reqText);
+            //console.log('selected project: '+reqText);
             //expect(reqText).toContain('boolean');   
             const desc = await app.client.$('#qa_var_tc_description_start_button');
             reqText = await desc.getText();
-            console.log('selected project: '+reqText);
+            //console.log('selected project: '+reqText);
             //expect(reqText).toContain('');                           
       });
 
   //------------------------------------------------------------------
       it('VARIABLE VIEW-EXPORT LANGUAGE CoCoSpec', async () => {
-            console.log('starting test: VARIABLE VIEW-EXPORT LANGUAGE CoCoSpec');
-            
+            console.log('starting test: VARIABLE VIEW-EXPORT LANGUAGE CoCoSpec');            
             await startWithJsonFileImport('realizability_sqa1.json');
 
-            const projBtn = await app.client.$('#qa_db_btn_projects');
-            
+            const projBtn = await app.client.$('#qa_db_btn_projects');            
             await projBtn.click();
 
-            //// await app.client.pause(1000);
-            //click on the Liquid_mixer dropdown menu option 
             const liquidMixer = await app.client.$('#qa_proj_select_Liquid_mixer');
             await liquidMixer.click();
 
-            //// await app.client.pause(1000);
-            // wait for the "Analysis portal" button to be visible
             const anaBtn = await app.client.$('#qa_db_li_analysis');
             await anaBtn.click();
-            //// await app.client.pause(1000);
 
             const expLang = await app.client.$('#qa_var_sel_exportLanguage');
             await expLang.click();
-            //// await app.client.pause(1000);
+
             const coco = await app.client.$('#qa_var_mi_cocospec');
             await coco.click();          
-            //// await app.client.pause(1000);
+
       });
 
   //------------------------------------------------------------------
       it('VARIABLE VIEW-DISPLAY VARIABLE-FUNCTION', async () => {
-            console.log('starting test: VARIABLE VIEW-DISPLAY VARIABLE-FUNCTION');
-            
+            console.log('starting test: VARIABLE VIEW-DISPLAY VARIABLE-FUNCTION');            
             await startWithJsonFileImport('realizability_sqa1.json');
 
-            const projBtn = await app.client.$('#qa_db_btn_projects');
-            
+            const projBtn = await app.client.$('#qa_db_btn_projects');            
             await projBtn.click();
 
-            //// await app.client.pause(1000);
-            //click on the Liquid_mixer dropdown menu option 
             const liquidMixer = await app.client.$('#qa_proj_select_Liquid_mixer');
             await liquidMixer.click();
 
-            //// await app.client.pause(1000);
-            // wait for the "Analysis portal" button to be visible
             const anaBtn = await app.client.$('#qa_db_li_analysis');
             await anaBtn.click();
-            //// await app.client.pause(1000);
 
-            //// await app.client.pause(1000);
             const expandIcon = await app.client.$('#qa_var_as_expandIcon');
             await expandIcon.click();
-            ////// await app.client.pause(1000);
+
             const emerBtn = await app.client.$('#qa_var_btn_FRETname_emergency_button');
             await emerBtn.click();
-            ////// await app.client.pause(1000);
 
             const varType = await app.client.$('#qa_disVar_sel_varType');
             await varType.click();
-            ////// await app.client.pause(1000);
+
             const varTypeFunc = await app.client.$('#qa_disVar_mi_varType_funcion');
             await varTypeFunc.click();
-            ////// await app.client.pause(1000);
+
             const funcMod = await app.client.$('#qa_disVar_tf_funcModName');
             let reqText = await funcMod.getText();
             console.log('qa_var_tf_funcModName project: '+reqText);
-            //expect(reqText).toContain('');  
-
-            //// await app.client.pause(1000);
                   
       });
 
   //------------------------------------------------------------------
       it('VARIABLE VIEW-DISPLAY VARIABLE-INPUT', async () => {
-            console.log('starting test: VARIABLE VIEW-DISPLAY VARIABLE-INPUT');
-            
+            console.log('starting test: VARIABLE VIEW-DISPLAY VARIABLE-INPUT');            
             await startWithJsonFileImport('realizability_sqa1.json');
 
-            const projBtn = await app.client.$('#qa_db_btn_projects');
-            
+            const projBtn = await app.client.$('#qa_db_btn_projects');            
             await projBtn.click();
 
-            //// await app.client.pause(1000);
-            //click on the Liquid_mixer dropdown menu option 
             const liquidMixer = await app.client.$('#qa_proj_select_Liquid_mixer');
             await liquidMixer.click();
 
-            //// await app.client.pause(1000);
-            // wait for the "Analysis portal" button to be visible
             const anaBtn = await app.client.$('#qa_db_li_analysis');
             await anaBtn.click();
-            //// await app.client.pause(1000);
 
             const expandIcon = await app.client.$('#qa_var_as_expandIcon');
             await expandIcon.click();
-            //// await app.client.pause(1000);
+
             const emerg = await app.client.$('#qa_var_btn_FRETname_emergency_button');
             await emerg.click();
-            //// await app.client.pause(1000);
-
+ 
             const varType = await app.client.$('#qa_disVar_sel_varType');
             await varType.click();
-            //// await app.client.pause(1000);
+
             const varTypeInp = await app.client.$('#qa_disVar_mi_varType_input');
             await varTypeInp.click();
-            //// await app.client.pause(1000);
-            /*
-            const modelVar = await app.client.$('#qa_disVar_sel_modelVar');
-            await modelVar.click();
-            //// await app.client.pause(1000);
-            const liqLv2 = await app.client.$('#qa_disVar_mi_modelVar_liquidlevel2');
-            await liqLv2.click();
-            */
+
+            //await app.client.pause(1000);
+            //const modelVar = await app.client.$('#qa_disVar_sel_modelVar');
+            //await modelVar.click();
+
+            //const liqLv2 = await app.client.$('#qa_disVar_mi_modelVar_liquidlevel2');
+            //await liqLv2.click();
 
       });
 
   //------------------------------------------------------------------
       it('VARIABLE VIEW-DISPLAY VARIABLE-MODE', async () => {
-            console.log('starting test: VARIABLE VIEW-DISPLAY VARIABLE-MODE');
-            
+            console.log('starting test: VARIABLE VIEW-DISPLAY VARIABLE-MODE');            
             await startWithJsonFileImport('realizability_sqa1.json');
 
-            const projBtn = await app.client.$('#qa_db_btn_projects');
-            
+            const projBtn = await app.client.$('#qa_db_btn_projects');            
             await projBtn.click();
 
-            //// await app.client.pause(1000);//needed
-            //click on the Liquid_mixer dropdown menu option 
             const liquidMixer = await app.client.$('#qa_proj_select_Liquid_mixer');
             await liquidMixer.click();
 
-            //// await app.client.pause(1000);
-            // wait for the "Analysis portal" button to be visible
             const anaBtn = await app.client.$('#qa_db_li_analysis');
             await anaBtn.click();
-            //// await app.client.pause(1000);
 
             const expandIcon = await app.client.$('#qa_var_as_expandIcon');
             await expandIcon.click();
-            //// await app.client.pause(1000);
 
             const emerBtn = await app.client.$('#qa_var_btn_FRETname_emergency_button');
             await emerBtn.click();
@@ -1550,12 +1320,10 @@ describe('FRET GUI E2E tests ', function () {
 
             const varTypeMode = await app.client.$('#qa_disVar_mi_varType_Mode');
             await varTypeMode.click();
-            //// await app.client.pause(1000);
             const dataType = await app.client.$('#qa_disVar_tf_dataType');
             let reqText = await dataType.getValue();
 
             expect(reqText).toBe('boolean');
-            //// await app.client.pause(1000);
             const modelReq = await app.client.$('#qa_disVar_tf_modelReq');
             await modelReq.click();
 
@@ -1563,181 +1331,116 @@ describe('FRET GUI E2E tests ', function () {
 
   //------------------------------------------------------------------
       it('REALIZABILITY VIEW-101', async () => {
-            console.log('starting test: VARIABLE VIEW-DISPLAY VARIABLE-MODE 101');
-            
+            console.log('starting test: VARIABLE VIEW-DISPLAY VARIABLE-MODE 101');            
             await startWithJsonFileImport('realizability_sqa1.json');
 
-            const projBtn = await app.client.$('#qa_db_btn_projects');
-            
+            const projBtn = await app.client.$('#qa_db_btn_projects');            
             await projBtn.click();
 
-            //// await app.client.pause(1000);//needed
-            //click on the Liquid_mixer dropdown menu option 
             const liquidMixer = await app.client.$('#qa_proj_select_Liquid_mixer');
             await liquidMixer.click();
 
-            /*
-            //// await app.client.pause(1000);
-            // wait for the "Analysis portal" button to be visible
             const anaBtn = await app.client.$('#qa_db_li_analysis');
             await anaBtn.click();     
-            //// await app.client.pause(1000);
+
             const expandIcon = await app.client.$('#qa_var_as_expandIcon');
             await expandIcon.click();
-            //// await app.client.pause(1000);
+
             const rlzTab = await app.client.$('#qa_rlz_tab');
             await rlzTab.click();
-            //// await app.client.pause(1000);
+
             const sysComp = await app.client.$('#qa_rlzTbl_sel_sysComp');
-            await sysComp.click();      
-            //// await app.client.pause(1000);
-            const scLm = await app.client.$('#qa_rlzTbl_mi_sysComp_liquid_mixer');
-            await scLm.click();            
-            //// await app.client.pause(1000);
-            const lm006 = await app.client.$('#qa_rlzTbl_tc_body_id_LM006');
-            let reqText = await lm006.getText();
-            console.log('qa_rlzTbl_tc_body_id_LM006: '+reqText);
-            expect(reqText).toContain('LM006');      
-            */        
+            await sysComp.click();     
+            //await app.client.pause(1000); 
+
+            //const scLm = await app.client.$('#qa_rlzTbl_mi_sysComp_liquid_mixer');
+            //await scLm.click();            
+
+            //const lm006 = await app.client.$('#qa_rlzTbl_tc_body_id_LM006');
+            //let reqText = await lm006.getText();
+            //console.log('qa_rlzTbl_tc_body_id_LM006: '+reqText);
+           // expect(reqText).toContain('LM006');      
+       
       });
 
       //------------------------------------------------------------------
       it('DELETING PROJECT', async () => {
-            console.log('starting test: DELETING A PROJECT')
-            
+            console.log('starting test: DELETING A PROJECT')            
             await startWithJsonFileImport('MyDBAM113.json');
-           
-            // wait for the "Projects" button to be visible
+
             const projBtn = await app.client.$('#qa_db_btn_projects');           
             await projBtn.click();
-            //// await app.client.pause(1000);
-            //click on a select 
+
             const hanfor = await app.client.$('#qa_proj_select_Hanfor');
             await hanfor.click();
-            // wait for the "Projects" button to be visible
-            //
+
             await projBtn.click();
-            //// await app.client.pause(1000);     
-            //click on a delete icon 
+
             const cmonitors = await app.client.$('#qa_proj_del_CMonitors');
             await cmonitors.click();
-            // wait for confirmation dialog
-            //// await app.client.pause(1000);
- 
 
       }); 
 
       //------------------------------------------------------------------
       it('DELETING ALL PROJECT', async () => {
-            console.log('starting test: DELETING ALL PROJECT')
-
-            
+            console.log('starting test: DELETING ALL PROJECT')            
             await startWithJsonFileImport('MyDBAM113.json');
- 
-            //delete project 
-            // wait for the "Projects" button to be visible
+
             const projBtn = await app.client.$('#qa_db_btn_projects');
             await projBtn.click();
-            //            
+                        
             const cmonitors = await app.client.$('#qa_proj_del_CMonitors');
             await cmonitors.click();
-            //click on ok button to delete
             const delProj = await app.client.$('#qa_delProj_btn_ok');
             await delProj.click(); 
 
-            //space in ID doesn't work
-            //await app.client.$('#qa_proj_del_All Projects').isVisible();
-            //await app.client.$('#qa_proj_del_All Projects').click();
-
-            
-            await projBtn.click();
-            //            
+            await projBtn.click();                        
             const gpca = await app.client.$('#qa_proj_del_GPCA');
             await gpca.click();
-            //click on ok button to delete
             await delProj.click(); 
 
-            
-            await projBtn.click();
-            //            
+            await projBtn.click();                       
             const gpcamodes = await app.client.$('#qa_proj_del_GPCA_with_modes');
             await gpcamodes.click();
-            //click on ok button to delete
-            //const delProj = await app.client.$('#qa_delProj_btn_ok');
             await delProj.click(); 
-
             
-            await projBtn.click();
-            //            
+            await projBtn.click();           
             const delHanfor = await app.client.$('#qa_proj_del_Hanfor');
             await delHanfor.click();
-            //click on ok button to delete
             await delProj.click(); 
-
             
-            await projBtn.click();
-            //            
+            await projBtn.click();           
             const lm_req = await app.client.$('#qa_proj_del_LM_requirements');
             await lm_req.click();
-            //click on ok button to delete
             await delProj.click(); 
 
-            
-            await projBtn.click();
-            //            
+            await projBtn.click();            
             const liquidMixer = await app.client.$('#qa_proj_del_Liquid_mixer');
             await liquidMixer.click();
-            //click on ok button to delete
             await delProj.click(); 
-
             
             await projBtn.click();
-            //            
             const semanPaper = await app.client.$('#qa_proj_del_SemanticsPaper');
-            await semanPaper.click();
-            //click on ok button to delete
+            await semanPaper.click();            
             await delProj.click(); 
-
             
             await projBtn.click();
-            //            
             const testReq = await app.client.$('#qa_proj_del_TestRequirements');
-            await testReq.click();
-            //click on ok button to delete
+            await testReq.click();            
             await delProj.click(); 
-
             
             await projBtn.click();
-            //            
             const pvs = await app.client.$('#qa_proj_del_reqsForPVS');
-            await pvs.click();
-            //click on ok button to delete
+            await pvs.click();            
             await delProj.click(); 
 
-            
             await projBtn.click();
-            //            
             const hackathon = await app.client.$('#qa_proj_del_test-hackathon');
-            await hackathon.click();
-            //click on ok button to delete
+            await hackathon.click();           
             await delProj.click(); 
-
-            // await app.client.pause(1000);         
+            await app.client.pause(1000);         
  
       });  
-
-      //------------------------------------------------------------------
-      it('CREATE NEW PROJECT', async () => {
-            console.log('starting test: CREATE NEW PROJECT')
-            
-            await startWithJsonFileImport('MyDBAM113.json');
-                    
-            // wait for the "Projects" button to be visible
-            const projBtn = await app.client.$('#qa_db_btn_projects');           
-            await projBtn.click();
-            //// await app.client.pause(1000);
-
-      });
 
       /////////////////////////   regression tests from Google TEST DOC   /////////////
       //------------------------------------------------------------------
@@ -1817,15 +1520,12 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------      
       it('I/E - 3', async () => {
-            console.log('starting test: I/E - 3')
-            
+            console.log('starting test: I/E - 3')            
             await startWithJsonFileImport('FSM-Demo.json');
-            //// await app.client.pause(3000);
-            // wait for the "Analysis portal" button to be visible
+
             const anaBtn = await app.client.$('#qa_db_li_analysis');
             await anaBtn.click();
 
-            // variable and realizability tabs should be visisble
             const varTab = await app.client.$('#qa_var_tab');
             const selAllProjects = await app.client.$('#qa_var_typ_selProjectAllProjects');
             let reqText = await selAllProjects.getText();
@@ -1835,8 +1535,7 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------
       it('I/E - 4', async () => {
-            console.log('starting test: I/E - 4')
-            
+            console.log('starting test: I/E - 4')           
             await startWithJsonFileImport('AnastasiaTestRequirements.csv');
 
             // Requirement ID
@@ -1867,8 +1566,7 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------
       it('I/E - 5', async () => {
-            console.log('starting test: I/E - 5')
-            
+            console.log('starting test: I/E - 5')           
             await startWithJsonFileImport('AnastasiaTestRequirements.csv');            
 
             // Requirement ID
@@ -1898,8 +1596,7 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------
       it('I/E - 6', async () => {
-            console.log('starting test: I/E - 5')
-            
+            console.log('starting test: I/E - 5')            
             await startWithJsonFileImport('AnastasiaTestRequirements.csv');
 
             // Requirement ID
@@ -1931,9 +1628,9 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------
       it('DA - 1', async () => {
-            console.log('starting test: DA - 1')
-            
+            console.log('starting test: DA - 1')            
             await startWithJsonFileImport('MyDBAM113.json');
+
             const projectBtn = await app.client.$('#qa_db_btn_projects');
             await projectBtn.click();
 
@@ -1962,6 +1659,7 @@ describe('FRET GUI E2E tests ', function () {
       it('RTF - 1', async () => {
             console.log('starting test: RTF - 1')
             await startWithJsonFileImport('FSMDemo-status.json');
+
             const projectBtn = await app.client.$('#qa_db_btn_projects');
             await projectBtn.click();
 
@@ -2039,7 +1737,7 @@ describe('FRET GUI E2E tests ', function () {
       }); 
 
       //------------------------------------------------------------------
-      it.only('RCE - 1', async () => {      
+      it('RCE - 1', async () => {      
             console.log('starting test: RCE - 1')
             await startWithJsonFileImport('FSM-Demo.json');
 
