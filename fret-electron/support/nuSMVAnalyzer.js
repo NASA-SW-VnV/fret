@@ -68,7 +68,8 @@ nuSMVAnalyzer.prototype.constructor = nuSMVAnalyzer;
 
 //// Visit a parse tree produced by NuSMVParser#plHolders.
 nuSMVAnalyzer.prototype.visitPlHolders = function(ctx) {
-  return plHolder = antlrUtilities.getText(ctx)
+  let plHolder = antlrUtilities.getText(ctx);
+  return plHolder;
 };
 
 // Visit a parse tree produced by NuSMVParser#durPlHolders.
@@ -86,6 +87,10 @@ nuSMVAnalyzer.prototype.visitProposition = function(ctx) {
     return antlrUtilities.getText(ctx);
 };
 
+nuSMVAnalyzer.prototype.visitComma = function(ctx) {
+    return antlrUtilities.getText(ctx);
+};
+
 nuSMVAnalyzer.prototype.visitSimpleExpr = function(ctx){
   let result = '';
     this.visitChildren(ctx).forEach(child => {
@@ -94,6 +99,12 @@ nuSMVAnalyzer.prototype.visitSimpleExpr = function(ctx){
     });
     return result;
 }
+
+// Visit a parse tree produced by NuSMVParser#arithmetic_expr.
+nuSMVAnalyzer.prototype.visitArithmetic_expr = function(ctx) {
+  //console.log('visitArithmetic_expr: ' + antlrUtilities.getText(ctx) + ' -> ' + result)
+  return antlrUtilities.getText(ctx);
+};
 
 // Visit a parse tree produced by NuSMVParser#simpleltl.
 nuSMVAnalyzer.prototype.visitSimpleltl = function(ctx) {
@@ -121,12 +132,35 @@ nuSMVAnalyzer.prototype.visitUnaryPastOp = function(ctx) {
 
 // Visit a parse tree produced by NuSMVParser#timedUnarySaltPastOp.
 nuSMVAnalyzer.prototype.visitTimedUnarySaltPastOp = function(ctx) {
-  let result = antlrUtilities.getText(ctx.pastTimedUnaryOp(0));
-  let saltBound = antlrUtilities.getText(ctx.saltBound(0)).replace(/\s/g, '');
-  saltBound = utilities.replaceSubstring(timingSubsts, saltBound);
-  result = result + 'T(' + saltBound + ','+this.visit(ctx.ltlExpr(0)) + ')';
-  let finalresult = utilities.replaceSubstring(onceStrictSubs, result);
-  return finalresult;
+  var result = antlrUtilities.getText(ctx.pastTimedUnaryOp(0));
+  var saltBound = antlrUtilities.getText(ctx.saltBound(0)).replace(/\s/g, '');
+  //console.log('saltBound: ' + JSON.stringify(saltBound))
+  let cocoBound = null;
+
+  let isDurationBound = saltBound.includes('$')
+  if (isDurationBound) {
+      cocoBound = utilities.replaceSubstring(timingSubsts, saltBound);
+  } else {
+     let num = saltBound.match(/\d+/g);
+     if (num) {
+       // a number was found
+       let n = parseInt(num[0],10);
+       if (saltBound.includes('<='))
+	  cocoBound =  n + ',0';
+       else if (saltBound.includes('<'))
+	  cocoBound = (n-1) + ',0';
+       else if (saltBound.includes('>='))
+	  cocoBound = '$max$,' + n;
+       else if (saltBound.includes('>'))
+	  cocoBound = '$max$,' + (n+1);
+       else if (saltBound.includes('='))
+	  cocoBound =  n + ',' + n;
+       else console.log('visitTimedUnarySaltPastOp: unknown comparison op: ' + saltBound);
+     } else console.log('visitTimedUnarySaltPastOp: missing number: ' + saltBound);
+  }
+
+    result = result + 'T(' + cocoBound + ',' + this.visit(ctx.ltlExpr(0)) + ')';
+  return utilities.replaceSubstring(onceStrictSubs, result);
 };
 
 // Visit a parse tree produced by NuSMVParser#binaryOp.

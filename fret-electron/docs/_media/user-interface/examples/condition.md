@@ -31,6 +31,10 @@ when exporting requirements for verification. Check the user manual under
 Parentheses **(** **)** are used as usual. Please use parentheses as much as
 possible to avoid mistakes and misunderstandings.
 
+Note: The following uppercase identifiers cannot be used as variables in
+Boolean and arithmetic expressions: A E F G H O S T U V X Y Z AF AG AX BU EF
+EG EX ABF ABG EBF EBG MAX MIN LAST.
+
 Examples:
 
 * **if** ((level(tank1) < 0.3) & (altitude > 1000)) **is false**

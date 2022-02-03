@@ -37,8 +37,14 @@ const antlrUtilities = new AntlrUtilities();
 const utilities = require('../../support/utilities');
 const fetchSemantics = require('./FetchSemantics');
 const cocospecSemantics = require('../../support/cocospecSemantics');
+const xform = require('../../support/xform');
+
 
 var result = {};
+
+function optLog(str) {
+    if (constants.verboseSemanticsAnalyzer) console.log(str);
+}
 
 function SemanticsAnalyzer() {
   RequirementListener.call(this);
@@ -54,6 +60,11 @@ function initialize(type) {
       response: 'action',
       variables: []
   }
+}
+
+function pushNewVariable(v) {
+  if (!result.variables.includes(v) && !constants.predefinedVars.includes(v))
+    result.variables.push(v)
 }
 
 // inherit default listener
@@ -94,7 +105,7 @@ SemanticsAnalyzer.prototype.enterScope = function(ctx) {
       else result.scope.type = 'unhandled';
   }
   else {
-      if (constants.verboseSemanticsAnalyzer) console.log("*** Scope value '" + text + "' accepted by grammar but unhandled by semanticsAnalyzer enterScope *** " );
+      optLog("*** Scope value '" + text + "' accepted by grammar but unhandled by semanticsAnalyzer enterScope *** " );
       result.scope.type = 'unhandled';
   }
 }
@@ -159,8 +170,9 @@ RequirementListener.prototype.enterQualifier_word = function(ctx) {
 
 RequirementListener.prototype.enterPre_condition = function(ctx) {
   let pc = '(' + antlrUtilities.getText(ctx).trim() + ')';
-  let pc2 = pc.replace(/ then /gi, ' => ').replace(/(\(| )(if )/gi,((match,p1,offset,str) => p1));
-  result.pre_condition = pc2;
+  let pcNoIfThen = pc.replace(/ then /gi, ' => ').replace(/(\(| )(if )/gi,((match,p1,offset,str) => p1));
+  //let pcTransformed = xform.transformTemporalConditions(pcNoIfThen);
+  result.pre_condition = pcNoIfThen;
 }
 
 RequirementListener.prototype.exitQualified_condition1 = function(ctx) {
@@ -180,8 +192,8 @@ RequirementListener.prototype.exitQualified_condition2 = function(ctx) {
     if (neg_polarity) pre_condition = '(! ' + pre_condition + ')';
     if (textLC.startsWith('or'))
 	result.regular_condition = '(' + result.regular_condition + ' | ' + pre_condition + ')';
-    else // either starts with 'and' or there is an implicit conjunction
-	//  (..when p, if q,..)
+    else // either starts with 'and' or there is an implicit conjunction;
+         // e.g., (...when p, if q,...)
 	result.regular_condition = '(' + result.regular_condition + ' & ' + pre_condition + ')';
 }
 
@@ -216,7 +228,9 @@ RequirementListener.prototype.exitTiming = function(ctx) {
 
 // keep only the number; i.e., throw away the units
 RequirementListener.prototype.enterDuration = function(ctx) {
-    result.duration = antlrUtilities.getText(ctx).trim().match(/\d+(?:\.\d+)?/);
+//    result.duration = antlrUtilities.getText(ctx).trim().match(/\d+(?:\.\d+)?/);
+    let d = antlrUtilities.getText(ctx).trim().match(/\d+(?:\.\d+)?/)
+    if (d) result.duration = d[0];
 }
 
 RequirementListener.prototype.exitResponse = function(ctx) {
@@ -236,6 +250,7 @@ RequirementListener.prototype.enterNot_order = function(ctx) {
   result.response = 'not_order'
 }
 
+/*
 RequirementListener.prototype.enterAction = function(ctx) {
   result.action = antlrUtilities.getText(ctx)
   if(ctx.ID(0)){
@@ -244,24 +259,29 @@ RequirementListener.prototype.enterAction = function(ctx) {
       result.variables.push(variable);
   }
 }
+*/
 
+/*
 RequirementListener.prototype.enterAction1 = function(ctx) {
     result.action1 = '(' + antlrUtilities.getText(ctx) + ')';
 
 }
+*/
 
+/*
 RequirementListener.prototype.enterAction2 = function(ctx) {
   result.action2 = '(' + antlrUtilities.getText(ctx) + ')'
 }
+*/
 
 RequirementListener.prototype.enterNumeric_expr = function(ctx) {
   if(ctx.ID(0)){
-    var variable = ctx.ID(0).toString();
-    if (variable && ! result.variables.includes(variable))
-      result.variables.push(variable);
+    const variable = ctx.ID(0).toString();
+    if (variable) pushNewVariable(variable);
+    //if (variable && ! result.variables.includes(variable))
+    //  result.variables.push(variable);
   }
 };
-
 //we do not need this
 // RequirementListener.prototype.enterNew_mode = function(ctx) {
 //   var mode = antlrUtilities.getText(ctx);
@@ -272,33 +292,52 @@ RequirementListener.prototype.enterNumeric_expr = function(ctx) {
 
 RequirementListener.prototype.enterBool_expr = function(ctx) {
   if(ctx.ID(0)){
-    var variable = ctx.ID(0).toString();
-    if (variable && ! result.variables.includes(variable))
-      result.variables.push(variable);
+    const variable = ctx.ID(0).toString();
+    if (variable) pushNewVariable(variable);
+    //if (variable && ! result.variables.includes(variable))
+    //  result.variables.push(variable);
   }
 };
 
+function replaceTemplateVarsWithResults(formula) {
+// formula may have template vars like $scope_mode$. Substitute what's in
+// the global variable "result" for them.
+   //if (constants.verboseSemanticsAnalyzer) console.log("formula in: " + JSON.stringify(formula))
+   if (formula) {
+      let args = formula.match(/\$\w+\d*\$/g);
+      if (args) {
+        args.forEach((a) => {
+	    formula = formula.replace(a,result[a.substring(1, a.length - 1)]);
+        })
+      }
+   }
+   //optLog("formula out: " + JSON.stringify(formula))
+   return formula;
+}
 
 function replaceTemplateVarsWithArgs(formula, noHTML, noClassicImplSymbol) {
   if (formula) {
-      var args = formula.match(/\$\w+\d*\$/g)
-      //console.log('replaceTemplateVarsWithArgs: ' + JSON.stringify(result))
+    let args = formula.match(/\$\w+\d*\$/g)
     if (args) {
       if (noHTML){
-       // Update formula with arguments
+       // Update formula with arguments from the global "result" (substituted if necessary)
         args.forEach((a) => {
-            formula = formula.replace(a, result[a.substring(1, a.length - 1)])
+            let repl = replaceTemplateVarsWithResults(result[a.substring(1, a.length - 1)])
+            //optLog("repl: " + repl);
+	    formula = formula.replace(a,repl)
         })
       } else {
         args.forEach((a) => {
-            formula = formula.replace(a, '<b><i>' + result[a.substring(1, a.length - 1)] + '</i></b>');
+            let repl = replaceTemplateVarsWithResults(result[a.substring(1, a.length - 1)])
+            //optLog("repl: " + repl);
+	    formula = formula.replace(a,'<b><i>' + repl + '</i></b>');
         })
       }
     }
-    if (noClassicImplSymbol){
+    if (noClassicImplSymbol) {
       formula = formula.replace(/=>/g,'->');
     }
-      return formula;
+    return formula;
   } else // formula is instead an error message that contains no args.
     return ("Unexpected case - SemanticsAnalyzer replaceTemplateVarsWithArgs");
 }
@@ -354,29 +393,183 @@ function replaceWithR2U2Substs(formula) {
   return utilities.replaceStrings(R2U2Semantics.R2U2Substs, formula);
 }
 
+var execSync = require('child_process').execSync;
+function get_LTL_from_old_SALT(SALT_string,SALT_env_var='SALT_HOME') {
+    optLog('\nSALT_env_var = ' + SALT_env_var + '\n');
+  	let SALT_assertion = "'" + SALT_string + "'";
+    var SALT_command = 'java -cp "$' + SALT_env_var + '/lib/antlr-2.7.5.jar:$' + SALT_env_var +'/bin/salt.jar:$'+SALT_env_var +'/bin" de.tum.in.salt.Compiler -xtltl -f ' + SALT_assertion;
+    optLog('SALT_command: ' + JSON.stringify(SALT_command));
+    var LTL_string = 'Initial LTL string';
+  	var compilation = '';
+  	var stdout = '';
+  	try {
+  	    compilation = execSync(SALT_command).toString();
+              stdout = execSync('/tmp/salt_temp').toString();
+  	} catch (error) {
+	    console.log('SemanticsAnalyzer:get_LTL_from_old_SALT error:');
+            console.log(error);
+	    console.log('SALT_string:\n' + SALT_string);
+  	}
+        optlog('SALT result: ' + JSON.stringify(stdout));
+    return stdout;
+  }
+
+function SALTExpr2SMV (expr) {
+   return '(' + get_LTL_from_old_SALT('assert ' + expr).slice(8).trim() + ')';
+}
+
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
 SemanticsAnalyzer.prototype.semantics = () => {
-  if (result.type === 'nasa'){
-    if (constants.verboseSemanticsAnalyzer)
-	  console.log('semantics result: ' + JSON.stringify(result));
-    var variableDescription = createVariableDescription(result.scope, result.condition, result.timing, result.response, result.stop_condition);
-    var fetchedSemantics = fetchSemantics.getSemantics(result.scope, result.condition, result.timing, result.response);
-    result.ft = replaceTemplateVarsWithArgs(fetchedSemantics.ft, false, true);
-    result.pt = replaceTemplateVarsWithArgs(fetchedSemantics.pt, false, true);
-    result.ftExpanded = replaceTemplateVarsWithArgs(fetchedSemantics.ftExpanded, false, true);
-    result.ptExpanded = replaceTemplateVarsWithArgs(fetchedSemantics.ptExpanded, false, true);
-    result.component = replaceTemplateVarsWithArgs('$component_name$', false, false);
-    result.CoCoSpecCode = replaceWithCoCoSpecSubsts(replaceTemplateVarsWithArgs(fetchedSemantics.CoCoSpecCode, true, false));
-    if (variableDescription !== ''){
-      result.diagramVariables = replaceTemplateVarsWithArgs(variableDescription, false, false);
-    }
-    result.description = replaceTemplateVarsWithArgs(fetchedSemantics.description, false, false);
-    result.diagram = fetchedSemantics.diagram;
-  } else if (result.type === 'freeForm'){
+ optLog('Semantics result in: ' + JSON.stringify(result));
+
+ if (result.type === 'freeForm') {
     result.ft = constants.natural_semantics;
     result.description = constants.natural_description;
-  }
+  } else if (result.type === 'nasa') {
+
+  // fetchedSemantics is an object with fields:
+  // endpoints, pt, ptExpanded, CoCoSpecCode, etc. See app/parser/semantics.json
+  let fetchedSemantics = fetchSemantics.getSemantics(result.scope, result.condition, result.timing, result.response);
+  optLog('fetchedSemantics: ' + JSON.stringify(fetchedSemantics));
+
+  // Create variable descriptions like 'M = cruise TC = goingTooSlow Response = speedup'
+  let variableDescription = createVariableDescription(result.scope, result.condition, result.timing, result.response, result.stop_condition);
+  if (variableDescription !== '') {
+     result.diagramVariables = replaceTemplateVarsWithArgs(variableDescription, false, false);
+   }
+  result.description = replaceTemplateVarsWithArgs(fetchedSemantics.description, false, false);
+  result.diagram = fetchedSemantics.diagram;
+
+  // ptleft has unexpanded endpoints like FTP and FFin_$scope_mode$
+  let ptleft = fetchedSemantics.endpoints.ptleft;
+  let ptright = fetchedSemantics.endpoints.ptright
+  // ptleftSMV has the endpoints expanded into LTL
+  let ptleftSMV = fetchedSemantics.endpoints.SMVptExtleft;
+  // ptleftCoCo is the same as ptleftSMV except that FTP is *not* expanded.
+  let ptleftCoCo = ptleftSMV.replace(/\(!(\s)*\(Y TRUE\)\)/g, 'FTP');
+  let ptrightSMV = fetchedSemantics.endpoints.SMVptExtright;
+
+  let regCond = result.regular_condition;
+  let postCond = result.post_condition;
+  let stopCond = result.stop_condition;  
+
+  if (regCond) {
+      // regCondTCxform has the temporal conditions rewritten into LTL.
+      // let regCondTCxform = xform.transformTemporalConditions(regCond)
+      optLog("regCond: " + JSON.stringify(regCond));
+      let regCondTCxform_pt = xform.transformPastTemporalConditions(regCond)
+      let regCondTCxform_ft = xform.transformFutureTemporalConditions(regCond)
+
+      // regCondUnexp has the endpoints unexpanded e.g. FTP, FFin_$scope_mode$.
+      //let regCondUnexp = regCondTCxform.replace(/\$Left\$/g, ptleft).replace(/\$Right\$/g,ptright);
+      //result.regular_condition_unexp = regCondUnexp;
+
+      let regCondUnexp_pt = regCondTCxform_pt.replace(/\$Left\$/g, ptleft).replace(/\$Right\$/g,ptright);
+      result.regular_condition_unexp_pt = regCondUnexp_pt;
+
+      let regCondUnexp_ft = regCondTCxform_ft.replace(/\$Left\$/g, ptleft).replace(/\$Right\$/g,ptright);
+      result.regular_condition_unexp_ft = regCondUnexp_ft;
+
+      // regCondSMV has the endpoints rewritten into LTL.
+      // let regCondSMV = regCondTCxform.replace(/\$Left\$/g, ptleftSMV).replace(/\$Right\$/g,ptrightSMV);
+      // result.regular_condition_SMV = regCondSMV;
+      //optLog('regCondSMV: ' + regCondSMV);
+
+      let regCondSMV_pt = regCondTCxform_pt.replace(/\$Left\$/g, ptleftSMV).replace(/\$Right\$/g,ptrightSMV);
+      result.regular_condition_SMV_pt = regCondSMV_pt;
+
+      let regCondSMV_ft = regCondTCxform_ft.replace(/\$Left\$/g, ptleftSMV).replace(/\$Right\$/g,ptrightSMV);
+      result.regular_condition_SMV_ft = regCondSMV_ft;
+
+
+      // regCondLeftCoCoSubsts has left endpoints, except for FTP,
+      // rewritten into LTL
+      // $Right$ means that a future temporal operator (persists, occurs)
+      // was present and CoCoSpec can't do anything with that.
+      let regCondLeftCoCoSubsts = regCondTCxform_pt.replace(/\$Left\$/g, ptleftCoCo);
+      optLog('regCondLeftCoCoSubsts: ' + regCondLeftCoCoSubsts);
+      let regCondLeftCoCo = cocospecSemantics.createCoCoSpecCode(regCondLeftCoCoSubsts)
+      result.regular_condition_coco = regCondLeftCoCo;
+    }
+
+    if (postCond) {
+        optLog("postCond: " + JSON.stringify(postCond));
+	// let postCondTCxform = xform.transformTemporalConditions(postCond);
+	let postCondTCxform_pt = xform.transformPastTemporalConditions(postCond);
+	let postCondTCxform_ft = xform.transformFutureTemporalConditions(postCond);
+
+	// let postCondUnexp = postCondTCxform.replace(/\$Left\$/g, ptleft).replace(/\$Right\$/g,ptright);
+	// result.post_condition_unexp = postCondUnexp;
+
+	let postCondUnexp_pt = postCondTCxform_pt.replace(/\$Left\$/g, ptleft).replace(/\$Right\$/g,ptright);
+	result.post_condition_unexp_pt = postCondUnexp_pt;
+
+	let postCondUnexp_ft = postCondTCxform_ft.replace(/\$Left\$/g, ptleft).replace(/\$Right\$/g,ptright);
+	result.post_condition_unexp_ft = postCondUnexp_ft;
+
+	// let postCondSMV = postCondTCxform.replace(/\$Left\$/g, ptleftSMV).replace(/\$Right\$/g,ptrightSMV);
+	// result.post_condition_SMV = postCondSMV;
+
+	let postCondSMV_pt = postCondTCxform_pt.replace(/\$Left\$/g, ptleftSMV).replace(/\$Right\$/g,ptrightSMV);
+	result.post_condition_SMV_pt = postCondSMV_pt;
+
+	let postCondSMV_ft = postCondTCxform_ft.replace(/\$Left\$/g, ptleftSMV).replace(/\$Right\$/g,ptrightSMV);
+	result.post_condition_SMV_ft = postCondSMV_ft;
+
+	let postCondLeftCoCoSubsts = postCondTCxform_pt.replace(/\$Left\$/g,ptleftCoCo)
+	let postCondLeftCoCo = cocospecSemantics.createCoCoSpecCode(postCondLeftCoCoSubsts)
+        result.post_condition_coco = postCondLeftCoCo;
+    }
+    
+  if (stopCond) {
+    // only done for past-time for now.
+      // stopCondTCxform has the temporal conditions rewritten into LTL.
+      // let stopCondTCxform = xform.transformTemporalConditions(stopCond)
+      optLog("stopCond: " + JSON.stringify(stopCond));
+      let stopCondTCxform_pt = xform.transformPastTemporalConditions(stopCond)
+      let stopCondTCxform_ft = xform.transformFutureTemporalConditions(stopCond)
+
+      let stopCondUnexp_pt = stopCondTCxform_pt.replace(/\$Left\$/g, ptleft).replace(/\$Right\$/g,ptright);
+      result.stop_condition_unexp_pt = stopCondUnexp_pt;
+
+      let stopCondSMV_pt = stopCondTCxform_pt.replace(/\$Left\$/g, ptleftSMV).replace(/\$Right\$/g,ptrightSMV);
+      result.stop_condition_SMV_pt = stopCondSMV_pt;
+
+      // stopCondLeftCoCoSubsts has left endpoints, except for FTP,
+      // rewritten into LTL
+      // $Right$ means that a future temporal operator (persists, occurs)
+      // was present and CoCoSpec can't do anything with that.
+      let stopCondLeftCoCoSubsts = stopCondTCxform_pt.replace(/\$Left\$/g, ptleftCoCo);
+      optLog('stopCondLeftCoCoSubsts: ' + stopCondLeftCoCoSubsts);
+      let stopCondLeftCoCo = cocospecSemantics.createCoCoSpecCode(stopCondLeftCoCoSubsts)
+      result.stop_condition_coco = stopCondLeftCoCo;
+    }
+
+
+    //pt and ft are used in the Edit/Update Requirement display
+    let fetched_ft = fetchedSemantics.ft.replace(/\$regular_condition\$/g,'$regular_condition_unexp_ft$').replace(/\$post_condition\$/g,'$post_condition_unexp_ft$');
+    result.ft = replaceTemplateVarsWithArgs(fetched_ft, false, false);
+
+    let fetched_pt = fetchedSemantics.pt.replace(/\$regular_condition\$/g,'$regular_condition_unexp_pt$').replace(/\$post_condition\$/g,'$post_condition_unexp_pt$').replace(/\$stop_condition\$/g,'$stop_condition_unexp_pt$');
+    result.pt = replaceTemplateVarsWithArgs(fetched_pt, false, false);
+
+    let fetched_ptExpanded = fetchedSemantics.ptExpanded.replace(/\$regular_condition\$/g,'$regular_condition_SMV_pt$').replace(/\$post_condition\$/g,'$post_condition_SMV_pt$').replace(/\$stop_condition\$/g,'$stop_condition_SMV_pt$');
+
+    result.ptExpanded = replaceTemplateVarsWithArgs(fetched_ptExpanded, true, true);
+
+    let fetched_ftExpanded = fetchedSemantics.ftExpanded.replace(/\$regular_condition\$/g,'$regular_condition_SMV_ft$').replace(/\$post_condition\$/g,'$post_condition_SMV_ft$');
+    result.ftExpanded = replaceTemplateVarsWithArgs(fetched_ftExpanded, true, true);
+
+    let fetched_coco = fetchedSemantics.CoCoSpecCode.replace(/\$regular_condition\$/g,'$regular_condition_coco$').replace(/\$post_condition\$/g,'$post_condition_coco$').replace(/\$stop_condition\$/g,'$stop_condition_coco$');
+    let CoCoSpecCodeLTL = replaceTemplateVarsWithArgs(fetched_coco, true, false);
+    let CoCoSpecCode = replaceWithCoCoSpecSubsts(CoCoSpecCodeLTL);
+    result.CoCoSpecCode = CoCoSpecCode;
+
+    result.component = replaceTemplateVarsWithArgs('$component_name$', false, false);
+
+    optLog('Semantics result out: ' + JSON.stringify(result));
+  } else console.log('!! Unknown result.type: ' + JSON.stringify(result.type));
   return result;
 }
 

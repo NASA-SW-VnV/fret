@@ -104,7 +104,8 @@ module.exports = Object.freeze({
   natural_description: "FRET only speaks FRETish but as a courtesy will save this requirement. ",
 
 //describes cases when the SVG diagrams cannot be created
-  undefined_svg: "Undefined svg."
+  undefined_svg: "Undefined svg.",
 
+  predefinedVars: ["persisted","occurred","persists","occurs"]
 
 });

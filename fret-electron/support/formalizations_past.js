@@ -360,6 +360,16 @@ const EndPointRewriteRules = [
     ['FTP', '(not previous TRUE)'] // should we leave this to the implementer of analysis tool?
 ]
 
+const SMVEndPointRewriteRules = [
+    ['FFiM','(FiM & ((Y (H (!MODE))) | FTP))'],
+    //['FLiM','(LiM and previous ((not LiM) since required inclusive FTP))'],
+    ['FLiM','(LiM & (Y (H (!LiM))))'], // is this the same as above?
+    ['FiM', '(MODE & (FTP | (Y (!MODE))))'],
+    ['LiM', '((!MODE) & (Y MODE))'],
+    ['FNiM', '((!MODE) & (FTP | (Y MODE)))'],
+    ['LNiM', '(MODE & (Y (!MODE)))'],
+    ['FTP', '(!(Y TRUE))'] // should we leave this to the implementer of analysis tool?
+]
 
 function parenthesize(str) { return utilities.parenthesize(str)}
 function negate(str) { return utilities.negate(str)}
@@ -422,6 +432,7 @@ exports.getFormalization = (key, neg, leftP, rightP, options) => {
   return generalform;
 }
 
-exports.EndPointsRewrite = (formula) => {
-    return utilities.replaceStrings(EndPointRewriteRules, formula);
+exports.EndPointsRewrite = (formula, format) => {
+  var rules = (format=='smv'? SMVEndPointRewriteRules : EndPointRewriteRules);
+  return utilities.replaceStrings(rules, formula);
 }

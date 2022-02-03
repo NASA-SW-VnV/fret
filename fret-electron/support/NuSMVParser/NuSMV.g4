@@ -35,7 +35,7 @@ grammar NuSMV;
 plHolders : '$post_condition$'
           | '$action$'
           | '$scope_mode$'
-	  | '$stop_condition$'
+          | '$stop_condition$'
           | '$regular_condition$'
           | '$action1$'
           | '$action2$'
@@ -52,13 +52,26 @@ durPlHolders : '$duration$'
              | '$duration$+1'
              ;
 
-proposition : ID ;
+proposition : ID ; // either a propositional symbol, a predicate, or an arithmetic function
 
-simpleExpr : proposition
+arithmetic_expr :
+         proposition (lp ((simpleExpr | arithmetic_expr) (comma (simpleExpr | arithmetic_expr))* )? rp)?
+       |  <assoc=right> arithmetic_expr expt arithmetic_expr
+       | negate arithmetic_expr
+       | arithmetic_expr (mult | div | mod) arithmetic_expr
+       | arithmetic_expr (plus | minus) arithmetic_expr
+       | NUMBER
+       | lp arithmetic_expr rp
+       ;
+
+simpleExpr :
+             proposition (lp ((simpleExpr | arithmetic_expr)
+	     (comma (simpleExpr | arithmetic_expr))*)? rp)?
            | plHolders
            | t
            | f
            | lp simpleExpr rp
+           | arithmetic_expr comparisonOp arithmetic_expr
            | not simpleExpr                   // logical not
            | simpleExpr and simpleExpr        // logical and
            | simpleExpr or simpleExpr         // logical or
@@ -68,10 +81,10 @@ simpleExpr : proposition
            ;
 
 ltlExpr :
-        simpleExpr                                   # simpleltl
+          simpleExpr                                 # simpleltl
         | lp ltlExpr rp                              # simpleltl
-        | not ltlExpr		                             # simpleltl
-        | ltlExpr and ltlExpr	                       # simpleltl
+        | not ltlExpr                                 # simpleltl
+        | ltlExpr and ltlExpr	                     # simpleltl
         | ltlExpr or ltlExpr                         # simpleltl
         | ltlExpr xor ltlExpr                        # simpleltl
         | ltlExpr implies ltlExpr                    # simpleltl
@@ -102,11 +115,13 @@ futureUnaryOp : 'X' | futureTimedUnaryOp ;  // next state, globally, eventually,
 
 futureBinaryOp : 'U' | 'V' | 'UI' ; // until, releases
 
-comparisonOp : '=' | '<' | '<=' | '>' | '>=' ;
+comparisonOp : '=' | '<' | '<=' | '>' | '>=' | '!=';
 
-bound : '[' UINT ',' UINT ']';
+bound : '[' NUMBER ',' NUMBER ']';
 
-saltBound : '[' comparisonOp durPlHolders ']' ;
+saltBound : '[' comparisonOp (durPlHolders | NUMBER) ']' ;
+
+comma : ',' ;
 
 lp : '(' ; // left parenthesis
 
@@ -124,12 +139,36 @@ implies : '->';
 
 equiv : '<->' ;
 
+expt : '^' ;
+
+mult : '*' ;
+
+div : '/' ;
+
+mod : '%' ;
+
+plus : '+' ;
+
+minus : '-' ;
+
+negate : '-' ;
+
 f : 'FALSE';
 
 t  : 'TRUE';
 
 ID : [_a-zA-Z][_a-zA-Z0-9]* ;
 
-UINT : [0-9]+ ;
+
+NUMBER :
+         '-'? NATNUM '.' [0-9]+ EXP?
+       | '-'? NATNUM EXP
+       | '-'? NATNUM
+       ;
+
+fragment EXP :
+         [Ee] [+\-]? NATNUM ;
+
+fragment NATNUM : '0' | [1-9][0-9]* ;
 
 WS : [ \t\r\n]+ -> skip ;  // skip spaces, tabs, newlines

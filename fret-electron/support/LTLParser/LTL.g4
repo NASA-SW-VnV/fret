@@ -39,8 +39,8 @@ arithmetic_expr :
              | arithmetic_expr (mult | div | mod) arithmetic_expr #arithBinary
              | arithmetic_expr (plus | minus) arithmetic_expr #arithBinary
              | NUMBER #arithNumber
-             | ID (lp (arithmetic_expr (',' arithmetic_expr)* )? rp)? #arithTerm
-             ;
+             | ID (lp ((bool_expr | arithmetic_expr) (',' (bool_expr | arithmetic_expr))* )? rp)? #arithTerm
+	     ;
 
 bool_expr :
             lp bool_expr rp #boolGroup
@@ -52,7 +52,7 @@ bool_expr :
           | <assoc=right> bool_expr implies bool_expr #boolBinary
           | bool_expr equiv bool_expr #boolBinary
           //| bool_expr '=' bool_expr
-          |  ID (lp (arithmetic_expr (',' arithmetic_expr)*)? rp)? #boolPred
+          |  ID (lp ((bool_expr | arithmetic_expr) (',' (bool_expr | arithmetic_expr))*)? rp)? #boolPred
           | t #boolConst
           | f #boolConst
 	  | unaryLTLOp bool_expr #boolUnaryLTL

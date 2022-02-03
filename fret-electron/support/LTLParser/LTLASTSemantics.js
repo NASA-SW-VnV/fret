@@ -115,14 +115,18 @@ function ASTtoLTL(ast) {
 		  else { let infixChar = infix[op];
 			 if (infixChar !== undefined)
 			     result = ('(' + ASTtoLTL(ast[1]) + ' ' + infixChar + ' ' + ASTtoLTL(ast[2]) + ')');
-			 else  result = (ast[0] + '(' + ast.slice(1).join(',') + ')');
+			 else {
+			     let args = ast.slice(1).map(ASTtoLTL);
+			     result = (ast[0] + '(' + args.join(',') + ')');
+			 }
+
 		       }
 		}
     } else console.log("LTLtoSMV doesn't know the type of " + ast);
     return result;
 }
     
-
+/*
 const tests = [//'F[<$duration$] 0', // SMV accepts this but won't parse
 	       'F[<$duration$] 0 < 4',
                'H (p & q) & r | ! s',
@@ -138,7 +142,18 @@ const tests = [//'F[<$duration$] 0', // SMV accepts this but won't parse
 	       '-3^x < 3',
 	       '-(3^x) < 3',
     'a + b() + c(34) < 3.0e2',
-    '0.0 > -3.0e2'
+    '0.0 > -3.0e2',
+    'p(3,TRUE)',
+    'p(x,f(x))',
+    'p(3, x > y & y > 0)',
+
+    'H[<=3+1] p',
+    'H[<3*2] p',
+    'H[<=3-1] p',   //doesn't parse, need blanks around minus sign
+    'H[<=3 - 1] p',
+    'H[<=3 + -1] p',
+    'H[<=3+-1] p',
+    '(3 - 4) < (2+3)'
 	      ];
 
 function runTestCase(LTLstr) {
@@ -149,5 +164,6 @@ function runTestCase(LTLstr) {
     console.log();
 }
 
-//tests.forEach(runTestCase);
+tests.forEach(runTestCase);
+*/
 

@@ -39,7 +39,10 @@ module.exports = {
     optimizeFT,
     finitizeFT,
     introduceSI,
-    transform
+    transform,
+    transformPastTemporalConditions,
+    transformFutureTemporalConditions,
+    transformTemporalConditions
 }
 
 const isArray = utils.isArray;
@@ -95,6 +98,18 @@ const finitizeFuture = [
     ['F __p', trueFn, '(!LAST) U __p']
 ];
 
+const futureTemporalConditions = [
+    ['persists(__n,__p)',trueFn,'((G[<=__n] __p) & (G[<__n] ! $Right$))'],
+    ['occurs(__n,__p)',trueFn,'(((! $Right$) U __p) & (F[<=__n] __p))']
+    ]
+
+const pastTemporalConditions = [
+    ['persisted(__n,__p)',trueFn,'((H[<=__n] __p) & (H[<__n] ! $Left$))'],
+    ['occurred(__n,__p)',trueFn,'(((! $Left$) S __p) & (O[<=__n] __p))']
+]
+
+const temporalConditions = pastTemporalConditions.concat(futureTemporalConditions);
+
 // pat has variables which are strings prefixed with '__'. Return null if no match else
 // a hashmap of variables to subterms of term.
 function matchAST(pat,term) {
@@ -126,7 +141,7 @@ function mergeSubsts(sbst1,sbst2) {
 // given term which may include variables, do the substitution  
 function subst(term,sbst) {
     if (isVar(term)) {
-	x = sbst[term];
+	let x = sbst[term];
 	return ((x === undefined) ? term : x);
     } else if (isAtom(term)) { return term; }
     else if (isArray(term)) {
@@ -156,8 +171,8 @@ function rewrite1(term,rule) {
 // If a rule in the array of rules applies, return its result, otherwise null
 function applyRules(term,rules) {
     var r = null;
-    for (i = 0; i < rules.length; i++) {
-	let result = rules[i](term);
+    for (let rule of rules) {
+	let result = rule(term);
 	if (result !== null) {
 	    r = result;
 	    break;
@@ -177,11 +192,12 @@ function applyTriple(term,triple) {
     if (sbst !== null && cond(sbst)) return subst(replacement,sbst);
     else return null;
 }
+
 // If a triple in the array of triples applies to term, return its result, otherwise null.
 function applyTriples(term,triples) {
-    var r = null;
-    for (i = 0; i < triples.length; i++) {
-	let result = applyTriple(term,triples[i]);
+    let r = null;
+    for (let triple of triples) {
+	let result = applyTriple(term,triple);
 	if (result !== null) {
 	    r = result;
 	    break;
@@ -205,6 +221,10 @@ const ftSimplifications =
 
 const finitizingFuture = finitizeFuture.map(parseit);
 
+const parsedPastTemporalConditions = pastTemporalConditions.map(parseit)
+const parsedFutureTemporalConditions = futureTemporalConditions.map(parseit)
+const parsedTemporalConditions = temporalConditions.map(parseit);
+
 function applyPtSimplifications (term) {
     return applyTriples(term,ptSimplifications);
 }
@@ -215,6 +235,18 @@ function applyFtSimplifications (term) {
 
 function applyFinitizing(term) {
     return applyTriples(term,finitizingFuture);
+}
+
+function applyPastTemporalConditions(term) {
+    return applyTriples(term,parsedPastTemporalConditions);
+}
+
+function applyFutureTemporalConditions(term) {
+    return applyTriples(term,parsedFutureTemporalConditions);
+}
+
+function applyTemporalConditions(term) {
+    return applyTriples(term,parsedTemporalConditions);
 }
 
 // Apply rules exhaustively to term, starting at the bottom again each time a rule applies.
@@ -236,6 +268,93 @@ function rewrite_bottomup(term,rules) {
 	   return ret;
 	 }
 }
+
+function rule_SinceInclusive (term) {
+    let sbst = matchAST(['Since','__p',['And','__p','__q']],term);
+    //console.log(sbst);
+    if (sbst !== null) return ['SinceInclusive',sbst['__p'], sbst['__q']];
+    else { let sbst = matchAST(['Since','__p',['And','__q','__p']]);
+	   if (sbst !== null) return ['SinceInclusive',sbst['__p'], sbst['__q']];
+	   else return null;
+	 }
+}
+
+const optimizePTrules = [applyPtSimplifications];
+
+function optimizePT(ptAST) {
+    let result = rewrite_bottomup(ptAST,optimizePTrules);
+    //if (isEqual(result,ptAST)) return null; else
+    return result;
+}
+
+const optimizeFTrules = [applyFtSimplifications];
+
+function optimizeFT(ftAST) {
+    //console.log('optimizeFT enter: ' + JSON.stringify(ftAST))
+    let result = rewrite_bottomup(ftAST,optimizeFTrules);
+    //if (isEqual(result,ptAST)) return null; else
+    //console.log('optimizeFT exit: ' + JSON.stringify(result))
+    return result;
+}
+
+const finitizeFTrules = [applyFinitizing];
+
+function finitizeFT(ftAST) {
+    let result = rewrite_bottomup(ftAST,finitizeFTrules);
+    return result;
+}
+
+const sinceInclusiveRules = [rule_SinceInclusive];
+
+function introduceSI(ptAST) {
+    let result = rewrite_bottomup(ptAST,sinceInclusiveRules);
+    //if (isEqual(result,ptAST)) return null; else
+    return result;
+}
+
+const pastTemporalConditionRules = [applyPastTemporalConditions];
+const futureTemporalConditionRules = [applyFutureTemporalConditions];
+const temporalConditionRules = [applyTemporalConditions];
+
+function expandPastTemporalConditions (ast) {
+    let result = rewrite_bottomup(ast,pastTemporalConditionRules);
+    return result;
+}
+
+function expandFutureTemporalConditions (ast) {
+    let result = rewrite_bottomup(ast,futureTemporalConditionRules);
+    return result;
+}
+
+function expandTemporalConditions (ast) {
+    let result = rewrite_bottomup(ast,temporalConditionRules);
+    return result;
+}
+
+function transform(formulaString,transformation) {
+    //let AST = astsem.SMVtoAST(formulaString);
+    let AST = astsem.LTLtoAST(formulaString);
+    if (AST === undefined) console.log("xform.transform couldn't parse '" + formulaString + "'");
+    let transformedAST = transformation(AST);
+    let transformedString = astsem.ASTtoLTL(transformedAST);
+    return transformedString;
+}
+
+function transformPastTemporalConditions (formulaString) {
+    let result = transform(formulaString,expandPastTemporalConditions);
+    return result;
+}
+
+function transformFutureTemporalConditions (formulaString) {
+    let result = transform(formulaString,expandFutureTemporalConditions);
+    return result;
+}
+
+function transformTemporalConditions (formulaString) {
+    let result = transform(formulaString,expandTemporalConditions);
+    return result;
+}
+
 
 /*
 function rule_NotOfNot (term) {
@@ -305,58 +424,6 @@ function rule_simplifyReflexive(term) {
 }	
 */
 
-function rule_SinceInclusive (term) {
-    let sbst = matchAST(['Since','__p',['And','__p','__q']],term);
-    //console.log(sbst);
-    if (sbst !== null) return ['SinceInclusive',sbst['__p'], sbst['__q']];
-    else { let sbst = matchAST(['Since','__p',['And','__q','__p']]);
-	   if (sbst !== null) return ['SinceInclusive',sbst['__p'], sbst['__q']];
-	   else return null;
-	 }
-}
-
-const optimizePTrules = [applyPtSimplifications];
-
-function optimizePT(ptAST) {
-    let result = rewrite_bottomup(ptAST,optimizePTrules);
-    //if (isEqual(result,ptAST)) return null; else
-    return result;
-}
-
-const optimizeFTrules = [applyFtSimplifications];
-
-function optimizeFT(ftAST) {
-    //console.log('optimizeFT enter: ' + JSON.stringify(ftAST))
-    let result = rewrite_bottomup(ftAST,optimizeFTrules);
-    //if (isEqual(result,ptAST)) return null; else
-    //console.log('optimizeFT exit: ' + JSON.stringify(result))
-    return result;
-}
-
-const finitizeFTrules = [applyFinitizing];
-
-function finitizeFT(ftAST) {
-    let result = rewrite_bottomup(ftAST,finitizeFTrules);
-    return result;
-}
-
-const sinceInclusiveRules = [rule_SinceInclusive];
-
-function introduceSI(ptAST) {
-    let result = rewrite_bottomup(ptAST,sinceInclusiveRules);
-    //if (isEqual(result,ptAST)) return null; else
-    return result;
-}
-
-function transform(formulaString,transformation) {
-    //let AST = astsem.SMVtoAST(formulaString);
-    let AST = astsem.LTLtoAST(formulaString);
-    if (AST === undefined) console.log("xform.transform couldn't parse '" + formulaString + "'");
-    let transformedAST = transformation(AST);
-    let transformedString = astsem.ASTtoLTL(transformedAST);
-    return transformedString;
-}
-
 /*
 function optimizeSemantics() {
     const sem = require('../app/parser/semantics.json')
@@ -387,11 +454,12 @@ optimizeSemantics()
 */
 
 /*
+console.log(transform('persisted(3,temp>100)',expandTemporalConditions));
 console.log(transform('(G ((!(((! m) & (! FALSE) & X m) & (!FALSE))) | ((((! m) & (! FALSE) & X m) & (!FALSE)) & (X ((((m & (! FALSE)) & X (! m)) | FALSE) V post))))) & (m -> ((m & X !m) V post))',optimizeFT))
 console.log(JSON.stringify(trueFn))
-console.log(JSON.stringify(simplifications))
-console.log(applyTriple(astsem.SMVtoAST('(q & q)'),simplifications[2]))
-console.log(applySimplifications(astsem.SMVtoAST('! H ! ((q & q) | q)')))
+//console.log(JSON.stringify(simplifications))
+//console.log(applyTriple(astsem.SMVtoAST('(q & q)'),simplifications[2]))
+//console.log(applySimplifications(astsem.SMVtoAST('! H ! ((q & q) | q)')))
 console.log(optimizePT(astsem.SMVtoAST('! H ! ((q & q) | q)')))
 
 console.log(isArray([3]));
@@ -437,4 +505,5 @@ console.log(rule_simplifyReflexive(['Eq','p','p']));
 
 console.log(JSON.stringify(rewrite_bottomup(['And','psi',true,['Or',false,['Eq',['Plus',['Mult','c',1],0],'c']]],[rule_simplifyIdentity,rule_simplifyUnit,rule_simplifyReflexive])));
 console.log(rule_simplifyReflexive(["Eq","c","c"]))
+
 */

@@ -89,6 +89,10 @@ exports.translateToSMV = (formula) => {
   return utilities.replaceStrings(NuSMVSubsts, formula)
 }
 
+exports.getEndpoints = (key) => {
+  return utilities.matchingBase(key,ScopeEndpoints);
+}
+
 // neverOK means that we check if point never happens
 // type can be pt or ft
 // key is array of strings.
@@ -106,8 +110,7 @@ exports.getFormalization = (key, type, options = {sem:'finite', in:'afterUntil'}
     return constants.undefined_semantics;
   }
 
-
-  var endpoints = utilities.matchingBase(key,ScopeEndpoints);
+  var endpoints = this.getEndpoints(key);
   var scopeRequiresNegation = utilities.matchingBase(key,NegateFormula);
 
 // now create key for formalizations at the moment  negate, timing, condition
@@ -148,11 +151,11 @@ exports.suggestedEndPointRewriteRules = (time) => {
     return formalizations_past.getEndPointRewriteRules()
 }
 
-exports.EndPointsRewrite = (type, formula) => {
+exports.EndPointsRewrite = (type, formula, format = 'salt') => {
   if (type == 'ft')
     return formalizations_future.EndPointsRewrite(formula);
   if (type == 'pt')
-      return formalizations_past.EndPointsRewrite(formula);
+    return formalizations_past.EndPointsRewrite(formula, format);
   return ('Undefined type of formula for rewriting... '); // if no ft and no pt
 }
 

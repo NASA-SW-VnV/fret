@@ -200,9 +200,10 @@ bool_expr :  ('!' | '~') bool_expr
           //| bool_expr '=' bool_expr
           | '(' bool_expr ')'
           | numeric_expr RELATIONAL_OP numeric_expr
-          |  ID ('(' ( numeric_expr (',' numeric_expr)*)? ')')?
+          |  ID ('(' ( (bool_expr | numeric_expr) (',' (bool_expr | numeric_expr))*)? ')')?
           | 'true'
           | 'false'
+// 	  | (FOR | WITHIN) (THE LAST)? duration bool_expr
 //	  | tl_expr
           ;
 
@@ -225,9 +226,8 @@ numeric_expr :
              | numeric_expr ('*' | '/' | MOD) numeric_expr
              | numeric_expr ('+' | '-') numeric_expr
              | NUMBER
-             | ID ('(' ( numeric_expr (',' numeric_expr)*)? ')')?
+             | ID ( '(' ( (bool_expr | numeric_expr) (',' (bool_expr | numeric_expr))*)? ')')?
              | '(' numeric_expr ')'
-
              ;
 
 AFTER : A F T E R;
@@ -245,6 +245,7 @@ IF : I F;
 IMMEDIATELY : I M M E D I A T E L Y;
 IN : I N;
 IS : I S;
+//LAST : L A S T;
 MICROSECOND : M I C R O S E C (O N D)? S?;
 MILLISECOND : M I L L I S E C (O N D)? S?;
 MINUTE : M I N U T E S?;

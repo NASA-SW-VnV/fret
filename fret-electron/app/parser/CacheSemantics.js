@@ -52,6 +52,7 @@ const fieldRanges = {
 }
 
 const semanticsObjNonsense = {
+  endpoints: 'BLANK',
   ft: constants.nonsense_semantics,
   ftExpanded: constants.nonsense_semantics,
   pt: constants.nonsense_semantics,
@@ -73,6 +74,7 @@ const semanticsObjNonsense = {
 }
 
 var semanticsObjUndefined = {
+  endpoints: 'BLANK',
   ft: constants.undefined_semantics,
   ftExpanded: constants.undefined_semantics,
   pt: constants.undefined_semantics,
@@ -339,6 +341,20 @@ function createSaltBatchString(product,options) {
       var scopeObj = {}
       scopeObj.type = iterator.value[0];
       var key = iterator.value.toString()
+
+      // making an object with all endpoints --------
+      var endpoints = {ptleft:'', ptright:'', ptExtleft:'', ptExtright: '', SMVptExtleft:'', SMVptExtright: ''};
+      // we use iterator.value because the matching base needs an array of strings, not a string
+      var eps =  formalizations.getEndpoints(iterator.value);
+      endpoints['ptleft'] = semanticsGenerator.customizeForFret(eps[0]);
+      endpoints['ptright'] = semanticsGenerator.customizeForFret(eps[1]);
+      endpoints['ptExtleft'] = semanticsGenerator.customizeForFret(formalizations.EndPointsRewrite('pt', eps[0]));
+      endpoints['ptExtright'] = semanticsGenerator.customizeForFret(formalizations.EndPointsRewrite('pt', eps[1]));
+      endpoints['SMVptExtleft'] = semanticsGenerator.customizeForFret(formalizations.EndPointsRewrite('pt', eps[0], 'smv'));
+      endpoints['SMVptExtright'] = semanticsGenerator.customizeForFret(formalizations.EndPointsRewrite('pt', eps[1], 'smv'));
+
+      FRETSemantics[key]['endpoints'] = endpoints;
+      // ---------------------------------------------
 
       if (constants.verboseCacheSemantics)
 	  console.log('\n\nKey is ' + key);

@@ -173,21 +173,21 @@ function getCoCoSpecString (ptLTL, form) {
 }
 
 function get_LTL_from_old_SALT(SALT_string,SALT_env_var='SALT_HOME') {
+  if (constants.verboseSemanticsGenerator)
         console.log('\n\nSALT_env_var = ' + SALT_env_var + '\n\n');
-  	var SALT_assertion = "'" + SALT_string + "'";
-    var SALT_command = 'java -cp "$' + SALT_env_var + '/lib/antlr-2.7.5.jar:$' + SALT_env_var +'/bin/salt.jar:$'+SALT_env_var +'/bin" de.tum.in.salt.Compiler -xtltl -f ' + SALT_assertion;
-        //console.log(SALT_command);
-  	var LTL_string = 'Initial LTL string';
-  	var compilation = '';
-  	var stdout = '';
-  	try {
-  	    compilation = execSync(SALT_command).toString();
-              stdout = execSync('/tmp/salt_temp').toString();
-  	} catch (error) {
-	    console.log('SemanticsGenerator:get_LTL_from_old_SALT error:');
-            console.log(error);
-	    console.log('SALT_string:\n' + SALT_string);
-  	}
-
-    return stdout;
+  var SALT_assertion = "'" + SALT_string + "'";
+  var SALT_command = 'java -cp "$' + SALT_env_var + '/lib/antlr-2.7.5.jar:$' + SALT_env_var +'/bin/salt.jar:$'+SALT_env_var +'/bin" de.tum.in.salt.Compiler -xtltl -f ' + SALT_assertion;
+  if (constants.verboseSemanticsGenerator) console.log(SALT_command);
+  var LTL_string = 'Initial LTL string';
+  var compilation = '';
+  var stdout = '';
+  try {
+    compilation = execSync(SALT_command).toString();
+    stdout = execSync('/tmp/salt_temp').toString();
+  } catch (error) {
+    console.log('SemanticsGenerator:get_LTL_from_old_SALT error:');
+    console.log(error);
+    console.log('SALT_string:\n' + SALT_string);
   }
+  return stdout;
+}
