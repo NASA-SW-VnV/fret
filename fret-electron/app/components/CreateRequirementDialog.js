@@ -575,7 +575,7 @@ class CreateRequirementDialog extends React.Component {
                 <Button id="qa_crt_btn_cancel" onClick={this.handleClose}>
                   Cancel
                 </Button>
-                <Button id="CreateRequirement_Create" onClick={this.handleCreate} color="secondary" variant='contained'>
+                <Button id="qa_crt_btn_create" onClick={this.handleCreate} color="secondary" variant='contained'>
                   {commitButtonText}
                 </Button>
               </DialogActions>
