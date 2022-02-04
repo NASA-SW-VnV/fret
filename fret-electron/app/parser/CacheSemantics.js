@@ -343,11 +343,11 @@ function createSaltBatchString(product,options) {
       var key = iterator.value.toString()
 
       // making an object with all endpoints --------
-      var endpoints = {ptleft:'', ptright:'', ptExtleft:'', ptExtright: '', SMVptExtleft:'', SMVptExtright: ''};
+      var endpoints = {left:'', right:'', ptExtleft:'', ptExtright: '', SMVptExtleft:'', SMVptExtright: ''};
       // we use iterator.value because the matching base needs an array of strings, not a string
       var eps =  formalizations.getEndpoints(iterator.value);
-      endpoints['ptleft'] = semanticsGenerator.customizeForFret(eps[0]);
-      endpoints['ptright'] = semanticsGenerator.customizeForFret(eps[1]);
+      endpoints['left'] = semanticsGenerator.customizeForFret(eps[0]);
+      endpoints['right'] = semanticsGenerator.customizeForFret(eps[1]);
       endpoints['ptExtleft'] = semanticsGenerator.customizeForFret(formalizations.EndPointsRewrite('pt', eps[0]));
       endpoints['ptExtright'] = semanticsGenerator.customizeForFret(formalizations.EndPointsRewrite('pt', eps[1]));
       endpoints['SMVptExtleft'] = semanticsGenerator.customizeForFret(formalizations.EndPointsRewrite('pt', eps[0], 'smv'));

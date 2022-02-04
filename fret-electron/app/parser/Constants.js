@@ -106,6 +106,10 @@ module.exports = Object.freeze({
 //describes cases when the SVG diagrams cannot be created
   undefined_svg: "Undefined svg.",
 
-  predefinedVars: ["persisted","occurred","persists","occurs"]
+  //TODO: The variables that are predefined won't show up in the
+  // variable mapping dialog. When, from the analysis portal, we
+  // handle export of future-time formalizations, then we can add
+  // persists and occurs to the list of predefined vars.
+  predefinedVars: ["persisted","occurred"]//,"persists","occurs"
 
 });

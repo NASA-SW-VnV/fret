@@ -1,8 +1,8 @@
 {
   "after,null,after,satisfaction": {
     "endpoints": {
-      "ptleft": "FLin_$scope_mode$",
-      "ptright": "LAST",
+      "left": "FLin_$scope_mode$",
+      "right": "LAST",
       "ptExtleft": "(((not $scope_mode$) and (previous $scope_mode$)) and previous (historically (not ((not $scope_mode$) and (previous $scope_mode$)))))",
       "ptExtright": "LAST",
       "SMVptExtleft": "(((!$scope_mode$) & (Y $scope_mode$)) & (Y (H (!((!$scope_mode$) & (Y $scope_mode$))))))",
@@ -28,8 +28,8 @@
   },
   "after,null,always,satisfaction": {
     "endpoints": {
-      "ptleft": "FLin_$scope_mode$",
-      "ptright": "LAST",
+      "left": "FLin_$scope_mode$",
+      "right": "LAST",
       "ptExtleft": "(((not $scope_mode$) and (previous $scope_mode$)) and previous (historically (not ((not $scope_mode$) and (previous $scope_mode$)))))",
       "ptExtright": "LAST",
       "SMVptExtleft": "(((!$scope_mode$) & (Y $scope_mode$)) & (Y (H (!((!$scope_mode$) & (Y $scope_mode$))))))",
@@ -55,8 +55,8 @@
   },
   "after,null,before,satisfaction": {
     "endpoints": {
-      "ptleft": "FLin_$scope_mode$",
-      "ptright": "LAST",
+      "left": "FLin_$scope_mode$",
+      "right": "LAST",
       "ptExtleft": "(((not $scope_mode$) and (previous $scope_mode$)) and previous (historically (not ((not $scope_mode$) and (previous $scope_mode$)))))",
       "ptExtright": "LAST",
       "SMVptExtleft": "(((!$scope_mode$) & (Y $scope_mode$)) & (Y (H (!((!$scope_mode$) & (Y $scope_mode$))))))",
@@ -82,8 +82,8 @@
   },
   "after,null,eventually,satisfaction": {
     "endpoints": {
-      "ptleft": "FLin_$scope_mode$",
-      "ptright": "LAST",
+      "left": "FLin_$scope_mode$",
+      "right": "LAST",
       "ptExtleft": "(((not $scope_mode$) and (previous $scope_mode$)) and previous (historically (not ((not $scope_mode$) and (previous $scope_mode$)))))",
       "ptExtright": "LAST",
       "SMVptExtleft": "(((!$scope_mode$) & (Y $scope_mode$)) & (Y (H (!((!$scope_mode$) & (Y $scope_mode$))))))",
@@ -109,8 +109,8 @@
   },
   "after,null,for,satisfaction": {
     "endpoints": {
-      "ptleft": "FLin_$scope_mode$",
-      "ptright": "LAST",
+      "left": "FLin_$scope_mode$",
+      "right": "LAST",
       "ptExtleft": "(((not $scope_mode$) and (previous $scope_mode$)) and previous (historically (not ((not $scope_mode$) and (previous $scope_mode$)))))",
       "ptExtright": "LAST",
       "SMVptExtleft": "(((!$scope_mode$) & (Y $scope_mode$)) & (Y (H (!((!$scope_mode$) & (Y $scope_mode$))))))",
@@ -136,8 +136,8 @@
   },
   "after,null,immediately,satisfaction": {
     "endpoints": {
-      "ptleft": "FLin_$scope_mode$",
-      "ptright": "LAST",
+      "left": "FLin_$scope_mode$",
+      "right": "LAST",
       "ptExtleft": "(((not $scope_mode$) and (previous $scope_mode$)) and previous (historically (not ((not $scope_mode$) and (previous $scope_mode$)))))",
       "ptExtright": "LAST",
       "SMVptExtleft": "(((!$scope_mode$) & (Y $scope_mode$)) & (Y (H (!((!$scope_mode$) & (Y $scope_mode$))))))",
@@ -163,8 +163,8 @@
   },
   "after,null,never,satisfaction": {
     "endpoints": {
-      "ptleft": "FLin_$scope_mode$",
-      "ptright": "LAST",
+      "left": "FLin_$scope_mode$",
+      "right": "LAST",
       "ptExtleft": "(((not $scope_mode$) and (previous $scope_mode$)) and previous (historically (not ((not $scope_mode$) and (previous $scope_mode$)))))",
       "ptExtright": "LAST",
       "SMVptExtleft": "(((!$scope_mode$) & (Y $scope_mode$)) & (Y (H (!((!$scope_mode$) & (Y $scope_mode$))))))",
@@ -190,8 +190,8 @@
   },
   "after,null,next,satisfaction": {
     "endpoints": {
-      "ptleft": "FLin_$scope_mode$",
-      "ptright": "LAST",
+      "left": "FLin_$scope_mode$",
+      "right": "LAST",
       "ptExtleft": "(((not $scope_mode$) and (previous $scope_mode$)) and previous (historically (not ((not $scope_mode$) and (previous $scope_mode$)))))",
       "ptExtright": "LAST",
       "SMVptExtleft": "(((!$scope_mode$) & (Y $scope_mode$)) & (Y (H (!((!$scope_mode$) & (Y $scope_mode$))))))",
@@ -217,8 +217,8 @@
   },
   "after,null,null,satisfaction": {
     "endpoints": {
-      "ptleft": "FLin_$scope_mode$",
-      "ptright": "LAST",
+      "left": "FLin_$scope_mode$",
+      "right": "LAST",
       "ptExtleft": "(((not $scope_mode$) and (previous $scope_mode$)) and previous (historically (not ((not $scope_mode$) and (previous $scope_mode$)))))",
       "ptExtright": "LAST",
       "SMVptExtleft": "(((!$scope_mode$) & (Y $scope_mode$)) & (Y (H (!((!$scope_mode$) & (Y $scope_mode$))))))",
@@ -244,8 +244,8 @@
   },
   "after,null,until,satisfaction": {
     "endpoints": {
-      "ptleft": "FLin_$scope_mode$",
-      "ptright": "LAST",
+      "left": "FLin_$scope_mode$",
+      "right": "LAST",
       "ptExtleft": "(((not $scope_mode$) and (previous $scope_mode$)) and previous (historically (not ((not $scope_mode$) and (previous $scope_mode$)))))",
       "ptExtright": "LAST",
       "SMVptExtleft": "(((!$scope_mode$) & (Y $scope_mode$)) & (Y (H (!((!$scope_mode$) & (Y $scope_mode$))))))",
@@ -271,8 +271,8 @@
   },
   "after,null,within,satisfaction": {
     "endpoints": {
-      "ptleft": "FLin_$scope_mode$",
-      "ptright": "LAST",
+      "left": "FLin_$scope_mode$",
+      "right": "LAST",
       "ptExtleft": "(((not $scope_mode$) and (previous $scope_mode$)) and previous (historically (not ((not $scope_mode$) and (previous $scope_mode$)))))",
       "ptExtright": "LAST",
       "SMVptExtleft": "(((!$scope_mode$) & (Y $scope_mode$)) & (Y (H (!((!$scope_mode$) & (Y $scope_mode$))))))",
@@ -298,8 +298,8 @@
   },
   "after,regular,after,satisfaction": {
     "endpoints": {
-      "ptleft": "FLin_$scope_mode$",
-      "ptright": "LAST",
+      "left": "FLin_$scope_mode$",
+      "right": "LAST",
       "ptExtleft": "(((not $scope_mode$) and (previous $scope_mode$)) and previous (historically (not ((not $scope_mode$) and (previous $scope_mode$)))))",
       "ptExtright": "LAST",
       "SMVptExtleft": "(((!$scope_mode$) & (Y $scope_mode$)) & (Y (H (!((!$scope_mode$) & (Y $scope_mode$))))))",
@@ -325,8 +325,8 @@
   },
   "after,regular,always,satisfaction": {
     "endpoints": {
-      "ptleft": "FLin_$scope_mode$",
-      "ptright": "LAST",
+      "left": "FLin_$scope_mode$",
+      "right": "LAST",
       "ptExtleft": "(((not $scope_mode$) and (previous $scope_mode$)) and previous (historically (not ((not $scope_mode$) and (previous $scope_mode$)))))",
       "ptExtright": "LAST",
       "SMVptExtleft": "(((!$scope_mode$) & (Y $scope_mode$)) & (Y (H (!((!$scope_mode$) & (Y $scope_mode$))))))",
@@ -352,8 +352,8 @@
   },
   "after,regular,before,satisfaction": {
     "endpoints": {
-      "ptleft": "FLin_$scope_mode$",
-      "ptright": "LAST",
+      "left": "FLin_$scope_mode$",
+      "right": "LAST",
       "ptExtleft": "(((not $scope_mode$) and (previous $scope_mode$)) and previous (historically (not ((not $scope_mode$) and (previous $scope_mode$)))))",
       "ptExtright": "LAST",
       "SMVptExtleft": "(((!$scope_mode$) & (Y $scope_mode$)) & (Y (H (!((!$scope_mode$) & (Y $scope_mode$))))))",
@@ -379,8 +379,8 @@
   },
   "after,regular,eventually,satisfaction": {
     "endpoints": {
-      "ptleft": "FLin_$scope_mode$",
-      "ptright": "LAST",
+      "left": "FLin_$scope_mode$",
+      "right": "LAST",
       "ptExtleft": "(((not $scope_mode$) and (previous $scope_mode$)) and previous (historically (not ((not $scope_mode$) and (previous $scope_mode$)))))",
       "ptExtright": "LAST",
       "SMVptExtleft": "(((!$scope_mode$) & (Y $scope_mode$)) & (Y (H (!((!$scope_mode$) & (Y $scope_mode$))))))",
@@ -406,8 +406,8 @@
   },
   "after,regular,for,satisfaction": {
     "endpoints": {
-      "ptleft": "FLin_$scope_mode$",
-      "ptright": "LAST",
+      "left": "FLin_$scope_mode$",
+      "right": "LAST",
       "ptExtleft": "(((not $scope_mode$) and (previous $scope_mode$)) and previous (historically (not ((not $scope_mode$) and (previous $scope_mode$)))))",
       "ptExtright": "LAST",
       "SMVptExtleft": "(((!$scope_mode$) & (Y $scope_mode$)) & (Y (H (!((!$scope_mode$) & (Y $scope_mode$))))))",
@@ -433,8 +433,8 @@
   },
   "after,regular,immediately,satisfaction": {
     "endpoints": {
-      "ptleft": "FLin_$scope_mode$",
-      "ptright": "LAST",
+      "left": "FLin_$scope_mode$",
+      "right": "LAST",
       "ptExtleft": "(((not $scope_mode$) and (previous $scope_mode$)) and previous (historically (not ((not $scope_mode$) and (previous $scope_mode$)))))",
       "ptExtright": "LAST",
       "SMVptExtleft": "(((!$scope_mode$) & (Y $scope_mode$)) & (Y (H (!((!$scope_mode$) & (Y $scope_mode$))))))",
@@ -460,8 +460,8 @@
   },
   "after,regular,never,satisfaction": {
     "endpoints": {
-      "ptleft": "FLin_$scope_mode$",
-      "ptright": "LAST",
+      "left": "FLin_$scope_mode$",
+      "right": "LAST",
       "ptExtleft": "(((not $scope_mode$) and (previous $scope_mode$)) and previous (historically (not ((not $scope_mode$) and (previous $scope_mode$)))))",
       "ptExtright": "LAST",
       "SMVptExtleft": "(((!$scope_mode$) & (Y $scope_mode$)) & (Y (H (!((!$scope_mode$) & (Y $scope_mode$))))))",
@@ -487,8 +487,8 @@
   },
   "after,regular,next,satisfaction": {
     "endpoints": {
-      "ptleft": "FLin_$scope_mode$",
-      "ptright": "LAST",
+      "left": "FLin_$scope_mode$",
+      "right": "LAST",
       "ptExtleft": "(((not $scope_mode$) and (previous $scope_mode$)) and previous (historically (not ((not $scope_mode$) and (previous $scope_mode$)))))",
       "ptExtright": "LAST",
       "SMVptExtleft": "(((!$scope_mode$) & (Y $scope_mode$)) & (Y (H (!((!$scope_mode$) & (Y $scope_mode$))))))",
@@ -514,8 +514,8 @@
   },
   "after,regular,null,satisfaction": {
     "endpoints": {
-      "ptleft": "FLin_$scope_mode$",
-      "ptright": "LAST",
+      "left": "FLin_$scope_mode$",
+      "right": "LAST",
       "ptExtleft": "(((not $scope_mode$) and (previous $scope_mode$)) and previous (historically (not ((not $scope_mode$) and (previous $scope_mode$)))))",
       "ptExtright": "LAST",
       "SMVptExtleft": "(((!$scope_mode$) & (Y $scope_mode$)) & (Y (H (!((!$scope_mode$) & (Y $scope_mode$))))))",
@@ -541,8 +541,8 @@
   },
   "after,regular,until,satisfaction": {
     "endpoints": {
-      "ptleft": "FLin_$scope_mode$",
-      "ptright": "LAST",
+      "left": "FLin_$scope_mode$",
+      "right": "LAST",
       "ptExtleft": "(((not $scope_mode$) and (previous $scope_mode$)) and previous (historically (not ((not $scope_mode$) and (previous $scope_mode$)))))",
       "ptExtright": "LAST",
       "SMVptExtleft": "(((!$scope_mode$) & (Y $scope_mode$)) & (Y (H (!((!$scope_mode$) & (Y $scope_mode$))))))",
@@ -568,8 +568,8 @@
   },
   "after,regular,within,satisfaction": {
     "endpoints": {
-      "ptleft": "FLin_$scope_mode$",
-      "ptright": "LAST",
+      "left": "FLin_$scope_mode$",
+      "right": "LAST",
       "ptExtleft": "(((not $scope_mode$) and (previous $scope_mode$)) and previous (historically (not ((not $scope_mode$) and (previous $scope_mode$)))))",
       "ptExtright": "LAST",
       "SMVptExtleft": "(((!$scope_mode$) & (Y $scope_mode$)) & (Y (H (!((!$scope_mode$) & (Y $scope_mode$))))))",
@@ -595,8 +595,8 @@
   },
   "before,null,after,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "FFin_$scope_mode$",
+      "left": "FTP",
+      "right": "FFin_$scope_mode$",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "(($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$))) and ((previous (historically not $scope_mode$)) or (not previous TRUE)))",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -622,8 +622,8 @@
   },
   "before,null,always,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "FFin_$scope_mode$",
+      "left": "FTP",
+      "right": "FFin_$scope_mode$",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "(($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$))) and ((previous (historically not $scope_mode$)) or (not previous TRUE)))",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -649,8 +649,8 @@
   },
   "before,null,before,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "FFin_$scope_mode$",
+      "left": "FTP",
+      "right": "FFin_$scope_mode$",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "(($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$))) and ((previous (historically not $scope_mode$)) or (not previous TRUE)))",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -676,8 +676,8 @@
   },
   "before,null,eventually,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "FFin_$scope_mode$",
+      "left": "FTP",
+      "right": "FFin_$scope_mode$",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "(($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$))) and ((previous (historically not $scope_mode$)) or (not previous TRUE)))",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -703,8 +703,8 @@
   },
   "before,null,for,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "FFin_$scope_mode$",
+      "left": "FTP",
+      "right": "FFin_$scope_mode$",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "(($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$))) and ((previous (historically not $scope_mode$)) or (not previous TRUE)))",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -730,8 +730,8 @@
   },
   "before,null,immediately,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "FFin_$scope_mode$",
+      "left": "FTP",
+      "right": "FFin_$scope_mode$",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "(($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$))) and ((previous (historically not $scope_mode$)) or (not previous TRUE)))",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -757,8 +757,8 @@
   },
   "before,null,never,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "FFin_$scope_mode$",
+      "left": "FTP",
+      "right": "FFin_$scope_mode$",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "(($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$))) and ((previous (historically not $scope_mode$)) or (not previous TRUE)))",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -784,8 +784,8 @@
   },
   "before,null,next,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "FFin_$scope_mode$",
+      "left": "FTP",
+      "right": "FFin_$scope_mode$",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "(($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$))) and ((previous (historically not $scope_mode$)) or (not previous TRUE)))",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -811,8 +811,8 @@
   },
   "before,null,null,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "FFin_$scope_mode$",
+      "left": "FTP",
+      "right": "FFin_$scope_mode$",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "(($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$))) and ((previous (historically not $scope_mode$)) or (not previous TRUE)))",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -838,8 +838,8 @@
   },
   "before,null,until,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "FFin_$scope_mode$",
+      "left": "FTP",
+      "right": "FFin_$scope_mode$",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "(($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$))) and ((previous (historically not $scope_mode$)) or (not previous TRUE)))",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -865,8 +865,8 @@
   },
   "before,null,within,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "FFin_$scope_mode$",
+      "left": "FTP",
+      "right": "FFin_$scope_mode$",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "(($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$))) and ((previous (historically not $scope_mode$)) or (not previous TRUE)))",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -892,8 +892,8 @@
   },
   "before,regular,after,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "FFin_$scope_mode$",
+      "left": "FTP",
+      "right": "FFin_$scope_mode$",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "(($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$))) and ((previous (historically not $scope_mode$)) or (not previous TRUE)))",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -919,8 +919,8 @@
   },
   "before,regular,always,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "FFin_$scope_mode$",
+      "left": "FTP",
+      "right": "FFin_$scope_mode$",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "(($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$))) and ((previous (historically not $scope_mode$)) or (not previous TRUE)))",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -946,8 +946,8 @@
   },
   "before,regular,before,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "FFin_$scope_mode$",
+      "left": "FTP",
+      "right": "FFin_$scope_mode$",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "(($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$))) and ((previous (historically not $scope_mode$)) or (not previous TRUE)))",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -973,8 +973,8 @@
   },
   "before,regular,eventually,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "FFin_$scope_mode$",
+      "left": "FTP",
+      "right": "FFin_$scope_mode$",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "(($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$))) and ((previous (historically not $scope_mode$)) or (not previous TRUE)))",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -1000,8 +1000,8 @@
   },
   "before,regular,for,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "FFin_$scope_mode$",
+      "left": "FTP",
+      "right": "FFin_$scope_mode$",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "(($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$))) and ((previous (historically not $scope_mode$)) or (not previous TRUE)))",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -1027,8 +1027,8 @@
   },
   "before,regular,immediately,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "FFin_$scope_mode$",
+      "left": "FTP",
+      "right": "FFin_$scope_mode$",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "(($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$))) and ((previous (historically not $scope_mode$)) or (not previous TRUE)))",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -1054,8 +1054,8 @@
   },
   "before,regular,never,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "FFin_$scope_mode$",
+      "left": "FTP",
+      "right": "FFin_$scope_mode$",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "(($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$))) and ((previous (historically not $scope_mode$)) or (not previous TRUE)))",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -1081,8 +1081,8 @@
   },
   "before,regular,next,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "FFin_$scope_mode$",
+      "left": "FTP",
+      "right": "FFin_$scope_mode$",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "(($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$))) and ((previous (historically not $scope_mode$)) or (not previous TRUE)))",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -1108,8 +1108,8 @@
   },
   "before,regular,null,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "FFin_$scope_mode$",
+      "left": "FTP",
+      "right": "FFin_$scope_mode$",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "(($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$))) and ((previous (historically not $scope_mode$)) or (not previous TRUE)))",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -1135,8 +1135,8 @@
   },
   "before,regular,until,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "FFin_$scope_mode$",
+      "left": "FTP",
+      "right": "FFin_$scope_mode$",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "(($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$))) and ((previous (historically not $scope_mode$)) or (not previous TRUE)))",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -1162,8 +1162,8 @@
   },
   "before,regular,within,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "FFin_$scope_mode$",
+      "left": "FTP",
+      "right": "FFin_$scope_mode$",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "(($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$))) and ((previous (historically not $scope_mode$)) or (not previous TRUE)))",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -1189,8 +1189,8 @@
   },
   "in,null,after,satisfaction": {
     "endpoints": {
-      "ptleft": "Fin_$scope_mode$",
-      "ptright": "Lin_$scope_mode$",
+      "left": "Fin_$scope_mode$",
+      "right": "Lin_$scope_mode$",
       "ptExtleft": "($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$)))",
       "ptExtright": "((not $scope_mode$) and (previous $scope_mode$))",
       "SMVptExtleft": "($scope_mode$ & ((!(Y TRUE)) | (Y (!$scope_mode$))))",
@@ -1216,8 +1216,8 @@
   },
   "in,null,always,satisfaction": {
     "endpoints": {
-      "ptleft": "Fin_$scope_mode$",
-      "ptright": "Lin_$scope_mode$",
+      "left": "Fin_$scope_mode$",
+      "right": "Lin_$scope_mode$",
       "ptExtleft": "($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$)))",
       "ptExtright": "((not $scope_mode$) and (previous $scope_mode$))",
       "SMVptExtleft": "($scope_mode$ & ((!(Y TRUE)) | (Y (!$scope_mode$))))",
@@ -1243,8 +1243,8 @@
   },
   "in,null,before,satisfaction": {
     "endpoints": {
-      "ptleft": "Fin_$scope_mode$",
-      "ptright": "Lin_$scope_mode$",
+      "left": "Fin_$scope_mode$",
+      "right": "Lin_$scope_mode$",
       "ptExtleft": "($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$)))",
       "ptExtright": "((not $scope_mode$) and (previous $scope_mode$))",
       "SMVptExtleft": "($scope_mode$ & ((!(Y TRUE)) | (Y (!$scope_mode$))))",
@@ -1270,8 +1270,8 @@
   },
   "in,null,eventually,satisfaction": {
     "endpoints": {
-      "ptleft": "Fin_$scope_mode$",
-      "ptright": "Lin_$scope_mode$",
+      "left": "Fin_$scope_mode$",
+      "right": "Lin_$scope_mode$",
       "ptExtleft": "($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$)))",
       "ptExtright": "((not $scope_mode$) and (previous $scope_mode$))",
       "SMVptExtleft": "($scope_mode$ & ((!(Y TRUE)) | (Y (!$scope_mode$))))",
@@ -1297,8 +1297,8 @@
   },
   "in,null,for,satisfaction": {
     "endpoints": {
-      "ptleft": "Fin_$scope_mode$",
-      "ptright": "Lin_$scope_mode$",
+      "left": "Fin_$scope_mode$",
+      "right": "Lin_$scope_mode$",
       "ptExtleft": "($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$)))",
       "ptExtright": "((not $scope_mode$) and (previous $scope_mode$))",
       "SMVptExtleft": "($scope_mode$ & ((!(Y TRUE)) | (Y (!$scope_mode$))))",
@@ -1324,8 +1324,8 @@
   },
   "in,null,immediately,satisfaction": {
     "endpoints": {
-      "ptleft": "Fin_$scope_mode$",
-      "ptright": "Lin_$scope_mode$",
+      "left": "Fin_$scope_mode$",
+      "right": "Lin_$scope_mode$",
       "ptExtleft": "($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$)))",
       "ptExtright": "((not $scope_mode$) and (previous $scope_mode$))",
       "SMVptExtleft": "($scope_mode$ & ((!(Y TRUE)) | (Y (!$scope_mode$))))",
@@ -1351,8 +1351,8 @@
   },
   "in,null,never,satisfaction": {
     "endpoints": {
-      "ptleft": "Fin_$scope_mode$",
-      "ptright": "Lin_$scope_mode$",
+      "left": "Fin_$scope_mode$",
+      "right": "Lin_$scope_mode$",
       "ptExtleft": "($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$)))",
       "ptExtright": "((not $scope_mode$) and (previous $scope_mode$))",
       "SMVptExtleft": "($scope_mode$ & ((!(Y TRUE)) | (Y (!$scope_mode$))))",
@@ -1378,8 +1378,8 @@
   },
   "in,null,next,satisfaction": {
     "endpoints": {
-      "ptleft": "Fin_$scope_mode$",
-      "ptright": "Lin_$scope_mode$",
+      "left": "Fin_$scope_mode$",
+      "right": "Lin_$scope_mode$",
       "ptExtleft": "($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$)))",
       "ptExtright": "((not $scope_mode$) and (previous $scope_mode$))",
       "SMVptExtleft": "($scope_mode$ & ((!(Y TRUE)) | (Y (!$scope_mode$))))",
@@ -1405,8 +1405,8 @@
   },
   "in,null,null,satisfaction": {
     "endpoints": {
-      "ptleft": "Fin_$scope_mode$",
-      "ptright": "Lin_$scope_mode$",
+      "left": "Fin_$scope_mode$",
+      "right": "Lin_$scope_mode$",
       "ptExtleft": "($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$)))",
       "ptExtright": "((not $scope_mode$) and (previous $scope_mode$))",
       "SMVptExtleft": "($scope_mode$ & ((!(Y TRUE)) | (Y (!$scope_mode$))))",
@@ -1432,8 +1432,8 @@
   },
   "in,null,until,satisfaction": {
     "endpoints": {
-      "ptleft": "Fin_$scope_mode$",
-      "ptright": "Lin_$scope_mode$",
+      "left": "Fin_$scope_mode$",
+      "right": "Lin_$scope_mode$",
       "ptExtleft": "($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$)))",
       "ptExtright": "((not $scope_mode$) and (previous $scope_mode$))",
       "SMVptExtleft": "($scope_mode$ & ((!(Y TRUE)) | (Y (!$scope_mode$))))",
@@ -1459,8 +1459,8 @@
   },
   "in,null,within,satisfaction": {
     "endpoints": {
-      "ptleft": "Fin_$scope_mode$",
-      "ptright": "Lin_$scope_mode$",
+      "left": "Fin_$scope_mode$",
+      "right": "Lin_$scope_mode$",
       "ptExtleft": "($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$)))",
       "ptExtright": "((not $scope_mode$) and (previous $scope_mode$))",
       "SMVptExtleft": "($scope_mode$ & ((!(Y TRUE)) | (Y (!$scope_mode$))))",
@@ -1486,8 +1486,8 @@
   },
   "in,regular,after,satisfaction": {
     "endpoints": {
-      "ptleft": "Fin_$scope_mode$",
-      "ptright": "Lin_$scope_mode$",
+      "left": "Fin_$scope_mode$",
+      "right": "Lin_$scope_mode$",
       "ptExtleft": "($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$)))",
       "ptExtright": "((not $scope_mode$) and (previous $scope_mode$))",
       "SMVptExtleft": "($scope_mode$ & ((!(Y TRUE)) | (Y (!$scope_mode$))))",
@@ -1513,8 +1513,8 @@
   },
   "in,regular,always,satisfaction": {
     "endpoints": {
-      "ptleft": "Fin_$scope_mode$",
-      "ptright": "Lin_$scope_mode$",
+      "left": "Fin_$scope_mode$",
+      "right": "Lin_$scope_mode$",
       "ptExtleft": "($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$)))",
       "ptExtright": "((not $scope_mode$) and (previous $scope_mode$))",
       "SMVptExtleft": "($scope_mode$ & ((!(Y TRUE)) | (Y (!$scope_mode$))))",
@@ -1540,8 +1540,8 @@
   },
   "in,regular,before,satisfaction": {
     "endpoints": {
-      "ptleft": "Fin_$scope_mode$",
-      "ptright": "Lin_$scope_mode$",
+      "left": "Fin_$scope_mode$",
+      "right": "Lin_$scope_mode$",
       "ptExtleft": "($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$)))",
       "ptExtright": "((not $scope_mode$) and (previous $scope_mode$))",
       "SMVptExtleft": "($scope_mode$ & ((!(Y TRUE)) | (Y (!$scope_mode$))))",
@@ -1567,8 +1567,8 @@
   },
   "in,regular,eventually,satisfaction": {
     "endpoints": {
-      "ptleft": "Fin_$scope_mode$",
-      "ptright": "Lin_$scope_mode$",
+      "left": "Fin_$scope_mode$",
+      "right": "Lin_$scope_mode$",
       "ptExtleft": "($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$)))",
       "ptExtright": "((not $scope_mode$) and (previous $scope_mode$))",
       "SMVptExtleft": "($scope_mode$ & ((!(Y TRUE)) | (Y (!$scope_mode$))))",
@@ -1594,8 +1594,8 @@
   },
   "in,regular,for,satisfaction": {
     "endpoints": {
-      "ptleft": "Fin_$scope_mode$",
-      "ptright": "Lin_$scope_mode$",
+      "left": "Fin_$scope_mode$",
+      "right": "Lin_$scope_mode$",
       "ptExtleft": "($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$)))",
       "ptExtright": "((not $scope_mode$) and (previous $scope_mode$))",
       "SMVptExtleft": "($scope_mode$ & ((!(Y TRUE)) | (Y (!$scope_mode$))))",
@@ -1621,8 +1621,8 @@
   },
   "in,regular,immediately,satisfaction": {
     "endpoints": {
-      "ptleft": "Fin_$scope_mode$",
-      "ptright": "Lin_$scope_mode$",
+      "left": "Fin_$scope_mode$",
+      "right": "Lin_$scope_mode$",
       "ptExtleft": "($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$)))",
       "ptExtright": "((not $scope_mode$) and (previous $scope_mode$))",
       "SMVptExtleft": "($scope_mode$ & ((!(Y TRUE)) | (Y (!$scope_mode$))))",
@@ -1648,8 +1648,8 @@
   },
   "in,regular,never,satisfaction": {
     "endpoints": {
-      "ptleft": "Fin_$scope_mode$",
-      "ptright": "Lin_$scope_mode$",
+      "left": "Fin_$scope_mode$",
+      "right": "Lin_$scope_mode$",
       "ptExtleft": "($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$)))",
       "ptExtright": "((not $scope_mode$) and (previous $scope_mode$))",
       "SMVptExtleft": "($scope_mode$ & ((!(Y TRUE)) | (Y (!$scope_mode$))))",
@@ -1675,8 +1675,8 @@
   },
   "in,regular,next,satisfaction": {
     "endpoints": {
-      "ptleft": "Fin_$scope_mode$",
-      "ptright": "Lin_$scope_mode$",
+      "left": "Fin_$scope_mode$",
+      "right": "Lin_$scope_mode$",
       "ptExtleft": "($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$)))",
       "ptExtright": "((not $scope_mode$) and (previous $scope_mode$))",
       "SMVptExtleft": "($scope_mode$ & ((!(Y TRUE)) | (Y (!$scope_mode$))))",
@@ -1702,8 +1702,8 @@
   },
   "in,regular,null,satisfaction": {
     "endpoints": {
-      "ptleft": "Fin_$scope_mode$",
-      "ptright": "Lin_$scope_mode$",
+      "left": "Fin_$scope_mode$",
+      "right": "Lin_$scope_mode$",
       "ptExtleft": "($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$)))",
       "ptExtright": "((not $scope_mode$) and (previous $scope_mode$))",
       "SMVptExtleft": "($scope_mode$ & ((!(Y TRUE)) | (Y (!$scope_mode$))))",
@@ -1729,8 +1729,8 @@
   },
   "in,regular,until,satisfaction": {
     "endpoints": {
-      "ptleft": "Fin_$scope_mode$",
-      "ptright": "Lin_$scope_mode$",
+      "left": "Fin_$scope_mode$",
+      "right": "Lin_$scope_mode$",
       "ptExtleft": "($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$)))",
       "ptExtright": "((not $scope_mode$) and (previous $scope_mode$))",
       "SMVptExtleft": "($scope_mode$ & ((!(Y TRUE)) | (Y (!$scope_mode$))))",
@@ -1756,8 +1756,8 @@
   },
   "in,regular,within,satisfaction": {
     "endpoints": {
-      "ptleft": "Fin_$scope_mode$",
-      "ptright": "Lin_$scope_mode$",
+      "left": "Fin_$scope_mode$",
+      "right": "Lin_$scope_mode$",
       "ptExtleft": "($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$)))",
       "ptExtright": "((not $scope_mode$) and (previous $scope_mode$))",
       "SMVptExtleft": "($scope_mode$ & ((!(Y TRUE)) | (Y (!$scope_mode$))))",
@@ -1783,8 +1783,8 @@
   },
   "notin,null,after,satisfaction": {
     "endpoints": {
-      "ptleft": "FNin_$scope_mode$",
-      "ptright": "LNin_$scope_mode$",
+      "left": "FNin_$scope_mode$",
+      "right": "LNin_$scope_mode$",
       "ptExtleft": "((not $scope_mode$) and ((not previous TRUE) or (previous $scope_mode$)))",
       "ptExtright": "($scope_mode$ and (previous not $scope_mode$))",
       "SMVptExtleft": "((!$scope_mode$) & ((!(Y TRUE)) | (Y $scope_mode$)))",
@@ -1810,8 +1810,8 @@
   },
   "notin,null,always,satisfaction": {
     "endpoints": {
-      "ptleft": "FNin_$scope_mode$",
-      "ptright": "LNin_$scope_mode$",
+      "left": "FNin_$scope_mode$",
+      "right": "LNin_$scope_mode$",
       "ptExtleft": "((not $scope_mode$) and ((not previous TRUE) or (previous $scope_mode$)))",
       "ptExtright": "($scope_mode$ and (previous not $scope_mode$))",
       "SMVptExtleft": "((!$scope_mode$) & ((!(Y TRUE)) | (Y $scope_mode$)))",
@@ -1837,8 +1837,8 @@
   },
   "notin,null,before,satisfaction": {
     "endpoints": {
-      "ptleft": "FNin_$scope_mode$",
-      "ptright": "LNin_$scope_mode$",
+      "left": "FNin_$scope_mode$",
+      "right": "LNin_$scope_mode$",
       "ptExtleft": "((not $scope_mode$) and ((not previous TRUE) or (previous $scope_mode$)))",
       "ptExtright": "($scope_mode$ and (previous not $scope_mode$))",
       "SMVptExtleft": "((!$scope_mode$) & ((!(Y TRUE)) | (Y $scope_mode$)))",
@@ -1864,8 +1864,8 @@
   },
   "notin,null,eventually,satisfaction": {
     "endpoints": {
-      "ptleft": "FNin_$scope_mode$",
-      "ptright": "LNin_$scope_mode$",
+      "left": "FNin_$scope_mode$",
+      "right": "LNin_$scope_mode$",
       "ptExtleft": "((not $scope_mode$) and ((not previous TRUE) or (previous $scope_mode$)))",
       "ptExtright": "($scope_mode$ and (previous not $scope_mode$))",
       "SMVptExtleft": "((!$scope_mode$) & ((!(Y TRUE)) | (Y $scope_mode$)))",
@@ -1891,8 +1891,8 @@
   },
   "notin,null,for,satisfaction": {
     "endpoints": {
-      "ptleft": "FNin_$scope_mode$",
-      "ptright": "LNin_$scope_mode$",
+      "left": "FNin_$scope_mode$",
+      "right": "LNin_$scope_mode$",
       "ptExtleft": "((not $scope_mode$) and ((not previous TRUE) or (previous $scope_mode$)))",
       "ptExtright": "($scope_mode$ and (previous not $scope_mode$))",
       "SMVptExtleft": "((!$scope_mode$) & ((!(Y TRUE)) | (Y $scope_mode$)))",
@@ -1918,8 +1918,8 @@
   },
   "notin,null,immediately,satisfaction": {
     "endpoints": {
-      "ptleft": "FNin_$scope_mode$",
-      "ptright": "LNin_$scope_mode$",
+      "left": "FNin_$scope_mode$",
+      "right": "LNin_$scope_mode$",
       "ptExtleft": "((not $scope_mode$) and ((not previous TRUE) or (previous $scope_mode$)))",
       "ptExtright": "($scope_mode$ and (previous not $scope_mode$))",
       "SMVptExtleft": "((!$scope_mode$) & ((!(Y TRUE)) | (Y $scope_mode$)))",
@@ -1945,8 +1945,8 @@
   },
   "notin,null,never,satisfaction": {
     "endpoints": {
-      "ptleft": "FNin_$scope_mode$",
-      "ptright": "LNin_$scope_mode$",
+      "left": "FNin_$scope_mode$",
+      "right": "LNin_$scope_mode$",
       "ptExtleft": "((not $scope_mode$) and ((not previous TRUE) or (previous $scope_mode$)))",
       "ptExtright": "($scope_mode$ and (previous not $scope_mode$))",
       "SMVptExtleft": "((!$scope_mode$) & ((!(Y TRUE)) | (Y $scope_mode$)))",
@@ -1972,8 +1972,8 @@
   },
   "notin,null,next,satisfaction": {
     "endpoints": {
-      "ptleft": "FNin_$scope_mode$",
-      "ptright": "LNin_$scope_mode$",
+      "left": "FNin_$scope_mode$",
+      "right": "LNin_$scope_mode$",
       "ptExtleft": "((not $scope_mode$) and ((not previous TRUE) or (previous $scope_mode$)))",
       "ptExtright": "($scope_mode$ and (previous not $scope_mode$))",
       "SMVptExtleft": "((!$scope_mode$) & ((!(Y TRUE)) | (Y $scope_mode$)))",
@@ -1999,8 +1999,8 @@
   },
   "notin,null,null,satisfaction": {
     "endpoints": {
-      "ptleft": "FNin_$scope_mode$",
-      "ptright": "LNin_$scope_mode$",
+      "left": "FNin_$scope_mode$",
+      "right": "LNin_$scope_mode$",
       "ptExtleft": "((not $scope_mode$) and ((not previous TRUE) or (previous $scope_mode$)))",
       "ptExtright": "($scope_mode$ and (previous not $scope_mode$))",
       "SMVptExtleft": "((!$scope_mode$) & ((!(Y TRUE)) | (Y $scope_mode$)))",
@@ -2026,8 +2026,8 @@
   },
   "notin,null,until,satisfaction": {
     "endpoints": {
-      "ptleft": "FNin_$scope_mode$",
-      "ptright": "LNin_$scope_mode$",
+      "left": "FNin_$scope_mode$",
+      "right": "LNin_$scope_mode$",
       "ptExtleft": "((not $scope_mode$) and ((not previous TRUE) or (previous $scope_mode$)))",
       "ptExtright": "($scope_mode$ and (previous not $scope_mode$))",
       "SMVptExtleft": "((!$scope_mode$) & ((!(Y TRUE)) | (Y $scope_mode$)))",
@@ -2053,8 +2053,8 @@
   },
   "notin,null,within,satisfaction": {
     "endpoints": {
-      "ptleft": "FNin_$scope_mode$",
-      "ptright": "LNin_$scope_mode$",
+      "left": "FNin_$scope_mode$",
+      "right": "LNin_$scope_mode$",
       "ptExtleft": "((not $scope_mode$) and ((not previous TRUE) or (previous $scope_mode$)))",
       "ptExtright": "($scope_mode$ and (previous not $scope_mode$))",
       "SMVptExtleft": "((!$scope_mode$) & ((!(Y TRUE)) | (Y $scope_mode$)))",
@@ -2080,8 +2080,8 @@
   },
   "notin,regular,after,satisfaction": {
     "endpoints": {
-      "ptleft": "FNin_$scope_mode$",
-      "ptright": "LNin_$scope_mode$",
+      "left": "FNin_$scope_mode$",
+      "right": "LNin_$scope_mode$",
       "ptExtleft": "((not $scope_mode$) and ((not previous TRUE) or (previous $scope_mode$)))",
       "ptExtright": "($scope_mode$ and (previous not $scope_mode$))",
       "SMVptExtleft": "((!$scope_mode$) & ((!(Y TRUE)) | (Y $scope_mode$)))",
@@ -2107,8 +2107,8 @@
   },
   "notin,regular,always,satisfaction": {
     "endpoints": {
-      "ptleft": "FNin_$scope_mode$",
-      "ptright": "LNin_$scope_mode$",
+      "left": "FNin_$scope_mode$",
+      "right": "LNin_$scope_mode$",
       "ptExtleft": "((not $scope_mode$) and ((not previous TRUE) or (previous $scope_mode$)))",
       "ptExtright": "($scope_mode$ and (previous not $scope_mode$))",
       "SMVptExtleft": "((!$scope_mode$) & ((!(Y TRUE)) | (Y $scope_mode$)))",
@@ -2134,8 +2134,8 @@
   },
   "notin,regular,before,satisfaction": {
     "endpoints": {
-      "ptleft": "FNin_$scope_mode$",
-      "ptright": "LNin_$scope_mode$",
+      "left": "FNin_$scope_mode$",
+      "right": "LNin_$scope_mode$",
       "ptExtleft": "((not $scope_mode$) and ((not previous TRUE) or (previous $scope_mode$)))",
       "ptExtright": "($scope_mode$ and (previous not $scope_mode$))",
       "SMVptExtleft": "((!$scope_mode$) & ((!(Y TRUE)) | (Y $scope_mode$)))",
@@ -2161,8 +2161,8 @@
   },
   "notin,regular,eventually,satisfaction": {
     "endpoints": {
-      "ptleft": "FNin_$scope_mode$",
-      "ptright": "LNin_$scope_mode$",
+      "left": "FNin_$scope_mode$",
+      "right": "LNin_$scope_mode$",
       "ptExtleft": "((not $scope_mode$) and ((not previous TRUE) or (previous $scope_mode$)))",
       "ptExtright": "($scope_mode$ and (previous not $scope_mode$))",
       "SMVptExtleft": "((!$scope_mode$) & ((!(Y TRUE)) | (Y $scope_mode$)))",
@@ -2188,8 +2188,8 @@
   },
   "notin,regular,for,satisfaction": {
     "endpoints": {
-      "ptleft": "FNin_$scope_mode$",
-      "ptright": "LNin_$scope_mode$",
+      "left": "FNin_$scope_mode$",
+      "right": "LNin_$scope_mode$",
       "ptExtleft": "((not $scope_mode$) and ((not previous TRUE) or (previous $scope_mode$)))",
       "ptExtright": "($scope_mode$ and (previous not $scope_mode$))",
       "SMVptExtleft": "((!$scope_mode$) & ((!(Y TRUE)) | (Y $scope_mode$)))",
@@ -2215,8 +2215,8 @@
   },
   "notin,regular,immediately,satisfaction": {
     "endpoints": {
-      "ptleft": "FNin_$scope_mode$",
-      "ptright": "LNin_$scope_mode$",
+      "left": "FNin_$scope_mode$",
+      "right": "LNin_$scope_mode$",
       "ptExtleft": "((not $scope_mode$) and ((not previous TRUE) or (previous $scope_mode$)))",
       "ptExtright": "($scope_mode$ and (previous not $scope_mode$))",
       "SMVptExtleft": "((!$scope_mode$) & ((!(Y TRUE)) | (Y $scope_mode$)))",
@@ -2242,8 +2242,8 @@
   },
   "notin,regular,never,satisfaction": {
     "endpoints": {
-      "ptleft": "FNin_$scope_mode$",
-      "ptright": "LNin_$scope_mode$",
+      "left": "FNin_$scope_mode$",
+      "right": "LNin_$scope_mode$",
       "ptExtleft": "((not $scope_mode$) and ((not previous TRUE) or (previous $scope_mode$)))",
       "ptExtright": "($scope_mode$ and (previous not $scope_mode$))",
       "SMVptExtleft": "((!$scope_mode$) & ((!(Y TRUE)) | (Y $scope_mode$)))",
@@ -2269,8 +2269,8 @@
   },
   "notin,regular,next,satisfaction": {
     "endpoints": {
-      "ptleft": "FNin_$scope_mode$",
-      "ptright": "LNin_$scope_mode$",
+      "left": "FNin_$scope_mode$",
+      "right": "LNin_$scope_mode$",
       "ptExtleft": "((not $scope_mode$) and ((not previous TRUE) or (previous $scope_mode$)))",
       "ptExtright": "($scope_mode$ and (previous not $scope_mode$))",
       "SMVptExtleft": "((!$scope_mode$) & ((!(Y TRUE)) | (Y $scope_mode$)))",
@@ -2296,8 +2296,8 @@
   },
   "notin,regular,null,satisfaction": {
     "endpoints": {
-      "ptleft": "FNin_$scope_mode$",
-      "ptright": "LNin_$scope_mode$",
+      "left": "FNin_$scope_mode$",
+      "right": "LNin_$scope_mode$",
       "ptExtleft": "((not $scope_mode$) and ((not previous TRUE) or (previous $scope_mode$)))",
       "ptExtright": "($scope_mode$ and (previous not $scope_mode$))",
       "SMVptExtleft": "((!$scope_mode$) & ((!(Y TRUE)) | (Y $scope_mode$)))",
@@ -2323,8 +2323,8 @@
   },
   "notin,regular,until,satisfaction": {
     "endpoints": {
-      "ptleft": "FNin_$scope_mode$",
-      "ptright": "LNin_$scope_mode$",
+      "left": "FNin_$scope_mode$",
+      "right": "LNin_$scope_mode$",
       "ptExtleft": "((not $scope_mode$) and ((not previous TRUE) or (previous $scope_mode$)))",
       "ptExtright": "($scope_mode$ and (previous not $scope_mode$))",
       "SMVptExtleft": "((!$scope_mode$) & ((!(Y TRUE)) | (Y $scope_mode$)))",
@@ -2350,8 +2350,8 @@
   },
   "notin,regular,within,satisfaction": {
     "endpoints": {
-      "ptleft": "FNin_$scope_mode$",
-      "ptright": "LNin_$scope_mode$",
+      "left": "FNin_$scope_mode$",
+      "right": "LNin_$scope_mode$",
       "ptExtleft": "((not $scope_mode$) and ((not previous TRUE) or (previous $scope_mode$)))",
       "ptExtright": "($scope_mode$ and (previous not $scope_mode$))",
       "SMVptExtleft": "((!$scope_mode$) & ((!(Y TRUE)) | (Y $scope_mode$)))",
@@ -2377,8 +2377,8 @@
   },
   "null,null,after,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "LAST",
+      "left": "FTP",
+      "right": "LAST",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "LAST",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -2404,8 +2404,8 @@
   },
   "null,null,always,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "LAST",
+      "left": "FTP",
+      "right": "LAST",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "LAST",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -2431,8 +2431,8 @@
   },
   "null,null,before,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "LAST",
+      "left": "FTP",
+      "right": "LAST",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "LAST",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -2458,8 +2458,8 @@
   },
   "null,null,eventually,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "LAST",
+      "left": "FTP",
+      "right": "LAST",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "LAST",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -2485,8 +2485,8 @@
   },
   "null,null,for,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "LAST",
+      "left": "FTP",
+      "right": "LAST",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "LAST",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -2512,8 +2512,8 @@
   },
   "null,null,immediately,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "LAST",
+      "left": "FTP",
+      "right": "LAST",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "LAST",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -2539,8 +2539,8 @@
   },
   "null,null,never,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "LAST",
+      "left": "FTP",
+      "right": "LAST",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "LAST",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -2566,8 +2566,8 @@
   },
   "null,null,next,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "LAST",
+      "left": "FTP",
+      "right": "LAST",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "LAST",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -2593,8 +2593,8 @@
   },
   "null,null,null,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "LAST",
+      "left": "FTP",
+      "right": "LAST",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "LAST",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -2620,8 +2620,8 @@
   },
   "null,null,until,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "LAST",
+      "left": "FTP",
+      "right": "LAST",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "LAST",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -2647,8 +2647,8 @@
   },
   "null,null,within,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "LAST",
+      "left": "FTP",
+      "right": "LAST",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "LAST",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -2674,8 +2674,8 @@
   },
   "null,regular,after,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "LAST",
+      "left": "FTP",
+      "right": "LAST",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "LAST",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -2701,8 +2701,8 @@
   },
   "null,regular,always,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "LAST",
+      "left": "FTP",
+      "right": "LAST",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "LAST",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -2728,8 +2728,8 @@
   },
   "null,regular,before,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "LAST",
+      "left": "FTP",
+      "right": "LAST",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "LAST",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -2755,8 +2755,8 @@
   },
   "null,regular,eventually,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "LAST",
+      "left": "FTP",
+      "right": "LAST",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "LAST",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -2782,8 +2782,8 @@
   },
   "null,regular,for,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "LAST",
+      "left": "FTP",
+      "right": "LAST",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "LAST",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -2809,8 +2809,8 @@
   },
   "null,regular,immediately,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "LAST",
+      "left": "FTP",
+      "right": "LAST",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "LAST",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -2836,8 +2836,8 @@
   },
   "null,regular,never,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "LAST",
+      "left": "FTP",
+      "right": "LAST",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "LAST",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -2863,8 +2863,8 @@
   },
   "null,regular,next,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "LAST",
+      "left": "FTP",
+      "right": "LAST",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "LAST",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -2890,8 +2890,8 @@
   },
   "null,regular,null,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "LAST",
+      "left": "FTP",
+      "right": "LAST",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "LAST",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -2917,8 +2917,8 @@
   },
   "null,regular,until,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "LAST",
+      "left": "FTP",
+      "right": "LAST",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "LAST",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -2944,8 +2944,8 @@
   },
   "null,regular,within,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "LAST",
+      "left": "FTP",
+      "right": "LAST",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "LAST",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -2971,8 +2971,8 @@
   },
   "onlyAfter,null,after,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "FLin_$scope_mode$",
+      "left": "FTP",
+      "right": "FLin_$scope_mode$",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "(((not $scope_mode$) and (previous $scope_mode$)) and previous (historically (not ((not $scope_mode$) and (previous $scope_mode$)))))",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -2998,8 +2998,8 @@
   },
   "onlyAfter,null,always,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "FLin_$scope_mode$",
+      "left": "FTP",
+      "right": "FLin_$scope_mode$",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "(((not $scope_mode$) and (previous $scope_mode$)) and previous (historically (not ((not $scope_mode$) and (previous $scope_mode$)))))",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -3025,8 +3025,8 @@
   },
   "onlyAfter,null,before,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "FLin_$scope_mode$",
+      "left": "FTP",
+      "right": "FLin_$scope_mode$",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "(((not $scope_mode$) and (previous $scope_mode$)) and previous (historically (not ((not $scope_mode$) and (previous $scope_mode$)))))",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -3052,8 +3052,8 @@
   },
   "onlyAfter,null,eventually,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "FLin_$scope_mode$",
+      "left": "FTP",
+      "right": "FLin_$scope_mode$",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "(((not $scope_mode$) and (previous $scope_mode$)) and previous (historically (not ((not $scope_mode$) and (previous $scope_mode$)))))",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -3079,8 +3079,8 @@
   },
   "onlyAfter,null,for,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "FLin_$scope_mode$",
+      "left": "FTP",
+      "right": "FLin_$scope_mode$",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "(((not $scope_mode$) and (previous $scope_mode$)) and previous (historically (not ((not $scope_mode$) and (previous $scope_mode$)))))",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -3106,8 +3106,8 @@
   },
   "onlyAfter,null,immediately,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "FLin_$scope_mode$",
+      "left": "FTP",
+      "right": "FLin_$scope_mode$",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "(((not $scope_mode$) and (previous $scope_mode$)) and previous (historically (not ((not $scope_mode$) and (previous $scope_mode$)))))",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -3133,8 +3133,8 @@
   },
   "onlyAfter,null,never,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "FLin_$scope_mode$",
+      "left": "FTP",
+      "right": "FLin_$scope_mode$",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "(((not $scope_mode$) and (previous $scope_mode$)) and previous (historically (not ((not $scope_mode$) and (previous $scope_mode$)))))",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -3160,8 +3160,8 @@
   },
   "onlyAfter,null,next,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "FLin_$scope_mode$",
+      "left": "FTP",
+      "right": "FLin_$scope_mode$",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "(((not $scope_mode$) and (previous $scope_mode$)) and previous (historically (not ((not $scope_mode$) and (previous $scope_mode$)))))",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -3187,8 +3187,8 @@
   },
   "onlyAfter,null,null,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "FLin_$scope_mode$",
+      "left": "FTP",
+      "right": "FLin_$scope_mode$",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "(((not $scope_mode$) and (previous $scope_mode$)) and previous (historically (not ((not $scope_mode$) and (previous $scope_mode$)))))",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -3214,8 +3214,8 @@
   },
   "onlyAfter,null,until,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "FLin_$scope_mode$",
+      "left": "FTP",
+      "right": "FLin_$scope_mode$",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "(((not $scope_mode$) and (previous $scope_mode$)) and previous (historically (not ((not $scope_mode$) and (previous $scope_mode$)))))",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -3241,8 +3241,8 @@
   },
   "onlyAfter,null,within,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "FLin_$scope_mode$",
+      "left": "FTP",
+      "right": "FLin_$scope_mode$",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "(((not $scope_mode$) and (previous $scope_mode$)) and previous (historically (not ((not $scope_mode$) and (previous $scope_mode$)))))",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -3268,8 +3268,8 @@
   },
   "onlyAfter,regular,after,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "FLin_$scope_mode$",
+      "left": "FTP",
+      "right": "FLin_$scope_mode$",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "(((not $scope_mode$) and (previous $scope_mode$)) and previous (historically (not ((not $scope_mode$) and (previous $scope_mode$)))))",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -3295,8 +3295,8 @@
   },
   "onlyAfter,regular,always,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "FLin_$scope_mode$",
+      "left": "FTP",
+      "right": "FLin_$scope_mode$",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "(((not $scope_mode$) and (previous $scope_mode$)) and previous (historically (not ((not $scope_mode$) and (previous $scope_mode$)))))",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -3322,8 +3322,8 @@
   },
   "onlyAfter,regular,before,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "FLin_$scope_mode$",
+      "left": "FTP",
+      "right": "FLin_$scope_mode$",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "(((not $scope_mode$) and (previous $scope_mode$)) and previous (historically (not ((not $scope_mode$) and (previous $scope_mode$)))))",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -3349,8 +3349,8 @@
   },
   "onlyAfter,regular,eventually,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "FLin_$scope_mode$",
+      "left": "FTP",
+      "right": "FLin_$scope_mode$",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "(((not $scope_mode$) and (previous $scope_mode$)) and previous (historically (not ((not $scope_mode$) and (previous $scope_mode$)))))",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -3376,8 +3376,8 @@
   },
   "onlyAfter,regular,for,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "FLin_$scope_mode$",
+      "left": "FTP",
+      "right": "FLin_$scope_mode$",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "(((not $scope_mode$) and (previous $scope_mode$)) and previous (historically (not ((not $scope_mode$) and (previous $scope_mode$)))))",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -3403,8 +3403,8 @@
   },
   "onlyAfter,regular,immediately,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "FLin_$scope_mode$",
+      "left": "FTP",
+      "right": "FLin_$scope_mode$",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "(((not $scope_mode$) and (previous $scope_mode$)) and previous (historically (not ((not $scope_mode$) and (previous $scope_mode$)))))",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -3430,8 +3430,8 @@
   },
   "onlyAfter,regular,never,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "FLin_$scope_mode$",
+      "left": "FTP",
+      "right": "FLin_$scope_mode$",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "(((not $scope_mode$) and (previous $scope_mode$)) and previous (historically (not ((not $scope_mode$) and (previous $scope_mode$)))))",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -3457,8 +3457,8 @@
   },
   "onlyAfter,regular,next,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "FLin_$scope_mode$",
+      "left": "FTP",
+      "right": "FLin_$scope_mode$",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "(((not $scope_mode$) and (previous $scope_mode$)) and previous (historically (not ((not $scope_mode$) and (previous $scope_mode$)))))",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -3484,8 +3484,8 @@
   },
   "onlyAfter,regular,null,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "FLin_$scope_mode$",
+      "left": "FTP",
+      "right": "FLin_$scope_mode$",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "(((not $scope_mode$) and (previous $scope_mode$)) and previous (historically (not ((not $scope_mode$) and (previous $scope_mode$)))))",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -3511,8 +3511,8 @@
   },
   "onlyAfter,regular,until,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "FLin_$scope_mode$",
+      "left": "FTP",
+      "right": "FLin_$scope_mode$",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "(((not $scope_mode$) and (previous $scope_mode$)) and previous (historically (not ((not $scope_mode$) and (previous $scope_mode$)))))",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -3538,8 +3538,8 @@
   },
   "onlyAfter,regular,within,satisfaction": {
     "endpoints": {
-      "ptleft": "FTP",
-      "ptright": "FLin_$scope_mode$",
+      "left": "FTP",
+      "right": "FLin_$scope_mode$",
       "ptExtleft": "(not previous TRUE)",
       "ptExtright": "(((not $scope_mode$) and (previous $scope_mode$)) and previous (historically (not ((not $scope_mode$) and (previous $scope_mode$)))))",
       "SMVptExtleft": "(!(Y TRUE))",
@@ -3565,8 +3565,8 @@
   },
   "onlyBefore,null,after,satisfaction": {
     "endpoints": {
-      "ptleft": "FFin_$scope_mode$",
-      "ptright": "LAST",
+      "left": "FFin_$scope_mode$",
+      "right": "LAST",
       "ptExtleft": "(($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$))) and ((previous (historically not $scope_mode$)) or (not previous TRUE)))",
       "ptExtright": "LAST",
       "SMVptExtleft": "(($scope_mode$ & ((!(Y TRUE)) | (Y (!$scope_mode$)))) & ((Y (H (!$scope_mode$))) | (!(Y TRUE))))",
@@ -3592,8 +3592,8 @@
   },
   "onlyBefore,null,always,satisfaction": {
     "endpoints": {
-      "ptleft": "FFin_$scope_mode$",
-      "ptright": "LAST",
+      "left": "FFin_$scope_mode$",
+      "right": "LAST",
       "ptExtleft": "(($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$))) and ((previous (historically not $scope_mode$)) or (not previous TRUE)))",
       "ptExtright": "LAST",
       "SMVptExtleft": "(($scope_mode$ & ((!(Y TRUE)) | (Y (!$scope_mode$)))) & ((Y (H (!$scope_mode$))) | (!(Y TRUE))))",
@@ -3619,8 +3619,8 @@
   },
   "onlyBefore,null,before,satisfaction": {
     "endpoints": {
-      "ptleft": "FFin_$scope_mode$",
-      "ptright": "LAST",
+      "left": "FFin_$scope_mode$",
+      "right": "LAST",
       "ptExtleft": "(($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$))) and ((previous (historically not $scope_mode$)) or (not previous TRUE)))",
       "ptExtright": "LAST",
       "SMVptExtleft": "(($scope_mode$ & ((!(Y TRUE)) | (Y (!$scope_mode$)))) & ((Y (H (!$scope_mode$))) | (!(Y TRUE))))",
@@ -3646,8 +3646,8 @@
   },
   "onlyBefore,null,eventually,satisfaction": {
     "endpoints": {
-      "ptleft": "FFin_$scope_mode$",
-      "ptright": "LAST",
+      "left": "FFin_$scope_mode$",
+      "right": "LAST",
       "ptExtleft": "(($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$))) and ((previous (historically not $scope_mode$)) or (not previous TRUE)))",
       "ptExtright": "LAST",
       "SMVptExtleft": "(($scope_mode$ & ((!(Y TRUE)) | (Y (!$scope_mode$)))) & ((Y (H (!$scope_mode$))) | (!(Y TRUE))))",
@@ -3673,8 +3673,8 @@
   },
   "onlyBefore,null,for,satisfaction": {
     "endpoints": {
-      "ptleft": "FFin_$scope_mode$",
-      "ptright": "LAST",
+      "left": "FFin_$scope_mode$",
+      "right": "LAST",
       "ptExtleft": "(($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$))) and ((previous (historically not $scope_mode$)) or (not previous TRUE)))",
       "ptExtright": "LAST",
       "SMVptExtleft": "(($scope_mode$ & ((!(Y TRUE)) | (Y (!$scope_mode$)))) & ((Y (H (!$scope_mode$))) | (!(Y TRUE))))",
@@ -3700,8 +3700,8 @@
   },
   "onlyBefore,null,immediately,satisfaction": {
     "endpoints": {
-      "ptleft": "FFin_$scope_mode$",
-      "ptright": "LAST",
+      "left": "FFin_$scope_mode$",
+      "right": "LAST",
       "ptExtleft": "(($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$))) and ((previous (historically not $scope_mode$)) or (not previous TRUE)))",
       "ptExtright": "LAST",
       "SMVptExtleft": "(($scope_mode$ & ((!(Y TRUE)) | (Y (!$scope_mode$)))) & ((Y (H (!$scope_mode$))) | (!(Y TRUE))))",
@@ -3727,8 +3727,8 @@
   },
   "onlyBefore,null,never,satisfaction": {
     "endpoints": {
-      "ptleft": "FFin_$scope_mode$",
-      "ptright": "LAST",
+      "left": "FFin_$scope_mode$",
+      "right": "LAST",
       "ptExtleft": "(($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$))) and ((previous (historically not $scope_mode$)) or (not previous TRUE)))",
       "ptExtright": "LAST",
       "SMVptExtleft": "(($scope_mode$ & ((!(Y TRUE)) | (Y (!$scope_mode$)))) & ((Y (H (!$scope_mode$))) | (!(Y TRUE))))",
@@ -3754,8 +3754,8 @@
   },
   "onlyBefore,null,next,satisfaction": {
     "endpoints": {
-      "ptleft": "FFin_$scope_mode$",
-      "ptright": "LAST",
+      "left": "FFin_$scope_mode$",
+      "right": "LAST",
       "ptExtleft": "(($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$))) and ((previous (historically not $scope_mode$)) or (not previous TRUE)))",
       "ptExtright": "LAST",
       "SMVptExtleft": "(($scope_mode$ & ((!(Y TRUE)) | (Y (!$scope_mode$)))) & ((Y (H (!$scope_mode$))) | (!(Y TRUE))))",
@@ -3781,8 +3781,8 @@
   },
   "onlyBefore,null,null,satisfaction": {
     "endpoints": {
-      "ptleft": "FFin_$scope_mode$",
-      "ptright": "LAST",
+      "left": "FFin_$scope_mode$",
+      "right": "LAST",
       "ptExtleft": "(($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$))) and ((previous (historically not $scope_mode$)) or (not previous TRUE)))",
       "ptExtright": "LAST",
       "SMVptExtleft": "(($scope_mode$ & ((!(Y TRUE)) | (Y (!$scope_mode$)))) & ((Y (H (!$scope_mode$))) | (!(Y TRUE))))",
@@ -3808,8 +3808,8 @@
   },
   "onlyBefore,null,until,satisfaction": {
     "endpoints": {
-      "ptleft": "FFin_$scope_mode$",
-      "ptright": "LAST",
+      "left": "FFin_$scope_mode$",
+      "right": "LAST",
       "ptExtleft": "(($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$))) and ((previous (historically not $scope_mode$)) or (not previous TRUE)))",
       "ptExtright": "LAST",
       "SMVptExtleft": "(($scope_mode$ & ((!(Y TRUE)) | (Y (!$scope_mode$)))) & ((Y (H (!$scope_mode$))) | (!(Y TRUE))))",
@@ -3835,8 +3835,8 @@
   },
   "onlyBefore,null,within,satisfaction": {
     "endpoints": {
-      "ptleft": "FFin_$scope_mode$",
-      "ptright": "LAST",
+      "left": "FFin_$scope_mode$",
+      "right": "LAST",
       "ptExtleft": "(($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$))) and ((previous (historically not $scope_mode$)) or (not previous TRUE)))",
       "ptExtright": "LAST",
       "SMVptExtleft": "(($scope_mode$ & ((!(Y TRUE)) | (Y (!$scope_mode$)))) & ((Y (H (!$scope_mode$))) | (!(Y TRUE))))",
@@ -3862,8 +3862,8 @@
   },
   "onlyBefore,regular,after,satisfaction": {
     "endpoints": {
-      "ptleft": "FFin_$scope_mode$",
-      "ptright": "LAST",
+      "left": "FFin_$scope_mode$",
+      "right": "LAST",
       "ptExtleft": "(($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$))) and ((previous (historically not $scope_mode$)) or (not previous TRUE)))",
       "ptExtright": "LAST",
       "SMVptExtleft": "(($scope_mode$ & ((!(Y TRUE)) | (Y (!$scope_mode$)))) & ((Y (H (!$scope_mode$))) | (!(Y TRUE))))",
@@ -3889,8 +3889,8 @@
   },
   "onlyBefore,regular,always,satisfaction": {
     "endpoints": {
-      "ptleft": "FFin_$scope_mode$",
-      "ptright": "LAST",
+      "left": "FFin_$scope_mode$",
+      "right": "LAST",
       "ptExtleft": "(($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$))) and ((previous (historically not $scope_mode$)) or (not previous TRUE)))",
       "ptExtright": "LAST",
       "SMVptExtleft": "(($scope_mode$ & ((!(Y TRUE)) | (Y (!$scope_mode$)))) & ((Y (H (!$scope_mode$))) | (!(Y TRUE))))",
@@ -3916,8 +3916,8 @@
   },
   "onlyBefore,regular,before,satisfaction": {
     "endpoints": {
-      "ptleft": "FFin_$scope_mode$",
-      "ptright": "LAST",
+      "left": "FFin_$scope_mode$",
+      "right": "LAST",
       "ptExtleft": "(($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$))) and ((previous (historically not $scope_mode$)) or (not previous TRUE)))",
       "ptExtright": "LAST",
       "SMVptExtleft": "(($scope_mode$ & ((!(Y TRUE)) | (Y (!$scope_mode$)))) & ((Y (H (!$scope_mode$))) | (!(Y TRUE))))",
@@ -3943,8 +3943,8 @@
   },
   "onlyBefore,regular,eventually,satisfaction": {
     "endpoints": {
-      "ptleft": "FFin_$scope_mode$",
-      "ptright": "LAST",
+      "left": "FFin_$scope_mode$",
+      "right": "LAST",
       "ptExtleft": "(($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$))) and ((previous (historically not $scope_mode$)) or (not previous TRUE)))",
       "ptExtright": "LAST",
       "SMVptExtleft": "(($scope_mode$ & ((!(Y TRUE)) | (Y (!$scope_mode$)))) & ((Y (H (!$scope_mode$))) | (!(Y TRUE))))",
@@ -3970,8 +3970,8 @@
   },
   "onlyBefore,regular,for,satisfaction": {
     "endpoints": {
-      "ptleft": "FFin_$scope_mode$",
-      "ptright": "LAST",
+      "left": "FFin_$scope_mode$",
+      "right": "LAST",
       "ptExtleft": "(($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$))) and ((previous (historically not $scope_mode$)) or (not previous TRUE)))",
       "ptExtright": "LAST",
       "SMVptExtleft": "(($scope_mode$ & ((!(Y TRUE)) | (Y (!$scope_mode$)))) & ((Y (H (!$scope_mode$))) | (!(Y TRUE))))",
@@ -3997,8 +3997,8 @@
   },
   "onlyBefore,regular,immediately,satisfaction": {
     "endpoints": {
-      "ptleft": "FFin_$scope_mode$",
-      "ptright": "LAST",
+      "left": "FFin_$scope_mode$",
+      "right": "LAST",
       "ptExtleft": "(($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$))) and ((previous (historically not $scope_mode$)) or (not previous TRUE)))",
       "ptExtright": "LAST",
       "SMVptExtleft": "(($scope_mode$ & ((!(Y TRUE)) | (Y (!$scope_mode$)))) & ((Y (H (!$scope_mode$))) | (!(Y TRUE))))",
@@ -4024,8 +4024,8 @@
   },
   "onlyBefore,regular,never,satisfaction": {
     "endpoints": {
-      "ptleft": "FFin_$scope_mode$",
-      "ptright": "LAST",
+      "left": "FFin_$scope_mode$",
+      "right": "LAST",
       "ptExtleft": "(($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$))) and ((previous (historically not $scope_mode$)) or (not previous TRUE)))",
       "ptExtright": "LAST",
       "SMVptExtleft": "(($scope_mode$ & ((!(Y TRUE)) | (Y (!$scope_mode$)))) & ((Y (H (!$scope_mode$))) | (!(Y TRUE))))",
@@ -4051,8 +4051,8 @@
   },
   "onlyBefore,regular,next,satisfaction": {
     "endpoints": {
-      "ptleft": "FFin_$scope_mode$",
-      "ptright": "LAST",
+      "left": "FFin_$scope_mode$",
+      "right": "LAST",
       "ptExtleft": "(($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$))) and ((previous (historically not $scope_mode$)) or (not previous TRUE)))",
       "ptExtright": "LAST",
       "SMVptExtleft": "(($scope_mode$ & ((!(Y TRUE)) | (Y (!$scope_mode$)))) & ((Y (H (!$scope_mode$))) | (!(Y TRUE))))",
@@ -4078,8 +4078,8 @@
   },
   "onlyBefore,regular,null,satisfaction": {
     "endpoints": {
-      "ptleft": "FFin_$scope_mode$",
-      "ptright": "LAST",
+      "left": "FFin_$scope_mode$",
+      "right": "LAST",
       "ptExtleft": "(($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$))) and ((previous (historically not $scope_mode$)) or (not previous TRUE)))",
       "ptExtright": "LAST",
       "SMVptExtleft": "(($scope_mode$ & ((!(Y TRUE)) | (Y (!$scope_mode$)))) & ((Y (H (!$scope_mode$))) | (!(Y TRUE))))",
@@ -4105,8 +4105,8 @@
   },
   "onlyBefore,regular,until,satisfaction": {
     "endpoints": {
-      "ptleft": "FFin_$scope_mode$",
-      "ptright": "LAST",
+      "left": "FFin_$scope_mode$",
+      "right": "LAST",
       "ptExtleft": "(($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$))) and ((previous (historically not $scope_mode$)) or (not previous TRUE)))",
       "ptExtright": "LAST",
       "SMVptExtleft": "(($scope_mode$ & ((!(Y TRUE)) | (Y (!$scope_mode$)))) & ((Y (H (!$scope_mode$))) | (!(Y TRUE))))",
@@ -4132,8 +4132,8 @@
   },
   "onlyBefore,regular,within,satisfaction": {
     "endpoints": {
-      "ptleft": "FFin_$scope_mode$",
-      "ptright": "LAST",
+      "left": "FFin_$scope_mode$",
+      "right": "LAST",
       "ptExtleft": "(($scope_mode$ and ((not previous TRUE) or (previous not $scope_mode$))) and ((previous (historically not $scope_mode$)) or (not previous TRUE)))",
       "ptExtright": "LAST",
       "SMVptExtleft": "(($scope_mode$ & ((!(Y TRUE)) | (Y (!$scope_mode$)))) & ((Y (H (!$scope_mode$))) | (!(Y TRUE))))",
@@ -4159,8 +4159,8 @@
   },
   "onlyIn,null,after,satisfaction": {
     "endpoints": {
-      "ptleft": "FNin_$scope_mode$",
-      "ptright": "LNin_$scope_mode$",
+      "left": "FNin_$scope_mode$",
+      "right": "LNin_$scope_mode$",
       "ptExtleft": "((not $scope_mode$) and ((not previous TRUE) or (previous $scope_mode$)))",
       "ptExtright": "($scope_mode$ and (previous not $scope_mode$))",
       "SMVptExtleft": "((!$scope_mode$) & ((!(Y TRUE)) | (Y $scope_mode$)))",
@@ -4186,8 +4186,8 @@
   },
   "onlyIn,null,always,satisfaction": {
     "endpoints": {
-      "ptleft": "FNin_$scope_mode$",
-      "ptright": "LNin_$scope_mode$",
+      "left": "FNin_$scope_mode$",
+      "right": "LNin_$scope_mode$",
       "ptExtleft": "((not $scope_mode$) and ((not previous TRUE) or (previous $scope_mode$)))",
       "ptExtright": "($scope_mode$ and (previous not $scope_mode$))",
       "SMVptExtleft": "((!$scope_mode$) & ((!(Y TRUE)) | (Y $scope_mode$)))",
@@ -4213,8 +4213,8 @@
   },
   "onlyIn,null,before,satisfaction": {
     "endpoints": {
-      "ptleft": "FNin_$scope_mode$",
-      "ptright": "LNin_$scope_mode$",
+      "left": "FNin_$scope_mode$",
+      "right": "LNin_$scope_mode$",
       "ptExtleft": "((not $scope_mode$) and ((not previous TRUE) or (previous $scope_mode$)))",
       "ptExtright": "($scope_mode$ and (previous not $scope_mode$))",
       "SMVptExtleft": "((!$scope_mode$) & ((!(Y TRUE)) | (Y $scope_mode$)))",
@@ -4240,8 +4240,8 @@
   },
   "onlyIn,null,eventually,satisfaction": {
     "endpoints": {
-      "ptleft": "FNin_$scope_mode$",
-      "ptright": "LNin_$scope_mode$",
+      "left": "FNin_$scope_mode$",
+      "right": "LNin_$scope_mode$",
       "ptExtleft": "((not $scope_mode$) and ((not previous TRUE) or (previous $scope_mode$)))",
       "ptExtright": "($scope_mode$ and (previous not $scope_mode$))",
       "SMVptExtleft": "((!$scope_mode$) & ((!(Y TRUE)) | (Y $scope_mode$)))",
@@ -4267,8 +4267,8 @@
   },
   "onlyIn,null,for,satisfaction": {
     "endpoints": {
-      "ptleft": "FNin_$scope_mode$",
-      "ptright": "LNin_$scope_mode$",
+      "left": "FNin_$scope_mode$",
+      "right": "LNin_$scope_mode$",
       "ptExtleft": "((not $scope_mode$) and ((not previous TRUE) or (previous $scope_mode$)))",
       "ptExtright": "($scope_mode$ and (previous not $scope_mode$))",
       "SMVptExtleft": "((!$scope_mode$) & ((!(Y TRUE)) | (Y $scope_mode$)))",
@@ -4294,8 +4294,8 @@
   },
   "onlyIn,null,immediately,satisfaction": {
     "endpoints": {
-      "ptleft": "FNin_$scope_mode$",
-      "ptright": "LNin_$scope_mode$",
+      "left": "FNin_$scope_mode$",
+      "right": "LNin_$scope_mode$",
       "ptExtleft": "((not $scope_mode$) and ((not previous TRUE) or (previous $scope_mode$)))",
       "ptExtright": "($scope_mode$ and (previous not $scope_mode$))",
       "SMVptExtleft": "((!$scope_mode$) & ((!(Y TRUE)) | (Y $scope_mode$)))",
@@ -4321,8 +4321,8 @@
   },
   "onlyIn,null,never,satisfaction": {
     "endpoints": {
-      "ptleft": "FNin_$scope_mode$",
-      "ptright": "LNin_$scope_mode$",
+      "left": "FNin_$scope_mode$",
+      "right": "LNin_$scope_mode$",
       "ptExtleft": "((not $scope_mode$) and ((not previous TRUE) or (previous $scope_mode$)))",
       "ptExtright": "($scope_mode$ and (previous not $scope_mode$))",
       "SMVptExtleft": "((!$scope_mode$) & ((!(Y TRUE)) | (Y $scope_mode$)))",
@@ -4348,8 +4348,8 @@
   },
   "onlyIn,null,next,satisfaction": {
     "endpoints": {
-      "ptleft": "FNin_$scope_mode$",
-      "ptright": "LNin_$scope_mode$",
+      "left": "FNin_$scope_mode$",
+      "right": "LNin_$scope_mode$",
       "ptExtleft": "((not $scope_mode$) and ((not previous TRUE) or (previous $scope_mode$)))",
       "ptExtright": "($scope_mode$ and (previous not $scope_mode$))",
       "SMVptExtleft": "((!$scope_mode$) & ((!(Y TRUE)) | (Y $scope_mode$)))",
@@ -4375,8 +4375,8 @@
   },
   "onlyIn,null,null,satisfaction": {
     "endpoints": {
-      "ptleft": "FNin_$scope_mode$",
-      "ptright": "LNin_$scope_mode$",
+      "left": "FNin_$scope_mode$",
+      "right": "LNin_$scope_mode$",
       "ptExtleft": "((not $scope_mode$) and ((not previous TRUE) or (previous $scope_mode$)))",
       "ptExtright": "($scope_mode$ and (previous not $scope_mode$))",
       "SMVptExtleft": "((!$scope_mode$) & ((!(Y TRUE)) | (Y $scope_mode$)))",
@@ -4402,8 +4402,8 @@
   },
   "onlyIn,null,until,satisfaction": {
     "endpoints": {
-      "ptleft": "FNin_$scope_mode$",
-      "ptright": "LNin_$scope_mode$",
+      "left": "FNin_$scope_mode$",
+      "right": "LNin_$scope_mode$",
       "ptExtleft": "((not $scope_mode$) and ((not previous TRUE) or (previous $scope_mode$)))",
       "ptExtright": "($scope_mode$ and (previous not $scope_mode$))",
       "SMVptExtleft": "((!$scope_mode$) & ((!(Y TRUE)) | (Y $scope_mode$)))",
@@ -4429,8 +4429,8 @@
   },
   "onlyIn,null,within,satisfaction": {
     "endpoints": {
-      "ptleft": "FNin_$scope_mode$",
-      "ptright": "LNin_$scope_mode$",
+      "left": "FNin_$scope_mode$",
+      "right": "LNin_$scope_mode$",
       "ptExtleft": "((not $scope_mode$) and ((not previous TRUE) or (previous $scope_mode$)))",
       "ptExtright": "($scope_mode$ and (previous not $scope_mode$))",
       "SMVptExtleft": "((!$scope_mode$) & ((!(Y TRUE)) | (Y $scope_mode$)))",
@@ -4456,8 +4456,8 @@
   },
   "onlyIn,regular,after,satisfaction": {
     "endpoints": {
-      "ptleft": "FNin_$scope_mode$",
-      "ptright": "LNin_$scope_mode$",
+      "left": "FNin_$scope_mode$",
+      "right": "LNin_$scope_mode$",
       "ptExtleft": "((not $scope_mode$) and ((not previous TRUE) or (previous $scope_mode$)))",
       "ptExtright": "($scope_mode$ and (previous not $scope_mode$))",
       "SMVptExtleft": "((!$scope_mode$) & ((!(Y TRUE)) | (Y $scope_mode$)))",
@@ -4483,8 +4483,8 @@
   },
   "onlyIn,regular,always,satisfaction": {
     "endpoints": {
-      "ptleft": "FNin_$scope_mode$",
-      "ptright": "LNin_$scope_mode$",
+      "left": "FNin_$scope_mode$",
+      "right": "LNin_$scope_mode$",
       "ptExtleft": "((not $scope_mode$) and ((not previous TRUE) or (previous $scope_mode$)))",
       "ptExtright": "($scope_mode$ and (previous not $scope_mode$))",
       "SMVptExtleft": "((!$scope_mode$) & ((!(Y TRUE)) | (Y $scope_mode$)))",
@@ -4510,8 +4510,8 @@
   },
   "onlyIn,regular,before,satisfaction": {
     "endpoints": {
-      "ptleft": "FNin_$scope_mode$",
-      "ptright": "LNin_$scope_mode$",
+      "left": "FNin_$scope_mode$",
+      "right": "LNin_$scope_mode$",
       "ptExtleft": "((not $scope_mode$) and ((not previous TRUE) or (previous $scope_mode$)))",
       "ptExtright": "($scope_mode$ and (previous not $scope_mode$))",
       "SMVptExtleft": "((!$scope_mode$) & ((!(Y TRUE)) | (Y $scope_mode$)))",
@@ -4537,8 +4537,8 @@
   },
   "onlyIn,regular,eventually,satisfaction": {
     "endpoints": {
-      "ptleft": "FNin_$scope_mode$",
-      "ptright": "LNin_$scope_mode$",
+      "left": "FNin_$scope_mode$",
+      "right": "LNin_$scope_mode$",
       "ptExtleft": "((not $scope_mode$) and ((not previous TRUE) or (previous $scope_mode$)))",
       "ptExtright": "($scope_mode$ and (previous not $scope_mode$))",
       "SMVptExtleft": "((!$scope_mode$) & ((!(Y TRUE)) | (Y $scope_mode$)))",
@@ -4564,8 +4564,8 @@
   },
   "onlyIn,regular,for,satisfaction": {
     "endpoints": {
-      "ptleft": "FNin_$scope_mode$",
-      "ptright": "LNin_$scope_mode$",
+      "left": "FNin_$scope_mode$",
+      "right": "LNin_$scope_mode$",
       "ptExtleft": "((not $scope_mode$) and ((not previous TRUE) or (previous $scope_mode$)))",
       "ptExtright": "($scope_mode$ and (previous not $scope_mode$))",
       "SMVptExtleft": "((!$scope_mode$) & ((!(Y TRUE)) | (Y $scope_mode$)))",
@@ -4591,8 +4591,8 @@
   },
   "onlyIn,regular,immediately,satisfaction": {
     "endpoints": {
-      "ptleft": "FNin_$scope_mode$",
-      "ptright": "LNin_$scope_mode$",
+      "left": "FNin_$scope_mode$",
+      "right": "LNin_$scope_mode$",
       "ptExtleft": "((not $scope_mode$) and ((not previous TRUE) or (previous $scope_mode$)))",
       "ptExtright": "($scope_mode$ and (previous not $scope_mode$))",
       "SMVptExtleft": "((!$scope_mode$) & ((!(Y TRUE)) | (Y $scope_mode$)))",
@@ -4618,8 +4618,8 @@
   },
   "onlyIn,regular,never,satisfaction": {
     "endpoints": {
-      "ptleft": "FNin_$scope_mode$",
-      "ptright": "LNin_$scope_mode$",
+      "left": "FNin_$scope_mode$",
+      "right": "LNin_$scope_mode$",
       "ptExtleft": "((not $scope_mode$) and ((not previous TRUE) or (previous $scope_mode$)))",
       "ptExtright": "($scope_mode$ and (previous not $scope_mode$))",
       "SMVptExtleft": "((!$scope_mode$) & ((!(Y TRUE)) | (Y $scope_mode$)))",
@@ -4645,8 +4645,8 @@
   },
   "onlyIn,regular,next,satisfaction": {
     "endpoints": {
-      "ptleft": "FNin_$scope_mode$",
-      "ptright": "LNin_$scope_mode$",
+      "left": "FNin_$scope_mode$",
+      "right": "LNin_$scope_mode$",
       "ptExtleft": "((not $scope_mode$) and ((not previous TRUE) or (previous $scope_mode$)))",
       "ptExtright": "($scope_mode$ and (previous not $scope_mode$))",
       "SMVptExtleft": "((!$scope_mode$) & ((!(Y TRUE)) | (Y $scope_mode$)))",
@@ -4672,8 +4672,8 @@
   },
   "onlyIn,regular,null,satisfaction": {
     "endpoints": {
-      "ptleft": "FNin_$scope_mode$",
-      "ptright": "LNin_$scope_mode$",
+      "left": "FNin_$scope_mode$",
+      "right": "LNin_$scope_mode$",
       "ptExtleft": "((not $scope_mode$) and ((not previous TRUE) or (previous $scope_mode$)))",
       "ptExtright": "($scope_mode$ and (previous not $scope_mode$))",
       "SMVptExtleft": "((!$scope_mode$) & ((!(Y TRUE)) | (Y $scope_mode$)))",
@@ -4699,8 +4699,8 @@
   },
   "onlyIn,regular,until,satisfaction": {
     "endpoints": {
-      "ptleft": "FNin_$scope_mode$",
-      "ptright": "LNin_$scope_mode$",
+      "left": "FNin_$scope_mode$",
+      "right": "LNin_$scope_mode$",
       "ptExtleft": "((not $scope_mode$) and ((not previous TRUE) or (previous $scope_mode$)))",
       "ptExtright": "($scope_mode$ and (previous not $scope_mode$))",
       "SMVptExtleft": "((!$scope_mode$) & ((!(Y TRUE)) | (Y $scope_mode$)))",
@@ -4726,8 +4726,8 @@
   },
   "onlyIn,regular,within,satisfaction": {
     "endpoints": {
-      "ptleft": "FNin_$scope_mode$",
-      "ptright": "LNin_$scope_mode$",
+      "left": "FNin_$scope_mode$",
+      "right": "LNin_$scope_mode$",
       "ptExtleft": "((not $scope_mode$) and ((not previous TRUE) or (previous $scope_mode$)))",
       "ptExtright": "($scope_mode$ and (previous not $scope_mode$))",
       "SMVptExtleft": "((!$scope_mode$) & ((!(Y TRUE)) | (Y $scope_mode$)))",

@@ -441,9 +441,9 @@ SemanticsAnalyzer.prototype.semantics = () => {
   result.description = replaceTemplateVarsWithArgs(fetchedSemantics.description, false, false);
   result.diagram = fetchedSemantics.diagram;
 
-  // ptleft has unexpanded endpoints like FTP and FFin_$scope_mode$
-  let ptleft = fetchedSemantics.endpoints.ptleft;
-  let ptright = fetchedSemantics.endpoints.ptright
+  // left has unexpanded endpoints like FTP and FFin_$scope_mode$
+  let left = fetchedSemantics.endpoints.left;
+  let right = fetchedSemantics.endpoints.right
   // ptleftSMV has the endpoints expanded into LTL
   let ptleftSMV = fetchedSemantics.endpoints.SMVptExtleft;
   // ptleftCoCo is the same as ptleftSMV except that FTP is *not* expanded.
@@ -465,10 +465,10 @@ SemanticsAnalyzer.prototype.semantics = () => {
       //let regCondUnexp = regCondTCxform.replace(/\$Left\$/g, ptleft).replace(/\$Right\$/g,ptright);
       //result.regular_condition_unexp = regCondUnexp;
 
-      let regCondUnexp_pt = regCondTCxform_pt.replace(/\$Left\$/g, ptleft).replace(/\$Right\$/g,ptright);
+      let regCondUnexp_pt = regCondTCxform_pt.replace(/\$Left\$/g, left).replace(/\$Right\$/g,right);
       result.regular_condition_unexp_pt = regCondUnexp_pt;
 
-      let regCondUnexp_ft = regCondTCxform_ft.replace(/\$Left\$/g, ptleft).replace(/\$Right\$/g,ptright);
+      let regCondUnexp_ft = regCondTCxform_ft.replace(/\$Left\$/g, left).replace(/\$Right\$/g,right);
       result.regular_condition_unexp_ft = regCondUnexp_ft;
 
       // regCondSMV has the endpoints rewritten into LTL.
@@ -502,10 +502,10 @@ SemanticsAnalyzer.prototype.semantics = () => {
 	// let postCondUnexp = postCondTCxform.replace(/\$Left\$/g, ptleft).replace(/\$Right\$/g,ptright);
 	// result.post_condition_unexp = postCondUnexp;
 
-	let postCondUnexp_pt = postCondTCxform_pt.replace(/\$Left\$/g, ptleft).replace(/\$Right\$/g,ptright);
+	let postCondUnexp_pt = postCondTCxform_pt.replace(/\$Left\$/g, left).replace(/\$Right\$/g,right);
 	result.post_condition_unexp_pt = postCondUnexp_pt;
 
-	let postCondUnexp_ft = postCondTCxform_ft.replace(/\$Left\$/g, ptleft).replace(/\$Right\$/g,ptright);
+	let postCondUnexp_ft = postCondTCxform_ft.replace(/\$Left\$/g, left).replace(/\$Right\$/g,right);
 	result.post_condition_unexp_ft = postCondUnexp_ft;
 
 	// let postCondSMV = postCondTCxform.replace(/\$Left\$/g, ptleftSMV).replace(/\$Right\$/g,ptrightSMV);
@@ -530,7 +530,7 @@ SemanticsAnalyzer.prototype.semantics = () => {
       let stopCondTCxform_pt = xform.transformPastTemporalConditions(stopCond)
       let stopCondTCxform_ft = xform.transformFutureTemporalConditions(stopCond)
 
-      let stopCondUnexp_pt = stopCondTCxform_pt.replace(/\$Left\$/g, ptleft).replace(/\$Right\$/g,ptright);
+      let stopCondUnexp_pt = stopCondTCxform_pt.replace(/\$Left\$/g, left).replace(/\$Right\$/g,right);
       result.stop_condition_unexp_pt = stopCondUnexp_pt;
 
       let stopCondSMV_pt = stopCondTCxform_pt.replace(/\$Left\$/g, ptleftSMV).replace(/\$Right\$/g,ptrightSMV);
