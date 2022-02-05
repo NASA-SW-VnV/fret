@@ -678,14 +678,15 @@ class SortableTable extends React.Component {
   };
 
   handleSearchInputChange = event => {
-    const {value} = event.target
-    this.setState({searchInputString: value})
+    const {value} = event.target;
+    this.setState({searchInputString: value});
+    //this.handleSearchKeyChange();
 
   }
 
-  // parsing seach string into search criteria
+  // parsing seach string into search criteria (states: searchId, searchStatus, searchSummary, searchHasWords)
   handleSearchKeyChange = event => {
-    const value = this.state.searchInputString
+    const value = this.state.searchInputString;
     const keyWordsIndexes = [];
     const indexOfId = value.toLowerCase().indexOf('id:');
     const indexOfSummary = value.toLowerCase().indexOf('summary:');

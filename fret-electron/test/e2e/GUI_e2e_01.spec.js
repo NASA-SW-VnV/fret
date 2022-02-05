@@ -23,6 +23,8 @@ const subdirNames = curDir.split(path.sep);
 const testTempDir = '/'+path.join(subdirNames[1],subdirNames[2],'Documents');
 const fretDB_dirName = path.join(testTempDir ,'fret-db');
 const modelDB_dirName = path.join(testTempDir ,'model-db');
+var numTest = 0;
+
 
 console.log('Current directory: ' + curDir);
 console.log('__dirname: ' + __dirname);
@@ -44,12 +46,12 @@ const rmDB = async()=>{
       // the 2 directories are also removed
       
       fsExtra.remove(fretDB_dirName, err => {
-            console.log('removing directory: ' + fretDB_dirName)
+            //console.log('removing directory: ' + fretDB_dirName)
             if (err) return console.error(err)
       });
 
       fsExtra.remove(modelDB_dirName, err => {
-            console.log('removing directory: ' + modelDB_dirName)
+            //console.log('removing directory: ' + modelDB_dirName)
             if (err) return console.error(err)
       });      
 }
@@ -60,7 +62,7 @@ const cpReferenceDB = async (refName) => {
       // this function causes errors print out on console log and makes tests more flaky
       const model_db = '../test_reference/inputs/'+refName+'/model-db';
       const ref_model_db = path.join(__dirname, model_db);
-      console.log('reference model-db: ' + ref_model_db)  
+      //console.log('reference model-db: ' + ref_model_db)  
       
       await fsExtra.copy(ref_model_db, modelDB_dirName)
       .then(() => console.log('copied reference model-db to: '+ref_model_db))
@@ -68,7 +70,7 @@ const cpReferenceDB = async (refName) => {
       
       const fret_db = '../test_reference/inputs/'+refName+'/fret-db';
       const ref_fret_db = path.join(__dirname, fret_db);
-      console.log('reference fret-db: ' + ref_fret_db)
+      //console.log('reference fret-db: ' + ref_fret_db)
 
       await fsExtra.copy(ref_fret_db, fretDB_dirName)
       .then(() => console.log('copied reference fret-db to: '+ref_fret_db))
@@ -98,6 +100,7 @@ describe('FRET GUI E2E tests ', function () {
 
       beforeEach(async () => {
             await rmDB();
+            numTest = numTest + 1;
       });
 
       afterEach(async () => {
@@ -110,14 +113,14 @@ describe('FRET GUI E2E tests ', function () {
   //       clickable elements from dashboard (db)
   //------------------------------------------------------------------
       it('I/E - 1', async () => {
-            console.log('starting test: I/E - 1');
+            console.log('starting test '+numTest+':  I/E - 1');
             await startWithJsonFileImport('MyDBAM113.json');
           
-            console.log('react MainView ' + await app.client.react$('MainView'));
+            await app.client.pause(1000);
             const projectField = await app.client.$('#qa_db_ili_projects');
             
             const projectText = await projectField.getText();
-            //console.log('project text: ' + projectText);
+            console.log('project text: ' + projectText);
             expect(projectText).toContain('Total Projects');
             expect(projectText).toContain('11');
                         
@@ -148,7 +151,7 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------
       it('SELECT TABLE', async () => {
-            console.log('starting test: SELECT TABLE');
+            console.log('starting test '+numTest+':  SELECT TABLE');
             await startWithJsonFileImport('MyDBAM113.json');
             
             const tableBtn = await app.client.$('#qa_db_li_table');
@@ -162,7 +165,7 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------
       it('SELECT ANALYSIS PORTAL THEN DASHBOARD', async () => {
-            console.log('starting test: ANALYSIS PORTAL  THEN DASHBOARD')
+            console.log('starting test '+numTest+':  ANALYSIS PORTAL  THEN DASHBOARD')
             await startWithJsonFileImport('MyDBAM113.json');
 
             const anaBtn = await app.client.$('#qa_db_li_analysis');
@@ -186,7 +189,7 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------
       it('SELECT HELP', async () => {
-            console.log('starting test: SELECT HELP');
+            console.log('starting test '+numTest+':  SELECT HELP');
             await startWithJsonFileImport('MyDBAM113.json');
              
             const helpBtn = await app.client.$('#qa_db_li_help');
@@ -200,7 +203,7 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------
       it('SELECT MENU OPEN DRAWER', async () => {
-            console.log('starting test: SELECT MENU OPEN DRAWER');
+            console.log('starting test '+numTest+':  SELECT MENU OPEN DRAWER');
             await startWithJsonFileImport('MyDBAM113.json');
             
             const openDrawer = await app.client.$('#qa_db_ib_openDrawer');
@@ -221,7 +224,7 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------
       it('SELECT PROJECTS', async () => {
-            console.log('starting test: SELECT PROJECTS');
+            console.log('starting test '+numTest+':  SELECT PROJECTS');
             await startWithJsonFileImport('MyDBAM113.json');
             
             const projBtn = await app.client.$('#qa_db_btn_projects');
@@ -240,7 +243,7 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------
       it('READING FEEDS', async () => {
-            console.log('starting test: READING FEEDS')
+            console.log('starting test '+numTest+':  READING FEEDS')
             await startWithJsonFileImport('MyDBAM113.json');
             await app.client.pause(500);
 
@@ -252,7 +255,7 @@ describe('FRET GUI E2E tests ', function () {
       
       //------------------------------------------------------------------
       it('ASSISTANT TAB - SCOPE', async () => {
-            console.log('starting test: ASSISTANT TAB - SCOPE')
+            console.log('starting test '+numTest+':  ASSISTANT TAB - SCOPE')
             await startWithJsonFileImport('MyDBAM113.json');
                                     
             const createBtn = await app.client.$('#qa_db_btn_create');           
@@ -274,7 +277,7 @@ describe('FRET GUI E2E tests ', function () {
       
       //------------------------------------------------------------------
       it('ASSISTANT TAB - CONDITIONS', async () => {
-            console.log('starting test: ASSISTANT TAB - CONDITIONS')
+            console.log('starting test '+numTest+':  ASSISTANT TAB - CONDITIONS')
             await startWithJsonFileImport('MyDBAM113.json');
                        
             const createBtn = await app.client.$('#qa_db_btn_create');            
@@ -296,7 +299,7 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------
       it('ASSISTANT TAB - COMPONENT', async () => {
-            console.log('starting test: ASSISTANT TAB - COMPONENT')
+            console.log('starting test '+numTest+':  ASSISTANT TAB - COMPONENT')
             await startWithJsonFileImport('MyDBAM113.json');
                        
             const createBtn = await app.client.$('#qa_db_btn_create');
@@ -318,7 +321,7 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------
       it('ASSISTANT TAB - TIMING', async () => {
-            console.log('starting test: ASSISTANT TAB - TIMING')
+            console.log('starting test '+numTest+':  ASSISTANT TAB - TIMING')
             await startWithJsonFileImport('MyDBAM113.json');
                         
             const createBtn = await app.client.$('#qa_db_btn_create');
@@ -340,7 +343,7 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------
       it('ASSISTANT TAB - RESPONSES', async () => {
-            console.log('starting test: ASSISTANT TAB - RESPONSES')
+            console.log('starting test '+numTest+':  ASSISTANT TAB - RESPONSES')
             await startWithJsonFileImport('MyDBAM113.json');            
             
             const createBtn = await app.client.$('#qa_db_btn_create');
@@ -362,7 +365,7 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------
       it('ASSISTANT TAB - SEMANTICS', async () => {
-            console.log('starting test: ASSISTANT TAB - SEMANTICS')
+            console.log('starting test '+numTest+':  ASSISTANT TAB - SEMANTICS')
             await startWithJsonFileImport('MyDBAM113.json');
 
             const liTable = await app.client.$('#qa_db_li_table');            
@@ -388,7 +391,7 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------
       it('ASSISTANT TAB - SEMANTICS LTLSIM', async () => {
-            console.log('starting test: ASSISTANT TAB - SEMANTICS LTLSIM');
+            console.log('starting test '+numTest+':  ASSISTANT TAB - SEMANTICS LTLSIM');
             await startWithJsonFileImport('MyDBAM113.json');
 
             const liTable = await app.client.$('#qa_db_li_table');
@@ -413,7 +416,7 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------
       it('ASSISTANT TAB - SEMANTICS DIAGRAM', async () => {
-            console.log('starting test: ASSISTANT TAB - SEMANTICS DIAGRAM')
+            console.log('starting test '+numTest+':  ASSISTANT TAB - SEMANTICS DIAGRAM')
             await startWithJsonFileImport('MyDBAM113.json');
                         
             const liTable = await app.client.$('#qa_db_li_table');
@@ -437,7 +440,7 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------
       it('ASSISTANT TAB - SEMANTICS PAST TIME', async () => {
-            console.log('starting test: ASSISTANT TAB - SEMANTICS PAST TIME')
+            console.log('starting test '+numTest+':  ASSISTANT TAB - SEMANTICS PAST TIME')
             await startWithJsonFileImport('MyDBAM113.json');
                        
             const liTable = await app.client.$('#qa_db_li_table');
@@ -457,16 +460,16 @@ describe('FRET GUI E2E tests ', function () {
 
             const pastTimeFor = await app.client.$('#qa_crtAst_sem_typ_pastTimeFormula');
             var reqText = await pastTimeFor.getTitle();
-            console.log('semantics: '+reqText);
+            //console.log('semantics: '+reqText);
             reqText = await pastTimeFor.getValue();
-            console.log('semantics: '+reqText);
+            //console.log('semantics: '+reqText);
             reqText = await pastTimeFor.getText();
-            console.log('semantics: '+reqText);
+            //console.log('semantics: '+reqText);
             //expect(reqText).toContain('ENFORCED: in the interval defined by the entire execution');
 
             const pastTimeComp = await app.client.$('#qa_crtAst_sem_typ_pastTimeComp');
             reqText = pastTimeComp.getText();
-            console.log('semantics: '+reqText);
+            //console.log('semantics: '+reqText);
             //expect(reqText).toContain('Target: Autopilot component');            
             //// await app.client.pause(3000);
  
@@ -474,7 +477,7 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------
       it('ASSISTANT TAB - SEMANTICS FUTURE TIME', async () => {
-            console.log('starting test: ASSISTANT TAB - SEMANTICS FUTURE TIME')
+            console.log('starting test '+numTest+':  ASSISTANT TAB - SEMANTICS FUTURE TIME')
             await startWithJsonFileImport('MyDBAM113.json');
                         
             const liTable = await app.client.$('#qa_db_li_table');
@@ -494,16 +497,16 @@ describe('FRET GUI E2E tests ', function () {
 
             const futureTimeFor = await app.client.$('#qa_crtAst_sem_typ_futureTimeFormula')
             var reqText = await futureTimeFor.getTitle();
-            console.log('semantics: '+reqText);
+            //console.log('semantics: '+reqText);
             reqText = await futureTimeFor.getValue();
-            console.log('semantics: '+reqText);
+            //console.log('semantics: '+reqText);
             reqText = futureTimeFor.getText();
-            console.log('semantics: '+reqText);
+            //console.log('semantics: '+reqText);
             //expect(reqText).toContain('ENFORCED: in the interval defined by the entire execution');
 
             const ftc = await app.client.$('#qa_crtAst_sem_typ_futureTimeComp');
             reqText = await ftc.getText();
-            console.log('semantics: '+reqText);
+            //console.log('semantics: '+reqText);
             //expect(reqText).toContain('Target: Autopilot component');            
             //// await app.client.pause(3000);
  
@@ -511,7 +514,7 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------
       it('CREATE NEW REQUIREMENT-GLOSSARY', async () => {
-            console.log('starting test: CREATE NEW REQUIREMENT-GLOSSARY')
+            console.log('starting test '+numTest+':  CREATE NEW REQUIREMENT-GLOSSARY')
             await startWithJsonFileImport('MyDBAM113.json');
                                  
             const createBtn = await app.client.$('#qa_db_btn_create');
@@ -528,7 +531,7 @@ describe('FRET GUI E2E tests ', function () {
       
       //------------------------------------------------------------------
       it('CREATE NEW REQUIREMENT-TEMPLATES', async () => {
-            console.log('starting test: CREATE NEW REQUIREMENT-TEMPLATES')
+            console.log('starting test '+numTest+':  CREATE NEW REQUIREMENT-TEMPLATES')
             await startWithJsonFileImport('MyDBAM113.json');
                         
             const createBtn = await app.client.$('#qa_db_btn_create');
@@ -551,7 +554,7 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------
       it('CREATE NEW REQUIREMENT-ASSISTANT', async () => {
-            console.log('starting test: CREATE NEW REQUIREMENT-ASSISTANT')
+            console.log('starting test '+numTest+':  CREATE NEW REQUIREMENT-ASSISTANT')
             await startWithJsonFileImport('MyDBAM113.json');
                                   
             const createBtn = await app.client.$('#qa_db_btn_create');
@@ -568,7 +571,7 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------ 
       it('CREATE NEW REQUIREMENT-STATUS', async () => {
-            console.log('starting test: CREATE NEW REQUIREMENT-STATUS')
+            console.log('starting test '+numTest+':  CREATE NEW REQUIREMENT-STATUS')
             await startWithJsonFileImport('MyDBAM113.json');
                      
             
@@ -585,7 +588,7 @@ describe('FRET GUI E2E tests ', function () {
       
       //------------------------------------------------------------------ 
       it('CREATE NEW REQUIREMENT-REQUIREMENT ID', async () => {
-            console.log('starting test: CREATE NEW REQUIREMENT-REQUIREMENT ID')            
+            console.log('starting test '+numTest+':  CREATE NEW REQUIREMENT-REQUIREMENT ID')            
             await startWithJsonFileImport('MyDBAM113.json');
 
             const createBtn = await app.client.$('#qa_db_btn_create');
@@ -599,7 +602,7 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------ 
       it('CREATE NEW REQUIREMENT-PARENT REQUIREMENT ID', async () => {
-            console.log('starting test: CREATE NEW REQUIREMENT-PARENT REQUIREMENT ID')            
+            console.log('starting test '+numTest+':  CREATE NEW REQUIREMENT-PARENT REQUIREMENT ID')            
             await startWithJsonFileImport('MyDBAM113.json');
             
             const createBtn = await app.client.$('#qa_db_btn_create');           
@@ -614,7 +617,7 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------ 
       it('CREATE NEW REQUIREMENT-PROJECT MENU', async () => {
-            console.log('starting test: CREATE NEW REQUIREMENT-PROJECT MENU')            
+            console.log('starting test '+numTest+':  CREATE NEW REQUIREMENT-PROJECT MENU')            
             await startWithJsonFileImport('MyDBAM113.json');
 
             const createBtn = await app.client.$('#qa_db_btn_create');            
@@ -629,7 +632,7 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------ 
       it('CREATE NEW REQUIREMENT-RATIONAL AMD COMMENTS', async () => {
-            console.log('starting test: CREATE NEW REQUIREMENT-RATIONAL AMD COMMENTS')             
+            console.log('starting test '+numTest+':  CREATE NEW REQUIREMENT-RATIONAL AMD COMMENTS')             
              await startWithJsonFileImport('MyDBAM113.json');
 
             const createBtn = await app.client.$('#qa_db_btn_create');            
@@ -648,7 +651,7 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------ 
       it('CREATE NEW REQUIREMENT-SCOPE BUBLE', async () => {
-            console.log('starting test: CREATE NEW REQUIREMENT-SCOPE BUBLE')            
+            console.log('starting test '+numTest+':  CREATE NEW REQUIREMENT-SCOPE BUBLE')            
             await startWithJsonFileImport('MyDBAM113.json');
 
             const createBtn = await app.client.$('#qa_db_btn_create');            
@@ -661,7 +664,7 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------ 
       it('CREATE NEW REQUIREMENT-CONDITIONS BUBLE', async () => {
-            console.log('starting test: CREATE NEW REQUIREMENT-CONDITIONS BUBLE')
+            console.log('starting test '+numTest+':  CREATE NEW REQUIREMENT-CONDITIONS BUBLE')
             
             await startWithJsonFileImport('MyDBAM113.json');
             
@@ -675,7 +678,7 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------ 
       it('CREATE NEW REQUIREMENT-COMPONENT BUBLE', async () => {
-            console.log('starting test: CREATE NEW REQUIREMENT-COMPONENT BUBLE')
+            console.log('starting test '+numTest+':  CREATE NEW REQUIREMENT-COMPONENT BUBLE')
             
             await startWithJsonFileImport('MyDBAM113.json');
             
@@ -688,7 +691,7 @@ describe('FRET GUI E2E tests ', function () {
       });
       //------------------------------------------------------------------ 
       it('CREATE NEW REQUIREMENT-TIMING BUBLE', async () => {
-            console.log('starting test: CREATE NEW REQUIREMENT-TIMING BUBLE')            
+            console.log('starting test '+numTest+':  CREATE NEW REQUIREMENT-TIMING BUBLE')            
             await startWithJsonFileImport('MyDBAM113.json');
 
             const createBtn = await app.client.$('#qa_db_btn_create');            
@@ -700,7 +703,7 @@ describe('FRET GUI E2E tests ', function () {
       });
       //------------------------------------------------------------------ 
       it('CREATE NEW REQUIREMENT-RESPONSES BUBLE', async () => {
-            console.log('starting test: CREATE NEW REQUIREMENT-RESPONSES BUBLE')            
+            console.log('starting test '+numTest+':  CREATE NEW REQUIREMENT-RESPONSES BUBLE')            
             await startWithJsonFileImport('MyDBAM113.json');
 
             const createBtn = await app.client.$('#qa_db_btn_create');
@@ -714,7 +717,7 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------ 
       it('CREATE NEW REQUIREMENT-?', async () => {
-            console.log('starting test: CREATE NEW REQUIREMENT-?')            
+            console.log('starting test '+numTest+':  CREATE NEW REQUIREMENT-?')            
             await startWithJsonFileImport('MyDBAM113.json');
 
             const createBtn = await app.client.$('#qa_db_btn_create');            
@@ -727,7 +730,7 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------ 
       it('CREATE NEW REQUIREMENT-RESPONSES BUBLE', async () => {
-            console.log('starting test: CREATE NEW REQUIREMENT-RESPONSES BUBLE')            
+            console.log('starting test '+numTest+':  CREATE NEW REQUIREMENT-RESPONSES BUBLE')            
             await startWithJsonFileImport('MyDBAM113.json');
     
             const createBtn = await app.client.$('#qa_db_btn_create');            
@@ -740,7 +743,7 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------ 
       it('CREATE NEW REQUIREMENT-RESPONSES BUBLE', async () => {
-            console.log('starting test: CREATE NEW REQUIREMENT-RESPONSES BUBLE')            
+            console.log('starting test '+numTest+':  CREATE NEW REQUIREMENT-RESPONSES BUBLE')            
             await startWithJsonFileImport('MyDBAM113.json');
             
             const createBtn = await app.client.$('#qa_db_btn_create');            
@@ -753,7 +756,7 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------
       it('CREATE REQUIREMENT - CANCEL', async () => {
-            console.log('starting test: CREATE REQUIREMENT - CANCEL')            
+            console.log('starting test '+numTest+':  CREATE REQUIREMENT - CANCEL')            
             await startWithJsonFileImport('MyDBAM113.json');
    
             const createBtn = await app.client.$('#qa_db_btn_create');            
@@ -775,7 +778,7 @@ describe('FRET GUI E2E tests ', function () {
   //       clickable elements from sortable table 
   //------------------------------------------------------------------  
       it('SORTABLE TABLE-STATUS HEAD', async () => {
-            console.log('starting test: SORTABLE TABLE-STATUS HEAD')            
+            console.log('starting test '+numTest+':  SORTABLE TABLE-STATUS HEAD')            
             await startWithJsonFileImport('MyDBAM113.json');
  
             // wait for the "table" button to be visible
@@ -790,7 +793,7 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------ 
       it('SORTABLE TABLE-REQID HEAD', async () => {
-            console.log('starting test: SORTABLE TABLE-REQID HEAD')            
+            console.log('starting test '+numTest+':  SORTABLE TABLE-REQID HEAD')            
             await startWithJsonFileImport('MyDBAM113.json');
             
             // wait for the "table" button to be visible
@@ -805,7 +808,7 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------ 
       it('SORTABLE TABLE-ADD HEAD', async () => {
-            console.log('starting test: SORTABLE TABLE-ADD HEAD')            
+            console.log('starting test '+numTest+':  SORTABLE TABLE-ADD HEAD')            
             await startWithJsonFileImport('MyDBAM113.json');
 
             const liTable = await app.client.$('#qa_db_li_table');
@@ -820,7 +823,7 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------ 
       it('SORTABLE TABLE-SUMMARY HEAD', async () => {
-            console.log('starting test: SORTABLE TABLE-SUMMARY HEAD')            
+            console.log('starting test '+numTest+':  SORTABLE TABLE-SUMMARY HEAD')            
             await startWithJsonFileImport('MyDBAM113.json');
             const liTable = await app.client.$('#qa_db_li_table');            
             await liTable.click();
@@ -832,7 +835,7 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------ 
       it('SORTABLE TABLE-PROJECT HEAD', async () => {
-            console.log('starting test: SORTABLE TABLE-PROJECT HEAD')            
+            console.log('starting test '+numTest+':  SORTABLE TABLE-PROJECT HEAD')            
             await startWithJsonFileImport('MyDBAM113.json');
 
             const liTable = await app.client.$('#qa_db_li_table');            
@@ -845,7 +848,7 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------ 
       it('SORTABLE TABLE-BULK CHANGE FORWARD', async () => {
-            console.log('starting test: SORTABLE TABLE-BULK CHANGE FORWARD')            
+            console.log('starting test '+numTest+':  SORTABLE TABLE-BULK CHANGE FORWARD')            
             await startWithJsonFileImport('MyDBAM113.json');
 
             const liTable = await app.client.$('#qa_db_li_table');            
@@ -866,7 +869,7 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------ 
       it('SORTABLE TABLE-BULK CHANGE REVERSE', async () => {
-            console.log('starting test: SORTABLE TABLE-BULK CHANGE REVERSE')            
+            console.log('starting test '+numTest+':  SORTABLE TABLE-BULK CHANGE REVERSE')            
             await startWithJsonFileImport('MyDBAM113.json');
 
             const liTable = await app.client.$('#qa_db_li_table');
@@ -891,7 +894,7 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------
       it('DELETING A PROJECT', async () => {
-            console.log('starting test: DELETING A PROJECT');
+            console.log('starting test '+numTest+':  DELETING A PROJECT');
             await startWithJsonFileImport('MyDBAM113.json');
 
             const projBtn = await app.client.$('#qa_db_btn_projects');
@@ -908,7 +911,7 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------ 
       it('DISPLAY REQUIREMENT: READ TEXTS', async () => {
-            console.log('starting test: DISPLAY REQUIREMENT: READ TEXTS');
+            console.log('starting test '+numTest+':  DISPLAY REQUIREMENT: READ TEXTS');
             await startWithJsonFileImport('MyDBAM113.json');
             
             const liTable = await app.client.$('#qa_db_li_table');           
@@ -921,12 +924,12 @@ describe('FRET GUI E2E tests ', function () {
             
             const reqId = await app.client.$('#qa_disReq_dt_reqId');
             var readText = await reqId.getText();       
-            console.log('qa_disReq_dt_reqId: '+readText) ;
+            //console.log('qa_disReq_dt_reqId: '+readText) ;
             expect(readText).toBe('AP-000');
             
             const proj = await app.client.$('#qa_disReq_dt_project');
             readText = await proj.getText();       
-            console.log('qa_disReq_dt_project: '+readText) ;   
+            //console.log('qa_disReq_dt_project: '+readText) ;   
             expect(readText).toBe('LM_requirements');
             
             const ration = await app.client.$('#qa_disReq_typ_rationale');
@@ -958,7 +961,7 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------ 
       it('UPDATE NEW REQUIREMENT-REQUIREMENT ID', async () => {
-            console.log('starting test: UPDATE NEW REQUIREMENT-REQUIREMENT ID');
+            console.log('starting test '+numTest+':  UPDATE NEW REQUIREMENT-REQUIREMENT ID');
             await startWithJsonFileImport('MyDBAM113.json');
  
             const liTable = await app.client.$('#qa_db_li_table');           
@@ -981,7 +984,7 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------
       it('CREATE A NEW PROJECT-CANCEL', async () => {
-            console.log('starting test: CREATE A NEW PROJECT-CANCEL')
+            console.log('starting test '+numTest+':  CREATE A NEW PROJECT-CANCEL')
             await startWithJsonFileImport('MyDBAM113.json');
 
             const projBtn = await app.client.$('#qa_db_btn_projects');
@@ -1003,7 +1006,7 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------
       it('SELECTING A PROJECT', async () => {
-            console.log('starting test: SELECTING A PROJECT')            
+            console.log('starting test '+numTest+':  SELECTING A PROJECT')            
             await startWithJsonFileImport('MyDBAM113.json');
 
             const projBtn = await app.client.$('#qa_db_btn_projects');
@@ -1045,7 +1048,7 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------
       it('CREATE A NEW PROJECT-OK', async () => {
-            console.log('starting test: CREATE A NEW PROJECT-OK')            
+            console.log('starting test '+numTest+':  CREATE A NEW PROJECT-OK')            
             await startWithJsonFileImport('MyDBAM113.json');
 
             const projBtn = await app.client.$('#qa_db_btn_projects');
@@ -1065,7 +1068,7 @@ describe('FRET GUI E2E tests ', function () {
  
       //------------------------------------------------------------------
       it('SELECT THE LM_requirements PROJECT', async () => {
-            console.log('starting test: SELECT THE HANFORD PROJECT');            
+            console.log('starting test '+numTest+':  SELECT THE HANFORD PROJECT');            
             await startWithJsonFileImport('MyDBAM113.json');
                         
             const projBtn = await app.client.$('#qa_db_btn_projects');            
@@ -1081,7 +1084,7 @@ describe('FRET GUI E2E tests ', function () {
   //------------------------------------------------------------------
       //            test variable view 
       it('VARIABLE VIEW-SELECTED PROJECT', async () => {
-            console.log('starting test: VARIABLE VIEW-SELECTED PROJECT');            
+            console.log('starting test '+numTest+':  VARIABLE VIEW-SELECTED PROJECT');            
             await startWithJsonFileImport('realizability_sqa1.json');
                         
             const projBtn = await app.client.$('#qa_db_btn_projects');            
@@ -1105,7 +1108,7 @@ describe('FRET GUI E2E tests ', function () {
   //------------------------------------------------------------------
       //            test variable view 
       it('VARIABLE VIEW-HELP', async () => {
-            console.log('starting test: VARIABLE VIEW-HELP');            
+            console.log('starting test '+numTest+':  VARIABLE VIEW-HELP');            
             await startWithJsonFileImport('realizability_sqa1.json');
 
             const projBtn = await app.client.$('#qa_db_btn_projects');            
@@ -1130,7 +1133,7 @@ describe('FRET GUI E2E tests ', function () {
   //------------------------------------------------------------------
       //            test variable view 
       it('VARIABLE VIEW-EXPANDICON', async () => {
-            console.log('starting test: VARIABLE VIEW-EXPANDICON');            
+            console.log('starting test '+numTest+':  VARIABLE VIEW-EXPANDICON');            
             await startWithJsonFileImport('realizability_sqa1.json');
 
             const projBtn = await app.client.$('#qa_db_btn_projects');            
@@ -1150,7 +1153,7 @@ describe('FRET GUI E2E tests ', function () {
   //------------------------------------------------------------------
       //            test variable view 
       it('VARIABLE VIEW-EXPORT LANGUAGE CoPilot', async () => {
-            console.log('starting test: VARIABLE VIEW-EXPORT LANGUAGE CoPilot');            
+            console.log('starting test '+numTest+':  VARIABLE VIEW-EXPORT LANGUAGE CoPilot');            
             await startWithJsonFileImport('realizability_sqa1.json');
  
             const projBtn = await app.client.$('#qa_db_btn_projects');            
@@ -1173,7 +1176,7 @@ describe('FRET GUI E2E tests ', function () {
 
   //------------------------------------------------------------------
       it('VARIABLE VIEW-SORTABLE TABLE', async () => {
-            console.log('starting test: VARIABLE VIEW-SORTABLE TABLE');            
+            console.log('starting test '+numTest+':  VARIABLE VIEW-SORTABLE TABLE');            
             await startWithJsonFileImport('realizability_sqa1.json');
 
             const projBtn = await app.client.$('#qa_db_btn_projects');
@@ -1208,7 +1211,7 @@ describe('FRET GUI E2E tests ', function () {
 
   //------------------------------------------------------------------
       it('VARIABLE VIEW-EXPORT LANGUAGE CoCoSpec', async () => {
-            console.log('starting test: VARIABLE VIEW-EXPORT LANGUAGE CoCoSpec');            
+            console.log('starting test '+numTest+':  VARIABLE VIEW-EXPORT LANGUAGE CoCoSpec');            
             await startWithJsonFileImport('realizability_sqa1.json');
 
             const projBtn = await app.client.$('#qa_db_btn_projects');            
@@ -1230,7 +1233,7 @@ describe('FRET GUI E2E tests ', function () {
 
   //------------------------------------------------------------------
       it('VARIABLE VIEW-DISPLAY VARIABLE-FUNCTION', async () => {
-            console.log('starting test: VARIABLE VIEW-DISPLAY VARIABLE-FUNCTION');            
+            console.log('starting test '+numTest+':  VARIABLE VIEW-DISPLAY VARIABLE-FUNCTION');            
             await startWithJsonFileImport('realizability_sqa1.json');
 
             const projBtn = await app.client.$('#qa_db_btn_projects');            
@@ -1256,13 +1259,13 @@ describe('FRET GUI E2E tests ', function () {
 
             const funcMod = await app.client.$('#qa_disVar_tf_funcModName');
             let reqText = await funcMod.getText();
-            console.log('qa_var_tf_funcModName project: '+reqText);
+            //console.log('qa_var_tf_funcModName project: '+reqText);
                   
       });
 
   //------------------------------------------------------------------
       it('VARIABLE VIEW-DISPLAY VARIABLE-INPUT', async () => {
-            console.log('starting test: VARIABLE VIEW-DISPLAY VARIABLE-INPUT');            
+            console.log('starting test '+numTest+':  VARIABLE VIEW-DISPLAY VARIABLE-INPUT');            
             await startWithJsonFileImport('realizability_sqa1.json');
 
             const projBtn = await app.client.$('#qa_db_btn_projects');            
@@ -1297,7 +1300,7 @@ describe('FRET GUI E2E tests ', function () {
 
   //------------------------------------------------------------------
       it('VARIABLE VIEW-DISPLAY VARIABLE-MODE', async () => {
-            console.log('starting test: VARIABLE VIEW-DISPLAY VARIABLE-MODE');            
+            console.log('starting test '+numTest+':  VARIABLE VIEW-DISPLAY VARIABLE-MODE');            
             await startWithJsonFileImport('realizability_sqa1.json');
 
             const projBtn = await app.client.$('#qa_db_btn_projects');            
@@ -1331,7 +1334,7 @@ describe('FRET GUI E2E tests ', function () {
 
   //------------------------------------------------------------------
       it('REALIZABILITY VIEW-101', async () => {
-            console.log('starting test: VARIABLE VIEW-DISPLAY VARIABLE-MODE 101');            
+            console.log('starting test '+numTest+':  VARIABLE VIEW-DISPLAY VARIABLE-MODE 101');            
             await startWithJsonFileImport('realizability_sqa1.json');
 
             const projBtn = await app.client.$('#qa_db_btn_projects');            
@@ -1365,7 +1368,7 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------
       it('DELETING PROJECT', async () => {
-            console.log('starting test: DELETING A PROJECT')            
+            console.log('starting test '+numTest+':  DELETING A PROJECT')            
             await startWithJsonFileImport('MyDBAM113.json');
 
             const projBtn = await app.client.$('#qa_db_btn_projects');           
@@ -1383,7 +1386,7 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------
       it('DELETING ALL PROJECT', async () => {
-            console.log('starting test: DELETING ALL PROJECT')            
+            console.log('starting test '+numTest+':  DELETING ALL PROJECT')            
             await startWithJsonFileImport('MyDBAM113.json');
 
             const projBtn = await app.client.$('#qa_db_btn_projects');
@@ -1445,7 +1448,7 @@ describe('FRET GUI E2E tests ', function () {
       /////////////////////////   regression tests from Google TEST DOC   /////////////
       //------------------------------------------------------------------
       it('I/E - 1A ', async () => {
-            console.log('starting test: I/E - 1A')            
+            console.log('starting test '+numTest+':  I/E - 1A')            
             await startWithJsonFileImport('FSM-Demo.json');
             //// await app.client.pause(10000);
 
@@ -1467,13 +1470,13 @@ describe('FRET GUI E2E tests ', function () {
             const cirPackReq = await app.client.$('#qa_cirPack_text_FSM-006');
             //await cirPackReq.click(); 
             const req_FSM_006_text = await cirPackReq.getValue();
-            console.log('req_FSM_006_text: ' + req_FSM_006_text);
+            //console.log('req_FSM_006_text: ' + req_FSM_006_text);
 
       });      
 
       //------------------------------------------------------------------
       it('I/E - 1B', async () => {
-            console.log('starting test: I/E - 1B')            
+            console.log('starting test '+numTest+':  I/E - 1B')            
             await startWithJsonFileImport('FSM-Demo.json');
             //// await app.client.pause(10000);
 
@@ -1502,7 +1505,7 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------
       it('I/E - 2 ', async () => {
-            console.log('starting test: I/E - 2')            
+            console.log('starting test '+numTest+':  I/E - 2')            
             await startWithJsonFileImport('FSM-Demo.json');
             //// await app.client.pause(3000);
 
@@ -1520,7 +1523,7 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------      
       it('I/E - 3', async () => {
-            console.log('starting test: I/E - 3')            
+            console.log('starting test '+numTest+':  I/E - 3')            
             await startWithJsonFileImport('FSM-Demo.json');
 
             const anaBtn = await app.client.$('#qa_db_li_analysis');
@@ -1535,7 +1538,7 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------
       it('I/E - 4', async () => {
-            console.log('starting test: I/E - 4')           
+            console.log('starting test '+numTest+':  I/E - 4')           
             await startWithJsonFileImport('AnastasiaTestRequirements.csv');
 
             // Requirement ID
@@ -1566,7 +1569,7 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------
       it('I/E - 5', async () => {
-            console.log('starting test: I/E - 5')           
+            console.log('starting test '+numTest+':  I/E - 5')           
             await startWithJsonFileImport('AnastasiaTestRequirements.csv');            
 
             // Requirement ID
@@ -1596,7 +1599,7 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------
       it('I/E - 6', async () => {
-            console.log('starting test: I/E - 5')            
+            console.log('starting test '+numTest+':  I/E - 5')            
             await startWithJsonFileImport('AnastasiaTestRequirements.csv');
 
             // Requirement ID
@@ -1628,7 +1631,7 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------
       it('DA - 1', async () => {
-            console.log('starting test: DA - 1')            
+            console.log('starting test '+numTest+':  DA - 1')            
             await startWithJsonFileImport('MyDBAM113.json');
 
             const projectBtn = await app.client.$('#qa_db_btn_projects');
@@ -1657,7 +1660,7 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------
       it('RTF - 1', async () => {
-            console.log('starting test: RTF - 1')
+            console.log('starting test '+numTest+':  RTF - 1')
             await startWithJsonFileImport('FSMDemo-status.json');
 
             const projectBtn = await app.client.$('#qa_db_btn_projects');
@@ -1678,15 +1681,15 @@ describe('FRET GUI E2E tests ', function () {
             // how to know  if it is paused?
             const statBtn = await app.client.$('#qa_crt_select_status');
             var statType = await statBtn.getText();
-            console.log('status button value: '+ statType);
+            //console.log('status button value: '+ statType);
             statType = await statBtn.getValue();
-            console.log('status button value: '+ statType);
+            //console.log('status button value: '+ statType);
 
       });  
 
       //------------------------------------------------------------------
       it('RTF - 2', async () => {
-            console.log('starting test: RTF - 2')
+            console.log('starting test '+numTest+':  RTF - 2')
             await startWithJsonFileImport('MyDBAM113.json');
 
             // make Hanfor current project
@@ -1738,7 +1741,7 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------
       it('RCE - 1', async () => {      
-            console.log('starting test: RCE - 1')
+            console.log('starting test '+numTest+':  RCE - 1')
             await startWithJsonFileImport('FSM-Demo.json');
 
             // verify that the number of requirements is 13 after the import
@@ -1775,7 +1778,7 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------
       it('RCE - 2', async () => {
-            console.log('starting test: RCE - 2')
+            console.log('starting test '+numTest+':  RCE - 2')
             await startWithJsonFileImport('MyDBAM113.json');
             // make Hanfor current project
             const projectBtn = await app.client.$('#qa_db_btn_projects');
@@ -1832,7 +1835,7 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------
       it('RCE - 3', async () => {
-            console.log('starting test: RCE - 3')
+            console.log('starting test '+numTest+':  RCE - 3')
             
             await startWithJsonFileImport('Glossary_DBAM113.json');            
 
@@ -1868,7 +1871,7 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------
       it('RCE - 4', async () => {
-            console.log('starting test: RCE - 4')
+            console.log('starting test '+numTest+':  RCE - 4')
 
             await app.start();
             await app.client.waitUntilWindowLoaded();
@@ -1880,14 +1883,14 @@ describe('FRET GUI E2E tests ', function () {
 
       //------------------------------------------------------------------      
       it('SF - 1', async () => {
-            console.log('starting test: SF - 1');
+            console.log('starting test '+numTest+':  SF - 1');
 
             await app.start();
             await app.client.waitUntilWindowLoaded();
 
                        
             const title = await app.client.getTitle();
-            console.log('TITLE= '+title);
+            //console.log('TITLE= '+title);
             expect(title).toBe('FRET');            
 
             // read Total Projects
