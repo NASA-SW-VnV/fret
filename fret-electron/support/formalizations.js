@@ -151,9 +151,10 @@ exports.suggestedEndPointRewriteRules = (time) => {
     return formalizations_past.getEndPointRewriteRules()
 }
 
+// format is 'salt' or 'smv'
 exports.EndPointsRewrite = (type, formula, format = 'salt') => {
   if (type == 'ft')
-    return formalizations_future.EndPointsRewrite(formula);
+    return formalizations_future.EndPointsRewrite(formula, format);
   if (type == 'pt')
     return formalizations_past.EndPointsRewrite(formula, format);
   return ('Undefined type of formula for rewriting... '); // if no ft and no pt

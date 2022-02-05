@@ -450,6 +450,9 @@ SemanticsAnalyzer.prototype.semantics = () => {
   let ptleftCoCo = ptleftSMV.replace(/\(!(\s)*\(Y TRUE\)\)/g, 'FTP');
   let ptrightSMV = fetchedSemantics.endpoints.SMVptExtright;
 
+  let ftleftSMV = fetchedSemantics.endpoints.SMVftExtleft;
+  let ftrightSMV = fetchedSemantics.endpoints.SMVftExtright;
+
   let regCond = result.regular_condition;
   let postCond = result.post_condition;
   let stopCond = result.stop_condition;  
@@ -479,7 +482,7 @@ SemanticsAnalyzer.prototype.semantics = () => {
       let regCondSMV_pt = regCondTCxform_pt.replace(/\$Left\$/g, ptleftSMV).replace(/\$Right\$/g,ptrightSMV);
       result.regular_condition_SMV_pt = regCondSMV_pt;
 
-      let regCondSMV_ft = regCondTCxform_ft.replace(/\$Left\$/g, ptleftSMV).replace(/\$Right\$/g,ptrightSMV);
+      let regCondSMV_ft = regCondTCxform_ft.replace(/\$Left\$/g, ftleftSMV).replace(/\$Right\$/g,ftrightSMV);
       result.regular_condition_SMV_ft = regCondSMV_ft;
 
 
@@ -514,7 +517,7 @@ SemanticsAnalyzer.prototype.semantics = () => {
 	let postCondSMV_pt = postCondTCxform_pt.replace(/\$Left\$/g, ptleftSMV).replace(/\$Right\$/g,ptrightSMV);
 	result.post_condition_SMV_pt = postCondSMV_pt;
 
-	let postCondSMV_ft = postCondTCxform_ft.replace(/\$Left\$/g, ptleftSMV).replace(/\$Right\$/g,ptrightSMV);
+	let postCondSMV_ft = postCondTCxform_ft.replace(/\$Left\$/g, ptleftSMV).replace(/\$Right\$/g,ftrightSMV);
 	result.post_condition_SMV_ft = postCondSMV_ft;
 
 	let postCondLeftCoCoSubsts = postCondTCxform_pt.replace(/\$Left\$/g,ptleftCoCo)
@@ -523,10 +526,10 @@ SemanticsAnalyzer.prototype.semantics = () => {
     }
     
   if (stopCond) {
-    // only done for past-time for now.
       // stopCondTCxform has the temporal conditions rewritten into LTL.
       // let stopCondTCxform = xform.transformTemporalConditions(stopCond)
       optLog("stopCond: " + JSON.stringify(stopCond));
+
       let stopCondTCxform_pt = xform.transformPastTemporalConditions(stopCond)
       let stopCondTCxform_ft = xform.transformFutureTemporalConditions(stopCond)
 
@@ -544,11 +547,19 @@ SemanticsAnalyzer.prototype.semantics = () => {
       optLog('stopCondLeftCoCoSubsts: ' + stopCondLeftCoCoSubsts);
       let stopCondLeftCoCo = cocospecSemantics.createCoCoSpecCode(stopCondLeftCoCoSubsts)
       result.stop_condition_coco = stopCondLeftCoCo;
+
+      let stopCondUnexp_ft = stopCondTCxform_ft.replace(/\$Left\$/g, left).replace(/\$Right\$/g,right);
+      result.stop_condition_unexp_ft = stopCondUnexp_ft;
+
+      let stopCondSMV_ft = stopCondTCxform_ft.replace(/\$Left\$/g, ftleftSMV).replace(/\$Right\$/g,ftrightSMV);
+      result.stop_condition_SMV_ft = stopCondSMV_ft;
+
+
     }
 
 
     //pt and ft are used in the Edit/Update Requirement display
-    let fetched_ft = fetchedSemantics.ft.replace(/\$regular_condition\$/g,'$regular_condition_unexp_ft$').replace(/\$post_condition\$/g,'$post_condition_unexp_ft$');
+    let fetched_ft = fetchedSemantics.ft.replace(/\$regular_condition\$/g,'$regular_condition_unexp_ft$').replace(/\$post_condition\$/g,'$post_condition_unexp_ft$').replace(/\$stop_condition\$/g,'$stop_condition_unexp_ft$');
     result.ft = replaceTemplateVarsWithArgs(fetched_ft, false, false);
 
     let fetched_pt = fetchedSemantics.pt.replace(/\$regular_condition\$/g,'$regular_condition_unexp_pt$').replace(/\$post_condition\$/g,'$post_condition_unexp_pt$').replace(/\$stop_condition\$/g,'$stop_condition_unexp_pt$');
@@ -558,7 +569,7 @@ SemanticsAnalyzer.prototype.semantics = () => {
 
     result.ptExpanded = replaceTemplateVarsWithArgs(fetched_ptExpanded, true, true);
 
-    let fetched_ftExpanded = fetchedSemantics.ftExpanded.replace(/\$regular_condition\$/g,'$regular_condition_SMV_ft$').replace(/\$post_condition\$/g,'$post_condition_SMV_ft$');
+    let fetched_ftExpanded = fetchedSemantics.ftExpanded.replace(/\$regular_condition\$/g,'$regular_condition_SMV_ft$').replace(/\$post_condition\$/g,'$post_condition_SMV_ft$').replace(/\$stop_condition\$/g,'$stop_condition_SMV_ft$');;
     result.ftExpanded = replaceTemplateVarsWithArgs(fetched_ftExpanded, true, true);
 
     let fetched_coco = fetchedSemantics.CoCoSpecCode.replace(/\$regular_condition\$/g,'$regular_condition_coco$').replace(/\$post_condition\$/g,'$post_condition_coco$').replace(/\$stop_condition\$/g,'$stop_condition_coco$');

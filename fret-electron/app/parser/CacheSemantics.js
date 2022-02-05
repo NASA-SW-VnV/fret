@@ -343,15 +343,26 @@ function createSaltBatchString(product,options) {
       var key = iterator.value.toString()
 
       // making an object with all endpoints --------
-      var endpoints = {left:'', right:'', ptExtleft:'', ptExtright: '', SMVptExtleft:'', SMVptExtright: ''};
+    var endpoints = {left:'', right:'',
+		     ptExtleft:'', ptExtright: '',
+		     SMVptExtleft:'', SMVptExtright: '',
+		     ftExtleft:'', ftExtright: '',
+		     SMVftExtleft:'', SMVftExtright: ''
+		    };
       // we use iterator.value because the matching base needs an array of strings, not a string
       var eps =  formalizations.getEndpoints(iterator.value);
       endpoints['left'] = semanticsGenerator.customizeForFret(eps[0]);
       endpoints['right'] = semanticsGenerator.customizeForFret(eps[1]);
+    
       endpoints['ptExtleft'] = semanticsGenerator.customizeForFret(formalizations.EndPointsRewrite('pt', eps[0]));
       endpoints['ptExtright'] = semanticsGenerator.customizeForFret(formalizations.EndPointsRewrite('pt', eps[1]));
       endpoints['SMVptExtleft'] = semanticsGenerator.customizeForFret(formalizations.EndPointsRewrite('pt', eps[0], 'smv'));
       endpoints['SMVptExtright'] = semanticsGenerator.customizeForFret(formalizations.EndPointsRewrite('pt', eps[1], 'smv'));
+
+      endpoints['ftExtleft'] = semanticsGenerator.customizeForFret(formalizations.EndPointsRewrite('ft', eps[0]));
+      endpoints['ftExtright'] = semanticsGenerator.customizeForFret(formalizations.EndPointsRewrite('ft', eps[1]));
+      endpoints['SMVftExtleft'] = semanticsGenerator.customizeForFret(formalizations.EndPointsRewrite('ft', eps[0], 'smv'));
+      endpoints['SMVftExtright'] = semanticsGenerator.customizeForFret(formalizations.EndPointsRewrite('ft', eps[1], 'smv'));
 
       FRETSemantics[key]['endpoints'] = endpoints;
       // ---------------------------------------------
