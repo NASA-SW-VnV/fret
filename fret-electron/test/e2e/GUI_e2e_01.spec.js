@@ -81,7 +81,7 @@ const startWithJsonFileImport = async (jsonFileNmae) => {
       await app.start();
       var mockFilePath = path.join(__dirname, '../../test/test_reference/inputs');
       mockFilePath = path.join(mockFilePath, jsonFileNmae);
-      console.log('mockFilePath ' + mockFilePath);
+      //console.log('mockFilePath ' + mockFilePath);
       fakeDialog.mock([ { method: 'showOpenDialogSync', value: [mockFilePath] } ])
       await app.client.waitUntilWindowLoaded();
       const importBtn = await app.client.$('#qa_db_li_import');
