@@ -310,9 +310,7 @@ let TableToolbar = props => {
               }
             />
 
-            <IconButton id="qa_tbl_ib_bulkChange"
-              aria-label="Bulk Change" 
-              onClick={() => bulkChangeEnabler()}>
+            <IconButton aria-label="Bulk Change" onClick={() => bulkChangeEnabler()}>
               <Tooltip title="Bulk Change">
               <ListIcon color='secondary'/>
               </Tooltip>
@@ -385,7 +383,6 @@ class SortableTable extends React.Component {
     selectedProject: 'All Projects',
     bulkChangeMode: false,
     deleteUsingCheckBoxes: false,
-    statusChkBx: { None: true, 'In Progress': true, Paused: true, Completed: true, Attention: true, Deprecated: true},
     searchId: [],
     searchSummary: [],      // array of string
     searchStatus: [],      // array of string
@@ -416,16 +413,12 @@ class SortableTable extends React.Component {
           bulkChangeMode: false,
         });
     }
-    if(this.props.requirements !== prevProps.requirements ||
-      this.state.searchStatus !== prevState.searchStatus ||
-      this.state.searchId !== prevState.searchId ||
-      this.state.searchSummary !== prevState.searchSummary ||
-      this.state.searchHasWords !== prevState.searchHasWords) {
+    if(this.props.requirements !== prevProps.requirements ){
         this.formatData()
     }
   }
 
-  formatData() {
+  formatData = () => {
     if (!this.mounted) return;
     const { selectedProject, requirements } = this.props;
     const { searchId, searchSummary, searchStatus, searchHasWords} = this.state;
@@ -470,7 +463,7 @@ class SortableTable extends React.Component {
           excludeStatusString+statusType:
           excludeStatusString+','+statusType;
         numNotStatus = numNotStatus + 1;
-      }    
+      }
     });
 
     if (numTrues===Object.keys(statusChkBx).length){
@@ -478,12 +471,12 @@ class SortableTable extends React.Component {
     } else {
       statusString=(statusString.length<excludeStatusString.length)?
       statusString:excludeStatusString;
-    }    
+    }
     // status string
 
-    const searchInputString = (searchHasWords.length ? hasWordsString+' ' : '') + 
-      (searchId.length ? 'id:'+ idString.trim()+' ' : '') + 
-      (searchSummary.length ? 'summary:'+summaryString.trim()+' ' : '') + 
+    const searchInputString = (searchHasWords.length ? hasWordsString+' ' : '') +
+      (searchId.length ? 'id:'+ idString.trim()+' ' : '') +
+      (searchSummary.length ? 'summary:'+summaryString.trim()+' ' : '') +
       statusString; //(searchStatus.length ? 'status:'+ (searchStatus.length > 1 ? searchStatus.join(','): searchStatus[0]) : '') ;
     this.setState({
       searchId,
@@ -673,20 +666,19 @@ class SortableTable extends React.Component {
                     searchHasWords: [],
                     searchId: [],
                     searchInputString: '',
-                    statusChkBx: { None: true, 'In Progress': true, Paused: true, Completed: true, Attention: true, Deprecated: true},
+                    searchStatus: [],
                   });
   };
 
   handleSearchInputChange = event => {
-    const {value} = event.target;
-    this.setState({searchInputString: value});
-    //this.handleSearchKeyChange();
+    const {value} = event.target
+    this.setState({searchInputString: value}, this.handleSearchKeyChange)
 
   }
 
-  // parsing seach string into search criteria (states: searchId, searchStatus, searchSummary, searchHasWords)
-  handleSearchKeyChange = event => {
-    const value = this.state.searchInputString;
+  // parsing seach string into search criteria
+  handleSearchKeyChange = () => {
+    const value = this.state.searchInputString
     const keyWordsIndexes = [];
     const indexOfId = value.toLowerCase().indexOf('id:');
     const indexOfSummary = value.toLowerCase().indexOf('summary:');
@@ -731,7 +723,7 @@ class SortableTable extends React.Component {
         let searchArray = ['none','in progress','paused','completed','attention','deprecated'];
         for (let j = 0; j < excludeStatus.length; j++) {
           if (searchArray.includes(excludeStatus[j])){
-            searchArray = searchArray.filter(e => e !== excludeStatus[j]); 
+            searchArray = searchArray.filter(e => e !== excludeStatus[j]);
 
           }
           searchStatus = searchArray;
@@ -758,7 +750,7 @@ class SortableTable extends React.Component {
     const { classes, selectedProject, existingProjectNames } = this.props;
     const { data, order, orderBy, selected, rowsPerPage, page, bulkChangeMode,
        snackBarDisplayInfo, selectionBulkChange, selectedRequirement,
-       deleteUsingCheckBoxes, statusChkBx, searchHasWords, searchId, searchStatus, searchSummary,searchInputString } = this.state;
+       deleteUsingCheckBoxes, searchHasWords, searchId, searchStatus, searchSummary,searchInputString } = this.state;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
     const title = 'Requirements: ' + selectedProject
     const selectionForDeletion = deleteUsingCheckBoxes ? selectionBulkChange : [selectedRequirement]
@@ -774,7 +766,7 @@ class SortableTable extends React.Component {
           bulkChangeEnabler={this.handleEnableBulkChange}
           deleteSelection={this.handleDeleteSelectedRequirements}
           searchInputString={searchInputString}
-          handleSearchKeyChange={this.handleSearchKeyChange}
+          handleSearchKeyChange={this.formatData}
           handleSearchInputChange={this.handleSearchInputChange}
           clearSearchInput={this.clearSearchInput}
           handleSearchTableDialogOpen={this.handleSearchTableDialogOpen}/>
@@ -794,10 +786,8 @@ class SortableTable extends React.Component {
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map(n => {
                   const isSelected = this.isSelected(n.dbkey);
-                  const label = n.reqid ? n.reqid : 'NONE';
-                  const label_ = label.replace(/ /g,'_')
-                  const projectLabel = n.project ? n.project : 'NONE';
-                  const rowid = n.rowid;
+                  const label = n.reqid ? n.reqid : 'NONE'
+                  const projectLabel = n.project ? n.project : 'NONE'
                   // getting requirement bubble color
                   const status = n.status;
                   const colorStyle = getRequirementStyle(n,false);
@@ -813,7 +803,7 @@ class SortableTable extends React.Component {
                         selected={isSelected}
                       >
                         <TableCell padding="checkbox">
-                          <Checkbox id={"qa_tbl_cb_table_body_bulk_"+label_} checked={isSelected} />
+                          <Checkbox id={"qa_tbl_cb_table_body_bulk_"+label} checked={isSelected} />
                         </TableCell>
                         <TableCell >
                           <Select
@@ -823,40 +813,40 @@ class SortableTable extends React.Component {
                             onChange={(event) => this.handleChange(event, n)}
                             onClick={event => event.stopPropagation()}
                           >
-                            <MenuItem id={"qa_tbl_mi_body_bulk_status_None_"+label_} value="None"/>
-                            <MenuItem id={"qa_tbl_mi_body_bulk_status_in_progress_"+label_} value={'in progress'}>
+                            <MenuItem id={"qa_tbl_mi_body_bulk_status_None_"+label} value="None"/>
+                            <MenuItem id={"qa_tbl_mi_body_bulk_status_in_progress_"+label} value={'in progress'}>
                               <Tooltip title="In progress"><InProgressIcon/></Tooltip>
                             </MenuItem>
-                            <MenuItem id={"qa_tbl_mi_body_bulk_status_paused_"+label_} value={'paused'}>
+                            <MenuItem id={"qa_tbl_mi_body_bulk_status_paused_"+label} value={'paused'}>
                               <Tooltip title="Paused"><PauseIcon/></Tooltip>
                             </MenuItem>
-                            <MenuItem id={"qa_tbl_mi_body_bulk_status_completed_"+label_} value={'completed'}>
+                            <MenuItem id={"qa_tbl_mi_body_bulk_status_completed_"+label} value={'completed'}>
                               <Tooltip title="Completed"><CompletedIcon/></Tooltip>
                             </MenuItem>
-                            <MenuItem id={"qa_tbl_mi_body_bulk_status_attention_"+label_} value={'attention'}>
+                            <MenuItem id={"qa_tbl_mi_body_bulk_status_attention_"+label} value={'attention'}>
                               <Tooltip title="Attention"><AttentionIcon/></Tooltip>
                             </MenuItem>
-                            <MenuItem id={"qa_tbl_mi_body_bulk_status_deprecated_"+label_} value={'deprecated'}>
+                            <MenuItem id={"qa_tbl_mi_body_bulk_status_deprecated_"+label} value={'deprecated'}>
                               <Tooltip title="Deprecated"><CloseIcon/></Tooltip>
                             </MenuItem>
                           </Select>
                         </TableCell>
                         <TableCell>
-                        <Button id={"qa_tbl_btn_bulk_id_"+label_}  color='secondary' onClick={this.handleRequirementDialogOpen(n)}>
+                        <Button id={"qa_tbl_btn_bulk_id_"+label}  color='secondary' onClick={this.handleRequirementDialogOpen(n)}>
                             {label}
                           </Button>
                         </TableCell>
                         <TableCell>
                           <Tooltip title="Add Child Requirement">
-                            <IconButton id={"qa_tbl_ic_bulk_add_child_"+label_} 
+                            <IconButton id={"qa_tbl_ic_bulk_add_child_"+label}
                               aria-label="Add Child Requirement"
                               onClick={this.handleAddChildRequirement(n.reqid, n.project)}>
                               <AddIcon/>
                             </IconButton>
                           </Tooltip>
                         </TableCell>
-                        <TableCell id={"qa_tbl_tc_bulk_summary_"+label_} >{n.summary}</TableCell>
-                        <TableCell id={"qa_tbl_tc_bulk_project_"+label_} >{projectLabel}</TableCell>
+                        <TableCell id={"qa_tbl_tc_bulk_summary_"+label} >{n.summary}</TableCell>
+                        <TableCell id={"qa_tbl_tc_bulk_project_"+label} >{projectLabel}</TableCell>
                       </TableRow>
                     );
                   } else {
@@ -869,40 +859,40 @@ class SortableTable extends React.Component {
                             value={status}
                             onChange={(event) => this.handleChange(event, n)}
                           >
-                            <MenuItem id={"qa_tbl_mi_not_bulk_status_None_"+label_} value="None"/>
-                            <MenuItem id={"qa_tbl_mi_not_bulk_status_in_progress_"+label_} value={'in progress'}>
+                            <MenuItem id={"qa_tbl_mi_not_bulk_status_None_"+label} value="None"/>
+                            <MenuItem id={"qa_tbl_mi_not_bulk_status_in_progress_"+label} value={'in progress'}>
                               <Tooltip title="In progress"><InProgressIcon/></Tooltip>
                             </MenuItem>
-                            <MenuItem id={"qa_tbl_mi_not_bulk_status_paused_"+label_} value={'paused'}>
+                            <MenuItem id={"qa_tbl_mi_not_bulk_status_paused_"+label} value={'paused'}>
                               <Tooltip title="Paused"><PauseIcon/></Tooltip>
                             </MenuItem>
-                            <MenuItem id={"qa_tbl_mi_not_bulk_status_completed_"+label_} value={'completed'}>
+                            <MenuItem id={"qa_tbl_mi_not_bulk_status_completed_"+label} value={'completed'}>
                               <Tooltip title="Completed"><CompletedIcon/></Tooltip>
                             </MenuItem>
-                            <MenuItem id={"qa_tbl_mi_not_bulk_status_attention_"+label_} value={'attention'}>
+                            <MenuItem id={"qa_tbl_mi_not_bulk_status_attention_"+label} value={'attention'}>
                               <Tooltip title="Attention"><AttentionIcon/></Tooltip>
                             </MenuItem>
-                            <MenuItem id={"qa_tbl_mi_not_bulk_status_deprecated_"+label_} value={'deprecated'}>
+                            <MenuItem id={"qa_tbl_mi_not_bulk_status_deprecated_"+label} value={'deprecated'}>
                               <Tooltip title="Deprecated"><CloseIcon/></Tooltip>
                             </MenuItem>
                           </Select>
                         </TableCell>
                         <TableCell>
-                        <Button id={"qa_tbl_btn_not_bulk_id_"+label_} color='secondary' onClick={this.handleRequirementDialogOpen(n)}>
+                        <Button id={"qa_tbl_btn_not_bulk_id_"+label} color='secondary' onClick={this.handleRequirementDialogOpen(n)}>
                               {label}
                             </Button>
                           </TableCell>
                           <TableCell>
                             <Tooltip title="Add Child Requirement">
-                            <IconButton id={"qa_tbl_ib_not_bulk_add_child_"+label_} 
+                            <IconButton id={"qa_tbl_ib_not_bulk_add_child_"+label}
                                 aria-label="Add Child Requirement"
                                 onClick={this.handleAddChildRequirement(n.reqid, n.project)}>
                                 <AddIcon />
                               </IconButton>
                             </Tooltip>
                           </TableCell>
-                        <TableCell id={"qa_tbl_tc_not_bulk_summary_"+label_} >{n.summary}</TableCell>
-                        <TableCell id={"qa_tbl_tc_not_bulk_project_"+label_} >{projectLabel}</TableCell>
+                        <TableCell id={"qa_tbl_tc_not_bulk_summary_"+label} >{n.summary}</TableCell>
+                        <TableCell id={"qa_tbl_tc_not_bulk_project_"+label} >{projectLabel}</TableCell>
                       </TableRow>
                     )
                   }
@@ -956,7 +946,7 @@ class SortableTable extends React.Component {
         handleSearchTableDialogOpen={this.handleSearchTableDialogOpen}
         handleSearchTableDialogClose={this.handleSearchTableDialogClose}
         handleSearchAction={this.setSearch}
-        searchHasWords={this.state.searchHasWords}
+        filterData={this.formatData}
         searchId={searchId}
         searchStatus={searchStatus}
         searchSummary={searchSummary}

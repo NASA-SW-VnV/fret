@@ -150,7 +150,7 @@ describe('FRET GUI E2E tests ', function () {
       });
 
       //------------------------------------------------------------------
-      it('SELECT TABLE', async () => {
+      it.only('SELECT TABLE', async () => {
             console.log('starting test '+numTest+':  SELECT TABLE');
             await startWithJsonFileImport('MyDBAM113.json');
             
@@ -159,7 +159,7 @@ describe('FRET GUI E2E tests ', function () {
             await tableBtn.click();
             const tblTitle = await app.client.$('#qa_tbl_title');
             const reqText = await tblTitle.getText();
-            expect(reqText).toBe('Requirements: All Projects');     
+            expect(reqText).toBe('Requirements:1 All Projects');     
                   
       });
 

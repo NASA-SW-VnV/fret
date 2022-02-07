@@ -61,31 +61,38 @@ class SearchSortableTableDialog extends React.Component {
       hasWords: '',
     };
 
-    handleApply = () => {
+    changeParentState = () => {
       const {handleSearchAction} = this.props;
       const {statusChkBx,hasWords,idString,summaryString} = this.state;
       handleSearchAction(idString,summaryString, statusChkBx, hasWords,);
-      this.handleClose();
     };
+
+    filterData = () => {
+      this.props.filterData()
+      this.handleClose();
+    }
 
     handleClose = () => {
       this.props.handleSearchTableDialogClose();
     };
 
     handleTextFieldChange = name => event => {
+      let key = '';
       if (name === 'searchID'){
-        this.setState({idString: event.target.value});
+        key = 'idString'
       } else if (name ==='searchSummary'){
-        this.setState({summaryString: event.target.value});
+        key = 'summaryString'
       } else if (name ==='searchHasWords'){
-        this.setState({hasWords: event.target.value});
+        key = 'hasWords'
       }
+      this.setState({[key]: event.target.value}, this.changeParentState);
+
     }
 
     handleCheckBoxChange = event => {
       const {target} = event;
       this.setState(prevState => {
-        return {statusChkBx: {...prevState.statusChkBx, [target.name]: target.checked}}});
+        return {statusChkBx: {...prevState.statusChkBx, [target.name]: target.checked}}}, this.changeParentState);
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -99,8 +106,8 @@ class SearchSortableTableDialog extends React.Component {
             acc[curr] = false;
           }
           return  acc;
-        },{...this.state.statusChkBx}) : {...this.state.statusChkBx}
-        console.log()
+        },{...this.state.statusChkBx}) :
+          { None: true, 'In Progress': true, Paused: true, Completed: true, Attention: true, Deprecated: true}
         this.setState({
           idString: searchId.length > 1 ? searchId.join(',') : searchId[0] || '',
           summaryString:  searchSummary.length > 1 ? searchSummary.join(',') : searchSummary[0] || '',
@@ -111,15 +118,15 @@ class SearchSortableTableDialog extends React.Component {
     }
 
     clearSearchHasWords = () => {
-      this.setState({hasWords: ''});
+      this.setState({hasWords: ''}, this.changeParentState);
     };
 
     clearSearchID = () => {
-      this.setState({idString: ''});
+      this.setState({idString: ''}, this.changeParentState);
     };
 
     clearSearchSum = () => {
-      this.setState({summaryString: ''});
+      this.setState({summaryString: ''}, this.changeParentState);
     };
 
     render() {
@@ -142,7 +149,6 @@ class SearchSortableTableDialog extends React.Component {
                 key={statusType}
                 control={
                   <Checkbox
-                    id={'qa_srchTbl_cb_'+statusType.replace(/ /g,"_")}
                     checked = {statusChkBx[statusType]}
                     icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
                     checkedIcon={<CheckBoxIcon fontSize="small" />}
@@ -221,12 +227,10 @@ class SearchSortableTableDialog extends React.Component {
             </DialogContent>
 
             <DialogActions>
-              <Button id = "qa_srchTbl_btn_Cancel"
-                onClick={this.handleClose} color="primary">
+              <Button onClick={this.handleClose} color="primary">
                 Cancel
               </Button>
-              <Button id = "qa_srchTbl_btn_Search"
-                onClick={this.handleApply} color="secondary" autoFocus variant='contained'>
+              <Button onClick={this.filterData} color="secondary" autoFocus variant='contained'>
                 Search
               </Button>
             </DialogActions>
