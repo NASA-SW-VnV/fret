@@ -248,7 +248,6 @@ describe('FRET E2E tests starting with test_1 DB, no DB modifications', function
             expect(reqText).toBe('Analysis Portal');
             
       });     
-
       //------------------------------------------------------------------
       //         test mv-7
       it('SELECT PROJECTS', async () => {
