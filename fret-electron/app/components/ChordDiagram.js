@@ -187,7 +187,7 @@ class ChordDiagram extends React.Component {
 		  	var requirementNames = [];
 		  	var conflictNames = [];
 		  	// var propNames = Object.keys(content.Dependencies);
-		  	var propNames = content.Properties;
+		  	var propNames = content.Requirements;
 		  	for (var i = 0; i < propNames.length; i++) {
 			    	var contains = false;
 			    	var propName = propNames[i];
@@ -226,7 +226,7 @@ class ChordDiagram extends React.Component {
 
 			//create dependency map for requirement -> list of cexs
 			for (var i = 0; i < counterexamples.length; i++) {
-				var conflict = counterexamples[i].props;
+				var conflict = counterexamples[i].requirements;
 				// var conflict = conflictNames[i];
 				var cex = counterexamples[i];
 				// cex.Dependencies = content.Dependencies;
@@ -336,7 +336,7 @@ class ChordDiagram extends React.Component {
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-		if(prevProps.selectedReport.Properties.toString() !== this.props.selectedReport.Properties.toString()) {
+		if(prevProps.selectedReport.Requirements.toString() !== this.props.selectedReport.Requirements.toString()) {
 			this.optLog(prevProps)
 			this.optLog(this.props)
 			this.setState({cexTableData : []});

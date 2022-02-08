@@ -113,8 +113,8 @@ function stableSort(array, conflictReqs, cmp) {
 function ccStableSort(array, conflictReqs, connectedComponent, cmp) {
   
   if (conflictReqs.length === 0) {
-    const ccData = array.filter(el => connectedComponent.properties.includes(el.reqid));
-    const remainingData = array.filter(el => !connectedComponent.properties.includes(el.reqid));    
+    const ccData = array.filter(el => connectedComponent.requirements.includes(el.reqid));
+    const remainingData = array.filter(el => !connectedComponent.requirements.includes(el.reqid));    
 
     const sortedRemaining = remainingData.map((el, index) => [el, index]);
     sortedRemaining.sort((a, b) => {
@@ -138,7 +138,7 @@ function ccStableSort(array, conflictReqs, connectedComponent, cmp) {
     });
 
     
-    const ccRemainingData = remainingData.filter(el => connectedComponent.properties.includes(el.reqid));
+    const ccRemainingData = remainingData.filter(el => connectedComponent.requirements.includes(el.reqid));
     const sortedCCRemainingData = ccRemainingData.map((el, index) => [el, index]);
     sortedCCRemainingData.sort((a, b) => {
       const order = cmp(a[0], b[0]);
@@ -149,7 +149,7 @@ function ccStableSort(array, conflictReqs, connectedComponent, cmp) {
 
     // const sortedRemaining = remainingData.map((el, index) => [el, index]);
     //everything else that's not in a conflict or part of the CC
-    const finalRemainingData = remainingData.filter(el => !connectedComponent.properties.includes(el.reqid));
+    const finalRemainingData = remainingData.filter(el => !connectedComponent.requirements.includes(el.reqid));
     const sortedRemaining = finalRemainingData.map((el, index) => [el, index]);
     sortedRemaining.sort((a, b) => {
       const order = cmp(a[0], b[0]);
@@ -364,7 +364,7 @@ class DiagnosisRequirementsTable extends React.Component {
                   var isInConflict = (reqs.length !== 0 && reqs.includes(label)) ? true : false;                  
                   return (
                       <TableRow key={n.rowid} style={{
-                          opacity : (isInConflict || connectedComponent.properties.includes(n.reqid)) ? 1 : .6,
+                          opacity : (isInConflict || connectedComponent.requirements.includes(n.reqid)) ? 1 : .6,
                           borderStyle: isInConflict ? 'solid' : 'initial', 
                           borderColor: isInConflict ? color : 'initial'}}>
                         <TableCell id={"qa_diagReqTbl_tc_body_id_"+label}>

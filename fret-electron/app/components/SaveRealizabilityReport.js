@@ -25,8 +25,7 @@ class SaveRealizabilityReport extends React.Component {
 
 	saveRealizabilityResults = event => {
 		event.stopPropagation();
-		const {projectReport} = this.props;
-		console.log(projectReport)
+		const {projectReport} = this.props;		
 		const homeDir = app.getPath('home');
 		const self = this;
 		var filePath = dialog.showSaveDialog({

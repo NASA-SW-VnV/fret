@@ -155,8 +155,8 @@ class CounterexampleTable extends React.Component {
   constructor(props) {
   	super(props);
   	this.state = { 
-  		numberOfSteps : this.props.cexTableData[this.props.currentConflicts[0]].K,
-		  cexConflictName : this.props.cexTableData[this.props.currentConflicts[0]].props,  		
+  		numberOfSteps : this.props.cexTableData[this.props.currentConflicts[0]].traceLength,
+		  cexConflictName : this.props.cexTableData[this.props.currentConflicts[0]].requirements,  		
   		cex : this.props.cexTableData[this.props.currentConflicts[0]].Counterexample,
       // deps: this.props.cexTableData[this.props.currentConflicts[0]].Dependencies
     };
@@ -164,8 +164,8 @@ class CounterexampleTable extends React.Component {
 
   handleChange = event => {
     this.setState({ 
-    	numberOfSteps : this.props.cexTableData[event.target.value].K,
-		  cexConflictName : this.props.cexTableData[event.target.value].props,
+    	numberOfSteps : this.props.cexTableData[event.target.value].traceLength,
+		  cexConflictName : this.props.cexTableData[event.target.value].requirements,
     	cex : this.props.cexTableData[event.target.value].Counterexample,
     	// deps : this.props.cexTableData[event.target.value].Dependencies,
       [event.target.name]: event.target.value
@@ -179,8 +179,8 @@ class CounterexampleTable extends React.Component {
   componentDidUpdate(prevProps) {
   	if (this.props.currentConflicts !== prevProps.currentConflicts) {
   		this.setState({
-  			numberOfSteps : this.props.cexTableData[this.props.currentConflicts[0]].K,
-  			cexConflictName : this.props.cexTableData[this.props.currentConflicts[0]].props,
+  			numberOfSteps : this.props.cexTableData[this.props.currentConflicts[0]].traceLength,
+  			cexConflictName : this.props.cexTableData[this.props.currentConflicts[0]].requirements,
   			cex : this.props.cexTableData[this.props.currentConflicts[0]].Counterexample,
         // deps : this.props.cexTableData[this.props.currentConflicts[0]].Dependencies
   		});    

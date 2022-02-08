@@ -442,11 +442,11 @@ class DiagnosisEngine {
 
   //Create input format for the Chord Diagram and Counterexample table
   combineReports() {
-    var combinedReport = {'Counterexamples' : [], 'Conflicts' : [], 'Properties' : []};
+    var combinedReport = {'Counterexamples' : [], 'Conflicts' : [], 'Requirements' : []};
     var properties = this.contract.properties.map(p => p.reqid.replace(/-/g,''));
-    combinedReport['Properties'] = properties;
+    combinedReport['Requirements'] = properties;
     for (const [conflKey, report] of this.counterExamples.entries()) {
-      combinedReport.Counterexamples.push({'K' : report.K, 'props' : conflKey.replace(/-/g,'').replace(/,/g,', '), 'Counterexample' : report.Counterexample})
+      combinedReport.Counterexamples.push({'traceLength' : report.K, 'requirements' : conflKey.replace(/-/g,'').replace(/,/g,', '), 'Counterexample' : report.Counterexample})
       combinedReport.Conflicts.push({'Conflict' : conflKey.replace(/-/g,'').replace(/,/g,', ')});
     }
     return combinedReport;
