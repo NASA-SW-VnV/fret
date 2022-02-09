@@ -784,7 +784,6 @@ class RealizabilityContent extends React.Component {
   componentDidUpdate(prevProps) {
     const {selectedProject, components} = this.props;
     if (selectedProject !== prevProps.selectedProject) {
-      this.synchStateWithModelDB();
       this.setState({monolithic: false, compositional: false, selected : '', projectReport : {project : '', systemComponents: {}}})
     } else {    
       if (selectedProject !== 'All Projects' && components !== prevProps.components) {
@@ -874,12 +873,13 @@ class RealizabilityContent extends React.Component {
               //   compositionalError : compositionalError
               // });
               projectReport['systemComponents'][selected.component_name]['compositional']['connectedComponents'][ccSelected]['diagnosisStatus'] = 'ERROR';
-              projectReport['systemComponents'][selected.component_name]['compositional']['connectedComponents'][ccSelected]['diagnosisError'] = err.message;
+              projectReport['systemComponents'][selected.component_name]['compositional']['connectedComponents'][ccSelected]['error'] = err.message;
               self.setState({
                 projectReport : projectReport});
             } else {
               projectReport['systemComponents'][selected.component_name]['compositional']['connectedComponents'][ccSelected]['diagnosisStatus'] = 'DIAGNOSED';
               projectReport['systemComponents'][selected.component_name]['compositional']['connectedComponents'][ccSelected]['diagnosisReport'] = result[1];
+              projectReport['systemComponents'][selected.component_name]['compositional']['connectedComponents'][ccSelected]['error'] = '';
               self.setState({
                 projectReport : projectReport});
 
@@ -903,13 +903,14 @@ class RealizabilityContent extends React.Component {
               // });
 
               projectReport['systemComponents'][selected.component_name]['monolithic']['diagnosisStatus'] = 'ERROR';
-              projectReport['systemComponents'][selected.component_name]['monolithic']['diagnosisError'] = err;                        
+              projectReport['systemComponents'][selected.component_name]['monolithic']['error'] = err;                        
               self.setState({
                 projectReport: projectReport
               });
             } else {
               projectReport['systemComponents'][selected.component_name]['monolithic']['diagnosisStatus'] = 'DIAGNOSED';
-              projectReport['systemComponents'][selected.component_name]['monolithic']['diagnosisReport'] = result[1];                        
+              projectReport['systemComponents'][selected.component_name]['monolithic']['diagnosisReport'] = result[1]; 
+              projectReport['systemComponents'][selected.component_name]['monolithic']['error'] = '';                       
               self.setState({
                 projectReport: projectReport
               });
@@ -960,11 +961,21 @@ class RealizabilityContent extends React.Component {
       self.setState(prevState => {
         if(monolithic) {
           prevState.projectReport['systemComponents'][tC.component_name]['monolithic']['result'] = 'PROCESSING';
+          prevState.projectReport['systemComponents'][tC.component_name]['monolithic']['time'] = '';
+          projectReport['systemComponents'][selected.component_name]['monolithic']['diagnosisStatus'] = '';
+          projectReport['systemComponents'][selected.component_name]['monolithic']['diagnosisReport'] = '';
+
+          prevState.projectReport['systemComponents'][tC.component_name]['monolithic']['error'] = '';
         } else {
           Object.keys(prevState.projectReport['systemComponents'][tC.component_name]['compositional']['connectedComponents']).forEach(cc => {            
             prevState.projectReport['systemComponents'][tC.component_name]['compositional']['connectedComponents'][cc]['result'] = 'PROCESSING';
+            prevState.projectReport['systemComponents'][tC.component_name]['compositional']['connectedComponents'][cc]['time'] = '';
+            prevState.projectReport['systemComponents'][tC.component_name]['compositional']['connectedComponents'][cc]['diagnosisStatus'] = '';
+            prevState.projectReport['systemComponents'][tC.component_name]['compositional']['connectedComponents'][cc]['diagnosisReport'] = '';
+            prevState.projectReport['systemComponents'][tC.component_name]['compositional']['connectedComponents'][cc]['error'] = '';
           });
           prevState.projectReport['systemComponents'][tC.component_name]['compositional']['result'] = 'PROCESSING';
+          prevState.projectReport['systemComponents'][tC.component_name]['compositional']['error'] = '';
         }
         return(prevState);
       })
@@ -1019,6 +1030,7 @@ class RealizabilityContent extends React.Component {
                   self.setState(prevState => {
                     prevState.projectReport['systemComponents'][tC.component_name]['monolithic']['result'] = result;
                     prevState.projectReport['systemComponents'][tC.component_name]['monolithic']['time'] = time;
+                    prevState.projectReport['systemComponents'][tC.component_name]['monolithic']['error'] = '';
                     return(prevState);
                   })
                 }
@@ -1054,6 +1066,7 @@ class RealizabilityContent extends React.Component {
                   var ccTime = checkOutput.match(new RegExp('(Time = )(.*?)\\n'))[2];
                   projectReport['systemComponents'][tC.component_name]['compositional']['connectedComponents'][cc]['result'] = ccResult;
                   projectReport['systemComponents'][tC.component_name]['compositional']['connectedComponents'][cc]['time'] = ccTime;
+                  projectReport['systemComponents'][tC.component_name]['compositional']['connectedComponents'][cc]['error'] = '';
                   self.setState(prevState => {
                     prevState.projectReport = projectReport
                     return(prevState);
@@ -1143,8 +1156,11 @@ class RealizabilityContent extends React.Component {
           <div key={cc} style={{display : 'flex', alignItems : 'center', flexWrap : 'wrap'}}>
             {cc}
             &nbsp;
-            <ResultIcon reskey={cc} result={projectReport['systemComponents'][selected.component_name]['compositional']['connectedComponents'][cc]['result']}
-            time={projectReport['systemComponents'][selected.component_name]['compositional']['connectedComponents'][cc]['time'] !== undefined ? ' - '+projectReport['systemComponents'][selected.component_name]['compositional']['connectedComponents'][cc]['time'] : ''}/>
+            <ResultIcon 
+              reskey={cc}
+              result={projectReport['systemComponents'][selected.component_name]['compositional']['connectedComponents'][cc]['result']}
+              time={projectReport['systemComponents'][selected.component_name]['compositional']['connectedComponents'][cc]['time'] !== undefined ? ' - '+projectReport['systemComponents'][selected.component_name]['compositional']['connectedComponents'][cc]['time'] : ''}
+              error={projectReport['systemComponents'][selected.component_name]['compositional']['connectedComponents'][cc]['error']}/>
           </div>
         }/>)                 
       }
@@ -1172,7 +1188,8 @@ class RealizabilityContent extends React.Component {
     var time = {};  
     for (const comp in projectReport['systemComponents']) {
       time[comp] = projectReport['systemComponents'][comp]['monolithic']['time'];
-    };          
+    };        
+          
 
     var diagStatus, diagReport;
     if (selected !== '' && selected !== 'all' && Object.keys(projectReport['systemComponents'][selected.component_name]['compositional']['connectedComponents']).length > 0) {
@@ -1206,9 +1223,8 @@ class RealizabilityContent extends React.Component {
                             <div key={n.component_name} style={{display : 'flex', alignItems : 'center'}}>
                               {n.component_name}
                               &nbsp;
-                              <ResultIcon 
-                                reskey={n.component_name} result={status[n.component_name] !== undefined ? status[n.component_name] : ''} time={(monolithic && time[n.component_name] !== undefined) ? ' - ' + time[n.component_name] : ''}
-                                error={monolithicError[n.component_name] !== undefined ? ' - '+monolithicError[n.component_name]: ''}/>
+                              <ResultIcon reskey={n.component_name} result={status[n.component_name] !== undefined ? status[n.component_name] : ''} time={(monolithic && time[n.component_name] !== undefined) ? ' - ' + time[n.component_name] : ''}
+                                error={projectReport['systemComponents'][n.component_name] ? projectReport['systemComponents'][n.component_name]['monolithic']['error'] : ''}/>
                             </div>
                           </MenuItem>
                           </span>
