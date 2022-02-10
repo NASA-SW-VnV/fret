@@ -310,7 +310,8 @@ let TableToolbar = props => {
               }
             />
 
-            <IconButton aria-label="Bulk Change" onClick={() => bulkChangeEnabler()}>
+            <IconButton id="qa_tbl_ib_bulkChange" 
+              aria-label="Bulk Change" onClick={() => bulkChangeEnabler()}>
               <Tooltip title="Bulk Change">
               <ListIcon color='secondary'/>
               </Tooltip>

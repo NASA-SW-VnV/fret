@@ -1177,21 +1177,21 @@ describe('FRET GUI E2E tests ', function () {
   //------------------------------------------------------------------
       it('VARIABLE VIEW-SORTABLE TABLE', async () => {
             console.log('starting test '+numTest+':  VARIABLE VIEW-SORTABLE TABLE');            
-            await startWithJsonFileImport('realizability_sqa1.json');
+            await startWithJsonFileImport('FSM-Demo.json');
 
             const projBtn = await app.client.$('#qa_db_btn_projects');
             await projBtn.click();
 
-            const liquidMixer = await app.client.$('#qa_proj_select_Liquid_mixer');
+            const liquidMixer = await app.client.$('#qa_proj_select_Demo-FSM');
             await liquidMixer.click();
 
             const anaBtn = await app.client.$('#qa_db_li_analysis');
             await anaBtn.click();
       
-            const expandIcon = await app.client.$('#qa_var_as_expandIcon');
+            const expandIcon = await app.client.$('#qa_var_as_apfail');
             await expandIcon.click();
 
-            const emerg = await app.client.$('#qa_var_tc_modelName_emergency_button');
+            const emerg = await app.client.$('#qa_var_tc_modelName_apfail');
             let reqText = await emerg.getText();
             //console.log('selected project: '+reqText);
             //expect(reqText).toContain('emergencybutton');   
