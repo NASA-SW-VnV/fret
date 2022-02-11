@@ -170,14 +170,13 @@ class SearchSortableTableDialog extends React.Component {
                     value={hasWords}
                     onChange={this.handleTextFieldChange('searchHasWords')}
 
-                    endAdornment={
+                    endAdornment={ hasWords.length > 0 &&
                       <Tooltip title="Search ID and summary">
                         <InputAdornment position="end">
-                          {hasWords.length === 0 ? null :
                           <CloseIcon id="qa_srchTbl_ib_clearHasWords"
                           cursor="pointer"
                           onClick={() => this.clearSearchHasWords()}
-                          />}
+                          />
                         </InputAdornment>
                       </Tooltip>
                     }
@@ -191,14 +190,13 @@ class SearchSortableTableDialog extends React.Component {
                   type="text"
                   value={idString}
                   onChange={this.handleTextFieldChange('searchID')}
-                  endAdornment={
+                  endAdornment={ idString.length > 0 &&
                     <Tooltip title="Search ID">
                       <InputAdornment position="end">
-                          {idString.length === 0 ? null :
                           <CloseIcon id="qa_srchTbl_ib_clearSearchID"
                           cursor="pointer"
                           onClick={() => this.clearSearchID()}
-                          />}
+                          />
                       </InputAdornment>
                     </Tooltip>
                   }
@@ -211,14 +209,13 @@ class SearchSortableTableDialog extends React.Component {
                     type="text"
                     value={summaryString}
                     onChange={this.handleTextFieldChange('searchSummary')}
-                    endAdornment={
-                      <Tooltip title="Search Summary">
+                    endAdornment={ summaryString.length > 0 &&
+                    <Tooltip title="Search Summary">
                         <InputAdornment position="end">
-                          {summaryString.length === 0 ? null :
                           <CloseIcon id="qa_srchTbl_ib_clearSearchSum"
                           cursor="pointer"
                           onClick={() => this.clearSearchSum()}
-                          />}
+                          />
                         </InputAdornment>
                       </Tooltip>
                     }

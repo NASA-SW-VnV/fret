@@ -426,9 +426,13 @@ class SortableTable extends React.Component {
     const filterOff = selectedProject == 'All Projects'
     const searchStatusLowerCase = searchStatus.map(status => status.toLowerCase());
     const data = requirements.filter(r => {
-      const idFilter = searchId.length > 0 ? searchId.every(elt => r.doc.reqid.toLowerCase().includes(elt.toLowerCase())) : true;
+      const idFilter = searchId.length > 0 ? searchId.every(elt => {
+        if(r.doc.reqid.toLowerCase().includes(elt.toLowerCase())) return true;
+        return (r.doc.reqid? false:(elt=='NONE'))
+      }) : true;
       const summaryFilter = searchSummary.length > 0 ? searchSummary.every(elt => r.doc.fulltext.toLowerCase().includes(elt.toLowerCase())): true;
-      const hasWordsFilter = searchHasWords.length > 0 ? searchHasWords.every(elt => r.doc.fulltext.toLowerCase().includes(elt.toLowerCase()) || r.doc.reqid.toLowerCase().includes(elt.toLowerCase())): true;
+      const hasWordsFilter = searchHasWords.length > 0 ? searchHasWords.every(elt => r.doc.fulltext.toLowerCase().includes(elt.toLowerCase()) ||
+       r.doc.reqid.toLowerCase().includes(elt.toLowerCase()) || (r.doc.reqid? false:(elt=='NONE'))): true;
       const statusFilter = searchStatusLowerCase.length ? r.doc.status ? searchStatusLowerCase.includes(r.doc.status.toLowerCase()) : searchStatusLowerCase.includes('none'): true;
       return (filterOff || r.doc.project == selectedProject) && idFilter && summaryFilter && statusFilter && hasWordsFilter;
     }).map(r => {
