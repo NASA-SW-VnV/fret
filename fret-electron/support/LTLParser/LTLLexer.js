@@ -1,7 +1,7 @@
 // *****************************************************************************
 // Notices:
 //
-// Copyright © 2019, 2021 United States Government as represented by the Administrator
+// Copyright ©2019, 2021 United States Government as represented by the Administrator
 // of the National Aeronautics and Space Administration. All Rights Reserved.
 //
 // Disclaimers
@@ -260,33 +260,33 @@ LTLLexer.prototype.channelNames = [ "DEFAULT_TOKEN_CHANNEL", "HIDDEN" ];
 
 LTLLexer.prototype.modeNames = [ "DEFAULT_MODE" ];
 
-LTLLexer.prototype.literalNames = [ null, "','", "'H'", "'O'", "'<|'", "'G'", 
-                                    "'F'", "'|>'", "'Y'", "'X'", "'Z'", 
-                                    "'S'", "'T'", "'SI'", "'U'", "'V'", 
-                                    "'UI'", "'='", "'<'", "'<='", "'>'", 
-                                    "'>='", "'!='", "'['", "']'", "'('", 
-                                    "')'", "'^'", "'*'", "'/'", "'%'", "'+'", 
-                                    "'-'", "'!'", "'&'", "'|'", "'xor'", 
+LTLLexer.prototype.literalNames = [ null, "','", "'H'", "'O'", "'<|'", "'G'",
+                                    "'F'", "'|>'", "'Y'", "'X'", "'Z'",
+                                    "'S'", "'T'", "'SI'", "'U'", "'V'",
+                                    "'UI'", "'='", "'<'", "'<='", "'>'",
+                                    "'>='", "'!='", "'['", "']'", "'('",
+                                    "')'", "'^'", "'*'", "'/'", "'%'", "'+'",
+                                    "'-'", "'!'", "'&'", "'|'", "'xor'",
                                     "'->'", "'<->'", "'FALSE'", "'TRUE'" ];
 
-LTLLexer.prototype.symbolicNames = [ null, null, null, null, null, null, 
-                                     null, null, null, null, null, null, 
-                                     null, null, null, null, null, null, 
-                                     null, null, null, null, null, null, 
-                                     null, null, null, null, null, null, 
-                                     null, null, null, null, null, null, 
-                                     null, null, null, null, null, "ID", 
+LTLLexer.prototype.symbolicNames = [ null, null, null, null, null, null,
+                                     null, null, null, null, null, null,
+                                     null, null, null, null, null, null,
+                                     null, null, null, null, null, null,
+                                     null, null, null, null, null, null,
+                                     null, null, null, null, null, null,
+                                     null, null, null, null, null, "ID",
                                      "NUMBER", "UINT", "WS" ];
 
-LTLLexer.prototype.ruleNames = [ "T__0", "T__1", "T__2", "T__3", "T__4", 
-                                 "T__5", "T__6", "T__7", "T__8", "T__9", 
-                                 "T__10", "T__11", "T__12", "T__13", "T__14", 
-                                 "T__15", "T__16", "T__17", "T__18", "T__19", 
-                                 "T__20", "T__21", "T__22", "T__23", "T__24", 
-                                 "T__25", "T__26", "T__27", "T__28", "T__29", 
-                                 "T__30", "T__31", "T__32", "T__33", "T__34", 
-                                 "T__35", "T__36", "T__37", "T__38", "T__39", 
-                                 "ID", "NUMBER", "EXP", "NATNUM", "UINT", 
+LTLLexer.prototype.ruleNames = [ "T__0", "T__1", "T__2", "T__3", "T__4",
+                                 "T__5", "T__6", "T__7", "T__8", "T__9",
+                                 "T__10", "T__11", "T__12", "T__13", "T__14",
+                                 "T__15", "T__16", "T__17", "T__18", "T__19",
+                                 "T__20", "T__21", "T__22", "T__23", "T__24",
+                                 "T__25", "T__26", "T__27", "T__28", "T__29",
+                                 "T__30", "T__31", "T__32", "T__33", "T__34",
+                                 "T__35", "T__36", "T__37", "T__38", "T__39",
+                                 "ID", "NUMBER", "EXP", "NATNUM", "UINT",
                                  "WS" ];
 
 LTLLexer.prototype.grammarFileName = "LTL.g4";
@@ -294,4 +294,3 @@ LTLLexer.prototype.grammarFileName = "LTL.g4";
 
 
 exports.LTLLexer = LTLLexer;
-

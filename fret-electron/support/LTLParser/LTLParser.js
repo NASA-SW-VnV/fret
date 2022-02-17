@@ -1,7 +1,7 @@
 // *****************************************************************************
 // Notices:
 //
-// Copyright © 2019, 2021 United States Government as represented by the Administrator
+// Copyright ©2019, 2021 United States Government as represented by the Administrator
 // of the National Aeronautics and Space Administration. All Rights Reserved.
 //
 // Disclaimers
@@ -196,24 +196,24 @@ var decisionsToDFA = atn.decisionToState.map( function(ds, index) { return new a
 
 var sharedContextCache = new antlr4.PredictionContextCache();
 
-var literalNames = [ null, "','", "'H'", "'O'", "'<|'", "'G'", "'F'", "'|>'", 
-                     "'Y'", "'X'", "'Z'", "'S'", "'T'", "'SI'", "'U'", "'V'", 
-                     "'UI'", "'='", "'<'", "'<='", "'>'", "'>='", "'!='", 
-                     "'['", "']'", "'('", "')'", "'^'", "'*'", "'/'", "'%'", 
-                     "'+'", "'-'", "'!'", "'&'", "'|'", "'xor'", "'->'", 
+var literalNames = [ null, "','", "'H'", "'O'", "'<|'", "'G'", "'F'", "'|>'",
+                     "'Y'", "'X'", "'Z'", "'S'", "'T'", "'SI'", "'U'", "'V'",
+                     "'UI'", "'='", "'<'", "'<='", "'>'", "'>='", "'!='",
+                     "'['", "']'", "'('", "')'", "'^'", "'*'", "'/'", "'%'",
+                     "'+'", "'-'", "'!'", "'&'", "'|'", "'xor'", "'->'",
                      "'<->'", "'FALSE'", "'TRUE'" ];
 
-var symbolicNames = [ null, null, null, null, null, null, null, null, null, 
-                      null, null, null, null, null, null, null, null, null, 
-                      null, null, null, null, null, null, null, null, null, 
-                      null, null, null, null, null, null, null, null, null, 
-                      null, null, null, null, null, "ID", "NUMBER", "UINT", 
+var symbolicNames = [ null, null, null, null, null, null, null, null, null,
+                      null, null, null, null, null, null, null, null, null,
+                      null, null, null, null, null, null, null, null, null,
+                      null, null, null, null, null, null, null, null, null,
+                      null, null, null, null, null, "ID", "NUMBER", "UINT",
                       "WS" ];
 
-var ruleNames =  [ "arithmetic_expr", "bool_expr", "timedUnaryLTLOp", "unaryLTLOp", 
-                   "binaryLTLOp", "comparisonOp", "bound", "range", "saltBound", 
-                   "lp", "rp", "expt", "mult", "div", "mod", "plus", "minus", 
-                   "negate", "not", "and", "or", "xor", "implies", "equiv", 
+var ruleNames =  [ "arithmetic_expr", "bool_expr", "timedUnaryLTLOp", "unaryLTLOp",
+                   "binaryLTLOp", "comparisonOp", "bound", "range", "saltBound",
+                   "lp", "rp", "expt", "mult", "div", "mod", "plus", "minus",
+                   "negate", "not", "and", "or", "xor", "implies", "equiv",
                    "f", "t" ];
 
 function LTLParser (input) {
@@ -324,7 +324,7 @@ Arithmetic_exprContext.prototype = Object.create(antlr4.ParserRuleContext.protot
 Arithmetic_exprContext.prototype.constructor = Arithmetic_exprContext;
 
 
- 
+
 Arithmetic_exprContext.prototype.copyFrom = function(ctx) {
     antlr4.ParserRuleContext.prototype.copyFrom.call(this, ctx);
 };
@@ -732,7 +732,7 @@ LTLParser.prototype.arithmetic_expr = function(_p) {
                     this.arithmetic_expr(4);
                     break;
 
-                } 
+                }
             }
             this.state = 102;
             this._errHandler.sync(this);
@@ -770,7 +770,7 @@ Bool_exprContext.prototype = Object.create(antlr4.ParserRuleContext.prototype);
 Bool_exprContext.prototype.constructor = Bool_exprContext;
 
 
- 
+
 Bool_exprContext.prototype.copyFrom = function(ctx) {
     antlr4.ParserRuleContext.prototype.copyFrom.call(this, ctx);
 };
@@ -1420,7 +1420,7 @@ LTLParser.prototype.bool_expr = function(_p) {
                     this.bool_expr(2);
                     break;
 
-                } 
+                }
             }
             this.state = 173;
             this._errHandler.sync(this);

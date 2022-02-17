@@ -1,7 +1,7 @@
 // *****************************************************************************
 // Notices:
 //
-// Copyright © 2019, 2021 United States Government as represented by the Administrator
+// Copyright ©2019, 2021 United States Government as represented by the Administrator
 // of the National Aeronautics and Space Administration. All Rights Reserved.
 //
 // Disclaimers
@@ -189,28 +189,28 @@ var decisionsToDFA = atn.decisionToState.map( function(ds, index) { return new a
 
 var sharedContextCache = new antlr4.PredictionContextCache();
 
-var literalNames = [ null, "'$post_condition$'", "'$action$'", "'$scope_mode$'", 
-                     "'$stop_condition$'", "'$regular_condition$'", "'$action1$'", 
-                     "'$action2$'", "'FTP'", "'FFin_$scope_mode$'", "'FLin_$scope_mode$'", 
-                     "'Fin_$scope_mode$'", "'Lin_$scope_mode$'", "'FNin_$scope_mode$'", 
-                     "'LNin_$scope_mode$'", "'$duration$'", "'$duration$+1'", 
-                     "'H'", "'O'", "'<|'", "'Y'", "'S'", "'T'", "'SI'", 
-                     "'G'", "'F'", "'|>'", "'X'", "'U'", "'V'", "'UI'", 
-                     "'='", "'<'", "'<='", "'>'", "'>='", "'['", "','", 
-                     "']'", "'('", "')'", "'!'", "'&'", "'|'", "'xor'", 
+var literalNames = [ null, "'$post_condition$'", "'$action$'", "'$scope_mode$'",
+                     "'$stop_condition$'", "'$regular_condition$'", "'$action1$'",
+                     "'$action2$'", "'FTP'", "'FFin_$scope_mode$'", "'FLin_$scope_mode$'",
+                     "'Fin_$scope_mode$'", "'Lin_$scope_mode$'", "'FNin_$scope_mode$'",
+                     "'LNin_$scope_mode$'", "'$duration$'", "'$duration$+1'",
+                     "'H'", "'O'", "'<|'", "'Y'", "'S'", "'T'", "'SI'",
+                     "'G'", "'F'", "'|>'", "'X'", "'U'", "'V'", "'UI'",
+                     "'='", "'<'", "'<='", "'>'", "'>='", "'['", "','",
+                     "']'", "'('", "')'", "'!'", "'&'", "'|'", "'xor'",
                      "'->'", "'<->'", "'FALSE'", "'TRUE'" ];
 
-var symbolicNames = [ null, null, null, null, null, null, null, null, null, 
-                      null, null, null, null, null, null, null, null, null, 
-                      null, null, null, null, null, null, null, null, null, 
-                      null, null, null, null, null, null, null, null, null, 
-                      null, null, null, null, null, null, null, null, null, 
+var symbolicNames = [ null, null, null, null, null, null, null, null, null,
+                      null, null, null, null, null, null, null, null, null,
+                      null, null, null, null, null, null, null, null, null,
+                      null, null, null, null, null, null, null, null, null,
+                      null, null, null, null, null, null, null, null, null,
                       null, null, null, null, "ID", "UINT", "WS" ];
 
-var ruleNames =  [ "plHolders", "durPlHolders", "proposition", "simpleExpr", 
-                   "ltlExpr", "pastTimedUnaryOp", "pastUnaryOp", "pastBinaryOp", 
-                   "futureTimedUnaryOp", "futureUnaryOp", "futureBinaryOp", 
-                   "comparisonOp", "bound", "saltBound", "lp", "rp", "not", 
+var ruleNames =  [ "plHolders", "durPlHolders", "proposition", "simpleExpr",
+                   "ltlExpr", "pastTimedUnaryOp", "pastUnaryOp", "pastBinaryOp",
+                   "futureTimedUnaryOp", "futureUnaryOp", "futureBinaryOp",
+                   "comparisonOp", "bound", "saltBound", "lp", "rp", "not",
                    "and", "or", "xor", "implies", "equiv", "f", "t" ];
 
 function NuSMVParser (input) {
@@ -757,7 +757,7 @@ NuSMVParser.prototype.simpleExpr = function(_p) {
                     this.simpleExpr(2);
                     break;
 
-                } 
+                }
             }
             this.state = 92;
             this._errHandler.sync(this);
@@ -795,7 +795,7 @@ LtlExprContext.prototype = Object.create(antlr4.ParserRuleContext.prototype);
 LtlExprContext.prototype.constructor = LtlExprContext;
 
 
- 
+
 LtlExprContext.prototype.copyFrom = function(ctx) {
     antlr4.ParserRuleContext.prototype.copyFrom.call(this, ctx);
 };
@@ -1702,7 +1702,7 @@ NuSMVParser.prototype.ltlExpr = function(_p) {
                     this.ltlExpr(2);
                     break;
 
-                } 
+                }
             }
             this.state = 178;
             this._errHandler.sync(this);

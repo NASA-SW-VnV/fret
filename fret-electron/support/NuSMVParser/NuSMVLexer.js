@@ -1,7 +1,7 @@
 // *****************************************************************************
 // Notices:
 //
-// Copyright © 2019, 2021 United States Government as represented by the Administrator
+// Copyright ©2019, 2021 United States Government as represented by the Administrator
 // of the National Aeronautics and Space Administration. All Rights Reserved.
 //
 // Disclaimers
@@ -372,41 +372,41 @@ NuSMVLexer.prototype.channelNames = [ "DEFAULT_TOKEN_CHANNEL", "HIDDEN" ];
 
 NuSMVLexer.prototype.modeNames = [ "DEFAULT_MODE" ];
 
-NuSMVLexer.prototype.literalNames = [ null, "'$post_condition$'", "'$action$'", 
-                                      "'$scope_mode$'", "'$stop_condition$'", 
-                                      "'$regular_condition$'", "'$action1$'", 
-                                      "'$action2$'", "'FTP'", "'FFin_$scope_mode$'", 
-                                      "'FLin_$scope_mode$'", "'Fin_$scope_mode$'", 
-                                      "'Lin_$scope_mode$'", "'FNin_$scope_mode$'", 
-                                      "'LNin_$scope_mode$'", "'$duration$'", 
-                                      "'$duration$+1'", "'H'", "'O'", "'<|'", 
-                                      "'Y'", "'S'", "'T'", "'SI'", "'G'", 
-                                      "'F'", "'|>'", "'X'", "'U'", "'V'", 
-                                      "'UI'", "'='", "'<'", "'<='", "'>'", 
-                                      "'>='", "'['", "','", "']'", "'('", 
-                                      "')'", "'!'", "'&'", "'|'", "'xor'", 
+NuSMVLexer.prototype.literalNames = [ null, "'$post_condition$'", "'$action$'",
+                                      "'$scope_mode$'", "'$stop_condition$'",
+                                      "'$regular_condition$'", "'$action1$'",
+                                      "'$action2$'", "'FTP'", "'FFin_$scope_mode$'",
+                                      "'FLin_$scope_mode$'", "'Fin_$scope_mode$'",
+                                      "'Lin_$scope_mode$'", "'FNin_$scope_mode$'",
+                                      "'LNin_$scope_mode$'", "'$duration$'",
+                                      "'$duration$+1'", "'H'", "'O'", "'<|'",
+                                      "'Y'", "'S'", "'T'", "'SI'", "'G'",
+                                      "'F'", "'|>'", "'X'", "'U'", "'V'",
+                                      "'UI'", "'='", "'<'", "'<='", "'>'",
+                                      "'>='", "'['", "','", "']'", "'('",
+                                      "')'", "'!'", "'&'", "'|'", "'xor'",
                                       "'->'", "'<->'", "'FALSE'", "'TRUE'" ];
 
-NuSMVLexer.prototype.symbolicNames = [ null, null, null, null, null, null, 
-                                       null, null, null, null, null, null, 
-                                       null, null, null, null, null, null, 
-                                       null, null, null, null, null, null, 
-                                       null, null, null, null, null, null, 
-                                       null, null, null, null, null, null, 
-                                       null, null, null, null, null, null, 
-                                       null, null, null, null, null, null, 
+NuSMVLexer.prototype.symbolicNames = [ null, null, null, null, null, null,
+                                       null, null, null, null, null, null,
+                                       null, null, null, null, null, null,
+                                       null, null, null, null, null, null,
+                                       null, null, null, null, null, null,
+                                       null, null, null, null, null, null,
+                                       null, null, null, null, null, null,
+                                       null, null, null, null, null, null,
                                        null, "ID", "UINT", "WS" ];
 
-NuSMVLexer.prototype.ruleNames = [ "T__0", "T__1", "T__2", "T__3", "T__4", 
-                                   "T__5", "T__6", "T__7", "T__8", "T__9", 
-                                   "T__10", "T__11", "T__12", "T__13", "T__14", 
-                                   "T__15", "T__16", "T__17", "T__18", "T__19", 
-                                   "T__20", "T__21", "T__22", "T__23", "T__24", 
-                                   "T__25", "T__26", "T__27", "T__28", "T__29", 
-                                   "T__30", "T__31", "T__32", "T__33", "T__34", 
-                                   "T__35", "T__36", "T__37", "T__38", "T__39", 
-                                   "T__40", "T__41", "T__42", "T__43", "T__44", 
-                                   "T__45", "T__46", "T__47", "ID", "UINT", 
+NuSMVLexer.prototype.ruleNames = [ "T__0", "T__1", "T__2", "T__3", "T__4",
+                                   "T__5", "T__6", "T__7", "T__8", "T__9",
+                                   "T__10", "T__11", "T__12", "T__13", "T__14",
+                                   "T__15", "T__16", "T__17", "T__18", "T__19",
+                                   "T__20", "T__21", "T__22", "T__23", "T__24",
+                                   "T__25", "T__26", "T__27", "T__28", "T__29",
+                                   "T__30", "T__31", "T__32", "T__33", "T__34",
+                                   "T__35", "T__36", "T__37", "T__38", "T__39",
+                                   "T__40", "T__41", "T__42", "T__43", "T__44",
+                                   "T__45", "T__46", "T__47", "ID", "UINT",
                                    "WS" ];
 
 NuSMVLexer.prototype.grammarFileName = "NuSMV.g4";
@@ -414,4 +414,3 @@ NuSMVLexer.prototype.grammarFileName = "NuSMV.g4";
 
 
 exports.NuSMVLexer = NuSMVLexer;
-
