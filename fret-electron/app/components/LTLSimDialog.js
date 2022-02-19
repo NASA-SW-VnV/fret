@@ -1,7 +1,7 @@
 // *****************************************************************************
 // Notices:
 //
-// Copyright © 2019, 2021 United States Government as represented by the Administrator
+// Copyright ©2019, 2021 United States Government as represented by the Administrator
 // of the National Aeronautics and Space Administration. All Rights Reserved.
 //
 // Disclaimers
@@ -240,6 +240,8 @@ class LTLSimDialog extends Component {
             let {model} = prevState;
             if (LTLSimController.getFormulaKeys(model).indexOf(id) !== -1) {
                 LTLSimController.setFormulaTrace(model, id, sid, trace);
+                //for FT: value is beggining of trace
+                value=trace[0]
                 LTLSimController.setFormulaValue(model, id, sid, value ?
                                                     EFormulaStates.VALIDATED :
                                                     EFormulaStates.VIOLATED);
