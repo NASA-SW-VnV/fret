@@ -54,6 +54,7 @@ import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 /* Model component specification */
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
+import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -626,7 +627,8 @@ class RealizabilityContent extends React.Component {
     projectReport: {projectName: '', systemComponents: []}
     settingsOpen: false,
     selectedEngine: 0,
-    retainFiles: false
+    retainFiles: false,        
+    actionsMenuOpen: false
   }
 
   // Use this for bulk check in the future
@@ -656,6 +658,7 @@ class RealizabilityContent extends React.Component {
   constructor(props){
     super(props);
     const self = this;
+    self.anchorRef = React.createRef();
     dbChangeListener_RealCont = modeldb.changes({
       since: 'now',
       live: true,
@@ -872,7 +875,7 @@ class RealizabilityContent extends React.Component {
     const {selected, ccSelected, compositional, monolithic, timeout, projectReport, retainFiles} = this.state;
     const {selectedProject, getPropertyInfo, getDelayInfo, getContractInfo} = this.props
     const self = this;
-
+    self.setState({actionsMenuOpen: false});
     var actualTimeout = (timeout === '' ? 900 : timeout);
 
     var systemComponentIndex = projectReport.systemComponents.findIndex( sc => sc.name === selected.component_name);
@@ -1036,7 +1039,7 @@ class RealizabilityContent extends React.Component {
     const {selected, ccSelected, monolithic, compositional, connectedComponents, timeout, retainFiles} = this.state;
     const {selectedProject, components, getPropertyInfo, getDelayInfo, getContractInfo} = this.props;
     const self = this;
-
+    self.setState({actionsMenuOpen: false});
     var actualTimeout = (timeout === '' ? 900 : timeout);
 
     let nameAndEngine = self.getEngineNameAndOptions();
@@ -1260,7 +1263,7 @@ class RealizabilityContent extends React.Component {
   };
 
   handleSettingsOpen = () => {
-    this.setState({settingsOpen : true});
+    this.setState({actionsMenuOpen: false, settingsOpen : true});
   };
 
 
@@ -1276,9 +1279,20 @@ class RealizabilityContent extends React.Component {
     this.setState({retainFiles: value});
   }
 
+  handleActionsClick = (event) => {    
+    this.setState({actionsMenuOpen: !this.state.actionsMenuOpen})
+  };
+
+  handleActionsMenuClose = (event) => {
+    if (this.anchorRef.current && this.anchorRef.current.contains(event.target)) {
+      return;
+    }
+    this.setState({actionsMenuOpen: false})
+  }  
+
   render() {
     const {classes, selectedProject, components, completedComponents, checkComponentCompleted} = this.props;
-    const {order, orderBy, selected, ccSelected, monolithic, compositional, dependenciesExist, missingDependencies, projectReport} = this.state;
+    const {order, orderBy, selected, ccSelected, monolithic, compositional, dependenciesExist, missingDependencies, projectReport, actionsMenuOpen} = this.state;
 
     let grid;
     var tabs = [];
@@ -1335,11 +1349,23 @@ class RealizabilityContent extends React.Component {
         diagReport = monolithic ? projectReport.systemComponents[systemComponentIndex].monolithic.diagnosisReport : projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].diagnosisReport;
       }
     }
+
+    const contentStyle = {transition: 'margin-right 450ms cubic-bezier(0.23, 1, 0.32, 1)' };
+
+    // let actionsMargin = '58%'
+    let actionsMargin = {marginRight: '58%', transition: 'margin-right 450ms cubic-bezier(0.23, 1, 0.32, 1)' };
+
+
+    if (this.state.settingsOpen) {
+      contentStyle.marginRight = 256;
+      actionsMargin.marginRight = '48%'
+    }
+
     return(
       <div>
         {components.length !== 0 &&
           <div style={{alignItems: 'flex-end', display: 'flex', flexWrap :'wrap'}}>
-          <Grid container alignItems="flex-end">
+          <Grid container alignItems="flex-end">          
             <FormControl className={classes.formControl} required>
               <InputLabel>System Component</InputLabel>
               <Select
@@ -1400,8 +1426,7 @@ class RealizabilityContent extends React.Component {
                   color="primary"
                 />
               }
-
-              style={{marginRight: '48%'}}
+              style={actionsMargin}
               label="Monolithic"
             />
             {/*Disable this for now.
@@ -1436,11 +1461,36 @@ class RealizabilityContent extends React.Component {
               }}
             />*/}
             <div className={classes.wrapper}>
-            <Button onClick={(event) => {this.checkRealizability(event)}} 
-              id="qa_rlzCont_btn_check"
-              size="small" className={classes.vAlign} color="secondary" variant='contained' 
-              disabled={status[selected.component_name] === 'PROCESSING' || diagStatus === 'PROCESSING' || !dependenciesExist || (dependenciesExist && selected === '')}>
-                Check
+              <Button 
+                id="realizability_actions_button"
+                ref={this.anchorRef}
+                aria-controls={actionsMenuOpen ? 'realizability_actions_menu' : undefined}
+                aria-haspopup="true"
+                aria-expanded={actionsMenuOpen ? 'true' : undefined}   
+                size="small" variant="contained" color="secondary"
+                disabled={status[selected.component_name] === 'PROCESSING' || diagStatus === 'PROCESSING' || !dependenciesExist || (dependenciesExist && selected === '')}
+                endIcon={<KeyboardArrowDownIcon />}
+                onClick={(event) => this.handleActionsClick(event)}>
+                Actions        
+              </Button>
+              <Menu id="realizability_actions_menu" anchorEl={this.anchorRef.current} open={actionsMenuOpen} onClose={(event) => this.handleActionsMenuClose(event)} MenuListProps={{'aria-labelledby': 'realizability_actions_button'}}>
+                <MenuItem id="qa_rlzCont_btn_check" onClick={(event) => this.checkRealizability(event)}>Check Realizability</MenuItem>
+                <MenuItem 
+                  id="qa_rlzCont_btn_diagnose"
+                  onClick={(event) => this.diagnoseSpec(event)}
+                  disabled={status[selected.component_name] === 'PROCESSING' || diagStatus === 'PROCESSING' || !dependenciesExist || (dependenciesExist && (selected === '' || selected === 'all')) ||
+                  (dependenciesExist && selected !== '' && compositional && connectedComponents[selected.component_name][ccSelected]['result'] !== 'UNREALIZABLE') ||
+                    (selected !== '' && monolithic && status[selected.component_name] !== 'UNREALIZABLE')}
+                >
+                  Diagnose Unrealizable Requirements
+                </MenuItem>
+                <MenuItem id="qa_rlzCont_btn_save">Save Report</MenuItem>
+                <MenuItem id="qa_rlzCont_btn_settings" onClick={() => this.handleSettingsOpen()}>Change Settings</MenuItem>
+              </Menu>
+            </div>
+            {/*<div className={classes.wrapper}>
+            <Button onClick={(event) => {this.checkRealizability(event)}} size="small" className={classes.vAlign} color="secondary" variant='contained' disabled={status[selected.component_name] === 'PROCESSING' || diagStatus === 'PROCESSING' || !dependenciesExist || (dependenciesExist && selected === '')}>
+              Check
             </Button>
             </div>
             <div className={classes.wrapper}>
@@ -1468,14 +1518,13 @@ class RealizabilityContent extends React.Component {
             <div className={classes.wrapper}>
             <Button color="secondary" onClick={this.handleHelpOpen} size="small" id="qa_rlzTbl_btn_help" className={classes.vAlign} variant="contained"> Help </Button>
               <Tooltip title={'Settings'}>
-                <Button color="secondary" onClick={() => this.handleSettingsOpen()} size="small" className={classes.vAlign} variant="contained"> 
-                  {/*<SettingsIcon/>*/}
+                <Button color="secondary" onClick={() => this.handleSettingsOpen()} size="small" className={classes.vAlign} variant="contained">                   
                   Settings
                 </Button>
               </Tooltip>
-            </div>
+            </div>*/}
             <div className={classes.wrapper}>
-              <Button color="secondary" onClick={this.handleHelpOpen} size="small" className={classes.vAlign} variant="contained"> Help </Button>
+              <Button id="qa_rlzTbl_btn_help" color="secondary" onClick={this.handleHelpOpen} size="small" className={classes.vAlign} variant="contained"> Help </Button>
             </div>
             </Grid>
             <div style={{width : '100%'}}>

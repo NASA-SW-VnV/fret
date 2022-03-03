@@ -122,7 +122,7 @@ class RealizabilitySettingsDialog extends React.Component {
 		const {classes,handleSettingsClose, handleSettingsEngineChange} = this.props;
 				return(
 			<div>
-		        <Drawer
+		    <Drawer
 				  className={classes.drawer}
 				  variant="persistent"
 				  anchor="right"
@@ -130,7 +130,7 @@ class RealizabilitySettingsDialog extends React.Component {
 				  onClose={this.handleClose}
 				  classes={{
 				    paper: classes.drawerPaper,
-				  }}
+				  }}          
 				>
 					<div className={classes.toolbar} />
 					<div className={classes.drawerHeader}>
