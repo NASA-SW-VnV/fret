@@ -124,6 +124,12 @@ exports.parse = (text) => {
 // tests
 
 /*
+console.log(JSON.stringify(this.compile('only after p shall the sw , after 2 ticks, satisfy q')))
+
+console.log(JSON.stringify(this.compile('except while flight_mode = landed the sw shall always satisfy alt > 0')))
+
+console.log(JSON.stringify(this.compile('While flight_mode=3 the sw shall always satisfy x>0')))
+
 console.log(JSON.stringify(this.compile('When p the sw shall, at the next timepoint, satisfy post')))
 
 console.log(JSON.stringify(this.compile('The sw shall, until stop, satisfy post')))

@@ -50,7 +50,7 @@ export default function LTLSimLauncher(props) {
                 </Tooltip>
                 <LTLSimDialog
                 open={open}
-                id="REQ" 
+                id="REQ"
                 ftExpression={ftExpression}
                 ptExpression={ptExpression}
                 onClose={onClose}

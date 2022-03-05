@@ -505,7 +505,7 @@ class VariablesSortableTable extends React.Component {
             handleModelChange={this.handleModelChange}
             importComponentModel={this.importComponentModel}
           />
-          <Table className={classes.table} aria-labelledby="tableTitle" size = "small">
+          <Table className={classes.table} aria-labelledby="tableTitle" size="small">
             <VariablesSortableHead
               order={order}
               orderBy={orderBy}

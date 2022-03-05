@@ -54,9 +54,9 @@ function TemplateDropdownMenu(props) {
             boxShadow: '0 1px 5px rgba(0,0,0,.2)',
         }}>
             {options.map((option, i) => (
-            <ListItem 
-                key={'Option_'+i} 
-                selected={i === selection} 
+            <ListItem
+                key={'Option_'+i}
+                selected={i === selection}
                 id={'Option_'+i}
                 button
                 onClick={onClick(i)}>
