@@ -786,7 +786,7 @@ class SortableTable extends React.Component {
               rowCount={data.length}
               enableBulkChange={bulkChangeMode}
             />
-            <TableBody>{
+            <TableBody id={"qa_tbl_sortableTable_body"}>{
                 stableSort(data, getSorting(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map(n => {

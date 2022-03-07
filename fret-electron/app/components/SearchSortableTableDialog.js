@@ -144,11 +144,12 @@ class SearchSortableTableDialog extends React.Component {
               <FormControl >
           <Typography fontSize="medium">Status</Typography>
           <FormGroup row>
-            {statusTypes.map(statusType =>
+            {statusTypes.map((statusType, index) =>
               <FormControlLabel
                 key={statusType}
                 control={
                   <Checkbox
+                    id={"qa_srchTbl_cb_"+index}
                     checked = {statusChkBx[statusType]}
                     icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
                     checkedIcon={<CheckBoxIcon fontSize="small" />}
@@ -224,10 +225,10 @@ class SearchSortableTableDialog extends React.Component {
             </DialogContent>
 
             <DialogActions>
-              <Button onClick={this.handleClose} color="primary">
+              <Button id="qa_srchTbl_btn_cancel" onClick={this.handleClose} color="primary">
                 Cancel
               </Button>
-              <Button onClick={this.filterData} color="secondary" autoFocus variant='contained'>
+              <Button id="qa_srchTbl_btn_search" onClick={this.filterData} color="secondary" autoFocus variant='contained'>
                 Search
               </Button>
             </DialogActions>
