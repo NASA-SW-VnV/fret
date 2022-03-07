@@ -400,9 +400,9 @@ class DisplayVariableDialog extends React.Component {
                   <MenuItem id="qa_disVar_mi_varType_None" value="" key={selectedVariable}>
                     <em>None</em>
                   </MenuItem>
-                  <MenuItem id="qa_disVar_mi_varType_funcion" value="Function">Function</MenuItem>
-                  <MenuItem id="qa_disVar_mi_varType_input" value="Input" >Input</MenuItem>
-                  <MenuItem id="qa_disVar_mi_varType_internal" value="Internal">Internal</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_Function" value="Function">Function</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_Input" value="Input" >Input</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_Internal" value="Internal">Internal</MenuItem>
                   <MenuItem id="qa_disVar_mi_varType_Mode" value="Mode">Mode</MenuItem>
                   <MenuItem id="qa_disVar_mi_varType_Output" value="Output">Output</MenuItem>
                 </Select>
@@ -547,9 +547,9 @@ class DisplayVariableDialog extends React.Component {
                     <MenuItem id="qa_disVar_mi_selVar_None" value="" key={selectedVariable}>
                       <em>None</em>
                     </MenuItem>
-                    <MenuItem id="qa_disVar_mi_varType_funcion" value="Function">Function</MenuItem>
-                    <MenuItem id="qa_disVar_mi_varType_input" value="Input" >Input</MenuItem>
-                    <MenuItem id="qa_disVar_mi_varType_internal" value="Internal">Internal</MenuItem>
+                    <MenuItem id="qa_disVar_mi_varType_Function" value="Function">Function</MenuItem>
+                    <MenuItem id="qa_disVar_mi_varType_Input" value="Input" >Input</MenuItem>
+                    <MenuItem id="qa_disVar_mi_varType_Internal" value="Internal">Internal</MenuItem>
                     <MenuItem id="qa_disVar_mi_varType_Mode" value="Mode">Mode</MenuItem>
                     <MenuItem id="qa_disVar_mi_varType_Output" value="Output">Output</MenuItem>
                   </Select>
@@ -654,9 +654,9 @@ class DisplayVariableDialog extends React.Component {
                   <MenuItem id="qa_disVar_mi_selVar_None" value="" key={selectedVariable}>
                     <em>None</em>
                   </MenuItem>
-                  <MenuItem id="qa_disVar_mi_varType_funcion" value="Function">Function</MenuItem>
-                  <MenuItem id="qa_disVar_mi_varType_input" value="Input" >Input</MenuItem>
-                  <MenuItem id="qa_disVar_mi_varType_internal" value="Internal">Internal</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_Function" value="Function">Function</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_Input" value="Input" >Input</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_Internal" value="Internal">Internal</MenuItem>
                   <MenuItem id="qa_disVar_mi_varType_Mode" value="Mode">Mode</MenuItem>
                   <MenuItem id="qa_disVar_mi_varType_Output" value="Output">Output</MenuItem>
                 </Select>
@@ -771,9 +771,9 @@ class DisplayVariableDialog extends React.Component {
                   <MenuItem id="qa_disVar_mi_selVar_None" value="" key={selectedVariable}>
                     <em>None</em>
                   </MenuItem>
-                  <MenuItem id="qa_disVar_mi_varType_funcion" value="Function">Function</MenuItem>
-                  <MenuItem id="qa_disVar_mi_varType_input" value="Input" >Input</MenuItem>
-                  <MenuItem id="qa_disVar_mi_varType_internal" value="Internal">Internal</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_Function" value="Function">Function</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_Input" value="Input" >Input</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_Internal" value="Internal">Internal</MenuItem>
                   <MenuItem id="qa_disVar_mi_varType_Mode" value="Mode">Mode</MenuItem>
                   <MenuItem id="qa_disVar_mi_varType_Output" value="Output">Output</MenuItem>
                 </Select>
@@ -918,9 +918,9 @@ class DisplayVariableDialog extends React.Component {
                   <MenuItem id="qa_disVar_mi_selVar_None" value="" key={selectedVariable}>
                     <em>None</em>
                   </MenuItem>
-                  <MenuItem id="qa_disVar_mi_varType_funcion" value="Function">Function</MenuItem>
-                  <MenuItem id="qa_disVar_mi_varType_input" value="Input" >Input</MenuItem>
-                  <MenuItem id="qa_disVar_mi_varType_internal" value="Internal">Internal</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_Function" value="Function">Function</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_Input" value="Input" >Input</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_Internal" value="Internal">Internal</MenuItem>
                   <MenuItem id="qa_disVar_mi_varType_Mode" value="Mode">Mode</MenuItem>
                   <MenuItem id="qa_disVar_mi_varType_Output" value="Output">Output</MenuItem>
                 </Select>
@@ -1077,9 +1077,9 @@ class DisplayVariableDialog extends React.Component {
                   <MenuItem id="qa_disVar_mi_selVar_None" value="" key={selectedVariable}>
                     <em>None</em>
                   </MenuItem>
-                  <MenuItem id="qa_disVar_mi_varType_funcion" value="Function">Function</MenuItem>
-                  <MenuItem id="qa_disVar_mi_varType_input" value="Input" >Input</MenuItem>
-                  <MenuItem id="qa_disVar_mi_varType_internal" value="Internal">Internal</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_Function" value="Function">Function</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_Input" value="Input" >Input</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_Internal" value="Internal">Internal</MenuItem>
                   <MenuItem id="qa_disVar_mi_varType_Mode" value="Mode">Mode</MenuItem>
                   <MenuItem id="qa_disVar_mi_varType_Output" value="Output">Output</MenuItem>
                 </Select>
@@ -1233,9 +1233,9 @@ class DisplayVariableDialog extends React.Component {
                   <MenuItem id="qa_disVar_mi_selVar_None" value="" key={selectedVariable}>
                     <em>None</em>
                   </MenuItem>
-                  <MenuItem id="qa_disVar_mi_varType_funcion" value="Function">Function</MenuItem>
-                  <MenuItem id="qa_disVar_mi_varType_input" value="Input" >Input</MenuItem>
-                  <MenuItem id="qa_disVar_mi_varType_internal" value="Internal">Internal</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_Function" value="Function">Function</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_Input" value="Input" >Input</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_Internal" value="Internal">Internal</MenuItem>
                   <MenuItem id="qa_disVar_mi_varType_Mode" value="Mode">Mode</MenuItem>
                   <MenuItem id="qa_disVar_mi_varType_Output" value="Output">Output</MenuItem>
                 </Select>
@@ -1400,9 +1400,9 @@ class DisplayVariableDialog extends React.Component {
                   <MenuItem id="qa_disVar_mi_selVar_None" value="" key={selectedVariable}>
                     <em>None</em>
                   </MenuItem>
-                  <MenuItem id="qa_disVar_mi_varType_funcion" value="Function">Function</MenuItem>
-                  <MenuItem id="qa_disVar_mi_varType_input" value="Input" >Input</MenuItem>
-                  <MenuItem id="qa_disVar_mi_varType_internal" value="Internal">Internal</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_Function" value="Function">Function</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_Input" value="Input" >Input</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_Internal" value="Internal">Internal</MenuItem>
                   <MenuItem id="qa_disVar_mi_varType_Mode" value="Mode">Mode</MenuItem>
                   <MenuItem id="qa_disVar_mi_varType_Output" value="Output">Output</MenuItem>
                 </Select>
@@ -1559,9 +1559,9 @@ class DisplayVariableDialog extends React.Component {
                   <MenuItem id="qa_disVar_mi_selVar_None" value="" key={selectedVariable}>
                     <em>None</em>
                   </MenuItem>
-                  <MenuItem id="qa_disVar_mi_varType_funcion" value="Function">Function</MenuItem>
-                  <MenuItem id="qa_disVar_mi_varType_input" value="Input" >Input</MenuItem>
-                  <MenuItem id="qa_disVar_mi_varType_internal" value="Internal">Internal</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_Function" value="Function">Function</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_Input" value="Input" >Input</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_Internal" value="Internal">Internal</MenuItem>
                   <MenuItem id="qa_disVar_mi_varType_Mode" value="Mode">Mode</MenuItem>
                   <MenuItem id="qa_disVar_mi_varType_Output" value="Output">Output</MenuItem>
                 </Select>
@@ -1718,9 +1718,9 @@ class DisplayVariableDialog extends React.Component {
                   <MenuItem id="qa_disVar_mi_selVar_None" value="" key={selectedVariable}>
                     <em>None</em>
                   </MenuItem>
-                  <MenuItem id="qa_disVar_mi_varType_funcion" value="Function">Function</MenuItem>
-                  <MenuItem id="qa_disVar_mi_varType_input" value="Input" >Input</MenuItem>
-                  <MenuItem id="qa_disVar_mi_varType_internal" value="Internal">Internal</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_Function" value="Function">Function</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_Input" value="Input" >Input</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_Internal" value="Internal">Internal</MenuItem>
                   <MenuItem id="qa_disVar_mi_varType_Mode" value="Mode">Mode</MenuItem>
                   <MenuItem id="qa_disVar_mi_varType_Output" value="Output">Output</MenuItem>
                 </Select>
@@ -1888,9 +1888,9 @@ class DisplayVariableDialog extends React.Component {
                   <MenuItem id="qa_disVar_mi_selVar_None" value="" key={selectedVariable}>
                     <em>None</em>
                   </MenuItem>
-                  <MenuItem id="qa_disVar_mi_varType_funcion" value="Function">Function</MenuItem>
-                  <MenuItem id="qa_disVar_mi_varType_input" value="Input" >Input</MenuItem>
-                  <MenuItem id="qa_disVar_mi_varType_internal" value="Internal">Internal</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_Function" value="Function">Function</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_Input" value="Input" >Input</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_Internal" value="Internal">Internal</MenuItem>
                   <MenuItem id="qa_disVar_mi_varType_Mode" value="Mode">Mode</MenuItem>
                   <MenuItem id="qa_disVar_mi_varType_Output" value="Output">Output</MenuItem>
                 </Select>
@@ -2058,9 +2058,9 @@ class DisplayVariableDialog extends React.Component {
                   <MenuItem id="qa_disVar_mi_selVar_None" value="" key={selectedVariable}>
                     <em>None</em>
                   </MenuItem>
-                  <MenuItem id="qa_disVar_mi_varType_funcion" value="Function">Function</MenuItem>
-                  <MenuItem id="qa_disVar_mi_varType_input" value="Input" >Input</MenuItem>
-                  <MenuItem id="qa_disVar_mi_varType_internal" value="Internal">Internal</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_Function" value="Function">Function</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_Input" value="Input" >Input</MenuItem>
+                  <MenuItem id="qa_disVar_mi_varType_Internal" value="Internal">Internal</MenuItem>
                   <MenuItem id="qa_disVar_mi_varType_Mode" value="Mode">Mode</MenuItem>
                   <MenuItem id="qa_disVar_mi_varType_Output" value="Output">Output</MenuItem>
                 </Select>
@@ -2230,9 +2230,9 @@ class DisplayVariableDialog extends React.Component {
                     <MenuItem id="qa_disVar_mi_selVar_None" value="" key={selectedVariable}>
                       <em>None</em>
                     </MenuItem>
-                    <MenuItem id="qa_disVar_mi_varType_funcion" value="Function">Function</MenuItem>
-                    <MenuItem id="qa_disVar_mi_varType_input" value="Input" >Input</MenuItem>
-                    <MenuItem id="qa_disVar_mi_varType_internal" value="Internal">Internal</MenuItem>
+                    <MenuItem id="qa_disVar_mi_varType_Function" value="Function">Function</MenuItem>
+                    <MenuItem id="qa_disVar_mi_varType_Input" value="Input" >Input</MenuItem>
+                    <MenuItem id="qa_disVar_mi_varType_Internal" value="Internal">Internal</MenuItem>
                     <MenuItem id="qa_disVar_mi_varType_Mode" value="Mode">Mode</MenuItem>
                     <MenuItem id="qa_disVar_mi_varType_Output" value="Output">Output</MenuItem>
                   </Select>

@@ -399,7 +399,7 @@ class VariablesView extends React.Component {
           {components.map(component => {
             return(
               <Accordion key={component}>
-              <AccordionSummary id="qa_var_as_expandIcon" expandIcon={<ExpandMoreIcon />}>
+              <AccordionSummary id={"qa_var_as_expandIcon_"+component} expandIcon={<ExpandMoreIcon />}>
                 <Typography className={classes.heading}>{component}</Typography>
                 <ComponentSummary
                   id={"qa_var_cs_"+component}

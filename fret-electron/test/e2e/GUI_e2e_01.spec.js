@@ -1335,6 +1335,7 @@ describe('FRET GUI E2E tests ', function () {
             const anaBtn = await app.client.$('#qa_db_li_analysis');
             await anaBtn.click();
 
+            //const expandIcon =  await app.client.$('#qa_var_as_expandIcon_FSM');
             const expandIcon =  await app.client.$('#qa_var_as_expandIcon_FSM');
             await expandIcon.click();
 
@@ -1369,6 +1370,7 @@ describe('FRET GUI E2E tests ', function () {
             await anaBtn.click();     
 
             const expandIcon = await app.client.$('#qa_var_as_expandIcon_liquid_mixer');
+            //const expandIcon = await app.client.$('#qa_var_as_expandIcon');
             await expandIcon.click();
 
             const rlzTab = await app.client.$('#qa_rlz_tab');
