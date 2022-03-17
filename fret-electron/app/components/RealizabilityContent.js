@@ -243,31 +243,33 @@ function determineResultIcon(result, time) {
 
 class ResultIcon extends React.Component {
   render() {
-    const {result, time, error} = this.props;
-    {/*<Tooltip title={(result === 'ERROR' ? ("The following error occured at the solver level:\n" + error) : result) +
-      (time !== undefined ? time : '')}>*/}
+    const {reskey, result, time, error} = this.props;
+    //{/*<Tooltip title={(result === 'ERROR' ? ("The following error occured at the solver level:\n" + error) : result) +
+    //  (time !== undefined ? time : '')}>*/};
     return (
     
     <Tooltip title={<span style={{ whiteSpace: 'pre-line' }}> {(result === 'ERROR' ? ("The following error(s) occured at the solver level:\n" + error) : result) +
       (time !== undefined ? time : '')} </span>}>
       {result === 'REALIZABLE' ?
-        <CheckCircleOutlineIcon style={{fontSize : '20px', verticalAlign : 'bottom', color : '#68BC00'}}/> :
+        <CheckCircleOutlineIcon id = {"qa_rlzTbl_res_"+reskey+"_"+result} style={{fontSize : '20px', verticalAlign : 'bottom', color : '#68BC00'}}/> :
         result === 'UNREALIZABLE' ?
-          <HighlightOffIcon style={{fontSize : '20px', verticalAlign : 'bottom'}} color='error'/> :
+          <HighlightOffIcon id = {"qa_rlzTbl_res_"+reskey+"_"+result} style={{fontSize : '20px', verticalAlign : 'bottom'}} color='error'/> :
           result === 'PROCESSING' ?
-            <CircularProgress style={{verticalAlign : 'bottom'}} size={15}/> :
+            <CircularProgress id = {"qa_rlzTbl_res_"+reskey+"_"+result} style={{verticalAlign : 'bottom'}} size={15}/> :
             result === 'UNKNOWN' ?
-            <HelpOutlineIcon style={{fontSize : '20px', verticalAlign : 'bottom', color : '#ff9900'}}/> :
+            <HelpOutlineIcon id = {"qa_rlzTbl_res_"+reskey+"_"+result} style={{fontSize : '20px', verticalAlign : 'bottom', color : '#ff9900'}}/> :
               result === 'ERROR' ?
-              <ErrorIcon style={{fontSize : '20px', verticalAlign : 'bottom'}} color='error'/> : <div/>}
+              <ErrorIcon id = {"qa_rlzTbl_res_"+reskey+"_"+result} style={{fontSize : '20px', verticalAlign : 'bottom'}} color='error'/> : <div/>}
     </Tooltip>
     )
   }
 }
 
 ResultIcon.propTypes ={
+  reskey:  PropTypes.string.isRequired,
   result: PropTypes.string.isRequired,
-  time: PropTypes.string.isRequired
+  time: PropTypes.string.isRequired,
+  error: PropTypes.string.isRequired
 }
 
 
@@ -1104,13 +1106,13 @@ class RealizabilityContent extends React.Component {
     let grid;
     var tabs = [];
     for (var cc in connectedComponents[selected.component_name]) {
-          tabs.push(<Tab key={cc} value={cc} classes={{root : classes.tabRoot}} label={
+          tabs.push(<Tab id = {"qa_rlzTbl_tab_"+cc } key={cc} value={cc} classes={{root : classes.tabRoot}} label={
         <div key={cc} style={{display : 'flex', alignItems : 'center', flexWrap : 'wrap'}}>
           {cc}
           &nbsp;
-          <ResultIcon key={cc} result={connectedComponents[selected.component_name][cc]['result']}
+          <ResultIcon reskey={cc} result={connectedComponents[selected.component_name][cc]['result']}
           time={connectedComponents[selected.component_name][cc]['time'] !== undefined ? ' - '+connectedComponents[selected.component_name][cc]['time'] : ''}
-          error={compositionalError[selected.component_name][cc]}/>
+          error={compositionalError[selected.component_name][cc] !== undefined ? ' - '+compositionalError[selected.component_name][cc] : ''}/>
         </div>
       }/>)
     }
@@ -1150,8 +1152,9 @@ class RealizabilityContent extends React.Component {
                             <div key={n.component_name} style={{display : 'flex', alignItems : 'center'}}>
                               {n.component_name}
                               &nbsp;
-                              <ResultIcon key={n.component_name} result={status[n.component_name] !== undefined ? status[n.component_name] : ''} time={(monolithic && time[n.component_name] !== undefined) ? ' - ' + time[n.component_name] : ''}
-                                error={monolithicError[n.component_name]}/>
+                              <ResultIcon 
+                                reskey={n.component_name} result={status[n.component_name] !== undefined ? status[n.component_name] : ''} time={(monolithic && time[n.component_name] !== undefined) ? ' - ' + time[n.component_name] : ''}
+                                error={monolithicError[n.component_name] !== undefined ? ' - '+monolithicError[n.component_name]: ''}/>
                             </div>
                           </MenuItem>
                           </span>
@@ -1244,7 +1247,6 @@ class RealizabilityContent extends React.Component {
                     <AppBar position="static" color="default">
                       <div className={classes.appbar}>
                         <Tabs
-                          id={"qa_rlzTbl_tab_"+ccSelected}
                           value={ccSelected}
                           onChange={this.handleCCChange}
                           variant="scrollable"

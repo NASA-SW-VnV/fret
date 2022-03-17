@@ -315,7 +315,7 @@ class ChordDiagram extends React.Component {
 					+ "translate(" + (innerRadius + 40) + ")"
 					+ (d.angle > Math.PI ? "rotate(180)" : "");
 		  		})
-			    .attr("id",function(d,i){return "qa_chordDia_svg_text_reqId_"+names[i];})
+			    .attr("id",function(d,i){return "qa_chordDia_svg_text_reqId_"+names[i].replace(/\s+/g, '_');})
 		  		.text(function(d,i) { return names[i]; });
 
 

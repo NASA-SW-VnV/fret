@@ -195,7 +195,7 @@ class CounterexampleTable extends React.Component {
   	for (var i = 0; i < currentConflicts.length; i++) {
   		menuItems.push(
 		(<MenuItem key={i}
-      id={"qa_counterEx_mi_"+i}
+      id={"qa_counterEx_mi_Conflict_"+allConflicts.indexOf(currentConflicts[i])+1}
       value={currentConflicts[i]} >
       Conflict {allConflicts.indexOf(currentConflicts[i])+1}
 			</MenuItem>)

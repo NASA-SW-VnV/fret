@@ -367,7 +367,7 @@ class DiagnosisRequirementsTable extends React.Component {
                           opacity : (isInConflict || connectedComponent.properties.has(n.reqid)) ? 1 : .6,
                           borderStyle: isInConflict ? 'solid' : 'initial', 
                           borderColor: isInConflict ? color : 'initial'}}>
-                        <TableCell id={"qa_rlzTbl_tc_body_id_"+label}>
+                        <TableCell id={"qa_rlzTbl_tc_body_id_"+label+"_row_"+n.rowid}>
                             {label}
                           </TableCell>
                         <TableCell id={"qa_rlzTbl_tc_body_summary_"+label}>{n.summary}</TableCell>
@@ -392,7 +392,7 @@ class DiagnosisRequirementsTable extends React.Component {
                           opacity : (isInConflict || reqs.length === 0  || isAssumption) ? 1 : .6,
                           borderStyle: isInConflict ? 'solid' : 'initial', 
                           borderColor: isInConflict ? color : 'initial'}}>
-                        <TableCell id={"qa_rlzTbl_tc_body_id_"+label}>
+                        <TableCell id={"qa_rlzTbl_tc_body_id_"+label+"_row_"+n.rowid}>
                             {label}
                           </TableCell>
                         <TableCell id={"qa_rlzTbl_tc_body_summary_"+label}>{n.summary}</TableCell>
