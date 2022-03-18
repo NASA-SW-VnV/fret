@@ -42,7 +42,11 @@ module.exports = {
     transform,
     transformPastTemporalConditions,
     transformFutureTemporalConditions,
-    transformTemporalConditions
+    transformTemporalConditions,
+    transformPastTemporalConditionsNoBounds,
+    transformFutureTemporalConditionsNoBounds,
+    transformTemporalConditionsNoBounds
+
 }
 
 const isArray = utils.isArray;
@@ -109,6 +113,18 @@ const pastTemporalConditions = [
 ]
 
 const temporalConditions = pastTemporalConditions.concat(futureTemporalConditions);
+
+const futureTemporalConditionsNoBounds = [
+    ['persists(__n,__p)',trueFn,'(G[<=__n] __p)'],
+    ['occurs(__n,__p)',trueFn,'(F[<=__n] __p)']
+    ]
+
+const pastTemporalConditionsNoBounds = [
+    ['persisted(__n,__p)',trueFn,'(H[<=__n] __p)'],
+    ['occurred(__n,__p)',trueFn,'(O[<=__n] __p)']
+]
+
+const temporalConditionsNoBounds = pastTemporalConditionsNoBounds.concat(futureTemporalConditionsNoBounds);
 
 // pat has variables which are strings prefixed with '__'. Return null if no match else
 // a hashmap of variables to subterms of term.
@@ -225,6 +241,11 @@ const parsedPastTemporalConditions = pastTemporalConditions.map(parseit)
 const parsedFutureTemporalConditions = futureTemporalConditions.map(parseit)
 const parsedTemporalConditions = temporalConditions.map(parseit);
 
+const parsedPastTemporalConditionsNoBounds = pastTemporalConditionsNoBounds.map(parseit)
+const parsedFutureTemporalConditionsNoBounds = futureTemporalConditionsNoBounds.map(parseit)
+const parsedTemporalConditionsNoBounds = temporalConditionsNoBounds.map(parseit);
+
+
 function applyPtSimplifications (term) {
     return applyTriples(term,ptSimplifications);
 }
@@ -247,6 +268,18 @@ function applyFutureTemporalConditions(term) {
 
 function applyTemporalConditions(term) {
     return applyTriples(term,parsedTemporalConditions);
+}
+
+function applyPastTemporalConditionsNoBounds(term) {
+    return applyTriples(term,parsedPastTemporalConditionsNoBounds);
+}
+
+function applyFutureTemporalConditionsNoBounds(term) {
+    return applyTriples(term,parsedFutureTemporalConditionsNoBounds);
+}
+
+function applyTemporalConditionsNoBounds(term) {
+    return applyTriples(term,parsedTemporalConditionsNoBounds);
 }
 
 // Apply rules exhaustively to term, starting at the bottom again each time a rule applies.
@@ -312,24 +345,44 @@ function introduceSI(ptAST) {
     return result;
 }
 
-const pastTemporalConditionRules = [applyPastTemporalConditions];
-const futureTemporalConditionRules = [applyFutureTemporalConditions];
-const temporalConditionRules = [applyTemporalConditions];
+const pastTemporalConditionsRules = [applyPastTemporalConditions];
+const futureTemporalConditionsRules = [applyFutureTemporalConditions];
+const temporalConditionsRules = [applyTemporalConditions];
 
 function expandPastTemporalConditions (ast) {
-    let result = rewrite_bottomup(ast,pastTemporalConditionRules);
+    let result = rewrite_bottomup(ast,pastTemporalConditionsRules);
     return result;
 }
 
 function expandFutureTemporalConditions (ast) {
-    let result = rewrite_bottomup(ast,futureTemporalConditionRules);
+    let result = rewrite_bottomup(ast,futureTemporalConditionsRules);
     return result;
 }
 
 function expandTemporalConditions (ast) {
-    let result = rewrite_bottomup(ast,temporalConditionRules);
+    let result = rewrite_bottomup(ast,temporalConditionsRules);
     return result;
 }
+
+const pastTemporalConditionsNoBoundsRules = [applyPastTemporalConditionsNoBounds];
+const futureTemporalConditionsNoBoundsRules = [applyFutureTemporalConditionsNoBounds];
+const temporalConditionsNoBoundsRules = [applyTemporalConditionsNoBounds];
+
+function expandPastTemporalConditionsNoBounds (ast) {
+    let result = rewrite_bottomup(ast,pastTemporalConditionsNoBoundsRules);
+    return result;
+}
+
+function expandFutureTemporalConditionsNoBounds (ast) {
+    let result = rewrite_bottomup(ast,futureTemporalConditionsNoBoundsRules);
+    return result;
+}
+
+function expandTemporalConditionsNoBounds (ast) {
+    let result = rewrite_bottomup(ast,temporalConditionsNoBoundsRules);
+    return result;
+}
+
 
 function transform(formulaString,transformation) {
     //let AST = astsem.SMVtoAST(formulaString);
@@ -352,6 +405,21 @@ function transformFutureTemporalConditions (formulaString) {
 
 function transformTemporalConditions (formulaString) {
     let result = transform(formulaString,expandTemporalConditions);
+    return result;
+}
+
+function transformPastTemporalConditionsNoBounds (formulaString) {
+    let result = transform(formulaString,expandPastTemporalConditionsNoBounds);
+    return result;
+}
+
+function transformFutureTemporalConditionsNoBounds (formulaString) {
+    let result = transform(formulaString,expandFutureTemporalConditionsNoBounds);
+    return result;
+}
+
+function transformTemporalConditionsNoBounds (formulaString) {
+    let result = transform(formulaString,expandTemporalConditionsNoBounds);
     return result;
 }
 
@@ -451,6 +519,16 @@ function optimizeSemantics() {
     }
 }
 optimizeSemantics()
+*/
+
+/*
+console.log(transformTemporalConditions("persisted(3,!p) & occurred(4,p)"))
+console.log(transformTemporalConditionsNoBounds("persisted(3,!p) & occurred(4,p)"))
+console.log(transformPastTemporalConditions("persisted(3,!p) & occurred(4,p)"))
+console.log(transformPastTemporalConditionsNoBounds("persisted(3,!p) & occurred(4,p)"))
+console.log(transformFutureTemporalConditions("persists(3,!p) & occurs(4,p)"))
+console.log(transformFutureTemporalConditionsNoBounds("persists(3,!p) & occurs(4,p)"))
+console.log(transformTemporalConditions("m"))
 */
 
 /*

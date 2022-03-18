@@ -9,7 +9,11 @@ FRET is a framework for the elicitation, specification, formalization and unders
 Contact
 -------
 
-Please contact <anastasia.mavridou@nasa.gov> and <tom.pressburger@nasa.gov> for further information on FRET. Detailed information can be found in the [FRET manual](fret-electron/docs/_media/userManual.md).
+For further information on FRET, please contact <andreas.katis@nasa.gov>,
+<anastasia.mavridou@nasa.gov>, <tom.pressburger@nasa.gov> or issues and
+discussions on GitHub at [https://github.com/NASA-SW-VnV/fret.git](https://github.com/NASA-SW-VnV/fret.git). Detailed
+information can be found in the
+[FRET manual](fret-electron/docs/_media/userManual.md).
 
 Installation
 ------------

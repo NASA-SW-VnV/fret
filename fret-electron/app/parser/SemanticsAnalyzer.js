@@ -42,9 +42,21 @@ const xform = require('../../support/xform');
 
 var result = {};
 
+function prettyObject(obj) {
+  let pretty = '';
+  for (let key in obj) {
+    let prettyField = key + ": " + JSON.stringify(obj[key]) + '\n';
+    pretty = pretty + prettyField;
+  }
+  return pretty;
+}
+    
+
 function optLog(str) {
     if (constants.verboseSemanticsAnalyzer) console.log(str);
 }
+
+
 
 function SemanticsAnalyzer() {
   RequirementListener.call(this);
@@ -148,6 +160,10 @@ RequirementListener.prototype.enterScope_mode = function(ctx) {
     }
 }
 
+RequirementListener.prototype.enterScope_condition = function(ctx) {
+    result.scope_mode = '(' + antlrUtilities.getText(ctx).trim() + ')';
+}
+
 RequirementListener.prototype.exitReqt_condition = function(ctx) {
   result.conditionTextRange = [ctx.start.start, ctx.stop.stop]
 }
@@ -200,11 +216,6 @@ RequirementListener.prototype.exitQualified_condition2 = function(ctx) {
 RequirementListener.prototype.enterStop_condition = function(ctx) {
     result.stop_condition = '(' + antlrUtilities.getText(ctx).trim() + ')';
 }
-
-RequirementListener.prototype.enterScope_condition = function(ctx) {
-    result.scope_mode = '(' + antlrUtilities.getText(ctx).trim() + ')';
-}
-
 
 //don't need this, regular_condition will already have outer parens
 //RequirementListener.prototype.exitRegular_condition = function(ctx) {
@@ -421,7 +432,7 @@ function SALTExpr2SMV (expr) {
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
 SemanticsAnalyzer.prototype.semantics = () => {
- optLog('Semantics result in: ' + JSON.stringify(result));
+ optLog('Semantics result in:\n' + prettyObject(result));
 
  if (result.type === 'freeForm') {
     result.ft = constants.natural_semantics;
@@ -431,7 +442,7 @@ SemanticsAnalyzer.prototype.semantics = () => {
   // fetchedSemantics is an object with fields:
   // endpoints, pt, ptExpanded, CoCoSpecCode, etc. See app/parser/semantics.json
   let fetchedSemantics = fetchSemantics.getSemantics(result.scope, result.condition, result.timing, result.response);
-  optLog('fetchedSemantics: ' + JSON.stringify(fetchedSemantics));
+  optLog('fetchedSemantics: ' + prettyObject(fetchedSemantics));
 
   // Create variable descriptions like 'M = cruise TC = goingTooSlow Response = speedup'
   let variableDescription = createVariableDescription(result.scope, result.condition, result.timing, result.response, result.stop_condition);
@@ -444,7 +455,7 @@ SemanticsAnalyzer.prototype.semantics = () => {
   // left has unexpanded endpoints like FTP and FFin_$scope_mode$
   let left = fetchedSemantics.endpoints.left;
   let right = fetchedSemantics.endpoints.right
-  // ptleftSMV has the endpoints expanded into LTL
+  // ptleftSMV has the endpoints expanded into ptLTL
   let ptleftSMV = fetchedSemantics.endpoints.SMVptExtleft;
   // ptleftCoCo is the same as ptleftSMV except that FTP is *not* expanded.
   let ptleftCoCo = ptleftSMV.replace(/\(!(\s)*\(Y TRUE\)\)/g, 'FTP');
@@ -457,129 +468,128 @@ SemanticsAnalyzer.prototype.semantics = () => {
   let postCond = result.post_condition;
   let stopCond = result.stop_condition;  
 
+  // Handle scope mode condition. It could be a boolean expr
+  // with a temporal condition.
+    if (result.scope.type === 'null') {
+      result.scope_mode_pt = "BAD_PT";
+      result.scope_mode_coco = "BAD_COCO";
+      result.scope_mode_ft = "BAD_FT"
+    } else {
+      // the scope_mode field only exists when scope.type !== 'null'
+      let modeCond = result.scope_mode; 
+      let modeCondTCxform_pt = xform.transformPastTemporalConditionsNoBounds(modeCond)
+      let modeCondTCxform_coco = cocospecSemantics.createCoCoSpecCode(modeCondTCxform_pt)
+      let modeCondTCxform_ft = xform.transformFutureTemporalConditionsNoBounds(modeCond)
+      result.scope_mode_pt = modeCondTCxform_pt;
+      result.scope_mode_coco = modeCondTCxform_coco;
+      result.scope_mode_ft = modeCondTCxform_ft;
+  }
+  // Handle trigger condition
   if (regCond) {
       // regCondTCxform has the temporal conditions rewritten into LTL.
-      // let regCondTCxform = xform.transformTemporalConditions(regCond)
-      optLog("regCond: " + JSON.stringify(regCond));
       let regCondTCxform_pt = xform.transformPastTemporalConditions(regCond)
+      optLog("regCondTCxform_pt: " + JSON.stringify(regCondTCxform_pt));
       let regCondTCxform_ft = xform.transformFutureTemporalConditions(regCond)
 
       // regCondUnexp has the endpoints unexpanded e.g. FTP, FFin_$scope_mode$.
-      //let regCondUnexp = regCondTCxform.replace(/\$Left\$/g, ptleft).replace(/\$Right\$/g,ptright);
-      //result.regular_condition_unexp = regCondUnexp;
-
-      let regCondUnexp_pt = regCondTCxform_pt.replace(/\$Left\$/g, left).replace(/\$Right\$/g,right);
+      let regCondUnexp_pt = regCondTCxform_pt.replace(/\$Left\$/g, left).replace(/\$scope_mode\$/g, '$scope_mode_pt$');
       result.regular_condition_unexp_pt = regCondUnexp_pt;
 
-      let regCondUnexp_ft = regCondTCxform_ft.replace(/\$Left\$/g, left).replace(/\$Right\$/g,right);
+      let regCondUnexp_ft = regCondTCxform_ft.replace(/\$Right\$/g,right).replace(/\$scope_mode\$/g, '$scope_mode_ft$');
       result.regular_condition_unexp_ft = regCondUnexp_ft;
 
-      // regCondSMV has the endpoints rewritten into LTL.
-      // let regCondSMV = regCondTCxform.replace(/\$Left\$/g, ptleftSMV).replace(/\$Right\$/g,ptrightSMV);
-      // result.regular_condition_SMV = regCondSMV;
-      //optLog('regCondSMV: ' + regCondSMV);
-
-      let regCondSMV_pt = regCondTCxform_pt.replace(/\$Left\$/g, ptleftSMV).replace(/\$Right\$/g,ptrightSMV);
+      let regCondSMV_pt = regCondTCxform_pt.replace(/\$Left\$/g, ptleftSMV).replace(/\$scope_mode\$/g,'$scope_mode_pt$');
       result.regular_condition_SMV_pt = regCondSMV_pt;
 
-      let regCondSMV_ft = regCondTCxform_ft.replace(/\$Left\$/g, ftleftSMV).replace(/\$Right\$/g,ftrightSMV);
+      let regCondSMV_ft = regCondTCxform_ft.replace(/\$Right\$/g,ftrightSMV).replace(/\$scope_mode\$/g,'$scope_mode_ft$');
       result.regular_condition_SMV_ft = regCondSMV_ft;
-
 
       // regCondLeftCoCoSubsts has left endpoints, except for FTP,
       // rewritten into LTL
-      // $Right$ means that a future temporal operator (persists, occurs)
-      // was present and CoCoSpec can't do anything with that.
-      let regCondLeftCoCoSubsts = regCondTCxform_pt.replace(/\$Left\$/g, ptleftCoCo);
-      optLog('regCondLeftCoCoSubsts: ' + regCondLeftCoCoSubsts);
+      // An occurrence of $Right$ means that a future temporal operator
+      // (persists, occurs) was present and CoCoSpec can't do anything with that
+      let regCondLeftCoCoSubsts = regCondTCxform_pt.replace(/\$Left\$/g, ptleftCoCo).replace(/\$scope_mode\$/g,result.scope_mode_pt); // scope_mode_coco
+      result.regular_condition_coco_smv = regCondLeftCoCoSubsts;
       let regCondLeftCoCo = cocospecSemantics.createCoCoSpecCode(regCondLeftCoCoSubsts)
       result.regular_condition_coco = regCondLeftCoCo;
     }
 
     if (postCond) {
-        optLog("postCond: " + JSON.stringify(postCond));
-	// let postCondTCxform = xform.transformTemporalConditions(postCond);
 	let postCondTCxform_pt = xform.transformPastTemporalConditions(postCond);
 	let postCondTCxform_ft = xform.transformFutureTemporalConditions(postCond);
 
-	// let postCondUnexp = postCondTCxform.replace(/\$Left\$/g, ptleft).replace(/\$Right\$/g,ptright);
-	// result.post_condition_unexp = postCondUnexp;
-
-	let postCondUnexp_pt = postCondTCxform_pt.replace(/\$Left\$/g, left).replace(/\$Right\$/g,right);
+        let postCondUnexp_pt = postCondTCxform_pt.replace(/\$Left\$/g, left).replace(/\$scope_mode\$/g, '$scope_mode_pt$');
 	result.post_condition_unexp_pt = postCondUnexp_pt;
 
-	let postCondUnexp_ft = postCondTCxform_ft.replace(/\$Left\$/g, left).replace(/\$Right\$/g,right);
+	let postCondUnexp_ft = postCondTCxform_ft.replace(/\$Right\$/g,right).replace(/\$scope_mode\$/g, '$scope_mode_ft$');;
 	result.post_condition_unexp_ft = postCondUnexp_ft;
 
-	// let postCondSMV = postCondTCxform.replace(/\$Left\$/g, ptleftSMV).replace(/\$Right\$/g,ptrightSMV);
-	// result.post_condition_SMV = postCondSMV;
-
-	let postCondSMV_pt = postCondTCxform_pt.replace(/\$Left\$/g, ptleftSMV).replace(/\$Right\$/g,ptrightSMV);
+	let postCondSMV_pt = postCondTCxform_pt.replace(/\$Left\$/g, ptleftSMV).replace(/\$scope_mode\$/g,'$scope_mode_pt$');
 	result.post_condition_SMV_pt = postCondSMV_pt;
 
-	let postCondSMV_ft = postCondTCxform_ft.replace(/\$Left\$/g, ptleftSMV).replace(/\$Right\$/g,ftrightSMV);
+	let postCondSMV_ft = postCondTCxform_ft.replace(/\$Right\$/g,ftrightSMV).replace(/\$scope_mode\$/g,'$scope_mode_ft$');
 	result.post_condition_SMV_ft = postCondSMV_ft;
 
-	let postCondLeftCoCoSubsts = postCondTCxform_pt.replace(/\$Left\$/g,ptleftCoCo)
+        let postCondLeftCoCoSubsts = postCondTCxform_pt.replace(/\$Left\$/g,ptleftCoCo).replace(/\$scope_mode\$/g,result.scope_mode_pt);
+        result.post_condition_coco_smv = postCondLeftCoCoSubsts;
 	let postCondLeftCoCo = cocospecSemantics.createCoCoSpecCode(postCondLeftCoCoSubsts)
         result.post_condition_coco = postCondLeftCoCo;
     }
     
   if (stopCond) {
       // stopCondTCxform has the temporal conditions rewritten into LTL.
-      // let stopCondTCxform = xform.transformTemporalConditions(stopCond)
-      optLog("stopCond: " + JSON.stringify(stopCond));
-
       let stopCondTCxform_pt = xform.transformPastTemporalConditions(stopCond)
       let stopCondTCxform_ft = xform.transformFutureTemporalConditions(stopCond)
 
-      let stopCondUnexp_pt = stopCondTCxform_pt.replace(/\$Left\$/g, left).replace(/\$Right\$/g,right);
+      let stopCondUnexp_pt = stopCondTCxform_pt.replace(/\$Left\$/g, left).replace(/\$scope_mode\$/g, '$scope_mode_pt$');;
       result.stop_condition_unexp_pt = stopCondUnexp_pt;
 
-      let stopCondSMV_pt = stopCondTCxform_pt.replace(/\$Left\$/g, ptleftSMV).replace(/\$Right\$/g,ptrightSMV);
+      let stopCondUnexp_ft = stopCondTCxform_ft.replace(/\$Right\$/g,right).replace(/\$scope_mode\$/g, '$scope_mode_ft$');;
+      result.stop_condition_unexp_ft = stopCondUnexp_ft;
+
+      let stopCondSMV_pt = stopCondTCxform_pt.replace(/\$Left\$/g,ptleftSMV).replace(/\$scope_mode\$/g,'$scope_mode_pt$');;
       result.stop_condition_SMV_pt = stopCondSMV_pt;
+
+      let stopCondSMV_ft = stopCondTCxform_ft.replace(/\$Right\$/g,ftrightSMV).replace(/\$scope_mode\$/g,'$scope_mode_ft$');;
+      result.stop_condition_SMV_ft = stopCondSMV_ft;
 
       // stopCondLeftCoCoSubsts has left endpoints, except for FTP,
       // rewritten into LTL
       // $Right$ means that a future temporal operator (persists, occurs)
       // was present and CoCoSpec can't do anything with that.
-      let stopCondLeftCoCoSubsts = stopCondTCxform_pt.replace(/\$Left\$/g, ptleftCoCo);
-      optLog('stopCondLeftCoCoSubsts: ' + stopCondLeftCoCoSubsts);
+      let stopCondLeftCoCoSubsts = stopCondTCxform_pt.replace(/\$Left\$/g, ptleftCoCo).replace(/\$scope_mode\$/g,result.scope_mode_pt);
+      result.stop_condition_coco_smv = stopCondLeftCoCoSubsts;
       let stopCondLeftCoCo = cocospecSemantics.createCoCoSpecCode(stopCondLeftCoCoSubsts)
       result.stop_condition_coco = stopCondLeftCoCo;
-
-      let stopCondUnexp_ft = stopCondTCxform_ft.replace(/\$Left\$/g, left).replace(/\$Right\$/g,right);
-      result.stop_condition_unexp_ft = stopCondUnexp_ft;
-
-      let stopCondSMV_ft = stopCondTCxform_ft.replace(/\$Left\$/g, ftleftSMV).replace(/\$Right\$/g,ftrightSMV);
-      result.stop_condition_SMV_ft = stopCondSMV_ft;
-
-
     }
 
-
     //pt and ft are used in the Edit/Update Requirement display
-    let fetched_ft = fetchedSemantics.ft.replace(/\$regular_condition\$/g,'$regular_condition_unexp_ft$').replace(/\$post_condition\$/g,'$post_condition_unexp_ft$').replace(/\$stop_condition\$/g,'$stop_condition_unexp_ft$');
+    let fetched_ft = fetchedSemantics.ft.replace(/\$regular_condition\$/g,'$regular_condition_unexp_ft$').replace(/\$post_condition\$/g,'$post_condition_unexp_ft$').replace(/\$stop_condition\$/g,'$stop_condition_unexp_ft$').replace(/\$scope_mode\$/g,'$scope_mode_ft$');
+    result.ft_fetched = fetched_ft;
     result.ft = replaceTemplateVarsWithArgs(fetched_ft, false, false);
 
-    let fetched_pt = fetchedSemantics.pt.replace(/\$regular_condition\$/g,'$regular_condition_unexp_pt$').replace(/\$post_condition\$/g,'$post_condition_unexp_pt$').replace(/\$stop_condition\$/g,'$stop_condition_unexp_pt$');
+    let fetched_pt = fetchedSemantics.pt.replace(/\$regular_condition\$/g,'$regular_condition_unexp_pt$').replace(/\$post_condition\$/g,'$post_condition_unexp_pt$').replace(/\$stop_condition\$/g,'$stop_condition_unexp_pt$').replace(/\$scope_mode\$/g,'$scope_mode_pt$');
+    result.pt_fetched = fetched_pt;
     result.pt = replaceTemplateVarsWithArgs(fetched_pt, false, false);
 
-    let fetched_ptExpanded = fetchedSemantics.ptExpanded.replace(/\$regular_condition\$/g,'$regular_condition_SMV_pt$').replace(/\$post_condition\$/g,'$post_condition_SMV_pt$').replace(/\$stop_condition\$/g,'$stop_condition_SMV_pt$');
-
+    let fetched_ptExpanded = fetchedSemantics.ptExpanded.replace(/\$regular_condition\$/g,'$regular_condition_SMV_pt$').replace(/\$post_condition\$/g,'$post_condition_SMV_pt$').replace(/\$stop_condition\$/g,'$stop_condition_SMV_pt$').replace(/\$scope_mode\$/g,'$scope_mode_pt$');
+    result.ptExpanded_fetched = fetched_ptExpanded;
     result.ptExpanded = replaceTemplateVarsWithArgs(fetched_ptExpanded, true, true);
 
-    let fetched_ftExpanded = fetchedSemantics.ftExpanded.replace(/\$regular_condition\$/g,'$regular_condition_SMV_ft$').replace(/\$post_condition\$/g,'$post_condition_SMV_ft$').replace(/\$stop_condition\$/g,'$stop_condition_SMV_ft$');;
+    let fetched_ftExpanded = fetchedSemantics.ftExpanded.replace(/\$regular_condition\$/g,'$regular_condition_SMV_ft$').replace(/\$post_condition\$/g,'$post_condition_SMV_ft$').replace(/\$stop_condition\$/g,'$stop_condition_SMV_ft$').replace(/\$scope_mode\$/g,'$scope_mode_ft$');;
+    result.ftExpanded_fetched = fetched_ftExpanded;
     result.ftExpanded = replaceTemplateVarsWithArgs(fetched_ftExpanded, true, true);
 
-    let fetched_coco = fetchedSemantics.CoCoSpecCode.replace(/\$regular_condition\$/g,'$regular_condition_coco$').replace(/\$post_condition\$/g,'$post_condition_coco$').replace(/\$stop_condition\$/g,'$stop_condition_coco$');
+    let fetched_coco = fetchedSemantics.CoCoSpecCode.replace(/\$regular_condition\$/g,'$regular_condition_coco$').replace(/\$post_condition\$/g,'$post_condition_coco$').replace(/\$stop_condition\$/g,'$stop_condition_coco$').replace(/\$scope_mode\$/g,'$scope_mode_coco$');
+    result.CoCoSpecCode_fetched = fetched_coco;
     let CoCoSpecCodeLTL = replaceTemplateVarsWithArgs(fetched_coco, true, false);
     let CoCoSpecCode = replaceWithCoCoSpecSubsts(CoCoSpecCodeLTL);
     result.CoCoSpecCode = CoCoSpecCode;
 
     result.component = replaceTemplateVarsWithArgs('$component_name$', false, false);
 
-    optLog('Semantics result out: ' + JSON.stringify(result));
+    //optLog('Semantics result out: ' + JSON.stringify(result));
+    optLog('Semantics result out:\n' + prettyObject(result))
   } else console.log('!! Unknown result.type: ' + JSON.stringify(result.type));
   return result;
 }

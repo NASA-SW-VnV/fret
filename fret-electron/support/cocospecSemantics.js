@@ -39,13 +39,13 @@ const nuSMVAnalyzer = require('./nuSMVAnalyzer').nuSMVAnalyzer;
 const NuSMVAnalyzer = new nuSMVAnalyzer();
 
 exports.CoCoSpecSubsts = [
-												['\\<->', '<=>'],
-												['\\->', '=>'],
-												['\\!=', '<>'],
-												['\\&', 'and'],
-		                    ['\\|', 'or'],
-                        ['\\!', 'not'],
-		                   ];
+  ['\\<->', '<=>'],
+  ['\\->', '=>'],
+  ['\\!=', '<>'],
+  ['\\&', 'and'],
+  ['\\|', 'or'],
+  ['\\!', 'not'],
+];
 
 exports.createCoCoSpecCode = (ptLTL) => {
   var chars = new antlr4.InputStream(ptLTL);
