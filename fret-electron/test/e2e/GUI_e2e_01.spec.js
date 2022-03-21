@@ -11,6 +11,7 @@ var path = require('path');
 const Application = require('spectron').Application;
 const electronPath = require('electron');
 const fakeDialog = require('spectron-fake-dialog');
+const { exec } = require("child_process");
 
 //=================================================
 // To run this test:  
@@ -81,10 +82,26 @@ function copyFolderRecursiveSync( source, target ) {
       }
   }
 
+  
+/*
+  exec("ls -la", (error, stdout, stderr) => {
+      if (error) {
+          console.log(`error: ${error.message}`);
+          return;
+      }
+      if (stderr) {
+          console.log(`stderr: ${stderr}`);
+          return;
+      }
+      console.log(`stdout: ${stdout}`);
+  });  
+  */
+
 const rmDB = async()=>{
+
       // removing all existing files in directory fret-db and model-db
       // the 2 directories are also removed
-      
+
       fsExtra.remove(fretDB_dirName, err => {
             //console.log('removing directory: ' + fretDB_dirName)
             if (err) return console.error(err)
@@ -93,7 +110,7 @@ const rmDB = async()=>{
       fsExtra.remove(modelDB_dirName, err => {
             //console.log('removing directory: ' + modelDB_dirName)
             if (err) return console.error(err)
-      });      
+      });     
 }
 
 const cpReferenceDB = async (refName) => {
@@ -105,26 +122,63 @@ const cpReferenceDB = async (refName) => {
       console.log('source reference model-db: ' + ref_model_db)  
       console.log('target model-db: ' + modelDB_dirName)  
 
-      //copyFileSync(ref_model_db, modelDB_dirName);
+
+      // shell copy model-db     
+      const cp_modelDB_command = 'cp -rf ' + ref_model_db+ ' '+ modelDB_dirName
+      console.log('exec shell command: ' + cp_modelDB_command)
+      exec(cp_modelDB_command,  (error, stdout, stderr) => {
+            if (error) {
+                console.log(`error: ${error.message}`);
+                return;
+            }
+            if (stderr) {
+                console.log(`stderr: ${stderr}`);
+                return;
+            }
+            console.log(`stdout: ${stdout}`);
+        });        
       
+
+
+      //copyFileSync(ref_model_db, modelDB_dirName);
+      /*
       await fsExtra.copy(ref_model_db, modelDB_dirName, err => {
             if (err) return console.error(err)
             console.log('success!')
           })
-        
+      */  
       
       const fret_db = '../test_reference/inputs/'+refName+'/fret-db';
       const ref_fret_db = path.join(__dirname, fret_db);
       console.log('source reference fret-db: ' + ref_fret_db)
       console.log('target reference fret-db: ' + fretDB_dirName)
 
+
+      const cp_fretDB_command = 'cp -rf ' + ref_fret_db+ ' '+ fretDB_dirName
+      console.log('exec shell command: ' + cp_fretDB_command)
+      exec(cp_fretDB_command,  (error, stdout, stderr) => {
+            if (error) {
+                console.log(`error: ${error.message}`);
+                return;
+            }
+            if (stderr) {
+                console.log(`stderr: ${stderr}`);
+                return;
+            }
+            console.log(`stdout: ${stdout}`);
+        });      
+
+
+
       //copyFileSync(ref_fret_db, fretDB_dirName);
 
-      
+      /*
       await fsExtra.copy(ref_fret_db, fretDB_dirName, err => {
             if (err) return console.error(err)
             console.log('success!')
           })
+          */
+          
           
 }
 
@@ -150,7 +204,7 @@ describe('FRET GUI E2E tests ', function () {
       });
 
       beforeEach(async () => {
-            //await rmDB();
+            await rmDB();
             numTest = numTest + 1;
       });
 
@@ -2237,9 +2291,9 @@ describe('FRET GUI E2E tests ', function () {
 
      //------------------------------------------------------------------      
       // TODO: rm a dependency path so realizability doesnt work, then swich back after the test
-      it.only('RLZ - 17', async () => {
+      it('RLZ - 17', async () => {
             console.log('starting test '+numTest+':  RLZ - 17');
-            //await cpReferenceDB('realizability');
+            await cpReferenceDB('realizability');
             //await new Promise((r) => setTimeout(r, 2000));
 
             await app.start();
@@ -2375,9 +2429,44 @@ describe('FRET GUI E2E tests ', function () {
       //------------------------------------------------------------------      
       it('RLZ - 20', async () => {
             console.log('starting test '+numTest+':  RLZ - 20');
-            //await cpReferenceDB('realizability');
-            //await new Promise((r) => setTimeout(r, 2000));
+            await cpReferenceDB('realizability');
+            await new Promise((r) => setTimeout(r, 4000));
             //we can do
+
+
+            await app.start();
+            await app.client.waitUntilWindowLoaded();            
+
+            const projBtn = await app.client.$('#qa_db_btn_projects');
+            await projBtn.click();
+            await app.client.pause(timeDelay1);
+            const hanfor = await app.client.$('#qa_proj_select_Demo-FSM');  
+            await hanfor.click();  
+            await app.client.pause(timeDelay1);
+
+
+            const anaBtn = await app.client.$('#qa_db_li_analysis');
+            await anaBtn.click();
+
+
+            const rlzTab = await app.client.$('#qa_rlz_tab');
+            await rlzTab.click();
+
+            const sysComp = await app.client.$('#qa_rlzTbl_sel_sysComp');
+            await sysComp.click();       
+
+            const fsm_sysComp = await app.client.$('#qa_rlzTbl_mi_sysComp_FSM');
+            await fsm_sysComp.click();     
+
+ 
+            const helpBtn = await app.client.$('#qa_rlzTbl_btn_help');
+            await helpBtn.click();                
+
+            const closeHelp = await app.client.$('#qa_rlzTbl_ib_closeHelpPage');
+            await closeHelp.click(); 
+
+
+
       });           
 
 
