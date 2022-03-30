@@ -84,7 +84,7 @@ class RealizabilityView extends React.Component {
 
   componentDidMount() {
     this.mounted = true;
-  //   this.props.synchStateWithDB();
+    this.props.synchStateWithDB();
   }
 
   componentWillUnmount() {

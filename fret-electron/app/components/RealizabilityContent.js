@@ -680,8 +680,6 @@ class RealizabilityContent extends React.Component {
   }
 
   computeConnectedComponents(project, components, completedComponents) {
-    console.log("Computing CCs")
-    console.log(components)
     const {getPropertyInfo, getDelayInfo, getContractInfo} = this.props;
     const {projectReport} = this.state;    
     const self = this;
@@ -697,7 +695,6 @@ class RealizabilityContent extends React.Component {
           modeldoc: false
         }
       }).then(function (modelResult){        
-        console.log("Found entry in model db...")
         var contract = getContractInfo(modelResult);
         contract.componentName = component.component_name+'Spec';
         db.find({
@@ -705,14 +702,7 @@ class RealizabilityContent extends React.Component {
             project: project
           }
         }).then(function (fretResult){
-          console.log("Found entry in fret db...")
-          console.log(completedComponents[0])
-          console.log(component.component_name)
-          console.log(completedComponents[0] === component.component_name)
-          console.log(completedComponents.includes(component.component_name))
-
           if (completedComponents.includes(component.component_name)) {
-          // if (self.isComponentComplete(component.component_name)) {
             contract.properties = getPropertyInfo(fretResult, contract.outputVariables, component.component_name);
             contract.delays = getDelayInfo(fretResult, component.component_name);
 
@@ -761,13 +751,7 @@ class RealizabilityContent extends React.Component {
       return(prevState);
     })
 
-    // this.setState({
-    //   selected: '',
-    //   monolithic: false,
-    //   compositional: false,      
-    //   ccSelected : 'cc0',
-    //   projectReport: projectReport
-    // })
+
   }
 
   checkDependenciesExist() {
@@ -811,12 +795,15 @@ class RealizabilityContent extends React.Component {
 
   componentDidMount() {
     const {selectedProject, components} = this.props;
-    this.mounted = true;
+    this.setState({
+        monolithic: false,
+        compositional: false,
+        selected: '',
+        ccSelected: '',
+        projectReport: {projectName: selectedProject, systemComponents: []}
+    });
     this.checkDependenciesExist();
-    // this.setState({
-    //   selected : '',
-    //   projectReport: {projectName: '', systemComponents: []}
-    // })
+        this.mounted = true;  
   }
 
   componentWillUnmount() {
@@ -825,23 +812,9 @@ class RealizabilityContent extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    Object.entries(this.props).forEach(([key, val]) =>
-    prevProps[key] !== val && console.log(`Prop '${key}' changed`)
-    );
-    if (this.state) {
-    Object.entries(this.state).forEach(([key, val]) =>
-      prevState[key] !== val && console.log(`State '${key}' changed`)
-    );
-    }
-    console.log("Component about to update...")
     const {selectedProject, components, completedComponents} = this.props;
     const {projectReport, selected, ccSelected} = this.state;
 
-    console.log(selectedProject + ", " + components + ", " + completedComponents);
-    console.log(prevProps.completedComponents)
-    console.log(this.props)
-    console.log(completedComponents !== prevProps.completedComponents)
-    console.log(completedComponents)
     if (selectedProject !== prevProps.selectedProject) {
       this.setState({
         monolithic: false,
@@ -853,64 +826,12 @@ class RealizabilityContent extends React.Component {
     }
 
     if (completedComponents.length !== 0 && completedComponents !== prevProps.completedComponents) {
-    // if (completedComponents.length !== 0 && ccSelected.length === 0) {
-      console.log("Got here...")
-      // this.setState({
-      //   monolithic: false,
-      //   compositional: false,
-      //   selected : ''
-      // })
-
-      // console.log(projectReport.systemComponents)
-      // console.log(projectReport.systemComponents.find( ({ name }) => name === event.target.value.component_name))
       try {
       this.computeConnectedComponents(selectedProject, components, completedComponents);
-      console.log(projectReport)
       } catch (err) {
-        console.log(err)
+        this.optLog(err)
       }
     }
-    console.log(projectReport)
-
-    // let compProperty = projectReport.systemComponents.find( ({ name }) => name === selected.component_name);
-
-    // // if (selected.component_name !== prevState.selected.component_name) {
-    // //   console.log(selected)
-    // //   console.log(prevState.selected)
-    // //   console.log(selected.component_name)
-    // //   console.log(projectReport)
-    // //   console.log(projectReport.systemComponents)
-
-    // //   let isDecomposable = compProperty.compositional.connectedComponents.length > 1;
-    // //   console.log(isDecomposable);
-    // //   this.setState({
-    // //     monolithic : !isDecomposable,
-    // //     compositional: isDecomposable
-    // //   });
-    // // }
-
-    // if (selectedProject !== prevProps.selectedProject) {
-    //   this.setState({
-    //     monolithic: false,
-    //     compositional: false,
-    //     selected : ''
-    //   })
-    //   try {
-    //   this.computeConnectedComponents(selectedProject, components); 
-    //   } catch (err) {
-    //     console.log(err)
-    //   }
-    // } else {
-    //   if (selectedProject !== 'All Projects' && components.length !== prevProps.components.length) {
-    //     this.setState({selected : '',  monolithic : false, compositional : false})
-    //     try {
-    //       console.log("Im here")
-    //       this.computeConnectedComponents(selectedProject, components); 
-    //     } catch (err) {
-    //       console.log(err)
-    //     }
-    //   }
-    // }    
   }
 
   handleChange = name => event => {
@@ -919,9 +840,6 @@ class RealizabilityContent extends React.Component {
       if (event.target.value === 'all') {
         this.setState({selected: 'all', monolithic : false, compositional : true});
       } else {
-
-        // console.log(projectReport.systemComponents)
-        // console.log(projectReport.systemComponents.find( ({ name }) => name === event.target.value.component_name))
 
         let componentObject = projectReport.systemComponents.find( ({ name }) => name === event.target.value.component_name);
 
