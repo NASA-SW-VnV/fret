@@ -114,6 +114,25 @@ export function compute_connected_components(contract, output_dep_map){
         has_intersection = false;
     }
 
+    //We are not done at this point. Array disjoint_list may contain connected components whose sets
+    //of outputs intersect. We merge such connected components below.
+    if (disjoint_list.length > 1) {
+        let mergedOutputs = disjoint_list.reduce((c,a) => {        
+            for (var i = 0; i < c.length; i++) {
+              if ([...a.outputs].some(v => c[i].outputs.has(v))) {
+                // a.forEach(v => c[i].add(v));
+                [...a.properties].forEach(p => c[i].properties.add(p));
+                [...a.outputs].forEach(o => c[i].outputs.add(o));
+                return c;
+              }
+            }
+            c.push(a);
+            return c;
+        }, []);
+
+        disjoint_list = [].concat(mergedOutputs);
+    }
+
     //add the assumptions
     for(var prop of contract['properties']){
         if (prop.reqid.includes('assumption')) {
