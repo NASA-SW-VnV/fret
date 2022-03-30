@@ -350,7 +350,7 @@ class VariablesView extends React.Component {
 
   componentDidMount() {
     this.mounted = true;
-    this.props.synchStateWithDB();
+    // this.props.synchStateWithDB();
   }
 
   componentWillUnmount() {
@@ -358,11 +358,14 @@ class VariablesView extends React.Component {
     dbChangeListener.cancel();
   }
 
-  componentDidUpdate(prevProps) {
-    if (this.props.selectedProject !== prevProps.selectedProject) {
-      this.props.synchStateWithDB();
-    }
-  }
+  // componentDidUpdate(prevProps) {
+  //   if (this.props.selectedProject !== prevProps.selectedProject) {
+  //     console.log(this.props.selectedProject)
+  //     console.log("varview syncing with db...")
+  //     this.props.synchStateWithDB();
+  //     console.log(this.props.components);
+  //   }
+  // }
 
   render() {
     const self = this;

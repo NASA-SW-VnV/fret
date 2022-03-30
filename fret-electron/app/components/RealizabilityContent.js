@@ -101,6 +101,9 @@ import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
+import Grid from '@material-ui/core/Grid';
+import Switch from '@material-ui/core/Switch'
+
 import realizabilityManual from '../../docs/_media/exports/realizability.md';
 
 const sharedObj = require('electron').remote.getGlobal('sharedObj');
@@ -208,8 +211,15 @@ const styles = theme => ({
     top: theme.spacing(1),
     color: theme.palette.grey[500],
   },
-
+  switchBase: {
+    color: "#26c6da"
+  },
+  track: {
+    opacity: 0.7,
+    backgroundColor: "#26c6da"
+  }
 });
+
 
 function TabContainer(props) {
   return (
@@ -669,35 +679,40 @@ class RealizabilityContent extends React.Component {
     return completedComponents.includes(name);
   }
 
-  computeConnectedComponents() {
-    const {getPropertyInfo, getDelayInfo, getContractInfo, components, selectedProject} = this.props;
+  computeConnectedComponents(project, components, completedComponents) {
+    console.log("Computing CCs")
+    console.log(components)
+    const {getPropertyInfo, getDelayInfo, getContractInfo} = this.props;
     const {projectReport} = this.state;    
     const self = this;
-    console.log(components)    
-    components.forEach(component => {
-      console.log(component)
-      console.log(selectedProject)
-      projectReport.projectName = selectedProject;
+
+    components.forEach(component => {      
+      projectReport.projectName = project;
       projectReport.systemComponents = [];
       modeldb.find({
         selector: {
           component_name: component.component_name,
-          project: selectedProject,
+          project: project,
           completed: true,
           modeldoc: false
         }
-      }).then(function (modelResult){
-        console.log("Found model")
+      }).then(function (modelResult){        
+        console.log("Found entry in model db...")
         var contract = getContractInfo(modelResult);
         contract.componentName = component.component_name+'Spec';
         db.find({
           selector: {
-            project: selectedProject
+            project: project
           }
         }).then(function (fretResult){
-          console.log("Found contract")
-          if (self.isComponentComplete(component.component_name)) {
-            console.log("Henloooooooooo")
+          console.log("Found entry in fret db...")
+          console.log(completedComponents[0])
+          console.log(component.component_name)
+          console.log(completedComponents[0] === component.component_name)
+          console.log(completedComponents.includes(component.component_name))
+
+          if (completedComponents.includes(component.component_name)) {
+          // if (self.isComponentComplete(component.component_name)) {
             contract.properties = getPropertyInfo(fretResult, contract.outputVariables, component.component_name);
             contract.delays = getDelayInfo(fretResult, component.component_name);
 
@@ -718,7 +733,6 @@ class RealizabilityContent extends React.Component {
                 })
               })
 
-              console.log("About to push")
               projectReport.systemComponents.push({
                 name: component.component_name,
                 monolithic: {result: 'UNCHECKED', time: '', diagnosisStatus: '', diagnosisReport: ''},
@@ -726,7 +740,6 @@ class RealizabilityContent extends React.Component {
               });              
 
             } else {
-              console.log("About to push 2")
               projectReport.systemComponents.push({
                 name: component.component_name,
                 monolithic: {result: 'UNCHECKED', time: '', diagnosisStatus: '', diagnosisReport: ''}
@@ -739,13 +752,22 @@ class RealizabilityContent extends React.Component {
       })
     });
 
-    this.setState({
-      selected: '',
-      monolithic: false,
-      compositional: false,      
-      ccSelected : 'cc0',
-      projectReport: projectReport
+    this.setState(prevState => {
+      prevState.selected = '';
+      prevState.monolithic = false;
+      prevState.compositional = false;
+      prevState.ccSelected = 'cc0';
+      prevState.projectReport = projectReport;
+      return(prevState);
     })
+
+    // this.setState({
+    //   selected: '',
+    //   monolithic: false,
+    //   compositional: false,      
+    //   ccSelected : 'cc0',
+    //   projectReport: projectReport
+    // })
   }
 
   checkDependenciesExist() {
@@ -791,10 +813,10 @@ class RealizabilityContent extends React.Component {
     const {selectedProject, components} = this.props;
     this.mounted = true;
     this.checkDependenciesExist();
-    this.setState({
-      selected : '',
-      projectReport: {projectName: '', systemComponents: []}
-    })
+    // this.setState({
+    //   selected : '',
+    //   projectReport: {projectName: '', systemComponents: []}
+    // })
   }
 
   componentWillUnmount() {
@@ -802,23 +824,71 @@ class RealizabilityContent extends React.Component {
     dbChangeListener_RealCont.cancel();
   }
 
-  componentDidUpdate(prevProps) {
-    const {selectedProject, components} = this.props;
-    console.log(selectedProject)
-    console.log(components)
-    if (selectedProject !== prevProps.selectedProject || 
-      (selectedProject === prevProps.selectedProject && components.toString() !== prevProps.components.toString())) {
+  componentDidUpdate(prevProps, prevState) {
+    Object.entries(this.props).forEach(([key, val]) =>
+    prevProps[key] !== val && console.log(`Prop '${key}' changed`)
+    );
+    if (this.state) {
+    Object.entries(this.state).forEach(([key, val]) =>
+      prevState[key] !== val && console.log(`State '${key}' changed`)
+    );
+    }
+    console.log("Component about to update...")
+    const {selectedProject, components, completedComponents} = this.props;
+    const {projectReport, selected, ccSelected} = this.state;
+
+    console.log(selectedProject + ", " + components + ", " + completedComponents);
+    console.log(prevProps.completedComponents)
+    console.log(this.props)
+    console.log(completedComponents !== prevProps.completedComponents)
+    console.log(completedComponents)
+    if (selectedProject !== prevProps.selectedProject) {
+      this.setState({
+        monolithic: false,
+        compositional: false,
+        selected: '',
+        ccSelected: '',
+        projectReport: {projectName: selectedProject, systemComponents: []}
+      });
+    }
+
+    if (completedComponents.length !== 0 && completedComponents !== prevProps.completedComponents) {
+    // if (completedComponents.length !== 0 && ccSelected.length === 0) {
+      console.log("Got here...")
       // this.setState({
       //   monolithic: false,
       //   compositional: false,
       //   selected : ''
       // })
+
+      // console.log(projectReport.systemComponents)
+      // console.log(projectReport.systemComponents.find( ({ name }) => name === event.target.value.component_name))
       try {
-      this.computeConnectedComponents();
+      this.computeConnectedComponents(selectedProject, components, completedComponents);
+      console.log(projectReport)
       } catch (err) {
         console.log(err)
       }
     }
+    console.log(projectReport)
+
+    // let compProperty = projectReport.systemComponents.find( ({ name }) => name === selected.component_name);
+
+    // // if (selected.component_name !== prevState.selected.component_name) {
+    // //   console.log(selected)
+    // //   console.log(prevState.selected)
+    // //   console.log(selected.component_name)
+    // //   console.log(projectReport)
+    // //   console.log(projectReport.systemComponents)
+
+    // //   let isDecomposable = compProperty.compositional.connectedComponents.length > 1;
+    // //   console.log(isDecomposable);
+    // //   this.setState({
+    // //     monolithic : !isDecomposable,
+    // //     compositional: isDecomposable
+    // //   });
+    // // }
+
     // if (selectedProject !== prevProps.selectedProject) {
     //   this.setState({
     //     monolithic: false,
@@ -850,12 +920,12 @@ class RealizabilityContent extends React.Component {
         this.setState({selected: 'all', monolithic : false, compositional : true});
       } else {
 
-        console.log(projectReport.systemComponents)
-        console.log(projectReport.systemComponents.find( ({ name }) => name === event.target.value.component_name))
+        // console.log(projectReport.systemComponents)
+        // console.log(projectReport.systemComponents.find( ({ name }) => name === event.target.value.component_name))
 
-        let compProperty = projectReport.systemComponents.find( ({ name }) => name === event.target.value.component_name).compositional;
+        let componentObject = projectReport.systemComponents.find( ({ name }) => name === event.target.value.component_name);
 
-        let isDecomposable = compProperty ? compProperty.connectedComponents.length > 1 : false;
+        let isDecomposable = componentObject.compositional ? componentObject.compositional.connectedComponents.length > 1 : false;
         
         this.setState({
           selected: event.target.value,
@@ -1195,7 +1265,7 @@ class RealizabilityContent extends React.Component {
     var systemComponentIndex = projectReport.systemComponents.findIndex( sc => sc.name === selected.component_name );
     var connectedComponentIndex = systemComponentIndex !== -1 ? projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents.findIndex( cc => cc.ccName === ccSelected ) : 0;
 
-    if (compositional && selected.component_name) {
+    if (compositional && selected.component_name && projectReport.systemComponents[systemComponentIndex]) {
       for (const cc of projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents) {        
             tabs.push(<Tab id = {"qa_rlzCont_tab_"+cc } key={cc.ccName} value={cc.ccName} classes={{root : classes.tabRoot}} label={
           <div key={cc.ccName} style={{display : 'flex', alignItems : 'center', flexWrap : 'wrap'}}>
@@ -1237,19 +1307,19 @@ class RealizabilityContent extends React.Component {
     }; 
 
     var diagStatus, diagReport;
-    if (selected !== '' && selected !== 'all' && projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents.length > 0) {
+    if (selected !== '' && selected !== 'all' && projectReport.systemComponents[systemComponentIndex]) {
+      if (projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents.length > 0) {
+        diagStatus = monolithic ? projectReport.systemComponents[systemComponentIndex].monolithic.diagnosisStatus : projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].diagnosisStatus;
 
-      diagStatus = monolithic ? projectReport.systemComponents[systemComponentIndex].monolithic.diagnosisStatus : projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].diagnosisStatus;
-
-      diagReport = monolithic ? projectReport.systemComponents[systemComponentIndex].monolithic.diagnosisReport : projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].diagnosisReport;
+        diagReport = monolithic ? projectReport.systemComponents[systemComponentIndex].monolithic.diagnosisReport : projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].diagnosisReport;
+      }
     }
-
-    console.log(projectReport)
 
     return(
       <div>
         {components.length !== 0 &&
           <div style={{alignItems: 'flex-end', display: 'flex', flexWrap :'wrap'}}>
+          <Grid container alignItems="flex-end">
             <FormControl className={classes.formControl} required>
               <InputLabel>System Component</InputLabel>
               <Select
@@ -1285,7 +1355,8 @@ class RealizabilityContent extends React.Component {
             </FormControl>
             <FormControlLabel
               disabled={
-                selected === '' || (selected !== 'all' && projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents.length <= 1)
+                selected === '' || (selected !== 'all' && 
+                  (projectReport.systemComponents[systemComponentIndex] ? projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents.length <= 1 : false))
               }
               control={
                 <Checkbox
@@ -1309,9 +1380,21 @@ class RealizabilityContent extends React.Component {
                   color="primary"
                 />
               }
-              style={{marginRight: '40%'}}
+              style={{marginRight: '40%'}}              
               label="Monolithic"
             />
+            {/*Disable this for now.
+            <Grid item  >
+              Monolithic
+              <Switch
+                classes={{switchBase: classes.switchBase,track: classes.track}} 
+                disabled={
+                selected === '' || (selected !== 'all' && 
+                (projectReport.systemComponents[systemComponentIndex] ? projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents.length <= 1 : false))
+                }
+              />
+              Compositional
+            </Grid> */}           
             {!dependenciesExist &&
               <Tooltip title={"Dependencies missing for realizability checking : " + missingDependencies.toString()+'. See FRET documentation for details.'}>
                 <ErrorIcon id="qa_rlzCont_icon_depMissing" className={classes.wrapper} style={{verticalAlign : 'bottom'}} color='error'/>
@@ -1362,6 +1445,7 @@ class RealizabilityContent extends React.Component {
             <div className={classes.wrapper}>
             <Button color="secondary" onClick={this.handleHelpOpen} size="small" id="qa_rlzCont_btn_help" className={classes.vAlign} variant="contained"> Help </Button>
             </div>
+            </Grid>
             <div style={{width : '100%'}}>
             {selected !== '' && selected !== 'all' &&
               <div className={classes.root}>

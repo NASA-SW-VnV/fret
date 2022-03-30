@@ -201,7 +201,8 @@ class AnalysisTabs extends React.Component {
       self.setState({
         cocospecData: data.cocospecData,
         cocospecModes: data.cocospecModes,
-        components: data.components.sort((a, b) => {return a.component_name.toLowerCase().trim() > b.component_name.toLowerCase().trim()})
+        components: data.components.sort((a, b) => {return a.component_name.toLowerCase().trim() > b.component_name.toLowerCase().trim()}),
+        completedComponents: []
       })
       self.checkComponents();
     }).catch((err) => {
@@ -229,7 +230,7 @@ class AnalysisTabs extends React.Component {
         if (index > -1) completedComponents.splice(index, 1);
       }
       self.setState({
-        completedComponents : completedComponents
+        completedComponents : [].concat(completedComponents)
       })
     }).catch(function (err) {
       console.log(err);
