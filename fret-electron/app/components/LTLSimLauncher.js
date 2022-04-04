@@ -58,7 +58,8 @@ export default function LTLSimLauncher(props) {
                 requirementID={requirementID}
                 />
             </div>) :
-            (<Tooltip title={status.ltlsim ?
+            (<Tooltip id="a_crtAst_btn_simulate_tooltip"
+                title={status.ltlsim ?
                 "Can't find a running NuSMV installation. Make sure to install NuSMV and add it to the PATH envinronment variable." :
                 "Can't find a running ltlsim installation. Make sure to install ltlsim-core and NuSMV as described in the installation instructions."}>
                 <div>

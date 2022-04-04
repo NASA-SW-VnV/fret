@@ -193,9 +193,10 @@ class CounterexampleTable extends React.Component {
   	const {numberOfSteps, cex, cexConflictName, deps} = this.state;
   	var menuItems = [];
   	for (var i = 0; i < currentConflicts.length; i++) {
+      var conflictLabel = allConflicts.indexOf(currentConflicts[i])+1;
   		menuItems.push(
 		(<MenuItem key={i}
-      id={"qa_counterEx_mi_Conflict_"+allConflicts.indexOf(currentConflicts[i])+1}
+      id={"qa_counterEx_mi_Conflict_"+conflictLabel}
       value={currentConflicts[i]} >
       Conflict {allConflicts.indexOf(currentConflicts[i])+1}
 			</MenuItem>)
@@ -224,15 +225,15 @@ class CounterexampleTable extends React.Component {
   	return (
   		<div>
       <Paper className={classes.root}>              
-        <TableComponentBar
+        <TableComponentBar id="qa_counterEx_menuList_conflicts"
           handleChange={this.handleChange}
           cexConflictName={cexConflictName}
           conflicts={allConflicts}
           menuItems={menuItems}
         />
-				<Table className={classes.table}>
-				  <TableHead>
-				    <TableRow>
+				<Table className={classes.table}  id="qa_counterEx_table">
+				  <TableHead id="qa_counterEx_tableHead">
+				    <TableRow  id="qa_counterEx_tableRow">
 				      <TableCell className={classes.header} align="right">Variable name</TableCell>
 				      <TableCell className={classes.header} align="right">Variable type</TableCell>
 				      {tableHeaders}

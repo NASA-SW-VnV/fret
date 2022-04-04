@@ -516,7 +516,7 @@ class VariablesSortableTable extends React.Component {
               onRequestSort= {this.handleRequestSort}
               rowCount={data.length}
             />
-            <TableBody id="qa_tbl_variablesSortableTable_body">{
+            <TableBody id="qa_var_tableBody">{
               stableSort(data, getSorting(order, orderBy))
               .slice(page *rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map(n => {

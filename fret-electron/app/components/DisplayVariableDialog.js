@@ -388,7 +388,7 @@ class DisplayVariableDialog extends React.Component {
               />
               <FormControl className={classes.formControl}>
                 <InputLabel htmlFor="idType-simple">Variable Type*</InputLabel>
-                <Select id="qa_disVar_sel_varType"
+                <Select 
                   id="qa_disVar_sel_varType"
                   key={selectedVariable}
                   value={this.state.idType}
@@ -420,16 +420,16 @@ class DisplayVariableDialog extends React.Component {
                         id: 'dataType-simple',
                       }}>
                       <MenuItem
-                        id="qa_disVar_mi_dataType_none"
+                        id="qa_disVar_mi_dataType_None"
                         value=""
                       >
                         <em>None</em>
                       </MenuItem>
-                      <MenuItem id="qa_disVar_mi_boolean" value="boolean" >boolean</MenuItem>
-                      <MenuItem id="qa_disVar_mi_integer" value="integer" >integer</MenuItem>
-                      <MenuItem id="qa_disVar_mi_unsignInt" value="unsigned integer" >unsigned integer</MenuItem>
-                      <MenuItem id="qa_disVar_mi_single" value="single">single</MenuItem>
-                      <MenuItem id="qa_disVar_mi_double" value="double">double</MenuItem>
+                      <MenuItem id="qa_disVar_mi_dataType_boolean" value="boolean" >boolean</MenuItem>
+                      <MenuItem id="qa_disVar_mi_dataType_integer" value="integer" >integer</MenuItem>
+                      <MenuItem id="qa_disVar_mi_dataType_unsigned_integer" value="unsigned integer" >unsigned integer</MenuItem>
+                      <MenuItem id="qa_disVar_mi_dataType_single" value="single">single</MenuItem>
+                      <MenuItem id="qa_disVar_mi_dataType_double" value="double">double</MenuItem>
                     </Select>
                   </FormControl>
                 :
@@ -780,7 +780,7 @@ class DisplayVariableDialog extends React.Component {
               </FormControl>
               <FormControl className={classes.formControl}>
                 <InputLabel htmlFor="dataType-simple">Data Type*</InputLabel>
-                <Select id="qa_disVar_sel_dataType"
+                <Select 
                   id="qa_disVar_sel_dataType"
                   key={selectedVariable}
                   value={this.state.dataType}
@@ -789,16 +789,16 @@ class DisplayVariableDialog extends React.Component {
                     name: 'dataType',
                     id: 'dataType-simple',
                   }}>
-                  <MenuItem id="qa_disVar_mi_dataType_none"
+                  <MenuItem id="qa_disVar_mi_dataType_None"
                     value=""
                   >
                     <em>None</em>
                   </MenuItem>
-                  <MenuItem id="qa_disVar_mi_boolean" value="boolean" >boolean</MenuItem>
-                  <MenuItem id="qa_disVar_mi_integer" value="integer" >integer</MenuItem>
-                  <MenuItem id="qa_disVar_mi_unsignInt" value="unsigned integer" >unsigned integer</MenuItem>
-                  <MenuItem id="qa_disVar_mi_single" value="single">single</MenuItem>
-                  <MenuItem id="qa_disVar_mi_double" value="double">double</MenuItem>
+                  <MenuItem id="qa_disVar_mi_dataType_boolean" value="boolean" >boolean</MenuItem>
+                  <MenuItem id="qa_disVar_mi_dataType_integer" value="integer" >integer</MenuItem>
+                  <MenuItem id="qa_disVar_mi_dataType_unsigned_integer" value="unsigned integer" >unsigned integer</MenuItem>
+                  <MenuItem id="qa_disVar_mi_dataType_single" value="single">single</MenuItem>
+                  <MenuItem id="qa_disVar_mi_dataType_double" value="double">double</MenuItem>
                 </Select>
               </FormControl>
               <div>
@@ -935,16 +935,16 @@ class DisplayVariableDialog extends React.Component {
                     name: 'dataType',
                     id: 'dataType-simple',
                   }}>
-                  <MenuItem  id="qa_disVar_mi_dataType_none"
+                  <MenuItem  id="qa_disVar_mi_dataType_None"
                     value=""
                   >
                     <em>None</em>
                   </MenuItem>
-                  <MenuItem id="qa_disVar_mi_boolean" value="boolean" >boolean</MenuItem>
-                  <MenuItem id="qa_disVar_mi_integer" value="integer" >integer</MenuItem>
-                  <MenuItem id="qa_disVar_mi_unsignInt" value="unsigned integer" >unsigned integer</MenuItem>
-                  <MenuItem id="qa_disVar_mi_single" value="single">single</MenuItem>
-                  <MenuItem id="qa_disVar_mi_double" value="double">double</MenuItem>
+                  <MenuItem id="qa_disVar_mi_dataType_boolean" value="boolean" >boolean</MenuItem>
+                  <MenuItem id="qa_disVar_mi_dataType_integer" value="integer" >integer</MenuItem>
+                  <MenuItem id="qa_disVar_mi_dataType_unsigned_integer" value="unsigned integer" >unsigned integer</MenuItem>
+                  <MenuItem id="qa_disVar_mi_dataType_single" value="single">single</MenuItem>
+                  <MenuItem id="qa_disVar_mi_dataType_double" value="double">double</MenuItem>
                 </Select>
               </FormControl>
               <div>
@@ -961,7 +961,7 @@ class DisplayVariableDialog extends React.Component {
               />
               <FormControlLabel
                 control={
-                  <Checkbox id="qa_disVar_cb_checkLustre"
+                  <Checkbox 
                     id="qa_disVar_cb_Lustre"
                     checked={this.state.checkLustre}
                     onChange={this.handleCheckChange('checkLustre')}
@@ -972,7 +972,7 @@ class DisplayVariableDialog extends React.Component {
               />
               <FormControlLabel
                 control={
-                  <Checkbox id="qa_disVar_cb_checkCoPilot"
+                  <Checkbox 
                     id="qa_disVar_cb_CoPilot"
                     checked={this.state.checkCoPilot}
                     onChange={this.handleCheckChange('checkCoPilot')}
@@ -1094,16 +1094,16 @@ class DisplayVariableDialog extends React.Component {
                     name: 'dataType',
                     id: 'dataType-simple',
                   }}>
-                  <MenuItem id="qa_disVar_mi_dataType_none"
+                  <MenuItem id="qa_disVar_mi_dataType_None"
                     value=""
                   >
                     <em>None</em>
                   </MenuItem>
-                  <MenuItem id="qa_disVar_mi_boolean" value="boolean" >boolean</MenuItem>
-                  <MenuItem id="qa_disVar_mi_integer" value="integer" >integer</MenuItem>
-                  <MenuItem id="qa_disVar_mi_unsignInt" value="unsigned integer" >unsigned integer</MenuItem>
-                  <MenuItem id="qa_disVar_mi_single" value="single">single</MenuItem>
-                  <MenuItem id="qa_disVar_mi_double" value="double">double</MenuItem>
+                  <MenuItem id="qa_disVar_mi_dataType_boolean" value="boolean" >boolean</MenuItem>
+                  <MenuItem id="qa_disVar_mi_dataType_integer" value="integer" >integer</MenuItem>
+                  <MenuItem id="qa_disVar_mi_dataType_unsigned_integer" value="unsigned integer" >unsigned integer</MenuItem>
+                  <MenuItem id="qa_disVar_mi_dataType_single" value="single">single</MenuItem>
+                  <MenuItem id="qa_disVar_mi_dataType_double" value="double">double</MenuItem>
                 </Select>
               </FormControl>
               <div>
@@ -1250,16 +1250,16 @@ class DisplayVariableDialog extends React.Component {
                     name: 'dataType',
                     id: 'dataType-simple',
                   }}>
-                  <MenuItem id="qa_disVar_mi_dataType_none"
+                  <MenuItem id="qa_disVar_mi_dataType_None"
                     value=""
                   >
                     <em>None</em>
                   </MenuItem>
-                  <MenuItem id="qa_disVar_mi_boolean" value="boolean" >boolean</MenuItem>
-                  <MenuItem id="qa_disVar_mi_integer" value="integer" >integer</MenuItem>
-                  <MenuItem id="qa_disVar_mi_unsignInt" value="unsigned integer" >unsigned integer</MenuItem>
-                  <MenuItem id="qa_disVar_mi_single" value="single">single</MenuItem>
-                  <MenuItem id="qa_disVar_mi_double" value="double">double</MenuItem>
+                  <MenuItem id="qa_disVar_mi_dataType_boolean" value="boolean" >boolean</MenuItem>
+                  <MenuItem id="qa_disVar_mi_dataType_integer" value="integer" >integer</MenuItem>
+                  <MenuItem id="qa_disVar_mi_dataType_unsigned_integer" value="unsigned integer" >unsigned integer</MenuItem>
+                  <MenuItem id="qa_disVar_mi_dataType_single" value="single">single</MenuItem>
+                  <MenuItem id="qa_disVar_mi_dataType_double" value="double">double</MenuItem>
                 </Select>
               </FormControl>
               <div>
@@ -1417,16 +1417,16 @@ class DisplayVariableDialog extends React.Component {
                     name: 'dataType',
                     id: 'dataType-simple',
                   }}>
-                  <MenuItem id="qa_disVar_mi_dataType_none"
+                  <MenuItem id="qa_disVar_mi_dataType_None"
                     value=""
                   >
                     <em>None</em>
                   </MenuItem>
-                  <MenuItem id="qa_disVar_mi_boolean" value="boolean" >boolean</MenuItem>
-                  <MenuItem id="qa_disVar_mi_integer" value="integer" >integer</MenuItem>
-                  <MenuItem id="qa_disVar_mi_unsignInt" value="unsigned integer" >unsigned integer</MenuItem>
-                  <MenuItem id="qa_disVar_mi_single" value="single">single</MenuItem>
-                  <MenuItem id="qa_disVar_mi_double" value="double">double</MenuItem>
+                  <MenuItem id="qa_disVar_mi_dataType_boolean" value="boolean" >boolean</MenuItem>
+                  <MenuItem id="qa_disVar_mi_dataType_integer" value="integer" >integer</MenuItem>
+                  <MenuItem id="qa_disVar_mi_dataType_unsigned_integer" value="unsigned integer" >unsigned integer</MenuItem>
+                  <MenuItem id="qa_disVar_mi_dataType_single" value="single">single</MenuItem>
+                  <MenuItem id="qa_disVar_mi_dataType_double" value="double">double</MenuItem>
                 </Select>
               </FormControl>
               <div>
@@ -1576,16 +1576,16 @@ class DisplayVariableDialog extends React.Component {
                     name: 'dataType',
                     id: 'dataType-simple',
                   }}>
-                  <MenuItem id="qa_disVar_mi_dataType_none"
+                  <MenuItem id="qa_disVar_mi_dataType_None"
                     value=""
                   >
                     <em>None</em>
                   </MenuItem>
-                  <MenuItem id="qa_disVar_mi_boolean" value="boolean" >boolean</MenuItem>
-                  <MenuItem id="qa_disVar_mi_integer" value="integer" >integer</MenuItem>
-                  <MenuItem id="qa_disVar_mi_unsignInt" value="unsigned integer" >unsigned integer</MenuItem>
-                  <MenuItem id="qa_disVar_mi_single" value="single">single</MenuItem>
-                  <MenuItem id="qa_disVar_mi_double" value="double">double</MenuItem>
+                  <MenuItem id="qa_disVar_mi_dataType_boolean" value="boolean" >boolean</MenuItem>
+                  <MenuItem id="qa_disVar_mi_dataType_integer" value="integer" >integer</MenuItem>
+                  <MenuItem id="qa_disVar_mi_dataType_unsigned_integer" value="unsigned integer" >unsigned integer</MenuItem>
+                  <MenuItem id="qa_disVar_mi_dataType_single" value="single">single</MenuItem>
+                  <MenuItem id="qa_disVar_mi_dataType_double" value="double">double</MenuItem>
                 </Select>
               </FormControl>
               <div>
@@ -1735,16 +1735,16 @@ class DisplayVariableDialog extends React.Component {
                     name: 'dataType',
                     id: 'dataType-simple',
                   }}>
-                  <MenuItem id="qa_disVar_mi_dataType_none"
+                  <MenuItem id="qa_disVar_mi_dataType_None"
                     value=""
                   >
                     <em>None</em>
                   </MenuItem>
-                  <MenuItem id="qa_disVar_mi_boolean" value="boolean" >boolean</MenuItem>
-                  <MenuItem id="qa_disVar_mi_integer" value="integer" >integer</MenuItem>
-                  <MenuItem id="qa_disVar_mi_unsignInt" value="unsigned integer" >unsigned integer</MenuItem>
-                  <MenuItem id="qa_disVar_mi_single" value="single">single</MenuItem>
-                  <MenuItem id="qa_disVar_mi_double" value="double">double</MenuItem>
+                  <MenuItem id="qa_disVar_mi_dataType_boolean" value="boolean" >boolean</MenuItem>
+                  <MenuItem id="qa_disVar_mi_dataType_integer" value="integer" >integer</MenuItem>
+                  <MenuItem id="qa_disVar_mi_dataType_unsigned_integer" value="unsigned integer" >unsigned integer</MenuItem>
+                  <MenuItem id="qa_disVar_mi_dataType_single" value="single">single</MenuItem>
+                  <MenuItem id="qa_disVar_mi_dataType_double" value="double">double</MenuItem>
                 </Select>
               </FormControl>
               <div>
@@ -1905,14 +1905,14 @@ class DisplayVariableDialog extends React.Component {
                     name: 'dataType',
                     id: 'dataType-simple',
                   }}>
-                  <MenuItem id="qa_disVar_mi_dataType_none"
+                  <MenuItem id="qa_disVar_mi_dataType_None"
                     value=""
                   >
                     <em>None</em>
                   </MenuItem>
-                  <MenuItem id="qa_disVar_mi_boolean" value="boolean" >boolean</MenuItem>
-                  <MenuItem id="qa_disVar_mi_integer" value="integer" >integer</MenuItem>
-                  <MenuItem id="qa_disVar_mi_unsignInt" value="unsigned integer" >unsigned integer</MenuItem>
+                  <MenuItem id="qa_disVar_mi_dataType_boolean" value="boolean" >boolean</MenuItem>
+                  <MenuItem id="qa_disVar_mi_dataType_integer" value="integer" >integer</MenuItem>
+                  <MenuItem id="qa_disVar_mi_dataType_unsigned_integer" value="unsigned integer" >unsigned integer</MenuItem>
                   <MenuItem value="single" >single</MenuItem>
                   <MenuItem value="double" >double</MenuItem>
                 </Select>
@@ -2075,14 +2075,14 @@ class DisplayVariableDialog extends React.Component {
                     name: 'dataType',
                     id: 'dataType-simple',
                   }}>
-                  <MenuItem id="qa_disVar_mi_dataType_none"
+                  <MenuItem id="qa_disVar_mi_dataType_None"
                     value=""
                   >
                     <em>None</em>
                   </MenuItem>
-                  <MenuItem id="qa_disVar_mi_boolean" value="boolean" >boolean</MenuItem>
-                  <MenuItem id="qa_disVar_mi_integer" value="integer" >integer</MenuItem>
-                  <MenuItem id="qa_disVar_mi_unsignInt" value="unsigned integer" >unsigned integer</MenuItem>
+                  <MenuItem id="qa_disVar_mi_dataType_boolean" value="boolean" >boolean</MenuItem>
+                  <MenuItem id="qa_disVar_mi_dataType_integer" value="integer" >integer</MenuItem>
+                  <MenuItem id="qa_disVar_mi_dataType_unsigned_integer" value="unsigned integer" >unsigned integer</MenuItem>
                   <MenuItem value="single" >single</MenuItem>
                   <MenuItem value="double" >double</MenuItem>
                 </Select>

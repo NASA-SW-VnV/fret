@@ -873,6 +873,7 @@ class SlateEditor2 extends React.Component {
         onClick={this.handleDropdownClick}/>
     } else if (variables.length > 0 && position) {
       menu = <VariablesDropdownMenu
+        id = "qa_slateEditor_menu_var"
         options={variables}
         selection={menuIndex}
         position={position}

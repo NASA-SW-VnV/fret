@@ -59,6 +59,7 @@ class TimeSeriesWidget extends Component {
         return ( (atomic === undefined) ? null :
                     <TimeSeriesChart
                         key={'chart-atomic-' + key + ((fkey) ? '-'+fkey : '')}
+                        id = {"qa_timeSeries_atomic_"+key}
                         data={atomic.trace}
                         name={key}
                         dataKey={key}
@@ -74,6 +75,7 @@ class TimeSeriesWidget extends Component {
         return ( (formula === undefined) ? null :
                     <TimeSeriesChart
                         key={'chart-formula-'+key}
+                        id = {"qa_timeSeries_formula_"+key}
                         data={formula.trace}
                         name={formula.label ? formula.label : key}
                         dataKey={key}

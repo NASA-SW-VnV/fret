@@ -812,26 +812,27 @@ class SortableTable extends React.Component {
                         </TableCell>
                         <TableCell >
                           <Select
+                            id={"qa_tbl_sel_bulk_status_"+label}
                             className={`${classes.select} ${colorStyle}`}
                             disableUnderline
                             value={status}
                             onChange={(event) => this.handleChange(event, n)}
                             onClick={event => event.stopPropagation()}
                           >
-                            <MenuItem id={"qa_tbl_mi_body_bulk_status_None_"+label} value="None"/>
-                            <MenuItem id={"qa_tbl_mi_body_bulk_status_in_progress_"+label} value={'in progress'}>
+                            <MenuItem id={"qa_tbl_mi_bulk_status_None_"+label} value="None"/>
+                            <MenuItem id={"qa_tbl_mi_bulk_status_in_progress_"+label} value={'in progress'}>
                               <Tooltip title="In progress"><InProgressIcon/></Tooltip>
                             </MenuItem>
-                            <MenuItem id={"qa_tbl_mi_body_bulk_status_paused_"+label} value={'paused'}>
+                            <MenuItem id={"qa_tbl_mi_bulk_status_paused_"+label} value={'paused'}>
                               <Tooltip title="Paused"><PauseIcon/></Tooltip>
                             </MenuItem>
-                            <MenuItem id={"qa_tbl_mi_body_bulk_status_completed_"+label} value={'completed'}>
+                            <MenuItem id={"qa_tbl_mi_bulk_status_completed_"+label} value={'completed'}>
                               <Tooltip title="Completed"><CompletedIcon/></Tooltip>
                             </MenuItem>
-                            <MenuItem id={"qa_tbl_mi_body_bulk_status_attention_"+label} value={'attention'}>
+                            <MenuItem id={"qa_tbl_mi_bulk_status_attention_"+label} value={'attention'}>
                               <Tooltip title="Attention"><AttentionIcon/></Tooltip>
                             </MenuItem>
-                            <MenuItem id={"qa_tbl_mi_body_bulk_status_deprecated_"+label} value={'deprecated'}>
+                            <MenuItem id={"qa_tbl_mi_bulk_status_deprecated_"+label} value={'deprecated'}>
                               <Tooltip title="Deprecated"><CloseIcon/></Tooltip>
                             </MenuItem>
                           </Select>
@@ -859,6 +860,7 @@ class SortableTable extends React.Component {
                       <TableRow key={n.rowid}>
                         <TableCell >
                           <Select
+                            id={"qa_tbl_sel_not_bulk_status_"+label}
                             className={`${classes.select} ${colorStyle}`}
                             disableUnderline
                             value={status}

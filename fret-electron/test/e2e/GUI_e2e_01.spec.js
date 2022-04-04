@@ -4,6 +4,9 @@ import { access, constants } from 'fs-extra';
 import { assert } from 'console';
 import { ExpansionPanelActions } from '@material-ui/core';
 import internal from 'stream';
+import { Token } from 'antlr4';
+import { parse } from 'node-html-parser';
+import { compileLustreExpr } from '../../support/lustreExprSemantics';
 
 const fsExtra = require('fs-extra')
 var fs = require('fs');
@@ -43,60 +46,6 @@ const app = new Application({
   webdriverLogPath: './webdriverlog',
 });
 fakeDialog.apply(app);
-
-
-function copyFileSync( source, target ) {
-
-      var targetFile = target;
-  
-      // If target is a directory, a new file with the same name will be created
-      if ( fs.existsSync( target ) ) {
-          if ( fs.lstatSync( target ).isDirectory() ) {
-              targetFile = path.join( target, path.basename( source ) );
-          }
-      }
-  
-      fs.writeFileSync(targetFile, fs.readFileSync(source));
-  }
-  
-function copyFolderRecursiveSync( source, target ) {
-      var files = [];
-  
-      // Check if folder needs to be created or integrated
-      var targetFolder = path.join( target, path.basename( source ) );
-      if ( !fs.existsSync( targetFolder ) ) {
-          fs.mkdirSync( targetFolder );
-      }
-  
-      // Copy
-      if ( fs.lstatSync( source ).isDirectory() ) {
-          files = fs.readdirSync( source );
-          files.forEach( function ( file ) {
-              var curSource = path.join( source, file );
-              if ( fs.lstatSync( curSource ).isDirectory() ) {
-                  copyFolderRecursiveSync( curSource, targetFolder );
-              } else {
-                  copyFileSync( curSource, targetFolder );
-              }
-          } );
-      }
-  }
-
-  
-/*
-  exec("ls -la", (error, stdout, stderr) => {
-      if (error) {
-          console.log(`error: ${error.message}`);
-          return;
-      }
-      if (stderr) {
-          console.log(`stderr: ${stderr}`);
-          return;
-      }
-      console.log(`stdout: ${stdout}`);
-  });  
-  */
-
 const rmDB = async()=>{
 
       // removing all existing files in directory fret-db and model-db
@@ -111,76 +60,48 @@ const rmDB = async()=>{
             //console.log('removing directory: ' + modelDB_dirName)
             if (err) return console.error(err)
       });     
+      await new Promise((r) => setTimeout(r, 1000));
 }
 
-const cpReferenceDB = async (refName) => {
-//function cpReferenceDB(refName){     
-      // copy reference DBs
-      // this function causes errors print out on console log and makes tests more flaky
+const cpFretDB = async (refName) => {
+      //function cpReferenceDB(refName){     
+
+            const fret_db = '../test_reference/inputs/'+refName+'/fret-db';
+            const ref_fret_db = path.join(__dirname, fret_db);
+            console.log('source reference fret-db: ' + ref_fret_db)
+            console.log('target reference fret-db: ' + fretDB_dirName)
+             
+            await fsExtra.copy(ref_fret_db, fretDB_dirName, err => {
+                  if (err) return console.error(err)
+                })           
+
+            await new Promise((r) => setTimeout(r, 1000));
+                
+      }
+      
+const cpModelDB = async (refName) => {
+
       const model_db = '../test_reference/inputs/'+refName+'/model-db';
       const ref_model_db = path.join(__dirname, model_db);
       console.log('source reference model-db: ' + ref_model_db)  
       console.log('target model-db: ' + modelDB_dirName)  
-
-
-      // shell copy model-db     
-      const cp_modelDB_command = 'cp -rf ' + ref_model_db+ ' '+ modelDB_dirName
-      console.log('exec shell command: ' + cp_modelDB_command)
-      exec(cp_modelDB_command,  (error, stdout, stderr) => {
-            if (error) {
-                console.log(`error: ${error.message}`);
-                return;
-            }
-            if (stderr) {
-                console.log(`stderr: ${stderr}`);
-                return;
-            }
-            console.log(`stdout: ${stdout}`);
-        });        
       
-
-
-      //copyFileSync(ref_model_db, modelDB_dirName);
-      /*
       await fsExtra.copy(ref_model_db, modelDB_dirName, err => {
             if (err) return console.error(err)
-            console.log('success!')
           })
-      */  
+
+      await new Promise((r) => setTimeout(r, 1000));
       
-      const fret_db = '../test_reference/inputs/'+refName+'/fret-db';
-      const ref_fret_db = path.join(__dirname, fret_db);
-      console.log('source reference fret-db: ' + ref_fret_db)
-      console.log('target reference fret-db: ' + fretDB_dirName)
-
-
-      const cp_fretDB_command = 'cp -rf ' + ref_fret_db+ ' '+ fretDB_dirName
-      console.log('exec shell command: ' + cp_fretDB_command)
-      exec(cp_fretDB_command,  (error, stdout, stderr) => {
-            if (error) {
-                console.log(`error: ${error.message}`);
-                return;
-            }
-            if (stderr) {
-                console.log(`stderr: ${stderr}`);
-                return;
-            }
-            console.log(`stdout: ${stdout}`);
-        });      
-
-
-
-      //copyFileSync(ref_fret_db, fretDB_dirName);
-
-      /*
-      await fsExtra.copy(ref_fret_db, fretDB_dirName, err => {
-            if (err) return console.error(err)
-            console.log('success!')
-          })
-          */
-          
-          
 }
+
+
+const cpReferenceDB = async (refName) => {
+
+      await cpFretDB(refName);
+      await cpModelDB(refName)
+           
+}
+      
 
 const startWithJsonFileImport = async (jsonFileNmae) => {
       await app.start();
@@ -215,11 +136,28 @@ describe('FRET GUI E2E tests ', function () {
       });      
 
       /////////////// begin regression tests from Google TEST DOC   //////
+      
       //------------------------------------------------------------------
-      it('I/E - 1A ', async () => {
-            console.log('starting test '+numTest+':  I/E - 1A')            
+      it('SF - 1 ', async () => {
+            console.log('starting test '+numTest+':  SF - 1')            
+
+            await app.start();
+            await app.client.waitUntilWindowLoaded();
+
+            const title = await app.client.getTitle();
+            expect(title).toBe('FRET')
+
+            const requirementField = await app.client.$('#qa_db_ili_requirements');           
+            const reqText = await requirementField.getText();
+            //console.log('requirements text: ' + reqText);
+            expect(reqText).toContain('Total Requirements');
+            expect(reqText).toContain('0');             
+      });
+      
+      //------------------------------------------------------------------
+      it('I/E - 1 ', async () => {
+            console.log('starting test '+numTest+':  I/E - 1')            
             await startWithJsonFileImport('FSM-Demo.json');
-            //// await app.client.pause(10000);
 
             // select Demo-FSM project
             const project = await app.client.$('#qa_db_btn_projects');
@@ -228,8 +166,7 @@ describe('FRET GUI E2E tests ', function () {
             const fsmProj = await app.client.$('#qa_proj_select_Demo-FSM');
             await fsmProj.click();
             await app.client.pause(timeDelay1);
-
-            
+           
             const requirementField = await app.client.$('#qa_db_ili_requirements');
             
             const reqText = await requirementField.getText();
@@ -237,11 +174,38 @@ describe('FRET GUI E2E tests ', function () {
             expect(reqText).toContain('Total Requirements');
             expect(reqText).toContain('13');            
 
-            // find 1 requiremnt in circle packing qa_cirPack_text_FSM-006
             const cirPackReq = await app.client.$('#qa_cirPack_text_FSM-006');
-            //await cirPackReq.click(); 
+
             const req_FSM_006_text = await cirPackReq.getValue();
-            //console.log('req_FSM_006_text: ' + req_FSM_006_text);
+            console.log('req_FSM_006_text: ' + req_FSM_006_text);
+            const tableBtn = await app.client.$('#qa_db_li_table');            
+            await tableBtn.click();
+
+            const tableBody = await app.client.$('#qa_tbl_sortableTable_body');
+            const tableBodyHTML = await tableBody.getHTML(false);
+
+            const tb = parse(tableBodyHTML);
+            //console.log(reqText);
+            //console.log(tb);
+            //console.log(tb.firstChild.structure)
+            //console.log(tb.childNodes.length)       
+            //console.log(tb.firstChild.text)         
+            //console.log(tb.childNodes[1].text)        
+            //console.log(tb.childNodes[2].text)      
+            //console.log(tb.childNodes[0].text)      
+            //console.log(tb.childNodes[3].text)       
+            //console.log(tb.firstChild.toString())
+            expect(tb.childNodes.length).toBe(10);   // showing 10 requirements per page
+            expect(tb.childNodes[0].text).toContain('FSM-001FSM  shall  always  satisfy if (limits & !standby & !apfail & supported) then pullupDemo-FSM');
+            expect(tb.childNodes[1].text).toContain('FSM-002FSM shall always satisfy if (standby & state = ap_transition_state) then STATE = ap_standby_stateDemo-FSM');
+            expect(tb.childNodes[2].text).toContain('FSM-003FSM shall always satisfy if (state = ap_transition_state & good & supported) then STATE = ap_nominal_stateDemo-FSM');
+            expect(tb.childNodes[3].text).toContain('FSM-004FSM shall always satisfy if (! good & state = ap_nominal_state) then STATE = ap_maneuver_stateDemo-FSM');
+
+            // wait for the "Analysis portal" button to be visible
+            const anaBtn = await app.client.$('#qa_db_li_analysis');
+            await anaBtn.click();
+
+            await app.client.pause(10000);
 
       });      
 
@@ -269,10 +233,6 @@ describe('FRET GUI E2E tests ', function () {
             await reqId12.click();
             const closeBtn = await app.client.$('#qa_disReq_btn_close');
             await closeBtn.click();
-
-            // wait for the "Analysis portal" button to be visible
-            const anaBtn = await app.client.$('#qa_db_li_analysis');
-            await anaBtn.click();
 
       });    
 
@@ -336,8 +296,39 @@ describe('FRET GUI E2E tests ', function () {
             const expandIcon =  await app.client.$('#qa_var_as_expandIcon_FSM');
             await expandIcon.click();
 
+            const varTableBody = await app.client.$('#qa_var_tableBody');
+            const varTableBodyHTML = await varTableBody.getHTML(false);
+
+            const tb = parse(varTableBodyHTML);
+            //console.log(reqText);
+            //console.log(tb);
+            //console.log(tb.firstChild.structure)
+            //console.log(tb.childNodes.length)       
+            //console.log(tb.firstChild.text)         
+            //console.log(tb.childNodes[1].text)        
+            //console.log(tb.childNodes[2].text)      
+            //console.log(tb.childNodes[3].text)      
+            //console.log(tb.childNodes[4].text)     
+            //console.log(tb.childNodes[5].text) 
+            //console.log(tb.childNodes[6].text) 
+            //console.log(tb.childNodes[7].text) 
+            //console.log(tb.childNodes[8].text) 
+            //console.log(tb.childNodes[9].text) 
+
+            expect(tb.childNodes.length).toBe(10);   // showing 10 requirements per page
+            expect(tb.childNodes[0].text).toBe('ap_maneuver_state');  //just id , no others
+            expect(tb.childNodes[1].text).toContain('ap_nominal_state');
+            expect(tb.childNodes[2].text).toContain('ap_standby_state');
+            expect(tb.childNodes[3].text).toContain('ap_transition_state');
+            expect(tb.childNodes[4].text).toContain('apfail');
+            expect(tb.childNodes[5].text).toContain('good');
+            expect(tb.childNodes[6].text).toContain('limits');
+            expect(tb.childNodes[7].text).toContain('pullup');
+            expect(tb.childNodes[8].text).toContain('request');
+            expect(tb.childNodes[9].text).toContain('sen_fault_state');
             await app.client.pause(timeDelay1);
       
+            // extra steps
             const apFail = await app.client.$('#qa_var_btn_FRETname_apfail');
             await apFail.click();
             await app.client.pause(timeDelay1);
@@ -415,57 +406,163 @@ describe('FRET GUI E2E tests ', function () {
             // Requirement ID
             const reqIDSel = await app.client.$('#qa_csvImp_sel_reqID');
             await reqIDSel.click();
-            const reqIDmi = await app.client.$('#qa_csvImp_mi_id_Project');
+            const reqIDmi = await app.client.$('#qa_csvImp_mi_id_Requirement_name');
             await reqIDmi.click();
 
             // Requirement Description
             const reqDesSel = await app.client.$('#qa_csvImp_sel_reqDescription');
             await reqDesSel.click();
-            const reqDes = await app.client.$('#qa_csvImp_mi_des_Other');
+            const reqDes = await app.client.$('#qa_csvImp_mi_des_Requirement_Description');
             await reqDes.click();
-            /*
 
             // Project Mapping qa_csvImp_sel_projID
             const projMap = await app.client.$('#qa_csvImp_sel_projID');
             projMap.click();
-            const mapCSV = await app.client.$('#qa_csvImp_mi_mapCSVfield');
+            const mapCSV = await app.client.$('#qa_csvImp_mi_createNewProj');
             mapCSV.click();
+            await app.client.pause(timeDelay1);
+
+            const projectIDtextfield = await app.client.$('#qa_csvImp_tf_specify_project_ID');
+            await projectIDtextfield.setValue('testProject');
 
             // ok button
             const okBtn = await app.client.$('#qa_csvImp_btn_ok');
             okBtn.click();
+            
+            const projBtn = await app.client.$('#qa_db_btn_projects');
+            await projBtn.click();
+            await app.client.pause(timeDelay1);
+
+            const liquidMixer = await app.client.$('#qa_proj_select_testProject');
+            await liquidMixer.click();
+            await app.client.pause(timeDelay1);       
+                                  
+            const requirementField = await app.client.$('#qa_db_ili_requirements');            
+            const reqText = await requirementField.getText();
+            //console.log('requirements text: ' + reqText);
+            expect(reqText).toContain('Total Requirements');
+            expect(reqText).toContain('200');       
+            
+            const req103 = await app.client.$('#qa_cirPack_text_t103');            
+            const req103Dis = await req103.isDisplayed();     
+            expect(req103Dis).toBeTruthy();       
+
+            const tableBtn = await app.client.$('#qa_db_li_table');            
+            await tableBtn.click();
+
+            const tableBody = await app.client.$('#qa_tbl_sortableTable_body');
+            const tableBodyHTML = await tableBody.getHTML(false);
+
+            const tb = parse(tableBodyHTML);
+            /*    
+            console.log(reqText);
+            console.log(tb);
+            console.log(tb.firstChild.structure)
+            console.log(tb.childNodes.length)       
+            console.log(tb.firstChild.text)     
+            console.log(tb.childNodes[0].text)     
+            console.log(tb.childNodes[1].text)        
+            console.log(tb.childNodes[2].text)                       
+            console.log(tb.childNodes[3].text)       
             */
+            expect(tb.childNodes.length).toBe(10);   // showing 10 requirements per page
+            expect(tb.childNodes[0].text).toContain('csvTest101a"Fret team shall satisfy best"testProject');
+            expect(tb.childNodes[1].text).toContain('t10"this is a FRET requirement"testProject');
+            expect(tb.childNodes[2].text).toContain('t100"this is a FRET requirement"testProject');
+            expect(tb.childNodes[3].text).toContain('t101"this is a FRET requirement"testProject');
+            
 
       });   
 
       //------------------------------------------------------------------
       it('I/E - 5', async () => {
-            console.log('starting test '+numTest+':  I/E - 5')           
-            await startWithJsonFileImport('AnastasiaTestRequirements.csv');            
+            console.log('starting test '+numTest+':  I/E - 5')   
+            await startWithJsonFileImport('FSM-Demo.json');        
+            //await startWithJsonFileImport('AnastasiaTestRequirements.csv');     
+            await app.client.pause(timeDelay1);  
+
+            var mockFilePath = path.join(__dirname, '../../test/test_reference/inputs');
+            mockFilePath = path.join(mockFilePath, 'AnastasiaTestRequirements.csv');
+            //console.log('mockFilePath ' + mockFilePath);
+            fakeDialog.mock([ { method: 'showOpenDialogSync', value: [mockFilePath] } ])
+            const importBtn = await app.client.$('#qa_db_li_import');
+            await importBtn.click();     
+            await app.client.pause(timeDelay1);
 
             // Requirement ID
             const reqIDSel = await app.client.$('#qa_csvImp_sel_reqID');
             await reqIDSel.click();
-            /*
-            const reqIDmi = await app.client.$('#qa_csvImp_mi_id_Requirement ID');
-            reqIDmi.click();
+            const reqIDmi = await app.client.$('#qa_csvImp_mi_id_Requirement_name');
+            await reqIDmi.click();
 
             // Requirement Description
             const reqDesSel = await app.client.$('#qa_csvImp_sel_reqDescription');
-            reqDesSel.click();
-            const reqDes = await app.client.$('#qa_csvImp_mi_des_Description');
-            reqDes.click();
+            await reqDesSel.click();
+            const reqDes = await app.client.$('#qa_csvImp_mi_des_Requirement_Description');
+            await reqDes.click();
 
             // Project Mapping qa_csvImp_sel_projID
             const projMap = await app.client.$('#qa_csvImp_sel_projID');
-            projMap.click();
-            const mapCSV = await app.client.$('#qa_csvImp_mi_mapCSVfield');
-            mapCSV.click();
+            projMap.click();      
+
+            // qa_csvImp_mi_pickExistFRETproj
+            const pickEsist = await app.client.$('#qa_csvImp_mi_pickExistFRETproj');
+            await pickEsist.click();
+            await app.client.pause(timeDelay1);    
+
+            const selProj = await app.client.$('#qa_csvImp_sel_pickExistFRETproj');
+            await selProj.click();
+            await app.client.pause(timeDelay1);    
+
+            const existProject = await app.client.$('#qa_csvImp_mi_pickExistFRETproj_Demo-FSM');
+            await existProject.click();
 
             // ok button
             const okBtn = await app.client.$('#qa_csvImp_btn_ok');
             okBtn.click();
-*/
+            
+            const projBtn = await app.client.$('#qa_db_btn_projects');
+            await projBtn.click();
+            await app.client.pause(timeDelay1);
+
+            const liquidMixer = await app.client.$('#qa_proj_select_Demo-FSM');
+            await liquidMixer.click();
+            await app.client.pause(timeDelay1);       
+                                  
+            const requirementField = await app.client.$('#qa_db_ili_requirements');            
+            const reqText = await requirementField.getText();
+            //console.log('requirements text: ' + reqText);
+            expect(reqText).toContain('Total Requirements');
+            expect(reqText).toContain('213');       
+            
+            const req103 = await app.client.$('#qa_cirPack_text_t103');            
+            const req103Dis = await req103.isDisplayed();     
+            expect(req103Dis).toBeTruthy();       
+
+            const tableBtn = await app.client.$('#qa_db_li_table');            
+            await tableBtn.click();
+
+            const tableBody = await app.client.$('#qa_tbl_sortableTable_body');
+            const tableBodyHTML = await tableBody.getHTML(false);
+
+            const tb = parse(tableBodyHTML);
+              
+            console.log(reqText);
+            console.log(tb);
+            console.log(tb.firstChild.structure)
+            console.log(tb.childNodes.length)       
+            console.log(tb.childNodes[0].text)     
+            console.log(tb.childNodes[1].text)        
+            console.log(tb.childNodes[2].text)                       
+            console.log(tb.childNodes[3].text)       
+            
+            expect(tb.childNodes.length).toBe(10);   // showing 10 requirements per page
+            expect(tb.childNodes[0].text).toContain('csvTest101a"Fret team shall satisfy best"Demo-FSM');
+            expect(tb.childNodes[1].text).toContain('FSM-001FSM  shall  always  satisfy if (limits & !standby & !apfail & supported) then pullupDemo-FSM');
+            expect(tb.childNodes[2].text).toContain('FSM-002FSM shall always satisfy if (standby & state = ap_transition_state) then STATE = ap_standby_stateDemo-FSM');
+            expect(tb.childNodes[3].text).toContain('FSM-003FSM shall always satisfy if (state = ap_transition_state & good & supported) then STATE = ap_nominal_stateDemo-FS');
+            
+
       });  
 
       //------------------------------------------------------------------
@@ -473,31 +570,47 @@ describe('FRET GUI E2E tests ', function () {
             console.log('starting test '+numTest+':  I/E - 5')            
             await startWithJsonFileImport('AnastasiaTestRequirements.csv');
 
-            // Requirement ID
             const reqIDSel = await app.client.$('#qa_csvImp_sel_reqID');
             await reqIDSel.click();
-            /*
-            const reqIDmi = await app.client.$('#qa_csvImp_mi_id_Requirement ID');
-            reqIDmi.click();
+            const reqIDmi = await app.client.$('#qa_csvImp_mi_id_Requirement_name');
+            await reqIDmi.click();
 
-            // Requirement Description
             const reqDesSel = await app.client.$('#qa_csvImp_sel_reqDescription');
-            reqDesSel.click();
-            const mapCSV = await app.client.$('#qa_csvImp_mi_des_Map to CSV field');
-            mapCSV.click();
+            await reqDesSel.click();
+            const reqDes = await app.client.$('#qa_csvImp_mi_des_Requirement_Description');
+            await reqDes.click();
+
+            const projMap = await app.client.$('#qa_csvImp_sel_projID');
+            await projMap.click();
+            const mapCSV = await app.client.$('#qa_csvImp_mi_mapCSVfield');
+            await mapCSV.click();
+            await app.client.pause(timeDelay1);
+
+            const selCSV = await app.client.$('#qa_csvImp_sel_CSVfileField');
+            await selCSV.click();            
+
+
+            const selCSVproject = await app.client.$('#qa_csvImp_mi_CSVfileField_Project');
+            await selCSVproject.click();   
 
              // ok button
              const okBtn = await app.client.$('#qa_csvImp_btn_ok');
-             okBtn.click();       
+             okBtn.click();      
+             await app.client.pause(timeDelay1); 
              
              const projectField = await app.client.$('#qa_db_ili_projects');
              
              const projectText = await projectField.getText();
              //console.log('project text: ' + projectText);
              expect(projectText).toContain('Total Projects');
-             expect(projectText).toContain('1');      
-             */       
-
+             expect(projectText).toContain('3');      
+                
+             const requirementField = await app.client.$('#qa_db_ili_requirements');
+            
+             const reqText = await requirementField.getText();
+             //console.log('requirements text: ' + reqText);
+             expect(reqText).toContain('Total Requirements');
+             expect(reqText).toContain('200');    
       });  
 
       //------------------------------------------------------------------
@@ -505,6 +618,14 @@ describe('FRET GUI E2E tests ', function () {
             console.log('starting test '+numTest+':  DA - 1')            
             await startWithJsonFileImport('MyDBAM113.json');
 
+            const projectField = await app.client.$('#qa_db_ili_projects');
+            await app.client.pause(timeDelay1);
+
+            var projectText = await projectField.getText();
+            await app.client.pause(timeDelay1);
+            expect(projectText).toContain('Total Projects');
+            expect(projectText).toContain('11');    
+                        
             const projectBtn = await app.client.$('#qa_db_btn_projects');
             await projectBtn.click();
             await app.client.pause(timeDelay1);
@@ -523,8 +644,8 @@ describe('FRET GUI E2E tests ', function () {
             const curProject = await app.client.$('#qa_proj_select_test');
             await curProject.click();
 
-            const projectField = await app.client.$('#qa_db_ili_projects');
-            const projectText = await projectField.getText();
+            
+            projectText = await projectField.getText();
             //console.log('project text: ' + projectText);
             expect(projectText).toContain('Current Project');
             expect(projectText).toContain('test');            
@@ -546,19 +667,29 @@ describe('FRET GUI E2E tests ', function () {
 
             const tableBtn = await app.client.$('#qa_db_li_table');            
             await tableBtn.click(); 
+            await app.client.pause(timeDelay1);
+
+            const selStat001 = await app.client.$('#qa_tbl_sel_not_bulk_status_FSM-001');
+            await selStat001.click();
+
+            const stat001paused = await app.client.$('#qa_tbl_mi_not_bulk_status_paused_FSM-001');
+            await stat001paused.click();
             
             const req_H1_idBtn = await app.client.$('#qa_tbl_btn_not_bulk_id_FSM-001');
             await req_H1_idBtn.click();
+            await app.client.pause(timeDelay1);
 
             const reqEdit = await app.client.$('#qa_disReq_ic_edit');
             await reqEdit.click();
+            await app.client.pause(timeDelay1);
 
-            // how to know  if it is paused?
+
             const statBtn = await app.client.$('#qa_crt_select_status');
-            var statType = await statBtn.getText();
-            //console.log('status button value: '+ statType);
-            statType = await statBtn.getValue();
-            //console.log('status button value: '+ statType);
+            const statBtnHTML = await statBtn.getHTML(false);
+            const statBtnText = parse(statBtnHTML);
+            const statBtnString = statBtnText.toString();
+            //console.log('title button value: '+ statBtnString);
+            expect(statBtnString).toContain('title="Paused"')
 
       });  
 
@@ -566,6 +697,7 @@ describe('FRET GUI E2E tests ', function () {
       it('RTF - 2', async () => {
             console.log('starting test '+numTest+':  RTF - 2')
             await startWithJsonFileImport('MyDBAM113.json');
+            await app.client.pause(timeDelay1);
 
             // make Hanfor current project
             const projectBtn = await app.client.$('#qa_db_btn_projects');
@@ -576,26 +708,71 @@ describe('FRET GUI E2E tests ', function () {
             await hanfor.click(); 
             await app.client.pause(timeDelay1);
 
-            /*
-            // bulk deletion of 2 requirements
-            const tableBtn = await app.client.$('#qa_db_li_table');            
-            await tableBtn.click(); 
-            const bulkChangeBtn = await app.client.$('#qa_tbl_ib_bulkChange');            
-            await bulkChangeBtn.click(); 
-            const delReq1 = await app.client.$('#qa_tbl_cb_table_body_bulk_1');            
-            await delReq1.click();            
-            const delReq2 = await app.client.$('#qa_tbl_cb_table_body_bulk_2');            
-            await delReq2.click();    
-            const delBtn = await app.client.$('#qa_tbl_ib_delete');            
-            await delBtn.click();                
-            const okDel = await app.client.$('#qa_delReq_btn_ok');            
-            await okDel.click();  
+            // click on the create button to add a requirement
+            const crtBtn = await app.client.$('#qa_db_btn_create');
+            await crtBtn.click();
+            const reqId = await app.client.$('#qa_crt_tf_reqid');
+            await reqId.setValue('r1');
+            const slateEditable = await app.client.$('#qa_crt_edt_editor');
+            await slateEditable.click();     
+            await app.client.pause(timeDelay1);       
+            await slateEditable.keys('In m component shall satisfy p');
 
-            // check on glossary that m1, x and q are removed
-            //const glossary = await app.client.react$('Glossary');  // can we look at Glossary props or states?
+            const semanticsBtn = await app.client.$('#qa_crt_btn_semantics');
+            await semanticsBtn.click();            
+            const createRq = await app.client.$('#qa_crt_btn_create');
+            await createRq.click();
+            await app.client.pause(timeDelay1);
+
+            await crtBtn.click();
+            await reqId.setValue('r2');
+            await slateEditable.click();     
+            await app.client.pause(timeDelay1);       
+            await slateEditable.keys('In m1 component shall satisfy q');
+            await semanticsBtn.click();            
+            await createRq.click();
+            await app.client.pause(timeDelay1);
+
+            await crtBtn.click();
+            await reqId.setValue('r3');
+            await slateEditable.click();     
+            await app.client.pause(timeDelay1);       
+            await slateEditable.keys('if x> 0 component shall satisfy p');
+            await semanticsBtn.click();            
+            await createRq.click();
+            await app.client.pause(timeDelay1);
+
+
+            const tableBtn = await app.client.$('#qa_db_li_table');            
+            await tableBtn.click();
+
+            const tableBody = await app.client.$('#qa_tbl_sortableTable_body');
+            const tableBodyHTML = await tableBody.getHTML(false);
+
+            const tb = parse(tableBodyHTML);
+            console.log(tb);
+            console.log(tb.firstChild.structure)
+            console.log(tb.childNodes.length)       
+            console.log(tb.childNodes[0].text)     
+            console.log(tb.childNodes[1].text)        
+            console.log(tb.childNodes[2].text)                       
+            console.log(tb.childNodes[3].text)       
             
-            const createBtn = await app.client.$('#qa_db_btn_create');           
-            await createBtn.click();            
+            expect(tb.childNodes.length).toBe(6);   // showing 10 requirements per page
+            expect(tb.childNodes[0].text).toContain('H1');
+            expect(tb.childNodes[1].text).toContain('H2');
+            expect(tb.childNodes[2].text).toContain('r1In m component shall satisfy pHanfor');
+            expect(tb.childNodes[3].text).toContain('r2');
+            expect(tb.childNodes[4].text).toContain('r3');
+
+            const r2 = await app.client.$('#qa_tbl_btn_not_bulk_id_r2');
+            await r2.click();
+            await app.client.pause(timeDelay1);
+
+            const reqEdit = await app.client.$('#qa_disReq_ic_edit');
+            await reqEdit.click();
+            await app.client.pause(timeDelay1);
+
             // click on Glossary
             const glos = await app.client.$('#qa_crt_tab_glossary');
             await glos.click();
@@ -605,14 +782,75 @@ describe('FRET GUI E2E tests ', function () {
             await comp.click();           
             const pVar = await app.client.$('#qa_gls_ti_var_p');
             await pVar.click();   
-            const pReqs = await app.client.$('#qa_gls_ti_var_reqs_p');
-            
-            //console.log('pReqs.getValue: '+ await pReqs.getValue());
-            console.log('pReqs.getText: '+ await pReqs.getText());  // reqs: Req-001
-            const reqsInP = await pReqs.getText();
-            expect(reqsInP).toContain('Req-001');
+            var pHTML = await pVar.getHTML(false);
+            var pVarText = parse(pHTML);
+            var pVarString = pVarText.toString();
+            console.log('p variable in glossary: ', pVarString)
+            expect(pVarString).toContain('>reqs: </p><p class="MuiTypography-root MuiTypography-body1" style="margin-left: 4px;">r1, r3<');
 
-*/
+            const mvar = await app.client.$('#qa_gls_ti_var_m');
+            expect(await mvar.isDisplayed()).toBeTruthy();
+
+            const m1var = await app.client.$('#qa_gls_ti_var_m1');
+            expect(await m1var.isDisplayed()).toBeTruthy();
+
+            var qVar = await app.client.$('#qa_gls_ti_var_q');
+            await qVar.click();
+            var qHTML = await qVar.getHTML(false);
+            var qVarText = parse(qHTML);
+            var qVarString = qVarText.toString();
+            console.log('q variable in glossary: ', qVarString);
+            expect(qVarString).toContain('>reqs: </p><p class="MuiTypography-root MuiTypography-body1" style="margin-left: 4px;">r2<');            
+
+            const xVar = await app.client.$('#qa_gls_ti_var_x');
+            expect(await xVar.isDisplayed()).toBeTruthy();
+
+            const cancelBtn = await app.client.$('#qa_crt_btn_cancel');
+            await cancelBtn.click();  
+            await app.client.pause(timeDelay1); 
+            
+            const bulkBtn  = await app.client.$('#qa_tbl_ib_bulkChange');
+            await bulkBtn.click();  
+            await app.client.pause(timeDelay1); 
+
+            
+            const r2Remove  = await app.client.$('#qa_tbl_cb_table_body_bulk_r2');
+            await r2Remove.click();              
+
+            
+            const r3Remove  = await app.client.$('#qa_tbl_cb_table_body_bulk_r3');
+            await r3Remove.click();       
+            
+            const delBtn = await app.client.$('#qa_tbl_ib_delete');            
+            await delBtn.click();                
+            const okDel = await app.client.$('#qa_delReq_btn_ok');            
+            await okDel.click();    
+            await app.client.pause(timeDelay1);         
+            
+            const bulkR1 = await app.client.$('#qa_tbl_btn_bulk_id_r1');            
+            await bulkR1.click();   
+            await app.client.pause(timeDelay1);         
+
+            await reqEdit.click();
+            await app.client.pause(timeDelay1);
+
+            // click on Glossary
+            await glos.click();
+            await selComp.click();            
+            await comp.click();           
+            await pVar.click();   
+            pHTML = await pVar.getHTML(false);
+            pVarText = parse(pHTML);
+            pVarString = pVarText.toString();
+            console.log('p variable in glossary: ', pVarString);
+            expect(pVarString).toContain('>reqs: </p><p class="MuiTypography-root MuiTypography-body1" style="margin-left: 4px;">r1</p>');
+
+            //expect(await mvar.isDisplayed()).toBeFalsy();
+            //expect(await xVar.isDisplayed()).toBeFalsy();
+            //expect(await m1var.isDisplayed()).toBeFalsy();
+
+            await app.client.pause(10000);
+
 
       }); 
 
@@ -649,7 +887,41 @@ describe('FRET GUI E2E tests ', function () {
 
             reqText = await requirementField.getText();
             expect(reqText).toContain('Total Requirements');
-            expect(reqText).toContain('14');    
+            expect(reqText).toContain('14');  
+
+            const projBtn = await app.client.$('#qa_db_btn_projects');
+            await projBtn.click();
+            await app.client.pause(timeDelay1);
+
+            const demo = await app.client.$('#qa_proj_select_Demo-FSM');
+            await demo.click();
+            await app.client.pause(timeDelay1);            
+
+            // circle packing
+            const cirPackReq = await app.client.$('#qa_cirPack_text_a_new_req');
+            await cirPackReq.click();  
+            await app.client.pause(timeDelay1);
+            const closeBtn = await app.client.$('#qa_disReq_btn_close');
+            await closeBtn.click();  
+
+            // check table
+            const tableBtn = await app.client.$('#qa_db_li_table');            
+            await tableBtn.click();
+
+            const tableBody = await app.client.$('#qa_tbl_sortableTable_body');
+            const tableBodyHTML = await tableBody.getHTML(false);
+            const tb = parse(tableBodyHTML);
+            /*
+            console.log(tb);
+            console.log(tb.firstChild.structure)
+            console.log(tb.childNodes.length)       
+            console.log(tb.childNodes[0].text)     
+            console.log(tb.childNodes[1].text)        
+            console.log(tb.childNodes[2].text)                       
+            console.log(tb.childNodes[3].text)  
+            */     
+            expect(tb.childNodes.length).toBe(10);   // showing 10 requirements per page
+            expect(tb.childNodes[0].text).toContain('a_new_reqif x> 0 component shall satisfy pDemo-FSM');
 
       });             
 
@@ -657,32 +929,14 @@ describe('FRET GUI E2E tests ', function () {
       it('RCE - 2', async () => {
             console.log('starting test '+numTest+':  RCE - 2')
             await startWithJsonFileImport('MyDBAM113.json');
-            // make Hanfor current project
-            const projectBtn = await app.client.$('#qa_db_btn_projects');
-            await projectBtn.click();
-            await app.client.pause(timeDelay1);
-/*
-            // select Hanfor project, should start with 5 requirements
-            const hanfor = await app.client.$('#qa_proj_select_Hanfor');  
-            await hanfor.click(); 
-            var reqField = await app.client.$('#qa_db_ili_requirements');
-            var reqText = await reqField.getText();
-            expect(reqText).toContain('Total Requirements');
-            expect(reqText).toContain('5');
 
-            // select GPCA project, should start with 12 requirements
-            await projectBtn.click();
-            const gpca = await app.client.$('#qa_proj_select_GPCA');  
-            await gpca.click(); 
-            reqText = await reqField.getText();
-            expect(reqText).toContain('Total Requirements');
-            expect(reqText).toContain('12');            
-
-            // move G1 of GPCA to Hanfor
             const tableBtn = await app.client.$('#qa_db_li_table');            
             await tableBtn.click(); 
-            const req_H1_idBtn = await app.client.$('#qa_tbl_btn_not_bulk_id_6');
-            await req_H1_idBtn.click();
+            await app.client.pause(timeDelay1);
+
+
+            const req_AP000 = await app.client.$('#qa_tbl_btn_not_bulk_id_AP-000');
+            await req_AP000.click();
             const reqEdit = await app.client.$('#qa_disReq_ic_edit');
             await reqEdit.click();
             const selProj = await app.client.$('#qa_crt_select_project');
@@ -690,99 +944,97 @@ describe('FRET GUI E2E tests ', function () {
             const selProjHanfor = await app.client.$('#qa_crt_select_project_Hanfor');
             await selProjHanfor.click();
             const updateBtn = await app.client.$('#qa_crt_btn_create');
-            await updateBtn.click();
+            await updateBtn.click();    
 
-            // click dashboard button
+            var tableBody = await app.client.$('#qa_tbl_sortableTable_body');
+            var tableBodyHTML = await tableBody.getHTML(false);
+            var htmlData = parse(tableBodyHTML);
+            /*
+            console.log(htmlData);
+            console.log(htmlData.firstChild.structure)
+            console.log(htmlData.childNodes.length)       
+            console.log(htmlData.childNodes[0].text)     
+            console.log(htmlData.childNodes[1].text)        
+            console.log(htmlData.childNodes[2].text)                       
+            console.log(htmlData.childNodes[3].text)  
+            */    
+            expect(htmlData.childNodes.length).toBe(10);   // showing 10 requirements per page
+            expect(htmlData.childNodes[0].text).toContain('AP-000Autopilot shall always satisfy altitude_hold => absOf_alt_minus_altIC <= 35.0Hanfor');            
+  
+            
+
+            const projBtn = await app.client.$('#qa_db_btn_projects');
+            await projBtn.click();
+            await app.client.pause(timeDelay1);
+
+            const demo = await app.client.$('#qa_proj_select_Hanfor');
+            await demo.click();
+            await app.client.pause(timeDelay1);            
+
+            // circle packing
             const dashboardBtn = await app.client.$('#qa_db_li_dashboard');
-            await dashboardBtn.click();            
-            reqText = await reqField.getText();
-            expect(reqText).toContain('Total Requirements');
-            expect(reqText).toContain('11');     
-            // await app.client.pause(3000);    
+            await dashboardBtn.click();  
+            const cirPackReq = await app.client.$('#qa_cirPack_text_AP-000');
+            await cirPackReq.click();  
+            await app.client.pause(timeDelay1);
+            const closeBtn = await app.client.$('#qa_disReq_btn_close');
+            await closeBtn.click();  
 
-            await projectBtn.click();
-            await hanfor.click(); 
-            reqText = await reqField.getText();
-            expect(reqText).toContain('Total Requirements');
-            expect(reqText).toContain('6');
 
-            // await app.client.pause(3000);
-            */
 
+
+            await app.client.pause(timeDelay1);
+            const liAnalysisBtn = await app.client.$('#qa_db_li_analysis');
+            await liAnalysisBtn.click();
+
+            await app.client.pause(timeDelay1);
+            const expandIconC = await app.client.$('#qa_var_as_expandIcon_Autopilot');
+            await expandIconC.click();
+            await app.client.pause(timeDelay1);    
+
+            //*********Added id #qa_var_tableBody in variablesSortableTable.js for table body**********
+            tableBody = await app.client.$('#qa_var_tableBody');
+            tableBodyHTML = await tableBody.getHTML(false);
+            htmlData = parse(tableBodyHTML);
+
+            console.log(htmlData.structure);
+            console.log(htmlData.toString())
+            console.log(htmlData.childNodes.toString())       
+            console.log(htmlData.childNodes[0].text)     
+            //console.log(htmlData.childNodes[1].text)        
+            //console.log(htmlData.childNodes[2].text)      
+
+            const varName1 = await app.client.$('#qa_var_tc_modelName_absOf_alt_minus_altIC');
+            //console.log('absOf_alt_minus_altIC is displayed', await varName1.isDisplayed())
+            expect(await varName1.isDisplayed()).toBeTruthy();
+            const varName2 = await app.client.$('#qa_var_tc_modelName_altitude_hold');
+            //console.log('altitude hold is displayed', await varName2.isDisplayed());
+            expect(await varName2.isDisplayed()).toBeTruthy();
       }); 
 
 
-      /*
+      
       //------------------------------------------------------------------
       it('RCE - 3', async () => {
-            console.log('starting test '+numTest+':  RCE - 3')
-            
-            await startWithJsonFileImport('Glossary_DBAM113.json');            
+            console.log('starting test '+numTest+':  RCE - 3')           
+            await startWithJsonFileImport('MyDBAM113.json');            
 
-            // make Hanfor current project
             const projectBtn = await app.client.$('#qa_db_btn_projects');
             await projectBtn.click();
             
-
-            // select Hanfor project, should start with 5 requirements
-            const hanfor = await app.client.$('#qa_proj_select_LM_requirement');  
+            const hanfor = await app.client.$('#qa_proj_select_LM_requirements');  
+            await app.client.pause(timeDelay1);
             await hanfor.click(); 
             var reqField = await app.client.$('#qa_db_ili_requirements');
-            var reqText = await reqField.getText();
-            expect(reqText).toContain('Total Requirements');
-            expect(reqText).toContain('5');
+            var reqText = await reqField.getHTML();
+            var reqString = reqText.toString()
+            //console.log('requirements: ',reqString)
+            expect(reqText).toContain('>Total Requirements</div><div class=\"jss17\">85<');
 
-            // click dashboard button
-            const dashboardBtn = await app.client.$('#qa_db_li_dashboard');
-            await dashboardBtn.click();            
-            reqText = await reqField.getText();
-            expect(reqText).toContain('Total Requirements');
-            expect(reqText).toContain('11');     
-            // await app.client.pause(3000);    
-
-            await projectBtn.click();
-            await hanfor.click(); 
-            reqText = await reqField.getText();
-            expect(reqText).toContain('Total Requirements');
-            expect(reqText).toContain('6');
-
-
-      }); 
-
-      //------------------------------------------------------------------
-      it('RCE - 4', async () => {
-            console.log('starting test '+numTest+':  RCE - 4')
-
-            await app.start();
-            await app.client.waitUntilWindowLoaded();
-
-            const projectBtn = await app.client.$('#qa_db_btn_projects');
-            await projectBtn.click();
-
-      }); 
-
-*/
-
-      //------------------------------------------------------------------ 
-      it('RCE - 3', async () => {
-            console.log('starting test '+numTest+':  RCE - 3')
-            
-            //await startWithJsonFileImport('Glossary_DBAM113.json');   
-            await startWithJsonFileImport('MyDBAM113.json');          
-
-            const projectBtn = await app.client.$('#qa_db_btn_projects');
-            await projectBtn.click();
-
-            await app.client.pause(timeDelay1);
-            const LM_requirements = await app.client.$('#qa_proj_select_LM_requirements');  
-            await LM_requirements.click(); 
+            const tableBtn = await app.client.$('#qa_db_li_table');            
+            await tableBtn.click(); 
             await app.client.pause(timeDelay1);
 
-            await app.client.pause(timeDelay1);
-            const li_table = await app.client.$('#qa_db_li_table');  
-            await li_table.click(); 
-
-            await app.client.pause(timeDelay1);
             const bulk_change = await app.client.$('#qa_tbl_ib_bulkChange');  
             await bulk_change.click(); 
 
@@ -795,20 +1047,27 @@ describe('FRET GUI E2E tests ', function () {
             await delete_selected_checkbox.click();
 
             await app.client.pause(timeDelay1);
+            const startTime = new Date();
             const okDelete = await app.client.$('#qa_delReq_btn_ok');  
             await okDelete.click();
-            
+            const endTime = new Date();
+            const timeDiff = endTime - startTime; //in ms
+            const shortTime = (6000 > timeDiff)?true:false;
+            expect(shortTime).toBeTruthy();
+            console.log('delete time: ',timeDiff);
             await app.client.pause(timeDelay1);
             const dashboardBtn = await app.client.$('#qa_db_li_dashboard');
             await dashboardBtn.click();   
-            
-            await app.client.pause(timeDelay1);
-            const requirementField = await app.client.$('#qa_db_ili_requirements');            
-            const reqText = await requirementField.getText();
-            expect(reqText).toContain('Total Requirements');
-            expect(reqText).toContain('0');
-      });
-      
+
+            reqText = await reqField.getHTML();
+            reqString = reqText.toString()
+            console.log('requirements: ',reqString)
+            expect(reqText).toContain('>Total Requirements</div><div class="jss67">0<');
+
+
+      }); 
+
+
       //------------------------------------------------------------------
       it('RCE - 4', async () => {
             console.log('starting test '+numTest+':  RCE - 4')
@@ -835,35 +1094,115 @@ describe('FRET GUI E2E tests ', function () {
             const createBtn = await app.client.$('#qa_db_btn_create');
             await createBtn.click();
 
+            const templates = await app.client.$('#qa_crt_tab_templates');
+            await templates.click();
+
+            const selTemplate  = await app.client.$('#qa_tpl_select');
+            await selTemplate.click();
+
+            const checkBounds = await app.client.$('#qa_tpl_mi_Check_Bounds');
+            await checkBounds.click();
+
+            const reqId = await app.client.$('#qa_crt_tf_reqid');
+            await reqId.setValue('R1');
+
+
+
+            /*
+            const slateEditable = await app.client.$('#qa_crt_edt_editor');
+            await slateEditable.click();              
+            var elemHTML = await slateEditable.getHTML();
+            console.log('slate editor html: ',elemHTML)
+            var elemString = elemHTML.toString()
+            console.log('slate editor string: ',elemString)
+            var elemText = elemHTML.text;
+            console.log('slate editor text: ',elemText)
+            */
+
+            const semanticsBtn = await app.client.$('#qa_crt_btn_semantics');
+            await semanticsBtn.click();
             await app.client.pause(timeDelay1);
             const createReqBtn = await app.client.$('#qa_crt_btn_create');
             await createReqBtn.click();
-
             await app.client.pause(timeDelay1);
-            const li_table = await app.client.$('#qa_db_li_table');  
-            await li_table.click(); 
 
-            const bulk_change = await app.client.$('#qa_tbl_ib_bulkChange');  
-            await bulk_change.click(); 
-
-            const head_checkbox_all = await app.client.$('#qa_tbl_tc_headcheckbox');  
-            await head_checkbox_all.click();
-
-            const delete_selected_checkbox = await app.client.$('#qa_tbl_ib_delete');  
-            await delete_selected_checkbox.click();
-
-            const okDelete = await app.client.$('#qa_delReq_btn_ok');  
-            await okDelete.click();          
-
+            await createBtn.click();
+            await templates.click();
+            await selTemplate.click();
+            const changeState = await app.client.$('#qa_tpl_mi_Change_State');
+            await changeState.click();
+            await reqId.setValue('R2');
+            await semanticsBtn.click();
+            await createReqBtn.click();
             await app.client.pause(timeDelay1);
-            const dashboardBtn = await app.client.$('#qa_db_li_dashboard');
-            await dashboardBtn.click();
 
+            await createBtn.click();
+            await templates.click();
+            await selTemplate.click();
+            const processCommand = await app.client.$('#qa_tpl_mi_Process_Command');
+            await processCommand.click();
+            await reqId.setValue('R3');
+            await semanticsBtn.click();
+            await createReqBtn.click();
             await app.client.pause(timeDelay1);
-            const requirementField = await app.client.$('#qa_db_ili_requirements');            
-            const reqText = await requirementField.getText();
-            expect(reqText).toContain('Total Requirements');
-            expect(reqText).toContain('0');
+
+            await createBtn.click();
+            await templates.click();
+            await selTemplate.click();
+            const setDiagnosticFlag = await app.client.$('#qa_tpl_mi_Set_Diagnostic_Flag');
+            await setDiagnosticFlag.click();
+            await reqId.setValue('R4');
+            await semanticsBtn.click();
+            await createReqBtn.click();
+            await app.client.pause(timeDelay1);
+
+            await createBtn.click();
+            await templates.click();
+            await selTemplate.click();
+            const prescribeFormat = await app.client.$('#qa_tpl_mi_Prescribe_Format');
+            await prescribeFormat.click();
+            await reqId.setValue('R5');
+            await semanticsBtn.click();
+            await createReqBtn.click();
+            await app.client.pause(timeDelay1);
+
+            var reqField = await app.client.$('#qa_db_ili_requirements');
+            var reqText = await reqField.getHTML();
+            var reqString = reqText.toString();
+            console.log('requirements: ',reqString)
+            expect(reqString).toContain('>Total Requirements</div><div class="jss17">5<');
+
+            await projectBtn.click();
+            
+            const rce4 = await app.client.$('#qa_proj_select_test_RCE_4');  
+            await rce4.click();
+            await app.client.pause(timeDelay1);
+
+            const tableBtn = await app.client.$('#qa_db_li_table');            
+            await tableBtn.click(); 
+            await app.client.pause(timeDelay1);
+
+
+            const tableBody = await app.client.$('#qa_tbl_sortableTable_body');
+            const tableBodyHTML = await tableBody.getHTML(false);
+            const tb = parse(tableBodyHTML);
+            
+            console.log(tb);
+            console.log(tb.firstChild.structure)
+            console.log(tb.childNodes.length)       
+            console.log(tb.childNodes[0].text)     
+            console.log(tb.childNodes[1].text)        
+            console.log(tb.childNodes[2].text)                       
+            console.log(tb.childNodes[3].text)  
+            console.log(tb.childNodes[4].text)  
+                 
+            expect(tb.childNodes.length).toBe(6);   
+            expect(tb.childNodes[0].text).toContain('R1The  component  shall always satisfy  bounds test_RCE_4');
+            expect(tb.childNodes[1].text).toContain('R2 component  shall always satisfy if ( input_state  &  condition ) then  output_state test_RCE_4');
+            expect(tb.childNodes[2].text).toContain('R3Upon  command  the  component  shall  timing  satisfy  response test_RCE_4');
+            expect(tb.childNodes[3].text).toContain('R4 condition  the  component  shall  timing  satisfy  response test_RCE_4');
+            expect(tb.childNodes[4].text).toContain('R5 component  shall always satisfy  response test_RCE_4');
+
       });
 
       //------------------------------------------------------------------
@@ -1485,11 +1824,24 @@ describe('FRET GUI E2E tests ', function () {
             const expandIconC = await app.client.$('#qa_var_as_expandIcon_C');
             await expandIconC.click();
 
-            //*********Added id #qa_tbl_variablesSortableTable_body in variablesSortableTable.js for table body**********
-            const tableBody = await app.client.$('#qa_tbl_variablesSortableTable_body');
+            //*********Added id #qa_var_tableBody in variablesSortableTable.js for table body**********
+            const tableBody = await app.client.$('#qa_var_tableBody');
             const reqText = await tableBody.getHTML(false);
-            const countMatching = (reqText.match(/MuiButton-label/g) || []).length;
+
+            const tb = parse(reqText);
             console.log(reqText);
+            console.log(tb);
+            console.log(tb.firstChild.structure)
+            console.log(tb.childNodes.length)       //4
+            console.log(tb.firstChild.text)         //a
+            console.log(tb.childNodes[1].text)        // b
+            console.log(tb.childNodes[2].text)        // cruising
+            console.log(tb.childNodes[0].text)        //a
+            console.log(tb.childNodes[3].text)         // empty
+            console.log(tb.firstChild.toString())
+
+            const countMatching = (reqText.match(/MuiButton-label/g) || []).length;
+            //console.log(reqText);
 
             expect(reqText).toContain('<span class="MuiButton-label">a</span>');
             expect(reqText).toContain('<span class="MuiButton-label">b</span>');
@@ -1616,8 +1968,11 @@ describe('FRET GUI E2E tests ', function () {
       //            test variable view 
       it('AP - 4', async () => {
             console.log('starting test '+numTest+':  AP - 4');            
-            await startWithJsonFileImport('MyDBAM113.json');
+            await cpReferenceDB('realizability');
+            //await new Promise((r) => setTimeout(r, 10000));
 
+            await app.start();
+            await app.client.waitUntilWindowLoaded();
             await app.client.pause(timeDelay1);
             const projBtn = await app.client.$('#qa_db_btn_projects');            
             await projBtn.click();
@@ -1641,24 +1996,26 @@ describe('FRET GUI E2E tests ', function () {
             await app.client.pause(timeDelay1);
             const varType = await app.client.$('#qa_disVar_sel_varType');
             await varType.click();
+            /*
             await app.client.pause(timeDelay3);
             const test = await varType.setValue('Internal');
             await app.client.pause(timeDelay3);
             const test2 = await test.getText();
             console.log('varType: -----------' + test2);
-
+*/
 
 
             //await app.client.pause(timeDelay3);
-            //const varTypeInternal = await app.client.$('#qa_disVar_mi_varType_internal');
-            //await varTypeInternal.click();
-/*
+            const varTypeInternal = await app.client.$('#qa_disVar_mi_varType_Internal');
+            await varTypeInternal.click();
+
             await app.client.pause(timeDelay1);
             const dataType = await app.client.$('#qa_disVar_sel_dataType');
             //const dataTypeValue = await dataType.getText();
+            await dataType.click();
 
             await app.client.pause(timeDelay1);
-            const miBoolean = await app.client.$('#qa_disVar_mi_boolean');
+            const miBoolean = await app.client.$('#qa_disVar_mi_dataType_single');
             await miBoolean.click();
 
             await app.client.pause(timeDelay1);
@@ -1670,19 +2027,15 @@ describe('FRET GUI E2E tests ', function () {
             const updateBtn = await app.client.$('#qa_disVar_btn_update');
             await updateBtn.click();
 
-            const selProj = await app.client.$('#alert-dialog-title');
+            const selProj = await app.client.$('#qa_nvd_alert_dialog');
             let reqText = await selProj.getHTML(false);
             expect(reqText).toContain('The following new variables were introduced in the assignment(s): HT.'); 
             
             await app.client.pause(timeDelay1);
-            const okBtn = await app.client.$('#qa_alertDialog_btn_ok');
+            const okBtn = await app.client.$('#qa_nvd_btn_ok');
             await okBtn.click();
 
-            await app.client.pause(timeDelay1);
-            const varTypeInp = await app.client.$('#idType-simple');
-            const varTypeInpVal = await varTypeInp.getValue();
-            expect(varTypeInpVal).toBe('');
-            */
+            
       });
 
 
@@ -1717,12 +2070,11 @@ describe('FRET GUI E2E tests ', function () {
             //// await app.client.pause(15000);
 
       });       
-      //------------------------------------------------------------------      why is mono default?
-      // TODO check with Andreas
+      //------------------------------------------------------------------      
       it('RLZ - 1', async () => {
             console.log('starting test '+numTest+':  RLZ - 1');
-            //await cpReferenceDB('realizability');
-            //await new Promise((r) => setTimeout(r, 2000));
+            await cpReferenceDB('realizability');
+            //await new Promise((r) => setTimeout(r, 10000));
 
             await app.start();
             await app.client.waitUntilWindowLoaded();
@@ -1742,30 +2094,32 @@ describe('FRET GUI E2E tests ', function () {
             const rlzTab = await app.client.$('#qa_rlz_tab');
             await rlzTab.click();
 
-            const sysComp = await app.client.$('#qa_rlzTbl_sel_sysComp');
+            await app.client.pause(timeDelay1);
+
+            const sysComp = await app.client.$('#qa_rlzCont_sel_sysComp');
             await sysComp.click();       
 
 
-            const lm_sysComp = await app.client.$('#qa_rlzTbl_mi_sysComp_liquid_mixer');
-            await lm_sysComp.click();       
+            const lm_sysComp = await app.client.$('#qa_rlzCont_mi_sysComp_liquid_mixer');
+            await lm_sysComp.click();   
+            
+            await app.client.pause(timeDelay1);
       
-
-            const comp_cb = await app.client.$('#qa_rlzTbl_cb_compositional');
-            const mono_cb = await app.client.$('#qa_rlzTbl_cb_monolithic');
+            const comp_cb = await app.client.$('#qa_rlzCont_cb_compositional');
+            const mono_cb = await app.client.$('#qa_rlzCont_cb_monolithic');
             // which cb is checked?
-            var checked = await mono_cb.getAttribute('checked');
-            console.log('monolithic is checked? ', checked);
-            checked = await comp_cb.getAttribute('checked');
-            console.log('compositional is checked? ', checked);
-            expect(checked).toBeTruthy();    
+            const compChecked = await comp_cb.getAttribute('checked');
+            const monoChecked = await mono_cb.getAttribute('checked');
+            expect(compChecked).toBeTruthy();  
+            expect(monoChecked).toBeFalsy();  
 
       });         
 
       //------------------------------------------------------------------      
       it('RLZ - 2', async () => {
             console.log('starting test '+numTest+':  RLZ - 2');
-            //await cpReferenceDB('realizability');
-            //await new Promise((r) => setTimeout(r, 2000));
+            await cpReferenceDB('realizability');
+            await new Promise((r) => setTimeout(r, 2000));
 
             await app.start();
             await app.client.waitUntilWindowLoaded();
@@ -1777,27 +2131,22 @@ describe('FRET GUI E2E tests ', function () {
             await hanfor.click();  
             await app.client.pause(timeDelay1);
 
-
             const anaBtn = await app.client.$('#qa_db_li_analysis');
             await anaBtn.click();
-
 
             const rlzTab = await app.client.$('#qa_rlz_tab');
             await rlzTab.click();
 
-            const sysComp = await app.client.$('#qa_rlzTbl_sel_sysComp');
+            const sysComp = await app.client.$('#qa_rlzCont_sel_sysComp');
             await sysComp.click();       
 
-
-            const lm_sysComp = await app.client.$('#qa_rlzTbl_mi_sysComp_liquid_mixer');
+            const lm_sysComp = await app.client.$('#qa_rlzCont_mi_sysComp_liquid_mixer');
             await lm_sysComp.click();       
       
-            const check_btn = await app.client.$('#qa_rlzTbl_btn_check');
+            const check_btn = await app.client.$('#qa_rlzCont_btn_check');
 
             const checkEnabled = await check_btn.isEnabled();
             expect(checkEnabled).toBeTruthy();
-      
-            //await app.client.pause(10000);          
 
       });     
 
@@ -1805,8 +2154,8 @@ describe('FRET GUI E2E tests ', function () {
       //------------------------------------------------------------------      
       it('RLZ - 3', async () => {
             console.log('starting test '+numTest+':  RLZ - 3');
-            //await cpReferenceDB('realizability');
-            //await new Promise((r) => setTimeout(r, 2000));
+            await cpReferenceDB('realizability');
+            await new Promise((r) => setTimeout(r, 2000));
 
             await app.start();
             await app.client.waitUntilWindowLoaded();
@@ -1818,35 +2167,42 @@ describe('FRET GUI E2E tests ', function () {
             await hanfor.click();  
             await app.client.pause(timeDelay1);
 
-
             const anaBtn = await app.client.$('#qa_db_li_analysis');
             await anaBtn.click();
-
 
             const rlzTab = await app.client.$('#qa_rlz_tab');
             await rlzTab.click();
 
-            const sysComp = await app.client.$('#qa_rlzTbl_sel_sysComp');
+            const sysComp = await app.client.$('#qa_rlzCont_sel_sysComp');
             await sysComp.click();       
 
-
-            const lm_sysComp = await app.client.$('#qa_rlzTbl_mi_sysComp_liquid_mixer');
+            const lm_sysComp = await app.client.$('#qa_rlzCont_mi_sysComp_liquid_mixer');
             await lm_sysComp.click();       
 
             await app.client.pause(timeDelay1);
-            const comp_cb = await app.client.$('#qa_rlzTbl_cb_compositional');
+            const comp_cb = await app.client.$('#qa_rlzCont_cb_compositional');
             await comp_cb.click();
       
-            const cc0 = await app.client.$('#qa_rlzTbl_tab_cc0');
-            const cc1 = await app.client.$('#qa_rlzTbl_tab_cc1');
-            const cc2 = await app.client.$('#qa_rlzTbl_tab_cc2');
-            const cc3 = await app.client.$('#qa_rlzTbl_tab_cc3');
-            const cc4 = await app.client.$('#qa_rlzTbl_tab_cc4');
-            const cc5 = await app.client.$('#qa_rlzTbl_tab_cc5');            
-            await cc1.click();
-            
-      
-            //await app.client.pause(10000);          
+            const cc0 = await app.client.$('#qa_rlzCont_tab_cc0');
+            const cc1 = await app.client.$('#qa_rlzCont_tab_cc1');
+            const cc2 = await app.client.$('#qa_rlzCont_tab_cc2');
+            const cc3 = await app.client.$('#qa_rlzCont_tab_cc3');
+            const cc4 = await app.client.$('#qa_rlzCont_tab_cc4');
+            const cc5 = await app.client.$('#qa_rlzCont_tab_cc5');        
+            const cc0_enabled = await cc0.isEnabled();
+            expect(cc0_enabled).toBeTruthy();
+            const cc1_displayed = await cc1.isDisplayed();
+            expect(cc1_displayed).toBeTruthy();
+            const cc2_text = await cc2.getText();
+            //console.log('cc2_text ', cc2_text);
+            expect(cc2_text).toContain('CC2')
+            const cc3_value = await cc3.getText();
+            //console.log('cc3_value ', getText);
+            expect(cc3_value).toContain('CC3')        
+            const cc4_existing = await cc4.isExisting();
+            expect(cc4_existing).toBeTruthy();
+            const cc5_displayed = await cc5.waitForExist();
+            expect(cc5_displayed).toBeTruthy();   
 
       });     
 
@@ -1854,8 +2210,8 @@ describe('FRET GUI E2E tests ', function () {
       //------------------------------------------------------------------      
       it('RLZ - 4', async () => {
             console.log('starting test '+numTest+':  RLZ - 4');
-            //await cpReferenceDB('realizability');
-            //await new Promise((r) => setTimeout(r, 2000));
+            await cpReferenceDB('realizability');
+            await new Promise((r) => setTimeout(r, 2000));
 
             await app.start();
             await app.client.waitUntilWindowLoaded();
@@ -1867,26 +2223,23 @@ describe('FRET GUI E2E tests ', function () {
             await hanfor.click();  
             await app.client.pause(timeDelay1);
 
-
             const anaBtn = await app.client.$('#qa_db_li_analysis');
             await anaBtn.click();
-
 
             const rlzTab = await app.client.$('#qa_rlz_tab');
             await rlzTab.click();
 
-            const sysComp = await app.client.$('#qa_rlzTbl_sel_sysComp');
+            const sysComp = await app.client.$('#qa_rlzCont_sel_sysComp');
             await sysComp.click();       
 
-
-            const lm_sysComp = await app.client.$('#qa_rlzTbl_mi_sysComp_liquid_mixer');
+            const lm_sysComp = await app.client.$('#qa_rlzCont_mi_sysComp_liquid_mixer');
             await lm_sysComp.click();       
 
             await app.client.pause(timeDelay1);
-            const comp_cb = await app.client.$('#qa_rlzTbl_cb_compositional');
+            const comp_cb = await app.client.$('#qa_rlzCont_cb_compositional');
             await comp_cb.click();
       
-            const timeout_tf = await app.client.$('#qa_rlzTbl_tf_timeOut');
+            const timeout_tf = await app.client.$('#qa_rlzCont_tf_timeOut');
             const timeout_enabled = await timeout_tf.isEnabled();
             expect(timeout_enabled).toBeTruthy();
             await timeout_tf.setValue('700');        
@@ -1897,8 +2250,8 @@ describe('FRET GUI E2E tests ', function () {
       //------------------------------------------------------------------      
       it('RLZ - 5', async () => {
             console.log('starting test '+numTest+':  RLZ - 5');
-            //await cpReferenceDB('realizability');
-            //await new Promise((r) => setTimeout(r, 2000));
+            await cpReferenceDB('realizability');
+            await new Promise((r) => setTimeout(r, 2000));
 
             await app.start();
             await app.client.waitUntilWindowLoaded();
@@ -1918,43 +2271,84 @@ describe('FRET GUI E2E tests ', function () {
             const rlzTab = await app.client.$('#qa_rlz_tab');
             await rlzTab.click();
 
-            const sysComp = await app.client.$('#qa_rlzTbl_sel_sysComp');
+            const sysComp = await app.client.$('#qa_rlzCont_sel_sysComp');
             await sysComp.click();       
 
 
-            const lm_sysComp = await app.client.$('#qa_rlzTbl_mi_sysComp_liquid_mixer');
+            const lm_sysComp = await app.client.$('#qa_rlzCont_mi_sysComp_liquid_mixer');
             await lm_sysComp.click();       
 
             await app.client.pause(timeDelay1);
-            const comp_cb = await app.client.$('#qa_rlzTbl_cb_compositional');
+            const comp_cb = await app.client.$('#qa_rlzCont_cb_compositional');
             await comp_cb.click();
 
-            const lm_012 = await app.client.$('#qa_rlzTbl_tc_body_id_LM012');
-            const lm_001 = await app.client.$('#qa_rlzTbl_tc_body_id_LM001');
-            const opacity1 = await lm_001.getCSSProperty('opacity')
-            console.log('opacity ', opacity1)
-      
             
-            const cc0 = await app.client.$('#qa_rlzTbl_tab_cc0');
-            const cc1 = await app.client.$('#qa_rlzTbl_tab_cc1');
-            const cc2 = await app.client.$('#qa_rlzTbl_tab_cc2');
-            const cc3 = await app.client.$('#qa_rlzTbl_tab_cc3');
-            const cc4 = await app.client.$('#qa_rlzTbl_tab_cc4');
-            const cc5 = await app.client.$('#qa_rlzTbl_tab_cc5');            
-            await cc1.click();
-            
-            
-            await app.client.pause(10000);          
+            const cc0 = await app.client.$('#qa_rlzCont_tab_cc0');
+            const cc1 = await app.client.$('#qa_rlzCont_tab_cc1');
+            const cc2 = await app.client.$('#qa_rlzCont_tab_cc2');
+            const cc3 = await app.client.$('#qa_rlzCont_tab_cc3');
+            const cc4 = await app.client.$('#qa_rlzCont_tab_cc4');
+            const cc5 = await app.client.$('#qa_rlzCont_tab_cc5');         
 
+            await cc0.click();
+            var cc_tbl_bd = await app.client.$('#qa_diagReqTbl_tableBody_1');
+            var reqText = await cc_tbl_bd.getHTML(false);
+
+            var tb_data = parse(reqText);
+ 
+            var id1 = tb_data.childNodes[0].toString();
+            var id2 = tb_data.childNodes[1].toString();
+            var id3 = tb_data.childNodes[2].toString();
+            //console.log('row 1: ', id1)
+            //console.log('row 2: ', id2)
+            //console.log('row 3: ', id3)
+
+            expect(id1).toContain('qa_diagReqTbl_tc_body_summary_LM012')
+            expect(id1).toContain('opacity: 1')
+
+            expect(id2).toContain('qa_diagReqTbl_tc_body_summary_LM006')
+            expect(id2).toContain('opacity: 1')
+
+            expect(id3).toContain('qa_diagReqTbl_tc_body_summary_LM001')
+            expect(id3).toContain('opacity: 0.6')            
+
+
+            await cc3.click();
+            cc_tbl_bd = await app.client.$('#qa_diagReqTbl_tableBody_1');
+            reqText = await cc_tbl_bd.getHTML(false);
+
+            tb_data = parse(reqText);
+            //console.log('html: ', reqText)
+            //console.log('html structure: ', tb_data)
+            id1 = tb_data.childNodes[0].toString();
+            id2 = tb_data.childNodes[1].toString();
+            id3 = tb_data.childNodes[2].toString();
+            var id4 = tb_data.childNodes[3].toString();
+            //console.log('row 1: ', id1)
+            //console.log('row 2: ', id2)
+            //console.log('row 3: ', id3)
+            //console.log('row 4: ', id4)
+
+            expect(id1).toContain('qa_diagReqTbl_tc_body_summary_LM010')
+            expect(id1).toContain('opacity: 1')
+
+            expect(id2).toContain('qa_diagReqTbl_tc_body_summary_LM003')
+            expect(id2).toContain('opacity: 1')
+
+            expect(id3).toContain('qa_diagReqTbl_tc_body_summary_LM004')
+            expect(id3).toContain('opacity: 1')        
+
+            expect(id4).toContain('qa_diagReqTbl_tc_body_summary_LM001')
+            expect(id4).toContain('opacity: 0.6')   
+
+            //await app.client.pause(10000);      
       });     
 
-
-
       //------------------------------------------------------------------      
-      it('RLZ - 6,7', async () => {
-            console.log('starting test '+numTest+':  RLZ - 6,7');
-            //await cpReferenceDB('realizability');
-            //await new Promise((r) => setTimeout(r, 2000));
+      it('RLZ - 6', async () => {
+            console.log('starting test '+numTest+':  RLZ - 6');
+            await cpReferenceDB('realizability');
+            await new Promise((r) => setTimeout(r, 2000));
 
             await app.start();
             await app.client.waitUntilWindowLoaded();
@@ -1974,28 +2368,28 @@ describe('FRET GUI E2E tests ', function () {
             const rlzTab = await app.client.$('#qa_rlz_tab');
             await rlzTab.click();
 
-            const sysComp = await app.client.$('#qa_rlzTbl_sel_sysComp');
+            const sysComp = await app.client.$('#qa_rlzCont_sel_sysComp');
             await sysComp.click();       
 
 
-            const lm_sysComp = await app.client.$('#qa_rlzTbl_mi_sysComp_liquid_mixer');
+            const lm_sysComp = await app.client.$('#qa_rlzCont_mi_sysComp_liquid_mixer');
             await lm_sysComp.click();       
       
-            const mono_cb = await app.client.$('#qa_rlzTbl_cb_monolithic');
-            const comp_cb = await app.client.$('#qa_rlzTbl_cb_compositional');
+            const mono_cb = await app.client.$('#qa_rlzCont_cb_monolithic');
+            const comp_cb = await app.client.$('#qa_rlzCont_cb_compositional');
             await comp_cb.click();
       
-            const checkBtn = await app.client.$('#qa_rlzTbl_btn_check');
+            const checkBtn = await app.client.$('#qa_rlzCont_btn_check');
             const checkEnabled = await checkBtn.isEnabled();
             expect(checkEnabled).toBeTruthy();
             await checkBtn.click();
 
-            const cc0res = await app.client.$('#qa_rlzTbl_res_cc0_REALIZABLE');
-            const cc1res = await app.client.$('#qa_rlzTbl_res_cc1_REALIZABLE');
-            const cc2res = await app.client.$('#qa_rlzTbl_res_cc2_UNREALIZABLE');
-            const cc3res = await app.client.$('#qa_rlzTbl_res_cc3_REALIZABLE');
-            const cc4res = await app.client.$('#qa_rlzTbl_res_cc4_REALIZABLE');
-            const cc5res = await app.client.$('#qa_rlzTbl_res_cc5_REALIZABLE');
+            const cc0res = await app.client.$('#qa_rlzCont_res_cc0_REALIZABLE');
+            const cc1res = await app.client.$('#qa_rlzCont_res_cc1_REALIZABLE');
+            const cc2res = await app.client.$('#qa_rlzCont_res_cc2_UNREALIZABLE');
+            const cc3res = await app.client.$('#qa_rlzCont_res_cc3_REALIZABLE');
+            const cc4res = await app.client.$('#qa_rlzCont_res_cc4_REALIZABLE');
+            const cc5res = await app.client.$('#qa_rlzCont_res_cc5_REALIZABLE');
             const cc0Dis = await cc0res.isDisplayed();
             expect(cc0Dis).toBeTruthy();
             const cc1Dis = await cc1res.isDisplayed();
@@ -2009,7 +2403,7 @@ describe('FRET GUI E2E tests ', function () {
             const cc5Dis = await cc5res.isDisplayed();
             expect(cc5Dis).toBeTruthy();
 
-            const lm_res = await app.client.$('#qa_rlzTbl_res_liquid_mixer_UNREALIZABLE');
+            const lm_res = await app.client.$('#qa_rlzCont_res_liquid_mixer_UNREALIZABLE');
             const lm_resDis = lm_res.isDisplayed();
             expect(lm_resDis).toBeTruthy();
       
@@ -2020,10 +2414,10 @@ describe('FRET GUI E2E tests ', function () {
 
 
       //------------------------------------------------------------------      
-      it('RLZ - 8,9', async () => {
-            console.log('starting test '+numTest+':  RLZ - 8,9');
-            //await cpReferenceDB('realizability');
-            //await new Promise((r) => setTimeout(r, 2000));
+      it('RLZ - 7', async () => {
+            console.log('starting test '+numTest+':  RLZ - 7');
+            await cpReferenceDB('realizability');
+            await new Promise((r) => setTimeout(r, 2000));
 
             await app.start();
             await app.client.waitUntilWindowLoaded();
@@ -2043,26 +2437,74 @@ describe('FRET GUI E2E tests ', function () {
             const rlzTab = await app.client.$('#qa_rlz_tab');
             await rlzTab.click();
 
-            const sysComp = await app.client.$('#qa_rlzTbl_sel_sysComp');
+            const sysComp = await app.client.$('#qa_rlzCont_sel_sysComp');
             await sysComp.click();       
 
 
-            const lm_sysComp = await app.client.$('#qa_rlzTbl_mi_sysComp_liquid_mixer');
+            const lm_sysComp = await app.client.$('#qa_rlzCont_mi_sysComp_liquid_mixer');
             await lm_sysComp.click();       
       
-            const mono_cb = await app.client.$('#qa_rlzTbl_cb_monolithic');
-            const comp_cb = await app.client.$('#qa_rlzTbl_cb_compositional');
+            const mono_cb = await app.client.$('#qa_rlzCont_cb_monolithic');
+            const comp_cb = await app.client.$('#qa_rlzCont_cb_compositional');
             await mono_cb.click();
       
-            const checkBtn = await app.client.$('#qa_rlzTbl_btn_check');
+            const checkBtn = await app.client.$('#qa_rlzCont_btn_check');
+            const checkEnabled = await checkBtn.isEnabled();
+            expect(checkEnabled).toBeTruthy();
+            await checkBtn.click();
+
+            const lm_res = await app.client.$('#qa_rlzCont_res_liquid_mixer_UNREALIZABLE');
+            const lm_resDis = lm_res.isDisplayed();
+            expect(lm_resDis).toBeTruthy();
+      
+            await app.client.pause(1000);      
+
+
+      });     
+
+
+      //------------------------------------------------------------------      
+      it('RLZ - 8, 9', async () => {
+            console.log('starting test '+numTest+':  RLZ - 8, 9');
+            await cpReferenceDB('realizability');
+            await new Promise((r) => setTimeout(r, 2000));
+
+            await app.start();
+            await app.client.waitUntilWindowLoaded();
+
+            const projBtn = await app.client.$('#qa_db_btn_projects');
+            await projBtn.click();
+            await app.client.pause(timeDelay1);
+            const hanfor = await app.client.$('#qa_proj_select_Liquid_mixer');  
+            await hanfor.click();  
+            await app.client.pause(timeDelay1);
+
+
+            const anaBtn = await app.client.$('#qa_db_li_analysis');
+            await anaBtn.click();
+
+
+            const rlzTab = await app.client.$('#qa_rlz_tab');
+            await rlzTab.click();
+
+            const sysComp = await app.client.$('#qa_rlzCont_sel_sysComp');
+            await sysComp.click();       
+
+
+            const lm_sysComp = await app.client.$('#qa_rlzCont_mi_sysComp_liquid_mixer');
+            await lm_sysComp.click();       
+      
+            const mono_cb = await app.client.$('#qa_rlzCont_cb_monolithic');
+            await mono_cb.click();
+      
+            const checkBtn = await app.client.$('#qa_rlzCont_btn_check');
             const checkEnabled = await checkBtn.isEnabled();
             expect(checkEnabled).toBeTruthy();
             await checkBtn.click();
       
             await app.client.pause(timeDelay1);      
-
-      
-            const diagBtn = await app.client.$('#qa_rlzTbl_btn_diagnose');
+            await app.client.pause(timeDelay1);     
+            const diagBtn = await app.client.$('#qa_rlzCont_btn_diagnose');
             const diagBtnEnabled = await checkBtn.isEnabled();
             expect(diagBtnEnabled).toBeTruthy();
             await diagBtn.click();
@@ -2074,9 +2516,6 @@ describe('FRET GUI E2E tests ', function () {
             await app.client.pause(1000);     
 
       });     
-
-      // --------------- RLZ 10 requires more time to work with svg
-
 
       //------------------------------------------------------------------      
       it('RLZ - 10, 11,12,13', async () => {
@@ -2102,18 +2541,25 @@ describe('FRET GUI E2E tests ', function () {
             const rlzTab = await app.client.$('#qa_rlz_tab');
             await rlzTab.click();
 
-            const sysComp = await app.client.$('#qa_rlzTbl_sel_sysComp');
+            const sysComp = await app.client.$('#qa_rlzCont_sel_sysComp');
             await sysComp.click();       
 
 
-            const lm_sysComp = await app.client.$('#qa_rlzTbl_mi_sysComp_Infusion_Manager');
-            await lm_sysComp.click();       
+            const lm_sysComp = await app.client.$('#qa_rlzCont_mi_sysComp_Infusion_Manager');
+            await lm_sysComp.click();     
+            await app.client.pause(timeDelay1);  
       
-            const mono_cb = await app.client.$('#qa_rlzTbl_cb_monolithic');
-            const comp_cb = await app.client.$('#qa_rlzTbl_cb_compositional');
+            const mono_cb = await app.client.$('#qa_rlzCont_cb_monolithic');
+            const comp_cb = await app.client.$('#qa_rlzCont_cb_compositional');
             await mono_cb.click();
+
       
-            const checkBtn = await app.client.$('#qa_rlzTbl_btn_check');
+            const timeout_tf = await app.client.$('#qa_rlzCont_tf_timeOut');
+            const timeout_enabled = await timeout_tf.isEnabled();
+            expect(timeout_enabled).toBeTruthy();
+            await timeout_tf.setValue('900');                  
+      
+            const checkBtn = await app.client.$('#qa_rlzCont_btn_check');
             const checkEnabled = await checkBtn.isEnabled();
             expect(checkEnabled).toBeTruthy();
             await checkBtn.click();
@@ -2121,7 +2567,7 @@ describe('FRET GUI E2E tests ', function () {
             await app.client.pause(2000);      
 
       
-            const diagBtn = await app.client.$('#qa_rlzTbl_btn_diagnose');
+            const diagBtn = await app.client.$('#qa_rlzCont_btn_diagnose');
             const diagBtnEnabled = await checkBtn.isEnabled();
             expect(diagBtnEnabled).toBeTruthy();
             await diagBtn.click();
@@ -2132,30 +2578,76 @@ describe('FRET GUI E2E tests ', function () {
             await chord_LM001.click();
 
             const counterExSel =  await app.client.$('#qa_counterEx_sel');
-            await counterExSel.click();            
-
+            var counterExSelValue = await counterExSel.getValue();
+            console.log('counterExSelValue: ',counterExSelValue)
+            var counterExSelText = await counterExSel.getText();
+            console.log('counterExSelText: ',counterExSelText)            
+            await counterExSel.click();           
+            
             const conflict7 = await app.client.$('#qa_counterEx_Conflict_7');
             const conflict7Visible = await conflict7.isDisplayed();
             expect(conflict7Visible).toBeTruthy();
             const conflict8 = await app.client.$('#qa_counterEx_Conflict_8');
-            await conflict8.click();
             await app.client.pause(10000);     
 
-            // test top 3 rows
-            const tablG3 = await app.client.$('#qa_rlzTbl_tc_body_id_G3_row_0');
-            const tablG4 = await app.client.$('#qa_rlzTbl_tc_body_id_G4_row_1');
-            const tablG7 = await app.client.$('#qa_rlzTbl_tc_body_id_G7_row_2');
+            const counterExTable = await app.client.$('#qa_counterEx_table');
+            const counterExTableHTML = await counterExTable.getHTML(false);
+
+            const counterExs = parse(counterExTableHTML)
+            console.log('counterExs: ',counterExs)
+            // process table 10 rows
+            // from top :    Flow_rate_KVO, Infustion_inhibit, System_On
+            // from bottom: G10, G4, G3, FTP
+
+            var numChildren = counterExs.childNodes.length
+            expect(numChildren).toBe(10)
+ 
+            var id1 = tb_data.childNodes[0].toString();
+            var id2 = tb_data.childNodes[1].toString();
+            var id3 = tb_data.childNodes[2].toString();
+            console.log('row 1: ', id1)
+            console.log('row 2: ', id2)
+            console.log('row 3: ', id3)
+
+            expect(id1).toContain('Flow_rate_KVO')
+            expect(id2).toContain('Infustion_inhibit')
+            expect(id3).toContain('System_On')
+            
+            // get diagReq table for counter example 7
+            //26 rows
+            // from top: G3, G4, G10 (1 opacity), (0.6 opacity) G11, G12, G1_1
+            const diagReqCE_7 = await app.client.$('#qa_diagReqTbl_tableBody_2');
+            const diagReqCE_7HTML = await diagReqCE_7.getHTML(false);
+            const diagReqTabl = parse(diagReqCE_7HTML)
+            console.log('diagReqTabl: ',diagReqTabl)
+
+            var numChildren = counterExs.childNodes.length
+            expect(numChildren).toBe(10)
+ 
+            var id1 = diagReqTabl.childNodes[0].toString();
+            var id2 = diagReqTabl.childNodes[1].toString();
+            var id3 = tb_ddiagReqTablata.childNodes[3].toString();
+            console.log('row 1: ', id1)
+            console.log('row 2: ', id2)
+            console.log('row 4: ', id3)
+
+            expect(id1).toContain('G3')
+            expect(id1).toContain('opacity: 1')
+
+            expect(id2).toContain('G4')
+            expect(id2).toContain('opacity: 1')
+
+            expect(id3).toContain('G11')
+            expect(id3).toContain('opacity: 0.6')                   
         
 
       });    
 
-
-
       //------------------------------------------------------------------      
       it('RLZ - 14', async () => {
             console.log('starting test '+numTest+':  RLZ - 14');
-            //await cpReferenceDB('realizability');
-            //await new Promise((r) => setTimeout(r, 2000));
+            await cpReferenceDB('realizability');
+            await new Promise((r) => setTimeout(r, 2000));
 
             await app.start();
             await app.client.waitUntilWindowLoaded();
@@ -2175,33 +2667,27 @@ describe('FRET GUI E2E tests ', function () {
             const rlzTab = await app.client.$('#qa_rlz_tab');
             await rlzTab.click();
 
-            const sysComp = await app.client.$('#qa_rlzTbl_sel_sysComp');
+            const sysComp = await app.client.$('#qa_rlzCont_sel_sysComp');
             await sysComp.click();       
 
-            const fsm_sysComp = await app.client.$('#qa_rlzTbl_mi_sysComp_FSM');
+            const fsm_sysComp = await app.client.$('#qa_rlzCont_mi_sysComp_FSM');
             await fsm_sysComp.click();     
 
-            const mono_cb = await app.client.$('#qa_rlzTbl_cb_monolithic');
-            const comp_cb = await app.client.$('#qa_rlzTbl_cb_compositional');
+            const mono_cb = await app.client.$('#qa_rlzCont_cb_monolithic');
+            const comp_cb = await app.client.$('#qa_rlzCont_cb_compositional');
 
-            // which cb is checked?
-            var checked = await mono_cb.getAttribute('checked');
-            console.log('monolithic is checked? ', checked);
-            checked = await comp_cb.getAttribute('checked');
-            console.log('compositional is checked? ', checked);
-            expect(checked).toBeTruthy();    
-
+            await comp_cb.click();
       
-            const checkBtn = await app.client.$('#qa_rlzTbl_btn_check');
+            const checkBtn = await app.client.$('#qa_rlzCont_btn_check');
             const checkEnabled = await checkBtn.isEnabled();
             expect(checkEnabled).toBeTruthy();
             await checkBtn.click();
       
             await app.client.pause(timeDelay1);      
 
-            const cc0res = await app.client.$('#qa_rlzTbl_res_cc0_UNREALIZABLE');
-            const cc1res = await app.client.$('#qa_rlzTbl_res_cc1_UNREALIZABLE');
-            const cc2res = await app.client.$('#qa_rlzTbl_res_cc2_REALIZABLE');
+            const cc0res = await app.client.$('#qa_rlzCont_res_cc0_UNREALIZABLE');
+            const cc1res = await app.client.$('#qa_rlzCont_res_cc1_UNREALIZABLE');
+            const cc2res = await app.client.$('#qa_rlzCont_res_cc2_REALIZABLE');
 
             const cc0Dis = await cc0res.isDisplayed();
             expect(cc0Dis).toBeTruthy();
@@ -2216,11 +2702,19 @@ describe('FRET GUI E2E tests ', function () {
 
 
       //------------------------------------------------------------------      
-      // TODO: rm a dependency path
       it('RLZ - 15', async () => {
             console.log('starting test '+numTest+':  RLZ - 15');
-            //await cpReferenceDB('realizability');
-            //await new Promise((r) => setTimeout(r, 2000));
+            await cpReferenceDB('realizability');
+            await new Promise((r) => setTimeout(r, 2000));
+
+            var env_PATH = process.env.PATH;
+            console.log('Path: ', env_PATH);
+            const bad_PATH = env_PATH.replace('z3','z3_bad');
+            console.log('Path: ', bad_PATH);
+            process.env.PATH = bad_PATH;
+            await new Promise((r) => setTimeout(r, 2000));
+            env_PATH = process.env.PATH;
+            console.log('Path: ', env_PATH);
 
             await app.start();
             await app.client.waitUntilWindowLoaded();
@@ -2236,24 +2730,32 @@ describe('FRET GUI E2E tests ', function () {
             const anaBtn = await app.client.$('#qa_db_li_analysis');
             await anaBtn.click();
 
-
             const rlzTab = await app.client.$('#qa_rlz_tab');
             await rlzTab.click();
 
-            const sysComp = await app.client.$('#qa_rlzTbl_sel_sysComp');
+            const sysComp = await app.client.$('#qa_rlzCont_sel_sysComp');
             await sysComp.click();       
 
-            const fsm_sysComp = await app.client.$('#qa_rlzTbl_mi_sysComp_FSM');
+            const fsm_sysComp = await app.client.$('#qa_rlzCont_mi_sysComp_FSM');
             await fsm_sysComp.click();     
+            
+            const errorIcon = await app.client.$('#qa_rlzCont_icon_depMissing');
+            const depErrorShowing = await errorIcon.isDisplayed();
+            expect(depErrorShowing).toBeTruthy();
+            const errorTip = errorIcon.elementHover.toString()
+            const errorVisible = await errorIcon.isDisplayed();
+            console.log(errorVisible)
+            console.log(errorTip)
+
+            await app.client.pause(10000);
 
       });    
 
      //------------------------------------------------------------------      
-      // TODO: rm a dependency path so realizability doesnt work, then swich back after the test
       it('RLZ - 16', async () => {
             console.log('starting test '+numTest+':  RLZ - 16');
-            //await cpReferenceDB('realizability');
-            //await new Promise((r) => setTimeout(r, 2000));
+            await cpReferenceDB('realizability');
+            await new Promise((r) => setTimeout(r, 2000));
 
             await app.start();
             await app.client.waitUntilWindowLoaded();
@@ -2273,72 +2775,31 @@ describe('FRET GUI E2E tests ', function () {
             const rlzTab = await app.client.$('#qa_rlz_tab');
             await rlzTab.click();
 
-            const sysComp = await app.client.$('#qa_rlzTbl_sel_sysComp');
+            const sysComp = await app.client.$('#qa_rlzCont_sel_sysComp');
             await sysComp.click();       
 
-            const fsm_sysComp = await app.client.$('#qa_rlzTbl_mi_sysComp_FSM');
+            const fsm_sysComp = await app.client.$('#qa_rlzCont_mi_sysComp_FSM');
             await fsm_sysComp.click();     
 
  
-            const helpBtn = await app.client.$('#qa_rlzTbl_btn_help');
+            const helpBtn = await app.client.$('#qa_rlzCont_btn_help');
             await helpBtn.click();                
 
-            const closeHelp = await app.client.$('#qa_rlzTbl_ib_closeHelpPage');
+            const closeHelp = await app.client.$('#qa_rlzCont_ib_closeHelpPage');
             await closeHelp.click(); 
 
       });          
 
 
      //------------------------------------------------------------------      
-      // TODO: rm a dependency path so realizability doesnt work, then swich back after the test
+
       it('RLZ - 17', async () => {
             console.log('starting test '+numTest+':  RLZ - 17');
             await cpReferenceDB('realizability');
-            //await new Promise((r) => setTimeout(r, 2000));
+            await new Promise((r) => setTimeout(r, 2000));
 
             await app.start();
             await app.client.waitUntilWindowLoaded();
-
-            const projBtn = await app.client.$('#qa_db_btn_projects');
-            await projBtn.click();
-            await app.client.pause(timeDelay1);
-            const hanfor = await app.client.$('#qa_proj_select_Demo-FSM');  
-            await hanfor.click();  
-            await app.client.pause(timeDelay1);
-
-
-            const anaBtn = await app.client.$('#qa_db_li_analysis');
-            await anaBtn.click();
-
-
-            const rlzTab = await app.client.$('#qa_rlz_tab');
-            await rlzTab.click();
-
-            const sysComp = await app.client.$('#qa_rlzTbl_sel_sysComp');
-            await sysComp.click();       
-
-            const fsm_sysComp = await app.client.$('#qa_rlzTbl_mi_sysComp_FSM');
-            await fsm_sysComp.click();     
-
- 
-            const helpBtn = await app.client.$('#qa_rlzTbl_btn_help');
-            await helpBtn.click();                
-
-            const closeHelp = await app.client.$('#qa_rlzTbl_ib_closeHelpPage');
-            await closeHelp.click(); 
-
-      });          
-
-
-      //------------------------------------------------------------------      
-      it('RLZ - 17', async () => {
-            console.log('starting test '+numTest+':  RLZ - 17');
-            //await cpReferenceDB('realizability');
-            //await new Promise((r) => setTimeout(r, 2000));
-
-            await app.start();
-            await app.client.waitUntilWindowLoaded();
-
             const projBtn = await app.client.$('#qa_db_btn_projects');
             await projBtn.click();
             await app.client.pause(timeDelay1);
@@ -2354,30 +2815,40 @@ describe('FRET GUI E2E tests ', function () {
             const rlzTab = await app.client.$('#qa_rlz_tab');
             await rlzTab.click();
 
-            const sysComp = await app.client.$('#qa_rlzTbl_sel_sysComp');
+            const sysComp = await app.client.$('#qa_rlzCont_sel_sysComp');
             await sysComp.click();       
 
 
-            const lm_sysComp = await app.client.$('#qa_rlzTbl_mi_sysComp_liquid_mixer');
-            await lm_sysComp.click();       
-
-            await app.client.pause(timeDelay1);
-            const comp_cb = await app.client.$('#qa_rlzTbl_cb_compositional');
-            await comp_cb.click();
+            const lm_sysComp = await app.client.$('#qa_rlzCont_mi_sysComp_liquid_mixer');
+            await lm_sysComp.click();    
+            
       
-            const timeout_tf = await app.client.$('#qa_rlzTbl_tf_timeOut');
+            const timeout_tf = await app.client.$('#qa_rlzCont_tf_timeOut');
             const timeout_enabled = await timeout_tf.isEnabled();
             expect(timeout_enabled).toBeTruthy();
-            await timeout_tf.setValue('700');        
 
-      });     
+            await timeout_tf.setValue('700i');                     
+            var timeOutText = await timeout_tf.getValue()
+            expect(timeOutText).toBe('700')
 
+            await timeout_tf.setValue('-800');    
+            timeOutText = await timeout_tf.getValue()
+            expect(timeOutText).toBe('700800')
+
+            await timeout_tf.setValue('900#20');    
+            timeOutText = await timeout_tf.getValue()
+            expect(timeOutText).toBe('70080090020')
+
+            await timeout_tf.setValue('900.20');    
+            timeOutText = await timeout_tf.getValue()
+            expect(timeOutText).toBe('7008009002090020')
+      });          
 
       //------------------------------------------------------------------      
       it('RLZ - 18', async () => {
             console.log('starting test '+numTest+':  RLZ - 18');
-            //await cpReferenceDB('realizability');
-            //await new Promise((r) => setTimeout(r, 2000));
+            await cpReferenceDB('realizability');
+            await new Promise((r) => setTimeout(r, 2000));
 
             await app.start();
             await app.client.waitUntilWindowLoaded();
@@ -2385,8 +2856,8 @@ describe('FRET GUI E2E tests ', function () {
             const projBtn = await app.client.$('#qa_db_btn_projects');
             await projBtn.click();
             await app.client.pause(timeDelay1);
-            const hanfor = await app.client.$('#qa_proj_select_Liquid_mixer');  
-            await hanfor.click();  
+            const fsmProj = await app.client.$('#qa_proj_select_FSM');  
+            await fsmProj.click();  
             await app.client.pause(timeDelay1);
 
 
@@ -2397,42 +2868,45 @@ describe('FRET GUI E2E tests ', function () {
             const rlzTab = await app.client.$('#qa_rlz_tab');
             await rlzTab.click();
 
-            const sysComp = await app.client.$('#qa_rlzTbl_sel_sysComp');
+            const sysComp = await app.client.$('#qa_rlzCont_sel_sysComp');
             await sysComp.click();       
 
 
-            const lm_sysComp = await app.client.$('#qa_rlzTbl_mi_sysComp_liquid_mixer');
-            await lm_sysComp.click();       
+            const fsm_sysComp = await app.client.$('#qa_rlzCont_mi_sysComp_FSM');
+            const fsm_clicable = await fsm_sysComp.isClickable()  
+            expect(fsm_clicable).toBeFalsy()
 
             await app.client.pause(timeDelay1);
-            const comp_cb = await app.client.$('#qa_rlzTbl_cb_compositional');
-            await comp_cb.click();
-      
-            const timeout_tf = await app.client.$('#qa_rlzTbl_tf_timeOut');
-            const timeout_enabled = await timeout_tf.isEnabled();
-            expect(timeout_enabled).toBeTruthy();
-            await timeout_tf.setValue('700');        
+            const comp_cb = await app.client.$('#qa_rlzCont_cb_compositional');
+            const comp_clicable = await comp_cb.isClickable()  
+            expect(comp_clicable).toBeFalsy()
+
+
+            await app.client.pause(timeDelay1);
+            const mono_cb = await app.client.$('#qa_rlzCont_cb_monolithic');
+            const mono_clicable = await mono_cb.isClickable()  
+            expect(mono_clicable).toBeFalsy()
+
 
       });     
 
 
-      //------------------------------------------------------------------      
+      //------------------------------------------------------------------    
+      /*  
       it('RLZ - 19', async () => {
             console.log('starting test '+numTest+':  RLZ - 19');
-            //await cpReferenceDB('realizability');
-            //await new Promise((r) => setTimeout(r, 2000));
+            await cpReferenceDB('realizability');
+            await new Promise((r) => setTimeout(r, 2000));
             // checking for windows machine..  we don't do here
 
       });     
-
+      */
 
       //------------------------------------------------------------------      
       it('RLZ - 20', async () => {
             console.log('starting test '+numTest+':  RLZ - 20');
             await cpReferenceDB('realizability');
             await new Promise((r) => setTimeout(r, 4000));
-            //we can do
-
 
             await app.start();
             await app.client.waitUntilWindowLoaded();            
@@ -2444,6 +2918,78 @@ describe('FRET GUI E2E tests ', function () {
             await hanfor.click();  
             await app.client.pause(timeDelay1);
 
+            const anaBtn = await app.client.$('#qa_db_li_analysis');
+            await anaBtn.click();
+
+
+            const rlzTab = await app.client.$('#qa_rlz_tab');
+            await rlzTab.click();
+
+            const sysComp = await app.client.$('#qa_rlzCont_sel_sysComp');
+            await sysComp.click();       
+
+            const fsm_sysComp = await app.client.$('#qa_rlzCont_mi_sysComp_FSM');
+            await fsm_sysComp.click();     
+
+            await app.client.pause(timeDelay1);
+            const comp_cb = await app.client.$('#qa_rlzCont_cb_compositional');
+            const comp_clicable = await comp_cb.isEnabled()  
+            expect(comp_clicable).toBeTruthy()
+
+            await comp_cb.click();
+
+            await app.client.pause(timeDelay1);
+            const mono_cb = await app.client.$('#qa_rlzCont_cb_monolithic');
+            const mono_clicable = await mono_cb.isEnabled()  
+            expect(mono_clicable).toBeTruthy()
+
+            
+            const cc0 = await app.client.$('#qa_rlzCont_tab_cc0');
+            const cc1 = await app.client.$('#qa_rlzCont_tab_cc1');
+            const cc2 = await app.client.$('#qa_rlzCont_tab_cc2');
+
+
+            await cc1.click();
+            const cc1_rw1 = await app.client.$('#qa_diagReqTbl_tc_body_id_FSM011_row_1');
+            var cc1_rw1_visible = await cc1_rw1.isDisplayed();
+            // expect(cc1_rw1_visible).toBeTruthy();
+
+
+            // Clicking on the currently selected view should do nothing (option remains selected, no rerendering)
+            await comp_cb.click();
+            
+            await app.client.pause(timeDelay1);    
+
+            await cc1.click();
+            cc1_rw1_visible = await cc1_rw1.isDisplayed();
+            //expect(cc1_rw1_visible).toBeTruthy();            
+ 
+            await mono_cb.click();
+            await app.client.pause(timeDelay1);
+            const mono_sum_FSM001 = await app.client.$('#qa_diagReqTbl_tc_body_summary_FSM001');
+            const sumText = await mono_sum_FSM001.getText();
+            //expect(sumText).toContain('FSM  shall  always  satisfy (limits &amp; !standby &amp; !apfail &amp; supported) =&gt; pullup')
+            expect(sumText).toContain('FSM shall always satisfy (limits & !standby & !apfail & supported) => pullup')
+            console.log('sumText ', sumText)
+
+      });           
+
+
+      //------------------------------------------------------------------      
+      it('RLZ - 21', async () => {
+            console.log('starting test '+numTest+':  RLZ - 21');
+            await cpReferenceDB('realizability');
+            await new Promise((r) => setTimeout(r, 2000));
+ 
+            await app.start();
+            await app.client.waitUntilWindowLoaded();            
+
+            const projBtn = await app.client.$('#qa_db_btn_projects');
+            await projBtn.click();
+            await app.client.pause(timeDelay1);
+            const hanfor = await app.client.$('#qa_proj_select_Demo-FSM');  
+            await hanfor.click();  
+            await app.client.pause(timeDelay1);
 
             const anaBtn = await app.client.$('#qa_db_li_analysis');
             await anaBtn.click();
@@ -2452,38 +2998,52 @@ describe('FRET GUI E2E tests ', function () {
             const rlzTab = await app.client.$('#qa_rlz_tab');
             await rlzTab.click();
 
-            const sysComp = await app.client.$('#qa_rlzTbl_sel_sysComp');
+            const sysComp = await app.client.$('#qa_rlzCont_sel_sysComp');
             await sysComp.click();       
 
-            const fsm_sysComp = await app.client.$('#qa_rlzTbl_mi_sysComp_FSM');
+            const fsm_sysComp = await app.client.$('#qa_rlzCont_mi_sysComp_FSM');
             await fsm_sysComp.click();     
 
- 
-            const helpBtn = await app.client.$('#qa_rlzTbl_btn_help');
-            await helpBtn.click();                
+            await app.client.pause(timeDelay1);
+            const comp_cb = await app.client.$('#qa_rlzCont_cb_compositional');
+            const comp_clicable = await comp_cb.isEnabled()  
+            expect(comp_clicable).toBeTruthy()
 
-            const closeHelp = await app.client.$('#qa_rlzTbl_ib_closeHelpPage');
-            await closeHelp.click(); 
+            await comp_cb.click();
+
+            await app.client.pause(timeDelay1);
+            const mono_cb = await app.client.$('#qa_rlzCont_cb_monolithic');
+            const mono_clicable = await mono_cb.isEnabled()  
+            expect(mono_clicable).toBeTruthy()
+
+            
+            const cc0 = await app.client.$('#qa_rlzCont_tab_cc0');
+            const cc1 = await app.client.$('#qa_rlzCont_tab_cc1');
+            const cc2 = await app.client.$('#qa_rlzCont_tab_cc2');
 
 
+            await cc1.click();
+            const cc1_rw1 = await app.client.$('#qa_rlzCont_tc_body_id_FSM011');
+            var cc1_rw1_visible = await cc1_rw1.isDisplayed();
+            // expect(cc1_rw1_visible).toBeTruthy();
 
-      });           
 
+      
+            const checkBtn = await app.client.$('#qa_rlzCont_btn_check');
+            const checkEnabled = await checkBtn.isEnabled();
+            expect(checkEnabled).toBeTruthy();
+            await checkBtn.click();
+      
+            await app.client.pause(10000);      
 
-      //------------------------------------------------------------------      
-      it('RLZ - 21', async () => {
-            console.log('starting test '+numTest+':  RLZ - 21');
-            //await cpReferenceDB('realizability');
-            //await new Promise((r) => setTimeout(r, 2000));
-            //we can do
       });     
       
 
       //------------------------------------------------------------------      
       it('RLZ - 22', async () => {
             console.log('starting test '+numTest+':  RLZ - 22');
-            //await cpReferenceDB('realizability');
-            //await new Promise((r) => setTimeout(r, 2000));
+            await cpReferenceDB('realizability');
+            await new Promise((r) => setTimeout(r, 2000));
             //we can do
       });           
 
@@ -2491,35 +3051,950 @@ describe('FRET GUI E2E tests ', function () {
       //------------------------------------------------------------------      
       it('RLZ - 23', async () => {
             console.log('starting test '+numTest+':  RLZ - 23');
-            //await cpReferenceDB('realizability');
-            //await new Promise((r) => setTimeout(r, 2000));
-            //checking window size
+            await cpReferenceDB('realizability');
+            await new Promise((r) => setTimeout(r, 2000));
+            //checking window size   do this by hand for now
+
       });        
 
       //------------------------------------------------------------------      
       it('RLZ - 24', async () => {
             console.log('starting test '+numTest+':  RLZ - 24');
-            //await cpReferenceDB('realizability');
-            //await new Promise((r) => setTimeout(r, 2000));
-            //we can do
+            await cpReferenceDB('realizability');
+            await new Promise((r) => setTimeout(r, 2000));
+
+            await app.start();
+            await app.client.waitUntilWindowLoaded();
+
+            const projBtn = await app.client.$('#qa_db_btn_projects');
+            await projBtn.click();
+            await app.client.pause(timeDelay1);
+            const hanfor = await app.client.$('#qa_proj_select_GPCA_with_modes');  
+            await hanfor.click();  
+            await app.client.pause(timeDelay1);
+
+            const anaBtn = await app.client.$('#qa_db_li_analysis');
+            await anaBtn.click();
+
+            const rlzTab = await app.client.$('#qa_rlz_tab');
+            await rlzTab.click();
+
+            const sysComp = await app.client.$('#qa_rlzCont_sel_sysComp');
+            await sysComp.click();       
+
+
+            const lm_sysComp = await app.client.$('#qa_rlzCont_mi_sysComp_Infusion_Manager');
+            await lm_sysComp.click();       
+      
+            const mono_cb = await app.client.$('#qa_rlzCont_cb_monolithic');
+            const comp_cb = await app.client.$('#qa_rlzCont_cb_compositional');
+            const comp_cb_enabled = await comp_cb.isEnabled();
+            expect(comp_cb_enabled).toBeFalsy();
+
+            // which cb is checked?
+            var checked = await mono_cb.getAttribute('checked');
+            console.log('monolithic is checked? ', checked);
+            expect(checked).toBeTruthy();    
+            checked = await comp_cb.getAttribute('checked');
+            console.log('compositional is checked? ', checked);
+            expect(checked).toBeFalsy();    
+ 
+
+      
+
       });                
 
       //------------------------------------------------------------------      
       it('RLZ - 25', async () => {
             console.log('starting test '+numTest+':  RLZ - 25');
-            //await cpReferenceDB('realizability');
-            //await new Promise((r) => setTimeout(r, 2000));
-            //we can do
+            await cpReferenceDB('realizability');
+            await new Promise((r) => setTimeout(r, 2000));
+ 
+            await app.start();
+            await app.client.waitUntilWindowLoaded();            
+
+            const projBtn = await app.client.$('#qa_db_btn_projects');
+            await projBtn.click();
+            await app.client.pause(timeDelay1);
+            const hanfor = await app.client.$('#qa_proj_select_Hanfor');  
+            await hanfor.click();  
+            await app.client.pause(timeDelay1);
+
+            const anaBtn = await app.client.$('#qa_db_li_analysis');
+            await anaBtn.click();
+
+
+            const rlzTab = await app.client.$('#qa_rlz_tab');
+            await rlzTab.click();
+
+            const sysComp = await app.client.$('#qa_rlzCont_sel_sysComp');
+            await sysComp.click();       
+            await app.client.pause(2000);
+
+            const fsm_sysComp = await app.client.$('#qa_rlzCont_mi_sysComp_component');
+            await fsm_sysComp.click();     
+
+            const timeout_tf = await app.client.$('#qa_rlzCont_tf_timeOut');
+            const timeout_enabled = await timeout_tf.isEnabled();
+            expect(timeout_enabled).toBeTruthy();
+            await timeout_tf.setValue('1');     
+            await app.client.pause(timeDelay1);
+
+      
+            const checkBtn = await app.client.$('#qa_rlzCont_btn_check');
+            const checkEnabled = await checkBtn.isEnabled();
+            expect(checkEnabled).toBeTruthy();
+            await checkBtn.click();
+
+            const componentResult = await app.client.$('#qa_rlzCont_res_component_UNKNOWN');
+            const compResVis = await componentResult.isDisplayed();
+            expect(compResVis).toBeTruthy();
+
       });                
 
 
       //------------------------------------------------------------------      
       it('RLZ - 26', async () => {
             console.log('starting test '+numTest+':  RLZ - 26');
-            //await cpReferenceDB('realizability');
-            //await new Promise((r) => setTimeout(r, 2000));
-            //we can do
+            await cpReferenceDB('realizability');
+            await new Promise((r) => setTimeout(r, 2000));
+
+
+            await app.start();
+            await app.client.waitUntilWindowLoaded();            
+
+            const projBtn = await app.client.$('#qa_db_btn_projects');
+            await projBtn.click();
+            await app.client.pause(timeDelay1);
+            const hanfor = await app.client.$('#qa_proj_select_test26');  
+            await hanfor.click();  
+            await app.client.pause(timeDelay1);
+
+            const anaBtn = await app.client.$('#qa_db_li_analysis');
+            await anaBtn.click();
+
+
+            const varTab = await app.client.$('#qa_var_tab');
+            await varTab.click();
+            await app.client.pause(2000);
+            const rlzTab = await app.client.$('#qa_rlz_tab');
+            await rlzTab.click();
+
+            const sysComp = await app.client.$('#qa_rlzCont_sel_sysComp');
+            await sysComp.click();       
+            await app.client.pause(2000);
+
+            const fsm_sysComp = await app.client.$('#qa_rlzCont_mi_sysComp_door');
+            await fsm_sysComp.click();     
+
+            await app.client.pause(2000);
+
+            //const comp_cb = await app.client.$('#qa_rlzCont_cb_compositional');
+            //await comp_cb.click();
+
+            const timeout_tf = await app.client.$('#qa_rlzCont_tf_timeOut');
+            const timeout_enabled = await timeout_tf.isEnabled();
+            expect(timeout_enabled).toBeTruthy();
+            await timeout_tf.setValue('900');
+            await app.client.pause(timeDelay1);
+
+      
+            const checkBtn = await app.client.$('#qa_rlzCont_btn_check');
+            const checkEnabled = await checkBtn.isEnabled();
+            expect(checkEnabled).toBeTruthy();
+            await checkBtn.click();
+
+            const doorCompUnrealizable = await app.client.$('#qa_rlzCont_res_door_UNREALIZABLE');
+            const doorResVis = await doorCompUnrealizable.isDisplayed();
+            expect(doorResVis).toBeTruthy();
+
+            const cc0Unrealizable = await app.client.$('#qa_rlzCont_res_cc0_UNREALIZABLE');
+            const cc0ResVis = await cc0Unrealizable.isDisplayed();
+            expect(cc0ResVis).toBeTruthy();
+
+            const cc1Unrealizable = await app.client.$('#qa_rlzCont_res_cc1_REALIZABLE');
+            const cc1ResVis = await cc1Unrealizable.isDisplayed();
+            expect(cc1ResVis).toBeTruthy();
+
       });                
+
+
+      //------------------------------------------------------------------
+      it('LTLSIM - K1', async () => {
+            console.log('starting test '+numTest+':  LTLSIM - K1');
+            await startWithJsonFileImport('MyDBAM113.json');
+
+            const projBtn = await app.client.$('#qa_db_btn_projects');
+            await projBtn.click();
+            await app.client.pause(timeDelay1);
+            const hanfor = await app.client.$('#qa_proj_select_Liquid_mixer');  
+            await hanfor.click();  
+            await app.client.pause(timeDelay1);
+
+            const cirPackReq = await app.client.$('#qa_cirPack_text_LM-006');
+            await cirPackReq.click();         
+            
+            const edtReq = await app.client.$('#qa_disReq_ic_edit');
+            await edtReq.click();      
+                       
+            const semanticBtn = await app.client.$('#qa_crt_btn_semantics');
+            await semanticBtn.click();            
+            
+            await app.client.pause(timeDelay1);
+            
+            const simBtn = await app.client.$('#qa_crtAst_btn_simulate');
+            await simBtn.click();               
+            await app.client.pause(timeDelay1);            
+
+
+            const reqAccordian = await app.client.$('#qa_ltlSim_ib_as_reqs');
+            await reqAccordian.click();   
+            
+            const reqDetails  = await app.client.$('#qa_ltlSim_typ_reqId');  
+            const reqHTML = await reqDetails.getHTML(false)
+            const reqId = parse(reqHTML)
+            const reqIdString = reqId.toString();
+            expect(reqIdString).toContain(': when liquid_level_2, the liquid_mixer shall until (timer_60sec_expire | emergency_button) satisfy stirring_motor')
+                                    
+      });
+
+      //------------------------------------------------------------------
+      it('LTLSIM - K2', async () => {
+            console.log('starting test '+numTest+':  LTLSIM - K2');
+            await startWithJsonFileImport('MyDBAM113.json');
+
+            const projBtn = await app.client.$('#qa_db_btn_projects');
+            await projBtn.click();
+            await app.client.pause(timeDelay1);
+            const hanfor = await app.client.$('#qa_proj_select_Liquid_mixer');  
+            await hanfor.click();  
+            await app.client.pause(timeDelay1);
+
+            const cirPackReq = await app.client.$('#qa_cirPack_text_LM-006');
+            await cirPackReq.click();         
+            
+            const edtReq = await app.client.$('#qa_disReq_ic_edit');
+            await edtReq.click();      
+                       
+            const semanticBtn = await app.client.$('#qa_crt_btn_semantics');
+            await semanticBtn.click();            
+            
+            await app.client.pause(timeDelay1);
+            
+            const simBtn = await app.client.$('#qa_crtAst_btn_simulate');
+            await simBtn.click();               
+            await app.client.pause(timeDelay1);            
+
+            const highLight  = await app.client.$('#qa_ltlSim_ib_highLight')
+            const highLightTip = await highLight.getAttribute('title')
+            console.log('highLightTip ', highLightTip)
+
+            /*
+            var someLineElement = await app.client.$('#qa_ltlSim_lc_emer');
+            var reqHTML = await someLineElement.getHTML(false)
+            var lineElement = parse(reqHTML)
+            var lineElementString = lineElement.toString();       
+            console.log('element string: ',lineElementString)     
+            
+
+            
+            someLineElement = await app.client.$('#qa_ltlSim_ln_1_emer');
+            reqHTML = await someLineElement.getHTML(false)
+            lineElement = parse(reqHTML)
+            lineElementString = lineElement.toString();       
+            console.log('element string: ',lineElementString)    
+            */
+
+      });
+
+
+
+      //------------------------------------------------------------------
+      it('LTLSIM - K3', async () => {
+            console.log('starting test '+numTest+':  LTLSIM - K3');
+
+
+            var env_PATH = process.env.PATH;
+            //console.log('Path: ', env_PATH);
+            const bad_PATH = env_PATH.replace('LTLSIM','LTLSIM_bad');
+            //console.log('Path: ', bad_PATH);
+            process.env.PATH = bad_PATH;
+            await new Promise((r) => setTimeout(r, 2000));
+            env_PATH = process.env.PATH;
+            //console.log('Path: ', env_PATH);
+
+
+
+            await startWithJsonFileImport('MyDBAM113.json');
+
+            const projBtn = await app.client.$('#qa_db_btn_projects');
+            await projBtn.click();
+            await app.client.pause(timeDelay1);
+            const hanfor = await app.client.$('#qa_proj_select_Liquid_mixer');  
+            await hanfor.click();  
+            await app.client.pause(timeDelay1);
+
+            const cirPackReq = await app.client.$('#qa_cirPack_text_LM-006');
+            await cirPackReq.click();         
+            
+            const edtReq = await app.client.$('#qa_disReq_ic_edit');
+            await edtReq.click();      
+                       
+            const semanticBtn = await app.client.$('#qa_crt_btn_semantics');
+            await semanticBtn.click();            
+            
+            await app.client.pause(timeDelay1);
+            
+            const simBtn = await app.client.$('#qa_crtAst_btn_simulate_disabled');
+            const simDisabled = await app.client.$('#qa_crtAst_btn_simulate_disabled');
+            const simBtnTip = await simDisabled.getAttribute('title');
+
+            var pHTML = await simBtn.getHTML(false);
+            var pVarText = parse(pHTML);
+            var pVarString = pVarText.toString();
+            //console.log('simBtn: ', pVarString)        
+            //console.log('simBtnTip ', simBtnTip);
+
+      });
+
+
+
+
+      // GL - 1   is done inside test RTF - 2
+      
+      //------------------------------------------------------------------
+      it('GL - 2', async () => {
+            console.log('starting test '+numTest+':  GL - 2');
+            await startWithJsonFileImport('MyDBAM113.json');
+                                 
+
+            // make Hanfor current project
+            const projectBtn = await app.client.$('#qa_db_btn_projects');
+            await projectBtn.click();
+            await app.client.pause(timeDelay1);
+
+            const hanfor = await app.client.$('#qa_proj_select_Hanfor');  
+            await hanfor.click(); 
+            await app.client.pause(timeDelay1);
+
+
+            const createBtn = await app.client.$('#qa_db_btn_create');           
+            await createBtn.click();
+
+            const txtInput = await app.client.$('#qa_crt_tf_reqid');
+            await txtInput.isEnabled();
+            await txtInput.setValue('R1');
+
+            const slateEditable = await app.client.$('#qa_crt_edt_editor');
+            await slateEditable.click();     
+            await app.client.pause(timeDelay1);       
+            await slateEditable.keys('In m component shall satisfy p');
+
+            const semanticsBtn = await app.client.$('#qa_crt_btn_semantics');
+            await semanticsBtn.click();    
+            await app.client.pause(timeDelay1);    
+
+            const createRq = await app.client.$('#qa_crt_btn_create');
+            await createRq.click();
+            await app.client.pause(timeDelay1);
+
+            const R1 = await app.client.$('#qa_cirPack_text_R1');
+            await R1.click();  
+                        
+            const disReqEdit = await app.client.$('#qa_disReq_ic_edit');
+            await disReqEdit.click();          
+            
+            const glos = await app.client.$('#qa_crt_tab_glossary');
+            await glos.click();     
+            
+            const selComp = await app.client.$('#qa_gls_sel_comp');
+            await selComp.click();          
+            await app.client.pause(timeDelay1);     
+            const comp = await app.client.$('#qa_gls_mi_comp_component');
+            await comp.click();          
+            await app.client.pause(timeDelay1);    
+            const pVar = await app.client.$('#qa_gls_ti_var_p');
+            await pVar.click();   
+            var pHTML = await pVar.getHTML(false);
+            var pVarText = parse(pHTML);
+            var pVarString = pVarText.toString();
+            //console.log('p variable in glossary: ', pVarString)
+            expect(pVarString).toContain('>reqs: </p><p class="MuiTypography-root MuiTypography-body1" style="margin-left: 4px;">R1<');
+            const cancelRq = await app.client.$('#qa_crt_btn_cancel');
+            await cancelRq.click();
+            await app.client.pause(timeDelay1);
+
+            await R1.click();  
+            await disReqEdit.click();  
+            await txtInput.setValue('R1_new');
+            await app.client.pause(timeDelay1);    
+            await createRq.click();
+
+            const R1new = await app.client.$('#qa_cirPack_text_R1_new');
+            await R1new.click();  
+            await disReqEdit.click();  
+            await app.client.pause(timeDelay1);    
+            await glos.click();   
+            await selComp.click();       
+            await comp.click();   
+            await pVar.click();   
+            pHTML = await pVar.getHTML(false);
+            pVarText = parse(pHTML);
+            pVarString = pVarText.toString();
+            //console.log('p variable in glossary: ', pVarString)
+            expect(pVarString).toContain('>reqs: </p><p class="MuiTypography-root MuiTypography-body1" style="margin-left: 4px;">R1_new<');
+
+      });
+
+      
+      //------------------------------------------------------------------
+      it('AP - 5', async () => {
+            console.log('starting test '+numTest+': AP - 5');
+            await startWithJsonFileImport('Glossary_4.json');
+                                 
+            const projectBtn = await app.client.$('#qa_db_btn_projects');
+            await projectBtn.click();
+            await app.client.pause(timeDelay1);
+
+            const hanfor = await app.client.$('#qa_proj_select_TestRequirements');  
+            await hanfor.click(); 
+            await app.client.pause(timeDelay1);
+
+            const anaBtn = await app.client.$('#qa_db_li_analysis');
+            await anaBtn.click();
+
+            const varTab = await app.client.$('#qa_var_tab');
+            await varTab.click();     
+            
+            const selExport =  await app.client.$('#qa_var_sel_exportLanguage');
+            await selExport.click();    
+
+            const coPilot  =  await app.client.$('#qa_var_mi_copilot');
+            await coPilot.click(); 
+            await app.client.pause(timeDelay1);
+
+            const uav = await app.client.$('#qa_var_as_expandIcon_UAV');
+            await uav.click(); 
+            await app.client.pause(timeDelay1);
+
+            const initVar = await app.client.$('#qa_var_btn_FRETname_initialization');
+            await initVar.click(); 
+            await app.client.pause(timeDelay1);
+            // Variable type selection
+            var varType  = await app.client.$('#qa_disVar_sel_varType');
+            await varType.click(); 
+            var varTypeMode  = await app.client.$('#qa_disVar_mi_varType_Mode');  
+            await varTypeMode.click();  
+            // Description
+            var varDescTextField = await app.client.$('#qa_disVar_tf_description');  
+            await varDescTextField.setValue('Initialization');
+            var updateVar  = await app.client.$('#qa_disVar_btn_update');  
+            await updateVar.click();  
+            await app.client.pause(timeDelay1);
+
+            const mVar  = await app.client.$('#qa_var_btn_FRETname_m');
+            await mVar.click(); 
+            // Variable type selection
+            var varType  = await app.client.$('#qa_disVar_sel_varType');
+            await varType.click(); 
+            var varTypeFunction  = await app.client.$('#qa_disVar_mi_varType_Function');  
+            await varTypeFunction.click(); 
+            var varDescTextField = await app.client.$('#qa_disVar_tf_description');  
+            await varDescTextField.setValue('Initiation function');
+            var updateVar  = await app.client.$('#qa_disVar_btn_update');  
+            await updateVar.click();  
+            await app.client.pause(timeDelay1);
+
+            const xAvar = await app.client.$('#qa_var_btn_FRETname_xA');
+            await xAvar.click(); 
+            var varType  = await app.client.$('#qa_disVar_sel_varType');
+            await varType.click(); 
+            var varTypeInternal  = await app.client.$('#qa_disVar_mi_varType_Internal');  
+            await varTypeInternal.click(); 
+            var dataType  = await app.client.$('#qa_disVar_sel_dataType');
+            await dataType.click(); 
+            var dataTypeSingle  = await app.client.$('#qa_disVar_mi_dataType_single');  
+            await dataTypeSingle.click(); 
+            var varDescTextField = await app.client.$('#qa_disVar_tf_description');  
+            await varDescTextField.setValue('variable xA');
+            var updateVar  = await app.client.$('#qa_disVar_btn_update');  
+            await updateVar.click();  
+            await app.client.pause(timeDelay1);
+
+            const xinAvar = await app.client.$('#qa_var_btn_FRETname_xin');
+            await xinAvar.click(); 
+            var varType  = await app.client.$('#qa_disVar_sel_varType');
+            await varType.click(); 
+            var varTypeInput  = await app.client.$('#qa_disVar_mi_varType_Input');  
+            await varTypeInput.click(); 
+            var dataType  = await app.client.$('#qa_disVar_sel_dataType');
+            await dataType.click(); 
+            var dataTypeInteger  = await app.client.$('#qa_disVar_mi_dataType_integer');  
+            await dataTypeInteger.click(); 
+            var varDescTextField = await app.client.$('#qa_disVar_tf_description');  
+            await varDescTextField.setValue('Input xin');
+            var updateVar  = await app.client.$('#qa_disVar_btn_update');  
+            await updateVar.click();  
+            await app.client.pause(timeDelay1);
+
+            const ybAvar = await app.client.$('#qa_var_btn_FRETname_yB');
+            await ybAvar.click(); 
+            var varDescTextField = await app.client.$('#qa_disVar_tf_description');  
+            await varDescTextField.setValue('Undefined yB');
+            var updateVar  = await app.client.$('#qa_disVar_btn_update');  
+            await updateVar.click();  
+            await app.client.pause(timeDelay1);
+
+            
+            const youtAvar = await app.client.$('#qa_var_btn_FRETname_yout');
+            await youtAvar.click(); 
+            var varType  = await app.client.$('#qa_disVar_sel_varType');
+            await varType.click(); 
+            var varTypeOutput  = await app.client.$('#qa_disVar_mi_varType_Output');  
+            await varTypeOutput.click(); 
+            var dataType  = await app.client.$('#qa_disVar_sel_dataType');
+            await dataType.click(); 
+            var dataTypeDouble  = await app.client.$('#qa_disVar_mi_dataType_double');  
+            await dataTypeDouble.click();    
+            var varDescTextField = await app.client.$('#qa_disVar_tf_description');  
+            await varDescTextField.setValue('Output yout');
+            var updateVar  = await app.client.$('#qa_disVar_btn_update');  
+            await updateVar.click();  
+            await app.client.pause(timeDelay1);
+
+
+
+
+            await app.client.pause(timeDelay1);
+
+
+
+      });
+
+      //------------------------------------------------------------------      
+      it('GL - 10', async () => {
+            console.log('starting test '+numTest+':  GL - 10');
+            await cpReferenceDB('Glossary');
+            await new Promise((r) => setTimeout(r, 2000));
+            await app.start();
+            await app.client.waitUntilWindowLoaded();            
+
+            const projBtn = await app.client.$('#qa_db_btn_projects');
+            await projBtn.click();
+            await app.client.pause(timeDelay1);
+            const hanfor = await app.client.$('#qa_proj_select_TestRequirements');  
+            await hanfor.click();  
+            await app.client.pause(timeDelay1);
+
+            var dashboard = await app.client.$('#qa_db_li_dashboard');
+            await dashboard.click();
+            var selCirpackReq = await app.client.$('#qa_cirPack_text_VariablesTest');
+            await selCirpackReq.click();
+            var disReqEdit = await app.client.$('#qa_disReq_ic_edit');
+            await disReqEdit.click();
+
+            var glossTab = await app.client.$('#qa_crt_tab_glossary');
+            await glossTab.click();    
+            var selGlossComp = await app.client.$('#qa_gls_sel_comp');
+            await selGlossComp.click();          
+            await app.client.pause(timeDelay1);     
+            var selGlossCompMI = await app.client.$('#qa_gls_mi_comp_UAV');
+            await selGlossCompMI.click();          
+            await app.client.pause(timeDelay1);    
+            var varGlossTableItem = await app.client.$('#qa_gls_ti_var_initialization');
+            await varGlossTableItem.click();               
+            var elementHTML = await varGlossTableItem.getHTML(false);
+            var elementParsedHTML = parse(elementHTML);
+            var child1text = elementParsedHTML.childNodes[1].text;  //childNodes[1] contains the tree items
+            //console.log('child1text: ', child1text);
+            expect(child1text).toContain('variable type: Modedata type: booleandescription: Initializationreqs: Meaningless_One');
+            await app.client.pause(timeDelay1);
+
+            var varGlossTableItem = await app.client.$('#qa_gls_ti_var_xA');
+            await varGlossTableItem.click();               
+            var elementHTML = await varGlossTableItem.getHTML(false);
+            var elementParsedHTML = parse(elementHTML);
+            var child1text = elementParsedHTML.childNodes[1].text;  //childNodes[1] contains the tree items
+            //console.log('child1text: ', child1text);
+            expect(child1text).toContain('variable type: Internaldata type: singledescription: variable xAreqs: VariablesTest');
+            await app.client.pause(timeDelay1);
+
+            var varGlossTableItem = await app.client.$('#qa_gls_ti_var_xin');
+            await varGlossTableItem.click();               
+            var elementHTML = await varGlossTableItem.getHTML(false);
+            var elementParsedHTML = parse(elementHTML);
+            var child1text = elementParsedHTML.childNodes[1].text;  //childNodes[1] contains the tree items
+            //console.log('child1text: ', child1text);
+            expect(child1text).toContain('variable type: Inputdata type: integerdescription: Input xinreqs: VariablesTest');
+            await app.client.pause(timeDelay1);
+
+            var varGlossTableItem = await app.client.$('#qa_gls_ti_var_yB');
+            await varGlossTableItem.click();               
+            var elementHTML = await varGlossTableItem.getHTML(false);
+            var elementParsedHTML = parse(elementHTML);
+            var child1text = elementParsedHTML.childNodes[1].text;  //childNodes[1] contains the tree items
+            //console.log('child1text: ', child1text);
+            expect(child1text).toContain('description: Undefined yBreqs: VariablesTest');
+            await app.client.pause(timeDelay1);
+
+            var varGlossTableItem = await app.client.$('#qa_gls_ti_var_yout');
+            await varGlossTableItem.click();               
+            var elementHTML = await varGlossTableItem.getHTML(false);
+            var elementParsedHTML = parse(elementHTML);
+            var child1text = elementParsedHTML.childNodes[1].text;  //childNodes[1] contains the tree items
+            //console.log('child1text: ', child1text);
+            expect(child1text).toContain('variable type: Outputdata type: doubledescription: Output youtreqs: Meaningless_One');
+
+      });
+
+
+      //------------------------------------------------------------------      
+      it('GL - 11', async () => {
+            console.log('starting test '+numTest+':  GL - 11');
+            await cpReferenceDB('Glossary');
+            await new Promise((r) => setTimeout(r, 2000));
+            await app.start();
+            await app.client.waitUntilWindowLoaded();            
+
+            const projBtn = await app.client.$('#qa_db_btn_projects');
+            await projBtn.click();
+            await app.client.pause(timeDelay1);
+            const hanfor = await app.client.$('#qa_proj_select_TestRequirements');  
+            await hanfor.click();  
+            await app.client.pause(timeDelay1);
+
+            var dashboard = await app.client.$('#qa_db_li_dashboard');
+            await dashboard.click();
+            var selCirpackReq = await app.client.$('#qa_cirPack_text_VariablesTest');
+            await selCirpackReq.click();
+            var disReqEdit = await app.client.$('#qa_disReq_ic_edit');
+            await disReqEdit.click();
+            await app.client.pause(timeDelay1);
+
+            var glossTab = await app.client.$('#qa_crt_tab_glossary');
+            await glossTab.click();    
+            await app.client.pause(timeDelay1);
+            var selGlossComp = await app.client.$('#qa_gls_sel_comp');
+            await selGlossComp.click();          
+            await app.client.pause(timeDelay1);     
+            var selGlossCompMI = await app.client.$('#qa_gls_mi_comp_UAV');
+            await selGlossCompMI.click();          
+            await app.client.pause(timeDelay1);   
+
+            var glossVarTableTree = await app.client.$('#qa_gls_tree_var');
+            await glossVarTableTree.click(); 
+            var elementHTML = await glossVarTableTree.getHTML(false);
+            var elementParsedHTML = parse(elementHTML);
+            var numVarShown = elementParsedHTML.childNodes.length;
+            //console.log('numVarShown: ', numVarShown);
+            expect(numVarShown).toBe(5);
+            var tableText = elementParsedHTML.text;  
+            //console.log('var table text: ', tableText);
+            expect(tableText).toContain('initializationxAxinvariable type: Inputdata type: integerdescription: Input xinreqs: VariablesTestyByout')
+            await app.client.pause(timeDelay1);         
+
+            var glossCheckboxMode = await app.client.$('#qa_gls_cb_Mode');
+            await glossCheckboxMode.click(); 
+            var glossVarTableTree = await app.client.$('#qa_gls_tree_var');
+            await glossVarTableTree.click(); 
+            var elementHTML = await glossVarTableTree.getHTML(false);
+            var elementParsedHTML = parse(elementHTML);
+            var numVarShown = elementParsedHTML.childNodes.length;
+            //console.log('numVarShown: ', numVarShown);
+            expect(numVarShown).toBe(4);
+            var tableText = elementParsedHTML.text;  
+            //console.log('var table text: ', tableText);
+            expect(tableText).toContain('xAxinvariable type: Inputdata type: integerdescription: Input xinreqs: VariablesTestyByout')
+            await app.client.pause(timeDelay1);         
+
+            var glossCheckboxInput = await app.client.$('#qa_gls_cb_Input');
+            await glossCheckboxInput.click(); 
+            var glossVarTableTree = await app.client.$('#qa_gls_tree_var');
+            await glossVarTableTree.click(); 
+            var elementHTML = await glossVarTableTree.getHTML(false);
+            var elementParsedHTML = parse(elementHTML);
+            var numVarShown = elementParsedHTML.childNodes.length;
+            //console.log('numVarShown: ', numVarShown);
+            expect(numVarShown).toBe(3);
+            var tableText = elementParsedHTML.text;  
+            //console.log('var table text: ', tableText);
+            expect(tableText).toContain('xAyBdescription: Undefined yBreqs: VariablesTestyout')
+            await app.client.pause(timeDelay1);      
+
+            var glossCheckboxOutput = await app.client.$('#qa_gls_cb_Output');
+            await glossCheckboxOutput.click();             
+            var glossVarTableTree = await app.client.$('#qa_gls_tree_var');
+            await glossVarTableTree.click(); 
+            var elementHTML = await glossVarTableTree.getHTML(false);
+            var elementParsedHTML = parse(elementHTML);
+            var numVarShown = elementParsedHTML.childNodes.length;
+            //console.log('numVarShown: ', numVarShown);
+            expect(numVarShown).toBe(2);
+            var tableText = elementParsedHTML.text;  
+            //console.log('var table text: ', tableText);
+            expect(tableText).toContain('xAyBdescription: Undefined yBreqs: VariablesTest')
+            await app.client.pause(timeDelay1);    
+
+            var glossCheckboxInternal = await app.client.$('#qa_gls_cb_Internal');
+            await glossCheckboxInternal.click(); 
+            var glossVarTableTree = await app.client.$('#qa_gls_tree_var');
+            await glossVarTableTree.click(); 
+            var elementHTML = await glossVarTableTree.getHTML(false);
+            var elementParsedHTML = parse(elementHTML);
+            var numVarShown = elementParsedHTML.childNodes.length;
+            //console.log('numVarShown: ', numVarShown);
+            expect(numVarShown).toBe(1);
+            var tableText = elementParsedHTML.text;  
+            //console.log('var table text: ', tableText);
+            expect(tableText).toContain('yBdescription: Undefined yBreqs: VariablesTest')
+            await app.client.pause(timeDelay1);  
+
+            var glossCheckboxUndefined = await app.client.$('#qa_gls_cb_Undefined');
+            await glossCheckboxUndefined.click(); 
+            var glossVarTableTree = await app.client.$('#qa_gls_tree_var');
+            var elementHTML = await glossVarTableTree.getHTML(false);
+            var elementParsedHTML = parse(elementHTML);
+            var numVarShown = elementParsedHTML.childNodes.length;
+            console.log('elementParsedHTML: ', elementParsedHTML.text);
+            expect(elementParsedHTML.text).toContain('');
+
+      });
+
+
+
+      //------------------------------------------------------------------      
+      it('GL - 3, 4, 5', async () => {
+            console.log('starting test '+numTest+':  GL - 3, 4, 5');
+            await cpReferenceDB('Glossary');
+            await new Promise((r) => setTimeout(r, 2000));
+            await app.start();
+            await app.client.waitUntilWindowLoaded();            
+
+            const projBtn = await app.client.$('#qa_db_btn_projects');
+            await projBtn.click();
+            await app.client.pause(timeDelay1);
+            const hanfor = await app.client.$('#qa_proj_select_TestRequirements');  
+            await hanfor.click();  
+            await app.client.pause(timeDelay1);
+                                                
+            var createBtn = await app.client.$('#qa_db_btn_create');           
+            await createBtn.click();
+
+            var glossTab = await app.client.$('#qa_crt_tab_glossary');
+            await glossTab.click();    
+            await app.client.pause(timeDelay1);
+            var selGlossComp = await app.client.$('#qa_gls_sel_comp');
+            await selGlossComp.click();          
+            await app.client.pause(timeDelay1);     
+            var selGlossCompMI = await app.client.$('#qa_gls_mi_comp_UAV');
+            await selGlossCompMI.click();          
+            await app.client.pause(timeDelay1);   
+
+            var crtIDtxtInput = await app.client.$('#qa_crt_tf_reqid');
+            await crtIDtxtInput.setValue('Rnew1');
+            await app.client.pause(timeDelay1);   
+            var crtSlateEditor = await app.client.$('#qa_crt_edt_editor');
+            await crtSlateEditor.click();  
+            await crtSlateEditor.keys('if xNew > 0 UAV shall satisfy x');
+            await app.client.pause(timeDelay1);  
+            await app.client.pause(timeDelay1);  
+
+            var varDropdownMenu = await app.client.$('#qa_vdm_menu');
+            var elementHTML = await varDropdownMenu.getHTML(false);
+            var elementParsedHTML = parse(elementHTML);
+            var numVarShown = elementParsedHTML.childNodes.length;
+            //console.log('numVarShown: ', numVarShown);
+            var varDropdownMenuText = elementParsedHTML.text;  
+            //console.log('var dropdown menu text: ', varDropdownMenuText);
+            expect(elementParsedHTML.text).toContain('xAxin');
+            var varDropdownItem = await app.client.$('#qa_vdm_var_xin');
+            await varDropdownItem.click();
+            await app.client.pause(timeDelay1);    
+            var curEdtText = await crtSlateEditor.getText();
+            expect(curEdtText).toContain('if xNew > 0 UAV shall satisfy xin');  
+            await app.client.pause(timeDelay1);  
+            var crtSemantics = await app.client.$('#qa_crt_btn_semantics');
+            await crtSemantics.click();     
+            await app.client.pause(timeDelay1);  
+            var crtCreate = await app.client.$('#qa_crt_btn_create');
+            await crtCreate.click();
+            await app.client.pause(timeDelay1);  
+            console.log('stop 1');
+
+
+            var createBtn = await app.client.$('#qa_db_btn_create');           
+            await createBtn.click();           
+            var glossTab = await app.client.$('#qa_crt_tab_glossary');
+            await glossTab.click();    
+            await app.client.pause(timeDelay1);
+            var selGlossComp = await app.client.$('#qa_gls_sel_comp');
+            await selGlossComp.click();          
+            await app.client.pause(timeDelay1);     
+            var selGlossCompMI = await app.client.$('#qa_gls_mi_comp_UAV');
+            await selGlossCompMI.click();          
+            await app.client.pause(timeDelay1);   
+
+            var crtIDtxtInput = await app.client.$('#qa_crt_tf_reqid');
+            await crtIDtxtInput.setValue('Rnew2');
+            await app.client.pause(timeDelay1);  
+            await app.client.pause(timeDelay1);  
+            var crtSlateEditor = await app.client.$('#qa_crt_edt_editor');
+            await crtSlateEditor.click();  
+            await crtSlateEditor.keys('if yNew > 0 component shall satisfy x');
+            await app.client.pause(timeDelay1);  
+
+            var varDropdownMenu = await app.client.$('#qa_vdm_menu');
+            var elementHTML = await varDropdownMenu.getHTML(false);
+            var elementParsedHTML = parse(elementHTML);
+            var numVarShown = elementParsedHTML.childNodes.length;
+            //console.log('numVarShown: ', numVarShown);
+            var varDropdownMenuText = elementParsedHTML.text;  
+            console.log('var dropdown menu text: ', varDropdownMenuText);
+            expect(elementParsedHTML.text).toContain('xAxinxNew');
+            var varDropdownItem = await app.client.$('#qa_vdm_var_xNew');
+            await varDropdownItem.click();
+            await app.client.pause(timeDelay1);    
+            var curEdtText = await crtSlateEditor.getText();
+            //console.log('curEdtText',curEdtText)
+            expect(curEdtText).toContain('if yNew > 0 component shall satisfy xNew');  
+
+      });
+
+
+      //------------------------------------------------------------------
+      it('DB - 1', async () => {
+            console.log('starting test '+numTest+':  DB - 1');
+            await cpReferenceDB('DB');
+            await new Promise((r) => setTimeout(r, 2000));
+
+
+            await app.start();
+            await app.client.waitUntilWindowLoaded();
+
+
+            const projectBtn = await app.client.$('#qa_db_btn_projects');
+            await projectBtn.click();
+            await app.client.pause(timeDelay1);
+
+            const testP = await app.client.$('#qa_proj_select_test');  
+            await testP.click(); 
+            await app.client.pause(timeDelay1);
+
+
+            const R2 = await app.client.$('#qa_cirPack_text_R2');
+            await R2.click();  
+                        
+            const disReqEdit = await app.client.$('#qa_disReq_ic_edit');
+            await disReqEdit.click();          
+            
+            const glos = await app.client.$('#qa_crt_tab_glossary');
+            await glos.click();     
+            
+            const selComp = await app.client.$('#qa_gls_sel_comp');
+            await selComp.click();          
+            await app.client.pause(timeDelay1);     
+            const comp = await app.client.$('#qa_gls_mi_comp_component');
+            await comp.click();          
+            await app.client.pause(timeDelay1);    
+            const pVar = await app.client.$('#qa_gls_ti_var_p');
+            await pVar.click();   
+            var pHTML = await pVar.getHTML(false);
+            var pVarText = parse(pHTML);
+            var pVarString = pVarText.toString();
+            console.log('p variable in glossary: ', pVarString);
+            expect(pVarString).toContain('>reqs: </p><p class="MuiTypography-root MuiTypography-body1" style="margin-left: 4px;">R2<');
+
+            const qVar = await app.client.$('#qa_gls_ti_var_q');
+            await qVar.click();   
+            pHTML = await qVar.getHTML(false);
+            pVarText = parse(pHTML);
+            pVarString = pVarText.toString();
+            console.log('q variable in glossary: ', pVarString);
+            expect(pVarString).toContain('>reqs: </p><p class="MuiTypography-root MuiTypography-body1" style="margin-left: 4px;"></p><');
+        
+      });
+
+
+      //------------------------------------------------------------------
+      it('DB - 2', async () => {
+            console.log('starting test '+numTest+':  DB - 2')            
+            await startWithJsonFileImport('MyDBAM113.json');
+
+            const projBtn = await app.client.$('#qa_db_btn_projects');
+            await projBtn.click();
+            await app.client.pause(timeDelay1);
+
+            const startTime = new Date();
+
+            const cmonitors = await app.client.$('#qa_proj_del_CMonitors');
+            await cmonitors.click();
+            await app.client.pause(timeDelay1);
+            const delProj = await app.client.$('#qa_delProj_btn_ok');
+            await delProj.click(); 
+            await app.client.pause(timeDelay1);
+
+            await projBtn.click();    
+            await app.client.pause(timeDelay1);                    
+            const gpca = await app.client.$('#qa_proj_del_GPCA');
+            await gpca.click();
+            await app.client.pause(timeDelay1);
+            await delProj.click(); 
+
+            await projBtn.click();                       
+            const gpcamodes = await app.client.$('#qa_proj_del_GPCA_with_modes');
+            await gpcamodes.click();
+            await delProj.click(); 
+            
+            await projBtn.click();           
+            const delHanfor = await app.client.$('#qa_proj_del_Hanfor');
+            await delHanfor.click();
+            await delProj.click(); 
+            
+            await projBtn.click();           
+            const lm_req = await app.client.$('#qa_proj_del_LM_requirements');
+            await lm_req.click();
+            await delProj.click(); 
+
+            await projBtn.click();            
+            const liquidMixer = await app.client.$('#qa_proj_del_Liquid_mixer');
+            await liquidMixer.click();
+            await delProj.click(); 
+            
+            await projBtn.click();
+            const semanPaper = await app.client.$('#qa_proj_del_SemanticsPaper');
+            await semanPaper.click();            
+            await delProj.click(); 
+            
+            await projBtn.click();
+            const testReq = await app.client.$('#qa_proj_del_TestRequirements');
+            await testReq.click();            
+            await delProj.click(); 
+            
+            await projBtn.click();
+            const pvs = await app.client.$('#qa_proj_del_reqsForPVS');
+            await pvs.click();            
+            await delProj.click(); 
+
+            await projBtn.click();
+            const hackathon = await app.client.$('#qa_proj_del_test-hackathon');
+            await hackathon.click();           
+            await delProj.click(); 
+
+
+            await projBtn.click();
+            const allProjects = await app.client.$('#qa_proj_del_All_Projects');
+            await allProjects.click();           
+            await delProj.click();             
+            await app.client.pause(timeDelay1);         
+
+            const endTime = new Date();
+            const timeDiff = endTime - startTime; //in ms   ~30 seconds
+            const shortTime = (120000 > timeDiff)?true:false;
+            console.log('timeDiff ',timeDiff);
+            expect(shortTime).toBeTruthy();            
+                                    
+      });  
+
 
 
       //------------------------------------------------------------------
@@ -3747,16 +5222,16 @@ describe('FRET GUI E2E tests ', function () {
             const rlzTab = await app.client.$('#qa_rlz_tab');
             await rlzTab.click();
 
-            const sysComp = await app.client.$('#qa_rlzTbl_sel_sysComp');
+            const sysComp = await app.client.$('#qa_rlzCont_sel_sysComp');
             await sysComp.click();     
             //await app.client.pause(timeDelay1); 
 
-            //const scLm = await app.client.$('#qa_rlzTbl_mi_sysComp_liquid_mixer');
+            //const scLm = await app.client.$('#qa_rlzCont_mi_sysComp_liquid_mixer');
             //await scLm.click();            
 
-            //const lm006 = await app.client.$('#qa_rlzTbl_tc_body_id_LM006');
+            //const lm006 = await app.client.$('#qa_rlzCont_tc_body_id_LM006');
             //let reqText = await lm006.getText();
-            //console.log('qa_rlzTbl_tc_body_id_LM006: '+reqText);
+            //console.log('qa_rlzCont_tc_body_id_LM006: '+reqText);
            // expect(reqText).toContain('LM006');      
        
       });
@@ -3780,72 +5255,6 @@ describe('FRET GUI E2E tests ', function () {
             await cmonitors.click();
 
       }); 
-
-      //------------------------------------------------------------------
-      it('DELETING ALL PROJECT', async () => {
-            console.log('starting test '+numTest+':  DELETING ALL PROJECT')            
-            await startWithJsonFileImport('MyDBAM113.json');
-
-            const projBtn = await app.client.$('#qa_db_btn_projects');
-            await projBtn.click();
-            await app.client.pause(timeDelay1);
-                        
-            const cmonitors = await app.client.$('#qa_proj_del_CMonitors');
-            await cmonitors.click();
-            await app.client.pause(timeDelay1);
-            const delProj = await app.client.$('#qa_delProj_btn_ok');
-            await delProj.click(); 
-            await app.client.pause(timeDelay1);
-
-            await projBtn.click();    
-            await app.client.pause(timeDelay1);                    
-            const gpca = await app.client.$('#qa_proj_del_GPCA');
-            await gpca.click();
-            await app.client.pause(timeDelay1);
-            await delProj.click(); 
-
-            await projBtn.click();                       
-            const gpcamodes = await app.client.$('#qa_proj_del_GPCA_with_modes');
-            await gpcamodes.click();
-            await delProj.click(); 
-            
-            await projBtn.click();           
-            const delHanfor = await app.client.$('#qa_proj_del_Hanfor');
-            await delHanfor.click();
-            await delProj.click(); 
-            
-            await projBtn.click();           
-            const lm_req = await app.client.$('#qa_proj_del_LM_requirements');
-            await lm_req.click();
-            await delProj.click(); 
-
-            await projBtn.click();            
-            const liquidMixer = await app.client.$('#qa_proj_del_Liquid_mixer');
-            await liquidMixer.click();
-            await delProj.click(); 
-            
-            await projBtn.click();
-            const semanPaper = await app.client.$('#qa_proj_del_SemanticsPaper');
-            await semanPaper.click();            
-            await delProj.click(); 
-            
-            await projBtn.click();
-            const testReq = await app.client.$('#qa_proj_del_TestRequirements');
-            await testReq.click();            
-            await delProj.click(); 
-            
-            await projBtn.click();
-            const pvs = await app.client.$('#qa_proj_del_reqsForPVS');
-            await pvs.click();            
-            await delProj.click(); 
-
-            await projBtn.click();
-            const hackathon = await app.client.$('#qa_proj_del_test-hackathon');
-            await hackathon.click();           
-            await delProj.click(); 
-            await app.client.pause(timeDelay1);         
- 
-      });  
 
 
      

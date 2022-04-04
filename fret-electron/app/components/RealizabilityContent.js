@@ -251,15 +251,15 @@ class ResultIcon extends React.Component {
     <Tooltip title={<span style={{ whiteSpace: 'pre-line' }}> {(result === 'ERROR' ? ("The following error(s) occured at the solver level:\n" + error) : result) +
       (time !== undefined ? time : '')} </span>}>
       {result === 'REALIZABLE' ?
-        <CheckCircleOutlineIcon id = {"qa_rlzTbl_res_"+reskey+"_"+result} style={{fontSize : '20px', verticalAlign : 'bottom', color : '#68BC00'}}/> :
+        <CheckCircleOutlineIcon id = {"qa_rlzCont_res_"+reskey+"_"+result} style={{fontSize : '20px', verticalAlign : 'bottom', color : '#68BC00'}}/> :
         result === 'UNREALIZABLE' ?
-          <HighlightOffIcon id = {"qa_rlzTbl_res_"+reskey+"_"+result} style={{fontSize : '20px', verticalAlign : 'bottom'}} color='error'/> :
+          <HighlightOffIcon id = {"qa_rlzCont_res_"+reskey+"_"+result} style={{fontSize : '20px', verticalAlign : 'bottom'}} color='error'/> :
           result === 'PROCESSING' ?
-            <CircularProgress id = {"qa_rlzTbl_res_"+reskey+"_"+result} style={{verticalAlign : 'bottom'}} size={15}/> :
+            <CircularProgress id = {"qa_rlzCont_res_"+reskey+"_"+result} style={{verticalAlign : 'bottom'}} size={15}/> :
             result === 'UNKNOWN' ?
-            <HelpOutlineIcon id = {"qa_rlzTbl_res_"+reskey+"_"+result} style={{fontSize : '20px', verticalAlign : 'bottom', color : '#ff9900'}}/> :
+            <HelpOutlineIcon id = {"qa_rlzCont_res_"+reskey+"_"+result} style={{fontSize : '20px', verticalAlign : 'bottom', color : '#ff9900'}}/> :
               result === 'ERROR' ?
-              <ErrorIcon id = {"qa_rlzTbl_res_"+reskey+"_"+result} style={{fontSize : '20px', verticalAlign : 'bottom'}} color='error'/> : <div/>}
+              <ErrorIcon id = {"qa_rlzCont_res_"+reskey+"_"+result} style={{fontSize : '20px', verticalAlign : 'bottom'}} color='error'/> : <div/>}
     </Tooltip>
     )
   }
@@ -392,7 +392,7 @@ class CCRequirementsTable extends React.Component {
                   {rows.map(row => {
                     return (
                       <TableCell
-                        id={"qa_rlzTbl_tc_head"+row.id}
+                        id={"qa_rlzCont_tc_head"+row.id}
                         key={row.id}
                         align={row.numeric?'right':'left'}
                         sortDirection={orderBy === row.id ? order : false}
@@ -403,7 +403,7 @@ class CCRequirementsTable extends React.Component {
                           enterDelay={300}
                         >
                           <TableSortLabel
-                            id={"qa_rlzTbl_tc_sort"+row.id}
+                            id={"qa_rlzCont_tc_sort"+row.id}
                             active={orderBy === row.id}
                             direction={order}
                             onClick={this.handleRequestSort(row.id)}
@@ -417,17 +417,17 @@ class CCRequirementsTable extends React.Component {
                 </TableRow>
               </TableHead>
               {Object.keys(connectedComponent).length !== 0 ?
-                (<TableBody>{
+                (<TableBody  id="qa_rlzCont_tableBody_1">{
                   stableSort(data, getSorting(order, orderBy))
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map(n => {
                     const label = n.reqid ? n.reqid.replace(/-/g,'') : 'NONE'
                     return (
                         <TableRow key={n.rowid}>
-                            <TableCell id={"qa_rlzTbl_tc_id"+label}>
+                            <TableCell id={"qa_rlzCont_tc_id"+label}>
                               {label}
                             </TableCell>
-                          <TableCell id={"qa_rlzTbl_tc_sum"+label}>{n.summary}</TableCell>
+                          <TableCell id={"qa_rlzCont_tc_sum"+label}>{n.summary}</TableCell>
                         </TableRow>
                       )
                   })}
@@ -437,7 +437,7 @@ class CCRequirementsTable extends React.Component {
                     </TableRow>
                   )}
                 </TableBody>) :
-                (<TableBody>{
+                (<TableBody  id="qa_rlzCont_tableBody_2">{
                   stableSort(data, getSorting(order, orderBy))
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map(n => {
@@ -515,7 +515,7 @@ function ProjectTableRow(props) {
                       <TableCell>Result</TableCell>
                     </TableRow>
                   </TableHead>
-                  <TableBody>
+                  <TableBody  id="qa_rlzCont_tableBody_project">
                     {Object.keys(connectedComponentRows).map((ccKey) => (
                       <TableRow key={name+"_"+ccKey}>
                         <TableCell/>
@@ -1106,7 +1106,7 @@ class RealizabilityContent extends React.Component {
     let grid;
     var tabs = [];
     for (var cc in connectedComponents[selected.component_name]) {
-          tabs.push(<Tab id = {"qa_rlzTbl_tab_"+cc } key={cc} value={cc} classes={{root : classes.tabRoot}} label={
+          tabs.push(<Tab id = {"qa_rlzCont_tab_"+cc } key={cc} value={cc} classes={{root : classes.tabRoot}} label={
         <div key={cc} style={{display : 'flex', alignItems : 'center', flexWrap : 'wrap'}}>
           {cc}
           &nbsp;
@@ -1134,7 +1134,7 @@ class RealizabilityContent extends React.Component {
             <FormControl className={classes.formControl} required>
               <InputLabel>System Component</InputLabel>
               <Select
-                id="qa_rlzTbl_sel_sysComp"
+                id="qa_rlzCont_sel_sysComp"
                 value={selected}
                 onChange={this.handleChange('selected')}
               >
@@ -1147,7 +1147,7 @@ class RealizabilityContent extends React.Component {
                         title={!this.isComponentComplete(n.component_name) ? 'Analysis is not possible for this component. Please complete mandatory variable fields in Variable Mapping first.' : ''}>
                           <span key={n.component_name}>
                           <MenuItem key={n.component_name} 
-                            id={"qa_rlzTbl_mi_sysComp_"+n.component_name}
+                            id={"qa_rlzCont_mi_sysComp_"+n.component_name}
                             disabled={!this.isComponentComplete(n.component_name)}>
                             <div key={n.component_name} style={{display : 'flex', alignItems : 'center'}}>
                               {n.component_name}
@@ -1167,7 +1167,7 @@ class RealizabilityContent extends React.Component {
               disabled={selected === '' || (selected !== 'all' && Object.keys(connectedComponents[selected.component_name]).length <= 1)}
               control={
                 <Checkbox
-                  id="qa_rlzTbl_cb_compositional"
+                  id="qa_rlzCont_cb_compositional"
                   checked={compositional}
                   onChange={this.handleChange('compositional')}
                   value="compositional"
@@ -1180,7 +1180,7 @@ class RealizabilityContent extends React.Component {
               disabled={selected === ''}
               control={
                 <Checkbox
-                  id="qa_rlzTbl_cb_monolithic"
+                  id="qa_rlzCont_cb_monolithic"
                   checked={monolithic}
                   onChange={this.handleChange('monolithic')}
                   value="monolithic"
@@ -1192,11 +1192,11 @@ class RealizabilityContent extends React.Component {
             />
             {!dependenciesExist &&
               <Tooltip title={"Dependencies missing for realizability checking : " + missingDependencies.toString()+'. See FRET documentation for details.'}>
-                <ErrorIcon className={classes.wrapper} style={{verticalAlign : 'bottom'}} color='error'/>
+                <ErrorIcon id="qa_rlzCont_icon_depMissing" className={classes.wrapper} style={{verticalAlign : 'bottom'}} color='error'/>
               </Tooltip>
             }
             <TextField
-              id="qa_rlzTbl_tf_timeOut"
+              id="qa_rlzCont_tf_timeOut"
               className={classes.wrapper}
               disabled={selected === ''}
               label="Timeout (seconds)"
@@ -1210,7 +1210,7 @@ class RealizabilityContent extends React.Component {
             />
             <div className={classes.wrapper}>
             <Button onClick={(event) => {this.checkRealizability(event)}} 
-              id="qa_rlzTbl_btn_check"
+              id="qa_rlzCont_btn_check"
               size="small" className={classes.vAlign} color="secondary" variant='contained' 
               disabled={status[selected.component_name] === 'PROCESSING' || diagStatus === 'PROCESSING' || !dependenciesExist || (dependenciesExist && selected === '')}>
                 Check
@@ -1218,7 +1218,7 @@ class RealizabilityContent extends React.Component {
             </div>
             <div className={classes.wrapper}>
               <Button
-                id="qa_rlzTbl_btn_diagnose"
+                id="qa_rlzCont_btn_diagnose"
                 onClick={(event) => {this.diagnoseSpec(event)}}
                 size="small" className={classes.vAlign}
                 color="secondary"
@@ -1231,7 +1231,7 @@ class RealizabilityContent extends React.Component {
               {diagStatus === 'PROCESSING' && <CircularProgress size={24} className={classes.buttonProgress}/>}
             </div>
             <div className={classes.wrapper}>
-            <Button color="secondary" onClick={this.handleHelpOpen} size="small" id="qa_rlzTbl_btn_help"
+            <Button color="secondary" onClick={this.handleHelpOpen} size="small" id="qa_rlzCont_btn_help"
               className={classes.vAlign} variant="contained"> Help </Button>
             </div>
             <div style={{width : '100%'}}>
@@ -1308,7 +1308,7 @@ class RealizabilityContent extends React.Component {
               Help
             </Typography>
             <IconButton className={classes.closeButton} 
-              id="qa_rlzTbl_ib_closeHelpPage"
+              id="qa_rlzCont_ib_closeHelpPage"
               aria-label="close" onClick={this.handleHelpClose}>
               <CloseIcon />
             </IconButton>

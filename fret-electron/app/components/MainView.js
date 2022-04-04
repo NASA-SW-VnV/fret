@@ -552,8 +552,8 @@ class MainView extends React.Component {
                           return <MenuItem                                    
                                     key={name}
                                     dense>
-                                    <ListItemText id={"qa_proj_select_"+name} primary = {name} onClick={() => this.handleSetProject(name)}/>
-                                    <IconButton id={"qa_proj_del_"+name} onClick={() => this.handleDeleteProject(name)} size="small" aria-label="delete" >
+                                    <ListItemText id={"qa_proj_select_"+name.replace(/\s+/g, '_')} primary = {name} onClick={() => this.handleSetProject(name)}/>
+                                    <IconButton id={"qa_proj_del_"+name.replace(/\s+/g, '_')} onClick={() => this.handleDeleteProject(name)} size="small" aria-label="delete" >
                                       <Tooltip id="project-tooltip-icon-delete" title="Delete Project">
                                       <DeleteIcon color='error'/>
                                       </Tooltip>

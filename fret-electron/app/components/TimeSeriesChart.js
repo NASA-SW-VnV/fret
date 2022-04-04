@@ -314,7 +314,7 @@ class TimeSeriesChart extends Component {
 
             <ResponsiveContainer width="99%" height={75} debounce={0}>
                 <LineChart
-                    id={"qa_ltlSim_lc_"+name}
+                    id={"qa_ltlSim_lc_"+this.props.name.slice(0, 4)}
                     syncId={this.props.syncId}
                     margin={{top: 10, right: 10, left: 0, bottom: 10}}
                     data={data}
@@ -333,13 +333,13 @@ class TimeSeriesChart extends Component {
                     />
                     <CartesianGrid strokeDasharray="3 3" fill={fill} fillOpacity="0.4"/>
                     <XAxis
-                        id={"qa_ltlSim_xaxis_"+name}
+                        id={"qa_ltlSim_xaxis_"+this.props.name.slice(0, 4)}
                         hide
                         domain={[-0.5, this.props.data.length-0.5]}
                         dataKey="time"
                     />
                     <YAxis
-                        id={"qa_ltlSim_yaxis_"+name}
+                        id={"qa_ltlSim_yaxis_"+this.props.name.slice(0, 4)}
                         type="category"
                         minTickGap={0}
                         dataKey="TF">
@@ -347,7 +347,7 @@ class TimeSeriesChart extends Component {
                     </YAxis>
                     <Line
                         name={this.props.name}
-                        id={"qa_ltlSim_ln_"+name}
+                        id={"qa_ltlSim_ln_1_"+this.props.name.slice(0, 4)}
                         dataKey={this.props.dataKey}
                         type="step"
                         stroke={primaryColor}
@@ -361,7 +361,7 @@ class TimeSeriesChart extends Component {
                     />
                     <Line
                         name={this.props.name}
-                        id={"qa_ltlSim_ln_"+name}
+                        id={"qa_ltlSim_ln_2_"+this.props.name.slice(0, 4)}
                         dataKey="false"
                         type="step"
                         stroke={primaryColor}
@@ -378,7 +378,7 @@ class TimeSeriesChart extends Component {
                     />
                     <Line
                         name={this.props.name}
-                        id={"qa_ltlSim_ln_"+name}
+                        id={"qa_ltlSim_ln_3_"+this.props.name.slice(0, 4)}
                         dataKey="true"
                         type="step"
                         stroke={primaryColor}
@@ -397,14 +397,14 @@ class TimeSeriesChart extends Component {
             </ResponsiveContainer>
             {nameTip !== null &&
                 <Nametip
-                    id={"qa_ltlSim_nt_"+nameTip}
+                    id={"qa_ltlSim_nt_"+this.props.name.slice(0, 4)}
                     title={nameTip}
                     placement="right"
                     classes={{tooltip: classes.nametip}}>
                     <div className={classes.nametipAnchor} />
                 </Nametip>}
             {chartState === EFormulaStates.BUSY && 
-              <CircularProgress size={24} id="qa_ltlSim_cp_" className={classes.progress}/>}
+              <CircularProgress size={24} id={"qa_ltlSim_cp_"} className={classes.progress}/>}
             </div>
         )
     }

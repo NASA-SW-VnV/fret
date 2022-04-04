@@ -171,7 +171,7 @@ class RequirementImportDialogs extends React.Component {
                 >
                 {csvFields.map(v => {
                     return(<MenuItem 
-                      id={"qa_csvImp_mi_id_"+v}
+                      id={"qa_csvImp_mi_id_"+v.replace(/\s+/g, '_')}
                       key={v} value={v}>{v}</MenuItem>)
                 })}
                 </Select>
@@ -192,7 +192,7 @@ class RequirementImportDialogs extends React.Component {
                   </MenuItem>
                 {csvFields.map(v => {
                     return(<MenuItem 
-                      id={"qa_csvImp_mi_des_"+v}
+                      id={"qa_csvImp_mi_des_"+v.replace(/\s+/g, '_')}
                       key={v} value={v}>{v}</MenuItem>)
                 })}
                 </Select>
@@ -225,13 +225,14 @@ class RequirementImportDialogs extends React.Component {
                 <FormControl required className={classes.formControl}>
                   <InputLabel>Existing FRET Project</InputLabel>
                   <Select
+                    id="qa_csvImp_sel_pickExistFRETproj"
                     value={this.state.project}
                     onChange={this.handleChange('project')}
                     name="existingProject"
                     className={classes.selectEmpty}
                   >
                   {listOfProjects.map(p => {
-                      return(<MenuItem key={p} value={p}>{p}</MenuItem>)
+                      return(<MenuItem id={"qa_csvImp_mi_pickExistFRETproj_"+ p} key={p} value={p}>{p}</MenuItem>)
                   })}
                   </Select>
                   <FormHelperText>Required field.</FormHelperText>
@@ -241,13 +242,14 @@ class RequirementImportDialogs extends React.Component {
                 <FormControl required className={classes.formControl}>
                   <InputLabel>CSV File Field</InputLabel>
                   <Select
+                    id="qa_csvImp_sel_CSVfileField"
                     value={this.state.project}
                     onChange={this.handleChange('project')}
                     name="csvProject"
                     className={classes.selectEmpty}
                   >
                    {csvFields.map(v => {
-                       return(<MenuItem key={v} value={v}>{v}</MenuItem>)
+                       return(<MenuItem id={"qa_csvImp_mi_CSVfileField_"+ v.replace(/\s+/g, '_')} key={v} value={v}>{v}</MenuItem>)
                    })}
                   </Select>
                   <FormHelperText>Required field.</FormHelperText>
@@ -256,7 +258,7 @@ class RequirementImportDialogs extends React.Component {
               {this.state.projectCategory === 'CreateProject' &&
                 <TextField
                   required
-                  id="standard-required"
+                  id="qa_csvImp_tf_specify_project_ID"
                   label="Please specify new Project ID"
                   defaultValue=""
                   className={classes.formControl}

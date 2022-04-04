@@ -185,7 +185,7 @@ class DiagnosisRequirementsTableHead extends React.Component {
           {rows.map(row => {
             return (
               <TableCell
-                id={"qa_rlzTbl_tc_head_"+row.id}
+                id={"_tc_head_"+row.id}
                 key={row.id}
                 align={row.numeric?'right':'left'}
                 sortDirection={orderBy === row.id ? order : false}
@@ -356,7 +356,7 @@ class DiagnosisRequirementsTable extends React.Component {
               rowCount={data.length}
             />
             {Object.keys(connectedComponent).length !== 0 ?
-              (<TableBody>{
+              (<TableBody id="qa_diagReqTbl_tableBody_1">{
                 ccStableSort(data, reqs, connectedComponent, getSorting(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map(n => {
@@ -367,10 +367,10 @@ class DiagnosisRequirementsTable extends React.Component {
                           opacity : (isInConflict || connectedComponent.properties.has(n.reqid)) ? 1 : .6,
                           borderStyle: isInConflict ? 'solid' : 'initial', 
                           borderColor: isInConflict ? color : 'initial'}}>
-                        <TableCell id={"qa_rlzTbl_tc_body_id_"+label+"_row_"+n.rowid}>
+                        <TableCell id={"qa_diagReqTbl_tc_body_id_"+label}>
                             {label}
                           </TableCell>
-                        <TableCell id={"qa_rlzTbl_tc_body_summary_"+label}>{n.summary}</TableCell>
+                        <TableCell id={"qa_diagReqTbl_tc_body_summary_"+label}>{n.summary}</TableCell>
                       </TableRow>
                     )
                 })}
@@ -380,7 +380,7 @@ class DiagnosisRequirementsTable extends React.Component {
                   </TableRow>
                 )}
               </TableBody>) :
-              (<TableBody>{
+              (<TableBody id="qa_diagReqTbl_tableBody_2">{
                 stableSort(data, reqs, getSorting(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map(n => {
@@ -392,10 +392,10 @@ class DiagnosisRequirementsTable extends React.Component {
                           opacity : (isInConflict || reqs.length === 0  || isAssumption) ? 1 : .6,
                           borderStyle: isInConflict ? 'solid' : 'initial', 
                           borderColor: isInConflict ? color : 'initial'}}>
-                        <TableCell id={"qa_rlzTbl_tc_body_id_"+label+"_row_"+n.rowid}>
+                        <TableCell id={"qa_diagReqTbl_tc_body_id_"+label}>
                             {label}
                           </TableCell>
-                        <TableCell id={"qa_rlzTbl_tc_body_summary_"+label}>{n.summary}</TableCell>
+                        <TableCell id={"qa_diagReqTbl_tc_body_summary_"+label}>{n.summary}</TableCell>
                       </TableRow>
                     )
                 })}

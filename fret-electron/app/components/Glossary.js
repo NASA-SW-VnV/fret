@@ -237,9 +237,10 @@ class Glossary extends React.Component {
               <FormControlLabel
                 classes={{label: classes.checkBoxFont}}
                 key={variableType}
-                id = {"qa_gls_cb_" + variableType}
+                
                 control={
                   <Checkbox
+                    id = {"qa_gls_cb_" + variableType}
                     checked={checked[variableType]}
                     icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
                     checkedIcon={<CheckBoxIcon fontSize="small" />}
@@ -255,6 +256,7 @@ class Glossary extends React.Component {
         </FormControl>
         <div>
           <TreeView
+            id = "qa_gls_tree_var"
             defaultCollapseIcon={<ExpandMoreIcon/>}
             defaultExpandIcon={<ChevronRightIcon/>}
           >
