@@ -68,8 +68,8 @@ const cpFretDB = async (refName) => {
 
             const fret_db = '../test_reference/inputs/'+refName+'/fret-db';
             const ref_fret_db = path.join(__dirname, fret_db);
-            console.log('source reference fret-db: ' + ref_fret_db)
-            console.log('target reference fret-db: ' + fretDB_dirName)
+           // console.log('source reference fret-db: ' + ref_fret_db)
+           // console.log('target reference fret-db: ' + fretDB_dirName)
              
             await fsExtra.copy(ref_fret_db, fretDB_dirName, err => {
                   if (err) return console.error(err)
@@ -83,8 +83,8 @@ const cpModelDB = async (refName) => {
 
       const model_db = '../test_reference/inputs/'+refName+'/model-db';
       const ref_model_db = path.join(__dirname, model_db);
-      console.log('source reference model-db: ' + ref_model_db)  
-      console.log('target model-db: ' + modelDB_dirName)  
+      // console.log('source reference model-db: ' + ref_model_db)  
+      // console.log('target model-db: ' + modelDB_dirName)  
       
       await fsExtra.copy(ref_model_db, modelDB_dirName, err => {
             if (err) return console.error(err)
@@ -177,7 +177,7 @@ describe('FRET GUI E2E tests ', function () {
             const cirPackReq = await app.client.$('#qa_cirPack_text_FSM-006');
 
             const req_FSM_006_text = await cirPackReq.getValue();
-            console.log('req_FSM_006_text: ' + req_FSM_006_text);
+            // console.log('req_FSM_006_text: ' + req_FSM_006_text);
             const tableBtn = await app.client.$('#qa_db_li_table');            
             await tableBtn.click();
 
@@ -204,8 +204,6 @@ describe('FRET GUI E2E tests ', function () {
             // wait for the "Analysis portal" button to be visible
             const anaBtn = await app.client.$('#qa_db_li_analysis');
             await anaBtn.click();
-
-            await app.client.pause(10000);
 
       });      
 
@@ -248,7 +246,7 @@ describe('FRET GUI E2E tests ', function () {
             const projectField = await app.client.$('#qa_db_ili_projects');
             
             const projectText = await projectField.getText();
-            console.log('project text: ' + projectText);
+            // console.log('project text: ' + projectText);
             expect(projectText).toContain('Total Projects');
             expect(projectText).toContain('11');
                         
@@ -454,17 +452,7 @@ describe('FRET GUI E2E tests ', function () {
             const tableBodyHTML = await tableBody.getHTML(false);
 
             const tb = parse(tableBodyHTML);
-            /*    
-            console.log(reqText);
-            console.log(tb);
-            console.log(tb.firstChild.structure)
-            console.log(tb.childNodes.length)       
-            console.log(tb.firstChild.text)     
-            console.log(tb.childNodes[0].text)     
-            console.log(tb.childNodes[1].text)        
-            console.log(tb.childNodes[2].text)                       
-            console.log(tb.childNodes[3].text)       
-            */
+
             expect(tb.childNodes.length).toBe(10);   // showing 10 requirements per page
             expect(tb.childNodes[0].text).toContain('csvTest101a"Fret team shall satisfy best"testProject');
             expect(tb.childNodes[1].text).toContain('t10"this is a FRET requirement"testProject');
@@ -546,16 +534,7 @@ describe('FRET GUI E2E tests ', function () {
             const tableBodyHTML = await tableBody.getHTML(false);
 
             const tb = parse(tableBodyHTML);
-              
-            console.log(reqText);
-            console.log(tb);
-            console.log(tb.firstChild.structure)
-            console.log(tb.childNodes.length)       
-            console.log(tb.childNodes[0].text)     
-            console.log(tb.childNodes[1].text)        
-            console.log(tb.childNodes[2].text)                       
-            console.log(tb.childNodes[3].text)       
-            
+ 
             expect(tb.childNodes.length).toBe(10);   // showing 10 requirements per page
             expect(tb.childNodes[0].text).toContain('csvTest101a"Fret team shall satisfy best"Demo-FSM');
             expect(tb.childNodes[1].text).toContain('FSM-001FSM  shall  always  satisfy if (limits & !standby & !apfail & supported) then pullupDemo-FSM');
@@ -749,14 +728,7 @@ describe('FRET GUI E2E tests ', function () {
             const tableBody = await app.client.$('#qa_tbl_sortableTable_body');
             const tableBodyHTML = await tableBody.getHTML(false);
 
-            const tb = parse(tableBodyHTML);
-            console.log(tb);
-            console.log(tb.firstChild.structure)
-            console.log(tb.childNodes.length)       
-            console.log(tb.childNodes[0].text)     
-            console.log(tb.childNodes[1].text)        
-            console.log(tb.childNodes[2].text)                       
-            console.log(tb.childNodes[3].text)       
+            const tb = parse(tableBodyHTML);  
             
             expect(tb.childNodes.length).toBe(6);   // showing 10 requirements per page
             expect(tb.childNodes[0].text).toContain('H1');
@@ -785,7 +757,7 @@ describe('FRET GUI E2E tests ', function () {
             var pHTML = await pVar.getHTML(false);
             var pVarText = parse(pHTML);
             var pVarString = pVarText.toString();
-            console.log('p variable in glossary: ', pVarString)
+            // console.log('p variable in glossary: ', pVarString)
             expect(pVarString).toContain('>reqs: </p><p class="MuiTypography-root MuiTypography-body1" style="margin-left: 4px;">r1, r3<');
 
             const mvar = await app.client.$('#qa_gls_ti_var_m');
@@ -799,7 +771,7 @@ describe('FRET GUI E2E tests ', function () {
             var qHTML = await qVar.getHTML(false);
             var qVarText = parse(qHTML);
             var qVarString = qVarText.toString();
-            console.log('q variable in glossary: ', qVarString);
+            // console.log('q variable in glossary: ', qVarString);
             expect(qVarString).toContain('>reqs: </p><p class="MuiTypography-root MuiTypography-body1" style="margin-left: 4px;">r2<');            
 
             const xVar = await app.client.$('#qa_gls_ti_var_x');
@@ -842,15 +814,8 @@ describe('FRET GUI E2E tests ', function () {
             pHTML = await pVar.getHTML(false);
             pVarText = parse(pHTML);
             pVarString = pVarText.toString();
-            console.log('p variable in glossary: ', pVarString);
+            // console.log('p variable in glossary: ', pVarString);
             expect(pVarString).toContain('>reqs: </p><p class="MuiTypography-root MuiTypography-body1" style="margin-left: 4px;">r1</p>');
-
-            //expect(await mvar.isDisplayed()).toBeFalsy();
-            //expect(await xVar.isDisplayed()).toBeFalsy();
-            //expect(await m1var.isDisplayed()).toBeFalsy();
-
-            await app.client.pause(10000);
-
 
       }); 
 
@@ -911,15 +876,7 @@ describe('FRET GUI E2E tests ', function () {
             const tableBody = await app.client.$('#qa_tbl_sortableTable_body');
             const tableBodyHTML = await tableBody.getHTML(false);
             const tb = parse(tableBodyHTML);
-            /*
-            console.log(tb);
-            console.log(tb.firstChild.structure)
-            console.log(tb.childNodes.length)       
-            console.log(tb.childNodes[0].text)     
-            console.log(tb.childNodes[1].text)        
-            console.log(tb.childNodes[2].text)                       
-            console.log(tb.childNodes[3].text)  
-            */     
+ 
             expect(tb.childNodes.length).toBe(10);   // showing 10 requirements per page
             expect(tb.childNodes[0].text).toContain('a_new_reqif x> 0 component shall satisfy pDemo-FSM');
 
@@ -949,20 +906,10 @@ describe('FRET GUI E2E tests ', function () {
             var tableBody = await app.client.$('#qa_tbl_sortableTable_body');
             var tableBodyHTML = await tableBody.getHTML(false);
             var htmlData = parse(tableBodyHTML);
-            /*
-            console.log(htmlData);
-            console.log(htmlData.firstChild.structure)
-            console.log(htmlData.childNodes.length)       
-            console.log(htmlData.childNodes[0].text)     
-            console.log(htmlData.childNodes[1].text)        
-            console.log(htmlData.childNodes[2].text)                       
-            console.log(htmlData.childNodes[3].text)  
-            */    
+
             expect(htmlData.childNodes.length).toBe(10);   // showing 10 requirements per page
             expect(htmlData.childNodes[0].text).toContain('AP-000Autopilot shall always satisfy altitude_hold => absOf_alt_minus_altIC <= 35.0Hanfor');            
   
-            
-
             const projBtn = await app.client.$('#qa_db_btn_projects');
             await projBtn.click();
             await app.client.pause(timeDelay1);
@@ -996,13 +943,6 @@ describe('FRET GUI E2E tests ', function () {
             tableBody = await app.client.$('#qa_var_tableBody');
             tableBodyHTML = await tableBody.getHTML(false);
             htmlData = parse(tableBodyHTML);
-
-            console.log(htmlData.structure);
-            console.log(htmlData.toString())
-            console.log(htmlData.childNodes.toString())       
-            console.log(htmlData.childNodes[0].text)     
-            //console.log(htmlData.childNodes[1].text)        
-            //console.log(htmlData.childNodes[2].text)      
 
             const varName1 = await app.client.$('#qa_var_tc_modelName_absOf_alt_minus_altIC');
             //console.log('absOf_alt_minus_altIC is displayed', await varName1.isDisplayed())
@@ -1054,14 +994,14 @@ describe('FRET GUI E2E tests ', function () {
             const timeDiff = endTime - startTime; //in ms
             const shortTime = (6000 > timeDiff)?true:false;
             expect(shortTime).toBeTruthy();
-            console.log('delete time: ',timeDiff);
+            // console.log('delete time: ',timeDiff);
             await app.client.pause(timeDelay1);
             const dashboardBtn = await app.client.$('#qa_db_li_dashboard');
             await dashboardBtn.click();   
 
             reqText = await reqField.getHTML();
             reqString = reqText.toString()
-            console.log('requirements: ',reqString)
+            // console.log('requirements: ',reqString)
             expect(reqText).toContain('>Total Requirements</div><div class="jss67">0<');
 
 
@@ -1105,19 +1045,6 @@ describe('FRET GUI E2E tests ', function () {
 
             const reqId = await app.client.$('#qa_crt_tf_reqid');
             await reqId.setValue('R1');
-
-
-
-            /*
-            const slateEditable = await app.client.$('#qa_crt_edt_editor');
-            await slateEditable.click();              
-            var elemHTML = await slateEditable.getHTML();
-            console.log('slate editor html: ',elemHTML)
-            var elemString = elemHTML.toString()
-            console.log('slate editor string: ',elemString)
-            var elemText = elemHTML.text;
-            console.log('slate editor text: ',elemText)
-            */
 
             const semanticsBtn = await app.client.$('#qa_crt_btn_semantics');
             await semanticsBtn.click();
@@ -1169,7 +1096,7 @@ describe('FRET GUI E2E tests ', function () {
             var reqField = await app.client.$('#qa_db_ili_requirements');
             var reqText = await reqField.getHTML();
             var reqString = reqText.toString();
-            console.log('requirements: ',reqString)
+            // console.log('requirements: ',reqString)
             expect(reqString).toContain('>Total Requirements</div><div class="jss17">5<');
 
             await projectBtn.click();
@@ -1186,16 +1113,7 @@ describe('FRET GUI E2E tests ', function () {
             const tableBody = await app.client.$('#qa_tbl_sortableTable_body');
             const tableBodyHTML = await tableBody.getHTML(false);
             const tb = parse(tableBodyHTML);
-            
-            console.log(tb);
-            console.log(tb.firstChild.structure)
-            console.log(tb.childNodes.length)       
-            console.log(tb.childNodes[0].text)     
-            console.log(tb.childNodes[1].text)        
-            console.log(tb.childNodes[2].text)                       
-            console.log(tb.childNodes[3].text)  
-            console.log(tb.childNodes[4].text)  
-                 
+ 
             expect(tb.childNodes.length).toBe(6);   
             expect(tb.childNodes[0].text).toContain('R1The  component  shall always satisfy  bounds test_RCE_4');
             expect(tb.childNodes[1].text).toContain('R2 component  shall always satisfy if ( input_state  &  condition ) then  output_state test_RCE_4');
@@ -1515,7 +1433,7 @@ describe('FRET GUI E2E tests ', function () {
 
             const tableBody = await app.client.$('#qa_tbl_sortableTable_body');
             const reqText = await tableBody.getHTML(false);
-            console.log(reqText);
+            // console.log(reqText);
             expect(reqText).toContain('002');
       });
 
@@ -1729,7 +1647,7 @@ describe('FRET GUI E2E tests ', function () {
             expect(title).toBe('FRET');            
 
             // read Total Projects
-            console.log('react MainView ' + await app.client.react$('MainView'));
+            // console.log('react MainView ' + await app.client.react$('MainView'));
             const projectField = await app.client.$('#qa_db_ili_projects');
             const projectText = await projectField.getText();
             expect(projectText).toContain('Total Projects');
@@ -1737,10 +1655,8 @@ describe('FRET GUI E2E tests ', function () {
 
             expect(fs.existsSync(fretDB_dirName)).toBeTruthy();
             expect(fs.existsSync(modelDB_dirName)).toBeTruthy();
-            //// await app.client.pause(15000);
 
       });          
-
 
 //------------------------------------------------------------------
       //Check analysis portal Sortable Table
@@ -1829,16 +1745,6 @@ describe('FRET GUI E2E tests ', function () {
             const reqText = await tableBody.getHTML(false);
 
             const tb = parse(reqText);
-            console.log(reqText);
-            console.log(tb);
-            console.log(tb.firstChild.structure)
-            console.log(tb.childNodes.length)       //4
-            console.log(tb.firstChild.text)         //a
-            console.log(tb.childNodes[1].text)        // b
-            console.log(tb.childNodes[2].text)        // cruising
-            console.log(tb.childNodes[0].text)        //a
-            console.log(tb.childNodes[3].text)         // empty
-            console.log(tb.firstChild.toString())
 
             const countMatching = (reqText.match(/MuiButton-label/g) || []).length;
             //console.log(reqText);
@@ -1881,14 +1787,19 @@ describe('FRET GUI E2E tests ', function () {
             await app.client.pause(timeDelay1);
             const semanticsBtn3 = await app.client.$('#qa_crt_btn_semantics');
             await semanticsBtn3.click();
+            await app.client.pause(timeDelay1);
 
             await app.client.pause(timeDelay1);
             const createReqBtn3 = await app.client.$('#qa_crt_btn_create');
             await createReqBtn3.click();
+            await app.client.pause(timeDelay1);
 
             const tableBody3 = await app.client.$('#qa_tbl_sortableTable_body');
             const reqText3 = await tableBody3.getHTML(false);
-            expect(reqText3).toContain('while cruising C shall satisfy a');
+            console.log('reqText3 ',reqText3)
+            var elementParsedHTML = parse(reqText3);
+            var req3text =  elementParsedHTML.childNodes[1].text;
+            expect(req3text).toContain('while cruising C shall satisfy a');
       });
 
 
@@ -1996,14 +1907,6 @@ describe('FRET GUI E2E tests ', function () {
             await app.client.pause(timeDelay1);
             const varType = await app.client.$('#qa_disVar_sel_varType');
             await varType.click();
-            /*
-            await app.client.pause(timeDelay3);
-            const test = await varType.setValue('Internal');
-            await app.client.pause(timeDelay3);
-            const test2 = await test.getText();
-            console.log('varType: -----------' + test2);
-*/
-
 
             //await app.client.pause(timeDelay3);
             const varTypeInternal = await app.client.$('#qa_disVar_mi_varType_Internal');
@@ -2038,14 +1941,6 @@ describe('FRET GUI E2E tests ', function () {
             
       });
 
-
-
-
-
-
-
-
-
       //------------------------------------------------------------------      
       it('AP - 2', async () => {
             console.log('starting test '+numTest+':  AP - 2');
@@ -2059,7 +1954,7 @@ describe('FRET GUI E2E tests ', function () {
             expect(title).toBe('FRET');            
 
             // read Total Projects
-            console.log('react MainView ' + await app.client.react$('MainView'));
+            // console.log('react MainView ' + await app.client.react$('MainView'));
             const projectField = await app.client.$('#qa_db_ili_projects');
             const projectText = await projectField.getText();
             expect(projectText).toContain('Total Projects');
@@ -2067,7 +1962,6 @@ describe('FRET GUI E2E tests ', function () {
 
             expect(fs.existsSync(fretDB_dirName)).toBeTruthy();
             expect(fs.existsSync(modelDB_dirName)).toBeTruthy();
-            //// await app.client.pause(15000);
 
       });       
       //------------------------------------------------------------------      
@@ -2341,7 +2235,6 @@ describe('FRET GUI E2E tests ', function () {
             expect(id4).toContain('qa_diagReqTbl_tc_body_summary_LM001')
             expect(id4).toContain('opacity: 0.6')   
 
-            //await app.client.pause(10000);      
       });     
 
       //------------------------------------------------------------------      
@@ -2406,8 +2299,6 @@ describe('FRET GUI E2E tests ', function () {
             const lm_res = await app.client.$('#qa_rlzCont_res_liquid_mixer_UNREALIZABLE');
             const lm_resDis = lm_res.isDisplayed();
             expect(lm_resDis).toBeTruthy();
-      
-            await app.client.pause(1000);      
 
 
       });     
@@ -2456,9 +2347,6 @@ describe('FRET GUI E2E tests ', function () {
             const lm_res = await app.client.$('#qa_rlzCont_res_liquid_mixer_UNREALIZABLE');
             const lm_resDis = lm_res.isDisplayed();
             expect(lm_resDis).toBeTruthy();
-      
-            await app.client.pause(1000);      
-
 
       });     
 
@@ -2513,7 +2401,6 @@ describe('FRET GUI E2E tests ', function () {
 
             const chord_LM001 =  await app.client.$('#qa_chordDia_svg_text_reqId_LM001');
             await chord_LM001.click();
-            await app.client.pause(1000);     
 
       });     
 
@@ -2579,9 +2466,9 @@ describe('FRET GUI E2E tests ', function () {
 
             const counterExSel =  await app.client.$('#qa_counterEx_sel');
             var counterExSelValue = await counterExSel.getValue();
-            console.log('counterExSelValue: ',counterExSelValue)
+            // console.log('counterExSelValue: ',counterExSelValue)
             var counterExSelText = await counterExSel.getText();
-            console.log('counterExSelText: ',counterExSelText)            
+            // console.log('counterExSelText: ',counterExSelText)            
             await counterExSel.click();           
             
             const conflict7 = await app.client.$('#qa_counterEx_Conflict_7');
@@ -2594,7 +2481,7 @@ describe('FRET GUI E2E tests ', function () {
             const counterExTableHTML = await counterExTable.getHTML(false);
 
             const counterExs = parse(counterExTableHTML)
-            console.log('counterExs: ',counterExs)
+            // console.log('counterExs: ',counterExs)
             // process table 10 rows
             // from top :    Flow_rate_KVO, Infustion_inhibit, System_On
             // from bottom: G10, G4, G3, FTP
@@ -2605,9 +2492,9 @@ describe('FRET GUI E2E tests ', function () {
             var id1 = tb_data.childNodes[0].toString();
             var id2 = tb_data.childNodes[1].toString();
             var id3 = tb_data.childNodes[2].toString();
-            console.log('row 1: ', id1)
-            console.log('row 2: ', id2)
-            console.log('row 3: ', id3)
+            // console.log('row 1: ', id1)
+            // console.log('row 2: ', id2)
+            // console.log('row 3: ', id3)
 
             expect(id1).toContain('Flow_rate_KVO')
             expect(id2).toContain('Infustion_inhibit')
@@ -2619,7 +2506,7 @@ describe('FRET GUI E2E tests ', function () {
             const diagReqCE_7 = await app.client.$('#qa_diagReqTbl_tableBody_2');
             const diagReqCE_7HTML = await diagReqCE_7.getHTML(false);
             const diagReqTabl = parse(diagReqCE_7HTML)
-            console.log('diagReqTabl: ',diagReqTabl)
+            // console.log('diagReqTabl: ',diagReqTabl)
 
             var numChildren = counterExs.childNodes.length
             expect(numChildren).toBe(10)
@@ -2627,9 +2514,9 @@ describe('FRET GUI E2E tests ', function () {
             var id1 = diagReqTabl.childNodes[0].toString();
             var id2 = diagReqTabl.childNodes[1].toString();
             var id3 = tb_ddiagReqTablata.childNodes[3].toString();
-            console.log('row 1: ', id1)
-            console.log('row 2: ', id2)
-            console.log('row 4: ', id3)
+            // console.log('row 1: ', id1)
+            // console.log('row 2: ', id2)
+            // console.log('row 4: ', id3)
 
             expect(id1).toContain('G3')
             expect(id1).toContain('opacity: 1')
@@ -2708,13 +2595,13 @@ describe('FRET GUI E2E tests ', function () {
             await new Promise((r) => setTimeout(r, 2000));
 
             var env_PATH = process.env.PATH;
-            console.log('Path: ', env_PATH);
+            // console.log('Path: ', env_PATH);
             const bad_PATH = env_PATH.replace('z3','z3_bad');
-            console.log('Path: ', bad_PATH);
+            // console.log('Path: ', bad_PATH);
             process.env.PATH = bad_PATH;
             await new Promise((r) => setTimeout(r, 2000));
             env_PATH = process.env.PATH;
-            console.log('Path: ', env_PATH);
+            // console.log('Path: ', env_PATH);
 
             await app.start();
             await app.client.waitUntilWindowLoaded();
@@ -2744,10 +2631,6 @@ describe('FRET GUI E2E tests ', function () {
             expect(depErrorShowing).toBeTruthy();
             const errorTip = errorIcon.elementHover.toString()
             const errorVisible = await errorIcon.isDisplayed();
-            console.log(errorVisible)
-            console.log(errorTip)
-
-            await app.client.pause(10000);
 
       });    
 
@@ -2970,7 +2853,7 @@ describe('FRET GUI E2E tests ', function () {
             const sumText = await mono_sum_FSM001.getText();
             //expect(sumText).toContain('FSM  shall  always  satisfy (limits &amp; !standby &amp; !apfail &amp; supported) =&gt; pullup')
             expect(sumText).toContain('FSM shall always satisfy (limits & !standby & !apfail & supported) => pullup')
-            console.log('sumText ', sumText)
+            // console.log('sumText ', sumText)
 
       });           
 
@@ -3033,8 +2916,6 @@ describe('FRET GUI E2E tests ', function () {
             const checkEnabled = await checkBtn.isEnabled();
             expect(checkEnabled).toBeTruthy();
             await checkBtn.click();
-      
-            await app.client.pause(10000);      
 
       });     
       
@@ -3093,10 +2974,10 @@ describe('FRET GUI E2E tests ', function () {
 
             // which cb is checked?
             var checked = await mono_cb.getAttribute('checked');
-            console.log('monolithic is checked? ', checked);
+            // console.log('monolithic is checked? ', checked);
             expect(checked).toBeTruthy();    
             checked = await comp_cb.getAttribute('checked');
-            console.log('compositional is checked? ', checked);
+            // console.log('compositional is checked? ', checked);
             expect(checked).toBeFalsy();    
  
 
@@ -3287,7 +3168,7 @@ describe('FRET GUI E2E tests ', function () {
 
             const highLight  = await app.client.$('#qa_ltlSim_ib_highLight')
             const highLightTip = await highLight.getAttribute('title')
-            console.log('highLightTip ', highLightTip)
+            // console.log('highLightTip ', highLightTip)
 
             /*
             var someLineElement = await app.client.$('#qa_ltlSim_lc_emer');
@@ -3755,7 +3636,7 @@ describe('FRET GUI E2E tests ', function () {
             var elementHTML = await glossVarTableTree.getHTML(false);
             var elementParsedHTML = parse(elementHTML);
             var numVarShown = elementParsedHTML.childNodes.length;
-            console.log('elementParsedHTML: ', elementParsedHTML.text);
+            // console.log('elementParsedHTML: ', elementParsedHTML.text);
             expect(elementParsedHTML.text).toContain('');
 
       });
@@ -3819,8 +3700,6 @@ describe('FRET GUI E2E tests ', function () {
             var crtCreate = await app.client.$('#qa_crt_btn_create');
             await crtCreate.click();
             await app.client.pause(timeDelay1);  
-            console.log('stop 1');
-
 
             var createBtn = await app.client.$('#qa_db_btn_create');           
             await createBtn.click();           
@@ -3849,7 +3728,7 @@ describe('FRET GUI E2E tests ', function () {
             var numVarShown = elementParsedHTML.childNodes.length;
             //console.log('numVarShown: ', numVarShown);
             var varDropdownMenuText = elementParsedHTML.text;  
-            console.log('var dropdown menu text: ', varDropdownMenuText);
+            // console.log('var dropdown menu text: ', varDropdownMenuText);
             expect(elementParsedHTML.text).toContain('xAxinxNew');
             var varDropdownItem = await app.client.$('#qa_vdm_var_xNew');
             await varDropdownItem.click();
@@ -3901,7 +3780,7 @@ describe('FRET GUI E2E tests ', function () {
             var pHTML = await pVar.getHTML(false);
             var pVarText = parse(pHTML);
             var pVarString = pVarText.toString();
-            console.log('p variable in glossary: ', pVarString);
+            // console.log('p variable in glossary: ', pVarString);
             expect(pVarString).toContain('>reqs: </p><p class="MuiTypography-root MuiTypography-body1" style="margin-left: 4px;">R2<');
 
             const qVar = await app.client.$('#qa_gls_ti_var_q');
@@ -3909,7 +3788,7 @@ describe('FRET GUI E2E tests ', function () {
             pHTML = await qVar.getHTML(false);
             pVarText = parse(pHTML);
             pVarString = pVarText.toString();
-            console.log('q variable in glossary: ', pVarString);
+            // console.log('q variable in glossary: ', pVarString);
             expect(pVarString).toContain('>reqs: </p><p class="MuiTypography-root MuiTypography-body1" style="margin-left: 4px;"></p><');
         
       });
@@ -3990,7 +3869,7 @@ describe('FRET GUI E2E tests ', function () {
             const endTime = new Date();
             const timeDiff = endTime - startTime; //in ms   ~30 seconds
             const shortTime = (120000 > timeDiff)?true:false;
-            console.log('timeDiff ',timeDiff);
+            // console.log('timeDiff ',timeDiff);
             expect(shortTime).toBeTruthy();            
                                     
       });  
@@ -4533,15 +4412,6 @@ describe('FRET GUI E2E tests ', function () {
             const createBtn = await app.client.$('#qa_db_btn_create');            
             await createBtn.click();
 
-            //createBtn.waitForClickable()
-            //createBtn.waitForDisplayed()
-            //createBtn.waitForExist()
-            //createBtn.waitUntil()
-            //createBtn.waitForEnabled()
-            //createBtn.waitUntilWindowLoaded()
-            //createBtn.isClickable()
-            //createBtn.isDisplayedInViewport()
- 
             const compBtn = await app.client.$('#qa_crt_btn_Component');
             await compBtn.click();   
 
