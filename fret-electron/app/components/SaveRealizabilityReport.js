@@ -52,17 +52,8 @@ class SaveRealizabilityReport extends React.Component {
 		const {classes, enabled} = this.props;
 		return(
 			<Tooltip title='Save realizability results.'>
-				<span>
-					<Button 
-						size="small"
-						onClick={this.saveRealizabilityResults}
-						color="secondary"
-						className={classes.vAlign}
-						variant="contained"
-						disabled={!enabled}
-					>
-					Save
-					</Button>
+				<span onClick={this.saveRealizabilityResults}>
+					Save Report
 				</span>
 			</Tooltip>			
 		);

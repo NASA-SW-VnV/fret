@@ -624,7 +624,7 @@ class RealizabilityContent extends React.Component {
     dependenciesExist: false,
     missingDependencies: [],
     helpOpen : false,
-    projectReport: {projectName: '', systemComponents: []}
+    projectReport: {projectName: '', systemComponents: []},
     settingsOpen: false,
     selectedEngine: 0,
     retainFiles: false,        
@@ -680,6 +680,17 @@ class RealizabilityContent extends React.Component {
     return completedComponents.includes(name);
   }
 
+  renameIDs(contract) {
+    //rename inputs
+    
+    for (const inputVar of contract.inputVariables) {
+      inputVar.name = '__'+inputVar.name;
+    }
+
+    console.log(contract);
+  return true;
+  }
+
   computeConnectedComponents(project, components, completedComponents) {
     const {getPropertyInfo, getDelayInfo, getContractInfo} = this.props;
     const {projectReport} = this.state;    
@@ -697,6 +708,7 @@ class RealizabilityContent extends React.Component {
         }
       }).then(function (modelResult){        
         var contract = getContractInfo(modelResult);
+        self.renameIDs(contract);
         contract.componentName = component.component_name+'Spec';
         db.find({
           selector: {
@@ -704,10 +716,11 @@ class RealizabilityContent extends React.Component {
           }
         }).then(function (fretResult){
           if (completedComponents.includes(component.component_name)) {
+            
             contract.properties = getPropertyInfo(fretResult, contract.outputVariables, component.component_name);
             contract.delays = getDelayInfo(fretResult, component.component_name);
 
-              /* Use contract to determine the output connected components
+            /* Use contract to determine the output connected components
                * */
             var mappings = cc_analysis.compute_dependency_maps(contract);
             var connected_components = cc_analysis.compute_connected_components(contract, mappings['output']);
@@ -996,16 +1009,6 @@ class RealizabilityContent extends React.Component {
     });
   }
 
-  checkRealizability = () => {    
-    const {selected, ccSelected, monolithic, compositional, connectedComponents, timeout, projectReport, retainFiles} = this.state;
-    const {selectedProject, components, getPropertyInfo, getDelayInfo, getContractInfo} = this.props;    
-
-    const self = this;
-
-    var actualTimeout = (timeout === '' ? 900 : timeout);
-
-    let engineName, engineOptions;
-
   getEngineNameAndOptions() {
     const {selectedEngine} = this.state;
     let name, options;
@@ -1036,7 +1039,7 @@ class RealizabilityContent extends React.Component {
 
   checkRealizability = () => {
 
-    const {selected, ccSelected, monolithic, compositional, connectedComponents, timeout, retainFiles} = this.state;
+    const {selected, ccSelected, monolithic, compositional, timeout, projectReport, retainFiles} = this.state;
     const {selectedProject, components, getPropertyInfo, getDelayInfo, getContractInfo} = this.props;
     const self = this;
     self.setState({actionsMenuOpen: false});
@@ -1192,18 +1195,19 @@ class RealizabilityContent extends React.Component {
                   })
                   ccResults.push('ERROR');
                 } else {
-                  var ccResult = checkOutput.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];
-                  var ccTime = checkOutput.match(new RegExp('(Time = )(.*?)\\n'))[2];
+                  // var ccResult = checkOutput.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];
+                  // var ccTime = checkOutput.match(new RegExp('(Time = )(.*?)\\n'))[2];
 
-                  cc.result = ccResult;
-                  cc.time = ccTime;
+                  cc.result = result;
+                  cc.time = time;
                   cc.error = '';
                   self.setState(prevState => {                    
                     prevState.projectReport = projectReport;
                     return(prevState);
                   })
-                  ccResults.push(ccResult);
-                }              
+                  ccResults.push(cc.result);
+                }
+
                 if (ccResults.length === projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents.length) {                  
                   const reducer = (accumulator, currentValue) => accumulator && (currentValue === 'REALIZABLE');
 
@@ -1479,12 +1483,14 @@ class RealizabilityContent extends React.Component {
                   id="qa_rlzCont_btn_diagnose"
                   onClick={(event) => this.diagnoseSpec(event)}
                   disabled={status[selected.component_name] === 'PROCESSING' || diagStatus === 'PROCESSING' || !dependenciesExist || (dependenciesExist && (selected === '' || selected === 'all')) ||
-                  (dependenciesExist && selected !== '' && compositional && connectedComponents[selected.component_name][ccSelected]['result'] !== 'UNREALIZABLE') ||
+                  (dependenciesExist && selected !== '' && compositional && projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].result !== 'UNREALIZABLE') ||
                     (selected !== '' && monolithic && status[selected.component_name] !== 'UNREALIZABLE')}
                 >
                   Diagnose Unrealizable Requirements
                 </MenuItem>
-                <MenuItem id="qa_rlzCont_btn_save">Save Report</MenuItem>
+                <MenuItem id="qa_rlzCont_btn_save">
+                  <SaveRealizabilityReport classes={{vAlign: classes.vAlign}} enabled={projectReport.systemComponents.length > 0 && status[selected.component_name] !== 'PROCESSING' && diagStatus !== 'PROCESSING'} projectReport={projectReport}/>
+                </MenuItem>
                 <MenuItem id="qa_rlzCont_btn_settings" onClick={() => this.handleSettingsOpen()}>Change Settings</MenuItem>
               </Menu>
             </div>
