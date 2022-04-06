@@ -51,8 +51,8 @@ import FormulaRenderer from './FormulaRenderer';
 const styles = theme => ({
     root: {
         position: 'sticky',
-        padding: theme.spacing(),
-        paddingTop: theme.spacing(4),
+        padding: theme.spacing.unit,
+        paddingTop: theme.spacing.unit*4,
         bottom: 0
     },
     details: {
@@ -68,7 +68,7 @@ const styles = theme => ({
     actions: {
         flex: '0 0 auto',
         position: 'relative',
-        right: theme.spacing()
+        right: theme.spacing.unit
     }
 });
 

@@ -475,10 +475,17 @@ class MainView extends Component {
         }     
     )}
 
+    //---------------------------------------------------------------
+    //
+    //---------------------------------------------------------------
     handleTraceDataChange(dataKey, dataIdx, trace) {
         this.setState((prevState) => {
             let { model } = prevState;
-            LTLSimController.setAtomicTrace(model, dataKey, trace);
+
+console.log("JSC-E EVAL_ARITH_HERE")
+	
+
+            LTLSimController.setAtomicTraceEval(model, dataKey, trace);
 
             /* Change value of affected formulas */
             LTLSimController.getAtomic(model, dataKey).formulas.forEach((f) => {
@@ -500,6 +507,9 @@ class MainView extends Component {
         });
     }
 
+    //---------------------------------------------------------------
+    //
+    //---------------------------------------------------------------
     handleFormulaChartClick(id) {
         this.setState((prevState) => {
             if (LTLSimController.getFormulaKeys(prevState.model).indexOf(id) !== -1){

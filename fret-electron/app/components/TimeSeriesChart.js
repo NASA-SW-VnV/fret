@@ -70,11 +70,14 @@ const styles = theme => ({
     nametipAnchor: {
         position: 'absolute',
         top: '50%',
-        left: 30,
+//JSC/CAV        left: 30,
+        left: 100,
         width: 60,
-        height: 30,
+//JSC/CAV        height: 30,
+        height: 130,
         marginTop: -15,
-        marginLeft: -30,
+//JSC/CAV        marginLeft: -30,
+        marginLeft: -80,
     },
     nametip:{
         overflowX: 'hidden'
@@ -104,7 +107,8 @@ const styles = theme => ({
     }
 })
 
-const maxNameLength = 5;
+//JSC/CAV const maxNameLength = 5;
+const maxNameLength = 7;
 
 function EmptyTooltip(props) {
     return null;
@@ -195,14 +199,34 @@ class TimeSeriesChart extends Component {
             const { dataKey, chart_type } = this.props;
             const dataIndex = event.activeTooltipIndex;
             let data  = this.state.data.slice();
+<<<<<<< HEAD
             this.setState((prevState) => {
+=======
+//JSC-CAV3
+	    var NV = 0;
+		    if (chart_type == "category"){
+	                    NV = (data[dataIndex]) ? 0 : 1;
+			    }
+		    else {
+                    	NV = data[dataIndex] + 1.0
+		    	if (NV > 9.0){
+			 	NV = 0.0
+				}
+			}
+//end JSC-CAV3
+            this.setState((prevState) => {  
+>>>>>>> LTLSim for realizability- buggy intermediate version for patch generation
                 if (!this.state.dragWasActive) {
 		    if (chart_type == "category"){
 	                    data[dataIndex] = (data[dataIndex]) ? 0 : 1;
 			    }
 		    else {
-                    	data[dataIndex] = data[dataIndex] + 0.1
-		    	if (data[dataIndex] > 1.0){
+//JSC/CAV                    	data[dataIndex] = data[dataIndex] + 0.1
+//JSC/CAV		    	if (data[dataIndex] > 1.0){
+//JSC/CAV			 	data[dataIndex] = 0.0
+//JSC/CAV				}
+                    	data[dataIndex] = data[dataIndex] + 1.0
+		    	if (data[dataIndex] > 9.0){
 			 	data[dataIndex] = 0.0
 				}
 			}
@@ -212,7 +236,9 @@ class TimeSeriesChart extends Component {
                 };
             });
 
-            this.props.onChange(dataKey, dataIndex, data);
+console.log("TSChart: before onChange "+data[dataIndex]);
+console.log("TSChart: before onChange NV="+NV);
+            this.props.onChange(dataKey, dataIndex, data, NV);
         }
         this.setState({
             dragActive: false,
@@ -267,15 +293,15 @@ class TimeSeriesChart extends Component {
     }
 
     handleMouseOverDot(event) {
-	console.log("over-dot")
-	console.log(event)
-	console.log("over-dot1")
+	// console.log("over-dot")
+	// console.log(event)
+	// console.log("over-dot1")
         if (event) {
-	    console.log("over-dot + event")
+	    // console.log("over-dot + event")
             const { dataKey } = this.props;
             const dataIndex = event.activeTooltipIndex;
             let data  = this.state.data.slice();
-	    console.log("OVER: "+ dataIndex)
+	    // console.log("OVER: "+ dataIndex)
         }
     }
 
@@ -290,6 +316,7 @@ class TimeSeriesChart extends Component {
 		return null;
 		}
 	   else {
+		console.log("tooltip "+this.props.chart_type + " "+payload[0].value)
 		return (
 			<div className="custom-tooltip">
 				<p className="label">{payload[0].value}</p>
@@ -365,7 +392,8 @@ class TimeSeriesChart extends Component {
                             }
                         ))
 	    dataKey="VAL"
-	    lineType="linear"
+//JSC/CAV	    lineType="linear"
+	    lineType="step"
 	     }
 //	console.log(data)
 //                    <YAxis
@@ -378,7 +406,7 @@ class TimeSeriesChart extends Component {
 const CustomizedLabel: FunctionComponent<any> = (props: any) => {
   const { x, y, stroke, value, chart_type } = props;
 
-  console.log("CUST-LABEL=" + chart_type)
+  // console.log("CUST-LABEL=" + chart_type)
 
   if (chart_type == "category"){
     return null;
@@ -395,21 +423,30 @@ const CustomizedLabel: FunctionComponent<any> = (props: any) => {
 //-------------------customizedlabel----------------
 
         let longName = this.props.name.length > maxNameLength;
+<<<<<<< HEAD
         let name = (longName) ? this.props.name.slice(0, maxNameLength-1) + "..." : this.props.name;
         let nameTip = (longName || expression) ?
+=======
+//JSC/CAV        let name = (longName) ? this.props.name.slice(0, maxNameLength-1) + "..." : this.props.name;
+        let name = (longName) ? this.props.name.replace(/REQ/, "FSM-006").replace(/_eq_/," = ").slice(0, maxNameLength-1) + "..." : this.props.name.replace(/REQ/,"FSM-006");
+
+        let nameTip = (longName || expression) ? 
+>>>>>>> LTLSim for realizability- buggy intermediate version for patch generation
                         <div>
                             {((longName) ? this.props.name + ((expression) ? ": " : "") : "")}
                             {(expression) ? <FormulaRenderer tex={expression}/>: null}
                         </div> : null;
 
+//JSC/CAV            <ResponsiveContainer width="99%" height={75} debounce={0}>
         return (
             <div className={classNames(classes.wrapper, classes.unselectable)}>
 
-            <ResponsiveContainer width="99%" height={75} debounce={0}>
+            <ResponsiveContainer width="99%" height={50} debounce={0}>
                 <LineChart
                     id={"qa_ltlSim_lc_"+this.props.name.slice(0, 4)}
                     syncId={this.props.syncId}
-                    margin={{top: 10, right: 10, left: 0, bottom: 10}}
+//JSC/CAV                    margin={{top: 10, right: 10, left: 0, bottom: 10}} 
+                    margin={{top: 10, right: 10, left: 30, bottom: 10}} 
                     data={data}
                     onClick={(this.props.onClick) ? this.handleClick : undefined}
                     onMouseDown={(canChange) ? this.handleMouseDown : undefined}
@@ -434,7 +471,8 @@ const CustomizedLabel: FunctionComponent<any> = (props: any) => {
                     <YAxis
                         id={"qa_ltlSim_yaxis_"+this.props.name.slice(0, 4)}
 			type={chart_type}
-			domain={[0,1]}
+//JSC/CAV			domain={[0,1]}
+			domain={[0,9]}
                         minTickGap={0}
                         dataKey={dataKey}
                         >

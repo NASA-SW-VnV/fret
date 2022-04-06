@@ -30,7 +30,7 @@
 // ANY SUCH MATTER SHALL BE THE IMMEDIATE, UNILATERAL TERMINATION OF THIS
 // AGREEMENT.
 // *****************************************************************************
-exports.LTLSIM_NuSMVParser = require('./LTLSIM_NuSMVParser').NuSMVParser;
-exports.LTLSIM_NuSMVLexer = require('./LTLSIM_NuSMVLexer').NuSMVLexer;
-exports.LTLSIM_NuSMVListener = require('./LTLSIM_NuSMVListener').NuSMVListener;
-exports.LTLSIM_NuSMVVisitor = require('./LTLSIM_NuSMVVisitor').NuSMVVisitor;
+exports.LTLSIM_NuSMVParser = require('./LTLSIM_NuSMVParser').LTLSIM_NuSMVParser;
+exports.LTLSIM_NuSMVLexer = require('./LTLSIM_NuSMVLexer').LTLSIM_NuSMVLexer;
+exports.LTLSIM_NuSMVListener = require('./LTLSIM_NuSMVListener').LTLSIM_NuSMVListener;
+exports.LTLSIM_NuSMVVisitor = require('./LTLSIM_NuSMVVisitor').LTLSIM_NuSMVVisitor;

@@ -31,16 +31,16 @@
 // AGREEMENT.
 // *****************************************************************************
 const antlr4 = require('antlr4');
-const NuSMVLexer = require('nusmvparser').NuSMVLexer;
-const NuSMVParser = require('nusmvparser').NuSMVParser;
+const LTLSIM_NuSMVLexer = require('ltlsim_nusmvparser').LTLSIM_NuSMVLexer;
+const LTLSIM_NuSMVParser = require('ltlsim_nusmvparser').LTLSIM_NuSMVParser;
 const AnnotatingErrorListener = require('./AnnotatingErrorListener').AnnotatingErrorListener;
 const LTLAnalyzer = require('./LTLAnalyzer').LTLAnalyzer;
 
 exports.parse = function parse(input) {
     let chars = new antlr4.InputStream(input);
-    let lexer = new NuSMVLexer(chars);
+    let lexer = new LTLSIM_NuSMVLexer(chars);
     let tokens = new antlr4.CommonTokenStream(lexer);
-    let parser = new NuSMVParser(tokens);
+    let parser = new LTLSIM_NuSMVParser(tokens);
     var annotations = [];
     var errorListener = new AnnotatingErrorListener(annotations);
     parser.removeErrorListeners();
@@ -48,24 +48,45 @@ exports.parse = function parse(input) {
     let analyzer = new LTLAnalyzer();
     parser.buildParseTrees = true;
 
+console.log("Parsing...")
     let tree = parser.ltlExpr();
     let result = {
         expression: "",
-        atomics: [],
+        atomics_name: [],
+        atomics_type: [],
+        atomics_canChange: [],
+        atomics_aex: [],
         subexpressions: [],
         errors: []
     };
 
+console.log("Parse: annotation length="+ annotations.length)
     if (annotations.length > 0) {
+console.log("Parsing...: w/annotations")
+console.log(annotations)
         result.errors = annotations.map((a) => (a.text));
     } else {
+console.log("Parsing...: starting visitor")
         let expression = analyzer.visit(tree);
-        result.expression = expression;
-        result.atomics = analyzer.atomics;
+console.log("Parsing...: visitor done")
+console.log("expression:")
+console.log(expression)
+console.log("subexpression:")
+console.log(analyzer.subexpressions)
+console.log("atomics:")
+console.log(analyzer.atomics_name)
+console.log(analyzer.atomics_type)
+console.log(analyzer.atomics_canChange)
+console.log(analyzer.atomics_aex)
+        result.expression = expression.text;
+        result.atomics_name = analyzer.atomics_name;
+        result.atomics_type = analyzer.atomics_type;
+        result.atomics_canChange = analyzer.atomics_canChange;
+        result.atomics_aex = analyzer.aex;
         result.subexpressions = analyzer.subexpressions;
         if (result.subexpressions.length > 0) {
             let lastSubexpression = result.subexpressions[result.subexpressions.length-1];
-            if (lastSubexpression === expression.trim()) {
+            if (lastSubexpression === expression.text.trim()) {
                 result.subexpressions.splice(result.subexpressions.length-1, 1);
             }
         }

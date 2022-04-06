@@ -52,33 +52,33 @@ durPlHolders : '$duration$'
              | '$duration$+1'
              ;
 
+proposition : ID ;
 
+simpleExpr : proposition			#simpleBoolExpr
+           | plHolders				#simpleBoolExpr
+           | t					#simpleBoolExpr
+           | f					#simpleBoolExpr
+           | lp simpleExpr rp			#simpleBoolExpr
+           | not simpleExpr                 	#simpleBoolExpr
+           | simpleExpr and simpleExpr        	#simpleBoolExpr
+           | simpleExpr or simpleExpr         	#simpleBoolExpr
+           | simpleExpr xor simpleExpr        	#simpleBoolExpr
+           | simpleExpr implies simpleExpr   	#simpleBoolExpr
+           | simpleExpr equiv simpleExpr    	#simpleBoolExpr
+           | arithmetic_expr comparisonOp arithmetic_expr #boolCompare 
+           ;
 
 arithmetic_expr :
-               lp arithmetic_expr rp  #arithGroup
+               lpA arithmetic_expr rpA  #arithGroup
              | <assoc=right> arithmetic_expr expt arithmetic_expr #arithBinary
              | negate arithmetic_expr #arithUnary
              | arithmetic_expr (mult | div | mod) arithmetic_expr #arithBinary
              | arithmetic_expr (plus | minus) arithmetic_expr #arithBinary
-             | NUMBER #arithNumber
-             | ID (lp (arithmetic_expr (',' arithmetic_expr)* )? rp)? #arithTerm
+	     | UINT #arith
+             | ID #arithTerm
              ;
+//             | ID (lpA (arithmetic_expr (',' arithmetic_expr)* )? rpA)? #arithTerm
 
-proposition : ID ;
-
-simpleExpr : proposition
-           | plHolders
-           | t
-           | f
-           | lp simpleExpr rp
-           | not simpleExpr                   // logical not
-           | simpleExpr and simpleExpr        // logical and
-           | simpleExpr or simpleExpr         // logical or
-           | simpleExpr xor simpleExpr        // logical exclusive or
-           | simpleExpr implies simpleExpr    // logical implication
-           | simpleExpr equiv simpleExpr      // logical equivalence
-           | arithmetic_expr comparisonOp arithmetic_expr #boolCompare
-           ;
 
 ltlExpr :
         simpleExpr                                   # simpleltl
@@ -123,7 +123,11 @@ saltBound : '[' comparisonOp durPlHolders ']' ;
 
 lp : '(' ; // left parenthesis
 
+lpA : '(' #LParith ; // left parenthesis
+
 rp : ')' ; // right parenthesis
+
+rpA : ')' #RParith ; // right parenthesis
 
 not  : '!' ;
 
@@ -155,16 +159,18 @@ plus : '+' ;
 
 minus : '-' ;
 
-NUMBER :
-         '-'? NATNUM '.' [0-9]+ EXP?
-       | '-'? NATNUM EXP
-       | '-'? NATNUM
-       ;
+negate : '-' ;
 
-fragment EXP :
-         [Ee] [+\-]? NATNUM ;
+//NUMBER :
+//          '-'? NATNUM '.' [0-9]+ EXP?
+//        | '-'? NATNUM EXP
+//        | '-'? NATNUM
+//        ;
 
-fragment NATNUM : '0' | [1-9][0-9]* ;
+//EXP :
+//        [Ee] [+\-]? NATNUM ;
+// 
+//NATNUM : '0' | [1-9][0-9]* ;
 
 UINT : [0-9]+ ;
 

@@ -49,7 +49,8 @@ const styles = theme => ({
     root: {
         position: 'sticky',
         padding: theme.spacing(),
-        paddingTop: theme.spacing(4),
+//JSC/CAV        paddingTop: theme.spacing(4),
+        paddingTop: theme.spacing(2),
         bottom: 0
     },
     details: {
@@ -93,7 +94,7 @@ class LTLSimRequirementDetails extends Component {
 			//
 			// our "current" one
 			//
-                    if (R_ID == "REQ"){
+                    if (R_ID == requirementID){
 			Desc=description;
 			ID=requirementID
 			}

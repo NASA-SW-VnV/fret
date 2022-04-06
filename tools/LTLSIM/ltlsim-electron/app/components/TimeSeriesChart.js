@@ -30,7 +30,9 @@
 // ANY SUCH MATTER SHALL BE THE IMMEDIATE, UNILATERAL TERMINATION OF THIS
 // AGREEMENT.
 // *****************************************************************************
-import React, { Component, FunctionComponent } from 'react';
+//JSC import React, { Component, FunctionComponent } from 'react';
+import { Component, FunctionComponent } from 'react';
+import * as React from 'react';
 import PropTypes from 'prop-types';
 import {  withStyles, withTheme } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -195,6 +197,7 @@ class TimeSeriesChart extends Component {
             const { dataKey, chart_type } = this.props;
             const dataIndex = event.activeTooltipIndex;
             let data  = this.state.data.slice();
+/*
             this.setState((prevState) => {  
                 if (!this.state.dragWasActive) {
 		    if (chart_type == "category"){
@@ -207,6 +210,25 @@ class TimeSeriesChart extends Component {
 				}
 			}
                 }
+                return {
+                    data
+                };
+            });
+*/
+                if (!this.state.dragWasActive) {
+		    if (chart_type == "category"){
+	                    data[dataIndex] = (data[dataIndex]) ? 0 : 1;
+			    }
+		    else {
+                    	data[dataIndex] = data[dataIndex] + 0.1
+		    	if (data[dataIndex] > 1.0){
+			 	data[dataIndex] = 0.0
+				}
+			}
+                }
+console.log("JSC-EE")
+console.log(data)
+            this.setState((prevState) => {  
                 return {
                     data
                 };
@@ -280,9 +302,22 @@ class TimeSeriesChart extends Component {
     }
 
     render() {
-        const { chart_type, classes, theme, canChange, chartState, highlight, expression, selected } = this.props;
+        const { chart_type, classes, theme, canChange, chartState, highlight, expr, selected } = this.props;
         const primaryColor = theme.palette.primary.main;
         const secondaryColor = theme.palette.secondary.main;
+        var expression = (expr == undefined)? "" : expr;
+
+
+//  console.log("RENDER.x=" + primaryColor)
+//  console.log("RENDER.x=" + secondaryColor)
+//  console.log("RENDER.x=" + chart_type)
+//  console.log("RENDER.x=" + classes)
+//  console.log("RENDER.x=" + theme)
+//  console.log("RENDER.x=" + canChange)
+//  console.log("RENDER.x=" + chartState)
+//  console.log("RENDER.x=" + highlight)
+//  console.log("RENDER.x=" + expression)
+//  console.log("RENDER.x=" + selected)
 
 	const JSCEmptyTooltip = ({ active, payload, label }) => {
 	if (active) {
@@ -378,9 +413,13 @@ class TimeSeriesChart extends Component {
 const CustomizedLabel: FunctionComponent<any> = (props: any) => {
   const { x, y, stroke, value, chart_type } = props;
 
-  console.log("CUST-LABEL=" + chart_type)
+//  console.log("CUST-LABEL.x=" + x)
+//  console.log("CUST-LABEL.y=" + y)
+//  console.log("CUST-LABEL.stroke=" + stroke)
+//  console.log("CUST-LABEL.value=" + value)
+//  console.log("CUST-LABEL=" + chart_type)
 
-  if (chart_type == "category"){
+  if (chart_type === "category"){
     return null;
     }
   else {
@@ -449,7 +488,7 @@ const CustomizedLabel: FunctionComponent<any> = (props: any) => {
                         isAnimationActive={false} 
                         onMouseEnter={this.handleMouseEnterLine}
                         onMouseLeave={this.handleMouseLeaveLine} >
-			<LabelList content={<CustomizedLabel chart_type={chart_type} />} />
+			<LabelList content={<CustomizedLabel stroke={primaryColor} chart_type={chart_type} />} />
 		    </Line>
                     <Line 
                         name={this.props.name}
@@ -530,4 +569,5 @@ TimeSeriesChart.defaultProps = {
     selected: false
 }
 
+//JSC export default withTheme()(withStyles(styles)(TimeSeriesChart));
 export default withTheme()(withStyles(styles)(TimeSeriesChart));

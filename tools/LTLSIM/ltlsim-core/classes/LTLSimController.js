@@ -43,6 +43,9 @@ module.exports = class LTLSimController {
         return new LTLSimModel(traceLength);
     }
 
+    //------------------------------------------------------------
+    //
+    //------------------------------------------------------------
     static addAtomic(model, id, atType, canChange) {
         if (model.atomics.keys.indexOf(id) === -1) {
             model.atomics.keys.push(id);
@@ -54,6 +57,9 @@ module.exports = class LTLSimController {
         return false;
     }
 
+    //------------------------------------------------------------
+    //
+    //------------------------------------------------------------
     static addFormula(model, id, expression) {
         if (model.formulas.keys.indexOf(id) === -1) {
             model.formulas.keys.push(id);
@@ -62,22 +68,27 @@ module.exports = class LTLSimController {
             // Add this formula to the respective atomics and add missing atomics
             model.formulas.values[id].atomics.forEach((a) => {
                 if (model.atomics.keys.indexOf(a) === -1) {
-			// TODO: JSC determine Type and canchange
-              	    var atomicType = "category";
-		    var canChange = true;
+			// TODO: JSC determine Type and canChange
+                    var idx = model.atomics.keys.indexOf(a);
+              	    var atomicType = formula.atomics_type[idx];
+		    var canChange = formula.atomics_canChange[idx];
                     LTLSimController.addAtomic(model, a, atomicType, canChange);
                 } 
                 model.atomics.values[a].formulas.push(id);
             }) 
 
             /* Explicitly set the expression via LTLSIMController to enforce formula update */
-            LTLSimController.setFormulaExpression(model, id, expression, true);
+            LTLSimController.setFormulaExpression(model, id, expression, false);
+	//JSC-0328-2: was true
 
             return true;
         }
         return false;
     }
 
+    //------------------------------------------------------------
+    //
+    //------------------------------------------------------------
     static addFormulaFromFile(model, id, formulaFile) {
 	    var data = fs.readFileSync(formulaFile);
             var myformula = data.toString()
@@ -85,9 +96,10 @@ module.exports = class LTLSimController {
         return true;
     }
 
-//===========================================================
-// add traces to the controller
-// load from CSV file
+    //------------------------------------------------------------
+    // add traces to the controller 
+    // load from CSV file
+    //------------------------------------------------------------
     static addTrace(model, tracefile) {
 	    var data = fs.readFileSync(tracefile);
             var mycsv = data.toString()
@@ -149,8 +161,9 @@ module.exports = class LTLSimController {
         return true;
     }
 
-//===========================================================
-// save traces to CSV file
+    //------------------------------------------------------------
+    // save traces to CSV file
+    //------------------------------------------------------------
     static saveTrace(model, tracefile) {
   
         let writeStream = fs.createWriteStream(tracefile)
@@ -183,8 +196,9 @@ module.exports = class LTLSimController {
 		})
     }
 
-//===========================================================
-// getTrace: return trace object
+    //------------------------------------------------------------
+    // getTrace: return trace object
+    //------------------------------------------------------------
     static getTrace(model) {
   
  	var V=model.atomics.keys;
@@ -202,10 +216,10 @@ module.exports = class LTLSimController {
 		};
     }
 
-//===========================================================
-// add trace to the controller from object
-// NOTE: do not add LAST or FTP
-//
+    //------------------------------------------------------------
+    // add trace to the controller from object
+    // NOTE: do not add LAST or FTP
+    //------------------------------------------------------------
     static setTrace(model, trace) {
 
 	console.log('set trace')
@@ -263,10 +277,10 @@ module.exports = class LTLSimController {
         return true;
     }
 
-//===========================================================
-// setEmptyTrace
-// set trace to all "0" except for FTP and LAST
-//
+    //------------------------------------------------------------
+    // setEmptyTrace
+    // set trace to all "0" except for FTP and LAST
+    //------------------------------------------------------------
     static setEmptyTrace(model) {
 
 	    let i = 0;
@@ -282,7 +296,9 @@ module.exports = class LTLSimController {
     }
 
 
-//===========================================================
+    //------------------------------------------------------------
+    //
+    //------------------------------------------------------------
     static removeFormula(model, id) {
         if (model.formulas.keys.indexOf(id) !== -1) {
             
@@ -313,6 +329,9 @@ module.exports = class LTLSimController {
         return false;
     }
 
+    //------------------------------------------------------------
+    //
+    //------------------------------------------------------------
     static setAtomicTrace(model, id, trace) {
         if (model.atomics.keys.indexOf(id) !== -1) {
             model.atomics.values[id].trace = trace;
@@ -320,7 +339,112 @@ module.exports = class LTLSimController {
         }
         return false;
     }
+
+    //------------------------------------------------------------
+    //
+    //------------------------------------------------------------
+    static setAtomicTraceEval(model, id, trace, dataIdx, newValue) {
+        if (model.atomics.keys.indexOf(id) !== -1) {
+            model.atomics.values[id].trace = trace;
+console.log("================eval=============")
+console.log("id="+id+"["+dataIdx+"]=="+newValue)
+console.log(model.atomics.values[id].trace)
+console.log(trace)
+console.log(model)
+		//
+		// evaluate all (dependent) variables
+		// TODO: V0.0: evaluate all variables
+//JSC-CAV2            model.atomics.keys.forEach((a) => {
+
+if (id == "state"){
+	if (newValue == 2){
+		model.atomics.values["state_eq_2"].trace[dataIdx] = 1;
+		}
+	else {
+		model.atomics.values["state_eq_2"].trace[dataIdx] = 0;
+		}
+	}
+//JSC-CAV3
+if (1==0){
+var a="state_eq_2"
+		console.log("eval. a="+a);
+		console.log("eval. type="+model.atomics.type[a]);
+		console.log("eval. canchange="+model.atomics.canChange[a]);
+/**************************************
+	V 0.0.0
+		if (!model.atomics.canChange[a]){
+			//
+			// dependent variable
+			// update its trace depeding on the aCode
+			//
+	    	    var i=0;
+            	    while (i < model.traceLength){
+			var val = 0;
+//            		if (model.atomics.values[id].trace[i] > 0.5){
+            		if (trace[i] > 0.5){
+				val = 1.0;
+				}
+			console.log("Eval value("+a+")="+val)
+			model.atomics.values[a].trace[i] = val;
+		        i = i+1;
+			}
+		    }
+		}
+**************************************/
+		if (!model.atomics.canChange[a]){
+			//JSC/CAV HARD HACK
+		  if (a == "state_eq_2"){
+			console.log("patching state_eq_2")
+			trace=model.atomics.values["state"].trace;
+	    	    var i=0;
+            	    while (i < model.traceLength){
+			var val = 0;
+            		if (trace[i] == 2.0){
+				val = 1.0;
+				}
+			model.atomics.values[a].trace[i] = val;
+		        i = i+1;
+			}
+			}
+		
+		  if (a == "STATE_eq_3"){
+			console.log("patching STATE_eq_3")
+			trace=model.atomics.values["STATE"].trace;
+	    	    var i=0;
+            	    while (i < model.traceLength){
+			var val = 0;
+            		if (trace[i] == 3.0){
+				val = 1.0;
+				}
+			model.atomics.values[a].trace[i] = val;
+		        i = i+1;
+			}
+			}
+		  if (a == "STATE_eq_0"){
+			console.log("patching STATE_eq_0")
+			trace=model.atomics.values["STATE"].trace;
+	    	    var i=0;
+            	    while (i < model.traceLength){
+			var val = 0;
+            		if (trace[i] == 0.0){
+				val = 1.0;
+				}
+			model.atomics.values[a].trace[i] = val;
+		        i = i+1;
+			}
+			}
+		
+		    }
+//JSC-CAV2		});
+} //JSC-CAV3
+            return true;
+        }
+        return false;
+    }
     
+    //------------------------------------------------------------
+    //
+    //------------------------------------------------------------
     static setAtomicLabel(model, id, newLabel, updateVars) {
         let oidx = model.atomics.keys.indexOf(id);
         let nidx = model.atomics.keys.indexOf(newLabel);
@@ -349,6 +473,9 @@ module.exports = class LTLSimController {
         return false;
     }
 
+    //------------------------------------------------------------
+    //
+    //------------------------------------------------------------
     static setFormulaExpression(model, id, expression, updateVars) {
         if (model.formulas.keys.indexOf(id) !== -1) {
             let formula = model.formulas.values[id];
@@ -358,7 +485,9 @@ module.exports = class LTLSimController {
             let result = LTLParser.parse(expression);
             formula.parsedExpression = result.expression;
             formula.parseErrors = result.errors;
-            formula.atomics = [...result.atomics];
+            formula.atomics = [...result.atomics_name];
+            formula.atomics_type = [...result.atomics_type];
+            formula.atomics_canChange = [...result.atomics_canChange];
             formula.subexpressions = result.subexpressions
                                     .map((s, i) => ({
                                         id: `${formula.id}_${i+1}`,
@@ -385,8 +514,9 @@ console.log("LTLSimController::setFormulaExpression: atomic keys: "+model.atomic
             formula.atomics.forEach((a) => {
                 if (model.atomics.keys.indexOf(a) === -1) {
 			// TODO: JSC determine Type and canchange
-              	    var atomicType = "category";
-		    var canChange = true;
+                    var idx = formula.atomics.indexOf(a);
+              	    var atomicType = formula.atomics_type[idx];
+		    var canChange = formula.atomics_canChange[idx];
                     LTLSimController.addAtomic(model, a, atomicType, canChange);
                 }
                 if (model.atomics.values[a].formulas.indexOf(id) === -1) {
@@ -417,6 +547,9 @@ console.log("LTLSimController::setFormulaExpression: atomic keys: "+model.atomic
         return false;
     }
 
+    //------------------------------------------------------------
+    //
+    //------------------------------------------------------------
     static setFormulaLabel(model, id, newLabel) {
         let oidx = model.formulas.keys.indexOf(id);
         let nidx = model.formulas.keys.indexOf(newLabel);
@@ -446,6 +579,9 @@ console.log("LTLSimController::setFormulaExpression: atomic keys: "+model.atomic
         return false;
     }
 
+    //------------------------------------------------------------
+    //
+    //------------------------------------------------------------
     static setFormulaTrace(model, id, slabel, trace) {
         if (model.formulas.keys.indexOf(id) !== -1) {
             if (slabel) {
@@ -464,6 +600,9 @@ console.log("LTLSimController::setFormulaExpression: atomic keys: "+model.atomic
         return false;
     }
     
+    //------------------------------------------------------------
+    //
+    //------------------------------------------------------------
     static setFormulaValue(model, id, slabel, value) {
         if (model.formulas.keys.indexOf(id) !== -1) {
             if (slabel || Number.isInteger(slabel)) {
@@ -483,6 +622,9 @@ console.log("LTLSimController::setFormulaExpression: atomic keys: "+model.atomic
         return false;
     }
 
+    //------------------------------------------------------------
+    //
+    //------------------------------------------------------------
     static setTraceLength(model, traceLength) {
         model.traceLength = traceLength;
         model.atomics.keys.forEach((a) => {
@@ -503,42 +645,72 @@ console.log("LTLSimController::setFormulaExpression: atomic keys: "+model.atomic
         return true;
     }
 
+    //------------------------------------------------------------
+    //
+    //------------------------------------------------------------
     static getTraceLength(model) {
         return model.traceLength;
     }
 
+    //------------------------------------------------------------
+    //
+    //------------------------------------------------------------
     static getAtomics(model) {
         return model.atomics.values;
     }
 
+    //------------------------------------------------------------
+    //
+    //------------------------------------------------------------
     static getAtomic(model, id) {
         return (model.atomics.keys.indexOf(id) !== -1) ? model.atomics.values[id] : undefined;
     }
 
+    //------------------------------------------------------------
+    //
+    //------------------------------------------------------------
     static getAtomic_type(model, id) {
         return (model.atomics.keys.indexOf(id) !== -1) ? model.atomics.type[id] : undefined;
     }
 
+    //------------------------------------------------------------
+    //
+    //------------------------------------------------------------
     static getAtomic_canChange(model, id) {
         return (model.atomics.keys.indexOf(id) !== -1) ? model.atomics.canChange[id] : undefined;
     }
 
+    //------------------------------------------------------------
+    //
+    //------------------------------------------------------------
     static getAtomicKeys(model) {
         return model.atomics.keys;
     }
     
+    //------------------------------------------------------------
+    //
+    //------------------------------------------------------------
     static getFormulas(model) {
         return model.formulas.values;
     }
 
+    //------------------------------------------------------------
+    //
+    //------------------------------------------------------------
     static getFormula(model, id) {
         return (model.formulas.keys.indexOf(id) !== -1) ? model.formulas.values[id] : undefined;
     }
 
+    //------------------------------------------------------------
+    //
+    //------------------------------------------------------------
     static getFormulaKeys(model) {
         return model.formulas.keys;
     }
 
+    //------------------------------------------------------------
+    //
+    //------------------------------------------------------------
     static getFilter(model, id, subformulas) {
         let formula = LTLSimController.getFormula(model, id);
         let result = {
@@ -562,8 +734,11 @@ console.log("LTLSimController::setFormulaExpression: atomic keys: "+model.atomic
     
 };
 
-function setLength(container, length) {
-    if (length > container.trace.length) {
+    //------------------------------------------------------------
+    //
+    //------------------------------------------------------------
+    function setLength(container, length) {
+      if (length > container.trace.length) {
         container.trace = container.trace
                             .concat(new Array(length - container.trace.length)
                             .fill(container.trace[container.trace.length-1]));

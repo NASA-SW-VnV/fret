@@ -38,9 +38,42 @@ import LTLSimDialog from './LTLSimDialog';
 export default function LTLSimLauncher(props) {
     const {open, semantics, status, onOpen, onClose, project, requirement,requirementID} = props;
 
+    var ftExpressions = []
+    var ptExpressions = []
+    var requirements = []
+    var requirementIDs = []
+    var IDs = []
+
     const ftExpression = rewriteExpressionForLTLSIM(semantics.ftExpanded);
     const ptExpression = rewriteExpressionForLTLSIM(semantics.ptExpanded);
 
+	console.log("LTLSImLauncher: requirement "+requirement)
+	console.log("LTLSImLauncher: requirementID "+requirementID)
+	console.log("LTLSImLauncher: project "+project)
+	//
+	// mock-up list
+	//
+	ftExpressions = ftExpressions.concat(ftExpression)
+	ptExpressions = ptExpressions.concat(ptExpression)
+
+	requirements = requirements.concat(requirement)
+
+	requirementIDs = requirementIDs.concat(requirementID)
+
+//	IDs = IDs.concat("FSM-006")
+	IDs = IDs.concat(requirementID)
+
+    if (false){
+	    ftExpressions = ftExpressions.concat(ftExpression)
+    	ptExpressions = ptExpressions.concat(ptExpression)
+    	requirements = requirements.concat(requirement)
+	    requirementIDs = requirementIDs.concat(requirementID + "_2")
+	    IDs = IDs.concat("FSM-006A")
+        }
+
+	console.log("LTLSImLauncher: ftExpressions "+ftExpressions)
+
+//JSC/CAV                id="REQ" 
     return (status.ltlsim && status.nusmv) ?
             (<div>
                 <Tooltip title="Launch interactive simulation" >
@@ -50,13 +83,17 @@ export default function LTLSimLauncher(props) {
                 </Tooltip>
                 <LTLSimDialog
                 open={open}
-                id="REQ" 
-                ftExpression={ftExpression}
-                ptExpression={ptExpression}
+                ids={IDs}
+                logics="PT"
+                ftExpressions={ftExpressions}
+                ptExpressions={ptExpressions}
                 onClose={onClose}
 		project={project}
-                requirement={requirement}
-                requirementID={requirementID}
+                requirements={requirements}
+                requirementIDs={requirementIDs}
+//JSC-0328		CEXFileName="/home/johann/Desktop/FSMSpec_FSM007FSM006.lus.json"
+//		CEXFileName="/home/johann/Desktop/FSMSpec_FSM007FSM006.lus.json"
+        traceID="CEX-1"
                 />
             </div>) :
             (<Tooltip id="a_crtAst_btn_simulate_tooltip"
@@ -88,12 +125,17 @@ function rewriteExpressionForLTLSIM(expression) {
             .replace(/<i>/g, "")
             .replace(/<\/b>/g, "")
             .replace(/<\/i>/g, "")
+//JSC/CAV
+	    .replace(/ap_maneuver_state/g,"2")
+	    .replace(/ap_standby_state/g,"3")
+	    .replace(/ap_transition_state/g,"0")
+//JSC/CAV END
 // arithmetic V0.0
-            .replace(/([0-9A-Za-z_]+) < ([0-9A-Za-z_]+)/g, "$1_lt_$2")
-            .replace(/([0-9A-Za-z_]+) > ([0-9A-Za-z_]+)/g, "$1_gt_$2")
-            .replace(/([0-9A-Za-z_]+) <= ([0-9A-Za-z_]+)/g, "$1_le_$2")
-            .replace(/([0-9A-Za-z_]+) >= ([0-9A-Za-z_]+)/g, "$1_ge_$2")
-            .replace(/([0-9A-Za-z_]+) = ([0-9A-Za-z_]+)/g, "$1_eq_$2")
+//            .replace(/([0-9A-Za-z_]+) < ([0-9A-Za-z_]+)/g, "$1_lt_$2")
+//            .replace(/([0-9A-Za-z_]+) > ([0-9A-Za-z_]+)/g, "$1_gt_$2")
+//            .replace(/([0-9A-Za-z_]+) <= ([0-9A-Za-z_]+)/g, "$1_le_$2")
+//            .replace(/([0-9A-Za-z_]+) >= ([0-9A-Za-z_]+)/g, "$1_ge_$2")
+//            .replace(/([0-9A-Za-z_]+) = ([0-9A-Za-z_]+)/g, "$1_eq_$2")
 // end arithmetic
             .replace(/(\d+)\+1/g, (str, p1, offset, s) => (`${parseInt(p1)+1}`))
             .replace(/\[<=(\d+)\]/g, "[0, $1]")

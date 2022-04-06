@@ -37,6 +37,7 @@ import PropTypes from 'prop-types';
 import TimeSeriesChart from './TimeSeriesChart';
 import TimeLine from './TimeLine';
 import TraceDialog from './TraceDialog';
+import TimeSeriesChartSettings from './TimeSeriesChartSettings';
 
 const LTLSimController = require('ltlsim-core').LTLSimController;
 
@@ -45,7 +46,8 @@ class TimeSeriesWidget extends Component {
         super(props);
 
         this.state = {
-            traceDialogOpen: false
+            traceDialogOpen: false,
+	    TimeSeriesChartSettingsOpen: true
         }
 
         this.atomic2chart = this.atomic2chart.bind(this);
@@ -53,11 +55,55 @@ class TimeSeriesWidget extends Component {
         this.handleTraceDialogApply = this.handleTraceDialogApply.bind(this);
         this.handleTraceDialogCancel = this.handleTraceDialogCancel.bind(this);
         this.handleTraceDialogOpen= this.handleTraceDialogOpen.bind(this);
+
+        this.handleTimeSeriesChartSettingsOpen = this.handleTimeSeriesChartSettingsOpen.bind(this);
+        this.handleTimeSeriesChartSettingsCancel = this.handleTimeSeriesChartSettingsCancel.bind(this);
+        this.handleTimeSeriesChartSettingsSave = this.handleTimeSeriesChartSettingsSave.bind(this);
     }
 
+//-------------------------------------------------------------------
+// callbacks for the settings
+//-------------------------------------------------------------------
+	//
+	// open the settings widget
+	//
+handleTimeSeriesChartSettingsOpen() {
+	console.log("Opening the TimeSeriesSettings")
+        this.setState({TimeSeriesChartSettingsOpen: true});
+    }
+
+	//
+	// cancel the settings widget
+	//
+handleTimeSeriesChartSettingsCancel() {
+	console.log("canceling the TimeSeriesSettings")
+        this.setState({TimeSeriesChartSettingsOpen: false});
+    }
+
+	//
+	// close the settings widget and save values
+	//
+handleTimeSeriesChartSettingsSave(settingsState) {
+        const {minValue, maxValue, deltaValue} = settingsState;
+	console.log("closing the TimeSeriesSettings")
+/*
+        this.setState({
+		TimeSeriesChartSettingsOpen: false,
+		minValue: minValue,
+		maxValue: maxValue,
+		deltaValue: DeltaValue
+		});
+*/
+        this.setState({TimeSeriesChartSettingsOpen: false});
+    }
+
+
+//---------------------------------------------------------------------
     atomic2chart(key, atomic, fkey, chart_type, canChange) {
 	console.log("atomic2chart: " + key + " " + chart_type + " " + canChange)
+	console.log('settings-' + key + ((fkey) ? '-'+fkey : ''))
         return ( (atomic === undefined) ? null :
+            <Typography component="div" >
                     <TimeSeriesChart
 			chart_type={chart_type}
                         key={'chart-atomic-' + key + ((fkey) ? '-'+fkey : '')}
@@ -68,12 +114,29 @@ class TimeSeriesWidget extends Component {
                         syncId={this.props.syncId}
                         canChange={canChange}
                         onChange={this.props.onChange}
-                        onClick={this.props.onAtomicsChartClick}
+                        onClick={this.handleTimeSeriesChartsettingsOpen}
                     />
+            </Typography>
         );
+/*JSC-0328
+  		   <TimeSeriesChartSettings
+                                    // classes={this}
+                                    open={this.state.TimeSeriesChartSettingsOpen}
+                                    onCancel={this.handleTimeSeriesChartSettingsCancel}
+                                    onSave={this.handleTimeSeriesChartSettingsSave}
+    				    chartType = {chart_type}
+    				    minValue = {2}
+    				    maxValue = {11}
+    				    deltaValue = {1}
+				    varName={key}
+                        	    key={'settings-' + key + ((fkey) ? '-'+fkey : '')}
+                        	    dataKey={key}
+                  />
+*/
     }
 
     formula2chart(key, formula) {
+        console.log("f2chart.key="+key)
         return ( (formula === undefined) ? null :
                     <TimeSeriesChart
 			chart_type="category"
@@ -113,6 +176,9 @@ class TimeSeriesWidget extends Component {
                 visibleSubformulas,
                 displaySubformulas } = this.props;
 
+        console.log(visibleAtomics)
+        console.log(visibleFormulas)
+        console.log(visibleSubformulas)
         const atomicsCharts = this.props.displayAtomicsWithFormulas ? null :
         visibleAtomics.map((akey) => (
             this.atomic2chart(akey, LTLSimController.getAtomic(model, akey),
