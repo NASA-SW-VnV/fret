@@ -807,9 +807,9 @@ class RealizabilityContent extends React.Component {
     }
 
     let validConfigurations = {'jkind': ['jkind', 'z3'], 'jkindMBP': ['jkind', 'z3', 'aeval'], 'kind2': ['kind2', 'z3']}
-    let configurationExists = false;
+    let someConfigurationExists = false;
     for (const config in validConfigurations) {
-
+      
     }
 
     if (missing.length !== 0) {
