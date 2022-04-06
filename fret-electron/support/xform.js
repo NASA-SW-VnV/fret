@@ -104,24 +104,28 @@ const finitizeFuture = [
 
 const futureTemporalConditions = [
     ['persists(__n,__p)',trueFn,'((G[<=__n] __p) & (G[<__n] ! $Right$))'],
-    ['occurs(__n,__p)',trueFn,'(((! $Right$) U __p) & (F[<=__n] __p))']
+    ['occurs(__n,__p)',trueFn,'(((! $Right$) U __p) & (F[<=__n] __p))'],
+    ['nextOcc(__p,__q)', trueFn, '(X((!__p & !$Right$) U (__p & __q)))']
     ]
 
 const pastTemporalConditions = [
     ['persisted(__n,__p)',trueFn,'((H[<=__n] __p) & (H[<__n] ! $Left$))'],
-    ['occurred(__n,__p)',trueFn,'(((! $Left$) S __p) & (O[<=__n] __p))']
+    ['occurred(__n,__p)',trueFn,'(((! $Left$) S __p) & (O[<=__n] __p))'],
+    ['prevOcc(__p,__q)', trueFn, '(Y ((! $Left$ & !__p) S (__p & __q)))']
 ]
 
 const temporalConditions = pastTemporalConditions.concat(futureTemporalConditions);
 
 const futureTemporalConditionsNoBounds = [
     ['persists(__n,__p)',trueFn,'(G[<=__n] __p)'],
-    ['occurs(__n,__p)',trueFn,'(F[<=__n] __p)']
+    ['occurs(__n,__p)',trueFn,'(F[<=__n] __p)'],
+    ['nextOcc(__p,__q)', trueFn, '(X((!__p) U (__p & __q)))']
     ]
 
 const pastTemporalConditionsNoBounds = [
     ['persisted(__n,__p)',trueFn,'(H[<=__n] __p)'],
-    ['occurred(__n,__p)',trueFn,'(O[<=__n] __p)']
+    ['occurred(__n,__p)',trueFn,'(O[<=__n] __p)'],
+    ['prevOcc(__p,__q)', trueFn, '(Y ((!__p) S (__p & __q)))']
 ]
 
 const temporalConditionsNoBounds = pastTemporalConditionsNoBounds.concat(futureTemporalConditionsNoBounds);
