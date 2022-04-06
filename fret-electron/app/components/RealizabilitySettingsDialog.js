@@ -119,7 +119,7 @@ class RealizabilitySettingsDialog extends React.Component {
 
 	render() {
 		const {open, selectedEngine} = this.state;
-		const {classes,handleSettingsClose, handleSettingsEngineChange} = this.props;
+		const {classes,handleSettingsClose, handleSettingsEngineChange, missingDependencies} = this.props;
 				return(
 			<div>
 		    <Drawer
@@ -147,10 +147,10 @@ class RealizabilitySettingsDialog extends React.Component {
 							<FormControl className={classes.formControl}>
 								<InputLabel>Engine</InputLabel>
 								<Select key={'engine'} value={selectedEngine ? selectedEngine : 0} onChange={this.handleEngineChange}>
-									<MenuItem value={0}> JKind (default)</MenuItem>
-									<MenuItem value={1}> JKind + MBP </MenuItem>
-									<MenuItem value={2}> Kind 2 </MenuItem>
-									<MenuItem value={3}> Kind 2 + MBP </MenuItem>							
+									<MenuItem disabled={missingDependencies.includes('jkind') || missingDependencies.includes('z3')} value={0}> JKind (default)</MenuItem>
+									<MenuItem disabled={missingDependencies.includes('jkind') || missingDependencies.includes('z3') || missingDependencies.includes('aeval')} value={1}> JKind + MBP </MenuItem>
+									<MenuItem disabled={missingDependencies.includes('kind2') || missingDependencies.includes('z3')} value={2}> Kind 2 </MenuItem>
+									<MenuItem disabled={missingDependencies.includes('kind2') || missingDependencies.includes('z3')} value={3}> Kind 2 + MBP </MenuItem>							
 								</Select>
 							</FormControl>	
           				</ListItem>        				
@@ -228,6 +228,7 @@ RealizabilitySettingsDialog.propTypes = {
 	open: PropTypes.bool.isRequired,
 	selectedEngine: PropTypes.number.isRequired,
 	retainFiles: PropTypes.bool.isRequired,
+	missingDependencies: PropTypes.array.isRequired,
 	handleSettingsClose: PropTypes.func.isRequired,
 	handleSettingsEngineChange: PropTypes.func.isRequired,
 	handleTimeoutChange: PropTypes.func.isRequired,

@@ -776,6 +776,12 @@ class RealizabilityContent extends React.Component {
       missing.push('jkind');
     }
 
+    try {
+      execSync('kind2 -h');
+    } catch(err) {
+      missing.push('kind2');
+    }
+
     //aeval currently returns with a segmentation fault signal when ran with no arguments.
     try {
       if ((process.platform === "linux") || (process.platform === "darwin")){
@@ -800,8 +806,14 @@ class RealizabilityContent extends React.Component {
       missing.push('z3');
     }
 
+    let validConfigurations = {'jkind': ['jkind', 'z3'], 'jkindMBP': ['jkind', 'z3', 'aeval'], 'kind2': ['kind2', 'z3']}
+    let configurationExists = false;
+    for (const config in validConfigurations) {
+
+    }
+
     if (missing.length !== 0) {
-      this.setState({ missingDependencies : missing});
+      this.setState({missingDependencies : missing});
     } else {
       this.setState({ dependenciesExist : true});
     }
@@ -1472,13 +1484,17 @@ class RealizabilityContent extends React.Component {
                 aria-haspopup="true"
                 aria-expanded={actionsMenuOpen ? 'true' : undefined}   
                 size="small" variant="contained" color="secondary"
-                disabled={status[selected.component_name] === 'PROCESSING' || diagStatus === 'PROCESSING' || !dependenciesExist || (dependenciesExist && selected === '')}
+                // disabled={status[selected.component_name] === 'PROCESSING' || diagStatus === 'PROCESSING' || !dependenciesExist || (dependenciesExist && selected === '')}
+                disabled={status[selected.component_name] === 'PROCESSING' || diagStatus === 'PROCESSING'}
                 endIcon={<KeyboardArrowDownIcon />}
                 onClick={(event) => this.handleActionsClick(event)}>
                 Actions        
               </Button>
               <Menu id="realizability_actions_menu" anchorEl={this.anchorRef.current} open={actionsMenuOpen} onClose={(event) => this.handleActionsMenuClose(event)} MenuListProps={{'aria-labelledby': 'realizability_actions_button'}}>
-                <MenuItem id="qa_rlzCont_btn_check" onClick={(event) => this.checkRealizability(event)}>Check Realizability</MenuItem>
+                <MenuItem
+                id="qa_rlzCont_btn_check"
+                disabled={!dependenciesExist || (dependenciesExist && (selected === '' || missingDependences.includes(this.getEngineNameAndOptions().name)))}
+                onClick={(event) => this.checkRealizability(event)}>Check Realizability</MenuItem>
                 <MenuItem 
                   id="qa_rlzCont_btn_diagnose"
                   onClick={(event) => this.diagnoseSpec(event)}
@@ -1610,7 +1626,7 @@ class RealizabilityContent extends React.Component {
             </div>
           </div>
         }
-        <RealizabilitySettingsDialog className={classes} selectedEngine={this.state.selectedEngine} retainFiles={this.state.retainFiles} open={this.state.settingsOpen} handleSettingsClose={this.handleSettingsClose} handleSettingsEngineChange={this.handleSettingsEngineChange} handleTimeoutChange={this.handleTimeoutChange} handleRetainFilesChange={this.handleRetainFilesChange}/>
+        <RealizabilitySettingsDialog className={classes} selectedEngine={this.state.selectedEngine} retainFiles={this.state.retainFiles} missingDependencies={missingDependencies} open={this.state.settingsOpen} handleSettingsClose={this.handleSettingsClose} handleSettingsEngineChange={this.handleSettingsEngineChange} handleTimeoutChange={this.handleTimeoutChange} handleRetainFilesChange={this.handleRetainFilesChange}/>
         <Dialog maxWidth='lg' onClose={this.handleHelpClose} open={this.state.helpOpen}>
           <DialogTitle id="realizability-help">
             <Typography>
