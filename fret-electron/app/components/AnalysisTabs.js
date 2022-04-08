@@ -275,12 +275,10 @@ class AnalysisTabs extends React.Component {
             doc.semantics.CoCoSpecCode !== constants.undefined_semantics &&
             doc.semantics.CoCoSpecCode !== constants.unhandled_semantics){
               if (doc.semantics.duration){
-                doc.semantics.duration.forEach(function(duration){
-                  if (!delays.includes(duration)) {
-                    delays.push(duration);
+                  if (!delays.includes(doc.semantics.duration)){
+                    delays.push(doc.semantics.duration);
                   }
-                })
-             }
+              }
           }
         }
       }
