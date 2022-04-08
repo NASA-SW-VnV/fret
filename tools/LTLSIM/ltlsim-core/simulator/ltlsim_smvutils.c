@@ -33,7 +33,7 @@ int checkNuSMVInstallation(bool doPrint) {
 #ifdef WINDOWS
     fp = popen("nusmv.exe -h 2>&1", "r");
 #else
-    fp = popen("nusmv -h 2>&1", "r");
+    fp = popen("NuSMV -h 2>&1", "r");
 #endif
 
     if (fp == NULL) {
