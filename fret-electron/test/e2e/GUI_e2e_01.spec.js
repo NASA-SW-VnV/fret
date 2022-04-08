@@ -24,9 +24,10 @@ const { exec } = require("child_process");
 
 const curDir = process.cwd();
 const subdirNames = curDir.split(path.sep);
-const testTempDir = '/'+path.join(subdirNames[1],subdirNames[2],'Documents');
-const fretDB_dirName = path.join(testTempDir ,'fret-db');
-const modelDB_dirName = path.join(testTempDir ,'model-db');
+const documentsDir = '/'+path.join(subdirNames[1],subdirNames[2],'Documents');
+const fretDB_dirName = path.join(documentsDir ,'fret_sqa','fret-db');
+const modelDB_dirName = path.join(documentsDir,'fret_sqa' ,'model-db');
+const testReferenceInputs = path.join(documentsDir ,'fret_sqa','test_references','inputs');
 let numTest = 0;
 const timeDelay1 = 1000;
 const timeDelay2 = 2000;
@@ -34,11 +35,10 @@ const timeDelay3 = 3000;
 
 console.log('Current directory: ' + curDir);
 console.log('__dirname: ' + __dirname);
-console.log('testTempDir: ' +testTempDir);
+console.log('documentsDir: ' +documentsDir);
 console.log('fretDB_dirName: '+fretDB_dirName);
 console.log('modelDB_dirName: ' + modelDB_dirName);
-
-console.log(electronPath);
+//console.log(electronPath);
 const app = new Application({
   path: electronPath,
   args: [path.join(__dirname, '../../app')],
@@ -64,27 +64,23 @@ const rmDB = async()=>{
 }
 
 const cpFretDB = async (refName) => {
-      //function cpReferenceDB(refName){     
-
-            const fret_db = '../test_reference/inputs/'+refName+'/fret-db';
-            const ref_fret_db = path.join(__dirname, fret_db);
-           // console.log('source reference fret-db: ' + ref_fret_db)
-           // console.log('target reference fret-db: ' + fretDB_dirName)
+      const ref_fret_db = path.join(testReferenceInputs, refName, 'fret-db');
+      //console.log('source reference fret-db: ' + ref_fret_db)
+      //console.log('target reference fret-db: ' + fretDB_dirName)
              
-            await fsExtra.copy(ref_fret_db, fretDB_dirName, err => {
-                  if (err) return console.error(err)
-                })           
+      await fsExtra.copy(ref_fret_db, fretDB_dirName, err => {
+            if (err) return console.error(err)
+      })           
 
-            await new Promise((r) => setTimeout(r, 1000));
+      await new Promise((r) => setTimeout(r, 1000));
                 
       }
       
 const cpModelDB = async (refName) => {
 
-      const model_db = '../test_reference/inputs/'+refName+'/model-db';
-      const ref_model_db = path.join(__dirname, model_db);
-      // console.log('source reference model-db: ' + ref_model_db)  
-      // console.log('target model-db: ' + modelDB_dirName)  
+      const ref_model_db = path.join(testReferenceInputs, refName, 'model-db');
+      //console.log('source reference model-db: ' + ref_model_db)  
+      //console.log('target model-db: ' + modelDB_dirName)  
       
       await fsExtra.copy(ref_model_db, modelDB_dirName, err => {
             if (err) return console.error(err)
@@ -94,19 +90,15 @@ const cpModelDB = async (refName) => {
       
 }
 
-
 const cpReferenceDB = async (refName) => {
-
       await cpFretDB(refName);
-      await cpModelDB(refName)
-           
+      await cpModelDB(refName)         
 }
       
 
-const startWithJsonFileImport = async (jsonFileNmae) => {
+const startWithJsonFileImport = async (jsonFileName) => {
       await app.start();
-      var mockFilePath = path.join(__dirname, '../../test/test_reference/inputs');
-      mockFilePath = path.join(mockFilePath, jsonFileNmae);
+      var mockFilePath = path.join(testReferenceInputs,jsonFileName);
       //console.log('mockFilePath ' + mockFilePath);
       fakeDialog.mock([ { method: 'showOpenDialogSync', value: [mockFilePath] } ])
       await app.client.waitUntilWindowLoaded();
@@ -469,7 +461,7 @@ describe('FRET GUI E2E tests ', function () {
             //await startWithJsonFileImport('AnastasiaTestRequirements.csv');     
             await app.client.pause(timeDelay1);  
 
-            var mockFilePath = path.join(__dirname, '../../test/test_reference/inputs');
+            var mockFilePath = testReferenceInputs;
             mockFilePath = path.join(mockFilePath, 'AnastasiaTestRequirements.csv');
             //console.log('mockFilePath ' + mockFilePath);
             fakeDialog.mock([ { method: 'showOpenDialogSync', value: [mockFilePath] } ])
@@ -1796,7 +1788,7 @@ describe('FRET GUI E2E tests ', function () {
 
             const tableBody3 = await app.client.$('#qa_tbl_sortableTable_body');
             const reqText3 = await tableBody3.getHTML(false);
-            console.log('reqText3 ',reqText3)
+            //console.log('reqText3 ',reqText3)
             var elementParsedHTML = parse(reqText3);
             var req3text =  elementParsedHTML.childNodes[1].text;
             expect(req3text).toContain('while cruising C shall satisfy a');
@@ -3194,7 +3186,6 @@ describe('FRET GUI E2E tests ', function () {
       it('LTLSIM - K3', async () => {
             console.log('starting test '+numTest+':  LTLSIM - K3');
 
-
             var env_PATH = process.env.PATH;
             //console.log('Path: ', env_PATH);
             const bad_PATH = env_PATH.replace('LTLSIM','LTLSIM_bad');
@@ -3203,8 +3194,6 @@ describe('FRET GUI E2E tests ', function () {
             await new Promise((r) => setTimeout(r, 2000));
             env_PATH = process.env.PATH;
             //console.log('Path: ', env_PATH);
-
-
 
             await startWithJsonFileImport('MyDBAM113.json');
 
@@ -3233,13 +3222,10 @@ describe('FRET GUI E2E tests ', function () {
             var pHTML = await simBtn.getHTML(false);
             var pVarText = parse(pHTML);
             var pVarString = pVarText.toString();
-            //console.log('simBtn: ', pVarString)        
-            //console.log('simBtnTip ', simBtnTip);
+            console.log('simBtn: ', pVarString)        
+            console.log('simBtnTip ', simBtnTip);
 
       });
-
-
-
 
       // GL - 1   is done inside test RTF - 2
       
@@ -4260,9 +4246,11 @@ describe('FRET GUI E2E tests ', function () {
       it('CREATE NEW REQUIREMENT-TEMPLATES', async () => {
             console.log('starting test '+numTest+':  CREATE NEW REQUIREMENT-TEMPLATES')
             await startWithJsonFileImport('MyDBAM113.json');
+            await app.client.pause(timeDelay1);
                         
             const createBtn = await app.client.$('#qa_db_btn_create');
             await createBtn.click();
+            await app.client.pause(timeDelay1);
 
             const templates = await app.client.$('#qa_crt_tab_templates');
             await templates.click();
@@ -4283,12 +4271,15 @@ describe('FRET GUI E2E tests ', function () {
       it('CREATE NEW REQUIREMENT-ASSISTANT', async () => {
             console.log('starting test '+numTest+':  CREATE NEW REQUIREMENT-ASSISTANT')
             await startWithJsonFileImport('MyDBAM113.json');
+            await app.client.pause(timeDelay1);
                                   
             const createBtn = await app.client.$('#qa_db_btn_create');
             await createBtn.click();
+            await app.client.pause(timeDelay1);
 
             const astTab = await app.client.$('#qa_crt_tab_assistant');
             await astTab.click();
+            await app.client.pause(timeDelay1);
             const speakFret = await app.client.$('#qa_ast_typ_speakFRETish');
             const reqText = await speakFret.getText();    
             //console.log('template 1: '+ reqText);
@@ -4317,11 +4308,14 @@ describe('FRET GUI E2E tests ', function () {
       it('CREATE NEW REQUIREMENT-REQUIREMENT ID', async () => {
             console.log('starting test '+numTest+':  CREATE NEW REQUIREMENT-REQUIREMENT ID')            
             await startWithJsonFileImport('MyDBAM113.json');
+            await app.client.pause(timeDelay1);
 
             const createBtn = await app.client.$('#qa_db_btn_create');
             await createBtn.click();
+            await app.client.pause(timeDelay1);
 
             const txtInput = await app.client.$('#qa_crt_tf_reqid');
+            await app.client.pause(timeDelay1);
             await txtInput.isEnabled();
             await txtInput.setValue('a_new_requirement');
 
@@ -4331,12 +4325,15 @@ describe('FRET GUI E2E tests ', function () {
       it('CREATE NEW REQUIREMENT-PARENT REQUIREMENT ID', async () => {
             console.log('starting test '+numTest+':  CREATE NEW REQUIREMENT-PARENT REQUIREMENT ID')            
             await startWithJsonFileImport('MyDBAM113.json');
+            await app.client.pause(timeDelay1);
             
             const createBtn = await app.client.$('#qa_db_btn_create');           
             await createBtn.click();
+            await app.client.pause(timeDelay1);
 
             const parentId = await app.client.$('#qa_crt_tf_parentReqid');
             await parentId.click();
+            await app.client.pause(timeDelay1);
 
             await parentId.setValue('test_id_001');
 
@@ -4346,12 +4343,15 @@ describe('FRET GUI E2E tests ', function () {
       it('CREATE NEW REQUIREMENT-PROJECT MENU', async () => {
             console.log('starting test '+numTest+':  CREATE NEW REQUIREMENT-PROJECT MENU')            
             await startWithJsonFileImport('MyDBAM113.json');
+            await app.client.pause(timeDelay1);
 
             const createBtn = await app.client.$('#qa_db_btn_create');            
             await createBtn.click();
+            await app.client.pause(timeDelay1);
 
             const selProj = await app.client.$('#qa_crt_select_project');
             await selProj.click();
+            await app.client.pause(timeDelay1);
             const reqText = await selProj.getText();    
             expect(reqText).toBe('All Projects');
 
@@ -4361,15 +4361,19 @@ describe('FRET GUI E2E tests ', function () {
       it('CREATE NEW REQUIREMENT-RATIONAL AMD COMMENTS', async () => {
             console.log('starting test '+numTest+':  CREATE NEW REQUIREMENT-RATIONAL AMD COMMENTS')             
              await startWithJsonFileImport('MyDBAM113.json');
+             await app.client.pause(timeDelay1);
 
             const createBtn = await app.client.$('#qa_db_btn_create');            
             await createBtn.click();
+            await app.client.pause(timeDelay1);
 
             const rationaleCom = await app.client.$('#qa_crt_as_rationaleComments');
             await rationaleCom.click();   
+            await app.client.pause(timeDelay1);
  
             const ration = await app.client.$('#qa_crt_tf_rationale');
             await ration.click();   
+            await app.client.pause(timeDelay1);
 
             const comments = await app.client.$('#qa_crt_tf_comments');
             await comments.click();   
@@ -4485,15 +4489,19 @@ describe('FRET GUI E2E tests ', function () {
       it('CREATE REQUIREMENT - CANCEL', async () => {
             console.log('starting test '+numTest+':  CREATE REQUIREMENT - CANCEL')            
             await startWithJsonFileImport('MyDBAM113.json');
+            await app.client.pause(timeDelay1);
    
             const createBtn = await app.client.$('#qa_db_btn_create');            
             await createBtn.click();
+            await app.client.pause(timeDelay1);
 
             const title = await app.client.$('#qa_crt_title');
             const dText = await title.getText();
+            await app.client.pause(timeDelay1);
 
             const CR_cancel_visible = await app.client.$('#qa_crt_btn_cancel');
             await CR_cancel_visible.click();
+            await app.client.pause(timeDelay1);
 
             const projs = await app.client.$('#qa_db_ili_projects');
             const projectText = await projs.getText();

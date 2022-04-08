@@ -48,8 +48,16 @@ import MenuBuilder from './menu';
 var NodePouchDB = require('pouchdb');
 NodePouchDB.plugin(require('pouchdb-find'));
 var userDocumentsFolder = app.getPath('documents');
-var leveldbDB = new NodePouchDB(userDocumentsFolder + '/fret-db');
-var modelDB = new NodePouchDB(userDocumentsFolder + '/model-db');
+
+var leveldbDBname = userDocumentsFolder + '/fret-db';
+var modelDBname = userDocumentsFolder + '/model-db';
+if (process.env.FRET_TESTING) {
+  leveldbDBname = userDocumentsFolder + '/fret_sqa/fret-db';
+  modelDBname = userDocumentsFolder + '/fret_sqa/model-db';
+} 
+var leveldbDB = new NodePouchDB(leveldbDBname);
+var modelDB = new NodePouchDB(modelDBname);
+
 
 leveldbDB.info().then(function (info) {
   console.log('We can use PouchDB with LevelDB!');
