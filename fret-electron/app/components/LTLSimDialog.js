@@ -240,6 +240,8 @@ class LTLSimDialog extends Component {
             let {model} = prevState;
             if (LTLSimController.getFormulaKeys(model).indexOf(id) !== -1) {
                 LTLSimController.setFormulaTrace(model, id, sid, trace);
+	        //for FT: value is beginning of trace
+                value=trace[0]
                 LTLSimController.setFormulaValue(model, id, sid, value ?
                                                     EFormulaStates.VALIDATED :
                                                     EFormulaStates.VIOLATED);
