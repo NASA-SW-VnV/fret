@@ -68,11 +68,14 @@ export function checkRealizability(filePath, engine, options, callback) {
         // callback(null, stdout); 
       } else {
         var kind2Output = JSON.parse(stdout);
-
         var realizabilityResults = kind2Output.filter(e => e.objectType === "realizabilityCheck")[0];
-        var consistencyResults = kind2Output.filter(e => e.objectType === "satisfiabilityCheck")[0];
-        result = consistencyResults.result === "unsatisfiable" ? "INCONSISTENT" : realizabilityResults.result.toUpperCase();
-        time = (realizabilityResults.runtime['value'] + consistencyResults.runtime['value']).toString() + realizabilityResults.runtime['unit'];
+        var consistencyResults = kind2Output.filter(e => e.objectType === "satisfiabilityCheck")[0];        
+        result = (consistencyResults && consistencyResults.result === "unsatisfiable") ? "INCONSISTENT" : realizabilityResults.result.toUpperCase();
+        if (consistencyResults) {
+          time = (realizabilityResults.runtime['value'] + consistencyResults.runtime['value']).toString() + realizabilityResults.runtime['unit'];
+        } else {
+          time = (realizabilityResults.runtime['value']).toString() + realizabilityResults.runtime['unit'];
+        }        
         cex = realizabilityResults.deadlockingTrace ? realizabilityResults.deadlockingTrace : null;
         callback(null, result, time, cex);
         // callback(null, kind2Output);

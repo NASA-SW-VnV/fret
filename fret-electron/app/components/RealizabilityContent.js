@@ -806,16 +806,26 @@ class RealizabilityContent extends React.Component {
       missing.push('z3');
     }
 
-    let validConfigurations = {'jkind': ['jkind', 'z3'], 'jkindMBP': ['jkind', 'z3', 'aeval'], 'kind2': ['kind2', 'z3']}
+    let validConfigurations = [['jkind', 'z3'], ['jkind', 'z3', 'aeval'], ['kind2', 'z3']]
     let someConfigurationExists = false;
-    for (const config in validConfigurations) {
-      
+    let defaultEngine = 0;
+    for (let i = 0; i < validConfigurations.length; i++) {
+      const reducer = (accumulator, currentValue) => accumulator && (!missing.includes(currentValue));
+      if (validConfigurations[i].reduce(reducer, true)) {
+        someConfigurationExists = true;
+        defaultEngine = i;
+        break;
+      }
     }
 
     if (missing.length !== 0) {
-      this.setState({missingDependencies : missing});
+      this.setState({
+        missingDependencies: missing,
+        dependenciesExist: someConfigurationExists,
+        selectedEngine: defaultEngine
+      });
     } else {
-      this.setState({ dependenciesExist : true});
+      this.setState({ dependenciesExist: true});
     }
   }
 
@@ -1366,15 +1376,10 @@ class RealizabilityContent extends React.Component {
       }
     }
 
-    const contentStyle = {transition: 'margin-right 450ms cubic-bezier(0.23, 1, 0.32, 1)' };
+    let actionsMargin = {marginRight: '55%', transition: 'margin-right 450ms cubic-bezier(0.23, 1, 0.32, 1)' };
 
-    // let actionsMargin = '58%'
-    let actionsMargin = {marginRight: '58%', transition: 'margin-right 450ms cubic-bezier(0.23, 1, 0.32, 1)' };
-
-
-    if (this.state.settingsOpen) {
-      contentStyle.marginRight = 256;
-      actionsMargin.marginRight = '48%'
+    if (this.state.settingsOpen) {      
+      actionsMargin.marginRight = '40%'
     }
 
     return(
@@ -1458,7 +1463,7 @@ class RealizabilityContent extends React.Component {
               Compositional
             </Grid> */}           
             {!dependenciesExist &&
-              <Tooltip title={"Dependencies missing for realizability checking : " + missingDependencies.toString()+'. See FRET documentation for details.'}>
+              <Tooltip title={"Dependencies missing for realizability checking. Click \"HELP\" for details."}>
                 <ErrorIcon id="qa_rlzCont_icon_depMissing" className={classes.wrapper} style={{verticalAlign : 'bottom'}} color='error'/>
               </Tooltip>
             }
@@ -1491,9 +1496,9 @@ class RealizabilityContent extends React.Component {
                 Actions        
               </Button>
               <Menu id="realizability_actions_menu" anchorEl={this.anchorRef.current} open={actionsMenuOpen} onClose={(event) => this.handleActionsMenuClose(event)} MenuListProps={{'aria-labelledby': 'realizability_actions_button'}}>
-                <MenuItem
+                <MenuItem 
                 id="qa_rlzCont_btn_check"
-                disabled={!dependenciesExist || (dependenciesExist && (selected === '' || missingDependences.includes(this.getEngineNameAndOptions().name)))}
+                disabled={!dependenciesExist || (dependenciesExist && (selected === '' || missingDependencies.includes(this.getEngineNameAndOptions().name)))}
                 onClick={(event) => this.checkRealizability(event)}>Check Realizability</MenuItem>
                 <MenuItem 
                   id="qa_rlzCont_btn_diagnose"

@@ -56,6 +56,7 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
+import Tooltip from '@material-ui/core/Tooltip';
 
 const styles = theme => ({
   root: {
@@ -119,7 +120,7 @@ class RealizabilitySettingsDialog extends React.Component {
 
 	render() {
 		const {open, selectedEngine} = this.state;
-		const {classes,handleSettingsClose, handleSettingsEngineChange, missingDependencies} = this.props;
+		const {classes,handleSettingsClose, handleSettingsEngineChange, missingDependencies} = this.props;		
 				return(
 			<div>
 		    <Drawer
@@ -147,10 +148,42 @@ class RealizabilitySettingsDialog extends React.Component {
 							<FormControl className={classes.formControl}>
 								<InputLabel>Engine</InputLabel>
 								<Select key={'engine'} value={selectedEngine ? selectedEngine : 0} onChange={this.handleEngineChange}>
-									<MenuItem disabled={missingDependencies.includes('jkind') || missingDependencies.includes('z3')} value={0}> JKind (default)</MenuItem>
-									<MenuItem disabled={missingDependencies.includes('jkind') || missingDependencies.includes('z3') || missingDependencies.includes('aeval')} value={1}> JKind + MBP </MenuItem>
-									<MenuItem disabled={missingDependencies.includes('kind2') || missingDependencies.includes('z3')} value={2}> Kind 2 </MenuItem>
-									<MenuItem disabled={missingDependencies.includes('kind2') || missingDependencies.includes('z3')} value={3}> Kind 2 + MBP </MenuItem>							
+									<Tooltip
+										key={'jkind'}
+										value={0}
+										title={missingDependencies.includes('jkind') || missingDependencies.includes('z3') ? 
+										'Option not available because of missing dependencies: ' + missingDependencies.filter(dep => dep === 'jkind' || dep === 'z3').toString() : ''}>
+										<span key={'jkind'}>
+											<MenuItem disabled={missingDependencies.includes('jkind') || missingDependencies.includes('z3')}> JKind </MenuItem>
+										</span>
+									</Tooltip>
+									<Tooltip
+										key={'jkindMBP'}
+										value={1}
+										title={missingDependencies.includes('jkind') || missingDependencies.includes('z3') || missingDependencies.includes('aeval') ? 
+										'Option not available because of missing dependencies: ' + missingDependencies.filter(dep => dep === 'jkind' || dep === 'z3' || dep === 'aeval').toString() : ''}>
+										<span key={'jkindMBP'}>
+											<MenuItem disabled={missingDependencies.includes('jkind') || missingDependencies.includes('z3') || missingDependencies.includes('aeval')}> JKind + MBP </MenuItem>
+										</span>
+									</Tooltip>
+									<Tooltip
+										key={'kind2'}
+										value={2}
+										title={missingDependencies.includes('kind2') || missingDependencies.includes('z3') ? 
+										'Option not available because of missing dependencies: ' + missingDependencies.filter(dep => dep === 'kind2' || dep === 'z3').toString() : ''}>
+										<span key={'kind2'}>
+											<MenuItem disabled={missingDependencies.includes('kind2') || missingDependencies.includes('z3')}> Kind 2 </MenuItem>
+										</span>
+									</Tooltip>
+									<Tooltip
+										key={'kind2MBP'}
+										value={3}
+										title={missingDependencies.includes('kind2') || missingDependencies.includes('z3') ? 
+										'Option not available because of missing dependencies: ' + missingDependencies.filter(dep => dep === 'kind2' || dep === 'z3').toString() : ''}>
+										<span key={'kind2MBP'}>
+											<MenuItem disabled={missingDependencies.includes('kind2') || missingDependencies.includes('z3')}> Kind 2 + MBP </MenuItem>
+										</span>
+									</Tooltip>
 								</Select>
 							</FormControl>	
           				</ListItem>        				
