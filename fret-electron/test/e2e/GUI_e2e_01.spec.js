@@ -2389,16 +2389,116 @@ describe('FRET GUI E2E tests ', function () {
             expect(diagBtnEnabled).toBeTruthy();
             await diagBtn.click();
 
-            await app.client.pause(10000);     
+            //await app.client.pause(10000);     
 
             const chord_LM001 =  await app.client.$('#qa_chordDia_svg_text_reqId_LM001');
             await chord_LM001.click();
 
       });     
 
+
       //------------------------------------------------------------------      
-      it('RLZ - 10, 11,12,13', async () => {
-            console.log('starting test '+numTest+':  RLZ - 10, 11, 12, 13');
+      it('RLZ - 10, 11', async () => {
+            console.log('starting test '+numTest+':  RLZ - 10, 11');
+            await cpReferenceDB('realizability');
+            await new Promise((r) => setTimeout(r, 2000));
+
+            await app.start();
+            await app.client.waitUntilWindowLoaded();
+
+            var projBtn = await app.client.$('#qa_db_btn_projects');
+            await projBtn.click();
+            await app.client.pause(timeDelay1);
+            var projSelected = await app.client.$('#qa_proj_select_Demo-FSM');  
+            await projSelected.click();  
+            await app.client.pause(timeDelay1);
+
+            var anaBtn = await app.client.$('#qa_db_li_analysis');
+            await anaBtn.click();
+            var rlzTab = await app.client.$('#qa_rlz_tab');
+            await rlzTab.click();
+            var sysComp = await app.client.$('#qa_rlzCont_sel_sysComp');
+            await sysComp.click();    
+            await app.client.pause(timeDelay1);   
+
+            var sysCompSelected = await app.client.$('#qa_rlzCont_mi_sysComp_FSM');
+            await sysCompSelected.click();     
+            await app.client.pause(timeDelay1);  
+      
+            var mono_cb = await app.client.$('#qa_rlzCont_cb_monolithic');
+            var comp_cb = await app.client.$('#qa_rlzCont_cb_compositional');
+            await comp_cb.click();
+      
+            var timeout_tf = await app.client.$('#qa_rlzCont_tf_timeOut');
+            var timeout_enabled = await timeout_tf.isEnabled();
+            expect(timeout_enabled).toBeTruthy();
+            await timeout_tf.setValue('900');                  
+      
+            var checkBtn = await app.client.$('#qa_rlzCont_btn_check');
+            var checkEnabled = await checkBtn.isEnabled();
+            expect(checkEnabled).toBeTruthy();
+            await checkBtn.click();      
+            await app.client.pause(2000);      
+
+            var diagBtn = await app.client.$('#qa_rlzCont_btn_diagnose');
+            await diagBtn.click();
+            await app.client.pause(timeDelay2);     
+
+            var reqChordSelected =  await app.client.$('#qa_chordDia_svg_text_reqId_FSM007');
+            await reqChordSelected.click();
+
+            var counterExSel =  await app.client.$('#qa_counterEx_sel');        
+            await counterExSel.click();   
+            await app.client.pause(timeDelay1);        
+            
+            var conflictMenuItem = await app.client.$('#qa_counterEx_mi_Conflict_3');
+            await conflictMenuItem.click();
+            await app.client.pause(timeDelay1);   
+
+            var counterExTable = await app.client.$('#qa_counterEx_table');
+            var counterExTableHTML = await counterExTable.getHTML(false);
+            var counterExs = parse(counterExTableHTML)
+            var tableBodytext = counterExs.childNodes[1].text;
+            //console.log('table body text: ', tableBodytext);
+            expect(tableBodytext).toContain('good  bool  true  standby  bool  true  state');
+            expect(tableBodytext).toContain('real  2  supported  bool  true  STATE  real  0');
+            expect(tableBodytext).toContain('FSM006  bool  false  FSM007  bool  true  ap_maneuver_state  real');
+            expect(tableBodytext).toContain(' 3  ap_transition_state  real  0');
+
+            var reqTableBodyElem = await app.client.$('#qa_diagReqTbl_tableBody_1');
+            var reqTableBodyHTML = await reqTableBodyElem.getHTML(false);
+            var reqTableBody = parse(reqTableBodyHTML)
+            // console.log('diagReqTabl: ',reqTableBody)
+
+            var numChildren = reqTableBody.childNodes.length
+            expect(numChildren).toBe(10)
+ 
+            var req1 = reqTableBody.childNodes[0].text;
+            var req2 = reqTableBody.childNodes[1].text;
+            var req3 = reqTableBody.childNodes[2].text;
+            //console.log('req1: ', req1);
+            //console.log('req2: ', req2);
+            //console.log('req3: ', req3);
+            expect(req1).toContain('FSM007');   
+            expect(req2).toContain('FSM006');        
+            expect(req3).toContain('FSM002');
+            var req1 = reqTableBody.childNodes[0].toString();
+            var req2 = reqTableBody.childNodes[1].toString();
+            var req3 = reqTableBody.childNodes[2].toString();
+            //console.log('req1: ', req1);
+            //console.log('req2: ', req2);
+            //console.log('req3: ', req3);            
+            expect(req1).toContain('border-color: rgb(');
+            expect(req2).toContain('border-color: rgb(');
+            expect(req3).toContain('border-color: initial');                 
+        
+
+      });    
+
+
+      //------------------------------------------------------------------      
+      it('RLZ - 12,13', async () => {
+            console.log('starting test '+numTest+':  RLZ - 12, 13');
             await cpReferenceDB('realizability');
             await new Promise((r) => setTimeout(r, 2000));
 
@@ -2450,6 +2550,8 @@ describe('FRET GUI E2E tests ', function () {
             const diagBtnEnabled = await checkBtn.isEnabled();
             expect(diagBtnEnabled).toBeTruthy();
             await diagBtn.click();
+
+            /*   Z3 can't consistently finish, file a bug
 
             await app.client.pause(120000);     
 
@@ -2518,7 +2620,7 @@ describe('FRET GUI E2E tests ', function () {
 
             expect(id3).toContain('G11')
             expect(id3).toContain('opacity: 0.6')                   
-        
+        */
 
       });    
 
@@ -2586,14 +2688,15 @@ describe('FRET GUI E2E tests ', function () {
             await cpReferenceDB('realizability');
             await new Promise((r) => setTimeout(r, 2000));
 
-            var env_PATH = process.env.PATH;
-            // console.log('Path: ', env_PATH);
-            const bad_PATH = env_PATH.replace('z3','z3_bad');
-            // console.log('Path: ', bad_PATH);
-            process.env.PATH = bad_PATH;
+            var good_PATH = process.env.PATH;
+            // console.log('good_PATH: ', good_PATH);
+            let re = /z3/gi;
+            const bad_PATH = good_PATH.replace(re,'z3_bad');
+            // console.log('bad_PATH: ', bad_PATH);
+            process.env.PATH = bad_PATH;            
+            var cur_PATH = process.env.PATH;
+            // console.log('cur_PATH: ', cur_PATH);
             await new Promise((r) => setTimeout(r, 2000));
-            env_PATH = process.env.PATH;
-            // console.log('Path: ', env_PATH);
 
             await app.start();
             await app.client.waitUntilWindowLoaded();
@@ -2623,6 +2726,12 @@ describe('FRET GUI E2E tests ', function () {
             expect(depErrorShowing).toBeTruthy();
             const errorTip = errorIcon.elementHover.toString()
             const errorVisible = await errorIcon.isDisplayed();
+
+            process.env.PATH = good_PATH;            
+            cur_PATH = process.env.PATH;
+            // console.log('cur_PATH: ', cur_PATH);
+            await new Promise((r) => setTimeout(r, 2000));
+
 
       });    
 
@@ -3029,7 +3138,7 @@ describe('FRET GUI E2E tests ', function () {
       //------------------------------------------------------------------      
       it('RLZ - 26', async () => {
             console.log('starting test '+numTest+':  RLZ - 26');
-            await cpReferenceDB('realizability');
+            await cpReferenceDB('realizability_26');
             await new Promise((r) => setTimeout(r, 2000));
 
 
@@ -3059,11 +3168,10 @@ describe('FRET GUI E2E tests ', function () {
 
             const fsm_sysComp = await app.client.$('#qa_rlzCont_mi_sysComp_door');
             await fsm_sysComp.click();     
-
             await app.client.pause(2000);
 
-            //const comp_cb = await app.client.$('#qa_rlzCont_cb_compositional');
-            //await comp_cb.click();
+            const comp_cb = await app.client.$('#qa_rlzCont_cb_compositional');
+            await comp_cb.click();
 
             const timeout_tf = await app.client.$('#qa_rlzCont_tf_timeOut');
             const timeout_enabled = await timeout_tf.isEnabled();
@@ -3186,14 +3294,15 @@ describe('FRET GUI E2E tests ', function () {
       it('LTLSIM - K3', async () => {
             console.log('starting test '+numTest+':  LTLSIM - K3');
 
-            var env_PATH = process.env.PATH;
-            //console.log('Path: ', env_PATH);
-            const bad_PATH = env_PATH.replace('LTLSIM','LTLSIM_bad');
+            var good_PATH = process.env.PATH;
+            //console.log('good_PATH: ', good_PATH);
+            let re = /LTLSIM/gi;
+            const bad_PATH = good_PATH.replace(re,'LTLSIM_bad');
             //console.log('Path: ', bad_PATH);
             process.env.PATH = bad_PATH;
+            var cur_PATH = process.env.PATH;
+            //console.log('cur_PATH: ', cur_PATH);
             await new Promise((r) => setTimeout(r, 2000));
-            env_PATH = process.env.PATH;
-            //console.log('Path: ', env_PATH);
 
             await startWithJsonFileImport('MyDBAM113.json');
 
@@ -3224,6 +3333,11 @@ describe('FRET GUI E2E tests ', function () {
             var pVarString = pVarText.toString();
             console.log('simBtn: ', pVarString)        
             console.log('simBtnTip ', simBtnTip);
+
+            process.env.PATH = good_PATH;
+            cur_PATH = process.env.PATH;
+            //console.log('cur_PATH: ', cur_PATH);
+            await new Promise((r) => setTimeout(r, 2000));            
 
       });
 
@@ -4006,7 +4120,7 @@ describe('FRET GUI E2E tests ', function () {
             var reqText = await crtAstEx.getText();
             //console.log('Conditions: '+reqText);
             expect(reqText).toContain('Condition (optional)');
-            expect(reqText).toContain('Specifies the conditions under which the requirement shall be true');
+            expect(reqText).toContain('specifies the trigger condition after which the requirement shall hold, taking into account scope. Trigger means');
  
       });           
 

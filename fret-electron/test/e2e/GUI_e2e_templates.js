@@ -146,7 +146,6 @@ var child1text = elementParsedHTML.childNodes[1].text;  //childNodes[1] contains
 console.log('child1text: ', child1text)
 await app.client.pause(timeDelay1);
 
-
 ///////////////  Update Variable Dialog (disVar)             
       // Variable Type dropdown menu
       var varType  = await app.client.$('#qa_disVar_sel_varType');
@@ -186,11 +185,90 @@ await app.client.pause(timeDelay1);
       var varDescTextField = await app.client.$('#qa_disVar_tf_description');  
       await varDescTextField.setValue('');
 
-
-
-
       // update or cancel
       var updateVar  = await app.client.$('#qa_disVar_btn_update');  
       await updateVar.click();     
       var cancelVar  = await app.client.$('#qa_disVar_btn_cancel');  
       await cancelVar.click();   
+
+
+////////////// Realizability 
+var projBtn = await app.client.$('#qa_db_btn_projects');
+await projBtn.click();
+await app.client.pause(timeDelay1);
+var projSelected = await app.client.$('#qa_proj_select_');  
+await projSelected.click();  
+await app.client.pause(timeDelay1);
+
+var anaBtn = await app.client.$('#qa_db_li_analysis');
+await anaBtn.click();
+var rlzTab = await app.client.$('#qa_rlz_tab');
+await rlzTab.click();
+var sysComp = await app.client.$('#qa_rlzCont_sel_sysComp');
+await sysComp.click();   
+await app.client.pause(timeDelay1);
+var sysCompSelected = await app.client.$('#qa_rlzCont_mi_sysComp_');
+await sysCompSelected.click();     
+await app.client.pause(timeDelay1);  
+
+var mono_cb = await app.client.$('#qa_rlzCont_cb_monolithic');
+var comp_cb = await app.client.$('#qa_rlzCont_cb_compositional');
+await comp_cb.click();
+var timeout_tf = await app.client.$('#qa_rlzCont_tf_timeOut');
+var timeout_enabled = await timeout_tf.isEnabled();
+expect(timeout_enabled).toBeTruthy();
+await timeout_tf.setValue('');  
+var checkBtn = await app.client.$('#qa_rlzCont_btn_check');
+await checkBtn.click();
+await app.client.pause(timeDelay2);    
+var diagBtn = await app.client.$('#qa_rlzCont_btn_diagnose');
+await diagBtn.click();
+await app.client.pause(timeDelay2);   
+
+var reqChordSelected =  await app.client.$('#qa_chordDia_svg_text_reqId_FSM007');
+await reqChordSelected.click();
+
+const counterExSel =  await app.client.$('#qa_counterEx_sel');        
+await counterExSel.click();   
+await app.client.pause(timeDelay1);      
+            
+var conflictMenuItem = await app.client.$('#qa_counterEx_mi_Conflict_');
+await conflictMenuItem.click();
+await app.client.pause(timeDelay1);  
+
+var counterExTable = await app.client.$('#qa_counterEx_table');
+var counterExTableHTML = await counterExTable.getHTML(false);
+var counterExs = parse(counterExTableHTML);
+var tableBodytext = counterExs.childNodes[1].text;
+console.log('table body text: ', tableBodytext);
+expect(tableBodytext).toContain('');
+
+
+var reqTableBodyElem = await app.client.$('#qa_diagReqTbl_tableBody_1');
+var reqTableBodyHTML = await reqTableBodyElem.getHTML(false);
+var reqTableBody = parse(reqTableBodyHTML);
+// console.log('diagReqTabl: ',reqTableBody)
+var numChildren = reqTableBody.childNodes.length;
+expect(numChildren).toBe();
+ 
+var req1 = reqTableBody.childNodes[0].text;
+var req2 = reqTableBody.childNodes[1].text;
+var req3 = reqTableBody.childNodes[2].text;
+//console.log('req1: ', req1);
+//console.log('req2: ', req2);
+//console.log('req3: ', req3);
+expect(req1).toContain('');   
+expect(req2).toContain('');        
+expect(req3).toContain('');
+var req1 = reqTableBody.childNodes[0].toString();
+var req2 = reqTableBody.childNodes[1].toString();
+var req3 = reqTableBody.childNodes[2].toString();
+//console.log('req1: ', req1);
+//console.log('req2: ', req2);
+//console.log('req3: ', req3);            
+expect(req1).toContain('border-color: rgb(');
+expect(req2).toContain('border-color: rgb(');
+expect(req3).toContain('border-color: initial');               
+
+
+
