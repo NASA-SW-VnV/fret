@@ -135,7 +135,6 @@ class DiagnosisEngine {
         localMap.set(propertyList, result);
         if (result === "UNREALIZABLE" && minimal) {
           let jsonOutput = checkOutput.output;
-          console.log(propertyList);          
           if (this.engineName === 'kind2') {
             let kind2JsonResult = jsonOutput.filter(e => e.objectType === "realizabilityCheck")[0];
             let newJsonOutput = {
@@ -584,7 +583,6 @@ class DiagnosisEngine {
         }
       }
     } catch (error) {
-      console.log(error)
       this.optLog(error)
       return callback(error);
     }

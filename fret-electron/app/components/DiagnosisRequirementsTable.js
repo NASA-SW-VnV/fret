@@ -285,7 +285,7 @@ class DiagnosisRequirementsTable extends React.Component {
   synchStateWithDB() {
     if (!this.mounted) return;
 
-    const { selectedProject } = this.props
+    const { selectedProject, selectedComponent } = this.props
     const filterOff = selectedProject == 'All Projects'
 
     db.allDocs({
@@ -302,7 +302,7 @@ class DiagnosisRequirementsTable extends React.Component {
       this.setState({
         data: result.rows
                 .filter(r => !system_dbkeys.includes(r.key))
-                .filter(r => filterOff || r.doc.project == selectedProject)
+                .filter(r => filterOff || (r.doc.project === selectedProject && r.doc.semantics.component_name === selectedComponent))
                 .map(r => {
                   return createData(r.doc._id, r.doc._rev, r.doc.reqid, r.doc.fulltext, r.doc.project)
                 })
@@ -430,6 +430,7 @@ class DiagnosisRequirementsTable extends React.Component {
 
 DiagnosisRequirementsTable.propTypes = {
   selectedProject: PropTypes.string.isRequired,
+  selectedComponent: PropTypes.string.isRequired,
   existingProjectNames: PropTypes.array.isRequired,
   connectedComponent : PropTypes.object.isRequired
 };

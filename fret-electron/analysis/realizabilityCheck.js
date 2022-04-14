@@ -30,6 +30,7 @@
 // ANY SUCH MATTER SHALL BE THE IMMEDIATE, UNILATERAL TERMINATION OF THIS
 // AGREEMENT.
 // *****************************************************************************
+const fs = require('fs');
 const exec = require('child_process').exec;
 const execSync = require('child_process').execSync;
 export function checkRealizability(filePath, engine, options, callback) {
