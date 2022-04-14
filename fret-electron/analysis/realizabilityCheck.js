@@ -91,7 +91,7 @@ export function checkReal(filePath, engine, options) {
   if (engine === 'jkind'){
     command = 'jrealizability ' + options + ' ' + filePath;
   } else {
-    command = 'kind2' + '-json --enable CONTRACTCK ' + filePath;
+    command = 'kind2 ' + '-json --enable CONTRACTCK ' + filePath;
   }
   // var jkindCommand = 'jrealizability '+ options + ' ' + filePath;
   var output

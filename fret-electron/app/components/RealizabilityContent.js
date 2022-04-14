@@ -686,8 +686,6 @@ class RealizabilityContent extends React.Component {
     for (const inputVar of contract.inputVariables) {
       inputVar.name = '__'+inputVar.name;
     }
-
-    console.log(contract);
   return true;
   }
 
@@ -1396,6 +1394,7 @@ class RealizabilityContent extends React.Component {
               >
                   {menuItems.concat(stableSort(components, getSorting(order, orderBy))
                     .map(n => {
+
                     return (
                       <Tooltip
                         key={n.component_name}
@@ -1410,7 +1409,7 @@ class RealizabilityContent extends React.Component {
                               &nbsp;
                               <ResultIcon reskey={n.component_name} result={status[n.component_name] !== undefined ? status[n.component_name] : ''} time={(monolithic && time[n.component_name] !== undefined) ? ' - ' + time[n.component_name] : ''}
                                 error={
-                                  systemComponentIndex !== -1 ? projectReport.systemComponents[systemComponentIndex].monolithic.error : ''
+                                  (systemComponentIndex !== -1 && projectReport.systemComponents[systemComponentIndex].monolithic.error) ? projectReport.systemComponents[systemComponentIndex].monolithic.error : ''
                                 }/>
                             </div>
                           </MenuItem>
@@ -1467,7 +1466,11 @@ class RealizabilityContent extends React.Component {
                 <ErrorIcon id="qa_rlzCont_icon_depMissing" className={classes.wrapper} style={{verticalAlign : 'bottom'}} color='error'/>
               </Tooltip>
             }
-
+            {monolithic && (status[selected.component_name] === 'ERROR' || diagStatus === 'ERROR') &&
+              <Tooltip title={(systemComponentIndex !== -1 && projectReport.systemComponents[systemComponentIndex]) ? projectReport.systemComponents[systemComponentIndex].monolithic.error.toString() : ''}>
+                <ErrorIcon id="qa_rlzCont_icon_analysisError" className={classes.wrapper} style={{verticalAlign: 'bottom'}} color='error'/>
+              </Tooltip>
+            }
 {/*            <TextField
               id="qa_rlzCont_tf_timeOut"
               className={classes.wrapper}
