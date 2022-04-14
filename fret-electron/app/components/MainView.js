@@ -63,6 +63,7 @@ import GraphIcon from '@material-ui/icons/Timeline';
 import ClusterIcon from '@material-ui/icons/BubbleChart';
 import ListIcon from '@material-ui/icons/List';
 import HelpIcon from '@material-ui/icons/Help';
+import InfoIcon from '@material-ui/icons/Info';
 import SettingsIcon from '@material-ui/icons/Settings';
 import LanguageIcon from '@material-ui/icons/Language';
 import CloseIcon from '@material-ui/icons/Close';
@@ -79,6 +80,7 @@ import AppMainContent from './AppMainContent';
 import RequirementImportDialogs from './RequirementImportDialogs';
 
 import ExportRequirementsDialog from './ExportRequirementsDialog';
+import VersionDialog from './VersionDialog';
 
 const app = require('electron').remote.app
 const dialog = require('electron').remote.dialog
@@ -211,6 +213,7 @@ class MainView extends React.Component {
     projectTobeDeleted: '',
     exportRequirementsDialogOpen: false,
     requirementImportDialogOpen: false,
+    versionDialogOpen: false,
     csvFields: [],
     importedReqs: [],
     requirements: [],
@@ -464,6 +467,19 @@ class MainView extends React.Component {
     })
   }
 
+  openVersionDialog = () => {
+    this.setState({
+      versionDialogOpen: true,
+      anchorEl: null
+    })
+  }
+
+  closeVersionDialog = () => {
+    this.setState({
+      versionDialogOpen: false,
+      anchorEl: null
+    })
+  }
 
   openExportRequirementsDialog = () => {
     this.setState({
@@ -520,7 +536,7 @@ class MainView extends React.Component {
               </IconButton>
               <Typography variant="h6" color="inherit" noWrap>
                 <div className={css.logo_container}>
-                  <div className={css.logo_content}>FRET</div>
+                  <div className={css.logo_content}>MU-FRET</div>
                   <div style={{paddingLeft: '30px'}}>
                     <Button
                       color="secondary"
@@ -642,6 +658,14 @@ class MainView extends React.Component {
                 <ListItemText primary="Help" />
               </ListItem>
               </div>
+              <div>
+              <ListItem button onClick={() => this.openVersionDialog()}>
+                <ListItemIcon>
+                  <InfoIcon />
+                </ListItemIcon>
+                <ListItemText primary="Version" />
+              </ListItem>
+              </div>
               </List>
             </div>
           </Drawer>
@@ -676,6 +700,11 @@ class MainView extends React.Component {
             open={this.state.exportRequirementsDialogOpen}
             fretProjects={this.state.listOfProjects}
             handleDialogClose={this.closeExportRequirementsDialog}
+          />
+          <VersionDialog
+            open={this.state.versionDialogOpen}
+            version= {app.getVersion()}
+            handleDialogClose={this.closeVersionDialog}
           />
           <RequirementImportDialogs
             open={this.state.requirementImportDialogOpen}
