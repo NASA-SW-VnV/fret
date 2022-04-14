@@ -189,7 +189,7 @@ class RealizabilitySettingsDialog extends React.Component {
           				</ListItem>        				
           				<ListItem>
 				            <TextField
-				              id="timeout-value"
+				              id="qa_rlzCont_tf_timeOut"
 				              label="Timeout (seconds)"
 				              placeholder="900"
 				              value={this.state.timeout}

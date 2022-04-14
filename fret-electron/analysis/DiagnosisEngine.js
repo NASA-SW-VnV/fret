@@ -130,26 +130,38 @@ class DiagnosisEngine {
       var lustreContract = ejsCache_realize.renderRealizeCode(this.engineName).component.complete(this.engines[eng]);
       fs.writeSync(output, lustreContract);
       if (minimal) {
-        // checkOutput = realizabilityCheck.checkReal(filePath, '-json -timeout ' + this.timeout);
         checkOutput = realizabilityCheck.checkReal(filePath, this.engineName, '-json -timeout ' + this.timeout);
-        // checkOutput = realizabilityCheck.checkRealizability(filePath, '-json -timeout ' + this.timeout);
-        // realizabilityCheck.checkRealizability(filePath, '-json -timeout ' + this.timeout, function(checkOutput) {
-        
-        var result = checkOutput.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];
+        var result = checkOutput.result;
         localMap.set(propertyList, result);
         if (result === "UNREALIZABLE" && minimal) {
-          var fileContent = fs.readFileSync(filePath+'.json', 'utf8');
-          var jsonOutput = JSON.parse(fileContent);
+          let jsonOutput = checkOutput.output;
+          console.log(propertyList);          
+          if (this.engineName === 'kind2') {
+            let kind2JsonResult = jsonOutput.filter(e => e.objectType === "realizabilityCheck")[0];
+            let newJsonOutput = {
+              "Runtime": {
+                "unit": kind2JsonResult.runtime['unit'],
+                "value": kind2JsonResult.runtime['value']},
+              "Answer": {"text": kind2JsonResult.result},
+              "K": kind2JsonResult.deadlockingTrace[0].streams[0].instantValues.length,
+              "Counterexample": []
+            };
+            let signals = kind2JsonResult.deadlockingTrace[0].streams;           
+            for (const signal of signals) {
+              let signalInfo = {"name": signal.name, "type": signal.type}              
+              for (let i = 0; i < newJsonOutput.K; i++){                
+                signalInfo['Step '+i] = signals[signals.indexOf(signal)].instantValues[i][1];
+              }
+              newJsonOutput.Counterexample.push(signalInfo);
+            }
+            jsonOutput = newJsonOutput;
+          }         
           this.counterExamples.set('['+propertyList.toString()+']', jsonOutput);
         }
-        // })          
       } else {
-        // checkOutput = realizabilityCheck.checkRealizability(filePath, '-fixpoint -timeout ' + this.timeout);
-        // realizabilityCheck.checkRealizability(filePath, '-fixpoint -timeout ' + this.timeout, function(checkOutput) {
         checkOutput = realizabilityCheck.checkReal(filePath, this.engineName, '-fixpoint -timeout ' + this.timeout);
-        var result = checkOutput.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];        
+        var result = checkOutput.result;
         localMap.set(propertyList, result);
-        // })          
       }
     }
     this.engines = [];
@@ -317,18 +329,18 @@ class DiagnosisEngine {
     }
 
     if (minConflicts.length === 0 && n < properties.length) {
-      // this.optLog('No minimal conflicts, but n < # of properties')
+      this.optLog('No minimal conflicts, but n < # of properties')
       var tmpConflicts = this.deltaDebug(contract, Math.min(properties.length, 2*n));
       if (tmpConflicts.toString().startsWith("UNKNOWN")) {
             return tmpConflicts;
       }
-      // this.optLog(tmpConflicts);
+      this.optLog(tmpConflicts);
       minConflicts = minConflicts.concat(tmpConflicts);
       this.addUniqueConflicts(tmpConflicts);      
     }
 
     if (minConflicts.length === 0 && !conflictExists) {
-      // this.optLog('No conflicts smaller than current found. Add current set of properties as minimal conflict')            
+      this.optLog('No conflicts smaller than current found. Add current set of properties as minimal conflict')            
       minConflicts.push(properties);
       this.addUniqueConflicts([properties]);
     }
@@ -572,6 +584,7 @@ class DiagnosisEngine {
         }
       }
     } catch (error) {
+      console.log(error)
       this.optLog(error)
       return callback(error);
     }

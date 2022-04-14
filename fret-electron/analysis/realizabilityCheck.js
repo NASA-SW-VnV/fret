@@ -64,8 +64,7 @@ export function checkRealizability(filePath, engine, options, callback) {
         result = stdout.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];
         time = stdout.match(new RegExp('(Time = )(.*?)\\n'))[2];
 
-        callback(null, result, time, null); 
-        // callback(null, stdout); 
+        callback(null, result, time, null);
       } else {
         var kind2Output = JSON.parse(stdout);
         var realizabilityResults = kind2Output.filter(e => e.objectType === "realizabilityCheck")[0];
@@ -78,7 +77,6 @@ export function checkRealizability(filePath, engine, options, callback) {
         }        
         cex = realizabilityResults.deadlockingTrace ? realizabilityResults.deadlockingTrace : null;
         callback(null, result, time, cex);
-        // callback(null, kind2Output);
       }
       
     }
@@ -93,14 +91,22 @@ export function checkReal(filePath, engine, options) {
   } else {
     command = 'kind2 ' + '-json --enable CONTRACTCK ' + filePath;
   }
-  // var jkindCommand = 'jrealizability '+ options + ' ' + filePath;
-  var output
+  var result, output;
   try {
-    // output = execSync(jkindCommand).toString();
-    output = execSync(command).toString();
-    return output;
+    result = execSync(command).toString();
+    if (engine === 'jkind') {
+      result = result.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];
+      var fileContent = fs.readFileSync(filePath+'.json', 'utf8');
+      output = JSON.parse(fileContent);
+    } else {
+      output = JSON.parse(result);
+      var realizabilityResults = output.filter(e => e.objectType === "realizabilityCheck")[0];      
+      var consistencyResults = output.filter(e => e.objectType === "satisfiabilityCheck")[0];        
+      result = (consistencyResults && consistencyResults.result === "unsatisfiable") ? "INCONSISTENT" : realizabilityResults.result.toUpperCase();
+    }
+    return {result, output};
   } catch (error) {    
-    return error.stdout.toString();
+    return error.toString();
   }
   
 }

@@ -898,10 +898,7 @@ class RealizabilityContent extends React.Component {
   };
 
   handleTimeoutChange = (value) => {
-    // var reg = new RegExp('^([1-9])([0-9]*)$');
-    // if (reg.test(event.target.value) || event.target.value === '') {
       this.setState({timeout: value});
-    // }
   };
 
   diagnoseSpec(event) {    
@@ -972,10 +969,6 @@ class RealizabilityContent extends React.Component {
                 projectReport: projectReport
               });
 
-              //delete intermediate files under homeDir/Documents/fret-analysis if not in dev mode
-              // if (process.env.NODE_ENV !== 'development') {
-              //   self.deleteAnalysisFiles();
-              // }
               if (!retainFiles) {
                 self.deleteAnalysisFiles();
               }
@@ -999,10 +992,6 @@ class RealizabilityContent extends React.Component {
                 projectReport: projectReport
               });
 
-              //delete intermediate files under homeDir/Documents/fret-analysis if not in dev mode
-              // if (process.env.NODE_ENV !== 'development') {
-              //   self.deleteAnalysisFiles();
-              // }
               if (!retainFiles) {
                 self.deleteAnalysisFiles();
               }
@@ -1068,28 +1057,6 @@ class RealizabilityContent extends React.Component {
     let nameAndEngine = self.getEngineNameAndOptions();
     let engineName = nameAndEngine.name;
     let engineOptions = nameAndEngine.options + actualTimeout;
-    // switch (selectedEngine) {
-    //   case 0:
-    //   //JKind without MBP
-    //     engineName = 'jkind';
-    //     engineOptions = '-fixpoint -timeout '+actualTimeout;
-    //     break;      
-    //   case 1:
-    //   //JKind+AEVAL (MBP)
-    //     engineName = 'jkind';
-    //     engineOptions = '-fixpoint -solver aeval -timeout '+actualTimeout
-    //     break;
-    //   case 2:
-    //   //Kind 2 without MBP
-    //     engineName = 'kind2';
-    //     engineOptions = '--enable CONTRACTCK --timeout '+actualTimeout;
-    //     break;        
-    //   case 3:
-    //   //Kind 2 (MBP)
-    //     engineName = 'kind2';
-    //     engineOptions = '--enable CONTRACTCK --ae_val_use_ctx false --timeout ' + actualTimeout;
-    //     break;
-    // }
     
     var targetComponents;
     if (selected === 'all') {
@@ -1160,8 +1127,6 @@ class RealizabilityContent extends React.Component {
               var lustreContract = ejsCache_realize.renderRealizeCode(engineName).component.complete(contract);
 
               fs.writeSync(output, lustreContract);
-              // checkOutput = realizability.checkRealizability(filePath, '-fixpoint -timeout ' + actualTimeout);
-              // realizability.checkRealizability(filePath, engineName, engineOptions, function(err, checkOutput) {
                 realizability.checkRealizability(filePath, engineName, engineOptions, function(err, result, time, cex) {
 
                 if (err) {
@@ -1171,8 +1136,6 @@ class RealizabilityContent extends React.Component {
                     return(prevState);
                   });
                 } else {
-                  // var result = checkOutput.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];
-                  // var time = checkOutput.match(new RegExp('(Time = )(.*?)\\n'))[2];
                   self.setState(prevState => {
                     prevState.projectReport.systemComponents[systemComponentIndex].monolithic.result = result;
                     prevState.projectReport.systemComponents[systemComponentIndex].monolithic.time = time;
@@ -1180,10 +1143,7 @@ class RealizabilityContent extends React.Component {
                     return(prevState);
                   })
                 }
-                //delete intermediate files under homeDir/Documents/fret-analysis if not in dev mode
-                // if (process.env.NODE_ENV !== 'development') {
-                //   self.deleteAnalysisFiles();
-                // }
+
                 if (!retainFiles) {
                   self.deleteAnalysisFiles();
                 }                
@@ -1200,10 +1160,6 @@ class RealizabilityContent extends React.Component {
               var lustreContract = ejsCache_realize.renderRealizeCode(engineName).component.complete(ccContract);
               fs.writeSync(output, lustreContract);
 
-              // output.write(lustreContract);
-              // output.end();
-              // output.on('finish', () => {
-              // realizability.checkRealizability(filePath, engineName, engineOptions, function(err, checkOutput) {
               realizability.checkRealizability(filePath, engineName, engineOptions, function(err, result, time, cex) {                
                 if (err) {
                   cc.result = 'ERROR';
@@ -1215,8 +1171,6 @@ class RealizabilityContent extends React.Component {
                   })
                   ccResults.push('ERROR');
                 } else {
-                  // var ccResult = checkOutput.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];
-                  // var ccTime = checkOutput.match(new RegExp('(Time = )(.*?)\\n'))[2];
 
                   cc.result = result;
                   cc.time = time;
@@ -1262,10 +1216,6 @@ class RealizabilityContent extends React.Component {
                     }
                   }
 
-                  //delete intermediate files under homeDir/Documents/fret-analysis if not in dev mode
-                  // if (process.env.NODE_ENV !== 'development') {
-                  //   self.deleteAnalysisFiles();
-                  // }
                   if (!retainFiles) {
                     self.deleteAnalysisFiles();
                   }                  
@@ -1471,19 +1421,6 @@ class RealizabilityContent extends React.Component {
                 <ErrorIcon id="qa_rlzCont_icon_analysisError" className={classes.wrapper} style={{verticalAlign: 'bottom'}} color='error'/>
               </Tooltip>
             }
-{/*            <TextField
-              id="qa_rlzCont_tf_timeOut"
-              className={classes.wrapper}
-              disabled={selected === ''}
-              label="Timeout (seconds)"
-              placeholder="900"
-              value={this.state.timeout}
-              onChange={this.handleTimeoutChange}
-              style={{width:150}}
-              InputLabelProps={{
-                shrink: true
-              }}
-            />*/}
             <div className={classes.wrapper}>
               <Button 
                 id="realizability_actions_button"
@@ -1492,7 +1429,6 @@ class RealizabilityContent extends React.Component {
                 aria-haspopup="true"
                 aria-expanded={actionsMenuOpen ? 'true' : undefined}   
                 size="small" variant="contained" color="secondary"
-                // disabled={status[selected.component_name] === 'PROCESSING' || diagStatus === 'PROCESSING' || !dependenciesExist || (dependenciesExist && selected === '')}
                 disabled={status[selected.component_name] === 'PROCESSING' || diagStatus === 'PROCESSING'}
                 endIcon={<KeyboardArrowDownIcon />}
                 onClick={(event) => this.handleActionsClick(event)}>
@@ -1518,41 +1454,7 @@ class RealizabilityContent extends React.Component {
                 <MenuItem id="qa_rlzCont_btn_settings" onClick={() => this.handleSettingsOpen()}>Change Settings</MenuItem>
               </Menu>
             </div>
-            {/*<div className={classes.wrapper}>
-            <Button onClick={(event) => {this.checkRealizability(event)}} size="small" className={classes.vAlign} color="secondary" variant='contained' disabled={status[selected.component_name] === 'PROCESSING' || diagStatus === 'PROCESSING' || !dependenciesExist || (dependenciesExist && selected === '')}>
-              Check
-            </Button>
-            </div>
-            <div className={classes.wrapper}>
-              <Button
-                id="qa_rlzCont_btn_diagnose"
-                onClick={(event) => {this.diagnoseSpec(event)}}
-                size="small" className={classes.vAlign}
-                color="secondary"
-                variant='contained'
-                disabled={
-                  status[selected.component_name] === 'PROCESSING' || diagStatus === 'PROCESSING' || !dependenciesExist || (dependenciesExist && (selected === '' || selected === 'all')) || 
-                  (dependenciesExist && selected !== '' && compositional && projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].result !== 'UNREALIZABLE') || 
-                    (selected !== '' && monolithic && status[selected.component_name] !== 'UNREALIZABLE')       
-                  }>
-                Diagnose
-              </Button>
-              {diagStatus === 'PROCESSING' && <CircularProgress size={24} className={classes.buttonProgress}/>}
-            </div>
-            <div className={classes.wrapper}>
-
-            <SaveRealizabilityReport classes={{vAlign: classes.vAlign}} enabled={
-              projectReport.systemComponents.length > 0 && status[selected.component_name] !== 'PROCESSING' && diagStatus !== 'PROCESSING'
-            } projectReport={projectReport}/>
-            </div>
-            <div className={classes.wrapper}>
-            <Button color="secondary" onClick={this.handleHelpOpen} size="small" id="qa_rlzTbl_btn_help" className={classes.vAlign} variant="contained"> Help </Button>
-              <Tooltip title={'Settings'}>
-                <Button color="secondary" onClick={() => this.handleSettingsOpen()} size="small" className={classes.vAlign} variant="contained">                   
-                  Settings
-                </Button>
-              </Tooltip>
-            </div>*/}
+            
             <div className={classes.wrapper}>
               <Button id="qa_rlzTbl_btn_help" color="secondary" onClick={this.handleHelpOpen} size="small" className={classes.vAlign} variant="contained"> Help </Button>
             </div>
