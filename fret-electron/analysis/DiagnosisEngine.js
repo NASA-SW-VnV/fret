@@ -130,7 +130,7 @@ class DiagnosisEngine {
       var lustreContract = ejsCache_realize.renderRealizeCode(this.engineName).component.complete(this.engines[eng]);
       fs.writeSync(output, lustreContract);
       if (minimal) {
-        checkOutput = realizabilityCheck.checkReal(filePath, this.engineName, '-json -timeout ' + this.timeout);
+        checkOutput = realizabilityCheck.checkReal(filePath, this.engineName, ' -json '+this.engineOptions + this.timeout);
         var result = checkOutput.result;
         localMap.set(propertyList, result);
         if (result === "UNREALIZABLE" && minimal) {
@@ -158,7 +158,7 @@ class DiagnosisEngine {
           this.counterExamples.set('['+propertyList.toString()+']', jsonOutput);
         }
       } else {
-        checkOutput = realizabilityCheck.checkReal(filePath, this.engineName, '-fixpoint -timeout ' + this.timeout);
+        checkOutput = realizabilityCheck.checkReal(filePath, this.engineName, this.engineOptions);
         var result = checkOutput.result;
         localMap.set(propertyList, result);
       }

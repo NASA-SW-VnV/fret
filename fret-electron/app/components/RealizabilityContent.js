@@ -693,7 +693,6 @@ class RealizabilityContent extends React.Component {
     const {getPropertyInfo, getDelayInfo, getContractInfo} = this.props;
     const {projectReport} = this.state;    
     const self = this;
-    console.log(components);
     components.forEach(component => {      
       projectReport.projectName = project;
       projectReport.systemComponents = [];
@@ -740,7 +739,6 @@ class RealizabilityContent extends React.Component {
                 monolithic: {result: 'UNCHECKED', time: '', diagnosisStatus: '', diagnosisReport: ''},
                 compositional: {result: 'UNCHECKED', connectedComponents: ccArray}
               });              
-              console.log(projectReport.systemComponents);
             } else {
               projectReport.systemComponents.push({
                 name: component.component_name,
@@ -860,7 +858,6 @@ class RealizabilityContent extends React.Component {
     }
 
     if (completedComponents.length !== 0 && completedComponents !== prevProps.completedComponents) {
-      console.log(completedComponents);
       try {
       this.computeConnectedComponents(selectedProject, components, completedComponents);
       } catch (err) {
@@ -876,7 +873,6 @@ class RealizabilityContent extends React.Component {
         this.setState({selected: 'all', monolithic : false, compositional : true});
       } else {
 
-        console.log(projectReport.systemComponents);
         let componentObject = projectReport.systemComponents.find( ({ name }) => name === event.target.value.component_name);
 
         let isDecomposable = componentObject.compositional ? componentObject.compositional.connectedComponents.length > 1 : false;
@@ -1070,7 +1066,6 @@ class RealizabilityContent extends React.Component {
     targetComponents.forEach(tC => {
 
       var systemComponentIndex = projectReport.systemComponents.findIndex( sc => sc.name === tC.component_name);
-      console.log(projectReport.systemComponents);
       self.setState(prevState => {
         if(monolithic) {
           prevState.projectReport.systemComponents[systemComponentIndex].monolithic = {

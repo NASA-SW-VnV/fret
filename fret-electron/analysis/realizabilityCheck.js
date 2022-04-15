@@ -90,15 +90,19 @@ export function checkReal(filePath, engine, options) {
   if (engine === 'jkind'){
     command = 'jrealizability ' + options + ' ' + filePath;
   } else {
-    command = 'kind2 ' + '-json --enable CONTRACTCK ' + filePath;
+    command = 'kind2 ' + options + filePath;
   }
   var result, output;
   try {
     result = execSync(command).toString();
     if (engine === 'jkind') {
       result = result.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];
-      var fileContent = fs.readFileSync(filePath+'.json', 'utf8');
-      output = JSON.parse(fileContent);
+      if (options.includes('json')){
+        var fileContent = fs.readFileSync(filePath+'.json', 'utf8');
+        output = JSON.parse(fileContent);
+      } else {
+        output = "";
+      }
     } else {
       output = JSON.parse(result);
       var realizabilityResults = output.filter(e => e.objectType === "realizabilityCheck")[0];      
