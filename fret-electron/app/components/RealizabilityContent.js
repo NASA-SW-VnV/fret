@@ -288,25 +288,10 @@ class CCRequirementsTable extends React.Component {
 
   constructor(props){
     super(props);
-    // dbChangeListener_CCReq_Tab = db.changes({
-    //     since: 'now',
-    //     live: true,
-    //     include_docs: true
-    //   }).on('change', (change) => {
-    //     if (!system_dbkeys.includes(change.id)) {
-    //       this.optLog(change);
-    //       this.synchStateWithDB();
-    //     }
-    //   }).on('complete', function(info) {
-    //     this.optLog(info);
-    //   }).on('error', function (err) {
-    //     this.optLog(err);
-    //   });
   }
 
   componentDidMount() {
     this.mounted = true;
-    // this.synchStateWithDB();
   }
 
   componentWillUnmount() {
@@ -316,7 +301,6 @@ class CCRequirementsTable extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (this.props.connectedComponent !== prevProps.connectedComponent) {
-      // this.synchStateWithDB()
       this.setState(
         {
           selected: [],
@@ -693,9 +677,7 @@ class RealizabilityContent extends React.Component {
     const {getPropertyInfo, getDelayInfo, getContractInfo} = this.props;
     const {projectReport} = this.state;    
     const self = this;
-    components.forEach(component => {      
-      projectReport.projectName = project;
-      projectReport.systemComponents = [];
+    components.forEach(component => {
       modeldb.find({
         selector: {
           component_name: component.component_name,
@@ -721,47 +703,40 @@ class RealizabilityContent extends React.Component {
                * */
             var mappings = cc_analysis.compute_dependency_maps(contract);
             var connected_components = cc_analysis.compute_connected_components(contract, mappings['output']);
-            if (connected_components.length > 0) {
-              let ccArray = [];
-              connected_components.forEach(comp => {
-                ccArray.push({
-                  ccName: 'cc' + connected_components.indexOf(comp),
-                  result: 'UNCHECKED',
-                  time: '',
-                  requirements: Array.from(comp.properties),
-                  diagnosisStatus: '',
-                  diagnosisReport: ''
-                })
+            let ccArray = [];
+            connected_components.forEach(comp => {
+              ccArray.push({
+                ccName: 'cc' + connected_components.indexOf(comp),
+                result: 'UNCHECKED',
+                time: '',
+                requirements: Array.from(comp.properties),
+                diagnosisStatus: '',
+                diagnosisReport: ''
               })
+            })
 
-              projectReport.systemComponents.push({
-                name: component.component_name,
-                monolithic: {result: 'UNCHECKED', time: '', diagnosisStatus: '', diagnosisReport: ''},
-                compositional: {result: 'UNCHECKED', connectedComponents: ccArray}
-              });              
-            } else {
-              projectReport.systemComponents.push({
-                name: component.component_name,
-                monolithic: {result: 'UNCHECKED', time: '', diagnosisStatus: '', diagnosisReport: ''}
-              })
-            }
-          }                  
+            projectReport.systemComponents = [].concat(projectReport.systemComponents.map(obj => {
+              if (obj.name === component.component_name) {
+                return {...obj, monolithic: {result: 'UNCHECKED', time: '', diagnosisStatus: '', diagnosisReport: ''}, compositional: {result: 'UNCHECKED', connectedComponents: ccArray}};
+              }
+              return obj;
+            }))
+
+            let isDecomposable = connected_components.length > 1;
+  
+            self.setState({
+              selected: components[0],
+              monolithic : !isDecomposable,
+              compositional: isDecomposable,
+              ccSelected: 'cc0',
+              projectReport: projectReport
+            });              
+          }
         }).catch((err) => {
           self.optLog(err);
         })
       })
     });
-
-    this.setState(prevState => {
-      prevState.selected = '';
-      prevState.monolithic = false;
-      prevState.compositional = false;
-      prevState.ccSelected = 'cc0';
-      prevState.projectReport = projectReport;
-      return(prevState);
-    })
-
-
   }
 
   checkDependenciesExist() {
@@ -827,12 +802,16 @@ class RealizabilityContent extends React.Component {
 
   componentDidMount() {
     const {selectedProject, components} = this.props;
+    let sysComps = []
+    for (const component of components) {
+      sysComps.push({name: component.component_name})
+    }
     this.setState({
         monolithic: false,
         compositional: false,
         selected: '',
         ccSelected: '',
-        projectReport: {projectName: selectedProject, systemComponents: []}
+        projectReport: {projectName: selectedProject, systemComponents: sysComps}
     });
     this.checkDependenciesExist();
         this.mounted = true;  
@@ -846,6 +825,7 @@ class RealizabilityContent extends React.Component {
   componentDidUpdate(prevProps, prevState) {
     const {selectedProject, components, completedComponents} = this.props;
     const {projectReport, selected, ccSelected} = this.state;
+    let sysComps = []
 
     if (selectedProject !== prevProps.selectedProject) {
       this.setState({
@@ -853,35 +833,32 @@ class RealizabilityContent extends React.Component {
         compositional: false,
         selected: '',
         ccSelected: '',
-        projectReport: {projectName: selectedProject, systemComponents: []}
+        projectReport: {projectName: selectedProject, systemComponents: sysComps}
       });
     }
 
-    if (completedComponents.length !== 0 && completedComponents !== prevProps.completedComponents) {
-      try {
-      this.computeConnectedComponents(selectedProject, components, completedComponents);
-      } catch (err) {
-        this.optLog(err)
+    if (components !== prevProps.components){
+      for (const component of components) {
+        sysComps.push({name: component.component_name})
       }
+      this.setState({
+        projectReport: {...projectReport, systemComponents: sysComps}
+      })      
+    }
+
+    if (selected !== prevState.selected) {
+      this.computeConnectedComponents(selectedProject, [selected], completedComponents);
     }
   }
 
   handleChange = name => event => {
     const {connectedComponents, projectReport} = this.state;
+    const {completedComponents} = this.props;
     if (name === 'selected') {
       if (event.target.value === 'all') {
-        this.setState({selected: 'all', monolithic : false, compositional : true});
+        this.setState({selected: 'all', monolithic : false, compositional : false});
       } else {
-
-        let componentObject = projectReport.systemComponents.find( ({ name }) => name === event.target.value.component_name);
-
-        let isDecomposable = componentObject.compositional ? componentObject.compositional.connectedComponents.length > 1 : false;
-        
-        this.setState({
-          selected: event.target.value,
-          monolithic : !isDecomposable,
-          compositional: isDecomposable
-        });
+        this.setState({selected: event.target.value});             
       }
 
     } else if (name === 'monolithic' && !this.state.monolithic) {
@@ -1033,12 +1010,12 @@ class RealizabilityContent extends React.Component {
       case 2:
       //Kind 2 without MBP
         name = 'kind2';
-        options = '--enable CONTRACTCK --timeout '
+        options = '-json --enable CONTRACTCK --timeout '
         break;        
       case 3:
       //Kind 2 (MBP)
         name = 'kind2';
-        engineOptions = '--enable CONTRACTCK --ae_val_use_ctx false --timeout '
+        engineOptions = '-json --enable CONTRACTCK --ae_val_use_ctx false --timeout '
         break;
     }
     return {name, options};
@@ -1269,7 +1246,7 @@ class RealizabilityContent extends React.Component {
     var tabs = [];
 
     var systemComponentIndex = projectReport.systemComponents.findIndex( sc => sc.name === selected.component_name );
-    var connectedComponentIndex = systemComponentIndex !== -1 ? projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents.findIndex( cc => cc.ccName === ccSelected ) : 0;
+    var connectedComponentIndex = (systemComponentIndex !== -1 && projectReport.systemComponents[systemComponentIndex].compositional) ? projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents.findIndex( cc => cc.ccName === ccSelected ) : 0;
 
     if (compositional && selected.component_name && projectReport.systemComponents[systemComponentIndex]) {
       for (const cc of projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents) {        
@@ -1294,7 +1271,7 @@ class RealizabilityContent extends React.Component {
     var compositionalStatus = {};
 
     for (const comp of projectReport.systemComponents) {
-      monolithicStatus[comp.name] = comp.monolithic.result;
+      monolithicStatus[comp.name] = comp.monolithic ? comp.monolithic.result : '';
     }
     for (const comp of projectReport.systemComponents) {
       compositionalStatus[comp.name] = comp.compositional ? comp.compositional.result : '';
@@ -1309,12 +1286,12 @@ class RealizabilityContent extends React.Component {
 
     var time = {};  
     for (const comp of projectReport.systemComponents) {
-      time[comp.name] = comp.monolithic.time;
+      time[comp.name] = comp.monolithic ? comp.monolithic.time : '';
     }; 
 
     var diagStatus, diagReport;
     if (selected !== '' && selected !== 'all' && projectReport.systemComponents[systemComponentIndex]) {
-      if (projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents.length > 0) {
+      if (projectReport.systemComponents[systemComponentIndex].compositional && projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents.length > 0) {
         diagStatus = monolithic ? projectReport.systemComponents[systemComponentIndex].monolithic.diagnosisStatus : projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].diagnosisStatus;
 
         diagReport = monolithic ? projectReport.systemComponents[systemComponentIndex].monolithic.diagnosisReport : projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].diagnosisReport;
@@ -1326,7 +1303,7 @@ class RealizabilityContent extends React.Component {
     if (this.state.settingsOpen) {      
       actionsMargin.marginRight = '40%'
     }
-
+    
     return(
       <div>
         {components.length !== 0 &&
@@ -1356,7 +1333,7 @@ class RealizabilityContent extends React.Component {
                               &nbsp;
                               <ResultIcon reskey={n.component_name} result={status[n.component_name] !== undefined ? status[n.component_name] : ''} time={(monolithic && time[n.component_name] !== undefined) ? ' - ' + time[n.component_name] : ''}
                                 error={
-                                  (systemComponentIndex !== -1 && projectReport.systemComponents[systemComponentIndex].monolithic.error) ? projectReport.systemComponents[systemComponentIndex].monolithic.error : ''
+                                  (systemComponentIndex !== -1 && projectReport.systemComponents[systemComponentIndex].monolithic) ? projectReport.systemComponents[systemComponentIndex].monolithic.error : ''
                                 }/>
                             </div>
                           </MenuItem>
@@ -1368,8 +1345,7 @@ class RealizabilityContent extends React.Component {
             </FormControl>
             <FormControlLabel
               disabled={
-                selected === '' || (selected !== 'all' && 
-                  (projectReport.systemComponents[systemComponentIndex] ? projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents.length <= 1 : false))
+                selected === '' || (selected !== 'all' && systemComponentIndex > -1 && (!projectReport.systemComponents[systemComponentIndex].compositional || projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents.length <= 1))                  
               }
               control={
                 <Checkbox
@@ -1383,7 +1359,7 @@ class RealizabilityContent extends React.Component {
               label="Compositional"
             />
             <FormControlLabel
-              disabled={selected === ''}
+              disabled={selected === '' || (systemComponentIndex > -1 && !projectReport.systemComponents[systemComponentIndex].compositional)}
               control={
                 <Checkbox
                   id="qa_rlzCont_cb_monolithic"

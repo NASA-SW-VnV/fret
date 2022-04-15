@@ -36,20 +36,9 @@ const execSync = require('child_process').execSync;
 export function checkRealizability(filePath, engine, options, callback) {
   let command;
   if (engine === 'jkind'){
-    command = 'jrealizability '+ options + ' ' + filePath;
-    // var output
-    // try {
-    //   output = exec(jkindCommand).toString();
-    // } catch (error) {    
-    //       console.log(error.status)
-    //   console.log(error.message)
-    //   console.log(error.stderr.toString())
-    //   console.log(error.stdout.toString())
-    // }
-    // console.log(output);
-    // return output;    
+    command = 'jrealizability '+ options + ' ' + filePath;   
   } else if (engine === 'kind2'){
-    command = 'kind2 -json ' + options + ' ' + filePath;
+    command = 'kind2 ' + options + ' ' + filePath;
   }
 
   exec(command, function (err, stdout, stderr) {
@@ -74,7 +63,7 @@ export function checkRealizability(filePath, engine, options, callback) {
         if (consistencyResults) {
           time = (realizabilityResults.runtime['value'] + consistencyResults.runtime['value']).toString() + realizabilityResults.runtime['unit'];
         } else {
-          time = (realizabilityResults.runtime['value']).toString() + realizabilityResults.runtime['unit'];
+          time = (realizabilityResults.runtime['value'] + (consistencyResults ? consistencyResults.runtime['value'] : 0)).toString() + realizabilityResults.runtime['unit'];
         }        
         cex = realizabilityResults.deadlockingTrace ? realizabilityResults.deadlockingTrace : null;
         callback(null, result, time, cex);
@@ -90,7 +79,7 @@ export function checkReal(filePath, engine, options) {
   if (engine === 'jkind'){
     command = 'jrealizability ' + options + ' ' + filePath;
   } else {
-    command = 'kind2 ' + options + filePath;
+    command = 'kind2 ' + options + ' ' + filePath;
   }
   var result, output;
   try {

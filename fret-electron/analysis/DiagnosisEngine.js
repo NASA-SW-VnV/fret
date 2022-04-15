@@ -133,7 +133,7 @@ class DiagnosisEngine {
         if (this.engineName === 'jkind'){
           checkOutput = realizabilityCheck.checkReal(filePath, this.engineName, ' -json -timeout ' + this.timeout);  
         } else {
-          checkOutput = realizabilityCheck.checkReal(filePath, this.engineName, ' -json ' + this.engineOptions);  
+          checkOutput = realizabilityCheck.checkReal(filePath, this.engineName, this.engineOptions);  
         }
         var result = checkOutput.result;
         localMap.set(propertyList, result);
@@ -561,7 +561,6 @@ class DiagnosisEngine {
       // }
 
       if (this.minConflicts.length === 0) {
-        // return ["REALIZABLE", []];
         return callback(null, ["REALIZABLE", []])
       } else {
         for (const [conflKey, conflValue] of this.minConflicts.entries()) {
@@ -583,7 +582,6 @@ class DiagnosisEngine {
         } else {
         this.computeDiagnoses();
         return callback(null, ["UNREALIZABLE", this.combineReports()])
-        // return ["UNREALIZABLE", this.combineReports()];
         }
       }
     } catch (error) {

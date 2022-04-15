@@ -170,14 +170,46 @@ class AnalysisTabs extends React.Component {
   }
 
   checkComponents () {
-    console.log("Checking components...")
     const self = this;
     const {components} = self.state;
     const {selectedProject} = self.props;
-    let comps = [];
-    components.forEach(function(component){
-      self.checkComponentCompleted(component.component_name, selectedProject); 
-    })    
+    self.checkComponentCompleted2(components, selectedProject);     
+  }
+
+    checkComponentCompleted2(components, project) {
+    const {cocospecData, cocospecModes,completedComponents} = this.state;
+    const self = this;
+    let checkCounter = 0;
+    components.forEach(function (component) {      
+      let component_name = component.component_name;
+      var dataAndModesLength = cocospecData[component_name] ? cocospecData[component_name].length : 0;
+      modeldb.find({
+        selector: {
+          component_name: component_name,
+          project: project,
+          completed: true,
+          modeldoc: false
+        }
+      }).then(function (result) {
+        if (result.docs.length === dataAndModesLength && dataAndModesLength !== 0){
+          if (!completedComponents.includes(component_name))
+           completedComponents.push(component_name);
+           checkCounter++;
+        } else {
+          var index = completedComponents.indexOf(component_name);
+          if (index > -1) completedComponents.splice(index, 1);
+          checkCounter++;
+        }
+        if (checkCounter === components.length){
+          self.setState({
+            completedComponents : [].concat(completedComponents)
+          })
+        }
+      }).catch(function (err) {
+        console.log(err);
+        return false;
+      })
+    })
   }
 
   synchStateWithDB () {
@@ -212,9 +244,8 @@ class AnalysisTabs extends React.Component {
   }
 
   checkComponentCompleted(component_name, project) {
-    console.log('checkComponentCompleted');
     const self = this;
-    const {cocospecData, cocospecModes,completedComponents, components} = this.state;
+    const {cocospecData, cocospecModes,completedComponents} = this.state;
     var dataAndModesLength = cocospecData[component_name] ? cocospecData[component_name].length : 0;
     modeldb.find({
       selector: {
@@ -231,11 +262,9 @@ class AnalysisTabs extends React.Component {
         var index = completedComponents.indexOf(component_name);
         if (index > -1) completedComponents.splice(index, 1);
       }
-      if (result && components.map(comp => comp.component_name).indexOf(component_name) === components.length - 1){
-        self.setState({
-          completedComponents : [].concat(completedComponents)
-        })
-      }
+      self.setState({
+        completedComponents : [].concat(completedComponents)
+      })
     }).catch(function (err) {
       console.log(err);
       return false;
