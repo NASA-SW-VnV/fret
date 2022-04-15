@@ -130,7 +130,11 @@ class DiagnosisEngine {
       var lustreContract = ejsCache_realize.renderRealizeCode(this.engineName).component.complete(this.engines[eng]);
       fs.writeSync(output, lustreContract);
       if (minimal) {
-        checkOutput = realizabilityCheck.checkReal(filePath, this.engineName, ' -json '+this.engineOptions + this.timeout);
+        if (this.engineName === 'jkind'){
+          checkOutput = realizabilityCheck.checkReal(filePath, this.engineName, ' -json -timeout ' + this.timeout);  
+        } else {
+          checkOutput = realizabilityCheck.checkReal(filePath, this.engineName, ' -json ' + this.engineOptions);  
+        }
         var result = checkOutput.result;
         localMap.set(propertyList, result);
         if (result === "UNREALIZABLE" && minimal) {
