@@ -79,6 +79,8 @@ class LTLSimRequirementDetails extends Component {
     render() {
         const {classes, requirementID, description, allreq, selreq} = this.props;
 
+	console.log("LTLSimRequirementDetails: ")
+	console.log(selreq)
         return (
           <div className={classes.root}>
             <Accordion>
@@ -89,16 +91,8 @@ class LTLSimRequirementDetails extends Component {
 <div>
       		{
 		selreq.map(R_ID => {
-		    let Desc="unknown"
-		    let ID=R_ID
-			//
-			// our "current" one
-			//
-                    if (R_ID == requirementID){
-			Desc=description;
-			ID=requirementID
-			}
-		    else {
+			var ID=R_ID;
+			var Desc="unknown-ID not in DB";
 			for (let i=0; i< allreq.length; i++){
 		            let reqID = allreq[i].reqID;
 		            let reqID_R = reqID.replace(/ /g,"_")
@@ -111,8 +105,7 @@ class LTLSimRequirementDetails extends Component {
 				break;
 				}
 			    }
-			}
-                  	return(<div key={ID}><Typography>
+                  	return(<div key={"LTLSimRequirementDetails_"+R_ID}><Typography>
                     		<b key={ID}>{ID}</b>: {Desc}
                     	</Typography></div>)})
                    }

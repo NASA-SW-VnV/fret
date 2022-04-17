@@ -196,26 +196,20 @@ class TimeSeriesChart extends Component {
 
     handleMouseUp(event) {
         if (event) {
-            const { dataKey, chart_type } = this.props;
+            const { dataKey, chart_type, chart_minval, chart_maxval } = this.props;
             const dataIndex = event.activeTooltipIndex;
             let data  = this.state.data.slice();
-<<<<<<< HEAD
-            this.setState((prevState) => {
-=======
-//JSC-CAV3
 	    var NV = 0;
 		    if (chart_type == "category"){
 	                    NV = (data[dataIndex]) ? 0 : 1;
 			    }
 		    else {
                     	NV = data[dataIndex] + 1.0
-		    	if (NV > 9.0){
-			 	NV = 0.0
+		    	if (NV > chart_maxval){
+			 	NV = chart_minval
 				}
 			}
-//end JSC-CAV3
             this.setState((prevState) => {  
->>>>>>> LTLSim for realizability- buggy intermediate version for patch generation
                 if (!this.state.dragWasActive) {
 		    if (chart_type == "category"){
 	                    data[dataIndex] = (data[dataIndex]) ? 0 : 1;
@@ -226,8 +220,8 @@ class TimeSeriesChart extends Component {
 //JSC/CAV			 	data[dataIndex] = 0.0
 //JSC/CAV				}
                     	data[dataIndex] = data[dataIndex] + 1.0
-		    	if (data[dataIndex] > 9.0){
-			 	data[dataIndex] = 0.0
+		    	if (data[dataIndex] > chart_maxval){
+			 	data[dataIndex] = chart_minval
 				}
 			}
                 }
@@ -236,8 +230,8 @@ class TimeSeriesChart extends Component {
                 };
             });
 
-console.log("TSChart: before onChange "+data[dataIndex]);
-console.log("TSChart: before onChange NV="+NV);
+// console.log("TSChart: before onChange "+data[dataIndex]);
+// console.log("TSChart: before onChange NV="+NV);
             this.props.onChange(dataKey, dataIndex, data, NV);
         }
         this.setState({
@@ -306,7 +300,7 @@ console.log("TSChart: before onChange NV="+NV);
     }
 
     render() {
-        const { chart_type, classes, theme, canChange, chartState, highlight, expression, selected } = this.props;
+        const { chart_type, classes, theme, canChange, chartState, highlight, expression, selected, chart_minval, chart_maxval } = this.props;
         const primaryColor = theme.palette.primary.main;
         const secondaryColor = theme.palette.secondary.main;
 
@@ -316,7 +310,7 @@ console.log("TSChart: before onChange NV="+NV);
 		return null;
 		}
 	   else {
-		console.log("tooltip "+this.props.chart_type + " "+payload[0].value)
+		// console.log("tooltip "+this.props.chart_type + " "+payload[0].value)
 		return (
 			<div className="custom-tooltip">
 				<p className="label">{payload[0].value}</p>
@@ -326,6 +320,13 @@ console.log("TSChart: before onChange NV="+NV);
 	    }
 	return null;
         };
+
+	//
+	// NUMBER-RULE
+	// * include "0"
+   	// if (chart_minval > 0){
+// 		chart_minval = 0;
+// 		}
 
         let fill = "none";
         switch (chartState) {
@@ -404,7 +405,8 @@ console.log("TSChart: before onChange NV="+NV);
 //                    </YAxis>
 //-------------------customizedlabel----------------
 const CustomizedLabel: FunctionComponent<any> = (props: any) => {
-  const { x, y, stroke, value, chart_type } = props;
+  const { x, y, stroke, value, chart_type, chart_minval, chart_maxval } = props;
+
 
   // console.log("CUST-LABEL=" + chart_type)
 
@@ -423,15 +425,10 @@ const CustomizedLabel: FunctionComponent<any> = (props: any) => {
 //-------------------customizedlabel----------------
 
         let longName = this.props.name.length > maxNameLength;
-<<<<<<< HEAD
-        let name = (longName) ? this.props.name.slice(0, maxNameLength-1) + "..." : this.props.name;
-        let nameTip = (longName || expression) ?
-=======
 //JSC/CAV        let name = (longName) ? this.props.name.slice(0, maxNameLength-1) + "..." : this.props.name;
         let name = (longName) ? this.props.name.replace(/REQ/, "FSM-006").replace(/_eq_/," = ").slice(0, maxNameLength-1) + "..." : this.props.name.replace(/REQ/,"FSM-006");
 
         let nameTip = (longName || expression) ? 
->>>>>>> LTLSim for realizability- buggy intermediate version for patch generation
                         <div>
                             {((longName) ? this.props.name + ((expression) ? ": " : "") : "")}
                             {(expression) ? <FormulaRenderer tex={expression}/>: null}
@@ -472,7 +469,7 @@ const CustomizedLabel: FunctionComponent<any> = (props: any) => {
                         id={"qa_ltlSim_yaxis_"+this.props.name.slice(0, 4)}
 			type={chart_type}
 //JSC/CAV			domain={[0,1]}
-			domain={[0,9]}
+			domain={[chart_minval,chart_maxval]}
                         minTickGap={0}
                         dataKey={dataKey}
                         >
@@ -563,6 +560,8 @@ TimeSeriesChart.propTypes = {
     onChange: PropTypes.func,
     chartState: PropTypes.number,
     chart_type: PropTypes.string,
+    chart_minval: PropTypes.number,
+    chart_maxval: PropTypes.number,
     selected: PropTypes.bool
 }
 

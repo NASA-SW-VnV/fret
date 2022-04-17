@@ -36,7 +36,9 @@ module.exports = class LTLSimModel {
             keys : [],
             values : {},
 	    type : [],
-	    canChange : []
+	    canChange : [],
+	    minval : [],
+	    maxval : []
         };
         this.formulas = {
             keys : [],

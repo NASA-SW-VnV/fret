@@ -35,6 +35,7 @@ const Atomic = require('./Atomic');
 const Formula = require('./Formula');
 const EFormulaStates = require('./EFormulaStates');
 const LTLParser = require("../parser/LTLParser");
+//JSC: TODO: const LTLAEX = require("../parser/LTLAEX");
 var   fs = require("fs");
 
 module.exports = class LTLSimController {
@@ -46,14 +47,34 @@ module.exports = class LTLSimController {
     //------------------------------------------------------------
     //
     //------------------------------------------------------------
-    static addAtomic(model, id, atType, canChange) {
+    static addAtomic(model, id, atType, canChange, mi, ma) {
         if (model.atomics.keys.indexOf(id) === -1) {
             model.atomics.keys.push(id);
             model.atomics.values[id] = new Atomic(id, model.traceLength);
             model.atomics.type[id] = atType;
             model.atomics.canChange[id] = canChange;
+            model.atomics.minval[id] = mi;
+            model.atomics.maxval[id] = ma;
             return true;
         }
+        return false;
+    }
+
+    //------------------------------------------------------------
+    // with update of min/max values
+    //------------------------------------------------------------
+    static addAtomicU(model, id, atType, canChange, mi, ma) {
+        if (model.atomics.keys.indexOf(id) === -1) {
+            model.atomics.keys.push(id);
+            model.atomics.values[id] = new Atomic(id, model.traceLength);
+            model.atomics.type[id] = atType;
+            model.atomics.canChange[id] = canChange;
+            model.atomics.minval[id] = mi;
+            model.atomics.maxval[id] = ma;
+            return true;
+        }
+        model.atomics.minval[id] = mi;
+        model.atomics.maxval[id] = ma;
         return false;
     }
 
@@ -72,7 +93,7 @@ module.exports = class LTLSimController {
                     var idx = model.atomics.keys.indexOf(a);
               	    var atomicType = formula.atomics_type[idx];
 		    var canChange = formula.atomics_canChange[idx];
-                    LTLSimController.addAtomic(model, a, atomicType, canChange);
+                    LTLSimController.addAtomic(model, a, atomicType, canChange,formula.atomics_minval[idx],formula.atomics_maxval[idx]);
                 } 
                 model.atomics.values[a].formulas.push(id);
             }) 
@@ -351,92 +372,33 @@ console.log("id="+id+"["+dataIdx+"]=="+newValue)
 console.log(model.atomics.values[id].trace)
 console.log(trace)
 console.log(model)
-		//
-		// evaluate all (dependent) variables
-		// TODO: V0.0: evaluate all variables
-//JSC-CAV2            model.atomics.keys.forEach((a) => {
 
-if (id == "state"){
-	if (newValue == 2){
-		model.atomics.values["state_eq_2"].trace[dataIdx] = 1;
-		}
-	else {
-		model.atomics.values["state_eq_2"].trace[dataIdx] = 0;
-		}
-	}
-//JSC-CAV3
-if (1==0){
-var a="state_eq_2"
-		console.log("eval. a="+a);
-		console.log("eval. type="+model.atomics.type[a]);
-		console.log("eval. canchange="+model.atomics.canChange[a]);
-/**************************************
-	V 0.0.0
+	model.atomics.keys.forEach((a) => {
 		if (!model.atomics.canChange[a]){
 			//
-			// dependent variable
-			// update its trace depeding on the aCode
-			//
-	    	    var i=0;
-            	    while (i < model.traceLength){
-			var val = 0;
-//            		if (model.atomics.values[id].trace[i] > 0.5){
-            		if (trace[i] > 0.5){
-				val = 1.0;
-				}
-			console.log("Eval value("+a+")="+val)
-			model.atomics.values[a].trace[i] = val;
-		        i = i+1;
+			// this is a dependent one
+			// might need to re-evaluate
+			// V0: re-evaluate all
+			// !!!!!!!! newvalue and dataIDX is not set....
+//JSC-0415
+//JSC: TODO:   		let result = LTLAEX.parse_eval(a, model);
+//JSC: TODO:		let newtrace = result.trace;
+			var newtrace;
+			newtrace = model.atomics.values[a].trace
+			newtrace[0] =1;
+	
+ 			console.log("eval. a="+a);
+ 			console.log(newtrace)
+
+			model.atomics.values[a].trace = newtrace;
 			}
-		    }
-		}
-**************************************/
-		if (!model.atomics.canChange[a]){
-			//JSC/CAV HARD HACK
-		  if (a == "state_eq_2"){
-			console.log("patching state_eq_2")
-			trace=model.atomics.values["state"].trace;
-	    	    var i=0;
-            	    while (i < model.traceLength){
-			var val = 0;
-            		if (trace[i] == 2.0){
-				val = 1.0;
-				}
-			model.atomics.values[a].trace[i] = val;
-		        i = i+1;
-			}
-			}
-		
-		  if (a == "STATE_eq_3"){
-			console.log("patching STATE_eq_3")
-			trace=model.atomics.values["STATE"].trace;
-	    	    var i=0;
-            	    while (i < model.traceLength){
-			var val = 0;
-            		if (trace[i] == 3.0){
-				val = 1.0;
-				}
-			model.atomics.values[a].trace[i] = val;
-		        i = i+1;
-			}
-			}
-		  if (a == "STATE_eq_0"){
-			console.log("patching STATE_eq_0")
-			trace=model.atomics.values["STATE"].trace;
-	    	    var i=0;
-            	    while (i < model.traceLength){
-			var val = 0;
-            		if (trace[i] == 0.0){
-				val = 1.0;
-				}
-			model.atomics.values[a].trace[i] = val;
-		        i = i+1;
-			}
-			}
-		
-		    }
-//JSC-CAV2		});
-} //JSC-CAV3
+		});
+//if (id == "state")
+//	if (newValue == 2)
+//		model.atomics.values["state_eq_2"].trace[dataIdx] = 1;
+// var a="state_eq_2"
+// 		console.log("eval. type="+model.atomics.type[a]);
+// 		console.log("eval. canchange="+model.atomics.canChange[a]);
             return true;
         }
         return false;
@@ -488,6 +450,8 @@ var a="state_eq_2"
             formula.atomics = [...result.atomics_name];
             formula.atomics_type = [...result.atomics_type];
             formula.atomics_canChange = [...result.atomics_canChange];
+            formula.atomics_minval = [...result.atomics_minval];
+            formula.atomics_maxval = [...result.atomics_maxval];
             formula.subexpressions = result.subexpressions
                                     .map((s, i) => ({
                                         id: `${formula.id}_${i+1}`,
@@ -517,7 +481,7 @@ console.log("LTLSimController::setFormulaExpression: atomic keys: "+model.atomic
                     var idx = formula.atomics.indexOf(a);
               	    var atomicType = formula.atomics_type[idx];
 		    var canChange = formula.atomics_canChange[idx];
-                    LTLSimController.addAtomic(model, a, atomicType, canChange);
+                    LTLSimController.addAtomic(model, a, atomicType, canChange, formula.atomics_minval[idx],formula.atomics_maxval[idx]);
                 }
                 if (model.atomics.values[a].formulas.indexOf(id) === -1) {
                     model.atomics.values[a].formulas.push(id);
@@ -679,6 +643,21 @@ console.log("LTLSimController::setFormulaExpression: atomic keys: "+model.atomic
     static getAtomic_canChange(model, id) {
         return (model.atomics.keys.indexOf(id) !== -1) ? model.atomics.canChange[id] : undefined;
     }
+
+    //------------------------------------------------------------
+    // w/default range: 0..1
+    //------------------------------------------------------------
+    static getAtomic_minval(model, id) {
+        return (model.atomics.keys.indexOf(id) !== -1) ? model.atomics.minval[id] : 0;
+    }
+
+    //------------------------------------------------------------
+    // w/default range: 0..1
+    //------------------------------------------------------------
+    static getAtomic_maxval(model, id) {
+        return (model.atomics.keys.indexOf(id) !== -1) ? model.atomics.maxval[id] : 1;
+    }
+
 
     //------------------------------------------------------------
     //

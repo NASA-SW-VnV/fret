@@ -55,6 +55,8 @@ console.log("Parsing...")
         atomics_name: [],
         atomics_type: [],
         atomics_canChange: [],
+        atomics_minval: [],
+        atomics_maxval: [],
         atomics_aex: [],
         subexpressions: [],
         errors: []
@@ -77,12 +79,27 @@ console.log("atomics:")
 console.log(analyzer.atomics_name)
 console.log(analyzer.atomics_type)
 console.log(analyzer.atomics_canChange)
+console.log(analyzer.min_value)
+console.log(analyzer.max_value)
 console.log(analyzer.atomics_aex)
         result.expression = expression.text;
-        result.atomics_name = analyzer.atomics_name;
+
+//JSC         result.atomics_name = analyzer.atomics_name;
+
+        result.atomics_name = [];
+	for (var i=0; i < analyzer.atomics_name.length;i++){
+		console.log("FOOOO: "+ analyzer.atomics_name[i])
+		console.log("FOOOO: "+ arithexpr_to_ID(analyzer.atomics_name[i]))
+		result.atomics_name = result.atomics_name.concat(
+				arithexpr_to_ID(analyzer.atomics_name[i])
+				)
+		}
+        result.atomics_aex = analyzer.atomics_name;
+
         result.atomics_type = analyzer.atomics_type;
         result.atomics_canChange = analyzer.atomics_canChange;
-        result.atomics_aex = analyzer.aex;
+        result.atomics_minval = analyzer.atomics_minval;
+        result.atomics_maxval = analyzer.atomics_maxval;
         result.subexpressions = analyzer.subexpressions;
         if (result.subexpressions.length > 0) {
             let lastSubexpression = result.subexpressions[result.subexpressions.length-1];
@@ -92,4 +109,27 @@ console.log(analyzer.atomics_aex)
         }
     }
     return result;
+}
+
+function arithexpr_to_ID(expr){
+
+let v = expr
+	.replace(/^[0-9]/g, "N")
+	.replace(/ /g, "_S_")
+	.replace(/\+/g, "_p_")
+	.replace(/-/g, "_m_")
+	.replace(/\*/g, "_mul_")
+	.replace(/\//g, "_div_")
+	.replace(/\(/g, "_lp_")
+	.replace(/\)/g, "_rp_")
+	.replace(/<=/g, "_leq_")
+	.replace(/</g, "_lt_")
+	.replace(/>=/g, "_geq_")
+	.replace(/>/g, "_gt_")
+	.replace(/==/g, "_eqeq_")
+	.replace(/=/g, "_eq_")
+	;
+
+return v
+
 }

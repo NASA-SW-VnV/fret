@@ -99,13 +99,15 @@ handleTimeSeriesChartSettingsSave(settingsState) {
 
 
 //---------------------------------------------------------------------
-    atomic2chart(key, atomic, fkey, chart_type, canChange) {
+    atomic2chart(key, atomic, fkey, chart_type, canChange, chart_minval, chart_maxval) {
 	console.log("atomic2chart: " + key + " " + chart_type + " " + canChange)
 	console.log('settings-' + key + ((fkey) ? '-'+fkey : ''))
         return ( (atomic === undefined) ? null :
             <Typography component="div" >
                     <TimeSeriesChart
 			chart_type={chart_type}
+			chart_minval={chart_minval}
+			chart_maxval={chart_maxval}
                         key={'chart-atomic-' + key + ((fkey) ? '-'+fkey : '')}
                         id = {"qa_timeSeries_atomic_"+key}
                         data={atomic.trace}
@@ -184,7 +186,9 @@ handleTimeSeriesChartSettingsSave(settingsState) {
             this.atomic2chart(akey, LTLSimController.getAtomic(model, akey),
 		null,
             	LTLSimController.getAtomic_type(model, akey),
-            	LTLSimController.getAtomic_canChange(model, akey)
+            	LTLSimController.getAtomic_canChange(model, akey),
+            	LTLSimController.getAtomic_minval(model, akey),
+            	LTLSimController.getAtomic_maxval(model, akey)
 		)
         ));
 
@@ -198,7 +202,9 @@ handleTimeSeriesChartSettingsSave(settingsState) {
 				   LTLSimController.getAtomic(model, akey),
 				   fkey,
             			   LTLSimController.getAtomic_type(model, akey),
-            			   LTLSimController.getAtomic_canChange(model, akey)
+            			   LTLSimController.getAtomic_canChange(model, akey),
+            			   LTLSimController.getAtomic_minval(model, akey),
+            			   LTLSimController.getAtomic_maxval(model, akey)
 				   )
                             )) : []
                     )

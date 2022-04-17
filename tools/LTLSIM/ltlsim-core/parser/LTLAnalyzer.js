@@ -58,6 +58,8 @@ var LTLAnalyzer = function() {
     this.atomics_name = [];
     this.atomics_type = [];
     this.atomics_canChange = [];
+    this.atomics_minval = [];
+    this.atomics_maxval = [];
     this.atomics_aex = [];
     this.abbr =[];
     this.aExpr =[];
@@ -89,6 +91,8 @@ console.log("PROPOSITION="+atomic);
         this.atomics_name.push(atomic);
        	this.atomics_type.push("category");
        	this.atomics_canChange.push(true);
+       	this.atomics_minval.push(0);
+       	this.atomics_maxval.push(1);
        	this.atomics_aex.push("EMPTY_BOOL");
 	console.log("VARIABLE "+atomic+" is BOOLEAN");
     }
@@ -360,6 +364,7 @@ LTLSIM_NuSMVVisitor.prototype.visitRParith = function(ctx) {
     return result;
   }
 
+/*
 //------------------------------------------------------------------
 //   LTLSIM_NuSMV specific
 //------------------------------------------------------------------
@@ -389,6 +394,8 @@ console.log("C undefined")
         		this.atomics_name.push(Lexpr.text);
        			this.atomics_type.push("number");
        			this.atomics_canChange.push(true);
+       			this.atomics_minval.push(0);
+       			this.atomics_maxval.push(10);
        			this.atomics_aex.push("HAX-number");
     			}
 		}
@@ -474,9 +481,46 @@ console.log("RExpr="+Rexpr.code)
         	this.atomics_name.push(abbr);
         	this.atomics_type.push("category");
         	this.atomics_canChange.push(false);
+       		this.atomics_minval.push(0);
+       		this.atomics_maxval.push(1);
         	this.atomics_aex.push(code);
     		}
 	return {text: abbr, code: code};
+	}
+*/
+//------------------------------------------------------------------
+//   LTLSIM_NuSMV specific
+//------------------------------------------------------------------
+LTLAnalyzer.prototype.handleArithExpression = function(ctx) {
+    	var Lexpr = {text: "", code:[]};
+	this.visitChildren(ctx).forEach(child => {
+
+		if (child != null && child != undefined) {
+            		Lexpr.text += child.text;
+            		Lexpr.code += child.code;
+        		}
+	});
+
+  	let abbr = arithexpr_to_ID(Lexpr.text);
+
+	console.log("handleArithExpr: text=" + abbr)
+	console.log(abbr)
+	
+      	let s = abbr.trim();
+	console.log("handleArith:" + s)
+      	if (this.abbr.indexOf(s) === -1 && this.abbr.indexOf(s) === -1) {
+       		this.abbr.push(s);
+		}
+        if (this.atomics_name.indexOf(abbr) === -1) {
+        	this.atomics_name.push(abbr);
+        	this.atomics_type.push("category");
+        	this.atomics_canChange.push(false);
+       		this.atomics_minval.push(0);
+       		this.atomics_maxval.push(1);
+        	this.atomics_aex.push(Lexpr.text);
+    		}
+	// return Lexpr;
+	return {text: abbr, code: Lexpr.code};
 	}
 
 
@@ -484,25 +528,28 @@ console.log("RExpr="+Rexpr.code)
 LTLSIM_NuSMVVisitor.prototype.visitArith = function(ctx) {
 // NUMBER in arith
 console.log("ARITH="+ctx.getText());
-    return {text: ctx.getText() + "_", code: "ARITH"+ctx.getText()};
+    return {text: ctx.getText() + " ", code: "ARITH"+ctx.getText()};
 };
 
 
 // Visit a parse tree produced by LTLSIM_NuSMVParser#arithGroup.
 LTLSIM_NuSMVVisitor.prototype.visitArithGroup = function(ctx) {
 console.log("ARITHGROUP="+ctx.getText());
-    return {text: ctx.getText() + "_", code: "ARITHGRP"};
+    return this.visitSubExpr(ctx);
+    // return {text: ctx.getText() + " ", code: "ARITHGRP"};
 };
 
 
 // Visit a parse tree produced by LTLSIM_NuSMVParser#arithBinary.
 LTLSIM_NuSMVVisitor.prototype.visitArithBinary = function(ctx) {
-    return {text: ctx.getText() + "_", code: ctx.getText()};
+    return this.visitSubExpr(ctx);
+    // return {text: ctx.getText() + "FOOBAR ", code: ctx.getText()};
 };
 
 // Visit a parse tree produced by LTLSIM_NuSMVParser#arithUnary.
 LTLSIM_NuSMVVisitor.prototype.visitArithUnary = function(ctx) {
-    return {text: ctx.getText() + "_", code: ctx.getText()};
+    return this.visitSubExpr(ctx);
+    // return {text: ctx.getText() + " ", code: ctx.getText()};
 };
 
 
@@ -519,56 +566,78 @@ console.log("VARIABLE "+ID.getText()+" is NUMERIC");
         this.atomics_name.push(atomic);
        	this.atomics_type.push("number");
        	this.atomics_canChange.push(true);
+       	this.atomics_minval.push(0);
+       	this.atomics_maxval.push(10);
     }
-    var RV={text: ID.getText() + "_", code: "VAR01"+ID.getText()};
+    var RV={text: ID.getText() + " ", code: "VAR01"+ID.getText()};
     return RV;
 };
 
 // Visit a parse tree produced by LTLSIM_NuSMVParser#expt.
 LTLSIM_NuSMVVisitor.prototype.visitExpt = function(ctx) {
-    return {text: "EXP_" , code: "CODE^"};
+    return {text: ctx.getText() + " ", code: "EXP"};
 };
 
 
 // Visit a parse tree produced by LTLSIM_NuSMVParser#mult.
 LTLSIM_NuSMVVisitor.prototype.visitMult = function(ctx) {
-    return {text: "MUL_" , code: "CODE*"};
+    return {text: ctx.getText() + " ", code: "MUL"};
 };
 
 
 // Visit a parse tree produced by LTLSIM_NuSMVParser#div.
 LTLSIM_NuSMVVisitor.prototype.visitDiv = function(ctx) {
-    return {text: "DIV_" , code: "CODE/"};
+    return {text: ctx.getText() + " ", code: "DIV"};
 };
 
 
 // Visit a parse tree produced by LTLSIM_NuSMVParser#mod.
 LTLSIM_NuSMVVisitor.prototype.visitMod = function(ctx) {
-    return {text: "MOD_" , code: "CODE/"};
+    return {text: ctx.getText() + " ", code: "MOD"};
 };
 
 
 // Visit a parse tree produced by LTLSIM_NuSMVParser#plus.
 LTLSIM_NuSMVVisitor.prototype.visitPlus = function(ctx) {
-    return {text: "plus_", code: "CODE+"};
+    return {text: ctx.getText() + " ", code: "PLUS"};
 };
 
 
 // Visit a parse tree produced by LTLSIM_NuSMVParser#minus.
 LTLSIM_NuSMVVisitor.prototype.visitMinus = function(ctx) {
-    //return ctx.getText() + "_";
-    return {text: "MINUS_" , code: "CODE-"};
+    return {text: ctx.getText() + " ", code: "MINUS"};
 };
 
 
 // Visit a parse tree produced by LTLSIM_NuSMVParser#negate.
 LTLSIM_NuSMVVisitor.prototype.visitNegate = function(ctx) {
-    //return ctx.getText() + "_";
-    return {text: "UMINUS_" , code: "NEG-"};
+    return {text: ctx.getText() + " ", code: "UMINUS"};
 };
 
 
 //------------------------------------------------------------------
+function arithexpr_to_ID(expr){
+
+let v = expr
+	.replace(/^[0-9]/g, "N")
+	.replace(/ /g, "_S_")
+	.replace(/\+/g, "_p_")
+	.replace(/-/g, "_m_")
+	.replace(/\*/g, "_mul_")
+	.replace(/\//g, "_div_")
+	.replace(/\(/g, "_lp_")
+	.replace(/\)/g, "_rp_")
+	.replace(/<=/g, "_leq_")
+	.replace(/</g, "_lt_")
+	.replace(/>=/g, "_geq_")
+	.replace(/>/g, "_gt_")
+	.replace(/==/g, "_eqeq_")
+	.replace(/=/g, "_eq_")
+	;
+
+return v
+
+}
 //------------------------------------------------------------------
 
 

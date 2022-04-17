@@ -150,7 +150,7 @@ class LTLSimDialog extends Component {
 			// ReqID from where LTLSim was called 
 			// (cannot remove from list)
 //JSC 0328-3	    JSCRootReqID: [this.props.id],  
-	    JSCRootReqID: this.props.ids[0],  
+	    JSCRootReqID: this.props.ids,  
 
 			//
 			// list of active traces (can be selected)
@@ -316,7 +316,6 @@ console.log("Didupdate open "+this.props.open+ " prev: "+ prevProps.open)
 				(logics === "FT") ? ftExpressions[i] : ptExpressions[i],
 				false);
 			}
-
 		// change logic for the added requirements
 	    for (let i=0; i< reqID_data.length; i++){
 		let reqID_R =reqID_data[i].reqID.replace(/ /g,"_")
@@ -578,7 +577,7 @@ console.log("Didupdate open "+this.props.open+ " prev: "+ prevProps.open)
 			let NewTraceID = "Imported-"+(NTC);
 			NTC = NTC + 1;
 
-			let saveToReqID = this.props.requirementID[0]
+			let saveToReqID = this.props.requirementIDs[0]
 			let saveToComponent = "*"
 			let saveToProject = this.props.project
 			let trace = LTLSimController.getTrace(model);
@@ -720,13 +719,41 @@ console.log("convert CEX");
 		// must add that variable to the model
 		//
 		var atomic_type = "number";
+		var mi = 0;
+		var ma = 1;
 		if (cex[idx].type == "bool"){
 			atomic_type = "category"
 			}
-		if (cex[idx].type == "real"){
-			atomic_type = "number"
+		else {
+			if (cex[idx].type == "real"){
+				atomic_type = "number"
+				}
+			//
+			// find minimum and maximum value
+			mi = 9e99;
+			ma = -9e99;
+			for (let step = 0; step < LTLSIM_tracelength; step++){
+		    		if (step < K){
+		    			val = cex[idx]["Step "+step.toString()];
+					if (val > ma){
+						ma=val;
+						}
+					if (val < mi){
+						mi=val;
+						}
+					}
+				}
+			console.log("CEX:"+cex[idx].name+" in ["+mi+","+ma+"]");
+
 			}
-		LTLSimController.addAtomic(this.state.model, key_R, atomic_type, true )
+		//
+		// number rule: include "0"
+		//
+		if (mi > 0){
+			mi = 0;
+			}
+
+		LTLSimController.addAtomicU(this.state.model, key_R, atomic_type, true, mi, ma )
 
 		keys=keys.concat(key_R);
 		vars_trace_type=vars_trace_type.concat(cex[idx].type)
@@ -825,7 +852,7 @@ console.log("project: "+this.props.project)
 		if ((origin === "Requirement") && 
 		     ! (
 		    (loadedTraces[tr].saveToReqID == "*") ||
-		    (loadedTraces[tr].saveToReqID == this.props.requirementID[0])
+		    (loadedTraces[tr].saveToReqID == this.props.requirementIDs[0])
 		    )){
 			console.log("requirement not matching");
 			continue;
@@ -1199,14 +1226,28 @@ console.log("start simulation: formulaFilter.id="+formulaFilter);
         })
     }
 
-
+//==========================================================
       handleLtlsimResult_FT(id, sid, value, trace) {
         this.setState((prevState) => {
             let {model} = prevState;
             if (LTLSimController.getFormulaKeys(model).indexOf(id) !== -1) {
                 LTLSimController.setFormulaTrace(model, id, sid, trace);
-	        //for FT: value is beginning of trace
-                value=trace[0]
+                LTLSimController.setFormulaValue(model, id, sid, value ?
+                                                    EFormulaStates.VALIDATED :
+                                                    EFormulaStates.VIOLATED);
+                return { model };
+            } else {
+                return prevState;
+            }
+        })
+    }
+
+//==========================================================
+      handleLtlsimResult_FT(id, sid, value, trace) {
+        this.setState((prevState) => {
+            let {model} = prevState;
+            if (LTLSimController.getFormulaKeys(model).indexOf(id) !== -1) {
+                LTLSimController.setFormulaTrace(model, id, sid, trace);
                 LTLSimController.setFormulaValue(model, id, sid, value ?
                                                     EFormulaStates.VALIDATED :
                                                     EFormulaStates.VIOLATED);
@@ -1524,7 +1565,7 @@ console.log("UPDATE-before-SIM: formulaFilter="+formulaFilter)
                         onTraceLengthChange={this.handleTraceLengthChange}
                         displayFormulaEvaluation={highlight}
                         displayAtomicsWithFormulas={false}
-                        displaySubformulas={true}   //JSC 03-28
+                        displaySubformulas={false}   //JSC 03-28
                         selectedFormula=""
 						requirementID={requirementIDs[0]}
                     />

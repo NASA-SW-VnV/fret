@@ -60,15 +60,28 @@ export default function LTLSimLauncher(props) {
 
 	requirementIDs = requirementIDs.concat(requirementID)
 
-//	IDs = IDs.concat("FSM-006")
-	IDs = IDs.concat(requirementID)
+	let reqID_R =requirementID.replace(/ /g,"_")
+			  .replace(/-/g,"_")
+			  .replace(/\./g,"_")
+			  .replace(/\+/g,"_")
+	IDs = IDs.concat(reqID_R)
+//	IDs = IDs.concat("TEST_01")
+
 
     if (false){
 	    ftExpressions = ftExpressions.concat(ftExpression)
     	ptExpressions = ptExpressions.concat(ptExpression)
     	requirements = requirements.concat(requirement)
 	    requirementIDs = requirementIDs.concat(requirementID + "_2")
-	    IDs = IDs.concat("FSM-006A")
+	    //IDs = IDs.concat("MYFSM-006_2")
+//	    IDs = IDs.concat("REQ2")
+//	    IDs = IDs.concat("TEST_01" + "_2")
+	var requirementID2="TEST-01"
+	let reqID_R2 =requirementID2.replace(/ /g,"_")
+			  .replace(/-/g,"_")
+			  .replace(/\./g,"_")
+			  .replace(/\+/g,"_")
+	IDs = IDs.concat(reqID_R2)
         }
 
 	console.log("LTLSImLauncher: ftExpressions "+ftExpressions)
@@ -84,16 +97,16 @@ export default function LTLSimLauncher(props) {
                 <LTLSimDialog
                 open={open}
                 ids={IDs}
-                logics="PT"
+                logics="FT"
                 ftExpressions={ftExpressions}
                 ptExpressions={ptExpressions}
                 onClose={onClose}
 		project={project}
                 requirements={requirements}
                 requirementIDs={requirementIDs}
-//JSC-0328		CEXFileName="/home/johann/Desktop/FSMSpec_FSM007FSM006.lus.json"
-//		CEXFileName="/home/johann/Desktop/FSMSpec_FSM007FSM006.lus.json"
-        traceID="CEX-1"
+//JSC-NOM-0415		CEXFileName="/home/johann/Desktop/FSMSpec_FSM007FSM006.lus.json"
+//        	traceID="CEX-1"
+        	traceID=""
                 />
             </div>) :
             (<Tooltip id="a_crtAst_btn_simulate_tooltip"
