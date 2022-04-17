@@ -138,11 +138,6 @@ function rewriteExpressionForLTLSIM(expression) {
             .replace(/<i>/g, "")
             .replace(/<\/b>/g, "")
             .replace(/<\/i>/g, "")
-//JSC/CAV
-	    .replace(/ap_maneuver_state/g,"2")
-	    .replace(/ap_standby_state/g,"3")
-	    .replace(/ap_transition_state/g,"0")
-//JSC/CAV END
 // arithmetic V0.0
 //            .replace(/([0-9A-Za-z_]+) < ([0-9A-Za-z_]+)/g, "$1_lt_$2")
 //            .replace(/([0-9A-Za-z_]+) > ([0-9A-Za-z_]+)/g, "$1_gt_$2")
