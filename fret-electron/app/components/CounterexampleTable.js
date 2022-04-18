@@ -99,14 +99,13 @@ let TableComponentBar = props => {
 
   const conflictRequirementObjects = requirements.filter(e => cexConflictRequirements.includes(e.reqid.replace(/-/g,'')));  
   console.log(LTLSimDialogOpen);
-  console.log(conflictRequirementObjects.map(obj => obj.reqid).toString());
   var ltlsimLauncher = <LTLSimLauncherRealizability
                       open={LTLSimDialogOpen}
                       semantics={conflictRequirementObjects[0].semantics}
                       status={LTLSimStatus}
                       onOpen={openLTLSimDialog}
                       onClose={closeLTLSimDialog}
-                      requirement={conflictRequirementObjects.map(elem => elem.fulltext)}
+                      requirement={conflictRequirementObjects}
                       project={project}
                       requirementID={conflictRequirementObjects[0].reqid}
                       CEXFileName={{'K': numberOfSteps, 'Counterexample': cex}}

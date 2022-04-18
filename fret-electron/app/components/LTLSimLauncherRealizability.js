@@ -44,29 +44,41 @@ export default function LTLSimLauncherRealizability(props) {
     var requirementIDs = []
     var IDs = []
 
-    const ftExpression = rewriteExpressionForLTLSIM(semantics.ftExpanded);
-    const ptExpression = rewriteExpressionForLTLSIM(semantics.ptExpanded);
+    // const ftExpression = rewriteExpressionForLTLSIM(semantics.ftExpanded);
+    // const ptExpression = rewriteExpressionForLTLSIM(semantics.ptExpanded);
 
 	console.log("LTLSimLauncherRealizability: requirement "+requirement)
 	console.log("LTLSimLauncherRealizability: requirementID "+requirementID)
 	console.log("LTLSimLauncherRealizability: project "+project)
-	//
-	// mock-up list
-	//
-	ftExpressions = ftExpressions.concat(ftExpression)
-	ptExpressions = ptExpressions.concat(ptExpression)
+// 	//
+// 	// mock-up list
+// 	//
+// 	ftExpressions = ftExpressions.concat(ftExpression)
+// 	ptExpressions = ptExpressions.concat(ptExpression)
 
-	requirements = requirements.concat(requirement)
+// 	requirements = requirements.concat(requirement)
 
-	requirementIDs = requirementIDs.concat(requirementID)
+// 	requirementIDs = requirementIDs.concat(requirementID)
 
-	let reqID_R =requirementID.replace(/ /g,"_")
-			  .replace(/-/g,"_")
-			  .replace(/\./g,"_")
-			  .replace(/\+/g,"_")
-	IDs = IDs.concat(reqID_R)
-//	IDs = IDs.concat("TEST_01")
+// 	let reqID_R =requirementID.replace(/ /g,"_")
+// 			  .replace(/-/g,"_")
+// 			  .replace(/\./g,"_")
+// 			  .replace(/\+/g,"_")
+// 	IDs = IDs.concat(reqID_R)
+// //	IDs = IDs.concat("TEST_01")
 
+    for(var i=0; i< requirement.length; i++){
+        ftExpressions[i] = rewriteExpressionForLTLSIM(requirement[i].semantics.ftExpanded);
+        ptExpressions[i] = rewriteExpressionForLTLSIM(requirement[i].semantics.ptExpanded);
+
+        requirements[i] = requirement[i].fulltext;
+        requirementIDs[i] = requirement[i].reqid;
+        IDs[i] = requirement[i].reqid
+                  .replace(/ /g,"_")
+                  .replace(/-/g,"_")
+                  .replace(/\./g,"_")
+                  .replace(/\+/g,"_")
+    }
 
     if (false){
 	    ftExpressions = ftExpressions.concat(ftExpression)
