@@ -58,14 +58,19 @@ export function checkRealizability(filePath, engine, options, callback) {
       } else {
         var kind2Output = JSON.parse(stdout);
         var realizabilityResults = kind2Output.filter(e => e.objectType === "realizabilityCheck")[0];
-        var consistencyResults = kind2Output.filter(e => e.objectType === "satisfiabilityCheck")[0];        
-        result = (consistencyResults && consistencyResults.result === "unsatisfiable") ? "INCONSISTENT" : realizabilityResults.result.toUpperCase();
+        var consistencyResults = kind2Output.filter(e => e.objectType === "satisfiabilityCheck")[0];
+        var logResults = kind2Output.filter(e => e.objectType === "log")[1];
+
+        result = (logResults && logResults.value === "Wallclock timeout.") ? "UNKNOWN" : ((consistencyResults && consistencyResults.result === "unsatisfiable") ? "INCONSISTENT" : realizabilityResults.result.toUpperCase());
         if (consistencyResults) {
           time = (realizabilityResults.runtime['value'] + consistencyResults.runtime['value']).toString() + realizabilityResults.runtime['unit'];
-        } else {
+        } else if (realizabilityResults) {
           time = (realizabilityResults.runtime['value'] + (consistencyResults ? consistencyResults.runtime['value'] : 0)).toString() + realizabilityResults.runtime['unit'];
-        }        
-        cex = realizabilityResults.deadlockingTrace ? realizabilityResults.deadlockingTrace : null;
+        } else {
+          time = "Wallclock timeout."
+        }
+
+        cex = (realizabilityResults && realizabilityResults.deadlockingTrace) ? realizabilityResults.deadlockingTrace : null;
         callback(null, result, time, cex);
       }
       
@@ -95,8 +100,10 @@ export function checkReal(filePath, engine, options) {
     } else {
       output = JSON.parse(result);
       var realizabilityResults = output.filter(e => e.objectType === "realizabilityCheck")[0];      
-      var consistencyResults = output.filter(e => e.objectType === "satisfiabilityCheck")[0];        
-      result = (consistencyResults && consistencyResults.result === "unsatisfiable") ? "INCONSISTENT" : realizabilityResults.result.toUpperCase();
+      var consistencyResults = output.filter(e => e.objectType === "satisfiabilityCheck")[0];
+      var logResults = kind2Output.filter(e => e.objectType === "log")[1];
+
+      result = (logResults && logResults.value === "Wallclock timeout.") ? "UNKNOWN" : ((consistencyResults && consistencyResults.result === "unsatisfiable") ? "INCONSISTENT" : realizabilityResults.result.toUpperCase());
     }
     return {result, output};
   } catch (error) {    

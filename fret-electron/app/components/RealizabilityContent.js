@@ -612,7 +612,8 @@ class RealizabilityContent extends React.Component {
     settingsOpen: false,
     selectedEngine: 0,
     retainFiles: false,        
-    actionsMenuOpen: false
+    actionsMenuOpen: false,
+    diagnosisRequirements: []
   }
 
   // Use this for bulk check in the future
@@ -711,13 +712,14 @@ class RealizabilityContent extends React.Component {
                 time: '',
                 requirements: Array.from(comp.properties),
                 diagnosisStatus: '',
-                diagnosisReport: ''
+                diagnosisReport: '',
+                error: ''
               })
             })
 
             projectReport.systemComponents = [].concat(projectReport.systemComponents.map(obj => {
               if (obj.name === component.component_name) {
-                return {...obj, monolithic: {result: 'UNCHECKED', time: '', diagnosisStatus: '', diagnosisReport: ''}, compositional: {result: 'UNCHECKED', connectedComponents: ccArray}};
+                return {...obj, monolithic: {result: 'UNCHECKED', time: '', diagnosisStatus: '', diagnosisReport: '', error: ''}, compositional: {result: 'UNCHECKED', connectedComponents: ccArray, error: ''}};
               }
               return obj;
             }))
@@ -921,6 +923,8 @@ class RealizabilityContent extends React.Component {
       }).then(function (fretResult){
         contract.properties = getPropertyInfo(fretResult, contract.outputVariables, selected.component_name);
         contract.delays = getDelayInfo(fretResult, selected.component_name);
+        self.setState({diagnosisRequirements : fretResult.docs})
+        
         return contract;
       }).then(function (contract){
         if (compositional) {
@@ -1015,7 +1019,7 @@ class RealizabilityContent extends React.Component {
       case 3:
       //Kind 2 (MBP)
         name = 'kind2';
-        engineOptions = '-json --enable CONTRACTCK --ae_val_use_ctx false --timeout '
+        options = '-json --enable CONTRACTCK --ae_val_use_ctx false --timeout '
         break;
     }
     return {name, options};
@@ -1240,7 +1244,7 @@ class RealizabilityContent extends React.Component {
 
   render() {
     const {classes, selectedProject, components, completedComponents, checkComponentCompleted} = this.props;
-    const {order, orderBy, selected, ccSelected, monolithic, compositional, dependenciesExist, missingDependencies, projectReport, actionsMenuOpen} = this.state;
+    const {order, orderBy, selected, ccSelected, monolithic, compositional, dependenciesExist, missingDependencies, projectReport, actionsMenuOpen, diagnosisRequirements} = this.state;
 
     let grid;
     var tabs = [];
@@ -1464,7 +1468,7 @@ class RealizabilityContent extends React.Component {
                             (<Fade in={diagStatus === 'DIAGNOSED'}>
                               <div>
                                 {[...Array(2)].map((e, i) => <div key={i}> &nbsp; </div>)}
-                                <ChordDiagram selectedReport = {diagReport}/>
+                                <ChordDiagram selectedReport = {diagReport} selectedProject={selectedProject} requirements={diagnosisRequirements}/>
                                 &nbsp;
                               </div>
                             </Fade>) : <div/>
@@ -1488,7 +1492,7 @@ class RealizabilityContent extends React.Component {
                           (<Fade in={diagStatus === 'DIAGNOSED'}>
                             <div>
                               {[...Array(2)].map((e, i) => <div key={i}> &nbsp; </div>)}
-                              <ChordDiagram selectedReport = {diagReport}/>
+                              <ChordDiagram selectedReport = {diagReport} selectedProject={selectedProject} requirements = {diagnosisRequirements}/>
                               &nbsp;
                             </div>
                           </Fade>) : <div/>

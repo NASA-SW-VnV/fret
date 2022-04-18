@@ -23,12 +23,12 @@ class SaveRealizabilityReport extends React.Component {
 
 	}
 
-	saveRealizabilityResults = event => {
+	saveRealizabilityResults = async (event) => {
 		event.stopPropagation();
 		const {projectReport} = this.props;		
 		const homeDir = app.getPath('home');
-		const self = this;
-		var filePath = dialog.showSaveDialog({
+		// const self = this;
+		var filePathObject = await dialog.showSaveDialog({
           defaultPath : homeDir,
           title : 'Save realizability results',
           buttonLabel : 'Save',
@@ -37,15 +37,16 @@ class SaveRealizabilityReport extends React.Component {
           ],
         });
 
-        if (filePath) {
-        	var output = fs.createWriteStream(filePath);
-        	var content = JSON.stringify(projectReport, null, 4);
-        	fs.writeFile(filePath, content, (err) => {
-        		if (err) {
-        			optLog(err);
-        		}
-        	});
-        }
+		let filePath = filePathObject.filePath;
+    if (filePath) {
+    	var output = fs.createWriteStream(filePath);
+    	var content = JSON.stringify(projectReport, null, 4);
+    	fs.writeFile(filePath, content, (err) => {
+    		if (err) {
+    			optLog(err);
+    		}
+    	});
+    }
 	}
 
 	render() {

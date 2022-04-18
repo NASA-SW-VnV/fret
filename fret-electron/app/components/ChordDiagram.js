@@ -367,6 +367,8 @@ class ChordDiagram extends React.Component {
 	    				currentConflicts={this.state.currentConflicts}
 	    				cexTableData={this.state.cexTableData}
 	    				colors={this.state.colors}
+	    				project={this.props.selectedProject}
+	    				requirements={this.props.requirements}
     				/>
 	          	</Grid>);
 	    }
@@ -382,5 +384,7 @@ class ChordDiagram extends React.Component {
 
 ChordDiagram.propTypes = {
   selectedReport: PropTypes.object.isRequired,
+  selectedProject: PropTypes.string.isRequired,
+  requirements: PropTypes.array.isRequired
 }
 export default ChordDiagram

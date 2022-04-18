@@ -219,7 +219,6 @@ class LTLSimDialog extends Component {
 
     //===============================================================
     componentDidMount() {
-
 	// this.handleReqSel(this.state.reqID_data[4])
     	if (this.props.CEXFileName != undefined){
 /*
@@ -235,9 +234,12 @@ class LTLSimDialog extends Component {
 		}
     }
 
+
+
     //===============================================================
     componentDidUpdate(prevProps) {
-
+    const {CEXFileName} = this.props;
+    if (!CEXFileName) {
         let { model } = this.state;
         let  traceLength  = LTLSimController.getTraceLength(model);
 
@@ -267,7 +269,12 @@ console.log("Didupdate open "+this.props.open+ " prev: "+ prevProps.open)
         formula.label = this.props.requirementIDs[i];
 }
 
-    }
+    } else {
+    	if (CEXFileName !== prevProps.CEXFileName) {
+    		this.loadCEXTrace(CEXFileName);
+    	}
+	}
+	}
 
 	//===============================================================
     handleClickHighlight() {
@@ -666,11 +673,12 @@ console.log("TODO: update the traces")
 	//
 console.log("load CEX trace: ")
 console.log(filepath)
-	var content = fs.readFileSync(filepath);
-console.log("Loading CEX JSON trace file")
-console.log("content")
-console.log(content)
-	var loadedTrace = JSON.parse(content);
+// 	var content = fs.readFileSync(filepath);
+// console.log("Loading CEX JSON trace file")
+// console.log("content")
+// console.log(content)
+// 	var loadedTrace = JSON.parse(content);
+var loadedTrace = filepath;
 console.log("parsed")
 console.log(loadedTrace)
 console.log("convert CEX");

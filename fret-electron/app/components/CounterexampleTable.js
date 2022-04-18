@@ -45,7 +45,7 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-
+import LTLSimLauncherRealizability from './LTLSimLauncherRealizability';
 //tooltips for variables in cex table
 //hover over requirement => show def. (like in CirclePacking diagram)
 //hover over variable => 
@@ -57,6 +57,8 @@ import { lighten } from '@material-ui/core/styles/colorManipulator';
 import classNames from 'classnames';
 import Input from '@material-ui/core/Input';
 import { DiagnosisContext } from './DiagnosisProvider';
+
+const ltlsim = require('ltlsim-core').ltlsim;
 
 const tableComponentBarStyles = theme => ({
   root: {
@@ -91,8 +93,27 @@ const tableComponentBarStyles = theme => ({
 });
 
 let TableComponentBar = props => {
-  const {classes, handleChange, cexConflictName, conflicts, menuItems} = props;  
-  
+  const {classes, handleChange, cexConflictName, conflicts, menuItems, numberOfSteps, cex, LTLSimStatus, LTLSimDialogOpen, openLTLSimDialog, closeLTLSimDialog, requirements, project} = props;
+
+  const cexConflictRequirements = cexConflictName.substring(1,cexConflictName.length-1).split(", ");
+
+  const conflictRequirementObjects = requirements.filter(e => cexConflictRequirements.includes(e.reqid.replace(/-/g,'')));  
+  console.log(LTLSimDialogOpen);
+  console.log(conflictRequirementObjects.map(obj => obj.reqid).toString());
+  var ltlsimLauncher = <LTLSimLauncherRealizability
+                      open={LTLSimDialogOpen}
+                      semantics={conflictRequirementObjects[0].semantics}
+                      status={LTLSimStatus}
+                      onOpen={openLTLSimDialog}
+                      onClose={closeLTLSimDialog}
+                      requirement={conflictRequirementObjects.map(elem => elem.fulltext)}
+                      project={project}
+                      requirementID={conflictRequirementObjects[0].reqid}
+                      CEXFileName={{'K': numberOfSteps, 'Counterexample': cex}}
+                      />;
+  console.log(cex);
+  console.log(cexConflictRequirements);
+  console.log(conflictRequirementObjects.map(obj => obj.reqid));
   return(
     <Toolbar className={classNames(classes.root, classes.componentBar)}>
       <form className={classes.formControl} autoComplete="off">
@@ -109,6 +130,7 @@ let TableComponentBar = props => {
           </Select>
         </FormControl>
       </form>
+      {ltlsimLauncher}
     </Toolbar>
   );
 };
@@ -118,7 +140,9 @@ TableComponentBar.propTypes = {
   handleChange: PropTypes.func.isRequired,
   cexConflictName: PropTypes.string.isRequired,
   conflicts: PropTypes.array.isRequired,
-  menuItems: PropTypes.array.isRequired
+  menuItems: PropTypes.array.isRequired,
+  LTLSimDialogOpen: PropTypes.bool.isRequired,
+  project: PropTypes.string.isRequired
 }
 
 TableComponentBar = withStyles(tableComponentBarStyles)(TableComponentBar);
@@ -149,17 +173,33 @@ class CounterexampleTable extends React.Component {
   state = {
   	numberOfSteps : undefined,
   	cex : undefined,
-    deps : []
+    deps : [],
+    LTLSimDialogOpen: false
   };
 
   constructor(props) {
   	super(props);
+    let status = ltlsim.check();
+    this.LTLSimStatus = status;
+
   	this.state = { 
   		numberOfSteps : this.props.cexTableData[this.props.currentConflicts[0]].traceLength,
 		  cexConflictName : this.props.cexTableData[this.props.currentConflicts[0]].requirements,  		
   		cex : this.props.cexTableData[this.props.currentConflicts[0]].Counterexample,
+      LTLSimDialogOpen: false
       // deps: this.props.cexTableData[this.props.currentConflicts[0]].Dependencies
     };
+    this.openLTLSimDialog = this.openLTLSimDialog.bind(this);
+    this.closeLTLSimDialog = this.closeLTLSimDialog.bind(this);
+  }
+
+  openLTLSimDialog() {
+    console.log(this.state);
+    this.setState({LTLSimDialogOpen: true});
+  }
+
+  closeLTLSimDialog() {
+    this.setState({LTLSimDialogOpen: false});
   }
 
   handleChange = event => {
@@ -189,8 +229,8 @@ class CounterexampleTable extends React.Component {
   }
 
   render() {
-  	const {classes, allConflicts, currentConflicts, cexTableData} = this.props;
-  	const {numberOfSteps, cex, cexConflictName, deps} = this.state;
+  	const {classes, allConflicts, currentConflicts, cexTableData, requirements, project} = this.props;
+  	const {numberOfSteps, cex, cexConflictName, deps, LTLSimDialogOpen} = this.state;
   	var menuItems = [];
   	for (var i = 0; i < currentConflicts.length; i++) {
       var conflictLabel = allConflicts.indexOf(currentConflicts[i])+1;
@@ -222,7 +262,7 @@ class CounterexampleTable extends React.Component {
               }                        
             })}
           </TableRow>)))
-           
+    console.log(cex);           
   	return (
   		<div>
       <Paper className={classes.root}>              
@@ -231,6 +271,14 @@ class CounterexampleTable extends React.Component {
           cexConflictName={cexConflictName}
           conflicts={allConflicts}
           menuItems={menuItems}
+          numberOfSteps={numberOfSteps}
+          cex={cex}
+          LTLSimStatus={this.LTLSimStatus}
+          LTLSimDialogOpen={LTLSimDialogOpen}
+          openLTLSimDialog={this.openLTLSimDialog}
+          closeLTLSimDialog={this.closeLTLSimDialog}
+          requirements={requirements}
+          project={project}
         />
 				<Table className={classes.table} id="qa_counterEx_table">
           <caption>FTP: First Time Point.</caption>
@@ -251,22 +299,12 @@ class CounterexampleTable extends React.Component {
   }
 }
 
-      // <FormControl>
-      // <InputLabel htmlFor="component-helper">Counterexample for conflict:</InputLabel>
-      // <Select
-        // name={cexConflictName}
-        // value={cexConflictName}
-        // onChange={this.handleChange}
-      // >
-      // {menuItems}
-      // </Select>
-      // </FormControl>
-
 CounterexampleTable.propTypes = {
   allConflicts: PropTypes.array.isRequired,  
   currentConflicts: PropTypes.array.isRequired,
   cexTableData: PropTypes.object.isRequired,
-  colors: PropTypes.array.isRequired
+  colors: PropTypes.array.isRequired,
+  project: PropTypes.string.isRequired
 }
 
 export default withStyles(styles)(CounterexampleTable);
