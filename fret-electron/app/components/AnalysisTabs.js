@@ -347,7 +347,7 @@ class AnalysisTabs extends React.Component {
     };
     result.docs.forEach(function(doc){
       var variable ={};
-      variable.name = doc.variable_name;
+      variable.name = '__'+doc.variable_name;
       if (doc.idType === 'Input'){
         variable.type = getCoCoSpecDataType(doc.dataType);
         contract.inputVariables.push(variable);

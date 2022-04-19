@@ -157,8 +157,18 @@ class DisplayVariableDialog extends React.Component {
     if (name === 'assignment'){
       resultLustre = lustreExprSemantics.compileLustreExpr(event.target.value);
       //console.log("result Lustre "+resultLustre.variables)
+      let tempAssignment = event.target.value
+      if (resultLustre.variables) {        
+        for (const lustreVar of resultLustre.variables) {
+          console.log(lustreVar)
+          var regex = new RegExp('\\b' + lustreVar + '\\b', "g");
+          tempAssignment = tempAssignment.replace(regex, '__'+lustreVar);
+        }
+        console.log(tempAssignment);
+      }
       this.setState({
-        [name]: event.target.value,
+        // [name]: event.target.value,
+        [name]: tempAssignment,
         errorsLustre: resultLustre.parseErrors ? 'Parse Errors: '+ resultLustre.parseErrors : '',
         lustreVariables: resultLustre.variables ? resultLustre.variables : []
       });

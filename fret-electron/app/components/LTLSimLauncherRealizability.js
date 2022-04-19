@@ -106,11 +106,11 @@ export default function LTLSimLauncherRealizability(props) {
                     Simulate
                 </Button>
                 </Tooltip>
-                <LTLSimDialog
+                {open && <LTLSimDialog
                 open={open}
-                ids={[].concat(IDs)}
-                logics="FT"
-                ftExpressions={[].concat(ftExpressions)}
+                ids={IDs}
+                logics="PT"
+                ftExpressions={ftExpressions}
                 ptExpressions={ptExpressions}
                 onClose={onClose}
 		project={project}
@@ -119,7 +119,7 @@ export default function LTLSimLauncherRealizability(props) {
                 CEXFileName={CEXFileName}
 //        	traceID="CEX-1"
         	traceID=""
-                />
+                />}
             </div>) :
             (<Tooltip id="a_crtAst_btn_simulate_tooltip"
                 title={status.ltlsim ?

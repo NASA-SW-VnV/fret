@@ -98,7 +98,7 @@ let TableComponentBar = props => {
   const cexConflictRequirements = cexConflictName.substring(1,cexConflictName.length-1).split(", ");
 
   const conflictRequirementObjects = requirements.filter(e => cexConflictRequirements.includes(e.reqid.replace(/-/g,'')));  
-  console.log(LTLSimDialogOpen);
+
   var ltlsimLauncher = <LTLSimLauncherRealizability
                       open={LTLSimDialogOpen}
                       semantics={conflictRequirementObjects[0].semantics}
@@ -109,9 +109,6 @@ let TableComponentBar = props => {
                       project={project}
                       CEXFileName={{'K': numberOfSteps, 'Counterexample': cex}}
                       />;
-  console.log(cex);
-  console.log(cexConflictRequirements);
-  console.log(conflictRequirementObjects.map(obj => obj.reqid));
   return(
     <Toolbar className={classNames(classes.root, classes.componentBar)}>
       <form className={classes.formControl} autoComplete="off">
@@ -192,7 +189,6 @@ class CounterexampleTable extends React.Component {
   }
 
   openLTLSimDialog() {
-    console.log(this.state);
     this.setState({LTLSimDialogOpen: true});
   }
 
@@ -260,7 +256,7 @@ class CounterexampleTable extends React.Component {
               }                        
             })}
           </TableRow>)))
-    console.log(cex);           
+         
   	return (
   		<div>
       <Paper className={classes.root}>              

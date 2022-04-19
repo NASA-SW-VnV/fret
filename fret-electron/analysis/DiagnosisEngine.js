@@ -137,8 +137,10 @@ class DiagnosisEngine {
         }
         var result = checkOutput.result;
         localMap.set(propertyList, result);
+
         if (result === "UNREALIZABLE" && minimal) {
           let jsonOutput = checkOutput.output;
+
           if (this.engineName === 'kind2') {
             let kind2JsonResult = jsonOutput.filter(e => e.objectType === "realizabilityCheck")[0];
             let newJsonOutput = {
@@ -149,7 +151,8 @@ class DiagnosisEngine {
               "K": kind2JsonResult.deadlockingTrace[0].streams[0].instantValues.length,
               "Counterexample": []
             };
-            let signals = kind2JsonResult.deadlockingTrace[0].streams;           
+            let signals = kind2JsonResult.deadlockingTrace[0].streams;
+
             for (const signal of signals) {
               let signalInfo = {"name": signal.name, "type": signal.type}              
               for (let i = 0; i < newJsonOutput.K; i++){                
@@ -460,11 +463,22 @@ class DiagnosisEngine {
   //Create input format for the Chord Diagram and Counterexample table
   combineReports() {
     var combinedReport = {'Counterexamples' : [], 'Conflicts' : [], 'Requirements' : []};
-    var properties = this.contract.properties.map(p => p.reqid.replace(/-/g,''));
+    var properties = this.contract.properties.map(p => p.reqid.replace(/-/g,'').substring(2));
     combinedReport['Requirements'] = properties;
-    for (const [conflKey, report] of this.counterExamples.entries()) {
-      combinedReport.Counterexamples.push({'traceLength' : report.K, 'requirements' : conflKey.replace(/-/g,'').replace(/,/g,', '), 'Counterexample' : report.Counterexample})
-      combinedReport.Conflicts.push({'Conflict' : conflKey.replace(/-/g,'').replace(/,/g,', ')});
+
+    for (var [conflKey, report] of this.counterExamples.entries()) {
+      conflKey = conflKey.replace(/-/g,'').replace(/,/g,', ')
+      for (const property of properties) {
+        var regex = new RegExp('\\b' + '__'+property + '\\b', "g");
+        conflKey = conflKey.replace(regex, property);
+      }
+
+      for (var obj of report.Counterexample){
+          obj.name = obj.name.substring(2);
+      }
+      
+      combinedReport.Counterexamples.push({'traceLength' : report.K, 'requirements' : conflKey, 'Counterexample' : report.Counterexample})
+      combinedReport.Conflicts.push({'Conflict' : conflKey});
     }
     return combinedReport;
   }

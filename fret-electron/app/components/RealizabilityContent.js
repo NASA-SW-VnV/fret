@@ -688,7 +688,7 @@ class RealizabilityContent extends React.Component {
         }
       }).then(function (modelResult){        
         var contract = getContractInfo(modelResult);
-        self.renameIDs(contract);
+        // self.renameIDs(contract);
         contract.componentName = component.component_name+'Spec';
         db.find({
           selector: {
@@ -697,20 +697,21 @@ class RealizabilityContent extends React.Component {
         }).then(function (fretResult){
           if (completedComponents.includes(component.component_name)) {
             
-            contract.properties = getPropertyInfo(fretResult, contract.outputVariables, component.component_name);
+            contract.properties = getPropertyInfo(fretResult, contract.outputVariables, component.component_name);            
             contract.delays = getDelayInfo(fretResult, component.component_name);
-
+            contract = self.renameProperties(contract);
             /* Use contract to determine the output connected components
                * */
             var mappings = cc_analysis.compute_dependency_maps(contract);
             var connected_components = cc_analysis.compute_connected_components(contract, mappings['output']);
             let ccArray = [];
+
             connected_components.forEach(comp => {
               ccArray.push({
                 ccName: 'cc' + connected_components.indexOf(comp),
                 result: 'UNCHECKED',
                 time: '',
-                requirements: Array.from(comp.properties),
+                requirements: Array.from(comp.properties).map(prop => prop.substring(2)),
                 diagnosisStatus: '',
                 diagnosisReport: '',
                 error: ''
@@ -923,17 +924,18 @@ class RealizabilityContent extends React.Component {
       }).then(function (fretResult){
         contract.properties = getPropertyInfo(fretResult, contract.outputVariables, selected.component_name);
         contract.delays = getDelayInfo(fretResult, selected.component_name);
-        self.setState({diagnosisRequirements : fretResult.docs})
+        contract = self.renameProperties(contract);
+        self.setState({diagnosisRequirements: fretResult.docs})
         
         return contract;
       }).then(function (contract){
         if (compositional) {
           var ccContract = JSON.parse(JSON.stringify(contract))          
-          var ccProperties = contract.properties.filter(p => projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].requirements.includes(p.reqid));
+          var ccProperties = contract.properties.filter(p => projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].requirements.includes(p.reqid.substring(2)));
           ccContract.properties = ccProperties          
 
           let engine = new DiagnosisEngine(ccContract, actualTimeout, 'realizability', engineName, engineOptions);
-          engine.main(function (err, result) {
+          engine.main(function (err, result) {            
             if (err) {              
               projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].diagnosisStatus = 'ERROR';
               projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].error = err.message;
@@ -1025,6 +1027,22 @@ class RealizabilityContent extends React.Component {
     return {name, options};
   }
 
+  renameProperties(contract){
+    let contractVariables = [].concat(contract.inputVariables.concat(contract.outputVariables.concat(contract.internalVariables.concat(contract.functions.concat(contract.modes)))));
+    for (const property of contract.properties){
+      property.reqid = '__'+property.reqid;
+      for (const contractVar of contractVariables) {
+        var regex = new RegExp('\\b' + contractVar.name.substring(2) + '\\b', "g");
+        property.value = property.value.replace(regex, contractVar.name);        
+      }
+      if (!contract.internalVariables.includes("__FTP")) {
+        var regex = new RegExp('\\b' + 'FTP' + '\\b', "g");
+        property.value = property.value.replace(regex, '__FTP'); 
+      }
+    }
+    return contract;
+  }
+
   checkRealizability = () => {
 
     const {selected, ccSelected, monolithic, compositional, timeout, projectReport, retainFiles} = this.state;
@@ -1096,6 +1114,7 @@ class RealizabilityContent extends React.Component {
         }).then(function (fretResult){
           contract.properties = getPropertyInfo(fretResult, contract.outputVariables, tC.component_name);
           contract.delays = getDelayInfo(fretResult, tC.component_name);
+          contract = self.renameProperties(contract);
           return contract;
         }).then(function (contract){
           if (monolithic) {
@@ -1132,7 +1151,7 @@ class RealizabilityContent extends React.Component {
               var output = fs.openSync(filePath, 'w');
               var ccContract = JSON.parse(JSON.stringify(contract))
               
-              var ccProperties = contract.properties.filter(p => cc.requirements.includes(p.reqid));
+              var ccProperties = contract.properties.filter(p => cc.requirements.includes(p.reqid.substring(2)));
 
               ccContract.properties = ccProperties
               var lustreContract = ejsCache_realize.renderRealizeCode(engineName).component.complete(ccContract);
