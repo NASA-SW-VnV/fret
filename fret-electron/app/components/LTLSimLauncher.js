@@ -106,6 +106,7 @@ export default function LTLSimLauncher(props) {
                 requirementIDs={requirementIDs}
 //JSC-NOM-0415		CEXFileName="/home/johann/Desktop/FSMSpec_FSM007FSM006.lus.json"
 //        	traceID="CEX-1"
+		CEXFileName="/home/johann/Desktop/FSMSpec_FSM007FSM006.lus.json"
         	traceID=""
                 />
             </div>) :

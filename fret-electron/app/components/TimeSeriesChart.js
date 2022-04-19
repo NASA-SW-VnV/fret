@@ -219,10 +219,13 @@ class TimeSeriesChart extends Component {
 //JSC/CAV		    	if (data[dataIndex] > 1.0){
 //JSC/CAV			 	data[dataIndex] = 0.0
 //JSC/CAV				}
+/*JSC-0418
                     	data[dataIndex] = data[dataIndex] + 1.0
 		    	if (data[dataIndex] > chart_maxval){
 			 	data[dataIndex] = chart_minval
 				}
+*/
+			data[dataIndex] = NV;
 			}
                 }
                 return {

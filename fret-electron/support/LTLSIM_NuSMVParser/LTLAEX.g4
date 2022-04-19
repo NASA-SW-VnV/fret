@@ -30,12 +30,60 @@
 // ANY SUCH MATTER SHALL BE THE IMMEDIATE, UNILATERAL TERMINATION OF THIS
 // AGREEMENT.
 // *****************************************************************************
-exports.LTLSIM_NuSMVParser = require('./LTLSIM_NuSMVParser').LTLSIM_NuSMVParser;
-exports.LTLSIM_NuSMVLexer = require('./LTLSIM_NuSMVLexer').LTLSIM_NuSMVLexer;
-exports.LTLSIM_NuSMVListener = require('./LTLSIM_NuSMVListener').LTLSIM_NuSMVListener;
-exports.LTLSIM_NuSMVVisitor = require('./LTLSIM_NuSMVVisitor').LTLSIM_NuSMVVisitor;
+grammar LTLAEX;
 
-exports.LTLAEXParser = require('./LTLAEXParser').LTLAEXParser;
-exports.LTLAEXLexer = require('./LTLAEXLexer').LTLAEXLexer;
-exports.LTLAEXListener = require('./LTLAEXListener').LTLAEXListener;
-exports.LTLAEXVisitor = require('./LTLAEXVisitor').LTLAEXVisitor;
+simpleExpr : 
+           arithmetic_expr comparisonOp arithmetic_expr #boolCompare 
+           ;
+
+arithmetic_expr :
+               lpA arithmetic_expr rpA  #arithGroup
+             | <assoc=right> arithmetic_expr expt arithmetic_expr #arithBinary
+             | negate arithmetic_expr #arithUnary
+             | arithmetic_expr (mult | div | mod) arithmetic_expr #arithBinary
+             | arithmetic_expr (plus | minus) arithmetic_expr #arithBinary
+	     | UINT #arith
+             | ID #arithTerm
+             ;
+//             | ID (lpA (arithmetic_expr (',' arithmetic_expr)* )? rpA)? #arithTerm
+
+comparisonOp : '=' | '<' | '<=' | '>' | '>=' ;
+
+lp : '(' ; // left parenthesis
+
+lpA : '(' #LParith ; // left parenthesis
+
+rp : ')' ; // right parenthesis
+
+rpA : ')' #RParith ; // right parenthesis
+
+ID : [_a-zA-Z][_a-zA-Z0-9]* ;
+
+expt : '^' ;
+
+mult : '*' ;
+
+div : '/' ;
+
+mod : '%' ;
+
+plus : '+' ;
+
+minus : '-' ;
+
+negate : '-' ;
+
+//NUMBER :
+//          '-'? NATNUM '.' [0-9]+ EXP?
+//        | '-'? NATNUM EXP
+//        | '-'? NATNUM
+//        ;
+
+//EXP :
+//        [Ee] [+\-]? NATNUM ;
+// 
+//NATNUM : '0' | [1-9][0-9]* ;
+
+UINT : [0-9]+ ;
+
+WS : [ \t\r\n]+ -> skip ;  // skip spaces, tabs, newlines

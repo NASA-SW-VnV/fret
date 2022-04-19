@@ -35,7 +35,7 @@ const Atomic = require('./Atomic');
 const Formula = require('./Formula');
 const EFormulaStates = require('./EFormulaStates');
 const LTLParser = require("../parser/LTLParser");
-//JSC: TODO: const LTLAEX = require("../parser/LTLAEX");
+const LTLAEX = require("../parser/LTLAEX");
 var   fs = require("fs");
 
 module.exports = class LTLSimController {
@@ -373,6 +373,9 @@ console.log(model.atomics.values[id].trace)
 console.log(trace)
 console.log(model)
 
+//JSC-0418-new
+	model.atomics.values[id].trace[dataIdx] = newValue;
+
 	model.atomics.keys.forEach((a) => {
 		if (!model.atomics.canChange[a]){
 			//
@@ -381,11 +384,14 @@ console.log(model)
 			// V0: re-evaluate all
 			// !!!!!!!! newvalue and dataIDX is not set....
 //JSC-0415
-//JSC: TODO:   		let result = LTLAEX.parse_eval(a, model);
-//JSC: TODO:		let newtrace = result.trace;
-			var newtrace;
-			newtrace = model.atomics.values[a].trace
-			newtrace[0] =1;
+console.log("start AEX...")
+  			let result = LTLAEX.parse(a, model);
+console.log("done AEX...")
+console.log(result.trace)
+			let newtrace = result.trace;
+//			var newtrace;
+//			newtrace = model.atomics.values[a].trace
+//			newtrace[0] =1;
 	
  			console.log("eval. a="+a);
  			console.log(newtrace)
