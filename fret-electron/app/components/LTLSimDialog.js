@@ -693,11 +693,11 @@ console.log("convert CEX");
 	console.log("CEX with "+cex.length+" variables")
 	var keys=[]
 	var vars_trace_type=[]
-	for (let idx=0; idx < cex.length; idx++){
-		let sanitizedReqIds = this.props.requirementIDs.map(id => id.replace(/ /g,"_")
+	let sanitizedReqIds = this.props.requirementIDs.map(id => id.replace(/ /g,"_")
 			  .replace(/-/g,"_")
 			  .replace(/\./g,"_")
 			  .replace(/\+/g,"_"));
+	for (let idx=0; idx < cex.length; idx++){		
 		if (!sanitizedReqIds.includes(cex[idx].name)) {
 		console.log("Variable: "+cex[idx].name);
 		console.log("Variable type: "+cex[idx].type);
