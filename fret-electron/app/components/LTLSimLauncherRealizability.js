@@ -36,7 +36,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import LTLSimDialog from './LTLSimDialog';
 
 export default function LTLSimLauncherRealizability(props) {
-    const {open, semantics, status, onOpen, onClose, project, requirement,requirementID, CEXFileName} = props;
+    const {open, semantics, status, onOpen, onClose, project, requirement, CEXFileName} = props;
 
     var ftExpressions = []
     var ptExpressions = []
@@ -47,9 +47,9 @@ export default function LTLSimLauncherRealizability(props) {
     // const ftExpression = rewriteExpressionForLTLSIM(semantics.ftExpanded);
     // const ptExpression = rewriteExpressionForLTLSIM(semantics.ptExpanded);
 
-	console.log("LTLSimLauncherRealizability: requirement "+requirement)
-	console.log("LTLSimLauncherRealizability: requirementID "+requirementID)
-	console.log("LTLSimLauncherRealizability: project "+project)
+	// console.log("LTLSimLauncherRealizability: requirement "+requirement)
+	// console.log("LTLSimLauncherRealizability: requirementID "+requirementID)
+	// console.log("LTLSimLauncherRealizability: project "+project)
 // 	//
 // 	// mock-up list
 // 	//
@@ -102,15 +102,15 @@ export default function LTLSimLauncherRealizability(props) {
     return (status.ltlsim && status.nusmv) ?
             (<div>
                 <Tooltip title="Launch interactive simulation" >
-                <Button id="qa_crtAst_btn_simulate" color="secondary" onClick={onOpen}>
+                <Button id="qa_crtAst_btn_simulate" color="secondary" variant="contained" size="small" onClick={onOpen}>
                     Simulate
                 </Button>
                 </Tooltip>
                 <LTLSimDialog
                 open={open}
-                ids={IDs}
+                ids={[].concat(IDs)}
                 logics="FT"
-                ftExpressions={ftExpressions}
+                ftExpressions={[].concat(ftExpressions)}
                 ptExpressions={ptExpressions}
                 onClose={onClose}
 		project={project}

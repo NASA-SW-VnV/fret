@@ -107,7 +107,6 @@ let TableComponentBar = props => {
                       onClose={closeLTLSimDialog}
                       requirement={conflictRequirementObjects}
                       project={project}
-                      requirementID={conflictRequirementObjects[0].reqid}
                       CEXFileName={{'K': numberOfSteps, 'Counterexample': cex}}
                       />;
   console.log(cex);
