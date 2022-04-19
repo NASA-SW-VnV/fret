@@ -156,7 +156,8 @@ class DiagnosisEngine {
             for (const signal of signals) {
               let signalInfo = {"name": signal.name, "type": signal.type}              
               for (let i = 0; i < newJsonOutput.K; i++){                
-                signalInfo['Step '+i] = signals[signals.indexOf(signal)].instantValues[i][1];
+                let signalValue = signals[signals.indexOf(signal)].instantValues[i][1];
+                signalInfo['Step '+i] = (typeof signalValue === "object") ? (signalValue.num / signalValue.den) : signalValue ;
               }
               newJsonOutput.Counterexample.push(signalInfo);
             }

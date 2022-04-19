@@ -58,9 +58,9 @@ export function checkRealizability(filePath, engine, options, callback) {
       } else {
         var kind2Output = JSON.parse(stdout);
         var realizabilityResults = kind2Output.filter(e => e.objectType === "realizabilityCheck")[0];
-        var consistencyResults = kind2Output.filter(e => e.objectType === "satisfiabilityCheck")[0];
+        var consistencyResults = kind2Output.filter(e => e.objectType === "satisfiabilityCheck")[0];        
         var logResults = kind2Output.filter(e => e.objectType === "log")[1];
-        result = (logResults && logResults.value === "Wallclock timeout.") ? "UNKNOWN" : ((consistencyResults && consistencyResults.result === "unsatisfiable") ? "INCONSISTENT" : realizabilityResults.result.toUpperCase());
+        result = (logResults && logResults.value === "Wallclock timeout.") ? "UNKNOWN" : ((consistencyResults && consistencyResults.result === "unsatisfiable") ? "UNREALIZABLE" : realizabilityResults.result.toUpperCase());
         if (consistencyResults) {
           time = (realizabilityResults.runtime['value'] + consistencyResults.runtime['value']).toString() + realizabilityResults.runtime['unit'];
         } else if (realizabilityResults) {
@@ -98,11 +98,10 @@ export function checkReal(filePath, engine, options) {
       }
     } else {
       output = JSON.parse(result);
-      console.log(output)
       var realizabilityResults = output.filter(e => e.objectType === "realizabilityCheck")[0];      
       var consistencyResults = output.filter(e => e.objectType === "satisfiabilityCheck")[0];
       var logResults = output.filter(e => e.objectType === "log")[1];
-      result = (logResults && logResults.value === "Wallclock timeout.") ? "UNKNOWN" : ((consistencyResults && consistencyResults.result === "unsatisfiable") ? "INCONSISTENT" : realizabilityResults.result.toUpperCase());
+      result = (logResults && logResults.value === "Wallclock timeout.") ? "UNKNOWN" : ((consistencyResults && consistencyResults.result === "unsatisfiable") ? "UNREALIZABLE" : realizabilityResults.result.toUpperCase());
     }
     return {result, output};
   } catch (error) {
