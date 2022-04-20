@@ -113,7 +113,8 @@ class DiagnosisEngine {
   }
 
   registerPartitionProcess(contract) {
-    //Use string sequence of properties as the name of the engine    
+    //Use string sequence of properties as the name of the engine
+    contract.componentName = this.contract.componentName+'_'+'diagnosticQuery'+'_'+this.engines.length;    
     this.engines.push(contract);
   }
 
@@ -125,7 +126,7 @@ class DiagnosisEngine {
 
     for (let eng in this.engines) {
       var propertyList = this.engines[eng].properties.map(p => p.reqid);
-      var filePath = this.tmppath+this.engines[eng].componentName+'.lus';
+      var filePath = this.tmppath+this.engines[eng].componentName+(minimal ? '_minimal' : '')+'.lus';
       var output = fs.openSync(filePath, 'w');      
       var lustreContract = ejsCache_realize.renderRealizeCode(this.engineName).component.complete(this.engines[eng]);
       fs.writeSync(output, lustreContract);
@@ -190,7 +191,7 @@ class DiagnosisEngine {
       if (!this.realizableMap.has(partition.join(''))) {
         var slicedContract = JSON.parse(JSON.stringify(this.contract));
         slicedContract.properties = this.contract.properties.filter(p => partition.includes(p.reqid));
-        slicedContract.componentName = this.contract.componentName + '_' + partition.join('').replace(/-/g,'');
+        // slicedContract.componentName = this.contract.componentName + '_' + partition.join('').replace(/-/g,'');
         this.registerPartitionProcess(slicedContract);
       } else if (this.realizableMap.get(partition.join('')) === "UNREALIZABLE" && !this.minConflicts.has(partition.join(''))) {
         conflictExists = true;
@@ -235,7 +236,7 @@ class DiagnosisEngine {
       if (!this.realizableMap.has(complID)) {
         var slicedContract = JSON.parse(JSON.stringify(this.contract));
         slicedContract.properties = this.contract.properties.filter(p => complProps.includes(p.reqid));
-        slicedContract.componentName = this.contract.componentName + '_' + complID.replace(/-/g,'');        
+        // slicedContract.componentName = this.contract.componentName + '_' + complID.replace(/-/g,'');        
         this.registerPartitionProcess(slicedContract);
       } else if (this.realizableMap.get(complID) === "UNREALIZABLE" && !this.minConflicts.has(complID)) {
         conflictExists = true;
@@ -500,8 +501,8 @@ class DiagnosisEngine {
               
               var slicedContract = JSON.parse(JSON.stringify(this.contract));
               slicedContract.properties = this.contract.properties.filter(x => !hittingSet.includes(x.reqid));
-              slicedContract.componentName = this.contract.componentName + '_' + properties.join('').replace(/-/g,'');        
-              
+              // slicedContract.componentName = this.contract.componentName + '_' + properties.join('').replace(/-/g,'');        
+
               var propID = slicedContract.properties.map(p => p. reqid).join('');
               if (this.realizableMap.has(propID)) {
                 if (this.realizableMap.get(propID) === "REALIZABLE") {
@@ -582,7 +583,7 @@ class DiagnosisEngine {
           var confList = conflValue;
           var slicedContract = JSON.parse(JSON.stringify(this.contract));
           slicedContract.properties = this.contract.properties.filter(p => confList.includes(p.reqid));
-          slicedContract.componentName = this.contract.componentName + '_' + confList.join('').replace(/-/g,'');
+          // slicedContract.componentName = this.contract.componentName + '_' + confList.join('').replace(/-/g,'');
           this.registerPartitionProcess(slicedContract);
         }
         const results = this.runEnginesAndGatherResults(true);
