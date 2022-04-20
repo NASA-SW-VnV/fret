@@ -1,0 +1,72 @@
+[    {
+        "reqid": "UC5_R_5.1",
+        "parent_reqid": "UC5_R_5",
+        "project": "EngineControllerv1.0",
+        "rationale": "UC5_TC_9:\n* Preconditions: Aircraft is in operating mode M and system parameter P deviates at most +/-R % from nominal value\n* Input conditions / steps: Observed aircraft thrust is at value V1 and pilot input changes from A1 to A2\n* Expected results: Observed aircraft thrust changes and settles to value V2, respecting control objectives (settling time, overshoot, steady state error)\n",
+        "comments": "",
+        "fulltext": "when (diff(r(i),y(i)) > E) if ((systemParameter(P) > nominalValue + R) | (systemParameter(P) < nominalValue - R) | (systemParameter(P) = null) & (observedThrust = V1) &(pilotInput => setThrust = V2)) Controller shall until (diff(r(i),y(i)) < e) satisfy (settlingTime >= 0) & (settlingTime <= settlingTimeMax) & (observedThrust = V2)",
+        "semantics": {
+            "type": "nasa",
+            "scope": {
+                "type": "null"
+            },
+            "condition": "regular",
+            "timing": "until",
+            "response": "satisfaction",
+            "variables": {
+                "regular": [
+                    "diff",
+                    "r",
+                    "i",
+                    "y",
+                    "E",
+                    "systemParameter",
+                    "P",
+                    "nominalValue",
+                    "R",
+                    "null",
+                    "observedThrust",
+                    "V1",
+                    "pilotInput",
+                    "setThrust",
+                    "V2",
+                    "e",
+                    "settlingTime",
+                    "settlingTimeMax"
+                ],
+                "modes": []
+            },
+            "regular_condition": "((( diff ( r ( i ) , y ( i ) ) > E )) & (( ( systemParameter ( P ) > nominalValue + R ) | ( systemParameter ( P ) < nominalValue - R ) | ( systemParameter ( P ) = null ) & ( observedThrust = V1 ) & ( pilotInput => setThrust = V2 ) )))",
+            "qualifier_word": "if",
+            "pre_condition": "(( ( systemParameter ( P ) > nominalValue + R ) | ( systemParameter ( P ) < nominalValue - R ) | ( systemParameter ( P ) = null ) & ( observedThrust = V1 ) & ( pilotInput => setThrust = V2 ) ))",
+            "conditionTextRange": [
+                0,
+                198
+            ],
+            "component_name": "Controller",
+            "componentTextRange": [
+                200,
+                209
+            ],
+            "stop_condition": "(( diff ( r ( i ) , y ( i ) ) < e ))",
+            "timingTextRange": [
+                217,
+                243
+            ],
+            "post_condition": "(( settlingTime >= 0 ) & ( settlingTime <= settlingTimeMax ) & ( observedThrust = V2 ))",
+            "responseTextRange": [
+                245,
+                331
+            ],
+            "ft": "((LAST V (((! <b><i>((( diff ( r ( i ) , y ( i ) ) > E )) & (( ( systemParameter ( P ) > nominalValue + R ) | ( systemParameter ( P ) < nominalValue - R ) | ( systemParameter ( P ) = null ) & ( observedThrust = V1 ) & ( pilotInput -> setThrust = V2 ) )))</i></b>) & ((! LAST) & (X <b><i>((( diff ( r ( i ) , y ( i ) ) > E )) & (( ( systemParameter ( P ) > nominalValue + R ) | ( systemParameter ( P ) < nominalValue - R ) | ( systemParameter ( P ) = null ) & ( observedThrust = V1 ) & ( pilotInput -> setThrust = V2 ) )))</i></b>))) -> (X ((<b><i>(( diff ( r ( i ) , y ( i ) ) < e ))</i></b> V (<b><i>(( settlingTime >= 0 ) & ( settlingTime <= settlingTimeMax ) & ( observedThrust = V2 ))</i></b> | <b><i>(( diff ( r ( i ) , y ( i ) ) < e ))</i></b>)) | (LAST V <b><i>(( settlingTime >= 0 ) & ( settlingTime <= settlingTimeMax ) & ( observedThrust = V2 ))</i></b>))))) & (<b><i>((( diff ( r ( i ) , y ( i ) ) > E )) & (( ( systemParameter ( P ) > nominalValue + R ) | ( systemParameter ( P ) < nominalValue - R ) | ( systemParameter ( P ) = null ) & ( observedThrust = V1 ) & ( pilotInput -> setThrust = V2 ) )))</i></b> -> ((<b><i>(( diff ( r ( i ) , y ( i ) ) < e ))</i></b> V (<b><i>(( settlingTime >= 0 ) & ( settlingTime <= settlingTimeMax ) & ( observedThrust = V2 ))</i></b> | <b><i>(( diff ( r ( i ) , y ( i ) ) < e ))</i></b>)) | (LAST V <b><i>(( settlingTime >= 0 ) & ( settlingTime <= settlingTimeMax ) & ( observedThrust = V2 ))</i></b>))))",
+            "pt": "(H ((H (! <b><i>((( diff ( r ( i ) , y ( i ) ) > E )) & (( ( systemParameter ( P ) > nominalValue + R ) | ( systemParameter ( P ) < nominalValue - R ) | ( systemParameter ( P ) = null ) & ( observedThrust = V1 ) & ( pilotInput -> setThrust = V2 ) )))</i></b>)) | (((! <b><i>(( diff ( r ( i ) , y ( i ) ) < e ))</i></b>) S ((! <b><i>(( diff ( r ( i ) , y ( i ) ) < e ))</i></b>) & (<b><i>((( diff ( r ( i ) , y ( i ) ) > E )) & (( ( systemParameter ( P ) > nominalValue + R ) | ( systemParameter ( P ) < nominalValue - R ) | ( systemParameter ( P ) = null ) & ( observedThrust = V1 ) & ( pilotInput -> setThrust = V2 ) )))</i></b> & ((Y (! <b><i>((( diff ( r ( i ) , y ( i ) ) > E )) & (( ( systemParameter ( P ) > nominalValue + R ) | ( systemParameter ( P ) < nominalValue - R ) | ( systemParameter ( P ) = null ) & ( observedThrust = V1 ) & ( pilotInput -> setThrust = V2 ) )))</i></b>)) | FTP)))) -> <b><i>(( settlingTime >= 0 ) & ( settlingTime <= settlingTimeMax ) & ( observedThrust = V2 ))</i></b>)))",
+            "ftExpanded": "((LAST V (((! <b><i>((( diff ( r ( i ) , y ( i ) ) > E )) & (( ( systemParameter ( P ) > nominalValue + R ) | ( systemParameter ( P ) < nominalValue - R ) | ( systemParameter ( P ) = null ) & ( observedThrust = V1 ) & ( pilotInput -> setThrust = V2 ) )))</i></b>) & ((! LAST) & (X <b><i>((( diff ( r ( i ) , y ( i ) ) > E )) & (( ( systemParameter ( P ) > nominalValue + R ) | ( systemParameter ( P ) < nominalValue - R ) | ( systemParameter ( P ) = null ) & ( observedThrust = V1 ) & ( pilotInput -> setThrust = V2 ) )))</i></b>))) -> (X ((<b><i>(( diff ( r ( i ) , y ( i ) ) < e ))</i></b> V (<b><i>(( settlingTime >= 0 ) & ( settlingTime <= settlingTimeMax ) & ( observedThrust = V2 ))</i></b> | <b><i>(( diff ( r ( i ) , y ( i ) ) < e ))</i></b>)) | (LAST V <b><i>(( settlingTime >= 0 ) & ( settlingTime <= settlingTimeMax ) & ( observedThrust = V2 ))</i></b>))))) & (<b><i>((( diff ( r ( i ) , y ( i ) ) > E )) & (( ( systemParameter ( P ) > nominalValue + R ) | ( systemParameter ( P ) < nominalValue - R ) | ( systemParameter ( P ) = null ) & ( observedThrust = V1 ) & ( pilotInput -> setThrust = V2 ) )))</i></b> -> ((<b><i>(( diff ( r ( i ) , y ( i ) ) < e ))</i></b> V (<b><i>(( settlingTime >= 0 ) & ( settlingTime <= settlingTimeMax ) & ( observedThrust = V2 ))</i></b> | <b><i>(( diff ( r ( i ) , y ( i ) ) < e ))</i></b>)) | (LAST V <b><i>(( settlingTime >= 0 ) & ( settlingTime <= settlingTimeMax ) & ( observedThrust = V2 ))</i></b>))))",
+            "ptExpanded": "(H ((H (! <b><i>((( diff ( r ( i ) , y ( i ) ) > E )) & (( ( systemParameter ( P ) > nominalValue + R ) | ( systemParameter ( P ) < nominalValue - R ) | ( systemParameter ( P ) = null ) & ( observedThrust = V1 ) & ( pilotInput -> setThrust = V2 ) )))</i></b>)) | (((! <b><i>(( diff ( r ( i ) , y ( i ) ) < e ))</i></b>) S ((! <b><i>(( diff ( r ( i ) , y ( i ) ) < e ))</i></b>) & (<b><i>((( diff ( r ( i ) , y ( i ) ) > E )) & (( ( systemParameter ( P ) > nominalValue + R ) | ( systemParameter ( P ) < nominalValue - R ) | ( systemParameter ( P ) = null ) & ( observedThrust = V1 ) & ( pilotInput -> setThrust = V2 ) )))</i></b> & ((Y (! <b><i>((( diff ( r ( i ) , y ( i ) ) > E )) & (( ( systemParameter ( P ) > nominalValue + R ) | ( systemParameter ( P ) < nominalValue - R ) | ( systemParameter ( P ) = null ) & ( observedThrust = V1 ) & ( pilotInput -> setThrust = V2 ) )))</i></b>)) | (! (Y TRUE)))))) -> <b><i>(( settlingTime >= 0 ) & ( settlingTime <= settlingTimeMax ) & ( observedThrust = V2 ))</i></b>)))",
+            "component": "<b><i>Controller</i></b>",
+            "CoCoSpecCode": "(H((H( not ((( diff ( r ( i ) , y ( i ) ) > E )) and (( ( systemParameter ( P ) > nominalValue + R ) or ( systemParameter ( P ) < nominalValue - R ) or ( systemParameter ( P ) = null ) and ( observedThrust = V1 ) and ( pilotInput => setThrust = V2 ) ))))) or ((SI( (((( diff ( r ( i ) , y ( i ) ) > E )) and (( ( systemParameter ( P ) > nominalValue + R ) or ( systemParameter ( P ) < nominalValue - R ) or ( systemParameter ( P ) = null ) and ( observedThrust = V1 ) and ( pilotInput => setThrust = V2 ) ))) and ((pre ( not ((( diff ( r ( i ) , y ( i ) ) > E )) and (( ( systemParameter ( P ) > nominalValue + R ) or ( systemParameter ( P ) < nominalValue - R ) or ( systemParameter ( P ) = null ) and ( observedThrust = V1 ) and ( pilotInput => setThrust = V2 ) ))))) or FTP)), ( not (( diff ( r ( i ) , y ( i ) ) < e ))) )) => (( settlingTime >= 0 ) and ( settlingTime <= settlingTimeMax ) and ( observedThrust = V2 )))))",
+            "diagramVariables": "TC = <b><i>((( diff ( r ( i ) , y ( i ) ) > E )) & (( ( systemParameter ( P ) > nominalValue + R ) | ( systemParameter ( P ) < nominalValue - R ) | ( systemParameter ( P ) = null ) & ( observedThrust = V1 ) & ( pilotInput => setThrust = V2 ) )))</i></b>, SC = <b><i>(( diff ( r ( i ) , y ( i ) ) < e ))</i></b>, Response = <b><i>(( settlingTime >= 0 ) & ( settlingTime <= settlingTimeMax ) & ( observedThrust = V2 ))</i></b>.",
+            "description": "ENFORCED: in the interval defined by the entire execution.\nTRIGGER: first point in the interval if <b><i>((( diff ( r ( i ) , y ( i ) ) > E )) & (( ( systemParameter ( P ) > nominalValue + R ) | ( systemParameter ( P ) < nominalValue - R ) | ( systemParameter ( P ) = null ) & ( observedThrust = V1 ) & ( pilotInput => setThrust = V2 ) )))</i></b> is true and any point in the interval where <b><i>((( diff ( r ( i ) , y ( i ) ) > E )) & (( ( systemParameter ( P ) > nominalValue + R ) | ( systemParameter ( P ) < nominalValue - R ) | ( systemParameter ( P ) = null ) & ( observedThrust = V1 ) & ( pilotInput => setThrust = V2 ) )))</i></b> becomes true (from false).\nREQUIRES: for every trigger, RES must remain true until (but not necessarily including) the point where the stop condition holds, or to the end of the interval. If the stop condition never occurs, RES must hold until the end of the scope, or forever.  If the stop condition holds at the trigger, the requirement is satisfied.",
+            "diagram": "_media/user-interface/examples/svgDiagrams/null_regular_until_satisfaction.svg"
+        },
+        "_id": "f6aa1880-e3f4-11eb-8236-9536ed7106bc"
+    }]

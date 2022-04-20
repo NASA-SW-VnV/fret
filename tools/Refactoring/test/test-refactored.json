@@ -1,0 +1,116 @@
+[{
+    "reqid": "UC5_R_5.1",
+    "parent_reqid": "UC5_R_5",
+    "project": "RF-EngineControllerv0.4",
+    "rationale": "UC5_TC_9:\n* Preconditions: Aircraft is in operating mode M and system parameter P deviates at most +/-R % from nominal value\n* Input conditions / steps: Observed aircraft thrust is at value V1 and pilot input changes from A1 to A2\n* Expected results: Observed aircraft thrust changes and settles to value V2, respecting control objectives (settling time, overshoot, steady state error)\n",
+    "comments": "",
+    "fulltext": "when ACTIVE if MECHANICAL_FATIGUE & TRACKING_PILOT_COMMANDS Controller shall until NOT_ACTIVE satisfy CONTROL_OBECTIVES & (observedThrust = V2)",
+    "semantics": {
+        "type": "nasa",
+        "scope": {
+            "type": "null"
+        },
+        "condition": "regular",
+        "timing": "until",
+        "response": "satisfaction",
+        "variables": [
+            "ACTIVE",
+            "MECHANICAL_FATIGUE",
+            "TRACKING_PILOT_COMMANDS",
+            "NOT_ACTIVE",
+            "CONTROL_OBECTIVES",
+            "observedThrust",
+            "V2"
+        ],
+        "qualifier_word": "if",
+        "pre_condition": "(MECHANICAL_FATIGUE & TRACKING_PILOT_COMMANDS)",
+        "regular_condition": "((ACTIVE) & (MECHANICAL_FATIGUE & TRACKING_PILOT_COMMANDS))",
+        "conditionTextRange": [
+            0,
+            58
+        ],
+        "component_name": "Controller",
+        "componentTextRange": [
+            60,
+            69
+        ],
+        "stop_condition": "(NOT_ACTIVE)",
+        "timingTextRange": [
+            77,
+            92
+        ],
+        "post_condition": "(CONTROL_OBECTIVES & ( observedThrust = V2 ))",
+        "responseTextRange": [
+            94,
+            142
+        ],
+        "ft": "((LAST V (((! <b><i>((ACTIVE) & (MECHANICAL_FATIGUE & TRACKING_PILOT_COMMANDS))</i></b>) & ((! LAST) & (X <b><i>((ACTIVE) & (MECHANICAL_FATIGUE & TRACKING_PILOT_COMMANDS))</i></b>))) -> (X ((<b><i>(NOT_ACTIVE)</i></b> V (<b><i>(CONTROL_OBECTIVES & ( observedThrust = V2 ))</i></b> | <b><i>(NOT_ACTIVE)</i></b>)) | (LAST V <b><i>(CONTROL_OBECTIVES & ( observedThrust = V2 ))</i></b>))))) & (<b><i>((ACTIVE) & (MECHANICAL_FATIGUE & TRACKING_PILOT_COMMANDS))</i></b> -> ((<b><i>(NOT_ACTIVE)</i></b> V (<b><i>(CONTROL_OBECTIVES & ( observedThrust = V2 ))</i></b> | <b><i>(NOT_ACTIVE)</i></b>)) | (LAST V <b><i>(CONTROL_OBECTIVES & ( observedThrust = V2 ))</i></b>))))",
+        "pt": "(H ((H (! <b><i>((ACTIVE) & (MECHANICAL_FATIGUE & TRACKING_PILOT_COMMANDS))</i></b>)) | (((! <b><i>(NOT_ACTIVE)</i></b>) S ((! <b><i>(NOT_ACTIVE)</i></b>) & (<b><i>((ACTIVE) & (MECHANICAL_FATIGUE & TRACKING_PILOT_COMMANDS))</i></b> & ((Y (! <b><i>((ACTIVE) & (MECHANICAL_FATIGUE & TRACKING_PILOT_COMMANDS))</i></b>)) | FTP)))) -> <b><i>(CONTROL_OBECTIVES & ( observedThrust = V2 ))</i></b>)))",
+        "ftExpanded": "((LAST V (((! <b><i>((ACTIVE) & (MECHANICAL_FATIGUE & TRACKING_PILOT_COMMANDS))</i></b>) & ((! LAST) & (X <b><i>((ACTIVE) & (MECHANICAL_FATIGUE & TRACKING_PILOT_COMMANDS))</i></b>))) -> (X ((<b><i>(NOT_ACTIVE)</i></b> V (<b><i>(CONTROL_OBECTIVES & ( observedThrust = V2 ))</i></b> | <b><i>(NOT_ACTIVE)</i></b>)) | (LAST V <b><i>(CONTROL_OBECTIVES & ( observedThrust = V2 ))</i></b>))))) & (<b><i>((ACTIVE) & (MECHANICAL_FATIGUE & TRACKING_PILOT_COMMANDS))</i></b> -> ((<b><i>(NOT_ACTIVE)</i></b> V (<b><i>(CONTROL_OBECTIVES & ( observedThrust = V2 ))</i></b> | <b><i>(NOT_ACTIVE)</i></b>)) | (LAST V <b><i>(CONTROL_OBECTIVES & ( observedThrust = V2 ))</i></b>))))",
+        "ptExpanded": "(H ((H (! <b><i>((ACTIVE) & (MECHANICAL_FATIGUE & TRACKING_PILOT_COMMANDS))</i></b>)) | (((! <b><i>(NOT_ACTIVE)</i></b>) S ((! <b><i>(NOT_ACTIVE)</i></b>) & (<b><i>((ACTIVE) & (MECHANICAL_FATIGUE & TRACKING_PILOT_COMMANDS))</i></b> & ((Y (! <b><i>((ACTIVE) & (MECHANICAL_FATIGUE & TRACKING_PILOT_COMMANDS))</i></b>)) | (! (Y TRUE)))))) -> <b><i>(CONTROL_OBECTIVES & ( observedThrust = V2 ))</i></b>)))",
+        "component": "<b><i>Controller</i></b>",
+        "CoCoSpecCode": "(H((H( not ((ACTIVE) and (MECHANICAL_FATIGUE and TRACKING_PILOT_COMMANDS)))) or ((SI( (((ACTIVE) and (MECHANICAL_FATIGUE and TRACKING_PILOT_COMMANDS)) and ((pre ( not ((ACTIVE) and (MECHANICAL_FATIGUE and TRACKING_PILOT_COMMANDS)))) or FTP)), ( not (NOT_ACTIVE)) )) => (CONTROL_OBECTIVES and ( observedThrust = V2 )))))",
+        "diagramVariables": "TC = <b><i>((ACTIVE) & (MECHANICAL_FATIGUE & TRACKING_PILOT_COMMANDS))</i></b>, SC = <b><i>(NOT_ACTIVE)</i></b>, Response = <b><i>(CONTROL_OBECTIVES & ( observedThrust = V2 ))</i></b>.",
+        "description": "ENFORCED: in the interval defined by the entire execution.\nTRIGGER: first point in the interval if <b><i>((ACTIVE) & (MECHANICAL_FATIGUE & TRACKING_PILOT_COMMANDS))</i></b> is true and any point in the interval where <b><i>((ACTIVE) & (MECHANICAL_FATIGUE & TRACKING_PILOT_COMMANDS))</i></b> becomes true (from false).\nREQUIRES: for every trigger, RES must remain true until (but not necessarily including) the point where the stop condition holds, or to the end of the interval. If the stop condition never occurs, RES must hold until the end of the scope, or forever.  If the stop condition holds at the trigger, the requirement is satisfied.",
+        "diagram": "_media/user-interface/examples/svgDiagrams/null_regular_until_satisfaction.svg"
+    },
+    "_id": "feb42600-512d-11ec-b1eb-65b4c2dba3de"
+},
+{
+    "reqid": "UC5_R_7.1",
+    "parent_reqid": "UC5_R_7",
+    "project": "RF-EngineControllerv0.4",
+    "rationale": "UC5_TC_11\n* Preconditions: Aircraft is in operating mode M and system parameter P deviates at most +/-R % from nominal value\n* Input conditions / steps: Observed aircraft thrust is at value V1 and pilot input changes from A1 to A2\n* Expected results: Observed aircraft thrust changes and settles to value V2, respecting operating limit objectives (e.g., upper limit in shaft speed)",
+    "comments": "",
+    "fulltext": "when ACTIVE if MECHANICAL_FATIGUE & TRACKING_PILOT_COMMANDS Controller shall until NOT_ACTIVE satisfy OPERATING_LIMIT_OBJECTIVES & (observedThrust = V2)",
+    "semantics": {
+        "type": "nasa",
+        "scope": {
+            "type": "null"
+        },
+        "condition": "regular",
+        "timing": "until",
+        "response": "satisfaction",
+        "variables": [
+            "ACTIVE",
+            "MECHANICAL_FATIGUE",
+            "TRACKING_PILOT_COMMANDS",
+            "NOT_ACTIVE",
+            "OPERATING_LIMIT_OBJECTIVES",
+            "observedThrust",
+            "V2"
+        ],
+        "qualifier_word": "if",
+        "pre_condition": "(MECHANICAL_FATIGUE & TRACKING_PILOT_COMMANDS)",
+        "regular_condition": "((ACTIVE) & (MECHANICAL_FATIGUE & TRACKING_PILOT_COMMANDS))",
+        "conditionTextRange": [
+            0,
+            58
+        ],
+        "component_name": "Controller",
+        "componentTextRange": [
+            60,
+            69
+        ],
+        "stop_condition": "(NOT_ACTIVE)",
+        "timingTextRange": [
+            77,
+            92
+        ],
+        "post_condition": "(OPERATING_LIMIT_OBJECTIVES & ( observedThrust = V2 ))",
+        "responseTextRange": [
+            94,
+            151
+        ],
+        "ft": "((LAST V (((! <b><i>((ACTIVE) & (MECHANICAL_FATIGUE & TRACKING_PILOT_COMMANDS))</i></b>) & ((! LAST) & (X <b><i>((ACTIVE) & (MECHANICAL_FATIGUE & TRACKING_PILOT_COMMANDS))</i></b>))) -> (X ((<b><i>(NOT_ACTIVE)</i></b> V (<b><i>(OPERATING_LIMIT_OBJECTIVES & ( observedThrust = V2 ))</i></b> | <b><i>(NOT_ACTIVE)</i></b>)) | (LAST V <b><i>(OPERATING_LIMIT_OBJECTIVES & ( observedThrust = V2 ))</i></b>))))) & (<b><i>((ACTIVE) & (MECHANICAL_FATIGUE & TRACKING_PILOT_COMMANDS))</i></b> -> ((<b><i>(NOT_ACTIVE)</i></b> V (<b><i>(OPERATING_LIMIT_OBJECTIVES & ( observedThrust = V2 ))</i></b> | <b><i>(NOT_ACTIVE)</i></b>)) | (LAST V <b><i>(OPERATING_LIMIT_OBJECTIVES & ( observedThrust = V2 ))</i></b>))))",
+        "pt": "(H ((H (! <b><i>((ACTIVE) & (MECHANICAL_FATIGUE & TRACKING_PILOT_COMMANDS))</i></b>)) | (((! <b><i>(NOT_ACTIVE)</i></b>) S ((! <b><i>(NOT_ACTIVE)</i></b>) & (<b><i>((ACTIVE) & (MECHANICAL_FATIGUE & TRACKING_PILOT_COMMANDS))</i></b> & ((Y (! <b><i>((ACTIVE) & (MECHANICAL_FATIGUE & TRACKING_PILOT_COMMANDS))</i></b>)) | FTP)))) -> <b><i>(OPERATING_LIMIT_OBJECTIVES & ( observedThrust = V2 ))</i></b>)))",
+        "ftExpanded": "((LAST V (((! <b><i>((ACTIVE) & (MECHANICAL_FATIGUE & TRACKING_PILOT_COMMANDS))</i></b>) & ((! LAST) & (X <b><i>((ACTIVE) & (MECHANICAL_FATIGUE & TRACKING_PILOT_COMMANDS))</i></b>))) -> (X ((<b><i>(NOT_ACTIVE)</i></b> V (<b><i>(OPERATING_LIMIT_OBJECTIVES & ( observedThrust = V2 ))</i></b> | <b><i>(NOT_ACTIVE)</i></b>)) | (LAST V <b><i>(OPERATING_LIMIT_OBJECTIVES & ( observedThrust = V2 ))</i></b>))))) & (<b><i>((ACTIVE) & (MECHANICAL_FATIGUE & TRACKING_PILOT_COMMANDS))</i></b> -> ((<b><i>(NOT_ACTIVE)</i></b> V (<b><i>(OPERATING_LIMIT_OBJECTIVES & ( observedThrust = V2 ))</i></b> | <b><i>(NOT_ACTIVE)</i></b>)) | (LAST V <b><i>(OPERATING_LIMIT_OBJECTIVES & ( observedThrust = V2 ))</i></b>))))",
+        "ptExpanded": "(H ((H (! <b><i>((ACTIVE) & (MECHANICAL_FATIGUE & TRACKING_PILOT_COMMANDS))</i></b>)) | (((! <b><i>(NOT_ACTIVE)</i></b>) S ((! <b><i>(NOT_ACTIVE)</i></b>) & (<b><i>((ACTIVE) & (MECHANICAL_FATIGUE & TRACKING_PILOT_COMMANDS))</i></b> & ((Y (! <b><i>((ACTIVE) & (MECHANICAL_FATIGUE & TRACKING_PILOT_COMMANDS))</i></b>)) | (! (Y TRUE)))))) -> <b><i>(OPERATING_LIMIT_OBJECTIVES & ( observedThrust = V2 ))</i></b>)))",
+        "component": "<b><i>Controller</i></b>",
+        "CoCoSpecCode": "(H((H( not ((ACTIVE) and (MECHANICAL_FATIGUE and TRACKING_PILOT_COMMANDS)))) or ((SI( (((ACTIVE) and (MECHANICAL_FATIGUE and TRACKING_PILOT_COMMANDS)) and ((pre ( not ((ACTIVE) and (MECHANICAL_FATIGUE and TRACKING_PILOT_COMMANDS)))) or FTP)), ( not (NOT_ACTIVE)) )) => (OPERATING_LIMIT_OBJECTIVES and ( observedThrust = V2 )))))",
+        "diagramVariables": "TC = <b><i>((ACTIVE) & (MECHANICAL_FATIGUE & TRACKING_PILOT_COMMANDS))</i></b>, SC = <b><i>(NOT_ACTIVE)</i></b>, Response = <b><i>(OPERATING_LIMIT_OBJECTIVES & ( observedThrust = V2 ))</i></b>.",
+        "description": "ENFORCED: in the interval defined by the entire execution.\nTRIGGER: first point in the interval if <b><i>((ACTIVE) & (MECHANICAL_FATIGUE & TRACKING_PILOT_COMMANDS))</i></b> is true and any point in the interval where <b><i>((ACTIVE) & (MECHANICAL_FATIGUE & TRACKING_PILOT_COMMANDS))</i></b> becomes true (from false).\nREQUIRES: for every trigger, RES must remain true until (but not necessarily including) the point where the stop condition holds, or to the end of the interval. If the stop condition never occurs, RES must hold until the end of the scope, or forever.  If the stop condition holds at the trigger, the requirement is satisfied.",
+        "diagram": "_media/user-interface/examples/svgDiagrams/null_regular_until_satisfaction.svg"
+    },
+    "_id": "feb47420-512d-11ec-b1eb-65b4c2dba3de"
+}]
