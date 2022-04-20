@@ -42,7 +42,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
 import MenuItem from '@material-ui/core/MenuItem';
-import TextField from '@material-ui/core/TextField';
+//import TextField from '@material-ui/core/TextField';
 
 const db = require('electron').remote.getGlobal('sharedObj').db;
 const app = require('electron').remote.app;
@@ -71,7 +71,7 @@ const styles = theme => ({
 
 class VersionDialog extends React.Component {
   state = {
-    //open: false,
+    open: false,
     //version: app.getVersion()
   };
 
