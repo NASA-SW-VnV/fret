@@ -65,7 +65,7 @@ class DiagnosisEngine {
     this.counterExamples = new Map();
     this.cexLengths = new Map();
     this.counter = 0;
-    this.count = 0;
+    this.diagnosticQueryIndex = 0;
     this.tmppath = analysisPath;
   }
 
@@ -113,246 +113,252 @@ class DiagnosisEngine {
   }
 
   registerPartitionProcess(contract) {
-    //Use string sequence of properties as the name of the engine
-    contract.componentName = this.contract.componentName+'_'+'diagnosticQuery'+'_'+this.engines.length;    
+    // console.log("Index before registering "+this.diagnosticQueryIndex);
+    contract.componentName = this.contract.componentName+'_'+'diagnosticQuery'+'_'+this.diagnosticQueryIndex; 
+    this.diagnosticQueryIndex++;
     this.engines.push(contract);
+    // console.log("Index after registering "+this.diagnosticQueryIndex);
   }
 
   //this method should be extended in the future if more checks are added, other than realizability
   runEnginesAndGatherResults(minimal) {
-    var checkOutput;
-    var localMap = new Map();
-    // try {
+    try {
+      var checkOutput;
+      var localMap = new Map();
 
-    for (let eng in this.engines) {
-      var propertyList = this.engines[eng].properties.map(p => p.reqid);
-      var filePath = this.tmppath+this.engines[eng].componentName+(minimal ? '_minimal' : '')+'.lus';
-      var output = fs.openSync(filePath, 'w');      
-      var lustreContract = ejsCache_realize.renderRealizeCode(this.engineName).component.complete(this.engines[eng]);
-      fs.writeSync(output, lustreContract);
-      if (minimal) {
-        if (this.engineName === 'jkind'){
-          checkOutput = realizabilityCheck.checkReal(filePath, this.engineName, ' -json -timeout ' + this.timeout);  
-        } else {
-          checkOutput = realizabilityCheck.checkReal(filePath, this.engineName, this.engineOptions);  
-        }
-        var result = checkOutput.result;
-        localMap.set(propertyList, result);
+      for (let eng in this.engines) {
+        var propertyList = this.engines[eng].properties.map(p => p.reqid);
+        var filePath = this.tmppath+this.engines[eng].componentName+(minimal ? '_minimal' : '')+'.lus';
+        var output = fs.openSync(filePath, 'w');      
+        var lustreContract = ejsCache_realize.renderRealizeCode(this.engineName).component.complete(this.engines[eng]);
+        fs.writeSync(output, lustreContract);
+        if (minimal) {
+          if (this.engineName === 'jkind'){
+            checkOutput = realizabilityCheck.checkReal(filePath, this.engineName, ' -json -timeout ' + this.timeout);  
+          } else {
+            checkOutput = realizabilityCheck.checkReal(filePath, this.engineName, this.engineOptions);  
+          }
+          var result = checkOutput.result;
+          localMap.set(propertyList, result);
 
-        if (result === "UNREALIZABLE" && minimal) {
-          let jsonOutput = checkOutput.output;
+          if (result === "UNREALIZABLE" && minimal) {
+            let jsonOutput = checkOutput.output;
 
-          if (this.engineName === 'kind2') {
-            let kind2JsonResult = jsonOutput.filter(e => e.objectType === "realizabilityCheck")[0];
-            let newJsonOutput = {
-              "Runtime": {
-                "unit": kind2JsonResult.runtime['unit'],
-                "value": kind2JsonResult.runtime['value']},
-              "Answer": {"text": kind2JsonResult.result},
-              "K": kind2JsonResult.deadlockingTrace[0].streams[0].instantValues.length,
-              "Counterexample": []
-            };
-            let signals = kind2JsonResult.deadlockingTrace[0].streams;
+            if (this.engineName === 'kind2') {
+              let kind2JsonResult = jsonOutput.filter(e => e.objectType === "realizabilityCheck")[0];
+              let newJsonOutput = {
+                "Runtime": {
+                  "unit": kind2JsonResult.runtime['unit'],
+                  "value": kind2JsonResult.runtime['value']},
+                "Answer": {"text": kind2JsonResult.result},
+                "K": kind2JsonResult.deadlockingTrace[0].streams[0].instantValues.length,
+                "Counterexample": []
+              };
+              let signals = kind2JsonResult.deadlockingTrace[0].streams;
 
-            for (const signal of signals) {
-              let signalInfo = {"name": signal.name, "type": signal.type}              
-              for (let i = 0; i < newJsonOutput.K; i++){                
-                let signalValue = signals[signals.indexOf(signal)].instantValues[i][1];
-                signalInfo['Step '+i] = (typeof signalValue === "object") ? (signalValue.num / signalValue.den) : signalValue ;
+              for (const signal of signals) {
+                let signalInfo = {"name": signal.name, "type": signal.type}              
+                for (let i = 0; i < newJsonOutput.K; i++){                
+                  let signalValue = signals[signals.indexOf(signal)].instantValues[i][1];
+                  signalInfo['Step '+i] = (typeof signalValue === "object") ? (signalValue.num / signalValue.den) : signalValue ;
+                }
+                newJsonOutput.Counterexample.push(signalInfo);
               }
-              newJsonOutput.Counterexample.push(signalInfo);
-            }
-            jsonOutput = newJsonOutput;
-          }         
-          this.counterExamples.set('['+propertyList.toString()+']', jsonOutput);
+              jsonOutput = newJsonOutput;
+            }         
+            this.counterExamples.set('['+propertyList.toString()+']', jsonOutput);
+          }
+        } else {
+          checkOutput = realizabilityCheck.checkReal(filePath, this.engineName, this.engineOptions);
+          var result = checkOutput.result;
+          localMap.set(propertyList, result);
         }
-      } else {
-        checkOutput = realizabilityCheck.checkReal(filePath, this.engineName, this.engineOptions);
-        var result = checkOutput.result;
-        localMap.set(propertyList, result);
       }
+      this.engines = [];
+      return localMap;
+    } catch (error) {
+      throw error;
     }
-    this.engines = [];
-    return localMap;
   }
 
   deltaDebug(contract, n) {
-    
-    var partitionMap = new Map();
-    var complementsMap = new Map();
-    var minConflicts = [];
+    try {
+      var partitionMap = new Map();
+      var complementsMap = new Map();
+      var minConflicts = [];
 
-    var complements = [];
-    var conflictExists = false;
-    var properties = contract.properties.map(p => p.reqid);
-    var propID = properties.join('');
-    for (var i = 0; i < n; i++) {
-      var partition = this.getPartition(properties, n, i, false);
-      if (!this.realizableMap.has(partition.join(''))) {
-        var slicedContract = JSON.parse(JSON.stringify(this.contract));
-        slicedContract.properties = this.contract.properties.filter(p => partition.includes(p.reqid));
-        // slicedContract.componentName = this.contract.componentName + '_' + partition.join('').replace(/-/g,'');
-        this.registerPartitionProcess(slicedContract);
-      } else if (this.realizableMap.get(partition.join('')) === "UNREALIZABLE" && !this.minConflicts.has(partition.join(''))) {
-        conflictExists = true;
-        partitionMap.set(partition, "UNREALIZABLE");
-      }
-
-      if (n !== 2) {
-       complements.push(this.getPartition(properties, n, i, true));
-      }
-    }
-    if (partitionMap.size === 0) {
-      partitionMap = this.runEnginesAndGatherResults(false);
-      if (Array.from(partitionMap.values()).includes("UNKNOWN")) {
-        const unknownSets = []
-        for (let [key, val] of partitionMap) {
-          if (val === "UNKNOWN") {
-            unknownSets.push(key);
-          }
-        }
-        return "UNKNOWN - Requirements: " + unknownSets;
-      }
-    }
-    for (const [partKey, partValue] of partitionMap.entries()) {
-      if(!this.realizableMap.has(partKey.join(''))) {
-        this.realizableMap.set(partKey.join(''), partValue);
-        if (partValue === "UNREALIZABLE") {
+      var complements = [];
+      var conflictExists = false;
+      var properties = contract.properties.map(p => p.reqid);
+      var propID = properties.join('');
+      for (var i = 0; i < n; i++) {
+        var partition = this.getPartition(properties, n, i, false);
+        if (!this.realizableMap.has(partition.join(''))) {
+          var slicedContract = JSON.parse(JSON.stringify(this.contract));
+          slicedContract.properties = this.contract.properties.filter(p => partition.includes(p.reqid));
+          this.registerPartitionProcess(slicedContract);
+        } else if (this.realizableMap.get(partition.join('')) === "UNREALIZABLE" && !this.minConflicts.has(partition.join(''))) {
           conflictExists = true;
-        } else if (partValue === "REALIZABLE") {
-          var pwrSet = this.powerSet(partKey);
-          for (let st in pwrSet) {                        
-            if (pwrSet[st].length !== 0) {
-              this.realizableMap.set(pwrSet[st].join(''), "REALIZABLE")
-            }            
+          partitionMap.set(partition, "UNREALIZABLE");
+        }
+
+        if (n !== 2) {
+         complements.push(this.getPartition(properties, n, i, true));
+        }
+      }
+      if (partitionMap.size === 0) {
+        partitionMap = this.runEnginesAndGatherResults(false);
+        if (Array.from(partitionMap.values()).includes("UNKNOWN")) {
+          const unknownSets = []
+          for (let [key, val] of partitionMap) {
+            if (val === "UNKNOWN") {
+              unknownSets.push(key);
+            }
+          }
+          return "UNKNOWN - Requirements: " + unknownSets;
+        }
+      }
+      for (const [partKey, partValue] of partitionMap.entries()) {
+        if(!this.realizableMap.has(partKey.join(''))) {
+          this.realizableMap.set(partKey.join(''), partValue);
+          if (partValue === "UNREALIZABLE") {
+            conflictExists = true;
+          } else if (partValue === "REALIZABLE") {
+            var pwrSet = this.powerSet(partKey);
+            for (let st in pwrSet) {                        
+              if (pwrSet[st].length !== 0) {
+                this.realizableMap.set(pwrSet[st].join(''), "REALIZABLE")
+              }            
+            }
           }
         }
       }
-    }
 
-    for (var compl in complements) {
-      var complProps = complements[compl];
-      var complID = complProps.join('');
-      if (!this.realizableMap.has(complID)) {
-        var slicedContract = JSON.parse(JSON.stringify(this.contract));
-        slicedContract.properties = this.contract.properties.filter(p => complProps.includes(p.reqid));
-        // slicedContract.componentName = this.contract.componentName + '_' + complID.replace(/-/g,'');        
-        this.registerPartitionProcess(slicedContract);
-      } else if (this.realizableMap.get(complID) === "UNREALIZABLE" && !this.minConflicts.has(complID)) {
-        conflictExists = true;
-        complementsMap.set(complProps, "UNREALIZABLE");
-      }
-
-      if (this.minConflicts.has(complID)) {
-        minConflicts.push(complProps);
-      }
-    }
-
-    if (complementsMap.size === 0) {
-      complementsMap = this.runEnginesAndGatherResults(false);
-      if (Array.from(complementsMap.values()).includes("UNKNOWN")) {
-        const unknownSets = []
-        for (let [key, val] of complementsMap) {
-          if (val === "UNKNOWN") {
-            unknownSets.push(key);
-          }
-        }
-        return "UNKNOWN - Requirements: " + unknownSets;
-      }
-    }
-
-    for (const [complKey, complValue] of complementsMap.entries()) {
-      if(!this.realizableMap.has(complKey.join(''))) {
-        this.realizableMap.set(complKey.join(''), complValue);
-        if (complValue === "UNREALIZABLE") {
+      for (var compl in complements) {
+        var complProps = complements[compl];
+        var complID = complProps.join('');
+        if (!this.realizableMap.has(complID)) {
+          var slicedContract = JSON.parse(JSON.stringify(this.contract));
+          slicedContract.properties = this.contract.properties.filter(p => complProps.includes(p.reqid));      
+          this.registerPartitionProcess(slicedContract);
+        } else if (this.realizableMap.get(complID) === "UNREALIZABLE" && !this.minConflicts.has(complID)) {
           conflictExists = true;
-        } else if (complValue === "REALIZABLE") {
-          var pwrSet = this.powerSet(complKey);
-          for (let st in pwrSet) {
-            if (pwrSet[st].length !== 0) {
-              this.realizableMap.set(pwrSet[st].join(''), "REALIZABLE");
+          complementsMap.set(complProps, "UNREALIZABLE");
+        }
+
+        if (this.minConflicts.has(complID)) {
+          minConflicts.push(complProps);
+        }
+      }
+
+      if (complementsMap.size === 0) {
+        complementsMap = this.runEnginesAndGatherResults(false);
+        if (Array.from(complementsMap.values()).includes("UNKNOWN")) {
+          const unknownSets = []
+          for (let [key, val] of complementsMap) {
+            if (val === "UNKNOWN") {
+              unknownSets.push(key);
+            }
+          }
+          return "UNKNOWN - Requirements: " + unknownSets;
+        }
+      }
+
+      for (const [complKey, complValue] of complementsMap.entries()) {
+        if(!this.realizableMap.has(complKey.join(''))) {
+          this.realizableMap.set(complKey.join(''), complValue);
+          if (complValue === "UNREALIZABLE") {
+            conflictExists = true;
+          } else if (complValue === "REALIZABLE") {
+            var pwrSet = this.powerSet(complKey);
+            for (let st in pwrSet) {
+              if (pwrSet[st].length !== 0) {
+                this.realizableMap.set(pwrSet[st].join(''), "REALIZABLE");
+              }
+
             }
 
           }
-
-        }
-      }
-    }
-
-    if (Array.from(partitionMap.values()).includes("UNREALIZABLE")) {
-      var unrealMap = new Map();
-      for (let [partKey, partValue] in partitionMap) {
-        if (partValue === "UNREALIZABLE") {
-          unrealMap.set(partKey, partValue);
         }
       }
 
-      for (const [unrealKey, unrealValue] of unrealMap.entries()) {
-        if (unrealKey.length > 1) {          
+      if (Array.from(partitionMap.values()).includes("UNREALIZABLE")) {
+        var unrealMap = new Map();
+        for (let [partKey, partValue] in partitionMap) {
+          if (partValue === "UNREALIZABLE") {
+            unrealMap.set(partKey, partValue);
+          }
+        }
+
+        for (const [unrealKey, unrealValue] of unrealMap.entries()) {
+          if (unrealKey.length > 1) {          
+            var slicedContract = JSON.parse(JSON.stringify(this.contract));
+            slicedContract.properties = this.contract.properties.filter(p => unrealKey.includes(p.reqid));
+            slicedContract.componentName = this.contract.componentName + '_' + unrealKey.join('').replace(/-/g,'');
+            if (this.minConflicts.has(unrealKey.join(''))) {
+              minConflicts.push(unrealKey);
+            } else {
+              var tmpConflicts = this.deltaDebug(slicedContract, 2);
+              if (tmpConflicts.toString().startsWith("UNKNOWN")) {
+                return tmpConflicts;
+              }
+              minConflicts = minConflicts.concat(tmpConflicts);
+              this.optLog(tmpConflicts);
+              this.addUniqueConflicts(tmpConflicts);
+            }
+          } else {
+            minConflicts.push(unrealKey);
+          }
+        }
+
+      }
+
+      if (Array.from(complementsMap.values()).includes("UNREALIZABLE") && n !== 2) {
+        var unrealMap = new Map();
+
+        for (const [partKey, partValue] of complementsMap.entries()) {      
+          if (partValue === "UNREALIZABLE") {
+            unrealMap.set(partKey, partValue);
+          }
+        }
+
+        for (const [unrealKey, unrealValue] of unrealMap.entries()) {
           var slicedContract = JSON.parse(JSON.stringify(this.contract));
           slicedContract.properties = this.contract.properties.filter(p => unrealKey.includes(p.reqid));
-          slicedContract.componentName = this.contract.componentName + '_' + unrealKey.join('').replace(/-/g,'');
+          slicedContract.componentName = this.contract.componentName + '_' + unrealKey.join('').replace(/-/g,'');        
           if (this.minConflicts.has(unrealKey.join(''))) {
             minConflicts.push(unrealKey);
           } else {
-            var tmpConflicts = this.deltaDebug(slicedContract, 2);
+            var tmpConflicts = this.deltaDebug(slicedContract, Math.max(n -1, 2));
             if (tmpConflicts.toString().startsWith("UNKNOWN")) {
               return tmpConflicts;
             }
             minConflicts = minConflicts.concat(tmpConflicts);
-            this.optLog(tmpConflicts);
             this.addUniqueConflicts(tmpConflicts);
           }
-        } else {
-          minConflicts.push(unrealKey);
         }
       }
 
-    }
-
-    if (Array.from(complementsMap.values()).includes("UNREALIZABLE") && n !== 2) {
-      var unrealMap = new Map();
-
-      for (const [partKey, partValue] of complementsMap.entries()) {      
-        if (partValue === "UNREALIZABLE") {
-          unrealMap.set(partKey, partValue);
+      if (minConflicts.length === 0 && n < properties.length) {
+        this.optLog('No minimal conflicts, but n < # of properties')
+        var tmpConflicts = this.deltaDebug(contract, Math.min(properties.length, 2*n));
+        if (tmpConflicts.toString().startsWith("UNKNOWN")) {
+              return tmpConflicts;
         }
+        this.optLog(tmpConflicts);
+        minConflicts = minConflicts.concat(tmpConflicts);
+        this.addUniqueConflicts(tmpConflicts);      
       }
 
-      for (const [unrealKey, unrealValue] of unrealMap.entries()) {
-        var slicedContract = JSON.parse(JSON.stringify(this.contract));
-        slicedContract.properties = this.contract.properties.filter(p => unrealKey.includes(p.reqid));
-        slicedContract.componentName = this.contract.componentName + '_' + unrealKey.join('').replace(/-/g,'');        
-        if (this.minConflicts.has(unrealKey.join(''))) {
-          minConflicts.push(unrealKey);
-        } else {
-          var tmpConflicts = this.deltaDebug(slicedContract, Math.max(n -1, 2));
-          if (tmpConflicts.toString().startsWith("UNKNOWN")) {
-            return tmpConflicts;
-          }
-          minConflicts = minConflicts.concat(tmpConflicts);
-          this.addUniqueConflicts(tmpConflicts);
-        }
+      if (minConflicts.length === 0 && !conflictExists) {
+        this.optLog('No conflicts smaller than current found. Add current set of properties as minimal conflict')            
+        minConflicts.push(properties);
+        this.addUniqueConflicts([properties]);
       }
+      return minConflicts;
+    } catch (error) {
+      throw error;
     }
-
-    if (minConflicts.length === 0 && n < properties.length) {
-      this.optLog('No minimal conflicts, but n < # of properties')
-      var tmpConflicts = this.deltaDebug(contract, Math.min(properties.length, 2*n));
-      if (tmpConflicts.toString().startsWith("UNKNOWN")) {
-            return tmpConflicts;
-      }
-      this.optLog(tmpConflicts);
-      minConflicts = minConflicts.concat(tmpConflicts);
-      this.addUniqueConflicts(tmpConflicts);      
-    }
-
-    if (minConflicts.length === 0 && !conflictExists) {
-      this.optLog('No conflicts smaller than current found. Add current set of properties as minimal conflict')            
-      minConflicts.push(properties);
-      this.addUniqueConflicts([properties]);
-    }
-    return minConflicts;
   }
 
   isSuperset(set, subset) {
@@ -398,39 +404,43 @@ class DiagnosisEngine {
   }
 
   labelRootNode() {
-    var conflicts = this.deltaDebug(this.contract, 2);
-    if (conflicts.toString().startsWith("UNKNOWN")) {
-      return conflicts;
-    }
-    if (conflicts.length !== 0) {
-      this.root.setLabel(conflicts[0]);
-      this.unlabeled = this.unlabeled.concat(this.root.children);
-      this.addUniqueConflicts(conflicts);
-      this.labeled.push(this.root);
-    } else {
-      this.registerPartitionProcess(this.contract);
-      var resMap = this.runEnginesAndGatherResults(false);
-      if (Array.from(resMap.values()).includes("UNKNOWN")) {
-        const unknownSets = []
-        for (let [key, val] of resMap) {
-          if (val === "UNKNOWN") {
-            unknownSets.push(key);
-          }
-        }
-        return "UNKNOWN - Requirements: " + unknownSets;        
+    try {
+      var conflicts = this.deltaDebug(this.contract, 2);
+      if (conflicts.toString().startsWith("UNKNOWN")) {
+        return conflicts;
       }
-      var propList = this.contract.properties.map(p => p.reqid); 
-      var propID = propList.join('')
-      for (const [resKey, resValue] of resMap.entries()){
-        if (resKey.join('') === propID && resValue === "REALIZABLE") {
-          return "DONE";
+      if (conflicts.length !== 0) {
+        this.root.setLabel(conflicts[0]);
+        this.unlabeled = this.unlabeled.concat(this.root.children);
+        this.addUniqueConflicts(conflicts);
+        this.labeled.push(this.root);
+      } else {
+        this.registerPartitionProcess(this.contract);
+        var resMap = this.runEnginesAndGatherResults(false);
+        if (Array.from(resMap.values()).includes("UNKNOWN")) {
+          const unknownSets = []
+          for (let [key, val] of resMap) {
+            if (val === "UNKNOWN") {
+              unknownSets.push(key);
+            }
+          }
+          return "UNKNOWN - Requirements: " + unknownSets;        
         }
-      }      
-      this.root.setLabel(propList);
-      this.labeled.push(this.root);
-      conflicts.push(propList);
-      this.addUniqueConflicts(conflicts);
-      return "DONE";
+        var propList = this.contract.properties.map(p => p.reqid); 
+        var propID = propList.join('')
+        for (const [resKey, resValue] of resMap.entries()){
+          if (resKey.join('') === propID && resValue === "REALIZABLE") {
+            return "DONE";
+          }
+        }      
+        this.root.setLabel(propList);
+        this.labeled.push(this.root);
+        conflicts.push(propList);
+        this.addUniqueConflicts(conflicts);
+        return "DONE";
+      }
+    } catch (error) {
+      throw error;
     }
   }
 
@@ -486,8 +496,7 @@ class DiagnosisEngine {
   }
 
   main(callback) {
-    try {
-      
+    try {      
       var rootResult = this.labelRootNode();
       if (rootResult && rootResult.toString().startsWith("UNKNOWN")) {
         return callback("Something went wrong during diagnosis.\n" + rootResult);
@@ -500,8 +509,7 @@ class DiagnosisEngine {
               var properties = this.contract.properties.map(p => p.reqid);
               
               var slicedContract = JSON.parse(JSON.stringify(this.contract));
-              slicedContract.properties = this.contract.properties.filter(x => !hittingSet.includes(x.reqid));
-              // slicedContract.componentName = this.contract.componentName + '_' + properties.join('').replace(/-/g,'');        
+              slicedContract.properties = this.contract.properties.filter(x => !hittingSet.includes(x.reqid));       
 
               var propID = slicedContract.properties.map(p => p. reqid).join('');
               if (this.realizableMap.has(propID)) {
@@ -583,7 +591,6 @@ class DiagnosisEngine {
           var confList = conflValue;
           var slicedContract = JSON.parse(JSON.stringify(this.contract));
           slicedContract.properties = this.contract.properties.filter(p => confList.includes(p.reqid));
-          // slicedContract.componentName = this.contract.componentName + '_' + confList.join('').replace(/-/g,'');
           this.registerPartitionProcess(slicedContract);
         }
         const results = this.runEnginesAndGatherResults(true);

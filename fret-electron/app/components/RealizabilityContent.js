@@ -938,7 +938,7 @@ class RealizabilityContent extends React.Component {
           engine.main(function (err, result) {            
             if (err) {              
               projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].diagnosisStatus = 'ERROR';
-              projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].error = err.message;
+              projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].error = err.message+err.stdout.toString();
               self.setState({
                 projectReport: projectReport
               });
@@ -960,7 +960,7 @@ class RealizabilityContent extends React.Component {
           engine.main(function (err, result) {
             if (err) {
               projectReport.systemComponents[systemComponentIndex].monolithic.diagnosisStatus = 'ERROR';
-              projectReport.systemComponents[systemComponentIndex].monolithic.error = err;                        
+              projectReport.systemComponents[systemComponentIndex].monolithic.error = err.message+err.stdout.toString();                        
 
               self.setState({
                 projectReport: projectReport

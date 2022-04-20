@@ -341,6 +341,7 @@ class AnalysisTabs extends React.Component {
       internalVariables: [],
       functions: [],
       assignments: [],
+      lustreValidAssignments: [],
       copilotAssignments: [],
       modes: [],
       properties: []
@@ -357,7 +358,9 @@ class AnalysisTabs extends React.Component {
       } else if (doc.idType === 'Internal'){
         variable.type = getCoCoSpecDataType(doc.dataType);
         contract.internalVariables.push(variable);
-        contract.assignments.push(doc.assignment);
+        // contract.assignments.push(doc.assignment);
+        contract.assignments.push(doc.lustreValidAssignment);
+        contract.lustreValidAssignments.push(doc.lustreValidAssignment);
         contract.copilotAssignments.push(doc.copilotAssignment);
       } else if (doc.idType === 'Mode'){
         if (doc.modeRequirement !== '')

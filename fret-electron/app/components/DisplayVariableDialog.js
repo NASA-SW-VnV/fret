@@ -100,6 +100,7 @@ class DisplayVariableDialog extends React.Component {
     idType: '',
     dataType: '',
     assignment: '',
+    lustreValidAssignment: '',
     copilotAssignment: '',
     moduleName: '',
     modeRequirement: '',
@@ -136,6 +137,7 @@ class DisplayVariableDialog extends React.Component {
       anchorEl: null,
       open: true,
       assignment: '',
+      lustreValidAssignment: '',
       copilotAssignment: ''
     })
   }
@@ -160,15 +162,13 @@ class DisplayVariableDialog extends React.Component {
       let tempAssignment = event.target.value
       if (resultLustre.variables) {        
         for (const lustreVar of resultLustre.variables) {
-          console.log(lustreVar)
           var regex = new RegExp('\\b' + lustreVar + '\\b', "g");
           tempAssignment = tempAssignment.replace(regex, '__'+lustreVar);
         }
-        console.log(tempAssignment);
       }
       this.setState({
-        // [name]: event.target.value,
-        [name]: tempAssignment,
+        [name]: event.target.value,
+        lustreValidAssignment: tempAssignment,
         errorsLustre: resultLustre.parseErrors ? 'Parse Errors: '+ resultLustre.parseErrors : '',
         lustreVariables: resultLustre.variables ? resultLustre.variables : []
       });
@@ -204,7 +204,7 @@ class DisplayVariableDialog extends React.Component {
 
   handleUpdate = () => {
     const self = this;
-    const {selectedVariable, description, idType, dataType, assignment, copilotAssignment, modeRequirement, modeldoc_id, modelComponent, lustreVariables, copilotVariables, moduleName} = this.state;
+    const {selectedVariable, description, idType, dataType, assignment, lustreValidAssignment, copilotAssignment, modeRequirement, modeldoc_id, modelComponent, lustreVariables, copilotVariables, moduleName} = this.state;
     var modeldbid = selectedVariable._id;
     var completedVariable = false;
     var newVariables = [];
@@ -264,6 +264,7 @@ class DisplayVariableDialog extends React.Component {
           moduleName: moduleName,
           description: description,
           assignment: assignment,
+          lustreValidAssignment: lustreValidAssignment,
           copilotAssignment: copilotAssignment,
           modeRequirement: modeRequirement,
           modeldoc: false,
@@ -292,6 +293,7 @@ class DisplayVariableDialog extends React.Component {
       moduleName: props.selectedVariable.moduleName,
       dataType: props.selectedVariable.dataType,
       assignment: props.selectedVariable.assignment,
+      lustreValidAssignment: props.selectedVariable.lustreValidAssignment,
       copilotAssignment: props.selectedVariable.copilotAssignment,
       modeRequirement: props.selectedVariable.modeRequirement,
       modeldoc_id: props.selectedVariable.modeldoc_id,
@@ -324,6 +326,7 @@ class DisplayVariableDialog extends React.Component {
         dataType: '',
         modeldoc_id: '',
         assignment: '',
+        lustreValidAssignment: '',
         copilotAssignment: '',
         modeRequirement: '',
         moduleName: ''
@@ -333,6 +336,7 @@ class DisplayVariableDialog extends React.Component {
         dataType: 'boolean',
         modeldoc_id: '',
         assignment: '',
+        lustreValidAssignment: '',
         copilotAssignment: '',
         modeRequirement: '',
         moduleName: ''
@@ -342,7 +346,7 @@ class DisplayVariableDialog extends React.Component {
 
   render(){
     const {classes, selectedVariable, modelVariables} = this.props;
-    const {dataType, idType, modeRequirement, assignment, copilotAssignment, errorsLustre, errorsCopilot, checkLustre, checkFRETish, checkCoPilot, moduleName} = this.state;
+    const {dataType, idType, modeRequirement, assignment, lustreValidAssignment, copilotAssignment, errorsLustre, errorsCopilot, checkLustre, checkFRETish, checkCoPilot, moduleName} = this.state;
 
     if (idType === 'Input' || idType === 'Output'){
       return (

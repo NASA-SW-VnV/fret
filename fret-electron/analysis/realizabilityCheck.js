@@ -88,6 +88,8 @@ export function checkReal(filePath, engine, options) {
   var result, output;
   try {
     result = execSync(command).toString();
+    console.log(filePath);
+    console.log(result);
     if (engine === 'jkind') {
       result = result.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];
       if (options.includes('json')){
@@ -105,8 +107,15 @@ export function checkReal(filePath, engine, options) {
     }
     return {result, output};
   } catch (error) {
-    console.log(error)
-    return error.toString();
+    // console.log(result)
+    // console.log(error)
+    // console.log("output",error)
+    // console.log("sdterr",error.stderr.toString())
+    // console.log("signal", error.signal)
+    // console.log("stdout", error.stdout.toString())
+    // console.log("status", error.status)
+    // console.log("pid", error.pid)
+    throw error;
   }
   
 }
