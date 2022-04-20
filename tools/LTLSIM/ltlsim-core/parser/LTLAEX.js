@@ -78,8 +78,9 @@ console.log(newtrace)
 function arithexpr_to_ID(expr){
 
 let v = expr
-	.replace(/^[0-9]/g, "N")
+	.replace(/^([0-9])/g, "N$1")
 	.replace(/ /g, "_S_")
+	.replace(/\./g, "_D_")
 	.replace(/\+/g, "_p_")
 	.replace(/-/g, "_m_")
 	.replace(/\*/g, "_mul_")
@@ -104,6 +105,7 @@ function ID_to_arithexpr(ID){
 let v = ID
 	.replace(/^N/g, "")
 	.replace(/_S_/g, " ")
+	.replace(/_D_/g, ".")
 	.replace(/_p_/g, "*")
 	.replace(/_m_/g, "-")
 	.replace(/_mul_/g, "*")

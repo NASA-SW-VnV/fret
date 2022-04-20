@@ -528,7 +528,8 @@ LTLAnalyzer.prototype.handleArithExpression = function(ctx) {
 LTLSIM_NuSMVVisitor.prototype.visitArith = function(ctx) {
 // NUMBER in arith
 console.log("ARITH="+ctx.getText());
-    return {text: ctx.getText() + " ", code: "ARITH"+ctx.getText()};
+    var pARITH=ctx.getText().replace(/\./,"_D_");
+    return {text: pARITH + " ", code: "ARITH"+ctx.getText()};
 };
 
 

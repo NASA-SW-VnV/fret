@@ -12,11 +12,6 @@ function LTLAEXVisitor() {
 LTLAEXVisitor.prototype = Object.create(antlr4.tree.ParseTreeVisitor.prototype);
 LTLAEXVisitor.prototype.constructor = LTLAEXVisitor;
 
-// Visit a parse tree produced by LTLAEXParser#proposition.
-LTLAEXVisitor.prototype.visitProposition = function(ctx) {
-};
-
-
 // Visit a parse tree produced by LTLAEXParser#boolCompare.
 LTLAEXVisitor.prototype.visitBoolCompare = function(ctx) {
 };

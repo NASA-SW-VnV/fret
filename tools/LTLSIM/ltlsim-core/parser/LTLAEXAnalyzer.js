@@ -125,7 +125,7 @@ LTLAEXVisitor.prototype.visitRParith = function(ctx) {
 LTLAEXVisitor.prototype.visitArith = function(ctx) {
 console.log("ARITH (NUMBER)="+ctx.getText());
 	// var val = parseFloat(mytraces[i][id],10);
-    var val = parseInt(ctx.getText());
+    var val = parseFloat(ctx.getText(),6);
     var arr = new Array(this.model.traceLength).fill(val);
     return {text:ctx.getText(), val: arr };
 };
@@ -248,8 +248,9 @@ LTLAEXVisitor.prototype.visitNegate = function(ctx) {
 function arithexpr_to_ID(expr){
 
 let v = expr
-	.replace(/^[0-9]/g, "N")
+	.replace(/^([0-9])/g, "N$1")
 	.replace(/ /g, "_S_")
+	.replace(/\./g, "_D_")
 	.replace(/\+/g, "_p_")
 	.replace(/-/g, "_m_")
 	.replace(/\*/g, "_mul_")

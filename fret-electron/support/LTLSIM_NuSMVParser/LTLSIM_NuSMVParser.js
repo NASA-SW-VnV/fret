@@ -7,7 +7,7 @@ var LTLSIM_NuSMVVisitor = require('./LTLSIM_NuSMVVisitor').LTLSIM_NuSMVVisitor;
 var grammarFileName = "LTLSIM_NuSMV.g4";
 
 var serializedATN = ["\u0003\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd",
-    "\u0003;\u0135\u0004\u0002\t\u0002\u0004\u0003\t\u0003\u0004\u0004\t",
+    "\u0003<\u0135\u0004\u0002\t\u0002\u0004\u0003\t\u0003\u0004\u0004\t",
     "\u0004\u0004\u0005\t\u0005\u0004\u0006\t\u0006\u0004\u0007\t\u0007\u0004",
     "\b\t\b\u0004\t\t\t\u0004\n\t\n\u0004\u000b\t\u000b\u0004\f\t\f\u0004",
     "\r\t\r\u0004\u000e\t\u000e\u0004\u000f\t\u000f\u0004\u0010\t\u0010\u0004",
@@ -229,7 +229,7 @@ var symbolicNames = [ 'null', 'null', 'null', 'null', 'null', 'null', 'null',
                       'null', 'null', 'null', 'null', 'null', 'null', 'null', 
                       'null', 'null', 'null', 'null', 'null', 'null', 'null', 
                       'null', 'null', 'null', 'null', 'null', 'null', "ID", 
-                      "UINT", "WS" ];
+                      "NUMBER", "UINT", "WS" ];
 
 var ruleNames =  [ "plHolders", "durPlHolders", "proposition", "simpleExpr", 
                    "arithmetic_expr", "ltlExpr", "pastTimedUnaryOp", "pastUnaryOp", 
@@ -313,8 +313,9 @@ LTLSIM_NuSMVParser.T__51 = 52;
 LTLSIM_NuSMVParser.T__52 = 53;
 LTLSIM_NuSMVParser.T__53 = 54;
 LTLSIM_NuSMVParser.ID = 55;
-LTLSIM_NuSMVParser.UINT = 56;
-LTLSIM_NuSMVParser.WS = 57;
+LTLSIM_NuSMVParser.NUMBER = 56;
+LTLSIM_NuSMVParser.UINT = 57;
+LTLSIM_NuSMVParser.WS = 58;
 
 LTLSIM_NuSMVParser.RULE_plHolders = 0;
 LTLSIM_NuSMVParser.RULE_durPlHolders = 1;
@@ -934,8 +935,8 @@ ArithContext.prototype.constructor = ArithContext;
 
 LTLSIM_NuSMVParser.ArithContext = ArithContext;
 
-ArithContext.prototype.UINT = function() {
-    return this.getToken(LTLSIM_NuSMVParser.UINT, 0);
+ArithContext.prototype.NUMBER = function() {
+    return this.getToken(LTLSIM_NuSMVParser.NUMBER, 0);
 };
 ArithContext.prototype.enterRule = function(listener) {
     if(listener instanceof LTLSIM_NuSMVListener ) {
@@ -1177,12 +1178,12 @@ LTLSIM_NuSMVParser.prototype.arithmetic_expr = function(_p) {
             this.state = 123;
             this.rpA();
             break;
-        case LTLSIM_NuSMVParser.UINT:
+        case LTLSIM_NuSMVParser.NUMBER:
             localctx = new ArithContext(this, localctx);
             this._ctx = localctx;
             _prevctx = localctx;
             this.state = 125;
-            this.match(LTLSIM_NuSMVParser.UINT);
+            this.match(LTLSIM_NuSMVParser.NUMBER);
             break;
         case LTLSIM_NuSMVParser.ID:
             localctx = new ArithTermContext(this, localctx);
@@ -2769,14 +2770,14 @@ function BoundContext(parser, parent, invokingState) {
 BoundContext.prototype = Object.create(antlr4.ParserRuleContext.prototype);
 BoundContext.prototype.constructor = BoundContext;
 
-BoundContext.prototype.UINT = function(i) {
+BoundContext.prototype.NUMBER = function(i) {
 	if(i===undefined) {
 		i = null;
 	}
     if(i===null) {
-        return this.getTokens(LTLSIM_NuSMVParser.UINT);
+        return this.getTokens(LTLSIM_NuSMVParser.NUMBER);
     } else {
-        return this.getToken(LTLSIM_NuSMVParser.UINT, i);
+        return this.getToken(LTLSIM_NuSMVParser.NUMBER, i);
     }
 };
 
@@ -2815,11 +2816,11 @@ LTLSIM_NuSMVParser.prototype.bound = function() {
         this.state = 257;
         this.match(LTLSIM_NuSMVParser.T__35);
         this.state = 258;
-        this.match(LTLSIM_NuSMVParser.UINT);
+        this.match(LTLSIM_NuSMVParser.NUMBER);
         this.state = 259;
         this.match(LTLSIM_NuSMVParser.T__36);
         this.state = 260;
-        this.match(LTLSIM_NuSMVParser.UINT);
+        this.match(LTLSIM_NuSMVParser.NUMBER);
         this.state = 261;
         this.match(LTLSIM_NuSMVParser.T__37);
     } catch (re) {

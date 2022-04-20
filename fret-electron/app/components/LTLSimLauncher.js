@@ -84,7 +84,12 @@ export default function LTLSimLauncher(props) {
 	IDs = IDs.concat(reqID_R2)
         }
 
+	console.log("LTLSImLauncher: open "+open)
 	console.log("LTLSImLauncher: ftExpressions "+ftExpressions)
+	console.log("LTLSImLauncher: ptExpressions "+ptExpressions)
+	console.log("LTLSImLauncher: IDs "+IDs)
+	console.log("LTLSImLauncher: requirements "+requirements)
+	console.log("LTLSImLauncher: requirementIDs "+requirementIDs)
 
 //JSC/CAV                id="REQ" 
     return (status.ltlsim && status.nusmv) ?
@@ -106,7 +111,8 @@ export default function LTLSimLauncher(props) {
                 requirementIDs={requirementIDs}
 //JSC-NOM-0415		CEXFileName="/home/johann/Desktop/FSMSpec_FSM007FSM006.lus.json"
 //        	traceID="CEX-1"
-		// CEXFileName="/home/johann/Desktop/FSMSpec_FSM007FSM006.lus.json"
+//		CEXFileName="/home/johann/Desktop/CEX-ANDREAS.json"
+//		CEXFileName="/home/johann/Desktop/FSMSpec_FSM007FSM006.lus.json"
         	traceID=""
                 />
             </div>) :

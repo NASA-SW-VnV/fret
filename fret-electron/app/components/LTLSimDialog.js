@@ -233,6 +233,22 @@ class LTLSimDialog extends Component {
 */
 		this.loadCEXTrace(this.props.CEXFileName)		
 		}
+
+/*JSC-NEW-BUGGY-0419
+	//
+	// update the traces and evaluate the variables
+	//
+	console.log("initial eval of variables")
+	this.state.model.atomics.keys.forEach((id) => {
+		if (this.state.model.atomics.keys.indexOf(id) !== -1) {
+            		var trace = this.state.model.atomics.values[id].trace;
+			LTLSimController.setAtomicTraceEval(this.state.model, id, trace, 0,trace[0]);
+			}
+		});
+	console.log("initial eval of variables done")
+*/
+	
+
     }
 
 
@@ -563,7 +579,7 @@ console.log("Didupdate open "+this.props.open+ " prev: "+ prevProps.open)
       			});
 		console.log("load trace: ")
 		console.log(filepath)
-		if (filepath == undefined){
+		 if (filepath && filepath.length == 0) {
 			// cancel
 			return;
 			}
@@ -767,10 +783,17 @@ console.log("convert CEX");
 
 			}
 		//
-		// number rule: include "0"
+		// number rule I: include "0"
 		//
 		if (mi > 0){
 			mi = 0;
+			}
+
+		//
+		// number rule II: no empty intervals
+		//
+		if (mi == ma){
+			ma = mi + 10;
 			}
 
 		LTLSimController.addAtomicU(this.state.model, key_R, atomic_type, true, mi, ma )

@@ -74,7 +74,7 @@ arithmetic_expr :
              | negate arithmetic_expr #arithUnary
              | arithmetic_expr (mult | div | mod) arithmetic_expr #arithBinary
              | arithmetic_expr (plus | minus) arithmetic_expr #arithBinary
-	     | UINT #arith
+	     | NUMBER #arith
              | ID #arithTerm
              ;
 //             | ID (lpA (arithmetic_expr (',' arithmetic_expr)* )? rpA)? #arithTerm
@@ -117,7 +117,7 @@ futureBinaryOp : 'U' | 'V' | 'UI' ; // until, releases
 
 comparisonOp : '=' | '<' | '<=' | '>' | '>=' ;
 
-bound : '[' UINT ',' UINT ']';
+bound : '[' NUMBER ',' NUMBER ']';
 
 saltBound : '[' comparisonOp durPlHolders ']' ;
 
@@ -161,16 +161,16 @@ minus : '-' ;
 
 negate : '-' ;
 
-//NUMBER :
-//          '-'? NATNUM '.' [0-9]+ EXP?
-//        | '-'? NATNUM EXP
-//        | '-'? NATNUM
-//        ;
+NUMBER :
+          '-'? NATNUM '.' [0-9]+ EXP?
+        | '-'? NATNUM EXP
+        | '-'? NATNUM
+        ;
 
-//EXP :
-//        [Ee] [+\-]? NATNUM ;
-// 
-//NATNUM : '0' | [1-9][0-9]* ;
+fragment EXP :
+        [Ee] [+\-]? NATNUM ;
+ 
+fragment NATNUM : '0' | [1-9][0-9]* ;
 
 UINT : [0-9]+ ;
 

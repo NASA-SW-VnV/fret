@@ -199,6 +199,8 @@ class TimeSeriesChart extends Component {
             const { dataKey, chart_type, chart_minval, chart_maxval } = this.props;
             const dataIndex = event.activeTooltipIndex;
             let data  = this.state.data.slice();
+console.log("TSC:handleMouseUp: dataIndex="+dataIndex);
+console.log(data)
 	    var NV = 0;
 		    if (chart_type == "category"){
 	                    NV = (data[dataIndex]) ? 0 : 1;
@@ -209,6 +211,8 @@ class TimeSeriesChart extends Component {
 			 	NV = chart_minval
 				}
 			}
+
+/*JSC-0420-01
             this.setState((prevState) => {  
                 if (!this.state.dragWasActive) {
 		    if (chart_type == "category"){
@@ -219,22 +223,25 @@ class TimeSeriesChart extends Component {
 //JSC/CAV		    	if (data[dataIndex] > 1.0){
 //JSC/CAV			 	data[dataIndex] = 0.0
 //JSC/CAV				}
-/*JSC-0418
+
                     	data[dataIndex] = data[dataIndex] + 1.0
 		    	if (data[dataIndex] > chart_maxval){
 			 	data[dataIndex] = chart_minval
 				}
-*/
-			data[dataIndex] = NV;
+console.log("TSChart: handleMouseUp:setState:number "+data[dataIndex]);
+console.log("TSChart: handleMouseUp:setState:number "+NV);
+
+//JSC-0419			data[dataIndex] = NV;
 			}
                 }
                 return {
                     data
                 };
             });
+*/
 
-// console.log("TSChart: before onChange "+data[dataIndex]);
-// console.log("TSChart: before onChange NV="+NV);
+console.log("TSChart: before onChange "+data[dataIndex]);
+console.log("TSChart: before onChange NV="+NV);
             this.props.onChange(dataKey, dataIndex, data, NV);
         }
         this.setState({
@@ -324,12 +331,6 @@ class TimeSeriesChart extends Component {
 	return null;
         };
 
-	//
-	// NUMBER-RULE
-	// * include "0"
-   	// if (chart_minval > 0){
-// 		chart_minval = 0;
-// 		}
 
         let fill = "none";
         switch (chartState) {
@@ -429,13 +430,20 @@ const CustomizedLabel: FunctionComponent<any> = (props: any) => {
 
         let longName = this.props.name.length > maxNameLength;
 //JSC/CAV        let name = (longName) ? this.props.name.slice(0, maxNameLength-1) + "..." : this.props.name;
-        let name = (longName) ? this.props.name.replace(/REQ/, "FSM-006").replace(/_eq_/," = ").slice(0, maxNameLength-1) + "..." : this.props.name.replace(/REQ/,"FSM-006");
+//JSC-0420-CAV        let name = (longName) ? this.props.name.replace(/REQ/, "FSM-006").replace(/_eq_/," = ").slice(0, maxNameLength-1) + "..." : this.props.name.replace(/REQ/,"FSM-006");
+	let Oname = ID_to_arithexpr(this.props.name);
+        let name = (longName) ? Oname.slice(0, maxNameLength-1) + "..." : Oname;
+console.log("TSC:render: longName="+longName);
+console.log("TSC:render: origname="+this.props.name);
+console.log("TSC:render: name="+name);
+console.log("TSC:render: expression="+expression);
 
         let nameTip = (longName || expression) ? 
                         <div>
-                            {((longName) ? this.props.name + ((expression) ? ": " : "") : "")}
-                            {(expression) ? <FormulaRenderer tex={expression}/>: null}
+                            {((longName) ? Oname + ((expression) ? ": " : "") : "")}
+                            {(expression) ? Oname : "" }
                         </div> : null;
+//JSC0420                            {(expression) ? <FormulaRenderer tex={expression}/>: null}
 
 //JSC/CAV            <ResponsiveContainer width="99%" height={75} debounce={0}>
         return (
@@ -579,3 +587,28 @@ TimeSeriesChart.defaultProps = {
 }
 
 export default withTheme(withStyles(styles)(TimeSeriesChart));
+
+function ID_to_arithexpr(ID){
+
+let v = ID
+        .replace(/^N/g, "")
+        .replace(/_S_/g, " ")
+        .replace(/_D_/g, ".")
+        .replace(/_p_/g, "*")
+        .replace(/_m_/g, "-")
+        .replace(/_mul_/g, "*")
+        .replace(/_div_/g, "/")
+        .replace(/_lp_/g, "(")
+        .replace(/_rp_/g, ")")
+        .replace(/_leq_/g, "<=")
+        .replace(/_lt_/g, "<")
+        .replace(/_gt_/g, ">")
+        .replace(/_geq_/g, ">=")
+        .replace(/_eq_/g, "=")
+        .replace(/_eqeq_/g, "==")
+        ;
+
+return v
+
+}
+

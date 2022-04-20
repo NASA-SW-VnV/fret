@@ -7,57 +7,56 @@ var LTLAEXVisitor = require('./LTLAEXVisitor').LTLAEXVisitor;
 var grammarFileName = "LTLAEX.g4";
 
 var serializedATN = ["\u0003\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd",
-    "\u0003\u0012c\u0004\u0002\t\u0002\u0004\u0003\t\u0003\u0004\u0004\t",
+    "\u0003\u0013_\u0004\u0002\t\u0002\u0004\u0003\t\u0003\u0004\u0004\t",
     "\u0004\u0004\u0005\t\u0005\u0004\u0006\t\u0006\u0004\u0007\t\u0007\u0004",
     "\b\t\b\u0004\t\t\t\u0004\n\t\n\u0004\u000b\t\u000b\u0004\f\t\f\u0004",
-    "\r\t\r\u0004\u000e\t\u000e\u0004\u000f\t\u000f\u0004\u0010\t\u0010\u0003",
-    "\u0002\u0003\u0002\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003",
-    "\u0004\u0003\u0004\u0003\u0004\u0003\u0004\u0003\u0004\u0003\u0004\u0003",
-    "\u0004\u0003\u0004\u0003\u0004\u0003\u0004\u0005\u00041\n\u0004\u0003",
-    "\u0004\u0003\u0004\u0003\u0004\u0003\u0004\u0003\u0004\u0003\u0004\u0003",
-    "\u0004\u0003\u0004\u0005\u0004;\n\u0004\u0003\u0004\u0003\u0004\u0003",
-    "\u0004\u0003\u0004\u0003\u0004\u0005\u0004B\n\u0004\u0003\u0004\u0003",
-    "\u0004\u0007\u0004F\n\u0004\f\u0004\u000e\u0004I\u000b\u0004\u0003\u0005",
-    "\u0003\u0005\u0003\u0006\u0003\u0006\u0003\u0007\u0003\u0007\u0003\b",
-    "\u0003\b\u0003\t\u0003\t\u0003\n\u0003\n\u0003\u000b\u0003\u000b\u0003",
-    "\f\u0003\f\u0003\r\u0003\r\u0003\u000e\u0003\u000e\u0003\u000f\u0003",
-    "\u000f\u0003\u0010\u0003\u0010\u0003\u0010\u0002\u0003\u0006\u0011\u0002",
-    "\u0004\u0006\b\n\f\u000e\u0010\u0012\u0014\u0016\u0018\u001a\u001c\u001e",
-    "\u0002\u0003\u0003\u0002\u0003\u0007\\\u0002 \u0003\u0002\u0002\u0002",
-    "\u0004\"\u0003\u0002\u0002\u0002\u00060\u0003\u0002\u0002\u0002\bJ\u0003",
-    "\u0002\u0002\u0002\nL\u0003\u0002\u0002\u0002\fN\u0003\u0002\u0002\u0002",
-    "\u000eP\u0003\u0002\u0002\u0002\u0010R\u0003\u0002\u0002\u0002\u0012",
-    "T\u0003\u0002\u0002\u0002\u0014V\u0003\u0002\u0002\u0002\u0016X\u0003",
-    "\u0002\u0002\u0002\u0018Z\u0003\u0002\u0002\u0002\u001a\\\u0003\u0002",
-    "\u0002\u0002\u001c^\u0003\u0002\u0002\u0002\u001e`\u0003\u0002\u0002",
-    "\u0002 !\u0007\u0010\u0002\u0002!\u0003\u0003\u0002\u0002\u0002\"#\u0005",
-    "\u0006\u0004\u0002#$\u0005\b\u0005\u0002$%\u0005\u0006\u0004\u0002%",
-    "\u0005\u0003\u0002\u0002\u0002&\'\b\u0004\u0001\u0002\'(\u0005\u001e",
-    "\u0010\u0002()\u0005\u0006\u0004\u0007)1\u0003\u0002\u0002\u0002*+\u0005",
-    "\f\u0007\u0002+,\u0005\u0006\u0004\u0002,-\u0005\u0010\t\u0002-1\u0003",
-    "\u0002\u0002\u0002.1\u0007\u0011\u0002\u0002/1\u0007\u0010\u0002\u0002",
-    "0&\u0003\u0002\u0002\u00020*\u0003\u0002\u0002\u00020.\u0003\u0002\u0002",
-    "\u00020/\u0003\u0002\u0002\u00021G\u0003\u0002\u0002\u000223\f\b\u0002",
-    "\u000234\u0005\u0012\n\u000245\u0005\u0006\u0004\b5F\u0003\u0002\u0002",
-    "\u00026:\f\u0006\u0002\u00027;\u0005\u0014\u000b\u00028;\u0005\u0016",
-    "\f\u00029;\u0005\u0018\r\u0002:7\u0003\u0002\u0002\u0002:8\u0003\u0002",
-    "\u0002\u0002:9\u0003\u0002\u0002\u0002;<\u0003\u0002\u0002\u0002<=\u0005",
-    "\u0006\u0004\u0007=F\u0003\u0002\u0002\u0002>A\f\u0005\u0002\u0002?",
-    "B\u0005\u001a\u000e\u0002@B\u0005\u001c\u000f\u0002A?\u0003\u0002\u0002",
-    "\u0002A@\u0003\u0002\u0002\u0002BC\u0003\u0002\u0002\u0002CD\u0005\u0006",
-    "\u0004\u0006DF\u0003\u0002\u0002\u0002E2\u0003\u0002\u0002\u0002E6\u0003",
-    "\u0002\u0002\u0002E>\u0003\u0002\u0002\u0002FI\u0003\u0002\u0002\u0002",
-    "GE\u0003\u0002\u0002\u0002GH\u0003\u0002\u0002\u0002H\u0007\u0003\u0002",
-    "\u0002\u0002IG\u0003\u0002\u0002\u0002JK\t\u0002\u0002\u0002K\t\u0003",
-    "\u0002\u0002\u0002LM\u0007\b\u0002\u0002M\u000b\u0003\u0002\u0002\u0002",
-    "NO\u0007\b\u0002\u0002O\r\u0003\u0002\u0002\u0002PQ\u0007\t\u0002\u0002",
-    "Q\u000f\u0003\u0002\u0002\u0002RS\u0007\t\u0002\u0002S\u0011\u0003\u0002",
-    "\u0002\u0002TU\u0007\n\u0002\u0002U\u0013\u0003\u0002\u0002\u0002VW",
-    "\u0007\u000b\u0002\u0002W\u0015\u0003\u0002\u0002\u0002XY\u0007\f\u0002",
-    "\u0002Y\u0017\u0003\u0002\u0002\u0002Z[\u0007\r\u0002\u0002[\u0019\u0003",
-    "\u0002\u0002\u0002\\]\u0007\u000e\u0002\u0002]\u001b\u0003\u0002\u0002",
-    "\u0002^_\u0007\u000f\u0002\u0002_\u001d\u0003\u0002\u0002\u0002`a\u0007",
-    "\u000f\u0002\u0002a\u001f\u0003\u0002\u0002\u0002\u00070:AEG"].join("");
+    "\r\t\r\u0004\u000e\t\u000e\u0004\u000f\t\u000f\u0003\u0002\u0003\u0002",
+    "\u0003\u0002\u0003\u0002\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003",
+    "\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003",
+    "\u0005\u0003-\n\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003",
+    "\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0005\u00037\n\u0003",
+    "\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0005\u0003",
+    ">\n\u0003\u0003\u0003\u0003\u0003\u0007\u0003B\n\u0003\f\u0003\u000e",
+    "\u0003E\u000b\u0003\u0003\u0004\u0003\u0004\u0003\u0005\u0003\u0005",
+    "\u0003\u0006\u0003\u0006\u0003\u0007\u0003\u0007\u0003\b\u0003\b\u0003",
+    "\t\u0003\t\u0003\n\u0003\n\u0003\u000b\u0003\u000b\u0003\f\u0003\f\u0003",
+    "\r\u0003\r\u0003\u000e\u0003\u000e\u0003\u000f\u0003\u000f\u0003\u000f",
+    "\u0002\u0003\u0004\u0010\u0002\u0004\u0006\b\n\f\u000e\u0010\u0012\u0014",
+    "\u0016\u0018\u001a\u001c\u0002\u0003\u0003\u0002\u0003\u0007Y\u0002",
+    "\u001e\u0003\u0002\u0002\u0002\u0004,\u0003\u0002\u0002\u0002\u0006",
+    "F\u0003\u0002\u0002\u0002\bH\u0003\u0002\u0002\u0002\nJ\u0003\u0002",
+    "\u0002\u0002\fL\u0003\u0002\u0002\u0002\u000eN\u0003\u0002\u0002\u0002",
+    "\u0010P\u0003\u0002\u0002\u0002\u0012R\u0003\u0002\u0002\u0002\u0014",
+    "T\u0003\u0002\u0002\u0002\u0016V\u0003\u0002\u0002\u0002\u0018X\u0003",
+    "\u0002\u0002\u0002\u001aZ\u0003\u0002\u0002\u0002\u001c\\\u0003\u0002",
+    "\u0002\u0002\u001e\u001f\u0005\u0004\u0003\u0002\u001f \u0005\u0006",
+    "\u0004\u0002 !\u0005\u0004\u0003\u0002!\u0003\u0003\u0002\u0002\u0002",
+    "\"#\b\u0003\u0001\u0002#$\u0005\u001c\u000f\u0002$%\u0005\u0004\u0003",
+    "\u0007%-\u0003\u0002\u0002\u0002&\'\u0005\n\u0006\u0002\'(\u0005\u0004",
+    "\u0003\u0002()\u0005\u000e\b\u0002)-\u0003\u0002\u0002\u0002*-\u0007",
+    "\u0011\u0002\u0002+-\u0007\u0010\u0002\u0002,\"\u0003\u0002\u0002\u0002",
+    ",&\u0003\u0002\u0002\u0002,*\u0003\u0002\u0002\u0002,+\u0003\u0002\u0002",
+    "\u0002-C\u0003\u0002\u0002\u0002./\f\b\u0002\u0002/0\u0005\u0010\t\u0002",
+    "01\u0005\u0004\u0003\b1B\u0003\u0002\u0002\u000226\f\u0006\u0002\u0002",
+    "37\u0005\u0012\n\u000247\u0005\u0014\u000b\u000257\u0005\u0016\f\u0002",
+    "63\u0003\u0002\u0002\u000264\u0003\u0002\u0002\u000265\u0003\u0002\u0002",
+    "\u000278\u0003\u0002\u0002\u000289\u0005\u0004\u0003\u00079B\u0003\u0002",
+    "\u0002\u0002:=\f\u0005\u0002\u0002;>\u0005\u0018\r\u0002<>\u0005\u001a",
+    "\u000e\u0002=;\u0003\u0002\u0002\u0002=<\u0003\u0002\u0002\u0002>?\u0003",
+    "\u0002\u0002\u0002?@\u0005\u0004\u0003\u0006@B\u0003\u0002\u0002\u0002",
+    "A.\u0003\u0002\u0002\u0002A2\u0003\u0002\u0002\u0002A:\u0003\u0002\u0002",
+    "\u0002BE\u0003\u0002\u0002\u0002CA\u0003\u0002\u0002\u0002CD\u0003\u0002",
+    "\u0002\u0002D\u0005\u0003\u0002\u0002\u0002EC\u0003\u0002\u0002\u0002",
+    "FG\t\u0002\u0002\u0002G\u0007\u0003\u0002\u0002\u0002HI\u0007\b\u0002",
+    "\u0002I\t\u0003\u0002\u0002\u0002JK\u0007\b\u0002\u0002K\u000b\u0003",
+    "\u0002\u0002\u0002LM\u0007\t\u0002\u0002M\r\u0003\u0002\u0002\u0002",
+    "NO\u0007\t\u0002\u0002O\u000f\u0003\u0002\u0002\u0002PQ\u0007\n\u0002",
+    "\u0002Q\u0011\u0003\u0002\u0002\u0002RS\u0007\u000b\u0002\u0002S\u0013",
+    "\u0003\u0002\u0002\u0002TU\u0007\f\u0002\u0002U\u0015\u0003\u0002\u0002",
+    "\u0002VW\u0007\r\u0002\u0002W\u0017\u0003\u0002\u0002\u0002XY\u0007",
+    "\u000e\u0002\u0002Y\u0019\u0003\u0002\u0002\u0002Z[\u0007\u000f\u0002",
+    "\u0002[\u001b\u0003\u0002\u0002\u0002\\]\u0007\u000f\u0002\u0002]\u001d",
+    "\u0003\u0002\u0002\u0002\u0007,6=AC"].join("");
 
 
 var atn = new antlr4.atn.ATNDeserializer().deserialize(serializedATN);
@@ -71,11 +70,11 @@ var literalNames = [ 'null', "'='", "'<'", "'<='", "'>'", "'>='", "'('",
 
 var symbolicNames = [ 'null', 'null', 'null', 'null', 'null', 'null', 'null', 
                       'null', 'null', 'null', 'null', 'null', 'null', 'null', 
-                      "ID", "UINT", "WS" ];
+                      "ID", "NUMBER", "UINT", "WS" ];
 
-var ruleNames =  [ "proposition", "simpleExpr", "arithmetic_expr", "comparisonOp", 
-                   "lp", "lpA", "rp", "rpA", "expt", "mult", "div", "mod", 
-                   "plus", "minus", "negate" ];
+var ruleNames =  [ "simpleExpr", "arithmetic_expr", "comparisonOp", "lp", 
+                   "lpA", "rp", "rpA", "expt", "mult", "div", "mod", "plus", 
+                   "minus", "negate" ];
 
 function LTLAEXParser (input) {
 	antlr4.Parser.call(this, input);
@@ -110,91 +109,24 @@ LTLAEXParser.T__10 = 11;
 LTLAEXParser.T__11 = 12;
 LTLAEXParser.T__12 = 13;
 LTLAEXParser.ID = 14;
-LTLAEXParser.UINT = 15;
-LTLAEXParser.WS = 16;
+LTLAEXParser.NUMBER = 15;
+LTLAEXParser.UINT = 16;
+LTLAEXParser.WS = 17;
 
-LTLAEXParser.RULE_proposition = 0;
-LTLAEXParser.RULE_simpleExpr = 1;
-LTLAEXParser.RULE_arithmetic_expr = 2;
-LTLAEXParser.RULE_comparisonOp = 3;
-LTLAEXParser.RULE_lp = 4;
-LTLAEXParser.RULE_lpA = 5;
-LTLAEXParser.RULE_rp = 6;
-LTLAEXParser.RULE_rpA = 7;
-LTLAEXParser.RULE_expt = 8;
-LTLAEXParser.RULE_mult = 9;
-LTLAEXParser.RULE_div = 10;
-LTLAEXParser.RULE_mod = 11;
-LTLAEXParser.RULE_plus = 12;
-LTLAEXParser.RULE_minus = 13;
-LTLAEXParser.RULE_negate = 14;
-
-function PropositionContext(parser, parent, invokingState) {
-	if(parent===undefined) {
-	    parent = null;
-	}
-	if(invokingState===undefined || invokingState===null) {
-		invokingState = -1;
-	}
-	antlr4.ParserRuleContext.call(this, parent, invokingState);
-    this.parser = parser;
-    this.ruleIndex = LTLAEXParser.RULE_proposition;
-    return this;
-}
-
-PropositionContext.prototype = Object.create(antlr4.ParserRuleContext.prototype);
-PropositionContext.prototype.constructor = PropositionContext;
-
-PropositionContext.prototype.ID = function() {
-    return this.getToken(LTLAEXParser.ID, 0);
-};
-
-PropositionContext.prototype.enterRule = function(listener) {
-    if(listener instanceof LTLAEXListener ) {
-        listener.enterProposition(this);
-	}
-};
-
-PropositionContext.prototype.exitRule = function(listener) {
-    if(listener instanceof LTLAEXListener ) {
-        listener.exitProposition(this);
-	}
-};
-
-PropositionContext.prototype.accept = function(visitor) {
-    if ( visitor instanceof LTLAEXVisitor ) {
-        return visitor.visitProposition(this);
-    } else {
-        return visitor.visitChildren(this);
-    }
-};
-
-
-
-
-LTLAEXParser.PropositionContext = PropositionContext;
-
-LTLAEXParser.prototype.proposition = function() {
-
-    var localctx = new PropositionContext(this, this._ctx, this.state);
-    this.enterRule(localctx, 0, LTLAEXParser.RULE_proposition);
-    try {
-        this.enterOuterAlt(localctx, 1);
-        this.state = 30;
-        this.match(LTLAEXParser.ID);
-    } catch (re) {
-    	if(re instanceof antlr4.error.RecognitionException) {
-	        localctx.exception = re;
-	        this._errHandler.reportError(this, re);
-	        this._errHandler.recover(this, re);
-	    } else {
-	    	throw re;
-	    }
-    } finally {
-        this.exitRule();
-    }
-    return localctx;
-};
+LTLAEXParser.RULE_simpleExpr = 0;
+LTLAEXParser.RULE_arithmetic_expr = 1;
+LTLAEXParser.RULE_comparisonOp = 2;
+LTLAEXParser.RULE_lp = 3;
+LTLAEXParser.RULE_lpA = 4;
+LTLAEXParser.RULE_rp = 5;
+LTLAEXParser.RULE_rpA = 6;
+LTLAEXParser.RULE_expt = 7;
+LTLAEXParser.RULE_mult = 8;
+LTLAEXParser.RULE_div = 9;
+LTLAEXParser.RULE_mod = 10;
+LTLAEXParser.RULE_plus = 11;
+LTLAEXParser.RULE_minus = 12;
+LTLAEXParser.RULE_negate = 13;
 
 function SimpleExprContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -271,15 +203,15 @@ LTLAEXParser.SimpleExprContext = SimpleExprContext;
 LTLAEXParser.prototype.simpleExpr = function() {
 
     var localctx = new SimpleExprContext(this, this._ctx, this.state);
-    this.enterRule(localctx, 2, LTLAEXParser.RULE_simpleExpr);
+    this.enterRule(localctx, 0, LTLAEXParser.RULE_simpleExpr);
     try {
         localctx = new BoolCompareContext(this, localctx);
         this.enterOuterAlt(localctx, 1);
-        this.state = 32;
+        this.state = 28;
         this.arithmetic_expr(0);
-        this.state = 33;
+        this.state = 29;
         this.comparisonOp();
-        this.state = 34;
+        this.state = 30;
         this.arithmetic_expr(0);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
@@ -328,8 +260,8 @@ ArithContext.prototype.constructor = ArithContext;
 
 LTLAEXParser.ArithContext = ArithContext;
 
-ArithContext.prototype.UINT = function() {
-    return this.getToken(LTLAEXParser.UINT, 0);
+ArithContext.prototype.NUMBER = function() {
+    return this.getToken(LTLAEXParser.NUMBER, 0);
 };
 ArithContext.prototype.enterRule = function(listener) {
     if(listener instanceof LTLAEXListener ) {
@@ -544,52 +476,52 @@ LTLAEXParser.prototype.arithmetic_expr = function(_p) {
     var _parentState = this.state;
     var localctx = new Arithmetic_exprContext(this, this._ctx, _parentState);
     var _prevctx = localctx;
-    var _startState = 4;
-    this.enterRecursionRule(localctx, 4, LTLAEXParser.RULE_arithmetic_expr, _p);
+    var _startState = 2;
+    this.enterRecursionRule(localctx, 2, LTLAEXParser.RULE_arithmetic_expr, _p);
     try {
         this.enterOuterAlt(localctx, 1);
-        this.state = 46;
+        this.state = 42;
         switch(this._input.LA(1)) {
         case LTLAEXParser.T__12:
             localctx = new ArithUnaryContext(this, localctx);
             this._ctx = localctx;
             _prevctx = localctx;
 
-            this.state = 37;
+            this.state = 33;
             this.negate();
-            this.state = 38;
+            this.state = 34;
             this.arithmetic_expr(5);
             break;
         case LTLAEXParser.T__5:
             localctx = new ArithGroupContext(this, localctx);
             this._ctx = localctx;
             _prevctx = localctx;
-            this.state = 40;
+            this.state = 36;
             this.lpA();
-            this.state = 41;
+            this.state = 37;
             this.arithmetic_expr(0);
-            this.state = 42;
+            this.state = 38;
             this.rpA();
             break;
-        case LTLAEXParser.UINT:
+        case LTLAEXParser.NUMBER:
             localctx = new ArithContext(this, localctx);
             this._ctx = localctx;
             _prevctx = localctx;
-            this.state = 44;
-            this.match(LTLAEXParser.UINT);
+            this.state = 40;
+            this.match(LTLAEXParser.NUMBER);
             break;
         case LTLAEXParser.ID:
             localctx = new ArithTermContext(this, localctx);
             this._ctx = localctx;
             _prevctx = localctx;
-            this.state = 45;
+            this.state = 41;
             this.match(LTLAEXParser.ID);
             break;
         default:
             throw new antlr4.error.NoViableAltException(this);
         }
         this._ctx.stop = this._input.LT(-1);
-        this.state = 69;
+        this.state = 65;
         this._errHandler.sync(this);
         var _alt = this._interp.adaptivePredict(this._input,4,this._ctx)
         while(_alt!=2 && _alt!=antlr4.atn.ATN.INVALID_ALT_NUMBER) {
@@ -598,77 +530,77 @@ LTLAEXParser.prototype.arithmetic_expr = function(_p) {
                     this.triggerExitRuleEvent();
                 }
                 _prevctx = localctx;
-                this.state = 67;
+                this.state = 63;
                 var la_ = this._interp.adaptivePredict(this._input,3,this._ctx);
                 switch(la_) {
                 case 1:
                     localctx = new ArithBinaryContext(this, new Arithmetic_exprContext(this, _parentctx, _parentState));
                     this.pushNewRecursionContext(localctx, _startState, LTLAEXParser.RULE_arithmetic_expr);
-                    this.state = 48;
+                    this.state = 44;
                     if (!( this.precpred(this._ctx, 6))) {
                         throw new antlr4.error.FailedPredicateException(this, "this.precpred(this._ctx, 6)");
                     }
-                    this.state = 49;
+                    this.state = 45;
                     this.expt();
-                    this.state = 50;
+                    this.state = 46;
                     this.arithmetic_expr(6);
                     break;
 
                 case 2:
                     localctx = new ArithBinaryContext(this, new Arithmetic_exprContext(this, _parentctx, _parentState));
                     this.pushNewRecursionContext(localctx, _startState, LTLAEXParser.RULE_arithmetic_expr);
-                    this.state = 52;
+                    this.state = 48;
                     if (!( this.precpred(this._ctx, 4))) {
                         throw new antlr4.error.FailedPredicateException(this, "this.precpred(this._ctx, 4)");
                     }
-                    this.state = 56;
+                    this.state = 52;
                     switch(this._input.LA(1)) {
                     case LTLAEXParser.T__8:
-                        this.state = 53;
+                        this.state = 49;
                         this.mult();
                         break;
                     case LTLAEXParser.T__9:
-                        this.state = 54;
+                        this.state = 50;
                         this.div();
                         break;
                     case LTLAEXParser.T__10:
-                        this.state = 55;
+                        this.state = 51;
                         this.mod();
                         break;
                     default:
                         throw new antlr4.error.NoViableAltException(this);
                     }
-                    this.state = 58;
+                    this.state = 54;
                     this.arithmetic_expr(5);
                     break;
 
                 case 3:
                     localctx = new ArithBinaryContext(this, new Arithmetic_exprContext(this, _parentctx, _parentState));
                     this.pushNewRecursionContext(localctx, _startState, LTLAEXParser.RULE_arithmetic_expr);
-                    this.state = 60;
+                    this.state = 56;
                     if (!( this.precpred(this._ctx, 3))) {
                         throw new antlr4.error.FailedPredicateException(this, "this.precpred(this._ctx, 3)");
                     }
-                    this.state = 63;
+                    this.state = 59;
                     switch(this._input.LA(1)) {
                     case LTLAEXParser.T__11:
-                        this.state = 61;
+                        this.state = 57;
                         this.plus();
                         break;
                     case LTLAEXParser.T__12:
-                        this.state = 62;
+                        this.state = 58;
                         this.minus();
                         break;
                     default:
                         throw new antlr4.error.NoViableAltException(this);
                     }
-                    this.state = 65;
+                    this.state = 61;
                     this.arithmetic_expr(4);
                     break;
 
                 } 
             }
-            this.state = 71;
+            this.state = 67;
             this._errHandler.sync(this);
             _alt = this._interp.adaptivePredict(this._input,4,this._ctx);
         }
@@ -732,11 +664,11 @@ LTLAEXParser.ComparisonOpContext = ComparisonOpContext;
 LTLAEXParser.prototype.comparisonOp = function() {
 
     var localctx = new ComparisonOpContext(this, this._ctx, this.state);
-    this.enterRule(localctx, 6, LTLAEXParser.RULE_comparisonOp);
+    this.enterRule(localctx, 4, LTLAEXParser.RULE_comparisonOp);
     var _la = 0; // Token type
     try {
         this.enterOuterAlt(localctx, 1);
-        this.state = 72;
+        this.state = 68;
         _la = this._input.LA(1);
         if(!((((_la) & ~0x1f) == 0 && ((1 << _la) & ((1 << LTLAEXParser.T__0) | (1 << LTLAEXParser.T__1) | (1 << LTLAEXParser.T__2) | (1 << LTLAEXParser.T__3) | (1 << LTLAEXParser.T__4))) !== 0))) {
         this._errHandler.recoverInline(this);
@@ -803,10 +735,10 @@ LTLAEXParser.LpContext = LpContext;
 LTLAEXParser.prototype.lp = function() {
 
     var localctx = new LpContext(this, this._ctx, this.state);
-    this.enterRule(localctx, 8, LTLAEXParser.RULE_lp);
+    this.enterRule(localctx, 6, LTLAEXParser.RULE_lp);
     try {
         this.enterOuterAlt(localctx, 1);
-        this.state = 74;
+        this.state = 70;
         this.match(LTLAEXParser.T__5);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
@@ -883,11 +815,11 @@ LTLAEXParser.LpAContext = LpAContext;
 LTLAEXParser.prototype.lpA = function() {
 
     var localctx = new LpAContext(this, this._ctx, this.state);
-    this.enterRule(localctx, 10, LTLAEXParser.RULE_lpA);
+    this.enterRule(localctx, 8, LTLAEXParser.RULE_lpA);
     try {
         localctx = new LParithContext(this, localctx);
         this.enterOuterAlt(localctx, 1);
-        this.state = 76;
+        this.state = 72;
         this.match(LTLAEXParser.T__5);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
@@ -948,10 +880,10 @@ LTLAEXParser.RpContext = RpContext;
 LTLAEXParser.prototype.rp = function() {
 
     var localctx = new RpContext(this, this._ctx, this.state);
-    this.enterRule(localctx, 12, LTLAEXParser.RULE_rp);
+    this.enterRule(localctx, 10, LTLAEXParser.RULE_rp);
     try {
         this.enterOuterAlt(localctx, 1);
-        this.state = 78;
+        this.state = 74;
         this.match(LTLAEXParser.T__6);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
@@ -1028,11 +960,11 @@ LTLAEXParser.RpAContext = RpAContext;
 LTLAEXParser.prototype.rpA = function() {
 
     var localctx = new RpAContext(this, this._ctx, this.state);
-    this.enterRule(localctx, 14, LTLAEXParser.RULE_rpA);
+    this.enterRule(localctx, 12, LTLAEXParser.RULE_rpA);
     try {
         localctx = new RParithContext(this, localctx);
         this.enterOuterAlt(localctx, 1);
-        this.state = 80;
+        this.state = 76;
         this.match(LTLAEXParser.T__6);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
@@ -1093,10 +1025,10 @@ LTLAEXParser.ExptContext = ExptContext;
 LTLAEXParser.prototype.expt = function() {
 
     var localctx = new ExptContext(this, this._ctx, this.state);
-    this.enterRule(localctx, 16, LTLAEXParser.RULE_expt);
+    this.enterRule(localctx, 14, LTLAEXParser.RULE_expt);
     try {
         this.enterOuterAlt(localctx, 1);
-        this.state = 82;
+        this.state = 78;
         this.match(LTLAEXParser.T__7);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
@@ -1157,10 +1089,10 @@ LTLAEXParser.MultContext = MultContext;
 LTLAEXParser.prototype.mult = function() {
 
     var localctx = new MultContext(this, this._ctx, this.state);
-    this.enterRule(localctx, 18, LTLAEXParser.RULE_mult);
+    this.enterRule(localctx, 16, LTLAEXParser.RULE_mult);
     try {
         this.enterOuterAlt(localctx, 1);
-        this.state = 84;
+        this.state = 80;
         this.match(LTLAEXParser.T__8);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
@@ -1221,10 +1153,10 @@ LTLAEXParser.DivContext = DivContext;
 LTLAEXParser.prototype.div = function() {
 
     var localctx = new DivContext(this, this._ctx, this.state);
-    this.enterRule(localctx, 20, LTLAEXParser.RULE_div);
+    this.enterRule(localctx, 18, LTLAEXParser.RULE_div);
     try {
         this.enterOuterAlt(localctx, 1);
-        this.state = 86;
+        this.state = 82;
         this.match(LTLAEXParser.T__9);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
@@ -1285,10 +1217,10 @@ LTLAEXParser.ModContext = ModContext;
 LTLAEXParser.prototype.mod = function() {
 
     var localctx = new ModContext(this, this._ctx, this.state);
-    this.enterRule(localctx, 22, LTLAEXParser.RULE_mod);
+    this.enterRule(localctx, 20, LTLAEXParser.RULE_mod);
     try {
         this.enterOuterAlt(localctx, 1);
-        this.state = 88;
+        this.state = 84;
         this.match(LTLAEXParser.T__10);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
@@ -1349,10 +1281,10 @@ LTLAEXParser.PlusContext = PlusContext;
 LTLAEXParser.prototype.plus = function() {
 
     var localctx = new PlusContext(this, this._ctx, this.state);
-    this.enterRule(localctx, 24, LTLAEXParser.RULE_plus);
+    this.enterRule(localctx, 22, LTLAEXParser.RULE_plus);
     try {
         this.enterOuterAlt(localctx, 1);
-        this.state = 90;
+        this.state = 86;
         this.match(LTLAEXParser.T__11);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
@@ -1413,10 +1345,10 @@ LTLAEXParser.MinusContext = MinusContext;
 LTLAEXParser.prototype.minus = function() {
 
     var localctx = new MinusContext(this, this._ctx, this.state);
-    this.enterRule(localctx, 26, LTLAEXParser.RULE_minus);
+    this.enterRule(localctx, 24, LTLAEXParser.RULE_minus);
     try {
         this.enterOuterAlt(localctx, 1);
-        this.state = 92;
+        this.state = 88;
         this.match(LTLAEXParser.T__12);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
@@ -1477,10 +1409,10 @@ LTLAEXParser.NegateContext = NegateContext;
 LTLAEXParser.prototype.negate = function() {
 
     var localctx = new NegateContext(this, this._ctx, this.state);
-    this.enterRule(localctx, 28, LTLAEXParser.RULE_negate);
+    this.enterRule(localctx, 26, LTLAEXParser.RULE_negate);
     try {
         this.enterOuterAlt(localctx, 1);
-        this.state = 94;
+        this.state = 90;
         this.match(LTLAEXParser.T__12);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
@@ -1499,7 +1431,7 @@ LTLAEXParser.prototype.negate = function() {
 
 LTLAEXParser.prototype.sempred = function(localctx, ruleIndex, predIndex) {
 	switch(ruleIndex) {
-	case 2:
+	case 1:
 			return this.arithmetic_expr_sempred(localctx, predIndex);
     default:
         throw "No predicate with index:" + ruleIndex;

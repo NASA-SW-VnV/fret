@@ -148,14 +148,15 @@ handleTimeSeriesChartSettingsSave(settingsState) {
                         name={key}
                         dataKey={key}
                         syncId={this.props.syncId}
+s                       expression={formula.tex}
                         canChange={false}
                         highlight={this.props.displayFormulaEvaluation}
                         onClick={this.props.onFormulaChartClick}
                         chartState={formula.value}
-                        expression={formula.tex}
                         selected={key === this.props.selectedFormula}
                     />
         );
+//JSC0420 TODO: active when LTLSimController format is changes                       expression={formula.tex}
     }
 
     handleTraceDialogOpen() {

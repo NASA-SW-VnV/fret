@@ -11,15 +11,6 @@ function LTLAEXListener() {
 LTLAEXListener.prototype = Object.create(antlr4.tree.ParseTreeListener.prototype);
 LTLAEXListener.prototype.constructor = LTLAEXListener;
 
-// Enter a parse tree produced by LTLAEXParser#proposition.
-LTLAEXListener.prototype.enterProposition = function(ctx) {
-};
-
-// Exit a parse tree produced by LTLAEXParser#proposition.
-LTLAEXListener.prototype.exitProposition = function(ctx) {
-};
-
-
 // Enter a parse tree produced by LTLAEXParser#boolCompare.
 LTLAEXListener.prototype.enterBoolCompare = function(ctx) {
 };
