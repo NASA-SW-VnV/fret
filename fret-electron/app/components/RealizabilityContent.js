@@ -250,6 +250,7 @@ function determineResultIcon(result, time) {
 class ResultIcon extends React.Component {
   render() {
     const {reskey, result, time, error} = this.props;
+
     return (
       <Tooltip title={<span style={{ whiteSpace: 'pre-line' }}> {(result === 'ERROR' ? ("The following error(s) occured at the solver level:\n" + error) : result) +
         (time !== undefined ? time : '')} </span>}>
@@ -938,7 +939,7 @@ class RealizabilityContent extends React.Component {
           engine.main(function (err, result) {            
             if (err) {              
               projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].diagnosisStatus = 'ERROR';
-              projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].error = err.message+err.stdout.toString();
+              projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].error = err.message+'\n'+err.stdout.toString();
               self.setState({
                 projectReport: projectReport
               });
@@ -960,7 +961,7 @@ class RealizabilityContent extends React.Component {
           engine.main(function (err, result) {
             if (err) {
               projectReport.systemComponents[systemComponentIndex].monolithic.diagnosisStatus = 'ERROR';
-              projectReport.systemComponents[systemComponentIndex].monolithic.error = err.message+err.stdout.toString();                        
+              projectReport.systemComponents[systemComponentIndex].monolithic.error = err.message+'\n'+err.stdout.toString();                        
 
               self.setState({
                 projectReport: projectReport

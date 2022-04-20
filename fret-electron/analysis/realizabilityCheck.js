@@ -88,8 +88,8 @@ export function checkReal(filePath, engine, options) {
   var result, output;
   try {
     result = execSync(command).toString();
-    console.log(filePath);
-    console.log(result);
+    // console.log(filePath);
+    // console.log(result);
     if (engine === 'jkind') {
       result = result.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];
       if (options.includes('json')){
