@@ -80,24 +80,14 @@ export default function LTLSimLauncherRealizability(props) {
                   .replace(/\+/g,"_")
     }
 
-    if (false){
-	    ftExpressions = ftExpressions.concat(ftExpression)
-    	ptExpressions = ptExpressions.concat(ptExpression)
-    	requirements = requirements.concat(requirement)
-	    requirementIDs = requirementIDs.concat(requirementID + "_2")
-	    //IDs = IDs.concat("MYFSM-006_2")
-//	    IDs = IDs.concat("REQ2")
-//	    IDs = IDs.concat("TEST_01" + "_2")
-	var requirementID2="TEST-01"
-	let reqID_R2 =requirementID2.replace(/ /g,"_")
-			  .replace(/-/g,"_")
-			  .replace(/\./g,"_")
-			  .replace(/\+/g,"_")
-	IDs = IDs.concat(reqID_R2)
-        }
+     console.log("LTLSImLauncher: ftExpressions "+ftExpressions)
+        console.log("LTLSImLauncher: ptExpressions "+ptExpressions)
+        console.log("LTLSImLauncher: IDs "+IDs)
+        console.log("LTLSImLauncher: requirements "+requirements)
+        console.log("LTLSImLauncher: requirementIDs "+requirementIDs)
 
 	console.log("LTLSimLauncherRealizability: ftExpressions "+ftExpressions)
-
+    console.log(open)
 //JSC/CAV                id="REQ" 
     return (status.ltlsim && status.nusmv) ?
             (<div>

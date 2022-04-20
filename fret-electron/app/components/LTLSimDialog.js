@@ -121,6 +121,7 @@ class LTLSimDialog extends Component {
 	
         this.state = {
             model,
+            updateOnce: true,
             visibleSubformulas: [],
             highlight: true,
 			// Trace Menu anchor
@@ -220,7 +221,7 @@ class LTLSimDialog extends Component {
     //===============================================================
     componentDidMount() {
 	// this.handleReqSel(this.state.reqID_data[4])
-    	if (this.props.CEXFileName != undefined){
+    	if (this.props.CEXFileName !== undefined){
 /*
         	this.setState((prevState) => {
 			this.loadCEXTrace(this.props.CEXFileName)
@@ -230,7 +231,7 @@ class LTLSimDialog extends Component {
             		this.update();
         		});
 */
-		this.loadCEXTrace(this.props.CEXFileName)
+		this.loadCEXTrace(this.props.CEXFileName)		
 		}
     }
 
@@ -239,8 +240,8 @@ class LTLSimDialog extends Component {
     //===============================================================
     componentDidUpdate(prevProps) {
     const {CEXFileName} = this.props;
-    if (!CEXFileName) {
-        let { model } = this.state;
+    // if (!CEXFileName) {
+        let { model, updateOnce } = this.state;
         let  traceLength  = LTLSimController.getTraceLength(model);
 
 	for (let i=0; i< this.props.requirementIDs.length; i++){
@@ -260,20 +261,22 @@ console.log("DidUpdate: "+i)
 console.log(formula)
 console.log(formula.parseErrors)
 console.log("Didupdate open "+this.props.open+ " prev: "+ prevProps.open)
-        if (this.props.open && !prevProps.open &&
+        if (((this.props.open && !prevProps.open) || updateOnce) &&        	
             formula && formula.parseErrors.length === 0) {
+        	console.log("About to update")
             this.update();
+            this.setState({updateOnce: false})
         }
 
         /* Update the formula label, to always display the correct label on the y-axis */
         formula.label = this.props.requirementIDs[i];
 }
 
-    } else {
-    	if (CEXFileName !== prevProps.CEXFileName) {
-    		this.loadCEXTrace(CEXFileName);
-    	}
-	}
+ //    } else {
+ //    	if (CEXFileName !== prevProps.CEXFileName) {
+ //    		this.loadCEXTrace(CEXFileName);
+ //    	}
+	// }
 	}
 
 	//===============================================================
@@ -679,6 +682,15 @@ console.log(filepath)
 // console.log(content)
 // 	var loadedTrace = JSON.parse(content);
 var loadedTrace = filepath;
+// let content = JSON.stringify(loadedTrace, null, 4)
+// fs.writeFile('/home/akatis/Desktop/cex.json', content, (err) => {
+//             if(err) {
+//                 return console.log(err);
+//             }
+//             console.log("The file was saved!");
+//         });
+
+
 console.log("parsed")
 console.log(loadedTrace)
 console.log("convert CEX");
@@ -693,12 +705,12 @@ console.log("convert CEX");
 	console.log("CEX with "+cex.length+" variables")
 	var keys=[]
 	var vars_trace_type=[]
-	let sanitizedReqIds = this.props.requirementIDs.map(id => id.replace(/ /g,"_")
-			  .replace(/-/g,"_")
-			  .replace(/\./g,"_")
-			  .replace(/\+/g,"_"));
+	// let sanitizedReqIds = this.props.requirementIDs.map(id => id.replace(/ /g,"_")
+	// 		  .replace(/-/g,"_")
+	// 		  .replace(/\./g,"_")
+	// 		  .replace(/\+/g,"_"));
 	for (let idx=0; idx < cex.length; idx++){		
-		if (!sanitizedReqIds.includes(cex[idx].name)) {
+		// if (!sanitizedReqIds.includes(cex[idx].name)) {
 		console.log("Variable: "+cex[idx].name);
 		console.log("Variable type: "+cex[idx].type);
 		
@@ -765,9 +777,9 @@ console.log("convert CEX");
 
 		keys=keys.concat(key_R);
 		vars_trace_type=vars_trace_type.concat(cex[idx].type)
-		} else {
-			continue;
-		}
+		// } else {
+		// 	continue;
+		// }
 		}
 
 
