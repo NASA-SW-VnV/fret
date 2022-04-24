@@ -429,14 +429,12 @@ const CustomizedLabel: FunctionComponent<any> = (props: any) => {
 //-------------------customizedlabel----------------
 
         let longName = this.props.name.length > maxNameLength;
-//JSC/CAV        let name = (longName) ? this.props.name.slice(0, maxNameLength-1) + "..." : this.props.name;
-//JSC-0420-CAV        let name = (longName) ? this.props.name.replace(/REQ/, "FSM-006").replace(/_eq_/," = ").slice(0, maxNameLength-1) + "..." : this.props.name.replace(/REQ/,"FSM-006");
 	let Oname = ID_to_arithexpr(this.props.name);
         let name = (longName) ? Oname.slice(0, maxNameLength-1) + "..." : Oname;
-console.log("TSC:render: longName="+longName);
-console.log("TSC:render: origname="+this.props.name);
-console.log("TSC:render: name="+name);
-console.log("TSC:render: expression="+expression);
+//console.log("TSC:render: longName="+longName);
+//console.log("TSC:render: origname="+this.props.name);
+//console.log("TSC:render: name="+name);
+//console.log("TSC:render: expression="+expression);
 
         let nameTip = (longName || expression) ? 
                         <div>

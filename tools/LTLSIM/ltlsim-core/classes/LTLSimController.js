@@ -122,6 +122,7 @@ module.exports = class LTLSimController {
     // load from CSV file
     //------------------------------------------------------------
     static addTrace(model, tracefile) {
+            console.log("LTLSimController::addTrace()")
 	    var data = fs.readFileSync(tracefile);
             var mycsv = data.toString()
 		.split(/\n/)
@@ -151,6 +152,8 @@ module.exports = class LTLSimController {
             		model.atomics.keys.push(a);
             		model.atomics.values[a] = 
 				new Atomic(a, model.traceLength);
+			model.atomics.minval[a] = 0;
+			model.atomics.maxval[a] = 1;
 			}
 //NOT USED	target_id = model.atomics.keys.indexOf(a);
 
@@ -158,6 +161,8 @@ module.exports = class LTLSimController {
                 
 	    	var i=0;
 		var isBoolean = true;
+		var minval = 9e99;
+		var maxval = -9e99;
             	while ((i < model.traceLength) && (i <mytraces.length-1)){
 			var val = parseFloat(mytraces[i][id],10);
 			console.log("value="+val)
@@ -165,14 +170,20 @@ module.exports = class LTLSimController {
 				console.log("Boolean=false")
 				isBoolean = false;
 				}
+			if (val < minval) { minval = val; }
+			if (val > maxval) { maxval = val; }
 			model.atomics.values[a].trace[i] = val;
 			i = i+1;
 			}
 		if (isBoolean){
 			model.atomics.type[a]="category";
+			model.atomics.minval[a]=0;
+			model.atomics.maxval[a]=1;
 			}
 		else {
 			model.atomics.type[a]="number";
+			model.atomics.minval[a]=minval;
+			model.atomics.maxval[a]=maxval;
 			}
 
 		model.atomics.canChange[a]=canChange;
@@ -614,6 +625,23 @@ console.log("LTLSimController::setFormulaExpression: atomic keys: "+model.atomic
         })
         return true;
     }
+
+    //------------------------------------------------------------
+    //
+    //------------------------------------------------------------
+    static evalModel(model) {
+	console.log("LTLSimController: evalModel")
+
+	model.atomics.keys.forEach((a) => {
+		if (!model.atomics.canChange[a]){
+			console.log("start AEX...for "+a)
+  			let result = LTLAEX.parse(a, model);
+			let newtrace = result.trace;
+			console.log("done AEX...trace: "+newtrace)
+			model.atomics.values[a].trace = newtrace;
+			}
+		});
+        }
 
     //------------------------------------------------------------
     //

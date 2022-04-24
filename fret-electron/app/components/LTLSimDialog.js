@@ -255,23 +255,45 @@ class LTLSimDialog extends Component {
 
     //===============================================================
     componentDidUpdate(prevProps) {
+    console.log("componentDidUpdate(): ")
     const {CEXFileName} = this.props;
-    // if (!CEXFileName) {
-        let { model, updateOnce } = this.state;
+        let { model, updateOnce, logics } = this.state;
         let  traceLength  = LTLSimController.getTraceLength(model);
 
+	var isChanged=false;
 	for (let i=0; i< this.props.requirementIDs.length; i++){
+            if (this.props.ids[i] !== prevProps.ids[i] || 
+		this.props.ftExpressions[i] !== prevProps.ftExpressions[i]) {
+			isChanged=true;
+		}
+	    }
 
         /* If label or expression changed, initialize a new model */
-        if (this.props.ids[i] !== prevProps.ids[i] || this.props.ftExpressions[i] !== prevProps.ftExpressions[i]) {
+	if (isChanged){
             model = LTLSimController.init(traceLength);
-            LTLSimController.addFormula(model, this.props.ids[i], this.props.ftExpressions[i]);
-            LTLSimController.getFormula(model, this.props.ids[i]).label = this.props.requirementIDs[i];
+	    for (let i=0; i< this.props.requirementIDs.length; i++){
+        	if (this.props.ids[i] !== prevProps.ids[i] || 
+		    this.props.ftExpressions[i] !== prevProps.ftExpressions[i]) {
+			if (logics == "FT"){
+            			LTLSimController.addFormula(model, 
+					this.props.ids[i], 
+					this.props.ftExpressions[i]);
+				}
+			else {
+            			LTLSimController.addFormula(model, 
+					this.props.ids[i], 
+					this.props.ptExpressions[i]);
+				}
+            		LTLSimController.getFormula(model, this.props.ids[i]).label = this.props.requirementIDs[i];
+		     }
+		}
+	    LTLSimController.evalModel(model);
             this.setState({model});
         }
 
         /* If the dialog just became visible and the formula has a valid expression,
         simulate the formula if required (checked by this.update()) */
+    for (let i=0; i< this.props.requirementIDs.length; i++){
         let formula = LTLSimController.getFormula(model, this.props.ids[i]);
 console.log("DidUpdate: "+i)
 console.log(formula)
@@ -279,16 +301,14 @@ console.log(formula.parseErrors)
 console.log("Didupdate open "+this.props.open+ " prev: "+ prevProps.open)
 		if (this.props.open && !prevProps.open &&        	
             formula && formula.parseErrors.length === 0) {
-        // if (((this.props.open && !prevProps.open) || updateOnce) &&        	
-        //     formula && formula.parseErrors.length === 0) {
-        	console.log("About to update")
+	    LTLSimController.evalModel(model);
             this.update();
             this.setState({updateOnce: false})
         }
-
         /* Update the formula label, to always display the correct label on the y-axis */
         formula.label = this.props.requirementIDs[i];
-}
+        }
+
 
  //    } else {
  //    	if (CEXFileName !== prevProps.CEXFileName) {
@@ -381,6 +401,9 @@ console.log("Didupdate open "+this.props.open+ " prev: "+ prevProps.open)
 				);
 			}
 		}
+
+//JSC0420-2
+	    setMarginVariableTraces(model);
             return {
                 logics,
                 model
@@ -488,13 +511,13 @@ console.log("Didupdate open "+this.props.open+ " prev: "+ prevProps.open)
 
 
     //===============================================================
-    handleSaveToFile() {
+    handleSaveToFile = async () => {
 	//
 	// just a dummy save current trace to file
 	//
-        this.setState((prevState) => {
+        // this.setState((prevState) => {
   		var homeDir = app.getPath('home');
-    		var filepath = dialog.showSaveDialogSync(
+    		var filepath = await dialog.showSaveDialog(
       				{
         		defaultPath : homeDir,
         		title : 'Export Trace',
@@ -507,16 +530,18 @@ console.log("Didupdate open "+this.props.open+ " prev: "+ prevProps.open)
 			//
 			// cancel ?
 			//
-		if (!filepath){
+		if (!filepath.filePath){
 			return;
 			}
-
-		console.log("save: "+filepath)
-		if (filepath.substring(filepath.length-3) == "csv"){
+		this.setState((prevState) => {
+		console.log("save: "+filepath.filePath)
+		if (filepath.filePath.substring(filepath.filePath.length-3) == "csv"){
        			let { model } = prevState;
-            		LTLSimController.saveTrace(model, filepath);
+            		LTLSimController.saveTrace(model, filepath.filePath);
+
 			}
-		if (filepath.substring(filepath.length-4) == "json"){
+
+		if (filepath.filePath.substring(filepath.filePath.length-4) == "json"){
 			let { model, 
 			      JSCTraces, 
 			      traceID, 
@@ -541,7 +566,7 @@ console.log("Didupdate open "+this.props.open+ " prev: "+ prevProps.open)
 				}
         		var JTrace = JSON.stringify(currTrace, null, 4)
         		console.log(JTrace)
-        		fs.writeFile(filepath, JTrace, (err) => {
+        		fs.writeFile(filepath.filePath, JTrace, (err) => {
             			if(err) {
                 			return console.log(err);
             				}
@@ -569,7 +594,7 @@ console.log("Didupdate open "+this.props.open+ " prev: "+ prevProps.open)
 	//
         this.setState((prevState) => {
   		var homeDir = app.getPath('home');
-    		var filepath = dialog.showOpenDialog(
+    		var filepath = dialog.showOpenDialogSync(
       				{
 			properties:['openFile'],
         		defaultPath : homeDir,
@@ -1071,7 +1096,13 @@ for (let i=0; i< reqID_data.length; i++){
 	}
 console.log("/reqID_data[..]")
 
-	if (reqID_R == requirementIDs[0]){
+	// need to also sanitize the 1st undeleteable ID
+	let reqID0_R =requirementIDs[0].replace(/ /g,"_")
+			  .replace(/-/g,"_")
+			  .replace(/\./g,"_")
+			  .replace(/\+/g,"_")
+	
+	if (reqID_R == reqID0_R){
 		console.log("We don't delete the current requirement");
 		return;
 		}
@@ -1365,6 +1396,7 @@ console.log("start simulation: formulaFilter.id="+formulaFilter);
                 }
             });
 
+      LTLSimController.evalModel(model);
 console.log("UPDATE-before-SIM: formulaFilter="+formulaFilter)
       this.handleLtlsimSimulate(formulaFilter);
   }
@@ -1627,12 +1659,17 @@ console.log("UPDATE-before-SIM: formulaFilter="+formulaFilter)
  * @param {LTLSimModel} model The model containing the variables to be modified
  */
 function setMarginVariableTraces(model) {
+console.log("setMarginVariableTraces")
+console.log(model)
     if (LTLSimController.getAtomicKeys(model).includes("FTP")) {
+	console.log("setMarginVariableTraces: includes FTP")
+
         let trace = new Array(LTLSimController.getTraceLength(model)).fill(0);
         trace[0] = 1;
         LTLSimController.setAtomicTrace(model, "FTP", trace);
     }
     if (LTLSimController.getAtomicKeys(model).includes("LAST")) {
+	console.log("setMarginVariableTraces: includes LAST")
         let trace = new Array(LTLSimController.getTraceLength(model)).fill(0);
         trace[trace.length-1] = 1;
         LTLSimController.setAtomicTrace(model, "LAST", trace);

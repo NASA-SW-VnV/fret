@@ -103,7 +103,7 @@ handleTimeSeriesChartSettingsSave(settingsState) {
 	console.log("atomic2chart: " + key + " " + chart_type + " " + canChange)
 	console.log('settings-' + key + ((fkey) ? '-'+fkey : ''))
         return ( (atomic === undefined) ? null :
-            <Typography component="div" >
+            <Typography key={'Typo-chart-atomic-' + key + ((fkey) ? '-'+fkey : '')} component="div" >
                     <TimeSeriesChart
 			chart_type={chart_type}
 			chart_minval={chart_minval}
