@@ -12,7 +12,9 @@ Note : Realizability checking is not currently supported in Microsoft Windows.
 
 Note : Depending on your setup, you may need to change permissions for the downloaded files to be executable by your user account. For example, in Linux you may have to run `chmod u+x <file>` for each of the downloaded binaries and scripts.
 
-Our interface provides four different configurations with which realizability checking can be performed: "JKind", "JKind + MBP", "Kind 2" and "Kind 2 + MBP". Depending on the configuration, the following dependencies must be installed:
+Our interface provides four different configurations with which realizability checking can be performed: "JKind", "JKind + MBP", "Kind 2" and "Kind 2 + MBP". "MBP" stands for Model Based Projection, a procedure that can be used to approximate quantifier elimination. The "MBP" configurations tend to be inferior in performance overall, but may solve problems that standard quantifier elimination cannot.
+
+Depending on the configuration, the following dependencies must be installed:
 
 * JKind ("JKind", "JKind + MBP"). To install JKind with JRealizability, make sure to have at least Java 11 installed. Then, download `jkind.jar`, `jkind`, `jrealizability` and `jlustre2kind` from the [the latest release](https://github.com/andrewkatis/jkind-1/releases/latest), put the downloaded files to a folder of your choice and add the path to the folder to your PATH environment variable.
 
