@@ -66,7 +66,7 @@ Pick a System Component. The realizability tab should now update to show the fol
   * Change Settings. Click to change the following settings:
     * Engine: Choose between the four available configurations (see "Dependencies" section).
     * Timeout (seconds): Set a timeout value for the analysis. The default value is 900 seconds.
-    * Retain Analysis Files (for debugging purposes): Enable this option to retain intermediate input files for JKind and Kind 2.
+    * Retain Analysis Files (for debugging purposes): Enable this option to retain intermediate input files for JKind and Kind 2.  Files are saved under `Documents/fret-analysis`.
 * "Help" button. Use this button to display this documentation.
 
 &nbsp;&nbsp;&nbsp;&nbsp;
