@@ -3,7 +3,8 @@ mkdir FRET_PACK
 cd FRET_PACK
 # git clone  https://github.com/NASA-SW-VnV/fret.git
 
-git clone https://babelfish.arc.nasa.gov/git/fret
+# git clone https://babelfish.arc.nasa.gov/git/fret
+git clone ssh://babelfish.ndc.nasa.gov/git/fret
 cd fret
 #Set the branch that you want to package, e.g.,:
 #git checkout master
@@ -37,26 +38,36 @@ if test -f "$FILERC"; then
  mv components/RealizabilityContent.js x.js;
  sed -e 's+\.\./\.\./analysis/+analysis/+' x.js > components/RealizabilityContent.js
  mv components/RealizabilityContent.js x.js;
- sed -e 's+analysis/tmp/+app/analysis/tmp/+' x.js > components/RealizabilityContent.js
- rm x.js
+ sed -e 's+\.\./docs/+docs/+' x.js > components/RealizabilityContent.js;
+ rm x.js;
 fi
 
 FILEDE=analysis/DiagnosisEngine.js
 if test -f "$FILEDE"; then
  mv analysis/DiagnosisEngine.js x.js;
  sed -e 's+\.\./support/+../../support/+' x.js > analysis/DiagnosisEngine.js
+ rm x.js;
  mv analysis/DiagnosisEngine.js x.js;
- sed -e 's+\./analysis/tmp/+app/analysis/tmp+' x.js > analysis/DiagnosisEngine.js
- rm x.js
+ sed -e 's+\.\./app/+../../app/+' x.js > analysis/DiagnosisEngine.js;
+ rm x.js;
+fi
+
+FILEDE=components/VariablesView.js;
+if test -f "$FILERC"; then
+ mv components/VariablesView.js x.js;
+ sed -e 's+\.\./docs/+docs/+' x.js > components/VariablesView.js;
+ rm x.js;
 fi
 
 mv package.json x.json;
 sed -e 's+\.\./\.\./tools/LTLSIM+tools/LTLSIM+' x.json >package.json
-rm x.json
+rm x.json;
 mv tools/LTLSIM/ltlsim-core/package.json x.json;
 sed -e 's+fret-electron/support/NuSMVParser+../support/NuSMVParser+' x.json >tools/LTLSIM/ltlsim-core/package.json
-rm x.json
-
+rm x.json;
+mv tools/LTLSIM/ltlsim-core/package.json x.json;
+sed -e 's+fret-electron/support/LTLSIM_NuSMVParser+../support/LTLSIM_NuSMVParser+' x.json > tools/LTLSIM/ltlsim-core/package.json;
+rm x.json;
 
 
 cd ..
