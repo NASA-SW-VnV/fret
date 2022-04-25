@@ -299,7 +299,9 @@ console.log("DidUpdate: "+i)
 console.log(formula)
 console.log(formula.parseErrors)
 console.log("Didupdate open "+this.props.open+ " prev: "+ prevProps.open)
-		if (this.props.open && !prevProps.open &&        	
+		// if (this.props.open && !prevProps.open &&        	
+  //           formula && formula.parseErrors.length === 0) {
+  	if (((this.props.open && !prevProps.open) || updateOnce) &&        	
             formula && formula.parseErrors.length === 0) {
 	    LTLSimController.evalModel(model);
             this.update();
@@ -748,11 +750,11 @@ console.log("convert CEX");
 	console.log("CEX with "+cex.length+" variables")
 	var keys=[]
 	var vars_trace_type=[]
-	// let sanitizedReqIds = this.props.requirementIDs.map(id => id.replace(/ /g,"_")
-	// 		  .replace(/-/g,"_")
-	// 		  .replace(/\./g,"_")
-	// 		  .replace(/\+/g,"_"));
-	// cex = cex.filter(variable => !sanitizedReqIds.includes(variable.name));
+	let sanitizedReqIds = this.props.requirementIDs.map(id => id.replace(/ /g,"_")
+			  .replace(/-/g,"_")
+			  .replace(/\./g,"_")
+			  .replace(/\+/g,"_"));
+	cex = cex.filter(variable => !sanitizedReqIds.includes(variable.name));
 	for (let idx=0; idx < cex.length; idx++){		
 		console.log("Variable: "+cex[idx].name);
 		console.log("Variable type: "+cex[idx].type);
