@@ -27,6 +27,8 @@ Our interface provides four different configurations with which realizability ch
 
 Note: In the past, we have encountered arbitrary analysis failures when using JKind and Z3, during which Z3 crashes with a segmentation fault. If you encounter this issue, please switch to an alternative engine setting, or try running the analysis again.
 
+Experimental Feature: Requirements can be designated as environment assumptions by adding the word `assumption` in the requirement ID.
+
 To check a system component's set of requirements for realizability, the user must follow the steps:
 
 ### **1. Pick a project and switch to the Analysis Portal**
