@@ -277,8 +277,10 @@ console.log("DidUpdate: "+i)
 console.log(formula)
 console.log(formula.parseErrors)
 console.log("Didupdate open "+this.props.open+ " prev: "+ prevProps.open)
-        if (((this.props.open && !prevProps.open) || updateOnce) &&        	
+		if (this.props.open && !prevProps.open &&        	
             formula && formula.parseErrors.length === 0) {
+        // if (((this.props.open && !prevProps.open) || updateOnce) &&        	
+        //     formula && formula.parseErrors.length === 0) {
         	console.log("About to update")
             this.update();
             this.setState({updateOnce: false})
@@ -492,7 +494,7 @@ console.log("Didupdate open "+this.props.open+ " prev: "+ prevProps.open)
 	//
         this.setState((prevState) => {
   		var homeDir = app.getPath('home');
-    		var filepath = dialog.showSaveDialog(
+    		var filepath = dialog.showSaveDialogSync(
       				{
         		defaultPath : homeDir,
         		title : 'Export Trace',
@@ -725,8 +727,8 @@ console.log("convert CEX");
 	// 		  .replace(/-/g,"_")
 	// 		  .replace(/\./g,"_")
 	// 		  .replace(/\+/g,"_"));
+	// cex = cex.filter(variable => !sanitizedReqIds.includes(variable.name));
 	for (let idx=0; idx < cex.length; idx++){		
-		// if (!sanitizedReqIds.includes(cex[idx].name)) {
 		console.log("Variable: "+cex[idx].name);
 		console.log("Variable type: "+cex[idx].type);
 		
@@ -800,9 +802,6 @@ console.log("convert CEX");
 
 		keys=keys.concat(key_R);
 		vars_trace_type=vars_trace_type.concat(cex[idx].type)
-		// } else {
-		// 	continue;
-		// }
 		}
 
 
