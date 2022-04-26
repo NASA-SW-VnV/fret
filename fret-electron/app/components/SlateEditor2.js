@@ -904,7 +904,7 @@ class SlateEditor2 extends React.Component {
         </ImageListItem>
         <ImageListItem>
           <div style={{textAlign:'right'}}>
-            <Button id="qa_crt_btn_semantics" onClick={this.showSemantics} size='small' color='secondary' disabled={false}>
+            <Button id="qa_crt_btn_semantics" onClick={this.showSemantics} size='small' color='secondary' disabled={this.enableSemantics()}>
               semantics
             </Button>
           </div>
