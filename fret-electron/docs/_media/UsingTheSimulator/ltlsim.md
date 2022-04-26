@@ -115,10 +115,6 @@ From this menu, a new (empty) trace can be created. The current trace values are
 lost unless that trace has been saved or exported.
 The current trace can be saved into a json file. 
 
-TODO
-
-TODO: deactivate the load buttons
-
 ### Annotating Traces
 When clicking on the `+` button, a dialog pops up, which allows the user
 to provide a name and description for the current trace.
@@ -129,8 +125,25 @@ to provide a name and description for the current trace.
 ***
 
 ### Importing Traces
+Clikcking on the DownArrow opens a file selection dialog to import a trace
+in CSV or JSON format.
 
-TODO: disable for now
+In the CVS format, the first line contains the variable names, subsequent
+lines the values. Dependent variables, corresponding to arithmetic expressions, must be preceeded by a `*`, as shown in the following example. The trace export automatically performs this operation during saving the trace.
+
+```
+LAST,xxx,*xxx_S__lt__S_2_S_
+0,0,true
+0,1,true
+0,0,true
+0,2,false
+0,0,true
+1,0,true
+```
+
+Note that the `LAST` variable is added automatically for future-time formulas.
+However that variable is not displayed.
+
 
 ### Exporting Traces
 The current trace can be exported into a CSV or JSON file. Upon clicking the

@@ -164,7 +164,14 @@ module.exports = class LTLSimController {
 		var minval = 9e99;
 		var maxval = -9e99;
             	while ((i < model.traceLength) && (i <mytraces.length-1)){
-			var val = parseFloat(mytraces[i][id],10);
+			var val = 0;
+			if (mytraces[i][id]== "true"){ 
+				val = 1;}
+			else if (mytraces[i][id]== "false"){ 
+				val = 0;}
+			else {
+				val = parseFloat(mytraces[i][id],10);
+				}
 			console.log("value="+val)
 			if ((val != 0.0) && (val != 1.0)){
 				console.log("Boolean=false")
@@ -201,8 +208,19 @@ module.exports = class LTLSimController {
         let writeStream = fs.createWriteStream(tracefile)
 
 		// header
+	var VN = model.atomics.keys;
+	var AN=[];
+	for (var i=0; i< VN.length; i++){
+		if (!model.atomics.canChange[VN[i]]){
+			AN[i] = "*"+ VN[i];
+			}
+		else {
+			AN[i] = VN[i];
+			}
+		}
+			
 	try {
-	writeStream.write(model.atomics.keys.join(',')+ '\n', () => {
+	writeStream.write(AN.join(',')+ '\n', () => {
         		// a line was written to stream
     		        })
 	}catch(e){ console.log("ERRR",e)}
