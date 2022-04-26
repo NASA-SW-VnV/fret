@@ -40,10 +40,7 @@ when exporting requirements for verification. Check the user manual under
 Parentheses **(** **)** are used as usual. Please use parentheses as much as
 possible to avoid mistakes and misunderstandings.
 
-**Restrictions on variable names**: The following uppercase names cannot be used
-as variables in Boolean and arithmetic expressions: A E F G H O S T U V X Y
-Z AF AG AX BU EF EG EX ABF ABG EBF EBG MAX MIN LAST.  If you have some of
-those in your requirements, the database fret-db will not be able to be read.
+> __Important Note:__ [Restrictions](../restrictions.md)
 
 Examples:
 
