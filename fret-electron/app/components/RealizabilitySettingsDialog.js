@@ -135,7 +135,7 @@ class RealizabilitySettingsDialog extends React.Component {
 				>
 					<div className={classes.toolbar} />
 					<div className={classes.drawerHeader}>
-						<IconButton onClick={this.handleClose}>
+						<IconButton id="qa_rlzSet_ib_RlzSettings" onClick={this.handleClose}>
 							<ChevronRightIcon/>
 							<Typography>
 								Realizability Settings

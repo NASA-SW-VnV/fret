@@ -1,35 +1,3 @@
-// *****************************************************************************
-// Notices:
-//
-// Copyright © 2019, 2021 United States Government as represented by the Administrator
-// of the National Aeronautics and Space Administration. All Rights Reserved.
-//
-// Disclaimers
-//
-// No Warranty: THE SUBJECT SOFTWARE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY OF
-// ANY KIND, EITHER EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED
-// TO, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL CONFORM TO SPECIFICATIONS,
-// ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE,
-// OR FREEDOM FROM INFRINGEMENT, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL BE
-// ERROR FREE, OR ANY WARRANTY THAT DOCUMENTATION, IF PROVIDED, WILL CONFORM TO
-// THE SUBJECT SOFTWARE. THIS AGREEMENT DOES NOT, IN ANY MANNER, CONSTITUTE AN
-// ENDORSEMENT BY GOVERNMENT AGENCY OR ANY PRIOR RECIPIENT OF ANY RESULTS,
-// RESULTING DESIGNS, HARDWARE, SOFTWARE PRODUCTS OR ANY OTHER APPLICATIONS
-// RESULTING FROM USE OF THE SUBJECT SOFTWARE.  FURTHER, GOVERNMENT AGENCY
-// DISCLAIMS ALL WARRANTIES AND LIABILITIES REGARDING THIRD-PARTY SOFTWARE, IF
-// PRESENT IN THE ORIGINAL SOFTWARE, AND DISTRIBUTES IT ''AS IS.''
-//
-// Waiver and Indemnity:  RECIPIENT AGREES TO WAIVE ANY AND ALL CLAIMS AGAINST
-// THE UNITED STATES GOVERNMENT, ITS CONTRACTORS AND SUBCONTRACTORS, AS WELL AS
-// ANY PRIOR RECIPIENT.  IF RECIPIENT'S USE OF THE SUBJECT SOFTWARE RESULTS IN
-// ANY LIABILITIES, DEMANDS, DAMAGES, EXPENSES OR LOSSES ARISING FROM SUCH USE,
-// INCLUDING ANY DAMAGES FROM PRODUCTS BASED ON, OR RESULTING FROM, RECIPIENT'S
-// USE OF THE SUBJECT SOFTWARE, RECIPIENT SHALL INDEMNIFY AND HOLD HARMLESS THE
-// UNITED STATES GOVERNMENT, ITS CONTRACTORS AND SUBCONTRACTORS, AS WELL AS ANY
-// PRIOR RECIPIENT, TO THE EXTENT PERMITTED BY LAW.  RECIPIENT'S SOLE REMEDY FOR
-// ANY SUCH MATTER SHALL BE THE IMMEDIATE, UNILATERAL TERMINATION OF THIS
-// AGREEMENT.
-// *****************************************************************************
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { access, constants } from 'fs-extra';
@@ -140,7 +108,7 @@ const startWithJsonFileImport = async (jsonFileName) => {
 
 describe('FRET GUI E2E tests ', function () {
       
-      jest.setTimeout(600000);
+      jest.setTimeout(300000);
 
       beforeAll(async () => {           
             if (app && app.isRunning()) {
@@ -915,25 +883,28 @@ describe('FRET GUI E2E tests ', function () {
             await tableBtn.click(); 
             await app.client.pause(timeDelay1);
 
-
-            const req_AP000 = await app.client.$('#qa_tbl_btn_not_bulk_id_AP-000');
-            await req_AP000.click();
-            const reqEdit = await app.client.$('#qa_disReq_ic_edit');
-            await reqEdit.click();
-            const selProj = await app.client.$('#qa_crt_select_project');
-            await selProj.click();
-            const selProjHanfor = await app.client.$('#qa_crt_select_project_Hanfor');
-            await selProjHanfor.click();
-            const updateBtn = await app.client.$('#qa_crt_btn_create');
-            await updateBtn.click();    
-
             var tableBody = await app.client.$('#qa_tbl_sortableTable_body');
             var tableBodyHTML = await tableBody.getHTML(false);
             var htmlData = parse(tableBodyHTML);
 
             expect(htmlData.childNodes.length).toBe(10);   // showing 10 requirements per page
-            expect(htmlData.childNodes[0].text).toContain('AP-000Autopilot shall always satisfy altitude_hold => absOf_alt_minus_altIC <= 35.0Hanfor');            
-  
+            expect(htmlData.childNodes[0].text).toContain('AP-000Autopilot shall always satisfy altitude_hold => absOf_alt_minus_altIC <= 35.0LM_requirements');            
+
+
+            const req_AP000 = await app.client.$('#qa_tbl_btn_not_bulk_id_AP-000');
+            await req_AP000.click();
+            const reqEdit = await app.client.$('#qa_disReq_ic_edit');
+            await reqEdit.click();
+            await app.client.pause(timeDelay1);
+
+            var crtSelProj = await app.client.$('#qa_crt_select_project');
+            await crtSelProj.click();
+            var crtSelHanfor = await app.client.$('#qa_crt_select_project_Hanfor');
+            await crtSelHanfor.click();
+            const updateBtn = await app.client.$('#qa_crt_btn_create');
+            await updateBtn.click();    
+            await app.client.pause(timeDelay1);            
+
             const projBtn = await app.client.$('#qa_db_btn_projects');
             await projBtn.click();
             await app.client.pause(timeDelay1);
@@ -1964,30 +1935,1387 @@ describe('FRET GUI E2E tests ', function () {
 
             
       });
+  
+      //------------------------------------------------------------------
+      it('AP - 5', async () => {
+            console.log('starting test '+numTest+': AP - 5');
+            await startWithJsonFileImport('Glossary_4.json');
+                                 
+            const projectBtn = await app.client.$('#qa_db_btn_projects');
+            await projectBtn.click();
+            await app.client.pause(timeDelay1);
 
-      //------------------------------------------------------------------      
-      it('AP - 2', async () => {
-            console.log('starting test '+numTest+':  AP - 2');
+            const hanfor = await app.client.$('#qa_proj_select_TestRequirements');  
+            await hanfor.click(); 
+            await app.client.pause(timeDelay1);
+
+            const anaBtn = await app.client.$('#qa_db_li_analysis');
+            await anaBtn.click();
+
+            const varTab = await app.client.$('#qa_var_tab');
+            await varTab.click();     
+            
+            const selExport =  await app.client.$('#qa_var_sel_exportLanguage');
+            await selExport.click();    
+
+            const coPilot  =  await app.client.$('#qa_var_mi_copilot');
+            await coPilot.click(); 
+            await app.client.pause(timeDelay1);
+
+            const uav = await app.client.$('#qa_var_as_expandIcon_UAV');
+            await uav.click(); 
+            await app.client.pause(timeDelay1);
+
+            const initVar = await app.client.$('#qa_var_btn_FRETname_initialization');
+            await initVar.click(); 
+            await app.client.pause(timeDelay1);
+            // Variable type selection
+            var varType  = await app.client.$('#qa_disVar_sel_varType');
+            await varType.click(); 
+            var varTypeMode  = await app.client.$('#qa_disVar_mi_varType_Mode');  
+            await varTypeMode.click();  
+            // Description
+            var varDescTextField = await app.client.$('#qa_disVar_tf_description');  
+            await varDescTextField.setValue('Initialization');
+            var updateVar  = await app.client.$('#qa_disVar_btn_update');  
+            await updateVar.click();  
+            await app.client.pause(timeDelay1);
+
+            const mVar  = await app.client.$('#qa_var_btn_FRETname_m');
+            await mVar.click(); 
+            // Variable type selection
+            var varType  = await app.client.$('#qa_disVar_sel_varType');
+            await varType.click(); 
+            var varTypeFunction  = await app.client.$('#qa_disVar_mi_varType_Function');  
+            await varTypeFunction.click(); 
+            var varDescTextField = await app.client.$('#qa_disVar_tf_description');  
+            await varDescTextField.setValue('Initiation function');
+            var updateVar  = await app.client.$('#qa_disVar_btn_update');  
+            await updateVar.click();  
+            await app.client.pause(timeDelay1);
+
+            const xAvar = await app.client.$('#qa_var_btn_FRETname_xA');
+            await xAvar.click(); 
+            var varType  = await app.client.$('#qa_disVar_sel_varType');
+            await varType.click(); 
+            var varTypeInternal  = await app.client.$('#qa_disVar_mi_varType_Internal');  
+            await varTypeInternal.click(); 
+            var dataType  = await app.client.$('#qa_disVar_sel_dataType');
+            await dataType.click(); 
+            var dataTypeSingle  = await app.client.$('#qa_disVar_mi_dataType_single');  
+            await dataTypeSingle.click(); 
+            var varDescTextField = await app.client.$('#qa_disVar_tf_description');  
+            await varDescTextField.setValue('variable xA');
+            var updateVar  = await app.client.$('#qa_disVar_btn_update');  
+            await updateVar.click();  
+            await app.client.pause(timeDelay1);
+
+            const xinAvar = await app.client.$('#qa_var_btn_FRETname_xin');
+            await xinAvar.click(); 
+            var varType  = await app.client.$('#qa_disVar_sel_varType');
+            await varType.click(); 
+            var varTypeInput  = await app.client.$('#qa_disVar_mi_varType_Input');  
+            await varTypeInput.click(); 
+            var dataType  = await app.client.$('#qa_disVar_sel_dataType');
+            await dataType.click(); 
+            var dataTypeInteger  = await app.client.$('#qa_disVar_mi_dataType_integer');  
+            await dataTypeInteger.click(); 
+            var varDescTextField = await app.client.$('#qa_disVar_tf_description');  
+            await varDescTextField.setValue('Input xin');
+            var updateVar  = await app.client.$('#qa_disVar_btn_update');  
+            await updateVar.click();  
+            await app.client.pause(timeDelay1);
+
+            const ybAvar = await app.client.$('#qa_var_btn_FRETname_yB');
+            await ybAvar.click(); 
+            var varDescTextField = await app.client.$('#qa_disVar_tf_description');  
+            await varDescTextField.setValue('Undefined yB');
+            var updateVar  = await app.client.$('#qa_disVar_btn_update');  
+            await updateVar.click();  
+            await app.client.pause(timeDelay1);
+
+            
+            const youtAvar = await app.client.$('#qa_var_btn_FRETname_yout');
+            await youtAvar.click(); 
+            var varType  = await app.client.$('#qa_disVar_sel_varType');
+            await varType.click(); 
+            var varTypeOutput  = await app.client.$('#qa_disVar_mi_varType_Output');  
+            await varTypeOutput.click(); 
+            var dataType  = await app.client.$('#qa_disVar_sel_dataType');
+            await dataType.click(); 
+            var dataTypeDouble  = await app.client.$('#qa_disVar_mi_dataType_double');  
+            await dataTypeDouble.click();    
+            var varDescTextField = await app.client.$('#qa_disVar_tf_description');  
+            await varDescTextField.setValue('Output yout');
+            var updateVar  = await app.client.$('#qa_disVar_btn_update');  
+            await updateVar.click();  
+            await app.client.pause(timeDelay1);
+
+            await app.client.pause(timeDelay1);
+
+      });
+
+
+      //------------------------------------------------------------------   
+      //  testing variable type None   
+      it('AP - 6', async () => {
+            console.log('starting test '+numTest+':  AP - 6');
+            await cpReferenceDB('realizability');
+            await new Promise((r) => setTimeout(r, 2000));
 
             await app.start();
             await app.client.waitUntilWindowLoaded();
 
-                       
-            const title = await app.client.getTitle();
-            //console.log('TITLE= '+title);
-            expect(title).toBe('FRET');            
+            const projBtn = await app.client.$('#qa_db_btn_projects');
+            await projBtn.click();
+            await app.client.pause(timeDelay1);
+            const hanfor = await app.client.$('#qa_proj_select_GPCA_with_modes');  
+            await hanfor.click();  
+            await app.client.pause(timeDelay1);
 
-            // read Total Projects
-            // console.log('react MainView ' + await app.client.react$('MainView'));
-            const projectField = await app.client.$('#qa_db_ili_projects');
-            const projectText = await projectField.getText();
-            expect(projectText).toContain('Total Projects');
-            expect(projectText).toContain('0');
+            const anaBtn = await app.client.$('#qa_db_li_analysis');
+            await anaBtn.click();
+            var varTab = await app.client.$('#qa_var_tab');
+            await varTab.click();  
 
-            expect(fs.existsSync(fretDB_dirName)).toBeTruthy();
-            expect(fs.existsSync(modelDB_dirName)).toBeTruthy();
+            var selFretComp = await app.client.$('#qa_var_as_expandIcon_Infusion_Manager');
+            await selFretComp.click(); 
+            await app.client.pause(timeDelay1);
 
-      });       
+            var fretVarName = await app.client.$('#qa_var_btn_FRETname_Configured');
+            await fretVarName.click(); 
+            await app.client.pause(timeDelay1);            
+
+            var fretProjectTF = await app.client.$('#qa_disVar_tf_FRETprojName');
+            //console.log('fretProjectTF', await fretProjectTF.getValue());
+            expect(await fretProjectTF.getValue()).toContain('GPCA_with_modes');
+
+            var fretCompTF = await app.client.$('#qa_disVar_tf_FRETcomp');
+            //console.log('fretCompTF', await fretCompTF.getValue());
+            expect(await fretCompTF.getValue()).toContain('Infusion_Manager');
+
+            var modelComp = await app.client.$('#qa_disVar_tf_modelComp');
+            expect(await modelComp.getValue()).toBe('');
+            //console.log('modelComp ', await modelComp.getValue());
+
+            var varType  = await app.client.$('#qa_disVar_sel_varType');
+            await varType.click(); 
+            var varTypeNone  = await app.client.$('#qa_disVar_mi_varType_None');  
+            await varTypeNone.click(); 
+            
+            var varDescTextField = await app.client.$('#qa_disVar_tf_description');  
+            await varDescTextField.setValue('Configured var type None');
+
+            var updateVar  = await app.client.$('#qa_disVar_btn_update');  
+            await updateVar.click();   
+            await app.client.pause(timeDelay2);
+
+            var varTable = await app.client.$('#qa_var_tableBody');  
+            var elementHTML = await varTable.getHTML(false);
+            var elementParsedHTML = parse(elementHTML);            
+            //console.log('varTable row 2 ',elementParsedHTML.childNodes[1].text);
+            expect(elementParsedHTML.childNodes[1].text).toBe('ConfiguredConfigured var type None');
+            await app.client.pause(timeDelay1);
+
+      });
+
+      //------------------------------------------------------------------   
+      //  testing variable type Function   
+      it('AP - 7', async () => {
+            console.log('starting test '+numTest+':  AP - 7');
+            await cpReferenceDB('realizability');
+            await new Promise((r) => setTimeout(r, 2000));
+
+            await app.start();
+            await app.client.waitUntilWindowLoaded();
+
+            const projBtn = await app.client.$('#qa_db_btn_projects');
+            await projBtn.click();
+            await app.client.pause(timeDelay1);
+            const hanfor = await app.client.$('#qa_proj_select_GPCA_with_modes');  
+            await hanfor.click();  
+            await app.client.pause(timeDelay1);
+
+            const anaBtn = await app.client.$('#qa_db_li_analysis');
+            await anaBtn.click();
+            var varTab = await app.client.$('#qa_var_tab');
+            await varTab.click();  
+
+            var selFretComp = await app.client.$('#qa_var_as_expandIcon_Infusion_Manager');
+            await selFretComp.click(); 
+            await app.client.pause(timeDelay1);
+
+            var fretVarName = await app.client.$('#qa_var_btn_FRETname_Commanded_Flow_Rate');
+            await fretVarName.click(); 
+            await app.client.pause(timeDelay1);            
+
+            var fretProjectTF = await app.client.$('#qa_disVar_tf_FRETprojName');
+            //console.log('fretProjectTF', await fretProjectTF.getValue());
+            expect(await fretProjectTF.getValue()).toContain('GPCA_with_modes');
+
+            var fretCompTF = await app.client.$('#qa_disVar_tf_FRETcomp');
+            //console.log('fretCompTF', await fretCompTF.getValue());
+            expect(await fretCompTF.getValue()).toContain('Infusion_Manager');
+
+            var modelComp = await app.client.$('#qa_disVar_tf_modelComp');
+            expect(await modelComp.getValue()).toBe('');
+            //console.log('modelComp ', await modelComp.getValue());
+
+            var varType  = await app.client.$('#qa_disVar_sel_varType');
+            await varType.click(); 
+            var varTypeNone  = await app.client.$('#qa_disVar_mi_varType_Function');  
+            await varTypeNone.click(); 
+
+            var funcName = await app.client.$('#qa_disVar_tf_funcModName');  
+            await funcName.setValue('function1'); 
+            await app.client.pause(timeDelay1);
+            
+            var varDescTextField = await app.client.$('#qa_disVar_tf_description');  
+            await varDescTextField.setValue('table 1st row');
+
+            var updateVar  = await app.client.$('#qa_disVar_btn_update');  
+            await updateVar.click();   
+            await app.client.pause(timeDelay2);
+
+            var varTable = await app.client.$('#qa_var_tableBody');  
+            var elementHTML = await varTable.getHTML(false);
+            var elementParsedHTML = parse(elementHTML);            
+            //console.log('varTable row 2 ',elementParsedHTML.childNodes[1].text);
+            expect(elementParsedHTML.childNodes[0].text).toBe('Commanded_Flow_RateFunctiontable 1st row');
+            await app.client.pause(timeDelay1);
+
+      });
+
+      //------------------------------------------------------------------   
+      //  testing variable type Input   
+      it('AP - 8', async () => {
+            console.log('starting test '+numTest+':  AP - 8');
+            await cpReferenceDB('realizability');
+            await new Promise((r) => setTimeout(r, 2000));
+
+            await app.start();
+            await app.client.waitUntilWindowLoaded();
+
+            const projBtn = await app.client.$('#qa_db_btn_projects');
+            await projBtn.click();
+            await app.client.pause(timeDelay1);
+            const hanfor = await app.client.$('#qa_proj_select_GPCA_with_modes');  
+            await hanfor.click();  
+            await app.client.pause(timeDelay1);
+
+            const anaBtn = await app.client.$('#qa_db_li_analysis');
+            await anaBtn.click();
+            var varTab = await app.client.$('#qa_var_tab');
+            await varTab.click();  
+
+            var selFretComp = await app.client.$('#qa_var_as_expandIcon_Infusion_Manager');
+            await selFretComp.click(); 
+            await app.client.pause(timeDelay1);
+
+            //////////  display/edit a Fret variable
+            var fretVarName = await app.client.$('#qa_var_btn_FRETname_Current_System_Mode_0');
+            await fretVarName.click(); 
+            await app.client.pause(timeDelay1);            
+
+            var fretProjectTF = await app.client.$('#qa_disVar_tf_FRETprojName');
+            //console.log('fretProjectTF', await fretProjectTF.getValue());
+            expect(await fretProjectTF.getValue()).toContain('GPCA_with_modes');
+
+            var fretCompTF = await app.client.$('#qa_disVar_tf_FRETcomp');
+            //console.log('fretCompTF', await fretCompTF.getValue());
+            expect(await fretCompTF.getValue()).toContain('Infusion_Manager');
+
+            var modelComp = await app.client.$('#qa_disVar_tf_modelComp');
+            expect(await modelComp.getValue()).toBe('');
+            //console.log('modelComp ', await modelComp.getValue());
+
+            var varType  = await app.client.$('#qa_disVar_sel_varType');
+            await varType.click(); 
+            var varTypeNone  = await app.client.$('#qa_disVar_mi_varType_Input');  
+            await varTypeNone.click(); 
+            await app.client.pause(timeDelay1); 
+            
+            var varType  = await app.client.$('#qa_disVar_sel_dataType');
+            await varType.click(); 
+            var varTypeNone  = await app.client.$('#qa_disVar_mi_dataType_None');  
+            await varTypeNone.click(); 
+            await app.client.pause(timeDelay1); 
+
+            var varDescTextField = await app.client.$('#qa_disVar_tf_description');  
+            await varDescTextField.setValue('table 3rd row');
+
+            var updateVar  = await app.client.$('#qa_disVar_btn_update');  
+            await updateVar.click();   
+            await app.client.pause(timeDelay2);
+
+            //////////  display/edit a Fret variable
+            var fretVarName = await app.client.$('#qa_var_btn_FRETname_Current_System_Mode_0_pre');
+            await fretVarName.click(); 
+            await app.client.pause(timeDelay1);            
+
+            var fretProjectTF = await app.client.$('#qa_disVar_tf_FRETprojName');
+            //console.log('fretProjectTF', await fretProjectTF.getValue());
+            expect(await fretProjectTF.getValue()).toContain('GPCA_with_modes');
+
+            var fretCompTF = await app.client.$('#qa_disVar_tf_FRETcomp');
+            //console.log('fretCompTF', await fretCompTF.getValue());
+            expect(await fretCompTF.getValue()).toContain('Infusion_Manager');
+
+            var modelComp = await app.client.$('#qa_disVar_tf_modelComp');
+            expect(await modelComp.getValue()).toBe('');
+            //console.log('modelComp ', await modelComp.getValue());
+
+            var varType  = await app.client.$('#qa_disVar_sel_varType');
+            await varType.click(); 
+            var varTypeNone  = await app.client.$('#qa_disVar_mi_varType_Input');  
+            await varTypeNone.click(); 
+            await app.client.pause(timeDelay1); 
+            
+            var varType  = await app.client.$('#qa_disVar_sel_dataType');
+            await varType.click(); 
+            var varTypeNone  = await app.client.$('#qa_disVar_mi_dataType_boolean');  
+            await varTypeNone.click(); 
+            await app.client.pause(timeDelay1); 
+
+            var varDescTextField = await app.client.$('#qa_disVar_tf_description');  
+            await varDescTextField.setValue('table 4th row');
+
+            var updateVar  = await app.client.$('#qa_disVar_btn_update');  
+            await updateVar.click();   
+            await app.client.pause(timeDelay2);
+
+            //////////  display/edit a Fret variable
+            var fretVarName = await app.client.$('#qa_var_btn_FRETname_Current_System_Mode_1');
+            await fretVarName.click(); 
+            await app.client.pause(timeDelay1);            
+
+            var fretProjectTF = await app.client.$('#qa_disVar_tf_FRETprojName');
+            //console.log('fretProjectTF', await fretProjectTF.getValue());
+            expect(await fretProjectTF.getValue()).toContain('GPCA_with_modes');
+
+            var fretCompTF = await app.client.$('#qa_disVar_tf_FRETcomp');
+            //console.log('fretCompTF', await fretCompTF.getValue());
+            expect(await fretCompTF.getValue()).toContain('Infusion_Manager');
+
+            var modelComp = await app.client.$('#qa_disVar_tf_modelComp');
+            expect(await modelComp.getValue()).toBe('');
+            //console.log('modelComp ', await modelComp.getValue());
+
+            var varType  = await app.client.$('#qa_disVar_sel_varType');
+            await varType.click(); 
+            var varTypeNone  = await app.client.$('#qa_disVar_mi_varType_Input');  
+            await varTypeNone.click(); 
+            await app.client.pause(timeDelay1); 
+            
+            var varType  = await app.client.$('#qa_disVar_sel_dataType');
+            await varType.click(); 
+            var varTypeNone  = await app.client.$('#qa_disVar_mi_dataType_integer');  
+            await varTypeNone.click(); 
+            await app.client.pause(timeDelay1); 
+
+            var varDescTextField = await app.client.$('#qa_disVar_tf_description');  
+            await varDescTextField.setValue('table 5th row');
+
+            var updateVar  = await app.client.$('#qa_disVar_btn_update');  
+            await updateVar.click();   
+            await app.client.pause(timeDelay2);
+
+            //////////  display/edit a Fret variable
+            var fretVarName = await app.client.$('#qa_var_btn_FRETname_Current_System_Mode_2');
+            await fretVarName.click(); 
+            await app.client.pause(timeDelay1);            
+
+            var fretProjectTF = await app.client.$('#qa_disVar_tf_FRETprojName');
+            //console.log('fretProjectTF', await fretProjectTF.getValue());
+            expect(await fretProjectTF.getValue()).toContain('GPCA_with_modes');
+
+            var fretCompTF = await app.client.$('#qa_disVar_tf_FRETcomp');
+            //console.log('fretCompTF', await fretCompTF.getValue());
+            expect(await fretCompTF.getValue()).toContain('Infusion_Manager');
+
+            var modelComp = await app.client.$('#qa_disVar_tf_modelComp');
+            expect(await modelComp.getValue()).toBe('');
+            //console.log('modelComp ', await modelComp.getValue());
+
+            var varType  = await app.client.$('#qa_disVar_sel_varType');
+            await varType.click(); 
+            var varTypeNone  = await app.client.$('#qa_disVar_mi_varType_Input');  
+            await varTypeNone.click(); 
+            await app.client.pause(timeDelay1); 
+            
+            var varType  = await app.client.$('#qa_disVar_sel_dataType');
+            await varType.click(); 
+            var varTypeNone  = await app.client.$('#qa_disVar_mi_dataType_unsigned_integer');  
+            await varTypeNone.click(); 
+            await app.client.pause(timeDelay1); 
+
+            var varDescTextField = await app.client.$('#qa_disVar_tf_description');  
+            await varDescTextField.setValue('table 6th row');
+
+            var updateVar  = await app.client.$('#qa_disVar_btn_update');  
+            await updateVar.click();   
+            await app.client.pause(timeDelay2);
+
+            //////////  display/edit a Fret variable
+            var fretVarName = await app.client.$('#qa_var_btn_FRETname_Current_System_Mode_3');
+            await fretVarName.click(); 
+            await app.client.pause(timeDelay1);            
+
+            var fretProjectTF = await app.client.$('#qa_disVar_tf_FRETprojName');
+            //console.log('fretProjectTF', await fretProjectTF.getValue());
+            expect(await fretProjectTF.getValue()).toContain('GPCA_with_modes');
+
+            var fretCompTF = await app.client.$('#qa_disVar_tf_FRETcomp');
+            //console.log('fretCompTF', await fretCompTF.getValue());
+            expect(await fretCompTF.getValue()).toContain('Infusion_Manager');
+
+            var modelComp = await app.client.$('#qa_disVar_tf_modelComp');
+            expect(await modelComp.getValue()).toBe('');
+            //console.log('modelComp ', await modelComp.getValue());
+
+            var varType  = await app.client.$('#qa_disVar_sel_varType');
+            await varType.click(); 
+            var varTypeNone  = await app.client.$('#qa_disVar_mi_varType_Input');  
+            await varTypeNone.click(); 
+            await app.client.pause(timeDelay1); 
+            
+            var varType  = await app.client.$('#qa_disVar_sel_dataType');
+            await varType.click(); 
+            var varTypeNone  = await app.client.$('#qa_disVar_mi_dataType_single');  
+            await varTypeNone.click(); 
+            await app.client.pause(timeDelay1); 
+
+            var varDescTextField = await app.client.$('#qa_disVar_tf_description');  
+            await varDescTextField.setValue('table 7th row');
+
+            var updateVar  = await app.client.$('#qa_disVar_btn_update');  
+            await updateVar.click();   
+            await app.client.pause(timeDelay2);
+
+
+            //////////  display/edit a Fret variable
+            var fretVarName = await app.client.$('#qa_var_btn_FRETname_Current_System_Mode_4');
+            await fretVarName.click(); 
+            await app.client.pause(timeDelay1);            
+
+            var fretProjectTF = await app.client.$('#qa_disVar_tf_FRETprojName');
+            //console.log('fretProjectTF', await fretProjectTF.getValue());
+            expect(await fretProjectTF.getValue()).toContain('GPCA_with_modes');
+
+            var fretCompTF = await app.client.$('#qa_disVar_tf_FRETcomp');
+            //console.log('fretCompTF', await fretCompTF.getValue());
+            expect(await fretCompTF.getValue()).toContain('Infusion_Manager');
+
+            var modelComp = await app.client.$('#qa_disVar_tf_modelComp');
+            expect(await modelComp.getValue()).toBe('');
+            //console.log('modelComp ', await modelComp.getValue());
+
+            var varType  = await app.client.$('#qa_disVar_sel_varType');
+            await varType.click(); 
+            var varTypeNone  = await app.client.$('#qa_disVar_mi_varType_Input');  
+            await varTypeNone.click(); 
+            await app.client.pause(timeDelay1); 
+            
+            var varType  = await app.client.$('#qa_disVar_sel_dataType');
+            await varType.click(); 
+            var varTypeNone  = await app.client.$('#qa_disVar_mi_dataType_double');  
+            await varTypeNone.click(); 
+            await app.client.pause(timeDelay1); 
+
+            var varDescTextField = await app.client.$('#qa_disVar_tf_description');  
+            await varDescTextField.setValue('table 8th row');
+
+            var updateVar  = await app.client.$('#qa_disVar_btn_update');  
+            await updateVar.click();   
+            await app.client.pause(timeDelay2);
+
+
+            var varTable = await app.client.$('#qa_var_tableBody');  
+            var elementHTML = await varTable.getHTML(false);
+            var elementParsedHTML = parse(elementHTML);            
+            //console.log('varTable row 2 ',elementParsedHTML.childNodes[1].text);
+            expect(elementParsedHTML.childNodes[2].text).toBe('Current_System_Mode_0Inputtable 3rd row');
+            expect(elementParsedHTML.childNodes[3].text).toBe('Current_System_Mode_0_preInputbooleantable 4th row');
+            expect(elementParsedHTML.childNodes[4].text).toBe('Current_System_Mode_1Inputintegertable 5th row');
+            expect(elementParsedHTML.childNodes[5].text).toBe('Current_System_Mode_2Inputunsigned integertable 6th row');
+            expect(elementParsedHTML.childNodes[6].text).toBe('Current_System_Mode_3Inputsingletable 7th row');
+            expect(elementParsedHTML.childNodes[7].text).toBe('Current_System_Mode_4Inputdoubletable 8th row');
+            await app.client.pause(timeDelay1);
+
+      });
+
+
+      //------------------------------------------------------------------   
+      //  testing variable type Output  
+      it('AP - 9', async () => {
+            console.log('starting test '+numTest+':  AP - 9');
+            await cpReferenceDB('realizability');
+            await new Promise((r) => setTimeout(r, 2000));
+
+            await app.start();
+            await app.client.waitUntilWindowLoaded();
+
+            const projBtn = await app.client.$('#qa_db_btn_projects');
+            await projBtn.click();
+            await app.client.pause(timeDelay1);
+            const hanfor = await app.client.$('#qa_proj_select_GPCA_with_modes');  
+            await hanfor.click();  
+            await app.client.pause(timeDelay1);
+
+            const anaBtn = await app.client.$('#qa_db_li_analysis');
+            await anaBtn.click();
+            var varTab = await app.client.$('#qa_var_tab');
+            await varTab.click();  
+
+            var selFretComp = await app.client.$('#qa_var_as_expandIcon_Infusion_Manager');
+            await selFretComp.click(); 
+            await app.client.pause(timeDelay1);
+
+            //////////  display/edit a Fret variable
+            var fretVarName = await app.client.$('#qa_var_btn_FRETname_Current_System_Mode_0');
+            await fretVarName.click(); 
+            await app.client.pause(timeDelay1);            
+
+            var fretProjectTF = await app.client.$('#qa_disVar_tf_FRETprojName');
+            //console.log('fretProjectTF', await fretProjectTF.getValue());
+            expect(await fretProjectTF.getValue()).toContain('GPCA_with_modes');
+
+            var fretCompTF = await app.client.$('#qa_disVar_tf_FRETcomp');
+            //console.log('fretCompTF', await fretCompTF.getValue());
+            expect(await fretCompTF.getValue()).toContain('Infusion_Manager');
+
+            var modelComp = await app.client.$('#qa_disVar_tf_modelComp');
+            expect(await modelComp.getValue()).toBe('');
+            //console.log('modelComp ', await modelComp.getValue());
+
+            var varType  = await app.client.$('#qa_disVar_sel_varType');
+            await varType.click(); 
+            var varTypeNone  = await app.client.$('#qa_disVar_mi_varType_Output');  
+            await varTypeNone.click(); 
+            await app.client.pause(timeDelay1); 
+            
+            var varType  = await app.client.$('#qa_disVar_sel_dataType');
+            await varType.click(); 
+            var varTypeNone  = await app.client.$('#qa_disVar_mi_dataType_None');  
+            await varTypeNone.click(); 
+            await app.client.pause(timeDelay1); 
+
+            var varDescTextField = await app.client.$('#qa_disVar_tf_description');  
+            await varDescTextField.setValue('table 3rd row');
+
+            var updateVar  = await app.client.$('#qa_disVar_btn_update');  
+            await updateVar.click();   
+            await app.client.pause(timeDelay2);
+
+            //////////  display/edit a Fret variable
+            var fretVarName = await app.client.$('#qa_var_btn_FRETname_Current_System_Mode_0_pre');
+            await fretVarName.click(); 
+            await app.client.pause(timeDelay1);            
+
+            var fretProjectTF = await app.client.$('#qa_disVar_tf_FRETprojName');
+            //console.log('fretProjectTF', await fretProjectTF.getValue());
+            expect(await fretProjectTF.getValue()).toContain('GPCA_with_modes');
+
+            var fretCompTF = await app.client.$('#qa_disVar_tf_FRETcomp');
+            //console.log('fretCompTF', await fretCompTF.getValue());
+            expect(await fretCompTF.getValue()).toContain('Infusion_Manager');
+
+            var modelComp = await app.client.$('#qa_disVar_tf_modelComp');
+            expect(await modelComp.getValue()).toBe('');
+            //console.log('modelComp ', await modelComp.getValue());
+
+            var varType  = await app.client.$('#qa_disVar_sel_varType');
+            await varType.click(); 
+            var varTypeNone  = await app.client.$('#qa_disVar_mi_varType_Output');  
+            await varTypeNone.click(); 
+            await app.client.pause(timeDelay1); 
+            
+            var varType  = await app.client.$('#qa_disVar_sel_dataType');
+            await varType.click(); 
+            var varTypeNone  = await app.client.$('#qa_disVar_mi_dataType_boolean');  
+            await varTypeNone.click(); 
+            await app.client.pause(timeDelay1); 
+
+            var varDescTextField = await app.client.$('#qa_disVar_tf_description');  
+            await varDescTextField.setValue('table 4th row');
+
+            var updateVar  = await app.client.$('#qa_disVar_btn_update');  
+            await updateVar.click();   
+            await app.client.pause(timeDelay2);
+
+            //////////  display/edit a Fret variable
+            var fretVarName = await app.client.$('#qa_var_btn_FRETname_Current_System_Mode_1');
+            await fretVarName.click(); 
+            await app.client.pause(timeDelay1);            
+
+            var fretProjectTF = await app.client.$('#qa_disVar_tf_FRETprojName');
+            //console.log('fretProjectTF', await fretProjectTF.getValue());
+            expect(await fretProjectTF.getValue()).toContain('GPCA_with_modes');
+
+            var fretCompTF = await app.client.$('#qa_disVar_tf_FRETcomp');
+            //console.log('fretCompTF', await fretCompTF.getValue());
+            expect(await fretCompTF.getValue()).toContain('Infusion_Manager');
+
+            var modelComp = await app.client.$('#qa_disVar_tf_modelComp');
+            expect(await modelComp.getValue()).toBe('');
+            //console.log('modelComp ', await modelComp.getValue());
+
+            var varType  = await app.client.$('#qa_disVar_sel_varType');
+            await varType.click(); 
+            var varTypeNone  = await app.client.$('#qa_disVar_mi_varType_Output');  
+            await varTypeNone.click(); 
+            await app.client.pause(timeDelay1); 
+            
+            var varType  = await app.client.$('#qa_disVar_sel_dataType');
+            await varType.click(); 
+            var varTypeNone  = await app.client.$('#qa_disVar_mi_dataType_integer');  
+            await varTypeNone.click(); 
+            await app.client.pause(timeDelay1); 
+
+            var varDescTextField = await app.client.$('#qa_disVar_tf_description');  
+            await varDescTextField.setValue('table 5th row');
+
+            var updateVar  = await app.client.$('#qa_disVar_btn_update');  
+            await updateVar.click();   
+            await app.client.pause(timeDelay2);
+
+            //////////  display/edit a Fret variable
+            var fretVarName = await app.client.$('#qa_var_btn_FRETname_Current_System_Mode_2');
+            await fretVarName.click(); 
+            await app.client.pause(timeDelay1);            
+
+            var fretProjectTF = await app.client.$('#qa_disVar_tf_FRETprojName');
+            //console.log('fretProjectTF', await fretProjectTF.getValue());
+            expect(await fretProjectTF.getValue()).toContain('GPCA_with_modes');
+
+            var fretCompTF = await app.client.$('#qa_disVar_tf_FRETcomp');
+            //console.log('fretCompTF', await fretCompTF.getValue());
+            expect(await fretCompTF.getValue()).toContain('Infusion_Manager');
+
+            var modelComp = await app.client.$('#qa_disVar_tf_modelComp');
+            expect(await modelComp.getValue()).toBe('');
+            //console.log('modelComp ', await modelComp.getValue());
+
+            var varType  = await app.client.$('#qa_disVar_sel_varType');
+            await varType.click(); 
+            var varTypeNone  = await app.client.$('#qa_disVar_mi_varType_Output');  
+            await varTypeNone.click(); 
+            await app.client.pause(timeDelay1); 
+            
+            var varType  = await app.client.$('#qa_disVar_sel_dataType');
+            await varType.click(); 
+            var varTypeNone  = await app.client.$('#qa_disVar_mi_dataType_unsigned_integer');  
+            await varTypeNone.click(); 
+            await app.client.pause(timeDelay1); 
+
+            var varDescTextField = await app.client.$('#qa_disVar_tf_description');  
+            await varDescTextField.setValue('table 6th row');
+
+            var updateVar  = await app.client.$('#qa_disVar_btn_update');  
+            await updateVar.click();   
+            await app.client.pause(timeDelay2);
+
+            //////////  display/edit a Fret variable
+            var fretVarName = await app.client.$('#qa_var_btn_FRETname_Current_System_Mode_3');
+            await fretVarName.click(); 
+            await app.client.pause(timeDelay1);            
+
+            var fretProjectTF = await app.client.$('#qa_disVar_tf_FRETprojName');
+            //console.log('fretProjectTF', await fretProjectTF.getValue());
+            expect(await fretProjectTF.getValue()).toContain('GPCA_with_modes');
+
+            var fretCompTF = await app.client.$('#qa_disVar_tf_FRETcomp');
+            //console.log('fretCompTF', await fretCompTF.getValue());
+            expect(await fretCompTF.getValue()).toContain('Infusion_Manager');
+
+            var modelComp = await app.client.$('#qa_disVar_tf_modelComp');
+            expect(await modelComp.getValue()).toBe('');
+            //console.log('modelComp ', await modelComp.getValue());
+
+            var varType  = await app.client.$('#qa_disVar_sel_varType');
+            await varType.click(); 
+            var varTypeNone  = await app.client.$('#qa_disVar_mi_varType_Output');  
+            await varTypeNone.click(); 
+            await app.client.pause(timeDelay1); 
+            
+            var varType  = await app.client.$('#qa_disVar_sel_dataType');
+            await varType.click(); 
+            var varTypeNone  = await app.client.$('#qa_disVar_mi_dataType_single');  
+            await varTypeNone.click(); 
+            await app.client.pause(timeDelay1); 
+
+            var varDescTextField = await app.client.$('#qa_disVar_tf_description');  
+            await varDescTextField.setValue('table 7th row');
+
+            var updateVar  = await app.client.$('#qa_disVar_btn_update');  
+            await updateVar.click();   
+            await app.client.pause(timeDelay2);
+
+
+            //////////  display/edit a Fret variable
+            var fretVarName = await app.client.$('#qa_var_btn_FRETname_Current_System_Mode_4');
+            await fretVarName.click(); 
+            await app.client.pause(timeDelay1);            
+
+            var fretProjectTF = await app.client.$('#qa_disVar_tf_FRETprojName');
+            //console.log('fretProjectTF', await fretProjectTF.getValue());
+            expect(await fretProjectTF.getValue()).toContain('GPCA_with_modes');
+
+            var fretCompTF = await app.client.$('#qa_disVar_tf_FRETcomp');
+            //console.log('fretCompTF', await fretCompTF.getValue());
+            expect(await fretCompTF.getValue()).toContain('Infusion_Manager');
+
+            var modelComp = await app.client.$('#qa_disVar_tf_modelComp');
+            expect(await modelComp.getValue()).toBe('');
+            //console.log('modelComp ', await modelComp.getValue());
+
+            var varType  = await app.client.$('#qa_disVar_sel_varType');
+            await varType.click(); 
+            var varTypeNone  = await app.client.$('#qa_disVar_mi_varType_Output');  
+            await varTypeNone.click(); 
+            await app.client.pause(timeDelay1); 
+            
+            var varType  = await app.client.$('#qa_disVar_sel_dataType');
+            await varType.click(); 
+            var varTypeNone  = await app.client.$('#qa_disVar_mi_dataType_double');  
+            await varTypeNone.click(); 
+            await app.client.pause(timeDelay1); 
+
+            var varDescTextField = await app.client.$('#qa_disVar_tf_description');  
+            await varDescTextField.setValue('table 8th row');
+
+            var updateVar  = await app.client.$('#qa_disVar_btn_update');  
+            await updateVar.click();   
+            await app.client.pause(timeDelay2);
+
+
+            var varTable = await app.client.$('#qa_var_tableBody');  
+            var elementHTML = await varTable.getHTML(false);
+            var elementParsedHTML = parse(elementHTML);            
+            //console.log('varTable row 2 ',elementParsedHTML.childNodes[1].text);
+            expect(elementParsedHTML.childNodes[2].text).toBe('Current_System_Mode_0Outputtable 3rd row');
+            expect(elementParsedHTML.childNodes[3].text).toBe('Current_System_Mode_0_preOutputbooleantable 4th row');
+            expect(elementParsedHTML.childNodes[4].text).toBe('Current_System_Mode_1Outputintegertable 5th row');
+            expect(elementParsedHTML.childNodes[5].text).toBe('Current_System_Mode_2Outputunsigned integertable 6th row');
+            expect(elementParsedHTML.childNodes[6].text).toBe('Current_System_Mode_3Outputsingletable 7th row');
+            expect(elementParsedHTML.childNodes[7].text).toBe('Current_System_Mode_4Outputdoubletable 8th row');
+            await app.client.pause(timeDelay1);
+
+      });
+
+
+      //------------------------------------------------------------------   
+      //  testing variable type Internal  
+      it('AP - 10', async () => {
+            console.log('starting test '+numTest+':  AP - 10');
+            await cpReferenceDB('realizability');
+            await new Promise((r) => setTimeout(r, 2000));
+
+            await app.start();
+            await app.client.waitUntilWindowLoaded();
+
+            const projBtn = await app.client.$('#qa_db_btn_projects');
+            await projBtn.click();
+            await app.client.pause(timeDelay1);
+            const hanfor = await app.client.$('#qa_proj_select_GPCA_with_modes');  
+            await hanfor.click();  
+            await app.client.pause(timeDelay1);
+
+            const anaBtn = await app.client.$('#qa_db_li_analysis');
+            await anaBtn.click();
+            var varTab = await app.client.$('#qa_var_tab');
+            await varTab.click();  
+
+            var selFretComp = await app.client.$('#qa_var_as_expandIcon_Infusion_Manager');
+            await selFretComp.click(); 
+            await app.client.pause(timeDelay1);
+
+            //////////  display/edit a Fret variable
+            var fretVarName = await app.client.$('#qa_var_btn_FRETname_Current_System_Mode_0');
+            await fretVarName.click(); 
+            await app.client.pause(timeDelay1);            
+
+            var fretProjectTF = await app.client.$('#qa_disVar_tf_FRETprojName');
+            //console.log('fretProjectTF', await fretProjectTF.getValue());
+            expect(await fretProjectTF.getValue()).toContain('GPCA_with_modes');
+
+            var fretCompTF = await app.client.$('#qa_disVar_tf_FRETcomp');
+            //console.log('fretCompTF', await fretCompTF.getValue());
+            expect(await fretCompTF.getValue()).toContain('Infusion_Manager');
+
+            var modelComp = await app.client.$('#qa_disVar_tf_modelComp');
+            expect(await modelComp.getValue()).toBe('');
+            //console.log('modelComp ', await modelComp.getValue());
+
+            var varType  = await app.client.$('#qa_disVar_sel_varType');
+            await varType.click(); 
+            var varTypeNone  = await app.client.$('#qa_disVar_mi_varType_Internal');  
+            await varTypeNone.click(); 
+            await app.client.pause(timeDelay1); 
+
+            // check box for Lustre and CoPilot
+            var lustreVarAssign = await app.client.$('#qa_disVar_tf_varAssignLustre');  
+            var coPilotVarAssign = await app.client.$('#qa_disVar_tf_varAssignCoPilot');  //  TBD DisplayVariableDialog.js    
+            expect(await lustreVarAssign.isDisplayed()).toBeTruthy();
+            expect(await coPilotVarAssign.isDisplayed()).toBeFalsy();
+            await lustreVarAssign.setValue('z');
+            await app.client.pause(timeDelay1); 
+
+            var coPilotCB = await app.client.$('#qa_disVar_cb_CoPilot');  
+            await coPilotCB.click();
+            await app.client.pause(timeDelay1); 
+            await coPilotVarAssign.setValue('y');
+            await app.client.pause(timeDelay1); 
+
+            var varType  = await app.client.$('#qa_disVar_sel_dataType');
+            await varType.click(); 
+            var varTypeNone  = await app.client.$('#qa_disVar_mi_dataType_None');  
+            await varTypeNone.click(); 
+            await app.client.pause(timeDelay1); 
+
+            var varDescTextField = await app.client.$('#qa_disVar_tf_description');  
+            await varDescTextField.setValue('table 3rd row');
+
+            var updateVar  = await app.client.$('#qa_disVar_btn_update');  
+            await updateVar.click();   
+            await app.client.pause(timeDelay2);
+
+            var alertDialog = await app.client.$('#qa_nvd_alert_dialog');  
+            var elementHTML = await alertDialog.getHTML(false);
+            var elementParsedHTML = parse(elementHTML);            
+            //console.log('copilot alert: ', elementParsedHTML.text);       
+            expect(elementParsedHTML.text).toContain('The following new variables were introduced in the assignment(s): z, y.');
+
+            var okBtn = await app.client.$('#qa_nvd_btn_ok');    
+            await okBtn.click();
+            await app.client.pause(timeDelay1); 
+
+            //////////  display/edit a Fret variable
+            var fretVarName = await app.client.$('#qa_var_btn_FRETname_Current_System_Mode_0_pre');
+            await fretVarName.click(); 
+            await app.client.pause(timeDelay1);            
+
+            var fretProjectTF = await app.client.$('#qa_disVar_tf_FRETprojName');
+            //console.log('fretProjectTF', await fretProjectTF.getValue());
+            expect(await fretProjectTF.getValue()).toContain('GPCA_with_modes');
+
+            var fretCompTF = await app.client.$('#qa_disVar_tf_FRETcomp');
+            //console.log('fretCompTF', await fretCompTF.getValue());
+            expect(await fretCompTF.getValue()).toContain('Infusion_Manager');
+
+            var modelComp = await app.client.$('#qa_disVar_tf_modelComp');
+            expect(await modelComp.getValue()).toBe('');
+            //console.log('modelComp ', await modelComp.getValue());
+
+            var varType  = await app.client.$('#qa_disVar_sel_varType');
+            await varType.click(); 
+            var varTypeNone  = await app.client.$('#qa_disVar_mi_varType_Internal');  
+            await varTypeNone.click(); 
+            await app.client.pause(timeDelay1); 
+            
+            var varType  = await app.client.$('#qa_disVar_sel_dataType');
+            await varType.click(); 
+            var varTypeNone  = await app.client.$('#qa_disVar_mi_dataType_boolean');  
+            await varTypeNone.click(); 
+            await app.client.pause(timeDelay1); 
+
+            var varDescTextField = await app.client.$('#qa_disVar_tf_description');  
+            await varDescTextField.setValue('table 4th row');
+
+            var updateVar  = await app.client.$('#qa_disVar_btn_update');  
+            await updateVar.click();   
+            await app.client.pause(timeDelay2);
+
+            //////////  display/edit a Fret variable
+            var fretVarName = await app.client.$('#qa_var_btn_FRETname_Current_System_Mode_1');
+            await fretVarName.click(); 
+            await app.client.pause(timeDelay1);            
+
+            var fretProjectTF = await app.client.$('#qa_disVar_tf_FRETprojName');
+            //console.log('fretProjectTF', await fretProjectTF.getValue());
+            expect(await fretProjectTF.getValue()).toContain('GPCA_with_modes');
+
+            var fretCompTF = await app.client.$('#qa_disVar_tf_FRETcomp');
+            //console.log('fretCompTF', await fretCompTF.getValue());
+            expect(await fretCompTF.getValue()).toContain('Infusion_Manager');
+
+            var modelComp = await app.client.$('#qa_disVar_tf_modelComp');
+            expect(await modelComp.getValue()).toBe('');
+            //console.log('modelComp ', await modelComp.getValue());
+
+            var varType  = await app.client.$('#qa_disVar_sel_varType');
+            await varType.click(); 
+            var varTypeNone  = await app.client.$('#qa_disVar_mi_varType_Internal');  
+            await varTypeNone.click(); 
+            await app.client.pause(timeDelay1); 
+            
+            var varType  = await app.client.$('#qa_disVar_sel_dataType');
+            await varType.click(); 
+            var varTypeNone  = await app.client.$('#qa_disVar_mi_dataType_integer');  
+            await varTypeNone.click(); 
+            await app.client.pause(timeDelay1); 
+
+            var varDescTextField = await app.client.$('#qa_disVar_tf_description');  
+            await varDescTextField.setValue('table 5th row');
+
+            var updateVar  = await app.client.$('#qa_disVar_btn_update');  
+            await updateVar.click();   
+            await app.client.pause(timeDelay2);
+
+            //////////  display/edit a Fret variable
+            var fretVarName = await app.client.$('#qa_var_btn_FRETname_Current_System_Mode_2');
+            await fretVarName.click(); 
+            await app.client.pause(timeDelay1);            
+
+            var fretProjectTF = await app.client.$('#qa_disVar_tf_FRETprojName');
+            //console.log('fretProjectTF', await fretProjectTF.getValue());
+            expect(await fretProjectTF.getValue()).toContain('GPCA_with_modes');
+
+            var fretCompTF = await app.client.$('#qa_disVar_tf_FRETcomp');
+            //console.log('fretCompTF', await fretCompTF.getValue());
+            expect(await fretCompTF.getValue()).toContain('Infusion_Manager');
+
+            var modelComp = await app.client.$('#qa_disVar_tf_modelComp');
+            expect(await modelComp.getValue()).toBe('');
+            //console.log('modelComp ', await modelComp.getValue());
+
+            var varType  = await app.client.$('#qa_disVar_sel_varType');
+            await varType.click(); 
+            var varTypeNone  = await app.client.$('#qa_disVar_mi_varType_Internal');  
+            await varTypeNone.click(); 
+            await app.client.pause(timeDelay1); 
+            
+            var varType  = await app.client.$('#qa_disVar_sel_dataType');
+            await varType.click(); 
+            var varTypeNone  = await app.client.$('#qa_disVar_mi_dataType_unsigned_integer');  
+            await varTypeNone.click(); 
+            await app.client.pause(timeDelay1); 
+
+            var varDescTextField = await app.client.$('#qa_disVar_tf_description');  
+            await varDescTextField.setValue('table 6th row');
+
+            var updateVar  = await app.client.$('#qa_disVar_btn_update');  
+            await updateVar.click();   
+            await app.client.pause(timeDelay2);
+
+            //////////  display/edit a Fret variable
+            var fretVarName = await app.client.$('#qa_var_btn_FRETname_Current_System_Mode_3');
+            await fretVarName.click(); 
+            await app.client.pause(timeDelay1);            
+
+            var fretProjectTF = await app.client.$('#qa_disVar_tf_FRETprojName');
+            //console.log('fretProjectTF', await fretProjectTF.getValue());
+            expect(await fretProjectTF.getValue()).toContain('GPCA_with_modes');
+
+            var fretCompTF = await app.client.$('#qa_disVar_tf_FRETcomp');
+            //console.log('fretCompTF', await fretCompTF.getValue());
+            expect(await fretCompTF.getValue()).toContain('Infusion_Manager');
+
+            var modelComp = await app.client.$('#qa_disVar_tf_modelComp');
+            expect(await modelComp.getValue()).toBe('');
+            //console.log('modelComp ', await modelComp.getValue());
+
+            var varType  = await app.client.$('#qa_disVar_sel_varType');
+            await varType.click(); 
+            var varTypeNone  = await app.client.$('#qa_disVar_mi_varType_Internal');  
+            await varTypeNone.click(); 
+            await app.client.pause(timeDelay1); 
+            
+            var varType  = await app.client.$('#qa_disVar_sel_dataType');
+            await varType.click(); 
+            var varTypeNone  = await app.client.$('#qa_disVar_mi_dataType_single');  
+            await varTypeNone.click(); 
+            await app.client.pause(timeDelay1); 
+
+            var varDescTextField = await app.client.$('#qa_disVar_tf_description');  
+            await varDescTextField.setValue('table 7th row');
+
+            var updateVar  = await app.client.$('#qa_disVar_btn_update');  
+            await updateVar.click();   
+            await app.client.pause(timeDelay2);
+
+
+            //////////  display/edit a Fret variable
+            var fretVarName = await app.client.$('#qa_var_btn_FRETname_Current_System_Mode_4');
+            await fretVarName.click(); 
+            await app.client.pause(timeDelay1);            
+
+            var fretProjectTF = await app.client.$('#qa_disVar_tf_FRETprojName');
+            //console.log('fretProjectTF', await fretProjectTF.getValue());
+            expect(await fretProjectTF.getValue()).toContain('GPCA_with_modes');
+
+            var fretCompTF = await app.client.$('#qa_disVar_tf_FRETcomp');
+            //console.log('fretCompTF', await fretCompTF.getValue());
+            expect(await fretCompTF.getValue()).toContain('Infusion_Manager');
+
+            var modelComp = await app.client.$('#qa_disVar_tf_modelComp');
+            expect(await modelComp.getValue()).toBe('');
+            //console.log('modelComp ', await modelComp.getValue());
+
+            var varType  = await app.client.$('#qa_disVar_sel_varType');
+            await varType.click(); 
+            var varTypeNone  = await app.client.$('#qa_disVar_mi_varType_Internal');  
+            await varTypeNone.click(); 
+            await app.client.pause(timeDelay1); 
+            
+            var varType  = await app.client.$('#qa_disVar_sel_dataType');
+            await varType.click(); 
+            var varTypeNone  = await app.client.$('#qa_disVar_mi_dataType_double');  
+            await varTypeNone.click(); 
+            await app.client.pause(timeDelay1); 
+
+            var varDescTextField = await app.client.$('#qa_disVar_tf_description');  
+            await varDescTextField.setValue('table 8th row');
+
+            var updateVar  = await app.client.$('#qa_disVar_btn_update');  
+            await updateVar.click();   
+            await app.client.pause(timeDelay2);
+
+
+            var varTable = await app.client.$('#qa_var_tableBody');  
+            var elementHTML = await varTable.getHTML(false);
+            var elementParsedHTML = parse(elementHTML);            
+            //console.log('varTable row 2 ',elementParsedHTML.childNodes[1].text);
+            expect(elementParsedHTML.childNodes[2].text).toBe('Current_System_Mode_0Internaltable 3rd row');
+            expect(elementParsedHTML.childNodes[3].text).toBe('Current_System_Mode_0_preInternalbooleantable 4th row');
+            expect(elementParsedHTML.childNodes[4].text).toBe('Current_System_Mode_1Internalintegertable 5th row');
+            expect(elementParsedHTML.childNodes[5].text).toBe('Current_System_Mode_2Internalunsigned integertable 6th row');
+            expect(elementParsedHTML.childNodes[6].text).toBe('Current_System_Mode_3Internalsingletable 7th row');
+            expect(elementParsedHTML.childNodes[7].text).toBe('Current_System_Mode_4Internaldoubletable 8th row');
+            await app.client.pause(timeDelay1);
+
+      });
+
+
+      //------------------------------------------------------------------   
+      //  testing variable type Mode  
+      it('AP - 11', async () => {
+            console.log('starting test '+numTest+':  AP - 11');
+            await cpReferenceDB('realizability');
+            await new Promise((r) => setTimeout(r, 2000));
+
+            await app.start();
+            await app.client.waitUntilWindowLoaded();
+
+            const projBtn = await app.client.$('#qa_db_btn_projects');
+            await projBtn.click();
+            await app.client.pause(timeDelay1);
+            const hanfor = await app.client.$('#qa_proj_select_GPCA_with_modes');  
+            await hanfor.click();  
+            await app.client.pause(timeDelay1);
+
+            const anaBtn = await app.client.$('#qa_db_li_analysis');
+            await anaBtn.click();
+            var varTab = await app.client.$('#qa_var_tab');
+            await varTab.click();  
+
+            var selFretComp = await app.client.$('#qa_var_as_expandIcon_Infusion_Manager');
+            await selFretComp.click(); 
+            await app.client.pause(timeDelay1);
+
+            //////////  display/edit a Fret variable
+            var fretVarName = await app.client.$('#qa_var_btn_FRETname_Current_System_Mode_0');
+            await fretVarName.click(); 
+            await app.client.pause(timeDelay1);            
+
+            var fretProjectTF = await app.client.$('#qa_disVar_tf_FRETprojName');
+            //console.log('fretProjectTF', await fretProjectTF.getValue());
+            expect(await fretProjectTF.getValue()).toContain('GPCA_with_modes');
+
+            var fretCompTF = await app.client.$('#qa_disVar_tf_FRETcomp');
+            //console.log('fretCompTF', await fretCompTF.getValue());
+            expect(await fretCompTF.getValue()).toContain('Infusion_Manager');
+
+            var modelComp = await app.client.$('#qa_disVar_tf_modelComp');
+            expect(await modelComp.getValue()).toBe('');
+            //console.log('modelComp ', await modelComp.getValue());
+
+            var varType  = await app.client.$('#qa_disVar_sel_varType');
+            await varType.click(); 
+            var varTypeNone  = await app.client.$('#qa_disVar_mi_varType_Mode');  
+            await varTypeNone.click(); 
+            await app.client.pause(timeDelay1); 
+
+            var varType  = await app.client.$('#qa_disVar_tf_dataType'); 
+            // console.log('data type: ', await varType.getValue());
+            expect(await varType.getValue()).toBe('boolean');
+            await app.client.pause(timeDelay1); 
+
+            var varDescTextField = await app.client.$('#qa_disVar_tf_description');  
+            await varDescTextField.setValue('table 3rd row');
+
+            var updateVar  = await app.client.$('#qa_disVar_btn_update');  
+            await updateVar.click();   
+            await app.client.pause(timeDelay2);
+
+            //////////  display/edit a Fret variable
+            var fretVarName = await app.client.$('#qa_var_btn_FRETname_Current_System_Mode_0_pre');
+            await fretVarName.click(); 
+            await app.client.pause(timeDelay1);            
+
+            var fretProjectTF = await app.client.$('#qa_disVar_tf_FRETprojName');
+            //console.log('fretProjectTF', await fretProjectTF.getValue());
+            expect(await fretProjectTF.getValue()).toContain('GPCA_with_modes');
+
+            var fretCompTF = await app.client.$('#qa_disVar_tf_FRETcomp');
+            //console.log('fretCompTF', await fretCompTF.getValue());
+            expect(await fretCompTF.getValue()).toContain('Infusion_Manager');
+
+            var modelComp = await app.client.$('#qa_disVar_tf_modelComp');
+            expect(await modelComp.getValue()).toBe('');
+            //console.log('modelComp ', await modelComp.getValue());
+
+            var varType  = await app.client.$('#qa_disVar_sel_varType');
+            await varType.click(); 
+            var varTypeNone  = await app.client.$('#qa_disVar_mi_varType_Mode');  
+            await varTypeNone.click(); 
+            await app.client.pause(timeDelay1); 
+            
+            var varType  = await app.client.$('#qa_disVar_tf_dataType'); 
+            //console.log('data type: ', await varType.getValue());
+            expect(await varType.getValue()).toBe('boolean');
+
+            var varDescTextField = await app.client.$('#qa_disVar_tf_description');  
+            await varDescTextField.setValue('table 4th row');
+
+            var updateVar  = await app.client.$('#qa_disVar_btn_update');  
+            await updateVar.click();   
+            await app.client.pause(timeDelay2);
+
+            //////////  display/edit a Fret variable
+            var fretVarName = await app.client.$('#qa_var_btn_FRETname_Current_System_Mode_1');
+            await fretVarName.click(); 
+            await app.client.pause(timeDelay1);            
+
+            var fretProjectTF = await app.client.$('#qa_disVar_tf_FRETprojName');
+            //console.log('fretProjectTF', await fretProjectTF.getValue());
+            expect(await fretProjectTF.getValue()).toContain('GPCA_with_modes');
+
+            var fretCompTF = await app.client.$('#qa_disVar_tf_FRETcomp');
+            //console.log('fretCompTF', await fretCompTF.getValue());
+            expect(await fretCompTF.getValue()).toContain('Infusion_Manager');
+
+            var modelComp = await app.client.$('#qa_disVar_tf_modelComp');
+            expect(await modelComp.getValue()).toBe('');
+            //console.log('modelComp ', await modelComp.getValue());
+
+            var varType  = await app.client.$('#qa_disVar_sel_varType');
+            await varType.click(); 
+            var varTypeNone  = await app.client.$('#qa_disVar_mi_varType_Mode');  
+            await varTypeNone.click(); 
+            await app.client.pause(timeDelay1); 
+                   
+            var varType  = await app.client.$('#qa_disVar_tf_dataType'); 
+            //console.log('data type: ', await varType.getValue());
+            expect(await varType.getValue()).toBe('boolean');
+            await app.client.pause(timeDelay1); 
+
+            var varDescTextField = await app.client.$('#qa_disVar_tf_description');  
+            await varDescTextField.setValue('table 5th row');
+
+            var updateVar  = await app.client.$('#qa_disVar_btn_update');  
+            await updateVar.click();   
+            await app.client.pause(timeDelay2);
+
+            //////////  display/edit a Fret variable
+            var fretVarName = await app.client.$('#qa_var_btn_FRETname_Current_System_Mode_2');
+            await fretVarName.click(); 
+            await app.client.pause(timeDelay1);            
+
+            var fretProjectTF = await app.client.$('#qa_disVar_tf_FRETprojName');
+            //console.log('fretProjectTF', await fretProjectTF.getValue());
+            expect(await fretProjectTF.getValue()).toContain('GPCA_with_modes');
+
+            var fretCompTF = await app.client.$('#qa_disVar_tf_FRETcomp');
+            //console.log('fretCompTF', await fretCompTF.getValue());
+            expect(await fretCompTF.getValue()).toContain('Infusion_Manager');
+
+            var modelComp = await app.client.$('#qa_disVar_tf_modelComp');
+            expect(await modelComp.getValue()).toBe('');
+            //console.log('modelComp ', await modelComp.getValue());
+
+            var varType  = await app.client.$('#qa_disVar_sel_varType');
+            await varType.click(); 
+            var varTypeNone  = await app.client.$('#qa_disVar_mi_varType_Mode');  
+            await varTypeNone.click(); 
+            await app.client.pause(timeDelay1); 
+            
+            var varType  = await app.client.$('#qa_disVar_tf_dataType'); 
+            // console.log('data type: ', await varType.getValue());
+            expect(await varType.getValue()).toBe('boolean');
+            await app.client.pause(timeDelay1); 
+
+            var varDescTextField = await app.client.$('#qa_disVar_tf_description');  
+            await varDescTextField.setValue('table 6th row');
+
+            var updateVar  = await app.client.$('#qa_disVar_btn_update');  
+            await updateVar.click();   
+            await app.client.pause(timeDelay2);
+
+            //////////  display/edit a Fret variable
+            var fretVarName = await app.client.$('#qa_var_btn_FRETname_Current_System_Mode_3');
+            await fretVarName.click(); 
+            await app.client.pause(timeDelay1);            
+
+            var fretProjectTF = await app.client.$('#qa_disVar_tf_FRETprojName');
+            //console.log('fretProjectTF', await fretProjectTF.getValue());
+            expect(await fretProjectTF.getValue()).toContain('GPCA_with_modes');
+
+            var fretCompTF = await app.client.$('#qa_disVar_tf_FRETcomp');
+            //console.log('fretCompTF', await fretCompTF.getValue());
+            expect(await fretCompTF.getValue()).toContain('Infusion_Manager');
+
+            var modelComp = await app.client.$('#qa_disVar_tf_modelComp');
+            expect(await modelComp.getValue()).toBe('');
+            //console.log('modelComp ', await modelComp.getValue());
+
+            var varType  = await app.client.$('#qa_disVar_sel_varType');
+            await varType.click(); 
+            var varTypeNone  = await app.client.$('#qa_disVar_mi_varType_Mode');  
+            await varTypeNone.click(); 
+            await app.client.pause(timeDelay1); 
+            
+            var varType  = await app.client.$('#qa_disVar_tf_dataType'); 
+            //console.log('data type: ', await varType.getValue());
+            expect(await varType.getValue()).toBe('boolean');
+            await app.client.pause(timeDelay1); 
+
+            var varDescTextField = await app.client.$('#qa_disVar_tf_description');  
+            await varDescTextField.setValue('table 7th row');
+
+            var updateVar  = await app.client.$('#qa_disVar_btn_update');  
+            await updateVar.click();   
+            await app.client.pause(timeDelay2);
+
+
+            //////////  display/edit a Fret variable
+            var fretVarName = await app.client.$('#qa_var_btn_FRETname_Current_System_Mode_4');
+            await fretVarName.click(); 
+            await app.client.pause(timeDelay1);            
+
+            var fretProjectTF = await app.client.$('#qa_disVar_tf_FRETprojName');
+            //console.log('fretProjectTF', await fretProjectTF.getValue());
+            expect(await fretProjectTF.getValue()).toContain('GPCA_with_modes');
+
+            var fretCompTF = await app.client.$('#qa_disVar_tf_FRETcomp');
+            //console.log('fretCompTF', await fretCompTF.getValue());
+            expect(await fretCompTF.getValue()).toContain('Infusion_Manager');
+
+            var modelComp = await app.client.$('#qa_disVar_tf_modelComp');
+            expect(await modelComp.getValue()).toBe('');
+            //console.log('modelComp ', await modelComp.getValue());
+
+            var varType  = await app.client.$('#qa_disVar_sel_varType');
+            await varType.click(); 
+            var varTypeNone  = await app.client.$('#qa_disVar_mi_varType_Mode');  
+            await varTypeNone.click(); 
+            await app.client.pause(timeDelay1); 
+            
+            var varType  = await app.client.$('#qa_disVar_tf_dataType'); 
+            //console.log('data type: ', await varType.getValue());
+            expect(await varType.getValue()).toBe('boolean');
+            await app.client.pause(timeDelay1); 
+
+            var modeReq = await app.client.$('#qa_disVar_tf_modelReq');  
+            await modeReq.setValue('function1'); 
+
+            var varDescTextField = await app.client.$('#qa_disVar_tf_description');  
+            await varDescTextField.setValue('table 8th row');
+
+            var updateVar  = await app.client.$('#qa_disVar_btn_update');  
+            await updateVar.click();   
+            await app.client.pause(timeDelay2);
+
+
+            var varTable = await app.client.$('#qa_var_tableBody');  
+            var elementHTML = await varTable.getHTML(false);
+            var elementParsedHTML = parse(elementHTML);            
+            //console.log('varTable row 2 ',elementParsedHTML.childNodes[1].text);
+            expect(elementParsedHTML.childNodes[2].text).toBe('Current_System_Mode_0Modebooleantable 3rd row');
+            expect(elementParsedHTML.childNodes[3].text).toBe('Current_System_Mode_0_preModebooleantable 4th row');
+            expect(elementParsedHTML.childNodes[4].text).toBe('Current_System_Mode_1Modebooleantable 5th row');
+            expect(elementParsedHTML.childNodes[5].text).toBe('Current_System_Mode_2Modebooleantable 6th row');
+            expect(elementParsedHTML.childNodes[6].text).toBe('Current_System_Mode_3Modebooleantable 7th row');
+            expect(elementParsedHTML.childNodes[7].text).toBe('Current_System_Mode_4Modebooleantable 8th row');
+            await app.client.pause(timeDelay1);
+
+      });
+
+
+
+      //------------------------------------------------------------------   
+      //  testing variable cancel
+      it('AP - 12', async () => {
+            console.log('starting test '+numTest+':  AP - 12');
+            await cpReferenceDB('realizability');
+            await new Promise((r) => setTimeout(r, 2000));
+
+            await app.start();
+            await app.client.waitUntilWindowLoaded();
+
+            const projBtn = await app.client.$('#qa_db_btn_projects');
+            await projBtn.click();
+            await app.client.pause(timeDelay1);
+            const hanfor = await app.client.$('#qa_proj_select_GPCA_with_modes');  
+            await hanfor.click();  
+            await app.client.pause(timeDelay1);
+
+            const anaBtn = await app.client.$('#qa_db_li_analysis');
+            await anaBtn.click();
+            var varTab = await app.client.$('#qa_var_tab');
+            await varTab.click();  
+
+            var selFretComp = await app.client.$('#qa_var_as_expandIcon_Infusion_Manager');
+            await selFretComp.click(); 
+            await app.client.pause(timeDelay1);
+
+            //////////  display/edit a Fret variable
+            var fretVarName = await app.client.$('#qa_var_btn_FRETname_Current_System_Mode_0');
+            await fretVarName.click(); 
+            await app.client.pause(timeDelay1);            
+
+            var fretProjectTF = await app.client.$('#qa_disVar_tf_FRETprojName');
+            //console.log('fretProjectTF', await fretProjectTF.getValue());
+            expect(await fretProjectTF.getValue()).toContain('GPCA_with_modes');
+
+            var fretCompTF = await app.client.$('#qa_disVar_tf_FRETcomp');
+            //console.log('fretCompTF', await fretCompTF.getValue());
+            expect(await fretCompTF.getValue()).toContain('Infusion_Manager');
+
+            var modelComp = await app.client.$('#qa_disVar_tf_modelComp');
+            expect(await modelComp.getValue()).toBe('');
+            //console.log('modelComp ', await modelComp.getValue());
+
+            var varType  = await app.client.$('#qa_disVar_sel_varType');
+            await varType.click(); 
+            var varTypeNone  = await app.client.$('#qa_disVar_mi_varType_Mode');  
+            await varTypeNone.click(); 
+            await app.client.pause(timeDelay1); 
+
+            var varType  = await app.client.$('#qa_disVar_tf_dataType'); 
+            // console.log('data type: ', await varType.getValue());
+            expect(await varType.getValue()).toBe('boolean');
+            await app.client.pause(timeDelay1); 
+
+            var varDescTextField = await app.client.$('#qa_disVar_tf_description');  
+            await varDescTextField.setValue('table 3rd row');
+
+            var updateVar  = await app.client.$('#qa_disVar_btn_cancel');  
+            await updateVar.click();   
+            await app.client.pause(timeDelay2);
+
+
+            var varTable = await app.client.$('#qa_var_tableBody');  
+            var elementHTML = await varTable.getHTML(false);
+            var elementParsedHTML = parse(elementHTML);            
+            //console.log('varTable row 2 ',elementParsedHTML.childNodes[1].text);
+            expect(elementParsedHTML.childNodes[2].text).toBe('Current_System_Mode_0Outputboolean');
+
+            await app.client.pause(timeDelay1);
+
+      });
+
+
       //------------------------------------------------------------------      
       it('RLZ - 1', async () => {
             console.log('starting test '+numTest+':  RLZ - 1');
@@ -2060,6 +3388,9 @@ describe('FRET GUI E2E tests ', function () {
 
             const lm_sysComp = await app.client.$('#qa_rlzCont_mi_sysComp_liquid_mixer');
             await lm_sysComp.click();       
+
+            var actions =  await app.client.$('#qa_rlzCont_btn_actions');
+            await actions.click();
       
             const check_btn = await app.client.$('#qa_rlzCont_btn_check');
 
@@ -2156,6 +3487,13 @@ describe('FRET GUI E2E tests ', function () {
             await app.client.pause(timeDelay1);
             const comp_cb = await app.client.$('#qa_rlzCont_cb_compositional');
             await comp_cb.click();
+
+            var actions =  await app.client.$('#qa_rlzCont_btn_actions');
+            await actions.click();
+            
+            var changeSettings = await app.client.$('#qa_rlzCont_btn_settings');
+            await changeSettings.click();
+            await app.client.pause(timeDelay1);
       
             const timeout_tf = await app.client.$('#qa_rlzCont_tf_timeOut');
             const timeout_enabled = await timeout_tf.isEnabled();
@@ -2295,6 +3633,9 @@ describe('FRET GUI E2E tests ', function () {
             const mono_cb = await app.client.$('#qa_rlzCont_cb_monolithic');
             const comp_cb = await app.client.$('#qa_rlzCont_cb_compositional');
             await comp_cb.click();
+
+            var actions =  await app.client.$('#qa_rlzCont_btn_actions');
+            await actions.click();       
       
             const checkBtn = await app.client.$('#qa_rlzCont_btn_check');
             const checkEnabled = await checkBtn.isEnabled();
@@ -2362,7 +3703,10 @@ describe('FRET GUI E2E tests ', function () {
             const mono_cb = await app.client.$('#qa_rlzCont_cb_monolithic');
             const comp_cb = await app.client.$('#qa_rlzCont_cb_compositional');
             await mono_cb.click();
-      
+
+            var actions =  await app.client.$('#qa_rlzCont_btn_actions');
+            await actions.click();       
+                       
             const checkBtn = await app.client.$('#qa_rlzCont_btn_check');
             const checkEnabled = await checkBtn.isEnabled();
             expect(checkEnabled).toBeTruthy();
@@ -2391,7 +3735,6 @@ describe('FRET GUI E2E tests ', function () {
             await hanfor.click();  
             await app.client.pause(timeDelay1);
 
-
             const anaBtn = await app.client.$('#qa_db_li_analysis');
             await anaBtn.click();
 
@@ -2408,14 +3751,19 @@ describe('FRET GUI E2E tests ', function () {
       
             const mono_cb = await app.client.$('#qa_rlzCont_cb_monolithic');
             await mono_cb.click();
-      
+
+            var actions =  await app.client.$('#qa_rlzCont_btn_actions');
+            await actions.click();    
+            await app.client.pause(timeDelay1);   
+                        
             const checkBtn = await app.client.$('#qa_rlzCont_btn_check');
-            const checkEnabled = await checkBtn.isEnabled();
-            expect(checkEnabled).toBeTruthy();
             await checkBtn.click();
       
             await app.client.pause(timeDelay1);      
-            await app.client.pause(timeDelay1);     
+            await app.client.pause(timeDelay1);   
+            
+            await actions.click();    
+            await app.client.pause(timeDelay1);              
             const diagBtn = await app.client.$('#qa_rlzCont_btn_diagnose');
             const diagBtnEnabled = await checkBtn.isEnabled();
             expect(diagBtnEnabled).toBeTruthy();
@@ -2460,21 +3808,35 @@ describe('FRET GUI E2E tests ', function () {
             var mono_cb = await app.client.$('#qa_rlzCont_cb_monolithic');
             var comp_cb = await app.client.$('#qa_rlzCont_cb_compositional');
             await comp_cb.click();
-      
+
+
+            var actions =  await app.client.$('#qa_rlzCont_btn_actions');
+            await actions.click();
+            
+            var changeSettings = await app.client.$('#qa_rlzCont_btn_settings');
+            await changeSettings.click();
+            await app.client.pause(timeDelay1);
+     
             var timeout_tf = await app.client.$('#qa_rlzCont_tf_timeOut');
             var timeout_enabled = await timeout_tf.isEnabled();
             expect(timeout_enabled).toBeTruthy();
-            await timeout_tf.setValue('900');                  
+            await timeout_tf.setValue('900');          
+            
+            var rlzSettings = await app.client.$('#qa_rlzSet_ib_RlzSettings');
+            await rlzSettings.click();
+            await app.client.pause(timeDelay1);   
+
+            await actions.click();
       
             var checkBtn = await app.client.$('#qa_rlzCont_btn_check');
-            var checkEnabled = await checkBtn.isEnabled();
-            expect(checkEnabled).toBeTruthy();
             await checkBtn.click();      
-            await app.client.pause(2000);      
+            await app.client.pause(5000);      
+
+            await actions.click();
 
             var diagBtn = await app.client.$('#qa_rlzCont_btn_diagnose');
             await diagBtn.click();
-            await app.client.pause(timeDelay2);     
+            await app.client.pause(5000);     
 
             var reqChordSelected =  await app.client.$('#qa_chordDia_svg_text_reqId_FSM007');
             await reqChordSelected.click();
@@ -2564,27 +3926,41 @@ describe('FRET GUI E2E tests ', function () {
             const comp_cb = await app.client.$('#qa_rlzCont_cb_compositional');
             await mono_cb.click();
 
-      
-            const timeout_tf = await app.client.$('#qa_rlzCont_tf_timeOut');
-            const timeout_enabled = await timeout_tf.isEnabled();
+
+
+            var actions =  await app.client.$('#qa_rlzCont_btn_actions');
+            await actions.click();
+            
+            var changeSettings = await app.client.$('#qa_rlzCont_btn_settings');
+            await changeSettings.click();
+            await app.client.pause(timeDelay1);
+     
+            var timeout_tf = await app.client.$('#qa_rlzCont_tf_timeOut');
+            var timeout_enabled = await timeout_tf.isEnabled();
             expect(timeout_enabled).toBeTruthy();
-            await timeout_tf.setValue('900');                  
+            await timeout_tf.setValue('900');          
+            
+            var rlzSettings = await app.client.$('#qa_rlzSet_ib_RlzSettings');
+            await rlzSettings.click();
+            await app.client.pause(timeDelay1);   
+
+            await actions.click();
       
-            const checkBtn = await app.client.$('#qa_rlzCont_btn_check');
-            const checkEnabled = await checkBtn.isEnabled();
-            expect(checkEnabled).toBeTruthy();
-            await checkBtn.click();
+            var checkBtn = await app.client.$('#qa_rlzCont_btn_check');
+            await checkBtn.click();      
+            await app.client.pause(5000);      
+
+
+            // comment out the rest until Z3 can pass reliably
             /*
             await app.client.pause(10000);      
-
-      
             const diagBtn = await app.client.$('#qa_rlzCont_btn_diagnose');
             const diagBtnEnabled = await checkBtn.isEnabled();
             expect(diagBtnEnabled).toBeTruthy();
             await diagBtn.click();
             await app.client.pause(10000);     
 
-            /*   Z3 can't consistently finish, file a bug
+            //   Z3 can't consistently finish, file a bug 
 
             await app.client.pause(120000);     
 
@@ -2653,8 +4029,8 @@ describe('FRET GUI E2E tests ', function () {
 
             expect(id3).toContain('G11')
             expect(id3).toContain('opacity: 0.6')                   
-        */
-
+        
+            */
       });    
 
       //------------------------------------------------------------------      
@@ -2691,6 +4067,11 @@ describe('FRET GUI E2E tests ', function () {
             const comp_cb = await app.client.$('#qa_rlzCont_cb_compositional');
 
             await comp_cb.click();
+
+ 
+            var actions =  await app.client.$('#qa_rlzCont_btn_actions');
+            await actions.click();
+              
       
             const checkBtn = await app.client.$('#qa_rlzCont_btn_check');
             const checkEnabled = await checkBtn.isEnabled();
@@ -2796,11 +4177,13 @@ describe('FRET GUI E2E tests ', function () {
             await sysComp.click();       
 
             const fsm_sysComp = await app.client.$('#qa_rlzCont_mi_sysComp_FSM');
-            await fsm_sysComp.click();     
+            await fsm_sysComp.click();   
+            await app.client.pause(timeDelay1);  
 
  
             const helpBtn = await app.client.$('#qa_rlzCont_btn_help');
-            await helpBtn.click();                
+            await helpBtn.click();  
+            await app.client.pause(timeDelay1);              
 
             const closeHelp = await app.client.$('#qa_rlzCont_ib_closeHelpPage');
             await closeHelp.click(); 
@@ -2839,7 +4222,16 @@ describe('FRET GUI E2E tests ', function () {
             const lm_sysComp = await app.client.$('#qa_rlzCont_mi_sysComp_liquid_mixer');
             await lm_sysComp.click();    
             
-      
+ 
+            var actions =  await app.client.$('#qa_rlzCont_btn_actions');
+            await actions.click();
+            
+            var changeSettings = await app.client.$('#qa_rlzCont_btn_settings');
+            await changeSettings.click();
+            await app.client.pause(timeDelay1);
+          
+
+
             const timeout_tf = await app.client.$('#qa_rlzCont_tf_timeOut');
             const timeout_enabled = await timeout_tf.isEnabled();
             expect(timeout_enabled).toBeTruthy();
@@ -3044,7 +4436,9 @@ describe('FRET GUI E2E tests ', function () {
             var cc1_rw1_visible = await cc1_rw1.isDisplayed();
             // expect(cc1_rw1_visible).toBeTruthy();
 
-
+ 
+            var actions =  await app.client.$('#qa_rlzCont_btn_actions');
+            await actions.click();
       
             const checkBtn = await app.client.$('#qa_rlzCont_btn_check');
             const checkEnabled = await checkBtn.isEnabled();
@@ -3099,7 +4493,8 @@ describe('FRET GUI E2E tests ', function () {
 
 
             const lm_sysComp = await app.client.$('#qa_rlzCont_mi_sysComp_Infusion_Manager');
-            await lm_sysComp.click();       
+            await lm_sysComp.click();    
+            await app.client.pause(timeDelay1);   
       
             const mono_cb = await app.client.$('#qa_rlzCont_cb_monolithic');
             const comp_cb = await app.client.$('#qa_rlzCont_cb_compositional');
@@ -3149,13 +4544,27 @@ describe('FRET GUI E2E tests ', function () {
             const fsm_sysComp = await app.client.$('#qa_rlzCont_mi_sysComp_component');
             await fsm_sysComp.click();     
 
+ 
+            var actions =  await app.client.$('#qa_rlzCont_btn_actions');
+            await actions.click();
+            
+            var changeSettings = await app.client.$('#qa_rlzCont_btn_settings');
+            await changeSettings.click();
+            await app.client.pause(timeDelay1);
+          
+
             const timeout_tf = await app.client.$('#qa_rlzCont_tf_timeOut');
             const timeout_enabled = await timeout_tf.isEnabled();
             expect(timeout_enabled).toBeTruthy();
             await timeout_tf.setValue('1');     
             await app.client.pause(timeDelay1);
 
-      
+            
+            var rlzSettings = await app.client.$('#qa_rlzSet_ib_RlzSettings');
+            await rlzSettings.click();
+            await app.client.pause(timeDelay1);   
+
+            await actions.click();      
             const checkBtn = await app.client.$('#qa_rlzCont_btn_check');
             const checkEnabled = await checkBtn.isEnabled();
             expect(checkEnabled).toBeTruthy();
@@ -3206,13 +4615,29 @@ describe('FRET GUI E2E tests ', function () {
             const comp_cb = await app.client.$('#qa_rlzCont_cb_compositional');
             await comp_cb.click();
 
+ 
+            var actions =  await app.client.$('#qa_rlzCont_btn_actions');
+            await actions.click();
+            
+            var changeSettings = await app.client.$('#qa_rlzCont_btn_settings');
+            await changeSettings.click();
+            await app.client.pause(timeDelay1);
+          
+
+
+
             const timeout_tf = await app.client.$('#qa_rlzCont_tf_timeOut');
             const timeout_enabled = await timeout_tf.isEnabled();
             expect(timeout_enabled).toBeTruthy();
             await timeout_tf.setValue('900');
             await app.client.pause(timeDelay1);
 
-      
+           
+            var rlzSettings = await app.client.$('#qa_rlzSet_ib_RlzSettings');
+            await rlzSettings.click();
+            await app.client.pause(timeDelay1);   
+
+            await actions.click();           
             const checkBtn = await app.client.$('#qa_rlzCont_btn_check');
             const checkEnabled = await checkBtn.isEnabled();
             expect(checkEnabled).toBeTruthy();
@@ -3234,6 +4659,9 @@ describe('FRET GUI E2E tests ', function () {
 
 
       //------------------------------------------------------------------
+      //  clicking on simulation, clicking on requirements in FRETish accordian
+      //  reading requirement text
+      //  clicking on accordian button again to close
       it('LTLSIM - K1', async () => {
             console.log('starting test '+numTest+':  LTLSIM - K1');
             await startWithJsonFileImport('MyDBAM113.json');
@@ -3256,23 +4684,27 @@ describe('FRET GUI E2E tests ', function () {
             
             await app.client.pause(timeDelay1);
             
-            const simBtn = await app.client.$('#qa_crtAst_btn_simulate');
+            var simBtn = await app.client.$('#qa_crtAst_btn_simulate');
             await simBtn.click();               
             await app.client.pause(timeDelay1);            
 
-
-            const reqAccordian = await app.client.$('#qa_ltlSim_ib_as_reqs');
+            var reqAccordian = await app.client.$('#qa_ltlSim_ib_as_reqs');
             await reqAccordian.click();   
             
             const reqDetails  = await app.client.$('#qa_ltlSim_typ_reqId');  
             const reqHTML = await reqDetails.getHTML(false)
             const reqId = parse(reqHTML)
             const reqIdString = reqId.toString();
-            expect(reqIdString).toContain(': when liquid_level_2, the liquid_mixer shall until (timer_60sec_expire | emergency_button) satisfy stirring_motor')
+            expect(reqIdString).toContain(': when liquid_level_2, the liquid_mixer shall until (timer_60sec_expire | emergency_button) satisfy stirring_motor');
+            await reqAccordian.click();   
+            await app.client.pause(timeDelay1);
+            var reqIdVisible = await reqDetails.isDisplayed();
+            expect(reqIdVisible).toBeFalsy();
                                     
       });
 
       //------------------------------------------------------------------
+      // click on high light to toggle color fill, get high light tip
       it('LTLSIM - K2', async () => {
             console.log('starting test '+numTest+':  LTLSIM - K2');
             await startWithJsonFileImport('MyDBAM113.json');
@@ -3299,31 +4731,30 @@ describe('FRET GUI E2E tests ', function () {
             await simBtn.click();               
             await app.client.pause(timeDelay1);            
 
-            const highLight  = await app.client.$('#qa_ltlSim_ib_highLight')
-            const highLightTip = await highLight.getAttribute('title')
-            // console.log('highLightTip ', highLightTip)
+            const highLight  = await app.client.$('#qa_ltlSim_ib_highLight');
+            const highLightTip = await highLight.getAttribute('title');
+            console.log('highLightTip ', highLightTip);
+            expect(highLightTip).toContain('Turn off formula highlight (colors the formula according to the overall valuation)');     
 
-            /*
-            var someLineElement = await app.client.$('#qa_ltlSim_lc_emer');
-            var reqHTML = await someLineElement.getHTML(false)
-            var lineElement = parse(reqHTML)
-            var lineElementString = lineElement.toString();       
-            console.log('element string: ',lineElementString)     
-            
+            var gridBackground = await app.client.$('.recharts-cartesian-grid-bg');
+            var boxHTML = await gridBackground.getHTML(true);
+            var boxElement = parse(boxHTML);
+            var boxElementString = boxElement.toString();       
+            console.log('boxElementString: ',boxElementString); 
+            expect(boxElementString).toContain('lightgreen');
 
-            
-            someLineElement = await app.client.$('#qa_ltlSim_ln_1_emer');
-            reqHTML = await someLineElement.getHTML(false)
-            lineElement = parse(reqHTML)
-            lineElementString = lineElement.toString();       
-            console.log('element string: ',lineElementString)    
-            */
+            await highLight.click();
+            gridBackground = await app.client.$('.recharts-cartesian-grid-bg');
+            var gridDisplayed = await gridBackground.isDisplayed();
+            console.log('gridDisplayed: ',gridDisplayed);  
+            await app.client.pause(timeDelay3);    
+            await app.client.pause(timeDelay1);     
+            expect(gridDisplayed).toBeFalsy();   // this branch show true
 
       });
 
-
-
       //------------------------------------------------------------------
+      // simulate button disabled when missing dependencies
       it('LTLSIM - K3', async () => {
             console.log('starting test '+numTest+':  LTLSIM - K3');
 
@@ -3373,6 +4804,795 @@ describe('FRET GUI E2E tests ', function () {
             await new Promise((r) => setTimeout(r, 2000));            
 
       });
+
+
+      //------------------------------------------------------------------
+      // checking color of dot on lines
+      it('LTLSIM - K4', async () => {
+            console.log('starting test '+numTest+':  LTLSIM - K2');
+            await startWithJsonFileImport('MyDBAM113.json');
+
+            const projBtn = await app.client.$('#qa_db_btn_projects');
+            await projBtn.click();
+            await app.client.pause(timeDelay1);
+            const hanfor = await app.client.$('#qa_proj_select_Liquid_mixer');  
+            await hanfor.click();  
+            await app.client.pause(timeDelay1);
+
+            const cirPackReq = await app.client.$('#qa_cirPack_text_LM-012');
+            await cirPackReq.click();         
+            
+            const edtReq = await app.client.$('#qa_disReq_ic_edit');
+            await edtReq.click();      
+                       
+            const semanticBtn = await app.client.$('#qa_crt_btn_semantics');
+            await semanticBtn.click();            
+            
+            await app.client.pause(timeDelay1);
+            
+            const simBtn = await app.client.$('#qa_crtAst_btn_simulate');
+            await simBtn.click();               
+            await app.client.pause(timeDelay1);            
+
+
+            var dotsOnLine = await app.client.$$('[cy="40"]');
+            console.log('num dotsOnLine 40: ',dotsOnLine.length);
+            var dotHTML = await dotsOnLine[1].getHTML(true);
+            await dotsOnLine[1].moveTo();
+            await dotsOnLine[1].click({ y: 3 });  
+            var traceTf =  await app.client.$('#qa_trace_tf_input');
+            var traceTfHTML = await traceTf.getHTML(true);
+            console.log('traceTfHTML',traceTfHTML.toString());
+            //await traceTf.clearValue();
+            await traceTf.setValue('\b\b40');
+            var traceApply =  await app.client.$('#qa_trace_btn_apply');
+            await traceApply.click();
+            await app.client.pause(timeDelay1); 
+
+            var dotsOnLine = await app.client.$$('[cy="10"]');
+            console.log('num dotsOnLine 10: ',dotsOnLine.length);
+            var dotHTML = await dotsOnLine[0].getHTML(true);
+            var dotElement = parse(dotHTML);
+            var dotElementString = dotElement.toString();       
+            console.log('dotElement: ',dotElement); 
+            expect(dotElementString).toContain('fill=\"#fff\"');
+
+            /*
+            dotsOnLine = await app.client.$$('[cy="65"]');
+            console.log('num dotsOnLine 65: ',dotsOnLine.length);
+            dotHTML = await dotsOnLine[9].getHTML(true);
+            dotElement = parse(dotHTML);
+            dotElementString = dotElement.toString();       
+            console.log('dotElement 65: ',dotElement); 
+            expect(dotElementString).toContain('fill=\"#fff\"');
+*/
+
+            dotsOnLine = await app.client.$$('[cy="40"]');
+            console.log('num dotsOnLine 40: ',dotsOnLine.length);
+            dotHTML = await dotsOnLine[19].getHTML(true);
+            dotElement = parse(dotHTML);
+            dotElementString = dotElement.toString();       
+            console.log('dotElement 40: ',dotElement); 
+            expect(dotElementString).toContain('fill=\"#fff\"');
+      });
+
+
+
+      //------------------------------------------------------------------
+      // clicking on dot, drag and drop 
+      it('LTLSIM - K5', async () => {
+            console.log('starting test '+numTest+':  LTLSIM - K5');
+            await startWithJsonFileImport('MyDBAM113.json');
+
+            const projBtn = await app.client.$('#qa_db_btn_projects');
+            await projBtn.click();
+            await app.client.pause(timeDelay1);
+            const hanfor = await app.client.$('#qa_proj_select_Liquid_mixer');  
+            await hanfor.click();  
+            await app.client.pause(timeDelay1);
+
+            const cirPackReq = await app.client.$('#qa_cirPack_text_LM-012');
+            await cirPackReq.click();         
+            
+            const edtReq = await app.client.$('#qa_disReq_ic_edit');
+            await edtReq.click();      
+                       
+            const semanticBtn = await app.client.$('#qa_crt_btn_semantics');
+            await semanticBtn.click();            
+            
+            await app.client.pause(timeDelay1);
+            
+            const simBtn = await app.client.$('#qa_crtAst_btn_simulate');
+            await simBtn.click();               
+            await app.client.pause(timeDelay1);        
+            
+
+            var dotsOnLine = await app.client.$$('[cy="40"]');
+            console.log('num dotsOnLine 40: ',dotsOnLine.length);
+            var dotHTML = await dotsOnLine[1].getHTML(true);
+            await dotsOnLine[1].moveTo();
+            await dotsOnLine[1].click({ y: 3 });  
+            var traceTf =  await app.client.$('#qa_trace_tf_input');
+            var traceTfHTML = await traceTf.getHTML(true);
+            console.log('traceTfHTML',traceTfHTML.toString());
+            //await traceTf.clearValue();
+            await traceTf.setValue('\b\b40');
+            var traceApply =  await app.client.$('#qa_trace_btn_apply');
+            await traceApply.click();
+            await app.client.pause(timeDelay1);             
+
+            var dotsOnLine = await app.client.$$('[cy="10"]');
+            console.log('num dotsOnLine 10: ',dotsOnLine.length);
+            var dotHTML = await dotsOnLine[9].getHTML(true);
+            console.log('dotHTML', dotHTML.toString());
+            await dotsOnLine[9].moveTo();
+            await app.client.pause(timeDelay1); 
+            await dotsOnLine[9].click({ y: -7 });
+            //await dotsOnLine[9].click();
+            //await app.client.positionClick();     
+            await app.client.pause(timeDelay1);   
+            await dotsOnLine[11].click({ y: -7 });
+
+            var lineToDrag = await app.client.$$('[x1="368.974358974359"]');
+            await lineToDrag[1].moveTo();
+            await app.client.pause(timeDelay1); 
+            await lineToDrag[1].dragAndDrop({ x: 100, y: 0 });
+            await app.client.pause(4000);  
+
+      });
+
+
+      //------------------------------------------------------------------
+      // set trace length
+      it('LTLSIM - K6', async () => {
+            console.log('starting test '+numTest+':  LTLSIM - K5');
+            await startWithJsonFileImport('MyDBAM113.json');
+
+            const projBtn = await app.client.$('#qa_db_btn_projects');
+            await projBtn.click();
+            await app.client.pause(timeDelay1);
+            const hanfor = await app.client.$('#qa_proj_select_Liquid_mixer');  
+            await hanfor.click();  
+            await app.client.pause(timeDelay1);
+
+            const cirPackReq = await app.client.$('#qa_cirPack_text_LM-012');
+            await cirPackReq.click();         
+            
+            const edtReq = await app.client.$('#qa_disReq_ic_edit');
+            await edtReq.click();      
+                       
+            const semanticBtn = await app.client.$('#qa_crt_btn_semantics');
+            await semanticBtn.click();            
+            
+            await app.client.pause(timeDelay1);
+            
+            const simBtn = await app.client.$('#qa_crtAst_btn_simulate');
+            await simBtn.click();               
+            await app.client.pause(timeDelay1);            
+
+            var dotsOnLine = await app.client.$$('[cy="40"]');
+            console.log('num dotsOnLine 40: ',dotsOnLine.length);
+            var dotHTML = await dotsOnLine[1].getHTML(true);
+            await dotsOnLine[1].moveTo();
+            await dotsOnLine[1].click({ y: 3 });  
+            var traceTf =  await app.client.$('#qa_trace_tf_input');
+            var traceTfHTML = await traceTf.getHTML(true);
+            console.log('traceTfHTML',traceTfHTML.toString());
+            //await traceTf.clearValue();
+            await traceTf.setValue('20');
+            var traceApply =  await app.client.$('#qa_trace_btn_apply');
+
+            var applyClicable = await traceApply.isClickable();
+            expect(applyClicable).toBeFalsy();
+            await app.client.pause(timeDelay1);     
+            await traceTf.click();
+            await traceTf.keys('\b\b\b\b20');
+            await app.client.pause(timeDelay1);  
+            await traceApply.click();
+            await app.client.pause(timeDelay1); 
+            var dotsOnLine = await app.client.$$('[cy="40"]');
+            console.log('num dotsOnLine 40: ',dotsOnLine.length);
+            expect(dotsOnLine.length).toBe(100);
+
+
+      });
+
+
+      //------------------------------------------------------------------
+      // check number of charts and chart labels
+      
+      it('LTLSIM - K7', async () => {
+            console.log('starting test '+numTest+':  LTLSIM - K7');
+            await startWithJsonFileImport('MyDBAM113.json');
+
+            const projBtn = await app.client.$('#qa_db_btn_projects');
+            await projBtn.click();
+            await app.client.pause(timeDelay1);
+            const hanfor = await app.client.$('#qa_proj_select_Liquid_mixer');  
+            await hanfor.click();  
+            await app.client.pause(timeDelay1);
+
+            const cirPackReq = await app.client.$('#qa_cirPack_text_LM-006');
+            await cirPackReq.click();         
+            
+            const edtReq = await app.client.$('#qa_disReq_ic_edit');
+            await edtReq.click();      
+                       
+            const semanticBtn = await app.client.$('#qa_crt_btn_semantics');
+            await semanticBtn.click();            
+            
+            await app.client.pause(timeDelay1);
+            
+            const simBtn = await app.client.$('#qa_crtAst_btn_simulate');
+            await simBtn.click();               
+            await app.client.pause(3000);            
+            
+            var charts  = await app.client.$$('.recharts-surface');
+            //console.log('charts.length: ',charts.length)
+            var elemHTML = await charts[0].getHTML(true);
+            var elemParsed = parse(elemHTML);
+            console.log('elemHTML text', elemParsed.text);   
+            expect( elemParsed.text).toContain('0123456789');
+
+            await charts[1].moveTo();
+            var elemHTML = await charts[1].getHTML(true);
+            var elemParsed = parse(elemHTML);
+            //console.log('elemHTML text', elemParsed.text);   
+            expect( elemParsed.text).toContain('FALSETRUEliquid...');
+
+            await charts[2].moveTo();
+            var elemHTML = await charts[2].getHTML(true);
+            var elemParsed = parse(elemHTML);
+            //console.log('elemHTML text', elemParsed.text);   
+            expect( elemParsed.text).toContain('FALSETRUEtimer_...');
+
+            await charts[3].moveTo();
+            var elemHTML = await charts[3].getHTML(true);
+            var elemParsed = parse(elemHTML);
+            //console.log('elemHTML text', elemParsed.text);   
+            expect( elemParsed.text).toContain('FALSETRUEemerge...');
+
+            await charts[4].moveTo();
+            var elemHTML = await charts[4].getHTML(true);
+            var elemParsed = parse(elemHTML);
+            //console.log('elemHTML text', elemParsed.text);   
+            expect( elemParsed.text).toContain('FALSETRUEstirri...');
+
+            await charts[5].moveTo();
+            var elemHTML = await charts[5].getHTML(true);
+            var elemParsed = parse(elemHTML);
+            //console.log('elemHTML text', elemParsed.text);               
+            expect( elemParsed.text).toContain('FALSETRUELM_006');
+
+      });
+
+
+
+      //------------------------------------------------------------------
+      // click on high light to toggle color fill, get high light tip
+      it('LTLSIM - K8', async () => {
+            console.log('starting test '+numTest+':  LTLSIM - K8');
+            await startWithJsonFileImport('MyDBAM113.json');
+
+            const projBtn = await app.client.$('#qa_db_btn_projects');
+            await projBtn.click();
+            await app.client.pause(timeDelay1);
+            const hanfor = await app.client.$('#qa_proj_select_Liquid_mixer');  
+            await hanfor.click();  
+            await app.client.pause(timeDelay1);
+
+            const cirPackReq = await app.client.$('#qa_cirPack_text_LM-006');
+            await cirPackReq.click();         
+            
+            const edtReq = await app.client.$('#qa_disReq_ic_edit');
+            await edtReq.click();      
+                       
+            const semanticBtn = await app.client.$('#qa_crt_btn_semantics');
+            await semanticBtn.click();            
+            
+            await app.client.pause(timeDelay1);
+            
+            const simBtn = await app.client.$('#qa_crtAst_btn_simulate');
+            await simBtn.click();               
+            await app.client.pause(timeDelay1);            
+
+            const highLight  = await app.client.$('#qa_ltlSim_ib_highLight');
+            const highLightTip = await highLight.getAttribute('title');
+            console.log('highLightTip ', highLightTip);
+            expect(highLightTip).toContain('Turn off formula highlight (colors the formula according to the overall valuation)');     
+
+            var gridBackground = await app.client.$('.recharts-cartesian-grid-bg');
+            var boxHTML = await gridBackground.getHTML(true);
+            var boxElement = parse(boxHTML);
+            var boxElementString = boxElement.toString();       
+            console.log('boxElementString: ',boxElementString); 
+            expect(boxElementString).toContain('lightgreen');
+
+            await highLight.click();
+            gridBackground = await app.client.$('.recharts-cartesian-grid-bg');
+            var gridDisplayed = await gridBackground.isDisplayed();
+            console.log('gridDisplayed: ',gridDisplayed);  
+            await app.client.pause(timeDelay1);    
+            // <text x="30" y="37.5" class="recharts-text recharts-label" text-anchor="middle"><tspan x="30" dy="0.355em">emer...</tspan></text>
+            // <div class="TimeSeriesChart-nametipAnchor-77"></div>
+            // body > div:nth-child(13) > div.MuiDialog-container.MuiDialog-scrollPaper > div > div:nth-child(3) > div > div:nth-child(2) > div.recharts-responsive-container > div.recharts-wrapper > svg > g.recharts-layer.recharts-cartesian-axis.recharts-yAxis.yAxis > text > tspan
+            //  = await app.client.$$('[cy="65"]');
+
+            var textLabels  = await app.client.$$('[text-anchor="middle"]');
+            //var textLabels  = await app.client.$('#qa_ltlSim_nt_emer');
+            var boxHTML = await textLabels[1].getHTML(true);
+            var boxElement = parse(boxHTML);
+            var boxElementString = boxElement.toString();       
+            console.log('boxElementString: ',boxElementString); 
+
+
+            console.log('textLabels: ',textLabels.text);  
+
+      });
+
+      /////////////// creating data base for LTLSIM test following example on 
+      // https://github.com/NASA-SW-VnV/fret/blob/master/fret-electron/docs/_media/UsingTheSimulator/ltlsim.md
+      it('LTLSIM - K9', async () => {
+            console.log('starting test '+numTest+': LTLSIM - K9');
+            await app.start();
+            await app.client.waitUntilWindowLoaded();            
+            await app.client.pause(timeDelay1);
+
+            var projBtn = await app.client.$('#qa_db_btn_projects');
+            await projBtn.click();
+            await app.client.pause(timeDelay1);
+
+            var projBtn = await app.client.$('#qa_db_btn_newProject');
+            await projBtn.click();
+            await app.client.pause(timeDelay1);
+
+            var newProjBtn = await app.client.$('#qa_newProj_tf_projectName');
+            await newProjBtn.setValue('LTLSIM_test');
+            await app.client.pause(timeDelay1);
+            var okBtn = await app.client.$('#qa_newProj_btn_ok');
+            await okBtn.click();
+            await app.client.pause(timeDelay1);
+            
+            var projBtn = await app.client.$('#qa_db_btn_projects');
+            await projBtn.click();
+            await app.client.pause(timeDelay1);
+            var selProject = await app.client.$('#qa_proj_select_LTLSIM_test');  
+            await selProject.click();  
+            await app.client.pause(timeDelay1);
+
+            var createReq = await app.client.$('#qa_db_btn_create');
+            await createReq.click();
+            await app.client.pause(timeDelay1);
+
+            var crtIDtxtInput = await app.client.$('#qa_crt_tf_reqid');
+            await crtIDtxtInput.setValue('REQ1');
+            await app.client.pause(timeDelay1);
+            
+            var crtSlateEditor = await app.client.$('#qa_crt_edt_editor');
+            await crtSlateEditor.click();  
+            await crtSlateEditor.keys('When in takeoff, the AC shall within 10 seconds satisfy TAKEOFF');
+            await app.client.pause(timeDelay1);
+
+            var crtSemantics = await app.client.$('#qa_crt_btn_semantics');
+            await crtSemantics.click();  
+            await app.client.pause(timeDelay1);
+
+
+            var simBtn = await app.client.$('#qa_crtAst_btn_simulate');
+            await simBtn.click();               
+            await app.client.pause(timeDelay1);  
+
+
+            var dotsOnLine = await app.client.$$('[cy="40"]');
+            console.log('num dotsOnLine 40: ',dotsOnLine.length);
+            var dotHTML = await dotsOnLine[1].getHTML(true);
+            await dotsOnLine[1].moveTo();
+            await dotsOnLine[1].click({ y: 3 });  
+            var traceTf =  await app.client.$('#qa_trace_tf_input');
+            var traceTfHTML = await traceTf.getHTML(true);
+            console.log('traceTfHTML',traceTfHTML.toString());
+            //await traceTf.clearValue();
+            await traceTf.setValue('\b\b40');
+            var traceApply =  await app.client.$('#qa_trace_btn_apply');
+            await traceApply.click();
+            await app.client.pause(timeDelay1);             
+
+            
+            var charts  = await app.client.$$('.recharts-surface');
+            //console.log('num texts: ',charts.length)
+            var elemHTML = await charts[0].getHTML(true);
+            var elemParsed = parse(elemHTML); 
+            console.log('elemParsed ', elemParsed)
+            expect( elemParsed.text).toContain('0123456789101112131415161718192021222324252627282930313233343536373839');
+
+            await charts[1].moveTo();
+            var elemHTML = await charts[1].getHTML(true);
+            var elemParsed = parse(elemHTML);
+            console.log('elemHTML', elemParsed);   
+            console.log('elemHTML text', elemParsed.text);   
+            expect( elemParsed.text).toContain('FALSETRUEtakeoff');
+
+            await charts[2].moveTo();
+            var elemHTML = await charts[2].getHTML(true);
+            var elemParsed = parse(elemHTML);
+            //console.log('elemHTML text', elemParsed.text);   
+            expect( elemParsed.text).toContain('FALSETRUETAKEOFF');
+
+            await charts[3].moveTo();
+            var elemHTML = await charts[3].getHTML(true);
+            var elemParsed = parse(elemHTML);
+            //console.log('elemHTML text', elemParsed.text);   
+            expect( elemParsed.text).toContain('FALSETRUEREQ1');
+
+      });
+
+      ///////////////  test 1
+      it('LTLSIM - K10', async () => {
+            console.log('starting test '+numTest+': LTLSIM - K10');
+            await cpReferenceDB('LTLSIM_1');
+            await new Promise((r) => setTimeout(r, 2000));
+            await app.start();
+            await app.client.waitUntilWindowLoaded();            
+            await app.client.pause(timeDelay1);
+
+            var projBtn = await app.client.$('#qa_db_btn_projects');
+            await projBtn.click();
+            await app.client.pause(timeDelay1);
+            var selProject = await app.client.$('#qa_proj_select_LTLSIM_test');  
+            await selProject.click();  
+            await app.client.pause(timeDelay1);
+
+            var selCirpackReq = await app.client.$('#qa_cirPack_text_REQ1');
+            await selCirpackReq.click();
+            await app.client.pause(timeDelay1);
+
+            var disReqEdit = await app.client.$('#qa_disReq_ic_edit');
+            await disReqEdit.click();
+            await app.client.pause(timeDelay1);
+
+            var crtSemantics = await app.client.$('#qa_crt_btn_semantics');
+            await crtSemantics.click();  
+            await app.client.pause(timeDelay1);
+
+            var simBtn = await app.client.$('#qa_crtAst_btn_simulate');
+            await simBtn.click();               
+            await app.client.pause(timeDelay1);  
+
+
+            var dotsOnLine = await app.client.$$('[cy="40"]');
+            console.log('num dotsOnLine 40: ',dotsOnLine.length);
+            var dotHTML = await dotsOnLine[1].getHTML(true);
+            await dotsOnLine[1].moveTo();
+            await dotsOnLine[1].click({ y: 3 });  
+            var traceTf =  await app.client.$('#qa_trace_tf_input');
+            var traceTfHTML = await traceTf.getHTML(true);
+            console.log('traceTfHTML',traceTfHTML.toString());
+            //await traceTf.clearValue();
+            await traceTf.setValue('\b\b40');
+            var traceApply =  await app.client.$('#qa_trace_btn_apply');
+            await traceApply.click();
+            await app.client.pause(timeDelay1);             
+
+
+            var dotsOnLine = await app.client.$$('[cy="40"]');
+            //console.log('num dotsOnLine',dotsOnLine.length);
+            var dotHTML = await dotsOnLine[0].getHTML(true);
+            var dotElement = parse(dotHTML);
+            var dotElementString = dotElement.toString();       
+            console.log('dotElement: ',dotElement); 
+            expect(dotElementString).toContain('fill=\"#fff\"');
+            await dotsOnLine[5].moveTo();
+            await dotsOnLine[5].click({ y: -7 });
+            await app.client.pause(timeDelay1);
+
+            //TODO
+            /*
+
+            var lineToDrag = await app.client.$$('[x1="203.33333333333334"]');
+            await lineToDrag[1].moveTo();
+            await app.client.pause(timeDelay1);
+            await lineToDrag[1].dragAndDrop({ x: 730, y: 0 });
+            await app.client.pause(timeDelay1);
+
+
+            var charts  = await app.client.$$('.recharts-surface');
+            //// console.log('num charts: ',charts.length)
+            var elemHTML = await charts[1].getHTML(true);
+            var elemParsed = parse(elemHTML);
+            // console.log('elemParsed', elemParsed);   
+            //console.log('elemParsed.toString', elemParsed.toString());   
+            //console.log('elemHTML text', elemParsed.text);  
+
+
+            var charts  = await app.client.$$('.recharts-surface');
+            console.log('num texts: ',charts.length)
+            var elemHTML = await charts[1].getHTML(false);
+            var elemParsed = parse(elemHTML);
+            console.log('elemParsed', elemParsed);   
+            console.log('elemParsed.toString', elemParsed.toString());   
+            console.log('elemHTML text', elemParsed.text); 
+
+            await app.client.pause(10000);
+            */
+
+      });
+
+
+      /////////////// 
+      it('LTLSIM - K11', async () => {
+            console.log('starting test '+numTest+': LTLSIM - K10');
+            await cpReferenceDB('LTLSIM_1');
+            await new Promise((r) => setTimeout(r, 2000));
+            await app.start();
+            await app.client.waitUntilWindowLoaded();            
+            await app.client.pause(timeDelay1);
+
+            var projBtn = await app.client.$('#qa_db_btn_projects');
+            await projBtn.click();
+            await app.client.pause(timeDelay1);
+            var selProject = await app.client.$('#qa_proj_select_LTLSIM_test');  
+            await selProject.click();  
+            await app.client.pause(timeDelay1);
+
+            var selCirpackReq = await app.client.$('#qa_cirPack_text_REQ1');
+            await selCirpackReq.click();
+            await app.client.pause(timeDelay1);
+
+            var disReqEdit = await app.client.$('#qa_disReq_ic_edit');
+            await disReqEdit.click();
+            await app.client.pause(timeDelay1);
+
+            var crtSemantics = await app.client.$('#qa_crt_btn_semantics');
+            await crtSemantics.click();  
+            await app.client.pause(timeDelay1);
+
+            var simBtn = await app.client.$('#qa_crtAst_btn_simulate');
+            await simBtn.click();               
+            await app.client.pause(10000);  
+
+            var charts  = await app.client.$$('.recharts-surface');
+            /*
+            charts.length: 4
+            elemHTML text 0123456789101112131415161718192021222324252627282930313233343536373839
+            elemHTML text FALSETRUEtake...
+            elemHTML text FALSETRUETAKE...
+            elemHTML text FALSETRUEREQ1
+            */
+
+            //// setting takeoff
+            var dotsOnLine = await app.client.$$('[cy="65"]');
+            // console.log('num dotsOnLine',dotsOnLine.length);
+            var dotHTML = await dotsOnLine[0].getHTML(true);
+            var dotElement = parse(dotHTML);
+            var dotElementString = dotElement.toString();       
+            // console.log('dotElement: ',dotElement); 
+            expect(dotElementString).toContain('fill=\"#fff\"');
+            await dotsOnLine[5].moveTo();
+            await dotsOnLine[5].click({ y: -7 });
+            await app.client.pause(timeDelay1);
+
+            var lineToDrag = await app.client.$$('[x1="203.33333333333334"]');
+            await lineToDrag[1].moveTo();
+            await lineToDrag[1].dragAndDrop({ x: 730, y: 0 });
+
+            //// setting TAKEOFF
+            //var dotsOnLine = await app.client.$('.recharts-surface*=FALSETRUETAKE').$$('[cy="65"]');   // TypeError: app.client.$(...).$$ is not a function
+            var dotsOnLine = await app.client.$$('[cy="65"]');
+            // console.log('num dotsOnLine',dotsOnLine.length);
+            var dotHTML = await dotsOnLine[0].getHTML(true);
+            var dotElement = parse(dotHTML);
+            var dotElementString = dotElement.toString();       
+            // console.log('dotElement: ',dotElement); 
+            expect(dotElementString).toContain('fill=\"#fff\"');
+            await dotsOnLine[41].moveTo();  
+            await dotsOnLine[41].click({ y: -7 });
+            await app.client.pause(timeDelay1);
+
+            await dotsOnLine[42].moveTo();  
+            await dotsOnLine[42].click({ y: -7 });
+            await app.client.pause(timeDelay1);
+            
+            await dotsOnLine[43].moveTo();  
+            await dotsOnLine[43].click({ y: -7 });
+            await app.client.pause(timeDelay1);
+            
+            await dotsOnLine[44].moveTo();  
+            await dotsOnLine[44].click({ y: -7 });
+            await app.client.pause(timeDelay1);
+            
+            await dotsOnLine[45].moveTo();  
+            await dotsOnLine[45].click({ y: -7 });
+            await app.client.pause(timeDelay1);
+            
+            await dotsOnLine[46].moveTo();  
+            await dotsOnLine[46].click({ y: -7 });
+            await app.client.pause(timeDelay1);
+            
+            await dotsOnLine[47].moveTo();  
+            await dotsOnLine[47].click({ y: -7 });
+            await app.client.pause(timeDelay1);
+           
+            await dotsOnLine[48].moveTo();  
+            await dotsOnLine[48].click({ y: -7 });
+            await app.client.pause(timeDelay1);
+           
+            await dotsOnLine[49].moveTo();  
+            await dotsOnLine[49].click({ y: -7 });
+            await app.client.pause(timeDelay1);
+
+            await app.client.pause(30000);
+
+      });
+
+
+      /////////////// 
+      it('LTLSIM - K12', async () => {
+            console.log('starting test '+numTest+': LTLSIM - K12');
+            await cpReferenceDB('LTLSIM_1');
+            await new Promise((r) => setTimeout(r, 2000));
+            await app.start();
+            await app.client.waitUntilWindowLoaded();            
+            await app.client.pause(timeDelay1);
+
+            var projBtn = await app.client.$('#qa_db_btn_projects');
+            await projBtn.click();
+            await app.client.pause(timeDelay1);
+            var selProject = await app.client.$('#qa_proj_select_LTLSIM_test');  
+            await selProject.click();  
+            await app.client.pause(timeDelay1);
+
+            var selCirpackReq = await app.client.$('#qa_cirPack_text_REQ1');
+            await selCirpackReq.click();
+            await app.client.pause(timeDelay1);
+
+            var disReqEdit = await app.client.$('#qa_disReq_ic_edit');
+            await disReqEdit.click();
+            await app.client.pause(timeDelay1);
+
+            var crtSemantics = await app.client.$('#qa_crt_btn_semantics');
+            await crtSemantics.click();  
+            await app.client.pause(timeDelay1);
+
+            var simBtn = await app.client.$('#qa_crtAst_btn_simulate');
+            await simBtn.click();               
+            await app.client.pause(timeDelay1);  
+
+
+            var dotsOnLine = await app.client.$$('[cy="40"]');
+            // console.log('num dotsOnLine 40: ',dotsOnLine.length);
+            var dotHTML = await dotsOnLine[1].getHTML(true);
+            await dotsOnLine[1].moveTo();
+            await dotsOnLine[1].click({ y: 3 });  
+            var traceTf =  await app.client.$('#qa_trace_tf_input');
+            var traceTfHTML = await traceTf.getHTML(true);
+            // console.log('traceTfHTML',traceTfHTML.toString());
+            //await traceTf.clearValue();
+            await traceTf.setValue('\b\b40');
+            var traceApply =  await app.client.$('#qa_trace_btn_apply');
+            await traceApply.click();
+            await app.client.pause(timeDelay1);             
+
+            // This is what I am guessing:
+            // index goes from bottom time series to time indicator (single line) at the top
+            // bottom time series has false line at $$('[cy="40"]') and true line at $$('[cy="10"]')
+            // top time indicator may be two lines on top of each other rwith $$('[cy="40"]');
+
+            //// setting takeoff
+            var dotsOnLine = await app.client.$$('[cy="40"]');
+            // console.log('num dotsOnLine',dotsOnLine.length);
+            var dotHTML = await dotsOnLine[0].getHTML(true);
+            var dotElement = parse(dotHTML);
+            var dotElementString = dotElement.toString();       
+            //console.log('dotElement: ',dotElement); 
+            //expect(dotElementString).toContain('fill=\"#fff\"');
+            await dotsOnLine[85].moveTo();
+            await dotsOnLine[85].click({ y: -7 });
+            await app.client.pause(timeDelay1);
+
+            var lineToDrag = await app.client.$$('[x1="229.4871794871795"]');
+            await lineToDrag[1].moveTo();
+            await lineToDrag[1].dragAndDrop({ x: 730, y: 0 });
+            await app.client.pause(timeDelay1);
+
+
+            //// setting TAKEOFF
+            //var dotsOnLine = await app.client.$('.recharts-surface*=FALSETRUETAKE').$$('[cy="65"]');   // TypeError: app.client.$(...).$$ is not a function
+            var dotsOnLine = await app.client.$$('[cy="40"]');
+            //console.log('num dotsOnLine',dotsOnLine.length);
+            var dotHTML = await dotsOnLine[0].getHTML(true);
+            var dotElement = parse(dotHTML);
+            //var dotElementString = dotElement.toString();       
+            //// console.log('dotElement: ',dotElement); 
+         
+            await dotsOnLine[88].moveTo();  
+            await dotsOnLine[88].click({ y: -7 });
+            await app.client.pause(timeDelay1);
+           
+            await dotsOnLine[89].moveTo();  
+            await dotsOnLine[89].click({ y: -7 });
+            await app.client.pause(10000);
+
+            // check future time results
+
+
+            var charts  = await app.client.$$('.recharts-surface');
+            //// console.log('num .recharts-surface: ',charts.length);
+            //// console.log('chart ', charts[0]);      
+            
+            ////////////// time label //////////
+            var elemHTML = await charts[0].getHTML(false);
+            var elemParsed = parse(elemHTML);
+            //console.log('elemParsed.toString', elemParsed.toString());   
+            //console.log('elemHTML text', elemParsed.text); 
+
+            ////////////// take off time series   //////////
+            var elemHTML = await charts[1].getHTML(false);
+            var elemParsed = parse(elemHTML);
+            //console.log('elemParsed.toString', elemParsed.toString());   
+            //console.log('elemHTML text ', elemParsed.text); 
+
+            var trueLine = elemParsed.childNodes[5];
+            //console.log('trueLine', trueLine.toString());  
+            var circles = trueLine.childNodes;
+            //console.log('true circles ', circles[1].childNodes.length);  
+            //console.log('true circles ', circles[1].childNodes[0].toString());             
+            expect(circles[1].childNodes.length).toBe(26);  
+            expect(circles[1].childNodes[0].toString()).toContain('lightgreen');
+
+            var falseLine = elemParsed.childNodes[4];
+            //console.log('falseLine', falseLine.toString());  
+            var circles = falseLine.childNodes;
+            //console.log('false circles ', circles[1].childNodes.length);  
+            //console.log('false circles ', circles[1].childNodes[0].toString());    
+            expect(circles[1].childNodes.length).toBe(14);  
+            expect(circles[1].childNodes[0].toString()).toContain('tomato');   
+
+            ////////////// TAKE OFF time series   //////////
+            var elemHTML = await charts[2].getHTML(false);
+            var elemParsed = parse(elemHTML);
+            //console.log('elemParsed.toString', elemParsed.toString());   
+            //console.log('elemHTML text ', elemParsed.text); 
+
+            var trueLine = elemParsed.childNodes[5];
+            //console.log('trueLine', trueLine.toString());  
+            var circles = trueLine.childNodes;
+            //console.log('true circles ', circles[1].childNodes.length);  
+            //console.log('true circles ', circles[1].childNodes[0].toString());             
+            expect(circles[1].childNodes.length).toBe(2);  
+            expect(circles[1].childNodes[0].toString()).toContain('lightgreen');
+
+            var falseLine = elemParsed.childNodes[4];
+            //console.log('falseLine', falseLine.toString());  
+            var circles = falseLine.childNodes;
+            //console.log('false circles ', circles[1].childNodes.length);  
+            //console.log('false circles ', circles[1].childNodes[0].toString());       
+            expect(circles[1].childNodes.length).toBe(38);  
+            expect(circles[1].childNodes[0].toString()).toContain('tomato');
+
+            /////// charts[3]   is the REQ time series /////
+            var elemHTML = await charts[3].getHTML(false);
+            //console.log('Req chart[3] ', charts[3]); 
+            var elemParsed = parse(elemHTML);
+            //console.log('elemHTML text ', elemParsed.text); 
+
+            var trueLine = elemParsed.childNodes[5];
+            //console.log('trueLine', trueLine.toString());  
+            var circles = trueLine.childNodes;
+            //console.log('true circles ', circles[1].childNodes.length);  
+            //console.log('true circles ', circles[1].childNodes[0].toString());             
+            expect(circles[1].childNodes.length).toBe(30);  
+            expect(circles[1].childNodes[0].toString()).toContain('lightgreen');
+
+            var falseLine = elemParsed.childNodes[4];
+            //console.log('falseLine', falseLine.toString());  
+            var circles = falseLine.childNodes;
+            //console.log('false circles ', circles[1].childNodes.length);  
+            //console.log('false circles ', circles[1].childNodes[0].toString());     
+            expect(circles[1].childNodes.length).toBe(10);  
+            expect(circles[1].childNodes[0].toString()).toContain('tomato');
+
+      });
+
 
       // GL - 1   is done inside test RTF - 2
       
@@ -3460,130 +5680,7 @@ describe('FRET GUI E2E tests ', function () {
 
       });
 
-      
-      //------------------------------------------------------------------
-      it('AP - 5', async () => {
-            console.log('starting test '+numTest+': AP - 5');
-            await startWithJsonFileImport('Glossary_4.json');
-                                 
-            const projectBtn = await app.client.$('#qa_db_btn_projects');
-            await projectBtn.click();
-            await app.client.pause(timeDelay1);
 
-            const hanfor = await app.client.$('#qa_proj_select_TestRequirements');  
-            await hanfor.click(); 
-            await app.client.pause(timeDelay1);
-
-            const anaBtn = await app.client.$('#qa_db_li_analysis');
-            await anaBtn.click();
-
-            const varTab = await app.client.$('#qa_var_tab');
-            await varTab.click();     
-            
-            const selExport =  await app.client.$('#qa_var_sel_exportLanguage');
-            await selExport.click();    
-
-            const coPilot  =  await app.client.$('#qa_var_mi_copilot');
-            await coPilot.click(); 
-            await app.client.pause(timeDelay1);
-
-            const uav = await app.client.$('#qa_var_as_expandIcon_UAV');
-            await uav.click(); 
-            await app.client.pause(timeDelay1);
-
-            const initVar = await app.client.$('#qa_var_btn_FRETname_initialization');
-            await initVar.click(); 
-            await app.client.pause(timeDelay1);
-            // Variable type selection
-            var varType  = await app.client.$('#qa_disVar_sel_varType');
-            await varType.click(); 
-            var varTypeMode  = await app.client.$('#qa_disVar_mi_varType_Mode');  
-            await varTypeMode.click();  
-            // Description
-            var varDescTextField = await app.client.$('#qa_disVar_tf_description');  
-            await varDescTextField.setValue('Initialization');
-            var updateVar  = await app.client.$('#qa_disVar_btn_update');  
-            await updateVar.click();  
-            await app.client.pause(timeDelay1);
-
-            const mVar  = await app.client.$('#qa_var_btn_FRETname_m');
-            await mVar.click(); 
-            // Variable type selection
-            var varType  = await app.client.$('#qa_disVar_sel_varType');
-            await varType.click(); 
-            var varTypeFunction  = await app.client.$('#qa_disVar_mi_varType_Function');  
-            await varTypeFunction.click(); 
-            var varDescTextField = await app.client.$('#qa_disVar_tf_description');  
-            await varDescTextField.setValue('Initiation function');
-            var updateVar  = await app.client.$('#qa_disVar_btn_update');  
-            await updateVar.click();  
-            await app.client.pause(timeDelay1);
-
-            const xAvar = await app.client.$('#qa_var_btn_FRETname_xA');
-            await xAvar.click(); 
-            var varType  = await app.client.$('#qa_disVar_sel_varType');
-            await varType.click(); 
-            var varTypeInternal  = await app.client.$('#qa_disVar_mi_varType_Internal');  
-            await varTypeInternal.click(); 
-            var dataType  = await app.client.$('#qa_disVar_sel_dataType');
-            await dataType.click(); 
-            var dataTypeSingle  = await app.client.$('#qa_disVar_mi_dataType_single');  
-            await dataTypeSingle.click(); 
-            var varDescTextField = await app.client.$('#qa_disVar_tf_description');  
-            await varDescTextField.setValue('variable xA');
-            var updateVar  = await app.client.$('#qa_disVar_btn_update');  
-            await updateVar.click();  
-            await app.client.pause(timeDelay1);
-
-            const xinAvar = await app.client.$('#qa_var_btn_FRETname_xin');
-            await xinAvar.click(); 
-            var varType  = await app.client.$('#qa_disVar_sel_varType');
-            await varType.click(); 
-            var varTypeInput  = await app.client.$('#qa_disVar_mi_varType_Input');  
-            await varTypeInput.click(); 
-            var dataType  = await app.client.$('#qa_disVar_sel_dataType');
-            await dataType.click(); 
-            var dataTypeInteger  = await app.client.$('#qa_disVar_mi_dataType_integer');  
-            await dataTypeInteger.click(); 
-            var varDescTextField = await app.client.$('#qa_disVar_tf_description');  
-            await varDescTextField.setValue('Input xin');
-            var updateVar  = await app.client.$('#qa_disVar_btn_update');  
-            await updateVar.click();  
-            await app.client.pause(timeDelay1);
-
-            const ybAvar = await app.client.$('#qa_var_btn_FRETname_yB');
-            await ybAvar.click(); 
-            var varDescTextField = await app.client.$('#qa_disVar_tf_description');  
-            await varDescTextField.setValue('Undefined yB');
-            var updateVar  = await app.client.$('#qa_disVar_btn_update');  
-            await updateVar.click();  
-            await app.client.pause(timeDelay1);
-
-            
-            const youtAvar = await app.client.$('#qa_var_btn_FRETname_yout');
-            await youtAvar.click(); 
-            var varType  = await app.client.$('#qa_disVar_sel_varType');
-            await varType.click(); 
-            var varTypeOutput  = await app.client.$('#qa_disVar_mi_varType_Output');  
-            await varTypeOutput.click(); 
-            var dataType  = await app.client.$('#qa_disVar_sel_dataType');
-            await dataType.click(); 
-            var dataTypeDouble  = await app.client.$('#qa_disVar_mi_dataType_double');  
-            await dataTypeDouble.click();    
-            var varDescTextField = await app.client.$('#qa_disVar_tf_description');  
-            await varDescTextField.setValue('Output yout');
-            var updateVar  = await app.client.$('#qa_disVar_btn_update');  
-            await updateVar.click();  
-            await app.client.pause(timeDelay1);
-
-
-
-
-            await app.client.pause(timeDelay1);
-
-
-
-      });
 
       //------------------------------------------------------------------      
       it('GL - 10', async () => {
@@ -4022,6 +6119,162 @@ describe('FRET GUI E2E tests ', function () {
             expect(reqText).toBe('Requirements: All Projects');     
                   
       });
+
+
+      //------------------------------------------------------------------
+      it('LTL - 1', async () => {
+            console.log('starting test '+numTest+':  LTL - 1');            
+            await startWithJsonFileImport('temp_cond_tests.json');
+
+            const projBtn = await app.client.$('#qa_db_btn_projects');
+            await projBtn.click();
+            await app.client.pause(timeDelay1);
+
+            const testsProject = await app.client.$('#qa_proj_select_TESTS');
+            await testsProject.click();
+            await app.client.pause(timeDelay1);
+
+            var dashboard = await app.client.$('#qa_db_li_dashboard');
+            await dashboard.click();
+            var selCirpackReq = await app.client.$('#qa_cirPack_text_TEST-PERSISTED-4');
+            await selCirpackReq.moveTo();
+            await selCirpackReq.click();
+            await app.client.pause(timeDelay1);
+            var futureTime = await app.client.$('#qa_disReq_div_futureTime');
+            var elementHTML = await futureTime.getHTML(false);
+            var elementParsedHTML = parse(elementHTML);
+            var elemText = elementParsedHTML.text;  
+            //console.log('future time LTL: ', elemText);
+            expect(elemText).toContain('persisted');
+            var pastTime = await app.client.$('#qa_disReq_div_pastTime');
+            var elementHTML = await pastTime.getHTML(false);
+            var elementParsedHTML = parse(elementHTML);
+            var elemText = elementParsedHTML.text;              
+            expect(elemText).not.toContain('persisted');
+
+            var closeBtn = await app.client.$('#qa_disReq_btn_close');
+            await closeBtn.click();
+            await app.client.pause(timeDelay1);
+            
+            var selCirpackReq = await app.client.$('#qa_cirPack_text_TEST-PERSISTS-2');
+            await selCirpackReq.moveTo();
+            await selCirpackReq.click();
+            await app.client.pause(timeDelay1);
+            var futureTime = await app.client.$('#qa_disReq_div_futureTime');
+            var elementHTML = await futureTime.getHTML(false);
+            var elementParsedHTML = parse(elementHTML);
+            var elemText = elementParsedHTML.text;  
+            //console.log('future time LTL: ', elemText);
+            expect(elemText).not.toContain('persists');
+            var pastTime = await app.client.$('#qa_disReq_div_pastTime');
+            var elementHTML = await pastTime.getHTML(false);
+            var elementParsedHTML = parse(elementHTML);
+            var elemText = elementParsedHTML.text;              
+            expect(elemText).toContain('persists');
+                 
+      });
+
+
+      //------------------------------------------------------------------
+      it('LTL - 2', async () => {
+            console.log('starting test '+numTest+':  LTL - 2');     
+            await app.start();
+            await app.client.waitUntilWindowLoaded();
+
+            var projBtn = await app.client.$('#qa_db_btn_projects');
+            await  projBtn.click();
+            await app.client.pause(timeDelay1);
+            var newProj = await  app.client.$('#qa_db_btn_newProject');
+            await  newProj.click();
+            await app.client.pause(timeDelay1);
+            var projName = await  app.client.$('#qa_newProj_tf_projectName');
+            await projName.setValue('TESTS');
+            var okBtn = await app.client.$('#qa_newProj_btn_ok');
+            await okBtn.click();
+            await app.client.pause(timeDelay1);
+
+            await projBtn.click();
+            await app.client.pause(timeDelay1);            
+            var selProject = await app.client.$('#qa_proj_select_TESTS');  
+            await selProject.click();  
+            await app.client.pause(timeDelay1);      
+            
+            var createBtn = await app.client.$('#qa_db_btn_create');           
+            await createBtn.click();
+            var txtInput = await app.client.$('#qa_crt_tf_reqid');
+            await txtInput.isEnabled();
+            await txtInput.setValue('R1');
+            var slateEditable = await app.client.$('#qa_crt_edt_editor');
+            await slateEditable.click();     
+            await app.client.pause(timeDelay1);       
+            await slateEditable.keys('while persisted(4,temp_too_hot) the sw shall until persisted(3,temp_ok) satisfy alarm');
+            var semanticsBtn = await app.client.$('#qa_crt_btn_semantics');
+            await semanticsBtn.click();    
+            await app.client.pause(timeDelay1);           
+            var futureTimeLTLexpand = await app.client.$('#qa_crtAst_sem_typ_futureTime');
+            await futureTimeLTLexpand.click();
+            var futureTimeFormula = await app.client.$('#qa_crtAst_sem_typ_futureTimeFormula');
+            var elementHTML = await futureTimeFormula.getHTML(false);
+            var elementParsedHTML = parse(elementHTML);
+            var elementText = elementParsedHTML.text;  
+            //console.log('futureTimeFormula text: ', elementText);    
+            expect(elementText).toContain('persisted');        
+            var pastTimeLTLexpand = await app.client.$('#qa_crtAst_sem_typ_pastTime');
+            await pastTimeLTLexpand.click();
+            var pastTimeFormula = await app.client.$('#qa_crtAst_sem_typ_pastTimeFormula');
+            var elementHTML = await pastTimeFormula.getHTML(false);
+            var elementParsedHTML = parse(elementHTML);
+            var elementText = elementParsedHTML.text;  
+            //console.log('futureTimeFormula text: ', elementText);    
+            expect(elementText).not.toContain('persisted');     
+            await app.client.pause(timeDelay3);                    
+            
+            var crtCreate = await app.client.$('#qa_crt_btn_create');
+            await crtCreate.click();  
+            await app.client.pause(timeDelay1);                   
+
+
+            
+            var createBtn = await app.client.$('#qa_db_btn_create');           
+            await createBtn.click();
+            var txtInput = await app.client.$('#qa_crt_tf_reqid');
+            await txtInput.isEnabled();
+            await txtInput.setValue('R2');
+            var slateEditable = await app.client.$('#qa_crt_edt_editor');
+            await slateEditable.click();     
+            await app.client.pause(timeDelay1);       
+            await slateEditable.keys('while persists(4,temp_too_hot) the sw shall until persists(3,temp_ok) satisfy alarm');
+            var semanticsBtn = await app.client.$('#qa_crt_btn_semantics');
+            await semanticsBtn.click();    
+            await app.client.pause(timeDelay1);           
+            var futureTimeLTLexpand = await app.client.$('#qa_crtAst_sem_typ_futureTime');
+            await futureTimeLTLexpand.click();
+            var futureTimeFormula = await app.client.$('#qa_crtAst_sem_typ_futureTimeFormula');
+            var elementHTML = await futureTimeFormula.getHTML(false);
+            var elementParsedHTML = parse(elementHTML);
+            var elementText = elementParsedHTML.text;  
+            //console.log('futureTimeFormula text: ', elementText);    
+            expect(elementText).not.toContain('persists');        
+            var pastTimeLTLexpand = await app.client.$('#qa_crtAst_sem_typ_pastTime');
+            await pastTimeLTLexpand.click();
+            var pastTimeFormula = await app.client.$('#qa_crtAst_sem_typ_pastTimeFormula');
+            var elementHTML = await pastTimeFormula.getHTML(false);
+            var elementParsedHTML = parse(elementHTML);
+            var elementText = elementParsedHTML.text;  
+            //console.log('futureTimeFormula text: ', elementText);    
+            expect(elementText).toContain('persists');     
+            await app.client.pause(timeDelay3);                    
+            
+            var crtCreate = await app.client.$('#qa_crt_btn_create');
+            await crtCreate.click();  
+            await app.client.pause(timeDelay1);                   
+
+
+
+
+
+      });
+
 
       //------------------------------------------------------------------
       it('SELECT ANALYSIS PORTAL THEN DASHBOARD', async () => {
@@ -5285,3 +7538,13 @@ describe('FRET GUI E2E tests ', function () {
      
 
 });      
+
+
+
+
+
+/////**** */
+
+
+
+

@@ -1274,7 +1274,7 @@ class RealizabilityContent extends React.Component {
 
     if (compositional && selected.component_name && projectReport.systemComponents[systemComponentIndex]) {
       for (const cc of projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents) {        
-            tabs.push(<Tab id = {"qa_rlzCont_tab_"+cc } key={cc.ccName} value={cc.ccName} classes={{root : classes.tabRoot}} label={
+            tabs.push(<Tab id = {"qa_rlzCont_tab_"+cc.ccName} key={cc.ccName} value={cc.ccName} classes={{root : classes.tabRoot}} label={
           <div key={cc.ccName} style={{display : 'flex', alignItems : 'center', flexWrap : 'wrap'}}>
             {cc.ccName}
             &nbsp;
@@ -1420,7 +1420,7 @@ class RealizabilityContent extends React.Component {
             }
             <div className={classes.wrapper}>
               <Button 
-                id="realizability_actions_button"
+                id="qa_rlzCont_btn_actions"
                 ref={this.anchorRef}
                 aria-controls={actionsMenuOpen ? 'realizability_actions_menu' : undefined}
                 aria-haspopup="true"
@@ -1431,7 +1431,7 @@ class RealizabilityContent extends React.Component {
                 onClick={(event) => this.handleActionsClick(event)}>
                 Actions        
               </Button>
-              <Menu id="realizability_actions_menu" anchorEl={this.anchorRef.current} open={actionsMenuOpen} onClose={(event) => this.handleActionsMenuClose(event)} MenuListProps={{'aria-labelledby': 'realizability_actions_button'}}>
+              <Menu id="qa_rlzCont_sel_actions" anchorEl={this.anchorRef.current} open={actionsMenuOpen} onClose={(event) => this.handleActionsMenuClose(event)} MenuListProps={{'aria-labelledby': 'realizability_actions_button'}}>
                 <MenuItem 
                 id="qa_rlzCont_btn_check"
                 disabled={!dependenciesExist || (dependenciesExist && (selected === '' || missingDependencies.includes(this.getEngineNameAndOptions().name)))}
@@ -1453,7 +1453,7 @@ class RealizabilityContent extends React.Component {
             </div>
             
             <div className={classes.wrapper}>
-              <Button id="qa_rlzTbl_btn_help" color="secondary" onClick={this.handleHelpOpen} size="small" className={classes.vAlign} variant="contained"> Help </Button>
+              <Button id="qa_rlzCont_btn_help" color="secondary" onClick={this.handleHelpOpen} size="small" className={classes.vAlign} variant="contained"> Help </Button>
             </div>
             </Grid>
             <div style={{width : '100%'}}>

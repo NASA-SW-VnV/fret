@@ -105,7 +105,7 @@ class LTLSimRequirementDetails extends Component {
 				break;
 				}
 			    }
-                  	return(<div key={"LTLSimRequirementDetails_"+R_ID}><Typography>
+                  	return(<div key={"LTLSimRequirementDetails_"+R_ID}><Typography id="qa_ltlSim_typ_reqId">
                     		<b key={ID}>{ID}</b>: {Desc}
                     	</Typography></div>)})
                    }
