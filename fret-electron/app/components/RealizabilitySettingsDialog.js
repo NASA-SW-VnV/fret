@@ -147,14 +147,14 @@ class RealizabilitySettingsDialog extends React.Component {
           				<ListItem>
 							<FormControl className={classes.formControl}>
 								<InputLabel>Engine</InputLabel>
-								<Select key={'engine'} value={selectedEngine ? selectedEngine : 0} onChange={this.handleEngineChange}>
+								<Select id="qa_rlzSet_sel_engine" key={'engine'} value={selectedEngine ? selectedEngine : 0} onChange={this.handleEngineChange}>
 									<Tooltip
 										key={'jkind'}
 										value={0}
 										title={missingDependencies.includes('jkind') || missingDependencies.includes('z3') ? 
 										'Option not available because of missing dependencies: ' + missingDependencies.filter(dep => dep === 'jkind' || dep === 'z3').toString() : ''}>
 										<span key={'jkind'}>
-											<MenuItem component="div" disabled={missingDependencies.includes('jkind') || missingDependencies.includes('z3')}> JKind </MenuItem>
+											<MenuItem id="qa_rlzSet_mi_jkind" component="div" disabled={missingDependencies.includes('jkind') || missingDependencies.includes('z3')}> JKind </MenuItem>
 										</span>
 									</Tooltip>
 									<Tooltip
@@ -163,7 +163,7 @@ class RealizabilitySettingsDialog extends React.Component {
 										title={missingDependencies.includes('jkind') || missingDependencies.includes('z3') || missingDependencies.includes('aeval') ? 
 										'Option not available because of missing dependencies: ' + missingDependencies.filter(dep => dep === 'jkind' || dep === 'z3' || dep === 'aeval').toString() : ''}>
 										<span key={'jkindMBP'}>
-											<MenuItem component="div" disabled={missingDependencies.includes('jkind') || missingDependencies.includes('z3') || missingDependencies.includes('aeval')}> JKind + MBP </MenuItem>
+											<MenuItem id="qa_rlzSet_mi_jkindMBP" component="div" disabled={missingDependencies.includes('jkind') || missingDependencies.includes('z3') || missingDependencies.includes('aeval')}> JKind + MBP </MenuItem>
 										</span>
 									</Tooltip>
 									<Tooltip
@@ -172,7 +172,7 @@ class RealizabilitySettingsDialog extends React.Component {
 										title={missingDependencies.includes('kind2') || missingDependencies.includes('z3') ? 
 										'Option not available because of missing dependencies: ' + missingDependencies.filter(dep => dep === 'kind2' || dep === 'z3').toString() : ''}>
 										<span key={'kind2'}>
-											<MenuItem component="div" disabled={missingDependencies.includes('kind2') || missingDependencies.includes('z3')}> Kind 2 </MenuItem>
+											<MenuItem id="qa_rlzSet_mi_kind2" component="div" disabled={missingDependencies.includes('kind2') || missingDependencies.includes('z3')}> Kind 2 </MenuItem>
 										</span>
 									</Tooltip>
 									<Tooltip
@@ -181,7 +181,7 @@ class RealizabilitySettingsDialog extends React.Component {
 										title={missingDependencies.includes('kind2') || missingDependencies.includes('z3') ? 
 										'Option not available because of missing dependencies: ' + missingDependencies.filter(dep => dep === 'kind2' || dep === 'z3').toString() : ''}>
 										<span key={'kind2MBP'}>
-											<MenuItem component="div" disabled={missingDependencies.includes('kind2') || missingDependencies.includes('z3')}> Kind 2 + MBP </MenuItem>
+											<MenuItem id="qa_rlzSet_mi_kind2MBP" component="div" disabled={missingDependencies.includes('kind2') || missingDependencies.includes('z3')}> Kind 2 + MBP </MenuItem>
 										</span>
 									</Tooltip>
 								</Select>

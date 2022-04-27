@@ -3852,11 +3852,11 @@ describe('FRET GUI E2E tests ', function () {
             var counterExTable = await app.client.$('#qa_counterEx_table');
             var counterExTableHTML = await counterExTable.getHTML(false);
             var counterExs = parse(counterExTableHTML)
-            var tableBodytext = counterExs.childNodes[1].text;
+            var tableBodytext = counterExs.childNodes[2].text;
             //console.log('table body text: ', tableBodytext);
             expect(tableBodytext).toContain('good  bool  true  standby  bool  true  state');
             expect(tableBodytext).toContain('real  2  supported  bool  true  STATE  real  0');
-            expect(tableBodytext).toContain('FSM006  bool  false  FSM007  bool  true  ap_maneuver_state  real');
+            expect(tableBodytext).toContain('FSM_006  bool  false  FSM_007  bool  true  ap_maneuver_state  real');
             expect(tableBodytext).toContain(' 3  ap_transition_state  real  0');
 
             var reqTableBodyElem = await app.client.$('#qa_diagReqTbl_tableBody_1');
@@ -3870,18 +3870,18 @@ describe('FRET GUI E2E tests ', function () {
             var req1 = reqTableBody.childNodes[0].text;
             var req2 = reqTableBody.childNodes[1].text;
             var req3 = reqTableBody.childNodes[2].text;
-            //console.log('req1: ', req1);
-            //console.log('req2: ', req2);
-            //console.log('req3: ', req3);
+            // console.log('req1: ', req1);
+            // console.log('req2: ', req2);
+            // console.log('req3: ', req3);
             expect(req1).toContain('FSM007');   
             expect(req2).toContain('FSM006');        
             expect(req3).toContain('FSM002');
             var req1 = reqTableBody.childNodes[0].toString();
             var req2 = reqTableBody.childNodes[1].toString();
             var req3 = reqTableBody.childNodes[2].toString();
-            //console.log('req1: ', req1);
-            //console.log('req2: ', req2);
-            //console.log('req3: ', req3);            
+            // console.log('req1: ', req1);
+            // console.log('req2: ', req2);
+            // console.log('req3: ', req3);            
             expect(req1).toContain('border-color: rgb(');
             expect(req2).toContain('border-color: rgb(');
             expect(req3).toContain('border-color: initial');                 
@@ -3938,7 +3938,13 @@ describe('FRET GUI E2E tests ', function () {
             var timeout_tf = await app.client.$('#qa_rlzCont_tf_timeOut');
             var timeout_enabled = await timeout_tf.isEnabled();
             expect(timeout_enabled).toBeTruthy();
-            await timeout_tf.setValue('900');          
+            await timeout_tf.setValue('900');         
+            
+            var selEngine = await app.client.$('#qa_rlzSet_sel_engine');
+            await selEngine.click();
+
+            var kind2MBP =  await app.client.$('#qa_rlzSet_mi_kind2MBP');
+            await kind2MBP.click();
             
             var rlzSettings = await app.client.$('#qa_rlzSet_ib_RlzSettings');
             await rlzSettings.click();
@@ -3948,17 +3954,15 @@ describe('FRET GUI E2E tests ', function () {
       
             var checkBtn = await app.client.$('#qa_rlzCont_btn_check');
             await checkBtn.click();      
-            await app.client.pause(5000);      
+            await app.client.pause(timeDelay3);      
 
 
             // comment out the rest until Z3 can pass reliably
-            /*
-            await app.client.pause(10000);      
+            await actions.click();  
             const diagBtn = await app.client.$('#qa_rlzCont_btn_diagnose');
             const diagBtnEnabled = await checkBtn.isEnabled();
             expect(diagBtnEnabled).toBeTruthy();
             await diagBtn.click();
-            await app.client.pause(10000);     
 
             //   Z3 can't consistently finish, file a bug 
 
@@ -3974,63 +3978,58 @@ describe('FRET GUI E2E tests ', function () {
             // console.log('counterExSelText: ',counterExSelText)            
             await counterExSel.click();           
             
-            const conflict7 = await app.client.$('#qa_counterEx_Conflict_7');
+            const conflict7 = await app.client.$('#qa_counterEx_Conflict_mi_7');
             const conflict7Visible = await conflict7.isDisplayed();
-            expect(conflict7Visible).toBeTruthy();
-            const conflict8 = await app.client.$('#qa_counterEx_Conflict_8');
+            //expect(conflict7Visible).toBeTruthy();
+            const conflict8 = await app.client.$('#qa_counterEx_Conflict_mi_8');
             await app.client.pause(10000);     
 
             const counterExTable = await app.client.$('#qa_counterEx_table');
             const counterExTableHTML = await counterExTable.getHTML(false);
 
-            const counterExs = parse(counterExTableHTML)
-            // console.log('counterExs: ',counterExs)
+            const counterExs = parse(counterExTableHTML);
+            //console.log('counterExs: ',counterExs.text);
             // process table 10 rows
             // from top :    Flow_rate_KVO, Infustion_inhibit, System_On
             // from bottom: G10, G4, G3, FTP
 
-            var numChildren = counterExs.childNodes.length
-            expect(numChildren).toBe(10)
+            expect(counterExs.text).toContain('Flow_Rate_KVO  int  -1  -1');
+            expect(counterExs.text).toContain('Infusion_Inhibit  bool  false  true  System_On  bool  false  true');
+            expect(counterExs.text).toContain('Commanded_Flow_Rate  int  0  -1');
+            expect(counterExs.text).toContain('Current_System_Mode_0  bool  true  false');
+            expect(counterExs.text).toContain('Current_System_Mode_1  bool  false  true');
+            expect(counterExs.text).toContain('Current_System_Mode_2  bool  false  false');
+            expect(counterExs.text).toContain('Current_System_Mode_3  bool  false  false');
+            expect(counterExs.text).toContain('Current_System_Mode_4  bool  false  false');
+             
  
-            var id1 = tb_data.childNodes[0].toString();
-            var id2 = tb_data.childNodes[1].toString();
-            var id3 = tb_data.childNodes[2].toString();
-            // console.log('row 1: ', id1)
-            // console.log('row 2: ', id2)
-            // console.log('row 3: ', id3)
-
-            expect(id1).toContain('Flow_rate_KVO')
-            expect(id2).toContain('Infustion_inhibit')
-            expect(id3).toContain('System_On')
             
             // get diagReq table for counter example 7
             //26 rows
             // from top: G3, G4, G10 (1 opacity), (0.6 opacity) G11, G12, G1_1
             const diagReqCE_7 = await app.client.$('#qa_diagReqTbl_tableBody_2');
             const diagReqCE_7HTML = await diagReqCE_7.getHTML(false);
-            const diagReqTabl = parse(diagReqCE_7HTML)
-            // console.log('diagReqTabl: ',diagReqTabl)
-
-            var numChildren = counterExs.childNodes.length
-            expect(numChildren).toBe(10)
+            const diagReqTabl = parse(diagReqCE_7HTML);
+            //console.log('diagReqTabl: ',diagReqTabl.text);
+            
+            var numChildren = diagReqTabl.childNodes.length;
+            //console.log('numChildren: ', numChildren);
+            //expect(numChildren).toBe(10)
  
             var id1 = diagReqTabl.childNodes[0].toString();
             var id2 = diagReqTabl.childNodes[1].toString();
-            var id3 = tb_ddiagReqTablata.childNodes[3].toString();
-            // console.log('row 1: ', id1)
-            // console.log('row 2: ', id2)
-            // console.log('row 4: ', id3)
+            var id3 = diagReqTabl.childNodes[3].toString();
+            //console.log('row 1: ', id1)
+            //console.log('row 2: ', id2)
+            //console.log('row 4: ', id3)
 
             expect(id1).toContain('G3')
             expect(id1).toContain('opacity: 1')
-
             expect(id2).toContain('G4')
             expect(id2).toContain('opacity: 1')
-
             expect(id3).toContain('G11')
             expect(id3).toContain('opacity: 0.6')                   
         
-            */
       });    
 
       //------------------------------------------------------------------      
