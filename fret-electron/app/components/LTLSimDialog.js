@@ -103,11 +103,8 @@ class LTLSimDialog extends Component {
 
         // LTLSimController.addFormula(model, props.id, props.ftExpression);
         // LTLSimController.getFormula(model, props.id).label = props.requirementID;
-	console.log("LTLSimDialog constructor length: "+props.requirementIDs.length)
-	console.log(props)
 
 	for (let i=0; i< props.requirementIDs.length; i++){
-		console.log("LTLSimDialog constructor: "+i)
 			if (this.props.logics == "FT"){
 				LTLSimController.addFormula(model, props.ids[i], props.ftExpressions[i]);
 			}
@@ -115,7 +112,6 @@ class LTLSimDialog extends Component {
         		LTLSimController.addFormula(model, props.ids[i], props.ptExpressions[i]);
 			}
         	LTLSimController.getFormula(model, props.ids[i]).label = props.requirementIDs[i];
-		console.log("LTLSimDialog constructor: processed "+i)
 		}
 
 	
@@ -255,7 +251,6 @@ class LTLSimDialog extends Component {
 
     //===============================================================
     componentDidUpdate(prevProps) {
-    console.log("componentDidUpdate(): ")
     const {CEXFileName} = this.props;
         let { model, updateOnce, logics } = this.state;
         let  traceLength  = LTLSimController.getTraceLength(model);
@@ -295,10 +290,6 @@ class LTLSimDialog extends Component {
         simulate the formula if required (checked by this.update()) */
     for (let i=0; i< this.props.requirementIDs.length; i++){
         let formula = LTLSimController.getFormula(model, this.props.ids[i]);
-console.log("DidUpdate: "+i)
-console.log(formula)
-console.log(formula.parseErrors)
-console.log("Didupdate open "+this.props.open+ " prev: "+ prevProps.open)
 		// if (this.props.open && !prevProps.open &&        	
   //           formula && formula.parseErrors.length === 0) {
   	if (((this.props.open && !prevProps.open) || updateOnce) &&        	
@@ -360,7 +351,6 @@ console.log("Didupdate open "+this.props.open+ " prev: "+ prevProps.open)
 
 		// change logic for "current" requirement/aaFor
 		// don't update the variables
-	    console.log("changing logic for current ID="+ids[0]);
 		for (var i=0; i< ftExpressions.length;i++){
             LTLSimController.setFormulaExpression(model, ids[i], 
 				(logics === "FT") ? ftExpressions[i] : ptExpressions[i],
@@ -374,7 +364,6 @@ console.log("Didupdate open "+this.props.open+ " prev: "+ prevProps.open)
 			  .replace(/\+/g,"_")
 		let idx = JSCReqID.indexOf(reqID_R);
 		if (idx >= 0){
-			console.log("changing logics for reqID="+reqID_R)
    		let N_formula = 
 			((logics === "FT") ? 
 				reqID_data[i].formula_FT : 
@@ -435,13 +424,10 @@ console.log("Didupdate open "+this.props.open+ " prev: "+ prevProps.open)
         this.setState((prevState) => {
         const {traces, JSCTraces} = prevState;
         const {reqID, traceID, traceDescription, saveTo} = dialogState;
-	console.log("TRACE-ADD-DIALOG-SAVE " + traceDescription + " " + traceID);
-	console.log("TRACE-ADD-DIALOG-SAVE saved to:" + saveTo);
         let { model } = prevState;
 	let trace = LTLSimController.getTrace(model);
 	
 
-	console.log("TODO: where to save traces");
 	LTLSimController.saveTrace(model, '/tmp/debug-trace.csv');
 
 	let saveToReqID = this.props.requirementIDs[0];
@@ -460,7 +446,6 @@ console.log("Didupdate open "+this.props.open+ " prev: "+ prevProps.open)
 		return tr.traceID === traceID;
 		})) == null){
 		
-		console.log("updating and saving (new) trace");
 		const allTraces = traces.concat(traceID);
 		const NewJSCTraces = JSCTraces.concat({
 			traceID: traceID,
@@ -497,7 +482,6 @@ console.log("Didupdate open "+this.props.open+ " prev: "+ prevProps.open)
 		if(err) {
        			return console.log(err);
        			}
-       	        console.log("The JSON DB file was saved!");
 		});
 
         	return {
@@ -536,7 +520,6 @@ console.log("Didupdate open "+this.props.open+ " prev: "+ prevProps.open)
 			return;
 			}
 		this.setState((prevState) => {
-		console.log("save: "+filepath.filePath)
 		if (filepath.filePath.substring(filepath.filePath.length-3) == "csv"){
        			let { model } = prevState;
             		LTLSimController.saveTrace(model, filepath.filePath);
@@ -567,7 +550,6 @@ console.log("Didupdate open "+this.props.open+ " prev: "+ prevProps.open)
 					};
 				}
         		var JTrace = JSON.stringify(currTrace, null, 4)
-        		console.log(JTrace)
         		fs.writeFile(filepath.filePath, JTrace, (err) => {
             			if(err) {
                 			return console.log(err);
@@ -575,7 +557,6 @@ console.log("Didupdate open "+this.props.open+ " prev: "+ prevProps.open)
             			console.log("The file was saved!");
               			})
 			}
-		console.log("save trace done");
     		});
 	}
 
@@ -606,8 +587,6 @@ console.log("Didupdate open "+this.props.open+ " prev: "+ prevProps.open)
           		{ name: "Trace", extensions: ['csv','json'] }
         		],
       			});
-		console.log("load trace: ")
-		console.log(filepath)
 		 if (filepath && filepath.length == 0) {
 			// cancel
 			return;
@@ -618,7 +597,6 @@ console.log("Didupdate open "+this.props.open+ " prev: "+ prevProps.open)
 			//
 			// load CSV as current trace; no meta information
 			//
-			console.log("Loading CSV trace -- no meta information")
 			LTLSimController.addTrace(model, filepath[0]);
 			setMarginVariableTraces(this.state.model);
 
@@ -655,43 +633,28 @@ console.log("Didupdate open "+this.props.open+ " prev: "+ prevProps.open)
 			//
 			// load a json file
 			//
-			console.log("Loading JSON trace / meta information")
       			var content = fs.readFileSync(filepath[0]);
-console.log("Loading JSON trace file")
-console.log("content")
-console.log(content)
       			var loadedTrace = JSON.parse(content);
-console.log("parsed")
-console.log(loadedTrace)
 
 			var loadedTraceInList = JSCTraces.find(tr => {
 				return tr.traceID === loadedTrace.traceID
 				});
-
-console.log("search")
-console.log(loadedTrace)
 			let NewJSCTraces = JSCTraces;
 			let NewTraces = traces;
 			if (!loadedTraceInList){
-console.log("not found in list")
 				NewJSCTraces = JSCTraces.concat(loadedTrace);
 				NewTraces = traces.concat(loadedTrace.traceID);
-console.log("New list")
-console.log(NewJSCTraces)
 				}
 			else {
-console.log("found in list")
 				NewJSCTraces = JSCTraces;
 				console.log("TODO: update Existing Trace")
 				}
-console.log(loadedTrace.theTrace)
 		//
 		// load the trace and set FTP and LAST accordingly
 		//
 		LTLSimController.setTrace(this.state.model,loadedTrace.theTrace);
 		setMarginVariableTraces(this.state.model);
 
-console.log("returning")
 console.log("TODO: update the traces")
         	return {
 	    		traceID: loadedTrace.traceID,
@@ -703,7 +666,6 @@ console.log("TODO: update the traces")
         
         }, () => {
             /* Call LTL simulation after the state was updated */
-	    console.log("trace loaded --update");
             this.update();
         });
     }
@@ -719,35 +681,12 @@ console.log("TODO: update the traces")
 	//
 	// just a load from file
 	//
-console.log("load CEX trace: ")
-console.log(filepath)
-// 	var content = fs.readFileSync(filepath);
-// console.log("Loading CEX JSON trace file")
-// console.log("content")
-// console.log(content)
-// 	var loadedTrace = JSON.parse(content);
 var loadedTrace = filepath;
-// let content = JSON.stringify(loadedTrace, null, 4)
-// fs.writeFile('/home/akatis/Desktop/cex.json', content, (err) => {
-//             if(err) {
-//                 return console.log(err);
-//             }
-//             console.log("The file was saved!");
-//         });
-
-
-console.log("parsed")
-console.log(loadedTrace)
-console.log("convert CEX");
-
 	var K = loadedTrace.K;
-	console.log("CEX with "+K+" steps");
 
 	var cex = loadedTrace.Counterexample;
         let LTLSIM_tracelength = LTLSimController.getTraceLength(this.state.model);
 
-	console.log(cex)
-	console.log("CEX with "+cex.length+" variables")
 	var keys=[]
 	var vars_trace_type=[]
 	let sanitizedReqIds = this.props.requirementIDs.map(id => id.replace(/ /g,"_")
@@ -755,10 +694,7 @@ console.log("convert CEX");
 			  .replace(/\./g,"_")
 			  .replace(/\+/g,"_"));
 	cex = cex.filter(variable => !sanitizedReqIds.includes(variable.name));
-	for (let idx=0; idx < cex.length; idx++){		
-		console.log("Variable: "+cex[idx].name);
-		console.log("Variable type: "+cex[idx].type);
-		
+	for (let idx=0; idx < cex.length; idx++){				
 		// check if requirements name
 /*
 		var do_ignore = 0;
@@ -808,8 +744,6 @@ console.log("convert CEX");
 						}
 					}
 				}
-			console.log("CEX:"+cex[idx].name+" in ["+mi+","+ma+"]");
-
 			}
 		//
 		// number rule I: include "0"
@@ -849,7 +783,6 @@ console.log("convert CEX");
 				}
 			}
 		values=values.concat([val]);
-		console.log("Step "+step+" value "+val);
 		}
 	    }
 
@@ -857,7 +790,6 @@ console.log("convert CEX");
 	keys: keys,
 	values: values
 	};
-	console.log(theTrace)
 
 
 	var NewtraceID="CEX-ID"
@@ -886,13 +818,8 @@ console.log("convert CEX");
 	//
         this.setState((prevState) => {
 	  let { model, traces, JSCTraces} = prevState;
-	   console.log("Loading JSON trace db / meta information")
-	   console.log("origin="+origin)
 	   var content = fs.readFileSync(trace_db_json);
-console.log("Loading JSON trace DB file")
 	   var loadedTraces = JSON.parse(content);
-console.log("parsed")
-console.log(loadedTraces)
 
 	    //
             // populate the JSCTraces and traces lists
@@ -900,11 +827,6 @@ console.log(loadedTraces)
 	    traces=[];
 	    JSCTraces=[];
 	    for (let tr=0; tr< loadedTraces.length; tr++){
-		console.log("working on Trace with name "+loadedTraces[tr].traceID)
-		console.log("  for project "+loadedTraces[tr].saveToProject)
-		console.log("  for req "+loadedTraces[tr].saveToReqID)
-console.log("project: "+this.props.project)
-
 			//
 			// load only those matching to project
 			//
@@ -926,10 +848,8 @@ console.log("project: "+this.props.project)
 		    (loadedTraces[tr].saveToReqID == "*") ||
 		    (loadedTraces[tr].saveToReqID == this.props.requirementIDs[0])
 		    )){
-			console.log("requirement not matching");
 			continue;
 			}
-		console.log("added Trace with name "+loadedTraces[tr].traceID)
 		traces = traces.concat(loadedTraces[tr].traceID);
 		JSCTraces = JSCTraces.concat(loadedTraces[tr]);
 		}
@@ -937,11 +857,8 @@ console.log("project: "+this.props.project)
 		traces: traces,
     		JSCTraces: JSCTraces
        		};
-
-	console.log("traces from JSON DB loaded")
         }, () => {
             /* Call LTL simulation after the state was updated */
-	    console.log("traces loaded --update");
             this.update();
         });
     }
@@ -955,7 +872,6 @@ console.log("project: "+this.props.project)
 	  let { model, traces, JSCTraces} = prevState;
 
 	  var JTrace = JSON.stringify(JSCTraces, null, 4)
-    		console.log(JTrace)
 	  fs.writeFile(trace_db_json, JTrace, (err) => {
 		if(err) {
        			return console.log(err);
@@ -973,15 +889,9 @@ console.log("project: "+this.props.project)
     // setting trace to named trace (existing)
     handleFoo(name){
       this.setState(() => {
-	console.log("Menu-handle-foo-with-close: " + name)
-
-        console.log(this.state.JSCTraces)
 	var NC = this.state.JSCTraces.find(tr => {
 		return tr.traceID === name
 		});
-        console.log("HandleFoo: member in JSCTraces")
-        console.log(NC)
-		
 		//
 		// load the trace and set FTP and LAST accordingly
 		//
@@ -994,7 +904,6 @@ console.log("project: "+this.props.project)
 		traceDescription: NC.traceDescription
 		};
 	}, () => { 
-		console.log("new-trace--update");
 //		this.handleLtlsimSimulate();
 		this.update();
 		}
@@ -1004,11 +913,6 @@ console.log("project: "+this.props.project)
     //===============================================================
     handleFooNew(name){
       this.setState(() =>{
-	console.log("Menu-handle-foo-new: " + name)
-
-	if (name == 'DeleteTrace'){
-		console.log('TODO: Delete trace from list');
-		}
 
 	let NTC = this.state.traceIDCnt;
 	NTC = NTC + 1;
@@ -1028,7 +932,6 @@ console.log("project: "+this.props.project)
 		traceDescription: ""
 		};
 	}, () => { 
-			console.log("new-trace--update");
 //			this.handleLtlsimSimulate();
 			this.update();
 			}
@@ -1063,7 +966,6 @@ console.log("project: "+this.props.project)
 	// this requirement is already selected
 	// it's a no-op
 	//
-	console.log("Menu-handle-select-all")
         this.setState({ anchorEl_Req: null });
 
 
@@ -1077,27 +979,13 @@ console.log("project: "+this.props.project)
 	const {reqID,formula_PT,formula_FT} = ReqID;
         const {requirementIDs } = this.props;
 
-	console.log("Menu-handle-select-requirement (orig): "+reqID)
-	console.log("event.target.value: "+event.target.value)
-
 	let reqID_R =reqID.replace(/ /g,"_")
 			  .replace(/-/g,"_")
 			  .replace(/\./g,"_")
 			  .replace(/\+/g,"_")
-	
-	console.log("Menu-handle-select-requirement: "+reqID_R)
-	console.log("PT: "+formula_PT)
-	console.log("FT: "+formula_FT)
-console.log("All reqID_data: "+reqID_data)
-console.log("All JSCReqID: "+JSCReqID)
-console.log("reqID_data[..]")
 for (let i=0; i< reqID_data.length; i++){
 //	Object.keys(reqID_data[i]).forEach((prop)=> console.log(prop))
-	console.log("reqID="+reqID_data[i].reqID)
-	console.log(reqID_data[i].fulltext)
 	}
-console.log("/reqID_data[..]")
-
 	// need to also sanitize the 1st undeleteable ID
 	let reqID0_R =requirementIDs[0].replace(/ /g,"_")
 			  .replace(/-/g,"_")
@@ -1105,7 +993,6 @@ console.log("/reqID_data[..]")
 			  .replace(/\+/g,"_")
 	
 	if (reqID_R == reqID0_R){
-		console.log("We don't delete the current requirement");
 		return;
 		}
 
@@ -1117,11 +1004,8 @@ console.log("/reqID_data[..]")
 		//
 		// in current list -- need to remove
 		//
-		console.log("removing requirement "+reqID_R);
         	LTLSimController.removeFormula(model, reqID_R);
-	JSCReqID.splice(idx);
-	console.log("New requirement IDs "+JSCReqID);
-        
+	JSCReqID.splice(idx);        
         return { 
 		anchorEl_Req: null,
 		JSCReqID: JSCReqID,
@@ -1175,7 +1059,6 @@ console.log("/reqID_data[..]")
 		}
 	} 
 	}, () => { 
-		console.log("new-formula--update");
 //		this.handleLtlsimSimulate();
 		this.update();
 		}
@@ -1196,11 +1079,6 @@ console.log("/reqID_data[..]")
         this.setState((prevState) => {
             let { model } = prevState;
             const { ids } = this.props;
-	    console.log("handleTraceDataChange: START EVALUATOR... display stuff")
-	    console.log("handleTraceDataChange: datakey:"+dataKey)
-	    console.log("handleTraceDataChange: dataIdx:"+dataIdx)
-	    console.log(trace)
-	    console.log("handleTraceDataChange: START EVALUATOR...")
             LTLSimController.setAtomicTraceEval(model, dataKey, trace, dataIdx, newValue);
 
             /* Change value of the affected formula */
@@ -1274,15 +1152,10 @@ console.log("/reqID_data[..]")
 
 // JOHANN
 	    JSCReqID.forEach(reqID => {
-console.log("SIM-loop-set-to-busy: "+reqID);
                 /* Set the simulated formula and subformulas to busy */
                 LTLSimController.setFormulaValue(model, reqID, 
 			"", EFormulaStates.UNKNOWN);
 		});
-
-console.log("start simulation: filter.id="+JSCReqID);
-console.log("start simulation: formulaFilter.id="+formulaFilter);
-
 //JSC-=NEW: filter vs formulaFilter below
             ltlsim.simulate(
                 model,
@@ -1399,7 +1272,6 @@ console.log("start simulation: formulaFilter.id="+formulaFilter);
             });
 
       LTLSimController.evalModel(model);
-console.log("UPDATE-before-SIM: formulaFilter="+formulaFilter)
       this.handleLtlsimSimulate(formulaFilter);
   }
 
@@ -1409,13 +1281,8 @@ console.log("UPDATE-before-SIM: formulaFilter="+formulaFilter)
         const { classes, open, onClose, requirements, ids, requirementIDs } = this.props;
         let { model, visibleSubformulas, highlight, anchorEl, anchorEl_Req, logics, traceID, reqID_data, JSCReqID } = this.state;
         let formula = LTLSimController.getFormula(model, ids[0]);
-		console.log("LTLSimDialog: render")
-		console.log(requirementIDs)
-		console.log(requirementIDs[0])
-		console.log(reqID_data)
 //JSC/CAV        const displayID = requirementID ? requirementID : "REQ";
         const displayID = requirementIDs[0] ? requirementIDs[0] : "FSM-006";
-		console.log("displayID="+displayID)
 
         if (formula !== undefined && formula !== null) {
             return (
@@ -1661,17 +1528,12 @@ console.log("UPDATE-before-SIM: formulaFilter="+formulaFilter)
  * @param {LTLSimModel} model The model containing the variables to be modified
  */
 function setMarginVariableTraces(model) {
-console.log("setMarginVariableTraces")
-console.log(model)
     if (LTLSimController.getAtomicKeys(model).includes("FTP")) {
-	console.log("setMarginVariableTraces: includes FTP")
-
         let trace = new Array(LTLSimController.getTraceLength(model)).fill(0);
         trace[0] = 1;
         LTLSimController.setAtomicTrace(model, "FTP", trace);
     }
     if (LTLSimController.getAtomicKeys(model).includes("LAST")) {
-	console.log("setMarginVariableTraces: includes LAST")
         let trace = new Array(LTLSimController.getTraceLength(model)).fill(0);
         trace[trace.length-1] = 1;
         LTLSimController.setAtomicTrace(model, "LAST", trace);

@@ -111,7 +111,7 @@ Select an unrealizable component (or connected component) and click on "Actions"
 
 Select a conflict on the diagram by clicking on the corresponding conflict label to view the participating requirements, as well as its counterexample table. The counterexample displays a system execution where at least one requirement can be violated, given specific inputs from the environment.
 
-As soon as a counterexample is displayed, the "Simulate" button becomes available next to the name of the conflict. Click "Simulate" to invoke LTLSim and perform an interactive simulation between the conflicting requirements.
+As soon as a counterexample is displayed, the "Simulate" button becomes available next to the name of the conflict. Click "Simulate" to invoke LTLSim and perform an interactive simulation between the conflicting requirements. For more information on how to use LTLSim, please read ["Using the Simulator"](../UsingTheSimulator/ltlsim.md) in the FRET user manual.
 
 &nbsp;&nbsp;&nbsp;&nbsp;
 

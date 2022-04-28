@@ -29,14 +29,11 @@ The LTLSIM tool is started from the requirements editor using the
 Note that
 * the SIMULATE button is only active after the `SEMANTICS` button has
 generated the temporal logic formulas for the requirement, and
-* the LTLSIM simulator and its underlying tool nuXmv is [installed properly](./installingFRET/installationInstructions.md).
+* the LTLSIM simulator and its underlying tool NuSMV is [installed properly](./installingFRET/installationInstructions.md).
 
 
-### Starting LTLSIM from the Realizability Portal
-LTLSIM can be started from the [Realizability Portal](./Realizability.md)
-after an analysis has been carried out and onr or more conflicts have been found.
-
-TODO
+### Starting LTLSIM from the Realizability Checking Portal
+LTLSIM can be used after a realizability checking analysis has been carried out and one or more conflicts have been found. Please read ["Realizability checking"](../exports/realizabilityManual.md) for details.
 
 
 ## The LTLSIM Window
@@ -71,7 +68,7 @@ the original (numeric) variable `pressure` as well as the evaluation of the
 expression (as a Boolean term). Traces for dependent terms are colored in
 light-blue and cannot be changed by the user directly. Rather, changes in the
 value of the original variable(s), here `pressure` automatically updates the value of the arithmetic expression for that time points.
-The reason for this is that the nuXMV checker cannot handle arithmetic expressions natively.
+The reason for this is that the NuSMV checker cannot handle arithmetic expressions natively.
 
 Traces of variables with numeric values can be changed interactively in a similar way as Boolean values. However, one click increments the variable value at the selected time by 1/10th of the variable range, usually by 1. If the maximum value is reached, a subsequent click resets the value to the minimum.
 
@@ -205,7 +202,7 @@ The `X` closes the LTLSIM tool and leads back to the requirements editor.
 
 ## Restrictions
 
-Because LTLSIM is using the external tool nuXmv for formula valuation, there currently exist a number of syntactic restrictions:
+Because LTLSIM is using the external tool NuSMV for formula valuation, there currently exist a number of syntactic restrictions:
 * LTLSIM will not work if any of the following uppercase atomic
 propositions are used as Boolean formulas:
 `A E F G H O S T U V X Y Z AF AG AX BU EF EG EX ABF ABG EBF EBG MAX MIN LAST`

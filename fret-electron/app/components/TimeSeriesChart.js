@@ -199,8 +199,6 @@ class TimeSeriesChart extends Component {
             const { dataKey, chart_type, chart_minval, chart_maxval } = this.props;
             const dataIndex = event.activeTooltipIndex;
             let data  = this.state.data.slice();
-console.log("TSC:handleMouseUp: dataIndex="+dataIndex);
-console.log(data)
 	    var NV = 0;
 		    if (chart_type == "category"){
 	                    NV = (data[dataIndex]) ? 0 : 1;
@@ -240,8 +238,6 @@ console.log("TSChart: handleMouseUp:setState:number "+NV);
             });
 */
 
-console.log("TSChart: before onChange "+data[dataIndex]);
-console.log("TSChart: before onChange NV="+NV);
             this.props.onChange(dataKey, dataIndex, data, NV);
         }
         this.setState({

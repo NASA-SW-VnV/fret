@@ -33,23 +33,16 @@
 
 const antlr4 = require('antlr4');
 const LTLAEXLexer = require('ltlsim_nusmvparser').LTLAEXLexer;
-console.log(LTLAEXLexer)
 const LTLSIM_NuSMVLexer = require('ltlsim_nusmvparser').LTLSIM_NuSMVLexer;
-console.log(LTLSIM_NuSMVLexer)
 
 const LTLAEXParser = require('ltlsim_nusmvparser').LTLAEXParser;
-console.log(LTLAEXParser)
 const AnnotatingErrorListener = require('./AnnotatingErrorListener').AnnotatingErrorListener;
 const LTLAEXAnalyzer = require('./LTLAEXAnalyzer').LTLAEXAnalyzer;
-console.log(LTLAEXAnalyzer)
 
 
 
 exports.parse = function parse(input, model) {
     let Oinput = ID_to_arithexpr(input);
-console.log("AEX-parse-eval: "+input+ " conv: >"+Oinput+"<");
-console.log(model)
-console.log(model.traceLength)
     let chars = new antlr4.InputStream(Oinput);
     let lexer = new LTLAEXLexer(chars);
     let tokens = new antlr4.CommonTokenStream(lexer);
@@ -63,15 +56,9 @@ console.log(model.traceLength)
 
     // analyzer.model = model;
 
-console.log("Parsing...")
     let tree = parser.simpleExpr();
-console.log("Parsing...: done")
-
-        let newtrace = analyzer.visit(tree);
+    let newtrace = analyzer.visit(tree);
 //JSC 0418	let newtrace= model.atomics.values[input].trace;
-
-console.log("new trace:")
-console.log(newtrace)
     return {trace: newtrace.val};
 }
 

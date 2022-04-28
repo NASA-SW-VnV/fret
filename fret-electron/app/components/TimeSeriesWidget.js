@@ -68,7 +68,6 @@ class TimeSeriesWidget extends Component {
 	// open the settings widget
 	//
 handleTimeSeriesChartSettingsOpen() {
-	console.log("Opening the TimeSeriesSettings")
         this.setState({TimeSeriesChartSettingsOpen: true});
     }
 
@@ -76,7 +75,6 @@ handleTimeSeriesChartSettingsOpen() {
 	// cancel the settings widget
 	//
 handleTimeSeriesChartSettingsCancel() {
-	console.log("canceling the TimeSeriesSettings")
         this.setState({TimeSeriesChartSettingsOpen: false});
     }
 
@@ -85,7 +83,6 @@ handleTimeSeriesChartSettingsCancel() {
 	//
 handleTimeSeriesChartSettingsSave(settingsState) {
         const {minValue, maxValue, deltaValue} = settingsState;
-	console.log("closing the TimeSeriesSettings")
 /*
         this.setState({
 		TimeSeriesChartSettingsOpen: false,
@@ -100,8 +97,6 @@ handleTimeSeriesChartSettingsSave(settingsState) {
 
 //---------------------------------------------------------------------
     atomic2chart(key, atomic, fkey, chart_type, canChange, chart_minval, chart_maxval) {
-	console.log("atomic2chart: " + key + " " + chart_type + " " + canChange)
-	console.log('settings-' + key + ((fkey) ? '-'+fkey : ''))
         return ( (atomic === undefined) ? null :
             <Typography key={'Typo-chart-atomic-' + key + ((fkey) ? '-'+fkey : '')} component="div" >
                     <TimeSeriesChart
@@ -138,7 +133,6 @@ handleTimeSeriesChartSettingsSave(settingsState) {
     }
 
     formula2chart(key, formula) {
-        console.log("f2chart.key="+key)
         return ( (formula === undefined) ? null :
                     <TimeSeriesChart
 			chart_type="category"
@@ -178,10 +172,6 @@ s                       expression={formula.tex}
                 visibleFormulas,
                 visibleSubformulas,
                 displaySubformulas } = this.props;
-
-        console.log(visibleAtomics)
-        console.log(visibleFormulas)
-        console.log(visibleSubformulas)
         const atomicsCharts = this.props.displayAtomicsWithFormulas ? null :
         visibleAtomics.map((akey) => (
             this.atomic2chart(akey, LTLSimController.getAtomic(model, akey),

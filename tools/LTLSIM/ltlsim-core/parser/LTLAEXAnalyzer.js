@@ -59,8 +59,6 @@ var LTLAEXAnalyzer = function(model) {
     return this;
 }
 
-console.log(LTLAEXVisitor)
-
 LTLAEXAnalyzer.prototype = 
 	Object.create(LTLAEXVisitor.prototype);
 LTLAEXAnalyzer.prototype.constructor = LTLAEXAnalyzer;
@@ -68,11 +66,8 @@ LTLAEXAnalyzer.prototype.constructor = LTLAEXAnalyzer;
 
 // Visit a parse tree produced by LTLAEX#boolCompare.
 LTLAEXVisitor.prototype.visitBoolCompare = function(ctx) {
-	console.log("visitBoolCompare:")
 	var C = this.visitChildren(ctx);
-console.log(C)
 	var Lval = C[0];
-console.log(Lval)
 	var Rval = C[2];
 	var cmp = ctx.children[1].getText();
 
@@ -97,8 +92,6 @@ console.log(Lval)
 			break;
 		}
 		}
-
-	console.log("visitBoolCompare: "+Lval.val + cmp + Rval.val + "= " + res)
 	return {text: ctx.getText(), val: res};
 }; 
 
@@ -123,7 +116,6 @@ LTLAEXVisitor.prototype.visitRParith = function(ctx) {
 // Visit a parse tree produced by LTLAEX#arith.
 // NUMBER in arith
 LTLAEXVisitor.prototype.visitArith = function(ctx) {
-console.log("ARITH (NUMBER)="+ctx.getText());
 	// var val = parseFloat(mytraces[i][id],10);
     var val = parseFloat(ctx.getText(),6);
     var arr = new Array(this.model.traceLength).fill(val);
@@ -132,10 +124,8 @@ console.log("ARITH (NUMBER)="+ctx.getText());
 
 // Visit a parse tree produced by LTLAEX#arithTerm.
 LTLAEXVisitor.prototype.visitArithTerm = function(ctx) {
-console.log("ARITH-TERM:");
 
 let ID = ctx.children[0].getText();
-console.log("ARITH-TERM: = "+ID);
     var val;
     if (this.model.atomics.keys.indexOf(ID) != -1) {
     	var val = this.model.atomics.values[ID].trace;
@@ -143,25 +133,21 @@ console.log("ARITH-TERM: = "+ID);
     else {
     	var val = new Array(this.model.traceLength).fill(0);
 	}
-console.log("ARITH-TERM: value = "+val);
     return {text:ctx.getText(), val: val };
 };
 
 // Visit a parse tree produced by LTLAEX#arithGroup.
 LTLAEXVisitor.prototype.visitArithGroup = function(ctx) {
-    console.log("ARITHGROUP="+ctx.getText());
     var C = this.visitChildren(ctx);
     return {text: ctx.getText(), val: C[1].val};
 };
 
 // Visit a parse tree produced by LTLAEX#arithBinary.
 LTLAEXVisitor.prototype.visitArithBinary = function(ctx) {
-    console.log("arithBinary: "+ctx.getText());
     var C = this.visitChildren(ctx);
     var Lval = C[0];
     var Rval = C[2];
     var op = ctx.children[1].getText();
-    console.log("arithbinary: op="+op+" "+Lval.val +" "+Rval.val);
     var val = new Array(this.model.traceLength).fill(0);
     for (var i=0; i < Lval.val.length; i++){
 	switch (op){
@@ -185,15 +171,12 @@ LTLAEXVisitor.prototype.visitArithBinary = function(ctx) {
 		break;
 	}
 	}
-console.log(val)
     return {text: ctx.getText(), val: val};
 };
 
 // Visit a parse tree produced by LTLAEX#arithUnary.
 LTLAEXVisitor.prototype.visitArithUnary = function(ctx) {
-    console.log("arithUnary: "+ctx.getText());
     var Lval = this.visitChildren(ctx.children[1]);
-    console.log("arithunary: op="+op+" "+Lval.val);
     var op = ctx.children[0].getText();
     for (var i=0; i < Lval.val.length; i++){
 	Lval.val[i] = - Lval.val[i];

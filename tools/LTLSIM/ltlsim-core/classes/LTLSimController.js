@@ -122,7 +122,6 @@ module.exports = class LTLSimController {
     // load from CSV file
     //------------------------------------------------------------
     static addTrace(model, tracefile) {
-            console.log("LTLSimController::addTrace()")
 	    var data = fs.readFileSync(tracefile);
             var mycsv = data.toString()
 		.split(/\n/)
@@ -157,7 +156,6 @@ module.exports = class LTLSimController {
 			}
 //NOT USED	target_id = model.atomics.keys.indexOf(a);
 
-		console.log("addTrace: a=" + a)
                 
 	    	var i=0;
 		var isBoolean = true;
@@ -172,9 +170,7 @@ module.exports = class LTLSimController {
 			else {
 				val = parseFloat(mytraces[i][id],10);
 				}
-			console.log("value="+val)
 			if ((val != 0.0) && (val != 1.0)){
-				console.log("Boolean=false")
 				isBoolean = false;
 				}
 			if (val < minval) { minval = val; }
@@ -240,7 +236,6 @@ module.exports = class LTLSimController {
 	}catch(e){ console.log("ERRR",e)}
 	        }
 	writeStream.on('close', () => {
-    		console.log('finish write stream, moving along')
 		}).on('error', (err) => {
     			console.log(err)
 		})
@@ -271,22 +266,12 @@ module.exports = class LTLSimController {
     // NOTE: do not add LAST or FTP
     //------------------------------------------------------------
     static setTrace(model, trace) {
-
-	console.log('set trace')
-	console.log(trace)
-	console.log('Keys:')
-	console.log(trace.keys.join(',')+ '\n');
-	console.log('values:')
-	console.log(trace.values.join(',')+ '\n');
-	console.log('/set trace')
-
 			//
 			// if atomic not yet defined, define it
 			// don't care about FTP or LAST
 			//
             trace.keys.forEach((a) => {
 	      if (a != "LAST" && a != "FTP"){
-		console.log("setTrace: new key: "+a)
         	if (model.atomics.keys.indexOf(a) === -1) {
             		model.atomics.keys.push(a);
             		model.atomics.values[a] = 
@@ -396,11 +381,6 @@ module.exports = class LTLSimController {
     static setAtomicTraceEval(model, id, trace, dataIdx, newValue) {
         if (model.atomics.keys.indexOf(id) !== -1) {
             model.atomics.values[id].trace = trace;
-console.log("================eval=============")
-console.log("id="+id+"["+dataIdx+"]=="+newValue)
-console.log(model.atomics.values[id].trace)
-console.log(trace)
-console.log(model)
 
 //JSC-0418-new
 	model.atomics.values[id].trace[dataIdx] = newValue;
@@ -413,18 +393,11 @@ console.log(model)
 			// V0: re-evaluate all
 			// !!!!!!!! newvalue and dataIDX is not set....
 //JSC-0415
-console.log("start AEX...")
   			let result = LTLAEX.parse(a, model);
-console.log("done AEX...")
-console.log(result.trace)
 			let newtrace = result.trace;
 //			var newtrace;
 //			newtrace = model.atomics.values[a].trace
 //			newtrace[0] =1;
-	
- 			console.log("eval. a="+a);
- 			console.log(newtrace)
-
 			model.atomics.values[a].trace = newtrace;
 			}
 		});
@@ -496,8 +469,6 @@ console.log(result.trace)
                                         value: EFormulaStates.UNKNOWN
                                     }));
 
-console.log("LTLSimController::setFormulaExpression: atomic keys: "+model.atomics.keys);
-
             /* Remove this formula from atomics which do not influence it anymore */
             model.atomics.keys
                 .filter((a) => (model.atomics.values[a].formulas.indexOf(id) !== -1))
@@ -508,7 +479,6 @@ console.log("LTLSimController::setFormulaExpression: atomic keys: "+model.atomic
                     }
                 });
 
-console.log("LTLSimController::setFormulaExpression: atomic keys: "+model.atomics.keys);
             /* Add this formula to its atomics, if not already present and add missing atomics */
             formula.atomics.forEach((a) => {
                 if (model.atomics.keys.indexOf(a) === -1) {
@@ -523,7 +493,6 @@ console.log("LTLSimController::setFormulaExpression: atomic keys: "+model.atomic
                 }
             })
 
-console.log("LTLSimController::setFormulaExpression: atomic keys: "+model.atomics.keys);
 	    if (updateVars){
             /* Remove atomics which do not influence anything */
             model.atomics.keys
@@ -533,7 +502,6 @@ console.log("LTLSimController::setFormulaExpression: atomic keys: "+model.atomic
                     model.atomics.keys.splice(model.atomics.keys.indexOf(a), 1);
                 })
 	     }
-console.log("LTLSimController::setFormulaExpression: atomic keys: "+model.atomics.keys);
 
             /* Change this formulas value to unknown */
             formula.value = EFormulaStates.UNKNOWN;
@@ -648,14 +616,11 @@ console.log("LTLSimController::setFormulaExpression: atomic keys: "+model.atomic
     //
     //------------------------------------------------------------
     static evalModel(model) {
-	console.log("LTLSimController: evalModel")
 
 	model.atomics.keys.forEach((a) => {
 		if (!model.atomics.canChange[a]){
-			console.log("start AEX...for "+a)
   			let result = LTLAEX.parse(a, model);
 			let newtrace = result.trace;
-			console.log("done AEX...trace: "+newtrace)
 			model.atomics.values[a].trace = newtrace;
 			}
 		});

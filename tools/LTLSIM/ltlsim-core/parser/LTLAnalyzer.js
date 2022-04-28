@@ -86,7 +86,6 @@ LTLAnalyzer.prototype.visitPlHolders = function(ctx) {
   // Visit a parse tree produced by NuSMVParser#proposition.
   LTLAnalyzer.prototype.visitProposition = function(ctx) {
     let atomic = ctx.getText();
-console.log("PROPOSITION="+atomic);
     if (this.atomics_name.indexOf(atomic) === -1) {
         this.atomics_name.push(atomic);
        	this.atomics_type.push("category");
@@ -94,7 +93,6 @@ console.log("PROPOSITION="+atomic);
        	this.atomics_minval.push(0);
        	this.atomics_maxval.push(1);
        	this.atomics_aex.push("EMPTY_BOOL");
-	console.log("VARIABLE "+atomic+" is BOOLEAN");
     }
     return {text: atomic + " ", code: "PROP_BOOL"};
   };
@@ -103,12 +101,7 @@ console.log("PROPOSITION="+atomic);
 // Visit a parse tree produced by LTLSIM_NuSMVParser#boolCompare.
 LTLSIM_NuSMVVisitor.prototype.visitBoolCompare = function(ctx) {
 // TODO:
-	console.log("visitBoolCompare:")
-	console.log(ctx)
-	console.log(ctx.getText());
 	let arithabbr = this.handleArithExpression(ctx);
-	console.log("visitBoolCompare: abbr="+arithabbr.text)
-	console.log("visitBoolCompare: abbr="+arithabbr.code)
 	//JSC-01return arithabbr.text;
 	return {text: arithabbr.text, code: ""};
 }; 
@@ -123,11 +116,7 @@ LTLSIM_NuSMVVisitor.prototype.visitSimpleBoolExpr = function(ctx) {
 //TODO
   LTLAnalyzer.prototype.visitSimpleExpr = function(ctx) {
 	if (isArithExpression(ctx)){
-
-		console.log("SimpleExpr: isArith")
-		console.log(ctx.getText());
 		let arithabbr = this.handleArithExpression(ctx);
-		console.log("SimpleExpr: isArith abbr=" + arithabbr)
 		return arithabbr;
     }
 
@@ -501,24 +490,20 @@ LTLAnalyzer.prototype.handleArithExpression = function(ctx) {
         		}
 	});
 
-  	let abbr = arithexpr_to_ID(Lexpr.text);
+	let abbr = arithexpr_to_ID(Lexpr.text);
+	let s = abbr.trim();
 
-	console.log("handleArithExpr: text=" + abbr)
-	console.log(abbr)
-	
-      	let s = abbr.trim();
-	console.log("handleArith:" + s)
-      	if (this.abbr.indexOf(s) === -1 && this.abbr.indexOf(s) === -1) {
-       		this.abbr.push(s);
-		}
-        if (this.atomics_name.indexOf(abbr) === -1) {
-        	this.atomics_name.push(abbr);
-        	this.atomics_type.push("category");
-        	this.atomics_canChange.push(false);
-       		this.atomics_minval.push(0);
-       		this.atomics_maxval.push(1);
-        	this.atomics_aex.push(Lexpr.text);
-    		}
+	if (this.abbr.indexOf(s) === -1 && this.abbr.indexOf(s) === -1) {
+ 		this.abbr.push(s);
+  }
+  if (this.atomics_name.indexOf(abbr) === -1) {
+  	this.atomics_name.push(abbr);
+  	this.atomics_type.push("category");
+  	this.atomics_canChange.push(false);
+ 		this.atomics_minval.push(0);
+ 		this.atomics_maxval.push(1);
+  	this.atomics_aex.push(Lexpr.text);
+	}
 	// return Lexpr;
 	return {text: abbr, code: Lexpr.code};
 	}
@@ -527,17 +512,15 @@ LTLAnalyzer.prototype.handleArithExpression = function(ctx) {
 // Visit a parse tree produced by LTLSIM_NuSMVParser#arith.
 LTLSIM_NuSMVVisitor.prototype.visitArith = function(ctx) {
 // NUMBER in arith
-console.log("ARITH="+ctx.getText());
-    var pARITH=ctx.getText().replace(/\./,"_D_");
-    return {text: pARITH + " ", code: "ARITH"+ctx.getText()};
+  var pARITH=ctx.getText().replace(/\./,"_D_");
+  return {text: pARITH + " ", code: "ARITH"+ctx.getText()};
 };
 
 
 // Visit a parse tree produced by LTLSIM_NuSMVParser#arithGroup.
 LTLSIM_NuSMVVisitor.prototype.visitArithGroup = function(ctx) {
-console.log("ARITHGROUP="+ctx.getText());
-    return this.visitSubExpr(ctx);
-    // return {text: ctx.getText() + " ", code: "ARITHGRP"};
+  return this.visitSubExpr(ctx);
+  // return {text: ctx.getText() + " ", code: "ARITHGRP"};
 };
 
 
@@ -556,22 +539,18 @@ LTLSIM_NuSMVVisitor.prototype.visitArithUnary = function(ctx) {
 
 // Visit a parse tree produced by LTLSIM_NuSMVParser#arithTerm.
 LTLSIM_NuSMVVisitor.prototype.visitArithTerm = function(ctx) {
-console.log("ARITH-TERM:");
-
-let ID = ctx.children[0];
-console.log("ARITH-TERM: = "+ID.getText());
-console.log("VARIABLE "+ID.getText()+" is NUMERIC");
+  let ID = ctx.children[0];
 //        (ctx.children[ctx.children.length-1] instanceof RpContext);
-    let atomic = ID.getText();
-    if (this.atomics_name.indexOf(atomic) === -1) {
-        this.atomics_name.push(atomic);
-       	this.atomics_type.push("number");
-       	this.atomics_canChange.push(true);
-       	this.atomics_minval.push(0);
-       	this.atomics_maxval.push(10);
-    }
-    var RV={text: ID.getText() + " ", code: "VAR01"+ID.getText()};
-    return RV;
+  let atomic = ID.getText();
+  if (this.atomics_name.indexOf(atomic) === -1) {
+      this.atomics_name.push(atomic);
+     	this.atomics_type.push("number");
+     	this.atomics_canChange.push(true);
+     	this.atomics_minval.push(0);
+     	this.atomics_maxval.push(10);
+  }
+  var RV={text: ID.getText() + " ", code: "VAR01"+ID.getText()};
+  return RV;
 };
 
 // Visit a parse tree produced by LTLSIM_NuSMVParser#expt.

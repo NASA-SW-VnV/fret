@@ -47,9 +47,6 @@ export default function LTLSimLauncher(props) {
     const ftExpression = rewriteExpressionForLTLSIM(semantics.ftExpanded);
     const ptExpression = rewriteExpressionForLTLSIM(semantics.ptExpanded);
 
-	console.log("LTLSImLauncher: requirement "+requirement)
-	console.log("LTLSImLauncher: requirementID "+requirementID)
-	console.log("LTLSImLauncher: project "+project)
 	//
 	// mock-up list
 	//
@@ -83,13 +80,6 @@ export default function LTLSimLauncher(props) {
 			  .replace(/\+/g,"_")
 	IDs = IDs.concat(reqID_R2)
         }
-
-	console.log("LTLSImLauncher: open "+open)
-	console.log("LTLSImLauncher: ftExpressions "+ftExpressions)
-	console.log("LTLSImLauncher: ptExpressions "+ptExpressions)
-	console.log("LTLSImLauncher: IDs "+IDs)
-	console.log("LTLSImLauncher: requirements "+requirements)
-	console.log("LTLSImLauncher: requirementIDs "+requirementIDs)
 
 //JSC/CAV                id="REQ" 
     return (status.ltlsim && status.nusmv) ?

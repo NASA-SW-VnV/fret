@@ -78,9 +78,6 @@ const styles = theme => ({
 class LTLSimRequirementDetails extends Component {
     render() {
         const {classes, requirementID, description, allreq, selreq} = this.props;
-
-	console.log("LTLSimRequirementDetails: ")
-	console.log(selreq)
         return (
           <div className={classes.root}>
             <Accordion>

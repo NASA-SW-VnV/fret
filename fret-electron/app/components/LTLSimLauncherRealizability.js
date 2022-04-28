@@ -47,9 +47,6 @@ export default function LTLSimLauncherRealizability(props) {
     // const ftExpression = rewriteExpressionForLTLSIM(semantics.ftExpanded);
     // const ptExpression = rewriteExpressionForLTLSIM(semantics.ptExpanded);
 
-	// console.log("LTLSimLauncherRealizability: requirement "+requirement)
-	// console.log("LTLSimLauncherRealizability: requirementID "+requirementID)
-	// console.log("LTLSimLauncherRealizability: project "+project)
 // 	//
 // 	// mock-up list
 // 	//
@@ -80,14 +77,6 @@ export default function LTLSimLauncherRealizability(props) {
                   .replace(/\+/g,"_")
     }
 
-     console.log("LTLSImLauncher: ftExpressions "+ftExpressions)
-        console.log("LTLSImLauncher: ptExpressions "+ptExpressions)
-        console.log("LTLSImLauncher: IDs "+IDs)
-        console.log("LTLSImLauncher: requirements "+requirements)
-        console.log("LTLSImLauncher: requirementIDs "+requirementIDs)
-
-	console.log("LTLSimLauncherRealizability: ftExpressions "+ftExpressions)
-    console.log(open)
 //JSC/CAV                id="REQ" 
     return (status.ltlsim && status.nusmv) ?
             (<div>
