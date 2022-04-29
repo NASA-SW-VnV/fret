@@ -11,7 +11,7 @@ let
 <%if (delays.length == 0){%>
   Y = X;<% -%>
 <%}%><% -%>
-<%if (delays.length > 0){-%>
+<%if (delays.length > 0){%>
   Y = if (R=0) then X<% -%>
 <%for (i=0; i < delays.length-1; i++) {%>
     else if (R=<%-delays[i]%>) then delay<%-delays[i]%>(X)<% -%>
@@ -27,7 +27,7 @@ let
 <%} else {%>
       else delay<%-delays[delays.length-1]%>(X);<% -%>
 <%}%>
-<%}-%>
+<%}%>
 tel
 <%for (i=0; i<= finalDelays.length-1; i++) {%>
 node delay<%-finalDelays[i]%>(X:bool) returns(Y:bool);
