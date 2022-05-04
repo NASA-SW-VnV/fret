@@ -277,12 +277,12 @@ class Instructions extends React.Component {
     return(
       <div>
       <br />
-        <div className={classes.description} dangerouslySetInnerHTML={{ __html: this.props.formalization.semantics.description}} />
+        <div id="qa_crtAst_sem_desc" className={classes.description} dangerouslySetInnerHTML={{ __html: this.props.formalization.semantics.description}} />
         <br />
         <div className={css.imgWrap}>
-        <img src= {path}/>
+        <img id="qa_crtAst_sem_img" src= {path}/>
         </div>
-        <div className={classes.variableDescription} dangerouslySetInnerHTML={{ __html: this.props.formalization.semantics.diagramVariables}} />
+        <div id="qa_crtAst_sem_imgFooter" className={classes.variableDescription} dangerouslySetInnerHTML={{ __html: this.props.formalization.semantics.diagramVariables}} />
         <br />
         <Accordion>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>

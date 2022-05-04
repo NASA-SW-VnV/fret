@@ -140,7 +140,7 @@ class Feeds extends React.Component {
 
     return (
       <div className={classes.root}>
-        <List className={classes.list}>
+        <List id="qa_db_list_feeds" className={classes.list}>
           {this.renderListItems()}
         </List>
       </div>

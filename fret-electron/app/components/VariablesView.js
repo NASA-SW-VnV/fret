@@ -286,7 +286,7 @@ class ComponentSummary extends React.Component {
       return (
         <Tooltip title='Export verification code.'>
         <span>
-          <Button id="qa_var_btn_export" size="small" 
+          <Button id={"qa_var_btn_export_"+component} size="small" 
             onClick={this.exportComponentCode} color="secondary" 
             variant='contained' className={classes.buttonControl}>
               Export
@@ -298,9 +298,10 @@ class ComponentSummary extends React.Component {
       return (
           <Tooltip title='To export verification code, please complete mandatory variable fields and export language first.'>
             <span>
-              <Button size="small" color="secondary" disabled variant='contained' className={classes.buttonControl}>
-                Export
-                </Button>
+              <Button id={"qa_var_btn_export_"+component}
+                 size="small" color="secondary" disabled variant='contained' className={classes.buttonControl}>
+                  Export
+              </Button>
             </span>
           </Tooltip>
       );

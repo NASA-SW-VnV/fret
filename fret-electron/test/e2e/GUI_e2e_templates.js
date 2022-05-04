@@ -178,6 +178,20 @@ var child1text = elementParsedHTML.childNodes[1].text;  //childNodes[1] contains
 console.log('child1text: ', child1text)
 await app.client.pause(timeDelay1);
 
+//////////////// Variable Mapping
+var anaBtn = await app.client.$('#qa_db_li_analysis');
+await anaBtn.click();
+var expLang = await app.client.$('#qa_var_sel_exportLanguage');
+await expLang.click();
+var cocospec = await app.client.$('#qa_var_mi_cocospec');
+await cocospec.click();      
+var cocospec = await app.client.$('#qa_var_mi_copilot');
+await cocospec.click(); 
+var exportCopilot = await app.client.$('#qa_var_btn_export_copilot');
+await exportCopilot.click(); 
+var exportNotCopilot = await app.client.$('#qa_var_btn_export_not_copilot');
+await exportNotCopilot.click(); 
+
 ///////////////  Update Variable Dialog (disVar)             
       // Variable Type dropdown menu
       var varType  = await app.client.$('#qa_disVar_sel_varType');
@@ -302,5 +316,102 @@ expect(req1).toContain('border-color: rgb(');
 expect(req2).toContain('border-color: rgb(');
 expect(req3).toContain('border-color: initial');               
 
+///////////////  DisplayRequirementDialog disReq
+var titleLine =  await app.client.$('#qa_disReq_dt_reqId');
+var title = await titleLine.getText();
+var image =  await app.client.$('img');
+var elementHTML = await image.getHTML(true);
+var elementParsedHTML = parse(elementHTML);
+console.log('img element: ', elementParsedHTML.toString());
+expect(elementParsedHTML.toString()).toContain('null_null_always_satisfaction.svg');
+
+///  svgDiagram after clicking Semantics
+await app.client.pause(timeDelay1);
+var image =  await app.client.$('img');
+var elementHTML = await image.getHTML(true);
+var elementParsedHTML = parse(elementHTML);
+console.log('img element: ', elementParsedHTML.toString());
+//expect(elementParsedHTML.toString()).toContain('');   
+var rationale =  await app.client.$('#qa_disReq_typ_rationale');
+var elementHTML = await rationale.getHTML(true);
+var elementParsedHTML = parse(elementHTML);
+console.log('rationale: ', elementParsedHTML.text);
+var requirement =  await app.client.$('#qa_disReq_typ_req');
+var elementHTML = await requirement.getHTML(true);
+var elementParsedHTML = parse(elementHTML);
+console.log('requirement: ', elementParsedHTML.text);
+var description =  await app.client.$('#qa_disReq_div_semDesc');
+var elementHTML = await description.getHTML(true);
+var elementParsedHTML = parse(elementHTML);
+console.log('description: ', elementParsedHTML.text);
+
+var semDiagramFooter =  await app.client.$('#qa_disReq_div_semDiagram');
+var elementHTML = await semDiagramFooter.getHTML(true);
+var elementParsedHTML = parse(elementHTML);
+console.log('semDiagramFooter: ', elementParsedHTML.text);
 
 
+var futureTime = await app.client.$('#qa_disReq_div_futureTime');
+var elementHTML = await futureTime.getHTML(false);
+var elementParsedHTML = parse(elementHTML);
+var elemText = elementParsedHTML.text;  
+console.log('future time: ', elemText);
+var pastTime = await app.client.$('#qa_disReq_div_pastTime');
+var elementHTML = await pastTime.getHTML(false);
+var elementParsedHTML = parse(elementHTML);
+var elemText = elementParsedHTML.text;              
+console.log('past time: ', elemText);
+
+
+///////////   create requirement dialog - assistant tab crtAst
+// qa_crtAst_sem_desc
+// qa_crtAst_sem_img
+// qa_crtAst_sem_imgFooter
+var description =  await app.client.$('#qa_crtAst_sem_desc');
+var elementHTML = await description.getHTML(true);
+var elementParsedHTML = parse(elementHTML);
+//console.log('description: ', elementParsedHTML.text);
+var image =  await app.client.$('#qa_crtAst_sem_img');
+var elementHTML = await image.getHTML(true);
+var elementParsedHTML = parse(elementHTML);
+console.log('img element: ', elementParsedHTML.toString());
+var semDiagramFooter =  await app.client.$('#qa_crtAst_sem_imgFooter');
+var elementHTML = await semDiagramFooter.getHTML(true);
+var elementParsedHTML = parse(elementHTML);
+console.log('semDiagramFooter: ', elementParsedHTML.text);
+var diagramSemantics = await app.client.$('#qa_crtAst_sem_typ_diagramSem');
+await diagramSemantics.click();            
+await app.client.pause(timeDelay1);  
+var diaSemImg =  await app.client.$('#qa_crtAst_sem_img_diagramSem');
+var elementHTML = await diaSemImg.getHTML(true);
+var elementParsedHTML = parse(elementHTML);
+//console.log('img element: ', elementParsedHTML.toString());
+var futureTimeLTLexpand = await app.client.$('#qa_crtAst_sem_typ_futureTime');
+await futureTimeLTLexpand.click();
+var futureTimeFormula = await app.client.$('#qa_crtAst_sem_typ_futureTimeFormula');
+var elementHTML = await futureTimeFormula.getHTML(false);
+var elementParsedHTML = parse(elementHTML);
+var elementText = elementParsedHTML.text;  
+console.log('futureTimeFormula text: ', elementText);    
+//expect(elementText).not.toContain('');        
+// qa_crtAst_sem_typ_futureTimeComp
+var futureComponent = await app.client.$('#qa_crtAst_sem_typ_futureTimeComp');
+var elementHTML = await futureComponent.getHTML(false);
+var elementParsedHTML = parse(elementHTML);
+var elementText = elementParsedHTML.text;  
+console.log('futureComponent text: ', elementText);    
+
+
+var pastTimeLTLexpand = await app.client.$('#qa_crtAst_sem_typ_pastTime');
+await pastTimeLTLexpand.click();
+var pastTimeFormula = await app.client.$('#qa_crtAst_sem_typ_pastTimeFormula');
+var elementHTML = await pastTimeFormula.getHTML(false);
+var elementParsedHTML = parse(elementHTML);
+var elementText = elementParsedHTML.text;  
+console.log('futureTimeFormula text: ', elementText);    
+//expect(elementText).toContain('');     
+var pastComponent = await app.client.$('#qa_crtAst_sem_typ_pastTimeComp');
+var elementHTML = await pastComponent.getHTML(false);
+var elementParsedHTML = parse(elementHTML);
+var elementText = elementParsedHTML.text;  
+console.log('pastComponent text: ', elementText);                  
