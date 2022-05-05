@@ -702,8 +702,8 @@ class MainView extends React.Component {
             handleDialogClose={this.closeExportRequirementsDialog}
           />
           <VersionDialog
-            open={this.state.versionDialogOpen}
-            version= {app.getVersion()}
+            open = {this.state.versionDialogOpen}
+            version = {app.getVersion()}
             handleDialogClose={this.closeVersionDialog}
           />
           <RequirementImportDialogs

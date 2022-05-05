@@ -37,6 +37,7 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import EditIcon from '@material-ui/icons/Edit';
+import BuildIcon from '@material-ui/icons/Build';
 import DeleteIcon from '@material-ui/icons/Delete';
 import TextField from '@material-ui/core/TextField';
 import Divider from '@material-ui/core/Divider';
@@ -86,23 +87,29 @@ class DisplayRequirementDialog extends React.Component {
   };
 
   handleUpdateRequirement = () => {
-    this.handleClose()
-    this.state.openCreateDialog()
+    this.handleClose();
+    this.state.openCreateDialog();
+  }
+
+  handleRefactorRequirement = () => {
+    this.handleClose();
+    this.state.openRefactorDialog();
   }
 
   handleDeleteRequirement = () => {
-    this.handleClose()
-    this.state.openDeleteDialog()
+    this.handleClose();
+    this.state.openDeleteDialog();
   }
 
   componentWillReceiveProps = (props) => {
     this.setState({
       selectedRequirement: props.selectedRequirement,
       open: props.open,
-      dialogCloseListener : props.handleDialogClose,
+      dialogCloseListener: props.handleDialogClose,
       openCreateDialog: props.handleCreateDialogOpen,
       openDeleteDialog: props.handleDeleteDialogOpen,
-    })
+      openRefactorDialog: props.handleRefacorDialogOpen
+    });
   }
 
   renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) {
@@ -174,6 +181,11 @@ class DisplayRequirementDialog extends React.Component {
                     <EditIcon />
                     </Tooltip>
                   </IconButton>
+                  <IconButton onClick={this.handleRefactorRequirement} size="small" color="tertiary" aria-label="edit" >
+                    <Tooltip id="tooltip-icon-refactor" title="Refactor Requirement">
+                    <BuildIcon />
+                    </Tooltip>
+                  </IconButton>
                   <IconButton onClick={this.handleDeleteRequirement} size="small" aria-label="delete" >
                     <Tooltip id="tooltip-icon-delete" title="Delete Requirement">
                     <DeleteIcon color='error'/>
@@ -219,6 +231,7 @@ DisplayRequirementDialog.propTypes = {
   handleDialogClose: PropTypes.func.isRequired,
   handleCreateDialogOpen: PropTypes.func.isRequired,
   handleDeleteDialogOpen: PropTypes.func.isRequired,
+  handleRefacorDialogOpen: PropTypes.func.isRequired
 }
 
 export default withStyles(styles)(DisplayRequirementDialog);

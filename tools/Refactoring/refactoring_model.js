@@ -4,7 +4,7 @@
 
 function ReplaceFragment(req, fragment, replacement)
 {
-  let	originalFretish = req.getFretish();
+  originalFretish = req.getFretish();
 
   let updatedFretish = originalFretish.replace(fragment, replacement);
 

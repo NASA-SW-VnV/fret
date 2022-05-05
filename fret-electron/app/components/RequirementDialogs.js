@@ -43,6 +43,7 @@ import IconButton from '@material-ui/core/IconButton';
 import DisplayRequirementDialog from './DisplayRequirementDialog';
 import CreateRequirementDialog from './CreateRequirementDialog';
 import DeleteRequirementDialog from './DeleteRequirementDialog';
+import RefactorRequirementDialog from './refactoring/RefactorRequirementDialog';
 
 
 const styles = theme => ({
@@ -53,16 +54,19 @@ class RequirementDialogs extends React.Component {
     createDialogOpen: false,
     deleteDialogOpen: false,
     snackbarOpen: false,
+    refactorDialogOpen: false,
     snackBarDisplayInfo: {}
   };
-
-  constructor(props){
-    super(props);
-  }
 
   handleCreateDialogOpen = () => {
     this.setState({
       createDialogOpen: true
+    })
+  }
+
+  handleRefactorDialogOpen = () => {
+    this.setState({
+      refactorDialogOpen: true
     })
   }
 
@@ -104,6 +108,7 @@ class RequirementDialogs extends React.Component {
     const { snackBarDisplayInfo } = this.state;
     return (
     <div>
+
       <DisplayRequirementDialog
         selectedRequirement={selectedRequirement}
         open={this.props.displayRequirementOpen}
@@ -111,11 +116,22 @@ class RequirementDialogs extends React.Component {
         handleCreateDialogOpen={this.handleCreateDialogOpen}
         handleDeleteDialogClose={this.handleDeleteDialogClose}
         handleDeleteDialogOpen={this.handleDeleteDialogOpen}/>
+
+      <RefactorRequirementDialog
+        selectedRequirement = {selectedRequirement}
+        open = {this.state.refactorDialogOpen}
+        handleDialogClose={this.props.handleDialogClose}
+        handleCreateDialogOpen={this.handleCreateDialogOpen}
+        handleDeleteDialogClose={this.handleDeleteDialogClose}
+        handleDeleteDialogOpen={this.handleDeleteDialogOpen}
+      />
+
+
       <CreateRequirementDialog
-        open={this.state.createDialogOpen}
-        handleCreateDialogClose={this.handleCreateDialogClose}
-        selectedProject={selectedProject}
-        editRequirement={selectedRequirement}
+        open = {this.state.createDialogOpen}
+        handleCreateDialogClose = {this.handleCreateDialogClose}
+        selectedProject = {selectedProject}
+        editRequirement = {selectedRequirement}
         //TODO: Update eventually
         addChildRequirementToParent={null}
         existingProjectNames={existingProjectNames}

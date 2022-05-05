@@ -28,7 +28,36 @@ Below is the step-by-step description of the applications' start up:
 5. `HomePage.js` imports `fret-election/app/components/Home.js`
 6. `Home.js` imports `fret-election/app/components/MainView.js` which sets up the main FRET window and is the main starting point for adding to FRET.
 
+## Directory Structure
 
+Inside the FRET repository, you'll find the following directory structure.
+
+* `executables`
+
+* `fret-election` – Root directory for the electron application
+  
+  * `analysis`
+  * `app` – Contains most of the FRET application
+    * `actions`
+    * `components` – Contains the various React components that make up the GUI/functionality
+    * `containers`
+    * `parser`
+    * `reducers`
+    * `store`
+    * `utils`
+  * `docs`
+  * `flow-typed`
+  * `internals`
+  * `resources`
+  * `support`
+  * `templates`
+  * `test`
+  
+* `tools` – Contains external tools or functionality that has been included in FRET
+
+* `tutorialExamples` – Contains example FRET project(s)
+
+  
 
 ## Version Dialogue Example
 
@@ -107,6 +136,52 @@ In `VersionDialog.js`, where  `ExportRequirementsDialog` was used (the class nam
 The `handleDialogClose` property is the `closeVersionDialog()` function passed through from `MainView.js` (on line 707). Line 87 adds it to the state of `VersionDialog`, and then `handleClose()` calls it on line 81 – triggered by the OK button being pressed. 
 
 Similarly, the version string is passed as a property on line 706 of `MainView.js` and displayed in the dialog on line 113. It didn't seem to be required to add it to the state, for some reason; but I added it anyway (line 88).
+
+
+
+## Adding the Refactoring Dialogue
+
+This section describes how I went about adding the Refactoring Dialogue to FRET, which is a more involved example than the Version Dialogue above.
+
+In `fret-electon/app/components/` there are three diaglogues for the requirements: `DisplayRequirementDialog`,  `CreateRequirementDialog`, and `DeleteRequirementDialog`. Each of them are imported into `RequirementDialogs`, which switches between them, depending on which is selected. 
+
+* `DisplayRequirementDialog` is shown when the requirement is selected in the Requirements list. It summarises the details of the requirement, and shows the edit and delete buttons at the top.
+* ` CreateRequirementDialog` is shown when the "CREATE" button is pressed, in which case it opens with the fields empty; and when the edit button on the `DisplayRequirementDialog` is pressed, in which case the feilds are filled with the details of the requirement that selected to open the `DisplayRequirementDialog`
+* `DeleteRequirementDialog` is shown when the delete button is pressed on the `DisplayRequirementDialog`, and asks for confirmation before deleting the requirement that was selected to open the `DisplayRequirementDialog`
+
+```mermaid
+flowchart LR
+
+0(Requirements List)
+1(DisplayRequirementDialog)
+2(CreateRequirementDialog)
+3(DeleteRequirementsDialog)
+
+0 -->|Select Requirement| 1 
+1 -->|Edit| 2
+1 -->|Delete| 3
+2 & 3 --> 0
+```
+
+### Adding the Button
+
+Again, the first thin to do was to add a button in the `DisplayRequirementDialog.js` file to open the new dialogue. 
+
+Inside the return of the `render()` method, I added the following to produce the button:
+
+```xml
+<IconButton onClick={this.handleRefactorRequirement} size="small" color="tertiary" aria-label="edit" >
+	<Tooltip id="tooltip-icon-refactor" title="Refactor Requirement">
+		<BuildIcon />
+	</Tooltip>
+</IconButton>
+```
+
+With the <BuildIcon /> having been imported at the top of the file. This produces a new button, with a spanner icon, at the top of the Display Requirement Dialogue. Of course, pressing the button does nothing more than close the dialogue, because `handleRefactorRequirement` has not been implemented yet.
+
+### Triggering the Dialogue Box
+
+
 
 
 
