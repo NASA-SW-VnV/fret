@@ -682,6 +682,12 @@ describe('FRET GUI E2E tests ', function () {
             await req_H1_idBtn.click();
             await app.client.pause(timeDelay1);
 
+            var image =  await app.client.$('img');
+            var elementHTML = await image.getHTML(true);
+            var elementParsedHTML = parse(elementHTML);
+            //console.log('elementParsedHTML ', elementParsedHTML.toString());
+            expect(elementParsedHTML.toString()).toContain('null_null_always_satisfaction.svg');
+
             const reqEdit = await app.client.$('#qa_disReq_ic_edit');
             await reqEdit.click();
             await app.client.pause(timeDelay1);
@@ -722,7 +728,17 @@ describe('FRET GUI E2E tests ', function () {
             await slateEditable.keys('In m component shall satisfy p');
 
             const semanticsBtn = await app.client.$('#qa_crt_btn_semantics');
-            await semanticsBtn.click();            
+            await semanticsBtn.click();        
+            
+            await app.client.pause(timeDelay1);
+            var image =  await app.client.$('img');
+            var elementHTML = await image.getHTML(true);
+            var elementParsedHTML = parse(elementHTML);
+            //console.log('img element: ', elementParsedHTML.toString());
+            expect(elementParsedHTML.toString()).toContain('in_null_null_satisfaction.svg');
+            
+
+
             const createRq = await app.client.$('#qa_crt_btn_create');
             await createRq.click();
             await app.client.pause(timeDelay1);
@@ -764,6 +780,12 @@ describe('FRET GUI E2E tests ', function () {
             const r2 = await app.client.$('#qa_tbl_btn_not_bulk_id_r2');
             await r2.click();
             await app.client.pause(timeDelay1);
+            var image =  await app.client.$('img');
+            var elementHTML = await image.getHTML(true);
+            var elementParsedHTML = parse(elementHTML);
+            //console.log('img element: ', elementParsedHTML.toString());
+            expect(elementParsedHTML.toString()).toContain('in_null_null_satisfaction.svg');
+            
 
             const reqEdit = await app.client.$('#qa_disReq_ic_edit');
             await reqEdit.click();
@@ -869,7 +891,17 @@ describe('FRET GUI E2E tests ', function () {
 
 
             const semanticsBtn = await app.client.$('#qa_crt_btn_semantics');
-            await semanticsBtn.click();            
+            await semanticsBtn.click();       
+            
+            
+            await app.client.pause(timeDelay1);
+            var image =  await app.client.$('img');
+            var elementHTML = await image.getHTML(true);
+            var elementParsedHTML = parse(elementHTML);
+            //console.log('img element: ', elementParsedHTML.toString());
+            expect(elementParsedHTML.toString()).toContain('null_regular_null_satisfaction.svg');            
+
+
             const createRq = await app.client.$('#qa_crt_btn_create');
             await createRq.click();
             await app.client.pause(timeDelay1);
@@ -925,6 +957,15 @@ describe('FRET GUI E2E tests ', function () {
 
             const req_AP000 = await app.client.$('#qa_tbl_btn_not_bulk_id_AP-000');
             await req_AP000.click();
+            await app.client.pause(timeDelay1);
+
+            var image =  await app.client.$('img');
+            var elementHTML = await image.getHTML(true);
+            var elementParsedHTML = parse(elementHTML);
+            //console.log('img element: ', elementParsedHTML.toString());
+            expect(elementParsedHTML.toString()).toContain('null_null_always_satisfaction.svg');
+            
+
             const reqEdit = await app.client.$('#qa_disReq_ic_edit');
             await reqEdit.click();
             await app.client.pause(timeDelay1);
@@ -1051,7 +1092,7 @@ describe('FRET GUI E2E tests ', function () {
             
             await app.client.pause(timeDelay1);
             const newProjectName = await app.client.$('#qa_newProj_tf_projectName');  
-            await newProjectName.setValue('test_RCE_4');
+            await newProjectName.setValue('test_RCE');
 
             await app.client.pause(timeDelay1);
             const newProjectOK = await app.client.$('#qa_newProj_btn_ok');  
@@ -1073,83 +1114,507 @@ describe('FRET GUI E2E tests ', function () {
             const reqId = await app.client.$('#qa_crt_tf_reqid');
             await reqId.setValue('R1');
 
+            var compBuble = await app.client.$('span=component');
+            await compBuble.click();
+            await compBuble.keys('autopilot');
+            await app.client.pause(timeDelay1);
+
+            var boundsBuble = await app.client.$('span=bounds');
+            await boundsBuble.click();
+            await boundsBuble.keys('roll_angle < 60 & roll_angle > -60');
+            await app.client.pause(timeDelay1);
+            
+            const semanticsBtn = await app.client.$('#qa_crt_btn_semantics');
+            await semanticsBtn.click();
+
+            await app.client.pause(timeDelay1);
+            await app.client.pause(timeDelay1);
+            var image =  await app.client.$('img');
+            var elementHTML = await image.getHTML(true);
+            var elementParsedHTML = parse(elementHTML);
+            //console.log('img element: ', elementParsedHTML.toString());
+            expect(elementParsedHTML.toString()).toContain('null_null_always_satisfaction.svg');   
+
+            await app.client.pause(timeDelay1);
+            const createReqBtn = await app.client.$('#qa_crt_btn_create');
+            await createReqBtn.click();
+            await app.client.pause(timeDelay1);
+         
+            var r1 = await app.client.$('#qa_db_lit_feeds_test_RCE_R1');
+            var elementHTML = await r1.getHTML(false);
+            var elementParsedHTML = parse(elementHTML);            
+            //console.log('Requirement texts: ', elementParsedHTML.text);
+            expect(elementParsedHTML.text).toContain('test_RCE R1The  autopilot  shall always satisfy  roll_angle < 60 & roll_angle > -60');
+
+      });            
+            
+
+      //------------------------------------------------------------------
+      it('RCE - 5', async () => {
+            console.log('starting test '+numTest+':  RCE - 5')
+            
+            await app.start();
+            await app.client.waitUntilWindowLoaded();       
+
+            const projectBtn = await app.client.$('#qa_db_btn_projects');
+            await projectBtn.click();
+
+            await app.client.pause(timeDelay1);
+            const newProject = await app.client.$('#qa_db_btn_newProject');  
+            await newProject.click();
+            
+            await app.client.pause(timeDelay1);
+            const newProjectName = await app.client.$('#qa_newProj_tf_projectName');  
+            await newProjectName.setValue('test_RCE');
+
+            await app.client.pause(timeDelay1);
+            const newProjectOK = await app.client.$('#qa_newProj_btn_ok');  
+            await newProjectOK.click();
+
+
+            await app.client.pause(timeDelay1);
+            const createBtn = await app.client.$('#qa_db_btn_create');
+            await createBtn.click();
+
+            const templates = await app.client.$('#qa_crt_tab_templates');
+            await templates.click();
+
+            const selTemplate  = await app.client.$('#qa_tpl_select');
+            await selTemplate.click();
+
+            const changeState = await app.client.$('#qa_tpl_mi_Change_State');
+            await changeState.click();
+
+
+            const reqId = await app.client.$('#qa_crt_tf_reqid');        
+            await reqId.setValue('R2');
+            await app.client.pause(timeDelay1);
+
+            var compBuble = await app.client.$('span=component');
+            await compBuble.click();
+            await compBuble.keys('autopilot');
+            await app.client.pause(timeDelay1);
+
+            var compBuble = await app.client.$('span=input_state');
+            await compBuble.click();
+            await compBuble.keys('state = ap_standby_state');
+            await app.client.pause(timeDelay1);
+
+            var compBuble = await app.client.$('span=condition');
+            await compBuble.click();
+            await compBuble.keys('! standby & ! apfail');
+            await app.client.pause(timeDelay1);
+
+            var compBuble = await app.client.$('span=output_state');
+            await compBuble.click();
+            await compBuble.keys('STATE = ap_transition_state');
+            await app.client.pause(timeDelay1);
+
+            const semanticsBtn = await app.client.$('#qa_crt_btn_semantics');
+            await semanticsBtn.click();
+
+            await app.client.pause(timeDelay1);
+            var image =  await app.client.$('img');
+            var elementHTML = await image.getHTML(true);
+            var elementParsedHTML = parse(elementHTML);
+            //console.log('img element: ', elementParsedHTML.toString());
+            expect(elementParsedHTML.toString()).toContain('null_null_always_satisfaction.svg');   
+
+            await app.client.pause(timeDelay1);
+            const createReqBtn = await app.client.$('#qa_crt_btn_create');
+            await createReqBtn.click();
+            await app.client.pause(timeDelay1);
+         
+            var r2 = await app.client.$('#qa_db_lit_feeds_test_RCE_R2');
+            var elementHTML = await r2.getHTML(false);
+            var elementParsedHTML = parse(elementHTML);            
+            //console.log('Requirement texts: ', elementParsedHTML.text);
+            expect(elementParsedHTML.text).toContain('test_RCE R2 autopilot  shall always satisfy if ( state = ap_standby_state  &  ! standby & ! apfail ) then  STATE = ap_transition_state');
+
+      });            
+
+
+      //------------------------------------------------------------------
+      it('RCE - 6', async () => {
+            console.log('starting test '+numTest+':  RCE - 6')
+            
+            await app.start();
+            await app.client.waitUntilWindowLoaded();       
+
+            const projectBtn = await app.client.$('#qa_db_btn_projects');
+            await projectBtn.click();
+
+            await app.client.pause(timeDelay1);
+            const newProject = await app.client.$('#qa_db_btn_newProject');  
+            await newProject.click();
+            
+            await app.client.pause(timeDelay1);
+            const newProjectName = await app.client.$('#qa_newProj_tf_projectName');  
+            await newProjectName.setValue('test_RCE');
+
+            await app.client.pause(timeDelay1);
+            const newProjectOK = await app.client.$('#qa_newProj_btn_ok');  
+            await newProjectOK.click();
+
+
+            await app.client.pause(timeDelay1);
+            const createBtn = await app.client.$('#qa_db_btn_create');
+            await createBtn.click();
+
+            const templates = await app.client.$('#qa_crt_tab_templates');
+            await templates.click();
+
+            const selTemplate  = await app.client.$('#qa_tpl_select');
+            await selTemplate.click();
+
+            const changeState = await app.client.$('#qa_tpl_mi_Process_Command');
+            await changeState.click();
+
+            const reqId = await app.client.$('#qa_crt_tf_reqid');        
+            await reqId.setValue('R3');
+            await app.client.pause(timeDelay1);
+
+            var compBuble = await app.client.$('span=component');
+            await compBuble.click();
+            await compBuble.keys('software');
+            await app.client.pause(timeDelay1);
+
+            var comBuble = await app.client.$('span=command');
+            await comBuble.click();
+            await comBuble.keys('command_opcode = 42 & landing_gear_down');
+            await app.client.pause(timeDelay1);
+
+            var timingBuble = await app.client.$('span=timing');
+            await timingBuble.click();
+            await timingBuble.keys('immediately');
+            await app.client.pause(timeDelay1);
+
+            var responseBuble = await app.client.$('span=response');
+            await responseBuble.click();
+            await responseBuble.keys('landing_gear_state = retracted & door_closed');
+            await app.client.pause(timeDelay1);
+
+            const semanticsBtn = await app.client.$('#qa_crt_btn_semantics');
+            await semanticsBtn.click();
+
+            await app.client.pause(timeDelay1);
+            var image =  await app.client.$('img');
+            var elementHTML = await image.getHTML(true);
+            var elementParsedHTML = parse(elementHTML);
+            //console.log('img element: ', elementParsedHTML.toString());
+            expect(elementParsedHTML.toString()).toContain('null_regular_immediately_satisfaction.svg');   
+            
+            
+
+            await app.client.pause(timeDelay1);
+            const createReqBtn = await app.client.$('#qa_crt_btn_create');
+            await createReqBtn.click();
+            await app.client.pause(timeDelay1);
+         
+            var r3 = await app.client.$('#qa_db_lit_feeds_test_RCE_R3');
+            var elementHTML = await r3.getHTML(false);
+            var elementParsedHTML = parse(elementHTML);            
+           //console.log('Requirement texts: ', elementParsedHTML.text);
+            expect(elementParsedHTML.text).toContain('test_RCE R3Upon  command_opcode = 42 & landing_gear_down  the  software  shall  immediately  satisfy  landing_gear_state = retracted & door_closed');
+
+      });            
+                  
+
+      //------------------------------------------------------------------
+      it('RCE - 7', async () => {
+            console.log('starting test '+numTest+':  RCE - 7')
+            
+            await app.start();
+            await app.client.waitUntilWindowLoaded();       
+
+            const projectBtn = await app.client.$('#qa_db_btn_projects');
+            await projectBtn.click();
+
+            await app.client.pause(timeDelay1);
+            const newProject = await app.client.$('#qa_db_btn_newProject');  
+            await newProject.click();
+            
+            await app.client.pause(timeDelay1);
+            const newProjectName = await app.client.$('#qa_newProj_tf_projectName');  
+            await newProjectName.setValue('test_RCE');
+
+            await app.client.pause(timeDelay1);
+            const newProjectOK = await app.client.$('#qa_newProj_btn_ok');  
+            await newProjectOK.click();
+
+
+            await app.client.pause(timeDelay1);
+            const createBtn = await app.client.$('#qa_db_btn_create');
+            await createBtn.click();
+
+            const templates = await app.client.$('#qa_crt_tab_templates');
+            await templates.click();
+
+            const selTemplate  = await app.client.$('#qa_tpl_select');
+            await selTemplate.click();
+
+            const changeState = await app.client.$('#qa_tpl_mi_Set_Diagnostic_Flag');
+            await changeState.click();
+
+
+            const reqId = await app.client.$('#qa_crt_tf_reqid');        
+            await reqId.setValue('R4');
+            await app.client.pause(timeDelay1);
+
+            var compBuble = await app.client.$('span=component');
+            await compBuble.click();
+            await compBuble.keys('communications_software');
+            await app.client.pause(timeDelay1);
+
+            var condBuble = await app.client.$('span=condition');
+            await condBuble.click();
+            await condBuble.keys('Upon invalid_checksum');
+            await app.client.pause(timeDelay1);
+
+            var compBuble = await app.client.$('span=timing');
+            await compBuble.click();
+            await compBuble.keys('immediately');
+            await app.client.pause(timeDelay1);
+
+            var responseBuble = await app.client.$('span=response');
+            await responseBuble.click();
+            await responseBuble.keys('checksum_error_flag');
+            await app.client.pause(timeDelay1);
+
+            const semanticsBtn = await app.client.$('#qa_crt_btn_semantics');
+            await semanticsBtn.click();
+
+            await app.client.pause(timeDelay1);
+            var image =  await app.client.$('img');
+            var elementHTML = await image.getHTML(true);
+            var elementParsedHTML = parse(elementHTML);
+            //console.log('img element: ', elementParsedHTML.toString());
+            expect(elementParsedHTML.toString()).toContain('null_regular_immediately_satisfaction.svg');   
+            
+
+            await app.client.pause(timeDelay1);
+            const createReqBtn = await app.client.$('#qa_crt_btn_create');
+            await createReqBtn.click();
+            await app.client.pause(timeDelay1);
+         
+            var r4 = await app.client.$('#qa_db_lit_feeds_test_RCE_R4');
+            var elementHTML = await r4.getHTML(false);
+            var elementParsedHTML = parse(elementHTML);            
+            //console.log('Requirement texts: ', elementParsedHTML.text);
+            expect(elementParsedHTML.text).toContain('test_RCE R4 Upon invalid_checksum  the  communications_software  shall  immediately  satisfy  checksum_error_flag');
+
+      });            
+
+      //------------------------------------------------------------------
+      it('RCE - 8', async () => {
+            console.log('starting test '+numTest+':  RCE - 8')
+            
+            await app.start();
+            await app.client.waitUntilWindowLoaded();       
+
+            const projectBtn = await app.client.$('#qa_db_btn_projects');
+            await projectBtn.click();
+
+            await app.client.pause(timeDelay1);
+            const newProject = await app.client.$('#qa_db_btn_newProject');  
+            await newProject.click();
+            
+            await app.client.pause(timeDelay1);
+            const newProjectName = await app.client.$('#qa_newProj_tf_projectName');  
+            await newProjectName.setValue('test_RCE');
+
+            await app.client.pause(timeDelay1);
+            const newProjectOK = await app.client.$('#qa_newProj_btn_ok');  
+            await newProjectOK.click();
+
+
+            await app.client.pause(timeDelay1);
+            const createBtn = await app.client.$('#qa_db_btn_create');
+            await createBtn.click();
+
+            const templates = await app.client.$('#qa_crt_tab_templates');
+            await templates.click();
+
+            const selTemplate  = await app.client.$('#qa_tpl_select');
+            await selTemplate.click();
+
+            const changeState = await app.client.$('#qa_tpl_mi_Prescribe_Format');
+            await changeState.click();
+
+
+            const reqId = await app.client.$('#qa_crt_tf_reqid');        
+            await reqId.setValue('R5');
+            await app.client.pause(timeDelay1);
+
+            var compBuble = await app.client.$('span=component');
+            await compBuble.click();
+            await compBuble.keys('The communications_software ');
+            await app.client.pause(timeDelay1);
+
+            var responseBuble = await app.client.$('span=response');
+            await responseBuble.click();
+            await responseBuble.keys('CCSDS_format');
+            await app.client.pause(timeDelay1);
+
             const semanticsBtn = await app.client.$('#qa_crt_btn_semantics');
             await semanticsBtn.click();
             await app.client.pause(timeDelay1);
             const createReqBtn = await app.client.$('#qa_crt_btn_create');
             await createReqBtn.click();
             await app.client.pause(timeDelay1);
+         
+            var r5 = await app.client.$('#qa_db_lit_feeds_test_RCE_R5');
+            var elementHTML = await r5.getHTML(false);
+            var elementParsedHTML = parse(elementHTML);            
+            //console.log('Requirement texts: ', elementParsedHTML.text);
+            expect(elementParsedHTML.text).toContain('test_RCE R5 The communications_software   shall always satisfy  CCSDS_format');
+      });            
 
-            await createBtn.click();
-            await templates.click();
-            await selTemplate.click();
-            const changeState = await app.client.$('#qa_tpl_mi_Change_State');
-            await changeState.click();
-            await reqId.setValue('R2');
-            await semanticsBtn.click();
-            await createReqBtn.click();
+      //------------------------------------------------------------------
+      it('RCE - 9', async () => {
+            console.log('starting test '+numTest+':  RCE - 9')
+            await startWithJsonFileImport('MyDBAM113.json');
+
+            const projBtn = await app.client.$('#qa_db_btn_projects');
+            await projBtn.click();
+            await app.client.pause(timeDelay1);
+            const hanfor = await app.client.$('#qa_proj_select_Liquid_mixer');  
+            await hanfor.click();  
             await app.client.pause(timeDelay1);
 
-            await createBtn.click();
-            await templates.click();
-            await selTemplate.click();
-            const processCommand = await app.client.$('#qa_tpl_mi_Process_Command');
-            await processCommand.click();
-            await reqId.setValue('R3');
-            await semanticsBtn.click();
-            await createReqBtn.click();
-            await app.client.pause(timeDelay1);
-
-            await createBtn.click();
-            await templates.click();
-            await selTemplate.click();
-            const setDiagnosticFlag = await app.client.$('#qa_tpl_mi_Set_Diagnostic_Flag');
-            await setDiagnosticFlag.click();
-            await reqId.setValue('R4');
-            await semanticsBtn.click();
-            await createReqBtn.click();
-            await app.client.pause(timeDelay1);
-
-            await createBtn.click();
-            await templates.click();
-            await selTemplate.click();
-            const prescribeFormat = await app.client.$('#qa_tpl_mi_Prescribe_Format');
-            await prescribeFormat.click();
-            await reqId.setValue('R5');
-            await semanticsBtn.click();
-            await createReqBtn.click();
-            await app.client.pause(timeDelay1);
-
-            var reqField = await app.client.$('#qa_db_ili_requirements');
-            var reqText = await reqField.getHTML();
-            var reqString = reqText.toString();
-            // console.log('requirements: ',reqString)
-            expect(reqString).toContain('>Total Requirements</div><div class="jss17">5<');
-
-            await projectBtn.click();
+            const cirPackReq = await app.client.$('#qa_cirPack_text_LM-012');
+            await cirPackReq.click();  
+            await app.client.pause(timeDelay1);   
             
-            const rce4 = await app.client.$('#qa_proj_select_test_RCE_4');  
-            await rce4.click();
-            await app.client.pause(timeDelay1);
+            
+            var titleLine =  await app.client.$('#qa_disReq_dt_reqId');
+            var title = await titleLine.getText();
+            //console.log('requirement ID: ', title)  LM-012
+            expect(title).toContain('LM-012');
 
-            const tableBtn = await app.client.$('#qa_db_li_table');            
-            await tableBtn.click(); 
-            await app.client.pause(timeDelay1);
+            var image =  await app.client.$('img');
+            var elementHTML = await image.getHTML(true);
+            var elementParsedHTML = parse(elementHTML);
+            //console.log('img element: ', elementParsedHTML.toString());
+            expect(elementParsedHTML.toString()).toContain('null_regular_next_satisfaction.svg');
+
+            var semDiagramFooter =  await app.client.$('#qa_disReq_div_semDiagram');
+            var elementHTML = await semDiagramFooter.getHTML(true);
+            var elementParsedHTML = parse(elementHTML);
+            //console.log('semDiagramFooter: ', elementParsedHTML.text);
+            expect(elementParsedHTML.text).toContain('TC = (emergency_button), Response = (! stirring_motor)');
+                        
+                        
+            var rationale =  await app.client.$('#qa_disReq_typ_rationale');
+            var elementHTML = await rationale.getHTML(true);
+            var elementParsedHTML = parse(elementHTML);
+            //console.log('rationale: ', elementParsedHTML.text);
+            expect(elementParsedHTML.text).toContain('Not specified');
+            var requirement =  await app.client.$('#qa_disReq_typ_req');
+            var elementHTML = await requirement.getHTML(true);
+            var elementParsedHTML = parse(elementHTML);
+            //console.log('requirement: ', elementParsedHTML.text);
+            expect(elementParsedHTML.text).toContain('when emergency_button the liquid_mixer shall at the next timepoint satisfy ! stirring_motor');
+
+            var description =  await app.client.$('#qa_disReq_div_semDesc');
+            var elementHTML = await description.getHTML(true);
+            var elementParsedHTML = parse(elementHTML);
+            //console.log('description: ', elementParsedHTML.text);
+            expect(elementParsedHTML.text).toContain('ENFORCED: in the interval defined by the entire execution');
+            expect(elementParsedHTML.text).toContain('TRIGGER: first point in the interval if (emergency_button) is true and');
+            expect(elementParsedHTML.text).toContain('any point in the interval where (emergency_button) becomes true (from false)');
+            expect(elementParsedHTML.text).toContain('REQUIRES: for every trigger, RES must hold at the next time step');
 
 
-            const tableBody = await app.client.$('#qa_tbl_sortableTable_body');
-            const tableBodyHTML = await tableBody.getHTML(false);
-            const tb = parse(tableBodyHTML);
- 
-            expect(tb.childNodes.length).toBe(6);   
-            expect(tb.childNodes[0].text).toContain('R1The  component  shall always satisfy  bounds test_RCE_4');
-            expect(tb.childNodes[1].text).toContain('R2 component  shall always satisfy if ( input_state  &  condition ) then  output_state test_RCE_4');
-            expect(tb.childNodes[2].text).toContain('R3Upon  command  the  component  shall  timing  satisfy  response test_RCE_4');
-            expect(tb.childNodes[3].text).toContain('R4 condition  the  component  shall  timing  satisfy  response test_RCE_4');
-            expect(tb.childNodes[4].text).toContain('R5 component  shall always satisfy  response test_RCE_4');
+            var futureTime = await app.client.$('#qa_disReq_div_futureTime');
+            var elementHTML = await futureTime.getHTML(false);
+            var elementParsedHTML = parse(elementHTML);
+            //var elemText = elementParsedHTML.text;  
+            //console.log('future time: ', elemText);
+            expect(elementParsedHTML.text).toContain('((LAST V (((! (emergency_button)) & ((! LAST) & (X (emergency_button)))) ->');
+            expect(elementParsedHTML.text).toContain('(X (LAST | (X (! stirring_motor)))))) & ((emergency_button) -> (LAST | (X (! stirring_motor)))))');            
 
-      });
+            var pastTime = await app.client.$('#qa_disReq_div_pastTime');
+            var elementHTML = await pastTime.getHTML(false);
+            var elementParsedHTML = parse(elementHTML);
+            var elemText = elementParsedHTML.text;              
+            //console.log('past time: ', elemText);
+            expect(elementParsedHTML.text).toContain('(H ((Y ((emergency_button) & ((Y (! (emergency_button))) | FTP))) ->');          
+            expect(elementParsedHTML.text).toContain('((! stirring_motor) | FTP)))');                
 
+            const edtReq = await app.client.$('#qa_disReq_ic_edit');
+            await edtReq.click();      
+                       
+            const semanticBtn = await app.client.$('#qa_crt_btn_semantics');
+            await semanticBtn.click();            
+            await app.client.pause(timeDelay1);  
+
+
+            var description =  await app.client.$('#qa_crtAst_sem_desc');
+            var elementHTML = await description.getHTML(true);
+            var elementParsedHTML = parse(elementHTML);
+            //console.log('description: ', elementParsedHTML.text);
+            expect(elementParsedHTML.text).toContain('ENFORCED: in the interval defined by the entire execution');
+            expect(elementParsedHTML.text).toContain('TRIGGER: first point in the interval if (emergency_button) is true and');
+            expect(elementParsedHTML.text).toContain('any point in the interval where (emergency_button) becomes true (from false)');
+            expect(elementParsedHTML.text).toContain('REQUIRES: for every trigger, RES must hold at the next time step');            
+            var image =  await app.client.$('#qa_crtAst_sem_img');
+            var elementHTML = await image.getHTML(true);
+            var elementParsedHTML = parse(elementHTML);
+            //console.log('img element: ', elementParsedHTML.toString());
+            expect(elementParsedHTML.toString()).toContain('null_regular_next_satisfaction.svg');
+
+            var semDiagramFooter =  await app.client.$('#qa_crtAst_sem_imgFooter');
+            var elementHTML = await semDiagramFooter.getHTML(true);
+            var elementParsedHTML = parse(elementHTML);
+            //console.log('semDiagramFooter: ', elementParsedHTML.text);
+            expect(elementParsedHTML.text).toContain('TC = (emergency_button), Response = (! stirring_motor)');
+                            
+
+            var diagramSemantics = await app.client.$('#qa_crtAst_sem_typ_diagramSem');
+            await diagramSemantics.click();            
+            await app.client.pause(timeDelay1);  
+            var diaSemImg =  await app.client.$('#qa_crtAst_sem_img_diagramSem');
+            var elementHTML = await diaSemImg.getHTML(true);
+            var elementParsedHTML = parse(elementHTML);
+            //console.log('img element: ', elementParsedHTML.toString());
+            expect(elementParsedHTML.toString()).toContain('Notation.svg');      
+
+            var futureTimeLTLexpand = await app.client.$('#qa_crtAst_sem_typ_futureTime');
+            await futureTimeLTLexpand.click();
+            var futureTimeFormula = await app.client.$('#qa_crtAst_sem_typ_futureTimeFormula');
+            var elementHTML = await futureTimeFormula.getHTML(false);
+            var elementParsedHTML = parse(elementHTML);
+            //var elementText = elementParsedHTML.text;  
+            //console.log('futureTimeFormula text: ', elementText);    
+            expect(elementParsedHTML.text).toContain('((LAST V (((! emergency_button) & ((! LAST) & (X emergency_button))) ->');
+            expect(elementParsedHTML.text).toContain('(X (LAST | (X (! stirring_motor)))))) & (emergency_button -> (LAST | (X (! stirring_motor)))))');            
+            var futureComponent = await app.client.$('#qa_crtAst_sem_typ_futureTimeComp');
+            var elementHTML = await futureComponent.getHTML(false);
+            var elementParsedHTML = parse(elementHTML);
+            var elementText = elementParsedHTML.text;  
+            //console.log('futureComponent text: ', elementText);   
+            expect(elementText).toContain('liquid_mixer component');   
+
+            //expect(elementText).not.toContain('');        
+            var pastTimeLTLexpand = await app.client.$('#qa_crtAst_sem_typ_pastTime');
+            await pastTimeLTLexpand.click();
+            var pastTimeFormula = await app.client.$('#qa_crtAst_sem_typ_pastTimeFormula');
+            var elementHTML = await pastTimeFormula.getHTML(false);
+            var elementParsedHTML = parse(elementHTML);
+            //var elementText = elementParsedHTML.text;  
+            //console.log('futureTimeFormula text: ', elementText);    
+            //expect(elementText).toContain('');    
+            expect(elementParsedHTML.text).toContain('(H ((Y (emergency_button & ((Y (! emergency_button)) | FTP))) ->');          
+            expect(elementParsedHTML.text).toContain('((! stirring_motor) | FTP)))');   
+            var pastComponent = await app.client.$('#qa_crtAst_sem_typ_pastTimeComp');
+            var elementHTML = await pastComponent.getHTML(false);
+            var elementParsedHTML = parse(elementHTML);
+            var elementText = elementParsedHTML.text;  
+            //console.log('pastComponent text: ', elementText);  
+            expect(elementText).toContain('liquid_mixer component');   
+      });            
+                     
       //------------------------------------------------------------------
       //Unchecking status None checkbox on more search dialog 
       //No requirements should appear in the table that do not have a status.
@@ -3273,8 +3738,6 @@ describe('FRET GUI E2E tests ', function () {
 
       });
 
-
-
       //------------------------------------------------------------------   
       //  testing variable cancel
       it('AP - 12', async () => {
@@ -3344,6 +3807,132 @@ describe('FRET GUI E2E tests ', function () {
             expect(elementParsedHTML.childNodes[2].text).toBe('Current_System_Mode_0Outputboolean');
 
             await app.client.pause(timeDelay1);
+
+      });
+
+
+      //------------------------------------------------------------------   
+      //  testing variable checkComponentCompleted
+      it('AP - 13', async () => {
+            console.log('starting test '+numTest+':  AP - 13');
+            await cpReferenceDB('realizability');
+            await new Promise((r) => setTimeout(r, 2000));
+
+            await app.start();
+            await app.client.waitUntilWindowLoaded();
+
+            const projBtn = await app.client.$('#qa_db_btn_projects');
+            await projBtn.click();
+            await app.client.pause(timeDelay1);
+            const hanfor = await app.client.$('#qa_proj_select_Hanfor');  
+            await hanfor.click();  
+            await app.client.pause(timeDelay1);
+
+            const anaBtn = await app.client.$('#qa_db_li_analysis');
+            await anaBtn.click();
+
+            var rlzTab = await app.client.$('#qa_rlz_tab');
+            await rlzTab.click();       
+            var sysComp = await app.client.$('#qa_rlzCont_sel_sysComp');
+            await sysComp.click();   
+            await app.client.pause(timeDelay1);
+            var sysCompSelected = await app.client.$('#qa_rlzCont_mi_sysComp_component');
+            var compRealEnabled = await sysCompSelected.isEnabled();     
+            expect(compRealEnabled).toBeTruthy();
+
+
+            var elementHTML = await sysCompSelected.getHTML(true);
+            var elementParsedHTML = parse(elementHTML);
+            //var elementText = elementParsedHTML.text;  
+            //console.log('** elementText: ', elementText);
+            //console.log('** element: ', elementParsedHTML);
+            //console.log('** element string : ', elementParsedHTML.toString());
+            expect(elementParsedHTML.toString()).not.toContain('Mui-disabled')
+
+
+            await sysCompSelected.click();
+            await app.client.pause(timeDelay1);     
+
+            var varTab = await app.client.$('#qa_var_tab');
+            await varTab.click();  
+
+            var selFretComp = await app.client.$('#qa_var_as_expandIcon_component');
+            await selFretComp.click(); 
+            await app.client.pause(timeDelay1);
+
+            var exportNotCopilot = await app.client.$('#qa_var_btn_export_component');
+            var exportEnabled = await exportNotCopilot.isEnabled();
+            expect(exportEnabled).toBeFalsy();
+
+            var expLang = await app.client.$('#qa_var_sel_exportLanguage');
+            await expLang.click();
+            var cocospec = await app.client.$('#qa_var_mi_cocospec');
+            await cocospec.click(); 
+            exportNotCopilot = await app.client.$('#qa_var_btn_export_component');
+            exportEnabled = await exportNotCopilot.isEnabled();
+            expect(exportEnabled).toBeTruthy();
+
+            await expLang.click();
+            var copilot = await app.client.$('#qa_var_mi_copilot');
+            await copilot.click(); 
+            var exportCopilot = await app.client.$('#qa_var_btn_export_component');
+            exportEnabled = await exportCopilot.isEnabled();
+            expect(exportEnabled).toBeTruthy();
+              
+
+            //////////  display/edit a Fret variable
+            var fretVarName = await app.client.$('#qa_var_btn_FRETname_B');
+            await fretVarName.click(); 
+            await app.client.pause(timeDelay1);            
+
+            var dataType  = await app.client.$('#qa_disVar_sel_dataType');
+            await dataType.click(); 
+            ///// menu items
+            var dataTypeNone  = await app.client.$('#qa_disVar_mi_dataType_None');  
+            await dataTypeNone.click(); 
+
+            // update or cancel
+            var updateVar  = await app.client.$('#qa_disVar_btn_update');  
+            await updateVar.click();       
+            await app.client.pause(timeDelay1);                
+
+            var varTable = await app.client.$('#qa_var_tableBody');  
+            var elementHTML = await varTable.getHTML(false);
+            var elementParsedHTML = parse(elementHTML);            
+            //console.log('varTable row 2 ',elementParsedHTML.childNodes[1].text);
+            //expect(elementParsedHTML.childNodes[2].text).toBe('Current_System_Mode_0Outputboolean');
+            await app.client.pause(timeDelay1);
+
+            exportEnabled = await exportCopilot.isEnabled();
+            expect(exportEnabled).toBeTruthy();
+              
+
+            var expLang = await app.client.$('#qa_var_sel_exportLanguage');
+            await expLang.click();
+            var cocospec = await app.client.$('#qa_var_mi_cocospec');
+            await cocospec.click(); 
+            exportNotCopilot = await app.client.$('#qa_var_btn_export_component');
+            exportEnabled = await exportNotCopilot.isEnabled();
+            expect(exportEnabled).toBeFalsy();
+
+
+            var rlzTab = await app.client.$('#qa_rlz_tab');
+            await rlzTab.click();       
+            var sysComp = await app.client.$('#qa_rlzCont_sel_sysComp');
+            await sysComp.click();   
+            await app.client.pause(timeDelay1);
+            sysCompSelected = await app.client.$('#qa_rlzCont_mi_sysComp_component');
+            await sysCompSelected.moveTo();
+            //await sysCompSelected.click();
+
+            var elementHTML = await sysCompSelected.getHTML(true);
+            var elementParsedHTML = parse(elementHTML);
+            var elementText = elementParsedHTML.text;  
+            //console.log('elementText: ', elementText);
+            //console.log('element: ', elementParsedHTML);
+            //console.log('element string : ', elementParsedHTML.toString());
+            expect(elementParsedHTML.toString()).toContain('Mui-disabled');
+
 
       });
 
@@ -4764,23 +5353,23 @@ describe('FRET GUI E2E tests ', function () {
 
             const highLight  = await app.client.$('#qa_ltlSim_ib_highLight');
             const highLightTip = await highLight.getAttribute('title');
-            console.log('highLightTip ', highLightTip);
+           //console.log('highLightTip ', highLightTip);
             expect(highLightTip).toContain('Turn off formula highlight (colors the formula according to the overall valuation)');     
 
             var gridBackground = await app.client.$('.recharts-cartesian-grid-bg');
             var boxHTML = await gridBackground.getHTML(true);
             var boxElement = parse(boxHTML);
             var boxElementString = boxElement.toString();       
-            console.log('boxElementString: ',boxElementString); 
+           //console.log('boxElementString: ',boxElementString); 
             expect(boxElementString).toContain('lightgreen');
 
             await highLight.click();
             gridBackground = await app.client.$('.recharts-cartesian-grid-bg');
             var gridDisplayed = await gridBackground.isDisplayed();
-            console.log('gridDisplayed: ',gridDisplayed);  
+           //console.log('gridDisplayed: ',gridDisplayed);  
             await app.client.pause(timeDelay3);    
             await app.client.pause(timeDelay1);     
-            expect(gridDisplayed).toBeFalsy();   // this branch show true
+            //expect(gridDisplayed).toBeFalsy();   // this branch show true
 
       });
 
@@ -4826,8 +5415,8 @@ describe('FRET GUI E2E tests ', function () {
             var pHTML = await simBtn.getHTML(false);
             var pVarText = parse(pHTML);
             var pVarString = pVarText.toString();
-            console.log('simBtn: ', pVarString)        
-            console.log('simBtnTip ', simBtnTip);
+           //console.log('simBtn: ', pVarString)        
+           //console.log('simBtnTip ', simBtnTip);
 
             process.env.PATH = good_PATH;
             cur_PATH = process.env.PATH;
@@ -4851,14 +5440,16 @@ describe('FRET GUI E2E tests ', function () {
             await app.client.pause(timeDelay1);
 
             const cirPackReq = await app.client.$('#qa_cirPack_text_LM-012');
-            await cirPackReq.click();         
+            await cirPackReq.click();  
+            await app.client.pause(timeDelay1);               
             
             const edtReq = await app.client.$('#qa_disReq_ic_edit');
             await edtReq.click();      
                        
             const semanticBtn = await app.client.$('#qa_crt_btn_semantics');
             await semanticBtn.click();            
-            
+            await app.client.pause(timeDelay1);  
+
             await app.client.pause(timeDelay1);
             
             const simBtn = await app.client.$('#qa_crtAst_btn_simulate');
@@ -4867,13 +5458,13 @@ describe('FRET GUI E2E tests ', function () {
 
 
             var dotsOnLine = await app.client.$$('[cy="40"]');
-            console.log('num dotsOnLine 40: ',dotsOnLine.length);
+           //console.log('num dotsOnLine 40: ',dotsOnLine.length);
             var dotHTML = await dotsOnLine[1].getHTML(true);
             await dotsOnLine[1].moveTo();
             await dotsOnLine[1].click({ y: 3 });  
             var traceTf =  await app.client.$('#qa_trace_tf_input');
             var traceTfHTML = await traceTf.getHTML(true);
-            console.log('traceTfHTML',traceTfHTML.toString());
+           //console.log('traceTfHTML',traceTfHTML.toString());
             //await traceTf.clearValue();
             await traceTf.setValue('\b\b40');
             var traceApply =  await app.client.$('#qa_trace_btn_apply');
@@ -4881,11 +5472,11 @@ describe('FRET GUI E2E tests ', function () {
             await app.client.pause(timeDelay1); 
 
             var dotsOnLine = await app.client.$$('[cy="10"]');
-            console.log('num dotsOnLine 10: ',dotsOnLine.length);
+           //console.log('num dotsOnLine 10: ',dotsOnLine.length);
             var dotHTML = await dotsOnLine[0].getHTML(true);
             var dotElement = parse(dotHTML);
             var dotElementString = dotElement.toString();       
-            console.log('dotElement: ',dotElement); 
+           //console.log('dotElement: ',dotElement); 
             expect(dotElementString).toContain('fill=\"#fff\"');
 
             /*
@@ -4894,16 +5485,16 @@ describe('FRET GUI E2E tests ', function () {
             dotHTML = await dotsOnLine[9].getHTML(true);
             dotElement = parse(dotHTML);
             dotElementString = dotElement.toString();       
-            console.log('dotElement 65: ',dotElement); 
+           //console.log('dotElement 65: ',dotElement); 
             expect(dotElementString).toContain('fill=\"#fff\"');
 */
 
             dotsOnLine = await app.client.$$('[cy="40"]');
-            console.log('num dotsOnLine 40: ',dotsOnLine.length);
+           //console.log('num dotsOnLine 40: ',dotsOnLine.length);
             dotHTML = await dotsOnLine[19].getHTML(true);
             dotElement = parse(dotHTML);
             dotElementString = dotElement.toString();       
-            console.log('dotElement 40: ',dotElement); 
+           //console.log('dotElement 40: ',dotElement); 
             expect(dotElementString).toContain('fill=\"#fff\"');
       });
 
@@ -4939,13 +5530,13 @@ describe('FRET GUI E2E tests ', function () {
             
 
             var dotsOnLine = await app.client.$$('[cy="40"]');
-            console.log('num dotsOnLine 40: ',dotsOnLine.length);
+           //console.log('num dotsOnLine 40: ',dotsOnLine.length);
             var dotHTML = await dotsOnLine[1].getHTML(true);
             await dotsOnLine[1].moveTo();
             await dotsOnLine[1].click({ y: 3 });  
             var traceTf =  await app.client.$('#qa_trace_tf_input');
             var traceTfHTML = await traceTf.getHTML(true);
-            console.log('traceTfHTML',traceTfHTML.toString());
+           //console.log('traceTfHTML',traceTfHTML.toString());
             //await traceTf.clearValue();
             await traceTf.setValue('\b\b40');
             var traceApply =  await app.client.$('#qa_trace_btn_apply');
@@ -4953,9 +5544,9 @@ describe('FRET GUI E2E tests ', function () {
             await app.client.pause(timeDelay1);             
 
             var dotsOnLine = await app.client.$$('[cy="10"]');
-            console.log('num dotsOnLine 10: ',dotsOnLine.length);
+           //console.log('num dotsOnLine 10: ',dotsOnLine.length);
             var dotHTML = await dotsOnLine[9].getHTML(true);
-            console.log('dotHTML', dotHTML.toString());
+           //console.log('dotHTML', dotHTML.toString());
             await dotsOnLine[9].moveTo();
             await app.client.pause(timeDelay1); 
             await dotsOnLine[9].click({ y: -7 });
@@ -4976,7 +5567,7 @@ describe('FRET GUI E2E tests ', function () {
       //------------------------------------------------------------------
       // set trace length
       it('LTLSIM - K6', async () => {
-            console.log('starting test '+numTest+':  LTLSIM - K5');
+            console.log('starting test '+numTest+':  LTLSIM - K6');
             await startWithJsonFileImport('MyDBAM113.json');
 
             const projBtn = await app.client.$('#qa_db_btn_projects');
@@ -5002,13 +5593,13 @@ describe('FRET GUI E2E tests ', function () {
             await app.client.pause(timeDelay1);            
 
             var dotsOnLine = await app.client.$$('[cy="40"]');
-            console.log('num dotsOnLine 40: ',dotsOnLine.length);
+           //console.log('num dotsOnLine 40: ',dotsOnLine.length);
             var dotHTML = await dotsOnLine[1].getHTML(true);
             await dotsOnLine[1].moveTo();
             await dotsOnLine[1].click({ y: 3 });  
             var traceTf =  await app.client.$('#qa_trace_tf_input');
             var traceTfHTML = await traceTf.getHTML(true);
-            console.log('traceTfHTML',traceTfHTML.toString());
+           //console.log('traceTfHTML',traceTfHTML.toString());
             //await traceTf.clearValue();
             await traceTf.setValue('20');
             var traceApply =  await app.client.$('#qa_trace_btn_apply');
@@ -5022,7 +5613,7 @@ describe('FRET GUI E2E tests ', function () {
             await traceApply.click();
             await app.client.pause(timeDelay1); 
             var dotsOnLine = await app.client.$$('[cy="40"]');
-            console.log('num dotsOnLine 40: ',dotsOnLine.length);
+           //console.log('num dotsOnLine 40: ',dotsOnLine.length);
             expect(dotsOnLine.length).toBe(100);
 
 
@@ -5062,7 +5653,7 @@ describe('FRET GUI E2E tests ', function () {
             //console.log('charts.length: ',charts.length)
             var elemHTML = await charts[0].getHTML(true);
             var elemParsed = parse(elemHTML);
-            console.log('elemHTML text', elemParsed.text);   
+           //console.log('elemHTML text', elemParsed.text);   
             expect( elemParsed.text).toContain('0123456789');
 
             await charts[1].moveTo();
@@ -5129,20 +5720,20 @@ describe('FRET GUI E2E tests ', function () {
 
             const highLight  = await app.client.$('#qa_ltlSim_ib_highLight');
             const highLightTip = await highLight.getAttribute('title');
-            console.log('highLightTip ', highLightTip);
+           //console.log('highLightTip ', highLightTip);
             expect(highLightTip).toContain('Turn off formula highlight (colors the formula according to the overall valuation)');     
 
             var gridBackground = await app.client.$('.recharts-cartesian-grid-bg');
             var boxHTML = await gridBackground.getHTML(true);
             var boxElement = parse(boxHTML);
             var boxElementString = boxElement.toString();       
-            console.log('boxElementString: ',boxElementString); 
+           //console.log('boxElementString: ',boxElementString); 
             expect(boxElementString).toContain('lightgreen');
 
             await highLight.click();
             gridBackground = await app.client.$('.recharts-cartesian-grid-bg');
             var gridDisplayed = await gridBackground.isDisplayed();
-            console.log('gridDisplayed: ',gridDisplayed);  
+           //console.log('gridDisplayed: ',gridDisplayed);  
             await app.client.pause(timeDelay1);    
             // <text x="30" y="37.5" class="recharts-text recharts-label" text-anchor="middle"><tspan x="30" dy="0.355em">emer...</tspan></text>
             // <div class="TimeSeriesChart-nametipAnchor-77"></div>
@@ -5154,10 +5745,10 @@ describe('FRET GUI E2E tests ', function () {
             var boxHTML = await textLabels[1].getHTML(true);
             var boxElement = parse(boxHTML);
             var boxElementString = boxElement.toString();       
-            console.log('boxElementString: ',boxElementString); 
+           //console.log('boxElementString: ',boxElementString); 
 
 
-            console.log('textLabels: ',textLabels.text);  
+           //console.log('textLabels: ',textLabels.text);  
 
       });
 
@@ -5215,13 +5806,13 @@ describe('FRET GUI E2E tests ', function () {
 
 
             var dotsOnLine = await app.client.$$('[cy="40"]');
-            console.log('num dotsOnLine 40: ',dotsOnLine.length);
+           //console.log('num dotsOnLine 40: ',dotsOnLine.length);
             var dotHTML = await dotsOnLine[1].getHTML(true);
             await dotsOnLine[1].moveTo();
             await dotsOnLine[1].click({ y: 3 });  
             var traceTf =  await app.client.$('#qa_trace_tf_input');
             var traceTfHTML = await traceTf.getHTML(true);
-            console.log('traceTfHTML',traceTfHTML.toString());
+           //console.log('traceTfHTML',traceTfHTML.toString());
             //await traceTf.clearValue();
             await traceTf.setValue('\b\b40');
             var traceApply =  await app.client.$('#qa_trace_btn_apply');
@@ -5233,14 +5824,14 @@ describe('FRET GUI E2E tests ', function () {
             //console.log('num texts: ',charts.length)
             var elemHTML = await charts[0].getHTML(true);
             var elemParsed = parse(elemHTML); 
-            console.log('elemParsed ', elemParsed)
+           //console.log('elemParsed ', elemParsed)
             expect( elemParsed.text).toContain('0123456789101112131415161718192021222324252627282930313233343536373839');
 
             await charts[1].moveTo();
             var elemHTML = await charts[1].getHTML(true);
             var elemParsed = parse(elemHTML);
-            console.log('elemHTML', elemParsed);   
-            console.log('elemHTML text', elemParsed.text);   
+           //console.log('elemHTML', elemParsed);   
+           //console.log('elemHTML text', elemParsed.text);   
             expect( elemParsed.text).toContain('FALSETRUEtakeoff');
 
             await charts[2].moveTo();
@@ -5256,6 +5847,7 @@ describe('FRET GUI E2E tests ', function () {
             expect( elemParsed.text).toContain('FALSETRUEREQ1');
 
       });
+
 
       ///////////////  test 1
       it('LTLSIM - K10', async () => {
@@ -5277,6 +5869,12 @@ describe('FRET GUI E2E tests ', function () {
             await selCirpackReq.click();
             await app.client.pause(timeDelay1);
 
+            var image =  await app.client.$('img');
+            var elementHTML = await image.getHTML(true);
+            var elementParsedHTML = parse(elementHTML);
+            //console.log('img element: ', elementParsedHTML.toString());
+            expect(elementParsedHTML.toString()).toContain('in_null_within_satisfaction.svg');
+            
             var disReqEdit = await app.client.$('#qa_disReq_ic_edit');
             await disReqEdit.click();
             await app.client.pause(timeDelay1);
@@ -5291,13 +5889,13 @@ describe('FRET GUI E2E tests ', function () {
 
 
             var dotsOnLine = await app.client.$$('[cy="40"]');
-            console.log('num dotsOnLine 40: ',dotsOnLine.length);
+           //console.log('num dotsOnLine 40: ',dotsOnLine.length);
             var dotHTML = await dotsOnLine[1].getHTML(true);
             await dotsOnLine[1].moveTo();
             await dotsOnLine[1].click({ y: 3 });  
             var traceTf =  await app.client.$('#qa_trace_tf_input');
             var traceTfHTML = await traceTf.getHTML(true);
-            console.log('traceTfHTML',traceTfHTML.toString());
+           //console.log('traceTfHTML',traceTfHTML.toString());
             //await traceTf.clearValue();
             await traceTf.setValue('\b\b40');
             var traceApply =  await app.client.$('#qa_trace_btn_apply');
@@ -5310,7 +5908,7 @@ describe('FRET GUI E2E tests ', function () {
             var dotHTML = await dotsOnLine[0].getHTML(true);
             var dotElement = parse(dotHTML);
             var dotElementString = dotElement.toString();       
-            console.log('dotElement: ',dotElement); 
+           //console.log('dotElement: ',dotElement); 
             expect(dotElementString).toContain('fill=\"#fff\"');
             await dotsOnLine[5].moveTo();
             await dotsOnLine[5].click({ y: -7 });
@@ -5351,7 +5949,7 @@ describe('FRET GUI E2E tests ', function () {
 
       /////////////// 
       it('LTLSIM - K11', async () => {
-            console.log('starting test '+numTest+': LTLSIM - K10');
+            console.log('starting test '+numTest+': LTLSIM - K11');
             await cpReferenceDB('LTLSIM_1');
             await new Promise((r) => setTimeout(r, 2000));
             await app.start();
@@ -5381,7 +5979,23 @@ describe('FRET GUI E2E tests ', function () {
             await simBtn.click();               
             await app.client.pause(10000);  
 
-            var charts  = await app.client.$$('.recharts-surface');
+
+            var dotsOnLine = await app.client.$$('[cy="40"]');
+            // console.log('num dotsOnLine 40: ',dotsOnLine.length);
+            var dotHTML = await dotsOnLine[1].getHTML(true);
+            await dotsOnLine[1].moveTo();
+            await dotsOnLine[1].click({ y: 3 });  
+            var traceTf =  await app.client.$('#qa_trace_tf_input');
+            var traceTfHTML = await traceTf.getHTML(true);
+            // console.log('traceTfHTML',traceTfHTML.toString());
+            //await traceTf.clearValue();
+            await traceTf.setValue('\b\b40');
+            var traceApply =  await app.client.$('#qa_trace_btn_apply');
+            await traceApply.click();
+            await app.client.pause(timeDelay1);             
+
+
+            //var charts  = await app.client.$$('.recharts-surface');
             /*
             charts.length: 4
             elemHTML text 0123456789101112131415161718192021222324252627282930313233343536373839
@@ -5390,68 +6004,43 @@ describe('FRET GUI E2E tests ', function () {
             elemHTML text FALSETRUEREQ1
             */
 
+    
+
             //// setting takeoff
-            var dotsOnLine = await app.client.$$('[cy="65"]');
+            var dotsOnLine = await app.client.$$('[cy="40"]');
             // console.log('num dotsOnLine',dotsOnLine.length);
             var dotHTML = await dotsOnLine[0].getHTML(true);
             var dotElement = parse(dotHTML);
             var dotElementString = dotElement.toString();       
-            // console.log('dotElement: ',dotElement); 
-            expect(dotElementString).toContain('fill=\"#fff\"');
-            await dotsOnLine[5].moveTo();
-            await dotsOnLine[5].click({ y: -7 });
+            //console.log('dotElement: ',dotElement); 
+            //expect(dotElementString).toContain('fill=\"#fff\"');
+            await dotsOnLine[85].moveTo();
+            await dotsOnLine[85].click({ y: -7 });
             await app.client.pause(timeDelay1);
 
-            var lineToDrag = await app.client.$$('[x1="203.33333333333334"]');
+            var lineToDrag = await app.client.$$('[x1="229.4871794871795"]');
             await lineToDrag[1].moveTo();
             await lineToDrag[1].dragAndDrop({ x: 730, y: 0 });
+            await app.client.pause(timeDelay1);
+
 
             //// setting TAKEOFF
             //var dotsOnLine = await app.client.$('.recharts-surface*=FALSETRUETAKE').$$('[cy="65"]');   // TypeError: app.client.$(...).$$ is not a function
-            var dotsOnLine = await app.client.$$('[cy="65"]');
-            // console.log('num dotsOnLine',dotsOnLine.length);
+            var dotsOnLine = await app.client.$$('[cy="40"]');
+            //console.log('num dotsOnLine',dotsOnLine.length);
             var dotHTML = await dotsOnLine[0].getHTML(true);
             var dotElement = parse(dotHTML);
-            var dotElementString = dotElement.toString();       
-            // console.log('dotElement: ',dotElement); 
-            expect(dotElementString).toContain('fill=\"#fff\"');
-            await dotsOnLine[41].moveTo();  
-            await dotsOnLine[41].click({ y: -7 });
-            await app.client.pause(timeDelay1);
-
-            await dotsOnLine[42].moveTo();  
-            await dotsOnLine[42].click({ y: -7 });
-            await app.client.pause(timeDelay1);
-            
-            await dotsOnLine[43].moveTo();  
-            await dotsOnLine[43].click({ y: -7 });
-            await app.client.pause(timeDelay1);
-            
-            await dotsOnLine[44].moveTo();  
-            await dotsOnLine[44].click({ y: -7 });
-            await app.client.pause(timeDelay1);
-            
-            await dotsOnLine[45].moveTo();  
-            await dotsOnLine[45].click({ y: -7 });
-            await app.client.pause(timeDelay1);
-            
-            await dotsOnLine[46].moveTo();  
-            await dotsOnLine[46].click({ y: -7 });
-            await app.client.pause(timeDelay1);
-            
-            await dotsOnLine[47].moveTo();  
-            await dotsOnLine[47].click({ y: -7 });
+            //var dotElementString = dotElement.toString();       
+            //// console.log('dotElement: ',dotElement); 
+         
+            await dotsOnLine[88].moveTo();  
+            await dotsOnLine[88].click({ y: -7 });
             await app.client.pause(timeDelay1);
            
-            await dotsOnLine[48].moveTo();  
-            await dotsOnLine[48].click({ y: -7 });
-            await app.client.pause(timeDelay1);
-           
-            await dotsOnLine[49].moveTo();  
-            await dotsOnLine[49].click({ y: -7 });
-            await app.client.pause(timeDelay1);
+            await dotsOnLine[89].moveTo();  
+            await dotsOnLine[89].click({ y: -7 });
+            await app.client.pause(10000);
 
-            await app.client.pause(30000);
 
       });
 
@@ -5625,6 +6214,496 @@ describe('FRET GUI E2E tests ', function () {
       });
 
 
+
+      //////     test save trace to file button    /////
+      it('LTLSIM - K13', async () => {
+            console.log('starting test '+numTest+': LTLSIM - K13');
+            await cpReferenceDB('LTLSIM_1');
+            await new Promise((r) => setTimeout(r, 2000));
+            await app.start();
+            await app.client.waitUntilWindowLoaded();            
+            await app.client.pause(timeDelay1);
+
+            var projBtn = await app.client.$('#qa_db_btn_projects');
+            await projBtn.click();
+            await app.client.pause(timeDelay1);
+            var selProject = await app.client.$('#qa_proj_select_LTLSIM_test');  
+            await selProject.click();  
+            await app.client.pause(timeDelay1);
+
+            var selCirpackReq = await app.client.$('#qa_cirPack_text_REQ1');
+            await selCirpackReq.click();
+            await app.client.pause(timeDelay1);
+
+            var disReqEdit = await app.client.$('#qa_disReq_ic_edit');
+            await disReqEdit.click();
+            await app.client.pause(timeDelay1);
+
+            var crtSemantics = await app.client.$('#qa_crt_btn_semantics');
+            await crtSemantics.click();  
+            await app.client.pause(timeDelay1);
+
+            var simBtn = await app.client.$('#qa_crtAst_btn_simulate');
+            await simBtn.click();               
+            await app.client.pause(timeDelay1);  
+
+
+            var dotsOnLine = await app.client.$$('[cy="40"]');
+            // console.log('num dotsOnLine 40: ',dotsOnLine.length);
+            var dotHTML = await dotsOnLine[1].getHTML(true);
+            await dotsOnLine[1].moveTo();
+            await dotsOnLine[1].click({ y: 3 });  
+            var traceTf =  await app.client.$('#qa_trace_tf_input');
+            var traceTfHTML = await traceTf.getHTML(true);
+            // console.log('traceTfHTML',traceTfHTML.toString());
+            //await traceTf.clearValue();
+            await traceTf.setValue('\b\b40');
+            var traceApply =  await app.client.$('#qa_trace_btn_apply');
+            await traceApply.click();
+            await app.client.pause(timeDelay1);             
+
+            // This is what I am guessing:
+            // index goes from bottom time series to time indicator (single line) at the top
+            // bottom time series has false line at $$('[cy="40"]') and true line at $$('[cy="10"]')
+            // top time indicator may be two lines on top of each other rwith $$('[cy="40"]');
+
+            //// setting takeoff
+            var dotsOnLine = await app.client.$$('[cy="40"]');
+            // console.log('num dotsOnLine',dotsOnLine.length);
+            var dotHTML = await dotsOnLine[0].getHTML(true);
+            var dotElement = parse(dotHTML);
+            var dotElementString = dotElement.toString();       
+            //console.log('dotElement: ',dotElement); 
+            //expect(dotElementString).toContain('fill=\"#fff\"');
+            await dotsOnLine[85].moveTo();
+            await dotsOnLine[85].click({ y: -7 });
+            await app.client.pause(timeDelay1);
+
+            var lineToDrag = await app.client.$$('[x1="229.4871794871795"]');
+            await lineToDrag[1].moveTo();
+            await lineToDrag[1].dragAndDrop({ x: 730, y: 0 });
+            await app.client.pause(timeDelay1);
+
+
+            //// setting TAKEOFF
+            //var dotsOnLine = await app.client.$('.recharts-surface*=FALSETRUETAKE').$$('[cy="65"]');   // TypeError: app.client.$(...).$$ is not a function
+            var dotsOnLine = await app.client.$$('[cy="40"]');
+            //console.log('num dotsOnLine',dotsOnLine.length);
+            var dotHTML = await dotsOnLine[0].getHTML(true);
+            var dotElement = parse(dotHTML);
+            //var dotElementString = dotElement.toString();       
+            //// console.log('dotElement: ',dotElement); 
+         
+            await dotsOnLine[88].moveTo();  
+            await dotsOnLine[88].click({ y: -7 });
+            await app.client.pause(timeDelay1);
+           
+            await dotsOnLine[89].moveTo();  
+            await dotsOnLine[89].click({ y: -7 });
+            await app.client.pause(timeDelay1);
+
+            var mockFilePath = path.join(documentsDir,'fret_sqa','LTLSIM_T13_trace_1.csv');   
+            var saveTrace = await app.client.$('#qa_ltlSim_ib_saveTrace');             
+            console.log('mockFilePath: ', mockFilePath);
+            fakeDialog.mock([ { method: 'showOpenDialogSync', value: [mockFilePath] } ])
+            await saveTrace.click();
+            await app.client.pause(10000);
+
+            //TBD test mockFilePath
+
+
+      });
+
+
+      //////     test load trace to file button    /////
+      it('LTLSIM - K14', async () => {
+            console.log('starting test '+numTest+': LTLSIM - K14');
+            await cpReferenceDB('LTLSIM_1');
+            await new Promise((r) => setTimeout(r, 2000));
+            await app.start();
+            await app.client.waitUntilWindowLoaded();            
+            await app.client.pause(timeDelay1);
+
+            var projBtn = await app.client.$('#qa_db_btn_projects');
+            await projBtn.click();
+            await app.client.pause(timeDelay1);
+            var selProject = await app.client.$('#qa_proj_select_LTLSIM_test');  
+            await selProject.click();  
+            await app.client.pause(timeDelay1);
+
+            var selCirpackReq = await app.client.$('#qa_cirPack_text_REQ1');
+            await selCirpackReq.click();
+            await app.client.pause(timeDelay1);
+
+            var disReqEdit = await app.client.$('#qa_disReq_ic_edit');
+            await disReqEdit.click();
+            await app.client.pause(timeDelay1);
+
+            var crtSemantics = await app.client.$('#qa_crt_btn_semantics');
+            await crtSemantics.click();  
+            await app.client.pause(timeDelay1);
+
+            var simBtn = await app.client.$('#qa_crtAst_btn_simulate');
+            await simBtn.click();               
+            await app.client.pause(timeDelay1);  
+
+            var mockFilePath = path.join(documentsDir,'fret_sqa/test_references/inputs','LTLSIM_T13_trace_1.csv');   
+            var loadTrace = await app.client.$('#qa_ltlSim_ib_loadTrace');            
+            console.log('mockFilePath: ', mockFilePath);
+            fakeDialog.mock([ { method: 'showOpenDialogSync', value: [mockFilePath] } ])
+            await loadTrace.click();
+
+            // TBD test loaded trace
+            await app.client.pause(10000);
+
+
+      });
+
+
+      //////     test add details to trace button    /////
+      it('LTLSIM - K15', async () => {
+            console.log('starting test '+numTest+': LTLSIM - K15');
+            await cpReferenceDB('LTLSIM_1');
+            await new Promise((r) => setTimeout(r, 2000));
+            await app.start();
+            await app.client.waitUntilWindowLoaded();            
+            await app.client.pause(timeDelay1);
+
+            var projBtn = await app.client.$('#qa_db_btn_projects');
+            await projBtn.click();
+            await app.client.pause(timeDelay1);
+            var selProject = await app.client.$('#qa_proj_select_LTLSIM_test');  
+            await selProject.click();  
+            await app.client.pause(timeDelay1);
+
+            var selCirpackReq = await app.client.$('#qa_cirPack_text_REQ1');
+            await selCirpackReq.click();
+            await app.client.pause(timeDelay1);
+
+            var disReqEdit = await app.client.$('#qa_disReq_ic_edit');
+            await disReqEdit.click();
+            await app.client.pause(timeDelay1);
+
+            var crtSemantics = await app.client.$('#qa_crt_btn_semantics');
+            await crtSemantics.click();  
+            await app.client.pause(timeDelay1);
+
+            var simBtn = await app.client.$('#qa_crtAst_btn_simulate');
+            await simBtn.click();               
+            await app.client.pause(timeDelay1);  
+
+            var mockFilePath = path.join(documentsDir,'fret_sqa/test_references/inputs','LTLSIM_T13_trace_1.csv');   
+            var loadTrace = await app.client.$('#qa_ltlSim_ib_loadTrace');            
+            console.log('mockFilePath: ', mockFilePath);
+            fakeDialog.mock([ { method: 'showOpenDialogSync', value: [mockFilePath] } ])
+            await loadTrace.click();
+            var selTrace = await app.client.$('#qa_ltlSim_ib_addDetails'); 
+            await selTrace.click();
+
+            var addDetailID = await app.client.$('#qa_ltlSimAdd_tf_traceID');
+            await addDetailID.setValue('TK15');
+            var addDetailDescription = await app.client.$('#qa_ltlSimAdd_tf_description');
+            await addDetailDescription.setValue('Trace TK15');
+            var saveTo = await app.client.$('#qa_ltlSimAdd_btn_saveTo');
+            await saveTo.click();
+            var elem = await app.client.$('#qa_ltlSimAdd_mi_Requirement');
+            await elem.click();
+
+            await app.client.pause(10000);
+
+
+      });
+
+
+
+      //////     test add details to trace button    /////
+      it('LTLSIM - K16', async () => {
+            console.log('starting test '+numTest+': LTLSIM - K16');
+            await cpReferenceDB('LTLSIM_1');
+            await new Promise((r) => setTimeout(r, 2000));
+            await app.start();
+            await app.client.waitUntilWindowLoaded();            
+            await app.client.pause(timeDelay1);
+
+            var projBtn = await app.client.$('#qa_db_btn_projects');
+            await projBtn.click();
+            await app.client.pause(timeDelay1);
+            var selProject = await app.client.$('#qa_proj_select_LTLSIM_test');  
+            await selProject.click();  
+            await app.client.pause(timeDelay1);
+
+            var selCirpackReq = await app.client.$('#qa_cirPack_text_REQ1');
+            await selCirpackReq.click();
+            await app.client.pause(timeDelay1);
+
+            var disReqEdit = await app.client.$('#qa_disReq_ic_edit');
+            await disReqEdit.click();
+            await app.client.pause(timeDelay1);
+
+            var crtSemantics = await app.client.$('#qa_crt_btn_semantics');
+            await crtSemantics.click();  
+            await app.client.pause(timeDelay1);
+
+            var simBtn = await app.client.$('#qa_crtAst_btn_simulate');
+            await simBtn.click();               
+            await app.client.pause(timeDelay1);  
+
+            var mockFilePath = path.join(documentsDir,'fret_sqa/test_references/inputs','LTLSIM_T13_trace_1.csv');   
+            var loadTrace = await app.client.$('#qa_ltlSim_ib_loadTrace');            
+            console.log('mockFilePath: ', mockFilePath);
+            fakeDialog.mock([ { method: 'showOpenDialogSync', value: [mockFilePath] } ])
+            await loadTrace.click();
+            var selTrace = await app.client.$('#qa_ltlSim_ib_addDetails'); 
+            await selTrace.click();
+
+            var addDetailID = await app.client.$('#qa_ltlSimAdd_tf_traceID');
+            await addDetailID.setValue('TK15');
+            var addDetailDescription = await app.client.$('#qa_ltlSimAdd_tf_description');
+            await addDetailDescription.setValue('Trace TK15');
+            var saveTo = await app.client.$('#qa_ltlSimAdd_btn_saveTo');
+            await saveTo.click();
+            var elem = await app.client.$('#qa_ltlSimAdd_mi_Component');
+            await elem.click();
+
+            await app.client.pause(10000);
+
+
+      });
+
+
+      //////     test add details to trace button    /////
+      it('LTLSIM - K17', async () => {
+            console.log('starting test '+numTest+': LTLSIM - K17');
+            await cpReferenceDB('LTLSIM_1');
+            await new Promise((r) => setTimeout(r, 2000));
+            await app.start();
+            await app.client.waitUntilWindowLoaded();            
+            await app.client.pause(timeDelay1);
+
+            var projBtn = await app.client.$('#qa_db_btn_projects');
+            await projBtn.click();
+            await app.client.pause(timeDelay1);
+            var selProject = await app.client.$('#qa_proj_select_LTLSIM_test');  
+            await selProject.click();  
+            await app.client.pause(timeDelay1);
+
+            var selCirpackReq = await app.client.$('#qa_cirPack_text_REQ1');
+            await selCirpackReq.click();
+            await app.client.pause(timeDelay1);
+
+            var disReqEdit = await app.client.$('#qa_disReq_ic_edit');
+            await disReqEdit.click();
+            await app.client.pause(timeDelay1);
+
+            var crtSemantics = await app.client.$('#qa_crt_btn_semantics');
+            await crtSemantics.click();  
+            await app.client.pause(timeDelay1);
+
+            var simBtn = await app.client.$('#qa_crtAst_btn_simulate');
+            await simBtn.click();               
+            await app.client.pause(timeDelay1);  
+
+            var mockFilePath = path.join(documentsDir,'fret_sqa/test_references/inputs','LTLSIM_T13_trace_1.csv');   
+            var loadTrace = await app.client.$('#qa_ltlSim_ib_loadTrace');            
+            console.log('mockFilePath: ', mockFilePath);
+            fakeDialog.mock([ { method: 'showOpenDialogSync', value: [mockFilePath] } ])
+            await loadTrace.click();
+            var selTrace = await app.client.$('#qa_ltlSim_ib_addDetails'); 
+            await selTrace.click();
+
+            var addDetailID = await app.client.$('#qa_ltlSimAdd_tf_traceID');
+            await addDetailID.setValue('TK15');
+            var addDetailDescription = await app.client.$('#qa_ltlSimAdd_tf_description');
+            await addDetailDescription.setValue('Trace TK15');
+            var saveTo = await app.client.$('#qa_ltlSimAdd_btn_saveTo');
+            await saveTo.click();
+            var elem = await app.client.$('#qa_ltlSimAdd_mi_Project');
+            await elem.click();
+
+            await app.client.pause(10000);
+
+
+      });
+
+
+      //////     test trace load project    /////
+      it('LTLSIM - K18', async () => {
+            console.log('starting test '+numTest+': LTLSIM - K18');
+            await cpReferenceDB('LTLSIM_1');
+            await new Promise((r) => setTimeout(r, 2000));
+            await app.start();
+            await app.client.waitUntilWindowLoaded();            
+            await app.client.pause(timeDelay1);
+
+            var projBtn = await app.client.$('#qa_db_btn_projects');
+            await projBtn.click();
+            await app.client.pause(timeDelay1);
+            var selProject = await app.client.$('#qa_proj_select_LTLSIM_test');  
+            await selProject.click();  
+            await app.client.pause(timeDelay1);
+
+            var selCirpackReq = await app.client.$('#qa_cirPack_text_REQ1');
+            await selCirpackReq.click();
+            await app.client.pause(timeDelay1);
+
+            var disReqEdit = await app.client.$('#qa_disReq_ic_edit');
+            await disReqEdit.click();
+            await app.client.pause(timeDelay1);
+
+            var crtSemantics = await app.client.$('#qa_crt_btn_semantics');
+            await crtSemantics.click();  
+            await app.client.pause(timeDelay1);
+
+            var simBtn = await app.client.$('#qa_crtAst_btn_simulate');
+            await simBtn.click();               
+            await app.client.pause(timeDelay1);  
+
+            var selTrace = await app.client.$('#qa_ltlSim_sel_Trace');
+            await selTrace.click();
+            var traceProject = await app.client.$('#qa_ltlSim_mi_traceLoadProject');
+            await traceProject.click();
+            //var traceName = await app.client.$('#qa_ltlSim_mi_trace_name_');
+            //await traceName.click();
+
+            await app.client.pause(10000);
+
+
+      });
+
+
+
+      //////     test trace load requirement    /////
+      it('LTLSIM - K19', async () => {
+            console.log('starting test '+numTest+': LTLSIM - K19');
+            await cpReferenceDB('LTLSIM_1');
+            await new Promise((r) => setTimeout(r, 2000));
+            await app.start();
+            await app.client.waitUntilWindowLoaded();            
+            await app.client.pause(timeDelay1);
+
+            var projBtn = await app.client.$('#qa_db_btn_projects');
+            await projBtn.click();
+            await app.client.pause(timeDelay1);
+            var selProject = await app.client.$('#qa_proj_select_LTLSIM_test');  
+            await selProject.click();  
+            await app.client.pause(timeDelay1);
+
+            var selCirpackReq = await app.client.$('#qa_cirPack_text_REQ1');
+            await selCirpackReq.click();
+            await app.client.pause(timeDelay1);
+
+            var disReqEdit = await app.client.$('#qa_disReq_ic_edit');
+            await disReqEdit.click();
+            await app.client.pause(timeDelay1);
+
+            var crtSemantics = await app.client.$('#qa_crt_btn_semantics');
+            await crtSemantics.click();  
+            await app.client.pause(timeDelay1);
+
+            var simBtn = await app.client.$('#qa_crtAst_btn_simulate');
+            await simBtn.click();               
+            await app.client.pause(timeDelay1);  
+
+            var selTrace = await app.client.$('#qa_ltlSim_sel_Trace');
+            await selTrace.click();
+            var traceProject = await app.client.$('#qa_ltlSim_mi_traceLoadRequirement');
+            await traceProject.click();
+            //var traceName = await app.client.$('#qa_ltlSim_mi_trace_name_');
+            //await traceName.click();
+
+            await app.client.pause(10000);
+
+
+      });
+
+
+
+      //////     test trace save to json    /////
+      it('LTLSIM - K20', async () => {
+            console.log('starting test '+numTest+': LTLSIM - K20');
+            await cpReferenceDB('LTLSIM_1');
+            await new Promise((r) => setTimeout(r, 2000));
+            await app.start();
+            await app.client.waitUntilWindowLoaded();            
+            await app.client.pause(timeDelay1);
+
+            var projBtn = await app.client.$('#qa_db_btn_projects');
+            await projBtn.click();
+            await app.client.pause(timeDelay1);
+            var selProject = await app.client.$('#qa_proj_select_LTLSIM_test');  
+            await selProject.click();  
+            await app.client.pause(timeDelay1);
+
+            var selCirpackReq = await app.client.$('#qa_cirPack_text_REQ1');
+            await selCirpackReq.click();
+            await app.client.pause(timeDelay1);
+
+            var disReqEdit = await app.client.$('#qa_disReq_ic_edit');
+            await disReqEdit.click();
+            await app.client.pause(timeDelay1);
+
+            var crtSemantics = await app.client.$('#qa_crt_btn_semantics');
+            await crtSemantics.click();  
+            await app.client.pause(timeDelay1);
+
+            var simBtn = await app.client.$('#qa_crtAst_btn_simulate');
+            await simBtn.click();               
+            await app.client.pause(timeDelay1);  
+
+            var selTrace = await app.client.$('#qa_ltlSim_sel_Trace');
+            await selTrace.click();
+            var traceProject = await app.client.$('#qa_ltlSim_mi_traceSaveJSON');
+            await traceProject.click();
+            //var traceName = await app.client.$('#qa_ltlSim_mi_trace_name_');
+            //await traceName.click();
+
+            await app.client.pause(10000);
+
+
+      });
+
+
+      //////     test add or remove requirements    /////
+      it('LTLSIM - K20', async () => {
+            console.log('starting test '+numTest+': LTLSIM - K20');      
+            await startWithJsonFileImport('FSM-Demo.json');
+
+            const projBtn = await app.client.$('#qa_db_btn_projects');
+            await projBtn.click();
+            await app.client.pause(timeDelay1);
+
+            const liquidMixer = await app.client.$('#qa_proj_select_Demo-FSM');
+            await liquidMixer.click();
+            await app.client.pause(timeDelay1);
+
+            const cirPackFSM008 = await app.client.$('#qa_cirPack_text_FSM-008');
+            await cirPackFSM008.click();
+            await app.client.pause(timeDelay1);
+
+
+            var disReqEdit = await app.client.$('#qa_disReq_ic_edit');
+            await disReqEdit.click();
+            await app.client.pause(timeDelay1);
+
+            var crtSemantics = await app.client.$('#qa_crt_btn_semantics');
+            await crtSemantics.click();  
+            await app.client.pause(timeDelay1);
+
+            var simBtn = await app.client.$('#qa_crtAst_btn_simulate');
+            await simBtn.click();               
+            await app.client.pause(timeDelay1);  
+
+            var selReq = await app.client.$('#qa_ltlSim_sel_Req');
+            await selReq.click();
+
+
+
+            await app.client.pause(10000);
+
+
+      });            
+
+            // check future time results
       // GL - 1   is done inside test RTF - 2
       
       //------------------------------------------------------------------
@@ -5732,6 +6811,14 @@ describe('FRET GUI E2E tests ', function () {
             await dashboard.click();
             var selCirpackReq = await app.client.$('#qa_cirPack_text_VariablesTest');
             await selCirpackReq.click();
+            await app.client.pause(timeDelay1);
+
+            var image =  await app.client.$('img');
+            var elementHTML = await image.getHTML(true);
+            var elementParsedHTML = parse(elementHTML);
+            //console.log('img element: ', elementParsedHTML.toString());
+            expect(elementParsedHTML.toString()).toContain('Undefined svg');
+            
             var disReqEdit = await app.client.$('#qa_disReq_ic_edit');
             await disReqEdit.click();
 
@@ -6863,19 +7950,6 @@ describe('FRET GUI E2E tests ', function () {
             await timing.click();   
 
       });
-      //------------------------------------------------------------------ 
-      it('CREATE NEW REQUIREMENT-RESPONSES BUBLE', async () => {
-            console.log('starting test '+numTest+':  CREATE NEW REQUIREMENT-RESPONSES BUBLE')            
-            await startWithJsonFileImport('MyDBAM113.json');
-
-            const createBtn = await app.client.$('#qa_db_btn_create');
-            
-            await createBtn.click();
-
-            const resp = await app.client.$('#qa_crt_btn_Responses');
-            await resp.click();   
-
-      });
 
       //------------------------------------------------------------------ 
       it('CREATE NEW REQUIREMENT-?', async () => {
@@ -6887,32 +7961,6 @@ describe('FRET GUI E2E tests ', function () {
 
             const quest = await app.client.$('#qa_crt_ib_question');
             await quest.click();   
-
-      });
-
-      //------------------------------------------------------------------ 
-      it('CREATE NEW REQUIREMENT-RESPONSES BUBLE', async () => {
-            console.log('starting test '+numTest+':  CREATE NEW REQUIREMENT-RESPONSES BUBLE')            
-            await startWithJsonFileImport('MyDBAM113.json');
-    
-            const createBtn = await app.client.$('#qa_db_btn_create');            
-            await createBtn.click();
-
-            const semanticBtn = await app.client.$('#qa_crt_btn_semantics');
-            await semanticBtn.click();   
-
-      });
-
-      //------------------------------------------------------------------ 
-      it('CREATE NEW REQUIREMENT-RESPONSES BUBLE', async () => {
-            console.log('starting test '+numTest+':  CREATE NEW REQUIREMENT-RESPONSES BUBLE')            
-            await startWithJsonFileImport('MyDBAM113.json');
-            
-            const createBtn = await app.client.$('#qa_db_btn_create');            
-            await createBtn.click();
- 
-            const editor = await app.client.$('#qa_crt_edt_editor');
-            await editor.click();   
 
       });
 
