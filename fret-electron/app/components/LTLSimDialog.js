@@ -1306,6 +1306,7 @@ for (let i=0; i< reqID_data.length; i++){
                     </Typography>
                     <Tooltip title="Show additional Requirements" >
                     <Button
+					  id="qa_ltlSim_sel_Req" 
                       color="secondary"
                       size="small"
                       aria-owns={anchorEl_Req ? 'simple-menu' : null}
@@ -1325,6 +1326,7 @@ for (let i=0; i< reqID_data.length; i++){
                     >
 						Add/Remove Require
                       <MenuItem
+					    id={"qa_ltlSim_mi_Req_1_"+this.props.project+":"+requirementIDs[0]} 
                         onClick={() =>  this.handleReqSelAll()}
                         dense
                         >
@@ -1341,6 +1343,7 @@ for (let i=0; i< reqID_data.length; i++){
 			  .replace(/\+/g,"_")
 			  if ((this.state.JSCReqID.indexOf(reqID_R) >=0) || (reqID.reqID == requirementIDs[0])){
                                 return <MenuItem
+								    id={"qa_ltlSim_mi_Req_2_"+this.props.project+":"+reqID.reqID}
                                     key={this.props.project+":"+reqID.dbkey}
                                     dense
                                     onClick={() => this.handleReqSel(reqID)}>
@@ -1353,6 +1356,7 @@ for (let i=0; i< reqID_data.length; i++){
 				  }
 			else {
                             return <MenuItem
+									id={"qa_ltlSim_mi_Req_2_"+this.props.project+":"+reqID.reqID}
                                     key={this.props.project+":"+reqID.dbkey}
                                     dense
                                     onClick={() => this.handleReqSel(reqID)}>
@@ -1367,6 +1371,7 @@ for (let i=0; i< reqID_data.length; i++){
                     </Menu>
                     <Tooltip title="Load/Save traces" >
                     <Button
+					  id="qa_ltlSim_sel_Trace"
                       color="secondary"
                       size="small"
                       aria-owns={anchorEl ? 'simple-menu' : null}
@@ -1379,12 +1384,13 @@ for (let i=0; i< reqID_data.length; i++){
                     </Button>
                     </Tooltip>
                     <Menu
-                      id="simple-menu"
+                      id="qa_ltlSim_sel_menu_Trace" 
                       anchorEl={anchorEl}
                       open={Boolean(anchorEl)}
                       onClose={this.handleClose}
                     >
                       <MenuItem
+					    id="qa_ltlSim_mi_traceNew"
                         onClick={() =>  this.handleFooNew('NewTrace')}
                         dense
                         >
@@ -1392,6 +1398,7 @@ for (let i=0; i< reqID_data.length; i++){
                         <ListItemText inset primary = {'New'} />
                       </MenuItem>
                       <MenuItem
+					  	id="qa_ltlSim_mi_traceLoadProject"
                         onClick={() =>  this.handleLoadTraces('Project')}
                         dense
                         >
@@ -1399,6 +1406,7 @@ for (let i=0; i< reqID_data.length; i++){
                         <ListItemText inset primary = {'Load/Project'} />
                       </MenuItem>
                       <MenuItem
+					    id="qa_ltlSim_mi_traceLoadRequirement"
                         onClick={() =>  this.handleLoadTraces('Requirement')}
                         dense
                         >
@@ -1406,6 +1414,7 @@ for (let i=0; i< reqID_data.length; i++){
                         <ListItemText inset primary = {'Load/Requirement'} />
                       </MenuItem>
                       <MenuItem
+					    id="qa_ltlSim_mi_traceSaveJSON"
                         onClick={() =>  this.handleSaveTraces('')}
                         dense
                         >
@@ -1415,6 +1424,7 @@ for (let i=0; i< reqID_data.length; i++){
                       {
                         (this.state.traces || []).map(traceID => {
                           return <MenuItem
+						            id={"qa_ltlSim_mi_trace_name_"+traceID}
                                     key={traceID}
                                     dense
                                     onClick={() => this.handleFoo(traceID)}>
@@ -1425,13 +1435,14 @@ for (let i=0; i< reqID_data.length; i++){
                       }
                     </Menu>
                     <Tooltip title="Add Details and Save to requirement" >
-                        <IconButton
+                        <IconButton id="qa_ltlSim_ib_addDetails"
                             color={"secondary"}
                             onClick={this.handleAddRequirements}>
                             <AddIcon />
                         </IconButton>
                     </Tooltip>
   		    <LTLSimAddTraceDialog
+			  						id="qa_ltlSimAdd_Dialog"
                                     classes={this.props.classes}
                                     open={this.state.traceAddDialogOpen}
                                     model={model}
@@ -1442,14 +1453,14 @@ for (let i=0; i< reqID_data.length; i++){
     				    traceDescription = {this.state.traceDescription}
                                 />
                     <Tooltip title="Load Trace" >
-                        <IconButton
+                        <IconButton id="qa_ltlSim_ib_loadTrace"
                             color={"secondary"}
                             onClick={this.handleLoadTrace}>
                             <LoadIcon />
                         </IconButton>
                     </Tooltip>
                     <Tooltip title="Save Trace to File" >
-                        <IconButton
+                        <IconButton id="qa_ltlSim_ib_saveTrace"
                             color={"secondary"}
                             onClick={this.handleSaveToFile}>
                             <SaveIcon />

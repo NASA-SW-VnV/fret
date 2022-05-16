@@ -167,7 +167,7 @@ class LTLSimAddTraceDialog extends Component {
                 <DialogContent>
                     <form>
                         <TextField 
-                            id="edit-trace-ID"
+                            id="qa_ltlSimAdd_tf_traceID"
                             label="Trace ID"
                             type="text"
                             fullWidth
@@ -176,7 +176,7 @@ class LTLSimAddTraceDialog extends Component {
                             onChange={this.handleTraceIDChange}
                         />
                         <TextField 
-                            id="edit-trace-description"
+                            id="qa_ltlSimAdd_tf_description"
                             label="Description"
                             type="text"
                             multiline
@@ -189,11 +189,13 @@ class LTLSimAddTraceDialog extends Component {
                 </DialogContent>
                 <DialogActions>
                     <Button 
+                        id="qa_ltlSimAdd_btn_cancel"
                         onClick={this.handleCancel}
                         color="primary">
                         Cancel
                     </Button>
                     <Button
+                      id="qa_ltlSimAdd_btn_saveTo"
                       color="secondary"
                       aria-owns={this.state.anchorEl_save ? 'save-menu' : null}
                       aria-haspopup="true"
@@ -210,18 +212,21 @@ class LTLSimAddTraceDialog extends Component {
                       onClose={this.handleClose_save}
                     >
                       <MenuItem
+                        id="qa_ltlSimAdd_mi_Requirement"
                         onClick={() =>  this.saveToReq()}
                         dense
                         >
 			Requirement
                       </MenuItem>
                       <MenuItem
+                        id="qa_ltlSimAdd_mi_Component"
                         onClick={() =>  this.saveToComponent()}
                         dense
                         >
 			Component
                       </MenuItem>
                       <MenuItem
+                        id="qa_ltlSimAdd_mi_Project"
                         onClick={() =>  this.saveToProject()}
                         dense
                         >
