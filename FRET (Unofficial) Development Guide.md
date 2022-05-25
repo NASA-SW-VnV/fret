@@ -165,7 +165,7 @@ flowchart LR
 
 ### Adding the Button
 
-Again, the first thin to do was to add a button in the `DisplayRequirementDialog.js` file to open the new dialogue. 
+Again, the first thing to do was to add a button in the `DisplayRequirementDialog.js` file to open the new dialogue. 
 
 Inside the return of the `render()` method, I added the following to produce the button:
 
@@ -180,6 +180,10 @@ Inside the return of the `render()` method, I added the following to produce the
 With the <BuildIcon /> having been imported at the top of the file. This produces a new button, with a spanner icon, at the top of the Display Requirement Dialogue. Of course, pressing the button does nothing more than close the dialogue, because `handleRefactorRequirement` has not been implemented yet.
 
 ### Triggering the Dialogue Box
+
+
+
+
 
 
 

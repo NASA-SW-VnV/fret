@@ -57,6 +57,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import ListIcon from '@material-ui/icons/List';
 // import EditIcon from '@material-ui/icons/Edit';
 import AddIcon from '@material-ui/icons/AddCircle';
+import BuildIcon from '@material-ui/icons/Build';
 // status icons
 import InProgressIcon from '@material-ui/icons/MoreHoriz';
 import RemoveIcon from '@material-ui/icons/Remove';
@@ -68,6 +69,8 @@ import { lighten } from '@material-ui/core/styles/colorManipulator';
 import DisplayRequirementDialog from './DisplayRequirementDialog';
 import CreateRequirementDialog from './CreateRequirementDialog';
 import DeleteRequirementDialog from './DeleteRequirementDialog';
+import RefactorRequirementDialog from './refactoring/RefactorRequirementDialog';
+
 
 // select and menu for status column
 import Select from '@material-ui/core/Select';
@@ -326,6 +329,7 @@ class SortableTable extends React.Component {
     selectedProject: 'All Projects',
     bulkChangeMode: false,
     deleteUsingCheckBoxes: false,
+    refactorDialogOpen: false
   };
 
   constructor(props){
@@ -388,7 +392,8 @@ class SortableTable extends React.Component {
     })
   }
 
-  handleRequirementDialogOpen = (row) => event => {event.stopPropagation();
+  handleRequirementDialogOpen = (row) => event => {
+    event.stopPropagation();
     if (row.dbkey) {
       db.get(row.dbkey).then((doc) => {
         doc.dbkey = row.dbkey
@@ -416,7 +421,8 @@ class SortableTable extends React.Component {
     })
   }
 
-  handleAddChildRequirement = (selectedReqId, parentProject) => event => {event.stopPropagation();
+  handleAddChildRequirement = (selectedReqId, parentProject) => event => {
+    event.stopPropagation();
     this.setState({
       createDialogOpen: true,
       selectedRequirement: {},
@@ -424,7 +430,36 @@ class SortableTable extends React.Component {
         parentReqId: selectedReqId,
         parentProject: parentProject
       }
-    })
+    });
+  }
+
+  handleRefactorRequirement = (row) => event => {
+    event.stopPropagation();
+
+    if (row.dbkey) {
+      db.get(row.dbkey).then((doc) => {
+        doc.dbkey = row.dbkey;
+        doc.rev = row.rev;
+        this.setState({
+          selectedRequirement: doc,
+          refactorDialogOpen: true,
+        });
+      }).catch((err) => {
+        console.log(err);
+      });
+    }
+
+    // this.setState({
+    //  refactorDialogOpen: true,
+    //  selectedRequirement: selectedReqId,
+    //  parentProject: parentProject
+    // });
+  }
+
+  handleRefactorDialogClose = () => {
+    this.setState({
+      refactorDialogOpen: false
+    });
   }
 
   handleDeleteDialogClose = () => {
@@ -622,7 +657,12 @@ class SortableTable extends React.Component {
                               <AddIcon/>
                             </IconButton>
                           </Tooltip>
-                        </TableCell>
+                          <Tooltip id="tooltip-icon-refactor" title="Refactor Requirement">
+                            <IconButton onClick={this.handleRefactorRequirement(n)} size="small" color="default" aria-label="refactor" >
+                            <BuildIcon />
+                            </IconButton>
+                          </Tooltip>
+                        </ TableCell>
                         <TableCell>{n.summary}</TableCell>
                         <TableCell>{projectLabel}</TableCell>
                       </TableRow>
@@ -668,6 +708,11 @@ class SortableTable extends React.Component {
                                 <AddIcon />
                               </IconButton>
                             </Tooltip>
+                            <Tooltip id="tooltip-icon-refactor" title="Refactor Requirement">
+                              <IconButton onClick={this.handleRefactorRequirement(n)} size="small" color="default" aria-label="refactor" >
+                              <BuildIcon />
+                              </IconButton>
+                            </Tooltip>
                           </TableCell>
                         <TableCell>{n.summary}</TableCell>
                         <TableCell>{projectLabel}</TableCell>
@@ -698,26 +743,34 @@ class SortableTable extends React.Component {
           onRowsPerPageChange={this.handleChangeRowsPerPage}
         />
       </Paper>
-      <DisplayRequirementDialog
-        selectedRequirement={this.state.selectedRequirement}
-        open={this.state.displayRequirementOpen}
-        handleDialogClose={this.handleRequirementDialogClose}
-        handleCreateDialogOpen={this.handleCreateDialogOpen}
-        handleDeleteDialogClose={this.handleDeleteDialogClose}
-        handleDeleteDialogOpen={this.handleDeleteDialogOpen}/>
-      <CreateRequirementDialog
-        open={this.state.createDialogOpen}
-        handleCreateDialogClose={this.handleCreateDialogClose}
-        selectedProject={this.state.selectedProject}
-        editRequirement={this.state.selectedRequirement}
-        addChildRequirementToParent={this.state.addChildRequirementMode}
-        existingProjectNames={this.props.existingProjectNames}
-        requirements = {this.props.requirements} />
-      <DeleteRequirementDialog
-        open={this.state.deleteDialogOpen}
-        requirementsToBeDeleted={selectionForDeletion}
-        handleDialogClose={this.handleDeleteDialogClose}
-      />
+        <DisplayRequirementDialog
+          selectedRequirement={this.state.selectedRequirement}
+          open={this.state.displayRequirementOpen}
+          handleDialogClose={this.handleRequirementDialogClose}
+          handleCreateDialogOpen={this.handleCreateDialogOpen}
+          handleDeleteDialogClose={this.handleDeleteDialogClose}
+          handleDeleteDialogOpen={this.handleDeleteDialogOpen}
+        />
+        <CreateRequirementDialog
+          open={this.state.createDialogOpen}
+          handleCreateDialogClose={this.handleCreateDialogClose}
+          selectedProject={this.state.selectedProject}
+          editRequirement={this.state.selectedRequirement}
+          addChildRequirementToParent={this.state.addChildRequirementMode}
+          existingProjectNames={this.props.existingProjectNames}
+          requirements={this.props.requirements}
+        />
+        <RefactorRequirementDialog
+          selectedRequirement={this.state.selectedRequirement}          
+          open={this.state.refactorDialogOpen}
+          handleDialogClose={this.handleRefactorDialogClose}
+          requirements={this.props.requirements}
+        />
+        <DeleteRequirementDialog
+          open={this.state.deleteDialogOpen}
+          requirementsToBeDeleted={selectionForDeletion}
+          handleDialogClose={this.handleDeleteDialogClose}
+        />
       <Snackbar
         anchorOrigin={{
           vertical: 'bottom',

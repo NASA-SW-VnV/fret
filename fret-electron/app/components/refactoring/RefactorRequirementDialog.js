@@ -30,6 +30,8 @@
 // ANY SUCH MATTER SHALL BE THE IMMEDIATE, UNILATERAL TERMINATION OF THIS
 // AGREEMENT.
 // *****************************************************************************
+
+// Created by Matt Luckcuck, May 2022, based on existing FRET Code
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
@@ -37,6 +39,7 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import EditIcon from '@material-ui/icons/Edit';
+import BuildIcon from '@material-ui/icons/Build';
 import DeleteIcon from '@material-ui/icons/Delete';
 import TextField from '@material-ui/core/TextField';
 import Divider from '@material-ui/core/Divider';
@@ -47,6 +50,11 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import ImageList from '@material-ui/core/ImageList';
 import ImageListItem from '@material-ui/core/ImageListItem';
+import Grid from '@material-ui/core/Grid';
+import Checkbox from '@material-ui/core/Checkbox';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+
 import ImageListItemBar from '@material-ui/core/ImageListItemBar';
 import Tooltip from '@material-ui/core/Tooltip';
 
@@ -74,25 +82,29 @@ const styles = theme => ({
   }
 });
 
-class DisplayRequirementDialog extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      open: false,
-      selectedRequirement: {}
-    };
-  }
+class RefactorRequirementDialog extends React.Component {
+  state = {
+    open: false,
+    selectedRequirement: {},
+    applyToAll: false,
+    refactoringType: false
+  };
 
-
-  static getDerivedStateFromProps(props, state) {
-    return {
+  componentWillReceiveProps = (props) => {
+    this.setState({
       selectedRequirement: props.selectedRequirement,
       open: props.open,
       dialogCloseListener: props.handleDialogClose,
       openCreateDialog: props.handleCreateDialogOpen,
       openDeleteDialog: props.handleDeleteDialogOpen,
-      openRefactorDialog: props.handleRefactorDialogOpen
-    };
+      selectedRequirementId: props.selectedRequirement.reqid,
+
+    });
+  }
+
+  handleRefactorRequirement = () => {
+    this.handleClose();
+    this.state.openRefactorDialog();
   }
 
   handleClose = () => {
@@ -100,58 +112,83 @@ class DisplayRequirementDialog extends React.Component {
     this.state.dialogCloseListener();
   };
 
-  handleUpdateRequirement = () => {
-    console.log('handleUpdateREquirement called');
-    this.handleClose();
-    this.state.openCreateDialog();
-  }
+handlePreview = () => {
+  console.log('Preview Button');
+};
 
-  handleRefactorRequirement = () => {
-    console.log('Handle Refactor requirement');
-    console.log(this.state.openRefactorDialog);
-    console.log(this.props.handleRefactorDialogOpen);
-    this.handleClose();
-    this.props.handleRefactorDialogOpen();
-    this.state.openRefactorDialog();
-  }
+handleOk = () => {
+  console.log('OK Button');
+};
 
-  handleDeleteRequirement = () => {
-    this.handleClose();
-    this.state.openDeleteDialog();
-  }
+handleRefactoringType = (event, child) => {
+  this.setState({ refactoringType: event.target.value });
+};
 
-  renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) {
-    const { classes } = this.props;
-    if (ltlFormula || ltlFormulaPt)
-      return (
-        <div>
-          <Typography variant='button'>
-            Semantic Description
-          </Typography>
-          <br />
-        <div color='primary' variant='body1' dangerouslySetInnerHTML={{ __html: ltlDescription }} />
-          <br />
-          <Typography variant='button'>
-            Semantic Diagram
+RefactoringContent(props){
+  let type = props.type;
+
+  if(type == false)
+  {
+    return (' ');
+  }
+  else if(type == "extract")
+  {
+    return(  <Grid container spacing={2} >
+      <Grid item xs={6}>
+        New Requirement Name:
+      </Grid>
+      <Grid item xs={6}>
+        <TextField id="newReqName" label="New Name" />
+      </Grid>
+
+      <Grid item xs={6}>
+        Apply to all available fragments:
+      </Grid>
+      <Grid item xs={6}>
+        <Checkbox
+          inputProps={{ 'aria-label': 'controlled' }}
+        />
+      </Grid>
+    </Grid>);
+  }
+  else if(type == "others")
+  {
+    return(' ');
+  }
+}
+
+renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) {
+  const { classes } = this.props;
+  if (ltlFormula || ltlFormulaPt) {
+    return (
+      <div>
+        <Typography variant="button">
+          Semantic Description
+        </Typography>
+        <br />
+        <div color="primary" variant="body1" dangerouslySetInnerHTML={{ __html: ltlDescription }} />
+        <br />
+        <Typography variant="button">
+          Semantic Diagram
         </Typography>
         <div className={classes.imgWrap}>
-        <img src= {path}/>
+          <img src={path} />
         </div>
-        <div className={classes.variableDescription} dangerouslySetInnerHTML={{ __html: diagramVariables}} />
+        <div className={classes.variableDescription} dangerouslySetInnerHTML={{ __html: diagramVariables }} />
         <br />
         <Typography variant='button' color='primary'>
         Future Time Formula
         </Typography>
-          <br />
-          <div className={classes.formula} dangerouslySetInnerHTML={{ __html: ltlFormula }} />
-          <Typography variant='button' color='primary'>
-            <br />
+        <br />
+        <div className={classes.formula} dangerouslySetInnerHTML={{ __html: ltlFormula}} />
+        <Typography variant='button' color='primary'>
+        <br />
         Past Time Formula
         </Typography>
         <br />
         <div className={classes.formula} dangerouslySetInnerHTML={{ __html: ltlFormulaPt}} />
         <br />
-      </div>)
+    </div>)}
     else
       return(
         <div>
@@ -162,79 +199,89 @@ class DisplayRequirementDialog extends React.Component {
   }
 
   render() {
-    const { classes } = this.props;
-    var { project, reqid, parent_reqid, rationale, ltl, semantics, fulltext } = this.state.selectedRequirement
-    const reqidLabel = (reqid ? reqid : "None")
-    const projectLabel = project ? project : "None"
-    var ltlFormula = ltl ? ltl : (semantics ? semantics.ft : undefined);
-    var ltlFormulaPt = (semantics ? semantics.pt : undefined);
-    var diagramVariables = (semantics ? semantics.diagramVariables : undefined);
-    var path = (semantics ? (`../docs/`+ semantics.diagram) : undefined);
-    var ltlDescription = semantics ? (semantics.description ? semantics.description : "No description available.") : "No description available.";
-    if (!rationale) rationale = 'Not specified'
-    if (!parent_reqid) parent_reqid = 'Not specified'
-    fulltext += '.'
-    return (
-      <div>
-        <Dialog
-          open={this.state.open}
-          onClose={this.handleClose}
-          aria-labelledby="form-dialog-title"
-        >
-          <ImageList rowHeight='auto' cols={2}>
-            <ImageListItem>
-              <DialogTitle id="form-dialog-title">{reqidLabel}
-                <IconButton onClick={this.handleUpdateRequirement} size="small" color="secondary" aria-label="edit" >
-                  <Tooltip id="tooltip-icon-edit" title="Edit Requirement">
-                    <EditIcon />
-                  </Tooltip>
-                </IconButton>
-                <IconButton onClick={this.handleDeleteRequirement} size="small" aria-label="delete" >
-                  <Tooltip id="tooltip-icon-delete" title="Delete Requirement">
-                    <DeleteIcon color='error' />
-                  </Tooltip>
-                </IconButton>
-              </DialogTitle>
-            </ImageListItem>
-            <ImageListItem>
-              <DialogTitle style={{ textAlign: 'right' }} id="form-dialog-title">{projectLabel}</DialogTitle>
-            </ImageListItem>
-          </ImageList>
-          <Divider />
-          <DialogContent>
-            <br />
-            <ImageList cols={1} rowHeight='auto' gap={20}>
-              <ImageListItem>
-                <Typography variant='button'>Rationale</Typography><br/>
-                <Typography color='primary' variant='body1'>{rationale}</Typography>
-              </ImageListItem>
-              <ImageListItem>
-                <Typography variant='button'>Requirement</Typography><br/>
-                <Typography color='primary' variant='body1'>{fulltext}</Typography>
-              </ImageListItem>
-              <ImageListItem>
-                {this.renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path)}
-              </ImageListItem>
-            </ImageList>
+  //  const {classes} = this.props;
+  var { project, reqid, parent_reqid, rationale, ltl, semantics, fulltext } = this.state.selectedRequirement
+  //  const reqidLabel = (reqid ? reqid : "None")
+  //  const projectLabel = project ? project : "None"
+  //  var ltlFormula = ltl ? ltl : (semantics ? semantics.ft : undefined);
+  //  var ltlFormulaPt = (semantics ? semantics.pt : undefined);
+  //  var diagramVariables = (semantics ? semantics.diagramVariables : undefined);
+  //  var path = (semantics ? (`../docs/`+ semantics.diagram) : undefined);
+  //  var ltlDescription = semantics ? (semantics.description ? semantics.description : "No description available.") : "No description available.";
+  //  if (!rationale) rationale = 'Not specified'
+  //  if (!parent_reqid) parent_reqid = 'Not specified'
+  //  fulltext += '.'
+
+
+  return (
+    <div>
+      <Dialog
+        open={this.state.open}
+        onClose={this.handleClose}
+        aria-labelledby="form-dialog-title"
+      >
+        <DialogContent>
+          <Grid container spacing={2} >
+            <Grid item xs={6}>
+              Requirement Name:
+            </Grid>
+            <Grid item xs={6}>
+              {this.state.selectedRequirementId}
+            </Grid>
+
+            <Grid item xs={6}>
+              Selected Definition:
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                id="definition"
+                multiline
+                label="Definition"
+                value={fulltext} />
+            </Grid>
+
+              <Grid item xs={6}>
+                Refactoring Type
+              </Grid>
+              <Grid item xs={6}>
+                <Select
+                  autoWidth
+                  labelId="refactoringType"
+                  id="select"
+                  onChange={this.handleRefactoringType}
+                >
+                  <MenuItem value="extract">Extract Requirement</MenuItem>
+                  <MenuItem value="others">Others</MenuItem>
+                </Select>
+              </Grid>
+              </Grid>
+
+              <this.RefactoringContent type={this.state.refactoringType} />
+
           </DialogContent>
           <DialogActions>
+            <Button onClick={this.handlePreview} color="secondary" disabled="true">
+              Preview
+            </Button>
             <Button onClick={this.handleClose} color="secondary">
-              Close
+              Cancel
+            </Button>
+            <Button onClick={this.handleOk} color="secondary">
+              Ok
             </Button>
           </DialogActions>
         </Dialog>
       </div>
-    );
-  }
+  );
+}
 }
 
-DisplayRequirementDialog.propTypes = {
+RefactorRequirementDialog.propTypes = {
   selectedRequirement: PropTypes.object.isRequired,
   open: PropTypes.bool.isRequired,
   handleDialogClose: PropTypes.func.isRequired,
   handleCreateDialogOpen: PropTypes.func.isRequired,
   handleDeleteDialogOpen: PropTypes.func.isRequired,
-  handleRefactorDialogOpen: PropTypes.func.isRequired,
-};
+}
 
-export default withStyles(styles)(DisplayRequirementDialog);
+export default withStyles(styles)(RefactorRequirementDialog);

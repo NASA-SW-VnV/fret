@@ -74,23 +74,21 @@ const styles = theme => ({
 
 class VersionDialog extends React.Component {
   state = {
-    open: false,
-    //version: app.getVersion()
-  };
-
-
-  handleClose = () => {
-    //this.setState({ open: false });
-    this.state.dialogCloseListener();
+    open: false
   };
 
   componentWillReceiveProps = (props) => {
     this.setState({
       open: props.open,
-      dialogCloseListener : props.handleDialogClose,
+      dialogCloseListener: props.handleDialogClose,
       version: props.version
-    })
+    });
   }
+
+  handleClose = () => {
+    // this.setState({ open: false });
+    this.state.dialogCloseListener();
+  };
 
   handleChange = name => event => {
     this.setState({ [name]: event.target.value });
@@ -107,13 +105,13 @@ class VersionDialog extends React.Component {
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
-          <DialogTitle id="alert-dialog-title">{"FRET Version"}</DialogTitle>
+          <DialogTitle id="alert-dialog-title">FRET Version</DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
               The Current Version of FRET
             </DialogContentText>
             <div>
-            Fret Version: {this.props.version}
+              Fret Version: {this.state.version}
             </div>
 
           </DialogContent>
@@ -133,5 +131,5 @@ VersionDialog.propTypes = {
   open: PropTypes.bool.isRequired,
   version: PropTypes.string.isRequired,
   handleDialogClose: PropTypes.func.isRequired,
-}
+};
 export default withStyles(styles)(VersionDialog);

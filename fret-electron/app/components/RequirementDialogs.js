@@ -43,47 +43,47 @@ import IconButton from '@material-ui/core/IconButton';
 import DisplayRequirementDialog from './DisplayRequirementDialog';
 import CreateRequirementDialog from './CreateRequirementDialog';
 import DeleteRequirementDialog from './DeleteRequirementDialog';
-import RefactorRequirementDialog from './refactoring/RefactorRequirementDialog';
 
 
 const styles = theme => ({
 });
 
 class RequirementDialogs extends React.Component {
-  state = {
-    createDialogOpen: false,
-    deleteDialogOpen: false,
-    snackbarOpen: false,
-    refactorDialogOpen: false,
-    snackBarDisplayInfo: {}
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      createDialogOpen: false,
+      deleteDialogOpen: false,
+      snackbarOpen: false,
+      refactorDialogOpen: false,
+      snackBarDisplayInfo: {}
+    };
+  }
 
   handleCreateDialogOpen = () => {
     this.setState({
       createDialogOpen: true
-    })
+    });
   }
 
   handleRefactorDialogOpen = () => {
-    this.setState({
-      refactorDialogOpen: true
-    })
+    console.log('handleRefactorDialogOpen');
+    this.setState({ refactorDialogOpen: true });
   }
 
   handleDeleteDialogClose = () => {
     this.setState({
       deleteDialogOpen: false
-    })
+    });
   }
 
   handleDeleteDialogOpen = () => {
     this.setState({
       deleteDialogOpen: true
-    })
+    });
   }
 
   handleCreateDialogClose = (requirementUpdated, newReqId, actionLabel) => {
-
     this.setState({
       createDialogOpen: false,
       snackbarOpen: requirementUpdated,
@@ -91,7 +91,7 @@ class RequirementDialogs extends React.Component {
         modifiedReqId: newReqId,
         action: actionLabel
       }
-    })
+    });
   }
 
   handleSnackbarClose = (event, reason) => {
@@ -103,71 +103,63 @@ class RequirementDialogs extends React.Component {
   };
 
 
-  render(){
-    const { classes, selectedProject, existingProjectNames, selectedRequirement, handleDialogClose } = this.props;
+  render() {
+    const {
+      classes, selectedProject, existingProjectNames, selectedRequirement, handleDialogClose
+    } = this.props;
     const { snackBarDisplayInfo } = this.state;
     return (
-    <div>
-
-      <DisplayRequirementDialog
-        selectedRequirement={selectedRequirement}
-        open={this.props.displayRequirementOpen}
-        handleDialogClose={this.props.handleDialogClose}
-        handleCreateDialogOpen={this.handleCreateDialogOpen}
-        handleDeleteDialogClose={this.handleDeleteDialogClose}
-        handleDeleteDialogOpen={this.handleDeleteDialogOpen}/>
-
-      <RefactorRequirementDialog
-        selectedRequirement = {selectedRequirement}
-        open = {this.state.refactorDialogOpen}
-        handleDialogClose={this.props.handleDialogClose}
-        handleCreateDialogOpen={this.handleCreateDialogOpen}
-        handleDeleteDialogClose={this.handleDeleteDialogClose}
-        handleDeleteDialogOpen={this.handleDeleteDialogOpen}
-      />
-
-
-      <CreateRequirementDialog
-        open = {this.state.createDialogOpen}
-        handleCreateDialogClose = {this.handleCreateDialogClose}
-        selectedProject = {selectedProject}
-        editRequirement = {selectedRequirement}
-        //TODO: Update eventually
-        addChildRequirementToParent={null}
-        existingProjectNames={existingProjectNames}
-        requirements={this.props.requirements} />
-      <DeleteRequirementDialog
-        open={this.state.deleteDialogOpen}
-        requirementsToBeDeleted={[selectedRequirement]}
-        handleDialogClose={this.handleDeleteDialogClose}
-      />
-      <Snackbar
-        anchorOrigin={{
+      <div>
+        <DisplayRequirementDialog
+          selectedRequirement={selectedRequirement}
+          open={this.props.displayRequirementOpen}
+          handleDialogClose={this.props.handleDialogClose}
+          handleCreateDialogOpen={this.handleCreateDialogOpen}
+          handleDeleteDialogClose={this.handleDeleteDialogClose}
+          handleDeleteDialogOpen={this.handleDeleteDialogOpen}
+        />
+        <CreateRequirementDialog
+          open={this.state.createDialogOpen}
+          handleCreateDialogClose={this.handleCreateDialogClose}
+          selectedProject={selectedProject}
+          editRequirement={selectedRequirement}
+        // TODO: Update eventually
+          addChildRequirementToParent={null}
+          existingProjectNames={existingProjectNames}
+          requirements={this.props.requirements}
+        />
+        <DeleteRequirementDialog
+          open={this.state.deleteDialogOpen}
+          requirementsToBeDeleted={[selectedRequirement]}
+          handleDialogClose={this.handleDeleteDialogClose}
+        />
+        <Snackbar
+          anchorOrigin={{
           vertical: 'bottom',
           horizontal: 'center',
         }}
-        open={this.state.snackbarOpen}
-        autoHideDuration={2000}
-        onClose={this.handleSnackbarClose}
-        snackbarcontentprops={{
+          open={this.state.snackbarOpen}
+          autoHideDuration={2000}
+          onClose={this.handleSnackbarClose}
+          snackbarcontentprops={{
           'aria-describedby': 'message-id',
         }}
-        message={<span id="message-id">Requirement Updated</span>}
-        action={[
-          <Button key="undo" color="secondary" size="small" onClick={this.handleSnackbarClose}>
-            {this.state.snackBarDisplayInfo.modifiedReqId}
-          </Button>,
-          <IconButton
-            key="close"
-            aria-label="Close"
-            color="inherit"
-            onClick={this.handleSnackbarClose}
-          >
+          message={<span id="message-id">Requirement Updated</span>}
+          action={[
+            <Button key="undo" color="secondary" size="small" onClick={this.handleSnackbarClose}>
+              {this.state.snackBarDisplayInfo.modifiedReqId}
+            </Button>,
+            <IconButton
+              key="close"
+              aria-label="Close"
+              color="inherit"
+              onClick={this.handleSnackbarClose}
+            >
             <CloseIcon />
           </IconButton>,
         ]} />
       </div>
-  );
+    );
   }
 }
 
