@@ -134,14 +134,14 @@ RefactoringContent(props){
   else if(type == "extract")
   {
     return(  <Grid container spacing={2} >
-      <Grid item xs={6}>
+      <Grid  style={{ textAlign: 'right' }} item xs={6}>
         New Requirement Name:
       </Grid>
       <Grid item xs={6}>
         <TextField id="newReqName" label="New Name" />
       </Grid>
 
-      <Grid item xs={6}>
+      <Grid  style={{ textAlign: 'right' }} item xs={6}>
         Apply to all available fragments:
       </Grid>
       <Grid item xs={6}>
@@ -222,14 +222,14 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
       >
         <DialogContent>
           <Grid container spacing={2} >
-            <Grid item xs={6}>
+            <Grid style={{ textAlign: 'right' }} item xs={6}>
               Requirement Name:
             </Grid>
             <Grid item xs={6}>
               {this.state.selectedRequirementId}
             </Grid>
 
-            <Grid item xs={6}>
+            <Grid style={{ textAlign: 'right' }} item xs={6}>
               Selected Definition:
             </Grid>
             <Grid item xs={6}>
@@ -240,7 +240,7 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
                 value={fulltext} />
             </Grid>
 
-              <Grid item xs={6}>
+              <Grid  style={{ textAlign: 'right' }} item xs={6}>
                 Refactoring Type
               </Grid>
               <Grid item xs={6}>
@@ -260,7 +260,7 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
 
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.handlePreview} color="secondary" disabled="true">
+            <Button onClick={this.handlePreview} color="secondary" disabled>
               Preview
             </Button>
             <Button onClick={this.handleClose} color="secondary">
