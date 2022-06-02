@@ -1,8 +1,14 @@
-FRET: Formal Requirements Elicitation Tool
+MU-FRET
 =============================================
 
 Introduction
 ------------
+
+MU-FRET is a fork of FRET (Formal Requirements Elicitation Tool) by a team at Maynooth University, Ireland.
+
+MU-FRET incorporates requirements refactoring techniques.
+
+# FRET 
 
 FRET is a framework for the elicitation, specification, formalization and understanding of requirements. Users enter system requirements in a specialized natural language. FRET helps understanding and review of semantics by utilizing a variety of forms for each requirement: natural language description, formal mathematical logics, and diagrams. Requirements can be defined in a hierarchical fashion and can be exported in a variety of forms to be used by analysis tools.
 
