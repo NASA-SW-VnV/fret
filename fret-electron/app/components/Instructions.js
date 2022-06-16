@@ -61,7 +61,16 @@ import Help from './Help';
 import ColorPicker from './ColorPicker';
 import LTLSimLauncher from './LTLSimLauncher';
 
-import TemplatePanel from './TemplatePanel'
+import TemplatePanel from './TemplatePanel';
+
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
+import FormGroup from '@material-ui/core/FormGroup';
 
 import {
   scopeInstruction,
@@ -116,6 +125,11 @@ const styles = theme => ({
     fontFamily: 'sans-serif',
     fontSize: '14px'
   },
+  buttonDescription: {
+  color: theme.palette.primary.main,
+  fontFamily: 'sans-serif',
+  fontSize: '6px'
+},
   variableDescription: {
     color: theme.palette.primary.main,
     fontFamily: 'sans-serif',
@@ -153,6 +167,10 @@ const styles = theme => ({
     fontSize: theme.typography.pxToRem(15),
     fontWeight: theme.typography.fontWeightRegular
   },
+  formControl: {
+  margin: theme.spacing(1),
+  minWidth: 120,
+  }
 });
 
 function TabContainer(props) {
@@ -182,6 +200,8 @@ class Instructions extends React.Component {
       LTLSimDialogOpen: false,
       components: {},
       selectedItem: null,
+      format: 'SMV',
+      expanded: false
     };
 
     this.openLTLSimDialog = this.openLTLSimDialog.bind(this);
@@ -233,6 +253,19 @@ class Instructions extends React.Component {
     });
   }
 
+handleFormatChange = (event) => {
+ this.setState({
+   format: event.target.value,
+ });
+}
+
+handleSwitchChange =(event) => {
+ //console.log(this.props.formalization.semantics)
+ this.setState({
+   expanded: event.target.checked,
+ });
+}
+
   openLTLSimDialog() {
     this.setState({LTLSimDialogOpen: true});
   }
@@ -273,7 +306,8 @@ class Instructions extends React.Component {
     var ftpInFT = this.props.formalization.semantics.ft.replace(/[()(<b>)(<i>)(</b>)(</i>)]/g,'').split(" ").includes("FTP");
     var ftpInPT = this.props.formalization.semantics.pt.replace(/[()(<b>)(<i>)(</b>)(</i>)]/g,'').split(" ").includes("FTP")
 
-    if ((ft !== constants.unhandled_semantics) && (ft !== constants.nonsense_semantics) && (ft !== constants.undefined_semantics) && (diagram !== constants.undefined_svg))
+    if ((ft !== constants.unhandled_semantics) && (ft !== constants.nonsense_semantics)
+    && (ft !== constants.undefined_semantics) && (diagram !== constants.undefined_svg))
     return(
       <div>
       <br />
@@ -305,7 +339,7 @@ class Instructions extends React.Component {
         </AccordionSummary>
         <AccordionDetails>
           <div>
-            <div id="qa_crtAst_sem_typ_futureTimeFormula" className={classes.formula} 
+            <div id="qa_crtAst_sem_typ_futureTimeFormula" className={classes.formula}
               dangerouslySetInnerHTML={{ __html: this.props.formalization.semantics.ft }} />
             <br />
             <div id="qa_crtAst_sem_typ_futureTimeComp" className={classes.description} dangerouslySetInnerHTML={{ __html:' Target: '+ this.props.formalization.semantics.component + ' component.'}} />
@@ -320,8 +354,34 @@ class Instructions extends React.Component {
         </AccordionSummary>
         <AccordionDetails>
         <div>
-          <div id="qa_crtAst_sem_typ_pastTimeFormula" className={classes.formula} 
-            dangerouslySetInnerHTML={{ __html: this.props.formalization.semantics.pt}} />
+        <FormGroup row>
+        <div>
+        <FormControl>
+          <Select
+            labelId="format"
+            id="format-helper"
+            value={this.state.format}
+            onChange={this.handleFormatChange}
+          >
+            <MenuItem value='SMV' key='SMV'>SMV</MenuItem>
+            <MenuItem value='Lustre' key='Lustre'>Lustre</MenuItem>
+          </Select>
+          <FormHelperText>Pick a format</FormHelperText>
+          </FormControl>
+          </div>
+          <div>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <FormControlLabel
+            control={<Switch size="small" checked={this.state.expanded} onChange={this.handleSwitchChange} name="expanded" />}
+            label="Expanded"
+          />
+          </div>
+          <br />
+        </FormGroup> <br />
+          <div className={classes.formula}
+          dangerouslySetInnerHTML={{ __html: (this.state.format=='SMV'
+          ? (this.state.expanded ? this.props.formalization.semantics.ptExpanded: this.props.formalization.semantics.pt)
+          : this.props.formalization.semantics.CoCoSpecCode)}} />
           <br />
           <div id="qa_crtAst_sem_typ_pastTimeComp" className={classes.description} dangerouslySetInnerHTML={{ __html:' Target: '+ this.props.formalization.semantics.component + ' component.'}} />
           {ftpInPT &&
@@ -350,7 +410,7 @@ class Instructions extends React.Component {
           <div>
             <div className={classes.formula} dangerouslySetInnerHTML={{ __html: this.props.formalization.semantics.ft}} />
             <br />
-            <div className={classes.description} dangerouslySetInnerHTML={{ __html:' Target: '+ this.props.formalization.semantics.component + ' component.'}} />            
+            <div className={classes.description} dangerouslySetInnerHTML={{ __html:' Target: '+ this.props.formalization.semantics.component + ' component.'}} />
           {ftpInFT &&
               <div className={classes.description} dangerouslySetInnerHTML={{ __html:' FTP: First Time Point.'}} />}
           </div>
