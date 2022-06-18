@@ -793,7 +793,7 @@ class SlateEditor2 extends React.Component {
         case 'field-element':
           return (
             <span
-              id = {"qa_crt_buble_"+props.element.type}
+              id = "qa_crt_buble"
               {...props.attributes}
               style={{
                 padding: '1px 0px',

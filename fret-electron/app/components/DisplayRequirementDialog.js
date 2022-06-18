@@ -121,7 +121,7 @@ class DisplayRequirementDialog extends React.Component {
         Semantic Diagram
         </Typography>
         <div className={classes.imgWrap}>
-        <img src= {path}/>
+        <img id="qa_disReq_div_semImg" src= {path}/>
         </div>
         <div id="qa_disReq_div_semDiagram" className={classes.variableDescription} 
         dangerouslySetInnerHTML={{ __html: diagramVariables}} />
