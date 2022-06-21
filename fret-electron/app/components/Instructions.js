@@ -200,7 +200,9 @@ class Instructions extends React.Component {
       LTLSimDialogOpen: false,
       components: {},
       selectedItem: null,
-      format: 'SMV',
+      ptFormat: 'SMV',
+      ftFormat: 'SMV',
+      ftExpanded: false,
       ptExpanded: false
     };
 
@@ -255,15 +257,20 @@ class Instructions extends React.Component {
 
 handleFormatChange = (event) => {
  this.setState({
-   format: event.target.value,
+   ptFormat: event.target.value,
  });
 }
 
 handleSwitchChange =(event) => {
- //console.log(this.props.formalization.semantics)
- this.setState({
-   ptExpanded: event.target.checked,
- });
+ if (event.target.name === 'ptExpanded'){
+   this.setState({
+     ptExpanded: event.target.checked,
+   })
+ } else if (event.target.name === 'ftExpanded'){
+   this.setState({
+     ftExpanded: event.target.checked,
+   })
+ }
 }
 
   openLTLSimDialog() {
@@ -339,8 +346,31 @@ handleSwitchChange =(event) => {
         </AccordionSummary>
         <AccordionDetails>
           <div>
+          <FormGroup row>
+          <div>
+          <FormControl>
+            <Select
+              labelId="select-disabled-label"
+              id="select-disabled"
+              value={this.state.ftFormat}
+            >
+            <MenuItem value='SMV' key='SMV'>SMV</MenuItem>
+            </Select>
+            <FormHelperText>Format</FormHelperText>
+            </FormControl>
+            </div>
+            <div>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <FormControlLabel
+              control={<Switch size="small" checked={this.state.ftExpanded} onChange={this.handleSwitchChange} name="ftExpanded" />}
+              label="Expanded"
+            />
+            </div>
+            <br />
+          </FormGroup> <br />
             <div id="qa_crtAst_sem_typ_futureTimeFormula" className={classes.formula}
-              dangerouslySetInnerHTML={{ __html: this.props.formalization.semantics.ft }} />
+              dangerouslySetInnerHTML={{ __html: (this.state.ftExpanded ? this.props.formalization.semantics.ftExpanded: this.props.formalization.semantics.ft) }} />
+
             <br />
             <div id="qa_crtAst_sem_typ_futureTimeComp" className={classes.description} dangerouslySetInnerHTML={{ __html:' Target: '+ this.props.formalization.semantics.component + ' component.'}} />
             {ftpInFT &&
@@ -360,13 +390,13 @@ handleSwitchChange =(event) => {
           <Select
             labelId="format"
             id="format-helper"
-            value={this.state.format}
+            value={this.state.ptFormat}
             onChange={this.handleFormatChange}
           >
             <MenuItem value='SMV' key='SMV'>SMV</MenuItem>
             <MenuItem value='Lustre' key='Lustre'>Lustre</MenuItem>
           </Select>
-          <FormHelperText>Pick a format</FormHelperText>
+          <FormHelperText>Format</FormHelperText>
           </FormControl>
           </div>
           <div>
@@ -379,7 +409,7 @@ handleSwitchChange =(event) => {
           <br />
         </FormGroup> <br />
           <div className={classes.formula}
-          dangerouslySetInnerHTML={{ __html: (this.state.format=='SMV'
+          dangerouslySetInnerHTML={{ __html: (this.state.ptFormat=='SMV'
           ? (this.state.ptExpanded ? this.props.formalization.semantics.ptExpanded: this.props.formalization.semantics.pt)
           : this.props.formalization.semantics.CoCoSpecCode)}} />
           <br />
