@@ -201,7 +201,7 @@ class Instructions extends React.Component {
       components: {},
       selectedItem: null,
       format: 'SMV',
-      expanded: false
+      ptExpanded: false
     };
 
     this.openLTLSimDialog = this.openLTLSimDialog.bind(this);
@@ -262,7 +262,7 @@ handleFormatChange = (event) => {
 handleSwitchChange =(event) => {
  //console.log(this.props.formalization.semantics)
  this.setState({
-   expanded: event.target.checked,
+   ptExpanded: event.target.checked,
  });
 }
 
@@ -372,7 +372,7 @@ handleSwitchChange =(event) => {
           <div>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           <FormControlLabel
-            control={<Switch size="small" checked={this.state.expanded} onChange={this.handleSwitchChange} name="expanded" />}
+            control={<Switch size="small" checked={this.state.ptExpanded} onChange={this.handleSwitchChange} name="ptExpanded" />}
             label="Expanded"
           />
           </div>
@@ -380,7 +380,7 @@ handleSwitchChange =(event) => {
         </FormGroup> <br />
           <div className={classes.formula}
           dangerouslySetInnerHTML={{ __html: (this.state.format=='SMV'
-          ? (this.state.expanded ? this.props.formalization.semantics.ptExpanded: this.props.formalization.semantics.pt)
+          ? (this.state.ptExpanded ? this.props.formalization.semantics.ptExpanded: this.props.formalization.semantics.pt)
           : this.props.formalization.semantics.CoCoSpecCode)}} />
           <br />
           <div id="qa_crtAst_sem_typ_pastTimeComp" className={classes.description} dangerouslySetInnerHTML={{ __html:' Target: '+ this.props.formalization.semantics.component + ' component.'}} />
