@@ -401,10 +401,16 @@ handleSwitchChange =(event) => {
           </div>
           <div>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <FormControlLabel
-            control={<Switch size="small" checked={this.state.ptExpanded} onChange={this.handleSwitchChange} name="ptExpanded" />}
-            label="Expanded"
-          />
+          {(this.state.ptFormat === 'SMV')?
+            <FormControlLabel
+                control={<Switch size="small" checked={this.state.ptExpanded} onChange={this.handleSwitchChange} name="ptExpanded" />}
+                label="Expanded"
+              /> :
+              <FormControlLabel disabled
+                  control={<Switch size="small"checked/>}
+                  label="Expanded"
+              />
+          }
           </div>
           <br />
         </FormGroup> <br />
