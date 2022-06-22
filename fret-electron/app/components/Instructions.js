@@ -414,7 +414,7 @@ handleSwitchChange =(event) => {
           </div>
           <br />
         </FormGroup> <br />
-          <div className={classes.formula}
+          <div id="qa_crtAst_sem_typ_pastTimeFormula" className={classes.formula} 
           dangerouslySetInnerHTML={{ __html: (this.state.ptFormat=='SMV'
           ? (this.state.ptExpanded ? this.props.formalization.semantics.ptExpanded: this.props.formalization.semantics.pt)
           : this.props.formalization.semantics.CoCoSpecCode)}} />
