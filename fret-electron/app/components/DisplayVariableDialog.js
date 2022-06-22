@@ -155,12 +155,12 @@ class DisplayVariableDialog extends React.Component {
       resultLustre = lustreExprSemantics.compileLustreExpr(event.target.value);
       //console.log("result Lustre "+resultLustre.variables)
       let tempAssignment = event.target.value;
-      if (resultLustre.variables) {        
+      if (resultLustre.variables) {
         for (const lustreVar of resultLustre.variables) {
           var regex = new RegExp('\\b' + lustreVar + '\\b', "g");
           tempAssignment = tempAssignment.replace(regex, '__'+lustreVar);
         }
-      }      
+      }
       this.setState({
         [name]: event.target.value,
         lustreValidAssignment: tempAssignment,
@@ -263,7 +263,7 @@ class DisplayVariableDialog extends React.Component {
         return console.log(err);
       });
     }).then(() => {
-      this.state.dialogCloseListener(selectedVariable._id);
+      this.state.dialogCloseListener(false);
     });
   }
 
@@ -287,13 +287,38 @@ class DisplayVariableDialog extends React.Component {
     }
   }
 
+  handleIdTypeChange = event => {
+    const self = this;
+    if (event.target.value !== 'Mode') {
+      self.setState({
+        idType: event.target.value,
+        dataType: '',
+        modeldoc_id: '',
+        assignment: '',
+        lustreValidAssignment: '',
+        copilotAssignment: '',
+        modeRequirement: '',
+        moduleName: ''
+      });
+    } else {
+      self.setState({
+        idType: event.target.value,
+        dataType: 'boolean',
+        modeldoc_id: '',
+        assignment: '',
+        lustreValidAssignment: '',
+        copilotAssignment: '',
+        modeRequirement: '',
+        moduleName: ''
+      });
+    }
+  }
+
   handleChange = event => {
     const self = this;
     const { selectedVariable } = this.props;
     const { modelComponent } = this.state;
-    this.setState({
-      [event.target.name]: event.target.value
-    });
+
     if (event.target.name === 'modeldoc_id') {
       modeldb.find({
         selector: {
@@ -303,27 +328,15 @@ class DisplayVariableDialog extends React.Component {
         }
       }).then(function (result) {
         //TODO:Update when higher dimensions allowed
-        self.setState({ dataType: result.docs[0].dataType[0] });
+        self.setState({
+          dataType: result.docs[0].dataType[0],
+          modeldoc_id: event.target.value
+        });
       });
-    } else if (event.target.name === 'idType' && event.target.value !== 'Mode') {
-      self.setState({
-        dataType: '',
-        modeldoc_id: '',
-        assignment: '',
-        lustreValidAssignment: '',
-        copilotAssignment: '',
-        modeRequirement: '',
-        moduleName: ''
-      });
-    } else if (event.target.name === 'idType' && event.target.value === 'Mode') {
-      self.setState({
-        dataType: 'boolean',
-        modeldoc_id: '',
-        assignment: '',
-        lustreValidAssignment: '',
-        copilotAssignment: '',
-        modeRequirement: '',
-        moduleName: ''
+    }
+    else {
+      this.setState({
+        [event.target.name]: event.target.value
       });
     }
   }
@@ -388,7 +401,7 @@ class DisplayVariableDialog extends React.Component {
                   id="qa_disVar_sel_varType"
                   key={selectedVariable}
                   value={this.state.idType}
-                  onChange={this.handleChange}
+                  onChange={this.handleIdTypeChange}
                   inputProps={{
                     name: 'idType',
                     id: 'idType-simple',
