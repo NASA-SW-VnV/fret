@@ -361,10 +361,17 @@ handleSwitchChange =(event) => {
             </div>
             <div>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <FormControlLabel
-              control={<Switch size="small" checked={this.state.ftExpanded} onChange={this.handleSwitchChange} name="ftExpanded" />}
-              label="Expanded"
-            />
+            {(this.props.formalization.semantics.ft !== this.props.formalization.semantics.ftExpanded)
+             ?
+              <FormControlLabel
+                  control={<Switch size="small" checked={this.state.ftExpanded} onChange={this.handleSwitchChange} name="ftExpanded" />}
+                  label="Expanded"/>
+             :
+             // disable for cases that the SMV form is the same for ft and ftExpanded
+                <FormControlLabel disabled
+                    control={<Switch size="small"checked/>}
+                    label="Expanded"/>
+            }
             </div>
             <br />
           </FormGroup> <br />
@@ -401,20 +408,21 @@ handleSwitchChange =(event) => {
           </div>
           <div>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          {(this.state.ptFormat === 'SMV')?
+          {((this.state.ptFormat === 'SMV') && (this.props.formalization.semantics.pt !== this.props.formalization.semantics.ptExpanded))
+           ?
             <FormControlLabel
                 control={<Switch size="small" checked={this.state.ptExpanded} onChange={this.handleSwitchChange} name="ptExpanded" />}
-                label="Expanded"
-              /> :
+                label="Expanded"/>
+           :
+           // disable Expanded for Lustre and for cases that the SMV form is the same for pt and ptExpanded
               <FormControlLabel disabled
                   control={<Switch size="small"checked/>}
-                  label="Expanded"
-              />
+                  label="Expanded"/>
           }
           </div>
           <br />
         </FormGroup> <br />
-          <div id="qa_crtAst_sem_typ_pastTimeFormula" className={classes.formula} 
+          <div id="qa_crtAst_sem_typ_pastTimeFormula" className={classes.formula}
           dangerouslySetInnerHTML={{ __html: (this.state.ptFormat=='SMV'
           ? (this.state.ptExpanded ? this.props.formalization.semantics.ptExpanded: this.props.formalization.semantics.pt)
           : this.props.formalization.semantics.CoCoSpecCode)}} />
