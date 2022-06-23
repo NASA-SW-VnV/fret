@@ -50,7 +50,7 @@ function prettyObject(obj) {
   }
   return pretty;
 }
-    
+
 
 function optLog(str) {
     if (constants.verboseSemanticsAnalyzer) console.log(str);
@@ -466,7 +466,7 @@ SemanticsAnalyzer.prototype.semantics = () => {
 
   let regCond = result.regular_condition;
   let postCond = result.post_condition;
-  let stopCond = result.stop_condition;  
+  let stopCond = result.stop_condition;
 
   // Handle scope mode condition. It could be a boolean expr
   // with a temporal condition.
@@ -476,7 +476,7 @@ SemanticsAnalyzer.prototype.semantics = () => {
       result.scope_mode_ft = "BAD_FT"
     } else {
       // the scope_mode field only exists when scope.type !== 'null'
-      let modeCond = result.scope_mode; 
+      let modeCond = result.scope_mode;
       let modeCondTCxform_pt = xform.transformPastTemporalConditionsNoBounds(modeCond)
       let modeCondTCxform_coco = cocospecSemantics.createCoCoSpecCode(modeCondTCxform_pt)
       let modeCondTCxform_ft = xform.transformFutureTemporalConditionsNoBounds(modeCond)
@@ -535,7 +535,7 @@ SemanticsAnalyzer.prototype.semantics = () => {
 	let postCondLeftCoCo = cocospecSemantics.createCoCoSpecCode(postCondLeftCoCoSubsts)
         result.post_condition_coco = postCondLeftCoCo;
     }
-    
+
   if (stopCond) {
       // stopCondTCxform has the temporal conditions rewritten into LTL.
       let stopCondTCxform_pt = xform.transformPastTemporalConditions(stopCond)
@@ -566,11 +566,11 @@ SemanticsAnalyzer.prototype.semantics = () => {
     //pt and ft are used in the Edit/Update Requirement display
     let fetched_ft = fetchedSemantics.ft.replace(/\$regular_condition\$/g,'$regular_condition_unexp_ft$').replace(/\$post_condition\$/g,'$post_condition_unexp_ft$').replace(/\$stop_condition\$/g,'$stop_condition_unexp_ft$').replace(/\$scope_mode\$/g,'$scope_mode_ft$');
     result.ft_fetched = fetched_ft;
-    result.ft = replaceTemplateVarsWithArgs(fetched_ft, false, false);
+    result.ft = replaceTemplateVarsWithArgs(fetched_ft, true, false);
 
     let fetched_pt = fetchedSemantics.pt.replace(/\$regular_condition\$/g,'$regular_condition_unexp_pt$').replace(/\$post_condition\$/g,'$post_condition_unexp_pt$').replace(/\$stop_condition\$/g,'$stop_condition_unexp_pt$').replace(/\$scope_mode\$/g,'$scope_mode_pt$');
     result.pt_fetched = fetched_pt;
-    result.pt = replaceTemplateVarsWithArgs(fetched_pt, false, false);
+    result.pt = replaceTemplateVarsWithArgs(fetched_pt, true, false);
 
     let fetched_ptExpanded = fetchedSemantics.ptExpanded.replace(/\$regular_condition\$/g,'$regular_condition_SMV_pt$').replace(/\$post_condition\$/g,'$post_condition_SMV_pt$').replace(/\$stop_condition\$/g,'$stop_condition_SMV_pt$').replace(/\$scope_mode\$/g,'$scope_mode_pt$');
     result.ptExpanded_fetched = fetched_ptExpanded;
