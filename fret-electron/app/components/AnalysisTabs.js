@@ -47,6 +47,7 @@ const sharedObj = require('electron').remote.getGlobal('sharedObj');
 const constants = require('../parser/Constants');
 const db = sharedObj.db;
 const modeldb = sharedObj.modeldb;
+const system_dbkeys = sharedObj.system_dbkeys;
 
 const styles = theme => ({
   root: {
@@ -76,7 +77,7 @@ TabContainer.propTypes = {
 };
 
 class AnalysisTabs extends React.Component {
-  
+
   state = {
     value: 0,
     components: [],
@@ -173,14 +174,14 @@ class AnalysisTabs extends React.Component {
     const self = this;
     const {components} = self.state;
     const {selectedProject} = self.props;
-    self.checkComponentCompleted2(components, selectedProject);     
+    self.checkComponentCompleted2(components, selectedProject);
   }
 
     checkComponentCompleted2(components, project) {
     const {cocospecData, cocospecModes,completedComponents} = this.state;
     const self = this;
     let checkCounter = 0;
-    components.forEach(function (component) {      
+    components.forEach(function (component) {
       let component_name = component.component_name;
       var dataAndModesLength = cocospecData[component_name] ? cocospecData[component_name].length : 0;
       modeldb.find({
@@ -389,14 +390,14 @@ class AnalysisTabs extends React.Component {
             scrollButtons="auto"
           >
             <Tab id="qa_var_tab" label="Variable Mapping" />
-            {process.platform === "win32" ? 
+            {process.platform === "win32" ?
               <Tooltip title={'Realizability checking is currently not supported in Windows OS'}>
                 <span>
-                  <Tab id="qa_rlz_tab_win" disabled label="Realizability" />            
-                </span>              
+                  <Tab id="qa_rlz_tab_win" disabled label="Realizability" />
+                </span>
               </Tooltip> :
               <Tab id="qa_rlz_tab" label="Realizability"/>
-            }            
+            }
           </Tabs>
         </AppBar>
         {value === 0 &&
