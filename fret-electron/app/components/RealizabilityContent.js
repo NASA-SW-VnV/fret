@@ -1129,7 +1129,7 @@ class RealizabilityContent extends React.Component {
 
                 if (err) {
                   self.setState(prevState => {
-                    prevState.projectReport.systemComponents[systemComponentIndex].monolithic.result = '';
+                    prevState.projectReport.systemComponents[systemComponentIndex].monolithic.result = 'ERROR';
                     prevState.projectReport.systemComponents[systemComponentIndex].monolithic.error = err.message;
                     return(prevState);
                   });
