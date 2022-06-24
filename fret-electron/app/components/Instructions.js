@@ -310,8 +310,8 @@ handleSwitchChange =(event) => {
     }
 
     //Check if FTP appears in the formulas to display clarification message.
-    var ftpInFT = this.props.formalization.semantics.ft.replace(/[()(<b>)(<i>)(</b>)(</i>)]/g,'').split(" ").includes("FTP");
-    var ftpInPT = this.props.formalization.semantics.pt.replace(/[()(<b>)(<i>)(</b>)(</i>)]/g,'').split(" ").includes("FTP")
+    var ftpInFT = this.props.formalization.semantics.ft ? this.props.formalization.semantics.ft.replace(/[()(<b>)(<i>)(</b>)(</i>)]/g,'').split(" ").includes("FTP") : false;
+    var ftpInPT = this.props.formalization.semantics.pt ? this.props.formalization.semantics.pt.replace(/[()(<b>)(<i>)(</b>)(</i>)]/g,'').split(" ").includes("FTP") : false;
 
     if ((ft !== constants.unhandled_semantics) && (ft !== constants.nonsense_semantics)
     && (ft !== constants.undefined_semantics) && (diagram !== constants.undefined_svg))
