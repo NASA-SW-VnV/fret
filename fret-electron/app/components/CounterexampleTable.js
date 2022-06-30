@@ -126,7 +126,7 @@ let TableComponentBar = props => {
           </Select>
         </FormControl>
       </form>
-      {ltlsimLauncher}
+      {(project !== '') && ltlsimLauncher}
     </Toolbar>
   );
 };

@@ -236,42 +236,71 @@ class DiagnosisRequirementsTable extends React.Component {
     data: [],
     page: 0,
     rowsPerPage: 10,
-    selectedRequirement: {},
-    selectedProject: 'All Projects',
   };
 
   constructor(props){
     super(props);
     
-    dbChangeListener = db.changes({
-      since: 'now',
-      live: true,
-      include_docs: true
-    }).on('change', (change) => {
-      if (!system_dbkeys.includes(change.id)) {
-        optLog(change);
-        this.synchStateWithDB();
-      }
-    }).on('complete', function(info) {
-      optLog(info);
-    }).on('error', function (err) {
-      optLog(err);
-    });
+    if (props.importedRequirements.length === 0) {
+      dbChangeListener = db.changes({
+        since: 'now',
+        live: true,
+        include_docs: true
+      }).on('change', (change) => {
+        if (!system_dbkeys.includes(change.id)) {
+          optLog(change);
+          this.synchStateWithDB();
+        }
+      }).on('complete', function(info) {
+        optLog(info);
+      }).on('error', function (err) {
+        optLog(err);
+      });
+    } else {
+      this.setState({
+        data: props.importedRequirements.map(r => {
+          return createData(r._id, r._rev, r.reqid, r.fulltext, r.project);
+        }).sort((a, b) => {return a.reqid > b.reqid})
+      });
+    }
   }
 
   componentDidMount() {
+    const { importedRequirements } = this.props;
     this.mounted = true;
-    this.synchStateWithDB();
+    if (importedRequirements.length === 0) {
+      this.synchStateWithDB();
+    } else {
+      this.setState({
+        data: importedRequirements.map(r => {
+          return createData(r._id, r._rev, r.reqid, r.fulltext, r.project);
+        }).sort((a, b) => {return a.reqid > b.reqid})
+      });
+    } 
   }
 
   componentWillUnmount() {
+    const { importedRequirements } = this.props;
+    
     this.mounted = false;
-    dbChangeListener.cancel();
+
+    if (importedRequirements.length === 0) {
+      dbChangeListener.cancel();
+    }
   }
 
   componentDidUpdate(prevProps) {
     if (this.props.connectedComponent !== prevProps.connectedComponent) {
-      this.synchStateWithDB()
+      if (this.props.importedRequirements.length === 0) {
+        this.synchStateWithDB()
+      } else {
+        this.setState({
+          data: this.props.importedRequirements.map(r => {
+            return createData(r._id, r._rev, r.reqid, r.fulltext, r.project);
+          }).sort((a, b) => {return a.reqid > b.reqid})
+        });
+      }
+
       const {setMessage} = this.context;
       setMessage({reqs : '', color : ''})
       this.setState(
@@ -286,7 +315,7 @@ class DiagnosisRequirementsTable extends React.Component {
     if (!this.mounted) return;
 
     const { selectedProject, selectedComponent } = this.props
-    const filterOff = selectedProject == 'All Projects'
+    const filterOff = selectedProject === 'All Projects'
 
     db.allDocs({
       include_docs: true,
@@ -432,7 +461,8 @@ DiagnosisRequirementsTable.propTypes = {
   selectedProject: PropTypes.string.isRequired,
   selectedComponent: PropTypes.string.isRequired,
   existingProjectNames: PropTypes.array.isRequired,
-  connectedComponent : PropTypes.object.isRequired
+  connectedComponent : PropTypes.object.isRequired,
+  importedRequirements: PropTypes.array.isRequired
 };
 
 export default withStyles(styles)(DiagnosisRequirementsTable);

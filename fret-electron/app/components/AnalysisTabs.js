@@ -417,7 +417,7 @@ class AnalysisTabs extends React.Component {
                   <Tab id="qa_rlz_tab_win" disabled label="Realizability" />
                 </span>
               </Tooltip> :
-              <Tab id="qa_rlz_tab" label="Realizability"/>
+              <Tab id="qa_rlz_tab" label="Realizability"/>              
             }
           </Tabs>
         </AppBar>

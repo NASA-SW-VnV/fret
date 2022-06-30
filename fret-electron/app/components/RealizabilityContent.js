@@ -217,7 +217,7 @@ const styles = theme => ({
 });
 
 
-function TabContainer(props) {
+export function TabContainer(props) {
   return (
     <Typography component="div" style={{ padding: 8 * 3 }}>
       {props.children}
@@ -247,7 +247,7 @@ function determineResultIcon(result, time) {
   );
 }
 
-class ResultIcon extends React.Component {
+export class ResultIcon extends React.Component {
   render() {
     const {reskey, result, time, error} = this.props;
 
@@ -719,7 +719,7 @@ class RealizabilityContent extends React.Component {
 
             self.setState({
               selected: components[0],
-              monolithic : !isDecomposable,
+              monolithic: !isDecomposable,
               compositional: isDecomposable,
               ccSelected: 'cc0',
               projectReport: projectReport
@@ -915,6 +915,7 @@ class RealizabilityContent extends React.Component {
         contract.properties = getPropertyInfo(fretResult, contract.outputVariables, selected.component_name);
         contract.delays = getDelayInfo(fretResult, selected.component_name);
         contract = self.renameIDs(contract);
+        projectReport.systemComponents[systemComponentIndex]['requirements'] = fretResult.docs;
         self.setState({diagnosisRequirements: fretResult.docs})
 
         return contract;
@@ -1509,8 +1510,9 @@ class RealizabilityContent extends React.Component {
                             selectedComponent={selected.component_name}
                             existingProjectNames={[selectedProject]}
                             connectedComponent={
-                            projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex]
-                          }/>
+                            projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex]}
+                            importedRequirements={[]}
+                          />
                         </div>
                       </DiagnosisProvider>
                     </TabContainer>
@@ -1532,7 +1534,9 @@ class RealizabilityContent extends React.Component {
                           selectedProject={selectedProject}
                           selectedComponent={selected.component_name}
                           existingProjectNames={[selectedProject]}
-                          connectedComponent={{}}/>
+                          connectedComponent={{}}
+                          importedRequirements={[]}
+                        />                          
                       </div>
                     </DiagnosisProvider>
                   }
