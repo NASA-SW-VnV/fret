@@ -354,7 +354,7 @@ handleSwitchChange =(event) => {
               id="select-disabled"
               value={this.state.ftFormat}
             >
-            <MenuItem value='SMV' key='SMV'>SMV</MenuItem>
+            <MenuItem id="qa_crtAst_sem_mi_futureSmv" value='SMV' key='SMV'>SMV</MenuItem>
             </Select>
             <FormHelperText>Format</FormHelperText>
             </FormControl>
@@ -363,12 +363,12 @@ handleSwitchChange =(event) => {
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             {(this.props.formalization.semantics.ft !== this.props.formalization.semantics.ftExpanded)
              ?
-              <FormControlLabel
+              <FormControlLabel id="qa_crtAst_sem_btn_switchFutureEnabled"
                   control={<Switch size="small" checked={this.state.ftExpanded} onChange={this.handleSwitchChange} name="ftExpanded" />}
                   label="Expanded"/>
              :
              // disable for cases that the SMV form is the same for ft and ftExpanded
-                <FormControlLabel disabled
+                <FormControlLabel id="qa_crtAst_sem_btn_switchFutureDisabled" disabled
                     control={<Switch size="small"checked/>}
                     label="Expanded"/>
             }
@@ -400,8 +400,8 @@ handleSwitchChange =(event) => {
             value={this.state.ptFormat}
             onChange={this.handleFormatChange}
           >
-            <MenuItem value='SMV' key='SMV'>SMV</MenuItem>
-            <MenuItem value='Lustre' key='Lustre'>Lustre</MenuItem>
+            <MenuItem id="qa_crtAst_sem_mi_pastSmv" value='SMV' key='SMV'>SMV</MenuItem>
+            <MenuItem id="qa_crtAst_sem_mi_pastLustre" value='Lustre' key='Lustre'>Lustre</MenuItem>
           </Select>
           <FormHelperText>Format</FormHelperText>
           </FormControl>
@@ -410,13 +410,13 @@ handleSwitchChange =(event) => {
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           {((this.state.ptFormat === 'SMV') && (this.props.formalization.semantics.pt !== this.props.formalization.semantics.ptExpanded))
            ?
-            <FormControlLabel
+            <FormControlLabel id="qa_crtAst_sem_btn_switchPastEnabled"
                 control={<Switch size="small" checked={this.state.ptExpanded} onChange={this.handleSwitchChange} name="ptExpanded" />}
                 label="Expanded"/>
            :
            // disable Expanded for Lustre and for cases that the SMV form is the same for pt and ptExpanded
-              <FormControlLabel disabled
-                  control={<Switch size="small"checked/>}
+              <FormControlLabel id="qa_crtAst_sem_btn_switchPastDisabled" disabled
+                  control={<Switch size="small" checked/>}
                   label="Expanded"/>
           }
           </div>
