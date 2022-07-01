@@ -351,7 +351,7 @@ handleSwitchChange =(event) => {
           <FormControl>
             <Select
               labelId="select-disabled-label"
-              id="select-disabled"
+              id="qa_crtAst_sem_sel_future"
               value={this.state.ftFormat}
             >
             <MenuItem id="qa_crtAst_sem_mi_futureSmv" value='SMV' key='SMV'>SMV</MenuItem>
@@ -396,7 +396,7 @@ handleSwitchChange =(event) => {
         <FormControl>
           <Select
             labelId="format"
-            id="format-helper"
+            id="qa_crtAst_sem_sel_past"
             value={this.state.ptFormat}
             onChange={this.handleFormatChange}
           >
