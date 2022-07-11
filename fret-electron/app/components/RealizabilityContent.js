@@ -710,7 +710,7 @@ class RealizabilityContent extends React.Component {
 
             projectReport.systemComponents = [].concat(projectReport.systemComponents.map(obj => {
               if (obj.name === component.component_name) {
-                return {...obj, monolithic: {result: 'UNCHECKED', time: '', diagnosisStatus: '', diagnosisReport: '', error: ''}, compositional: {result: 'UNCHECKED', connectedComponents: ccArray, error: ''}};
+                return {...obj, comments: '', monolithic: {result: 'UNCHECKED', time: '', diagnosisStatus: '', diagnosisReport: '', error: ''}, compositional: {result: 'UNCHECKED', connectedComponents: ccArray, error: ''}, requirements: fretResult.docs};
               }
               return obj;
             }))
@@ -820,6 +820,8 @@ class RealizabilityContent extends React.Component {
     const {projectReport, selected, ccSelected} = this.state;
     let sysComps = []
 
+    let systemComponentIndex = projectReport.systemComponents.findIndex( sc => sc.name === selected.component_name);
+
     if (selectedProject !== prevProps.selectedProject) {
       this.setState({
         monolithic: false,
@@ -839,14 +841,15 @@ class RealizabilityContent extends React.Component {
       })
     }
 
-    if (selected !== prevState.selected) {
+    if (selected !== prevState.selected && (!projectReport.systemComponents[systemComponentIndex].compositional)) {
       this.computeConnectedComponents(selectedProject, [selected], completedComponents);
     }
   }
 
   handleChange = name => event => {
-    const {connectedComponents, projectReport} = this.state;
+    const {connectedComponents, projectReport, selected} = this.state;
     const {completedComponents} = this.props;
+
     if (name === 'selected') {
       if (event.target.value === 'all') {
         this.setState({selected: 'all', monolithic : false, compositional : false});
@@ -858,6 +861,10 @@ class RealizabilityContent extends React.Component {
       this.setState({monolithic : !this.state.monolithic, compositional : false});
     } else if (name === 'compositional' && !this.state.compositional) {
       this.setState({monolithic : false, compositional : !this.state.compositional});
+    } else if (name === 'comments') {
+      var systemComponentIndex = projectReport.systemComponents.findIndex( sc => sc.name === selected.component_name);
+      projectReport.systemComponents[systemComponentIndex].comments = event.target.value;
+      this.setState({projectReport: projectReport});
     }
   }
 
@@ -1327,6 +1334,7 @@ class RealizabilityContent extends React.Component {
 
     var diagStatus, diagReport;
     if (selected !== '' && selected !== 'all' && projectReport.systemComponents[systemComponentIndex]) {
+
       if (projectReport.systemComponents[systemComponentIndex].compositional && projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents.length > 0) {
         diagStatus = monolithic ? projectReport.systemComponents[systemComponentIndex].monolithic.diagnosisStatus : projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].diagnosisStatus;
 
@@ -1339,7 +1347,7 @@ class RealizabilityContent extends React.Component {
     if (this.state.settingsOpen) {
       actionsMargin.marginRight = '40%'
     }
-
+    
     return(
       <div>
         {components.length !== 0 &&
@@ -1470,12 +1478,30 @@ class RealizabilityContent extends React.Component {
             </Grid>
             <div style={{width : '100%'}}>
             {selected !== '' && selected !== 'all' &&
-              <div className={classes.root}>
+              <div>
                 &nbsp;
                 &nbsp;
                 &nbsp;
-                <Divider/>
                 <div>
+                  <Accordion>
+                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                      <Typography>Comments</Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                    <TextField
+                            multiline={true}
+                            variant="outlined"
+                            label="Enter your comments here."
+                            type="text"
+                            fullWidth
+                            value={projectReport.systemComponents[systemComponentIndex].comments}
+                            onChange={this.handleChange('comments')}
+                    />
+                    </AccordionDetails>
+                  </Accordion>
+                  &nbsp;
+                  &nbsp;
+                  &nbsp;
                   {compositional &&
                     <div>
                     <AppBar position="static" color="default">

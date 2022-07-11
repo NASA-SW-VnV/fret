@@ -59,6 +59,9 @@ class SaveRealizabilityReport extends React.Component {
 		event.stopPropagation();
 		const {projectReport} = this.props;		
 		const homeDir = app.getPath('home');
+
+		projectReport.systemComponents = projectReport.systemComponents.filter(sc => sc.monolithic);
+
 		// const self = this;
 		var filePathObject = await dialog.showSaveDialog({
           defaultPath : homeDir,
