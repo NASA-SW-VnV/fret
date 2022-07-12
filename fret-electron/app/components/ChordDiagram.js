@@ -370,7 +370,7 @@ class ChordDiagram extends React.Component {
 	    				project={this.props.selectedProject}
 	    				requirements={this.props.requirements}
     				/>
-	          	</Grid>);
+	        </Grid>);
 	    }
 
 	    return(

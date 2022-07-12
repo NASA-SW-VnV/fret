@@ -42,7 +42,9 @@ import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Paper from '@material-ui/core/Paper';
 import Tooltip from '@material-ui/core/Tooltip';
+import Checkbox from '@material-ui/core/Checkbox';
 import { DiagnosisContext } from './DiagnosisProvider';
+import { SelectRequirementsContext } from './SelectRequirementsProvider';
 
 const sharedObj = require('electron').remote.getGlobal('sharedObj');
 const constants = require('../parser/Constants');
@@ -177,11 +179,18 @@ class DiagnosisRequirementsTableHead extends React.Component {
   };
 
   render() {
-    const {order, orderBy, numSelected, rowCount } = this.props;
+    const {onSelectAllClick, order, orderBy, numSelected, rowCount } = this.props;
 
     return (
       <TableHead>
         <TableRow>
+          <TableCell padding="checkbox">
+            <Checkbox
+              indeterminate={numSelected > 0 && numSelected < rowCount}
+              checked={numSelected === rowCount}
+              onChange={onSelectAllClick}
+            />
+          </TableCell>
           {rows.map(row => {
             return (
               <TableCell
@@ -213,6 +222,7 @@ class DiagnosisRequirementsTableHead extends React.Component {
 }
 
 DiagnosisRequirementsTableHead.propTypes = {
+  onSelectAllClick: PropTypes.func.isRequired,
   numSelected: PropTypes.number.isRequired,
   onRequestSort: PropTypes.func.isRequired,
   order: PropTypes.string.isRequired,
@@ -229,6 +239,7 @@ const styles = theme => ({
 
 class DiagnosisRequirementsTable extends React.Component {
   static contextType = DiagnosisContext;
+
   state = {
     order: 'asc',
     orderBy: 'reqid',
@@ -290,6 +301,7 @@ class DiagnosisRequirementsTable extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
+/*<<<<<<< HEAD
     if (this.props.connectedComponent !== prevProps.connectedComponent) {
       if (this.props.importedRequirements.length === 0) {
         this.synchStateWithDB()
@@ -301,21 +313,48 @@ class DiagnosisRequirementsTable extends React.Component {
         });
       }
 
+=======
+
+    if (this.props.connectedComponent !== prevProps.connectedComponent && Object.keys(this.props.connectedComponent).length !==0) {
+      // this.synchStateWithDB()
+>>>>>>> First iteration of selecting requirements in realizability.
       const {setMessage} = this.context;
       setMessage({reqs : '', color : ''})
-      this.setState(
-        {
-          selected: [],
-          bulkChangeMode: false
+      // this.props.updateSelectedRequirements([])
+      // this.setState({selected: []});
+      console.log(this.props.connectedComponent.requirements);
+      console.log("Table updating")
+      let newSelectedReqs = this.props.connectedComponent.requirements ? this.props.connectedComponent.requirements : [];
+      // if (newSelectedReqs.length !== 0) this.props.updateSelectedRequirements(newSelectedReqs);
+      this.setState({selected: [].concat(newSelectedReqs)})
+    }
+*/
+    if (this.props.connectedComponent !== prevProps.connectedComponent && Object.keys(this.props.connectedComponent).length !==0) {
+      if (this.props.importedRequirements.length === 0) {
+        const {setMessage} = this.context;
+        setMessage({reqs : '', color : ''})
+        // this.props.updateSelectedRequirements([])
+        // this.setState({selected: []});
+        console.log(this.props.connectedComponent.requirements);
+        console.log("Table updating")
+        let newSelectedReqs = this.props.connectedComponent.requirements ? this.props.connectedComponent.requirements : [];
+        // if (newSelectedReqs.length !== 0) this.props.updateSelectedRequirements(newSelectedReqs);
+        this.setState({selected: [].concat(newSelectedReqs)})
+      } else {
+        this.setState({
+          data: this.props.importedRequirements.map(r => {
+            return createData(r._id, r._rev, r.reqid, r.fulltext, r.project);
+          }).sort((a, b) => {return a.reqid > b.reqid})
         });
+      }
     }
   }
 
   synchStateWithDB() {
     if (!this.mounted) return;
 
-    const { selectedProject, selectedComponent } = this.props
-    const filterOff = selectedProject === 'All Projects'
+    const { selectedProject, selectedComponent, updateSelectedRequirements } = this.props
+    const filterOff = selectedProject == 'All Projects'
 
     db.allDocs({
       include_docs: true,
@@ -328,20 +367,56 @@ class DiagnosisRequirementsTable extends React.Component {
     }).then((result) => {
       optLog(result.rows
                 .filter(r => !system_dbkeys.includes(r.key)))
-      this.setState({
-        data: result.rows
+      let dbData = result.rows
                 .filter(r => !system_dbkeys.includes(r.key))
                 .filter(r => filterOff || (r.doc.project === selectedProject && r.doc.semantics.component_name === selectedComponent))
                 .map(r => {
                   return createData(r.doc._id, r.doc._rev, r.doc.reqid, r.doc.fulltext, r.doc.project)
                 })
                 .sort((a, b) => {return a.reqid > b.reqid})
+      updateSelectedRequirements(dbData.map(n => n.reqid));
+      this.setState({
+        data: dbData,
+        selected: dbData.map(n => n.reqid)
       })
     }).catch((err) => {
       optLog(err);
     });
   }
 
+  handleSelectAllClick = event => {
+    const { updateSelectedRequirements } = this.props;
+    const { data } = this.state
+    if (event.target.checked) {
+      updateSelectedRequirements(data.map(n => n.reqid));
+      this.setState({ selected: data.map(n => n.reqid) });
+      return;
+    }
+    updateSelectedRequirements([]);
+    this.setState({ selected: [] });
+  };
+
+  handleClick = (event, id) => {
+    const { updateSelectedRequirements } = this.props;
+    const { selected } = this.state;
+    const selectedIndex = selected.indexOf(id);
+    let newSelected = [];
+
+    if (selectedIndex === -1) {
+      newSelected = newSelected.concat(selected, id);
+    } else if (selectedIndex === 0) {
+      newSelected = newSelected.concat(selected.slice(1));
+    } else if (selectedIndex === selected.length - 1) {
+      newSelected = newSelected.concat(selected.slice(0, -1));
+    } else if (selectedIndex > 0) {
+      newSelected = newSelected.concat(
+        selected.slice(0, selectedIndex),
+        selected.slice(selectedIndex + 1),
+      );
+    }
+    updateSelectedRequirements(newSelected);
+    this.setState({ selected: newSelected });
+  };
 
   handleRequestSort = (event, property) => {
     const orderBy = property;
@@ -362,6 +437,7 @@ class DiagnosisRequirementsTable extends React.Component {
     this.setState({ rowsPerPage: event.target.value });
   };
 
+  isSelected = id => this.state.selected.indexOf(id) !== -1;
 
   render() {
     const { reqs, color } = this.context.state;
@@ -377,10 +453,11 @@ class DiagnosisRequirementsTable extends React.Component {
       <Paper>
         <div>
           <Table aria-labelledby="tableTitle" size="medium">
-            <DiagnosisRequirementsTableHead
+            <DiagnosisRequirementsTableHead              
               numSelected={selected.length}
               order={order}
               orderBy={orderBy}
+              onSelectAllClick={this.handleSelectAllClick}
               onRequestSort={this.handleRequestSort}
               rowCount={data.length}
             />
@@ -389,16 +466,29 @@ class DiagnosisRequirementsTable extends React.Component {
                 ccStableSort(data, reqs, connectedComponent, getSorting(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map(n => {
+                  const isSelected = this.isSelected(n.reqid);
                   const label = n.reqid ? n.reqid.replace(/-/g,'') : 'NONE'
-                  var isInConflict = (reqs.length !== 0 && reqs.includes(label)) ? true : false;                  
+                  var isInConflict = (reqs.length !== 0 && reqs.includes(label)) ? true : false;
+                  const isInConflictOrCC = (isInConflict || connectedComponent.requirements.includes(n.reqid));                  
                   return (
-                      <TableRow key={n.rowid} style={{
-                          opacity : (isInConflict || connectedComponent.requirements.includes(n.reqid)) ? 1 : .6,
+                      <TableRow 
+                        key={n.rowid} 
+                        style={{
+                          opacity : isInConflictOrCC ? 1 : .6,
                           borderStyle: isInConflict ? 'solid' : 'initial', 
-                          borderColor: isInConflict ? color : 'initial'}}>
+                          borderColor: isInConflict ? color : 'initial'}}
+                        onClick={event => { isInConflictOrCC ? this.handleClick(event, n.reqid) : null}}
+                        selected={isSelected && isInConflictOrCC}
+                      >
+                        <TableCell padding="checkbox">
+                          <Checkbox 
+                            disabled={!isInConflictOrCC}
+                            checked={isSelected && isInConflictOrCC}
+                          />
+                        </TableCell>
                         <TableCell id={"qa_diagReqTbl_tc_body_id_"+label}>
-                            {label}
-                          </TableCell>
+                          {label}
+                        </TableCell>
                         <TableCell id={"qa_diagReqTbl_tc_body_summary_"+label}>{n.summary}</TableCell>
                       </TableRow>
                     )
@@ -413,17 +503,30 @@ class DiagnosisRequirementsTable extends React.Component {
                 stableSort(data, reqs, getSorting(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map(n => {
+                  const isSelected = this.isSelected(n.reqid);
                   const label = n.reqid ? n.reqid.replace(/-/g,'') : 'NONE'
                   var isInConflict = (reqs.length !== 0 && reqs.includes(label)) ? true : false;
                   var isAssumption = n.reqid.includes('assumption')
+                  const isInConflictOrAssumptions = (isInConflict || reqs.length === 0  || isAssumption);
                   return (
-                      <TableRow key={n.rowid} style={{
-                          opacity : (isInConflict || reqs.length === 0  || isAssumption) ? 1 : .6,
+                      <TableRow
+                        key={n.rowid}
+                        style={{
+                          opacity : isInConflictOrAssumptions ? 1 : .6,
                           borderStyle: isInConflict ? 'solid' : 'initial', 
-                          borderColor: isInConflict ? color : 'initial'}}>
+                          borderColor: isInConflict ? color : 'initial'}}
+                        onClick={event => this.handleClick(event, n.reqid)}
+                        selected={isSelected && isInConflictOrAssumptions}
+                        >
+                        <TableCell padding="checkbox">
+                          <Checkbox 
+                            disabled={!isInConflictOrAssumptions}
+                            checked={isSelected && isInConflictOrAssumptions}
+                          />
+                        </TableCell>
                         <TableCell id={"qa_diagReqTbl_tc_body_id_"+label}>
-                            {label}
-                          </TableCell>
+                          {label}
+                        </TableCell>
                         <TableCell id={"qa_diagReqTbl_tc_body_summary_"+label}>{n.summary}</TableCell>
                       </TableRow>
                     )

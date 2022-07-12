@@ -96,6 +96,7 @@ import TableSortLabel from '@material-ui/core/TableSortLabel';
 import TablePagination from '@material-ui/core/TablePagination';
 import DiagnosisRequirementsTable from './DiagnosisRequirementsTable';
 import DiagnosisProvider from './DiagnosisProvider';
+import SelectRequirementsProvider from './SelectRequirementsProvider';
 import Fade from '@material-ui/core/Fade';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
@@ -104,6 +105,8 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Grid from '@material-ui/core/Grid';
 import Switch from '@material-ui/core/Switch'
 import SettingsIcon from '@material-ui/icons/Settings';
+
+import { SelectRequirementsContext } from './SelectRequirementsProvider';
 
 import realizabilityManual from '../../docs/_media/exports/realizability.md';
 
@@ -589,6 +592,7 @@ ProjectSummary.propTypes = {
 };
 
 class RealizabilityContent extends React.Component {
+
   state = {
     selected: '',
     ccSelected: '',
@@ -876,7 +880,7 @@ class RealizabilityContent extends React.Component {
       this.setState({timeout: value});
   };
 
-  diagnoseSpec(event) {
+  diagnoseSpec(event, selectedReqs) {    
     const {selected, ccSelected, compositional, monolithic, timeout, projectReport, retainFiles} = this.state;
     const {selectedProject, getPropertyInfo, getDelayInfo, getContractInfo} = this.props
     const self = this;
@@ -919,8 +923,9 @@ class RealizabilityContent extends React.Component {
           project: selectedProject
         }
       }).then(function (fretResult){
-        contract.properties = getPropertyInfo(fretResult, contract.outputVariables, selected.component_name);
+        contract.properties = getPropertyInfo(fretResult, contract.outputVariables, selected.component_name).filter(p => selectedReqs.includes(p.reqid));
         contract.delays = getDelayInfo(fretResult, selected.component_name);
+
         contract = self.renameIDs(contract);
         projectReport.systemComponents[systemComponentIndex]['requirements'] = fretResult.docs;
         self.setState({diagnosisRequirements: fretResult.docs})
@@ -1063,7 +1068,7 @@ class RealizabilityContent extends React.Component {
     return newContract;
   }
 
-  checkRealizability = () => {
+  checkRealizability = (event, selectedReqs) => {
 
     const {selected, ccSelected, monolithic, compositional, timeout, projectReport, retainFiles} = this.state;
     const {selectedProject, components, getPropertyInfo, getDelayInfo, getContractInfo} = this.props;
@@ -1138,7 +1143,7 @@ class RealizabilityContent extends React.Component {
           return contract;
         }).then(function (contract){
           if (monolithic) {
-
+              contract.properties = contract.properties.filter(p => selectedReqs.includes(p.reqid.substring(2)))
               var filePath = analysisPath + tC.component_name+'.lus';
               var output = fs.openSync(filePath, 'w');
               var lustreContract = ejsCache_realize.renderRealizeCode(engineName).component.complete(contract);
@@ -1173,7 +1178,7 @@ class RealizabilityContent extends React.Component {
 
               var ccProperties = contract.properties.filter(p => cc.requirements.includes(p.reqid.substring(2)));
 
-              ccContract.properties = ccProperties
+              ccContract.properties = (cc.ccName === ccSelected) ? ccProperties.filter(p => selectedReqs.includes(p.reqid.substring(2))) : ccProperties;
               var lustreContract = ejsCache_realize.renderRealizeCode(engineName).component.complete(ccContract);
               fs.writeSync(output, lustreContract);
 
@@ -1350,254 +1355,247 @@ class RealizabilityContent extends React.Component {
     
     return(
       <div>
-        {components.length !== 0 &&
-          <div style={{alignItems: 'flex-end', display: 'flex', flexWrap :'wrap'}}>
-          <Grid container alignItems="flex-end">
-            <FormControl className={classes.formControl} required>
-              <InputLabel>System Component</InputLabel>
-              <Select
-                id="qa_rlzCont_sel_sysComp"
-                value={selected}
-                onChange={this.handleChange('selected')}
-              >
-                  {menuItems.concat(stableSort(components, getSorting(order, orderBy))
-                    .map(n => {
+        <SelectRequirementsProvider>
+          <div>
+            <SelectRequirementsContext.Consumer>
+                {({state, setMessage}) => 
+                  <div>
+                    {console.log(state.selectedReqs)}
+                    {console.log(setMessage)}
+                    {components.length !== 0 &&
+                      <div style={{alignItems: 'flex-end', display: 'flex', flexWrap :'wrap'}}>
+                      <Grid container alignItems="flex-end">          
+                        <FormControl className={classes.formControl} required>
+                          <InputLabel>System Component</InputLabel>
+                          <Select
+                            id="qa_rlzCont_sel_sysComp"
+                            value={selected}
+                            onChange={this.handleChange('selected')}
+                          >
+                              {menuItems.concat(stableSort(components, getSorting(order, orderBy))
+                                .map(n => {
 
-                    return (
-                      <Tooltip
-                        key={n.component_name}
-                        value={!this.isComponentComplete(n.component_name) ? '' : n}
-                        title={!this.isComponentComplete(n.component_name) ? 'Analysis is not possible for this component. Please complete mandatory variable fields in Variable Mapping first.' : ''}>
-                          <span key={n.component_name}>
-                          <MenuItem key={n.component_name}
-                            id={"qa_rlzCont_mi_sysComp_"+n.component_name}
-                            disabled={!this.isComponentComplete(n.component_name)}>
-                            <div key={n.component_name} style={{display : 'flex', alignItems : 'center'}}>
-                              {n.component_name}
-                              &nbsp;
-                              <ResultIcon reskey={n.component_name} result={status[n.component_name] !== undefined ? status[n.component_name] : ''} time={(monolithic && time[n.component_name] !== undefined) ? ' - ' + time[n.component_name] : ''}
-                                error={
-                                  (systemComponentIndex !== -1 && projectReport.systemComponents[systemComponentIndex].monolithic) ? projectReport.systemComponents[systemComponentIndex].monolithic.error : ''
-                                }/>
-                            </div>
-                          </MenuItem>
-                          </span>
-                      </Tooltip>
-                      )
-                  }))}
-              </Select>
-            </FormControl>
-            <FormControlLabel
-              disabled={
-                selected === '' || (selected !== 'all' && systemComponentIndex > -1 && (!projectReport.systemComponents[systemComponentIndex].compositional || projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents.length <= 1))
-              }
-              control={
-                <Checkbox
-                  id="qa_rlzCont_cb_compositional"
-                  checked={compositional}
-                  onChange={this.handleChange('compositional')}
-                  value="compositional"
-                  color="primary"
-                />
-              }
-              label="Compositional"
-            />
-            <FormControlLabel
-              disabled={selected === '' || (systemComponentIndex > -1 && !projectReport.systemComponents[systemComponentIndex].compositional)}
-              control={
-                <Checkbox
-                  id="qa_rlzCont_cb_monolithic"
-                  checked={monolithic}
-                  onChange={this.handleChange('monolithic')}
-                  value="monolithic"
-                  color="primary"
-                />
-              }
-              style={actionsMargin}
-              label="Monolithic"
-            />
-            {/*Disable this for now.
-            <Grid item  >
-              Monolithic
-              <Switch
-                classes={{switchBase: classes.switchBase,track: classes.track}}
-                disabled={
-                selected === '' || (selected !== 'all' &&
-                (projectReport.systemComponents[systemComponentIndex] ? projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents.length <= 1 : false))
-                }
-              />
-              Compositional
-            </Grid> */}
-            {!dependenciesExist &&
-              <Tooltip title={"Dependencies missing for realizability checking. Click \"HELP\" for details."}>
-                <ErrorIcon id="qa_rlzCont_icon_depMissing" className={classes.wrapper} style={{verticalAlign : 'bottom'}} color='error'/>
-              </Tooltip>
-            }
-            {monolithic && diagStatus === 'ERROR' &&
-              <Tooltip title={(systemComponentIndex !== -1 && projectReport.systemComponents[systemComponentIndex]) ? projectReport.systemComponents[systemComponentIndex].monolithic.error.toString() : ''}>
-                <ErrorIcon id="qa_rlzCont_icon_analysisError" className={classes.wrapper} style={{verticalAlign: 'bottom'}} color='error'/>
-              </Tooltip>
-            }
-            <div className={classes.wrapper}>
-              <Button
-                id="qa_rlzCont_btn_actions"
-                ref={this.anchorRef}
-                aria-controls={actionsMenuOpen ? 'realizability_actions_menu' : undefined}
-                aria-haspopup="true"
-                aria-expanded={actionsMenuOpen ? 'true' : undefined}
-                size="small" variant="contained" color="secondary"
-                disabled={status[selected.component_name] === 'PROCESSING' || diagStatus === 'PROCESSING'}
-                endIcon={<KeyboardArrowDownIcon />}
-                onClick={(event) => this.handleActionsClick(event)}>
-                Actions
-              </Button>
-              <Menu id="qa_rlzCont_sel_actions" anchorEl={this.anchorRef.current} open={actionsMenuOpen} onClose={(event) => this.handleActionsMenuClose(event)} MenuListProps={{'aria-labelledby': 'realizability_actions_button'}}>
-                <MenuItem
-                id="qa_rlzCont_btn_check"
-                disabled={!dependenciesExist || (dependenciesExist && (selected === '' || missingDependencies.includes(this.getEngineNameAndOptions().name)))}
-                onClick={(event) => this.checkRealizability(event)}>Check Realizability</MenuItem>
-                <MenuItem
-                  id="qa_rlzCont_btn_diagnose"
-                  onClick={(event) => this.diagnoseSpec(event)}
-                  disabled={status[selected.component_name] === 'PROCESSING' || diagStatus === 'PROCESSING' || !dependenciesExist || (dependenciesExist && (selected === '' || selected === 'all')) ||
-                  (dependenciesExist && selected !== '' && compositional && projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].result !== 'UNREALIZABLE') ||
-                    (selected !== '' && monolithic && status[selected.component_name] !== 'UNREALIZABLE')}
-                >
-                  Diagnose Unrealizable Requirements
-                </MenuItem>
-                <MenuItem id="qa_rlzCont_btn_save">
-                  <SaveRealizabilityReport classes={{vAlign: classes.vAlign}} enabled={projectReport.systemComponents.length > 0 && status[selected.component_name] !== 'PROCESSING' && diagStatus !== 'PROCESSING'} projectReport={projectReport}/>
-                </MenuItem>
-                <MenuItem id="qa_rlzCont_btn_settings" onClick={() => this.handleSettingsOpen()}>Change Settings</MenuItem>
-              </Menu>
-            </div>
-
-            <div className={classes.wrapper}>
-              <Button id="qa_rlzCont_btn_help" color="secondary" onClick={this.handleHelpOpen} size="small" className={classes.vAlign} variant="contained"> Help </Button>
-            </div>
-            </Grid>
-            <div style={{width : '100%'}}>
-            {selected !== '' && selected !== 'all' &&
-              <div>
-                &nbsp;
-                &nbsp;
-                &nbsp;
-                <div>
-                  <Accordion>
-                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                      <Typography>Comments</Typography>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                    <TextField
-                            multiline={true}
-                            variant="outlined"
-                            label="Enter your comments here."
-                            type="text"
-                            fullWidth
-                            value={projectReport.systemComponents[systemComponentIndex].comments}
-                            onChange={this.handleChange('comments')}
-                    />
-                    </AccordionDetails>
-                  </Accordion>
-                  &nbsp;
-                  &nbsp;
-                  &nbsp;
-                  {compositional &&
-                    <div>
-                    <AppBar position="static" color="default">
-                      <div className={classes.appbar}>
-                        <Tabs
-                          value={ccSelected}
-                          onChange={this.handleCCChange}
-                          variant="scrollable"
-                          scrollButtons="on"
-                          indicatorColor="secondary"
-                          textColor="primary"
-                          classes={{scrollable : classes.tabsScrollable}}
-                        >
-                        {tabs}
-                        </Tabs>
-                      </div>
-                    </AppBar>
-                    <TabContainer>
-                      <DiagnosisProvider>
-                        <div>
-                          {diagStatus === 'DIAGNOSED' ?
-                            (<Fade in={diagStatus === 'DIAGNOSED'}>
-                              <div>
-                                {[...Array(2)].map((e, i) => <div key={i}> &nbsp; </div>)}
-                                <ChordDiagram selectedReport = {diagReport} selectedProject={selectedProject} requirements={diagnosisRequirements}/>
-                                &nbsp;
-                              </div>
-                            </Fade>) : <div/>
+                                return (
+                                  <Tooltip
+                                    key={n.component_name}
+                                    value={!this.isComponentComplete(n.component_name) ? '' : n}
+                                    title={!this.isComponentComplete(n.component_name) ? 'Analysis is not possible for this component. Please complete mandatory variable fields in Variable Mapping first.' : ''}>
+                                      <span key={n.component_name}>
+                                      <MenuItem key={n.component_name} 
+                                        id={"qa_rlzCont_mi_sysComp_"+n.component_name}
+                                        disabled={!this.isComponentComplete(n.component_name)}>
+                                        <div key={n.component_name} style={{display : 'flex', alignItems : 'center'}}>
+                                          {n.component_name}
+                                          &nbsp;
+                                          <ResultIcon reskey={n.component_name} result={status[n.component_name] !== undefined ? status[n.component_name] : ''} time={(monolithic && time[n.component_name] !== undefined) ? ' - ' + time[n.component_name] : ''}
+                                            error={
+                                              (systemComponentIndex !== -1 && projectReport.systemComponents[systemComponentIndex].monolithic) ? projectReport.systemComponents[systemComponentIndex].monolithic.error : ''
+                                            }/>
+                                        </div>
+                                      </MenuItem>
+                                      </span>
+                                  </Tooltip>
+                                  )
+                              }))}
+                          </Select>
+                        </FormControl>
+                        <FormControlLabel
+                          disabled={
+                            selected === '' || (selected !== 'all' && systemComponentIndex > -1 && (!projectReport.systemComponents[systemComponentIndex].compositional || projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents.length <= 1))                  
                           }
-                          <DiagnosisRequirementsTable
-                            selectedProject={selectedProject}
-                            selectedComponent={selected.component_name}
-                            existingProjectNames={[selectedProject]}
-                            connectedComponent={
-                            projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex]}
-                            importedRequirements={[]}
+                          control={
+                            <Checkbox
+                              id="qa_rlzCont_cb_compositional"
+                              checked={compositional}
+                              onChange={this.handleChange('compositional')}
+                              value="compositional"
+                              color="primary"
+                            />
+                          }
+                          label="Compositional"
+                        />
+                        <FormControlLabel
+                          disabled={selected === '' || (systemComponentIndex > -1 && !projectReport.systemComponents[systemComponentIndex].compositional)}
+                          control={
+                            <Checkbox
+                              id="qa_rlzCont_cb_monolithic"
+                              checked={monolithic}
+                              onChange={this.handleChange('monolithic')}
+                              value="monolithic"
+                              color="primary"
+                            />
+                          }
+                          style={actionsMargin}
+                          label="Monolithic"
+                        />
+                        {/*Disable this for now.
+                        <Grid item  >
+                          Monolithic
+                          <Switch
+                            classes={{switchBase: classes.switchBase,track: classes.track}} 
+                            disabled={
+                            selected === '' || (selected !== 'all' && 
+                            (projectReport.systemComponents[systemComponentIndex] ? projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents.length <= 1 : false))
+                            }
                           />
-                        </div>
-                      </DiagnosisProvider>
-                    </TabContainer>
-                    </div>
-                  }
-                  {monolithic &&
-                    <DiagnosisProvider>
-                      <div>
-                        {diagStatus === 'DIAGNOSED' ?
-                          (<Fade in={diagStatus === 'DIAGNOSED'}>
-                            <div>
-                              {[...Array(2)].map((e, i) => <div key={i}> &nbsp; </div>)}
-                              <ChordDiagram selectedReport = {diagReport} selectedProject={selectedProject} requirements = {diagnosisRequirements}/>
-                              &nbsp;
-                            </div>
-                          </Fade>) : <div/>
+                          Compositional
+                        </Grid> */}           
+                        {!dependenciesExist &&
+                          <Tooltip title={"Dependencies missing for realizability checking. Click \"HELP\" for details."}>
+                            <ErrorIcon id="qa_rlzCont_icon_depMissing" className={classes.wrapper} style={{verticalAlign : 'bottom'}} color='error'/>
+                          </Tooltip>
                         }
-                        <DiagnosisRequirementsTable
+                        {monolithic && diagStatus === 'ERROR' &&
+                          <Tooltip title={(systemComponentIndex !== -1 && projectReport.systemComponents[systemComponentIndex]) ? projectReport.systemComponents[systemComponentIndex].monolithic.error.toString() : ''}>
+                            <ErrorIcon id="qa_rlzCont_icon_analysisError" className={classes.wrapper} style={{verticalAlign: 'bottom'}} color='error'/>
+                          </Tooltip>
+                        }
+                        <div className={classes.wrapper}>
+                          <Button 
+                            id="qa_rlzCont_btn_actions"
+                            ref={this.anchorRef}
+                            aria-controls={actionsMenuOpen ? 'realizability_actions_menu' : undefined}
+                            aria-haspopup="true"
+                            aria-expanded={actionsMenuOpen ? 'true' : undefined}   
+                            size="small" variant="contained" color="secondary"
+                            disabled={status[selected.component_name] === 'PROCESSING' || diagStatus === 'PROCESSING'}
+                            endIcon={<KeyboardArrowDownIcon />}
+                            onClick={(event) => this.handleActionsClick(event)}>
+                            Actions        
+                          </Button>
+                          <Menu id="qa_rlzCont_sel_actions" anchorEl={this.anchorRef.current} open={actionsMenuOpen} onClose={(event) => this.handleActionsMenuClose(event)} MenuListProps={{'aria-labelledby': 'realizability_actions_button'}}>
+                            <MenuItem 
+                            id="qa_rlzCont_btn_check"
+                            disabled={state.selectedReqs.length === 0 || !dependenciesExist || (dependenciesExist && (selected === '' || missingDependencies.includes(this.getEngineNameAndOptions().name)))}
+                            onClick={(event) => this.checkRealizability(event, state.selectedReqs)}>Check Realizability</MenuItem>
+                            <MenuItem 
+                              id="qa_rlzCont_btn_diagnose"
+                              onClick={(event) => this.diagnoseSpec(event, state.selectedReqs)}
+                              disabled={state.selectedReqs.length === 0 || status[selected.component_name] === 'PROCESSING' || diagStatus === 'PROCESSING' || !dependenciesExist || (dependenciesExist && (selected === '' || selected === 'all')) ||
+                              (dependenciesExist && selected !== '' && compositional && projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].result !== 'UNREALIZABLE') ||
+                                (selected !== '' && monolithic && status[selected.component_name] !== 'UNREALIZABLE')}
+                            >
+                              Diagnose Unrealizable Requirements
+                            </MenuItem>
+                            <MenuItem id="qa_rlzCont_btn_save">
+                              <SaveRealizabilityReport classes={{vAlign: classes.vAlign}} enabled={projectReport.systemComponents.length > 0 && status[selected.component_name] !== 'PROCESSING' && diagStatus !== 'PROCESSING'} projectReport={projectReport}/>
+                            </MenuItem>
+                            <MenuItem id="qa_rlzCont_btn_settings" onClick={() => this.handleSettingsOpen()}>Change Settings</MenuItem>
+                          </Menu>
+                        </div>
+                        
+                        <div className={classes.wrapper}>
+                          <Button id="qa_rlzCont_btn_help" color="secondary" onClick={this.handleHelpOpen} size="small" className={classes.vAlign} variant="contained"> Help </Button>
+                        </div>
+                        </Grid>
+                        <div style={{width : '100%'}}>
+                        {selected !== '' && selected !== 'all' &&
+                          <div className={classes.root}>
+                            &nbsp;
+                            &nbsp;
+                            &nbsp;
+                            <Divider/>
+                            <div>
+                                          {compositional &&
+                                          <div>
+                                            <AppBar position="static" color="default">
+                                              <div className={classes.appbar}>
+                                                <Tabs
+                                                  value={ccSelected}
+                                                  onChange={this.handleCCChange}
+                                                  variant="scrollable"
+                                                  scrollButtons="on"
+                                                  indicatorColor="secondary"
+                                                  textColor="primary"
+                                                  classes={{scrollable : classes.tabsScrollable}}
+                                                >
+                                                {tabs}
+                                                </Tabs>
+                                              </div>
+                                            </AppBar>
+                                            <TabContainer>
+                                              <DiagnosisProvider>
+                                                <div>
+                                                  {diagStatus === 'DIAGNOSED' ?
+                                                    (<Fade in={diagStatus === 'DIAGNOSED'}>
+                                                      <div>
+                                                        {[...Array(2)].map((e, i) => <div key={i}> &nbsp; </div>)}
+                                                        <ChordDiagram selectedReport = {diagReport} selectedProject={selectedProject} requirements={diagnosisRequirements}/>
+                                                        &nbsp;
+                                                      </div>
+                                                    </Fade>) : <div/>
+                                                  }                        
+                                                  <DiagnosisRequirementsTable
+                                                    updateSelectedRequirements={setMessage} 
+                                                    selectedProject={selectedProject}
+                                                    selectedComponent={selected.component_name}
+                                                    existingProjectNames={[selectedProject]}
+                                                    connectedComponent={
+                                                    projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex]
+                                                  }/>
+                                                </div>
+                                              </DiagnosisProvider>
+                                            </TabContainer>
+                                          </div>
+                                        }
+                                        {monolithic &&
+                                          <DiagnosisProvider>
+                                            <div>
+                                              {diagStatus === 'DIAGNOSED' ?
+                                                (<Fade in={diagStatus === 'DIAGNOSED'}>
+                                                  <div>
+                                                    {[...Array(2)].map((e, i) => <div key={i}> &nbsp; </div>)}
+                                                    <ChordDiagram selectedReport = {diagReport} selectedProject={selectedProject} requirements = {diagnosisRequirements}/>
+                                                    &nbsp;
+                                                  </div>
+                                                </Fade>) : <div/>
+                                              }
+                                              <DiagnosisRequirementsTable
+                                                updateSelectedRequirements={setMessage}
+                                                selectedProject={selectedProject}
+                                                selectedComponent={selected.component_name}
+                                                existingProjectNames={[selectedProject]}
+                                                connectedComponent={{}}/>
+                                            </div>
+                                          </DiagnosisProvider>
+                                        }                          
+                            </div>
+                          </div>
+                        }
+                        {selected === 'all' &&
+                          <ProjectSummary
                           selectedProject={selectedProject}
-                          selectedComponent={selected.component_name}
-                          existingProjectNames={[selectedProject]}
-                          connectedComponent={{}}
-                          importedRequirements={[]}
-                        />                          
+                          components={components}
+                          compositional={compositional}
+                          monolithicStatus={monolithicStatus}
+                          compositionalStatus={compositionalStatus}
+                          connectedComponents={connectedComponents}
+                          time={time}/>
+                        }
+                        </div>
                       </div>
-                    </DiagnosisProvider>
-                  }
-                </div>
-              </div>
-            }
-            {selected === 'all' &&
-              <ProjectSummary
-              selectedProject={selectedProject}
-              components={components}
-              compositional={compositional}
-              monolithicStatus={monolithicStatus}
-              compositionalStatus={compositionalStatus}
-              connectedComponents={connectedComponents}
-              time={time}/>
-            }
-            </div>
-          </div>
-        }
-        <RealizabilitySettingsDialog className={classes} selectedEngine={this.state.selectedEngine} retainFiles={this.state.retainFiles} missingDependencies={missingDependencies} open={this.state.settingsOpen} handleSettingsClose={this.handleSettingsClose} handleSettingsEngineChange={this.handleSettingsEngineChange} handleTimeoutChange={this.handleTimeoutChange} handleRetainFilesChange={this.handleRetainFilesChange}/>
-        <Dialog maxWidth='lg' onClose={this.handleHelpClose} open={this.state.helpOpen}>
-          <DialogTitle id="realizability-help">
-            <Typography>
-              Help
-            </Typography>
-            <IconButton className={classes.closeButton}
-              id="qa_rlzCont_ib_closeHelpPage"
-              aria-label="close" onClick={this.handleHelpClose}>
-              <CloseIcon />
-            </IconButton>
-          </DialogTitle>
-          <DialogContent dividers>
-            <ReactMarkdown renderers={{image: (props) => <img {...props} style={{maxHeight: '10%', width: '100%'}} />}} transformImageUri = {uri => `../docs/_media/screen_shots/${uri}`} linkTarget="_blank" source={realizabilityManual}/>
-          </DialogContent>
-        </Dialog>
+                    }
+                    <RealizabilitySettingsDialog className={classes} selectedEngine={this.state.selectedEngine} retainFiles={this.state.retainFiles} missingDependencies={missingDependencies} open={this.state.settingsOpen} handleSettingsClose={this.handleSettingsClose} handleSettingsEngineChange={this.handleSettingsEngineChange} handleTimeoutChange={this.handleTimeoutChange} handleRetainFilesChange={this.handleRetainFilesChange}/>
+                    <Dialog maxWidth='lg' onClose={this.handleHelpClose} open={this.state.helpOpen}>
+                      <DialogTitle id="realizability-help">
+                        <Typography>
+                          Help
+                        </Typography>
+                        <IconButton className={classes.closeButton} 
+                          id="qa_rlzCont_ib_closeHelpPage"
+                          aria-label="close" onClick={this.handleHelpClose}>
+                          <CloseIcon />
+                        </IconButton>
+                      </DialogTitle>
+                      <DialogContent dividers>
+                        <ReactMarkdown renderers={{image: (props) => <img {...props} style={{maxHeight: '10%', width: '100%'}} />}} transformImageUri = {uri => `../docs/_media/screen_shots/${uri}`} linkTarget="_blank" source={realizabilityManual}/>
+                      </DialogContent>
+                    </Dialog>
+                 </div>
+               }
+             </SelectRequirementsContext.Consumer>
+           </div>                          
+         </SelectRequirementsProvider>
       </div>
     );
   }
