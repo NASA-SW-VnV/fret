@@ -1,1 +1,0 @@
-A webdriver log is written in the folder webdriverlog.  Do not add this in the git repository.
