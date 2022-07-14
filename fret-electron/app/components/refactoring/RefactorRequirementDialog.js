@@ -37,26 +37,29 @@ import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import EditIcon from '@material-ui/icons/Edit';
-import BuildIcon from '@material-ui/icons/Build';
-import DeleteIcon from '@material-ui/icons/Delete';
+//import IconButton from '@material-ui/core/IconButton';
+//import EditIcon from '@material-ui/icons/Edit';
+//import BuildIcon from '@material-ui/icons/Build';
+//import DeleteIcon from '@material-ui/icons/Delete';
 import TextField from '@material-ui/core/TextField';
-import Divider from '@material-ui/core/Divider';
+//import Divider from '@material-ui/core/Divider';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import ImageList from '@material-ui/core/ImageList';
-import ImageListItem from '@material-ui/core/ImageListItem';
+//import DialogContentText from '@material-ui/core/DialogContentText';
+//import DialogTitle from '@material-ui/core/DialogTitle';
+//import ImageList from '@material-ui/core/ImageList';
+//import ImageListItem from '@material-ui/core/ImageListItem';
 import Grid from '@material-ui/core/Grid';
 import Checkbox from '@material-ui/core/Checkbox';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 
-import ImageListItemBar from '@material-ui/core/ImageListItemBar';
-import Tooltip from '@material-ui/core/Tooltip';
+//import ImageListItemBar from '@material-ui/core/ImageListItemBar';
+//import Tooltip from '@material-ui/core/Tooltip';
+
+//import RefactoringController from '../../../../tools/Refactoring/refactoring_controller';
+//import RefactoringController from './refactoring_controller';
 
 const styles = theme => ({
   formula: {
@@ -87,7 +90,10 @@ class RefactorRequirementDialog extends React.Component {
     open: false,
     selectedRequirement: {},
     applyToAll: false,
-    refactoringType: false
+    refactoringType: '',
+    refactoringContent: ' ',
+    extractString: 'this is a test',
+    newName: ''
   };
 
   componentWillReceiveProps = (props) => {
@@ -95,8 +101,8 @@ class RefactorRequirementDialog extends React.Component {
       selectedRequirement: props.selectedRequirement,
       open: props.open,
       dialogCloseListener: props.handleDialogClose,
-      openCreateDialog: props.handleCreateDialogOpen,
-      openDeleteDialog: props.handleDeleteDialogOpen,
+//      openCreateDialog: props.handleCreateDialogOpen,
+//      openDeleteDialog: props.handleDeleteDialogOpen,
       selectedRequirementId: props.selectedRequirement.reqid,
 
     });
@@ -118,30 +124,44 @@ handlePreview = () => {
 
 handleOk = () => {
   console.log('OK Button');
+  console.log(this.state.extractString);
+  console.log(this.state.newName);
+  //RefactoringController.test();
 };
 
-handleRefactoringType = (event, child) => {
+handleRefactoringType = () => event => {
+  console.log(event.target.value);
   this.setState({ refactoringType: event.target.value });
 };
 
-RefactoringContent(props){
-  let type = props.type;
+handleChangeExtract = () => event => {
+  console.log(event.target.value);
+  this.setState({ extractString: event.target.value });
+}
 
-  if(type == false)
-  {
-    return (' ');
-  }
-  else if(type == "extract")
-  {
-    return(  <Grid container spacing={2} >
-      <Grid  style={{ textAlign: 'right' }} item xs={6}>
+updateNewName = () => event => {
+  console.log(event.target.value);
+  this.setState({ newName: event.target.value });
+}
+
+/*
+RefactoringContent(type) {
+//  const type = this.state.refactoringType;
+
+  if (type === -1) {
+    console.log('equals false');
+      return (' ');
+  } else if (type === 1) {
+    console.log('equals extract');
+    return (<Grid container spacing={2} >
+      <Grid style={{ textAlign: 'right' }} item xs={6}>
         New Requirement Name:
       </Grid>
       <Grid item xs={6}>
         <TextField id="newReqName" label="New Name" />
       </Grid>
 
-      <Grid  style={{ textAlign: 'right' }} item xs={6}>
+      <Grid style={{ textAlign: 'right' }} item xs={6}>
         Apply to all available fragments:
       </Grid>
       <Grid item xs={6}>
@@ -149,13 +169,14 @@ RefactoringContent(props){
           inputProps={{ 'aria-label': 'controlled' }}
         />
       </Grid>
-    </Grid>);
-  }
-  else if(type == "others")
-  {
-    return(' ');
+    </Grid>
+    );
+  } else if (type === 0) {
+    console.log('equals others');
+    return (' ');
   }
 }
+*/
 
 renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) {
   const { classes } = this.props;
@@ -221,6 +242,7 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
         aria-labelledby="form-dialog-title"
       >
         <DialogContent>
+          Extract Requirement
           <Grid container spacing={2} >
             <Grid style={{ textAlign: 'right' }} item xs={6}>
               Requirement Name:
@@ -230,7 +252,7 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
             </Grid>
 
             <Grid style={{ textAlign: 'right' }} item xs={6}>
-              Selected Definition:
+              Definition:
             </Grid>
             <Grid item xs={6}>
               <TextField
@@ -240,6 +262,20 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
                 value={fulltext} />
             </Grid>
 
+            <Grid style={{ textAlign: 'right' }} item xs={6}>
+              String to Extract:
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                id="extract"
+                multiline
+                label="Copy the part of the definition to extract"
+                value={this.state.extract}
+                onChange={this.handleChangeExtract()}
+              />
+            </Grid>
+
+
               <Grid  style={{ textAlign: 'right' }} item xs={6}>
                 Refactoring Type
               </Grid>
@@ -248,15 +284,36 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
                   autoWidth
                   labelId="refactoringType"
                   id="select"
-                  onChange={this.handleRefactoringType}
+                  value={this.state.refactoringType}
+                  onChange={this.handleRefactoringType()}
                 >
-                  <MenuItem value="extract">Extract Requirement</MenuItem>
-                  <MenuItem value="others">Others</MenuItem>
+                  <MenuItem value="1">Extract Requirement</MenuItem>
+                  <MenuItem value="0">Others</MenuItem>
                 </Select>
               </Grid>
-              </Grid>
 
-              <this.RefactoringContent type={this.state.refactoringType} />
+                <Grid style={{ textAlign: 'right' }} item xs={6}>
+                  New Requirement Name:
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    id="newReqName"
+                    label="New Name"
+                    value={this.state.newName}
+                    onChange={this.updateNewName()}
+                  />
+                </Grid>
+
+                <Grid style={{ textAlign: 'right' }} item xs={6}>
+                  Apply to all available fragments:
+                </Grid>
+                <Grid item xs={6}>
+                  <Checkbox
+                    inputProps={{ 'aria-label': 'controlled' }}
+                    disabled
+                  />
+                </Grid>
+          </Grid>
 
           </DialogContent>
           <DialogActions>
@@ -266,7 +323,10 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
             <Button onClick={this.handleClose} color="secondary">
               Cancel
             </Button>
-            <Button onClick={this.handleOk} color="secondary">
+            <Button
+              onClick={this.handleOk}
+              color="secondary"
+            >
               Ok
             </Button>
           </DialogActions>
@@ -280,8 +340,8 @@ RefactorRequirementDialog.propTypes = {
   selectedRequirement: PropTypes.object.isRequired,
   open: PropTypes.bool.isRequired,
   handleDialogClose: PropTypes.func.isRequired,
-  handleCreateDialogOpen: PropTypes.func.isRequired,
-  handleDeleteDialogOpen: PropTypes.func.isRequired,
+//  handleCreateDialogOpen: PropTypes.func.isRequired,
+//  handleDeleteDialogOpen: PropTypes.func.isRequired,
 }
 
 export default withStyles(styles)(RefactorRequirementDialog);
