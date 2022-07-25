@@ -2,8 +2,8 @@
 
 ### Dependencies
 
- * [NodeJS](https://nodejs.org/en/download/) (use any version between v10.15.x - v14.x.x)
- * Python 2.x
+ * [NodeJS](https://nodejs.org/en/download/) (use any version between v15.14.x - v16.16.x)
+ * Python 2.x, 3.x
  * (Optional) [NuSMV](http://nusmv.fbk.eu/)
 
 ### Download and Install
@@ -35,11 +35,9 @@ For the installation of FRET on Windows 10 see [Installation_Windows](installati
 
 > __Note:__ To perform realizability checking, additional dependencies must be installed. Read the realizability checking [Dependencies](../exports/realizabilityManual.md) section for details.
 
-> __Note:__ FRET requires **python 2.x**. If your machine is running a newer version of python, e.g., 3.x, then please config FRET to search for a python2 executable. Run the following: `npm config set python /usr/bin/python2.x`
+> __Note:__ FRET can run with both **python 2.x** and **python 3.x**. You can config FRET to specify which version of python to use. For example, to use python2 executable, run the following: `npm config set python /usr/bin/python2.x`
 
 > __Note:__ Compiling on Windows machines requires  **gcc** and the [node-gyp prerequisites](https://github.com/nodejs/node-gyp#on-windows).
-
->__Note:__ Recommended npm version 6.x (comes with nodejs v10.x)
 
 [Back to FRET home page](../userManual.md)
 

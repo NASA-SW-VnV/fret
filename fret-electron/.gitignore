@@ -64,6 +64,5 @@ analysis/tmp/*
 # playwright report and playwright results, playwright test
 playwright-report/*
 test-results/*
-test/e2e/*.spec.js
-test/e2e/*.spec.old
+test/e2e/*
 
