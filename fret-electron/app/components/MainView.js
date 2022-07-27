@@ -272,6 +272,14 @@ class MainView extends React.Component {
         this.synchStateWithDB();
       }
     })
+    if(process.env.EXTERNAL_TOOL=='1'){
+      console.log('env EXTERNAL_TOOL',process.env.EXTERNAL_TOOL);
+      this.handleImport();
+      
+      //this.setState
+      
+      this.handleCreateDialogOpen();
+    }
   }
 
 

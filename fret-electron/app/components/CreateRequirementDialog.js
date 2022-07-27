@@ -153,6 +153,14 @@ class CreateRequirementDialog extends React.Component {
     this.setDialogPosition();
   }
 
+  componentDidMount = () => {
+    if(process.env.EXTERNAL_TOOL=='1'){
+      console.log('componentDidMount env EXTERNAL_TOOL',process.env.EXTERNAL_TOOL);
+
+
+    }
+  }
+
   setDialogPosition = () => {
     if(this.dialogRef && this.dialogRef.current) {
       const { dialogTop, dialogLeft } = this.state;
@@ -308,6 +316,11 @@ class CreateRequirementDialog extends React.Component {
         self.state.dialogCloseListener(true, newReqId);
       }
     )
+    if(process.env.EXTERNAL_TOOL=='1'){
+      console.log('env EXTERNAL_TOOL',process.env.EXTERNAL_TOOL);
+      console.log('export json for external tool');
+
+    }
 };
 
   handleUpdateInstruction = (field) => {
