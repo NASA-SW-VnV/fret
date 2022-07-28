@@ -5,6 +5,9 @@
  * [NodeJS](https://nodejs.org/en/download/) (use any version between v15.14.x - v16.16.x)
  * Python 2.x, 3.x
  * (Optional) [NuSMV](http://nusmv.fbk.eu/)
+ * (Optional) [JKind](https://github.com/andrewkatis/jkind-1/releases/latest)
+ * (Optional) [Kind 2](https://github.com/kind2-mc/kind2/blob/develop/README.rst)
+ * (Optional) [Z3](https://github.com/Z3Prover/z3/releases)
 
 ### Download and Install
 
@@ -33,7 +36,7 @@ For the installation of FRET on Windows 10 see [Installation_Windows](installati
 
 > __Note:__ To run the LTLSIM simulator, a NuSMV (see http://nusmv.fbk.eu/) installation is required. Please make sure that the NuSMV binaries directory is added to the PATH environment variable. Additionally, please add `$PATH_TO_FRET/fret/tools/LTLSIM/ltlsim-core/simulator` to the PATH environment variable.
 
-> __Note:__ To perform realizability checking, additional dependencies must be installed. Read the realizability checking [Dependencies](../exports/realizabilityManual.md) section for details.
+> __Note:__ To perform realizability checking, additional dependencies must be installed (e.g., JKind or Kind2). Read the realizability checking [Dependencies](../exports/realizabilityManual.md) section for details.
 
 > __Note:__ FRET can run with both **python 2.x** and **python 3.x**. You can config FRET to specify which version of python to use. For example, to use python2 executable, run the following: `npm config set python /usr/bin/python2.x`
 
