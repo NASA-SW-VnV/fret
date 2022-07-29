@@ -337,7 +337,7 @@ class CCRequirementsTable extends React.Component {
                 .map(r => {
                   return createData(r.doc._id, r.doc._rev, r.doc.reqid, r.doc.fulltext, r.doc.project)
                 })
-                .sort((a, b) => {return a.reqid > b.reqid})
+                .sort((a, b) => {return a.reqid > b.reqid})        
       })
     }).catch((err) => {
       this.optLog(err);
@@ -593,6 +593,8 @@ ProjectSummary.propTypes = {
 
 class RealizabilityContent extends React.Component {
 
+  setMessage = selectedReqs => {this.setState({ selectedReqs: selectedReqs })}
+
   state = {
     selected: '',
     ccSelected: '',
@@ -618,7 +620,9 @@ class RealizabilityContent extends React.Component {
     selectedEngine: 0,
     retainFiles: false,
     actionsMenuOpen: false,
-    diagnosisRequirements: []
+    diagnosisRequirements: [],
+    selectedReqs: [],
+    setMessage: this.setMessage
   }
 
   // Use this for bulk check in the future
@@ -672,7 +676,9 @@ class RealizabilityContent extends React.Component {
 
   computeConnectedComponents(project, components, completedComponents) {
     const {getPropertyInfo, getDelayInfo, getContractInfo} = this.props;
-    const {projectReport} = this.state;
+    const {projectReport, selectedReqs} = this.state;
+    console.log(selectedReqs)    
+
     const self = this;
     components.forEach(component => {
       modeldb.find({
@@ -691,7 +697,9 @@ class RealizabilityContent extends React.Component {
           }
         }).then(function (fretResult){
           if (completedComponents.includes(component.component_name)) {
-            contract.properties = getPropertyInfo(fretResult, contract.outputVariables, component.component_name);
+            
+            contract.properties = getPropertyInfo(fretResult, contract.outputVariables, component.component_name).filter(p => selectedReqs.includes(p.reqid));            
+
             contract.delays = getDelayInfo(fretResult, component.component_name);
             contract = self.renameIDs(contract);
 
@@ -726,8 +734,9 @@ class RealizabilityContent extends React.Component {
               monolithic: !isDecomposable,
               compositional: isDecomposable,
               ccSelected: 'cc0',
-              projectReport: projectReport
-            });
+              projectReport: projectReport,
+              selectedReqs: fretResult.docs.filter(doc => doc.semantics.component_name === component.component_name).map(doc => doc.reqid)
+            });              
           }
         }).catch((err) => {
           self.optLog(err);
@@ -821,7 +830,7 @@ class RealizabilityContent extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     const {selectedProject, components, completedComponents} = this.props;
-    const {projectReport, selected, ccSelected} = this.state;
+    const {projectReport, selected, ccSelected, selectedReqs} = this.state;
     let sysComps = []
 
     let systemComponentIndex = projectReport.systemComponents.findIndex( sc => sc.name === selected.component_name);
@@ -845,7 +854,10 @@ class RealizabilityContent extends React.Component {
       })
     }
 
-    if (selected !== prevState.selected && (!projectReport.systemComponents[systemComponentIndex].compositional)) {
+    // if (selected !== prevState.selected && (!projectReport.systemComponents[systemComponentIndex].compositional)) {
+    if ((selected !== prevState.selected || selectedReqs.toString() !== prevState.selectedReqs.toString())) {
+      console.log("UPDATING")
+      console.log(selectedReqs)
       this.computeConnectedComponents(selectedProject, [selected], completedComponents);
     }
   }
@@ -1355,12 +1367,12 @@ class RealizabilityContent extends React.Component {
     
     return(
       <div>
-        <SelectRequirementsProvider>
+        <SelectRequirementsContext.Provider value={this.state}>
           <div>
             <SelectRequirementsContext.Consumer>
-                {({state, setMessage}) => 
+                {({selectedReqs, setMessage}) => 
                   <div>
-                    {console.log(state.selectedReqs)}
+                    {console.log(selectedReqs)}
                     {console.log(setMessage)}
                     {components.length !== 0 &&
                       <div style={{alignItems: 'flex-end', display: 'flex', flexWrap :'wrap'}}>
@@ -1466,12 +1478,12 @@ class RealizabilityContent extends React.Component {
                           <Menu id="qa_rlzCont_sel_actions" anchorEl={this.anchorRef.current} open={actionsMenuOpen} onClose={(event) => this.handleActionsMenuClose(event)} MenuListProps={{'aria-labelledby': 'realizability_actions_button'}}>
                             <MenuItem 
                             id="qa_rlzCont_btn_check"
-                            disabled={state.selectedReqs.length === 0 || !dependenciesExist || (dependenciesExist && (selected === '' || missingDependencies.includes(this.getEngineNameAndOptions().name)))}
-                            onClick={(event) => this.checkRealizability(event, state.selectedReqs)}>Check Realizability</MenuItem>
+                            disabled={selectedReqs.length === 0 || !dependenciesExist || (dependenciesExist && (selected === '' || missingDependencies.includes(this.getEngineNameAndOptions().name)))}
+                            onClick={(event) => this.checkRealizability(event, selectedReqs)}>Check Realizability</MenuItem>
                             <MenuItem 
                               id="qa_rlzCont_btn_diagnose"
-                              onClick={(event) => this.diagnoseSpec(event, state.selectedReqs)}
-                              disabled={state.selectedReqs.length === 0 || status[selected.component_name] === 'PROCESSING' || diagStatus === 'PROCESSING' || !dependenciesExist || (dependenciesExist && (selected === '' || selected === 'all')) ||
+                              onClick={(event) => this.diagnoseSpec(event, selectedReqs)}
+                              disabled={selectedReqs.length === 0 || status[selected.component_name] === 'PROCESSING' || diagStatus === 'PROCESSING' || !dependenciesExist || (dependenciesExist && (selected === '' || selected === 'all')) ||
                               (dependenciesExist && selected !== '' && compositional && projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].result !== 'UNREALIZABLE') ||
                                 (selected !== '' && monolithic && status[selected.component_name] !== 'UNREALIZABLE')}
                             >
@@ -1496,69 +1508,71 @@ class RealizabilityContent extends React.Component {
                             &nbsp;
                             <Divider/>
                             <div>
-                                          {compositional &&
-                                          <div>
-                                            <AppBar position="static" color="default">
-                                              <div className={classes.appbar}>
-                                                <Tabs
-                                                  value={ccSelected}
-                                                  onChange={this.handleCCChange}
-                                                  variant="scrollable"
-                                                  scrollButtons="on"
-                                                  indicatorColor="secondary"
-                                                  textColor="primary"
-                                                  classes={{scrollable : classes.tabsScrollable}}
-                                                >
-                                                {tabs}
-                                                </Tabs>
-                                              </div>
-                                            </AppBar>
-                                            <TabContainer>
-                                              <DiagnosisProvider>
-                                                <div>
-                                                  {diagStatus === 'DIAGNOSED' ?
-                                                    (<Fade in={diagStatus === 'DIAGNOSED'}>
-                                                      <div>
-                                                        {[...Array(2)].map((e, i) => <div key={i}> &nbsp; </div>)}
-                                                        <ChordDiagram selectedReport = {diagReport} selectedProject={selectedProject} requirements={diagnosisRequirements}/>
-                                                        &nbsp;
-                                                      </div>
-                                                    </Fade>) : <div/>
-                                                  }                        
-                                                  <DiagnosisRequirementsTable
-                                                    updateSelectedRequirements={setMessage} 
-                                                    selectedProject={selectedProject}
-                                                    selectedComponent={selected.component_name}
-                                                    existingProjectNames={[selectedProject]}
-                                                    connectedComponent={
-                                                    projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex]
-                                                  }/>
-                                                </div>
-                                              </DiagnosisProvider>
-                                            </TabContainer>
-                                          </div>
-                                        }
-                                        {monolithic &&
-                                          <DiagnosisProvider>
+                              {compositional &&
+                                <div>
+                                  <AppBar position="static" color="default">
+                                    <div className={classes.appbar}>
+                                      <Tabs
+                                        value={ccSelected}
+                                        onChange={this.handleCCChange}
+                                        variant="scrollable"
+                                        scrollButtons="on"
+                                        indicatorColor="secondary"
+                                        textColor="primary"
+                                        classes={{scrollable : classes.tabsScrollable}}
+                                      >
+                                      {tabs}
+                                      </Tabs>
+                                    </div>
+                                  </AppBar>
+                                  <TabContainer>
+                                    <DiagnosisProvider>
+                                      <div>
+                                        {diagStatus === 'DIAGNOSED' ?
+                                          (<Fade in={diagStatus === 'DIAGNOSED'}>
                                             <div>
-                                              {diagStatus === 'DIAGNOSED' ?
-                                                (<Fade in={diagStatus === 'DIAGNOSED'}>
-                                                  <div>
-                                                    {[...Array(2)].map((e, i) => <div key={i}> &nbsp; </div>)}
-                                                    <ChordDiagram selectedReport = {diagReport} selectedProject={selectedProject} requirements = {diagnosisRequirements}/>
-                                                    &nbsp;
-                                                  </div>
-                                                </Fade>) : <div/>
-                                              }
-                                              <DiagnosisRequirementsTable
-                                                updateSelectedRequirements={setMessage}
-                                                selectedProject={selectedProject}
-                                                selectedComponent={selected.component_name}
-                                                existingProjectNames={[selectedProject]}
-                                                connectedComponent={{}}/>
+                                              {[...Array(2)].map((e, i) => <div key={i}> &nbsp; </div>)}
+                                              <ChordDiagram selectedReport = {diagReport} selectedProject={selectedProject} requirements={diagnosisRequirements}/>
+                                              &nbsp;
                                             </div>
-                                          </DiagnosisProvider>
-                                        }                          
+                                          </Fade>) : <div/>
+                                        }                        
+                                        <DiagnosisRequirementsTable
+                                          selectedRequirements={selectedReqs}
+                                          updateSelectedRequirements={setMessage} 
+                                          selectedProject={selectedProject}
+                                          selectedComponent={selected.component_name}
+                                          existingProjectNames={[selectedProject]}
+                                          connectedComponent={
+                                          projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex]
+                                        }/>
+                                      </div>
+                                    </DiagnosisProvider>
+                                  </TabContainer>
+                                </div>
+                              }
+                              {monolithic &&
+                                <DiagnosisProvider>
+                                  <div>
+                                    {diagStatus === 'DIAGNOSED' ?
+                                      (<Fade in={diagStatus === 'DIAGNOSED'}>
+                                        <div>
+                                          {[...Array(2)].map((e, i) => <div key={i}> &nbsp; </div>)}
+                                          <ChordDiagram selectedReport = {diagReport} selectedProject={selectedProject} requirements = {diagnosisRequirements}/>
+                                          &nbsp;
+                                        </div>
+                                      </Fade>) : <div/>
+                                    }
+                                    <DiagnosisRequirementsTable
+                                      selectedRequirements={selectedReqs}
+                                      updateSelectedRequirements={setMessage}
+                                      selectedProject={selectedProject}
+                                      selectedComponent={selected.component_name}
+                                      existingProjectNames={[selectedProject]}
+                                      connectedComponent={{}}/>
+                                  </div>
+                                </DiagnosisProvider>
+                              }                          
                             </div>
                           </div>
                         }
@@ -1595,7 +1609,7 @@ class RealizabilityContent extends React.Component {
                }
              </SelectRequirementsContext.Consumer>
            </div>                          
-         </SelectRequirementsProvider>
+         </SelectRequirementsContext.Provider>
       </div>
     );
   }

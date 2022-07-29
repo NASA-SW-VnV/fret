@@ -31,8 +31,10 @@
 // AGREEMENT.
 // *****************************************************************************
 import React from 'react';
+import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
+import Toolbar from '@material-ui/core/Toolbar';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -45,6 +47,12 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Checkbox from '@material-ui/core/Checkbox';
 import { DiagnosisContext } from './DiagnosisProvider';
 import { SelectRequirementsContext } from './SelectRequirementsProvider';
+import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
+import ListIcon from '@material-ui/icons/List';
+import CloseIcon from '@material-ui/icons/Close';
+import { lighten } from '@material-ui/core/styles/colorManipulator';
+import Typography from '@material-ui/core/Typography';
 
 const sharedObj = require('electron').remote.getGlobal('sharedObj');
 const constants = require('../parser/Constants');
@@ -173,24 +181,114 @@ const rows = [
   { id: 'summary', numeric: false, disablePadding: false, label: 'Summary' },
 ];
 
+const toolbarStyles = theme => ({
+  root: {
+    paddingRight: theme.spacing(),
+  },
+  highlight:
+    theme.palette.type === 'light'
+      ? {
+          color: theme.palette.secondary.main,
+          backgroundColor: lighten(theme.palette.secondary.light, 0.85),
+        }
+      : {
+          color: theme.palette.text.primary,
+          backgroundColor: theme.palette.secondary.dark,
+        },
+  spacer: {
+    flex: '1 1 100%',
+  },
+  actions: {
+    color: theme.palette.text.secondary,
+  },
+  title: {
+    flex: '0 0 auto',
+  },
+  toolbar: {
+    margin: theme.spacing(1),
+    display: 'flex',
+    flexWrap:'nowrap'
+  },
+  searchInput: {
+    width: 600,
+  },
+  button: {
+    margin: theme.spacing(1),
+  }
+});
+
+let DiagnosisRequirementsTableToolbar = props => {
+  const { numSelected, classes, selectEnabled, selectEnabler, applySelection } = props;
+  return(
+    <Toolbar className={classNames(classes.root, {[classes.highlight]: (selectEnabled && numSelected > 0),})}>
+      <div className={classes.title}>
+        {selectEnabled ? (
+            <Typography>
+              {numSelected} Selected
+            </Typography>
+          ) : (
+            <Typography>
+              Requirements
+            </Typography>
+          )
+        }
+      </div>
+      <div className={classes.spacer} />
+      {(selectEnabled && numSelected > 0) &&
+          <div className={classes.toolbar}>
+            <Tooltip title="Apply Selection">
+              <Button className={classes.button} size='small' variant='contained' color='secondary' onClick={() => applySelection()}>
+                Apply
+              </Button>
+            </Tooltip>
+            <Tooltip title="Cancel Selection">
+              <Button className={classes.button} size='small' variant='contained' color='secondary' onClick={() => selectEnabler()}>
+                Cancel
+              </Button>
+            </Tooltip>
+          </div>
+        /*) : (
+          <Tooltip title="Select requirements for analysis">
+            <IconButton onClick={() => selectEnabler()}>
+              <ListIcon color='secondary'/>
+            </IconButton>
+          </Tooltip>
+        )*/
+      }
+    </Toolbar>
+  )
+}
+
+DiagnosisRequirementsTableToolbar.propTypes = {
+  classes: PropTypes.object.isRequired,
+  numSelected:PropTypes.number.isRequired,
+  selectEnabled: PropTypes.bool.isRequired,
+  selectEnabler: PropTypes.func.isRequired
+}
+
+DiagnosisRequirementsTableToolbar = withStyles(toolbarStyles)(DiagnosisRequirementsTableToolbar);
+
+
 class DiagnosisRequirementsTableHead extends React.Component {
   createSortHandler = property => event => {
     this.props.onRequestSort(event, property);
   };
 
   render() {
-    const {onSelectAllClick, order, orderBy, numSelected, rowCount } = this.props;
+    const { onSelectAllClick, order, orderBy, numSelected, rowCount, selectEnabled } = this.props;
 
     return (
       <TableHead>
         <TableRow>
-          <TableCell padding="checkbox">
-            <Checkbox
-              indeterminate={numSelected > 0 && numSelected < rowCount}
-              checked={numSelected === rowCount}
-              onChange={onSelectAllClick}
-            />
-          </TableCell>
+{/*          {selectEnabled &&*/}
+            <TableCell padding="checkbox">
+              <Checkbox
+                indeterminate={numSelected > 0 && numSelected < rowCount}
+                checked={numSelected === rowCount}
+                onChange={onSelectAllClick}
+              />
+            </TableCell>
+          {/*}*/}
           {rows.map(row => {
             return (
               <TableCell
@@ -228,6 +326,7 @@ DiagnosisRequirementsTableHead.propTypes = {
   order: PropTypes.string.isRequired,
   orderBy: PropTypes.string.isRequired,
   rowCount: PropTypes.number.isRequired,
+  selectEnabled: PropTypes.bool.isRequired
 };
 
 const styles = theme => ({
@@ -235,6 +334,11 @@ const styles = theme => ({
     // width: '100%',
     marginTop: theme.spacing(3),
   },
+  tableRowSelected: {
+    '&.Mui-selected': {
+      backgroundColor: lighten(theme.palette.secondary.light, 0.85)
+    }
+  }  
 });
 
 class DiagnosisRequirementsTable extends React.Component {
@@ -244,9 +348,13 @@ class DiagnosisRequirementsTable extends React.Component {
     order: 'asc',
     orderBy: 'reqid',
     selected: [],
+    tempSelected: [],
     data: [],
     page: 0,
     rowsPerPage: 10,
+    selectedRequirement: {},
+    selectedProject: 'All Projects',
+    selectEnabled: false
   };
 
   constructor(props){
@@ -319,13 +427,14 @@ class DiagnosisRequirementsTable extends React.Component {
       // this.synchStateWithDB()
 >>>>>>> First iteration of selecting requirements in realizability.
       const {setMessage} = this.context;
+
       setMessage({reqs : '', color : ''})
       // this.props.updateSelectedRequirements([])
       // this.setState({selected: []});
       console.log(this.props.connectedComponent.requirements);
       console.log("Table updating")
+      
       let newSelectedReqs = this.props.connectedComponent.requirements ? this.props.connectedComponent.requirements : [];
-      // if (newSelectedReqs.length !== 0) this.props.updateSelectedRequirements(newSelectedReqs);
       this.setState({selected: [].concat(newSelectedReqs)})
     }
 */
@@ -353,9 +462,9 @@ class DiagnosisRequirementsTable extends React.Component {
   synchStateWithDB() {
     if (!this.mounted) return;
 
-    const { selectedProject, selectedComponent, updateSelectedRequirements } = this.props
+    const { selectedProject, selectedComponent, selectedRequirements, updateSelectedRequirements } = this.props
     const filterOff = selectedProject == 'All Projects'
-
+    const { selectedReqs } = this.context;
     db.allDocs({
       include_docs: true,
     }).then((result) => {
@@ -374,10 +483,12 @@ class DiagnosisRequirementsTable extends React.Component {
                   return createData(r.doc._id, r.doc._rev, r.doc.reqid, r.doc.fulltext, r.doc.project)
                 })
                 .sort((a, b) => {return a.reqid > b.reqid})
-      updateSelectedRequirements(dbData.map(n => n.reqid));
+                console.log("About to update reqs 2")
+      // updateSelectedRequirements(dbData.map(n => n.reqid));
       this.setState({
         data: dbData,
-        selected: dbData.map(n => n.reqid)
+        selected: selectedRequirements,
+        tempSelected: selectedRequirements
       })
     }).catch((err) => {
       optLog(err);
@@ -387,35 +498,37 @@ class DiagnosisRequirementsTable extends React.Component {
   handleSelectAllClick = event => {
     const { updateSelectedRequirements } = this.props;
     const { data } = this.state
-    if (event.target.checked) {
-      updateSelectedRequirements(data.map(n => n.reqid));
-      this.setState({ selected: data.map(n => n.reqid) });
+    if (event.target.checked) { 
+    console.log("About to update reqs 3")     
+      this.setState({ tempSelected: data.map(n => n.reqid) });
       return;
     }
-    updateSelectedRequirements([]);
-    this.setState({ selected: [] });
+    console.log("About to update reqs 4")
+    this.setState({ tempSelected: [] });
   };
 
   handleClick = (event, id) => {
     const { updateSelectedRequirements } = this.props;
-    const { selected } = this.state;
-    const selectedIndex = selected.indexOf(id);
+    const { tempSelected } = this.state;
+    const selectedIndex = tempSelected.indexOf(id);
     let newSelected = [];
 
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, id);
+      newSelected = newSelected.concat(tempSelected, id);
     } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
+      newSelected = newSelected.concat(tempSelected.slice(1));
+    } else if (selectedIndex === tempSelected.length - 1) {
+      newSelected = newSelected.concat(tempSelected.slice(0, -1));
     } else if (selectedIndex > 0) {
       newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1),
+        tempSelected.slice(0, selectedIndex),
+        tempSelected.slice(selectedIndex + 1),
       );
-    }
-    updateSelectedRequirements(newSelected);
-    this.setState({ selected: newSelected });
+    }    
+    this.setState({ 
+      selectEnabled: true,
+      tempSelected: newSelected
+    });
   };
 
   handleRequestSort = (event, property) => {
@@ -437,12 +550,30 @@ class DiagnosisRequirementsTable extends React.Component {
     this.setState({ rowsPerPage: event.target.value });
   };
 
-  isSelected = id => this.state.selected.indexOf(id) !== -1;
+  handleEnableSelect = () => {
+    this.setState({
+      selectEnabled: !this.state.selectEnabled,
+      tempSelected: this.state.selected
+    })
+  }
+
+  handleApplySelection = () => {
+    const { updateSelectedRequirements } = this.props;
+    const { tempSelected } = this.state;
+    this.setState({
+      selectEnabled: false,
+      selected: tempSelected
+    })
+    updateSelectedRequirements(tempSelected);
+  }
+
+  isSelected = id => this.state.tempSelected.indexOf(id) !== -1;
+
 
   render() {
     const { reqs, color } = this.context.state;
-    const { connectedComponent } = this.props;
-    const { data, order, orderBy, selected, rowsPerPage, page } = this.state;
+    const { classes, connectedComponent } = this.props;
+    const { data, order, orderBy, selected, rowsPerPage, page, selectEnabled } = this.state;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
     
 
@@ -452,6 +583,12 @@ class DiagnosisRequirementsTable extends React.Component {
       <div>
       <Paper>
         <div>
+          <DiagnosisRequirementsTableToolbar 
+            numSelected={selected.length}
+            selectEnabled={selectEnabled}
+            selectEnabler={this.handleEnableSelect}
+            applySelection={this.handleApplySelection}
+          />
           <Table aria-labelledby="tableTitle" size="medium">
             <DiagnosisRequirementsTableHead              
               numSelected={selected.length}
@@ -460,6 +597,7 @@ class DiagnosisRequirementsTable extends React.Component {
               onSelectAllClick={this.handleSelectAllClick}
               onRequestSort={this.handleRequestSort}
               rowCount={data.length}
+              selectEnabled={selectEnabled}
             />
             {Object.keys(connectedComponent).length !== 0 ?
               (<TableBody id="qa_diagReqTbl_tableBody_1">{
@@ -477,15 +615,17 @@ class DiagnosisRequirementsTable extends React.Component {
                           opacity : isInConflictOrCC ? 1 : .6,
                           borderStyle: isInConflict ? 'solid' : 'initial', 
                           borderColor: isInConflict ? color : 'initial'}}
+                        classes={{selected: (isSelected && isInConflictOrCC) ? classes.tableRowSelected : 'initial'}}
                         onClick={event => { isInConflictOrCC ? this.handleClick(event, n.reqid) : null}}
-                        selected={isSelected && isInConflictOrCC}
+                        selected={isSelected}
                       >
-                        <TableCell padding="checkbox">
-                          <Checkbox 
-                            disabled={!isInConflictOrCC}
-                            checked={isSelected && isInConflictOrCC}
-                          />
-                        </TableCell>
+{/*                        {selectEnabled &&*/}
+                          <TableCell padding="checkbox">
+                            <Checkbox 
+                              checked={isSelected}
+                            />
+                          </TableCell>
+                        {/*}*/}
                         <TableCell id={"qa_diagReqTbl_tc_body_id_"+label}>
                           {label}
                         </TableCell>
@@ -512,18 +652,20 @@ class DiagnosisRequirementsTable extends React.Component {
                       <TableRow
                         key={n.rowid}
                         style={{
-                          opacity : isInConflictOrAssumptions ? 1 : .6,
+                          opacity : isInConflictOrAssumptions ? 1 : .6,                          
                           borderStyle: isInConflict ? 'solid' : 'initial', 
                           borderColor: isInConflict ? color : 'initial'}}
+                        classes={{selected: classes.tableRowSelected}}
                         onClick={event => this.handleClick(event, n.reqid)}
-                        selected={isSelected && isInConflictOrAssumptions}
+                        selected={isSelected}
                         >
-                        <TableCell padding="checkbox">
-                          <Checkbox 
-                            disabled={!isInConflictOrAssumptions}
-                            checked={isSelected && isInConflictOrAssumptions}
-                          />
-                        </TableCell>
+                        {/*{selectEnabled &&*/}
+                          <TableCell padding="checkbox">
+                            <Checkbox 
+                              checked={isSelected}
+                            />
+                          </TableCell>
+                        {/*}*/}
                         <TableCell id={"qa_diagReqTbl_tc_body_id_"+label}>
                           {label}
                         </TableCell>
@@ -563,6 +705,7 @@ class DiagnosisRequirementsTable extends React.Component {
 DiagnosisRequirementsTable.propTypes = {
   selectedProject: PropTypes.string.isRequired,
   selectedComponent: PropTypes.string.isRequired,
+  selectedRequirements: PropTypes.array.isRequired,
   existingProjectNames: PropTypes.array.isRequired,
   connectedComponent : PropTypes.object.isRequired,
   importedRequirements: PropTypes.array.isRequired

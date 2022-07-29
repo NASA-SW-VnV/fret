@@ -31,21 +31,26 @@
 // AGREEMENT.
 // *****************************************************************************
 import React from 'react';
-export const SelectRequirementsContext = React.createContext();  //exporting context object
-class SelectRequirementsProvider extends React.Component {
-	state = {selectedReqs: []}
-	setMessage = (value) => {
-		this.setState({
-			selectedReqs : value
-		});
-	}
+export const SelectRequirementsContext = React.createContext({
+	selectedReqs: [],
+	setMessage: () => {}
+});
+// export const SelectRequirementsContext = React.createContext();  //exporting context object
+// class SelectRequirementsProvider extends React.Component {
+// 	state = {selectedReqs: []}
+// 	setMessage = (value) => {
+// 		this.setState({
+// 			selectedReqs : value
+// 		});
+// 	}
 
-	render() {
-	        return (
-	            <SelectRequirementsContext.Provider value={{ state: this.state, setMessage: this.setMessage}}>
-		            {this.props.children}
-	            </SelectRequirementsContext.Provider>)
-	    }
-}
+// 	render() {
+// 	        return (
+// 	            <SelectRequirementsContext.Provider value={{ state: this.state, setMessage: this.setMessage}}>
+// 		            {this.props.children}
+// 	            </SelectRequirementsContext.Provider>)
+// 	    }
+// }
 
-export default SelectRequirementsProvider;
+export default SelectRequirementsContext;
+// export default SelectRequirementsProvider;
