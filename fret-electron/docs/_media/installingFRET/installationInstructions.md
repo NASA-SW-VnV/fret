@@ -3,7 +3,7 @@
 ### Dependencies
 
  * [NodeJS](https://nodejs.org/en/download/) (use any version between v15.14.x - v16.16.x)
- * Python 2.x, 3.x
+ * Python
  * (Optional) [NuSMV](http://nusmv.fbk.eu/)
  * (Optional) [JKind](https://github.com/andrewkatis/jkind-1/releases/latest)
  * (Optional) [Kind 2](https://github.com/kind2-mc/kind2/blob/develop/README.rst)
@@ -38,7 +38,7 @@ For the installation of FRET on Windows 10 see [Installation_Windows](installati
 
 > __Note:__ To perform realizability checking, additional dependencies must be installed (e.g., JKind or Kind2). Read the realizability checking [Dependencies](../exports/realizabilityManual.md) section for details.
 
-> __Note:__ FRET can run with both **python 2.x** and **python 3.x**. You can config FRET to specify which version of python to use. For example, to use python2 executable, run the following: `npm config set python /usr/bin/python2.x`
+> __Note:__ FRET can run with either **python 2.x** or **python 3.x**. You can config FRET to specify which version of python to use. For example, to use python2 executable, run the following: `npm config set python /usr/bin/python2.x`
 
 > __Note:__ Compiling on Windows machines requires  **gcc** and the [node-gyp prerequisites](https://github.com/nodejs/node-gyp#on-windows).
 
