@@ -58,7 +58,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 //import ImageListItemBar from '@material-ui/core/ImageListItemBar';
 //import Tooltip from '@material-ui/core/Tooltip';
 
-//import RefactoringController from '../../../../tools/Refactoring/refactoring_controller';
+import RefactoringController from '../../../../tools/Refactoring/refactoring_controller';
 //import RefactoringController from './refactoring_controller';
 
 const styles = theme => ({
@@ -126,7 +126,7 @@ handleOk = () => {
   console.log('OK Button');
   console.log(this.state.extractString);
   console.log(this.state.newName);
-  //RefactoringController.test();
+  RefactoringController.test(this.state.extractString, this.state.newName);
 };
 
 handleRefactoringType = () => event => {

@@ -4,6 +4,12 @@
 var FretRequirement = require("./FretRequirement")
 var model = require("./refactoring_model")
 
+exports.test = function test(extractString, newName)
+{
+	console.log("Refactoring Test: " + extractString + " " + newName);
+
+}
+
 // Handles one request to refactor a requirement, including the
 // knock-on effects to other requirements containing the same fragment.
 function extractRequirement(req, fragment, destinationName, knockons)
