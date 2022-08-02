@@ -1,8 +1,12 @@
 // refactoring_controller.js
 // Matt Luckcuck 2022
 
-var FretRequirement = require("./FretRequirement")
+//var FretRequirement = require("./FretRequirement")
 var model = require("./refactoring_model")
+var fretSemantics = require("../../fret-electron/app/parser/FretSemantics")
+
+
+
 
 exports.test = function test(extractString, newName)
 {
@@ -12,22 +16,40 @@ exports.test = function test(extractString, newName)
 
 // Handles one request to refactor a requirement, including the
 // knock-on effects to other requirements containing the same fragment.
+
 function extractRequirement(req, fragment, destinationName, knockons)
 {
 	// Step 1
-  // Make new requirement
-	let destinationRequirement = new FretRequirement(destinationName, null);
+  // Clone requirement
+	//let destinationRequirement = new FretRequirement(destinationName, null);
+	let clonedReq = Object.assign({}, req);
+	clonedReq.reqid = destinationName.toUpperCase();
+	clonedReq.rationale = "EXTRACT REQUIREMENT: extracted " + fragment + " from " + req.reqid;
+//	console.log(clonedReq);
+
+//	console.log(typeof(req));
+//	console.log(req);
+
 
 	// Step 2
-  // Copy definition to new requirement
-	let component = req.getComponent();
+  // Build new fretish requirement
+	let component = req.semantics.component_name;
+//	console.log(component);
+	//req.getComponent();
 
-  // Builds new fretish requirement
+
+  // New fretish requirement
 	let newFretish = "if " + fragment + " " + component + " shall satisfy " + destinationName;
 
-	destinationRequirement.setFretish(newFretish);
+	 clonedReq.fulltext = newFretish;
+	 // Compile the new semantics and add to the new req
+	 newSemantics = fretSemantics.compile(newFretish)
+	 //console.log(newSemantics);
+	 clonedReq.semantics = newSemantics.collectedSemantics;
 
 
+	console.log("req");
+	console.log(req);
 	// Step 3
   // Replace fragment in original requirement with reference to new requirement
 
@@ -41,16 +63,21 @@ function extractRequirement(req, fragment, destinationName, knockons)
   // Step 5
   // Propagate
 
-  if (knockons.length > 0)
+  if (knockons)
   {
     // Do the thing
     // Similar to this method, but the destination requirement already exists.
   }
 
+	console.log("req");
+	console.log(req);
 
+	console.log("clonedReq");
+	console.log(clonedReq);
 
-  return [req, destinationRequirement]
+  return [req, clonedReq]
 }
+exports.extractRequirement =extractRequirement;
 
 // Handles one request to move a definition to another requirement
 // This should have no knock-on effects, since we can only refer to a requirement
@@ -110,6 +137,8 @@ function InlineRequirement()
 
 }
 
+
+/*
 let R5_1 = new FretRequirement("UC5_R_5.1", "when (diff(r(i),y(i)) > E) if ((systemParameter(P) > nominalValue + R) | (systemParameter(P) < nominalValue - R) | (systemParameter(P) = null) & (observedThrust = V1) &(pilotInput => setThrust = V2)) Controller shall until (diff(r(i),y(i)) < e) satisfy (settlingTime >= 0) & (settlingTime <= settlingTimeMax) & (observedThrust = V2)");
 
 console.log("Requirement 5.1 " + R5_1) ;
@@ -121,3 +150,4 @@ console.log("Updated Requirement 5.1 " + updates[0]);
 console.log("") ;
 
 console.log("Extracted Requirement " + updates[1]);
+*/

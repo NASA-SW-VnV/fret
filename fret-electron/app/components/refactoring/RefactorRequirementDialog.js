@@ -126,7 +126,14 @@ handleOk = () => {
   console.log('OK Button');
   console.log(this.state.extractString);
   console.log(this.state.newName);
-  RefactoringController.test(this.state.extractString, this.state.newName);
+  // req, fragment, destinationName, knockons
+  RefactoringController.extractRequirement(
+    this.state.selectedRequirement,
+    this.state.extractString, this.state.newName, false
+  );
+
+  this.setState({ open: false });
+  this.state.dialogCloseListener();
 };
 
 handleRefactoringType = () => event => {
@@ -342,6 +349,6 @@ RefactorRequirementDialog.propTypes = {
   handleDialogClose: PropTypes.func.isRequired,
 //  handleCreateDialogOpen: PropTypes.func.isRequired,
 //  handleDeleteDialogOpen: PropTypes.func.isRequired,
-}
+};
 
 export default withStyles(styles)(RefactorRequirementDialog);
