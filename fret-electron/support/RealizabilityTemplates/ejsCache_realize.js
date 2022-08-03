@@ -30,21 +30,21 @@
 // ANY SUCH MATTER SHALL BE THE IMMEDIATE, UNILATERAL TERMINATION OF THIS
 // AGREEMENT.
 // *****************************************************************************
-const jkindComponentSignature = require('ejs-compiled-loader!./jkind/ComponentSignature.ejs'),      
+const jkindComponentSignature = require('ejs-compiled-loader!./jkind/ComponentSignature.ejs'),
       jkindInternalVariables = require('ejs-compiled-loader!./jkind/InternalVariables.ejs'),
       jkindInternalAssignments = require('ejs-compiled-loader!./jkind/InternalAssignments.ejs'),
       jkindPropertyDefinitions = require('ejs-compiled-loader!./jkind/PropertyDefinitions.ejs'),
       jkindComplete = require('ejs-compiled-loader!./jkind/Complete.ejs'),
-      
+
       kind2ComponentSignature = require('ejs-compiled-loader!./kind2/ComponentSignature.ejs'),
       kind2InternalVariables = require('ejs-compiled-loader!./kind2/InternalVariables.ejs'),
       kind2PropertyDefinitions = require('ejs-compiled-loader!./kind2/PropertyDefinitions.ejs'),
       kind2Complete = require('ejs-compiled-loader!./kind2/Complete.ejs'),
 
-      libraryOfOperators = require('ejs-compiled-loader!./LibraryOfOperators.ejs'),
-      delayOperators = require('ejs-compiled-loader!./DelayOperators.ejs'),
-      modeDefinitions = require('ejs-compiled-loader!./ModeDefinitions.ejs');
-      
+      libraryOfOperators = require('ejs-compiled-loader!../CommonTemplates/LibraryOfOperators.ejs'),
+      delayOperators = require('ejs-compiled-loader!../CommonTemplates/DelayOperators.ejs'),
+      modeDefinitions = require('ejs-compiled-loader!../CommonTemplates/ModeDefinitions.ejs');
+
 exports.renderRealizeCode = (solver) => {
   if (solver === 'jkind'){
     return {
@@ -56,7 +56,7 @@ exports.renderRealizeCode = (solver) => {
         internalAssignments: jkindInternalAssignments,
         propertyDefinitions: jkindPropertyDefinitions,
         complete: jkindComplete
-      }  
+      }
     };
   } else {
     return {
