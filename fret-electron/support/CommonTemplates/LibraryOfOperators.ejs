@@ -85,20 +85,20 @@ tel
 -- Absolute value for reals
 node absReal(x:real) returns(y: real);
 let
-   y = if (x >= 0.0) then x else -x;
+  y = if (x >= 0.0) then x else -x;
 tel
 
 -- Absolute value for integers
 node absInt(x:int) returns(y: int);
 let
-   y = if (x >= 0) then x else -x;
+  y = if (x >= 0) then x else -x;
 tel
 
 -- Maximum value between two reals
 node MaxReal (a : real; b : real)
 returns (z : real);
 let
-  z = (if (((a) >= (b))) then (a) else (b));
+  z = (if (((a) >= (b))) then (a) else (b));
 tel
 
 -- Maximum value between two integers
@@ -120,15 +120,4 @@ node MinReal (a : real; b : real)
 returns (z : real);
 let
   z = (if (((a) <= (b))) then (a) else (b));
-tel
-
-
-node ToInt (b: bool) returns (n: int) ;
-let
-  n = if b then 1 else 0;
-tel
-
-node Count (b: bool) returns (n: int) ;
-let
-  n = (0 -> pre n) + ToInt(b);
 tel

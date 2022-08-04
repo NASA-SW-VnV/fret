@@ -4,6 +4,16 @@ let
   X = true -> false;
 tel
 
+node ToInt (b: bool) returns (n: int) ;
+let
+  n = if b then 1 else 0;
+tel
+
+node Count (b: bool) returns (n: int) ;
+let
+  n = (0 -> pre n) + ToInt(b);
+tel
+
 -- First state in Mode
 node FM(M:bool) returns (X:bool);
 let
