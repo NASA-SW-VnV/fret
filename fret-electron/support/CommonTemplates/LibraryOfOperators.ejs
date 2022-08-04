@@ -95,28 +95,28 @@ let
 tel
 
 -- Maximum value between two reals
-node MaxReal (a : real; b : real)
+node maxReal (a : real; b : real)
 returns (z : real);
 let
   z = (if (((a) >= (b))) then (a) else (b));
 tel
 
 -- Maximum value between two integers
-node MaxInt (a : int; b : int)
+node maxInt (a : int; b : int)
 returns (z : int);
 let
   z = (if (((a) >= (b))) then (a) else (b));
 tel
 
 -- Minimum value between two integers
-node MinInt (a : int; b : int)
+node minInt (a : int; b : int)
 returns (z : int);
 let
   z = (if (((a) <= (b))) then (a) else (b));
 tel
 
 -- Minimum value between two reals
-node MinReal (a : real; b : real)
+node minReal (a : real; b : real)
 returns (z : real);
 let
   z = (if (((a) <= (b))) then (a) else (b));
