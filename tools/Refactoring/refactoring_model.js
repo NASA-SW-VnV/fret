@@ -50,6 +50,19 @@ export function AddRequirementToDB(req)
 {
   db.put(req, (err, responses) => {
       if (err) {
+        console.log(req._id);
+        return console.log(err);
+      }
+      console.log(responses);
+    }
+  )
+}
+
+export function AddNewRequirementToDB(req)
+{  
+  db.post(req, (err, responses) => {
+      if (err) {
+        console.log(req._id);
         return console.log(err);
       }
       console.log(responses);

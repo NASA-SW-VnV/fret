@@ -4,8 +4,9 @@
 //var FretRequirement = require("./FretRequirement")
 var model = require("./refactoring_model")
 var fretSemantics = require("../../fret-electron/app/parser/FretSemantics")
-
-
+//const {v1:uuidv1} = require('uuid');
+//const uuidv1 = require('uuid/v1');
+//const { v1: uuidv1 } = require('uuid');
 
 
 exports.test = function test(extractString, newName)
@@ -24,8 +25,11 @@ function extractRequirement(req, fragment, destinationName, knockons)
 	//let destinationRequirement = new FretRequirement(destinationName, null);
 	let clonedReq = Object.assign({}, req);
 	clonedReq.reqid = destinationName.toUpperCase();
+	delete clonedReq._id;
+	delete clonedReq.dbkey;
 	clonedReq.rationale = "EXTRACT REQUIREMENT: extracted " + fragment + " from " + req.reqid;
-//	console.log(clonedReq);
+	console.log("Cloned Req Right Away")
+	console.log(clonedReq);
 
 //	console.log(typeof(req));
 //	console.log(req);
@@ -56,6 +60,11 @@ function extractRequirement(req, fragment, destinationName, knockons)
 	model.ReplaceFragment(req, fragment, destinationName)
 
 
+console.log("Adding Req");
+	model.AddRequirementToDB(req);
+
+	console.log("Addinf Cloned Req");
+	model.AddNewRequirementToDB(clonedReq);
 
   // Step 4
   // Verify
@@ -69,13 +78,13 @@ function extractRequirement(req, fragment, destinationName, knockons)
     // Similar to this method, but the destination requirement already exists.
   }
 
-	console.log("req");
+
 	console.log(req);
 
-	console.log("clonedReq");
+
 	console.log(clonedReq);
 
-  return [req, clonedReq]
+  return {req: req, fragment :clonedReq}
 }
 exports.extractRequirement =extractRequirement;
 

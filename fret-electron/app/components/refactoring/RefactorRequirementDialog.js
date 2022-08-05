@@ -92,7 +92,7 @@ class RefactorRequirementDialog extends React.Component {
     applyToAll: false,
     refactoringType: '',
     refactoringContent: ' ',
-    extractString: 'this is a test',
+    extractString: 'default extract string',
     newName: ''
   };
 
@@ -127,10 +127,14 @@ handleOk = () => {
   console.log(this.state.extractString);
   console.log(this.state.newName);
   // req, fragment, destinationName, knockons
-  RefactoringController.extractRequirement(
+  let result = RefactoringController.extractRequirement(
     this.state.selectedRequirement,
     this.state.extractString, this.state.newName, false
   );
+
+  console.log(result.req);
+  console.log(result.fragment);
+
 
   this.setState({ open: false });
   this.state.dialogCloseListener();
