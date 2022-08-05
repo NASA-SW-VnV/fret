@@ -65,7 +65,7 @@ mult : '*' ;
 
 div : '/' ;
 
-mod : '%' ;
+mod : 'mod' ;
 
 plus : '+' ;
 

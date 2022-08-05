@@ -77,11 +77,6 @@ nuSMVAnalyzer.prototype.visitDurPlHolders = function(ctx) {
   return antlrUtilities.getText(ctx);
 };
 
-// Visit a parse tree produced by NuSMVParser#comparisonOp.
-nuSMVAnalyzer.prototype.visitComparisonOp = function(ctx) {
-  return antlrUtilities.getText(ctx);
-};
-
 // Visit a parse tree produced by NuSMVParser#proposition.
 nuSMVAnalyzer.prototype.visitProposition = function(ctx) {
     return antlrUtilities.getText(ctx);
@@ -94,16 +89,18 @@ nuSMVAnalyzer.prototype.visitComma = function(ctx) {
 nuSMVAnalyzer.prototype.visitSimpleExpr = function(ctx){
   let result = '';
     this.visitChildren(ctx).forEach(child => {
+      // console.log('child = ' + JSON.stringify(child))
       if (child != null && child != undefined)
         result += child;
     });
-    return result;
+    return result.replace(/\sxor\s/gi,' xor ');
 }
 
 // Visit a parse tree produced by NuSMVParser#arithmetic_expr.
+// Change M O D, e.g. "MOD", surrounded by whitespace, to "mod"
 nuSMVAnalyzer.prototype.visitArithmetic_expr = function(ctx) {
-  //console.log('visitArithmetic_expr: ' + antlrUtilities.getText(ctx) + ' -> ' + result)
-  return antlrUtilities.getText(ctx);
+    // console.log('visitArithmetic_expr: ' + antlrUtilities.getText(ctx))
+    return antlrUtilities.getText(ctx).replace(/(\s)mod(\s)/gi,(m,p1,p2) => p1 + 'mod' + p2)
 };
 
 // Visit a parse tree produced by NuSMVParser#simpleltl.
@@ -163,10 +160,18 @@ nuSMVAnalyzer.prototype.visitTimedUnarySaltPastOp = function(ctx) {
   return utilities.replaceSubstring(onceStrictSubs, result);
 };
 
+
+
 // Visit a parse tree produced by NuSMVParser#binaryOp.
  nuSMVAnalyzer.prototype.visitBinaryPastOp = function(ctx) {
    let result = antlrUtilities.getText(ctx.pastBinaryOp(0))+'( '+ this.visit(ctx.ltlExpr(1)) +', '+ this.visit(ctx.ltlExpr(0)) +' )';
    return result;
+};
+
+
+// Visit a parse tree produced by NuSMVParser#comparisonOp.
+NuSMVVisitor.prototype.visitComparisonOp = function(ctx) {
+    return ' ' + antlrUtilities.getText(ctx).replace(/!=/g,'<>') + ' '
 };
 
 
@@ -202,7 +207,7 @@ nuSMVAnalyzer.prototype.visitOr = function(ctx) {
 
 // Visit a parse tree produced by NuSMVParser#xor.
 nuSMVAnalyzer.prototype.visitXor = function(ctx) {
-  return antlrUtilities.getText(ctx);
+  return ' xor ';
 };
 
 
@@ -214,7 +219,7 @@ nuSMVAnalyzer.prototype.visitImplies = function(ctx) {
 
 // Visit a parse tree produced by NuSMVParser#equiv.
 nuSMVAnalyzer.prototype.visitEquiv = function(ctx) {
-  return ' <=> ';
+  return ' = ';
 };
 
 

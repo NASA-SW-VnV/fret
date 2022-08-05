@@ -51,13 +51,16 @@ const symbolToOpMap =
 	X : 'Next', G : 'Globally', F : 'Eventually', U : 'Until', V : 'Releases',
 	'<|' : 'LookingBackwards', '|>' : 'LookingForwards',
 	'!' : 'Not', '&' : 'And', '|' : 'Or', '->' : 'Implies', '<->' : 'Equiv',
-	'+' : 'Plus', '-' : 'Minus', '/' : 'Divide', '*' : 'Mult', '%' : 'Mod', '^' : 'Expt',
+	'xor' : 'ExclusiveOr',
+	'+' : 'Plus', '-' : 'Minus', '/' : 'Divide', '*' : 'Mult', 'mod' : 'Mod',
+	'^' : 'Expt',
 	'<' : 'LessThan', '<=' : 'LessThanOrEqual', '!=' : 'NotEqual', '=' : 'Equal',
 	'>' : 'GreaterThan', '>=' : 'GreaterThanOrEqual'
       };
 
-function symbolToOp(symbol,isTimed) {
-    let op = symbolToOpMap[symbol.trim()] + (isTimed ? 'Timed' : '');
+function symbolToOp(symbolIn,isTimed) {
+    const symbol = symbolIn.trim().replace(/mod/i,'mod').replace(/xor/i,'xor');
+    let op = symbolToOpMap[symbol] + (isTimed ? 'Timed' : '');
     return op;
 }
 
@@ -76,7 +79,7 @@ LTLASTAnalyzer.prototype.visitArithBinary = function(ctx) {
     return [op, operand1, operand2];
 };
 
-// Visit a parse tree produced by LTLParser#arithUnary.
+// visit a parse tree produced by LTLParser#arithUnary.
 LTLVisitor.prototype.visitArithUnary = function(ctx) {
     return ['Negate', this.visit(ctx.arithmetic_expr(0))];
 };

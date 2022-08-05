@@ -1,36 +1,4 @@
-// *****************************************************************************
-// Notices:
-//
-// Copyright © 2019, 2021 United States Government as represented by the Administrator
-// of the National Aeronautics and Space Administration. All Rights Reserved.
-//
-// Disclaimers
-//
-// No Warranty: THE SUBJECT SOFTWARE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY OF
-// ANY KIND, EITHER EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED
-// TO, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL CONFORM TO SPECIFICATIONS,
-// ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE,
-// OR FREEDOM FROM INFRINGEMENT, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL BE
-// ERROR FREE, OR ANY WARRANTY THAT DOCUMENTATION, IF PROVIDED, WILL CONFORM TO
-// THE SUBJECT SOFTWARE. THIS AGREEMENT DOES NOT, IN ANY MANNER, CONSTITUTE AN
-// ENDORSEMENT BY GOVERNMENT AGENCY OR ANY PRIOR RECIPIENT OF ANY RESULTS,
-// RESULTING DESIGNS, HARDWARE, SOFTWARE PRODUCTS OR ANY OTHER APPLICATIONS
-// RESULTING FROM USE OF THE SUBJECT SOFTWARE.  FURTHER, GOVERNMENT AGENCY
-// DISCLAIMS ALL WARRANTIES AND LIABILITIES REGARDING THIRD-PARTY SOFTWARE, IF
-// PRESENT IN THE ORIGINAL SOFTWARE, AND DISTRIBUTES IT ''AS IS.''
-//
-// Waiver and Indemnity:  RECIPIENT AGREES TO WAIVE ANY AND ALL CLAIMS AGAINST
-// THE UNITED STATES GOVERNMENT, ITS CONTRACTORS AND SUBCONTRACTORS, AS WELL AS
-// ANY PRIOR RECIPIENT.  IF RECIPIENT'S USE OF THE SUBJECT SOFTWARE RESULTS IN
-// ANY LIABILITIES, DEMANDS, DAMAGES, EXPENSES OR LOSSES ARISING FROM SUCH USE,
-// INCLUDING ANY DAMAGES FROM PRODUCTS BASED ON, OR RESULTING FROM, RECIPIENT'S
-// USE OF THE SUBJECT SOFTWARE, RECIPIENT SHALL INDEMNIFY AND HOLD HARMLESS THE
-// UNITED STATES GOVERNMENT, ITS CONTRACTORS AND SUBCONTRACTORS, AS WELL AS ANY
-// PRIOR RECIPIENT, TO THE EXTENT PERMITTED BY LAW.  RECIPIENT'S SOLE REMEDY FOR
-// ANY SUCH MATTER SHALL BE THE IMMEDIATE, UNILATERAL TERMINATION OF THIS
-// AGREEMENT.
-// *****************************************************************************
-// Generated from LTLAEX.g4 by ANTLR 4.5.1
+// Generated from LTLAEX.g4 by ANTLR 4.8
 // jshint ignore: start
 var antlr4 = require('antlr4/index');
 var LTLAEXListener = require('./LTLAEXListener').LTLAEXListener;
@@ -38,7 +6,8 @@ var LTLAEXVisitor = require('./LTLAEXVisitor').LTLAEXVisitor;
 
 var grammarFileName = "LTLAEX.g4";
 
-var serializedATN = ["\u0003\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd",
+
+var serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964",
     "\u0003\u0013_\u0004\u0002\t\u0002\u0004\u0003\t\u0003\u0004\u0004\t",
     "\u0004\u0004\u0005\t\u0005\u0004\u0006\t\u0006\u0004\u0007\t\u0007\u0004",
     "\b\t\b\u0004\t\t\t\u0004\n\t\n\u0004\u000b\t\u000b\u0004\f\t\f\u0004",
@@ -54,41 +23,41 @@ var serializedATN = ["\u0003\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd",
     "\t\u0003\t\u0003\n\u0003\n\u0003\u000b\u0003\u000b\u0003\f\u0003\f\u0003",
     "\r\u0003\r\u0003\u000e\u0003\u000e\u0003\u000f\u0003\u000f\u0003\u000f",
     "\u0002\u0003\u0004\u0010\u0002\u0004\u0006\b\n\f\u000e\u0010\u0012\u0014",
-    "\u0016\u0018\u001a\u001c\u0002\u0003\u0003\u0002\u0003\u0007Y\u0002",
-    "\u001e\u0003\u0002\u0002\u0002\u0004,\u0003\u0002\u0002\u0002\u0006",
-    "F\u0003\u0002\u0002\u0002\bH\u0003\u0002\u0002\u0002\nJ\u0003\u0002",
-    "\u0002\u0002\fL\u0003\u0002\u0002\u0002\u000eN\u0003\u0002\u0002\u0002",
-    "\u0010P\u0003\u0002\u0002\u0002\u0012R\u0003\u0002\u0002\u0002\u0014",
-    "T\u0003\u0002\u0002\u0002\u0016V\u0003\u0002\u0002\u0002\u0018X\u0003",
-    "\u0002\u0002\u0002\u001aZ\u0003\u0002\u0002\u0002\u001c\\\u0003\u0002",
-    "\u0002\u0002\u001e\u001f\u0005\u0004\u0003\u0002\u001f \u0005\u0006",
-    "\u0004\u0002 !\u0005\u0004\u0003\u0002!\u0003\u0003\u0002\u0002\u0002",
-    "\"#\b\u0003\u0001\u0002#$\u0005\u001c\u000f\u0002$%\u0005\u0004\u0003",
-    "\u0007%-\u0003\u0002\u0002\u0002&\'\u0005\n\u0006\u0002\'(\u0005\u0004",
-    "\u0003\u0002()\u0005\u000e\b\u0002)-\u0003\u0002\u0002\u0002*-\u0007",
+    "\u0016\u0018\u001a\u001c\u0002\u0003\u0003\u0002\u0003\u0007\u0002Y",
+    "\u0002\u001e\u0003\u0002\u0002\u0002\u0004,\u0003\u0002\u0002\u0002",
+    "\u0006F\u0003\u0002\u0002\u0002\bH\u0003\u0002\u0002\u0002\nJ\u0003",
+    "\u0002\u0002\u0002\fL\u0003\u0002\u0002\u0002\u000eN\u0003\u0002\u0002",
+    "\u0002\u0010P\u0003\u0002\u0002\u0002\u0012R\u0003\u0002\u0002\u0002",
+    "\u0014T\u0003\u0002\u0002\u0002\u0016V\u0003\u0002\u0002\u0002\u0018",
+    "X\u0003\u0002\u0002\u0002\u001aZ\u0003\u0002\u0002\u0002\u001c\\\u0003",
+    "\u0002\u0002\u0002\u001e\u001f\u0005\u0004\u0003\u0002\u001f \u0005",
+    "\u0006\u0004\u0002 !\u0005\u0004\u0003\u0002!\u0003\u0003\u0002\u0002",
+    "\u0002\"#\b\u0003\u0001\u0002#$\u0005\n\u0006\u0002$%\u0005\u0004\u0003",
+    "\u0002%&\u0005\u000e\b\u0002&-\u0003\u0002\u0002\u0002\'(\u0005\u001c",
+    "\u000f\u0002()\u0005\u0004\u0003\u0007)-\u0003\u0002\u0002\u0002*-\u0007",
     "\u0011\u0002\u0002+-\u0007\u0010\u0002\u0002,\"\u0003\u0002\u0002\u0002",
-    ",&\u0003\u0002\u0002\u0002,*\u0003\u0002\u0002\u0002,+\u0003\u0002\u0002",
-    "\u0002-C\u0003\u0002\u0002\u0002./\f\b\u0002\u0002/0\u0005\u0010\t\u0002",
-    "01\u0005\u0004\u0003\b1B\u0003\u0002\u0002\u000226\f\u0006\u0002\u0002",
-    "37\u0005\u0012\n\u000247\u0005\u0014\u000b\u000257\u0005\u0016\f\u0002",
-    "63\u0003\u0002\u0002\u000264\u0003\u0002\u0002\u000265\u0003\u0002\u0002",
-    "\u000278\u0003\u0002\u0002\u000289\u0005\u0004\u0003\u00079B\u0003\u0002",
-    "\u0002\u0002:=\f\u0005\u0002\u0002;>\u0005\u0018\r\u0002<>\u0005\u001a",
-    "\u000e\u0002=;\u0003\u0002\u0002\u0002=<\u0003\u0002\u0002\u0002>?\u0003",
-    "\u0002\u0002\u0002?@\u0005\u0004\u0003\u0006@B\u0003\u0002\u0002\u0002",
-    "A.\u0003\u0002\u0002\u0002A2\u0003\u0002\u0002\u0002A:\u0003\u0002\u0002",
-    "\u0002BE\u0003\u0002\u0002\u0002CA\u0003\u0002\u0002\u0002CD\u0003\u0002",
-    "\u0002\u0002D\u0005\u0003\u0002\u0002\u0002EC\u0003\u0002\u0002\u0002",
-    "FG\t\u0002\u0002\u0002G\u0007\u0003\u0002\u0002\u0002HI\u0007\b\u0002",
-    "\u0002I\t\u0003\u0002\u0002\u0002JK\u0007\b\u0002\u0002K\u000b\u0003",
-    "\u0002\u0002\u0002LM\u0007\t\u0002\u0002M\r\u0003\u0002\u0002\u0002",
-    "NO\u0007\t\u0002\u0002O\u000f\u0003\u0002\u0002\u0002PQ\u0007\n\u0002",
-    "\u0002Q\u0011\u0003\u0002\u0002\u0002RS\u0007\u000b\u0002\u0002S\u0013",
-    "\u0003\u0002\u0002\u0002TU\u0007\f\u0002\u0002U\u0015\u0003\u0002\u0002",
-    "\u0002VW\u0007\r\u0002\u0002W\u0017\u0003\u0002\u0002\u0002XY\u0007",
-    "\u000e\u0002\u0002Y\u0019\u0003\u0002\u0002\u0002Z[\u0007\u000f\u0002",
-    "\u0002[\u001b\u0003\u0002\u0002\u0002\\]\u0007\u000f\u0002\u0002]\u001d",
-    "\u0003\u0002\u0002\u0002\u0007,6=AC"].join("");
+    ",\'\u0003\u0002\u0002\u0002,*\u0003\u0002\u0002\u0002,+\u0003\u0002",
+    "\u0002\u0002-C\u0003\u0002\u0002\u0002./\f\b\u0002\u0002/0\u0005\u0010",
+    "\t\u000201\u0005\u0004\u0003\b1B\u0003\u0002\u0002\u000226\f\u0006\u0002",
+    "\u000237\u0005\u0012\n\u000247\u0005\u0014\u000b\u000257\u0005\u0016",
+    "\f\u000263\u0003\u0002\u0002\u000264\u0003\u0002\u0002\u000265\u0003",
+    "\u0002\u0002\u000278\u0003\u0002\u0002\u000289\u0005\u0004\u0003\u0007",
+    "9B\u0003\u0002\u0002\u0002:=\f\u0005\u0002\u0002;>\u0005\u0018\r\u0002",
+    "<>\u0005\u001a\u000e\u0002=;\u0003\u0002\u0002\u0002=<\u0003\u0002\u0002",
+    "\u0002>?\u0003\u0002\u0002\u0002?@\u0005\u0004\u0003\u0006@B\u0003\u0002",
+    "\u0002\u0002A.\u0003\u0002\u0002\u0002A2\u0003\u0002\u0002\u0002A:\u0003",
+    "\u0002\u0002\u0002BE\u0003\u0002\u0002\u0002CA\u0003\u0002\u0002\u0002",
+    "CD\u0003\u0002\u0002\u0002D\u0005\u0003\u0002\u0002\u0002EC\u0003\u0002",
+    "\u0002\u0002FG\t\u0002\u0002\u0002G\u0007\u0003\u0002\u0002\u0002HI",
+    "\u0007\b\u0002\u0002I\t\u0003\u0002\u0002\u0002JK\u0007\b\u0002\u0002",
+    "K\u000b\u0003\u0002\u0002\u0002LM\u0007\t\u0002\u0002M\r\u0003\u0002",
+    "\u0002\u0002NO\u0007\t\u0002\u0002O\u000f\u0003\u0002\u0002\u0002PQ",
+    "\u0007\n\u0002\u0002Q\u0011\u0003\u0002\u0002\u0002RS\u0007\u000b\u0002",
+    "\u0002S\u0013\u0003\u0002\u0002\u0002TU\u0007\f\u0002\u0002U\u0015\u0003",
+    "\u0002\u0002\u0002VW\u0007\r\u0002\u0002W\u0017\u0003\u0002\u0002\u0002",
+    "XY\u0007\u000e\u0002\u0002Y\u0019\u0003\u0002\u0002\u0002Z[\u0007\u000f",
+    "\u0002\u0002[\u001b\u0003\u0002\u0002\u0002\\]\u0007\u000f\u0002\u0002",
+    "]\u001d\u0003\u0002\u0002\u0002\u0007,6=AC"].join("");
 
 
 var atn = new antlr4.atn.ATNDeserializer().deserialize(serializedATN);
@@ -97,12 +66,12 @@ var decisionsToDFA = atn.decisionToState.map( function(ds, index) { return new a
 
 var sharedContextCache = new antlr4.PredictionContextCache();
 
-var literalNames = [ 'null', "'='", "'<'", "'<='", "'>'", "'>='", "'('", 
-                     "')'", "'^'", "'*'", "'/'", "'%'", "'+'", "'-'" ];
+var literalNames = [ null, "'='", "'<'", "'<='", "'>'", "'>='", "'('", "')'", 
+                     "'^'", "'*'", "'/'", "'mod'", "'+'", "'-'" ];
 
-var symbolicNames = [ 'null', 'null', 'null', 'null', 'null', 'null', 'null', 
-                      'null', 'null', 'null', 'null', 'null', 'null', 'null', 
-                      "ID", "NUMBER", "UINT", "WS" ];
+var symbolicNames = [ null, null, null, null, null, null, null, null, null, 
+                      null, null, null, null, null, "ID", "NUMBER", "UINT", 
+                      "WS" ];
 
 var ruleNames =  [ "simpleExpr", "arithmetic_expr", "comparisonOp", "lp", 
                    "lpA", "rp", "rpA", "expt", "mult", "div", "mod", "plus", 
@@ -159,6 +128,7 @@ LTLAEXParser.RULE_mod = 10;
 LTLAEXParser.RULE_plus = 11;
 LTLAEXParser.RULE_minus = 12;
 LTLAEXParser.RULE_negate = 13;
+
 
 function SimpleExprContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -258,6 +228,7 @@ LTLAEXParser.prototype.simpleExpr = function() {
     }
     return localctx;
 };
+
 
 function Arithmetic_exprContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -513,27 +484,28 @@ LTLAEXParser.prototype.arithmetic_expr = function(_p) {
     try {
         this.enterOuterAlt(localctx, 1);
         this.state = 42;
+        this._errHandler.sync(this);
         switch(this._input.LA(1)) {
-        case LTLAEXParser.T__12:
-            localctx = new ArithUnaryContext(this, localctx);
-            this._ctx = localctx;
-            _prevctx = localctx;
-
-            this.state = 33;
-            this.negate();
-            this.state = 34;
-            this.arithmetic_expr(5);
-            break;
         case LTLAEXParser.T__5:
             localctx = new ArithGroupContext(this, localctx);
             this._ctx = localctx;
             _prevctx = localctx;
-            this.state = 36;
+
+            this.state = 33;
             this.lpA();
-            this.state = 37;
+            this.state = 34;
             this.arithmetic_expr(0);
-            this.state = 38;
+            this.state = 35;
             this.rpA();
+            break;
+        case LTLAEXParser.T__12:
+            localctx = new ArithUnaryContext(this, localctx);
+            this._ctx = localctx;
+            _prevctx = localctx;
+            this.state = 37;
+            this.negate();
+            this.state = 38;
+            this.arithmetic_expr(5);
             break;
         case LTLAEXParser.NUMBER:
             localctx = new ArithContext(this, localctx);
@@ -563,6 +535,7 @@ LTLAEXParser.prototype.arithmetic_expr = function(_p) {
                 }
                 _prevctx = localctx;
                 this.state = 63;
+                this._errHandler.sync(this);
                 var la_ = this._interp.adaptivePredict(this._input,3,this._ctx);
                 switch(la_) {
                 case 1:
@@ -586,6 +559,7 @@ LTLAEXParser.prototype.arithmetic_expr = function(_p) {
                         throw new antlr4.error.FailedPredicateException(this, "this.precpred(this._ctx, 4)");
                     }
                     this.state = 52;
+                    this._errHandler.sync(this);
                     switch(this._input.LA(1)) {
                     case LTLAEXParser.T__8:
                         this.state = 49;
@@ -614,6 +588,7 @@ LTLAEXParser.prototype.arithmetic_expr = function(_p) {
                         throw new antlr4.error.FailedPredicateException(this, "this.precpred(this._ctx, 3)");
                     }
                     this.state = 59;
+                    this._errHandler.sync(this);
                     switch(this._input.LA(1)) {
                     case LTLAEXParser.T__11:
                         this.state = 57;
@@ -650,6 +625,7 @@ LTLAEXParser.prototype.arithmetic_expr = function(_p) {
     }
     return localctx;
 };
+
 
 function ComparisonOpContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -706,6 +682,7 @@ LTLAEXParser.prototype.comparisonOp = function() {
         this._errHandler.recoverInline(this);
         }
         else {
+        	this._errHandler.reportMatch(this);
             this.consume();
         }
     } catch (re) {
@@ -721,6 +698,7 @@ LTLAEXParser.prototype.comparisonOp = function() {
     }
     return localctx;
 };
+
 
 function LpContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -785,6 +763,7 @@ LTLAEXParser.prototype.lp = function() {
     }
     return localctx;
 };
+
 
 function LpAContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -867,6 +846,7 @@ LTLAEXParser.prototype.lpA = function() {
     return localctx;
 };
 
+
 function RpContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
@@ -930,6 +910,7 @@ LTLAEXParser.prototype.rp = function() {
     }
     return localctx;
 };
+
 
 function RpAContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -1012,6 +993,7 @@ LTLAEXParser.prototype.rpA = function() {
     return localctx;
 };
 
+
 function ExptContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
@@ -1075,6 +1057,7 @@ LTLAEXParser.prototype.expt = function() {
     }
     return localctx;
 };
+
 
 function MultContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -1140,6 +1123,7 @@ LTLAEXParser.prototype.mult = function() {
     return localctx;
 };
 
+
 function DivContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
@@ -1203,6 +1187,7 @@ LTLAEXParser.prototype.div = function() {
     }
     return localctx;
 };
+
 
 function ModContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -1268,6 +1253,7 @@ LTLAEXParser.prototype.mod = function() {
     return localctx;
 };
 
+
 function PlusContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
@@ -1332,6 +1318,7 @@ LTLAEXParser.prototype.plus = function() {
     return localctx;
 };
 
+
 function MinusContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
@@ -1395,6 +1382,7 @@ LTLAEXParser.prototype.minus = function() {
     }
     return localctx;
 };
+
 
 function NegateContext(parser, parent, invokingState) {
 	if(parent===undefined) {

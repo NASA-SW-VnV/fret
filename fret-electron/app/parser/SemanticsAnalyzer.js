@@ -378,28 +378,6 @@ function createVariableDescription(scope, condition, timing, response, stop_cond
 
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
-function replaceWithCoCoSpecSubsts(formula) {
-  return utilities.replaceStrings(cocospecSemantics.CoCoSpecSubsts, formula);
-}
-
-//----------------------------------------------------------------------
-//----------------------------------------------------------------------
-function replaceWithVisualizationSubsts(formula) {
-
-  console.log("VIS-REPL: formula="+formula);
-  var RS = utilities.replaceStrings(cocospecSemantics.CoCoSpecSubsts, formula);
-  console.log("VIS-REPL: formula after repl="+RS);
-
-  var RRS = cocospecSemantics.createCoCoSpecCode(formula);
-
-  console.log("VIS-REPL: formula after cocospec-create="+RRS);
-
-  return RS;
-//  return utilities.replaceStrings(VisualizationSemantics.VisualizationSubsts, formula);
-}
-
-//----------------------------------------------------------------------
-//----------------------------------------------------------------------
 function replaceWithR2U2Substs(formula) {
   return utilities.replaceStrings(R2U2Semantics.R2U2Substs, formula);
 }
@@ -583,8 +561,7 @@ SemanticsAnalyzer.prototype.semantics = () => {
     let fetched_coco = fetchedSemantics.CoCoSpecCode.replace(/\$regular_condition\$/g,'$regular_condition_coco$').replace(/\$post_condition\$/g,'$post_condition_coco$').replace(/\$stop_condition\$/g,'$stop_condition_coco$').replace(/\$scope_mode\$/g,'$scope_mode_coco$');
     result.CoCoSpecCode_fetched = fetched_coco;
     let CoCoSpecCodeLTL = replaceTemplateVarsWithArgs(fetched_coco, true, false);
-    let CoCoSpecCode = replaceWithCoCoSpecSubsts(CoCoSpecCodeLTL);
-    result.CoCoSpecCode = CoCoSpecCode;
+    result.CoCoSpecCode = CoCoSpecCodeLTL;
 
     result.component = replaceTemplateVarsWithArgs('$component_name$', false, false);
 

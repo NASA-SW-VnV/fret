@@ -73,7 +73,7 @@ simpleExpr :
            | lp simpleExpr rp
            | arithmetic_expr comparisonOp arithmetic_expr
            | not simpleExpr                   // logical not
-           | simpleExpr and simpleExpr        // logical and
+           | <assoc=left> simpleExpr and simpleExpr        // logical and
            | simpleExpr or simpleExpr         // logical or
            | simpleExpr xor simpleExpr        // logical exclusive or
            | simpleExpr implies simpleExpr    // logical implication
@@ -84,7 +84,7 @@ ltlExpr :
           simpleExpr                                 # simpleltl
         | lp ltlExpr rp                              # simpleltl
         | not ltlExpr                                 # simpleltl
-        | ltlExpr and ltlExpr	                     # simpleltl
+        | <assoc=left> ltlExpr and ltlExpr	                     # simpleltl
         | ltlExpr or ltlExpr                         # simpleltl
         | ltlExpr xor ltlExpr                        # simpleltl
         | ltlExpr implies ltlExpr                    # simpleltl
@@ -133,7 +133,7 @@ and  : '&' ;
 
 or : '|' ;
 
-xor : 'xor' ;
+xor : 'XOR' | 'xor' | 'Xor' | 'xOR' ;
 
 implies : '->';
 
@@ -145,7 +145,7 @@ mult : '*' ;
 
 div : '/' ;
 
-mod : '%' ;
+mod : 'mod' | 'MOD' ;
 
 plus : '+' ;
 
@@ -159,6 +159,9 @@ t  : 'TRUE';
 
 ID : [_a-zA-Z][_a-zA-Z0-9]* ;
 
+XOR : X O R ;
+
+MOD : M O D ;	
 
 NUMBER :
          '-'? NATNUM '.' [0-9]+ EXP?
@@ -170,5 +173,11 @@ fragment EXP :
          [Ee] [+\-]? NATNUM ;
 
 fragment NATNUM : '0' | [1-9][0-9]* ;
+
+fragment D : [dD] ;
+fragment M : [mM] ;
+fragment O : [oO] ;
+fragment R : [rR] ;
+fragment X : [xX] ;
 
 WS : [ \t\r\n]+ -> skip ;  // skip spaces, tabs, newlines

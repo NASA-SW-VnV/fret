@@ -1,36 +1,4 @@
-// *****************************************************************************
-// Notices:
-//
-// Copyright © 2019, 2021 United States Government as represented by the Administrator
-// of the National Aeronautics and Space Administration. All Rights Reserved.
-//
-// Disclaimers
-//
-// No Warranty: THE SUBJECT SOFTWARE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY OF
-// ANY KIND, EITHER EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED
-// TO, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL CONFORM TO SPECIFICATIONS,
-// ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE,
-// OR FREEDOM FROM INFRINGEMENT, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL BE
-// ERROR FREE, OR ANY WARRANTY THAT DOCUMENTATION, IF PROVIDED, WILL CONFORM TO
-// THE SUBJECT SOFTWARE. THIS AGREEMENT DOES NOT, IN ANY MANNER, CONSTITUTE AN
-// ENDORSEMENT BY GOVERNMENT AGENCY OR ANY PRIOR RECIPIENT OF ANY RESULTS,
-// RESULTING DESIGNS, HARDWARE, SOFTWARE PRODUCTS OR ANY OTHER APPLICATIONS
-// RESULTING FROM USE OF THE SUBJECT SOFTWARE.  FURTHER, GOVERNMENT AGENCY
-// DISCLAIMS ALL WARRANTIES AND LIABILITIES REGARDING THIRD-PARTY SOFTWARE, IF
-// PRESENT IN THE ORIGINAL SOFTWARE, AND DISTRIBUTES IT ''AS IS.''
-//
-// Waiver and Indemnity:  RECIPIENT AGREES TO WAIVE ANY AND ALL CLAIMS AGAINST
-// THE UNITED STATES GOVERNMENT, ITS CONTRACTORS AND SUBCONTRACTORS, AS WELL AS
-// ANY PRIOR RECIPIENT.  IF RECIPIENT'S USE OF THE SUBJECT SOFTWARE RESULTS IN
-// ANY LIABILITIES, DEMANDS, DAMAGES, EXPENSES OR LOSSES ARISING FROM SUCH USE,
-// INCLUDING ANY DAMAGES FROM PRODUCTS BASED ON, OR RESULTING FROM, RECIPIENT'S
-// USE OF THE SUBJECT SOFTWARE, RECIPIENT SHALL INDEMNIFY AND HOLD HARMLESS THE
-// UNITED STATES GOVERNMENT, ITS CONTRACTORS AND SUBCONTRACTORS, AS WELL AS ANY
-// PRIOR RECIPIENT, TO THE EXTENT PERMITTED BY LAW.  RECIPIENT'S SOLE REMEDY FOR
-// ANY SUCH MATTER SHALL BE THE IMMEDIATE, UNILATERAL TERMINATION OF THIS
-// AGREEMENT.
-// *****************************************************************************
-// Generated from LTLSIM_NuSMV.g4 by ANTLR 4.5.1
+// Generated from LTLSIM_NuSMV.g4 by ANTLR 4.8
 // jshint ignore: start
 var antlr4 = require('antlr4/index');
 var LTLSIM_NuSMVListener = require('./LTLSIM_NuSMVListener').LTLSIM_NuSMVListener;
@@ -38,7 +6,8 @@ var LTLSIM_NuSMVVisitor = require('./LTLSIM_NuSMVVisitor').LTLSIM_NuSMVVisitor;
 
 var grammarFileName = "LTLSIM_NuSMV.g4";
 
-var serializedATN = ["\u0003\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd",
+
+var serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964",
     "\u0003<\u0135\u0004\u0002\t\u0002\u0004\u0003\t\u0003\u0004\u0004\t",
     "\u0004\u0004\u0005\t\u0005\u0004\u0006\t\u0006\u0004\u0007\t\u0007\u0004",
     "\b\t\b\u0004\t\t\t\u0004\n\t\n\u0004\u000b\t\u000b\u0004\f\t\f\u0004",
@@ -90,149 +59,149 @@ var serializedATN = ["\u0003\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd",
     "\u0005\b\n\f$\u0002\u0004\u0006\b\n\f\u000e\u0010\u0012\u0014\u0016",
     "\u0018\u001a\u001c\u001e \"$&(*,.02468:<>@BD\u0002\t\u0003\u0002\u0003",
     "\u0010\u0003\u0002\u0011\u0012\u0003\u0002\u0013\u0015\u0003\u0002\u0017",
-    "\u0019\u0003\u0002\u001a\u001c\u0003\u0002\u001e \u0003\u0002!%\u013b",
-    "\u0002F\u0003\u0002\u0002\u0002\u0004H\u0003\u0002\u0002\u0002\u0006",
-    "J\u0003\u0002\u0002\u0002\b\\\u0003\u0002\u0002\u0002\n\u0081\u0003",
-    "\u0002\u0002\u0002\f\u00ba\u0003\u0002\u0002\u0002\u000e\u00f1\u0003",
-    "\u0002\u0002\u0002\u0010\u00f5\u0003\u0002\u0002\u0002\u0012\u00f7\u0003",
-    "\u0002\u0002\u0002\u0014\u00f9\u0003\u0002\u0002\u0002\u0016\u00fd\u0003",
-    "\u0002\u0002\u0002\u0018\u00ff\u0003\u0002\u0002\u0002\u001a\u0101\u0003",
-    "\u0002\u0002\u0002\u001c\u0103\u0003\u0002\u0002\u0002\u001e\u0109\u0003",
-    "\u0002\u0002\u0002 \u010e\u0003\u0002\u0002\u0002\"\u0110\u0003\u0002",
-    "\u0002\u0002$\u0112\u0003\u0002\u0002\u0002&\u0114\u0003\u0002\u0002",
-    "\u0002(\u0116\u0003\u0002\u0002\u0002*\u0118\u0003\u0002\u0002\u0002",
-    ",\u011a\u0003\u0002\u0002\u0002.\u011c\u0003\u0002\u0002\u00020\u011e",
-    "\u0003\u0002\u0002\u00022\u0120\u0003\u0002\u0002\u00024\u0122\u0003",
-    "\u0002\u0002\u00026\u0124\u0003\u0002\u0002\u00028\u0126\u0003\u0002",
-    "\u0002\u0002:\u0128\u0003\u0002\u0002\u0002<\u012a\u0003\u0002\u0002",
-    "\u0002>\u012c\u0003\u0002\u0002\u0002@\u012e\u0003\u0002\u0002\u0002",
-    "B\u0130\u0003\u0002\u0002\u0002D\u0132\u0003\u0002\u0002\u0002FG\t\u0002",
-    "\u0002\u0002G\u0003\u0003\u0002\u0002\u0002HI\t\u0003\u0002\u0002I\u0005",
-    "\u0003\u0002\u0002\u0002JK\u00079\u0002\u0002K\u0007\u0003\u0002\u0002",
-    "\u0002LM\b\u0005\u0001\u0002MN\u0005(\u0015\u0002NO\u0005\b\u0005\t",
-    "O]\u0003\u0002\u0002\u0002P]\u0005\u0006\u0004\u0002Q]\u0005\u0002\u0002",
-    "\u0002R]\u00056\u001c\u0002S]\u00054\u001b\u0002TU\u0005 \u0011\u0002",
-    "UV\u0005\b\u0005\u0002VW\u0005$\u0013\u0002W]\u0003\u0002\u0002\u0002",
-    "XY\u0005\n\u0006\u0002YZ\u0005\u001a\u000e\u0002Z[\u0005\n\u0006\u0002",
-    "[]\u0003\u0002\u0002\u0002\\L\u0003\u0002\u0002\u0002\\P\u0003\u0002",
-    "\u0002\u0002\\Q\u0003\u0002\u0002\u0002\\R\u0003\u0002\u0002\u0002\\",
-    "S\u0003\u0002\u0002\u0002\\T\u0003\u0002\u0002\u0002\\X\u0003\u0002",
-    "\u0002\u0002]t\u0003\u0002\u0002\u0002^_\f\b\u0002\u0002_`\u0005*\u0016",
-    "\u0002`a\u0005\b\u0005\tas\u0003\u0002\u0002\u0002bc\f\u0007\u0002\u0002",
-    "cd\u0005,\u0017\u0002de\u0005\b\u0005\bes\u0003\u0002\u0002\u0002fg",
-    "\f\u0006\u0002\u0002gh\u0005.\u0018\u0002hi\u0005\b\u0005\u0007is\u0003",
-    "\u0002\u0002\u0002jk\f\u0005\u0002\u0002kl\u00050\u0019\u0002lm\u0005",
-    "\b\u0005\u0006ms\u0003\u0002\u0002\u0002no\f\u0004\u0002\u0002op\u0005",
-    "2\u001a\u0002pq\u0005\b\u0005\u0005qs\u0003\u0002\u0002\u0002r^\u0003",
-    "\u0002\u0002\u0002rb\u0003\u0002\u0002\u0002rf\u0003\u0002\u0002\u0002",
-    "rj\u0003\u0002\u0002\u0002rn\u0003\u0002\u0002\u0002sv\u0003\u0002\u0002",
-    "\u0002tr\u0003\u0002\u0002\u0002tu\u0003\u0002\u0002\u0002u\t\u0003",
-    "\u0002\u0002\u0002vt\u0003\u0002\u0002\u0002wx\b\u0006\u0001\u0002x",
-    "y\u0005D#\u0002yz\u0005\n\u0006\u0007z\u0082\u0003\u0002\u0002\u0002",
-    "{|\u0005\"\u0012\u0002|}\u0005\n\u0006\u0002}~\u0005&\u0014\u0002~\u0082",
-    "\u0003\u0002\u0002\u0002\u007f\u0082\u0007:\u0002\u0002\u0080\u0082",
-    "\u00079\u0002\u0002\u0081w\u0003\u0002\u0002\u0002\u0081{\u0003\u0002",
-    "\u0002\u0002\u0081\u007f\u0003\u0002\u0002\u0002\u0081\u0080\u0003\u0002",
-    "\u0002\u0002\u0082\u0098\u0003\u0002\u0002\u0002\u0083\u0084\f\b\u0002",
-    "\u0002\u0084\u0085\u00058\u001d\u0002\u0085\u0086\u0005\n\u0006\b\u0086",
-    "\u0097\u0003\u0002\u0002\u0002\u0087\u008b\f\u0006\u0002\u0002\u0088",
-    "\u008c\u0005:\u001e\u0002\u0089\u008c\u0005<\u001f\u0002\u008a\u008c",
-    "\u0005> \u0002\u008b\u0088\u0003\u0002\u0002\u0002\u008b\u0089\u0003",
-    "\u0002\u0002\u0002\u008b\u008a\u0003\u0002\u0002\u0002\u008c\u008d\u0003",
-    "\u0002\u0002\u0002\u008d\u008e\u0005\n\u0006\u0007\u008e\u0097\u0003",
-    "\u0002\u0002\u0002\u008f\u0092\f\u0005\u0002\u0002\u0090\u0093\u0005",
-    "@!\u0002\u0091\u0093\u0005B\"\u0002\u0092\u0090\u0003\u0002\u0002\u0002",
-    "\u0092\u0091\u0003\u0002\u0002\u0002\u0093\u0094\u0003\u0002\u0002\u0002",
-    "\u0094\u0095\u0005\n\u0006\u0006\u0095\u0097\u0003\u0002\u0002\u0002",
-    "\u0096\u0083\u0003\u0002\u0002\u0002\u0096\u0087\u0003\u0002\u0002\u0002",
-    "\u0096\u008f\u0003\u0002\u0002\u0002\u0097\u009a\u0003\u0002\u0002\u0002",
-    "\u0098\u0096\u0003\u0002\u0002\u0002\u0098\u0099\u0003\u0002\u0002\u0002",
-    "\u0099\u000b\u0003\u0002\u0002\u0002\u009a\u0098\u0003\u0002\u0002\u0002",
-    "\u009b\u009c\b\u0007\u0001\u0002\u009c\u009d\u0005(\u0015\u0002\u009d",
-    "\u009e\u0005\f\u0007\u0014\u009e\u00bb\u0003\u0002\u0002\u0002\u009f",
-    "\u00a0\u0005\u0010\t\u0002\u00a0\u00a1\u0005\f\u0007\u000e\u00a1\u00bb",
-    "\u0003\u0002\u0002\u0002\u00a2\u00a3\u0005\u0016\f\u0002\u00a3\u00a4",
-    "\u0005\f\u0007\r\u00a4\u00bb\u0003\u0002\u0002\u0002\u00a5\u00a6\u0005",
-    "\u000e\b\u0002\u00a6\u00a7\u0005\u001c\u000f\u0002\u00a7\u00a8\u0005",
-    "\f\u0007\n\u00a8\u00bb\u0003\u0002\u0002\u0002\u00a9\u00aa\u0005\u0014",
-    "\u000b\u0002\u00aa\u00ab\u0005\u001c\u000f\u0002\u00ab\u00ac\u0005\f",
-    "\u0007\t\u00ac\u00bb\u0003\u0002\u0002\u0002\u00ad\u00ae\u0005\u000e",
-    "\b\u0002\u00ae\u00af\u0005\u001e\u0010\u0002\u00af\u00b0\u0005\f\u0007",
-    "\u0006\u00b0\u00bb\u0003\u0002\u0002\u0002\u00b1\u00b2\u0005\u0014\u000b",
-    "\u0002\u00b2\u00b3\u0005\u001e\u0010\u0002\u00b3\u00b4\u0005\f\u0007",
-    "\u0004\u00b4\u00bb\u0003\u0002\u0002\u0002\u00b5\u00bb\u0005\b\u0005",
-    "\u0002\u00b6\u00b7\u0005 \u0011\u0002\u00b7\u00b8\u0005\f\u0007\u0002",
-    "\u00b8\u00b9\u0005$\u0013\u0002\u00b9\u00bb\u0003\u0002\u0002\u0002",
-    "\u00ba\u009b\u0003\u0002\u0002\u0002\u00ba\u009f\u0003\u0002\u0002\u0002",
-    "\u00ba\u00a2\u0003\u0002\u0002\u0002\u00ba\u00a5\u0003\u0002\u0002\u0002",
-    "\u00ba\u00a9\u0003\u0002\u0002\u0002\u00ba\u00ad\u0003\u0002\u0002\u0002",
-    "\u00ba\u00b1\u0003\u0002\u0002\u0002\u00ba\u00b5\u0003\u0002\u0002\u0002",
-    "\u00ba\u00b6\u0003\u0002\u0002\u0002\u00bb\u00ee\u0003\u0002\u0002\u0002",
-    "\u00bc\u00bd\f\u0013\u0002\u0002\u00bd\u00be\u0005*\u0016\u0002\u00be",
-    "\u00bf\u0005\f\u0007\u0014\u00bf\u00ed\u0003\u0002\u0002\u0002\u00c0",
-    "\u00c1\f\u0012\u0002\u0002\u00c1\u00c2\u0005,\u0017\u0002\u00c2\u00c3",
-    "\u0005\f\u0007\u0013\u00c3\u00ed\u0003\u0002\u0002\u0002\u00c4\u00c5",
-    "\f\u0011\u0002\u0002\u00c5\u00c6\u0005.\u0018\u0002\u00c6\u00c7\u0005",
-    "\f\u0007\u0012\u00c7\u00ed\u0003\u0002\u0002\u0002\u00c8\u00c9\f\u0010",
-    "\u0002\u0002\u00c9\u00ca\u00050\u0019\u0002\u00ca\u00cb\u0005\f\u0007",
-    "\u0011\u00cb\u00ed\u0003\u0002\u0002\u0002\u00cc\u00cd\f\u000f\u0002",
-    "\u0002\u00cd\u00ce\u00052\u001a\u0002\u00ce\u00cf\u0005\f\u0007\u0010",
-    "\u00cf\u00ed\u0003\u0002\u0002\u0002\u00d0\u00d1\f\f\u0002\u0002\u00d1",
-    "\u00d2\u0005\u0012\n\u0002\u00d2\u00d3\u0005\f\u0007\r\u00d3\u00ed\u0003",
-    "\u0002\u0002\u0002\u00d4\u00d5\f\u000b\u0002\u0002\u00d5\u00d6\u0005",
-    "\u0018\r\u0002\u00d6\u00d7\u0005\f\u0007\f\u00d7\u00ed\u0003\u0002\u0002",
-    "\u0002\u00d8\u00d9\f\b\u0002\u0002\u00d9\u00da\u0005\u0012\n\u0002\u00da",
-    "\u00db\u0005\u001c\u000f\u0002\u00db\u00dc\u0005\f\u0007\t\u00dc\u00ed",
-    "\u0003\u0002\u0002\u0002\u00dd\u00de\f\u0007\u0002\u0002\u00de\u00df",
-    "\u0005\u0018\r\u0002\u00df\u00e0\u0005\u001c\u000f\u0002\u00e0\u00e1",
-    "\u0005\f\u0007\b\u00e1\u00ed\u0003\u0002\u0002\u0002\u00e2\u00e3\f\u0005",
-    "\u0002\u0002\u00e3\u00e4\u0005\u0012\n\u0002\u00e4\u00e5\u0005\u001e",
-    "\u0010\u0002\u00e5\u00e6\u0005\f\u0007\u0006\u00e6\u00ed\u0003\u0002",
-    "\u0002\u0002\u00e7\u00e8\f\u0003\u0002\u0002\u00e8\u00e9\u0005\u0018",
-    "\r\u0002\u00e9\u00ea\u0005\u001e\u0010\u0002\u00ea\u00eb\u0005\f\u0007",
-    "\u0004\u00eb\u00ed\u0003\u0002\u0002\u0002\u00ec\u00bc\u0003\u0002\u0002",
-    "\u0002\u00ec\u00c0\u0003\u0002\u0002\u0002\u00ec\u00c4\u0003\u0002\u0002",
-    "\u0002\u00ec\u00c8\u0003\u0002\u0002\u0002\u00ec\u00cc\u0003\u0002\u0002",
-    "\u0002\u00ec\u00d0\u0003\u0002\u0002\u0002\u00ec\u00d4\u0003\u0002\u0002",
-    "\u0002\u00ec\u00d8\u0003\u0002\u0002\u0002\u00ec\u00dd\u0003\u0002\u0002",
-    "\u0002\u00ec\u00e2\u0003\u0002\u0002\u0002\u00ec\u00e7\u0003\u0002\u0002",
-    "\u0002\u00ed\u00f0\u0003\u0002\u0002\u0002\u00ee\u00ec\u0003\u0002\u0002",
-    "\u0002\u00ee\u00ef\u0003\u0002\u0002\u0002\u00ef\r\u0003\u0002\u0002",
-    "\u0002\u00f0\u00ee\u0003\u0002\u0002\u0002\u00f1\u00f2\t\u0004\u0002",
-    "\u0002\u00f2\u000f\u0003\u0002\u0002\u0002\u00f3\u00f6\u0007\u0016\u0002",
-    "\u0002\u00f4\u00f6\u0005\u000e\b\u0002\u00f5\u00f3\u0003\u0002\u0002",
-    "\u0002\u00f5\u00f4\u0003\u0002\u0002\u0002\u00f6\u0011\u0003\u0002\u0002",
-    "\u0002\u00f7\u00f8\t\u0005\u0002\u0002\u00f8\u0013\u0003\u0002\u0002",
-    "\u0002\u00f9\u00fa\t\u0006\u0002\u0002\u00fa\u0015\u0003\u0002\u0002",
-    "\u0002\u00fb\u00fe\u0007\u001d\u0002\u0002\u00fc\u00fe\u0005\u0014\u000b",
-    "\u0002\u00fd\u00fb\u0003\u0002\u0002\u0002\u00fd\u00fc\u0003\u0002\u0002",
-    "\u0002\u00fe\u0017\u0003\u0002\u0002\u0002\u00ff\u0100\t\u0007\u0002",
-    "\u0002\u0100\u0019\u0003\u0002\u0002\u0002\u0101\u0102\t\b\u0002\u0002",
-    "\u0102\u001b\u0003\u0002\u0002\u0002\u0103\u0104\u0007&\u0002\u0002",
-    "\u0104\u0105\u0007:\u0002\u0002\u0105\u0106\u0007\'\u0002\u0002\u0106",
-    "\u0107\u0007:\u0002\u0002\u0107\u0108\u0007(\u0002\u0002\u0108\u001d",
-    "\u0003\u0002\u0002\u0002\u0109\u010a\u0007&\u0002\u0002\u010a\u010b",
-    "\u0005\u001a\u000e\u0002\u010b\u010c\u0005\u0004\u0003\u0002\u010c\u010d",
-    "\u0007(\u0002\u0002\u010d\u001f\u0003\u0002\u0002\u0002\u010e\u010f",
-    "\u0007)\u0002\u0002\u010f!\u0003\u0002\u0002\u0002\u0110\u0111\u0007",
-    ")\u0002\u0002\u0111#\u0003\u0002\u0002\u0002\u0112\u0113\u0007*\u0002",
-    "\u0002\u0113%\u0003\u0002\u0002\u0002\u0114\u0115\u0007*\u0002\u0002",
-    "\u0115\'\u0003\u0002\u0002\u0002\u0116\u0117\u0007+\u0002\u0002\u0117",
-    ")\u0003\u0002\u0002\u0002\u0118\u0119\u0007,\u0002\u0002\u0119+\u0003",
-    "\u0002\u0002\u0002\u011a\u011b\u0007-\u0002\u0002\u011b-\u0003\u0002",
-    "\u0002\u0002\u011c\u011d\u0007.\u0002\u0002\u011d/\u0003\u0002\u0002",
-    "\u0002\u011e\u011f\u0007/\u0002\u0002\u011f1\u0003\u0002\u0002\u0002",
-    "\u0120\u0121\u00070\u0002\u0002\u01213\u0003\u0002\u0002\u0002\u0122",
-    "\u0123\u00071\u0002\u0002\u01235\u0003\u0002\u0002\u0002\u0124\u0125",
-    "\u00072\u0002\u0002\u01257\u0003\u0002\u0002\u0002\u0126\u0127\u0007",
-    "3\u0002\u0002\u01279\u0003\u0002\u0002\u0002\u0128\u0129\u00074\u0002",
-    "\u0002\u0129;\u0003\u0002\u0002\u0002\u012a\u012b\u00075\u0002\u0002",
-    "\u012b=\u0003\u0002\u0002\u0002\u012c\u012d\u00076\u0002\u0002\u012d",
-    "?\u0003\u0002\u0002\u0002\u012e\u012f\u00077\u0002\u0002\u012fA\u0003",
-    "\u0002\u0002\u0002\u0130\u0131\u00078\u0002\u0002\u0131C\u0003\u0002",
-    "\u0002\u0002\u0132\u0133\u00078\u0002\u0002\u0133E\u0003\u0002\u0002",
-    "\u0002\u000f\\rt\u0081\u008b\u0092\u0096\u0098\u00ba\u00ec\u00ee\u00f5",
-    "\u00fd"].join("");
+    "\u0019\u0003\u0002\u001a\u001c\u0003\u0002\u001e \u0003\u0002!%\u0002",
+    "\u013b\u0002F\u0003\u0002\u0002\u0002\u0004H\u0003\u0002\u0002\u0002",
+    "\u0006J\u0003\u0002\u0002\u0002\b\\\u0003\u0002\u0002\u0002\n\u0081",
+    "\u0003\u0002\u0002\u0002\f\u00ba\u0003\u0002\u0002\u0002\u000e\u00f1",
+    "\u0003\u0002\u0002\u0002\u0010\u00f5\u0003\u0002\u0002\u0002\u0012\u00f7",
+    "\u0003\u0002\u0002\u0002\u0014\u00f9\u0003\u0002\u0002\u0002\u0016\u00fd",
+    "\u0003\u0002\u0002\u0002\u0018\u00ff\u0003\u0002\u0002\u0002\u001a\u0101",
+    "\u0003\u0002\u0002\u0002\u001c\u0103\u0003\u0002\u0002\u0002\u001e\u0109",
+    "\u0003\u0002\u0002\u0002 \u010e\u0003\u0002\u0002\u0002\"\u0110\u0003",
+    "\u0002\u0002\u0002$\u0112\u0003\u0002\u0002\u0002&\u0114\u0003\u0002",
+    "\u0002\u0002(\u0116\u0003\u0002\u0002\u0002*\u0118\u0003\u0002\u0002",
+    "\u0002,\u011a\u0003\u0002\u0002\u0002.\u011c\u0003\u0002\u0002\u0002",
+    "0\u011e\u0003\u0002\u0002\u00022\u0120\u0003\u0002\u0002\u00024\u0122",
+    "\u0003\u0002\u0002\u00026\u0124\u0003\u0002\u0002\u00028\u0126\u0003",
+    "\u0002\u0002\u0002:\u0128\u0003\u0002\u0002\u0002<\u012a\u0003\u0002",
+    "\u0002\u0002>\u012c\u0003\u0002\u0002\u0002@\u012e\u0003\u0002\u0002",
+    "\u0002B\u0130\u0003\u0002\u0002\u0002D\u0132\u0003\u0002\u0002\u0002",
+    "FG\t\u0002\u0002\u0002G\u0003\u0003\u0002\u0002\u0002HI\t\u0003\u0002",
+    "\u0002I\u0005\u0003\u0002\u0002\u0002JK\u00079\u0002\u0002K\u0007\u0003",
+    "\u0002\u0002\u0002LM\b\u0005\u0001\u0002M]\u0005\u0006\u0004\u0002N",
+    "]\u0005\u0002\u0002\u0002O]\u00056\u001c\u0002P]\u00054\u001b\u0002",
+    "QR\u0005 \u0011\u0002RS\u0005\b\u0005\u0002ST\u0005$\u0013\u0002T]\u0003",
+    "\u0002\u0002\u0002UV\u0005(\u0015\u0002VW\u0005\b\u0005\tW]\u0003\u0002",
+    "\u0002\u0002XY\u0005\n\u0006\u0002YZ\u0005\u001a\u000e\u0002Z[\u0005",
+    "\n\u0006\u0002[]\u0003\u0002\u0002\u0002\\L\u0003\u0002\u0002\u0002",
+    "\\N\u0003\u0002\u0002\u0002\\O\u0003\u0002\u0002\u0002\\P\u0003\u0002",
+    "\u0002\u0002\\Q\u0003\u0002\u0002\u0002\\U\u0003\u0002\u0002\u0002\\",
+    "X\u0003\u0002\u0002\u0002]t\u0003\u0002\u0002\u0002^_\f\b\u0002\u0002",
+    "_`\u0005*\u0016\u0002`a\u0005\b\u0005\tas\u0003\u0002\u0002\u0002bc",
+    "\f\u0007\u0002\u0002cd\u0005,\u0017\u0002de\u0005\b\u0005\bes\u0003",
+    "\u0002\u0002\u0002fg\f\u0006\u0002\u0002gh\u0005.\u0018\u0002hi\u0005",
+    "\b\u0005\u0007is\u0003\u0002\u0002\u0002jk\f\u0005\u0002\u0002kl\u0005",
+    "0\u0019\u0002lm\u0005\b\u0005\u0006ms\u0003\u0002\u0002\u0002no\f\u0004",
+    "\u0002\u0002op\u00052\u001a\u0002pq\u0005\b\u0005\u0005qs\u0003\u0002",
+    "\u0002\u0002r^\u0003\u0002\u0002\u0002rb\u0003\u0002\u0002\u0002rf\u0003",
+    "\u0002\u0002\u0002rj\u0003\u0002\u0002\u0002rn\u0003\u0002\u0002\u0002",
+    "sv\u0003\u0002\u0002\u0002tr\u0003\u0002\u0002\u0002tu\u0003\u0002\u0002",
+    "\u0002u\t\u0003\u0002\u0002\u0002vt\u0003\u0002\u0002\u0002wx\b\u0006",
+    "\u0001\u0002xy\u0005\"\u0012\u0002yz\u0005\n\u0006\u0002z{\u0005&\u0014",
+    "\u0002{\u0082\u0003\u0002\u0002\u0002|}\u0005D#\u0002}~\u0005\n\u0006",
+    "\u0007~\u0082\u0003\u0002\u0002\u0002\u007f\u0082\u0007:\u0002\u0002",
+    "\u0080\u0082\u00079\u0002\u0002\u0081w\u0003\u0002\u0002\u0002\u0081",
+    "|\u0003\u0002\u0002\u0002\u0081\u007f\u0003\u0002\u0002\u0002\u0081",
+    "\u0080\u0003\u0002\u0002\u0002\u0082\u0098\u0003\u0002\u0002\u0002\u0083",
+    "\u0084\f\b\u0002\u0002\u0084\u0085\u00058\u001d\u0002\u0085\u0086\u0005",
+    "\n\u0006\b\u0086\u0097\u0003\u0002\u0002\u0002\u0087\u008b\f\u0006\u0002",
+    "\u0002\u0088\u008c\u0005:\u001e\u0002\u0089\u008c\u0005<\u001f\u0002",
+    "\u008a\u008c\u0005> \u0002\u008b\u0088\u0003\u0002\u0002\u0002\u008b",
+    "\u0089\u0003\u0002\u0002\u0002\u008b\u008a\u0003\u0002\u0002\u0002\u008c",
+    "\u008d\u0003\u0002\u0002\u0002\u008d\u008e\u0005\n\u0006\u0007\u008e",
+    "\u0097\u0003\u0002\u0002\u0002\u008f\u0092\f\u0005\u0002\u0002\u0090",
+    "\u0093\u0005@!\u0002\u0091\u0093\u0005B\"\u0002\u0092\u0090\u0003\u0002",
+    "\u0002\u0002\u0092\u0091\u0003\u0002\u0002\u0002\u0093\u0094\u0003\u0002",
+    "\u0002\u0002\u0094\u0095\u0005\n\u0006\u0006\u0095\u0097\u0003\u0002",
+    "\u0002\u0002\u0096\u0083\u0003\u0002\u0002\u0002\u0096\u0087\u0003\u0002",
+    "\u0002\u0002\u0096\u008f\u0003\u0002\u0002\u0002\u0097\u009a\u0003\u0002",
+    "\u0002\u0002\u0098\u0096\u0003\u0002\u0002\u0002\u0098\u0099\u0003\u0002",
+    "\u0002\u0002\u0099\u000b\u0003\u0002\u0002\u0002\u009a\u0098\u0003\u0002",
+    "\u0002\u0002\u009b\u009c\b\u0007\u0001\u0002\u009c\u00bb\u0005\b\u0005",
+    "\u0002\u009d\u009e\u0005 \u0011\u0002\u009e\u009f\u0005\f\u0007\u0002",
+    "\u009f\u00a0\u0005$\u0013\u0002\u00a0\u00bb\u0003\u0002\u0002\u0002",
+    "\u00a1\u00a2\u0005(\u0015\u0002\u00a2\u00a3\u0005\f\u0007\u0014\u00a3",
+    "\u00bb\u0003\u0002\u0002\u0002\u00a4\u00a5\u0005\u0010\t\u0002\u00a5",
+    "\u00a6\u0005\f\u0007\u000e\u00a6\u00bb\u0003\u0002\u0002\u0002\u00a7",
+    "\u00a8\u0005\u0016\f\u0002\u00a8\u00a9\u0005\f\u0007\r\u00a9\u00bb\u0003",
+    "\u0002\u0002\u0002\u00aa\u00ab\u0005\u000e\b\u0002\u00ab\u00ac\u0005",
+    "\u001c\u000f\u0002\u00ac\u00ad\u0005\f\u0007\n\u00ad\u00bb\u0003\u0002",
+    "\u0002\u0002\u00ae\u00af\u0005\u0014\u000b\u0002\u00af\u00b0\u0005\u001c",
+    "\u000f\u0002\u00b0\u00b1\u0005\f\u0007\t\u00b1\u00bb\u0003\u0002\u0002",
+    "\u0002\u00b2\u00b3\u0005\u000e\b\u0002\u00b3\u00b4\u0005\u001e\u0010",
+    "\u0002\u00b4\u00b5\u0005\f\u0007\u0006\u00b5\u00bb\u0003\u0002\u0002",
+    "\u0002\u00b6\u00b7\u0005\u0014\u000b\u0002\u00b7\u00b8\u0005\u001e\u0010",
+    "\u0002\u00b8\u00b9\u0005\f\u0007\u0004\u00b9\u00bb\u0003\u0002\u0002",
+    "\u0002\u00ba\u009b\u0003\u0002\u0002\u0002\u00ba\u009d\u0003\u0002\u0002",
+    "\u0002\u00ba\u00a1\u0003\u0002\u0002\u0002\u00ba\u00a4\u0003\u0002\u0002",
+    "\u0002\u00ba\u00a7\u0003\u0002\u0002\u0002\u00ba\u00aa\u0003\u0002\u0002",
+    "\u0002\u00ba\u00ae\u0003\u0002\u0002\u0002\u00ba\u00b2\u0003\u0002\u0002",
+    "\u0002\u00ba\u00b6\u0003\u0002\u0002\u0002\u00bb\u00ee\u0003\u0002\u0002",
+    "\u0002\u00bc\u00bd\f\u0013\u0002\u0002\u00bd\u00be\u0005*\u0016\u0002",
+    "\u00be\u00bf\u0005\f\u0007\u0014\u00bf\u00ed\u0003\u0002\u0002\u0002",
+    "\u00c0\u00c1\f\u0012\u0002\u0002\u00c1\u00c2\u0005,\u0017\u0002\u00c2",
+    "\u00c3\u0005\f\u0007\u0013\u00c3\u00ed\u0003\u0002\u0002\u0002\u00c4",
+    "\u00c5\f\u0011\u0002\u0002\u00c5\u00c6\u0005.\u0018\u0002\u00c6\u00c7",
+    "\u0005\f\u0007\u0012\u00c7\u00ed\u0003\u0002\u0002\u0002\u00c8\u00c9",
+    "\f\u0010\u0002\u0002\u00c9\u00ca\u00050\u0019\u0002\u00ca\u00cb\u0005",
+    "\f\u0007\u0011\u00cb\u00ed\u0003\u0002\u0002\u0002\u00cc\u00cd\f\u000f",
+    "\u0002\u0002\u00cd\u00ce\u00052\u001a\u0002\u00ce\u00cf\u0005\f\u0007",
+    "\u0010\u00cf\u00ed\u0003\u0002\u0002\u0002\u00d0\u00d1\f\f\u0002\u0002",
+    "\u00d1\u00d2\u0005\u0012\n\u0002\u00d2\u00d3\u0005\f\u0007\r\u00d3\u00ed",
+    "\u0003\u0002\u0002\u0002\u00d4\u00d5\f\u000b\u0002\u0002\u00d5\u00d6",
+    "\u0005\u0018\r\u0002\u00d6\u00d7\u0005\f\u0007\f\u00d7\u00ed\u0003\u0002",
+    "\u0002\u0002\u00d8\u00d9\f\b\u0002\u0002\u00d9\u00da\u0005\u0012\n\u0002",
+    "\u00da\u00db\u0005\u001c\u000f\u0002\u00db\u00dc\u0005\f\u0007\t\u00dc",
+    "\u00ed\u0003\u0002\u0002\u0002\u00dd\u00de\f\u0007\u0002\u0002\u00de",
+    "\u00df\u0005\u0018\r\u0002\u00df\u00e0\u0005\u001c\u000f\u0002\u00e0",
+    "\u00e1\u0005\f\u0007\b\u00e1\u00ed\u0003\u0002\u0002\u0002\u00e2\u00e3",
+    "\f\u0005\u0002\u0002\u00e3\u00e4\u0005\u0012\n\u0002\u00e4\u00e5\u0005",
+    "\u001e\u0010\u0002\u00e5\u00e6\u0005\f\u0007\u0006\u00e6\u00ed\u0003",
+    "\u0002\u0002\u0002\u00e7\u00e8\f\u0003\u0002\u0002\u00e8\u00e9\u0005",
+    "\u0018\r\u0002\u00e9\u00ea\u0005\u001e\u0010\u0002\u00ea\u00eb\u0005",
+    "\f\u0007\u0004\u00eb\u00ed\u0003\u0002\u0002\u0002\u00ec\u00bc\u0003",
+    "\u0002\u0002\u0002\u00ec\u00c0\u0003\u0002\u0002\u0002\u00ec\u00c4\u0003",
+    "\u0002\u0002\u0002\u00ec\u00c8\u0003\u0002\u0002\u0002\u00ec\u00cc\u0003",
+    "\u0002\u0002\u0002\u00ec\u00d0\u0003\u0002\u0002\u0002\u00ec\u00d4\u0003",
+    "\u0002\u0002\u0002\u00ec\u00d8\u0003\u0002\u0002\u0002\u00ec\u00dd\u0003",
+    "\u0002\u0002\u0002\u00ec\u00e2\u0003\u0002\u0002\u0002\u00ec\u00e7\u0003",
+    "\u0002\u0002\u0002\u00ed\u00f0\u0003\u0002\u0002\u0002\u00ee\u00ec\u0003",
+    "\u0002\u0002\u0002\u00ee\u00ef\u0003\u0002\u0002\u0002\u00ef\r\u0003",
+    "\u0002\u0002\u0002\u00f0\u00ee\u0003\u0002\u0002\u0002\u00f1\u00f2\t",
+    "\u0004\u0002\u0002\u00f2\u000f\u0003\u0002\u0002\u0002\u00f3\u00f6\u0007",
+    "\u0016\u0002\u0002\u00f4\u00f6\u0005\u000e\b\u0002\u00f5\u00f3\u0003",
+    "\u0002\u0002\u0002\u00f5\u00f4\u0003\u0002\u0002\u0002\u00f6\u0011\u0003",
+    "\u0002\u0002\u0002\u00f7\u00f8\t\u0005\u0002\u0002\u00f8\u0013\u0003",
+    "\u0002\u0002\u0002\u00f9\u00fa\t\u0006\u0002\u0002\u00fa\u0015\u0003",
+    "\u0002\u0002\u0002\u00fb\u00fe\u0007\u001d\u0002\u0002\u00fc\u00fe\u0005",
+    "\u0014\u000b\u0002\u00fd\u00fb\u0003\u0002\u0002\u0002\u00fd\u00fc\u0003",
+    "\u0002\u0002\u0002\u00fe\u0017\u0003\u0002\u0002\u0002\u00ff\u0100\t",
+    "\u0007\u0002\u0002\u0100\u0019\u0003\u0002\u0002\u0002\u0101\u0102\t",
+    "\b\u0002\u0002\u0102\u001b\u0003\u0002\u0002\u0002\u0103\u0104\u0007",
+    "&\u0002\u0002\u0104\u0105\u0007:\u0002\u0002\u0105\u0106\u0007\'\u0002",
+    "\u0002\u0106\u0107\u0007:\u0002\u0002\u0107\u0108\u0007(\u0002\u0002",
+    "\u0108\u001d\u0003\u0002\u0002\u0002\u0109\u010a\u0007&\u0002\u0002",
+    "\u010a\u010b\u0005\u001a\u000e\u0002\u010b\u010c\u0005\u0004\u0003\u0002",
+    "\u010c\u010d\u0007(\u0002\u0002\u010d\u001f\u0003\u0002\u0002\u0002",
+    "\u010e\u010f\u0007)\u0002\u0002\u010f!\u0003\u0002\u0002\u0002\u0110",
+    "\u0111\u0007)\u0002\u0002\u0111#\u0003\u0002\u0002\u0002\u0112\u0113",
+    "\u0007*\u0002\u0002\u0113%\u0003\u0002\u0002\u0002\u0114\u0115\u0007",
+    "*\u0002\u0002\u0115\'\u0003\u0002\u0002\u0002\u0116\u0117\u0007+\u0002",
+    "\u0002\u0117)\u0003\u0002\u0002\u0002\u0118\u0119\u0007,\u0002\u0002",
+    "\u0119+\u0003\u0002\u0002\u0002\u011a\u011b\u0007-\u0002\u0002\u011b",
+    "-\u0003\u0002\u0002\u0002\u011c\u011d\u0007.\u0002\u0002\u011d/\u0003",
+    "\u0002\u0002\u0002\u011e\u011f\u0007/\u0002\u0002\u011f1\u0003\u0002",
+    "\u0002\u0002\u0120\u0121\u00070\u0002\u0002\u01213\u0003\u0002\u0002",
+    "\u0002\u0122\u0123\u00071\u0002\u0002\u01235\u0003\u0002\u0002\u0002",
+    "\u0124\u0125\u00072\u0002\u0002\u01257\u0003\u0002\u0002\u0002\u0126",
+    "\u0127\u00073\u0002\u0002\u01279\u0003\u0002\u0002\u0002\u0128\u0129",
+    "\u00074\u0002\u0002\u0129;\u0003\u0002\u0002\u0002\u012a\u012b\u0007",
+    "5\u0002\u0002\u012b=\u0003\u0002\u0002\u0002\u012c\u012d\u00076\u0002",
+    "\u0002\u012d?\u0003\u0002\u0002\u0002\u012e\u012f\u00077\u0002\u0002",
+    "\u012fA\u0003\u0002\u0002\u0002\u0130\u0131\u00078\u0002\u0002\u0131",
+    "C\u0003\u0002\u0002\u0002\u0132\u0133\u00078\u0002\u0002\u0133E\u0003",
+    "\u0002\u0002\u0002\u000f\\rt\u0081\u008b\u0092\u0096\u0098\u00ba\u00ec",
+    "\u00ee\u00f5\u00fd"].join("");
 
 
 var atn = new antlr4.atn.ATNDeserializer().deserialize(serializedATN);
@@ -241,7 +210,7 @@ var decisionsToDFA = atn.decisionToState.map( function(ds, index) { return new a
 
 var sharedContextCache = new antlr4.PredictionContextCache();
 
-var literalNames = [ 'null', "'$post_condition$'", "'$action$'", "'$scope_mode$'", 
+var literalNames = [ null, "'$post_condition$'", "'$action$'", "'$scope_mode$'", 
                      "'$stop_condition$'", "'$regular_condition$'", "'$action1$'", 
                      "'$action2$'", "'FTP'", "'FFin_$scope_mode$'", "'FLin_$scope_mode$'", 
                      "'Fin_$scope_mode$'", "'Lin_$scope_mode$'", "'FNin_$scope_mode$'", 
@@ -251,17 +220,15 @@ var literalNames = [ 'null', "'$post_condition$'", "'$action$'", "'$scope_mode$'
                      "'='", "'<'", "'<='", "'>'", "'>='", "'['", "','", 
                      "']'", "'('", "')'", "'!'", "'&'", "'|'", "'xor'", 
                      "'->'", "'<->'", "'FALSE'", "'TRUE'", "'^'", "'*'", 
-                     "'/'", "'%'", "'+'", "'-'" ];
+                     "'/'", "'mod'", "'+'", "'-'" ];
 
-var symbolicNames = [ 'null', 'null', 'null', 'null', 'null', 'null', 'null', 
-                      'null', 'null', 'null', 'null', 'null', 'null', 'null', 
-                      'null', 'null', 'null', 'null', 'null', 'null', 'null', 
-                      'null', 'null', 'null', 'null', 'null', 'null', 'null', 
-                      'null', 'null', 'null', 'null', 'null', 'null', 'null', 
-                      'null', 'null', 'null', 'null', 'null', 'null', 'null', 
-                      'null', 'null', 'null', 'null', 'null', 'null', 'null', 
-                      'null', 'null', 'null', 'null', 'null', 'null', "ID", 
-                      "NUMBER", "UINT", "WS" ];
+var symbolicNames = [ null, null, null, null, null, null, null, null, null, 
+                      null, null, null, null, null, null, null, null, null, 
+                      null, null, null, null, null, null, null, null, null, 
+                      null, null, null, null, null, null, null, null, null, 
+                      null, null, null, null, null, null, null, null, null, 
+                      null, null, null, null, null, null, null, null, null, 
+                      null, "ID", "NUMBER", "UINT", "WS" ];
 
 var ruleNames =  [ "plHolders", "durPlHolders", "proposition", "simpleExpr", 
                    "arithmetic_expr", "ltlExpr", "pastTimedUnaryOp", "pastUnaryOp", 
@@ -384,6 +351,7 @@ LTLSIM_NuSMVParser.RULE_plus = 31;
 LTLSIM_NuSMVParser.RULE_minus = 32;
 LTLSIM_NuSMVParser.RULE_negate = 33;
 
+
 function PlHoldersContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
@@ -439,6 +407,7 @@ LTLSIM_NuSMVParser.prototype.plHolders = function() {
         this._errHandler.recoverInline(this);
         }
         else {
+        	this._errHandler.reportMatch(this);
             this.consume();
         }
     } catch (re) {
@@ -454,6 +423,7 @@ LTLSIM_NuSMVParser.prototype.plHolders = function() {
     }
     return localctx;
 };
+
 
 function DurPlHoldersContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -510,6 +480,7 @@ LTLSIM_NuSMVParser.prototype.durPlHolders = function() {
         this._errHandler.recoverInline(this);
         }
         else {
+        	this._errHandler.reportMatch(this);
             this.consume();
         }
     } catch (re) {
@@ -525,6 +496,7 @@ LTLSIM_NuSMVParser.prototype.durPlHolders = function() {
     }
     return localctx;
 };
+
 
 function PropositionContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -592,6 +564,7 @@ LTLSIM_NuSMVParser.prototype.proposition = function() {
     }
     return localctx;
 };
+
 
 function SimpleExprContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -672,21 +645,6 @@ SimpleBoolExprContext.prototype.constructor = SimpleBoolExprContext;
 
 LTLSIM_NuSMVParser.SimpleBoolExprContext = SimpleBoolExprContext;
 
-SimpleBoolExprContext.prototype.not = function() {
-    return this.getTypedRuleContext(NotContext,0);
-};
-
-SimpleBoolExprContext.prototype.simpleExpr = function(i) {
-    if(i===undefined) {
-        i = null;
-    }
-    if(i===null) {
-        return this.getTypedRuleContexts(SimpleExprContext);
-    } else {
-        return this.getTypedRuleContext(SimpleExprContext,i);
-    }
-};
-
 SimpleBoolExprContext.prototype.proposition = function() {
     return this.getTypedRuleContext(PropositionContext,0);
 };
@@ -707,8 +665,23 @@ SimpleBoolExprContext.prototype.lp = function() {
     return this.getTypedRuleContext(LpContext,0);
 };
 
+SimpleBoolExprContext.prototype.simpleExpr = function(i) {
+    if(i===undefined) {
+        i = null;
+    }
+    if(i===null) {
+        return this.getTypedRuleContexts(SimpleExprContext);
+    } else {
+        return this.getTypedRuleContext(SimpleExprContext,i);
+    }
+};
+
 SimpleBoolExprContext.prototype.rp = function() {
     return this.getTypedRuleContext(RpContext,0);
+};
+
+SimpleBoolExprContext.prototype.not = function() {
+    return this.getTypedRuleContext(NotContext,0);
 };
 
 SimpleBoolExprContext.prototype.and = function() {
@@ -765,6 +738,7 @@ LTLSIM_NuSMVParser.prototype.simpleExpr = function(_p) {
     try {
         this.enterOuterAlt(localctx, 1);
         this.state = 90;
+        this._errHandler.sync(this);
         var la_ = this._interp.adaptivePredict(this._input,0,this._ctx);
         switch(la_) {
         case 1:
@@ -773,53 +747,53 @@ LTLSIM_NuSMVParser.prototype.simpleExpr = function(_p) {
             _prevctx = localctx;
 
             this.state = 75;
-            this.not();
-            this.state = 76;
-            this.simpleExpr(7);
+            this.proposition();
             break;
 
         case 2:
             localctx = new SimpleBoolExprContext(this, localctx);
             this._ctx = localctx;
             _prevctx = localctx;
-            this.state = 78;
-            this.proposition();
+            this.state = 76;
+            this.plHolders();
             break;
 
         case 3:
             localctx = new SimpleBoolExprContext(this, localctx);
             this._ctx = localctx;
             _prevctx = localctx;
-            this.state = 79;
-            this.plHolders();
+            this.state = 77;
+            this.t();
             break;
 
         case 4:
             localctx = new SimpleBoolExprContext(this, localctx);
             this._ctx = localctx;
             _prevctx = localctx;
-            this.state = 80;
-            this.t();
+            this.state = 78;
+            this.f();
             break;
 
         case 5:
             localctx = new SimpleBoolExprContext(this, localctx);
             this._ctx = localctx;
             _prevctx = localctx;
+            this.state = 79;
+            this.lp();
+            this.state = 80;
+            this.simpleExpr(0);
             this.state = 81;
-            this.f();
+            this.rp();
             break;
 
         case 6:
             localctx = new SimpleBoolExprContext(this, localctx);
             this._ctx = localctx;
             _prevctx = localctx;
-            this.state = 82;
-            this.lp();
             this.state = 83;
-            this.simpleExpr(0);
+            this.not();
             this.state = 84;
-            this.rp();
+            this.simpleExpr(7);
             break;
 
         case 7:
@@ -846,6 +820,7 @@ LTLSIM_NuSMVParser.prototype.simpleExpr = function(_p) {
                 }
                 _prevctx = localctx;
                 this.state = 112;
+                this._errHandler.sync(this);
                 var la_ = this._interp.adaptivePredict(this._input,1,this._ctx);
                 switch(la_) {
                 case 1:
@@ -933,6 +908,7 @@ LTLSIM_NuSMVParser.prototype.simpleExpr = function(_p) {
     }
     return localctx;
 };
+
 
 function Arithmetic_exprContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -1188,27 +1164,28 @@ LTLSIM_NuSMVParser.prototype.arithmetic_expr = function(_p) {
     try {
         this.enterOuterAlt(localctx, 1);
         this.state = 127;
+        this._errHandler.sync(this);
         switch(this._input.LA(1)) {
-        case LTLSIM_NuSMVParser.T__53:
-            localctx = new ArithUnaryContext(this, localctx);
-            this._ctx = localctx;
-            _prevctx = localctx;
-
-            this.state = 118;
-            this.negate();
-            this.state = 119;
-            this.arithmetic_expr(5);
-            break;
         case LTLSIM_NuSMVParser.T__38:
             localctx = new ArithGroupContext(this, localctx);
             this._ctx = localctx;
             _prevctx = localctx;
-            this.state = 121;
+
+            this.state = 118;
             this.lpA();
-            this.state = 122;
+            this.state = 119;
             this.arithmetic_expr(0);
-            this.state = 123;
+            this.state = 120;
             this.rpA();
+            break;
+        case LTLSIM_NuSMVParser.T__53:
+            localctx = new ArithUnaryContext(this, localctx);
+            this._ctx = localctx;
+            _prevctx = localctx;
+            this.state = 122;
+            this.negate();
+            this.state = 123;
+            this.arithmetic_expr(5);
             break;
         case LTLSIM_NuSMVParser.NUMBER:
             localctx = new ArithContext(this, localctx);
@@ -1238,6 +1215,7 @@ LTLSIM_NuSMVParser.prototype.arithmetic_expr = function(_p) {
                 }
                 _prevctx = localctx;
                 this.state = 148;
+                this._errHandler.sync(this);
                 var la_ = this._interp.adaptivePredict(this._input,6,this._ctx);
                 switch(la_) {
                 case 1:
@@ -1261,6 +1239,7 @@ LTLSIM_NuSMVParser.prototype.arithmetic_expr = function(_p) {
                         throw new antlr4.error.FailedPredicateException(this, "this.precpred(this._ctx, 4)");
                     }
                     this.state = 137;
+                    this._errHandler.sync(this);
                     switch(this._input.LA(1)) {
                     case LTLSIM_NuSMVParser.T__49:
                         this.state = 134;
@@ -1289,6 +1268,7 @@ LTLSIM_NuSMVParser.prototype.arithmetic_expr = function(_p) {
                         throw new antlr4.error.FailedPredicateException(this, "this.precpred(this._ctx, 3)");
                     }
                     this.state = 144;
+                    this._errHandler.sync(this);
                     switch(this._input.LA(1)) {
                     case LTLSIM_NuSMVParser.T__52:
                         this.state = 142;
@@ -1325,6 +1305,7 @@ LTLSIM_NuSMVParser.prototype.arithmetic_expr = function(_p) {
     }
     return localctx;
 };
+
 
 function LtlExprContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -1680,8 +1661,12 @@ SimpleltlContext.prototype.constructor = SimpleltlContext;
 
 LTLSIM_NuSMVParser.SimpleltlContext = SimpleltlContext;
 
-SimpleltlContext.prototype.not = function() {
-    return this.getTypedRuleContext(NotContext,0);
+SimpleltlContext.prototype.simpleExpr = function() {
+    return this.getTypedRuleContext(SimpleExprContext,0);
+};
+
+SimpleltlContext.prototype.lp = function() {
+    return this.getTypedRuleContext(LpContext,0);
 };
 
 SimpleltlContext.prototype.ltlExpr = function(i) {
@@ -1695,16 +1680,12 @@ SimpleltlContext.prototype.ltlExpr = function(i) {
     }
 };
 
-SimpleltlContext.prototype.simpleExpr = function() {
-    return this.getTypedRuleContext(SimpleExprContext,0);
-};
-
-SimpleltlContext.prototype.lp = function() {
-    return this.getTypedRuleContext(LpContext,0);
-};
-
 SimpleltlContext.prototype.rp = function() {
     return this.getTypedRuleContext(RpContext,0);
+};
+
+SimpleltlContext.prototype.not = function() {
+    return this.getTypedRuleContext(NotContext,0);
 };
 
 SimpleltlContext.prototype.and = function() {
@@ -1982,6 +1963,7 @@ LTLSIM_NuSMVParser.prototype.ltlExpr = function(_p) {
     try {
         this.enterOuterAlt(localctx, 1);
         this.state = 184;
+        this._errHandler.sync(this);
         var la_ = this._interp.adaptivePredict(this._input,8,this._ctx);
         switch(la_) {
         case 1:
@@ -1990,97 +1972,97 @@ LTLSIM_NuSMVParser.prototype.ltlExpr = function(_p) {
             _prevctx = localctx;
 
             this.state = 154;
-            this.not();
-            this.state = 155;
-            this.ltlExpr(18);
-            break;
-
-        case 2:
-            localctx = new UnaryPastOpContext(this, localctx);
-            this._ctx = localctx;
-            _prevctx = localctx;
-            this.state = 157;
-            this.pastUnaryOp();
-            this.state = 158;
-            this.ltlExpr(12);
-            break;
-
-        case 3:
-            localctx = new UnaryFutureOpContext(this, localctx);
-            this._ctx = localctx;
-            _prevctx = localctx;
-            this.state = 160;
-            this.futureUnaryOp();
-            this.state = 161;
-            this.ltlExpr(11);
-            break;
-
-        case 4:
-            localctx = new UnaryBoundedPastOpContext(this, localctx);
-            this._ctx = localctx;
-            _prevctx = localctx;
-            this.state = 163;
-            this.pastTimedUnaryOp();
-            this.state = 164;
-            this.bound();
-            this.state = 165;
-            this.ltlExpr(8);
-            break;
-
-        case 5:
-            localctx = new UnaryBoundedFutureOpContext(this, localctx);
-            this._ctx = localctx;
-            _prevctx = localctx;
-            this.state = 167;
-            this.futureTimedUnaryOp();
-            this.state = 168;
-            this.bound();
-            this.state = 169;
-            this.ltlExpr(7);
-            break;
-
-        case 6:
-            localctx = new TimedUnarySaltPastOpContext(this, localctx);
-            this._ctx = localctx;
-            _prevctx = localctx;
-            this.state = 171;
-            this.pastTimedUnaryOp();
-            this.state = 172;
-            this.saltBound();
-            this.state = 173;
-            this.ltlExpr(4);
-            break;
-
-        case 7:
-            localctx = new TimedUnarySaltFutureOpContext(this, localctx);
-            this._ctx = localctx;
-            _prevctx = localctx;
-            this.state = 175;
-            this.futureTimedUnaryOp();
-            this.state = 176;
-            this.saltBound();
-            this.state = 177;
-            this.ltlExpr(2);
-            break;
-
-        case 8:
-            localctx = new SimpleltlContext(this, localctx);
-            this._ctx = localctx;
-            _prevctx = localctx;
-            this.state = 179;
             this.simpleExpr(0);
             break;
 
-        case 9:
+        case 2:
             localctx = new SimpleltlContext(this, localctx);
             this._ctx = localctx;
             _prevctx = localctx;
-            this.state = 180;
+            this.state = 155;
             this.lp();
-            this.state = 181;
+            this.state = 156;
             this.ltlExpr(0);
-            this.state = 182;
+            this.state = 157;
             this.rp();
+            break;
+
+        case 3:
+            localctx = new SimpleltlContext(this, localctx);
+            this._ctx = localctx;
+            _prevctx = localctx;
+            this.state = 159;
+            this.not();
+            this.state = 160;
+            this.ltlExpr(18);
+            break;
+
+        case 4:
+            localctx = new UnaryPastOpContext(this, localctx);
+            this._ctx = localctx;
+            _prevctx = localctx;
+            this.state = 162;
+            this.pastUnaryOp();
+            this.state = 163;
+            this.ltlExpr(12);
+            break;
+
+        case 5:
+            localctx = new UnaryFutureOpContext(this, localctx);
+            this._ctx = localctx;
+            _prevctx = localctx;
+            this.state = 165;
+            this.futureUnaryOp();
+            this.state = 166;
+            this.ltlExpr(11);
+            break;
+
+        case 6:
+            localctx = new UnaryBoundedPastOpContext(this, localctx);
+            this._ctx = localctx;
+            _prevctx = localctx;
+            this.state = 168;
+            this.pastTimedUnaryOp();
+            this.state = 169;
+            this.bound();
+            this.state = 170;
+            this.ltlExpr(8);
+            break;
+
+        case 7:
+            localctx = new UnaryBoundedFutureOpContext(this, localctx);
+            this._ctx = localctx;
+            _prevctx = localctx;
+            this.state = 172;
+            this.futureTimedUnaryOp();
+            this.state = 173;
+            this.bound();
+            this.state = 174;
+            this.ltlExpr(7);
+            break;
+
+        case 8:
+            localctx = new TimedUnarySaltPastOpContext(this, localctx);
+            this._ctx = localctx;
+            _prevctx = localctx;
+            this.state = 176;
+            this.pastTimedUnaryOp();
+            this.state = 177;
+            this.saltBound();
+            this.state = 178;
+            this.ltlExpr(4);
+            break;
+
+        case 9:
+            localctx = new TimedUnarySaltFutureOpContext(this, localctx);
+            this._ctx = localctx;
+            _prevctx = localctx;
+            this.state = 180;
+            this.futureTimedUnaryOp();
+            this.state = 181;
+            this.saltBound();
+            this.state = 182;
+            this.ltlExpr(2);
             break;
 
         }
@@ -2095,6 +2077,7 @@ LTLSIM_NuSMVParser.prototype.ltlExpr = function(_p) {
                 }
                 _prevctx = localctx;
                 this.state = 234;
+                this._errHandler.sync(this);
                 var la_ = this._interp.adaptivePredict(this._input,9,this._ctx);
                 switch(la_) {
                 case 1:
@@ -2269,6 +2252,7 @@ LTLSIM_NuSMVParser.prototype.ltlExpr = function(_p) {
     return localctx;
 };
 
+
 function PastTimedUnaryOpContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
@@ -2324,6 +2308,7 @@ LTLSIM_NuSMVParser.prototype.pastTimedUnaryOp = function() {
         this._errHandler.recoverInline(this);
         }
         else {
+        	this._errHandler.reportMatch(this);
             this.consume();
         }
     } catch (re) {
@@ -2339,6 +2324,7 @@ LTLSIM_NuSMVParser.prototype.pastTimedUnaryOp = function() {
     }
     return localctx;
 };
+
 
 function PastUnaryOpContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -2391,6 +2377,7 @@ LTLSIM_NuSMVParser.prototype.pastUnaryOp = function() {
     this.enterRule(localctx, 14, LTLSIM_NuSMVParser.RULE_pastUnaryOp);
     try {
         this.state = 243;
+        this._errHandler.sync(this);
         switch(this._input.LA(1)) {
         case LTLSIM_NuSMVParser.T__19:
             this.enterOuterAlt(localctx, 1);
@@ -2420,6 +2407,7 @@ LTLSIM_NuSMVParser.prototype.pastUnaryOp = function() {
     }
     return localctx;
 };
+
 
 function PastBinaryOpContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -2476,6 +2464,7 @@ LTLSIM_NuSMVParser.prototype.pastBinaryOp = function() {
         this._errHandler.recoverInline(this);
         }
         else {
+        	this._errHandler.reportMatch(this);
             this.consume();
         }
     } catch (re) {
@@ -2491,6 +2480,7 @@ LTLSIM_NuSMVParser.prototype.pastBinaryOp = function() {
     }
     return localctx;
 };
+
 
 function FutureTimedUnaryOpContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -2547,6 +2537,7 @@ LTLSIM_NuSMVParser.prototype.futureTimedUnaryOp = function() {
         this._errHandler.recoverInline(this);
         }
         else {
+        	this._errHandler.reportMatch(this);
             this.consume();
         }
     } catch (re) {
@@ -2562,6 +2553,7 @@ LTLSIM_NuSMVParser.prototype.futureTimedUnaryOp = function() {
     }
     return localctx;
 };
+
 
 function FutureUnaryOpContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -2614,6 +2606,7 @@ LTLSIM_NuSMVParser.prototype.futureUnaryOp = function() {
     this.enterRule(localctx, 20, LTLSIM_NuSMVParser.RULE_futureUnaryOp);
     try {
         this.state = 251;
+        this._errHandler.sync(this);
         switch(this._input.LA(1)) {
         case LTLSIM_NuSMVParser.T__26:
             this.enterOuterAlt(localctx, 1);
@@ -2643,6 +2636,7 @@ LTLSIM_NuSMVParser.prototype.futureUnaryOp = function() {
     }
     return localctx;
 };
+
 
 function FutureBinaryOpContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -2699,6 +2693,7 @@ LTLSIM_NuSMVParser.prototype.futureBinaryOp = function() {
         this._errHandler.recoverInline(this);
         }
         else {
+        	this._errHandler.reportMatch(this);
             this.consume();
         }
     } catch (re) {
@@ -2714,6 +2709,7 @@ LTLSIM_NuSMVParser.prototype.futureBinaryOp = function() {
     }
     return localctx;
 };
+
 
 function ComparisonOpContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -2770,6 +2766,7 @@ LTLSIM_NuSMVParser.prototype.comparisonOp = function() {
         this._errHandler.recoverInline(this);
         }
         else {
+        	this._errHandler.reportMatch(this);
             this.consume();
         }
     } catch (re) {
@@ -2785,6 +2782,7 @@ LTLSIM_NuSMVParser.prototype.comparisonOp = function() {
     }
     return localctx;
 };
+
 
 function BoundContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -2869,6 +2867,7 @@ LTLSIM_NuSMVParser.prototype.bound = function() {
     return localctx;
 };
 
+
 function SaltBoundContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
@@ -2946,6 +2945,7 @@ LTLSIM_NuSMVParser.prototype.saltBound = function() {
     return localctx;
 };
 
+
 function LpContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
@@ -3009,6 +3009,7 @@ LTLSIM_NuSMVParser.prototype.lp = function() {
     }
     return localctx;
 };
+
 
 function LpAContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -3091,6 +3092,7 @@ LTLSIM_NuSMVParser.prototype.lpA = function() {
     return localctx;
 };
 
+
 function RpContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
@@ -3154,6 +3156,7 @@ LTLSIM_NuSMVParser.prototype.rp = function() {
     }
     return localctx;
 };
+
 
 function RpAContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -3236,6 +3239,7 @@ LTLSIM_NuSMVParser.prototype.rpA = function() {
     return localctx;
 };
 
+
 function NotContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
@@ -3299,6 +3303,7 @@ LTLSIM_NuSMVParser.prototype.not = function() {
     }
     return localctx;
 };
+
 
 function AndContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -3364,6 +3369,7 @@ LTLSIM_NuSMVParser.prototype.and = function() {
     return localctx;
 };
 
+
 function OrContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
@@ -3427,6 +3433,7 @@ LTLSIM_NuSMVParser.prototype.or = function() {
     }
     return localctx;
 };
+
 
 function XorContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -3492,6 +3499,7 @@ LTLSIM_NuSMVParser.prototype.xor = function() {
     return localctx;
 };
 
+
 function ImpliesContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
@@ -3555,6 +3563,7 @@ LTLSIM_NuSMVParser.prototype.implies = function() {
     }
     return localctx;
 };
+
 
 function EquivContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -3620,6 +3629,7 @@ LTLSIM_NuSMVParser.prototype.equiv = function() {
     return localctx;
 };
 
+
 function FContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
@@ -3683,6 +3693,7 @@ LTLSIM_NuSMVParser.prototype.f = function() {
     }
     return localctx;
 };
+
 
 function TContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -3748,6 +3759,7 @@ LTLSIM_NuSMVParser.prototype.t = function() {
     return localctx;
 };
 
+
 function ExptContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
@@ -3811,6 +3823,7 @@ LTLSIM_NuSMVParser.prototype.expt = function() {
     }
     return localctx;
 };
+
 
 function MultContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -3876,6 +3889,7 @@ LTLSIM_NuSMVParser.prototype.mult = function() {
     return localctx;
 };
 
+
 function DivContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
@@ -3939,6 +3953,7 @@ LTLSIM_NuSMVParser.prototype.div = function() {
     }
     return localctx;
 };
+
 
 function ModContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -4004,6 +4019,7 @@ LTLSIM_NuSMVParser.prototype.mod = function() {
     return localctx;
 };
 
+
 function PlusContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
@@ -4068,6 +4084,7 @@ LTLSIM_NuSMVParser.prototype.plus = function() {
     return localctx;
 };
 
+
 function MinusContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
@@ -4131,6 +4148,7 @@ LTLSIM_NuSMVParser.prototype.minus = function() {
     }
     return localctx;
 };
+
 
 function NegateContext(parser, parent, invokingState) {
 	if(parent===undefined) {
