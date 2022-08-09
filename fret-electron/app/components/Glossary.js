@@ -126,6 +126,9 @@ class Glossary extends React.Component {
     if(this.props.requirements !== prevProps.requirements) {
       this.createMapDbIdToReqId();
     }
+    if(process.env.EXTERNAL_TOOL=='1'){
+      this.props.setAutoFillVariables(this.props.editVariables.map(variable => variable.variable_name));
+    }
   }
 
   getComponents = async () => {
@@ -199,7 +202,8 @@ class Glossary extends React.Component {
   filterVariables = () => {
     const {components, selectedComponent, checked} = this.state;
     const checkedVariableTypes = Object.keys(checked).filter(variableType => checked[variableType]);
-    const filteredVariables = selectedComponent ? components[selectedComponent].filter(variable => checked.Undefined && !variable['variable type'] || checkedVariableTypes.includes(variable['variable type'])).sort(this.sortFunction): [];
+    const filteredVariables = selectedComponent ?
+      components[selectedComponent].filter(variable => checked.Undefined && !variable['variable type'] || checkedVariableTypes.includes(variable['variable type'])).sort(this.sortFunction): [];
     this.setState({filteredVariables})
   }
 
@@ -237,7 +241,7 @@ class Glossary extends React.Component {
               <FormControlLabel
                 classes={{label: classes.checkBoxFont}}
                 key={variableType}
-                
+
                 control={
                   <Checkbox
                     id = {"qa_gls_cb_" + variableType}
@@ -293,7 +297,8 @@ class Glossary extends React.Component {
 Glossary.propTypes = {
   projectName:PropTypes.string.isRequired,
   setAutoFillVariables: PropTypes.func,
-  requirements: PropTypes.array
+  requirements: PropTypes.array,
+  editVariables: PropTypes.array
 };
 
 export default withStyles(styles)(Glossary);

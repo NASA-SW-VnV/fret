@@ -586,7 +586,8 @@ handleSwitchChange =(event) => {
             id = "Glossary"
             projectName={this.props.projectName}
             setAutoFillVariables={this.props.setAutoFillVariables}
-            requirements={this.props.requirements}/>
+            requirements={this.props.requirements}
+            editVariables={this.props.editVariables}/>
         </TabContainer>}
       </div>
     );
@@ -605,7 +606,8 @@ Instructions.propTypes = {
   tabValue: PropTypes.number.isRequired,
   handleTabChange: PropTypes.func.isRequired,
   requirements: PropTypes.array,
-  setAutoFillVariables: PropTypes.func
+  setAutoFillVariables: PropTypes.func,
+  editVariables: PropTypes.array
 };
 
 export default withStyles(styles)(Instructions);

@@ -308,8 +308,8 @@ class MainView extends React.Component {
               externalVariables : data.variables
             })
             self.handleCreateDialogOpen();
-        });
-      }
+        })
+    }
   }
 
 
@@ -691,7 +691,8 @@ class MainView extends React.Component {
           <CreateRequirementDialog
             open={this.state.createDialogOpen}
             handleCreateDialogClose={this.handleCreateDialogClose}
-            editRequirement={this.externalRequirement}
+            editRequirement={this.state.externalRequirement}
+            editVariables={this.state.externalVariables}
             selectedProject={this.state.selectedProject}
             existingProjectNames={this.state.listOfProjects}
             requirements={this.state.requirements}
