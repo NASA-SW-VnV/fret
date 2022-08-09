@@ -215,6 +215,8 @@ class MainView extends React.Component {
     importedReqs: [],
     requirements: [],
     changingReqsInBulk: false,
+    externalRequirement: {},
+    externalVariables: []
   };
 
   initializeSelectedProject = () => {
@@ -273,18 +275,41 @@ class MainView extends React.Component {
       }
     })
     if(process.env.EXTERNAL_TOOL=='1'){
-      console.log('env EXTERNAL_TOOL',process.env.EXTERNAL_TOOL);
-      this.handleImport();
-      
-      //this.setState
-      
-      this.handleCreateDialogOpen();
+      //console.log('env EXTERNAL_TOOL',process.env.EXTERNAL_TOOL);
+      this.handleImportExternalTool();
     }
   }
 
 
   componentWillUnmount() {
     dbChangeListener.cancel()
+  }
+
+  handleImportExternalTool = () => {
+    const self = this;
+    var homeDir = app.getPath('home');
+    var filepaths = dialog.showOpenDialogSync({
+      defaultPath : homeDir,
+      title : 'Import Requirement and Variables',
+      buttonLabel : 'Import',
+      filters: [
+        { name: "Documents",
+          extensions: ['json']
+        }
+      ],
+      properties: ['openFile']});
+       if (filepaths && filepaths.length > 0) {
+         const filepath = filepaths[0];
+        fs.readFile(filepath, function (err,buffer) {
+            if (err) throw err;
+            let data = JSON.parse(buffer);
+            self.setState({
+              externalRequirement : data.requirement,
+              externalVariables : data.variables
+            })
+            self.handleCreateDialogOpen();
+        });
+      }
   }
 
 
@@ -557,7 +582,7 @@ class MainView extends React.Component {
                       </MenuItem>
                       {
                         this.state.listOfProjects.map(name => {
-                          return <MenuItem                                    
+                          return <MenuItem
                                     key={name}
                                     dense>
                                     <ListItemText id={"qa_proj_select_"+name.replace(/\s+/g, '_')} primary = {name} onClick={() => this.handleSetProject(name)}/>
@@ -666,7 +691,7 @@ class MainView extends React.Component {
           <CreateRequirementDialog
             open={this.state.createDialogOpen}
             handleCreateDialogClose={this.handleCreateDialogClose}
-            editRequirement={undefined}
+            editRequirement={this.externalRequirement}
             selectedProject={this.state.selectedProject}
             existingProjectNames={this.state.listOfProjects}
             requirements={this.state.requirements}
