@@ -622,7 +622,7 @@ CreateRequirementDialog.propTypes = {
   open: PropTypes.bool.isRequired,
   handleCreateDialogClose: PropTypes.func.isRequired,
   editRequirement: PropTypes.object,
-  editVariables: PropTypes.array,
+  editVariables: PropTypes.object,
   addChildRequirementToParent: PropTypes.object,
   selectedProject: PropTypes.string.isRequired,
   existingProjectNames: PropTypes.array.isRequired,

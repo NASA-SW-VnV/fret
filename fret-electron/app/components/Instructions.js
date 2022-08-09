@@ -607,7 +607,7 @@ Instructions.propTypes = {
   handleTabChange: PropTypes.func.isRequired,
   requirements: PropTypes.array,
   setAutoFillVariables: PropTypes.func,
-  editVariables: PropTypes.array
+  editVariables: PropTypes.object
 };
 
 export default withStyles(styles)(Instructions);

@@ -216,7 +216,7 @@ class MainView extends React.Component {
     requirements: [],
     changingReqsInBulk: false,
     externalRequirement: {},
-    externalVariables: []
+    externalVariables: {}
   };
 
   initializeSelectedProject = () => {

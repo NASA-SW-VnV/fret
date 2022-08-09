@@ -126,31 +126,41 @@ class Glossary extends React.Component {
     if(this.props.requirements !== prevProps.requirements) {
       this.createMapDbIdToReqId();
     }
-    if(process.env.EXTERNAL_TOOL=='1'){
-      this.props.setAutoFillVariables(this.props.editVariables.map(variable => variable.variable_name));
+    if(process.env.EXTERNAL_TOOL == '1'){
+      //this.props.setAutoFillVariables(this.props.editVariables.docs.map(variable => variable.variable_name));
     }
   }
 
   getComponents = async () => {
-    const { projectName } = this.props;
-    const project = await db.find({
-      selector: {
-        project: projectName,
-      }
-    });
-    const components_names = {};
-    project && project.docs.forEach(function (req) {
-      const component_name = req.semantics && req.semantics.component_name;
-      if (component_name && !components_names[component_name]) {
-        components_names[component_name] = [];
-      }
-    });
-    const variables = await modeldb.find({
-      selector: {
-        project: projectName,
-        component_name: { $in: Object.keys(components_names) }
-      }
-    });
+    let variables= {}
+    let components_names = {};
+    if(process.env.EXTERNAL_TOOL !=='1'){
+      const { projectName } = this.props;
+      const project = await db.find({
+        selector: {
+          project: projectName,
+        }
+      });
+
+      project && project.docs.forEach(function (req) {
+        const component_name = req.semantics && req.semantics.component_name;
+        if (component_name && !components_names[component_name]) {
+          components_names[component_name] = [];
+        }
+      });
+
+      variables = await modeldb.find({
+        selector: {
+          project: projectName,
+          component_name: { $in: Object.keys(components_names) }
+        }
+      });
+    } else {
+      variables = this.props.editVariables;
+
+      //TODO: now it only works for one component, update.
+      components_names[variables.docs[0].component_name] = [];
+    }
     variables && variables.docs && variables.docs.forEach(v => {
       const variable = {
         name: v.variable_name || '',
@@ -298,7 +308,7 @@ Glossary.propTypes = {
   projectName:PropTypes.string.isRequired,
   setAutoFillVariables: PropTypes.func,
   requirements: PropTypes.array,
-  editVariables: PropTypes.array
+  editVariables: PropTypes.object
 };
 
 export default withStyles(styles)(Glossary);
