@@ -407,6 +407,11 @@ function SALTExpr2SMV (expr) {
    return '(' + get_LTL_from_old_SALT('assert ' + expr).slice(8).trim() + ')';
 }
 
+function LAST_is_FALSE (formula) {
+    const rewritten_formula = formula.replace(/& \(! LAST\)/g, '').replace(/\(! LAST\) &/g,'').replace(/\(! LAST\) U/g,'F').replace(/LAST/g,'FALSE')
+    return rewritten_formula
+}
+
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
 SemanticsAnalyzer.prototype.semantics = () => {
@@ -554,9 +559,17 @@ SemanticsAnalyzer.prototype.semantics = () => {
     result.ptExpanded_fetched = fetched_ptExpanded;
     result.ptExpanded = replaceTemplateVarsWithArgs(fetched_ptExpanded, true, true);
 
-    let fetched_ftExpanded = fetchedSemantics.ftExpanded.replace(/\$regular_condition\$/g,'$regular_condition_SMV_ft$').replace(/\$post_condition\$/g,'$post_condition_SMV_ft$').replace(/\$stop_condition\$/g,'$stop_condition_SMV_ft$').replace(/\$scope_mode\$/g,'$scope_mode_ft$');;
+    let fetched_ftExpanded = fetchedSemantics.ftExpanded.replace(/\$regular_condition\$/g,'$regular_condition_SMV_ft$').replace(/\$post_condition\$/g,'$post_condition_SMV_ft$').replace(/\$stop_condition\$/g,'$stop_condition_SMV_ft$').replace(/\$scope_mode\$/g,'$scope_mode_ft$');
     result.ftExpanded_fetched = fetched_ftExpanded;
     result.ftExpanded = replaceTemplateVarsWithArgs(fetched_ftExpanded, true, true);
+
+    const fetched_ftInfAUExpanded = fetchedSemantics.ftInfAUExpanded.replace(/\$regular_condition\$/g,'$regular_condition_SMV_ft$').replace(/\$post_condition\$/g,'$post_condition_SMV_ft$').replace(/\$stop_condition\$/g,'$stop_condition_SMV_ft$').replace(/\$scope_mode\$/g,'$scope_mode_ft$');
+    result.ftInfAUExpanded_fetched = fetched_ftInfAUExpanded;
+    result.ftInfAUExpanded = LAST_is_FALSE(replaceTemplateVarsWithArgs(fetched_ftInfAUExpanded, true, true));     
+      
+    const fetched_ftInfBtwExpanded = fetchedSemantics.ftInfBtwExpanded.replace(/\$regular_condition\$/g,'$regular_condition_SMV_ft$').replace(/\$post_condition\$/g,'$post_condition_SMV_ft$').replace(/\$stop_condition\$/g,'$stop_condition_SMV_ft$').replace(/\$scope_mode\$/g,'$scope_mode_ft$');
+    result.ftInfBtwExpanded_fetched = fetched_ftInfBtwExpanded;
+    result.ftInfBtwExpanded = LAST_is_FALSE(replaceTemplateVarsWithArgs(fetched_ftInfBtwExpanded, true, true));     
 
     let fetched_coco = fetchedSemantics.CoCoSpecCode.replace(/\$regular_condition\$/g,'$regular_condition_coco$').replace(/\$post_condition\$/g,'$post_condition_coco$').replace(/\$stop_condition\$/g,'$stop_condition_coco$').replace(/\$scope_mode\$/g,'$scope_mode_coco$');
     result.CoCoSpecCode_fetched = fetched_coco;
