@@ -39,6 +39,7 @@ const fetchSemantics = require('./FetchSemantics');
 const cocospecSemantics = require('../../support/cocospecSemantics');
 const xform = require('../../support/xform');
 
+const dot_replacement = '_DOT_';
 
 var result = {};
 
@@ -117,7 +118,7 @@ SemanticsAnalyzer.prototype.enterScope = function(ctx) {
       else result.scope.type = 'unhandled';
   }
   else {
-      optLog("*** Scope value '" + text + "' accepted by grammar but unhandled by semanticsAnalyzer enterScope *** " );
+      if (constants.verboseSemanticsAnalyzer) console.log("*** Scope value '" + text + "' accepted by grammar but unhandled by semanticsAnalyzer enterScope *** " );
       result.scope.type = 'unhandled';
   }
 }
@@ -310,40 +311,43 @@ RequirementListener.prototype.enterBool_expr = function(ctx) {
   }
 };
 
-function replaceTemplateVarsWithResults(formula) {
+function transform_dots(str) {
+    if (str) {
+    const str2 = str.replace(/(^|[^\w])([A-Za-z]\w*)\./g,(match,p1,p2,offset,str) => (p1 + p2 + dot_replacement))
+    return ((str2 === str) ? str : transform_dots(str2))
+    }
+    else return str;
+}
+
+/* function replaceTemplateVarsWithResults(formula) {
 // formula may have template vars like $scope_mode$. Substitute what's in
 // the global variable "result" for them.
-   //if (constants.verboseSemanticsAnalyzer) console.log("formula in: " + JSON.stringify(formula))
+   if (constants.verboseSemanticsAnalyzer) console.log("rTVWR formula in: " + JSON.stringify(formula))
    if (formula) {
       let args = formula.match(/\$\w+\d*\$/g);
       if (args) {
         args.forEach((a) => {
-	    formula = formula.replace(a,result[a.substring(1, a.length - 1)]);
-        })
+	    formula = formula.replace(a,transform_dots(result[a.substring(1, a.length - 1)],'_DOT_'));
+	    if (constants.verboseSemanticsAnalyzer) console.log("rTVWR " + a + ": " + JSON.stringify(formula))
+	    
+        } )
       }
    }
-   //optLog("formula out: " + JSON.stringify(formula))
+   if (constants.verboseSemanticsAnalyzer) console.log("rTVWR formula out: " + JSON.stringify(formula))
    return formula;
 }
+*/
 
 function replaceTemplateVarsWithArgs(formula, noHTML, noClassicImplSymbol) {
   if (formula) {
     let args = formula.match(/\$\w+\d*\$/g)
     if (args) {
-      if (noHTML){
        // Update formula with arguments from the global "result" (substituted if necessary)
         args.forEach((a) => {
-            let repl = replaceTemplateVarsWithResults(result[a.substring(1, a.length - 1)])
-            //optLog("repl: " + repl);
-	    formula = formula.replace(a,repl)
-        })
-      } else {
-        args.forEach((a) => {
-            let repl = replaceTemplateVarsWithResults(result[a.substring(1, a.length - 1)])
-            //optLog("repl: " + repl);
-	    formula = formula.replace(a,'<b><i>' + repl + '</i></b>');
-        })
-      }
+            let repl = result[a.substring(1, a.length - 1)]
+            if (constants.verboseSemanticsAnalyzer) console.log("rTVWA " + a + ": " + repl);
+	    formula = formula.replace(a, noHTML ? repl : ('<b><i>' + repl + '</i></b>'))
+	})
     }
     if (noClassicImplSymbol) {
       formula = formula.replace(/=>/g,'->');
@@ -384,10 +388,10 @@ function replaceWithR2U2Substs(formula) {
 
 var execSync = require('child_process').execSync;
 function get_LTL_from_old_SALT(SALT_string,SALT_env_var='SALT_HOME') {
-    optLog('\nSALT_env_var = ' + SALT_env_var + '\n');
+    if (constants.verboseSemanticsAnalyzer) console.log('\nSALT_env_var = ' + SALT_env_var + '\n');
   	let SALT_assertion = "'" + SALT_string + "'";
     var SALT_command = 'java -cp "$' + SALT_env_var + '/lib/antlr-2.7.5.jar:$' + SALT_env_var +'/bin/salt.jar:$'+SALT_env_var +'/bin" de.tum.in.salt.Compiler -xtltl -f ' + SALT_assertion;
-    optLog('SALT_command: ' + JSON.stringify(SALT_command));
+    if (constants.verboseSemanticsAnalyzer) console.log('SALT_command: ' + JSON.stringify(SALT_command));
     var LTL_string = 'Initial LTL string';
   	var compilation = '';
   	var stdout = '';
@@ -399,7 +403,7 @@ function get_LTL_from_old_SALT(SALT_string,SALT_env_var='SALT_HOME') {
             console.log(error);
 	    console.log('SALT_string:\n' + SALT_string);
   	}
-        optlog('SALT result: ' + JSON.stringify(stdout));
+    if (constants.verboseSemanticsAnalyzer) console.log('SALT result: ' + JSON.stringify(stdout));
     return stdout;
   }
 
@@ -415,7 +419,7 @@ function LAST_is_FALSE (formula) {
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
 SemanticsAnalyzer.prototype.semantics = () => {
- optLog('Semantics result in:\n' + prettyObject(result));
+ if (constants.verboseSemanticsAnalyzer) console.log('Semantics result in:\n' + prettyObject(result));
 
  if (result.type === 'freeForm') {
     result.ft = constants.natural_semantics;
@@ -425,7 +429,7 @@ SemanticsAnalyzer.prototype.semantics = () => {
   // fetchedSemantics is an object with fields:
   // endpoints, pt, ptExpanded, CoCoSpecCode, etc. See app/parser/semantics.json
   let fetchedSemantics = fetchSemantics.getSemantics(result.scope, result.condition, result.timing, result.response);
-  optLog('fetchedSemantics: ' + prettyObject(fetchedSemantics));
+  if (constants.verboseSemanticsAnalyzer) console.log('fetchedSemantics: ' + prettyObject(fetchedSemantics));
 
   // Create variable descriptions like 'M = cruise TC = goingTooSlow Response = speedup'
   let variableDescription = createVariableDescription(result.scope, result.condition, result.timing, result.response, result.stop_condition);
@@ -447,9 +451,9 @@ SemanticsAnalyzer.prototype.semantics = () => {
   let ftleftSMV = fetchedSemantics.endpoints.SMVftExtleft;
   let ftrightSMV = fetchedSemantics.endpoints.SMVftExtright;
 
-  let regCond = result.regular_condition;
-  let postCond = result.post_condition;
-  let stopCond = result.stop_condition;
+  let regCond = transform_dots(result.regular_condition);
+  let postCond = transform_dots(result.post_condition);
+  let stopCond = transform_dots(result.stop_condition);
 
   // Handle scope mode condition. It could be a boolean expr
   // with a temporal condition.
@@ -459,7 +463,7 @@ SemanticsAnalyzer.prototype.semantics = () => {
       result.scope_mode_ft = "BAD_FT"
     } else {
       // the scope_mode field only exists when scope.type !== 'null'
-      let modeCond = result.scope_mode;
+      let modeCond = transform_dots(result.scope_mode);
       let modeCondTCxform_pt = xform.transformPastTemporalConditionsNoBounds(modeCond)
       let modeCondTCxform_coco = cocospecSemantics.createCoCoSpecCode(modeCondTCxform_pt)
       let modeCondTCxform_ft = xform.transformFutureTemporalConditionsNoBounds(modeCond)
@@ -471,7 +475,7 @@ SemanticsAnalyzer.prototype.semantics = () => {
   if (regCond) {
       // regCondTCxform has the temporal conditions rewritten into LTL.
       let regCondTCxform_pt = xform.transformPastTemporalConditions(regCond)
-      optLog("regCondTCxform_pt: " + JSON.stringify(regCondTCxform_pt));
+      if (constants.verboseSemanticsAnalyzer) console.log("regCondTCxform_pt: " + JSON.stringify(regCondTCxform_pt));
       let regCondTCxform_ft = xform.transformFutureTemporalConditions(regCond)
 
       // regCondUnexp has the endpoints unexpanded e.g. FTP, FFin_$scope_mode$.
@@ -578,8 +582,8 @@ SemanticsAnalyzer.prototype.semantics = () => {
 
     result.component = replaceTemplateVarsWithArgs('$component_name$', false, false);
 
-    //optLog('Semantics result out: ' + JSON.stringify(result));
-    optLog('Semantics result out:\n' + prettyObject(result))
+    //if (constants.verboseSemanticsAnalyzer) console.log('Semantics result out: ' + JSON.stringify(result));
+    if (constants.verboseSemanticsAnalyzer) console.log('Semantics result out:\n' + prettyObject(result))
   } else console.log('!! Unknown result.type: ' + JSON.stringify(result.type));
   return result;
 }

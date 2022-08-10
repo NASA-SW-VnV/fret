@@ -1,35 +1,3 @@
-// *****************************************************************************
-// Notices:
-//
-// Copyright © 2019, 2021 United States Government as represented by the Administrator
-// of the National Aeronautics and Space Administration. All Rights Reserved.
-//
-// Disclaimers
-//
-// No Warranty: THE SUBJECT SOFTWARE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY OF
-// ANY KIND, EITHER EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED
-// TO, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL CONFORM TO SPECIFICATIONS,
-// ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE,
-// OR FREEDOM FROM INFRINGEMENT, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL BE
-// ERROR FREE, OR ANY WARRANTY THAT DOCUMENTATION, IF PROVIDED, WILL CONFORM TO
-// THE SUBJECT SOFTWARE. THIS AGREEMENT DOES NOT, IN ANY MANNER, CONSTITUTE AN
-// ENDORSEMENT BY GOVERNMENT AGENCY OR ANY PRIOR RECIPIENT OF ANY RESULTS,
-// RESULTING DESIGNS, HARDWARE, SOFTWARE PRODUCTS OR ANY OTHER APPLICATIONS
-// RESULTING FROM USE OF THE SUBJECT SOFTWARE.  FURTHER, GOVERNMENT AGENCY
-// DISCLAIMS ALL WARRANTIES AND LIABILITIES REGARDING THIRD-PARTY SOFTWARE, IF
-// PRESENT IN THE ORIGINAL SOFTWARE, AND DISTRIBUTES IT ''AS IS.''
-//
-// Waiver and Indemnity:  RECIPIENT AGREES TO WAIVE ANY AND ALL CLAIMS AGAINST
-// THE UNITED STATES GOVERNMENT, ITS CONTRACTORS AND SUBCONTRACTORS, AS WELL AS
-// ANY PRIOR RECIPIENT.  IF RECIPIENT'S USE OF THE SUBJECT SOFTWARE RESULTS IN
-// ANY LIABILITIES, DEMANDS, DAMAGES, EXPENSES OR LOSSES ARISING FROM SUCH USE,
-// INCLUDING ANY DAMAGES FROM PRODUCTS BASED ON, OR RESULTING FROM, RECIPIENT'S
-// USE OF THE SUBJECT SOFTWARE, RECIPIENT SHALL INDEMNIFY AND HOLD HARMLESS THE
-// UNITED STATES GOVERNMENT, ITS CONTRACTORS AND SUBCONTRACTORS, AS WELL AS ANY
-// PRIOR RECIPIENT, TO THE EXTENT PERMITTED BY LAW.  RECIPIENT'S SOLE REMEDY FOR
-// ANY SUCH MATTER SHALL BE THE IMMEDIATE, UNILATERAL TERMINATION OF THIS
-// AGREEMENT.
-// *****************************************************************************
 // Generated from Requirement.g4 by ANTLR 4.8
 // jshint ignore: start
 var antlr4 = require('antlr4/index');
@@ -292,29 +260,29 @@ var decisionsToDFA = atn.decisionToState.map( function(ds, index) { return new a
 
 var sharedContextCache = new antlr4.PredictionContextCache();
 
-var literalNames = [ null, "'requirement'", "':'", "'.'", "','", "'!'",
-                     "'~'", "'&'", "'|'", "'->'", "'=>'", "'<->'", "'<=>'",
-                     "'('", "')'", "'true'", "'false'", "'^'", "'-'", "'*'",
+var literalNames = [ null, "'requirement'", "':'", "'.'", "','", "'!'", 
+                     "'~'", "'&'", "'|'", "'->'", "'=>'", "'<->'", "'<=>'", 
+                     "'('", "')'", "'true'", "'false'", "'^'", "'-'", "'*'", 
                      "'/'", "'+'" ];
 
-var symbolicNames = [ null, null, null, null, null, null, null, null, null,
-                      null, null, null, null, null, null, null, null, null,
-                      null, null, null, null, "AFTER", "ALWAYS", "AND",
-                      "AT", "BEFORE", "DURING", "EVENTUALLY", "EXCEPT",
-                      "FALSE", "FOR", "HOUR", "IF", "IMMEDIATELY", "IN",
-                      "IS", "MICROSECOND", "MILLISECOND", "MINUTE", "MOD",
-                      "MODE", "NEVER", "NEXT", "NOT", "ONLY", "OR", "SATISFY",
-                      "SECOND", "SHALL", "THE", "THEN", "TICK", "TIMEPOINT",
-                      "TRUE", "UNLESS", "UNTIL", "UPON", "WHEN", "WHERE",
-                      "WHILE", "WITHIN", "XOR", "STRING", "RELATIONAL_OP",
+var symbolicNames = [ null, null, null, null, null, null, null, null, null, 
+                      null, null, null, null, null, null, null, null, null, 
+                      null, null, null, null, "AFTER", "ALWAYS", "AND", 
+                      "AT", "BEFORE", "DURING", "EVENTUALLY", "EXCEPT", 
+                      "FALSE", "FOR", "HOUR", "IF", "IMMEDIATELY", "IN", 
+                      "IS", "MICROSECOND", "MILLISECOND", "MINUTE", "MOD", 
+                      "MODE", "NEVER", "NEXT", "NOT", "ONLY", "OR", "SATISFY", 
+                      "SECOND", "SHALL", "THE", "THEN", "TICK", "TIMEPOINT", 
+                      "TRUE", "UNLESS", "UNTIL", "UPON", "WHEN", "WHERE", 
+                      "WHILE", "WITHIN", "XOR", "STRING", "RELATIONAL_OP", 
                       "NUMBER", "DIGITS", "ID", "REQT_ID", "WS" ];
 
-var ruleNames =  [ "reqts", "reqt", "reqt_body", "freeform", "nasa", "scope",
-                   "reqt_condition", "regular_condition", "qualifier_word",
-                   "qualified_condition1", "qualified_condition2", "scope_condition",
-                   "scope_mode", "pre_condition", "stop_condition", "component",
-                   "response", "satisfaction", "timing", "timing_aux", "duration_upper",
-                   "duration_lower", "component_name", "mode_name", "duration",
+var ruleNames =  [ "reqts", "reqt", "reqt_body", "freeform", "nasa", "scope", 
+                   "reqt_condition", "regular_condition", "qualifier_word", 
+                   "qualified_condition1", "qualified_condition2", "scope_condition", 
+                   "scope_mode", "pre_condition", "stop_condition", "component", 
+                   "response", "satisfaction", "timing", "timing_aux", "duration_upper", 
+                   "duration_lower", "component_name", "mode_name", "duration", 
                    "timeunit", "post_condition", "bool_expr", "numeric_expr" ];
 
 function RequirementParser (input) {
@@ -488,13 +456,13 @@ RequirementParser.prototype.reqts = function() {
     var _la = 0; // Token type
     try {
         this.enterOuterAlt(localctx, 1);
-        this.state = 59;
+        this.state = 59; 
         this._errHandler.sync(this);
         _la = this._input.LA(1);
         do {
             this.state = 58;
             this.reqt();
-            this.state = 61;
+            this.state = 61; 
             this._errHandler.sync(this);
             _la = this._input.LA(1);
         } while(_la===RequirementParser.T__0);
@@ -1362,7 +1330,7 @@ RequirementParser.prototype.regular_condition = function() {
                 }
 
                 this.state = 158;
-                this.qualified_condition2();
+                this.qualified_condition2(); 
             }
             this.state = 163;
             this._errHandler.sync(this);
@@ -3149,7 +3117,7 @@ RequirementParser.prototype.bool_expr = function(_p) {
                     this.bool_expr(8);
                     break;
 
-                }
+                } 
             }
             this.state = 304;
             this._errHandler.sync(this);
@@ -3399,7 +3367,7 @@ RequirementParser.prototype.numeric_expr = function(_p) {
                     this.numeric_expr(5);
                     break;
 
-                }
+                } 
             }
             this.state = 349;
             this._errHandler.sync(this);
