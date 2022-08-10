@@ -44,6 +44,7 @@
  */
 import { app, BrowserWindow } from 'electron';
 import MenuBuilder from './menu';
+const {ipcMain} = require('electron');
 
 var NodePouchDB = require('pouchdb');
 NodePouchDB.plugin(require('pouchdb-find'));
@@ -187,6 +188,28 @@ app.on('ready', async () => {
   });
 
   mainWindow.loadURL(`file://${__dirname}/app.html`);
+
+  if(process.env.EXTERNAL_TOOL=='1'){
+    var splash = new BrowserWindow({ 
+      width: 800, 
+      height: 600, 
+      transparent: true, 
+      frame: false, 
+      alwaysOnTop: true 
+    });
+    
+    splash.loadFile('FRETsplash.html');
+    splash.center();
+    setTimeout(function () {
+      splash.close();
+      mainWindow.center();
+      mainWindow.show();
+    }, 3000);
+}
+
+  ipcMain.on('closeFRET', (evt, arg) => {
+    app.quit();
+  })
 
   // @TODO: Use 'ready-to-show' event
   //        https://github.com/electron/electron/blob/master/docs/api/browser-window.md#using-ready-to-show-event

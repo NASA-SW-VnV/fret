@@ -80,6 +80,7 @@ const modeldb = require('electron').remote.getGlobal('sharedObj').modeldb;
 const constants = require('../parser/Constants');
 const uuidv1 = require('uuid/v1');
 const checkDbFormat = require('../../support/fretDbSupport/checkDBFormat.js');
+const {ipcRenderer} = require('electron');
 
 
 const formStyles = theme => ({
@@ -319,7 +320,7 @@ class CreateRequirementDialog extends React.Component {
     if(process.env.EXTERNAL_TOOL=='1'){
       console.log('env EXTERNAL_TOOL',process.env.EXTERNAL_TOOL);
       console.log('export json for external tool');
-
+      ipcRenderer.send('closeFRET');
     }
 };
 
