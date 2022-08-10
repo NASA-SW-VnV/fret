@@ -55,7 +55,7 @@ var modelDBname = userDocumentsFolder + '/model-db';
 if (process.env.FRET_TESTING) {
   leveldbDBname = userDocumentsFolder + '/fret_sqa/fret-db';
   modelDBname = userDocumentsFolder + '/fret_sqa/model-db';
-} 
+}
 var leveldbDB = new NodePouchDB(leveldbDBname);
 var modelDB = new NodePouchDB(modelDBname);
 
@@ -190,20 +190,19 @@ app.on('ready', async () => {
   mainWindow.loadURL(`file://${__dirname}/app.html`);
 
   if(process.env.EXTERNAL_TOOL=='1'){
-    var splash = new BrowserWindow({ 
-      width: 800, 
-      height: 600, 
-      transparent: true, 
-      frame: false, 
-      alwaysOnTop: true 
+    var splash = new BrowserWindow({
+      width: 800,
+      height: 600,
+      transparent: true,
+      frame: false,
+      alwaysOnTop: true
     });
-    
+
     splash.loadFile('FRETsplash.html');
     splash.center();
     setTimeout(function () {
       splash.close();
       mainWindow.center();
-      mainWindow.show();
     }, 3000);
 }
 
