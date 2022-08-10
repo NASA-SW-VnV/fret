@@ -126,9 +126,6 @@ class Glossary extends React.Component {
     if(this.props.requirements !== prevProps.requirements) {
       this.createMapDbIdToReqId();
     }
-    if(process.env.EXTERNAL_TOOL == '1'){
-      //this.props.setAutoFillVariables(this.props.editVariables.docs.map(variable => variable.variable_name));
-    }
   }
 
   getComponents = async () => {
