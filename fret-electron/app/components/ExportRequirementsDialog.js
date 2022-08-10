@@ -83,13 +83,13 @@ class ExportRequirementsDialog extends React.Component {
 //                      ({reqid, parent_reqid, project, rationale, comments, fulltext, semantics, input}))(r.doc)
 
         R.forEach((r) => {
-		s=s + "| " + r.reqid + 
-		     " | " + r.parent_reqid + 
+		s=s + "| " + r.reqid +
+		     " | " + r.parent_reqid +
 		     " | " + r.fulltext.replace(/\|/g,",").replace(/\n/g," ").replace(/\r/g,"") +
 		     " | " + r.rationale.replace(/\|/g,",").replace(/\n/g," ").replace(/\r/g,"");
 		s=s + "\n";
         	})
-	
+
 	return s;
 	}
 // REPLACE/Quote UTF-8 chars by \u BLA
@@ -142,15 +142,11 @@ class ExportRequirementsDialog extends React.Component {
 	var content;
 	console.log(output_format)
 	if (output_format === "md"){
-		console.log("MD")
 		content=this.export_to_md(filteredResult, project)
 		}
 	else {
-		console.log("JSON")
-        	content = JSON.stringify(filteredResult, null, 4)
+      content = JSON.stringify(filteredResult, null, 4)
 		}
-	console.log(content)
-
         fs.writeFile(filepath, content, (err) => {
             if(err) {
                 return console.log(err);
