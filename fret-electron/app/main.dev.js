@@ -206,7 +206,7 @@ app.on('ready', async () => {
     setTimeout(function () {
       splash.close();
       mainWindow.center();
-    }, 3000);
+    }, 2000);
 }
 
   ipcMain.on('closeFRET', (evt, arg) => {
