@@ -40,6 +40,7 @@ const cocospecSemantics = require('../../support/cocospecSemantics');
 const xform = require('../../support/xform');
 
 const dot_replacement = '_DOT_';
+const percent_replacement = '_PERCENT_';
 
 var result = {};
 
@@ -313,30 +314,11 @@ RequirementListener.prototype.enterBool_expr = function(ctx) {
 
 function transform_dots(str) {
     if (str) {
-    const str2 = str.replace(/(^|[^\w])([A-Za-z]\w*)\./g,(match,p1,p2,offset,str) => (p1 + p2 + dot_replacement))
-    return ((str2 === str) ? str : transform_dots(str2))
+	const str2 = str.replace(/(^|[^\w])([A-Za-z]\w*)(\.|%)/g,(match,p1,p2,p3,offset,str) => (p1 + p2 + ((p3 === ".") ? dot_replacement : percent_replacement)))
+	return ((str2 === str) ? str : transform_dots(str2))
     }
     else return str;
 }
-
-/* function replaceTemplateVarsWithResults(formula) {
-// formula may have template vars like $scope_mode$. Substitute what's in
-// the global variable "result" for them.
-   if (constants.verboseSemanticsAnalyzer) console.log("rTVWR formula in: " + JSON.stringify(formula))
-   if (formula) {
-      let args = formula.match(/\$\w+\d*\$/g);
-      if (args) {
-        args.forEach((a) => {
-	    formula = formula.replace(a,transform_dots(result[a.substring(1, a.length - 1)],'_DOT_'));
-	    if (constants.verboseSemanticsAnalyzer) console.log("rTVWR " + a + ": " + JSON.stringify(formula))
-	    
-        } )
-      }
-   }
-   if (constants.verboseSemanticsAnalyzer) console.log("rTVWR formula out: " + JSON.stringify(formula))
-   return formula;
-}
-*/
 
 function replaceTemplateVarsWithArgs(formula, noHTML, noClassicImplSymbol) {
   if (formula) {
