@@ -92,6 +92,7 @@ const modelSupport = require('../../support/modelDbSupport/populateVariables');
 const checkDbFormat = require('../../support/fretDbSupport/checkDBFormat.js');
 const drawerWidth = 240;
 let dbChangeListener = null;
+const ext_imp_json_file = require('electron').remote.getGlobal('sharedObj').ext_imp_json;
 
 const styles = theme => ({
   root: {
@@ -288,27 +289,18 @@ class MainView extends React.Component {
   handleImportExternalTool = () => {
     const self = this;
     var homeDir = app.getPath('home');
-    var filepaths = dialog.showOpenDialogSync({
-      defaultPath : homeDir,
-      title : 'Import Requirement and Variables',
-      buttonLabel : 'Import',
-      filters: [
-        { name: "Documents",
-          extensions: ['json']
-        }
-      ],
-      properties: ['openFile']});
-       if (filepaths && filepaths.length > 0) {
-         const filepath = filepaths[0];
-        fs.readFile(filepath, function (err,buffer) {
-            if (err) throw err;
-            let data = JSON.parse(buffer);
-            self.setState({
-              externalRequirement : data.requirement,
-              externalVariables : data.variables
-            })
-            self.handleCreateDialogOpen();
-        })
+    var filepath = ext_imp_json_file;
+    if (filepath && filepath.length > 0) {
+      //const filepath = filepaths[0];
+      fs.readFile(filepath, function (err,buffer) {
+        if (err) throw err;
+        let data = JSON.parse(buffer);
+          self.setState({
+            externalRequirement : data.requirement,
+            externalVariables : data.variables
+          })
+          self.handleCreateDialogOpen();
+      })
     }
   }
 

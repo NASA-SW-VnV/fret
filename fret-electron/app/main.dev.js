@@ -45,6 +45,7 @@
 import { app, BrowserWindow } from 'electron';
 import MenuBuilder from './menu';
 const {ipcMain} = require('electron');
+const path = require('path');
 
 var NodePouchDB = require('pouchdb');
 NodePouchDB.plugin(require('pouchdb-find'));
@@ -59,6 +60,8 @@ if (process.env.FRET_TESTING) {
 var leveldbDB = new NodePouchDB(leveldbDBname);
 var modelDB = new NodePouchDB(modelDBname);
 
+const ext_imp_json_file = path.join(userDocumentsFolder,process.env.EXTERNAL_JSON)+'.json';
+//console.log('ext_imp_json_file ',ext_imp_json_file);
 
 leveldbDB.info().then(function (info) {
   console.log('We can use PouchDB with LevelDB!');
@@ -125,6 +128,7 @@ leveldbDB.get(FRET_PROJECTS_DBKEY).catch((err) => {
 
 const FRET_REALTIME_CONFIG = 'REAL_TIME_CONFIG';
 global.sharedObj = {
+  ext_imp_json: ext_imp_json_file,
   db: leveldbDB,
   modeldb: modelDB,
   system_dbkeys: [ FRET_PROJECTS_DBKEY, FRET_PROPS_DBKEY, FRET_REALTIME_CONFIG ]
@@ -139,7 +143,6 @@ if (process.env.NODE_ENV === 'production') {
 
 if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
   require('electron-debug')();
-  const path = require('path');
   const p = path.join(__dirname, '..', 'app', 'node_modules');
   require('module').globalPaths.push(p);
 }

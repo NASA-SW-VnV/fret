@@ -193,6 +193,9 @@ class CreateRequirementDialog extends React.Component {
     this.setState({ createDialogOpen: false, tabValue: 0 });
     this.state.dialogCloseListener(false);
     this.setAutoFillVariables([]);
+    if(process.env.EXTERNAL_TOOL=='1'){
+      ipcRenderer.send('closeFRET');
+    }
   };
 
   handleSelectedTemplateChange = (selectedTemplate) => {
