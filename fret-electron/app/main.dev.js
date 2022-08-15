@@ -60,9 +60,11 @@ if (process.env.FRET_TESTING) {
 var leveldbDB = new NodePouchDB(leveldbDBname);
 var modelDB = new NodePouchDB(modelDBname);
 
-//const ext_imp_json_file = path.join(userDocumentsFolder,process.env.EXTERNAL_JSON)+'.json';
-const ext_imp_json_file = process.env.EXTERNAL_JSON+'.json';
-//console.log('ext_imp_json_file ',ext_imp_json_file);
+var ext_imp_json_file = '';
+if(process.env.EXTERNAL_TOOL=='1'){
+  //const ext_imp_json_file = path.join(userDocumentsFolder,process.env.EXTERNAL_JSON)+'.json';
+  const ext_imp_json_file = process.env.EXTERNAL_JSON+'.json';
+}
 
 leveldbDB.info().then(function (info) {
   console.log('We can use PouchDB with LevelDB!');
