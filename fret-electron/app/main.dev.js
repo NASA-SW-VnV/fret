@@ -62,8 +62,8 @@ var modelDB = new NodePouchDB(modelDBname);
 
 var ext_imp_json_file = '';
 if(process.env.EXTERNAL_TOOL=='1'){
-  //const ext_imp_json_file = path.join(userDocumentsFolder,process.env.EXTERNAL_JSON)+'.json';
-  const ext_imp_json_file = process.env.EXTERNAL_JSON+'.json';
+  //ext_imp_json_file = path.join(userDocumentsFolder,process.env.EXTERNAL_JSON)+'.json';
+  ext_imp_json_file = process.env.EXTERNAL_JSON+'.json';
 }
 
 leveldbDB.info().then(function (info) {
