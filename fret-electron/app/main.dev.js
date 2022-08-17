@@ -60,7 +60,8 @@ if (process.env.FRET_TESTING) {
 var leveldbDB = new NodePouchDB(leveldbDBname);
 var modelDB = new NodePouchDB(modelDBname);
 
-const ext_imp_json_file = path.join(userDocumentsFolder,process.env.EXTERNAL_JSON)+'.json';
+//const ext_imp_json_file = path.join(userDocumentsFolder,process.env.EXTERNAL_JSON)+'.json';
+const ext_imp_json_file = process.env.EXTERNAL_JSON+'.json';
 //console.log('ext_imp_json_file ',ext_imp_json_file);
 
 leveldbDB.info().then(function (info) {
