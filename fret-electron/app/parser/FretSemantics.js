@@ -47,6 +47,13 @@ const REQ_BODY_CTX_RULE = 'reqt_body'
  * { collectedSemantics: {...} } is returned.
  */
 exports.compile = (text) => {
+  let trimmedText = text.trim()
+  if (trimmedText.startsWith('"') & trimmedText.endsWith('"')) {
+    // Handle reqt that is within string quotes, meaning don't formalize it
+    semanticsAnalyzer.clearResult();
+    semanticsAnalyzer.enterFreeform();
+    return ({ collectedSemantics: semanticsAnalyzer.semantics()})
+  } else {
   var chars = new antlr4.InputStream(text.trim());
   var lexer = new RequirementLexer.RequirementLexer(chars);
   var tokens  = new antlr4.CommonTokenStream(lexer);
@@ -68,6 +75,7 @@ exports.compile = (text) => {
       collectedSemantics: semanticsAnalyzer.semantics()
     })
   }
+    }
 }
 
 exports.compilePartialText = (text) => {

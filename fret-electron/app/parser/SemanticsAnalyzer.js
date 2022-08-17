@@ -35,12 +35,10 @@ const RequirementListener = require('./RequirementListener').RequirementListener
 const AntlrUtilities = require('../parser/AntlrUtilities').AntlrUtilities;
 const antlrUtilities = new AntlrUtilities();
 const utilities = require('../../support/utilities');
+const utils = require('../../support/utils');
 const fetchSemantics = require('./FetchSemantics');
 const cocospecSemantics = require('../../support/cocospecSemantics');
 const xform = require('../../support/xform');
-
-const dot_replacement = '_DOT_';
-const percent_replacement = '_PERCENT_';
 
 var result = {};
 
@@ -312,14 +310,6 @@ RequirementListener.prototype.enterBool_expr = function(ctx) {
   }
 };
 
-function transform_dots(str) {
-    if (str) {
-	const str2 = str.replace(/(^|[^\w])([A-Za-z]\w*)(\.|%)/g,(match,p1,p2,p3,offset,str) => (p1 + p2 + ((p3 === ".") ? dot_replacement : percent_replacement)))
-	return ((str2 === str) ? str : transform_dots(str2))
-    }
-    else return str;
-}
-
 function replaceTemplateVarsWithArgs(formula, noHTML, noClassicImplSymbol) {
   if (formula) {
     let args = formula.match(/\$\w+\d*\$/g)
@@ -433,9 +423,9 @@ SemanticsAnalyzer.prototype.semantics = () => {
   let ftleftSMV = fetchedSemantics.endpoints.SMVftExtleft;
   let ftrightSMV = fetchedSemantics.endpoints.SMVftExtright;
 
-  let regCond = transform_dots(result.regular_condition);
-  let postCond = transform_dots(result.post_condition);
-  let stopCond = transform_dots(result.stop_condition);
+  let regCond = utils.replace_special_chars(result.regular_condition);
+  let postCond = utils.replace_special_chars(result.post_condition);
+  let stopCond = utils.replace_special_chars(result.stop_condition);
 
   // Handle scope mode condition. It could be a boolean expr
   // with a temporal condition.
@@ -445,7 +435,7 @@ SemanticsAnalyzer.prototype.semantics = () => {
       result.scope_mode_ft = "BAD_FT"
     } else {
       // the scope_mode field only exists when scope.type !== 'null'
-      let modeCond = transform_dots(result.scope_mode);
+      let modeCond = utils.replace_special_chars(result.scope_mode);
       let modeCondTCxform_pt = xform.transformPastTemporalConditionsNoBounds(modeCond)
       let modeCondTCxform_coco = cocospecSemantics.createCoCoSpecCode(modeCondTCxform_pt)
       let modeCondTCxform_ft = xform.transformFutureTemporalConditionsNoBounds(modeCond)

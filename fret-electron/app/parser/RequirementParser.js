@@ -64,7 +64,7 @@ var serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964",
     "\u001e\u0003\u001e\u0003\u001e\u0007\u001e\u015c\n\u001e\f\u001e\u000e",
     "\u001e\u015f\u000b\u001e\u0003\u001e\u0002\u00048:\u001f\u0002\u0004",
     "\u0006\b\n\f\u000e\u0010\u0012\u0014\u0016\u0018\u001a\u001c\u001e ",
-    "\"$&(*,.02468:\u0002\u000f\u0003\u0002DF\u0004\u0002##<<\u0004\u0002",
+    "\"$&(*,.02468:\u0002\u000f\u0004\u0002AAEF\u0004\u0002##<<\u0004\u0002",
     "\u0018\u0018\u001c\u001c\u0004\u0002\u001d\u001d%%\u0005\u0002##99;",
     "=\u0004\u0002  88\u0004\u0002\u001a\u001a00\u0006\u0002\"\"\')2266\u0003",
     "\u0002\u0007\b\u0004\u0002\n\n@@\u0003\u0002\u000b\u000e\u0004\u0002",
@@ -90,7 +90,7 @@ var serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964",
     "\b\u0005\u0002HF\u0003\u0002\u0002\u0002HG\u0003\u0002\u0002\u0002I",
     "K\u0003\u0002\u0002\u0002JL\u0007\u0005\u0002\u0002KJ\u0003\u0002\u0002",
     "\u0002KL\u0003\u0002\u0002\u0002L\u0007\u0003\u0002\u0002\u0002MN\u0007",
-    "A\u0002\u0002N\t\u0003\u0002\u0002\u0002OQ\u0005\f\u0007\u0002PO\u0003",
+    "B\u0002\u0002N\t\u0003\u0002\u0002\u0002OQ\u0005\f\u0007\u0002PO\u0003",
     "\u0002\u0002\u0002PQ\u0003\u0002\u0002\u0002QS\u0003\u0002\u0002\u0002",
     "RT\u0005\u000e\b\u0002SR\u0003\u0002\u0002\u0002ST\u0003\u0002\u0002",
     "\u0002TZ\u0003\u0002\u0002\u0002UV\u0005 \u0011\u0002VW\u00073\u0002",
@@ -183,9 +183,9 @@ var serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964",
     "\u0002\u0002\u0002\u00eb\u00ea\u0003\u0002\u0002\u0002\u00ec)\u0003",
     "\u0002\u0002\u0002\u00ed\u00ee\u00052\u001a\u0002\u00ee+\u0003\u0002",
     "\u0002\u0002\u00ef\u00f0\u00052\u001a\u0002\u00f0-\u0003\u0002\u0002",
-    "\u0002\u00f1\u00f2\u0007E\u0002\u0002\u00f2/\u0003\u0002\u0002\u0002",
-    "\u00f3\u00f4\u0007E\u0002\u0002\u00f41\u0003\u0002\u0002\u0002\u00f5",
-    "\u00f6\u0007C\u0002\u0002\u00f6\u00f7\u00054\u001b\u0002\u00f73\u0003",
+    "\u0002\u00f1\u00f2\u0007A\u0002\u0002\u00f2/\u0003\u0002\u0002\u0002",
+    "\u00f3\u00f4\u0007A\u0002\u0002\u00f41\u0003\u0002\u0002\u0002\u00f5",
+    "\u00f6\u0007D\u0002\u0002\u00f6\u00f7\u00054\u001b\u0002\u00f73\u0003",
     "\u0002\u0002\u0002\u00f8\u00f9\t\t\u0002\u0002\u00f95\u0003\u0002\u0002",
     "\u0002\u00fa\u00fb\u00058\u001d\u0002\u00fb7\u0003\u0002\u0002\u0002",
     "\u00fc\u00fd\b\u001d\u0001\u0002\u00fd\u00fe\t\n\u0002\u0002\u00fe\u0124",
@@ -194,8 +194,8 @@ var serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964",
     "\u0124\u0003\u0002\u0002\u0002\u0104\u0105\u0007\u000f\u0002\u0002\u0105",
     "\u0106\u00058\u001d\u0002\u0106\u0107\u0007\u0010\u0002\u0002\u0107",
     "\u0124\u0003\u0002\u0002\u0002\u0108\u0109\u0005:\u001e\u0002\u0109",
-    "\u010a\u0007B\u0002\u0002\u010a\u010b\u0005:\u001e\u0002\u010b\u0124",
-    "\u0003\u0002\u0002\u0002\u010c\u011f\u0007E\u0002\u0002\u010d\u011c",
+    "\u010a\u0007C\u0002\u0002\u010a\u010b\u0005:\u001e\u0002\u010b\u0124",
+    "\u0003\u0002\u0002\u0002\u010c\u011f\u0007A\u0002\u0002\u010d\u011c",
     "\u0007\u000f\u0002\u0002\u010e\u0111\u00058\u001d\u0002\u010f\u0111",
     "\u0005:\u001e\u0002\u0110\u010e\u0003\u0002\u0002\u0002\u0110\u010f",
     "\u0003\u0002\u0002\u0002\u0111\u0119\u0003\u0002\u0002\u0002\u0112\u0115",
@@ -222,8 +222,8 @@ var serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964",
     "\u0002\u0002\u0002\u0130\u012e\u0003\u0002\u0002\u0002\u0130\u0131\u0003",
     "\u0002\u0002\u0002\u01319\u0003\u0002\u0002\u0002\u0132\u0130\u0003",
     "\u0002\u0002\u0002\u0133\u0134\b\u001e\u0001\u0002\u0134\u0135\u0007",
-    "\u0014\u0002\u0002\u0135\u0151\u0005:\u001e\b\u0136\u0151\u0007C\u0002",
-    "\u0002\u0137\u014a\u0007E\u0002\u0002\u0138\u0147\u0007\u000f\u0002",
+    "\u0014\u0002\u0002\u0135\u0151\u0005:\u001e\b\u0136\u0151\u0007D\u0002",
+    "\u0002\u0137\u014a\u0007A\u0002\u0002\u0138\u0147\u0007\u000f\u0002",
     "\u0002\u0139\u013c\u00058\u001d\u0002\u013a\u013c\u0005:\u001e\u0002",
     "\u013b\u0139\u0003\u0002\u0002\u0002\u013b\u013a\u0003\u0002\u0002\u0002",
     "\u013c\u0144\u0003\u0002\u0002\u0002\u013d\u0140\u0007\u0006\u0002\u0002",
@@ -274,8 +274,8 @@ var symbolicNames = [ null, null, null, null, null, null, null, null, null,
                       "MODE", "NEVER", "NEXT", "NOT", "ONLY", "OR", "SATISFY", 
                       "SECOND", "SHALL", "THE", "THEN", "TICK", "TIMEPOINT", 
                       "TRUE", "UNLESS", "UNTIL", "UPON", "WHEN", "WHERE", 
-                      "WHILE", "WITHIN", "XOR", "STRING", "RELATIONAL_OP", 
-                      "NUMBER", "DIGITS", "ID", "REQT_ID", "WS" ];
+                      "WHILE", "WITHIN", "XOR", "ID", "STRING", "RELATIONAL_OP", 
+                      "NUMBER", "DIGITS", "REQT_ID", "WS" ];
 
 var ruleNames =  [ "reqts", "reqt", "reqt_body", "freeform", "nasa", "scope", 
                    "reqt_condition", "regular_condition", "qualifier_word", 
@@ -366,11 +366,11 @@ RequirementParser.WHERE = 59;
 RequirementParser.WHILE = 60;
 RequirementParser.WITHIN = 61;
 RequirementParser.XOR = 62;
-RequirementParser.STRING = 63;
-RequirementParser.RELATIONAL_OP = 64;
-RequirementParser.NUMBER = 65;
-RequirementParser.DIGITS = 66;
-RequirementParser.ID = 67;
+RequirementParser.ID = 63;
+RequirementParser.STRING = 64;
+RequirementParser.RELATIONAL_OP = 65;
+RequirementParser.NUMBER = 66;
+RequirementParser.DIGITS = 67;
 RequirementParser.REQT_ID = 68;
 RequirementParser.WS = 69;
 
@@ -541,7 +541,7 @@ RequirementParser.prototype.reqt = function() {
         this.match(RequirementParser.T__0);
         this.state = 64;
         _la = this._input.LA(1);
-        if(!(((((_la - 66)) & ~0x1f) == 0 && ((1 << (_la - 66)) & ((1 << (RequirementParser.DIGITS - 66)) | (1 << (RequirementParser.ID - 66)) | (1 << (RequirementParser.REQT_ID - 66)))) !== 0))) {
+        if(!(((((_la - 63)) & ~0x1f) == 0 && ((1 << (_la - 63)) & ((1 << (RequirementParser.ID - 63)) | (1 << (RequirementParser.DIGITS - 63)) | (1 << (RequirementParser.REQT_ID - 63)))) !== 0))) {
         this._errHandler.recoverInline(this);
         }
         else {
@@ -2990,7 +2990,7 @@ RequirementParser.prototype.bool_expr = function(_p) {
                 this.state = 282;
                 this._errHandler.sync(this);
                 _la = this._input.LA(1);
-                if(((((_la - 5)) & ~0x1f) == 0 && ((1 << (_la - 5)) & ((1 << (RequirementParser.T__4 - 5)) | (1 << (RequirementParser.T__5 - 5)) | (1 << (RequirementParser.T__12 - 5)) | (1 << (RequirementParser.T__14 - 5)) | (1 << (RequirementParser.T__15 - 5)) | (1 << (RequirementParser.T__17 - 5)) | (1 << (RequirementParser.IF - 5)))) !== 0) || _la===RequirementParser.NUMBER || _la===RequirementParser.ID) {
+                if(((((_la - 5)) & ~0x1f) == 0 && ((1 << (_la - 5)) & ((1 << (RequirementParser.T__4 - 5)) | (1 << (RequirementParser.T__5 - 5)) | (1 << (RequirementParser.T__12 - 5)) | (1 << (RequirementParser.T__14 - 5)) | (1 << (RequirementParser.T__15 - 5)) | (1 << (RequirementParser.T__17 - 5)) | (1 << (RequirementParser.IF - 5)))) !== 0) || _la===RequirementParser.ID || _la===RequirementParser.NUMBER) {
                     this.state = 270;
                     this._errHandler.sync(this);
                     var la_ = this._interp.adaptivePredict(this._input,30,this._ctx);
@@ -3241,7 +3241,7 @@ RequirementParser.prototype.numeric_expr = function(_p) {
                 this.state = 325;
                 this._errHandler.sync(this);
                 _la = this._input.LA(1);
-                if(((((_la - 5)) & ~0x1f) == 0 && ((1 << (_la - 5)) & ((1 << (RequirementParser.T__4 - 5)) | (1 << (RequirementParser.T__5 - 5)) | (1 << (RequirementParser.T__12 - 5)) | (1 << (RequirementParser.T__14 - 5)) | (1 << (RequirementParser.T__15 - 5)) | (1 << (RequirementParser.T__17 - 5)) | (1 << (RequirementParser.IF - 5)))) !== 0) || _la===RequirementParser.NUMBER || _la===RequirementParser.ID) {
+                if(((((_la - 5)) & ~0x1f) == 0 && ((1 << (_la - 5)) & ((1 << (RequirementParser.T__4 - 5)) | (1 << (RequirementParser.T__5 - 5)) | (1 << (RequirementParser.T__12 - 5)) | (1 << (RequirementParser.T__14 - 5)) | (1 << (RequirementParser.T__15 - 5)) | (1 << (RequirementParser.T__17 - 5)) | (1 << (RequirementParser.IF - 5)))) !== 0) || _la===RequirementParser.ID || _la===RequirementParser.NUMBER) {
                     this.state = 313;
                     this._errHandler.sync(this);
                     var la_ = this._interp.adaptivePredict(this._input,38,this._ctx);
