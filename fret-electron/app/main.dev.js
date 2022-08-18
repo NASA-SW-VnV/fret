@@ -213,6 +213,7 @@ app.on('ready', async () => {
 }
 
   ipcMain.on('closeFRET', (evt, arg) => {
+    console.log('main received closeFRET')
     app.quit();
   })
 

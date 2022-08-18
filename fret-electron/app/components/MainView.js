@@ -77,7 +77,8 @@ import CreateProjectDialog from './CreateProjectDialog';
 import DeleteProjectDialog from './DeleteProjectDialog';
 import AppMainContent from './AppMainContent';
 import RequirementImportDialogs from './RequirementImportDialogs';
-
+import MissingExternalImportDialog from './MissingExternalImportDialog';
+import ExternalImportFileMissingDialog from './ExternalImportFileMissing';
 import ExportRequirementsDialog from './ExportRequirementsDialog';
 
 const app = require('electron').remote.app
@@ -93,6 +94,7 @@ const checkDbFormat = require('../../support/fretDbSupport/checkDBFormat.js');
 const drawerWidth = 240;
 let dbChangeListener = null;
 const ext_imp_json_file = require('electron').remote.getGlobal('sharedObj').ext_imp_json;
+const {ipcRenderer} = require('electron');
 
 const styles = theme => ({
   root: {
@@ -217,7 +219,10 @@ class MainView extends React.Component {
     requirements: [],
     changingReqsInBulk: false,
     externalRequirement: {},
-    externalVariables: {}
+    externalVariables: {},
+    missingExternalImportDialogOpen: false,
+    externalImportFileMissingDialogOpen: false,
+    browseExternalImportFile: true,
   };
 
   initializeSelectedProject = () => {
@@ -290,16 +295,32 @@ class MainView extends React.Component {
     const self = this;
     var homeDir = app.getPath('home');
     var filepath = ext_imp_json_file;
+    console.log('expected file in handleImportExternalTool: ', filepath);
     if (filepath && filepath.length > 0) {
       //const filepath = filepaths[0];
       fs.readFile(filepath, function (err,buffer) {
-        if (err) throw err;
-        let data = JSON.parse(buffer);
+        if (err) {
+          // throw err;
+          console.log('err in handleImportExternalTool: ', err);
+          console.log('err string in handleImportExternalTool: ', String(err));
+          // pop up error not found, give option to quit or access filesystem
+          if (String(err).includes('ENOENT')){
+
+            self.setState({
+              missingExternalImportDialogOpen: true,
+              anchorEl: null
+            });
+          }
+
+
+        } else {
+          let data = JSON.parse(buffer);
           self.setState({
             externalRequirement : data.requirement,
             externalVariables : data.variables
           })
           self.handleCreateDialogOpen();
+        }
       })
     }
   }
@@ -481,6 +502,14 @@ class MainView extends React.Component {
     })
   }
 
+  openExternalImportFileMissingDialog = () => {
+    this.setState({
+      externalImportFileMissingDialogOpen: true,
+      browseExternalImportFile: true,
+      anchorEl: null
+    })
+  }
+
   closeDeleteProjectDialog = () => {
     this.setState({
       deleteProjectDialogOpen: false,
@@ -524,6 +553,47 @@ class MainView extends React.Component {
       requirementImportDialogOpen: false,
       anchorEl: null
     })
+  }
+
+  closeMissingExternalImportDialog = (missingExtImpDialogSelection) => {
+    console.log('missingExtImpDialogSelection: ', missingExtImpDialogSelection)
+    if (missingExtImpDialogSelection){
+      // call file browser
+      const self = this;
+      var homeDir = app.getPath('home');
+      console.log('calling browser in closeMissingExternalImportDialog');
+      var filepaths2 = dialog.showOpenDialogSync({
+        defaultPath : homeDir,
+        title : 'Import Requirements',
+        buttonLabel : 'Import',
+        filters: [
+          { name: "Documents",
+            extensions: ['json', 'csv']
+          }
+        ],
+        properties: ['openFile']});
+
+        if (filepaths2 && filepaths2.length > 0) {
+          var data;
+          const filepath2 = filepaths2[0];
+          fs.readFile(filepath2, function (err,buffer2) {
+            if (err) throw err;
+            data = JSON.parse(buffer2);
+            console.log('data: ', data)
+            self.setState({
+              externalRequirement : data.requirement,
+              externalVariables : data.variables
+            })
+            self.handleCreateDialogOpen();            
+          });
+          
+
+        }
+    } else {
+      console.log('exit FRET');
+      ipcRenderer.send('closeFRET');
+    }
+    this.setState({missingExternalImportDialogOpen: false})
   }
 
   render() {
@@ -712,6 +782,10 @@ class MainView extends React.Component {
             csvFields={this.state.csvFields}
             listOfProjects={this.state.listOfProjects}
             importedReqs={this.state.importedReqs}
+          />
+          <MissingExternalImportDialog
+          open={this.state.missingExternalImportDialogOpen}
+          handleMissingExternalImportDialogClose={this.closeMissingExternalImportDialog}
           />
         </div>
         <Snackbar
