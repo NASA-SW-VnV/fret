@@ -160,8 +160,6 @@ class CreateRequirementDialog extends React.Component {
   componentDidMount = () => {
     if(process.env.EXTERNAL_TOOL=='1'){
       console.log('componentDidMount env EXTERNAL_TOOL',process.env.EXTERNAL_TOOL);
-
-
     }
   }
 
@@ -399,7 +397,8 @@ class CreateRequirementDialog extends React.Component {
               selectedTemplate: -1,
             }
           );
-      } else if (props.editRequirement) {
+      } else if ((props.editRequirement)
+            && Object.keys((props.editRequirement)).length !== 0) {
         const template = props.editRequirement.template;
         const templateIds = templates.map(t => t._id);
         const selectedTemplate = template && template.id ?
