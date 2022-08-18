@@ -69,13 +69,14 @@ class MissingExternalImportDialog extends React.Component {
     let self = this;
     console.log('MissingExternalImportDialog: EXIT selected')
     ipcRenderer.send('closeFRET');
-    self.setState({ selectBrowse: false});
-    //this.setState({selectBrowse: 'EXIT'})
-    const {selectBrowse} = self.state;
-    console.log('action state: ', selectBrowse)
-    //ipcRenderer.send('closeFRET');
-    console.log('closeFRET ipc sent')
-    self.handleClose();
+    self.setState({ selectBrowse: false}).then(()=>{
+      //this.setState({selectBrowse: 'EXIT'})
+      let {selectBrowse} = self.state;
+      console.log('action state: ', selectBrowse)
+      //ipcRenderer.send('closeFRET');
+      console.log('closeFRET ipc sent')
+      self.handleClose();
+    });
   };
 
   handleBrowse = () => {
@@ -109,7 +110,7 @@ class MissingExternalImportDialog extends React.Component {
           <DialogActions>
             <Button id="qa_missExtImp_btn_exit" onClick={this.handleExit} color="primary" >
               Exit
-            </Button>            
+            </Button>
             <Button id="qa_missExtImp_btn_browse" onClick={this.handleBrowse} color="primary" autoFocus>
               Browse
             </Button>
