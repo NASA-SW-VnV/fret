@@ -85,32 +85,33 @@ class LTLSimRequirementDetails extends Component {
                 <Typography className={classes.heading}>Requirements in FRETish</Typography>
               </AccordionSummary>
               <AccordionDetails>
-<div>
-      		{
-		selreq.map(R_ID => {
-			var ID=R_ID;
-			var Desc="unknown-ID not in DB";
-			for (let i=0; i< allreq.length; i++){
-		            let reqID = allreq[i].reqID;
-		            let reqID_R = reqID.replace(/ /g,"_")
-			      .replace(/-/g,"_")
-			      .replace(/\./g,"_")
-			      .replace(/\+/g,"_")
-		            if (reqID_R == R_ID){
-				Desc=allreq[i].fulltext
-				ID=reqID;
-				break;
-				}
-			    }
-                  	return(<div key={"LTLSimRequirementDetails_"+R_ID}><Typography id="qa_ltlSim_typ_reqId">
-                    		<b key={ID}>{ID}</b>: {Desc}
-                    	</Typography></div>)})
-                   }
-</div>
-              </AccordionDetails>
-            </Accordion>
-          </div>
-        )
+            <div>
+      		    {
+                  selreq.map(R_ID => {
+                    let ID=R_ID;
+                    let Desc;
+                    (selreq.length === 1)? (Desc=description):(Desc="unknown-ID not in DB")
+                    for (let i=0; i< allreq.length; i++){
+                      let reqID = allreq[i].reqID;
+                      let reqID_R = reqID.replace(/ /g,"_")
+                                         .replace(/-/g,"_")
+                                         .replace(/\./g,"_")
+                                         .replace(/\+/g,"_")
+                      if (reqID_R == R_ID){
+                        Desc=allreq[i].fulltext
+                        ID=reqID;
+                        break;
+                      }
+                    }
+                	return(<div key={"LTLSimRequirementDetails_"+R_ID}><Typography id="qa_ltlSim_typ_reqId">
+                  		<b key={ID}>{ID}</b>: {Desc}
+                  	</Typography></div>)})
+                }
+              </div>
+            </AccordionDetails>
+          </Accordion>
+        </div>
+      )
     }
 }
 
