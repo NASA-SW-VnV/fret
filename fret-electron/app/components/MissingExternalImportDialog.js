@@ -41,7 +41,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import { withStyles } from '@material-ui/core/styles';
 
 const {ipcRenderer} = require('electron');
-
+const ext_imp_json_file = require('electron').remote.getGlobal('sharedObj').ext_imp_json;
 
 const styles = theme => ({
   textField: {
@@ -60,27 +60,27 @@ class MissingExternalImportDialog extends React.Component {
 
   handleClose = () => {
     const {selectBrowse} = this.state;
-    console.log('selectBrowse: ', selectBrowse)
+    //console.log('selectBrowse: ', selectBrowse)
     this.props.handleMissingExternalImportDialogClose(selectBrowse)
     this.setState({ open: false });
   };
 
   handleExit = () => {
     let self = this;
-    console.log('MissingExternalImportDialog: EXIT selected')
+    //console.log('MissingExternalImportDialog: EXIT selected')
     ipcRenderer.send('closeFRET');
     self.setState({ selectBrowse: false}).then(()=>{
       //this.setState({selectBrowse: 'EXIT'})
       let {selectBrowse} = self.state;
-      console.log('action state: ', selectBrowse)
+      //console.log('action state: ', selectBrowse)
       //ipcRenderer.send('closeFRET');
-      console.log('closeFRET ipc sent')
-      self.handleClose();
+      //console.log('closeFRET ipc sent')
+      //self.handleClose();
     });
   };
 
   handleBrowse = () => {
-    console.log('MissingExternalImportDialog: BROWSE selected')
+    //console.log('MissingExternalImportDialog: BROWSE selected')
     this.setState({selectBrowse: true})
     this.handleClose();
   };
@@ -101,7 +101,7 @@ class MissingExternalImportDialog extends React.Component {
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
-          <DialogTitle id="alert-dialog-title">"Expected import file not found"</DialogTitle>
+          <DialogTitle id="alert-dialog-title">File {ext_imp_json_file} not found</DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
               Browse for json import file or exit FRET

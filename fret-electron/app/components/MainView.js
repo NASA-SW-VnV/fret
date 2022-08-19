@@ -78,7 +78,6 @@ import DeleteProjectDialog from './DeleteProjectDialog';
 import AppMainContent from './AppMainContent';
 import RequirementImportDialogs from './RequirementImportDialogs';
 import MissingExternalImportDialog from './MissingExternalImportDialog';
-import ExternalImportFileMissingDialog from './ExternalImportFileMissing';
 import ExportRequirementsDialog from './ExportRequirementsDialog';
 
 const app = require('electron').remote.app
@@ -221,8 +220,6 @@ class MainView extends React.Component {
     externalRequirement: {},
     externalVariables: {},
     missingExternalImportDialogOpen: false,
-    externalImportFileMissingDialogOpen: false,
-    browseExternalImportFile: true,
   };
 
   initializeSelectedProject = () => {
@@ -295,14 +292,14 @@ class MainView extends React.Component {
     const self = this;
     var homeDir = app.getPath('home');
     var filepath = ext_imp_json_file;
-    console.log('expected file in handleImportExternalTool: ', filepath);
+    //console.log('expected file in handleImportExternalTool: ', filepath);
     if (filepath && filepath.length > 0) {
       //const filepath = filepaths[0];
       fs.readFile(filepath, function (err,buffer) {
         if (err) {
           // throw err;
-          console.log('err in handleImportExternalTool: ', err);
-          console.log('err string in handleImportExternalTool: ', String(err));
+          //console.log('err in handleImportExternalTool: ', err);
+          //console.log('err string in handleImportExternalTool: ', String(err));
           // pop up error not found, give option to quit or access filesystem
           if (String(err).includes('ENOENT')){
 
@@ -502,14 +499,6 @@ class MainView extends React.Component {
     })
   }
 
-  openExternalImportFileMissingDialog = () => {
-    this.setState({
-      externalImportFileMissingDialogOpen: true,
-      browseExternalImportFile: true,
-      anchorEl: null
-    })
-  }
-
   closeDeleteProjectDialog = () => {
     this.setState({
       deleteProjectDialogOpen: false,
@@ -556,12 +545,12 @@ class MainView extends React.Component {
   }
 
   closeMissingExternalImportDialog = (missingExtImpDialogSelection) => {
-    console.log('missingExtImpDialogSelection: ', missingExtImpDialogSelection)
+    //console.log('missingExtImpDialogSelection: ', missingExtImpDialogSelection)
     if (missingExtImpDialogSelection){
       // call file browser
       const self = this;
       var homeDir = app.getPath('home');
-      console.log('calling browser in closeMissingExternalImportDialog');
+      //console.log('calling browser in closeMissingExternalImportDialog');
       var filepaths2 = dialog.showOpenDialogSync({
         defaultPath : homeDir,
         title : 'Import Requirements',
@@ -579,7 +568,7 @@ class MainView extends React.Component {
           fs.readFile(filepath2, function (err,buffer2) {
             if (err) throw err;
             data = JSON.parse(buffer2);
-            console.log('data: ', data)
+            //console.log('data: ', data)
             self.setState({
               externalRequirement : data.requirement,
               externalVariables : data.variables
@@ -590,7 +579,7 @@ class MainView extends React.Component {
 
         }
     } else {
-      console.log('exit FRET');
+      //console.log('exit FRET');
       ipcRenderer.send('closeFRET');
     }
     this.setState({missingExternalImportDialogOpen: false})
