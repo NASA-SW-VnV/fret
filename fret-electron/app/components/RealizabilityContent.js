@@ -666,15 +666,6 @@ class RealizabilityContent extends React.Component {
     return completedComponents.includes(name);
   }
 
-  renameIDs(contract) {
-    //rename inputs
-    
-    for (const inputVar of contract.inputVariables) {
-      inputVar.name = '__'+inputVar.name;
-    }
-  return true;
-  }
-
   computeConnectedComponents(project, components, completedComponents) {
     const {getPropertyInfo, getDelayInfo, getContractInfo} = this.props;
     const {projectReport} = this.state;    
@@ -689,7 +680,6 @@ class RealizabilityContent extends React.Component {
         }
       }).then(function (modelResult){        
         var contract = getContractInfo(modelResult);
-        // self.renameIDs(contract);
         contract.componentName = component.component_name+'Spec';
         db.find({
           selector: {
@@ -700,7 +690,7 @@ class RealizabilityContent extends React.Component {
             
             contract.properties = getPropertyInfo(fretResult, contract.outputVariables, component.component_name);            
             contract.delays = getDelayInfo(fretResult, component.component_name);
-            contract = self.renameProperties(contract);
+            contract = self.renameIDs(contract);
             /* Use contract to determine the output connected components
                * */
             var mappings = cc_analysis.compute_dependency_maps(contract);
@@ -925,7 +915,7 @@ class RealizabilityContent extends React.Component {
       }).then(function (fretResult){
         contract.properties = getPropertyInfo(fretResult, contract.outputVariables, selected.component_name);
         contract.delays = getDelayInfo(fretResult, selected.component_name);
-        contract = self.renameProperties(contract);
+        contract = self.renameIDs(contract);
         self.setState({diagnosisRequirements: fretResult.docs})
         
         return contract;
@@ -1028,8 +1018,13 @@ class RealizabilityContent extends React.Component {
     return {name, options};
   }
 
-  renameProperties(contract){
+  renameIDs(contract){
     let contractVariables = [].concat(contract.inputVariables.concat(contract.outputVariables.concat(contract.internalVariables.concat(contract.functions.concat(contract.modes)))));
+    
+    for (const contractVar of contractVariables) {
+      contractVar.name = '__'+contractVar.name;
+    }
+
     for (const property of contract.properties){
       property.reqid = '__'+property.reqid;
       for (const contractVar of contractVariables) {
@@ -1115,7 +1110,7 @@ class RealizabilityContent extends React.Component {
         }).then(function (fretResult){
           contract.properties = getPropertyInfo(fretResult, contract.outputVariables, tC.component_name);
           contract.delays = getDelayInfo(fretResult, tC.component_name);
-          contract = self.renameProperties(contract);
+          contract = self.renameIDs(contract);
           return contract;
         }).then(function (contract){
           if (monolithic) {

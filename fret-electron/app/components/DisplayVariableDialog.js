@@ -98,7 +98,6 @@ class DisplayVariableDialog extends React.Component {
     idType: '',
     dataType: '',
     assignment: '',
-    lustreValidAssignment: '',
     copilotAssignment: '',
     moduleName: '',
     modeRequirement: '',
@@ -132,7 +131,6 @@ class DisplayVariableDialog extends React.Component {
       copilotVariables: [],
       lustreVariables: [],
       assignment: '',
-      lustreValidAssignment: '',
       copilotAssignment: '',
     });
   }
@@ -153,17 +151,8 @@ class DisplayVariableDialog extends React.Component {
 
     if (name === 'assignment') {
       resultLustre = lustreExprSemantics.compileLustreExpr(event.target.value);
-      //console.log("result Lustre "+resultLustre.variables)
-      let tempAssignment = event.target.value;
-      if (resultLustre.variables) {
-        for (const lustreVar of resultLustre.variables) {
-          var regex = new RegExp('\\b' + lustreVar + '\\b', "g");
-          tempAssignment = tempAssignment.replace(regex, '__'+lustreVar);
-        }
-      }
       this.setState({
         [name]: event.target.value,
-        lustreValidAssignment: tempAssignment,
         errorsLustre: resultLustre.parseErrors ? 'Parse Errors: ' + resultLustre.parseErrors : '',
         lustreVariables: resultLustre.variables ? resultLustre.variables : []
       });
@@ -196,7 +185,7 @@ class DisplayVariableDialog extends React.Component {
   handleUpdate = () => {
     const self = this;
     const { selectedVariable } = this.props;
-    const { description, idType, dataType, assignment, lustreValidAssignment, copilotAssignment, modeRequirement, modeldoc_id, modelComponent, lustreVariables, copilotVariables, moduleName } = this.state;
+    const { description, idType, dataType, assignment, copilotAssignment, modeRequirement, modeldoc_id, modelComponent, lustreVariables, copilotVariables, moduleName } = this.state;
     var modeldbid = selectedVariable._id;
     var completedVariable = false;
     var newVariables = [];
@@ -249,7 +238,6 @@ class DisplayVariableDialog extends React.Component {
         moduleName: moduleName,
         description: description,
         assignment: assignment,
-        lustreValidAssignment: lustreValidAssignment,
         copilotAssignment: copilotAssignment,
         modeRequirement: modeRequirement,
         modeldoc: false,
@@ -276,7 +264,6 @@ class DisplayVariableDialog extends React.Component {
         moduleName: selectedVariable.moduleName,
         dataType: selectedVariable.dataType,
         assignment: selectedVariable.assignment,
-        lustreValidAssignment: selectedVariable.lustreValidAssignment,
         copilotAssignment: selectedVariable.copilotAssignment,
         modeRequirement: selectedVariable.modeRequirement,
         modeldoc_id: selectedVariable.modeldoc_id,
@@ -295,7 +282,6 @@ class DisplayVariableDialog extends React.Component {
         dataType: '',
         modeldoc_id: '',
         assignment: '',
-        lustreValidAssignment: '',
         copilotAssignment: '',
         modeRequirement: '',
         moduleName: ''
@@ -306,7 +292,6 @@ class DisplayVariableDialog extends React.Component {
         dataType: 'boolean',
         modeldoc_id: '',
         assignment: '',
-        lustreValidAssignment: '',
         copilotAssignment: '',
         modeRequirement: '',
         moduleName: ''
@@ -343,7 +328,7 @@ class DisplayVariableDialog extends React.Component {
 
   render() {
     const { classes, selectedVariable, modelVariables, open } = this.props;
-    const { idType, lustreValidAssignment, errorsLustre, errorsCopilot, checkLustre, checkCoPilot } = this.state;
+    const { idType, errorsLustre, errorsCopilot, checkLustre, checkCoPilot } = this.state;
     return (
       <div>
         <Dialog

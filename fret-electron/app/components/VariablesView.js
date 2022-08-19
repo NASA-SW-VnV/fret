@@ -250,18 +250,6 @@ class ComponentSummary extends React.Component {
             contract.properties = getPropertyInfo(fretResult, contract.outputVariables, component);
             contract.delays = getDelayInfo(fretResult, component);
             if (language === 'cocospec'){
-              let contractVariables = [].concat(contract.inputVariables.concat(contract.outputVariables.concat(contract.internalVariables.concat(contract.functions.concat(contract.modes)))));
-              for (const property of contract.properties){
-                // property.reqid = '__'+property.reqid;
-                for (const contractVar of contractVariables) {
-                  var regex = new RegExp('\\b' + contractVar.name.substring(2) + '\\b', "g");
-                  property.value = property.value.replace(regex, contractVar.name);        
-                }
-                if (!contract.internalVariables.includes("__FTP")) {
-                  var regex = new RegExp('\\b' + 'FTP' + '\\b', "g");
-                  property.value = property.value.replace(regex, '__FTP'); 
-                }
-              }
               archive.append(ejsCache.renderContractCode().contract.complete(contract), {name: contract.componentName+'.lus'})
             } else if (language === 'copilot'){
               contract.internalVariables.push.apply(contract.internalVariables, contract.modes);
