@@ -110,6 +110,6 @@ module.exports = Object.freeze({
   // variable mapping dialog. When, from the analysis portal, we
   // handle export of future-time formalizations, then we can add
   // persists and occurs to the list of predefined vars.
-  predefinedVars: ["persisted","occurred","prevOcc","nextOcc","preBool","preInt","preReal","absReal","absInt","minReal","minInt","maxReal","maxInt"]//,"persists","occurs"
+  predefinedVars: ["persisted","occurred","prevOcc","nextOcc","preBool","preInt","preReal","absReal","absInt","minReal","minInt","maxReal","maxInt","FTP"]//,"persists","occurs"
 
 });
