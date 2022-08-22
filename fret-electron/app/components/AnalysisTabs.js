@@ -48,6 +48,7 @@ const constants = require('../parser/Constants');
 const db = sharedObj.db;
 const modeldb = sharedObj.modeldb;
 const system_dbkeys = sharedObj.system_dbkeys;
+const utils = require('../../support/utils');
 
 const styles = theme => ({
   root: {
@@ -372,6 +373,29 @@ class AnalysisTabs extends React.Component {
     return contract;
   }
 
+  variableIdentifierReplacement(contract){
+    contract.inputVariables.forEach(function(input){
+      input.name = utils.replace_special_chars(input.name)
+    })
+    contract.outputVariables.forEach(function(output){
+      output.name = utils.replace_special_chars(output.name)
+    })
+    contract.internalVariables.forEach(function(internal){
+      internal.name = utils.replace_special_chars(internal.name)
+    })
+    contract.assignments.forEach((item, i) => {
+      contract.assignments[i] = utils.replace_special_chars(item);
+    });
+    contract.copilotAssignments.forEach((item, i) => {
+      contract.copilotAssignments[i] = utils.replace_special_chars(item);
+    });
+    contract.modes.forEach(function(mode){
+      mode.name = utils.replace_special_chars(mode.name)
+      mode.assignment = utils.replace_special_chars(mode.assignment)
+    })
+    return contract;
+  }
+
   render() {
     const {classes, selectedProject, existingProjectNames} = this.props;
     const {value, components, completedComponents, cocospecData, cocospecModes} = this.state;
@@ -399,12 +423,35 @@ class AnalysisTabs extends React.Component {
         </AppBar>
         {value === 0 &&
           <TabContainer>
-            <VariablesView selectedProject={selectedProject} existingProjectNames={existingProjectNames} synchStateWithDB={this.synchStateWithDB} checkComponentCompleted={this.checkComponentCompleted} getPropertyInfo={this.getPropertyInfo} getDelayInfo={this.getDelayInfo} getContractInfo={this.getContractInfo} components={components.map(e => e.component_name)} completedComponents={completedComponents} cocospecData={cocospecData} cocospecModes={cocospecModes}/>
+            <VariablesView
+            selectedProject={selectedProject}
+            existingProjectNames={existingProjectNames}
+            synchStateWithDB={this.synchStateWithDB}
+            checkComponentCompleted={this.checkComponentCompleted}
+            getPropertyInfo={this.getPropertyInfo}
+            getDelayInfo={this.getDelayInfo}
+            getContractInfo={this.getContractInfo}
+            components={components.map(e => e.component_name)}
+            completedComponents={completedComponents}
+            cocospecData={cocospecData}
+            cocospecModes={cocospecModes}
+            variableIdentifierReplacement={this.variableIdentifierReplacement}/>
           </TabContainer>
         }
         {value === 1 &&
           <TabContainer>
-            <RealizabilityView selectedProject={selectedProject} existingProjectNames={existingProjectNames} synchStateWithDB={this.synchStateWithDB} getPropertyInfo={this.getPropertyInfo} getDelayInfo={this.getDelayInfo} getContractInfo={this.getContractInfo} components={components} completedComponents={completedComponents} cocospecData={cocospecData} cocospecModes={cocospecModes}/>
+            <RealizabilityView
+            selectedProject={selectedProject}
+            existingProjectNames={existingProjectNames}
+            synchStateWithDB={this.synchStateWithDB}
+            getPropertyInfo={this.getPropertyInfo}
+            getDelayInfo={this.getDelayInfo}
+            getContractInfo={this.getContractInfo}
+            components={components}
+            completedComponents={completedComponents}
+            cocospecData={cocospecData}
+            cocospecModes={cocospecModes}
+            variableIdentifierReplacement={this.variableIdentifierReplacement}/>
           </TabContainer>
         }
       </div>

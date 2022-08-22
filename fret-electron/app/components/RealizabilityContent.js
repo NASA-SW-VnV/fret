@@ -169,7 +169,7 @@ const styles = theme => ({
   root: {
     display: 'flex',
     flexDirection : 'column'
-  },  
+  },
   wrapper: {
     margin: theme.spacing(1),
     position: 'relative',
@@ -612,7 +612,7 @@ class RealizabilityContent extends React.Component {
     projectReport: {projectName: '', systemComponents: []},
     settingsOpen: false,
     selectedEngine: 0,
-    retainFiles: false,        
+    retainFiles: false,
     actionsMenuOpen: false,
     diagnosisRequirements: []
   }
@@ -668,7 +668,7 @@ class RealizabilityContent extends React.Component {
 
   computeConnectedComponents(project, components, completedComponents) {
     const {getPropertyInfo, getDelayInfo, getContractInfo} = this.props;
-    const {projectReport} = this.state;    
+    const {projectReport} = this.state;
     const self = this;
     components.forEach(component => {
       modeldb.find({
@@ -678,7 +678,7 @@ class RealizabilityContent extends React.Component {
           completed: true,
           modeldoc: false
         }
-      }).then(function (modelResult){        
+      }).then(function (modelResult){
         var contract = getContractInfo(modelResult);
         contract.componentName = component.component_name+'Spec';
         db.find({
@@ -687,8 +687,8 @@ class RealizabilityContent extends React.Component {
           }
         }).then(function (fretResult){
           if (completedComponents.includes(component.component_name)) {
-            
-            contract.properties = getPropertyInfo(fretResult, contract.outputVariables, component.component_name);            
+
+            contract.properties = getPropertyInfo(fretResult, contract.outputVariables, component.component_name);
             contract.delays = getDelayInfo(fretResult, component.component_name);
             contract = self.renameIDs(contract);
             /* Use contract to determine the output connected components
@@ -717,14 +717,14 @@ class RealizabilityContent extends React.Component {
             }))
 
             let isDecomposable = connected_components.length > 1;
-  
+
             self.setState({
               selected: components[0],
               monolithic : !isDecomposable,
               compositional: isDecomposable,
               ccSelected: 'cc0',
               projectReport: projectReport
-            });              
+            });
           }
         }).catch((err) => {
           self.optLog(err);
@@ -808,7 +808,7 @@ class RealizabilityContent extends React.Component {
         projectReport: {projectName: selectedProject, systemComponents: sysComps}
     });
     this.checkDependenciesExist();
-        this.mounted = true;  
+        this.mounted = true;
   }
 
   componentWillUnmount() {
@@ -837,7 +837,7 @@ class RealizabilityContent extends React.Component {
       }
       this.setState({
         projectReport: {...projectReport, systemComponents: sysComps}
-      })      
+      })
     }
 
     if (selected !== prevState.selected) {
@@ -852,7 +852,7 @@ class RealizabilityContent extends React.Component {
       if (event.target.value === 'all') {
         this.setState({selected: 'all', monolithic : false, compositional : false});
       } else {
-        this.setState({selected: event.target.value});             
+        this.setState({selected: event.target.value});
       }
 
     } else if (name === 'monolithic' && !this.state.monolithic) {
@@ -870,7 +870,7 @@ class RealizabilityContent extends React.Component {
       this.setState({timeout: value});
   };
 
-  diagnoseSpec(event) {    
+  diagnoseSpec(event) {
     const {selected, ccSelected, compositional, monolithic, timeout, projectReport, retainFiles} = this.state;
     const {selectedProject, getPropertyInfo, getDelayInfo, getContractInfo} = this.props
     const self = this;
@@ -882,18 +882,18 @@ class RealizabilityContent extends React.Component {
 
     let nameAndEngine = self.getEngineNameAndOptions();
     let engineName = nameAndEngine.name;
-    let engineOptions = nameAndEngine.options + actualTimeout;    
+    let engineOptions = nameAndEngine.options + actualTimeout;
 
     if(compositional) {
       projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].diagnosisStatus = 'PROCESSING';
       self.setState({
         projectReport: projectReport
-      });            
+      });
     } else {
       projectReport.systemComponents[systemComponentIndex].monolithic.diagnosisStatus = 'PROCESSING';
       self.setState({
         projectReport: projectReport
-      });            
+      });
     }
 
     modeldb.find({
@@ -917,17 +917,17 @@ class RealizabilityContent extends React.Component {
         contract.delays = getDelayInfo(fretResult, selected.component_name);
         contract = self.renameIDs(contract);
         self.setState({diagnosisRequirements: fretResult.docs})
-        
+
         return contract;
       }).then(function (contract){
         if (compositional) {
-          var ccContract = JSON.parse(JSON.stringify(contract))          
+          var ccContract = JSON.parse(JSON.stringify(contract))
           var ccProperties = contract.properties.filter(p => projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].requirements.includes(p.reqid.substring(2)));
-          ccContract.properties = ccProperties          
+          ccContract.properties = ccProperties
 
           let engine = new DiagnosisEngine(ccContract, actualTimeout, 'realizability', engineName, engineOptions);
-          engine.main(function (err, result) {            
-            if (err) {              
+          engine.main(function (err, result) {
+            if (err) {
               projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].diagnosisStatus = 'ERROR';
               projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].error = err.message+'\n'+err.stdout.toString();
               self.setState({
@@ -951,7 +951,7 @@ class RealizabilityContent extends React.Component {
           engine.main(function (err, result) {
             if (err) {
               projectReport.systemComponents[systemComponentIndex].monolithic.diagnosisStatus = 'ERROR';
-              projectReport.systemComponents[systemComponentIndex].monolithic.error = err.message+'\n'+err.stdout.toString();                        
+              projectReport.systemComponents[systemComponentIndex].monolithic.error = err.message+'\n'+err.stdout.toString();
 
               self.setState({
                 projectReport: projectReport
@@ -959,7 +959,7 @@ class RealizabilityContent extends React.Component {
             } else {
               projectReport.systemComponents[systemComponentIndex].monolithic.diagnosisStatus = 'DIAGNOSED';
               projectReport.systemComponents[systemComponentIndex].monolithic.diagnosisReport = result[1];
-              projectReport.systemComponents[systemComponentIndex].monolithic.error = ''                      
+              projectReport.systemComponents[systemComponentIndex].monolithic.error = ''
               self.setState({
                 projectReport: projectReport
               });
@@ -998,7 +998,7 @@ class RealizabilityContent extends React.Component {
       //JKind without MBP
         name = 'jkind';
         options = '-fixpoint -timeout '
-        break;      
+        break;
       case 1:
       //JKind+AEVAL (MBP)
         name = 'jkind';
@@ -1008,7 +1008,7 @@ class RealizabilityContent extends React.Component {
       //Kind 2 without MBP
         name = 'kind2';
         options = '-json --enable CONTRACTCK --timeout '
-        break;        
+        break;
       case 3:
       //Kind 2 (MBP)
         name = 'kind2';
@@ -1020,7 +1020,7 @@ class RealizabilityContent extends React.Component {
 
   renameIDs(contract){
     let contractVariables = [].concat(contract.inputVariables.concat(contract.outputVariables.concat(contract.internalVariables.concat(contract.functions.concat(contract.modes)))));
-    
+
     for (const contractVar of contractVariables) {
       contractVar.name = '__'+contractVar.name;
     }
@@ -1029,11 +1029,11 @@ class RealizabilityContent extends React.Component {
       property.reqid = '__'+property.reqid;
       for (const contractVar of contractVariables) {
         var regex = new RegExp('\\b' + contractVar.name.substring(2) + '\\b', "g");
-        property.value = property.value.replace(regex, contractVar.name);        
+        property.value = property.value.replace(regex, contractVar.name);
       }
       if (!contract.internalVariables.includes("__FTP")) {
         var regex = new RegExp('\\b' + 'FTP' + '\\b', "g");
-        property.value = property.value.replace(regex, '__FTP'); 
+        property.value = property.value.replace(regex, '__FTP');
       }
     }
     return contract;
@@ -1050,7 +1050,7 @@ class RealizabilityContent extends React.Component {
     let nameAndEngine = self.getEngineNameAndOptions();
     let engineName = nameAndEngine.name;
     let engineOptions = nameAndEngine.options + actualTimeout;
-    
+
     var targetComponents;
     if (selected === 'all') {
       targetComponents = components;
@@ -1139,21 +1139,21 @@ class RealizabilityContent extends React.Component {
 
                 if (!retainFiles) {
                   self.deleteAnalysisFiles();
-                }                
+                }
               })
-          } else if (compositional) {          
+          } else if (compositional) {
             projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents.forEach(cc => {
               var filePath = analysisPath + tC.component_name+'_'+cc.ccName+'.lus';
               var output = fs.openSync(filePath, 'w');
               var ccContract = JSON.parse(JSON.stringify(contract))
-              
+
               var ccProperties = contract.properties.filter(p => cc.requirements.includes(p.reqid.substring(2)));
 
               ccContract.properties = ccProperties
               var lustreContract = ejsCache_realize.renderRealizeCode(engineName).component.complete(ccContract);
               fs.writeSync(output, lustreContract);
 
-              realizability.checkRealizability(filePath, engineName, engineOptions, function(err, result, time, cex) {                
+              realizability.checkRealizability(filePath, engineName, engineOptions, function(err, result, time, cex) {
                 if (err) {
                   cc.result = 'ERROR';
                   cc.error = err.message;
@@ -1168,19 +1168,19 @@ class RealizabilityContent extends React.Component {
                   cc.result = result;
                   cc.time = time;
                   cc.error = '';
-                  self.setState(prevState => {                    
+                  self.setState(prevState => {
                     prevState.projectReport = projectReport;
                     return(prevState);
                   })
                   ccResults.push(cc.result);
                 }
 
-                if (ccResults.length === projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents.length) {                  
+                if (ccResults.length === projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents.length) {
                   const reducer = (accumulator, currentValue) => accumulator && (currentValue === 'REALIZABLE');
 
                   if (ccResults.reduce(reducer, true)) {
                     self.setState(prevState => {
-                      prevState.projectReport.systemComponents[systemComponentIndex].compositional.result = 'REALIZABLE';                      
+                      prevState.projectReport.systemComponents[systemComponentIndex].compositional.result = 'REALIZABLE';
                       return(prevState);
                     })
                   } else {
@@ -1211,7 +1211,7 @@ class RealizabilityContent extends React.Component {
 
                   if (!retainFiles) {
                     self.deleteAnalysisFiles();
-                  }                  
+                  }
                 }
               })
             });
@@ -1246,7 +1246,7 @@ class RealizabilityContent extends React.Component {
     this.setState({retainFiles: value});
   }
 
-  handleActionsClick = (event) => {    
+  handleActionsClick = (event) => {
     this.setState({actionsMenuOpen: !this.state.actionsMenuOpen})
   };
 
@@ -1255,7 +1255,7 @@ class RealizabilityContent extends React.Component {
       return;
     }
     this.setState({actionsMenuOpen: false})
-  }  
+  }
 
   render() {
     const {classes, selectedProject, components, completedComponents, checkComponentCompleted} = this.props;
@@ -1268,18 +1268,18 @@ class RealizabilityContent extends React.Component {
     var connectedComponentIndex = (systemComponentIndex !== -1 && projectReport.systemComponents[systemComponentIndex].compositional) ? projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents.findIndex( cc => cc.ccName === ccSelected ) : 0;
 
     if (compositional && selected.component_name && projectReport.systemComponents[systemComponentIndex]) {
-      for (const cc of projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents) {        
+      for (const cc of projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents) {
             tabs.push(<Tab id = {"qa_rlzCont_tab_"+cc.ccName} key={cc.ccName} value={cc.ccName} classes={{root : classes.tabRoot}} label={
           <div key={cc.ccName} style={{display : 'flex', alignItems : 'center', flexWrap : 'wrap'}}>
             {cc.ccName}
             &nbsp;
-            <ResultIcon 
+            <ResultIcon
               reskey={cc.ccName}
               result={cc.result}
               time={cc.time !== undefined ? ' - ' + cc.time : ''}
               error={cc.error}/>
           </div>
-        }/>)                 
+        }/>)
       }
     }
 
@@ -1303,10 +1303,10 @@ class RealizabilityContent extends React.Component {
       status = compositionalStatus;
     }
 
-    var time = {};  
+    var time = {};
     for (const comp of projectReport.systemComponents) {
       time[comp.name] = comp.monolithic ? comp.monolithic.time : '';
-    }; 
+    };
 
     var diagStatus, diagReport;
     if (selected !== '' && selected !== 'all' && projectReport.systemComponents[systemComponentIndex]) {
@@ -1319,15 +1319,15 @@ class RealizabilityContent extends React.Component {
 
     let actionsMargin = {marginRight: '55%', transition: 'margin-right 450ms cubic-bezier(0.23, 1, 0.32, 1)' };
 
-    if (this.state.settingsOpen) {      
+    if (this.state.settingsOpen) {
       actionsMargin.marginRight = '40%'
     }
-    
+
     return(
       <div>
         {components.length !== 0 &&
           <div style={{alignItems: 'flex-end', display: 'flex', flexWrap :'wrap'}}>
-          <Grid container alignItems="flex-end">          
+          <Grid container alignItems="flex-end">
             <FormControl className={classes.formControl} required>
               <InputLabel>System Component</InputLabel>
               <Select
@@ -1344,7 +1344,7 @@ class RealizabilityContent extends React.Component {
                         value={!this.isComponentComplete(n.component_name) ? '' : n}
                         title={!this.isComponentComplete(n.component_name) ? 'Analysis is not possible for this component. Please complete mandatory variable fields in Variable Mapping first.' : ''}>
                           <span key={n.component_name}>
-                          <MenuItem key={n.component_name} 
+                          <MenuItem key={n.component_name}
                             id={"qa_rlzCont_mi_sysComp_"+n.component_name}
                             disabled={!this.isComponentComplete(n.component_name)}>
                             <div key={n.component_name} style={{display : 'flex', alignItems : 'center'}}>
@@ -1364,7 +1364,7 @@ class RealizabilityContent extends React.Component {
             </FormControl>
             <FormControlLabel
               disabled={
-                selected === '' || (selected !== 'all' && systemComponentIndex > -1 && (!projectReport.systemComponents[systemComponentIndex].compositional || projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents.length <= 1))                  
+                selected === '' || (selected !== 'all' && systemComponentIndex > -1 && (!projectReport.systemComponents[systemComponentIndex].compositional || projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents.length <= 1))
               }
               control={
                 <Checkbox
@@ -1395,14 +1395,14 @@ class RealizabilityContent extends React.Component {
             <Grid item  >
               Monolithic
               <Switch
-                classes={{switchBase: classes.switchBase,track: classes.track}} 
+                classes={{switchBase: classes.switchBase,track: classes.track}}
                 disabled={
-                selected === '' || (selected !== 'all' && 
+                selected === '' || (selected !== 'all' &&
                 (projectReport.systemComponents[systemComponentIndex] ? projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents.length <= 1 : false))
                 }
               />
               Compositional
-            </Grid> */}           
+            </Grid> */}
             {!dependenciesExist &&
               <Tooltip title={"Dependencies missing for realizability checking. Click \"HELP\" for details."}>
                 <ErrorIcon id="qa_rlzCont_icon_depMissing" className={classes.wrapper} style={{verticalAlign : 'bottom'}} color='error'/>
@@ -1414,24 +1414,24 @@ class RealizabilityContent extends React.Component {
               </Tooltip>
             }
             <div className={classes.wrapper}>
-              <Button 
+              <Button
                 id="qa_rlzCont_btn_actions"
                 ref={this.anchorRef}
                 aria-controls={actionsMenuOpen ? 'realizability_actions_menu' : undefined}
                 aria-haspopup="true"
-                aria-expanded={actionsMenuOpen ? 'true' : undefined}   
+                aria-expanded={actionsMenuOpen ? 'true' : undefined}
                 size="small" variant="contained" color="secondary"
                 disabled={status[selected.component_name] === 'PROCESSING' || diagStatus === 'PROCESSING'}
                 endIcon={<KeyboardArrowDownIcon />}
                 onClick={(event) => this.handleActionsClick(event)}>
-                Actions        
+                Actions
               </Button>
               <Menu id="qa_rlzCont_sel_actions" anchorEl={this.anchorRef.current} open={actionsMenuOpen} onClose={(event) => this.handleActionsMenuClose(event)} MenuListProps={{'aria-labelledby': 'realizability_actions_button'}}>
-                <MenuItem 
+                <MenuItem
                 id="qa_rlzCont_btn_check"
                 disabled={!dependenciesExist || (dependenciesExist && (selected === '' || missingDependencies.includes(this.getEngineNameAndOptions().name)))}
                 onClick={(event) => this.checkRealizability(event)}>Check Realizability</MenuItem>
-                <MenuItem 
+                <MenuItem
                   id="qa_rlzCont_btn_diagnose"
                   onClick={(event) => this.diagnoseSpec(event)}
                   disabled={status[selected.component_name] === 'PROCESSING' || diagStatus === 'PROCESSING' || !dependenciesExist || (dependenciesExist && (selected === '' || selected === 'all')) ||
@@ -1446,7 +1446,7 @@ class RealizabilityContent extends React.Component {
                 <MenuItem id="qa_rlzCont_btn_settings" onClick={() => this.handleSettingsOpen()}>Change Settings</MenuItem>
               </Menu>
             </div>
-            
+
             <div className={classes.wrapper}>
               <Button id="qa_rlzCont_btn_help" color="secondary" onClick={this.handleHelpOpen} size="small" className={classes.vAlign} variant="contained"> Help </Button>
             </div>
@@ -1487,8 +1487,8 @@ class RealizabilityContent extends React.Component {
                                 &nbsp;
                               </div>
                             </Fade>) : <div/>
-                          }                        
-                          <DiagnosisRequirementsTable 
+                          }
+                          <DiagnosisRequirementsTable
                             selectedProject={selectedProject}
                             selectedComponent={selected.component_name}
                             existingProjectNames={[selectedProject]}
@@ -1542,7 +1542,7 @@ class RealizabilityContent extends React.Component {
             <Typography>
               Help
             </Typography>
-            <IconButton className={classes.closeButton} 
+            <IconButton className={classes.closeButton}
               id="qa_rlzCont_ib_closeHelpPage"
               aria-label="close" onClick={this.handleHelpClose}>
               <CloseIcon />
@@ -1551,7 +1551,7 @@ class RealizabilityContent extends React.Component {
           <DialogContent dividers>
             <ReactMarkdown renderers={{image: (props) => <img {...props} style={{maxHeight: '10%', width: '100%'}} />}} transformImageUri = {uri => `../docs/_media/screen_shots/${uri}`} linkTarget="_blank" source={realizabilityManual}/>
           </DialogContent>
-        </Dialog>        
+        </Dialog>
       </div>
     );
   }
@@ -1564,7 +1564,8 @@ RealizabilityContent.propTypes = {
   completedComponents: PropTypes.array.isRequired,
   getPropertyInfo: PropTypes.func.isRequired,
   getDelayInfo: PropTypes.func.isRequired,
-  getContractInfo: PropTypes.func.isRequired
+  getContractInfo: PropTypes.func.isRequired,
+  variableIdentifierReplacement: PropTypes.func.isRequired
 };
 
 export default withStyles(styles)(RealizabilityContent);

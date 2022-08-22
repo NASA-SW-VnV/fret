@@ -80,7 +80,6 @@ const app = require('electron').remote.app;
 const dialog = require('electron').remote.dialog;
 
 import analysisPortalManual from '../../docs/_media/ExportingForAnalysis/analysisInsideFRET.md';
-
 var dbChangeListener;
 
 const styles = theme => ({
@@ -127,7 +126,7 @@ let VariablesViewHeader = props => {
        <FormControl required className={classes.formControl}>
          <InputLabel htmlFor="language-export-required"> Export Language</InputLabel>
          <Select
-           id="qa_var_sel_exportLanguage" 
+           id="qa_var_sel_exportLanguage"
            value={language}
            onChange={handleChange('language')}
            inputProps={{
@@ -250,12 +249,14 @@ class ComponentSummary extends React.Component {
             contract.properties = getPropertyInfo(fretResult, contract.outputVariables, component);
             contract.delays = getDelayInfo(fretResult, component);
             if (language === 'cocospec'){
+              self.props.variableIdentifierReplacement(contract);
               archive.append(ejsCache.renderContractCode().contract.complete(contract), {name: contract.componentName+'.lus'})
             } else if (language === 'copilot'){
               contract.internalVariables.push.apply(contract.internalVariables, contract.modes);
               contract.modes.forEach(function(mode) {
-                contract.assignments.push(mode.assignment);
+              contract.assignments.push(mode.assignment);
               });
+              self.props.variableIdentifierReplacement(contract);
               archive.append(ejsCacheCoPilot.renderCoPilotSpec().contract.complete(contract), {name: contract.componentName+'.json'})
             }
             // finalize the archive (ie we are done appending files but streams have to finish yet)
@@ -274,8 +275,8 @@ class ComponentSummary extends React.Component {
       return (
         <Tooltip title='Export verification code.'>
         <span>
-          <Button id={"qa_var_btn_export_"+component} size="small" 
-            onClick={this.exportComponentCode} color="secondary" 
+          <Button id={"qa_var_btn_export_"+component} size="small"
+            onClick={this.exportComponentCode} color="secondary"
             variant='contained' className={classes.buttonControl}>
               Export
           </Button>
@@ -305,7 +306,8 @@ ComponentSummary.propTypes = {
   language: PropTypes.string.isRequired,
   getPropertyInfo: PropTypes.func.isRequired,
   getDelayInfo: PropTypes.func.isRequired,
-  getContractInfo: PropTypes.func.isRequired
+  getContractInfo: PropTypes.func.isRequired,
+  variableIdentifierReplacement: PropTypes.func.isRequired
 };
 
 ComponentSummary = withStyles(componentStyles)(ComponentSummary);
@@ -414,7 +416,7 @@ class VariablesView extends React.Component {
                   getPropertyInfo={getPropertyInfo}
                   getDelayInfo={getDelayInfo}
                   getContractInfo={getContractInfo}
-
+                  variableIdentifierReplacement={this.props.variableIdentifierReplacement}
                 />
               </AccordionSummary>
               <Divider />
@@ -448,7 +450,8 @@ VariablesView.propTypes = {
   completedComponents: PropTypes.array.isRequired,
   getPropertyInfo: PropTypes.func.isRequired,
   getDelayInfo: PropTypes.func.isRequired,
-  getContractInfo: PropTypes.func.isRequired
+  getContractInfo: PropTypes.func.isRequired,
+  variableIdentifierReplacement: PropTypes.func.isRequired
 };
 
 export default withStyles(styles)(VariablesView);

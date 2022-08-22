@@ -120,6 +120,7 @@ class RealizabilityView extends React.Component {
             getPropertyInfo={getPropertyInfo}
             getDelayInfo={getDelayInfo}
             getContractInfo={getContractInfo}
+            variableIdentifierReplacement={self.props.variableIdentifierReplacement}
           />
         </div>
       );
@@ -138,7 +139,8 @@ RealizabilityView.propTypes = {
   completedComponents: PropTypes.array.isRequired,
   getPropertyInfo: PropTypes.func.isRequired,
   getDelayInfo: PropTypes.func.isRequired,
-  getContractInfo: PropTypes.func.isRequired
+  getContractInfo: PropTypes.func.isRequired,
+  variableIdentifierReplacement: PropTypes.func.isRequired
 };
 
 export default withStyles(styles)(RealizabilityView);
