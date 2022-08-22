@@ -951,7 +951,7 @@ class RealizabilityContent extends React.Component {
           engine.main(function (err, result) {
             if (err) {
               projectReport.systemComponents[systemComponentIndex].monolithic.diagnosisStatus = 'ERROR';
-              projectReport.systemComponents[systemComponentIndex].monolithic.error = err.message+'\n'+err.stdout.toString();
+              projectReport.systemComponents[systemComponentIndex].monolithic.error = err.message+'\n';
 
               self.setState({
                 projectReport: projectReport
@@ -1019,24 +1019,40 @@ class RealizabilityContent extends React.Component {
   }
 
   renameIDs(contract){
-    let contractVariables = [].concat(contract.inputVariables.concat(contract.outputVariables.concat(contract.internalVariables.concat(contract.functions.concat(contract.modes)))));
+    const { variableIdentifierReplacement } = this.props;
+    let newContract = variableIdentifierReplacement(contract);
+    let contractVariables = [].concat(newContract.inputVariables.concat(newContract.outputVariables.concat(newContract.internalVariables.concat(newContract.functions.concat(newContract.modes)))));
 
     for (const contractVar of contractVariables) {
       contractVar.name = '__'+contractVar.name;
     }
 
-    for (const property of contract.properties){
+    newContract.assignments.forEach((item, i) => {
+      for (const contractVar of contractVariables) {
+        var regex = new RegExp('\\b' + contractVar.name.substring(2) + '\\b', "g");
+        newContract.assignments[i] = newContract.assignments[i].replace(
+          regex, contractVar.name);
+      }
+
+      if (!newContract.internalVariables.includes("__FTP")) {
+        var regex = new RegExp('\\b' + 'FTP' + '\\b', "g");
+        newContract.assignments[i] = newContract.assignments[i].replace(
+          regex, '__FTP');
+      }      
+    })
+
+    for (const property of newContract.properties){
       property.reqid = '__'+property.reqid;
       for (const contractVar of contractVariables) {
         var regex = new RegExp('\\b' + contractVar.name.substring(2) + '\\b', "g");
         property.value = property.value.replace(regex, contractVar.name);
       }
-      if (!contract.internalVariables.includes("__FTP")) {
+      if (!newContract.internalVariables.includes("__FTP")) {
         var regex = new RegExp('\\b' + 'FTP' + '\\b', "g");
         property.value = property.value.replace(regex, '__FTP');
       }
     }
-    return contract;
+    return newContract;
   }
 
   checkRealizability = () => {

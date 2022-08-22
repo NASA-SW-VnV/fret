@@ -59,6 +59,7 @@ import Input from '@material-ui/core/Input';
 import { DiagnosisContext } from './DiagnosisProvider';
 
 const ltlsim = require('ltlsim-core').ltlsim;
+const utils = require('../../support/utils');
 
 const tableComponentBarStyles = theme => ({
   root: {
@@ -250,7 +251,7 @@ class CounterexampleTable extends React.Component {
           <TableRow key={cex.indexOf(row)}>
             {Object.keys(row).map(function(key, index) {
               if (index === 0) {
-              return(<TableCell id={"qa_counterEx_tc_"+cex.indexOf(row)+"_"+index} key={index}> {row[key].toString()} </TableCell>);  
+              return(<TableCell id={"qa_counterEx_tc_"+cex.indexOf(row)+"_"+index} key={index}> {utils.unreplace_special_chars(row[key].toString())} </TableCell>);  
               } else {
               return(<TableCell id={"qa_counterEx_tc_"+cex.indexOf(row)+"_"+index} key={index} align="right"> {row[key].toString()} </TableCell>);  
               }                        
