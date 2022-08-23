@@ -43,6 +43,11 @@ export function checkRealizability(filePath, engine, options, callback) {
 
   exec(command, function (err, stdout, stderr) {
     if (err) {
+      if (engine === 'kind2') {
+        var kind2Output = JSON.parse(stdout);
+        var logResults = kind2Output.filter(e => ((e.objectType === "log") && (e.level === "error")))[0];
+        err.message = err.message + '\n' + logResults.value.toString();
+      }
       callback(err);
       console.log(err.status)
       console.log(err.message)
@@ -54,7 +59,7 @@ export function checkRealizability(filePath, engine, options, callback) {
         result = stdout.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];
         time = stdout.match(new RegExp('(Time = )(.*?)\\n'))[2];
 
-        callback(null, result, time, null);
+        callback(null, result, time + '\n'+ stderr.toString(), null);
       } else {
         var kind2Output = JSON.parse(stdout);
         var realizabilityResults = kind2Output.filter(e => e.objectType === "realizabilityCheck")[0];

@@ -140,8 +140,7 @@ export function compute_connected_components(contract, output_dep_map){
                 connected_component['properties'].add(prop.reqid)
             }
         }
-    }
-
+    }    
     return disjoint_list;
 }
 
@@ -150,7 +149,6 @@ export function compute_dependency_maps(contract){
      * @returns maps: {'internal':internal_dep_map, 'output':output_dep_map} 
      * Returns mappings from property to dependent internal and output variables
      * */
-
     var output_dep_map = {}; 
     var internal_dep_map = {};
     var assignment_map = {}; 
@@ -189,7 +187,7 @@ export function compute_dependency_maps(contract){
     for(var int_var of contract['internalVariables']){
 
         compute_output_dependencies(int_var.name, internal_dep_map, output_dep_map, false);
-    }    
+    }  
     
     // Get 1st level dependencies
     for(var prop of contract['properties']){
@@ -243,7 +241,7 @@ export function compute_output_dependencies(var_name, internal_dep_map, output_d
     for(var int_var of internal_dep_map[var_name]){
         
 
-        if(!one_level){ 
+        if(!one_level && (int_var !== var_name)){ 
             compute_output_dependencies(int_var, internal_dep_map, output_dep_map);
         }
 

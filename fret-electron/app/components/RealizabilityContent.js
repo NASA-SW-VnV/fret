@@ -256,7 +256,7 @@ class ResultIcon extends React.Component {
         (time !== undefined ? time : '')} </span>}>
         {result === 'REALIZABLE' ?
           <CheckCircleOutlineIcon id = {"qa_rlzCont_res_"+reskey+"_"+result} style={{fontSize : '20px', verticalAlign : 'bottom', color : '#68BC00'}}/> :
-          result === 'UNREALIZABLE' ?
+          (result === 'UNREALIZABLE' || result === 'INCONSISTENT') ?
             <HighlightOffIcon id = {"qa_rlzCont_res_"+reskey+"_"+result} style={{fontSize : '20px', verticalAlign : 'bottom'}} color='error'/> :
             result === 'PROCESSING' ?
               <CircularProgress id = {"qa_rlzCont_res_"+reskey+"_"+result} style={{verticalAlign : 'bottom'}} size={15}/> :
@@ -687,16 +687,15 @@ class RealizabilityContent extends React.Component {
           }
         }).then(function (fretResult){
           if (completedComponents.includes(component.component_name)) {
-
             contract.properties = getPropertyInfo(fretResult, contract.outputVariables, component.component_name);
             contract.delays = getDelayInfo(fretResult, component.component_name);
             contract = self.renameIDs(contract);
+
             /* Use contract to determine the output connected components
                * */
             var mappings = cc_analysis.compute_dependency_maps(contract);
             var connected_components = cc_analysis.compute_connected_components(contract, mappings['output']);
             let ccArray = [];
-
             connected_components.forEach(comp => {
               ccArray.push({
                 ccName: 'cc' + connected_components.indexOf(comp),
@@ -1052,6 +1051,7 @@ class RealizabilityContent extends React.Component {
         property.value = property.value.replace(regex, '__FTP');
       }
     }
+
     return newContract;
   }
 
@@ -1424,7 +1424,7 @@ class RealizabilityContent extends React.Component {
                 <ErrorIcon id="qa_rlzCont_icon_depMissing" className={classes.wrapper} style={{verticalAlign : 'bottom'}} color='error'/>
               </Tooltip>
             }
-            {monolithic && (status[selected.component_name] === 'ERROR' || diagStatus === 'ERROR') &&
+            {monolithic && diagStatus === 'ERROR' &&
               <Tooltip title={(systemComponentIndex !== -1 && projectReport.systemComponents[systemComponentIndex]) ? projectReport.systemComponents[systemComponentIndex].monolithic.error.toString() : ''}>
                 <ErrorIcon id="qa_rlzCont_icon_analysisError" className={classes.wrapper} style={{verticalAlign: 'bottom'}} color='error'/>
               </Tooltip>
