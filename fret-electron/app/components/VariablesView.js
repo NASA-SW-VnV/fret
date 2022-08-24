@@ -78,6 +78,7 @@ const fs = require('fs');
 const archiver = require('archiver');
 const app = require('electron').remote.app;
 const dialog = require('electron').remote.dialog;
+const utils = require('../../support/utils');
 
 import analysisPortalManual from '../../docs/_media/ExportingForAnalysis/analysisInsideFRET.md';
 var dbChangeListener;
@@ -185,7 +186,9 @@ class ComponentSummary extends React.Component {
           componentMapping.model_path = doc.modelComponent;
         }
         var variable = {};
-        variable.variable_name = doc.modeldoc_id;
+        //Variable name in FRETish
+        variable.variable_name = utils.replace_special_chars(doc.variable_name);
+        //Signal path in Simulink model
         variable.variable_path = componentMapping.model_path+'/'+doc.modeldoc_id;
         (doc.idType === 'Input') ? componentInputs.push(variable) : componentOutputs.push(variable);
       }
