@@ -761,7 +761,7 @@ class SortableTable extends React.Component {
           requirements={this.props.requirements}
         />
         <RefactorRequirementDialog
-          selectedRequirement={this.state.selectedRequirement}          
+          selectedRequirement={this.state.selectedRequirement}
           open={this.state.refactorDialogOpen}
           handleDialogClose={this.handleRefactorDialogClose}
           requirements={this.props.requirements}

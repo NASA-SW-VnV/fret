@@ -35,7 +35,7 @@
 /**
 * Dialog component for refacotring, based on existing FRET Code.
 * @author Matt Luckcuck <m.luckcuck@tutanota.com>
-* Started: May 2022 
+* Started: May 2022
 */
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
@@ -98,7 +98,8 @@ class RefactorRequirementDialog extends React.Component {
     refactoringType: '',
     refactoringContent: ' ',
     extractString: 'default extract string',
-    newName: ''
+    newName: '',
+    requirements: []
   };
 
   componentWillReceiveProps = (props) => {
@@ -109,7 +110,7 @@ class RefactorRequirementDialog extends React.Component {
 //      openCreateDialog: props.handleCreateDialogOpen,
 //      openDeleteDialog: props.handleDeleteDialogOpen,
       selectedRequirementId: props.selectedRequirement.reqid,
-
+      requirements: props.requirements
     });
   }
 
@@ -134,7 +135,7 @@ handleOk = () => {
   // req, fragment, destinationName, knockons
   let result = RefactoringController.extractRequirement(
     this.state.selectedRequirement,
-    this.state.extractString, this.state.newName, false
+    this.state.extractString, this.state.newName, this.state.applyToAll, this.state.requirements
   );
 
   console.log(result.req);
@@ -158,6 +159,11 @@ handleChangeExtract = () => event => {
 updateNewName = () => event => {
   console.log(event.target.value);
   this.setState({ newName: event.target.value });
+}
+
+updateApplytoAllStatus = () => event => {
+  console.log(event.target.checked);
+  this.setState({applyToAll: event.target.checked});
 }
 
 /*
@@ -321,13 +327,13 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
                 </Grid>
 
                 <Grid style={{ textAlign: 'right' }} item xs={6}>
-                  Apply to all available fragments:
+                  Apply to all Matching Fragments:
                 </Grid>
                 <Grid item xs={6}>
                   <Checkbox
                     inputProps={{ 'aria-label': 'controlled' }}
-                    disabled
-                  />
+                    onChange={this.updateApplytoAllStatus()}
+                    />
                 </Grid>
           </Grid>
 
@@ -356,6 +362,7 @@ RefactorRequirementDialog.propTypes = {
   selectedRequirement: PropTypes.object.isRequired,
   open: PropTypes.bool.isRequired,
   handleDialogClose: PropTypes.func.isRequired,
+  requirements: PropTypes.array
 //  handleCreateDialogOpen: PropTypes.func.isRequired,
 //  handleDeleteDialogOpen: PropTypes.func.isRequired,
 };

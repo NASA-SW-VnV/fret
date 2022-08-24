@@ -23,7 +23,7 @@ exports.test = function test(extractString, newName)
 * Handles one request to refactor a requirement, including the
 * knock-on effects to other requirements containing the same fragment.
 */
-function extractRequirement(req, fragment, destinationName, knockons)
+function extractRequirement(req, fragment, destinationName, knockons, allRequirements)
 {
 	// Step 1
   // Clone requirement
@@ -61,7 +61,7 @@ function extractRequirement(req, fragment, destinationName, knockons)
 	// Step 3
   // Replace fragment in original requirement with reference to new requirement
 
-	model.ReplaceFragment(req, fragment, destinationName)
+	model.ReplaceFragment(req, fragment, destinationName);
 
  //Updating original requirement
 	model.AddRequirementToDB(req);
@@ -77,8 +77,29 @@ function extractRequirement(req, fragment, destinationName, knockons)
 
   if (knockons)
   {
+		console.log("knockons");
     // Do the thing
     // Similar to this method, but the destination requirement already exists.
+		project = req.project;
+		let reqKnockons = model.FindRequirementsWithFragment(allRequirements, project, fragment, req.reqid, destinationName);
+
+		console.log("Lets see what requirements I've got to update...");
+		console.log(reqKnockons);
+
+		if(reqKnockons.length >0)
+		{
+			for (var i = 0; i < reqKnockons.length; i++) {
+
+				let kreq = reqKnockons[i];
+
+				console.log("replacing fragment and updating db");
+				console.log(kreq);
+
+				model.ReplaceFragment(kreq, fragment, destinationName);
+				model.AddRequirementToDB(kreq);
+			}
+		}
+
   }
 
 
@@ -141,7 +162,7 @@ return requirement
 
 }
 
- 
+
 /**
 * Handles one request to inline a requirement, including the knock-on effects to
 * other requirements that reference the requirement being inlined.

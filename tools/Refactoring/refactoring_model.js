@@ -60,11 +60,10 @@ function CopyFragment(fragment, destinationReq)
 * The Database Callback function,
 * handles the result from the database
 */
-function DBCallback(err, responses)
+function DBAddCallback(err, responses)
 {
   if (err) {
     console.log("Adding Requirement Failed...");
-    console.log(req._id);
     return console.log(err);
   }
   else {
@@ -79,7 +78,89 @@ function DBCallback(err, responses)
 */
 export function AddRequirementToDB(req)
 {
-  db.put(req, DBCallback)
+  console.log("Adding Requirement: " + req.reqid);
+  db.put(req, DBAddCallback)
+}
+
+
+export function RequirementsInProject(project_name)
+{
+
+  try{
+    var result = db.allDocs( {include_docs: true, selector:{project:project_name}} );
+
+      // for( var i=0; i<result.rows.length; i++ ) {
+      //     // result.rows[i].id is the document _id
+      //     // result.rows[i].doc is the full document if include_docs is true
+      // }
+      return result;
+  }
+  catch(err)
+  {
+    DBCallback(err, "");
+  }
+
+}
+
+
+/**
+* Finds all the requirements in the given project
+* that contain the given fragment
+*/
+export function FindRequirementsWithFragment(allRequirements, project_name, fragment, reqName, destinationName)
+{
+  let reqsWithFrag = [];
+  // var result = db.allDocs( {include_docs: true, selector:{project:project_name}}, function(err, response) {
+  // if (err) { return console.log(err); }
+  // // handle result
+
+  for( var i=0; i<allRequirements.length; i++ ) {
+      let this_req = allRequirements[i].doc
+       // result.rows[i].id is the document _id
+       // result.rows[i].doc is the full document if include_docs is true
+       console.log(i);
+       console.log(this_req);
+
+          let this_req_text = this_req.fulltext;
+          if(typeof this_req_text === "undefined")
+          {
+            console.log("No fulltext, so assuming it's not a requirement.")
+          }
+          else if(this_req.req_id == destinationName)
+          {
+            console.log("Found the destination requirement. Skip")
+          }
+          else if (this_req.req_id == reqName)
+          {
+            console.log("Found the (old) version of the requirement I'm refactoring. Skip")
+          }
+          else
+          {
+             console.log(this_req_text);
+             if(this_req_text.includes(fragment))
+             {
+               console.log("Pushing " + this_req);
+               reqsWithFrag.push(this_req);
+             }
+           }
+      }
+
+      return reqsWithFrag;
+  //});
+
+
+
+  // console.log(typeof(reqsInProject));
+  // console.log(reqsInProject);
+  //
+  // let reqsWithFrag = [];
+
+  // reqsInProject.forEach((req) => {
+  //   if(req.fulltext.includes(fragment))
+  //   {
+  //     reqsWithFrag.push(req);
+  //   }
+  // });
 }
 
 // export function AddNewRequirementToDB(req)
