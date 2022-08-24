@@ -93,7 +93,7 @@ let v = ID
 	.replace(/^N/g, "")
 	.replace(/_S_/g, " ")
 	.replace(/_D_/g, ".")
-	.replace(/_p_/g, "*")
+	.replace(/_p_/g, "+")
 	.replace(/_m_/g, "-")
 	.replace(/_mul_/g, "*")
 	.replace(/_div_/g, "/")
