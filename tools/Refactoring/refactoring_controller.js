@@ -1,5 +1,8 @@
-// refactoring_controller.js
-// Matt Luckcuck 2022
+/**
+* Controller code for the refactoring module backend
+* @author Matt Luckcuck <m.luckcuck@tutanota.com>
+* 2022
+*/
 
 //var FretRequirement = require("./FretRequirement")
 var model = require("./refactoring_model")
@@ -15,9 +18,11 @@ exports.test = function test(extractString, newName)
 
 }
 
-// Handles one request to refactor a requirement, including the
-// knock-on effects to other requirements containing the same fragment.
 
+/**
+* Handles one request to refactor a requirement, including the
+* knock-on effects to other requirements containing the same fragment.
+*/
 function extractRequirement(req, fragment, destinationName, knockons)
 {
 	// Step 1
@@ -45,7 +50,7 @@ function extractRequirement(req, fragment, destinationName, knockons)
 
 
   // New fretish requirement
-	let newFretish = "if " + fragment + " " + component + " shall satisfy " + destinationName;
+	let newFretish = "if " + fragment + " " + component + " shall satisfy " + destinationName.toUpperCase();
 
 	 clonedReq.fulltext = newFretish;
 	 // Compile the new semantics and add to the new req
@@ -53,19 +58,15 @@ function extractRequirement(req, fragment, destinationName, knockons)
 	 //console.log(newSemantics);
 	 clonedReq.semantics = newSemantics.collectedSemantics;
 
-
-	console.log("req");
-	console.log(req);
 	// Step 3
   // Replace fragment in original requirement with reference to new requirement
 
 	model.ReplaceFragment(req, fragment, destinationName)
 
-
-console.log("Adding Req");
+ //Updating original requirement
 	model.AddRequirementToDB(req);
 
-	console.log("Addinf Cloned Req");
+// Adding extracted requirement
 	model.AddRequirementToDB(clonedReq);
 
   // Step 4
@@ -88,11 +89,13 @@ console.log("Adding Req");
 
   return {req: req, fragment :clonedReq}
 }
-exports.extractRequirement =extractRequirement;
+exports.extractRequirement = extractRequirement;
 
-// Handles one request to move a definition to another requirement
-// This should have no knock-on effects, since we can only refer to a requirement
-// not a definition within a requirement.
+/**
+* Handles one request to move a definition to another requirement
+* This should have no knock-on effects, since we can only refer to a requirement
+* not a definition within a requirement.
+*/
 function MoveDefinition(sourceReq, definition, destinationReq)
 {
   // Ramos
@@ -104,7 +107,7 @@ function MoveDefinition(sourceReq, definition, destinationReq)
 
 
 // Step 2
-  model.MoveFragment(sourceReq, definition, destinationReq) // Not yet working
+model.MoveFragment(sourceReq, definition, destinationReq) // Not yet working
 
 // Step 3
  // (Ramos' step 3 isn't needed so...) Verify
@@ -112,8 +115,11 @@ function MoveDefinition(sourceReq, definition, destinationReq)
 
 }
 
-// Handles on request to rename a requirement, including the knock-on effect to
-// other requirements that reference this requirement
+
+/**
+* Handles on request to rename a requirement, including the knock-on effect to
+* other requirements that reference this requirement
+*/
 function Rename(requirement, newName)
 {
   // Ramos
@@ -135,8 +141,11 @@ return requirement
 
 }
 
-// Handles one request to inline a requirement, including the knock-on effects to
-// other requirements that reference the requirement being inlined.
+ 
+/**
+* Handles one request to inline a requirement, including the knock-on effects to
+* other requirements that reference the requirement being inlined.
+*/
 function InlineRequirement()
 {
 

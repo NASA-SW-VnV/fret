@@ -1,5 +1,8 @@
-// refactoring_model.js
-// Matt Luckcuck 2022
+/**
+* Model (lower-level and database) functions for the refactoring module's backend
+* @author Matt Luckcuck <m.luckcuck@tutanota.com>
+* 2022
+*/
 
 
 // Fret's Database Stuff
@@ -9,11 +12,12 @@ const modeldb = require('electron').remote.getGlobal('sharedObj').modeldb;
 //const uuidv1 = require('uuid/v1');
 //const checkDbFormat = require('../../support/fretDbSupport/checkDBFormat.js');
 
+/**
+* Replaces one fragement in a requirement with another
+*/
 export function ReplaceFragment(req, fragment, replacement)
 {
-  console.log(req);
   let originalFretish = req.fulltext;
-  console.log(originalFretish);
 
   let updatedFretish = originalFretish.replace(fragment, replacement);
 
@@ -23,12 +27,18 @@ export function ReplaceFragment(req, fragment, replacement)
 }
 // global.exports.ReplaceFragment = ReplaceFragment;
 
+/**
+* Moves a fragement from one requirement to another
+*/
 function MoveFragment(sourceReq, fragment, destinationReq)
 {
   // Use CopyFragment, then delete fragment from srouceReq's fretish with ReplaceFragment(sourceReq, "", destinationReq)
 }
 // exports.MoveFragment = MoveFragment;
 
+/**
+* Copies a fragement from one requirement to another
+*/
 function CopyFragment(fragment, destinationReq)
 {
   // Either this needs to assume we're only moving fragments from the condition
@@ -46,20 +56,27 @@ function CopyFragment(fragment, destinationReq)
 }
 // exports.CopyFragment = CopyFragment;
 
+/**
+* The Database Callback function,
+* handles the result from the database
+*/
 function DBCallback(err, responses)
 {
   if (err) {
-    console.log{"Adding Requirement Failed..."};
+    console.log("Adding Requirement Failed...");
     console.log(req._id);
     return console.log(err);
   }
   else {
-    console.log{"Requirement Added"};
+    console.log("Requirement Added");
     console.log(responses);
   }
 
 }
 
+/**
+* Adds the requirement to the Database
+*/
 export function AddRequirementToDB(req)
 {
   db.put(req, DBCallback)

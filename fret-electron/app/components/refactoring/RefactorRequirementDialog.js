@@ -31,7 +31,12 @@
 // AGREEMENT.
 // *****************************************************************************
 
-// Created by Matt Luckcuck, May 2022, based on existing FRET Code
+
+/**
+* Dialog component for refacotring, based on existing FRET Code.
+* @author Matt Luckcuck <m.luckcuck@tutanota.com>
+* Started: May 2022 
+*/
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
