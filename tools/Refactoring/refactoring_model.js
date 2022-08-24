@@ -46,29 +46,29 @@ function CopyFragment(fragment, destinationReq)
 }
 // exports.CopyFragment = CopyFragment;
 
-export function AddRequirementToDB(req)
+function DBCallback(err, responses)
 {
-  db.put(req, (err, responses) => {
-      if (err) {
-        console.log(req._id);
-        return console.log(err);
-      }
-      console.log(responses);
-    }
-  )
+  if (err) {
+    console.log{"Adding Requirement Failed..."};
+    console.log(req._id);
+    return console.log(err);
+  }
+  else {
+    console.log{"Requirement Added"};
+    console.log(responses);
+  }
+
 }
 
-export function AddNewRequirementToDB(req)
-{  
-  db.post(req, (err, responses) => {
-      if (err) {
-        console.log(req._id);
-        return console.log(err);
-      }
-      console.log(responses);
-    }
-  )
+export function AddRequirementToDB(req)
+{
+  db.put(req, DBCallback)
 }
+
+// export function AddNewRequirementToDB(req)
+// {
+//   db.post(req, DBCallback)
+// }
 // exports.AddRequirementToDB = AddRequirementToDB;
 
 /*

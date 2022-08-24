@@ -25,8 +25,10 @@ function extractRequirement(req, fragment, destinationName, knockons)
 	//let destinationRequirement = new FretRequirement(destinationName, null);
 	let clonedReq = Object.assign({}, req);
 	clonedReq.reqid = destinationName.toUpperCase();
-	delete clonedReq._id;
-	delete clonedReq.dbkey;
+	// New Req needs a new ID so I'm just adding one to it
+	clonedReq._id = clonedReq._id +1;
+	// New Req doesn't need a revision number
+	delete clonedReq._rev;
 	clonedReq.rationale = "EXTRACT REQUIREMENT: extracted " + fragment + " from " + req.reqid;
 	console.log("Cloned Req Right Away")
 	console.log(clonedReq);
@@ -64,7 +66,7 @@ console.log("Adding Req");
 	model.AddRequirementToDB(req);
 
 	console.log("Addinf Cloned Req");
-	model.AddNewRequirementToDB(clonedReq);
+	model.AddRequirementToDB(clonedReq);
 
   // Step 4
   // Verify
