@@ -62,7 +62,6 @@ var modelDB = new NodePouchDB(modelDBname);
 
 var ext_imp_json_file = '';
 if(process.env.EXTERNAL_TOOL=='1'){
-  //ext_imp_json_file = path.join(userDocumentsFolder,process.env.EXTERNAL_JSON)+'.json';
   ext_imp_json_file = process.env.EXTERNAL_JSON+'.json';
 }
 
@@ -104,7 +103,7 @@ leveldbDB.put(baseProps).catch((err) => {
 })
 
 const FRET_PROJECTS_DBKEY = 'FRET_PROJECTS'
-// For backward compatiability, ensure that an object
+// For backward compatibility, ensure that an object
 // that stores all project names is in place.
 leveldbDB.get(FRET_PROJECTS_DBKEY).catch((err) => {
   if (err.status == 404) {

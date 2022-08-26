@@ -311,11 +311,16 @@ class MainView extends React.Component {
 
 
         } else {
-          let data = JSON.parse(buffer);
-          self.setState({
-            externalRequirement : data.requirement,
-            externalVariables : data.variables
-          })
+          try {
+            let data = JSON.parse(buffer);
+            self.setState({
+              externalRequirement : data.requirement,
+              externalVariables : data.variables
+            })
+          } catch (error) {
+            //if invalid JSON
+            console.log(error);
+          }
           self.handleCreateDialogOpen();
         }
       })
@@ -573,9 +578,9 @@ class MainView extends React.Component {
               externalRequirement : data.requirement,
               externalVariables : data.variables
             })
-            self.handleCreateDialogOpen();            
+            self.handleCreateDialogOpen();
           });
-          
+
 
         }
     } else {
