@@ -132,14 +132,21 @@ handleOk = () => {
   console.log('OK Button');
   console.log(this.state.extractString);
   console.log(this.state.newName);
-  // req, fragment, destinationName, knockons
-  let result = RefactoringController.extractRequirement(
-    this.state.selectedRequirement,
-    this.state.extractString, this.state.newName, this.state.applyToAll, this.state.requirements
-  );
+  console.log("apply to all = " + this.state.applyToAll);
+  if (this.state.applyToAll == true)
+  {
+    RefactoringController.extractRequirement_ApplyAll(
+      this.state.selectedRequirement, this.state.extractString,
+      this.state.newName, this.state.requirements);
+  }
+  else {
+    // req, fragment, destinationName, knockons
+      RefactoringController.extractRequirement(
+        this.state.selectedRequirement, this.state.extractString, this.state.newName);
+  }
 
-  console.log(result.req);
-  console.log(result.fragment);
+  // console.log(result.req);
+  // console.log(result.fragment);
 
 
   this.setState({ open: false });

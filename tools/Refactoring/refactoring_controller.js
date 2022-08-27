@@ -20,11 +20,11 @@ exports.test = function test(extractString, newName)
 
 
 /**
-* Handles one request to refactor a requirement, including the
-* knock-on effects to other requirements containing the same fragment.
+* Handles one request to refactor one requirement
 */
-function extractRequirement(req, fragment, destinationName, knockons, allRequirements)
+function extractRequirement(req, fragment, destinationName)
 {
+	console.log("Extract One");
 	// Step 1
   // Clone requirement
 	//let destinationRequirement = new FretRequirement(destinationName, null);
@@ -37,9 +37,6 @@ function extractRequirement(req, fragment, destinationName, knockons, allRequire
 	clonedReq.rationale = "EXTRACT REQUIREMENT: extracted " + fragment + " from " + req.reqid;
 	console.log("Cloned Req Right Away")
 	console.log(clonedReq);
-
-//	console.log(typeof(req));
-//	console.log(req);
 
 
 	// Step 2
@@ -72,45 +69,64 @@ function extractRequirement(req, fragment, destinationName, knockons, allRequire
   // Step 4
   // Verify
 
-  // Step 5
-  // Propagate
-
-  if (knockons)
-  {
-		console.log("knockons");
-    // Do the thing
-    // Similar to this method, but the destination requirement already exists.
-		project = req.project;
-		let reqKnockons = model.FindRequirementsWithFragment(allRequirements, project, fragment, req.reqid, destinationName);
-
-		console.log("Lets see what requirements I've got to update...");
-		console.log(reqKnockons);
-
-		if(reqKnockons.length >0)
-		{
-			for (var i = 0; i < reqKnockons.length; i++) {
-
-				let kreq = reqKnockons[i];
-
-				console.log("replacing fragment and updating db");
-				console.log(kreq);
-
-				model.ReplaceFragment(kreq, fragment, destinationName);
-				model.AddRequirementToDB(kreq);
-			}
-		}
-
-  }
-
 
 	console.log(req);
 
 
 	console.log(clonedReq);
 
-  return {req: req, fragment :clonedReq}
+  //return {req: req, fragment :clonedReq}
 }
 exports.extractRequirement = extractRequirement;
+
+/**
+* Handles a request to extract a fragment from all requirements that contain it.
+*/
+function extractRequirement_ApplyAll(req, fragment, destinationName, allRequirements)
+{
+	console.log("Extract All")
+	// Step 1
+  // Clone requirement
+	//let destinationRequirement = new FretRequirement(destinationName, null);
+	let clonedReq = Object.assign({}, req);
+	clonedReq.reqid = destinationName.toUpperCase();
+	// New Req needs a new ID so I'm just adding one to it
+	clonedReq._id = clonedReq._id +1;
+	// New Req doesn't need a revision number
+	delete clonedReq._rev;
+	clonedReq.rationale = "EXTRACT REQUIREMENT: extracted " + fragment + " from " + req.reqid;
+	console.log("Cloned Req Right Away")
+	console.log(clonedReq);
+
+	console.log("knockons");
+  // Do the thing
+  // Similar to this method, but the destination requirement already exists.
+	project = req.project;
+	let reqKnockons = model.FindRequirementsWithFragment(allRequirements, project, fragment, req.reqid, destinationName);
+
+	console.log("Lets see what requirements I've got to update...");
+	console.log(reqKnockons);
+
+	if(reqKnockons.length >0)
+	{
+		for (var i = 0; i < reqKnockons.length; i++) {
+
+			let kreq = reqKnockons[i];
+
+			console.log("replacing fragment and updating db");
+			console.log(kreq);
+
+			model.ReplaceFragment(kreq, fragment, destinationName);
+			model.AddRequirementToDB(kreq);
+		}
+	}
+
+
+	// Adding extracted requirement
+		model.AddRequirementToDB(clonedReq);
+
+}
+exports.extractRequirement_ApplyAll = extractRequirement_ApplyAll;
 
 /**
 * Handles one request to move a definition to another requirement
