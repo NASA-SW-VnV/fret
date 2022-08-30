@@ -81,6 +81,7 @@ const constants = require('../parser/Constants');
 const uuidv1 = require('uuid/v1');
 const checkDbFormat = require('../../support/fretDbSupport/checkDBFormat.js');
 const {ipcRenderer} = require('electron');
+const ext_exp_json_file = require('electron').remote.getGlobal('sharedObj').ext_exp_json;
 
 const app = require('electron').remote.app;
 const fs = require('fs');
@@ -322,8 +323,7 @@ class CreateRequirementDialog extends React.Component {
       }
     )
     if(process.env.EXTERNAL_TOOL=='1'){
-      var homeDir = app.getPath('home');
-      console.log('env EXTERNAL_TOOL',process.env.EXTERNAL_TOOL);
+      var filepath = ext_exp_json_file;
       let doc = ({"requirement": {"reqid" :this.state.reqid,
                   "parent_reqid": this.state.parent_reqid,
                   "project": this.state.project,
@@ -335,7 +335,7 @@ class CreateRequirementDialog extends React.Component {
                   "semantics": semantics,
                   "input": input}});
 
-        fs.writeFile(homeDir+'/Documents/requirement.json', JSON.stringify(doc, null, 4), (err) => {
+        fs.writeFile(filepath, JSON.stringify(doc, null, 4), (err) => {
             if(err) {
                 return console.log(err);
             }

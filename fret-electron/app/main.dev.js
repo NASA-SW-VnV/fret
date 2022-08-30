@@ -61,8 +61,10 @@ var leveldbDB = new NodePouchDB(leveldbDBname);
 var modelDB = new NodePouchDB(modelDBname);
 
 var ext_imp_json_file = '';
+var ext_exp_json_file = '';
 if(process.env.EXTERNAL_TOOL=='1'){
-  ext_imp_json_file = process.env.EXTERNAL_JSON+'.json';
+  ext_imp_json_file = process.env.EXTERNAL_IMP_JSON+'.json';
+  ext_exp_json_file = process.env.EXTERNAL_EXP_JSON+'.json';
 }
 
 leveldbDB.info().then(function (info) {
@@ -131,6 +133,7 @@ leveldbDB.get(FRET_PROJECTS_DBKEY).catch((err) => {
 const FRET_REALTIME_CONFIG = 'REAL_TIME_CONFIG';
 global.sharedObj = {
   ext_imp_json: ext_imp_json_file,
+  ext_exp_json: ext_exp_json_file,
   db: leveldbDB,
   modeldb: modelDB,
   system_dbkeys: [ FRET_PROJECTS_DBKEY, FRET_PROPS_DBKEY, FRET_REALTIME_CONFIG ]
