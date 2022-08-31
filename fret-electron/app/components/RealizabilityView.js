@@ -133,7 +133,7 @@ class RealizabilityView extends React.Component {
 
   render() {
     const { importedReport } = this.state;
-    const {classes, selectedProject, existingProjectNames, components, completedComponents, getPropertyInfo, getDelayInfo, getContractInfo} = this.props;
+    const {classes, selectedProject, existingProjectNames, components, completedComponents, getPropertyInfo, getDelayInfo, getContractInfo, variableIdentifierReplacement} = this.props;
 
     if (selectedProject === 'All Projects'){
       if (Object.keys(importedReport).length === 0) {
@@ -163,7 +163,7 @@ class RealizabilityView extends React.Component {
             getPropertyInfo={getPropertyInfo}
             getDelayInfo={getDelayInfo}
             getContractInfo={getContractInfo}
-            variableIdentifierReplacement={self.props.variableIdentifierReplacement}
+            variableIdentifierReplacement={variableIdentifierReplacement}
           />
         </div>
       );

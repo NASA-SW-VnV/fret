@@ -676,8 +676,7 @@ class RealizabilityContent extends React.Component {
 
   computeConnectedComponents(project, components, completedComponents) {
     const {getPropertyInfo, getDelayInfo, getContractInfo} = this.props;
-    const {projectReport, selectedReqs} = this.state;
-    console.log(selectedReqs)    
+    const {projectReport, selectedReqs} = this.state;    
 
     const self = this;
     components.forEach(component => {
@@ -1372,8 +1371,6 @@ class RealizabilityContent extends React.Component {
             <SelectRequirementsContext.Consumer>
                 {({selectedReqs, setMessage}) => 
                   <div>
-                    {console.log(selectedReqs)}
-                    {console.log(setMessage)}
                     {components.length !== 0 &&
                       <div style={{alignItems: 'flex-end', display: 'flex', flexWrap :'wrap'}}>
                       <Grid container alignItems="flex-end">          
@@ -1543,9 +1540,9 @@ class RealizabilityContent extends React.Component {
                                           selectedProject={selectedProject}
                                           selectedComponent={selected.component_name}
                                           existingProjectNames={[selectedProject]}
-                                          connectedComponent={
-                                          projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex]
-                                        }/>
+                                          connectedComponent={projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex]}
+                                          importedRequirements={[]}
+                                        />
                                       </div>
                                     </DiagnosisProvider>
                                   </TabContainer>
@@ -1569,7 +1566,9 @@ class RealizabilityContent extends React.Component {
                                       selectedProject={selectedProject}
                                       selectedComponent={selected.component_name}
                                       existingProjectNames={[selectedProject]}
-                                      connectedComponent={{}}/>
+                                      connectedComponent={{}}
+                                      importedRequirements={[]}
+                                    />
                                   </div>
                                 </DiagnosisProvider>
                               }                          
