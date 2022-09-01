@@ -156,6 +156,9 @@ class RealizabilityView extends React.Component {
     } else {
       return (
         <div>
+          <Typography variant='h6'>
+            Realizability Analysis: {selectedProject}
+          </Typography>
           <RealizabilityContent
             selectedProject={selectedProject}
             components={components}
