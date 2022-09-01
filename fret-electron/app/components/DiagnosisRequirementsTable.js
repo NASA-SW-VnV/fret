@@ -88,20 +88,31 @@ function desc(a, b, orderBy) {
   return 0
 }
 
-function stableSort(array, conflictReqs, cmp) {
+function stableSort(array, conflictReqs, selectedReqs, cmp) {
   if (conflictReqs.length === 0) {
-    const stabilizedThis = array.map((el, index) => [el, index]);
+    const notSelectedData = array.filter(el => !selectedReqs.includes(el.reqid));
+    const stabilizedThis = array.filter(el => !notSelectedData.map(el2 => el2.reqid).includes(el.reqid)).map((el, index) => [el, index]);
     stabilizedThis.sort((a, b) => {
       const order = cmp(a[0], b[0]);
       if (order !== 0) return order;
       return a[1] - b[1];
     });
-    return stabilizedThis.map(el => el[0]);
-  } else {
+
+    const sortedNotSelectedData = notSelectedData.map((el, index) => [el, index]);
+    sortedNotSelectedData.sort((a, b) => {
+      const order = cmp(a[0], b[0]);
+      if (order !== 0) return order;
+      return a[1] - b[1];
+    });
+
+    return stabilizedThis.map(el => el[0]).concat(sortedNotSelectedData.map(el => el[0]));
+  } else {    
     const conflictData = array.filter(el => conflictReqs.includes(el.reqid.replace(/-/g,'')));
-    const assumptionData = array.filter(el => el.reqid.includes('assumption'));
+
+    const notSelectedData = array.filter(el => !selectedReqs.includes(el.reqid));
+    const assumptionData = array.filter(el => (el.reqid.includes('assumption') && !notSelectedData.map(el => el.reqid).includes(el.reqid)));
     const remainingData = array.filter(el => (!el.reqid.includes('assumption') &&
-      !conflictReqs.includes(el.reqid.replace(/-/g,''))));
+      !conflictReqs.includes(el.reqid.replace(/-/g,'')) && !notSelectedData.map(el => el.reqid).includes(el.reqid)));
     
     const sortedAssumptions = assumptionData.map((el, index) => [el, index]);
     sortedAssumptions.sort((a, b) => {
@@ -116,15 +127,25 @@ function stableSort(array, conflictReqs, cmp) {
       if (order !== 0) return order;
       return a[1] - b[1];
     });
-    return conflictData.concat(sortedAssumptions.map(el => el[0]).concat(sortedRemaining.map(el => el[0])));
+
+    const sortedNotSelectedData = notSelectedData.map((el, index) => [el, index]);
+    sortedNotSelectedData.sort((a, b) => {
+      const order = cmp(a[0], b[0]);
+      if (order !== 0) return order;
+      return a[1] - b[1];
+    });
+
+    return conflictData.concat(sortedAssumptions.map(el => el[0]).concat(sortedRemaining.map(el => el[0]).concat(sortedNotSelectedData.map(el => el[0]))));
   }
 }
 
-function ccStableSort(array, conflictReqs, connectedComponent, cmp) {
+function ccStableSort(array, conflictReqs, selectedReqs, connectedComponent, cmp) {
   
   if (conflictReqs.length === 0) {
     const ccData = array.filter(el => connectedComponent.requirements.includes(el.reqid));
-    const remainingData = array.filter(el => !connectedComponent.requirements.includes(el.reqid));    
+    const notSelectedData = array.filter(el => !selectedReqs.includes(el.reqid));
+    
+    const remainingData = array.filter(el => (!connectedComponent.requirements.includes(el.reqid) && !notSelectedData.map(el => el.reqid).includes(el.reqid)));    
 
     const sortedRemaining = remainingData.map((el, index) => [el, index]);
     sortedRemaining.sort((a, b) => {
@@ -133,12 +154,21 @@ function ccStableSort(array, conflictReqs, connectedComponent, cmp) {
       return a[1] - b[1];
     });
 
-    return ccData.concat(sortedRemaining.map(el => el[0]));
+    const sortedNotSelectedData = notSelectedData.map((el, index) => [el, index]);    
+    sortedNotSelectedData.sort((a, b) => {
+      const order = cmp(a[0], b[0]);
+      if (order !== 0) return order;
+      return a[1] - b[1];
+    });
+
+    return ccData.concat(sortedRemaining.map(el => el[0]).concat(sortedNotSelectedData.map(el => el[0])));
   } else {
     const conflictData = array.filter(el => conflictReqs.includes(el.reqid.replace(/-/g,'')));
-    const assumptionData = array.filter(el => el.reqid.includes('assumption'));
+    const notSelectedData = array.filter(el => !selectedReqs.includes(el.reqid));
+    
+    const assumptionData = array.filter(el => (el.reqid.includes('assumption') && !notSelectedData.map(el => el.reqid).includes(el.reqid)));
     const remainingData = array.filter(el => (!el.reqid.includes('assumption') &&
-      !conflictReqs.includes(el.reqid.replace(/-/g,''))));
+      !conflictReqs.includes(el.reqid.replace(/-/g,'')) && !notSelectedData.map(el => el.reqid).includes(el.reqid)));
     
     const sortedAssumptions = assumptionData.map((el, index) => [el, index]);
     sortedAssumptions.sort((a, b) => {
@@ -156,8 +186,6 @@ function ccStableSort(array, conflictReqs, connectedComponent, cmp) {
       return a[1] - b[1];
     });
 
-
-    // const sortedRemaining = remainingData.map((el, index) => [el, index]);
     //everything else that's not in a conflict or part of the CC
     const finalRemainingData = remainingData.filter(el => !connectedComponent.requirements.includes(el.reqid));
     const sortedRemaining = finalRemainingData.map((el, index) => [el, index]);
@@ -167,8 +195,14 @@ function ccStableSort(array, conflictReqs, connectedComponent, cmp) {
       return a[1] - b[1];
     });
 
-    // return conflictData.concat(sortedAssumptions.map(el => el[0]).concat(sortedRemaining.map(el => el[0])));
-    return conflictData.concat(sortedAssumptions.map(el => el[0]).concat(sortedCCRemainingData.map(el => el[0]).concat(sortedRemaining.map(el => el[0]))));
+    const sortedNotSelectedData = notSelectedData.map((el, index) => [el, index]);
+    sortedNotSelectedData.sort((a, b) => {
+      const order = cmp(a[0], b[0]);
+      if (order !== 0) return order;
+      return a[1] - b[1];
+    });
+
+    return conflictData.concat(sortedAssumptions.map(el => el[0]).concat(sortedCCRemainingData.map(el => el[0]).concat(sortedRemaining.map(el => el[0]).concat(sortedNotSelectedData.map(el => el[0])))));
   }
 }
 
@@ -234,10 +268,10 @@ let DiagnosisRequirementsTableToolbar = props => {
         }
       </div>
       <div className={classes.spacer} />
-      {(selectEnabled && numSelected > 0) &&
+      {selectEnabled &&
           <div className={classes.toolbar}>
             <Tooltip title="Apply Selection">
-              <Button className={classes.button} size='small' variant='contained' color='secondary' onClick={() => applySelection()}>
+              <Button disabled={numSelected <= 0} className={classes.button} size='small' variant='contained' color='secondary' onClick={() => applySelection()}>
                 Apply
               </Button>
             </Tooltip>
@@ -275,12 +309,12 @@ class DiagnosisRequirementsTableHead extends React.Component {
   };
 
   render() {
-    const { onSelectAllClick, order, orderBy, numSelected, rowCount, selectEnabled } = this.props;
+    const { onSelectAllClick, order, orderBy, numSelected, rowCount, selectEnabled, importedRequirements } = this.props;
 
     return (
       <TableHead>
         <TableRow>
-{/*          {selectEnabled &&*/}
+          {(importedRequirements.length === 0) &&
             <TableCell padding="checkbox">
               <Checkbox
                 indeterminate={numSelected > 0 && numSelected < rowCount}
@@ -288,7 +322,7 @@ class DiagnosisRequirementsTableHead extends React.Component {
                 onChange={onSelectAllClick}
               />
             </TableCell>
-          {/*}*/}
+          }
           {rows.map(row => {
             return (
               <TableCell
@@ -326,7 +360,8 @@ DiagnosisRequirementsTableHead.propTypes = {
   order: PropTypes.string.isRequired,
   orderBy: PropTypes.string.isRequired,
   rowCount: PropTypes.number.isRequired,
-  selectEnabled: PropTypes.bool.isRequired
+  selectEnabled: PropTypes.bool.isRequired,
+  importedRequirements: PropTypes.array.isRequired
 };
 
 const styles = theme => ({
@@ -400,7 +435,6 @@ class DiagnosisRequirementsTable extends React.Component {
 
   componentWillUnmount() {
     const { importedRequirements } = this.props;
-    
     this.mounted = false;
 
     if (importedRequirements.length === 0) {
@@ -409,52 +443,13 @@ class DiagnosisRequirementsTable extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-/*<<<<<<< HEAD
-    if (this.props.connectedComponent !== prevProps.connectedComponent) {
-      if (this.props.importedRequirements.length === 0) {
-        this.synchStateWithDB()
-      } else {
-        this.setState({
-          data: this.props.importedRequirements.map(r => {
-            return createData(r._id, r._rev, r.reqid, r.fulltext, r.project);
-          }).sort((a, b) => {return a.reqid > b.reqid})
-        });
-      }
-
-=======
-
-    if (this.props.connectedComponent !== prevProps.connectedComponent && Object.keys(this.props.connectedComponent).length !==0) {
-      // this.synchStateWithDB()
->>>>>>> First iteration of selecting requirements in realizability.
-      const {setMessage} = this.context;
-
-      setMessage({reqs : '', color : ''})
-      // this.props.updateSelectedRequirements([])
-      // this.setState({selected: []});
-      console.log(this.props.connectedComponent.requirements);
-      console.log("Table updating")
-      
-      let newSelectedReqs = this.props.connectedComponent.requirements ? this.props.connectedComponent.requirements : [];
-      this.setState({selected: [].concat(newSelectedReqs)})
-    }
-*/
-    if (this.props.connectedComponent !== prevProps.connectedComponent && Object.keys(this.props.connectedComponent).length !==0) {
-      if (this.props.importedRequirements.length === 0) {
+    const { connectedComponent, importedRequirements, selectedRequirements } = this.props;
+    if (connectedComponent !== prevProps.connectedComponent) {
+      if (importedRequirements.length === 0) {
         const {setMessage} = this.context;
         setMessage({reqs : '', color : ''})
-        // this.props.updateSelectedRequirements([])
-        // this.setState({selected: []});
-        console.log(this.props.connectedComponent.requirements);
-        console.log("Table updating")
-        let newSelectedReqs = this.props.connectedComponent.requirements ? this.props.connectedComponent.requirements : [];
-        // if (newSelectedReqs.length !== 0) this.props.updateSelectedRequirements(newSelectedReqs);
+        let newSelectedReqs = selectedRequirements;
         this.setState({selected: [].concat(newSelectedReqs)})
-      } else {
-        this.setState({
-          data: this.props.importedRequirements.map(r => {
-            return createData(r._id, r._rev, r.reqid, r.fulltext, r.project);
-          }).sort((a, b) => {return a.reqid > b.reqid})
-        });
       }
     }
   }
@@ -483,7 +478,6 @@ class DiagnosisRequirementsTable extends React.Component {
                   return createData(r.doc._id, r.doc._rev, r.doc.reqid, r.doc.fulltext, r.doc.project)
                 })
                 .sort((a, b) => {return a.reqid > b.reqid})
-                console.log("About to update reqs 2")
       // updateSelectedRequirements(dbData.map(n => n.reqid));
       this.setState({
         data: dbData,
@@ -498,13 +492,14 @@ class DiagnosisRequirementsTable extends React.Component {
   handleSelectAllClick = event => {
     const { updateSelectedRequirements } = this.props;
     const { data } = this.state
-    if (event.target.checked) { 
-    console.log("About to update reqs 3")     
-      this.setState({ tempSelected: data.map(n => n.reqid) });
-      return;
+    if (event.target.checked) {      
+      this.setState({ selectEnabled: true, tempSelected: data.map(n => n.reqid) });
+    } else {
+      this.setState({ tempSelected: []});
+
     }
-    console.log("About to update reqs 4")
-    this.setState({ tempSelected: [] });
+
+    return;
   };
 
   handleClick = (event, id) => {
@@ -572,11 +567,10 @@ class DiagnosisRequirementsTable extends React.Component {
 
   render() {
     const { reqs, color } = this.context.state;
-    const { classes, connectedComponent } = this.props;
-    const { data, order, orderBy, selected, rowsPerPage, page, selectEnabled } = this.state;
+    const { classes, connectedComponent, importedRequirements } = this.props;
+    const { data, order, orderBy, selected, tempSelected, rowsPerPage, page, selectEnabled } = this.state;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
     
-
     optLog(reqs)
     optLog(color)
     return (
@@ -584,24 +578,25 @@ class DiagnosisRequirementsTable extends React.Component {
       <Paper>
         <div>
           <DiagnosisRequirementsTableToolbar 
-            numSelected={selected.length}
+            numSelected={tempSelected.length}
             selectEnabled={selectEnabled}
             selectEnabler={this.handleEnableSelect}
             applySelection={this.handleApplySelection}
           />
           <Table aria-labelledby="tableTitle" size="medium">
             <DiagnosisRequirementsTableHead              
-              numSelected={selected.length}
+              numSelected={tempSelected.length}
               order={order}
               orderBy={orderBy}
               onSelectAllClick={this.handleSelectAllClick}
               onRequestSort={this.handleRequestSort}
               rowCount={data.length}
               selectEnabled={selectEnabled}
+              importedRequirements={importedRequirements}
             />
             {Object.keys(connectedComponent).length !== 0 ?
               (<TableBody id="qa_diagReqTbl_tableBody_1">{
-                ccStableSort(data, reqs, connectedComponent, getSorting(order, orderBy))
+                ccStableSort(data, reqs, selected, connectedComponent, getSorting(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map(n => {
                   const isSelected = this.isSelected(n.reqid);
@@ -616,16 +611,15 @@ class DiagnosisRequirementsTable extends React.Component {
                           borderStyle: isInConflict ? 'solid' : 'initial', 
                           borderColor: isInConflict ? color : 'initial'}}
                         classes={{selected: (isSelected && isInConflictOrCC) ? classes.tableRowSelected : 'initial'}}
-                        onClick={event => { isInConflictOrCC ? this.handleClick(event, n.reqid) : null}}
-                        selected={isSelected}
+                        onClick={event => { this.handleClick(event, n.reqid)}}
                       >
-{/*                        {selectEnabled &&*/}
-                          <TableCell padding="checkbox">
-                            <Checkbox 
-                              checked={isSelected}
-                            />
-                          </TableCell>
-                        {/*}*/}
+                      {(importedRequirements.length === 0) &&
+                        <TableCell padding="checkbox">
+                          <Checkbox 
+                            checked={isSelected}
+                          />
+                        </TableCell>
+                      }
                         <TableCell id={"qa_diagReqTbl_tc_body_id_"+label}>
                           {label}
                         </TableCell>
@@ -640,7 +634,7 @@ class DiagnosisRequirementsTable extends React.Component {
                 )}
               </TableBody>) :
               (<TableBody id="qa_diagReqTbl_tableBody_2">{
-                stableSort(data, reqs, getSorting(order, orderBy))
+                stableSort(data, reqs, selected, getSorting(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map(n => {
                   const isSelected = this.isSelected(n.reqid);
@@ -657,15 +651,14 @@ class DiagnosisRequirementsTable extends React.Component {
                           borderColor: isInConflict ? color : 'initial'}}
                         classes={{selected: classes.tableRowSelected}}
                         onClick={event => this.handleClick(event, n.reqid)}
-                        selected={isSelected}
                         >
-                        {/*{selectEnabled &&*/}
+                        {(importedRequirements.length === 0) &&
                           <TableCell padding="checkbox">
                             <Checkbox 
                               checked={isSelected}
                             />
                           </TableCell>
-                        {/*}*/}
+                        }
                         <TableCell id={"qa_diagReqTbl_tc_body_id_"+label}>
                           {label}
                         </TableCell>

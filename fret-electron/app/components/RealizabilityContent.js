@@ -697,7 +697,9 @@ class RealizabilityContent extends React.Component {
         }).then(function (fretResult){
           if (completedComponents.includes(component.component_name)) {
             
-            contract.properties = getPropertyInfo(fretResult, contract.outputVariables, component.component_name).filter(p => selectedReqs.includes(p.reqid));            
+            contract.properties = selectedReqs.length === 0 ? 
+              (getPropertyInfo(fretResult, contract.outputVariables, component.component_name)) :
+              (getPropertyInfo(fretResult, contract.outputVariables, component.component_name).filter(p => selectedReqs.includes(p.reqid)));            
 
             contract.delays = getDelayInfo(fretResult, component.component_name);
             contract = self.renameIDs(contract);
@@ -734,7 +736,7 @@ class RealizabilityContent extends React.Component {
               compositional: isDecomposable,
               ccSelected: 'cc0',
               projectReport: projectReport,
-              selectedReqs: fretResult.docs.filter(doc => doc.semantics.component_name === component.component_name).map(doc => doc.reqid)
+              selectedReqs: selectedReqs.length === 0 ? fretResult.docs.filter(doc => doc.semantics.component_name === component.component_name).map(doc => doc.reqid) : selectedReqs
             });              
           }
         }).catch((err) => {
@@ -782,7 +784,7 @@ class RealizabilityContent extends React.Component {
       missing.push('z3');
     }
 
-    let validConfigurations = [['jkind', 'z3'], ['jkind', 'z3', 'aeval'], ['kind2', 'z3']]
+    let validConfigurations = [['kind2', 'z3'], ['jkind', 'z3'], ['jkind', 'z3', 'aeval']]
     let someConfigurationExists = false;
     let defaultEngine = 0;
     for (let i = 0; i < validConfigurations.length; i++) {
@@ -829,8 +831,9 @@ class RealizabilityContent extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     const {selectedProject, components, completedComponents} = this.props;
-    const {projectReport, selected, ccSelected, selectedReqs} = this.state;
+    const {projectReport, selected, ccSelected, selectedReqs} = this.state;    
     let sysComps = []
+
 
     let systemComponentIndex = projectReport.systemComponents.findIndex( sc => sc.name === selected.component_name);
 
@@ -840,7 +843,8 @@ class RealizabilityContent extends React.Component {
         compositional: false,
         selected: '',
         ccSelected: '',
-        projectReport: {projectName: selectedProject, systemComponents: sysComps}
+        projectReport: {projectName: selectedProject, systemComponents: sysComps},
+        selectedReqs: []
       });
     }
 
@@ -849,15 +853,13 @@ class RealizabilityContent extends React.Component {
         sysComps.push({name: component.component_name})
       }
       this.setState({
-        projectReport: {...projectReport, systemComponents: sysComps}
+        projectReport: {...projectReport, systemComponents: sysComps},
+        selectedReqs: []
       })
     }
 
-    // if (selected !== prevState.selected && (!projectReport.systemComponents[systemComponentIndex].compositional)) {
-    if ((selected !== prevState.selected || selectedReqs.toString() !== prevState.selectedReqs.toString())) {
-      console.log("UPDATING")
-      console.log(selectedReqs)
-      this.computeConnectedComponents(selectedProject, [selected], completedComponents);
+    if (selected !== prevState.selected || selectedReqs.toString() !== prevState.selectedReqs.toString()) {      
+      this.computeConnectedComponents(selectedProject, [selected], completedComponents);      
     }
   }
 
@@ -1018,24 +1020,24 @@ class RealizabilityContent extends React.Component {
     let name, options;
     switch (selectedEngine) {
       case 0:
-      //JKind without MBP
-        name = 'jkind';
-        options = '-fixpoint -timeout '
-        break;
-      case 1:
-      //JKind+AEVAL (MBP)
-        name = 'jkind';
-        options = '-fixpoint -solver aeval -timeout '
-        break;
-      case 2:
       //Kind 2 without MBP
         name = 'kind2';
         options = '-json --enable CONTRACTCK --timeout '
         break;
-      case 3:
+      case 1:
       //Kind 2 (MBP)
         name = 'kind2';
         options = '-json --enable CONTRACTCK --ae_val_use_ctx false --timeout '
+        break;
+      case 2:
+      //JKind without MBP
+        name = 'jkind';
+        options = '-fixpoint -timeout '
+        break;
+      case 3:
+      //JKind+AEVAL (MBP)
+        name = 'jkind';
+        options = '-fixpoint -solver aeval -timeout '
         break;
     }
     return {name, options};
@@ -1503,8 +1505,26 @@ class RealizabilityContent extends React.Component {
                             &nbsp;
                             &nbsp;
                             &nbsp;
-                            <Divider/>
                             <div>
+                              <Accordion>
+                                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                                  <Typography>Comments</Typography>
+                                </AccordionSummary>
+                                <AccordionDetails>
+                                <TextField
+                                        multiline={true}
+                                        variant="outlined"
+                                        label="Enter your comments here."
+                                        type="text"
+                                        fullWidth
+                                        value={projectReport.systemComponents[systemComponentIndex].comments}
+                                        onChange={this.handleChange('comments')}
+                                />
+                                </AccordionDetails>
+                              </Accordion>
+                              &nbsp;
+                              &nbsp;
+                              &nbsp;
                               {compositional &&
                                 <div>
                                   <AppBar position="static" color="default">
