@@ -310,16 +310,31 @@ RequirementListener.prototype.enterBool_expr = function(ctx) {
   }
 };
 
-function replaceTemplateVarsWithArgs(formula, noHTML, noClassicImplSymbol) {
+function replaceTemplateVarsWithResults(formula) {
+  // formula may have template vars like $scope_mode_pt$.
+  // Substitute what's in the global variable "result" for them.
+  if (constants.verboseSemanticsAnalyzer) console.log("rTVWR in: " + JSON.stringify(formula))
+  if (formula) {
+    let args = formula.match(/\$\w+\d*\$/g);
+    if (args) {
+      args.forEach((a) => {
+	formula = formula.replace(a,result[a.substring(1, a.length - 1)]);
+      })
+    }
+  }
+  if (constants.verboseSemanticsAnalyzer) console.log("rTVWR out: " + JSON.stringify(formula))
+  return formula;
+}
+
+function replaceTemplateVarsWithArgs(formula, noHTML, noClassicImplSymbol){
   if (formula) {
     let args = formula.match(/\$\w+\d*\$/g)
     if (args) {
-       // Update formula with arguments from the global "result" (substituted if necessary)
+	// Update formula with arguments from the global "result" (substituted if necessary)
         args.forEach((a) => {
-            let repl = result[a.substring(1, a.length - 1)]
-            if (constants.verboseSemanticsAnalyzer) console.log("rTVWA " + a + ": " + repl);
-	    formula = formula.replace(a, noHTML ? repl : ('<b><i>' + repl + '</i></b>'))
-	})
+          let repl = replaceTemplateVarsWithResults(result[a.substring(1, a.length - 1)])
+	  formula = formula.replace(a, noHTML ? repl :'<b><i>' + repl + '</i></b>')
+        })
     }
     if (noClassicImplSymbol) {
       formula = formula.replace(/=>/g,'->');
@@ -533,19 +548,27 @@ SemanticsAnalyzer.prototype.semantics = () => {
 
     let fetched_ptExpanded = fetchedSemantics.ptExpanded.replace(/\$regular_condition\$/g,'$regular_condition_SMV_pt$').replace(/\$post_condition\$/g,'$post_condition_SMV_pt$').replace(/\$stop_condition\$/g,'$stop_condition_SMV_pt$').replace(/\$scope_mode\$/g,'$scope_mode_pt$');
     result.ptExpanded_fetched = fetched_ptExpanded;
-    result.ptExpanded = replaceTemplateVarsWithArgs(fetched_ptExpanded, true, true);
+    result.ptExpanded = utils.salt2smv(replaceTemplateVarsWithArgs(fetched_ptExpanded, true, true));
+
+    const fetched_ptFinBtwExpanded = fetchedSemantics.ptFinBtwExpanded.replace(/\$regular_condition\$/g,'$regular_condition_SMV_pt$').replace(/\$post_condition\$/g,'$post_condition_SMV_pt$').replace(/\$stop_condition\$/g,'$stop_condition_SMV_pt$').replace(/\$scope_mode\$/g,'$scope_mode_pt$');
+    result.ptFinBtwExpanded_fetched = fetched_ptFinBtwExpanded;
+    result.ptFinBtwExpanded = utils.salt2smv(replaceTemplateVarsWithArgs(fetched_ptFinBtwExpanded, true, true));     
 
     let fetched_ftExpanded = fetchedSemantics.ftExpanded.replace(/\$regular_condition\$/g,'$regular_condition_SMV_ft$').replace(/\$post_condition\$/g,'$post_condition_SMV_ft$').replace(/\$stop_condition\$/g,'$stop_condition_SMV_ft$').replace(/\$scope_mode\$/g,'$scope_mode_ft$');
     result.ftExpanded_fetched = fetched_ftExpanded;
-    result.ftExpanded = replaceTemplateVarsWithArgs(fetched_ftExpanded, true, true);
+    result.ftExpanded = utils.salt2smv(replaceTemplateVarsWithArgs(fetched_ftExpanded, true, true));
 
     const fetched_ftInfAUExpanded = fetchedSemantics.ftInfAUExpanded.replace(/\$regular_condition\$/g,'$regular_condition_SMV_ft$').replace(/\$post_condition\$/g,'$post_condition_SMV_ft$').replace(/\$stop_condition\$/g,'$stop_condition_SMV_ft$').replace(/\$scope_mode\$/g,'$scope_mode_ft$');
     result.ftInfAUExpanded_fetched = fetched_ftInfAUExpanded;
-    result.ftInfAUExpanded = LAST_is_FALSE(replaceTemplateVarsWithArgs(fetched_ftInfAUExpanded, true, true));     
+    result.ftInfAUExpanded = utils.salt2smv(LAST_is_FALSE(replaceTemplateVarsWithArgs(fetched_ftInfAUExpanded, true, true)));     
       
     const fetched_ftInfBtwExpanded = fetchedSemantics.ftInfBtwExpanded.replace(/\$regular_condition\$/g,'$regular_condition_SMV_ft$').replace(/\$post_condition\$/g,'$post_condition_SMV_ft$').replace(/\$stop_condition\$/g,'$stop_condition_SMV_ft$').replace(/\$scope_mode\$/g,'$scope_mode_ft$');
     result.ftInfBtwExpanded_fetched = fetched_ftInfBtwExpanded;
-    result.ftInfBtwExpanded = LAST_is_FALSE(replaceTemplateVarsWithArgs(fetched_ftInfBtwExpanded, true, true));     
+    result.ftInfBtwExpanded = utils.salt2smv(LAST_is_FALSE(replaceTemplateVarsWithArgs(fetched_ftInfBtwExpanded, true, true)));     
+
+    const fetched_ftFinBtwExpanded = fetchedSemantics.ftFinBtwExpanded.replace(/\$regular_condition\$/g,'$regular_condition_SMV_ft$').replace(/\$post_condition\$/g,'$post_condition_SMV_ft$').replace(/\$stop_condition\$/g,'$stop_condition_SMV_ft$').replace(/\$scope_mode\$/g,'$scope_mode_ft$');
+    result.ftFinBtwExpanded_fetched = fetched_ftFinBtwExpanded;
+    result.ftFinBtwExpanded = utils.salt2smv(replaceTemplateVarsWithArgs(fetched_ftFinBtwExpanded, true, true));
 
     let fetched_coco = fetchedSemantics.CoCoSpecCode.replace(/\$regular_condition\$/g,'$regular_condition_coco$').replace(/\$post_condition\$/g,'$post_condition_coco$').replace(/\$stop_condition\$/g,'$stop_condition_coco$').replace(/\$scope_mode\$/g,'$scope_mode_coco$');
     result.CoCoSpecCode_fetched = fetched_coco;

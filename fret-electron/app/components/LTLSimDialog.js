@@ -367,7 +367,8 @@ class LTLSimDialog extends Component {
    		let N_formula = 
 			((logics === "FT") ? 
 				reqID_data[i].formula_FT : 
-				reqID_data[i].formula_PT)
+			 reqID_data[i].formula_PT)
+		  /*
             		.replace(/<b>/g, "")
             		.replace(/<i>/g, "")
             		.replace(/<\/b>/g, "")
@@ -383,7 +384,7 @@ class LTLSimDialog extends Component {
             		.replace(/\[<=(\d+)\]/g, "[0, $1]")
             		.replace(/\[=(\d+)\]/g, "[$1, $1]")
             		.replace(/\[<(\d+)\]/g, (str, p1, offset, s) => (`[0, ${parseInt(p1)-1}]`));
-
+*/
 	               LTLSimController.setFormulaExpression(
 				model, 
 				reqID_R, 

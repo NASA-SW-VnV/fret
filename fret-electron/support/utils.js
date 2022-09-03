@@ -198,15 +198,24 @@ function union(l1,l2) {
     return r;
 }
 
+/**
+ * This function rewrites an expression produced by FRET formalization.
+ * The bounds in bounded LTL operators 
+ * ([<=t] -> [0, t], [=t] -> [t, t], [<t] -> [0, t-1], 
+ * expressions containing "t+1" are rewritten
+ * such that "t+1" is evaluated to an integer
+ * @param {string} expression the expression that should be modified
+ * @returns {string} the modified expression
+*/
 function salt2smv(ptForm) {
-    ptForm = ptForm.replace(/\<\w\>/g,'').replace(/\<\/\w\>/g,'') // Remove html tags
+    ptForm = ptForm.replace(/\<[bi]\>/g,'').replace(/\<\/[bi]\>/g,'') // Remove html tags
 	.replace(/\=\>/g,'->')
-        .replace(/\[<=(\d+)\s*\w*\s*\]/g, "[0, $1]")
-        .replace(/\[<=(\d+)\s*\w*\s*\+1\]/g, (str, p1, offset, s) => (`[0, ${parseInt(p1)+1}]`))
-        .replace(/\[<(\d+)\s*\w*\s*\]/g, (str, p1, offset, s) => (`[0, ${parseInt(p1)-1}]`))
-        .replace(/\[<(\d+)\s*\w*\s*\+1\]/g, "[0, $1]")
+        .replace(/\[<=(\d+)\s*\w*\s*\]/g, "[0,$1]")
+        .replace(/\[<=(\d+)\s*\w*\s*\+1\]/g, (str, p1, offset, s) => (`[0,${parseInt(p1)+1}]`))
+        .replace(/\[<(\d+)\s*\w*\s*\]/g, (str, p1, offset, s) => (`[0,${parseInt(p1)-1}]`))
+        .replace(/\[<(\d+)\s*\w*\s*\+1\]/g, "[0,$1]")
 	.replace(/\[=(\d+)\s*\w*\s*\]/g, "[$1,$1]")
-        .replace(/\[=(\d+)\s*\w*\s*\+1\]/g, (str, p1, offset, s) => (`[${parseInt(p1)+1}, ${parseInt(p1)+1}]`))
+        .replace(/\[=(\d+)\s*\w*\s*\+1\]/g, (str, p1, offset, s) => (`[${parseInt(p1)+1},${parseInt(p1)+1}]`))
     return ptForm;
 }
 
