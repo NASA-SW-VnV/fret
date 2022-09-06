@@ -65,4 +65,5 @@ analysis/tmp/*
 playwright-report/*
 test-results/*
 test/e2e/*
+test-reports/*
 
