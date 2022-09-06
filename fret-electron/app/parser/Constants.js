@@ -68,7 +68,7 @@ module.exports = Object.freeze({
 // Configuration - console logs
   verboseTesting: false,
   verboseRealizabilityTesting: false,
-  verboseSemanticsAnalyzer: true,
+  verboseSemanticsAnalyzer: false,
   verboseSemanticsGenerator: false,
   verboseCacheSemantics:false,
   verboseCoCoSpecSemantics:true,
