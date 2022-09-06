@@ -105,14 +105,17 @@ const finitizeFuture = [
 const futureTemporalConditions = [
     ['persists(__n,__p)',trueFn,'((G[<=__n] __p) & (G[<__n] ! $Right$))'],
     ['occurs(__n,__p)',trueFn,'(((! $Right$) U __p) & (F[<=__n] __p))'],
-    ['nextOcc(__p,__q)', trueFn, '(X((!__p & !$Right$) U (__p & __q)))']
+    // This commented out version assumes there must be a next occurrence of p
+    //['nextOcc(__p,__q)', trueFn, '(X((!__p & !$Right$) U (__p & __q)))'] 
+    // This version is satisfied if there is no next occurrence of p.
+    ['nextOcc(__p,__q)', trueFn, '(X (((!__p & !$Right$) U __p) => ((!__p & !$Right$) U (__p & __q))) )']
     ]
 
 const pastTemporalConditions = [
     ['FTP', trueFn, '(! (Y TRUE))'],
     ['persisted(__n,__p)',trueFn,'((H[<=__n] __p) & (H[<__n] ! $Left$))'],
     ['occurred(__n,__p)',trueFn,'(((! $Left$) S __p) & (O[<=__n] __p))'],
-    ['prevOcc(__p,__q)', trueFn, '(Y ((! $Left$ & !__p) S (__p & __q)))']
+    ['prevOcc(__p,__q)', trueFn, '(Y (((! $Left$ & !__p) S __p) => ((! $Left$ & !__p) S (__p & __q))))']
 ]
 
 const temporalConditions = pastTemporalConditions.concat(futureTemporalConditions);

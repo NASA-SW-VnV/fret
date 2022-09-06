@@ -310,6 +310,7 @@ RequirementListener.prototype.enterBool_expr = function(ctx) {
   }
 };
 
+/*
 function replaceTemplateVarsWithResults(formula) {
   // formula may have template vars like $scope_mode_pt$.
   // Substitute what's in the global variable "result" for them.
@@ -343,11 +344,31 @@ function replaceTemplateVarsWithArgs(formula, noHTML, noClassicImplSymbol){
   } else // formula is instead an error message that contains no args.
     return ("Unexpected case - SemanticsAnalyzer replaceTemplateVarsWithArgs");
 }
+*/
+
+// Replace $foo$ with result['foo'] throughout formula.  Note that the
+// replacement might have $bar$ within it, in the case of temporal
+// conditions.
+function replaceTemplateVars(formula,html=false) {
+  if (formula) {
+    let arr = formula.match(/\$\w+\$/);
+    while (arr) {
+      const tv = arr[0]
+      const tvnodollar = tv.substring(1,tv.length-1)
+      const repl = result[tvnodollar]
+      formula = formula.replace(tv,
+				html ? '<b><i>' + repl + '</i></b>' : repl)
+      arr = formula.match(/\$\w+\$/);
+    }
+    return formula;
+  }
+  else return "!! Unexpected case in SemanticsAnalyzer.replaceTemplateVars"
+}
 
 function createVariableDescription(scope, condition, timing, response, stop_condition) {
   var description = '';
   if (scope.type !== 'null' && scope.type !== 'unhandled'){
-    description += 'M = $scope_mode$, ';
+    description += 'M = $scope_mode$,, ';
   }
   if (condition !=='null'){
     description += 'TC = $regular_condition$, '
@@ -421,9 +442,9 @@ SemanticsAnalyzer.prototype.semantics = () => {
   // Create variable descriptions like 'M = cruise TC = goingTooSlow Response = speedup'
   let variableDescription = createVariableDescription(result.scope, result.condition, result.timing, result.response, result.stop_condition);
   if (variableDescription !== '') {
-     result.diagramVariables = replaceTemplateVarsWithArgs(variableDescription, false, false);
+    result.diagramVariables = replaceTemplateVars(variableDescription,true);
    }
-  result.description = replaceTemplateVarsWithArgs(fetchedSemantics.description, false, false);
+    result.description = replaceTemplateVars(fetchedSemantics.description,true);
   result.diagram = fetchedSemantics.diagram;
 
   // left has unexpanded endpoints like FTP and FFin_$scope_mode$
@@ -540,42 +561,42 @@ SemanticsAnalyzer.prototype.semantics = () => {
     //pt and ft are used in the Edit/Update Requirement display
     let fetched_ft = fetchedSemantics.ft.replace(/\$regular_condition\$/g,'$regular_condition_unexp_ft$').replace(/\$post_condition\$/g,'$post_condition_unexp_ft$').replace(/\$stop_condition\$/g,'$stop_condition_unexp_ft$').replace(/\$scope_mode\$/g,'$scope_mode_ft$');
     result.ft_fetched = fetched_ft;
-    result.ft = replaceTemplateVarsWithArgs(fetched_ft, true, false);
+    result.ft = replaceTemplateVars(fetched_ft);
 
     let fetched_pt = fetchedSemantics.pt.replace(/\$regular_condition\$/g,'$regular_condition_unexp_pt$').replace(/\$post_condition\$/g,'$post_condition_unexp_pt$').replace(/\$stop_condition\$/g,'$stop_condition_unexp_pt$').replace(/\$scope_mode\$/g,'$scope_mode_pt$');
     result.pt_fetched = fetched_pt;
-    result.pt = replaceTemplateVarsWithArgs(fetched_pt, true, false);
+    result.pt = replaceTemplateVars(fetched_pt);
 
     let fetched_ptExpanded = fetchedSemantics.ptExpanded.replace(/\$regular_condition\$/g,'$regular_condition_SMV_pt$').replace(/\$post_condition\$/g,'$post_condition_SMV_pt$').replace(/\$stop_condition\$/g,'$stop_condition_SMV_pt$').replace(/\$scope_mode\$/g,'$scope_mode_pt$');
     result.ptExpanded_fetched = fetched_ptExpanded;
-    result.ptExpanded = utils.salt2smv(replaceTemplateVarsWithArgs(fetched_ptExpanded, true, true));
+    result.ptExpanded = utils.salt2smv(replaceTemplateVars(fetched_ptExpanded));
 
     const fetched_ptFinBtwExpanded = fetchedSemantics.ptFinBtwExpanded.replace(/\$regular_condition\$/g,'$regular_condition_SMV_pt$').replace(/\$post_condition\$/g,'$post_condition_SMV_pt$').replace(/\$stop_condition\$/g,'$stop_condition_SMV_pt$').replace(/\$scope_mode\$/g,'$scope_mode_pt$');
     result.ptFinBtwExpanded_fetched = fetched_ptFinBtwExpanded;
-    result.ptFinBtwExpanded = utils.salt2smv(replaceTemplateVarsWithArgs(fetched_ptFinBtwExpanded, true, true));     
+    result.ptFinBtwExpanded = utils.salt2smv(replaceTemplateVars(fetched_ptFinBtwExpanded));
 
     let fetched_ftExpanded = fetchedSemantics.ftExpanded.replace(/\$regular_condition\$/g,'$regular_condition_SMV_ft$').replace(/\$post_condition\$/g,'$post_condition_SMV_ft$').replace(/\$stop_condition\$/g,'$stop_condition_SMV_ft$').replace(/\$scope_mode\$/g,'$scope_mode_ft$');
     result.ftExpanded_fetched = fetched_ftExpanded;
-    result.ftExpanded = utils.salt2smv(replaceTemplateVarsWithArgs(fetched_ftExpanded, true, true));
+    result.ftExpanded = utils.salt2smv(replaceTemplateVars(fetched_ftExpanded))
 
     const fetched_ftInfAUExpanded = fetchedSemantics.ftInfAUExpanded.replace(/\$regular_condition\$/g,'$regular_condition_SMV_ft$').replace(/\$post_condition\$/g,'$post_condition_SMV_ft$').replace(/\$stop_condition\$/g,'$stop_condition_SMV_ft$').replace(/\$scope_mode\$/g,'$scope_mode_ft$');
     result.ftInfAUExpanded_fetched = fetched_ftInfAUExpanded;
-    result.ftInfAUExpanded = utils.salt2smv(LAST_is_FALSE(replaceTemplateVarsWithArgs(fetched_ftInfAUExpanded, true, true)));     
+    result.ftInfAUExpanded = utils.salt2smv(LAST_is_FALSE(replaceTemplateVars(fetched_ftInfAUExpanded)));
       
     const fetched_ftInfBtwExpanded = fetchedSemantics.ftInfBtwExpanded.replace(/\$regular_condition\$/g,'$regular_condition_SMV_ft$').replace(/\$post_condition\$/g,'$post_condition_SMV_ft$').replace(/\$stop_condition\$/g,'$stop_condition_SMV_ft$').replace(/\$scope_mode\$/g,'$scope_mode_ft$');
     result.ftInfBtwExpanded_fetched = fetched_ftInfBtwExpanded;
-    result.ftInfBtwExpanded = utils.salt2smv(LAST_is_FALSE(replaceTemplateVarsWithArgs(fetched_ftInfBtwExpanded, true, true)));     
+    result.ftInfBtwExpanded = utils.salt2smv(LAST_is_FALSE(replaceTemplateVars(fetched_ftInfBtwExpanded)));
 
     const fetched_ftFinBtwExpanded = fetchedSemantics.ftFinBtwExpanded.replace(/\$regular_condition\$/g,'$regular_condition_SMV_ft$').replace(/\$post_condition\$/g,'$post_condition_SMV_ft$').replace(/\$stop_condition\$/g,'$stop_condition_SMV_ft$').replace(/\$scope_mode\$/g,'$scope_mode_ft$');
     result.ftFinBtwExpanded_fetched = fetched_ftFinBtwExpanded;
-    result.ftFinBtwExpanded = utils.salt2smv(replaceTemplateVarsWithArgs(fetched_ftFinBtwExpanded, true, true));
+    result.ftFinBtwExpanded = utils.salt2smv(replaceTemplateVars(fetched_ftFinBtwExpanded));
 
     let fetched_coco = fetchedSemantics.CoCoSpecCode.replace(/\$regular_condition\$/g,'$regular_condition_coco$').replace(/\$post_condition\$/g,'$post_condition_coco$').replace(/\$stop_condition\$/g,'$stop_condition_coco$').replace(/\$scope_mode\$/g,'$scope_mode_coco$');
     result.CoCoSpecCode_fetched = fetched_coco;
-    let CoCoSpecCodeLTL = replaceTemplateVarsWithArgs(fetched_coco, true, false);
+    let CoCoSpecCodeLTL = replaceTemplateVars(fetched_coco);
     result.CoCoSpecCode = CoCoSpecCodeLTL;
 
-    result.component = replaceTemplateVarsWithArgs('$component_name$', false, false);
+    result.component = replaceTemplateVars('$component_name$')
 
     //if (constants.verboseSemanticsAnalyzer) console.log('Semantics result out: ' + JSON.stringify(result));
     if (constants.verboseSemanticsAnalyzer) console.log('Semantics result out:\n' + prettyObject(result))
