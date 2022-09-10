@@ -209,7 +209,7 @@ function union(l1,l2) {
 */
 function salt2smv(ptForm) {
     ptForm = ptForm.replace(/\<[bi]\>/g,'').replace(/\<\/[bi]\>/g,'') // Remove html tags
-	.replace(/\=\>/g,'->')
+	.replace(/=>/g,'->')
         .replace(/\[<=(\d+)\s*\w*\s*\]/g, "[0,$1]")
         .replace(/\[<=(\d+)\s*\w*\s*\+1\]/g, (str, p1, offset, s) => (`[0,${parseInt(p1)+1}]`))
         .replace(/\[<(\d+)\s*\w*\s*\]/g, (str, p1, offset, s) => (`[0,${parseInt(p1)-1}]`))
