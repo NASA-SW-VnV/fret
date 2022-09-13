@@ -31,6 +31,8 @@ Here are the steps to install and start FRET:
 
 For the installation of FRET on Windows 10 see [Installation_Windows](installation_windows.md).
 
+For the installation of FRET on Apple M1 machines see notes below.
+
 
 ### Notes
 
@@ -41,6 +43,17 @@ For the installation of FRET on Windows 10 see [Installation_Windows](installati
 > __Note:__ FRET can run with either **python 2.x** or **python 3.x**. You can config FRET to specify which version of python to use. For example, to use python2 executable, run the following: `npm config set python /usr/bin/python2.x`
 
 > __Note:__ Compiling on Windows machines requires  **gcc** and the [node-gyp prerequisites](https://github.com/nodejs/node-gyp#on-windows).
+
+> __Note:__ For M1 architectures please follow the following steps after cloning FRET:
+1. cd fret/fret-electron
+2. npm run fret-install
+4. cd app (under fret/fret-electron/)
+5. npm install leveldown@latest
+6. Edit package-lock.json (under fret/fret-electron/app/)
+- Change leveldown dependency: “^5.4.0” under node_modules/level to “^6.0.3”
+- Change leveldown dependency: “5.6.0” under node_modules/pouchdb to “^6.0.3”
+7. cd ..
+8. npm start
 
 [Back to FRET home page](../userManual.md)
 
