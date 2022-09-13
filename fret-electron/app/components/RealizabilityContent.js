@@ -250,9 +250,8 @@ function determineResultIcon(result, time) {
   );
 }
 
-export class ResultIcon extends React.Component {
-  render() {
-    const {reskey, result, time, error} = this.props;
+export function ResultIcon(props) {
+    const {reskey, result, time, error} = props;
 
     return (
       <Tooltip title={<span style={{ whiteSpace: 'pre-line' }}> {(result === 'ERROR' ? ("The following error(s) occured at the solver level:\n" + error) : result) +
@@ -269,7 +268,6 @@ export class ResultIcon extends React.Component {
                 <ErrorIcon id = {"qa_rlzCont_res_"+reskey+"_"+result} style={{fontSize : '20px', verticalAlign : 'bottom'}} color='error'/> : <div/>}
       </Tooltip>
     )
-  }
 }
 
 ResultIcon.propTypes ={
@@ -280,316 +278,316 @@ ResultIcon.propTypes ={
 }
 
 
-class CCRequirementsTable extends React.Component {
-  state = {
-    order: 'asc',
-    orderBy: 'reqid',
-    data: [],
-    page: 0,
-    rowsPerPage: 10,
-    selectedProject: 'All Projects'
-  };
+// class CCRequirementsTable extends React.Component {
+//   state = {
+//     order: 'asc',
+//     orderBy: 'reqid',
+//     data: [],
+//     page: 0,
+//     rowsPerPage: 10,
+//     selectedProject: 'All Projects'
+//   };
 
-  constructor(props){
-    super(props);
-  }
+//   constructor(props){
+//     super(props);
+//   }
 
-  componentDidMount() {
-    this.mounted = true;
-  }
+//   componentDidMount() {
+//     this.mounted = true;
+//   }
 
-  componentWillUnmount() {
-    this.mounted = false;
-    dbChangeListener_CCReq_Tab.cancel();
-  }
+//   componentWillUnmount() {
+//     this.mounted = false;
+//     dbChangeListener_CCReq_Tab.cancel();
+//   }
 
-  componentDidUpdate(prevProps) {
-    if (this.props.connectedComponent !== prevProps.connectedComponent) {
-      this.setState(
-        {
-          selected: [],
-          bulkChangeMode: false
-        });
-    }
-  }
+//   componentDidUpdate(prevProps) {
+//     if (this.props.connectedComponent !== prevProps.connectedComponent) {
+//       this.setState(
+//         {
+//           selected: [],
+//           bulkChangeMode: false
+//         });
+//     }
+//   }
 
-  synchStateWithDB() {
-    if (!this.mounted) return;
+//   synchStateWithDB() {
+//     if (!this.mounted) return;
 
-    const { selectedProject } = this.props
-    const filterOff = selectedProject == 'All Projects'
+//     const { selectedProject } = this.props
+//     const filterOff = selectedProject == 'All Projects'
 
-    db.allDocs({
-      include_docs: true,
-    }).then((result) => {
-      this.optLog(result.rows.filter(r => !system_dbkeys.includes(r.key)));
-    })
+//     db.allDocs({
+//       include_docs: true,
+//     }).then((result) => {
+//       this.optLog(result.rows.filter(r => !system_dbkeys.includes(r.key)));
+//     })
 
-    db.allDocs({
-      include_docs: true,
-    }).then((result) => {
-      this.optLog(result.rows
-                .filter(r => !system_dbkeys.includes(r.key)))
-      this.setState({
-        data: result.rows
-                .filter(r => !system_dbkeys.includes(r.key))
-                .filter(r => filterOff || r.doc.project == selectedProject)
-                .map(r => {
-                  return createData(r.doc._id, r.doc._rev, r.doc.reqid, r.doc.fulltext, r.doc.project)
-                })
-                .sort((a, b) => {return a.reqid > b.reqid})        
-      })
-    }).catch((err) => {
-      this.optLog(err);
-    });
-  }
+//     db.allDocs({
+//       include_docs: true,
+//     }).then((result) => {
+//       this.optLog(result.rows
+//                 .filter(r => !system_dbkeys.includes(r.key)))
+//       this.setState({
+//         data: result.rows
+//                 .filter(r => !system_dbkeys.includes(r.key))
+//                 .filter(r => filterOff || r.doc.project == selectedProject)
+//                 .map(r => {
+//                   return createData(r.doc._id, r.doc._rev, r.doc.reqid, r.doc.fulltext, r.doc.project)
+//                 })
+//                 .sort((a, b) => {return a.reqid > b.reqid})        
+//       })
+//     }).catch((err) => {
+//       this.optLog(err);
+//     });
+//   }
 
-  handleRequestSort = (event, property) => {
-    const orderBy = property;
-    let order = 'desc';
+//   handleRequestSort = (event, property) => {
+//     const orderBy = property;
+//     let order = 'desc';
 
-    if (this.state.orderBy === property && this.state.order === 'desc') {
-      order = 'asc';
-    }
+//     if (this.state.orderBy === property && this.state.order === 'desc') {
+//       order = 'asc';
+//     }
 
-    this.setState({ order, orderBy });
-  };
+//     this.setState({ order, orderBy });
+//   };
 
-  handleChangePage = (event, page) => {
-    this.setState({ page });
-  };
+//   handleChangePage = (event, page) => {
+//     this.setState({ page });
+//   };
 
-  handleChangeRowsPerPage = event => {
-    this.setState({ rowsPerPage: event.target.value });
-  };
+//   handleChangeRowsPerPage = event => {
+//     this.setState({ rowsPerPage: event.target.value });
+//   };
 
-  render() {
-    const { data, order, orderBy, rowsPerPage, page } = this.state;
-    const rows = [
-      { id: 'reqid', numeric: false, disablePadding: false, label: 'ID' },
-      { id: 'summary', numeric: false, disablePadding: false, label: 'Summary' },
-    ];
-    const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
+//   render() {
+//     const { data, order, orderBy, rowsPerPage, page } = this.state;
+//     const rows = [
+//       { id: 'reqid', numeric: false, disablePadding: false, label: 'ID' },
+//       { id: 'summary', numeric: false, disablePadding: false, label: 'Summary' },
+//     ];
+//     const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
 
-    const { selectedProject, connectedComponent } = this.props
+//     const { selectedProject, connectedComponent } = this.props
 
-    return(
-      <div>
-        <Paper>
-          <div>
-            <Table aria-labelledby="tableTitle" size="medium">
-              <TableHead>
-                <TableRow>
-                  {rows.map(row => {
-                    return (
-                      <TableCell
-                        id={"qa_rlzCont_tc_head"+row.id}
-                        key={row.id}
-                        align={row.numeric?'right':'left'}
-                        sortDirection={orderBy === row.id ? order : false}
-                      >
-                        <Tooltip
-                          title="Sort"
-                          placement={row.numeric ? 'bottom-end' : 'bottom-start'}
-                          enterDelay={300}
-                        >
-                          <TableSortLabel
-                            id={"qa_rlzCont_tc_sort"+row.id}
-                            active={orderBy === row.id}
-                            direction={order}
-                            onClick={this.handleRequestSort(row.id)}
-                          >
-                            {row.label}
-                          </TableSortLabel>
-                        </Tooltip>
-                      </TableCell>
-                    );
-                  }, this)}
-                </TableRow>
-              </TableHead>
-              {Object.keys(connectedComponent).length !== 0 ?
-                (<TableBody  id="qa_rlzCont_tableBody_1">{
-                  stableSort(data, getSorting(order, orderBy))
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map(n => {
-                    const label = n.reqid ? n.reqid.replace(/-/g,'') : 'NONE'
-                    return (
-                        <TableRow key={n.rowid}>
-                            <TableCell id={"qa_rlzCont_tc_id"+label}>
-                              {label}
-                            </TableCell>
-                          <TableCell id={"qa_rlzCont_tc_sum"+label}>{n.summary}</TableCell>
-                        </TableRow>
-                      )
-                  })}
-                  {emptyRows > 0 && (
-                    <TableRow style={{ height: 49 * emptyRows }}>
-                      <TableCell colSpan={6} />
-                    </TableRow>
-                  )}
-                </TableBody>) :
-                (<TableBody  id="qa_rlzCont_tableBody_2">{
-                  stableSort(data, getSorting(order, orderBy))
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map(n => {
-                    const label = n.reqid ? n.reqid.replace(/-/g,'') : 'NONE'
-                    return (
-                        <TableRow key={n.rowid}>
-                          <TableCell>
-                              {label}
-                            </TableCell>
-                          <TableCell>{n.summary}</TableCell>
-                        </TableRow>
-                      )
-                  })}
-                  {emptyRows > 0 && (
-                    <TableRow style={{ height: 49 * emptyRows }}>
-                      <TableCell colSpan={6} />
-                    </TableRow>
-                  )}
-                </TableBody>)
-              }
-            </Table>
-          </div>
-          <TablePagination
-            component="div"
-            count={data.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            backIconButtonProps={{
-              'aria-label': 'Previous Page',
-            }}
-            nextIconButtonProps={{
-              'aria-label': 'Next Page',
-            }}
-            onPageChange={this.handleChangePage}
-            onRowsPerPageChange={this.handleChangeRowsPerPage}
-          />
-        </Paper>
-      </div>
-    );
-  }
-}
+//     return(
+//       <div>
+//         <Paper>
+//           <div>
+//             <Table aria-labelledby="tableTitle" size="medium">
+//               <TableHead>
+//                 <TableRow>
+//                   {rows.map(row => {
+//                     return (
+//                       <TableCell
+//                         id={"qa_rlzCont_tc_head"+row.id}
+//                         key={row.id}
+//                         align={row.numeric?'right':'left'}
+//                         sortDirection={orderBy === row.id ? order : false}
+//                       >
+//                         <Tooltip
+//                           title="Sort"
+//                           placement={row.numeric ? 'bottom-end' : 'bottom-start'}
+//                           enterDelay={300}
+//                         >
+//                           <TableSortLabel
+//                             id={"qa_rlzCont_tc_sort"+row.id}
+//                             active={orderBy === row.id}
+//                             direction={order}
+//                             onClick={this.handleRequestSort(row.id)}
+//                           >
+//                             {row.label}
+//                           </TableSortLabel>
+//                         </Tooltip>
+//                       </TableCell>
+//                     );
+//                   }, this)}
+//                 </TableRow>
+//               </TableHead>
+//               {Object.keys(connectedComponent).length !== 0 ?
+//                 (<TableBody  id="qa_rlzCont_tableBody_1">{
+//                   stableSort(data, getSorting(order, orderBy))
+//                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+//                   .map(n => {
+//                     const label = n.reqid ? n.reqid.replace(/-/g,'') : 'NONE'
+//                     return (
+//                         <TableRow key={n.rowid}>
+//                             <TableCell id={"qa_rlzCont_tc_id"+label}>
+//                               {label}
+//                             </TableCell>
+//                           <TableCell id={"qa_rlzCont_tc_sum"+label}>{n.summary}</TableCell>
+//                         </TableRow>
+//                       )
+//                   })}
+//                   {emptyRows > 0 && (
+//                     <TableRow style={{ height: 49 * emptyRows }}>
+//                       <TableCell colSpan={6} />
+//                     </TableRow>
+//                   )}
+//                 </TableBody>) :
+//                 (<TableBody  id="qa_rlzCont_tableBody_2">{
+//                   stableSort(data, getSorting(order, orderBy))
+//                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+//                   .map(n => {
+//                     const label = n.reqid ? n.reqid.replace(/-/g,'') : 'NONE'
+//                     return (
+//                         <TableRow key={n.rowid}>
+//                           <TableCell>
+//                               {label}
+//                             </TableCell>
+//                           <TableCell>{n.summary}</TableCell>
+//                         </TableRow>
+//                       )
+//                   })}
+//                   {emptyRows > 0 && (
+//                     <TableRow style={{ height: 49 * emptyRows }}>
+//                       <TableCell colSpan={6} />
+//                     </TableRow>
+//                   )}
+//                 </TableBody>)
+//               }
+//             </Table>
+//           </div>
+//           <TablePagination
+//             component="div"
+//             count={data.length}
+//             rowsPerPage={rowsPerPage}
+//             page={page}
+//             backIconButtonProps={{
+//               'aria-label': 'Previous Page',
+//             }}
+//             nextIconButtonProps={{
+//               'aria-label': 'Next Page',
+//             }}
+//             onPageChange={this.handleChangePage}
+//             onRowsPerPageChange={this.handleChangeRowsPerPage}
+//           />
+//         </Paper>
+//       </div>
+//     );
+//   }
+// }
 
-CCRequirementsTable.propTypes ={
-  selectedProject: PropTypes.string.isRequired,
-  connectedComponent: PropTypes.object.isRequired
-}
+// CCRequirementsTable.propTypes ={
+//   selectedProject: PropTypes.string.isRequired,
+//   connectedComponent: PropTypes.object.isRequired
+// }
 
 
-function ProjectTableRow(props) {
-  const {name, result, time, connectedComponentRows} = props;
-  const [open, setOpen] = React.useState(false);
+// function ProjectTableRow(props) {
+//   const {name, result, time, connectedComponentRows} = props;
+//   const [open, setOpen] = React.useState(false);
 
-  return (
-    <React.Fragment>
-      <TableRow>
-        <TableCell>
-          <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
-            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-          </IconButton>
-        </TableCell>
-        <TableCell component="th" scope="row">
-          {name}
-        </TableCell>
-        <TableCell>{determineResultIcon(name, result, time)}</TableCell>
-      </TableRow>
-      {Object.keys(connectedComponentRows).length !== 0 &&
-        <TableRow>
-          <TableCell colSpan={3}>
-            <Collapse in={open} timeout="auto" unmountOnExit>
-                <Table size="small" aria-label="purchases">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell style={{width: 50}}/>
-                      <TableCell>Connected Component</TableCell>
-                      <TableCell>Result</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody  id="qa_rlzCont_tableBody_project">
-                    {Object.keys(connectedComponentRows).map((ccKey) => (
-                      <TableRow key={name+"_"+ccKey}>
-                        <TableCell/>
-                        <TableCell component="th" scope="row">
-                          {ccKey.toUpperCase()}
-                        </TableCell>
-                        <TableCell>{determineResultIcon(ccKey, connectedComponentRows[ccKey].result, {ccKey : connectedComponentRows[ccKey].time})}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-            </Collapse>
-          </TableCell>
-        </TableRow>
-      }
-    </React.Fragment>
-  );
-}
+//   return (
+//     <React.Fragment>
+//       <TableRow>
+//         <TableCell>
+//           <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
+//             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+//           </IconButton>
+//         </TableCell>
+//         <TableCell component="th" scope="row">
+//           {name}
+//         </TableCell>
+//         <TableCell>{determineResultIcon(name, result, time)}</TableCell>
+//       </TableRow>
+//       {Object.keys(connectedComponentRows).length !== 0 &&
+//         <TableRow>
+//           <TableCell colSpan={3}>
+//             <Collapse in={open} timeout="auto" unmountOnExit>
+//                 <Table size="small" aria-label="purchases">
+//                   <TableHead>
+//                     <TableRow>
+//                       <TableCell style={{width: 50}}/>
+//                       <TableCell>Connected Component</TableCell>
+//                       <TableCell>Result</TableCell>
+//                     </TableRow>
+//                   </TableHead>
+//                   <TableBody  id="qa_rlzCont_tableBody_project">
+//                     {Object.keys(connectedComponentRows).map((ccKey) => (
+//                       <TableRow key={name+"_"+ccKey}>
+//                         <TableCell/>
+//                         <TableCell component="th" scope="row">
+//                           {ccKey.toUpperCase()}
+//                         </TableCell>
+//                         <TableCell>{determineResultIcon(ccKey, connectedComponentRows[ccKey].result, {ccKey : connectedComponentRows[ccKey].time})}</TableCell>
+//                       </TableRow>
+//                     ))}
+//                   </TableBody>
+//                 </Table>
+//             </Collapse>
+//           </TableCell>
+//         </TableRow>
+//       }
+//     </React.Fragment>
+//   );
+// }
 
-ProjectTableRow.propTypes = {
- name: PropTypes.string.isRequired,
- result: PropTypes.string.isRequired,
- time: PropTypes.object.isRequired,
- connectedComponentRows: PropTypes.object.isRequired
-};
+// ProjectTableRow.propTypes = {
+//  name: PropTypes.string.isRequired,
+//  result: PropTypes.string.isRequired,
+//  time: PropTypes.object.isRequired,
+//  connectedComponentRows: PropTypes.object.isRequired
+// };
 
-function ProjectSummary(props) {
-  const {selectedProject, components, compositional, monolithicStatus, compositionalStatus, connectedComponents, time} = props;
-  var results = compositional ? compositionalStatus : monolithicStatus;
-  return(
-    <div>
-      &nbsp;
-      &nbsp;
-      &nbsp;
-      {components.map(c => (
-        <Accordion>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />} id={c.component_name}>
-            <Typography>
-              <div style={{display : 'flex', alignItems : 'center', flexWrap : 'wrap'}}>
-                {c.component_name}
-                &nbsp;
-                &nbsp;
-                {determineResultIcon(c.component_name, results[c.component_name], time[c.component_name])}
-              </div>
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <div style={{width : '100%'}}>
-            {Object.keys(projectReport['systemComponents'][c.component_name]['compositional']['connectedComponents']).map(ccKey => (
-              <Accordion>
-                <AccordionSummary expandIcon={<ExpandMoreIcon />} id={c.component_name}>
-                  <Typography>
-                    <div key={ccKey} style={{display : 'flex', alignItems : 'center', flexWrap : 'wrap'}}>
-                      {ccKey.toUpperCase()}
-                      &nbsp;
-                      &nbsp;
-                      {determineResultIcon(ccKey, projectReport['systemComponents'][c.component_name]['compositional']['connectedComponents'][ccKey].result, projectReport['systemComponents'][c.component_name]['compositional']['connectedComponents'][ccKey].time)}
-                    </div>
-                  </Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <Typography>
-                    {/* <CCRequirementsTable selectedProject={selectedProject} connectedComponent={connectedComponents[c.component_name][ccKey]}/> */}
-                  </Typography>
-                </AccordionDetails>
-              </Accordion>
-            ))}
-            </div>
-          </AccordionDetails>
-        </Accordion>
-      ))}
-    </div>
-  )
-}
+// function ProjectSummary(props) {
+//   const {selectedProject, components, compositional, monolithicStatus, compositionalStatus, connectedComponents, time} = props;
+//   var results = compositional ? compositionalStatus : monolithicStatus;
+//   return(
+//     <div>
+//       &nbsp;
+//       &nbsp;
+//       &nbsp;
+//       {components.map(c => (
+//         <Accordion>
+//           <AccordionSummary expandIcon={<ExpandMoreIcon />} id={c.component_name}>
+//             <Typography>
+//               <div style={{display : 'flex', alignItems : 'center', flexWrap : 'wrap'}}>
+//                 {c.component_name}
+//                 &nbsp;
+//                 &nbsp;
+//                 {determineResultIcon(c.component_name, results[c.component_name], time[c.component_name])}
+//               </div>
+//             </Typography>
+//           </AccordionSummary>
+//           <AccordionDetails>
+//             <div style={{width : '100%'}}>
+//             {Object.keys(projectReport['systemComponents'][c.component_name]['compositional']['connectedComponents']).map(ccKey => (
+//               <Accordion>
+//                 <AccordionSummary expandIcon={<ExpandMoreIcon />} id={c.component_name}>
+//                   <Typography>
+//                     <div key={ccKey} style={{display : 'flex', alignItems : 'center', flexWrap : 'wrap'}}>
+//                       {ccKey.toUpperCase()}
+//                       &nbsp;
+//                       &nbsp;
+//                       {determineResultIcon(ccKey, projectReport['systemComponents'][c.component_name]['compositional']['connectedComponents'][ccKey].result, projectReport['systemComponents'][c.component_name]['compositional']['connectedComponents'][ccKey].time)}
+//                     </div>
+//                   </Typography>
+//                 </AccordionSummary>
+//                 <AccordionDetails>
+//                   <Typography>
+//                     {/* <CCRequirementsTable selectedProject={selectedProject} connectedComponent={connectedComponents[c.component_name][ccKey]}/> */}
+//                   </Typography>
+//                 </AccordionDetails>
+//               </Accordion>
+//             ))}
+//             </div>
+//           </AccordionDetails>
+//         </Accordion>
+//       ))}
+//     </div>
+//   )
+// }
 
-ProjectSummary.propTypes = {
-  selectedProject: PropTypes.string.isRequired,
-  components: PropTypes.array.isRequired,
-  compositional: PropTypes.bool.isRequired,
-  monolithicStatus: PropTypes.object.isRequired,
-  compositionalStatus: PropTypes.object.isRequired,
-  connectedComponents: PropTypes.object.isRequired
-};
+// ProjectSummary.propTypes = {
+//   selectedProject: PropTypes.string.isRequired,
+//   components: PropTypes.array.isRequired,
+//   compositional: PropTypes.bool.isRequired,
+//   monolithicStatus: PropTypes.object.isRequired,
+//   compositionalStatus: PropTypes.object.isRequired,
+//   connectedComponents: PropTypes.object.isRequired
+// };
 
 class RealizabilityContent extends React.Component {
 
@@ -699,7 +697,7 @@ class RealizabilityContent extends React.Component {
             
             contract.properties = selectedReqs.length === 0 ? 
               (getPropertyInfo(fretResult, contract.outputVariables, component.component_name)) :
-              (getPropertyInfo(fretResult, contract.outputVariables, component.component_name).filter(p => selectedReqs.includes(p.reqid)));            
+              (getPropertyInfo(fretResult, contract.outputVariables, component.component_name).filter(p => selectedReqs.includes(p.reqid)));
 
             contract.delays = getDelayInfo(fretResult, component.component_name);
             contract = self.renameIDs(contract);
@@ -1595,7 +1593,7 @@ class RealizabilityContent extends React.Component {
                             </div>
                           </div>
                         }
-                        {selected === 'all' &&
+{/*                        {selected === 'all' &&
                           <ProjectSummary
                           selectedProject={selectedProject}
                           components={components}
@@ -1604,7 +1602,7 @@ class RealizabilityContent extends React.Component {
                           compositionalStatus={compositionalStatus}
                           connectedComponents={connectedComponents}
                           time={time}/>
-                        }
+                        }*/}
                         </div>
                       </div>
                     }
