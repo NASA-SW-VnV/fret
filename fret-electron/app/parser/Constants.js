@@ -65,6 +65,8 @@ module.exports = Object.freeze({
   //testTiming : ['always','null','immediately','eventually', 'never', 'for','within','after'],
   testResponse : ['satisfaction'/*,'action','order','not_order'*/].sort(),
 
+  semanticsTestEngine: 'NuSMV', // can also be 'nuXmv'. Path to their binary should be in PATH
+
 // Configuration - console logs
   verboseTesting: false,
   verboseRealizabilityTesting: false,
