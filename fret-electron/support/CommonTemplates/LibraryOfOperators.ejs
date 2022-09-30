@@ -82,6 +82,12 @@ let
   Y = false -> pre X;
 tel
 
+-- The equivalent of LTL's Z in Lustre.
+node ZtoPre(X: bool) returns (Y:bool);
+let
+  Y = true -> pre X;
+tel
+
 -- Absolute value for reals
 node absReal(x:real) returns(y: real);
 let

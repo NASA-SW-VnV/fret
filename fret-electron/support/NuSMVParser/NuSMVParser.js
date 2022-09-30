@@ -8,7 +8,7 @@ var grammarFileName = "NuSMV.g4";
 
 
 var serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964",
-    "\u0003B\u015e\u0004\u0002\t\u0002\u0004\u0003\t\u0003\u0004\u0004\t",
+    "\u0003C\u015f\u0004\u0002\t\u0002\u0004\u0003\t\u0003\u0004\u0004\t",
     "\u0004\u0004\u0005\t\u0005\u0004\u0006\t\u0006\u0004\u0007\t\u0007\u0004",
     "\b\t\b\u0004\t\t\t\u0004\n\t\n\u0004\u000b\t\u000b\u0004\f\t\f\u0004",
     "\r\t\r\u0004\u000e\t\u000e\u0004\u000f\t\u000f\u0004\u0010\t\u0010\u0004",
@@ -53,52 +53,52 @@ var serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964",
     "\u0003\u0007\u0003\u0007\u0003\u0007\u0003\u0007\u0003\u0007\u0003\u0007",
     "\u0003\u0007\u0003\u0007\u0003\u0007\u0003\u0007\u0003\u0007\u0003\u0007",
     "\u0007\u0007\u0115\n\u0007\f\u0007\u000e\u0007\u0118\u000b\u0007\u0003",
-    "\b\u0003\b\u0003\t\u0003\t\u0005\t\u011e\n\t\u0003\n\u0003\n\u0003\u000b",
-    "\u0003\u000b\u0003\f\u0003\f\u0005\f\u0126\n\f\u0003\r\u0003\r\u0003",
-    "\u000e\u0003\u000e\u0003\u000f\u0003\u000f\u0003\u000f\u0003\u000f\u0003",
-    "\u000f\u0003\u000f\u0003\u0010\u0003\u0010\u0003\u0010\u0003\u0010\u0005",
-    "\u0010\u0136\n\u0010\u0003\u0010\u0003\u0010\u0003\u0011\u0003\u0011",
-    "\u0003\u0012\u0003\u0012\u0003\u0013\u0003\u0013\u0003\u0014\u0003\u0014",
-    "\u0003\u0015\u0003\u0015\u0003\u0016\u0003\u0016\u0003\u0017\u0003\u0017",
-    "\u0003\u0018\u0003\u0018\u0003\u0019\u0003\u0019\u0003\u001a\u0003\u001a",
-    "\u0003\u001b\u0003\u001b\u0003\u001c\u0003\u001c\u0003\u001d\u0003\u001d",
-    "\u0003\u001e\u0003\u001e\u0003\u001f\u0003\u001f\u0003 \u0003 \u0003",
-    "!\u0003!\u0003\"\u0003\"\u0003\"\u0002\u0005\b\n\f#\u0002\u0004\u0006",
-    "\b\n\f\u000e\u0010\u0012\u0014\u0016\u0018\u001a\u001c\u001e \"$&(*",
-    ",.02468:<>@B\u0002\u000b\u0003\u0002\u0003\u0010\u0003\u0002\u0011\u0012",
-    "\u0003\u0002\u0013\u0015\u0003\u0002\u0017\u0019\u0003\u0002\u001a\u001c",
-    "\u0003\u0002\u001e \u0003\u0002!&\u0003\u0002/2\u0003\u000289\u0002",
-    "\u0170\u0002D\u0003\u0002\u0002\u0002\u0004F\u0003\u0002\u0002\u0002",
-    "\u0006H\u0003\u0002\u0002\u0002\bi\u0003\u0002\u0002\u0002\n\u00a8\u0003",
-    "\u0002\u0002\u0002\f\u00e2\u0003\u0002\u0002\u0002\u000e\u0119\u0003",
-    "\u0002\u0002\u0002\u0010\u011d\u0003\u0002\u0002\u0002\u0012\u011f\u0003",
-    "\u0002\u0002\u0002\u0014\u0121\u0003\u0002\u0002\u0002\u0016\u0125\u0003",
-    "\u0002\u0002\u0002\u0018\u0127\u0003\u0002\u0002\u0002\u001a\u0129\u0003",
-    "\u0002\u0002\u0002\u001c\u012b\u0003\u0002\u0002\u0002\u001e\u0131\u0003",
-    "\u0002\u0002\u0002 \u0139\u0003\u0002\u0002\u0002\"\u013b\u0003\u0002",
-    "\u0002\u0002$\u013d\u0003\u0002\u0002\u0002&\u013f\u0003\u0002\u0002",
-    "\u0002(\u0141\u0003\u0002\u0002\u0002*\u0143\u0003\u0002\u0002\u0002",
-    ",\u0145\u0003\u0002\u0002\u0002.\u0147\u0003\u0002\u0002\u00020\u0149",
-    "\u0003\u0002\u0002\u00022\u014b\u0003\u0002\u0002\u00024\u014d\u0003",
-    "\u0002\u0002\u00026\u014f\u0003\u0002\u0002\u00028\u0151\u0003\u0002",
-    "\u0002\u0002:\u0153\u0003\u0002\u0002\u0002<\u0155\u0003\u0002\u0002",
-    "\u0002>\u0157\u0003\u0002\u0002\u0002@\u0159\u0003\u0002\u0002\u0002",
-    "B\u015b\u0003\u0002\u0002\u0002DE\t\u0002\u0002\u0002E\u0003\u0003\u0002",
-    "\u0002\u0002FG\t\u0003\u0002\u0002G\u0005\u0003\u0002\u0002\u0002HI",
-    "\u0007>\u0002\u0002I\u0007\u0003\u0002\u0002\u0002JK\b\u0005\u0001\u0002",
-    "K_\u0005\u0006\u0004\u0002L[\u0005\"\u0012\u0002MP\u0005\n\u0006\u0002",
-    "NP\u0005\b\u0005\u0002OM\u0003\u0002\u0002\u0002ON\u0003\u0002\u0002",
-    "\u0002PX\u0003\u0002\u0002\u0002QT\u0005 \u0011\u0002RU\u0005\n\u0006",
-    "\u0002SU\u0005\b\u0005\u0002TR\u0003\u0002\u0002\u0002TS\u0003\u0002",
-    "\u0002\u0002UW\u0003\u0002\u0002\u0002VQ\u0003\u0002\u0002\u0002WZ\u0003",
-    "\u0002\u0002\u0002XV\u0003\u0002\u0002\u0002XY\u0003\u0002\u0002\u0002",
-    "Y\\\u0003\u0002\u0002\u0002ZX\u0003\u0002\u0002\u0002[O\u0003\u0002",
-    "\u0002\u0002[\\\u0003\u0002\u0002\u0002\\]\u0003\u0002\u0002\u0002]",
-    "^\u0005$\u0013\u0002^`\u0003\u0002\u0002\u0002_L\u0003\u0002\u0002\u0002",
-    "_`\u0003\u0002\u0002\u0002`j\u0003\u0002\u0002\u0002ab\u0005> \u0002",
-    "bc\u0005\b\u0005\u0007cj\u0003\u0002\u0002\u0002dj\u0007A\u0002\u0002",
-    "ef\u0005\"\u0012\u0002fg\u0005\b\u0005\u0002gh\u0005$\u0013\u0002hj",
-    "\u0003\u0002\u0002\u0002iJ\u0003\u0002\u0002\u0002ia\u0003\u0002\u0002",
+    "\b\u0003\b\u0003\t\u0003\t\u0003\t\u0005\t\u011f\n\t\u0003\n\u0003\n",
+    "\u0003\u000b\u0003\u000b\u0003\f\u0003\f\u0005\f\u0127\n\f\u0003\r\u0003",
+    "\r\u0003\u000e\u0003\u000e\u0003\u000f\u0003\u000f\u0003\u000f\u0003",
+    "\u000f\u0003\u000f\u0003\u000f\u0003\u0010\u0003\u0010\u0003\u0010\u0003",
+    "\u0010\u0005\u0010\u0137\n\u0010\u0003\u0010\u0003\u0010\u0003\u0011",
+    "\u0003\u0011\u0003\u0012\u0003\u0012\u0003\u0013\u0003\u0013\u0003\u0014",
+    "\u0003\u0014\u0003\u0015\u0003\u0015\u0003\u0016\u0003\u0016\u0003\u0017",
+    "\u0003\u0017\u0003\u0018\u0003\u0018\u0003\u0019\u0003\u0019\u0003\u001a",
+    "\u0003\u001a\u0003\u001b\u0003\u001b\u0003\u001c\u0003\u001c\u0003\u001d",
+    "\u0003\u001d\u0003\u001e\u0003\u001e\u0003\u001f\u0003\u001f\u0003 ",
+    "\u0003 \u0003!\u0003!\u0003\"\u0003\"\u0003\"\u0002\u0005\b\n\f#\u0002",
+    "\u0004\u0006\b\n\f\u000e\u0010\u0012\u0014\u0016\u0018\u001a\u001c\u001e",
+    " \"$&(*,.02468:<>@B\u0002\u000b\u0003\u0002\u0003\u0010\u0003\u0002",
+    "\u0011\u0012\u0003\u0002\u0013\u0015\u0003\u0002\u0018\u001a\u0003\u0002",
+    "\u001b\u001d\u0003\u0002\u001f!\u0003\u0002\"\'\u0003\u000203\u0003",
+    "\u00029:\u0002\u0172\u0002D\u0003\u0002\u0002\u0002\u0004F\u0003\u0002",
+    "\u0002\u0002\u0006H\u0003\u0002\u0002\u0002\bi\u0003\u0002\u0002\u0002",
+    "\n\u00a8\u0003\u0002\u0002\u0002\f\u00e2\u0003\u0002\u0002\u0002\u000e",
+    "\u0119\u0003\u0002\u0002\u0002\u0010\u011e\u0003\u0002\u0002\u0002\u0012",
+    "\u0120\u0003\u0002\u0002\u0002\u0014\u0122\u0003\u0002\u0002\u0002\u0016",
+    "\u0126\u0003\u0002\u0002\u0002\u0018\u0128\u0003\u0002\u0002\u0002\u001a",
+    "\u012a\u0003\u0002\u0002\u0002\u001c\u012c\u0003\u0002\u0002\u0002\u001e",
+    "\u0132\u0003\u0002\u0002\u0002 \u013a\u0003\u0002\u0002\u0002\"\u013c",
+    "\u0003\u0002\u0002\u0002$\u013e\u0003\u0002\u0002\u0002&\u0140\u0003",
+    "\u0002\u0002\u0002(\u0142\u0003\u0002\u0002\u0002*\u0144\u0003\u0002",
+    "\u0002\u0002,\u0146\u0003\u0002\u0002\u0002.\u0148\u0003\u0002\u0002",
+    "\u00020\u014a\u0003\u0002\u0002\u00022\u014c\u0003\u0002\u0002\u0002",
+    "4\u014e\u0003\u0002\u0002\u00026\u0150\u0003\u0002\u0002\u00028\u0152",
+    "\u0003\u0002\u0002\u0002:\u0154\u0003\u0002\u0002\u0002<\u0156\u0003",
+    "\u0002\u0002\u0002>\u0158\u0003\u0002\u0002\u0002@\u015a\u0003\u0002",
+    "\u0002\u0002B\u015c\u0003\u0002\u0002\u0002DE\t\u0002\u0002\u0002E\u0003",
+    "\u0003\u0002\u0002\u0002FG\t\u0003\u0002\u0002G\u0005\u0003\u0002\u0002",
+    "\u0002HI\u0007?\u0002\u0002I\u0007\u0003\u0002\u0002\u0002JK\b\u0005",
+    "\u0001\u0002K_\u0005\u0006\u0004\u0002L[\u0005\"\u0012\u0002MP\u0005",
+    "\n\u0006\u0002NP\u0005\b\u0005\u0002OM\u0003\u0002\u0002\u0002ON\u0003",
+    "\u0002\u0002\u0002PX\u0003\u0002\u0002\u0002QT\u0005 \u0011\u0002RU",
+    "\u0005\n\u0006\u0002SU\u0005\b\u0005\u0002TR\u0003\u0002\u0002\u0002",
+    "TS\u0003\u0002\u0002\u0002UW\u0003\u0002\u0002\u0002VQ\u0003\u0002\u0002",
+    "\u0002WZ\u0003\u0002\u0002\u0002XV\u0003\u0002\u0002\u0002XY\u0003\u0002",
+    "\u0002\u0002Y\\\u0003\u0002\u0002\u0002ZX\u0003\u0002\u0002\u0002[O",
+    "\u0003\u0002\u0002\u0002[\\\u0003\u0002\u0002\u0002\\]\u0003\u0002\u0002",
+    "\u0002]^\u0005$\u0013\u0002^`\u0003\u0002\u0002\u0002_L\u0003\u0002",
+    "\u0002\u0002_`\u0003\u0002\u0002\u0002`j\u0003\u0002\u0002\u0002ab\u0005",
+    "> \u0002bc\u0005\b\u0005\u0007cj\u0003\u0002\u0002\u0002dj\u0007B\u0002",
+    "\u0002ef\u0005\"\u0012\u0002fg\u0005\b\u0005\u0002gh\u0005$\u0013\u0002",
+    "hj\u0003\u0002\u0002\u0002iJ\u0003\u0002\u0002\u0002ia\u0003\u0002\u0002",
     "\u0002id\u0003\u0002\u0002\u0002ie\u0003\u0002\u0002\u0002j\u0080\u0003",
     "\u0002\u0002\u0002kl\f\b\u0002\u0002lm\u00052\u001a\u0002mn\u0005\b",
     "\u0005\bn\u007f\u0003\u0002\u0002\u0002os\f\u0006\u0002\u0002pt\u0005",
@@ -201,41 +201,42 @@ var serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964",
     "\u0003\u0002\u0002\u0002\u0115\u0118\u0003\u0002\u0002\u0002\u0116\u0114",
     "\u0003\u0002\u0002\u0002\u0116\u0117\u0003\u0002\u0002\u0002\u0117\r",
     "\u0003\u0002\u0002\u0002\u0118\u0116\u0003\u0002\u0002\u0002\u0119\u011a",
-    "\t\u0004\u0002\u0002\u011a\u000f\u0003\u0002\u0002\u0002\u011b\u011e",
-    "\u0007\u0016\u0002\u0002\u011c\u011e\u0005\u000e\b\u0002\u011d\u011b",
-    "\u0003\u0002\u0002\u0002\u011d\u011c\u0003\u0002\u0002\u0002\u011e\u0011",
-    "\u0003\u0002\u0002\u0002\u011f\u0120\t\u0005\u0002\u0002\u0120\u0013",
-    "\u0003\u0002\u0002\u0002\u0121\u0122\t\u0006\u0002\u0002\u0122\u0015",
-    "\u0003\u0002\u0002\u0002\u0123\u0126\u0007\u001d\u0002\u0002\u0124\u0126",
-    "\u0005\u0014\u000b\u0002\u0125\u0123\u0003\u0002\u0002\u0002\u0125\u0124",
-    "\u0003\u0002\u0002\u0002\u0126\u0017\u0003\u0002\u0002\u0002\u0127\u0128",
-    "\t\u0007\u0002\u0002\u0128\u0019\u0003\u0002\u0002\u0002\u0129\u012a",
-    "\t\b\u0002\u0002\u012a\u001b\u0003\u0002\u0002\u0002\u012b\u012c\u0007",
-    "\'\u0002\u0002\u012c\u012d\u0007A\u0002\u0002\u012d\u012e\u0007(\u0002",
-    "\u0002\u012e\u012f\u0007A\u0002\u0002\u012f\u0130\u0007)\u0002\u0002",
-    "\u0130\u001d\u0003\u0002\u0002\u0002\u0131\u0132\u0007\'\u0002\u0002",
-    "\u0132\u0135\u0005\u001a\u000e\u0002\u0133\u0136\u0005\u0004\u0003\u0002",
-    "\u0134\u0136\u0007A\u0002\u0002\u0135\u0133\u0003\u0002\u0002\u0002",
-    "\u0135\u0134\u0003\u0002\u0002\u0002\u0136\u0137\u0003\u0002\u0002\u0002",
-    "\u0137\u0138\u0007)\u0002\u0002\u0138\u001f\u0003\u0002\u0002\u0002",
-    "\u0139\u013a\u0007(\u0002\u0002\u013a!\u0003\u0002\u0002\u0002\u013b",
-    "\u013c\u0007*\u0002\u0002\u013c#\u0003\u0002\u0002\u0002\u013d\u013e",
-    "\u0007+\u0002\u0002\u013e%\u0003\u0002\u0002\u0002\u013f\u0140\u0007",
-    ",\u0002\u0002\u0140\'\u0003\u0002\u0002\u0002\u0141\u0142\u0007-\u0002",
-    "\u0002\u0142)\u0003\u0002\u0002\u0002\u0143\u0144\u0007.\u0002\u0002",
-    "\u0144+\u0003\u0002\u0002\u0002\u0145\u0146\t\t\u0002\u0002\u0146-\u0003",
-    "\u0002\u0002\u0002\u0147\u0148\u00073\u0002\u0002\u0148/\u0003\u0002",
-    "\u0002\u0002\u0149\u014a\u00074\u0002\u0002\u014a1\u0003\u0002\u0002",
-    "\u0002\u014b\u014c\u00075\u0002\u0002\u014c3\u0003\u0002\u0002\u0002",
-    "\u014d\u014e\u00076\u0002\u0002\u014e5\u0003\u0002\u0002\u0002\u014f",
-    "\u0150\u00077\u0002\u0002\u01507\u0003\u0002\u0002\u0002\u0151\u0152",
-    "\t\n\u0002\u0002\u01529\u0003\u0002\u0002\u0002\u0153\u0154\u0007:\u0002",
-    "\u0002\u0154;\u0003\u0002\u0002\u0002\u0155\u0156\u0007;\u0002\u0002",
-    "\u0156=\u0003\u0002\u0002\u0002\u0157\u0158\u0007;\u0002\u0002\u0158",
-    "?\u0003\u0002\u0002\u0002\u0159\u015a\u0007<\u0002\u0002\u015aA\u0003",
-    "\u0002\u0002\u0002\u015b\u015c\u0007=\u0002\u0002\u015cC\u0003\u0002",
+    "\t\u0004\u0002\u0002\u011a\u000f\u0003\u0002\u0002\u0002\u011b\u011f",
+    "\u0007\u0016\u0002\u0002\u011c\u011f\u0007\u0017\u0002\u0002\u011d\u011f",
+    "\u0005\u000e\b\u0002\u011e\u011b\u0003\u0002\u0002\u0002\u011e\u011c",
+    "\u0003\u0002\u0002\u0002\u011e\u011d\u0003\u0002\u0002\u0002\u011f\u0011",
+    "\u0003\u0002\u0002\u0002\u0120\u0121\t\u0005\u0002\u0002\u0121\u0013",
+    "\u0003\u0002\u0002\u0002\u0122\u0123\t\u0006\u0002\u0002\u0123\u0015",
+    "\u0003\u0002\u0002\u0002\u0124\u0127\u0007\u001e\u0002\u0002\u0125\u0127",
+    "\u0005\u0014\u000b\u0002\u0126\u0124\u0003\u0002\u0002\u0002\u0126\u0125",
+    "\u0003\u0002\u0002\u0002\u0127\u0017\u0003\u0002\u0002\u0002\u0128\u0129",
+    "\t\u0007\u0002\u0002\u0129\u0019\u0003\u0002\u0002\u0002\u012a\u012b",
+    "\t\b\u0002\u0002\u012b\u001b\u0003\u0002\u0002\u0002\u012c\u012d\u0007",
+    "(\u0002\u0002\u012d\u012e\u0007B\u0002\u0002\u012e\u012f\u0007)\u0002",
+    "\u0002\u012f\u0130\u0007B\u0002\u0002\u0130\u0131\u0007*\u0002\u0002",
+    "\u0131\u001d\u0003\u0002\u0002\u0002\u0132\u0133\u0007(\u0002\u0002",
+    "\u0133\u0136\u0005\u001a\u000e\u0002\u0134\u0137\u0005\u0004\u0003\u0002",
+    "\u0135\u0137\u0007B\u0002\u0002\u0136\u0134\u0003\u0002\u0002\u0002",
+    "\u0136\u0135\u0003\u0002\u0002\u0002\u0137\u0138\u0003\u0002\u0002\u0002",
+    "\u0138\u0139\u0007*\u0002\u0002\u0139\u001f\u0003\u0002\u0002\u0002",
+    "\u013a\u013b\u0007)\u0002\u0002\u013b!\u0003\u0002\u0002\u0002\u013c",
+    "\u013d\u0007+\u0002\u0002\u013d#\u0003\u0002\u0002\u0002\u013e\u013f",
+    "\u0007,\u0002\u0002\u013f%\u0003\u0002\u0002\u0002\u0140\u0141\u0007",
+    "-\u0002\u0002\u0141\'\u0003\u0002\u0002\u0002\u0142\u0143\u0007.\u0002",
+    "\u0002\u0143)\u0003\u0002\u0002\u0002\u0144\u0145\u0007/\u0002\u0002",
+    "\u0145+\u0003\u0002\u0002\u0002\u0146\u0147\t\t\u0002\u0002\u0147-\u0003",
+    "\u0002\u0002\u0002\u0148\u0149\u00074\u0002\u0002\u0149/\u0003\u0002",
+    "\u0002\u0002\u014a\u014b\u00075\u0002\u0002\u014b1\u0003\u0002\u0002",
+    "\u0002\u014c\u014d\u00076\u0002\u0002\u014d3\u0003\u0002\u0002\u0002",
+    "\u014e\u014f\u00077\u0002\u0002\u014f5\u0003\u0002\u0002\u0002\u0150",
+    "\u0151\u00078\u0002\u0002\u01517\u0003\u0002\u0002\u0002\u0152\u0153",
+    "\t\n\u0002\u0002\u01539\u0003\u0002\u0002\u0002\u0154\u0155\u0007;\u0002",
+    "\u0002\u0155;\u0003\u0002\u0002\u0002\u0156\u0157\u0007<\u0002\u0002",
+    "\u0157=\u0003\u0002\u0002\u0002\u0158\u0159\u0007<\u0002\u0002\u0159",
+    "?\u0003\u0002\u0002\u0002\u015a\u015b\u0007=\u0002\u0002\u015bA\u0003",
+    "\u0002\u0002\u0002\u015c\u015d\u0007>\u0002\u0002\u015dC\u0003\u0002",
     "\u0002\u0002\u001aOTX[_isz~\u0080\u0088\u008d\u0091\u0094\u0098\u00a8",
-    "\u00be\u00c0\u00e2\u0114\u0116\u011d\u0125\u0135"].join("");
+    "\u00be\u00c0\u00e2\u0114\u0116\u011e\u0126\u0136"].join("");
 
 
 var atn = new antlr4.atn.ATNDeserializer().deserialize(serializedATN);
@@ -249,7 +250,7 @@ var literalNames = [ null, "'$post_condition$'", "'$action$'", "'$scope_mode$'",
                      "'$action2$'", "'FTP'", "'FFin_$scope_mode$'", "'FLin_$scope_mode$'", 
                      "'Fin_$scope_mode$'", "'Lin_$scope_mode$'", "'FNin_$scope_mode$'", 
                      "'LNin_$scope_mode$'", "'$duration$'", "'$duration$+1'", 
-                     "'H'", "'O'", "'<|'", "'Y'", "'S'", "'T'", "'SI'", 
+                     "'H'", "'O'", "'<|'", "'Y'", "'Z'", "'S'", "'T'", "'SI'", 
                      "'G'", "'F'", "'|>'", "'X'", "'U'", "'V'", "'UI'", 
                      "'='", "'<'", "'<='", "'>'", "'>='", "'!='", "'['", 
                      "','", "']'", "'('", "')'", "'!'", "'&'", "'|'", "'XOR'", 
@@ -263,8 +264,8 @@ var symbolicNames = [ null, null, null, null, null, null, null, null, null,
                       null, null, null, null, null, null, null, null, null, 
                       null, null, null, null, null, null, null, null, null, 
                       null, null, null, null, null, null, null, null, null, 
-                      null, null, null, null, null, null, "ID", "XOR", "MOD", 
-                      "NUMBER", "WS" ];
+                      null, null, null, null, null, null, null, "ID", "XOR", 
+                      "MOD", "NUMBER", "WS" ];
 
 var ruleNames =  [ "plHolders", "durPlHolders", "proposition", "arithmetic_expr", 
                    "simpleExpr", "ltlExpr", "pastTimedUnaryOp", "pastUnaryOp", 
@@ -352,11 +353,12 @@ NuSMVParser.T__55 = 56;
 NuSMVParser.T__56 = 57;
 NuSMVParser.T__57 = 58;
 NuSMVParser.T__58 = 59;
-NuSMVParser.ID = 60;
-NuSMVParser.XOR = 61;
-NuSMVParser.MOD = 62;
-NuSMVParser.NUMBER = 63;
-NuSMVParser.WS = 64;
+NuSMVParser.T__59 = 60;
+NuSMVParser.ID = 61;
+NuSMVParser.XOR = 62;
+NuSMVParser.MOD = 63;
+NuSMVParser.NUMBER = 64;
+NuSMVParser.WS = 65;
 
 NuSMVParser.RULE_plHolders = 0;
 NuSMVParser.RULE_durPlHolders = 1;
@@ -750,7 +752,7 @@ NuSMVParser.prototype.arithmetic_expr = function(_p) {
                 this.state = 89;
                 this._errHandler.sync(this);
                 _la = this._input.LA(1);
-                if((((_la) & ~0x1f) == 0 && ((1 << _la) & ((1 << NuSMVParser.T__0) | (1 << NuSMVParser.T__1) | (1 << NuSMVParser.T__2) | (1 << NuSMVParser.T__3) | (1 << NuSMVParser.T__4) | (1 << NuSMVParser.T__5) | (1 << NuSMVParser.T__6) | (1 << NuSMVParser.T__7) | (1 << NuSMVParser.T__8) | (1 << NuSMVParser.T__9) | (1 << NuSMVParser.T__10) | (1 << NuSMVParser.T__11) | (1 << NuSMVParser.T__12) | (1 << NuSMVParser.T__13))) !== 0) || ((((_la - 40)) & ~0x1f) == 0 && ((1 << (_la - 40)) & ((1 << (NuSMVParser.T__39 - 40)) | (1 << (NuSMVParser.T__41 - 40)) | (1 << (NuSMVParser.T__56 - 40)) | (1 << (NuSMVParser.T__57 - 40)) | (1 << (NuSMVParser.T__58 - 40)) | (1 << (NuSMVParser.ID - 40)) | (1 << (NuSMVParser.NUMBER - 40)))) !== 0)) {
+                if((((_la) & ~0x1f) == 0 && ((1 << _la) & ((1 << NuSMVParser.T__0) | (1 << NuSMVParser.T__1) | (1 << NuSMVParser.T__2) | (1 << NuSMVParser.T__3) | (1 << NuSMVParser.T__4) | (1 << NuSMVParser.T__5) | (1 << NuSMVParser.T__6) | (1 << NuSMVParser.T__7) | (1 << NuSMVParser.T__8) | (1 << NuSMVParser.T__9) | (1 << NuSMVParser.T__10) | (1 << NuSMVParser.T__11) | (1 << NuSMVParser.T__12) | (1 << NuSMVParser.T__13))) !== 0) || ((((_la - 41)) & ~0x1f) == 0 && ((1 << (_la - 41)) & ((1 << (NuSMVParser.T__40 - 41)) | (1 << (NuSMVParser.T__42 - 41)) | (1 << (NuSMVParser.T__57 - 41)) | (1 << (NuSMVParser.T__58 - 41)) | (1 << (NuSMVParser.T__59 - 41)) | (1 << (NuSMVParser.ID - 41)) | (1 << (NuSMVParser.NUMBER - 41)))) !== 0)) {
                     this.state = 77;
                     this._errHandler.sync(this);
                     var la_ = this._interp.adaptivePredict(this._input,0,this._ctx);
@@ -769,7 +771,7 @@ NuSMVParser.prototype.arithmetic_expr = function(_p) {
                     this.state = 86;
                     this._errHandler.sync(this);
                     _la = this._input.LA(1);
-                    while(_la===NuSMVParser.T__37) {
+                    while(_la===NuSMVParser.T__38) {
                         this.state = 79;
                         this.comma();
                         this.state = 82;
@@ -798,7 +800,7 @@ NuSMVParser.prototype.arithmetic_expr = function(_p) {
 
             }
             break;
-        case NuSMVParser.T__56:
+        case NuSMVParser.T__57:
             this.state = 95;
             this.negate();
             this.state = 96;
@@ -808,7 +810,7 @@ NuSMVParser.prototype.arithmetic_expr = function(_p) {
             this.state = 98;
             this.match(NuSMVParser.NUMBER);
             break;
-        case NuSMVParser.T__39:
+        case NuSMVParser.T__40:
             this.state = 99;
             this.lp();
             this.state = 100;
@@ -856,16 +858,16 @@ NuSMVParser.prototype.arithmetic_expr = function(_p) {
                     this.state = 113;
                     this._errHandler.sync(this);
                     switch(this._input.LA(1)) {
-                    case NuSMVParser.T__51:
+                    case NuSMVParser.T__52:
                         this.state = 110;
                         this.mult();
                         break;
-                    case NuSMVParser.T__52:
+                    case NuSMVParser.T__53:
                         this.state = 111;
                         this.div();
                         break;
-                    case NuSMVParser.T__53:
                     case NuSMVParser.T__54:
+                    case NuSMVParser.T__55:
                         this.state = 112;
                         this.mod();
                         break;
@@ -886,11 +888,11 @@ NuSMVParser.prototype.arithmetic_expr = function(_p) {
                     this.state = 120;
                     this._errHandler.sync(this);
                     switch(this._input.LA(1)) {
-                    case NuSMVParser.T__55:
+                    case NuSMVParser.T__56:
                         this.state = 118;
                         this.plus();
                         break;
-                    case NuSMVParser.T__56:
+                    case NuSMVParser.T__57:
                         this.state = 119;
                         this.minus();
                         break;
@@ -1075,7 +1077,7 @@ NuSMVParser.prototype.simpleExpr = function(_p) {
                 this.state = 146;
                 this._errHandler.sync(this);
                 _la = this._input.LA(1);
-                if((((_la) & ~0x1f) == 0 && ((1 << _la) & ((1 << NuSMVParser.T__0) | (1 << NuSMVParser.T__1) | (1 << NuSMVParser.T__2) | (1 << NuSMVParser.T__3) | (1 << NuSMVParser.T__4) | (1 << NuSMVParser.T__5) | (1 << NuSMVParser.T__6) | (1 << NuSMVParser.T__7) | (1 << NuSMVParser.T__8) | (1 << NuSMVParser.T__9) | (1 << NuSMVParser.T__10) | (1 << NuSMVParser.T__11) | (1 << NuSMVParser.T__12) | (1 << NuSMVParser.T__13))) !== 0) || ((((_la - 40)) & ~0x1f) == 0 && ((1 << (_la - 40)) & ((1 << (NuSMVParser.T__39 - 40)) | (1 << (NuSMVParser.T__41 - 40)) | (1 << (NuSMVParser.T__56 - 40)) | (1 << (NuSMVParser.T__57 - 40)) | (1 << (NuSMVParser.T__58 - 40)) | (1 << (NuSMVParser.ID - 40)) | (1 << (NuSMVParser.NUMBER - 40)))) !== 0)) {
+                if((((_la) & ~0x1f) == 0 && ((1 << _la) & ((1 << NuSMVParser.T__0) | (1 << NuSMVParser.T__1) | (1 << NuSMVParser.T__2) | (1 << NuSMVParser.T__3) | (1 << NuSMVParser.T__4) | (1 << NuSMVParser.T__5) | (1 << NuSMVParser.T__6) | (1 << NuSMVParser.T__7) | (1 << NuSMVParser.T__8) | (1 << NuSMVParser.T__9) | (1 << NuSMVParser.T__10) | (1 << NuSMVParser.T__11) | (1 << NuSMVParser.T__12) | (1 << NuSMVParser.T__13))) !== 0) || ((((_la - 41)) & ~0x1f) == 0 && ((1 << (_la - 41)) & ((1 << (NuSMVParser.T__40 - 41)) | (1 << (NuSMVParser.T__42 - 41)) | (1 << (NuSMVParser.T__57 - 41)) | (1 << (NuSMVParser.T__58 - 41)) | (1 << (NuSMVParser.T__59 - 41)) | (1 << (NuSMVParser.ID - 41)) | (1 << (NuSMVParser.NUMBER - 41)))) !== 0)) {
                     this.state = 134;
                     this._errHandler.sync(this);
                     var la_ = this._interp.adaptivePredict(this._input,10,this._ctx);
@@ -1094,7 +1096,7 @@ NuSMVParser.prototype.simpleExpr = function(_p) {
                     this.state = 143;
                     this._errHandler.sync(this);
                     _la = this._input.LA(1);
-                    while(_la===NuSMVParser.T__37) {
+                    while(_la===NuSMVParser.T__38) {
                         this.state = 136;
                         this.comma();
                         this.state = 139;
@@ -2335,7 +2337,7 @@ NuSMVParser.prototype.pastUnaryOp = function() {
     var localctx = new PastUnaryOpContext(this, this._ctx, this.state);
     this.enterRule(localctx, 14, NuSMVParser.RULE_pastUnaryOp);
     try {
-        this.state = 283;
+        this.state = 284;
         this._errHandler.sync(this);
         switch(this._input.LA(1)) {
         case NuSMVParser.T__19:
@@ -2343,11 +2345,16 @@ NuSMVParser.prototype.pastUnaryOp = function() {
             this.state = 281;
             this.match(NuSMVParser.T__19);
             break;
+        case NuSMVParser.T__20:
+            this.enterOuterAlt(localctx, 2);
+            this.state = 282;
+            this.match(NuSMVParser.T__20);
+            break;
         case NuSMVParser.T__16:
         case NuSMVParser.T__17:
         case NuSMVParser.T__18:
-            this.enterOuterAlt(localctx, 2);
-            this.state = 282;
+            this.enterOuterAlt(localctx, 3);
+            this.state = 283;
             this.pastTimedUnaryOp();
             break;
         default:
@@ -2417,9 +2424,9 @@ NuSMVParser.prototype.pastBinaryOp = function() {
     var _la = 0; // Token type
     try {
         this.enterOuterAlt(localctx, 1);
-        this.state = 285;
+        this.state = 286;
         _la = this._input.LA(1);
-        if(!((((_la) & ~0x1f) == 0 && ((1 << _la) & ((1 << NuSMVParser.T__20) | (1 << NuSMVParser.T__21) | (1 << NuSMVParser.T__22))) !== 0))) {
+        if(!((((_la) & ~0x1f) == 0 && ((1 << _la) & ((1 << NuSMVParser.T__21) | (1 << NuSMVParser.T__22) | (1 << NuSMVParser.T__23))) !== 0))) {
         this._errHandler.recoverInline(this);
         }
         else {
@@ -2490,9 +2497,9 @@ NuSMVParser.prototype.futureTimedUnaryOp = function() {
     var _la = 0; // Token type
     try {
         this.enterOuterAlt(localctx, 1);
-        this.state = 287;
+        this.state = 288;
         _la = this._input.LA(1);
-        if(!((((_la) & ~0x1f) == 0 && ((1 << _la) & ((1 << NuSMVParser.T__23) | (1 << NuSMVParser.T__24) | (1 << NuSMVParser.T__25))) !== 0))) {
+        if(!((((_la) & ~0x1f) == 0 && ((1 << _la) & ((1 << NuSMVParser.T__24) | (1 << NuSMVParser.T__25) | (1 << NuSMVParser.T__26))) !== 0))) {
         this._errHandler.recoverInline(this);
         }
         else {
@@ -2564,19 +2571,19 @@ NuSMVParser.prototype.futureUnaryOp = function() {
     var localctx = new FutureUnaryOpContext(this, this._ctx, this.state);
     this.enterRule(localctx, 20, NuSMVParser.RULE_futureUnaryOp);
     try {
-        this.state = 291;
+        this.state = 292;
         this._errHandler.sync(this);
         switch(this._input.LA(1)) {
-        case NuSMVParser.T__26:
+        case NuSMVParser.T__27:
             this.enterOuterAlt(localctx, 1);
-            this.state = 289;
-            this.match(NuSMVParser.T__26);
+            this.state = 290;
+            this.match(NuSMVParser.T__27);
             break;
-        case NuSMVParser.T__23:
         case NuSMVParser.T__24:
         case NuSMVParser.T__25:
+        case NuSMVParser.T__26:
             this.enterOuterAlt(localctx, 2);
-            this.state = 290;
+            this.state = 291;
             this.futureTimedUnaryOp();
             break;
         default:
@@ -2646,9 +2653,9 @@ NuSMVParser.prototype.futureBinaryOp = function() {
     var _la = 0; // Token type
     try {
         this.enterOuterAlt(localctx, 1);
-        this.state = 293;
+        this.state = 294;
         _la = this._input.LA(1);
-        if(!((((_la) & ~0x1f) == 0 && ((1 << _la) & ((1 << NuSMVParser.T__27) | (1 << NuSMVParser.T__28) | (1 << NuSMVParser.T__29))) !== 0))) {
+        if(!((((_la) & ~0x1f) == 0 && ((1 << _la) & ((1 << NuSMVParser.T__28) | (1 << NuSMVParser.T__29) | (1 << NuSMVParser.T__30))) !== 0))) {
         this._errHandler.recoverInline(this);
         }
         else {
@@ -2719,9 +2726,9 @@ NuSMVParser.prototype.comparisonOp = function() {
     var _la = 0; // Token type
     try {
         this.enterOuterAlt(localctx, 1);
-        this.state = 295;
+        this.state = 296;
         _la = this._input.LA(1);
-        if(!(((((_la - 31)) & ~0x1f) == 0 && ((1 << (_la - 31)) & ((1 << (NuSMVParser.T__30 - 31)) | (1 << (NuSMVParser.T__31 - 31)) | (1 << (NuSMVParser.T__32 - 31)) | (1 << (NuSMVParser.T__33 - 31)) | (1 << (NuSMVParser.T__34 - 31)) | (1 << (NuSMVParser.T__35 - 31)))) !== 0))) {
+        if(!(((((_la - 32)) & ~0x1f) == 0 && ((1 << (_la - 32)) & ((1 << (NuSMVParser.T__31 - 32)) | (1 << (NuSMVParser.T__32 - 32)) | (1 << (NuSMVParser.T__33 - 32)) | (1 << (NuSMVParser.T__34 - 32)) | (1 << (NuSMVParser.T__35 - 32)) | (1 << (NuSMVParser.T__36 - 32)))) !== 0))) {
         this._errHandler.recoverInline(this);
         }
         else {
@@ -2802,16 +2809,16 @@ NuSMVParser.prototype.bound = function() {
     this.enterRule(localctx, 26, NuSMVParser.RULE_bound);
     try {
         this.enterOuterAlt(localctx, 1);
-        this.state = 297;
-        this.match(NuSMVParser.T__36);
         this.state = 298;
-        this.match(NuSMVParser.NUMBER);
-        this.state = 299;
         this.match(NuSMVParser.T__37);
-        this.state = 300;
+        this.state = 299;
         this.match(NuSMVParser.NUMBER);
-        this.state = 301;
+        this.state = 300;
         this.match(NuSMVParser.T__38);
+        this.state = 301;
+        this.match(NuSMVParser.NUMBER);
+        this.state = 302;
+        this.match(NuSMVParser.T__39);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
 	        localctx.exception = re;
@@ -2886,27 +2893,27 @@ NuSMVParser.prototype.saltBound = function() {
     this.enterRule(localctx, 28, NuSMVParser.RULE_saltBound);
     try {
         this.enterOuterAlt(localctx, 1);
-        this.state = 303;
-        this.match(NuSMVParser.T__36);
         this.state = 304;
+        this.match(NuSMVParser.T__37);
+        this.state = 305;
         this.comparisonOp();
-        this.state = 307;
+        this.state = 308;
         this._errHandler.sync(this);
         switch(this._input.LA(1)) {
         case NuSMVParser.T__14:
         case NuSMVParser.T__15:
-            this.state = 305;
+            this.state = 306;
             this.durPlHolders();
             break;
         case NuSMVParser.NUMBER:
-            this.state = 306;
+            this.state = 307;
             this.match(NuSMVParser.NUMBER);
             break;
         default:
             throw new antlr4.error.NoViableAltException(this);
         }
-        this.state = 309;
-        this.match(NuSMVParser.T__38);
+        this.state = 310;
+        this.match(NuSMVParser.T__39);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
 	        localctx.exception = re;
@@ -2970,8 +2977,8 @@ NuSMVParser.prototype.comma = function() {
     this.enterRule(localctx, 30, NuSMVParser.RULE_comma);
     try {
         this.enterOuterAlt(localctx, 1);
-        this.state = 311;
-        this.match(NuSMVParser.T__37);
+        this.state = 312;
+        this.match(NuSMVParser.T__38);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
 	        localctx.exception = re;
@@ -3035,8 +3042,8 @@ NuSMVParser.prototype.lp = function() {
     this.enterRule(localctx, 32, NuSMVParser.RULE_lp);
     try {
         this.enterOuterAlt(localctx, 1);
-        this.state = 313;
-        this.match(NuSMVParser.T__39);
+        this.state = 314;
+        this.match(NuSMVParser.T__40);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
 	        localctx.exception = re;
@@ -3100,8 +3107,8 @@ NuSMVParser.prototype.rp = function() {
     this.enterRule(localctx, 34, NuSMVParser.RULE_rp);
     try {
         this.enterOuterAlt(localctx, 1);
-        this.state = 315;
-        this.match(NuSMVParser.T__40);
+        this.state = 316;
+        this.match(NuSMVParser.T__41);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
 	        localctx.exception = re;
@@ -3165,8 +3172,8 @@ NuSMVParser.prototype.not = function() {
     this.enterRule(localctx, 36, NuSMVParser.RULE_not);
     try {
         this.enterOuterAlt(localctx, 1);
-        this.state = 317;
-        this.match(NuSMVParser.T__41);
+        this.state = 318;
+        this.match(NuSMVParser.T__42);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
 	        localctx.exception = re;
@@ -3230,8 +3237,8 @@ NuSMVParser.prototype.and = function() {
     this.enterRule(localctx, 38, NuSMVParser.RULE_and);
     try {
         this.enterOuterAlt(localctx, 1);
-        this.state = 319;
-        this.match(NuSMVParser.T__42);
+        this.state = 320;
+        this.match(NuSMVParser.T__43);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
 	        localctx.exception = re;
@@ -3295,8 +3302,8 @@ NuSMVParser.prototype.or = function() {
     this.enterRule(localctx, 40, NuSMVParser.RULE_or);
     try {
         this.enterOuterAlt(localctx, 1);
-        this.state = 321;
-        this.match(NuSMVParser.T__43);
+        this.state = 322;
+        this.match(NuSMVParser.T__44);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
 	        localctx.exception = re;
@@ -3361,9 +3368,9 @@ NuSMVParser.prototype.xor = function() {
     var _la = 0; // Token type
     try {
         this.enterOuterAlt(localctx, 1);
-        this.state = 323;
+        this.state = 324;
         _la = this._input.LA(1);
-        if(!(((((_la - 45)) & ~0x1f) == 0 && ((1 << (_la - 45)) & ((1 << (NuSMVParser.T__44 - 45)) | (1 << (NuSMVParser.T__45 - 45)) | (1 << (NuSMVParser.T__46 - 45)) | (1 << (NuSMVParser.T__47 - 45)))) !== 0))) {
+        if(!(((((_la - 46)) & ~0x1f) == 0 && ((1 << (_la - 46)) & ((1 << (NuSMVParser.T__45 - 46)) | (1 << (NuSMVParser.T__46 - 46)) | (1 << (NuSMVParser.T__47 - 46)) | (1 << (NuSMVParser.T__48 - 46)))) !== 0))) {
         this._errHandler.recoverInline(this);
         }
         else {
@@ -3433,8 +3440,8 @@ NuSMVParser.prototype.implies = function() {
     this.enterRule(localctx, 44, NuSMVParser.RULE_implies);
     try {
         this.enterOuterAlt(localctx, 1);
-        this.state = 325;
-        this.match(NuSMVParser.T__48);
+        this.state = 326;
+        this.match(NuSMVParser.T__49);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
 	        localctx.exception = re;
@@ -3498,8 +3505,8 @@ NuSMVParser.prototype.equiv = function() {
     this.enterRule(localctx, 46, NuSMVParser.RULE_equiv);
     try {
         this.enterOuterAlt(localctx, 1);
-        this.state = 327;
-        this.match(NuSMVParser.T__49);
+        this.state = 328;
+        this.match(NuSMVParser.T__50);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
 	        localctx.exception = re;
@@ -3563,8 +3570,8 @@ NuSMVParser.prototype.expt = function() {
     this.enterRule(localctx, 48, NuSMVParser.RULE_expt);
     try {
         this.enterOuterAlt(localctx, 1);
-        this.state = 329;
-        this.match(NuSMVParser.T__50);
+        this.state = 330;
+        this.match(NuSMVParser.T__51);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
 	        localctx.exception = re;
@@ -3628,8 +3635,8 @@ NuSMVParser.prototype.mult = function() {
     this.enterRule(localctx, 50, NuSMVParser.RULE_mult);
     try {
         this.enterOuterAlt(localctx, 1);
-        this.state = 331;
-        this.match(NuSMVParser.T__51);
+        this.state = 332;
+        this.match(NuSMVParser.T__52);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
 	        localctx.exception = re;
@@ -3693,8 +3700,8 @@ NuSMVParser.prototype.div = function() {
     this.enterRule(localctx, 52, NuSMVParser.RULE_div);
     try {
         this.enterOuterAlt(localctx, 1);
-        this.state = 333;
-        this.match(NuSMVParser.T__52);
+        this.state = 334;
+        this.match(NuSMVParser.T__53);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
 	        localctx.exception = re;
@@ -3759,9 +3766,9 @@ NuSMVParser.prototype.mod = function() {
     var _la = 0; // Token type
     try {
         this.enterOuterAlt(localctx, 1);
-        this.state = 335;
+        this.state = 336;
         _la = this._input.LA(1);
-        if(!(_la===NuSMVParser.T__53 || _la===NuSMVParser.T__54)) {
+        if(!(_la===NuSMVParser.T__54 || _la===NuSMVParser.T__55)) {
         this._errHandler.recoverInline(this);
         }
         else {
@@ -3831,8 +3838,8 @@ NuSMVParser.prototype.plus = function() {
     this.enterRule(localctx, 56, NuSMVParser.RULE_plus);
     try {
         this.enterOuterAlt(localctx, 1);
-        this.state = 337;
-        this.match(NuSMVParser.T__55);
+        this.state = 338;
+        this.match(NuSMVParser.T__56);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
 	        localctx.exception = re;
@@ -3896,8 +3903,8 @@ NuSMVParser.prototype.minus = function() {
     this.enterRule(localctx, 58, NuSMVParser.RULE_minus);
     try {
         this.enterOuterAlt(localctx, 1);
-        this.state = 339;
-        this.match(NuSMVParser.T__56);
+        this.state = 340;
+        this.match(NuSMVParser.T__57);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
 	        localctx.exception = re;
@@ -3961,8 +3968,8 @@ NuSMVParser.prototype.negate = function() {
     this.enterRule(localctx, 60, NuSMVParser.RULE_negate);
     try {
         this.enterOuterAlt(localctx, 1);
-        this.state = 341;
-        this.match(NuSMVParser.T__56);
+        this.state = 342;
+        this.match(NuSMVParser.T__57);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
 	        localctx.exception = re;
@@ -4026,8 +4033,8 @@ NuSMVParser.prototype.f = function() {
     this.enterRule(localctx, 62, NuSMVParser.RULE_f);
     try {
         this.enterOuterAlt(localctx, 1);
-        this.state = 343;
-        this.match(NuSMVParser.T__57);
+        this.state = 344;
+        this.match(NuSMVParser.T__58);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
 	        localctx.exception = re;
@@ -4091,8 +4098,8 @@ NuSMVParser.prototype.t = function() {
     this.enterRule(localctx, 64, NuSMVParser.RULE_t);
     try {
         this.enterOuterAlt(localctx, 1);
-        this.state = 345;
-        this.match(NuSMVParser.T__58);
+        this.state = 346;
+        this.match(NuSMVParser.T__59);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
 	        localctx.exception = re;

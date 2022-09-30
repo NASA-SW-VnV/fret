@@ -118,6 +118,8 @@ nuSMVAnalyzer.prototype.visitUnaryPastOp = function(ctx) {
   let operator = antlrUtilities.getText(ctx.pastUnaryOp(0));
   if (operator === 'Y'){
     operator = 'YtoPre';
+  } else if (operator === 'Z') {
+    operator = 'ZtoPre';
   }
   if (antlrUtilities.getText(ctx.ltlExpr(0)).match(/^\(/)) {
     return operator + this.visit(ctx.ltlExpr(0));

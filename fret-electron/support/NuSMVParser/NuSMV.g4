@@ -105,7 +105,7 @@ ltlExpr :
 
 pastTimedUnaryOp : 'H' | 'O' | '<|' ; //These are the operators that could appear in the timed version
 
-pastUnaryOp : 'Y' | pastTimedUnaryOp ; // previous state, not previous state not, historically, once, looking backward (O strict/non-inclusive)
+pastUnaryOp : 'Y' | 'Z' | pastTimedUnaryOp ; // previous state, not previous state not, historically, once, looking backward (O strict/non-inclusive)
 
 pastBinaryOp : 'S' | 'T' | 'SI' ; //since, triggered, since inclusive
 

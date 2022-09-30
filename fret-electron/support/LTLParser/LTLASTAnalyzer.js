@@ -46,7 +46,7 @@ LTLASTAnalyzer.prototype = Object.create(LTLVisitor.prototype);
 LTLASTAnalyzer.prototype.constructor = LTLASTAnalyzer;
 
 const symbolToOpMap =
-      { Y : 'Previous', H : 'Historically', O : 'Once', S : 'Since', T : 'Triggers',
+      { Y : 'PrevFalse', Z : 'PrevTrue', H : 'Historically', O : 'Once', S : 'Since', T : 'Triggers',
 	SI : 'SinceInclusive', UI : 'UntilInclusive',
 	X : 'Next', G : 'Globally', F : 'Eventually', U : 'Until', V : 'Releases',
 	'<|' : 'LookingBackwards', '|>' : 'LookingForwards',

@@ -75,6 +75,7 @@ function initialize(type) {
 }
 
 function pushNewVariable(v) {
+  //console.log('pushNewVariable: ' + JSON.stringify(v))
   if (!result.variables.includes(v) && !constants.predefinedVars.includes(v))
     result.variables.push(v)
 }
@@ -365,6 +366,15 @@ function replaceTemplateVars(formula,html=false) {
   else return "!! Unexpected case in SemanticsAnalyzer.replaceTemplateVars"
 }
 
+// Canonicalize for SMV format: TRUE, FALSE, and special chars replaced in identifiers.
+function canon_bool_expr(expr) {
+  if (expr) {
+    const without_special_chars = utils.replace_special_chars(expr);
+    const result = without_special_chars.replace(/\btrue\b/gi,'TRUE').replace(/\bfalse\b/gi,'FALSE');
+    return result;
+  } else return expr;
+}
+
 function createVariableDescription(scope, condition, timing, response, stop_condition) {
   var description = '';
   if (scope.type !== 'null' && scope.type !== 'unhandled'){
@@ -459,9 +469,9 @@ SemanticsAnalyzer.prototype.semantics = () => {
   let ftleftSMV = fetchedSemantics.endpoints.SMVftExtleft;
   let ftrightSMV = fetchedSemantics.endpoints.SMVftExtright;
 
-  let regCond = utils.replace_special_chars(result.regular_condition);
-  let postCond = utils.replace_special_chars(result.post_condition);
-  let stopCond = utils.replace_special_chars(result.stop_condition);
+  let regCond = canon_bool_expr(result.regular_condition);
+  let postCond = canon_bool_expr(result.post_condition);
+  let stopCond = canon_bool_expr(result.stop_condition);
 
   // Handle scope mode condition. It could be a boolean expr
   // with a temporal condition.
@@ -471,7 +481,7 @@ SemanticsAnalyzer.prototype.semantics = () => {
       result.scope_mode_ft = "BAD_FT"
     } else {
       // the scope_mode field only exists when scope.type !== 'null'
-      let modeCond = utils.replace_special_chars(result.scope_mode);
+      let modeCond = canon_bool_expr(result.scope_mode);
       let modeCondTCxform_pt = xform.transformPastTemporalConditionsNoBounds(modeCond)
       let modeCondTCxform_coco = cocospecSemantics.createCoCoSpecCode(modeCondTCxform_pt)
       let modeCondTCxform_ft = xform.transformFutureTemporalConditionsNoBounds(modeCond)

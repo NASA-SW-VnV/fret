@@ -112,10 +112,12 @@ const futureTemporalConditions = [
     ]
 
 const pastTemporalConditions = [
-    ['FTP', trueFn, '(! (Y TRUE))'],
-    ['persisted(__n,__p)',trueFn,'((H[<=__n] __p) & (H[<__n] ! $Left$))'],
-    ['occurred(__n,__p)',trueFn,'(((! $Left$) S __p) & (O[<=__n] __p))'],
-    ['prevOcc(__p,__q)', trueFn, '(Y (((! $Left$ & !__p) S __p) => ((! $Left$ & !__p) S (__p & __q))))']
+  ['FTP', trueFn, '(! (Y TRUE))'],
+  ['preBool(FALSE,__p)',trueFn,'(Y __p)'],
+  ['preBool(TRUE,__p)',trueFn,'(Z __p)'],
+  ['persisted(__n,__p)',trueFn,'((H[<=__n] __p) & (H[<__n] ! $Left$))'],
+  ['occurred(__n,__p)',trueFn,'(((! $Left$) S __p) & (O[<=__n] __p))'],
+  ['prevOcc(__p,__q)', trueFn, '(Y (((! $Left$ & !__p) S __p) => ((! $Left$ & !__p) S (__p & __q))))']
 ]
 
 const temporalConditions = pastTemporalConditions.concat(futureTemporalConditions);

@@ -60,12 +60,13 @@ const infix = { ExclusiveOr : 'xor', And : '&', Or : '|', Implies : '->', Equiv 
 
 const prefix = { Not : '!', Historically : 'H', Once : 'O', Negate : '-',
 		 OnceTimed : 'O', HistoricallyTimed : 'H', EventuallyTimed : 'F',
-		 Globally : 'G', Eventually : 'F', Next : 'X', Previous : 'Y',
+		 Globally : 'G', Eventually : 'F', Next : 'X', PrevFalse : 'Y',
+		 PrevTrue : 'Z',
 		 GloballyTimed : 'G',
 	         LookingBackwardsTimed : '<|', LookingForwardsTimed : '|>', Negate : '-'};
 
 function LTLtoAST (LTL) {
-  var chars = new antlr4.InputStream(LTL.replace(/\=\>/g,'->'));
+  var chars = new antlr4.InputStream(LTL.replace(/=>/g,'->'));
   var lexer = new LTLLexer.LTLLexer(chars);
   var tokens  = new antlr4.CommonTokenStream(lexer);
   var parser = new LTLParser.LTLParser(tokens);
