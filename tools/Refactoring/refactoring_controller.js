@@ -15,8 +15,13 @@ var fretSemantics = require("../../fret-electron/app/parser/FretSemantics")
 exports.test = function test(extractString, newName)
 {
 	console.log("Refactoring Test: " + extractString + " " + newName);
+};
 
-}
+function newRequirement()
+{
+	// New Req doesn't need a revision number
+	return {fulltext: '', parent_reqid: '', project: '',rationale: '', reqid: '', semantics: '', _id: ''};
+};
 
 
 /**
@@ -26,17 +31,19 @@ function extractRequirement(req, fragment, destinationName, newID)
 {
 	console.log("Extract One");
 	// Step 1
-  // Clone requirement
+  // Make New requirement
 	//let destinationRequirement = new FretRequirement(destinationName, null);
-	let clonedReq = Object.assign({}, req);
-	clonedReq.reqid = destinationName.toUpperCase();
-	// New Req needs a new ID so I'm just adding one to it
-	clonedReq._id = newID;
-	// New Req doesn't need a revision number
-	delete clonedReq._rev;
-	clonedReq.rationale = "EXTRACT REQUIREMENT: extracted " + fragment + " from " + req.reqid;
-	console.log("Cloned Req Right Away")
-	console.log(clonedReq);
+	//let clonedReq = Object.assign({}, req);
+	let newReq = newRequirement();
+	newReq.reqid = destinationName.toUpperCase();
+	// New Req needs a new ID
+	newReq._id = newID;
+	// Copying the project name
+	newReq.project = req.project;
+
+	newReq.rationale = "EXTRACT REQUIREMENT: extracted " + fragment + " from " + req.reqid;
+	console.log("Made New Requirement")
+	console.log(newReq);
 
 
 	// Step 2
@@ -49,11 +56,11 @@ function extractRequirement(req, fragment, destinationName, newID)
   // New fretish requirement
 	let newFretish = "if " + fragment + " " + component + " shall satisfy " + destinationName.toUpperCase();
 
-	 clonedReq.fulltext = newFretish;
+	 newReq.fulltext = newFretish;
 	 // Compile the new semantics and add to the new req
 	 newSemantics = fretSemantics.compile(newFretish)
 	 //console.log(newSemantics);
-	 clonedReq.semantics = newSemantics.collectedSemantics;
+	 newReq.semantics = newSemantics.collectedSemantics;
 
 	// Step 3
   // Replace fragment in original requirement with reference to new requirement
@@ -64,7 +71,7 @@ function extractRequirement(req, fragment, destinationName, newID)
 	model.AddRequirementToDB(req);
 
 // Adding extracted requirement
-	model.AddRequirementToDB(clonedReq);
+	model.AddRequirementToDB(newReq);
 
   // Step 4
   // Verify
@@ -73,9 +80,9 @@ function extractRequirement(req, fragment, destinationName, newID)
 	console.log(req);
 
 
-	console.log(clonedReq);
+	console.log(newReq);
 
-  //return {req: req, fragment :clonedReq}
+  //return [newReq]
 }
 exports.extractRequirement = extractRequirement;
 
@@ -88,15 +95,33 @@ function extractRequirement_ApplyAll(req, fragment, destinationName, newID, allR
 	// Step 1
   // Clone requirement
 	//let destinationRequirement = new FretRequirement(destinationName, null);
-	let clonedReq = Object.assign({}, req);
-	clonedReq.reqid = destinationName.toUpperCase();
-	// New Req needs a new ID so I'm just adding one to it
-	clonedReq._id = newID; // clonedReq._id +1;
-	// New Req doesn't need a revision number
-	delete clonedReq._rev;
-	clonedReq.rationale = "EXTRACT REQUIREMENT: extracted " + fragment + " from " + req.reqid;
-	console.log("Cloned Req Right Away")
-	console.log(clonedReq);
+	let newReq = newRequirement();
+	newReq.reqid = destinationName.toUpperCase();
+	// New Req needs a new ID
+	newReq._id = newID;
+	// Copying the project name
+	newReq.project = req.project;
+
+	newReq.rationale = "EXTRACT REQUIREMENT: extracted " + fragment + " from " + req.reqid;
+
+	// Step 2
+  // Build new fretish requirement
+	let component = req.semantics.component_name;
+//	console.log(component);
+	//req.getComponent();
+
+
+  // New fretish requirement
+	let newFretish = "if " + fragment + " " + component + " shall satisfy " + destinationName.toUpperCase();
+
+	 newReq.fulltext = newFretish;
+	 // Compile the new semantics and add to the new req
+	 newSemantics = fretSemantics.compile(newFretish)
+	 //console.log(newSemantics);
+	 newReq.semantics = newSemantics.collectedSemantics;
+
+	console.log("Made New Requirement")
+	console.log(newReq);
 
 	console.log("knockons");
   // Do the thing
@@ -123,8 +148,8 @@ function extractRequirement_ApplyAll(req, fragment, destinationName, newID, allR
 
 
 	// Adding extracted requirement
-		model.AddRequirementToDB(clonedReq);
-
+		model.AddRequirementToDB(newReq);
+	//return [newReq]
 }
 exports.extractRequirement_ApplyAll = extractRequirement_ApplyAll;
 
