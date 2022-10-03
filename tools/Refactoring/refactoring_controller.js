@@ -10,7 +10,7 @@ var fretSemantics = require("../../fret-electron/app/parser/FretSemantics")
 //const {v1:uuidv1} = require('uuid');
 //const uuidv1 = require('uuid/v1');
 //const { v1: uuidv1 } = require('uuid');
-
+//import { v4 as uuidv4 } from 'uuid';
 
 exports.test = function test(extractString, newName)
 {
@@ -22,7 +22,7 @@ exports.test = function test(extractString, newName)
 /**
 * Handles one request to refactor one requirement
 */
-function extractRequirement(req, fragment, destinationName)
+function extractRequirement(req, fragment, destinationName, newID)
 {
 	console.log("Extract One");
 	// Step 1
@@ -31,7 +31,7 @@ function extractRequirement(req, fragment, destinationName)
 	let clonedReq = Object.assign({}, req);
 	clonedReq.reqid = destinationName.toUpperCase();
 	// New Req needs a new ID so I'm just adding one to it
-	clonedReq._id = clonedReq._id +1;
+	clonedReq._id = newID;
 	// New Req doesn't need a revision number
 	delete clonedReq._rev;
 	clonedReq.rationale = "EXTRACT REQUIREMENT: extracted " + fragment + " from " + req.reqid;
@@ -82,7 +82,7 @@ exports.extractRequirement = extractRequirement;
 /**
 * Handles a request to extract a fragment from all requirements that contain it.
 */
-function extractRequirement_ApplyAll(req, fragment, destinationName, allRequirements)
+function extractRequirement_ApplyAll(req, fragment, destinationName, newID, allRequirements)
 {
 	console.log("Extract All")
 	// Step 1
@@ -91,7 +91,7 @@ function extractRequirement_ApplyAll(req, fragment, destinationName, allRequirem
 	let clonedReq = Object.assign({}, req);
 	clonedReq.reqid = destinationName.toUpperCase();
 	// New Req needs a new ID so I'm just adding one to it
-	clonedReq._id = clonedReq._id +1;
+	clonedReq._id = newID; // clonedReq._id +1;
 	// New Req doesn't need a revision number
 	delete clonedReq._rev;
 	clonedReq.rationale = "EXTRACT REQUIREMENT: extracted " + fragment + " from " + req.reqid;

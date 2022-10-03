@@ -65,6 +65,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 
 import RefactoringController from '../../../../tools/Refactoring/refactoring_controller';
 //import RefactoringController from './refactoring_controller';
+import { v4 as uuid } from 'uuid';
 
 const styles = theme => ({
   formula: {
@@ -133,16 +134,17 @@ handleOk = () => {
   console.log(this.state.extractString);
   console.log(this.state.newName);
   console.log("apply to all = " + this.state.applyToAll);
+  var newID = uuid.v1();
   if (this.state.applyToAll == true)
   {
     RefactoringController.extractRequirement_ApplyAll(
       this.state.selectedRequirement, this.state.extractString,
-      this.state.newName, this.state.requirements);
+      this.state.newName, newID, this.state.requirements);
   }
   else {
     // req, fragment, destinationName, knockons
       RefactoringController.extractRequirement(
-        this.state.selectedRequirement, this.state.extractString, this.state.newName);
+        this.state.selectedRequirement, this.state.extractString, this.state.newName, newID);
   }
 
   // console.log(result.req);

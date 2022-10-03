@@ -251,7 +251,8 @@
     "slate": "^0.57.1",
     "slate-history": "^0.59.0",
     "slate-react": "^0.57.1",
-    "source-map-support": "^0.5.3"
+    "source-map-support": "^0.5.3",
+    "uuid": "^9.0.0"
   },
   "devEngines": {
     "node": ">=7.x",
