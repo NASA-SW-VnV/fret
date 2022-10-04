@@ -130,7 +130,7 @@ const pastTemporalConditions = [
   // ['preBool(__init,__p)', trueFn, //(sbst) => nonBoolConstant(sbst["__init"]),
   //'(($Left$ & __init) | ((! $Left$) & (Y __p)))'],
   ['preBool(__init,__p)', trueFn, //(sbst) => nonBoolConstant(sbst["__init"]),
-   '(((! (Y TRUE)) & __init) | ((! (! Y TRUE) ) & (Y __p)))'],
+   '(((! (Y TRUE)) & (__init)) | ((! (! Y TRUE) ) & (Y __p)))'],
   ['persisted(__n,__p)',trueFn,'((H[<=__n] __p) & (H[<__n] ! $Left$))'],
   ['occurred(__n,__p)',trueFn,'(((! $Left$) S __p) & (O[<=__n] __p))'],
   ['prevOcc(__p,__q)', trueFn, '(Y (((! $Left$ & !__p) S __p) => ((! $Left$ & !__p) S (__p & __q))))']
