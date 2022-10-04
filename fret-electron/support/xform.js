@@ -73,15 +73,19 @@ const booleanSimplifications = [
     [ '(! (__p & __q)) & (! (__r | __q))', trueFn, '(! __q) & (! __r)'],
     ['! FALSE',trueFn,'TRUE'],
     ['__p | FALSE',trueFn,'__p'], ['FALSE | __p',trueFn,'__p'],
-    ['__p & TRUE',trueFn,'__p'], ['TRUE & __p',trueFn,'__p']
+    ['__p & TRUE',trueFn,'__p'], ['TRUE & __p',trueFn,'__p'],
+    ['__p & FALSE', trueFn, 'FALSE'], ['FALSE & __p', trueFn, 'FALSE']
 ];
 
 const pastTimeSimplifications = [
-    	  [ '! H ! __p', trueFn, 'O __p'],
-	  [ '! O ! __p', trueFn, 'H __p'],
-	  ['__p S (__p & FTP)', trueFn, 'H __p'],
-	  ['__p S (__p & ! Y TRUE)', trueFn, 'H __p'],
-	  ['__p S (FTP & __p)', trueFn, 'H __p']
+  [ '! H ! __p', trueFn, 'O __p'],
+  [ '! O ! __p', trueFn, 'H __p'],
+  ['__p S (__p & FTP)', trueFn, 'H __p'],
+  ['__p S (__p & ! Y TRUE)', trueFn, 'H __p'],
+  ['__p S (FTP & __p)', trueFn, 'H __p'],
+  ['(Y TRUE) & (Y __p)', trueFn, '(Y __p)'],
+  ['(! (Y TRUE)) | (Y __p)', trueFn, '(Z __p)']
+  
           // -xtltl flag given to SALT does this: [ '__p | <| [] __p', trueFn, 'O __p'] 
 	  // For "regular,within":
 	  // Text substitution done in substitutionsCustomizeFret in SemanticsGenerator.js
@@ -111,10 +115,19 @@ const futureTemporalConditions = [
     ['nextOcc(__p,__q)', trueFn, '(X (((!__p & !$Right$) U __p) => ((!__p & !$Right$) U (__p & __q))) )']
     ]
 
+/*
+function nonBoolConstant(v) {
+  return (v != true) & (v != false);
+}
+*/
+
 const pastTemporalConditions = [
   ['FTP', trueFn, '(! (Y TRUE))'],
-  ['preBool(FALSE,__p)',trueFn,'(Y __p)'],
-  ['preBool(TRUE,__p)',trueFn,'(Z __p)'],
+  //These special cases are unnecessary due to booleanSimplifications 
+  //['preBool(FALSE,__p)',trueFn,'((! $Left$) & (Y __p))'],
+  //['preBool(TRUE,__p)',trueFn,'($Left$ | (Y __p))'],
+  ['preBool(__init,__p)', trueFn, //(sbst) => nonBoolConstant(sbst["__init"]),
+   '(($Left$ & __init) | (!$Left$ & (Y __p)))'],
   ['persisted(__n,__p)',trueFn,'((H[<=__n] __p) & (H[<__n] ! $Left$))'],
   ['occurred(__n,__p)',trueFn,'(((! $Left$) S __p) & (O[<=__n] __p))'],
   ['prevOcc(__p,__q)', trueFn, '(Y (((! $Left$ & !__p) S __p) => ((! $Left$ & !__p) S (__p & __q))))']

@@ -526,7 +526,7 @@ SemanticsAnalyzer.prototype.semantics = () => {
         let postCondUnexp_pt = postCondTCxform_pt.replace(/\$Left\$/g, left).replace(/\$scope_mode\$/g, '$scope_mode_pt$');
 	result.post_condition_unexp_pt = postCondUnexp_pt;
 
-	let postCondUnexp_ft = postCondTCxform_ft.replace(/\$Right\$/g,right).replace(/\$scope_mode\$/g, '$scope_mode_ft$');;
+	let postCondUnexp_ft = postCondTCxform_ft.replace(/\$Right\$/g,right).replace(/\$scope_mode\$/g, '$scope_mode_ft$');
 	result.post_condition_unexp_ft = postCondUnexp_ft;
 
 	let postCondSMV_pt = postCondTCxform_pt.replace(/\$Left\$/g, ptleftSMV).replace(/\$scope_mode\$/g,'$scope_mode_pt$');
@@ -546,16 +546,16 @@ SemanticsAnalyzer.prototype.semantics = () => {
       let stopCondTCxform_pt = xform.transformPastTemporalConditions(stopCond)
       let stopCondTCxform_ft = xform.transformFutureTemporalConditions(stopCond)
 
-      let stopCondUnexp_pt = stopCondTCxform_pt.replace(/\$Left\$/g, left).replace(/\$scope_mode\$/g, '$scope_mode_pt$');;
+      let stopCondUnexp_pt = stopCondTCxform_pt.replace(/\$Left\$/g, left).replace(/\$scope_mode\$/g, '$scope_mode_pt$');
       result.stop_condition_unexp_pt = stopCondUnexp_pt;
 
-      let stopCondUnexp_ft = stopCondTCxform_ft.replace(/\$Right\$/g,right).replace(/\$scope_mode\$/g, '$scope_mode_ft$');;
+      let stopCondUnexp_ft = stopCondTCxform_ft.replace(/\$Right\$/g,right).replace(/\$scope_mode\$/g, '$scope_mode_ft$');
       result.stop_condition_unexp_ft = stopCondUnexp_ft;
 
-      let stopCondSMV_pt = stopCondTCxform_pt.replace(/\$Left\$/g,ptleftSMV).replace(/\$scope_mode\$/g,'$scope_mode_pt$');;
+      let stopCondSMV_pt = stopCondTCxform_pt.replace(/\$Left\$/g,ptleftSMV).replace(/\$scope_mode\$/g,'$scope_mode_pt$');
       result.stop_condition_SMV_pt = stopCondSMV_pt;
 
-      let stopCondSMV_ft = stopCondTCxform_ft.replace(/\$Right\$/g,ftrightSMV).replace(/\$scope_mode\$/g,'$scope_mode_ft$');;
+      let stopCondSMV_ft = stopCondTCxform_ft.replace(/\$Right\$/g,ftrightSMV).replace(/\$scope_mode\$/g,'$scope_mode_ft$');
       result.stop_condition_SMV_ft = stopCondSMV_ft;
 
       // stopCondLeftCoCoSubsts has left endpoints, except for FTP,
@@ -579,7 +579,7 @@ SemanticsAnalyzer.prototype.semantics = () => {
 
     let fetched_ptExpanded = fetchedSemantics.ptExpanded.replace(/\$regular_condition\$/g,'$regular_condition_SMV_pt$').replace(/\$post_condition\$/g,'$post_condition_SMV_pt$').replace(/\$stop_condition\$/g,'$stop_condition_SMV_pt$').replace(/\$scope_mode\$/g,'$scope_mode_pt$');
     result.ptExpanded_fetched = fetched_ptExpanded;
-    result.ptExpanded = utils.salt2smv(replaceTemplateVars(fetched_ptExpanded));
+    result.ptExpanded = xform.transform(utils.salt2smv(replaceTemplateVars(fetched_ptExpanded)),xform.optimizePT);
 
     const fetched_ptFinBtwExpanded = fetchedSemantics.ptFinBtwExpanded.replace(/\$regular_condition\$/g,'$regular_condition_SMV_pt$').replace(/\$post_condition\$/g,'$post_condition_SMV_pt$').replace(/\$stop_condition\$/g,'$stop_condition_SMV_pt$').replace(/\$scope_mode\$/g,'$scope_mode_pt$');
     result.ptFinBtwExpanded_fetched = fetched_ptFinBtwExpanded;
