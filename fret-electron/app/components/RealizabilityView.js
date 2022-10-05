@@ -110,7 +110,8 @@ class RealizabilityView extends React.Component {
     }
   }
 
-  handleLoadClick = (event) => {    
+  handleLoadClick = (event) => {
+    event.stopPropagation();    
     var homeDir = app.getPath('home');
     var filepaths = dialog.showOpenDialogSync({
       defaultPath: homeDir,

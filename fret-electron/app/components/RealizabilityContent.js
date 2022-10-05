@@ -721,7 +721,12 @@ class RealizabilityContent extends React.Component {
 
             projectReport.systemComponents = [].concat(projectReport.systemComponents.map(obj => {
               if (obj.name === component.component_name) {
-                return {...obj, comments: '', monolithic: {result: 'UNCHECKED', time: '', diagnosisStatus: '', diagnosisReport: '', error: ''}, compositional: {result: 'UNCHECKED', connectedComponents: ccArray, error: ''}, requirements: fretResult.docs};
+                return {...obj, 
+                  comments: '',
+                  monolithic: {result: 'UNCHECKED', time: '', diagnosisStatus: '', diagnosisReport: '', error: ''},
+                  compositional: {result: 'UNCHECKED', connectedComponents: ccArray, error: ''},
+                  requirements: fretResult.docs, 
+                  selectedReqs: (selectedReqs.length === 0 ? fretResult.docs.filter(doc => doc.semantics.component_name === component.component_name).map(doc => doc.reqid) : selectedReqs)};
               }
               return obj;
             }))

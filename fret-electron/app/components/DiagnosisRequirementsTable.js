@@ -144,7 +144,6 @@ function ccStableSort(array, conflictReqs, selectedReqs, connectedComponent, cmp
   if (conflictReqs.length === 0) {
     const ccData = array.filter(el => connectedComponent.requirements.includes(el.reqid));
     const notSelectedData = array.filter(el => !selectedReqs.includes(el.reqid));
-    
     const remainingData = array.filter(el => (!connectedComponent.requirements.includes(el.reqid) && !notSelectedData.map(el => el.reqid).includes(el.reqid)));    
 
     const sortedRemaining = remainingData.map((el, index) => [el, index]);
@@ -314,7 +313,7 @@ class DiagnosisRequirementsTableHead extends React.Component {
     return (
       <TableHead>
         <TableRow>
-          {(importedRequirements.length === 0) &&
+          {importedRequirements.length === 0 &&
             <TableCell padding="checkbox">
               <Checkbox
                 indeterminate={numSelected > 0 && numSelected < rowCount}
@@ -420,7 +419,7 @@ class DiagnosisRequirementsTable extends React.Component {
   }
 
   componentDidMount() {
-    const { importedRequirements } = this.props;
+    const { importedRequirements, selectedRequirements } = this.props;
     this.mounted = true;
     if (importedRequirements.length === 0) {
       this.synchStateWithDB();
@@ -428,7 +427,9 @@ class DiagnosisRequirementsTable extends React.Component {
       this.setState({
         data: importedRequirements.map(r => {
           return createData(r._id, r._rev, r.reqid, r.fulltext, r.project);
-        }).sort((a, b) => {return a.reqid > b.reqid})
+        }).sort((a, b) => {return a.reqid > b.reqid}),
+        selected: [].concat(selectedRequirements),
+        tempSelected: [].concat(selectedRequirements)
       });
     } 
   }
@@ -444,13 +445,13 @@ class DiagnosisRequirementsTable extends React.Component {
 
   componentDidUpdate(prevProps) {
     const { connectedComponent, importedRequirements, selectedRequirements } = this.props;
-    if (connectedComponent !== prevProps.connectedComponent) {
+
+    if (connectedComponent && (connectedComponent !== prevProps.connectedComponent)) {
       if (importedRequirements.length === 0) {
         const {setMessage} = this.context;
         setMessage({reqs : '', color : ''})
-        let newSelectedReqs = selectedRequirements;
-        this.setState({selected: [].concat(newSelectedReqs)})
-      }
+        this.setState({selected: [].concat(selectedRequirements)})
+      }      
     }
   }
 
@@ -602,7 +603,7 @@ class DiagnosisRequirementsTable extends React.Component {
                   const isSelected = this.isSelected(n.reqid);
                   const label = n.reqid ? n.reqid.replace(/-/g,'') : 'NONE'
                   var isInConflict = (reqs.length !== 0 && reqs.includes(label)) ? true : false;
-                  const isInConflictOrCC = (isInConflict || connectedComponent.requirements.includes(n.reqid));                  
+                  const isInConflictOrCC = (isInConflict || connectedComponent.requirements.includes(n.reqid));               
                   return (
                       <TableRow 
                         key={n.rowid} 
@@ -611,13 +612,11 @@ class DiagnosisRequirementsTable extends React.Component {
                           borderStyle: isInConflict ? 'solid' : 'initial', 
                           borderColor: isInConflict ? color : 'initial'}}
                         classes={{selected: (isSelected && isInConflictOrCC) ? classes.tableRowSelected : 'initial'}}
-                        onClick={event => { this.handleClick(event, n.reqid)}}
+                        onClick={event => { importedRequirements.length === 0 ? this.handleClick(event, n.reqid) : null}}            
                       >
-                      {(importedRequirements.length === 0) &&
+                      {true &&
                         <TableCell padding="checkbox">
-                          <Checkbox 
-                            checked={isSelected}
-                          />
+                          <Checkbox checked={isSelected}/>
                         </TableCell>
                       }
                         <TableCell id={"qa_diagReqTbl_tc_body_id_"+label}>
@@ -640,23 +639,22 @@ class DiagnosisRequirementsTable extends React.Component {
                   const isSelected = this.isSelected(n.reqid);
                   const label = n.reqid ? n.reqid.replace(/-/g,'') : 'NONE'
                   var isInConflict = (reqs.length !== 0 && reqs.includes(label)) ? true : false;
-                  var isAssumption = n.reqid.includes('assumption')
-                  const isInConflictOrAssumptions = (isInConflict || reqs.length === 0  || isAssumption);
+                  //var isAssumption = n.reqid.includes('assumption')
+                  //const isInConflictOrAssumptions = (isInConflict || reqs.length === 0  || isAssumption);
+                  const isInConflictOrSelected = (isInConflict || isSelected);
                   return (
                       <TableRow
                         key={n.rowid}
                         style={{
-                          opacity : isInConflictOrAssumptions ? 1 : .6,                          
+                          opacity : isInConflictOrSelected ? 1 : .6,                          
                           borderStyle: isInConflict ? 'solid' : 'initial', 
                           borderColor: isInConflict ? color : 'initial'}}
                         classes={{selected: classes.tableRowSelected}}
-                        onClick={event => this.handleClick(event, n.reqid)}
+                        onClick={event => (importedRequirements.length === 0 ? this.handleClick(event, n.reqid) : null)}
                         >
-                        {(importedRequirements.length === 0) &&
+                        {true &&
                           <TableCell padding="checkbox">
-                            <Checkbox 
-                              checked={isSelected}
-                            />
+                            <Checkbox checked={isSelected}/>
                           </TableCell>
                         }
                         <TableCell id={"qa_diagReqTbl_tc_body_id_"+label}>

@@ -232,6 +232,7 @@ class AnalysisReportContent extends React.Component {
 		                            existingProjectNames={[selectedProject]}
 		                            connectedComponent={selected.compositional.connectedComponents[connectedComponentIndex]}
 		                            importedRequirements={selected.requirements}
+		                            selectedRequirements={selected.selectedReqs}
 		                          />
 		                        </div>
 		                      </DiagnosisProvider>
@@ -256,6 +257,7 @@ class AnalysisReportContent extends React.Component {
 		                          existingProjectNames={[selectedProject]}
 		                          connectedComponent={{}}
 		                          importedRequirements={selected.requirements}
+		                          selectedRequirements={selected.selectedReqs}
 		                        />
 		                      </div>
 		                    </DiagnosisProvider>
