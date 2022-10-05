@@ -124,3 +124,15 @@ The requirements table is also updated when a conflict is selected. The particip
 &nbsp;&nbsp;&nbsp;&nbsp;
 
 ![](ChordDiagramRequirements2.png)
+
+## Selecting requirements for realizability checking
+
+Users can select which requirements in a given system component should be considered for the purposes of analysis, allowing thus realizability checking and diagnosis for subset requirements.
+
+After selecting a system component, can users deselect requirements by clicking on their corresponding row in the requirements table. After the new set of requirements has been identified, click on the "Apply" button to confirm the selection. The interface is updated, considering the new set of requirements. This may lead to new results with respect to connected components analysis. All previous analysis results are cleared, and analysis can be performed for the new set using the steps outlined in the previous section.
+
+## Saving and loading realizability checking results
+
+FRET provides means to save a report containing the current results of a given analysis, including a) connected component analysis, b) realizability results and c) diagnostic results. Reports are currently saved using the JSON format. To save a report for a given project, click on "Actions" -> "Save realizability results". In the new window, select a path in your system to save the report in. Provide a name for the report and click on "Save".
+
+Users are also able to load saved reports and inspect them in FRET. Loaded reports are not associated with existing projects in the database. In other words, reports can be loaded even though the original project is not part of the FRET database. To load a report, click on the "Projects" button and select "All Projects". Then, navigate to the realizability tab in the Analysis Portal, and click on the "Load" button. In the new window, select the report to be loaded and click on "Load". The report should now be accessible using the graphical interface.
