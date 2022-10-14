@@ -66,6 +66,59 @@ const FSM002 =
     "_id": "9bd61cd0-a851-11eb-b618-a1b9aef9ccb2"
 };
 
+const newFSM002=
+{
+    "reqid": "FSM-002",
+    "parent_reqid": "",
+    "project": "Demo-FSM",
+    "rationale": "The autopilot shall change states from TRANSITION to STANDBY when the pilot is in control (standby).",
+    "fulltext": "FSM shall always satisfy if (standby & In_Trans) then STATE = ap_standby_state",
+    "semantics": {
+        "type": "nasa",
+        "scope": {
+            "type": "null"
+        },
+        "condition": "null",
+        "timing": "always",
+        "response": "satisfaction",
+        "variables": [
+            "standby",
+            "In_Trans",
+            "STATE",
+            "ap_standby_state"
+        ],
+        "component_name": "FSM",
+        "componentTextRange": [
+            0,
+            2
+        ],
+        "timingTextRange": [
+            10,
+            15
+        ],
+        "post_condition": "(( standby & In_Trans ) => STATE = ap_standby_state)",
+        "responseTextRange": [
+            17,
+            77
+        ],
+        "diagramVariables": "Response = <b><i>(( standby & In_Trans ) => STATE = ap_standby_state)</i></b>.",
+        "description": "ENFORCED: in the interval defined by the entire execution.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must hold at all time points between (and including) the trigger and the end of the interval.",
+        "diagram": "_media/user-interface/examples/svgDiagrams/null_null_always_satisfaction.svg",
+        "post_condition_unexp_pt": "((standby & In_Trans) -> (STATE = ap_standby_state))",
+        "post_condition_unexp_ft": "((standby & In_Trans) -> (STATE = ap_standby_state))",
+        "post_condition_SMV_pt": "((standby & In_Trans) -> (STATE = ap_standby_state))",
+        "post_condition_SMV_ft": "((standby & In_Trans) -> (STATE = ap_standby_state))",
+        "post_condition_coco": "((standby and In_Trans) => (STATE=ap_standby_state))",
+        "ft": "(LAST V <b><i>((standby & In_Trans) -> (STATE = ap_standby_state))</i></b>)",
+        "pt": "(H <b><i>((standby & In_Trans) -> (STATE = ap_standby_state))</i></b>)",
+        "ptExpanded": "(H ((standby & In_Trans) -> (STATE = ap_standby_state)))",
+        "ftExpanded": "(LAST V ((standby & In_Trans) -> (STATE = ap_standby_state)))",
+        "CoCoSpecCode": "(H(((standby and In_Trans) => (STATE=ap_standby_state))))",
+        "component": "<b><i>FSM</i></b>"
+    },
+    "_id": "f6d916e0-4bcb-11ed-9c30-75988c5c0eaf"
+}
+
 var placeholderSubsts =
       [
 	  ['\\$regular_condition\\$','pre'],
@@ -81,6 +134,35 @@ function substitutePlaceholders (ltlspec,n) {
 }
 
 /**
+* Gets the variable names out of the requirement's
+* JSON object.
+*/
+function getVariableNames(requirement)
+{
+  let variables = requirement.semantics.variables;
+  console.log(typeof(variables));
+
+  // If variables is an object, then I'm going to asssume
+  // that it's the version of the requirement with 'regular' and 'modes'
+  if (variables.constructor === Object) // Javascript is stupid...
+  {
+    let varList = variables.regular ;
+    varList = varList.concat(variables.modes);
+    console.log("if object: " + varList);
+    return varList;
+  }
+  else
+  {
+    // If variables isn't an object, I'm going to assume that its'
+    //  the version of the requirement with all the variables listed under
+    // variables.
+    console.log("if not object: " +variables);
+    return variables;
+  }
+}
+
+
+/**
 * Generates the SMV variables for the two requirements
 * using the variables listed in the requirement JSON.
 * In the SMV file these will be subbed in as booleans.
@@ -93,10 +175,10 @@ function getVars(originalReq, newReq)
 
   //console.log(originalReq.semantics.variables.regular );
 
-  let origVars = originalReq.semantics.variables.regular ;
-  origVars = origVars.concat(originalReq.semantics.variables.modes);
-  let newVars = newReq.semantics.variables.regular ;
-  newVars = newVars.concat(newReq.semantics.variables.modes);
+
+
+  let origVars = getVariableNames(originalReq);
+  let newVars = getVariableNames(newReq)
 
   //console.log(origVars);
 
@@ -205,7 +287,11 @@ let len = 11;
 let n = 4;
 
 //This should obviously work
+//let originalReq = FSM002;
+//let newReq = FSM002;
+
+//This does not work, different booleans
 let originalReq = FSM002;
-let newReq = FSM002;
+let newReq = newFSM002
 
 compare(originalReq, newReq, len,n)

@@ -68,7 +68,7 @@ exports.callNuSMV2 = (file_name) => {
     const batchFile = writeSMV('_batch',commands,'batch commands');
     //var NuSMV_command = '$NuSMV_HOME/bin/NuSMV -dcx -source ' + batchFile;
     //var nuXmv_command = '$nuXmv_HOME/bin/nuXmv -dcx -source ' + batchFile;
-    var nuXmv_command = '$nuXmv_HOME/bin/nuXmv -source ' + batchFile;
+    var nuXmv_command = '/home/matt/bin/nuXmv-2.0.0-Linux/bin/nuXmv -source ' + batchFile;
     var nu_command = nuXmv_command;
     //var nu_command = NuSMV_command;
     //console.log('command = ' + nu_command);
@@ -88,18 +88,18 @@ exports.callNuSMV2 = (file_name) => {
 	else if (m.includes('False')) boolResults.push(false);
 	else console.log('smv returned unexpected value: ' + matches);
     }
-    //console.log('boolResults: ', boolResults);
-    //console.log(boolResults[0]);    console.log(boolResults[1]);
+    console.log('boolResults: ', boolResults);
+    console.log(boolResults[0]);    console.log(boolResults[1]);
     return boolResults;
 }
-    
+
 
 exports.callNuSMV = (file_name) => {
     // -dcx is option to not print out counter-example
-    var NuSMV_command = '$NuSMV_HOME/bin/NuSMV -dcx ' + file_name;
-    var nuXmv_command = '$nuXmv_HOME/bin/nuXmv -dcx ' + file_name;
-    var nu_command = nuXmv_command;
-    //var nu_command = NuSMV_command;
+    var NuSMV_command = '/home/matt/bin/NuSMV-2.6.0-linux64/NuSMV-2.6.0-Linux/bin/nusmv -dcx ' + file_name;
+    //var nuXmv_command = '$nuXmv_HOME/bin/nuXmv -dcx ' + file_name;
+    //var nu_command = nuXmv_command;
+    var nu_command = NuSMV_command;
     //console.log('command = ' + nu_command);
     var NuSMV_output = '';
     try {
@@ -130,6 +130,7 @@ function writeSMV(testID,str,msg='SMV') {
     });
     return fileName;
 }
+exports.writeSMV = writeSMV;
 
 // formulaTenses is an array like [['H mode','pt',key1],['G mode','ft',key2],['G (H mode)','ft',key3]]
 // The tenses are used to decide whether to evaluate the formula
@@ -172,6 +173,7 @@ DEFINE
     //console.log('final: ' + final);
     return final;
 }
+exports.createSMV = createSMV;
 
 function LTLSpecs (limit,formulaTenses) {
     var result = '';
@@ -204,7 +206,7 @@ function smvWaveform (intervals, limit=null) {
     }
 		//and at the end just fill with false
 		str = str + '    TRUE : FALSE;\n'
-		
+
     // right is the right endpoint of the last interval
   //   if (limit && (right == (limit-1))) {
 	// str = str + '    TRUE : TRUE;\n'
@@ -224,12 +226,12 @@ exports.testNuSMV = (testID, nTimeSteps,modeIntervals,condIntervals,stopInterval
 
 
 
-/*
-console.log(createSMV(10,[{left: 0,right: 2},{left: 7,right:9}],
+
+/*console.log(createSMV(10,[{left: 0,right: 2},{left: 7,right:9}],
 		      [{left:2,right:3},{left:5,right:6}],
 		      [{left:2,right:2},{left:7,right:9}],
                       [['G true','ft','null,null,always']]))
-
+/*
 MODULE main
 VAR
   t : 0 .. 10;
@@ -261,8 +263,9 @@ DEFINE
   esac;
 LTLSPEC NAME F0_null_null_always_ft := G((t = 0) -> (G true));
 
+
 console.log('NuSMV returned '
 	    + exports.testNuSMV(40,[[5,10],[15,30]],[],[[7,10],[17,20]],
 			[['H (resp -> mode)','pt','onlyIn,null,always,satisfaction'],
-                       ['H (mode -> resp)','pt','in,null,always,satisfaction']])
+                       ['H (mode -> resp)','pt','in,null,always,satisfaction']]))
 */
