@@ -110,8 +110,8 @@ function stableSort(array, conflictReqs, selectedReqs, cmp) {
     const conflictData = array.filter(el => conflictReqs.includes(el.reqid.replace(/-/g,'')));
 
     const notSelectedData = array.filter(el => !selectedReqs.includes(el.reqid));
-    const assumptionData = array.filter(el => (el.reqid.includes('assumption') && !notSelectedData.map(el => el.reqid).includes(el.reqid)));
-    const remainingData = array.filter(el => (!el.reqid.includes('assumption') &&
+    const assumptionData = array.filter(el => (el.reqid.toLowerCase().includes('assumption') && !notSelectedData.map(el => el.reqid).includes(el.reqid)));
+    const remainingData = array.filter(el => (!el.reqid.toLowerCase().includes('assumption') &&
       !conflictReqs.includes(el.reqid.replace(/-/g,'')) && !notSelectedData.map(el => el.reqid).includes(el.reqid)));
     
     const sortedAssumptions = assumptionData.map((el, index) => [el, index]);
@@ -165,8 +165,8 @@ function ccStableSort(array, conflictReqs, selectedReqs, connectedComponent, cmp
     const conflictData = array.filter(el => conflictReqs.includes(el.reqid.replace(/-/g,'')));
     const notSelectedData = array.filter(el => !selectedReqs.includes(el.reqid));
     
-    const assumptionData = array.filter(el => (el.reqid.includes('assumption') && !notSelectedData.map(el => el.reqid).includes(el.reqid)));
-    const remainingData = array.filter(el => (!el.reqid.includes('assumption') &&
+    const assumptionData = array.filter(el => (el.reqid.toLowerCase().includes('assumption') && !notSelectedData.map(el => el.reqid).includes(el.reqid)));
+    const remainingData = array.filter(el => (!el.reqid.toLowerCase().includes('assumption') &&
       !conflictReqs.includes(el.reqid.replace(/-/g,'')) && !notSelectedData.map(el => el.reqid).includes(el.reqid)));
     
     const sortedAssumptions = assumptionData.map((el, index) => [el, index]);

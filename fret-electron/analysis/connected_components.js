@@ -77,7 +77,7 @@ export function compute_connected_components(contract, output_dep_map){
     var has_intersection = false;  
 
     for(var prop of contract['properties']){        
-        if (!prop.reqid.includes('assumption')) {
+        if (!prop.reqid.toLowerCase().includes('assumption')) {
             var dep_set = output_dep_map[prop.reqid];
         
             if(disjoint_list.length == 0){
@@ -135,7 +135,7 @@ export function compute_connected_components(contract, output_dep_map){
 
     //add the assumptions
     for(var prop of contract['properties']){
-        if (prop.reqid.includes('assumption')) {
+        if (prop.reqid.toLowerCase().includes('assumption')) {
             for (var connected_component of disjoint_list) {
                 connected_component['properties'].add(prop.reqid)
             }

@@ -6,7 +6,7 @@
 <%}%>
 <% for(i=0; i < properties.length; i++){%> 
 <%var newid = properties[i].reqid.replace(/[^a-zA-Z0-9_~]/g,'_')%>
-<%var reqType = newid.includes('assumption') ? 'assert' : '--%PROPERTY'%> <%- reqType %> <%- newid %>; <%}%>
+<%var reqType = newid.toLowerCase().includes('assumption') ? 'assert' : '--%PROPERTY'%> <%- reqType %> <%- newid %>; <%}%>
 
 --%REALIZABLE <%for(i=0; i < inputVariables.length;i++){%><%- inputVariables[i].name -%><%if(i<inputVariables.length-1){%>,<%}}%>;
 
