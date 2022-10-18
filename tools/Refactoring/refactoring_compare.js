@@ -66,13 +66,74 @@ const FSM002 =
     "_id": "9bd61cd0-a851-11eb-b618-a1b9aef9ccb2"
 };
 
-const newFSM002=
+const In_Trans =
+{
+       "reqid": "IN_TRANS",
+       "parent_reqid": "",
+       "project": "Demo-FSM",
+       "rationale": "EXTRACT REQUIREMENT: extracted state = ap_transition_state from FSM-002",
+       "fulltext": "if state = ap_transition_state FSM shall satisfy IN_TRANS",
+       "semantics": {
+           "type": "nasa",
+           "scope": {
+               "type": "null"
+           },
+           "condition": "regular",
+           "timing": "null",
+           "response": "satisfaction",
+           "variables": [
+               "state",
+               "ap_transition_state",
+               "IN_TRANS"
+           ],
+           "qualifier_word": "if",
+           "pre_condition": "(state = ap_transition_state)",
+           "regular_condition": "(state = ap_transition_state)",
+           "conditionTextRange": [
+               0,
+               29
+           ],
+           "component_name": "FSM",
+           "componentTextRange": [
+               31,
+               33
+           ],
+           "post_condition": "(IN_TRANS)",
+           "responseTextRange": [
+               41,
+               56
+           ],
+           "diagramVariables": "TC = <b><i>(state = ap_transition_state)</i></b>, Response = <b><i>(IN_TRANS)</i></b>.",
+           "description": "ENFORCED: in the interval defined by the entire execution.\nTRIGGER: first point in the interval if <b><i>(state = ap_transition_state)</i></b> is true and any point in the interval where <b><i>(state = ap_transition_state)</i></b> becomes true (from false).\nREQUIRES: for every trigger, RES must hold at some time point between (and including) the trigger and the end of the interval.",
+           "diagram": "_media/user-interface/examples/svgDiagrams/null_regular_null_satisfaction.svg",
+           "regular_condition_unexp_pt": "(state = ap_transition_state)",
+           "regular_condition_unexp_ft": "(state = ap_transition_state)",
+           "regular_condition_SMV_pt": "(state = ap_transition_state)",
+           "regular_condition_SMV_ft": "(state = ap_transition_state)",
+           "regular_condition_coco": "(state=ap_transition_state)",
+           "post_condition_unexp_pt": "IN_TRANS",
+           "post_condition_unexp_ft": "IN_TRANS",
+           "post_condition_SMV_pt": "IN_TRANS",
+           "post_condition_SMV_ft": "IN_TRANS",
+           "post_condition_coco": "IN_TRANS",
+           "ft": "((LAST V (((! <b><i>(state = ap_transition_state)</i></b>) & ((! LAST) & (X <b><i>(state = ap_transition_state)</i></b>))) -> (X ((! LAST) U <b><i>IN_TRANS</i></b>)))) & (<b><i>(state = ap_transition_state)</i></b> -> ((! LAST) U <b><i>IN_TRANS</i></b>)))",
+           "pt": "((H (! <b><i>(state = ap_transition_state)</i></b>)) | (! ((! <b><i>IN_TRANS</i></b>) S ((! <b><i>IN_TRANS</i></b>) & (<b><i>(state = ap_transition_state)</i></b> & ((Y (! <b><i>(state = ap_transition_state)</i></b>)) | FTP))))))",
+           "ptExpanded": "((H (! (state = ap_transition_state))) | (! ((! IN_TRANS) S ((! IN_TRANS) & ((state = ap_transition_state) & ((Y (! (state = ap_transition_state))) | (! (Y TRUE))))))))",
+           "ftExpanded": "((LAST V (((! (state = ap_transition_state)) & ((! LAST) & (X (state = ap_transition_state)))) -> (X ((! LAST) U IN_TRANS)))) & ((state = ap_transition_state) -> ((! LAST) U IN_TRANS)))",
+           "CoCoSpecCode": "((H( not (state=ap_transition_state))) or ( not (SI( ((state=ap_transition_state) and ((YtoPre( not (state=ap_transition_state))) or FTP)), ( not IN_TRANS) ))))",
+           "component": "<b><i>FSM</i></b>"
+       },
+       "_id": "f6d8c8c0-4bcb-11ed-9c30-75988c5c0eaf"
+};
+
+const newFSM002 =
 {
     "reqid": "FSM-002",
     "parent_reqid": "",
     "project": "Demo-FSM",
     "rationale": "The autopilot shall change states from TRANSITION to STANDBY when the pilot is in control (standby).",
-    "fulltext": "FSM shall always satisfy if (standby & In_Trans) then STATE = ap_standby_state",
+    "fulltext": "FSM shall always satisfy if (standby & IN_TRANS) then STATE = ap_standby_state",
+    "fragments":["IN_TRANS"],
     "semantics": {
         "type": "nasa",
         "scope": {
@@ -83,7 +144,7 @@ const newFSM002=
         "response": "satisfaction",
         "variables": [
             "standby",
-            "In_Trans",
+            "IN_TRANS",
             "STATE",
             "ap_standby_state"
         ],
@@ -96,24 +157,24 @@ const newFSM002=
             10,
             15
         ],
-        "post_condition": "(( standby & In_Trans ) => STATE = ap_standby_state)",
+        "post_condition": "(( standby & IN_TRANS ) => STATE = ap_standby_state)",
         "responseTextRange": [
             17,
             77
         ],
-        "diagramVariables": "Response = <b><i>(( standby & In_Trans ) => STATE = ap_standby_state)</i></b>.",
+        "diagramVariables": "Response = <b><i>(( standby & IN_TRANS ) => STATE = ap_standby_state)</i></b>.",
         "description": "ENFORCED: in the interval defined by the entire execution.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must hold at all time points between (and including) the trigger and the end of the interval.",
         "diagram": "_media/user-interface/examples/svgDiagrams/null_null_always_satisfaction.svg",
-        "post_condition_unexp_pt": "((standby & In_Trans) -> (STATE = ap_standby_state))",
-        "post_condition_unexp_ft": "((standby & In_Trans) -> (STATE = ap_standby_state))",
-        "post_condition_SMV_pt": "((standby & In_Trans) -> (STATE = ap_standby_state))",
-        "post_condition_SMV_ft": "((standby & In_Trans) -> (STATE = ap_standby_state))",
-        "post_condition_coco": "((standby and In_Trans) => (STATE=ap_standby_state))",
-        "ft": "(LAST V <b><i>((standby & In_Trans) -> (STATE = ap_standby_state))</i></b>)",
-        "pt": "(H <b><i>((standby & In_Trans) -> (STATE = ap_standby_state))</i></b>)",
-        "ptExpanded": "(H ((standby & In_Trans) -> (STATE = ap_standby_state)))",
-        "ftExpanded": "(LAST V ((standby & In_Trans) -> (STATE = ap_standby_state)))",
-        "CoCoSpecCode": "(H(((standby and In_Trans) => (STATE=ap_standby_state))))",
+        "post_condition_unexp_pt": "((standby & IN_TRANS) -> (STATE = ap_standby_state))",
+        "post_condition_unexp_ft": "((standby & IN_TRANS) -> (STATE = ap_standby_state))",
+        "post_condition_SMV_pt": "((standby & IN_TRANS) -> (STATE = ap_standby_state))",
+        "post_condition_SMV_ft": "((standby & IN_TRANS) -> (STATE = ap_standby_state))",
+        "post_condition_coco": "((standby and IN_TRANS) => (STATE=ap_standby_state))",
+        "ft": "(LAST V <b><i>((standby & IN_TRANS) -> (STATE = ap_standby_state))</i></b>)",
+        "pt": "(H <b><i>((standby & IN_TRANS) -> (STATE = ap_standby_state))</i></b>)",
+        "ptExpanded": "(H ((standby & IN_TRANS) -> (STATE = ap_standby_state)))",
+        "ftExpanded": "(LAST V ((standby & IN_TRANS) -> (STATE = ap_standby_state)))",
+        "CoCoSpecCode": "(H(((standby and IN_TRANS) => (STATE=ap_standby_state))))",
         "component": "<b><i>FSM</i></b>"
     },
     "_id": "f6d916e0-4bcb-11ed-9c30-75988c5c0eaf"
@@ -206,7 +267,32 @@ function getVars(originalReq, newReq)
 
 }
 
-function genLTLSPECs(originalReq, newReq,n) {
+/**
+* Replace each instance of the fragment name in the
+* requirement's property, with the pre-condition of the fragment
+*/
+function mergeFragment(property, fragment)
+{
+  let mergedProperty = property;
+
+  let frag_condition = fragment.semantics.pre_condition;
+
+  console.log(frag_condition);
+
+  console.log(mergedProperty);
+
+  const re = new RegExp(`(${fragment.reqid})`, 'gi')
+  console.log(re)
+
+  mergedProperty = mergedProperty.replace(re, frag_condition)
+
+  console.log(mergedProperty);
+
+  return mergedProperty;
+}
+
+function genLTLSPECs(originalReq, newReq,n)
+{
   let ltlspecs = [];
   let keysTested = [];
   let keynum = -1;
@@ -215,7 +301,15 @@ function genLTLSPECs(originalReq, newReq,n) {
   //  let f = formalizations[key];
     let origFT = originalReq.semantics.ftExpanded;
     //if (ftexp === constants.nonsense_semantics || ftexp === constants.undefined_semantics) continue;
+    if ("fragments" in originalReq){
+      origFT = mergeFragment(origFT, In_Trans) // hacked in
+    }
+
     let newFT = newReq.semantics.ftExpanded;
+    console.log(newFT.fragments);
+    if ("fragments" in newReq){
+      newFT = mergeFragment(newFT, In_Trans) // hacked in
+    }
     // remove ,satisfaction, change commas to underlines
   //  keynum++;
     variables = getVars(originalReq, newReq);
