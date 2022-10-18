@@ -4,43 +4,12 @@ MU-FRET
 Introduction
 ------------
 
-MU-FRET is a fork of FRET (Formal Requirements Elicitation Tool) by a team at Maynooth University, Ireland.
+MU-FRET is a fork of the Formal Requirements Elicitation Tool (FRET) by a team at Maynooth University, Ireland.
 
-MU-FRET incorporates requirements refactoring techniques.
+FRET is a framework for the elicitation, specification, formalisation and understanding of requirements. It was developed by a Software Verification and Validation team at NASA. In FRET,  users enter system requirements in a structure natural language called FRETISH. FRET automatically translates FRETISH requirements to past- and future-time metric temporal logic.
 
-# FRET 
+MU-FRET extends FRET by adding refactoring functionality. Refactoring, when applied to software, is the process of rearranging the software's internal structure without changing its external behaviour. This is helpful for the maintainability of software, and has similar benefits for requirements.
 
-FRET is a framework for the elicitation, specification, formalization and understanding of requirements. Users enter system requirements in a specialized natural language. FRET helps understanding and review of semantics by utilizing a variety of forms for each requirement: natural language description, formal mathematical logics, and diagrams. Requirements can be defined in a hierarchical fashion and can be exported in a variety of forms to be used by analysis tools.
+MU-FRET enables a user to extract parts of a requirement to a new requirement, allowing the extracted part to be reused. MU-FRET also formally verifies that the refactored requirement (including the extracted parts) has the same behaviour as the original requirement. This gives confidence that the tool has not inadvertently introduced new (possibly incorrect) behaviour.
 
-Contact
--------
 
-Please contact <anastasia.mavridou@nasa.gov> and <tom.pressburger@nasa.gov> for further information on FRET. Detailed information can be found in the [FRET manual](fret-electron/docs/_media/userManual.md).
-
-Installation
-------------
-
-Detailed instructions can be found in [installation instructions](fret-electron/docs/_media/installingFRET/installationInstructions.md).
-
-Platforms
----------
-
-FRET has been tested in a range of architecture/operating system
-combinations. It has been tested on PC Intel, Apple Mac and Sun
-architectures, with different versions and distributions of Windows, Mac OS
-X, and Linux.
-
-License
--------
-
-FRET has been released under the NASA Open Source Agreement version 1.3, see [LICENSE.pdf](LICENSE.pdf).
-
-Contributors
-------------
-
-See the FRET [Contributors](CONTRIBUTORS.md).
-
-Publications
-------------
-
-Here are some FRET-related [Publications](PUBLICATIONS.md).
