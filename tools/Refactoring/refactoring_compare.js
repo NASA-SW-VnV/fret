@@ -200,6 +200,7 @@ function substitutePlaceholders (ltlspec,n) {
 */
 function getVariableNames(requirement)
 {
+  console.log(requirement);
   let variables = requirement.semantics.variables;
   console.log(typeof(variables));
 
@@ -227,17 +228,16 @@ function getVariableNames(requirement)
 * Generates the SMV variables for the two requirements
 * using the variables listed in the requirement JSON.
 * In the SMV file these will be subbed in as booleans.
+* If there are requirements in the fragList (requirements that
+* were originally fragments) their variables will be included too.
 */
-function getVars(originalReq, newReq)
+function getVars(originalReq, newReq, fragList)
 {
   console.log("getVars");
   let varSet = new Set();
   let variables = "";
 
   //console.log(originalReq.semantics.variables.regular );
-
-
-
   let origVars = getVariableNames(originalReq);
   let newVars = getVariableNames(newReq)
 
@@ -253,6 +253,20 @@ function getVars(originalReq, newReq)
   {
     //console.log("adding new variable: " + v)
     varSet.add(v);
+  }
+
+  if (fragList != [])
+  {
+    console.log("Processing the FragList... " + fragList )
+    for (let f of fragList)
+    {
+      console.log(f);
+      let fragVars = getVariableNames(f);
+      for (let v of fragVars)
+      {
+        varSet.add(v);
+      }
+    }
   }
 
   varSet.forEach
@@ -281,6 +295,7 @@ function mergeFragment(property, fragment)
 
   console.log(mergedProperty);
 
+  // Regular Expression for global (g) and case insensitive (i) search
   const re = new RegExp(`(${fragment.reqid})`, 'gi')
   console.log(re)
 
@@ -296,24 +311,32 @@ function genLTLSPECs(originalReq, newReq,n)
   let ltlspecs = [];
   let keysTested = [];
   let keynum = -1;
+  let fragList = [];
+
 
   //  if (! key.endsWith('satisfaction')) continue;
   //  let f = formalizations[key];
     let origFT = originalReq.semantics.ftExpanded;
     //if (ftexp === constants.nonsense_semantics || ftexp === constants.undefined_semantics) continue;
-    if ("fragments" in originalReq){
+    if ("fragments" in originalReq)
+    {
+      console.log("merging original req")
       origFT = mergeFragment(origFT, In_Trans) // hacked in
+      fraglist.push(In_Trans)
     }
 
     let newFT = newReq.semantics.ftExpanded;
     console.log(newFT.fragments);
-    if ("fragments" in newReq){
+    if ("fragments" in newReq)
+    {
+      console.log("merging new req")
       newFT = mergeFragment(newFT, In_Trans) // hacked in
+      fragList.push(In_Trans)
     }
     // remove ,satisfaction, change commas to underlines
   //  keynum++;
-    variables = getVars(originalReq, newReq);
-  let name = originalReq.reqid;
+    let variables = getVars(originalReq, newReq, fragList);
+    let name = originalReq.reqid;
   //  let name = 'n' + keynum + '_' + key.substring(0,key.length - 13).replace(/,/g,'_');
     //	let name = key.substring(0,key.length - 13).replace(/,/g,'_');
     keysTested.push(name);
@@ -349,8 +372,9 @@ DEFINE
 function callnuXmv (originalReq, newReq,len,n) {
   let r = genLTLSPECs(originalReq, newReq, n);
   let nuXmvCode = preamble(r.vars, len) + r.specs.join('\n') + '\n'; //
+
   //TODO temp file naming should use the req names
-  let nuXmvTempFile = nuXmvTempFilePrefix + '_' + len + '_' + n + '.smv'
+  let nuXmvTempFile = nuXmvTempFilePrefix + '_' + originalReq.reqid + '_' + newReq.reqid + '.smv'
   fs.writeFileSync(nuXmvTempFile,nuXmvCode,function(err) {
     if (err) return console.log(err);
   });
@@ -376,6 +400,7 @@ function compare(originalReq, newReq, len,n) {
     console.log('\ndifferent(' + different.length + '): '
 		+ JSON.stringify(different));
 }
+exports.compareRequirements = compare;
 
 let len = 11;
 let n = 4;
@@ -384,7 +409,7 @@ let n = 4;
 //let originalReq = FSM002;
 //let newReq = FSM002;
 
-//This does not work, different booleans
+//This works, because it merges the fragment in
 let originalReq = FSM002;
 let newReq = newFSM002
 
