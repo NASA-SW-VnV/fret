@@ -200,7 +200,6 @@ function substitutePlaceholders (ltlspec,n) {
 */
 function getVariableNames(requirement)
 {
-  console.log(requirement);
   let variables = requirement.semantics.variables;
   console.log(typeof(variables));
 
@@ -260,7 +259,6 @@ function getVars(originalReq, newReq, fragList)
     console.log("Processing the FragList... " + fragList )
     for (let f of fragList)
     {
-      console.log(f);
       let fragVars = getVariableNames(f);
       for (let v of fragVars)
       {
@@ -306,13 +304,35 @@ function mergeFragment(property, fragment)
   return mergedProperty;
 }
 
-function genLTLSPECs(originalReq, newReq,n)
+function getFragmetReqs(fragmentNames, allRequirements)
+{
+  console.log("getting fragment requirements");
+   let fragments = [];
+   console.log(fragmentNames)
+   for (let req of allRequirements)
+   {
+     console.log(req.reqid)
+     for (let name of fragmentNames)
+     {
+       console.log(name);
+       if (req.reqid == name)
+       {
+         console.log("req in fragment names")
+         fragments.push(req);
+         fragmentNames.splice(fragmentNames.indexOf(name),1);
+       }
+     }
+
+   }
+
+   return fragments
+}
+
+function generateSMV(originalReq, newReq,n, allRequirements)
 {
   let ltlspecs = [];
-  let keysTested = [];
-  let keynum = -1;
   let fragList = [];
-
+  let fragsToGet = [];
 
   //  if (! key.endsWith('satisfaction')) continue;
   //  let f = formalizations[key];
@@ -321,25 +341,37 @@ function genLTLSPECs(originalReq, newReq,n)
     if ("fragments" in originalReq)
     {
       console.log("merging original req")
-      origFT = mergeFragment(origFT, In_Trans) // hacked in
-      fraglist.push(In_Trans)
+
+      let fragments = getFragmetReqs(originalReq.fragments, allRequirements)
+
+      for (let f of fragments)
+      {
+        origFT = mergeFragment(origFT, f)
+        fragList.push(f)
+      }
     }
 
     let newFT = newReq.semantics.ftExpanded;
-    console.log(newFT.fragments);
+    console.log(newReq.fragments);
     if ("fragments" in newReq)
     {
       console.log("merging new req")
-      newFT = mergeFragment(newFT, In_Trans) // hacked in
-      fragList.push(In_Trans)
+
+      let fragments = getFragmetReqs(newReq.fragments, allRequirements)
+      console.log(fragments)
+      for (let f of fragments)
+      {
+        newFT = mergeFragment(newFT, f)
+        fragList.push(f)
+      }
     }
-    // remove ,satisfaction, change commas to underlines
+
   //  keynum++;
     let variables = getVars(originalReq, newReq, fragList);
     let name = originalReq.reqid;
   //  let name = 'n' + keynum + '_' + key.substring(0,key.length - 13).replace(/,/g,'_');
     //	let name = key.substring(0,key.length - 13).replace(/,/g,'_');
-    keysTested.push(name);
+    //keysTested.push(name);
     let rawSaltSpec = `${origFT} <-> ${newFT}`;
     //let nothingAfterLast = "G(LAST -> (G (!pre & !post & !m)))";
     //let checkEquiv = `((G(LAST -> ${ptexp})) <-> ${ftexp})`;
@@ -348,7 +380,7 @@ function genLTLSPECs(originalReq, newReq,n)
     let smvSpec = utils.salt2smv(saltSpec);
     ltlspecs.push(`LTLSPEC NAME ${name} := ` + smvSpec + ';');
 
-  return {specs: ltlspecs, keys: keysTested, vars: variables};
+  return {specs: ltlspecs,  vars: variables};
 }
 
 function preamble(variables, len) {
@@ -369,21 +401,31 @@ DEFINE
 `;
 }
 
-function callnuXmv (originalReq, newReq,len,n) {
-  let r = genLTLSPECs(originalReq, newReq, n);
+function callnuXmv (originalReq, newReq,len,n, allRequirements) {
+  let r = generateSMV(originalReq, newReq, n, allRequirements);
   let nuXmvCode = preamble(r.vars, len) + r.specs.join('\n') + '\n'; //
 
-  //TODO temp file naming should use the req names
   let nuXmvTempFile = nuXmvTempFilePrefix + '_' + originalReq.reqid + '_' + newReq.reqid + '.smv'
   fs.writeFileSync(nuXmvTempFile,nuXmvCode,function(err) {
     if (err) return console.log(err);
   });
   console.log('SMV saved in ' + nuXmvTempFile);
+  //Calling nuXmv using the function at "../../fret-electron/test/semantics/CallNuSMV"
   let boolVec = CallNuSMV.callNuSMV2(nuXmvTempFile);
   //console.log('\n[' + boolVec + ']\n')
-  console.log("Checking the problem: " + r.keys.length);
-  return { same: utils.compress(r.keys,boolVec),
-    different: utils.compress(r.keys,boolVec,true)}
+  //console.log("Checking the problem: " + r.keys.length);
+
+  if (boolVec.length = 1)
+  {
+    return boolVec[0]; //bit hacky for now
+  }
+  else
+  {
+      console.error("nuXmv returned an unexpectedly long array of results. (Length 1 was expected)");
+  }
+
+//  return { same: utils.compress(r.keys,boolVec),
+  //  different: utils.compress(r.keys,boolVec,true)}
   }
 
 // len is the length of the trace; n is the duration as an integer.
@@ -400,7 +442,28 @@ function compare(originalReq, newReq, len,n) {
     console.log('\ndifferent(' + different.length + '): '
 		+ JSON.stringify(different));
 }
-exports.compareRequirements = compare;
+
+
+
+function compareRequirements(originalReq, newReq, requirementSet)
+{
+  let len = 11;
+  let n = 4;
+
+  console.log("+++ Comparing Requirements +++")
+
+  let checkResult = callnuXmv(originalReq, newReq ,len,n, allRequirements);
+
+  if (checkResult)
+  {
+    console.log("PASS: Requirements behave the same");
+  }
+  else
+  {
+    console.log("FAIL: Requirements have differently");
+  }
+}
+exports.compareRequirements = compareRequirements;
 
 let len = 11;
 let n = 4;
@@ -413,4 +476,8 @@ let n = 4;
 let originalReq = FSM002;
 let newReq = newFSM002
 
-compare(originalReq, newReq, len,n)
+//compare(originalReq, newReq, len,n)
+
+let allRequirements = [FSM002, newFSM002, In_Trans];
+
+compareRequirements(originalReq, newReq, allRequirements);

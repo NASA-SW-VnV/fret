@@ -7,6 +7,7 @@
 //var FretRequirement = require("./FretRequirement")
 var model = require("./refactoring_model")
 var fretSemantics = require("../../fret-electron/app/parser/FretSemantics")
+var compare = require("./refactoring_compare")
 //const {v1:uuidv1} = require('uuid');
 //const uuidv1 = require('uuid/v1');
 //const { v1: uuidv1 } = require('uuid');
@@ -17,6 +18,9 @@ exports.test = function test(extractString, newName)
 	console.log("Refactoring Test: " + extractString + " " + newName);
 };
 
+/**
+* returns a new requirement object, with empty fields
+*/
 function newRequirement()
 {
 	// New Req doesn't need a revision number
@@ -27,7 +31,7 @@ function newRequirement()
 /**
 * Handles one request to refactor one requirement
 */
-function extractRequirement(req, fragment, destinationName, newID)
+function extractRequirement(req, fragment, destinationName, newID, allRequirements)
 {
 	console.log("Extract One");
 	// Step 1
@@ -52,6 +56,9 @@ function extractRequirement(req, fragment, destinationName, newID)
 //	console.log(component);
 	//req.getComponent();
 
+	// New Field to list the fragments that this requirement depends on
+	req.fragments = [newReq.reqid]
+
 
   // New fretish requirement
 	let newFretish = "if " + fragment + " " + component + " shall satisfy " + destinationName.toUpperCase();
@@ -75,6 +82,7 @@ function extractRequirement(req, fragment, destinationName, newID)
 
   // Step 4
   // Verify
+	//TODO call compare.compare()
 
 
 	console.log(req);
@@ -108,7 +116,7 @@ function extractRequirement_ApplyAll(req, fragment, destinationName, newID, allR
   // Build new fretish requirement
 	let component = req.semantics.component_name;
 //	console.log(component);
-	//req.getComponent();
+
 
 
   // New fretish requirement
@@ -145,6 +153,8 @@ function extractRequirement_ApplyAll(req, fragment, destinationName, newID, allR
 			model.AddRequirementToDB(kreq);
 		}
 	}
+
+	//Where to compare??
 
 
 	// Adding extracted requirement
