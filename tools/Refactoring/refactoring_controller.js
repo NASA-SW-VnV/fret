@@ -5,9 +5,9 @@
 */
 
 //var FretRequirement = require("./FretRequirement")
-var model = require("./refactoring_model")
-var fretSemantics = require("../../fret-electron/app/parser/FretSemantics")
-var compare = require("./refactoring_compare")
+var model = require("./refactoring_model");
+var fretSemantics = require("../../fret-electron/app/parser/FretSemantics");
+var compare = require("./refactoring_compare");
 //const {v1:uuidv1} = require('uuid');
 //const uuidv1 = require('uuid/v1');
 //const { v1: uuidv1 } = require('uuid');

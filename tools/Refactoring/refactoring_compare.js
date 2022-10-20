@@ -3,14 +3,14 @@ const fs = require('fs');
 const execSync = require('child_process').execSync;
 
 const fretSupportPath = "../../fret-electron/support/";
-const utils = require(fretSupportPath + 'utils.js');
-const utilities = require(fretSupportPath + 'utilities.js');
+const utils = require('../../fret-electron/support/utils.js'); // /home/matt/work/mu-fret/fret-electron/support/utils.js
+const utilities = require('../../fret-electron/support/utilities.js');
 
-const CallNuSMV = require("../../fret-electron/test/semantics/CallNuSMV");
-const fretParserPath = "../../fret-electron/app/parser/"
-const formalizations = require(fretParserPath + 'semantics.json');
+const CallNuSMV = require("./CallNuSMV");
+//const fretParserPath = "../../fret-electron/app/parser/"
+//const formalizations = require('../../fret-electron/app/parser/semantics.json');
 //const formalizations = require(fretParserPath + 'semantics_until_last.json');
-const constants = require(fretParserPath + 'Constants');
+//const constants = require('../../fret-electron/app/parser/Constants');
 
 const nuXmvTempFilePrefix = '/tmp/refactoring-equiv';
 

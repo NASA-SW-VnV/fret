@@ -129,6 +129,10 @@ handlePreview = () => {
   console.log('Preview Button');
 };
 
+/**
+* Event Handler for the OK Button
+* Calls the requested extract requirement method
+*/
 handleOk = () => {
   console.log('OK Button');
   console.log(this.state.extractString);
@@ -142,14 +146,10 @@ handleOk = () => {
       this.state.newName, newID, this.state.requirements);
   }
   else {
-    // req, fragment, destinationName, knockons
+    // Now this needs all the requirements too, to pass to the compare method
       RefactoringController.extractRequirement(
-        this.state.selectedRequirement, this.state.extractString, this.state.newName, newID);
+        this.state.selectedRequirement, this.state.extractString, this.state.newName, newID, this.state.requirements);
   }
-
-  // console.log(result.req);
-  // console.log(result.fragment);
-
 
   this.setState({ open: false });
   this.state.dialogCloseListener();
@@ -271,6 +271,7 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
         open={this.state.open}
         onClose={this.handleClose}
         aria-labelledby="form-dialog-title"
+        maxWidth="lg"
       >
         <DialogContent>
           Extract Requirement
@@ -307,7 +308,7 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
             </Grid>
 
 
-              <Grid  style={{ textAlign: 'right' }} item xs={6}>
+              <Grid  style={{ textAlign: 'right'}} item xs={6}>
                 Refactoring Type
               </Grid>
               <Grid item xs={6}>
@@ -317,6 +318,7 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
                   id="select"
                   value={this.state.refactoringType}
                   onChange={this.handleRefactoringType()}
+                  disabled
                 >
                   <MenuItem value="1">Extract Requirement</MenuItem>
                   <MenuItem value="0">Others</MenuItem>
