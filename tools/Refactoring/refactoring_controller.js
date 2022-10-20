@@ -83,8 +83,8 @@ function extractRequirement(req, fragment, destinationName, newID, allRequiremen
 
   // Step 4
   // Verify
-	compare.compareRequirements()
-
+	var result = compare.compareRequirements(req, newReq, allRequirements);
+	console.log("controller, result = " + result);
 
 	console.log(req);
 
@@ -92,6 +92,7 @@ function extractRequirement(req, fragment, destinationName, newID, allRequiremen
 	console.log(newReq);
 
   //return [newReq]
+	return result
 }
 exports.extractRequirement = extractRequirement;
 

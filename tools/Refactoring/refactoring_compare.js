@@ -334,10 +334,9 @@ function generateSMV(originalReq, newReq,n, allRequirements)
   let fragList = [];
   let fragsToGet = [];
 
-  //  if (! key.endsWith('satisfaction')) continue;
-  //  let f = formalizations[key];
+
     let origFT = originalReq.semantics.ftExpanded;
-    //if (ftexp === constants.nonsense_semantics || ftexp === constants.undefined_semantics) continue;
+
     if ("fragments" in originalReq)
     {
       console.log("merging original req")
@@ -462,6 +461,7 @@ function compareRequirements(originalReq, newReq, requirementSet)
   {
     console.log("FAIL: Requirements have differently");
   }
+  return checkResult;
 }
 exports.compareRequirements = compareRequirements;
 
@@ -480,4 +480,4 @@ let newReq = newFSM002
 
 let allRequirements = [FSM002, newFSM002, In_Trans];
 
-compareRequirements(originalReq, newReq, allRequirements);
+//compareRequirements(originalReq, newReq, allRequirements);

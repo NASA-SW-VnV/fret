@@ -100,7 +100,9 @@ class RefactorRequirementDialog extends React.Component {
     refactoringContent: ' ',
     extractString: 'default extract string',
     newName: '',
-    requirements: []
+    requirements: [],
+    refactoringCheckresult: null,
+
   };
 
   componentWillReceiveProps = (props) => {
@@ -125,6 +127,11 @@ class RefactorRequirementDialog extends React.Component {
     this.state.dialogCloseListener();
   };
 
+  handleRefactorDialogClose = () => {
+    this.setState({ refactorDialogOpen: false });
+
+  };
+
 handlePreview = () => {
   console.log('Preview Button');
 };
@@ -139,20 +146,28 @@ handleOk = () => {
   console.log(this.state.newName);
   console.log("apply to all = " + this.state.applyToAll);
   var newID = uuid.v1();
+  var result;
   if (this.state.applyToAll == true)
   {
-    RefactoringController.extractRequirement_ApplyAll(
+    result = RefactoringController.extractRequirement_ApplyAll(
       this.state.selectedRequirement, this.state.extractString,
       this.state.newName, newID, this.state.requirements);
+
+      console.log("result all = " + result);
+      this.setState({refactoringCheckresult: result});
   }
   else {
     // Now this needs all the requirements too, to pass to the compare method
-      RefactoringController.extractRequirement(
+      result = RefactoringController.extractRequirement(
         this.state.selectedRequirement, this.state.extractString, this.state.newName, newID, this.state.requirements);
+
+        console.log("result one = " + result);
+        this.setState({refactoringCheckresult: result});
   }
 
-  this.setState({ open: false });
-  this.state.dialogCloseListener();
+
+  //this.setState({ open: false });
+  //this.state.dialogCloseListener();
 };
 
 handleRefactoringType = () => event => {
@@ -263,8 +278,39 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
   //  if (!rationale) rationale = 'Not specified'
   //  if (!parent_reqid) parent_reqid = 'Not specified'
   //  fulltext += '.'
+  var result = this.state.refactoringCheckresult;
+  console.log("Result = " + result);
+  if (result != null)
+  {
+    return(
+      <Dialog
+        open={this.state.open}
+        onClose={this.handleClose}
+        aria-labelledby="form-dialog-title"
+        maxWidth="md"
+      >
+      <DialogTitle id="simple-dialog-title">  Extract Requirement: {this.state.selectedRequirementId}
+      </DialogTitle>
+        <DialogContent>
+         This version of the dialog will show the result better. For now result: <div>{this.state.refactoringCheckresult}</div>
+        </DialogContent>
+        <DialogActions>
 
+          <Button onClick={this.handleClose} color="secondary">
+            Cancel
+          </Button>
+          <Button
+            onClick={this.handleOk}
+            color="secondary"
+          >
+            Ok
+          </Button>
+        </DialogActions>
+      </Dialog>
 
+    );
+  }
+  else{
   return (
     <div>
       <Dialog
@@ -304,7 +350,7 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
                         onChange={this.handleChangeExtract()}
                       />
                     </Grid>
-                    
+
                         <Grid style={{ textAlign: 'right' }} item xs={3}>
                           New Requirement Name:
                         </Grid>
@@ -345,7 +391,9 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
           </DialogActions>
         </Dialog>
       </div>
+
   );
+}
 }
 }
 
