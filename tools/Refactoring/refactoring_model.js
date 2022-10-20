@@ -104,8 +104,7 @@ export function RequirementsInProject(project_name)
 
 
 /**
-* Finds all the requirements in the given project
-* that contain the given fragment
+* Finds all the requirements in the given project that contain the given fragment
 */
 export function FindRequirementsWithFragment(allRequirements, project_name, fragment, reqName, destinationName)
 {

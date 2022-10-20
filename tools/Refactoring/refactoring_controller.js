@@ -65,8 +65,9 @@ function extractRequirement(req, fragment, destinationName, newID, allRequiremen
 
 	 newReq.fulltext = newFretish;
 	 // Compile the new semantics and add to the new req
+	 // Not sure that this is working
 	 newSemantics = fretSemantics.compile(newFretish)
-	 //console.log(newSemantics);
+	 console.log(newSemantics);
 	 newReq.semantics = newSemantics.collectedSemantics;
 
 	// Step 3
@@ -82,7 +83,7 @@ function extractRequirement(req, fragment, destinationName, newID, allRequiremen
 
   // Step 4
   // Verify
-	//TODO call compare.compare()
+	compare.compareRequirements()
 
 
 	console.log(req);
