@@ -52,7 +52,7 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 //import DialogContentText from '@material-ui/core/DialogContentText';
-//import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogTitle from '@material-ui/core/DialogTitle';
 //import ImageList from '@material-ui/core/ImageList';
 //import ImageListItem from '@material-ui/core/ImageListItem';
 import Grid from '@material-ui/core/Grid';
@@ -271,88 +271,68 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
         open={this.state.open}
         onClose={this.handleClose}
         aria-labelledby="form-dialog-title"
-        maxWidth="lg"
+        maxWidth="md"
       >
+      <DialogTitle id="simple-dialog-title">  Extract Requirement: {this.state.selectedRequirementId}</DialogTitle>
         <DialogContent>
-          Extract Requirement
-          <Grid container spacing={2} >
-            <Grid style={{ textAlign: 'right' }} item xs={6}>
-              Requirement Name:
-            </Grid>
-            <Grid item xs={6}>
-              {this.state.selectedRequirementId}
-            </Grid>
 
-            <Grid style={{ textAlign: 'right' }} item xs={6}>
-              Definition:
-            </Grid>
-            <Grid item xs={6}>
-              <TextField
-                id="definition"
-                multiline
-                label="Definition"
-                value={fulltext} />
-            </Grid>
+        <Grid container spacing={2} >
 
-            <Grid style={{ textAlign: 'right' }} item xs={6}>
-              String to Extract:
-            </Grid>
-            <Grid item xs={6}>
-              <TextField
-                id="extract"
-                multiline
-                label="Copy the part of the definition to extract"
-                value={this.state.extract}
-                onChange={this.handleChangeExtract()}
-              />
-            </Grid>
+                    <Grid style={{ textAlign: 'right' }} item xs={3}>
+                      Definition:
+                    </Grid>
+                    <Grid item xs={9}>
+                      <TextField
+                        id="definition"
+                        multiline
+                        fullWidth
+                        label="Definition"
+                        value={fulltext} />
+                    </Grid>
 
+                    <Grid style={{ textAlign: 'right' }} item xs={3}>
+                      String to Extract:
+                    </Grid>
+                    <Grid item xs={9}>
+                      <TextField
+                        id="extract"
+                        multiline
+                        fullWidth
+                        label="Extract"
+                        placeholder="Copy the part of the definition to extract"
+                        value={this.state.extract}
+                        onChange={this.handleChangeExtract()}
+                      />
+                    </Grid>
+                    
+                        <Grid style={{ textAlign: 'right' }} item xs={3}>
+                          New Requirement Name:
+                        </Grid>
+                        <Grid item xs={9}>
+                          <TextField
+                            id="newReqName"
+                            label="New Name"
+                            placeholder="Type the name you want to give to the extracted requirement"
+                            value={this.state.newName}
+                            onChange={this.updateNewName()}
+                          />
+                        </Grid>
 
-              <Grid  style={{ textAlign: 'right'}} item xs={6}>
-                Refactoring Type
-              </Grid>
-              <Grid item xs={6}>
-                <Select
-                  autoWidth
-                  labelId="refactoringType"
-                  id="select"
-                  value={this.state.refactoringType}
-                  onChange={this.handleRefactoringType()}
-                  disabled
-                >
-                  <MenuItem value="1">Extract Requirement</MenuItem>
-                  <MenuItem value="0">Others</MenuItem>
-                </Select>
-              </Grid>
+                        <Grid style={{ textAlign: 'right' }} item xs={3}>
+                          Apply to all Matching Fragments:
+                        </Grid>
+                        <Grid item xs={9}>
+                          <Checkbox
+                            inputProps={{ 'aria-label': 'controlled' }}
+                            onChange={this.updateApplytoAllStatus()}
+                            />
+                        </Grid>
+                  </Grid>
 
-                <Grid style={{ textAlign: 'right' }} item xs={6}>
-                  New Requirement Name:
-                </Grid>
-                <Grid item xs={6}>
-                  <TextField
-                    id="newReqName"
-                    label="New Name"
-                    value={this.state.newName}
-                    onChange={this.updateNewName()}
-                  />
-                </Grid>
-
-                <Grid style={{ textAlign: 'right' }} item xs={6}>
-                  Apply to all Matching Fragments:
-                </Grid>
-                <Grid item xs={6}>
-                  <Checkbox
-                    inputProps={{ 'aria-label': 'controlled' }}
-                    onChange={this.updateApplytoAllStatus()}
-                    />
-                </Grid>
-          </Grid>
 
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.handlePreview} color="secondary" disabled>
-              Preview
-            </Button>
+
             <Button onClick={this.handleClose} color="secondary">
               Cancel
             </Button>

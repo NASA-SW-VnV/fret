@@ -99,7 +99,7 @@ function createData(dbkey, rev, reqid, summary, project, status, semantics, full
 
 function desc(a, b, orderBy) {
   var element_a, element_b
-  if (rows.find(r => r.id == orderBy).numeric) {
+  if (columnHeadings.find(r => r.id == orderBy).numeric) {
     element_a = a[orderBy]
     element_b = b[orderBy]
   } else {
@@ -128,10 +128,11 @@ function getSorting(order, orderBy) {
   return order === 'desc' ? (a, b) => desc(a, b, orderBy) : (a, b) => -desc(a, b, orderBy);
 }
 
-const rows = [
+const columnHeadings = [
   { id: 'status', numeric: false, disablePadding: false, label: 'Status' },
   { id: 'reqid', numeric: false, disablePadding: false, label: 'ID' },
   { id: 'add', numeric: false, disablePadding: false, label: '' },
+  { id: 'refactor', numeric: false, disablePadding: false, label: '' },
   { id: 'summary', numeric: false, disablePadding: false, label: 'Summary' },
   { id: 'project', numeric: false, disablePadding: false, label: 'Project' },
 ]
@@ -157,7 +158,7 @@ class SortableTableHead extends React.Component {
               />
             </TableCell>
           }
-          {rows.map(row => {
+          {columnHeadings.map(row => {
             return (
               <TableCell
                 key={row.id}
@@ -657,6 +658,8 @@ class SortableTable extends React.Component {
                               <AddIcon/>
                             </IconButton>
                           </Tooltip>
+                        </TableCell>
+                        <TableCell>
                           <Tooltip id="tooltip-icon-refactor" title="Refactor Requirement">
                             <IconButton onClick={this.handleRefactorRequirement(n)} size="small" color="default" aria-label="refactor" >
                             <BuildIcon />
@@ -708,6 +711,8 @@ class SortableTable extends React.Component {
                                 <AddIcon />
                               </IconButton>
                             </Tooltip>
+                          </TableCell>
+                          <TableCell>
                             <Tooltip id="tooltip-icon-refactor" title="Refactor Requirement">
                               <IconButton onClick={this.handleRefactorRequirement(n)} size="small" color="default" aria-label="refactor" >
                               <BuildIcon />
