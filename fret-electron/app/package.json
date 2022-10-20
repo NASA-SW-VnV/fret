@@ -1,7 +1,7 @@
 {
   "name": "fret",
   "productName": "FRET",
-  "version": "2.1.1-mu.fret",
+  "version": "2.1.2-mu.fret",
   "description": "FRET",
   "main": "./main.prod.js",
   "author": {
