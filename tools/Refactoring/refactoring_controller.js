@@ -71,20 +71,34 @@ function extractRequirement(req, fragment, destinationName, newID, allRequiremen
 	 newReq.semantics = newSemantics.collectedSemantics;
 
 	// Step 3
-  // Replace fragment in original requirement with reference to new requirement
 
+	//Backup original requirement's text, just in case
+	let reqBackup = req.fulltext
+
+  // Replace fragment in original requirement with reference to new requirement
 	model.ReplaceFragment(req, fragment, destinationName);
 
- //Updating original requirement
-	model.AddRequirementToDB(req);
 
-// Adding extracted requirement
-	model.AddRequirementToDB(newReq);
 
   // Step 4
   // Verify
 	var result = compare.compareRequirements(req, newReq, allRequirements);
 	console.log("controller, result = " + result);
+	if(result)
+	{
+		console.log("+++ adding requirements to the database +++")
+		//Updating original requirement
+		 model.AddRequirementToDB(req);
+
+	 // Adding extracted requirement
+		 model.AddRequirementToDB(newReq);
+	}
+	else
+	{
+		console.log("+++ check failed, undoing +++")
+		delete req.fragments;
+		req.fulltext = reqBackup;
+	}
 
 	console.log(req);
 

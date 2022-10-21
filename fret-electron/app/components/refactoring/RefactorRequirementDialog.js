@@ -323,7 +323,7 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
           <DialogContent>
             <DialogContentText>
                <CancelIcon/> The check failed, the original and new requirement behave differently.
-               Result: <div>{this.state.refactoringCheckresult}</div>
+               Result: {this.state.refactoringCheckresult}
             </DialogContentText>
           </DialogContent>
           <DialogActions>
