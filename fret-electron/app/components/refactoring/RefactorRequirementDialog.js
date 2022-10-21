@@ -51,7 +51,7 @@ import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-//import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 //import ImageList from '@material-ui/core/ImageList';
 //import ImageListItem from '@material-ui/core/ImageListItem';
@@ -59,6 +59,9 @@ import Grid from '@material-ui/core/Grid';
 import Checkbox from '@material-ui/core/Checkbox';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
+
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+import CancelIcon from '@material-ui/icons/Cancel';
 
 //import ImageListItemBar from '@material-ui/core/ImageListItemBar';
 //import Tooltip from '@material-ui/core/Tooltip';
@@ -282,33 +285,56 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
   console.log("Result = " + result);
   if (result != null)
   {
-    return(
-      <Dialog
-        open={this.state.open}
-        onClose={this.handleClose}
-        aria-labelledby="form-dialog-title"
-        maxWidth="md"
-      >
-      <DialogTitle id="simple-dialog-title">  Extract Requirement: {this.state.selectedRequirementId}
-      </DialogTitle>
-        <DialogContent>
-         This version of the dialog will show the result better. For now result: <div>{this.state.refactoringCheckresult}</div>
-        </DialogContent>
-        <DialogActions>
-
+    if(result == true)
+    {// Check has passed
+      return(
+        <Dialog
+          open={this.state.open}
+          onClose={this.handleClose}
+          aria-labelledby="form-dialog-title"
+          maxWidth="md"
+        >
+        <DialogTitle id="simple-dialog-title">  Extract Requirement: {this.state.selectedRequirementId}
+        </DialogTitle>
+          <DialogContent>
+               <DialogContentText>
+                <CheckCircleIcon/> Checks Passed. The original and new requirements behave the same.
+               </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleClose} color="secondary">
+              Close
+            </Button>
+          </DialogActions>
+        </Dialog>
+      );
+    }
+    else
+    { // Check has failed. The user should probably never see this
+      return(
+        <Dialog
+          open={this.state.open}
+          onClose={this.handleClose}
+          aria-labelledby="form-dialog-title"
+          maxWidth="md"
+        >
+        <DialogTitle id="simple-dialog-title">  Extract Requirement: {this.state.selectedRequirementId}
+        </DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+               <CancelIcon/> The check failed, the original and new requirement behave differently.
+               Result: <div>{this.state.refactoringCheckresult}</div>
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
           <Button onClick={this.handleClose} color="secondary">
-            Cancel
+            Close
           </Button>
-          <Button
-            onClick={this.handleOk}
-            color="secondary"
-          >
-            Ok
-          </Button>
-        </DialogActions>
-      </Dialog>
+          </DialogActions>
+        </Dialog>
+      );
+    }
 
-    );
   }
   else{
   return (
