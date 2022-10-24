@@ -282,7 +282,7 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
   //  if (!parent_reqid) parent_reqid = 'Not specified'
   //  fulltext += '.'
   var result = this.state.refactoringCheckresult;
-  console.log("Result = " + result);
+  console.log("Render Result = " + result);
   if (result != null)
   {
     if(result == true)

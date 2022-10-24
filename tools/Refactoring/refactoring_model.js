@@ -12,6 +12,9 @@ const modeldb = require('electron').remote.getGlobal('sharedObj').modeldb;
 //const uuidv1 = require('uuid/v1');
 //const checkDbFormat = require('../../support/fretDbSupport/checkDBFormat.js');
 
+
+
+
 /**
 * Replaces one fragement in a requirement with another
 */

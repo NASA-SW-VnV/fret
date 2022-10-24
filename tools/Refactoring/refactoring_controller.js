@@ -13,6 +13,7 @@ var compare = require("./refactoring_compare");
 //const { v1: uuidv1 } = require('uuid');
 //import { v4 as uuidv4 } from 'uuid';
 
+
 exports.test = function test(extractString, newName)
 {
 	console.log("Refactoring Test: " + extractString + " " + newName);
@@ -34,10 +35,18 @@ function newRequirement()
 function extractRequirement(req, fragment, destinationName, newID, allRequirements)
 {
 	console.log("Extract One");
-	// Step 1
-  // Make New requirement
-	//let destinationRequirement = new FretRequirement(destinationName, null);
-	//let clonedReq = Object.assign({}, req);
+
+
+	let dummyUpdatedReq = {}
+	dummyUpdatedReq.reqid = req.reqid;
+	dummyUpdatedReq.fulltext = req.fulltext;
+	dummyUpdatedReq.semantics = {};
+	dummyUpdatedReq.semantics.ftExpanded = req.semantics.ftExpanded;
+	dummyUpdatedReq.semantics.variables = req.semantics.variables;
+
+
+	// Ramos Step 1: Make New requirement
+
 	let newReq = newRequirement();
 	newReq.reqid = destinationName.toUpperCase();
 	// New Req needs a new ID
@@ -47,17 +56,14 @@ function extractRequirement(req, fragment, destinationName, newID, allRequiremen
 
 	newReq.rationale = "EXTRACT REQUIREMENT: extracted " + fragment + " from " + req.reqid;
 	console.log("Made New Requirement")
-	console.log(newReq);
+	//console.log(newReq);
 
 
 	// Step 2
   // Build new fretish requirement
 	let component = req.semantics.component_name;
-//	console.log(component);
-	//req.getComponent();
 
-	// New Field to list the fragments that this requirement depends on
-	req.fragments = [newReq.reqid]
+
 
 
   // New fretish requirement
@@ -72,23 +78,36 @@ function extractRequirement(req, fragment, destinationName, newID, allRequiremen
 
 	// Step 3
 
-	//Backup original requirement's text, just in case
-	let reqBackup = req.fulltext
 
-  // Replace fragment in original requirement with reference to new requirement
-	model.ReplaceFragment(req, fragment, destinationName);
 
+	// Dummy Run on the Dummy Req
+	model.ReplaceFragment(dummyUpdatedReq, fragment, destinationName);
+
+
+	console.log("~~~~~")
+	console.log("checking what two reqs I'm comparing...")
+	console.log("req text = " + req.fulltext)
+	console.log("dummyUpdatedReq text = " + dummyUpdatedReq.fulltext)
+	console.log("~~~~~")
 
 
   // Step 4
   // Verify
-	var result = compare.compareRequirements(req, newReq, allRequirements);
+	var result = compare.compareRequirements(req, dummyUpdatedReq, allRequirements);
 	console.log("controller, result = " + result);
 	if(result)
 	{
 		console.log("+++ adding requirements to the database +++")
-		//Updating original requirement
-		 model.AddRequirementToDB(req);
+		//Updating original requirement and adding to database
+
+		// New Field to list the fragments that this requirement depends on
+		req.fragments = [newReq.reqid]
+
+		// Replace fragment in original requirement with reference to new requirement
+		model.ReplaceFragment(req, fragment, destinationName);
+
+
+		model.AddRequirementToDB(req);
 
 	 // Adding extracted requirement
 		 model.AddRequirementToDB(newReq);
@@ -116,9 +135,11 @@ exports.extractRequirement = extractRequirement;
 function extractRequirement_ApplyAll(req, fragment, destinationName, newID, allRequirements)
 {
 	console.log("Extract All")
+
+
 	// Step 1
-  // Clone requirement
-	//let destinationRequirement = new FretRequirement(destinationName, null);
+
+	// The destination of the extracted fragment
 	let newReq = newRequirement();
 	newReq.reqid = destinationName.toUpperCase();
 	// New Req needs a new ID
@@ -131,9 +152,6 @@ function extractRequirement_ApplyAll(req, fragment, destinationName, newID, allR
 	// Step 2
   // Build new fretish requirement
 	let component = req.semantics.component_name;
-//	console.log(component);
-
-
 
   // New fretish requirement
 	let newFretish = "if " + fragment + " " + component + " shall satisfy " + destinationName.toUpperCase();

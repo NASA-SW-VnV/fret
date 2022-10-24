@@ -334,6 +334,10 @@ function generateSMV(originalReq, newReq,n, allRequirements)
   let fragList = [];
   let fragsToGet = [];
 
+  console.log("GENERATE SMV\n");
+  console.log(originalReq);
+  console.log(newReq);
+
 
     let origFT = originalReq.semantics.ftExpanded;
 
