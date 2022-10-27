@@ -29,6 +29,18 @@ function newRequirement()
 };
 
 
+function makeDummyUpdatedReq(req)
+{
+	let dummyUpdatedReq = {}
+	dummyUpdatedReq.reqid = req.reqid;
+	dummyUpdatedReq.fulltext = req.fulltext;
+	dummyUpdatedReq.semantics = {};
+	dummyUpdatedReq.semantics.ftExpanded = req.semantics.ftExpanded;
+	dummyUpdatedReq.semantics.variables = req.semantics.variables;
+
+	return dummyUpdatedReq
+}
+
 /**
 * Handles one request to refactor one requirement
 */
@@ -36,13 +48,8 @@ function extractRequirement(req, fragment, destinationName, newID, allRequiremen
 {
 	console.log("Extract One");
 
+	let dummyUpdatedReq = makeDummyUpdatedReq(req);
 
-	let dummyUpdatedReq = {}
-	dummyUpdatedReq.reqid = req.reqid;
-	dummyUpdatedReq.fulltext = req.fulltext;
-	dummyUpdatedReq.semantics = {};
-	dummyUpdatedReq.semantics.ftExpanded = req.semantics.ftExpanded;
-	dummyUpdatedReq.semantics.variables = req.semantics.variables;
 
 
 	// Ramos Step 1: Make New requirement
@@ -64,8 +71,6 @@ function extractRequirement(req, fragment, destinationName, newID, allRequiremen
 	let component = req.semantics.component_name;
 
 
-
-
   // New fretish requirement
 	let newFretish = "if " + fragment + " " + component + " shall satisfy " + destinationName.toUpperCase();
 
@@ -73,7 +78,6 @@ function extractRequirement(req, fragment, destinationName, newID, allRequiremen
 	 // Compile the new semantics and add to the new req
 	 // Not sure that this is working
 	 newSemantics = fretSemantics.compile(newFretish)
-	 console.log(newSemantics);
 	 newReq.semantics = newSemantics.collectedSemantics;
 
 	// Step 3
@@ -114,9 +118,9 @@ function extractRequirement(req, fragment, destinationName, newID, allRequiremen
 	}
 	else
 	{
-		console.log("+++ check failed, undoing +++")
-		delete req.fragments;
-		req.fulltext = reqBackup;
+		console.log("+++ check failed, not adding +++")
+		//delete req.fragments;
+		//req.fulltext = reqBackup;
 	}
 
 	console.log(req);
@@ -135,6 +139,7 @@ exports.extractRequirement = extractRequirement;
 function extractRequirement_ApplyAll(req, fragment, destinationName, newID, allRequirements)
 {
 	console.log("Extract All")
+
 
 
 	// Step 1
@@ -159,7 +164,6 @@ function extractRequirement_ApplyAll(req, fragment, destinationName, newID, allR
 	 newReq.fulltext = newFretish;
 	 // Compile the new semantics and add to the new req
 	 newSemantics = fretSemantics.compile(newFretish)
-	 //console.log(newSemantics);
 	 newReq.semantics = newSemantics.collectedSemantics;
 
 	console.log("Made New Requirement")
@@ -169,31 +173,74 @@ function extractRequirement_ApplyAll(req, fragment, destinationName, newID, allR
   // Do the thing
   // Similar to this method, but the destination requirement already exists.
 	project = req.project;
+
+	//I think this should contain the req parameter too.
 	let reqKnockons = model.FindRequirementsWithFragment(allRequirements, project, fragment, req.reqid, destinationName);
 
 	console.log("Lets see what requirements I've got to update...");
 	console.log(reqKnockons);
-
+	var result = false;
 	if(reqKnockons.length >0)
 	{
-		for (var i = 0; i < reqKnockons.length; i++) {
+		//check first
+		for (var i = 0; i < reqKnockons.length; i++)
+		{
 
 			let kreq = reqKnockons[i];
 
-			console.log("replacing fragment and updating db");
+			console.log("checking requirement");
 			console.log(kreq);
+			let dummyUpdatedReq = makeDummyUpdatedReq(kreq);
 
-			model.ReplaceFragment(kreq, fragment, destinationName);
-			model.AddRequirementToDB(kreq);
+			// Dummy Run on the Dummy Req
+			model.ReplaceFragment(dummyUpdatedReq, fragment, destinationName);
+
+			console.log("~~~~~")
+			console.log("checking what two reqs I'm comparing...")
+			console.log("req text = " + req.fulltext)
+			console.log("dummyUpdatedReq text = " + dummyUpdatedReq.fulltext)
+			console.log("~~~~~")
+
+			// Step 4
+			// Verify
+			result = compare.compareRequirements(kreq, dummyUpdatedReq, allRequirements);
+			console.log("controller, result = " + result);
+
+			if(!result)
+			{
+				console.log("+++ check failed aborting +++")
+				console.log("+++ failed on the following requirement +++")
+				console.log(kreq);
+				break;
+			}
+
+
+		}
+
+		if(result)
+		{
+			console.log("+++ adding requirements to the database +++")
+			//Checks passed so now add
+			for (var i = 0; i < reqKnockons.length; i++)
+			{
+
+				let kreq = reqKnockons[i];
+
+				kreq.fragments = [newReq.reqid]
+				model.ReplaceFragment(kreq, fragment, destinationName);
+				model.AddRequirementToDB(kreq);
+
+			}
+
+			console.log("+++ Adding Extracted Requirement +++")
+		// Adding extracted requirement
+			model.AddRequirementToDB(newReq);
+
 		}
 	}
 
-	//Where to compare??
 
-
-	// Adding extracted requirement
-		model.AddRequirementToDB(newReq);
-	//return [newReq]
+	return result;
 }
 exports.extractRequirement_ApplyAll = extractRequirement_ApplyAll;
 

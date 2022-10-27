@@ -139,7 +139,8 @@ export function FindRequirementsWithFragment(allRequirements, project_name, frag
           else
           {
              console.log(this_req_text);
-             if(this_req_text.includes(fragment))
+             console.log("checking for fragment: " + fragment)
+             if(this_req_text.split(" ").join("").includes(fragment.split(" ").join("")))
              {
                console.log("Pushing " + this_req);
                reqsWithFrag.push(this_req);

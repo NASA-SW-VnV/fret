@@ -12,7 +12,19 @@ const CallNuSMV = require("./CallNuSMV");
 //const formalizations = require(fretParserPath + 'semantics_until_last.json');
 //const constants = require('../../fret-electron/app/parser/Constants');
 
-const nuXmvTempFilePrefix = '/tmp/refactoring-equiv';
+const nuXmvTempFilePrefix = '/tmp/refactoring-verification';
+
+/*const nusmv_keywords = ["MODULE", "DEFINE", "MDEFINE", "CONSTANTS", "VAR", "IVAR", "FROZENVAR",
+"INIT", "TRANS", "INVAR", "SPEC", "CTLSPEC", "LTLSPEC", "PSLSPEC", "COMPUTE",
+"NAME", "INVARSPEC", "FAIRNESS", "JUSTICE", "COMPASSION", "ISA", "ASSIGN",
+"CONSTRAINT", "SIMPWFF", "CTLWFF", "LTLWFF", "PSLWFF", "COMPWFF", "IN", "MIN",
+"MAX", "MIRROR", "PRED", "PREDICATES", "process", "array", "of", "boolean",
+"integer", "real", "word", "word1", "bool", "signed", "unsigned", "extend",
+"resize", "sizeof", "uwconst", "swconst", "EX", "AX", "EF", "AF", "EG", "AG", "E", "F", "O", "G",
+"H", "X", "Y", "Z", "A", "U", "S", "V", "T", "BU", "EBF", "ABF", "EBG", "ABG", "case", "esac", "mod", "next",
+"init", "union", "in", "xor", "xnor", "self", "TRUE", "FALSE", "count", "abs", "max", "min"]
+*/
+
 
 const FSM002 =
 {
@@ -193,6 +205,34 @@ function substitutePlaceholders (ltlspec,n) {
     placeholderSubsts[4][1] = '' + n;
     return utilities.replaceStrings(placeholderSubsts,ltlspec);
 }
+
+/*
+function replaceNuSMVKeywords(value)
+{
+  let value_words=value.split(" ");
+  console.log(value_words)
+
+  console.log("replacing...")
+  for(let word of value_words)
+  {
+    console.log("word = " + word)
+
+
+    if(nusmv_keywords.includes(word))
+    {
+      console.log("true");
+
+      value_words[word] = word + "_var";
+    }
+    else
+    {
+      console.log("false");
+
+    }
+  }
+  return value_words.join(" ");
+}
+*/
 
 /**
 * Gets the variable names out of the requirement's
@@ -375,6 +415,11 @@ function generateSMV(originalReq, newReq,n, allRequirements)
   //  let name = 'n' + keynum + '_' + key.substring(0,key.length - 13).replace(/,/g,'_');
     //	let name = key.substring(0,key.length - 13).replace(/,/g,'_');
     //keysTested.push(name);
+
+    /*//Check for/update NUSMV Keyword names
+    origFT = replaceNuSMVKeywords(origFT);
+    newFT = replaceNuSMVKeywords(newFT);
+    */
     let rawSaltSpec = `${origFT} <-> ${newFT}`;
     //let nothingAfterLast = "G(LAST -> (G (!pre & !post & !m)))";
     //let checkEquiv = `((G(LAST -> ${ptexp})) <-> ${ftexp})`;
@@ -447,7 +492,15 @@ function compare(originalReq, newReq, len,n) {
 }
 
 
-
+/**
+* Compares the original requirement with the refactored version.
+* The method uses pulls any extracted fragments from the requirement set, using
+* the `fragment` varibale present in a previously refactored requirement.  
+*
+* originalReq is the original requirement
+* newReq is the refactored requirement
+* requirementSet is the set of requirements the requirement belongs to
+*/
 function compareRequirements(originalReq, newReq, requirementSet)
 {
   let len = 11;
@@ -455,7 +508,7 @@ function compareRequirements(originalReq, newReq, requirementSet)
 
   console.log("+++ Comparing Requirements +++")
 
-  let checkResult = callnuXmv(originalReq, newReq ,len,n, allRequirements);
+  let checkResult = callnuXmv(originalReq, newReq ,len,n, requirementSet);
 
   if (checkResult)
   {
@@ -469,19 +522,30 @@ function compareRequirements(originalReq, newReq, requirementSet)
 }
 exports.compareRequirements = compareRequirements;
 
-let len = 11;
-let n = 4;
 
-//This should obviously work
-//let originalReq = FSM002;
-//let newReq = FSM002;
+/**
+* Testing Code, only runs if this module is run directly
+* Use `node refactoring_compare.js` to run the quick tests.
+*/
+if (require.main === module)
+{
 
-//This works, because it merges the fragment in
-let originalReq = FSM002;
-let newReq = newFSM002
+console.log("\nTesting Compare requirements on local requirements")
+  let len = 11;
+  let n = 4;
+  let allRequirements = [FSM002, newFSM002, In_Trans];
 
-//compare(originalReq, newReq, len,n)
+  //This should obviously work
+  let originalReq = FSM002;
+  let newReq = FSM002;
+  console.log("Same Requirements: should obviously work")
+  compareRequirements(originalReq, newReq, allRequirements);
 
-let allRequirements = [FSM002, newFSM002, In_Trans];
 
-//compareRequirements(originalReq, newReq, allRequirements);
+  //This works, because it merges the fragment in
+  originalReq = FSM002;
+  newReq = newFSM002
+  console.log("Different Requirements: works because the fragments are merged back in")
+  compareRequirements(originalReq, newReq, allRequirements);
+
+}
