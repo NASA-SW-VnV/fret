@@ -194,6 +194,7 @@ function extractRequirement_ApplyAll(req, fragment, destinationName, newID, allR
 
 			// Dummy Run on the Dummy Req
 			model.ReplaceFragment(dummyUpdatedReq, fragment, destinationName);
+			dummyUpdatedReq.fragments = [newReq.reqid]
 
 			console.log("~~~~~")
 			console.log("checking what two reqs I'm comparing...")
