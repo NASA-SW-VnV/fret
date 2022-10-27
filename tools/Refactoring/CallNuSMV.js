@@ -67,11 +67,13 @@ quit
 exports.callNuSMV2 = (file_name) => {
     const commands = batchCommands.replace('FILE_NAME',file_name);
     const batchFile = writeSMV('_batch',commands,'batch commands');
-    //var NuSMV_command = '$NuSMV_HOME/bin/NuSMV -dcx -source ' + batchFile;
+		var NuSMV_command = '$NuSMV_HOME/nusmv -dcx -source ' + batchFile;
+		//var NuSMV_command = '/home/matt/bin/NuSMV-2.6.0-linux64/NuSMV-2.6.0-Linux/bin/nusmv -dcx -source ' + batchFile;
+
     //var nuXmv_command = '$nuXmv_HOME/bin/nuXmv -dcx -source ' + batchFile;
-    var nuXmv_command = '/home/matt/bin/nuXmv-2.0.0-Linux/bin/nuXmv -source ' + batchFile;
-    var nu_command = nuXmv_command;
-    //var nu_command = NuSMV_command;
+    //var nuXmv_command = '/home/matt/bin/nuXmv-2.0.0-Linux/bin/nuXmv -source ' + batchFile;
+    //var nu_command = nuXmv_command;
+    var nu_command = NuSMV_command;
     //console.log('command = ' + nu_command);
     var NuSMV_output = '';
     try {
@@ -97,7 +99,7 @@ exports.callNuSMV2 = (file_name) => {
 
 exports.callNuSMV = (file_name) => {
     // -dcx is option to not print out counter-example
-    var NuSMV_command = '/home/matt/bin/NuSMV-2.6.0-linux64/NuSMV-2.6.0-Linux/bin/nusmv -dcx ' + file_name;
+    var NuSMV_command = '$NuSMV_HOME/nusmv -dcx ' + file_name;
     //var nuXmv_command = '$nuXmv_HOME/bin/nuXmv -dcx ' + file_name;
     //var nu_command = nuXmv_command;
     var nu_command = NuSMV_command;
