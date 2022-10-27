@@ -202,7 +202,7 @@ class DisplayRequirementDialog extends React.Component {
           <Divider />
           <DialogContent>
             <br />
-            <ImageList cols={1} rowHeight='auto' gap={20}>
+            <ImageList cols={1}  gap={10}>
               <ImageListItem>
                 <Typography variant='button'>Rationale</Typography><br/>
                 <Typography color='primary' variant='body1'>{rationale}</Typography>
