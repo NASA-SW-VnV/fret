@@ -91,7 +91,6 @@ class DisplayRequirementDialog extends React.Component {
       dialogCloseListener: props.handleDialogClose,
       openCreateDialog: props.handleCreateDialogOpen,
       openDeleteDialog: props.handleDeleteDialogOpen,
-      openRefactorDialog: props.handleRefactorDialogOpen
     };
   }
 
@@ -233,8 +232,7 @@ DisplayRequirementDialog.propTypes = {
   open: PropTypes.bool.isRequired,
   handleDialogClose: PropTypes.func.isRequired,
   handleCreateDialogOpen: PropTypes.func.isRequired,
-  handleDeleteDialogOpen: PropTypes.func.isRequired,
-  handleRefactorDialogOpen: PropTypes.func.isRequired,
+  handleDeleteDialogOpen: PropTypes.func.isRequired
 };
 
 export default withStyles(styles)(DisplayRequirementDialog);
