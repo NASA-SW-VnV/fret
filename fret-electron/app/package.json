@@ -1,13 +1,13 @@
 {
   "name": "fret",
-  "productName": "FRET",
+  "productName": "MU-FRET",
   "version": "2.1.2-mu.fret",
-  "description": "FRET",
+  "description": "MU-FRET",
   "main": "./main.prod.js",
   "author": {
-    "name": "Nija Shi`",
-    "email": "nija.shi@nasa.gov",
-    "url": "https://ti.arc.nasa.gov/profile/shi/"
+    "name": "",
+    "email": "",
+    "url": ""
   },
   "scripts": {
     "electron-rebuild": "node -r babel-register ../internals/scripts/ElectronRebuild.js",
