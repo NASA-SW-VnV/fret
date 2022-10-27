@@ -126,7 +126,7 @@ class RefactorRequirementDialog extends React.Component {
   }
 
   handleClose = () => {
-    this.setState({ open: false });
+    this.setState({ open: false, selectedRequirement: {}, requirements: [], refactoringCheckresult: null, applyToAll: false, refactoringType: '', newName: '', refactoringContent: ''});
     this.state.dialogCloseListener();
   };
 
