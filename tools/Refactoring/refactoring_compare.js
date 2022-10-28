@@ -325,6 +325,7 @@ function getVars(originalReq, newReq, fragList)
 */
 function mergeFragment(property, fragment)
 {
+  console.log("mergeFragment")
   let mergedProperty = property;
 
   let frag_condition = fragment.semantics.pre_condition;
@@ -495,7 +496,7 @@ function compare(originalReq, newReq, len,n) {
 /**
 * Compares the original requirement with the refactored version.
 * The method uses pulls any extracted fragments from the requirement set, using
-* the `fragment` varibale present in a previously refactored requirement.  
+* the `fragment` varibale present in a previously refactored requirement.
 *
 * originalReq is the original requirement
 * newReq is the refactored requirement
