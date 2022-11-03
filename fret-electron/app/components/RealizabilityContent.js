@@ -1482,6 +1482,12 @@ class RealizabilityContent extends React.Component {
                             id="qa_rlzCont_btn_check"
                             disabled={selectedReqs.length === 0 || !dependenciesExist || (dependenciesExist && (selected === '' || missingDependencies.includes(this.getEngineNameAndOptions().name)))}
                             onClick={(event) => this.checkRealizability(event, selectedReqs)}>Check Realizability</MenuItem>
+                            <MenuItem
+                              id="qa_rlzCont_btn_realizSimulate"
+                              disabled={this.getEngineNameAndOptions().name === 'kind2' || (compositional ? (projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].result !== 'REALIZABLE') : status[selected.component_name] !== 'REALIZABLE')
+                              }>
+                              {'Simulate Realizable Requirements' + (compositional ? (' ('+ccSelected.toUpperCase()+')') : '')}
+                            </MenuItem>
                             <MenuItem 
                               id="qa_rlzCont_btn_diagnose"
                               onClick={(event) => this.diagnoseSpec(event, selectedReqs)}
