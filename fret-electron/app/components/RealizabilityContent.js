@@ -105,11 +105,12 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Grid from '@material-ui/core/Grid';
 import Switch from '@material-ui/core/Switch'
 import SettingsIcon from '@material-ui/icons/Settings';
-
+import LTLSimDialog from './LTLSimDialog';
 import { SelectRequirementsContext } from './SelectRequirementsProvider';
 
 import realizabilityManual from '../../docs/_media/exports/realizability.md';
 
+const ltlsim = require('ltlsim-core').ltlsim;
 const sharedObj = require('electron').remote.getGlobal('sharedObj');
 const modeldb = sharedObj.modeldb;
 const system_dbkeys = sharedObj.system_dbkeys;
@@ -610,6 +611,8 @@ class RealizabilityContent extends React.Component {
     monolithic: false,
     compositional: false,
     timeout: '',
+    realizableTraceLength: -1,
+    LTLSimDialogOpen: false,
     dependenciesExist: false,
     missingDependencies: [],
     helpOpen : false,
@@ -665,6 +668,19 @@ class RealizabilityContent extends React.Component {
     if (!fs.existsSync(analysisPath)) {
       fs.mkdirSync(analysisPath);
     }
+
+    let status = ltlsim.check();
+    this.LTLSimStatus = status;
+    this.openLTLSimDialog = this.openLTLSimDialog.bind(this);
+    this.closeLTLSimDialog = this.closeLTLSimDialog.bind(this);
+  }
+
+  openLTLSimDialog(event) {
+    this.setState({LTLSimDialogOpen: true});
+  }
+
+  closeLTLSimDialog() {
+    this.setState({LTLSimDialogOpen: false});
   }
 
   isComponentComplete(name) {
@@ -893,7 +909,11 @@ class RealizabilityContent extends React.Component {
   };
 
   handleTimeoutChange = (value) => {
-      this.setState({timeout: value});
+    this.setState({timeout: value});
+  };
+
+  handleTraceLengthChange = (value) => {
+    this.setState({realizableTraceLength: value})
   };
 
   diagnoseSpec(event, selectedReqs) {    
@@ -908,14 +928,16 @@ class RealizabilityContent extends React.Component {
 
     let nameAndEngine = self.getEngineNameAndOptions();
     let engineName = nameAndEngine.name;
-    let engineOptions = nameAndEngine.options + actualTimeout;
+    let engineOptions = nameAndEngine.options + actualTimeout;    
 
     if(compositional) {
+      projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].diagnosisSolver = engineName;
       projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].diagnosisStatus = 'PROCESSING';
       self.setState({
         projectReport: projectReport
       });
     } else {
+      projectReport.systemComponents[systemComponentIndex].monolithic.diagnosisSolver = engineName;
       projectReport.systemComponents[systemComponentIndex].monolithic.diagnosisStatus = 'PROCESSING';
       self.setState({
         projectReport: projectReport
@@ -1035,7 +1057,7 @@ class RealizabilityContent extends React.Component {
       case 2:
       //JKind without MBP
         name = 'jkind';
-        options = '-fixpoint -timeout '
+        options = '-json -fixpoint -timeout '
         break;
       case 3:
       //JKind+AEVAL (MBP)
@@ -1086,7 +1108,7 @@ class RealizabilityContent extends React.Component {
 
   checkRealizability = (event, selectedReqs) => {
 
-    const {selected, ccSelected, monolithic, compositional, timeout, projectReport, retainFiles} = this.state;
+    const {selected, ccSelected, monolithic, compositional, timeout, realizableTraceLength, projectReport, retainFiles} = this.state;
     const {selectedProject, components, getPropertyInfo, getDelayInfo, getContractInfo} = this.props;
     const self = this;
     self.setState({actionsMenuOpen: false});
@@ -1095,6 +1117,7 @@ class RealizabilityContent extends React.Component {
     let nameAndEngine = self.getEngineNameAndOptions();
     let engineName = nameAndEngine.name;
     let engineOptions = nameAndEngine.options + actualTimeout;
+    if (realizableTraceLength > 0 && engineName === 'jkind') engineOptions = engineOptions + ' -tracelength ' + realizableTraceLength;
 
     var targetComponents;
     if (selected === 'all') {
@@ -1109,6 +1132,7 @@ class RealizabilityContent extends React.Component {
       self.setState(prevState => {
         if(monolithic) {
           prevState.projectReport.systemComponents[systemComponentIndex].monolithic = {
+            solver: engineName,
             result: 'PROCESSING',
             time: '',
             diagnosisStatus: '',
@@ -1116,6 +1140,7 @@ class RealizabilityContent extends React.Component {
             error: ''
           }
         } else {
+          prevState.projectReport.systemComponents[systemComponentIndex].compositional.solver = engineName;
           prevState.projectReport.systemComponents[systemComponentIndex].compositional.result = 'PROCESSING';
           prevState.projectReport.systemComponents[systemComponentIndex].compositional.error = '';
           prevState.projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents.forEach(cc => {
@@ -1165,7 +1190,7 @@ class RealizabilityContent extends React.Component {
               var lustreContract = ejsCache_realize.renderRealizeCode(engineName).component.complete(contract);
 
               fs.writeSync(output, lustreContract);
-                realizability.checkRealizability(filePath, engineName, engineOptions, function(err, result, time, cex) {
+                realizability.checkRealizability(filePath, engineName, engineOptions, function(err, result, time, traceInfo) {
 
                 if (err) {
                   self.setState(prevState => {
@@ -1177,6 +1202,13 @@ class RealizabilityContent extends React.Component {
                   self.setState(prevState => {
                     prevState.projectReport.systemComponents[systemComponentIndex].monolithic.result = result;
                     prevState.projectReport.systemComponents[systemComponentIndex].monolithic.time = time;
+                    
+                    if (traceInfo && engineName === 'jkind') {
+                      for (var obj of traceInfo.Trace){
+                        obj.name = obj.name.substring(2);
+                      }
+                    }
+                    prevState.projectReport.systemComponents[systemComponentIndex].monolithic.traceInfo = traceInfo;
                     prevState.projectReport.systemComponents[systemComponentIndex].monolithic.error = '';
                     return(prevState);
                   })
@@ -1198,11 +1230,10 @@ class RealizabilityContent extends React.Component {
               var lustreContract = ejsCache_realize.renderRealizeCode(engineName).component.complete(ccContract);
               fs.writeSync(output, lustreContract);
 
-              realizability.checkRealizability(filePath, engineName, engineOptions, function(err, result, time, cex) {
+              realizability.checkRealizability(filePath, engineName, engineOptions, function(err, result, time, traceInfo) {
                 if (err) {
                   cc.result = 'ERROR';
-                  cc.error = err.message;
-
+                  cc.error = err.message;                  
                   self.setState(prevState => {
                     prevState.projectReport = projectReport;
                     return(prevState);
@@ -1212,6 +1243,12 @@ class RealizabilityContent extends React.Component {
 
                   cc.result = result;
                   cc.time = time;
+                  if (traceInfo && engineName === 'jkind') {
+                    for (var obj of traceInfo.Trace) {
+                      obj.name = obj.name.substring(2);
+                    }
+                  }
+                  cc.traceInfo = traceInfo;
                   cc.error = '';
                   self.setState(prevState => {
                     prevState.projectReport = projectReport;
@@ -1264,6 +1301,32 @@ class RealizabilityContent extends React.Component {
         });
       })
     })
+  }
+
+  disableSimulateRealizableButton = (systemComponentIndex, connectedComponentIndex) => {
+    const {projectReport, monolithic, compositional} = this.state;            
+    
+    let isNotJKind = (analysisSolver) => {return analysisSolver !== 'jkind'};
+    
+    if (!(this.LTLSimStatus.ltlsim && this.LTLSimStatus.nusmv)) {
+      return true;
+    }
+
+    if (monolithic || compositional) {
+      if (compositional) {
+        if (projectReport.systemComponents[systemComponentIndex].compositional.result !== 'UNCHECKED') {
+          let analysisSolver = projectReport.systemComponents[systemComponentIndex].compositional.solver;        
+          return isNotJKind(analysisSolver) || projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].result !== 'REALIZABLE';
+        }       
+      } else {
+        if (projectReport.systemComponents[systemComponentIndex].monolithic.result !== 'UNCHECKED') {
+          let analysisSolver = projectReport.systemComponents[systemComponentIndex].monolithic.solver;        
+          return isNotJKind(analysisSolver) || projectReport.systemComponents[systemComponentIndex].monolithic.result !== 'REALIZABLE';        
+        }      
+      }
+    }
+
+    return true;
   }
 
   handleHelpOpen = () => {
@@ -1368,7 +1431,75 @@ class RealizabilityContent extends React.Component {
     if (this.state.settingsOpen) {
       actionsMargin.marginRight = '40%'
     }
-    
+
+    let LTLSimComponent = (props) => {
+      // const {projectReport, monolithic, compositional} = this.state;
+      const {selectedReqs, systemComponentIndex, connectedComponentIndex} = props;
+      let systemComponentReport = projectReport.systemComponents[systemComponentIndex];
+      let ltlsimRequirements, numberOfSteps, trace;
+      console.log(systemComponentIndex)
+      console.log(systemComponentReport);
+      if (compositional) {
+        let connectedComponentReport = systemComponentReport.compositional.connectedComponents[connectedComponentIndex];
+        ltlsimRequirements = systemComponentReport.requirements.filter(e => connectedComponentReport.requirements.includes(e.reqid.replace(/-/g,'')));
+        // numberOfSteps = connectedComponentReport.traceInfo ? (Object.keys(connectedComponentReport.traceInfo.Trace[0]).length - 2) : 0;
+        numberOfSteps = connectedComponentReport.traceInfo ? connectedComponentReport.traceInfo.K : 0;
+        trace = connectedComponentReport.traceInfo ? connectedComponentReport.traceInfo.Trace : {};
+      } else if (monolithic) {
+        ltlsimRequirements = systemComponentReport.requirements.filter(e => selectedReqs.includes(e.reqid.replace(/-/g,'')));
+        // numberOfSteps = systemComponentReport.monolithic.traceInfo ? (Object.keys(systemComponentReport.monolithic.traceInfo.Trace[0]).length -2) : 0;
+        numberOfSteps = systemComponentReport.monolithic.traceInfo ? systemComponentReport.monolithic.traceInfo.K : 0;
+        trace = systemComponentReport.monolithic.traceInfo ? systemComponentReport.monolithic.traceInfo.Trace : {};
+      }
+
+
+
+      var ftExpressions = []
+      var ptExpressions = []
+      var requirements = []
+      var requirementIDs = []
+      var IDs = []
+      for(var i=0; i < ltlsimRequirements.length; i++){
+          ftExpressions[i] = ltlsimRequirements[i].semantics.ftExpanded;
+          ptExpressions[i] = ltlsimRequirements[i].semantics.ptExpanded;
+
+          requirements[i] = ltlsimRequirements[i].fulltext;
+          requirementIDs[i] = ltlsimRequirements[i].reqid;
+          IDs[i] = ltlsimRequirements[i].reqid
+                    .replace(/ /g,"_")
+                    .replace(/-/g,"_")
+                    .replace(/\./g,"_")
+                    .replace(/\+/g,"_")
+      }
+
+      console.log(trace)
+      if (trace && numberOfSteps) {         
+        return(
+          <LTLSimDialog
+            open={this.state.LTLSimDialogOpen}
+            ids={IDs}
+            logics="PT"
+            ftExpressions={ftExpressions}
+            ptExpressions={ptExpressions}
+            onClose={this.closeLTLSimDialog}
+            project={projectReport.projectName}
+            requirements={requirements}
+            requirementIDs={requirementIDs}
+            CEXFileName={{'K': numberOfSteps, 'Counterexample': trace}}
+            traceID=""
+          />
+        )
+      } else {
+        return (<div/>)
+      }
+    }
+
+    LTLSimComponent.propTypes = {
+      selectedReqs: PropTypes.array.isRequired,
+      systemComponentIndex: PropTypes.number.isRequired,
+      connectedComponentIndex: PropTypes.number.isRequired
+    }
+
     return(
       <div>
         <SelectRequirementsContext.Provider value={this.state}>
@@ -1484,8 +1615,9 @@ class RealizabilityContent extends React.Component {
                             onClick={(event) => this.checkRealizability(event, selectedReqs)}>Check Realizability</MenuItem>
                             <MenuItem
                               id="qa_rlzCont_btn_realizSimulate"
-                              disabled={this.getEngineNameAndOptions().name === 'kind2' || (compositional ? (projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].result !== 'REALIZABLE') : status[selected.component_name] !== 'REALIZABLE')
-                              }>
+                              disabled={this.disableSimulateRealizableButton(systemComponentIndex, connectedComponentIndex)}
+                              onClick={(event) => this.openLTLSimDialog(event)}
+                            >
                               {'Simulate Realizable Requirements' + (compositional ? (' ('+ccSelected.toUpperCase()+')') : '')}
                             </MenuItem>
                             <MenuItem 
@@ -1495,7 +1627,7 @@ class RealizabilityContent extends React.Component {
                               (dependenciesExist && selected !== '' && compositional && projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].result !== 'UNREALIZABLE') ||
                                 (selected !== '' && monolithic && status[selected.component_name] !== 'UNREALIZABLE')}
                             >
-                              Diagnose Unrealizable Requirements
+                              {'Diagnose Unrealizable Requirements' + (compositional ? (' ('+ccSelected.toUpperCase()+')') : '')}
                             </MenuItem>
                             <MenuItem id="qa_rlzCont_btn_save">
                               <SaveRealizabilityReport classes={{vAlign: classes.vAlign}} enabled={projectReport.systemComponents.length > 0 && status[selected.component_name] !== 'PROCESSING' && diagStatus !== 'PROCESSING'} projectReport={projectReport}/>
@@ -1575,6 +1707,7 @@ class RealizabilityContent extends React.Component {
                                       </div>
                                     </DiagnosisProvider>
                                   </TabContainer>
+                                  <LTLSimComponent selectedReqs={selectedReqs} systemComponentIndex={systemComponentIndex} connectedComponentIndex={connectedComponentIndex}/>
                                 </div>
                               }
                               {monolithic &&
@@ -1598,9 +1731,10 @@ class RealizabilityContent extends React.Component {
                                       connectedComponent={{}}
                                       importedRequirements={[]}
                                     />
+                                    <LTLSimComponent selectedReqs={selectedReqs} systemComponentIndex={systemComponentIndex} connectedComponentIndex={connectedComponentIndex}/>
                                   </div>
                                 </DiagnosisProvider>
-                              }                          
+                              }
                             </div>
                           </div>
                         }
@@ -1617,7 +1751,7 @@ class RealizabilityContent extends React.Component {
                         </div>
                       </div>
                     }
-                    <RealizabilitySettingsDialog className={classes} selectedEngine={this.state.selectedEngine} retainFiles={this.state.retainFiles} missingDependencies={missingDependencies} open={this.state.settingsOpen} handleSettingsClose={this.handleSettingsClose} handleSettingsEngineChange={this.handleSettingsEngineChange} handleTimeoutChange={this.handleTimeoutChange} handleRetainFilesChange={this.handleRetainFilesChange}/>
+                    <RealizabilitySettingsDialog className={classes} selectedEngine={this.state.selectedEngine} retainFiles={this.state.retainFiles} missingDependencies={missingDependencies} open={this.state.settingsOpen} handleSettingsClose={this.handleSettingsClose} handleSettingsEngineChange={this.handleSettingsEngineChange} handleTimeoutChange={this.handleTimeoutChange} handleTraceLengthChange={this.handleTraceLengthChange} handleRetainFilesChange={this.handleRetainFilesChange}/>
                     <Dialog maxWidth='lg' onClose={this.handleHelpClose} open={this.state.helpOpen}>
                       <DialogTitle id="realizability-help">
                         <Typography>

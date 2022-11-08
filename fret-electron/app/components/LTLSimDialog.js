@@ -686,8 +686,9 @@ var loadedTrace = filepath;
 	var K = loadedTrace.K;
 
 	var cex = loadedTrace.Counterexample;
-        let LTLSIM_tracelength = LTLSimController.getTraceLength(this.state.model);
-
+    
+	LTLSimController.setTraceLength(this.state.model, K);
+	let LTLSIM_tracelength = LTLSimController.getTraceLength(this.state.model);
 	var keys=[]
 	var vars_trace_type=[]
 	let sanitizedReqIds = this.props.requirementIDs.map(id => id.replace(/ /g,"_")

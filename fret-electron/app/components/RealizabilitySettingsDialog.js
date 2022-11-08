@@ -67,9 +67,15 @@ const styles = theme => ({
       display: 'flex',
       flexWrap: 'wrap',
   },
+  list: {
+  	width: 400
+  },
   formControl: {
     marginTop: theme.spacing(2),
-    width: 300,
+    width: 150,
+  },
+  textField:{
+  	width: 300
   },
   drawer: {
 
@@ -88,6 +94,7 @@ class RealizabilitySettingsDialog extends React.Component {
 		open: false,
 		selectedEngine: 0,
 		timeout: '',
+		realizableTraceLength: -1,
 		retainFiles: false
 	}
 
@@ -110,6 +117,14 @@ class RealizabilitySettingsDialog extends React.Component {
 	    if (reg.test(event.target.value) || event.target.value === '') {
 	      this.setState({timeout: event.target.value});
 	      this.props.handleTimeoutChange(event.target.value);
+	    }
+	}
+
+	handleTraceLengthOptionChange = (event, value) => {
+		var reg = new RegExp('^([1-9])([0-9]*)$');
+	    if (reg.test(event.target.value) || event.target.value === '') {
+	      this.setState({realizableTraceLength: event.target.value});
+	      this.props.handleTraceLengthChange(event.target.value);
 	    }
 	}
 
@@ -143,49 +158,49 @@ class RealizabilitySettingsDialog extends React.Component {
             			</IconButton>
           			</div>
           			<Divider/>
-          			<List>
+          			<List className={classes.list}>
           				<ListItem>
-							<FormControl className={classes.formControl}>
-								<InputLabel>Engine</InputLabel>
-								<Select id="qa_rlzSet_sel_engine" key={'engine'} value={selectedEngine ? selectedEngine : 0} onChange={this.handleEngineChange}>
-									<Tooltip
-										key={'kind2'}
-										value={0}
-										title={missingDependencies.includes('kind2') || missingDependencies.includes('z3') ? 
-										'Option not available because of missing dependencies: ' + missingDependencies.filter(dep => dep === 'kind2' || dep === 'z3').toString() : ''}>
-										<span key={'kind2'}>
-											<MenuItem id="qa_rlzSet_mi_kind2" component="div" disabled={missingDependencies.includes('kind2') || missingDependencies.includes('z3')}> Kind 2 </MenuItem>
-										</span>
-									</Tooltip>
-									<Tooltip
-										key={'kind2MBP'}
-										value={1}
-										title={missingDependencies.includes('kind2') || missingDependencies.includes('z3') ? 
-										'Option not available because of missing dependencies: ' + missingDependencies.filter(dep => dep === 'kind2' || dep === 'z3').toString() : ''}>
-										<span key={'kind2MBP'}>
-											<MenuItem id="qa_rlzSet_mi_kind2MBP" component="div" disabled={missingDependencies.includes('kind2') || missingDependencies.includes('z3')}> Kind 2 + MBP </MenuItem>
-										</span>
-									</Tooltip>
-									<Tooltip
-										key={'jkind'}
-										value={2}
-										title={missingDependencies.includes('jkind') || missingDependencies.includes('z3') ? 
-										'Option not available because of missing dependencies: ' + missingDependencies.filter(dep => dep === 'jkind' || dep === 'z3').toString() : ''}>
-										<span key={'jkind'}>
-											<MenuItem id="qa_rlzSet_mi_jkind" component="div" disabled={missingDependencies.includes('jkind') || missingDependencies.includes('z3')}> JKind </MenuItem>
-										</span>
-									</Tooltip>
-									<Tooltip
-										key={'jkindMBP'}
-										value={3}
-										title={missingDependencies.includes('jkind') || missingDependencies.includes('z3') || missingDependencies.includes('aeval') ? 
-										'Option not available because of missing dependencies: ' + missingDependencies.filter(dep => dep === 'jkind' || dep === 'z3' || dep === 'aeval').toString() : ''}>
-										<span key={'jkindMBP'}>
-											<MenuItem id="qa_rlzSet_mi_jkindMBP" component="div" disabled={missingDependencies.includes('jkind') || missingDependencies.includes('z3') || missingDependencies.includes('aeval')}> JKind + MBP </MenuItem>
-										</span>
-									</Tooltip>
-								</Select>
-							</FormControl>	
+										<FormControl className={classes.formControl}>
+											<InputLabel>Engine</InputLabel>
+											<Select id="qa_rlzSet_sel_engine" key={'engine'} value={selectedEngine ? selectedEngine : 0} onChange={this.handleEngineChange}>
+												<Tooltip
+													key={'kind2'}
+													value={0}
+													title={missingDependencies.includes('kind2') || missingDependencies.includes('z3') ? 
+													'Option not available because of missing dependencies: ' + missingDependencies.filter(dep => dep === 'kind2' || dep === 'z3').toString() : ''}>
+													<span key={'kind2'}>
+														<MenuItem id="qa_rlzSet_mi_kind2" component="div" disabled={missingDependencies.includes('kind2') || missingDependencies.includes('z3')}> Kind 2 </MenuItem>
+													</span>
+												</Tooltip>
+												<Tooltip
+													key={'kind2MBP'}
+													value={1}
+													title={missingDependencies.includes('kind2') || missingDependencies.includes('z3') ? 
+													'Option not available because of missing dependencies: ' + missingDependencies.filter(dep => dep === 'kind2' || dep === 'z3').toString() : ''}>
+													<span key={'kind2MBP'}>
+														<MenuItem id="qa_rlzSet_mi_kind2MBP" component="div" disabled={missingDependencies.includes('kind2') || missingDependencies.includes('z3')}> Kind 2 + MBP </MenuItem>
+													</span>
+												</Tooltip>
+												<Tooltip
+													key={'jkind'}
+													value={2}
+													title={missingDependencies.includes('jkind') || missingDependencies.includes('z3') ? 
+													'Option not available because of missing dependencies: ' + missingDependencies.filter(dep => dep === 'jkind' || dep === 'z3').toString() : ''}>
+													<span key={'jkind'}>
+														<MenuItem id="qa_rlzSet_mi_jkind" component="div" disabled={missingDependencies.includes('jkind') || missingDependencies.includes('z3')}> JKind </MenuItem>
+													</span>
+												</Tooltip>
+												<Tooltip
+													key={'jkindMBP'}
+													value={3}
+													title={missingDependencies.includes('jkind') || missingDependencies.includes('z3') || missingDependencies.includes('aeval') ? 
+													'Option not available because of missing dependencies: ' + missingDependencies.filter(dep => dep === 'jkind' || dep === 'z3' || dep === 'aeval').toString() : ''}>
+													<span key={'jkindMBP'}>
+														<MenuItem id="qa_rlzSet_mi_jkindMBP" component="div" disabled={missingDependencies.includes('jkind') || missingDependencies.includes('z3') || missingDependencies.includes('aeval')}> JKind + MBP </MenuItem>
+													</span>
+												</Tooltip>
+											</Select>
+										</FormControl>	
           				</ListItem>        				
           				<ListItem>
 				            <TextField
@@ -194,11 +209,21 @@ class RealizabilitySettingsDialog extends React.Component {
 				              placeholder="900"
 				              value={this.state.timeout}
 				              onChange={this.handleTimeoutOptionChange}      
-				              InputLabelProps={{
-				                shrink: true
-				              }}
+				              InputLabelProps={{ shrink: true }}
 				            />            				
-          				</ListItem>          				
+          				</ListItem>
+          				{selectedEngine === 2 && 
+          					<ListItem>
+	          					<TextField
+	          						className={classes.textField}
+	          						id="qa_rlzCont_tf_realizableTraceLength"
+	          						label="Example trace length (realizable results)"
+	          						placeholder="auto"
+	          						onChange={this.handleTraceLengthOptionChange}
+	          						InputLabelProps={{ shrink: true }}
+	          					/>
+	          				</ListItem>
+	          			}
           				<ListItem>
 				            <FormControlLabel
 				              control={
@@ -265,6 +290,7 @@ RealizabilitySettingsDialog.propTypes = {
 	handleSettingsClose: PropTypes.func.isRequired,
 	handleSettingsEngineChange: PropTypes.func.isRequired,
 	handleTimeoutChange: PropTypes.func.isRequired,
+	handleTraceLengthChange: PropTypes.func.isRequired,
 	handleRetainFilesChange: PropTypes.func.isRequired
 }
 

@@ -54,12 +54,19 @@ export function checkRealizability(filePath, engine, options, callback) {
       console.log(stderr.toString())
       console.log(stdout.toString())
     } else {
-      let result, time, cex;
+      let result, time, traceInfo;
       if (engine === 'jkind') {
         result = stdout.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];
-        time = stdout.match(new RegExp('(Time = )(.*?)\\n'))[2];
-
-        callback(null, result, time + '\n'+ stderr.toString(), null);
+        time = stdout.match(new RegExp('(Time = )(.*?)\\n'))[2];        
+        
+        if (options.includes('json') && result === "REALIZABLE"){
+          var fileContent = fs.readFileSync(filePath+'.json', 'utf8');
+          let output = JSON.parse(fileContent);
+          traceInfo = {K: Object.keys(output.Counterexample[0]).length - 2, Trace: output.Counterexample};
+        } else {          
+          traceInfo = null;
+        }  
+        callback(null, result, time + '\n'+ stderr.toString(), traceInfo);
       } else {
         var kind2Output = JSON.parse(stdout);
         var realizabilityResults = kind2Output.filter(e => e.objectType === "realizabilityCheck")[0];
@@ -74,8 +81,8 @@ export function checkRealizability(filePath, engine, options, callback) {
           time = "Wallclock timeout."
         }
 
-        cex = (realizabilityResults && realizabilityResults.deadlockingTrace) ? realizabilityResults.deadlockingTrace : null;
-        callback(null, result, time, cex);
+        traceInfo = (realizabilityResults && realizabilityResults.deadlockingTrace) ? realizabilityResults.deadlockingTrace : null;
+        callback(null, result, time, traceInfo);
       }
       
     }
