@@ -1587,7 +1587,7 @@ LTLSimDialog.propTypes = {
     requirements: PropTypes.array.isRequired,
     requirementIDs: PropTypes.array.isRequired,
 	traceID: PropTypes.string.isRequired,
-    CEXFileName: PropTypes.string
+    CEXFileName: PropTypes.object
 };
 
 export default withStyles(styles)(LTLSimDialog)

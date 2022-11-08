@@ -1471,10 +1471,10 @@ class RealizabilityContent extends React.Component {
                     .replace(/\./g,"_")
                     .replace(/\+/g,"_")
       }
-
-      console.log(trace)
+      
       if (trace && numberOfSteps) {         
-        return(
+        console.log("LTLSimDialog")
+        return(          
           <LTLSimDialog
             open={this.state.LTLSimDialogOpen}
             ids={IDs}
@@ -1707,7 +1707,7 @@ class RealizabilityContent extends React.Component {
                                       </div>
                                     </DiagnosisProvider>
                                   </TabContainer>
-                                  <LTLSimComponent selectedReqs={selectedReqs} systemComponentIndex={systemComponentIndex} connectedComponentIndex={connectedComponentIndex}/>
+                                  {this.state.LTLSimDialogOpen && <LTLSimComponent selectedReqs={selectedReqs} systemComponentIndex={systemComponentIndex} connectedComponentIndex={connectedComponentIndex}/>}
                                 </div>
                               }
                               {monolithic &&
@@ -1731,7 +1731,7 @@ class RealizabilityContent extends React.Component {
                                       connectedComponent={{}}
                                       importedRequirements={[]}
                                     />
-                                    <LTLSimComponent selectedReqs={selectedReqs} systemComponentIndex={systemComponentIndex} connectedComponentIndex={connectedComponentIndex}/>
+                                    {this.state.LTLSimDialogOpen && <LTLSimComponent selectedReqs={selectedReqs} systemComponentIndex={systemComponentIndex} connectedComponentIndex={connectedComponentIndex}/>}
                                   </div>
                                 </DiagnosisProvider>
                               }
