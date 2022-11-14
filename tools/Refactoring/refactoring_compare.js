@@ -5,6 +5,7 @@ const execSync = require('child_process').execSync;
 const fretSupportPath = "../../fret-electron/support/";
 const utils = require('../../fret-electron/support/utils.js'); // /home/matt/work/mu-fret/fret-electron/support/utils.js
 const utilities = require('../../fret-electron/support/utilities.js');
+const refactoring_utils = require('./refactoring_utils.js')
 
 const CallNuSMV = require("./CallNuSMV");
 //const fretParserPath = "../../fret-electron/app/parser/"
@@ -234,33 +235,7 @@ function replaceNuSMVKeywords(value)
 }
 */
 
-/**
-* Gets the variable names out of the requirement's
-* JSON object.
-*/
-function getVariableNames(requirement)
-{
-  let variables = requirement.semantics.variables;
-  console.log(typeof(variables));
 
-  // If variables is an object, then I'm going to asssume
-  // that it's the version of the requirement with 'regular' and 'modes'
-  if (variables.constructor === Object) // Javascript is stupid...
-  {
-    let varList = variables.regular ;
-    varList = varList.concat(variables.modes);
-    console.log("if object: " + varList);
-    return varList;
-  }
-  else
-  {
-    // If variables isn't an object, I'm going to assume that its'
-    //  the version of the requirement with all the variables listed under
-    // variables.
-    console.log("if not object: " +variables);
-    return variables;
-  }
-}
 
 
 /**
@@ -277,8 +252,8 @@ function getVars(originalReq, newReq, fragList)
   let variables = "";
 
   //console.log(originalReq.semantics.variables.regular );
-  let origVars = getVariableNames(originalReq);
-  let newVars = getVariableNames(newReq)
+  let origVars = refactoring_utils.getVariableNames(originalReq);
+  let newVars = refactoring_utils.getVariableNames(newReq)
 
   //console.log(origVars);
 
@@ -299,7 +274,7 @@ function getVars(originalReq, newReq, fragList)
     console.log("Processing the FragList... " + fragList )
     for (let f of fragList)
     {
-      let fragVars = getVariableNames(f);
+      let fragVars = refactoring_utils.getVariableNames(f);
       for (let v of fragVars)
       {
         varSet.add(v);

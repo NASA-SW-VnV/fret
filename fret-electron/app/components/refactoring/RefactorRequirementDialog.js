@@ -63,12 +63,24 @@ import MenuItem from '@material-ui/core/MenuItem';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
 
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListSubheader from '@material-ui/core/ListSubheader';
+
 //import ImageListItemBar from '@material-ui/core/ImageListItemBar';
 //import Tooltip from '@material-ui/core/Tooltip';
 
 import RefactoringController from '../../../../tools/Refactoring/refactoring_controller';
+import RefactoringUtils from '../../../../tools/Refactoring/refactoring_utils';
 //import RefactoringController from './refactoring_controller';
 import { v4 as uuid } from 'uuid';
+
+const sharedObj = require('electron').remote.getGlobal('sharedObj');
+const modeldb = sharedObj.modeldb;
+const system_dbkeys = sharedObj.system_dbkeys;
+const STATE = {INITIAL:"initial", RESULT_TRUE:"result true", RESULT_FALSE: "result false", TYPES:"types please"};
+
 
 const styles = theme => ({
   formula: {
@@ -97,7 +109,10 @@ const styles = theme => ({
 class RefactorRequirementDialog extends React.Component {
   state = {
     open: false,
+    dialogState : STATE.INITIAL,
     selectedRequirement: {},
+    variables: [],
+    variablesText: "No Variables",
     applyToAll: false,
     refactoringType: '',
     refactoringContent: ' ',
@@ -106,6 +121,7 @@ class RefactorRequirementDialog extends React.Component {
     requirements: [],
     refactoringCheckresult: null,
 
+
   };
 
   componentWillReceiveProps = (props) => {
@@ -113,8 +129,6 @@ class RefactorRequirementDialog extends React.Component {
       selectedRequirement: props.selectedRequirement,
       open: props.open,
       dialogCloseListener: props.handleDialogClose,
-//      openCreateDialog: props.handleCreateDialogOpen,
-//      openDeleteDialog: props.handleDeleteDialogOpen,
       selectedRequirementId: props.selectedRequirement.reqid,
       requirements: props.requirements
     });
@@ -126,7 +140,7 @@ class RefactorRequirementDialog extends React.Component {
   }
 
   handleClose = () => {
-    this.setState({ open: false, selectedRequirement: {}, requirements: [], refactoringCheckresult: null, applyToAll: false, refactoringType: '', newName: '', refactoringContent: ''});
+    this.setState({ open: false, dialogState: STATE.INITIAL, selectedRequirement: {}, requirements: [], refactoringCheckresult: null, applyToAll: false, refactoringType: '', newName: '', refactoringContent: ''});
     this.state.dialogCloseListener();
   };
 
@@ -138,6 +152,61 @@ class RefactorRequirementDialog extends React.Component {
 handlePreview = () => {
   console.log('Preview Button');
 };
+
+/**
+* Event Handler for the OK Button on the initial
+* refactor screen. Advances to confirming the variable types
+*/
+handleInitialOK = () =>
+{
+  let varList = RefactoringUtils.getVariableNames(this.state.selectedRequirement);
+  console.log("handleInitialOK's var list = " + varList);
+
+
+  //let variableTypes = []
+  var self = this;
+
+  modeldb.find({
+    selector: {
+      project : this.state.selectedRequirement.selectedProject,
+      component_name : this.selectedRequirement,
+      variable_name : {$in:varList}
+    }
+  }).then(function(result){
+    console.log("result.docs");
+    console.log(result.docs);
+
+    var variableTypes = [];
+    for (let doc of result.docs)
+    {
+      let varName = doc.variable_name;
+      let varType = doc.dataType;
+
+      if(varType == "")
+      {
+        varType = "undefined";
+      }
+
+      variableTypes.push( { name: varName, type :varType} );
+
+    }
+
+    console.log("!!! Show me the Variables!")
+    for(let i of variableTypes)
+    {
+      console.log(i);
+    }
+
+    self.setState({variables : variableTypes});
+
+    }).catch((err) => {
+      console.log(err);
+    })
+
+  this.setState({dialogState:STATE.TYPES});
+  console.log("state's copy of variables = " + this.state.variables);
+
+}
 
 /**
 * Event Handler for the OK Button
@@ -168,9 +237,15 @@ handleOk = () => {
         this.setState({refactoringCheckresult: result});
   }
 
+  if(result == true)
+  {
+    this.setState({dialogState:STATE.RESULT_TRUE});
+  }
+  else
+  {
+    this.setState({dialogState:STATE.RESULT_FALSE});
+  }
 
-  //this.setState({ open: false });
-  //this.state.dialogCloseListener();
 };
 
 handleRefactoringType = () => event => {
@@ -179,8 +254,49 @@ handleRefactoringType = () => event => {
 };
 
 handleChangeExtract = () => event => {
-  console.log(event.target.value);
-  this.setState({ extractString: event.target.value });
+  let extractString = event.target.value
+  console.log(extractString);
+  this.setState({ extractString: extractString });
+
+  //let varList = RefactoringUtils.getVariableNames(this.state.selectedRequirement);
+
+/*  let componentModel = '';
+    modeldb.find({
+      selector: {
+        project : this.state.selectedRequirement.selectedProject,
+        component_name : this.selectedRequirement,
+      }
+    }).then(function(result){
+      console.log("result.docs");
+      console.log(result.docs);
+
+        //self.synchModelVariablesAndComponents(componentModel);
+      }).catch((err) => {
+        console.log(err);
+      })
+
+  //maybe split the string
+  if(varList.includes(extractString))
+  {
+    console.log("Extract String contains a Variable");
+    let varsInString = [];
+    for (let v of varList)
+    {
+      if (extractString.includes(v))
+      {
+        varsInString.push(v);
+      }
+    }
+
+    console.log(varsInString)
+    this.setState({ variablesText : varsInString });
+  }
+  else
+  {
+    console.log("Extract String doesn't contain a variable")
+
+    this.setState({ variablesText : "No Variables" });
+  }*/
 }
 
 updateNewName = () => event => {
@@ -191,6 +307,27 @@ updateNewName = () => event => {
 updateApplytoAllStatus = () => event => {
   console.log(event.target.checked);
   this.setState({applyToAll: event.target.checked});
+}
+
+
+handleTypeChange = () => event =>
+{
+  var value =  event.target.value;
+  var name = event.target.name;
+
+  console.log("handleTypeChange - " + value + " from: " + name);
+
+  var variablesList = this.state.variables;
+  for (let v of variablesList)
+  {
+    if (v.name == name)
+    {
+      v.type = value;
+    }
+  }
+
+  this.setState({variables: variablesList});
+
 }
 
 /*
@@ -227,6 +364,7 @@ RefactoringContent(type) {
 }
 */
 
+/*
 renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) {
   const { classes } = this.props;
   if (ltlFormula || ltlFormulaPt) {
@@ -267,6 +405,7 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
           <Typography variant='body1' color='primary'>Not Applicable</Typography>
         </div>)
   }
+*/
 
   render() {
   //  const {classes} = this.props;
@@ -281,12 +420,153 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
   //  if (!rationale) rationale = 'Not specified'
   //  if (!parent_reqid) parent_reqid = 'Not specified'
   //  fulltext += '.'
-  var result = this.state.refactoringCheckresult;
-  console.log("Render Result = " + result);
-  if (result != null)
+
+  var dialog_state = this.state.dialogState;
+  console.log("Dialog State = " + dialog_state);
+
+  switch(dialog_state)
   {
-    if(result == true)
-    {// Check has passed
+    case STATE.INITIAL:
+    return (
+      <div>
+        <Dialog
+          open={this.state.open}
+          onClose={this.handleClose}
+          aria-labelledby="form-dialog-title"
+          maxWidth="md"
+        >
+        <DialogTitle id="simple-dialog-title">  Extract Requirement: {this.state.selectedRequirementId}</DialogTitle>
+          <DialogContent>
+
+          <Grid container spacing={2} >
+
+                      <Grid style={{ textAlign: 'right' }} item xs={3}>
+                        Definition:
+                      </Grid>
+                      <Grid item xs={9}>
+                        <TextField
+                          id="definition"
+                          multiline
+                          fullWidth
+                          label="Definition"
+                          value={fulltext} />
+                      </Grid>
+
+                      <Grid style={{ textAlign: 'right' }} item xs={3}>
+                        String to Extract:
+                      </Grid>
+                      <Grid item xs={9}>
+                        <TextField
+                          id="extract"
+                          multiline
+                          fullWidth
+                          label="Extract"
+                          placeholder="Copy the part of the definition to extract"
+                          value={this.state.extract}
+                          onChange={this.handleChangeExtract()}
+                        />
+                      </Grid>
+
+
+
+                          <Grid style={{ textAlign: 'right' }} item xs={3}>
+                            New Requirement Name:
+                          </Grid>
+                          <Grid item xs={9}>
+                            <TextField
+                              id="newReqName"
+                              label="New Name"
+                              placeholder="Type the name you want to give to the extracted requirement"
+                              value={this.state.newName}
+                              onChange={this.updateNewName()}
+                            />
+                          </Grid>
+
+                          <Grid style={{ textAlign: 'right' }} item xs={3}>
+                            Apply to all Matching Fragments:
+                          </Grid>
+                          <Grid item xs={9}>
+                            <Checkbox
+                              inputProps={{ 'aria-label': 'controlled' }}
+                              onChange={this.updateApplytoAllStatus()}
+                              />
+                          </Grid>
+                    </Grid>
+
+
+            </DialogContent>
+            <DialogActions>
+
+              <Button onClick={this.handleClose} color="secondary">
+                Cancel
+              </Button>
+              <Button
+                onClick={this.handleInitialOK}
+                color="secondary"
+              >
+                Ok
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </div>
+    );
+    break;
+
+    case STATE.TYPES:
+      let varList = [];
+      varList = RefactoringUtils.getVariableNames(this.state.selectedRequirement);
+      console.log("VarList = " + varList);
+
+     return(
+          <Dialog
+            open={this.state.open}
+            onClose={this.handleClose}
+            aria-labelledby="form-dialog-title"
+            maxWidth="md"
+          >
+          <DialogTitle id="simple-dialog-title">  Extract Requirement: {this.state.selectedRequirementId} -- Check Types
+          </DialogTitle>
+
+          <DialogContent>
+            Please check the variable types listed below. Correct any that are wrong and update any that are "Unknown".
+            <br/>
+              <ul >
+              {this.state.variables.map( (varObj) =>
+                (
+                  <li key={varObj.name}>
+                    {varObj.name} :
+                  <Select
+                    labelId={varObj.name}
+                    id={varObj.name}
+                    name = {varObj.name}
+                    onChange={this.handleTypeChange}
+                    value = {varObj.type}
+                    >
+                    <MenuItem value={"boolean"}>Boolean</MenuItem>
+                    <MenuItem value={"integer"}>Integer</MenuItem>
+                    <MenuItem value={"undefined"}>Unknown</MenuItem>
+                  </Select>
+                  </li>
+                )
+              )
+            }
+            </ul>
+
+          </DialogContent>
+
+          <DialogActions>
+            <Button   onClick={this.handleOk} color="secondary">
+              Ok
+            </Button>
+          </DialogActions>
+
+        </Dialog>
+        );
+    break;
+
+
+    case STATE.RESULT_TRUE:
+    // Check has passed
       return(
         <Dialog
           open={this.state.open}
@@ -308,9 +588,11 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
           </DialogActions>
         </Dialog>
       );
-    }
-    else
-    { // Check has failed. The user should probably never see this
+
+    break;
+
+    case STATE.RESULT_FALSE:
+    // Check has failed. The user should probably never see this
       return(
         <Dialog
           open={this.state.open}
@@ -333,93 +615,8 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
           </DialogActions>
         </Dialog>
       );
-    }
-
+    break;
   }
-  else{
-  return (
-    <div>
-      <Dialog
-        open={this.state.open}
-        onClose={this.handleClose}
-        aria-labelledby="form-dialog-title"
-        maxWidth="md"
-      >
-      <DialogTitle id="simple-dialog-title">  Extract Requirement: {this.state.selectedRequirementId}</DialogTitle>
-        <DialogContent>
-
-        <Grid container spacing={2} >
-
-                    <Grid style={{ textAlign: 'right' }} item xs={3}>
-                      Definition:
-                    </Grid>
-                    <Grid item xs={9}>
-                      <TextField
-                        id="definition"
-                        multiline
-                        fullWidth
-                        label="Definition"
-                        value={fulltext} />
-                    </Grid>
-
-                    <Grid style={{ textAlign: 'right' }} item xs={3}>
-                      String to Extract:
-                    </Grid>
-                    <Grid item xs={9}>
-                      <TextField
-                        id="extract"
-                        multiline
-                        fullWidth
-                        label="Extract"
-                        placeholder="Copy the part of the definition to extract"
-                        value={this.state.extract}
-                        onChange={this.handleChangeExtract()}
-                      />
-                    </Grid>
-
-                        <Grid style={{ textAlign: 'right' }} item xs={3}>
-                          New Requirement Name:
-                        </Grid>
-                        <Grid item xs={9}>
-                          <TextField
-                            id="newReqName"
-                            label="New Name"
-                            placeholder="Type the name you want to give to the extracted requirement"
-                            value={this.state.newName}
-                            onChange={this.updateNewName()}
-                          />
-                        </Grid>
-
-                        <Grid style={{ textAlign: 'right' }} item xs={3}>
-                          Apply to all Matching Fragments:
-                        </Grid>
-                        <Grid item xs={9}>
-                          <Checkbox
-                            inputProps={{ 'aria-label': 'controlled' }}
-                            onChange={this.updateApplytoAllStatus()}
-                            />
-                        </Grid>
-                  </Grid>
-
-
-          </DialogContent>
-          <DialogActions>
-
-            <Button onClick={this.handleClose} color="secondary">
-              Cancel
-            </Button>
-            <Button
-              onClick={this.handleOk}
-              color="secondary"
-            >
-              Ok
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </div>
-
-  );
-}
 }
 }
 
