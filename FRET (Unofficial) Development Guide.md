@@ -185,6 +185,18 @@ With the <BuildIcon /> having been imported at the top of the file. This produce
 
 
 
+## Other Electron Tips
+
+* To make an interface react to updates the user makes, use a state variable and an event handler that uses `this.setState({var:new_value});`
+  * For example, some text needs to change in response to the user selecting an item in a drop-down list
+  * The drop-down list should use an `onChange` event handler to update a variable in the state, using `this.setState({variable: "the text"});`
+  * Then the `TextField` that will display the text in `variable` should have `value = {this.state.variable}`
+  * When the `setState()` method alters the state, the `render()` method is called again, so the new text will be shown on the interface.
+* One nice way of having one component that can present multiple versions of its interface is to use `if…else` or `switch()` statements in the `render()` method. 
+  * Use a variable (either a boolean or an enum – a `const` object mapping the enum constants to a useful string) to decide which state the interface should be in.
+  * Use the appropriate control structure inside the `render()` method 
+  * Inside each conditional block, remember to put that state of the interface inside `return();`
+
 ## Data Dictionaries
 
 ### FRET DB
@@ -217,25 +229,25 @@ With the <BuildIcon /> having been imported at the top of the file. This produce
 
 1. Contains information about the modelling of the requirements, things that relate to the variable 'mapping' and exporting the requirements into CoCoSim or CoPilot.
 
-| Name                  | Type    | Description                                                  |
-| --------------------- | ------- | ------------------------------------------------------------ |
-| assignment            | String  | Usure What This Is                                           |
-| completed             | Boolean | I think this is true if the variable has been 'mapped'       |
-| component_name        | String  | The component that the variable belongs to                   |
-| copilotAssignment     | String  | Usure What This Is                                           |
-| dataType              | String  | The variable's type                                          |
-| description           | String  | Presumably a description of the variable                     |
-| idType                | String  | If the variable is "Input", "Output", etc on the mapping screen |
-| modeRequirement       | String? | Usure What This Is                                           |
-| modelComponent        | String  | Usure What This Is                                           |
-| modeldoc              | Boolean | Usure What This Is                                           |
-| modeldoc_id           | String  | Usure What This Is, related to above?                        |
-| moduleName            | String  | Usure What This Is                                           |
-| project               | String  | The project this variable belongs to                         |
-| reqs:Array(1)         | Array   | Array of UUIDs (I think reqids) for the requirements that this variable is used in. |
-| variable_name         | String  | The variable's name                                          |
-| _id:"Demo-FSMFSMLIVE" | String  | Mangles `project` + `component_name` + `variable_name` (no spaces) |
-| _rev                  | String  | CouchDB's revision id for this entry (probably best not to touch it) |
+| Name              | Type    | Description                                                  |
+| ----------------- | ------- | ------------------------------------------------------------ |
+| assignment        | String  | Usure What This Is                                           |
+| completed         | Boolean | I think this is true if the variable has been 'mapped'       |
+| component_name    | String  | The component that the variable belongs to                   |
+| copilotAssignment | String  | Usure What This Is                                           |
+| dataType          | String  | The variable's type                                          |
+| description       | String  | Presumably a description of the variable                     |
+| idType            | String  | If the variable is "Input", "Output", etc on the mapping screen |
+| modeRequirement   | String? | Usure What This Is                                           |
+| modelComponent    | String  | Usure What This Is                                           |
+| modeldoc          | Boolean | Usure What This Is                                           |
+| modeldoc_id       | String  | Usure What This Is, related to above?                        |
+| moduleName        | String  | Usure What This Is                                           |
+| project           | String  | The project this variable belongs to                         |
+| reqs              | Array   | Array of UUIDs (I think reqids) for the requirements that this variable is used in. |
+| variable_name     | String  | The variable's name                                          |
+| _id               | String  | Mangles `project` + `component_name` + `variable_name` (no spaces) |
+| _rev              | String  | CouchDB's revision id for this entry (probably best not to touch it) |
 
 
 
