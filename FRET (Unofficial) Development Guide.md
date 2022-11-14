@@ -3,7 +3,7 @@ title: FRET (Unofficial) Development Guide V0.1
 author: Matt Luckcuck
 ---
 
-# FRET (Unofficial) Development Guide V0.1
+# FRET (Unofficial) Development Guide V0.2
 
 #### Matt Luckcuck 2022
 
@@ -185,7 +185,57 @@ With the <BuildIcon /> having been imported at the top of the file. This produce
 
 
 
+## Data Dictionaries
 
+### FRET DB
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+|      |      |             |
+|      |      |             |
+|      |      |             |
+|      |      |             |
+|      |      |             |
+|      |      |             |
+|      |      |             |
+|      |      |             |
+|      |      |             |
+|      |      |             |
+|      |      |             |
+|      |      |             |
+|      |      |             |
+|      |      |             |
+|      |      |             |
+|      |      |             |
+|      |      |             |
+|      |      |             |
+|      |      |             |
+
+
+
+### Model DB
+
+1. Contains information about the modelling of the requirements, things that relate to the variable 'mapping' and exporting the requirements into CoCoSim or CoPilot.
+
+| Name                  | Type    | Description                                                  |
+| --------------------- | ------- | ------------------------------------------------------------ |
+| assignment            | String  | Usure What This Is                                           |
+| completed             | Boolean | I think this is true if the variable has been 'mapped'       |
+| component_name        | String  | The component that the variable belongs to                   |
+| copilotAssignment     | String  | Usure What This Is                                           |
+| dataType              | String  | The variable's type                                          |
+| description           | String  | Presumably a description of the variable                     |
+| idType                | String  | If the variable is "Input", "Output", etc on the mapping screen |
+| modeRequirement       | String? | Usure What This Is                                           |
+| modelComponent        | String  | Usure What This Is                                           |
+| modeldoc              | Boolean | Usure What This Is                                           |
+| modeldoc_id           | String  | Usure What This Is, related to above?                        |
+| moduleName            | String  | Usure What This Is                                           |
+| project               | String  | The project this variable belongs to                         |
+| reqs:Array(1)         | Array   | Array of UUIDs (I think reqids) for the requirements that this variable is used in. |
+| variable_name         | String  | The variable's name                                          |
+| _id:"Demo-FSMFSMLIVE" | String  | Mangles `project` + `component_name` + `variable_name` (no spaces) |
+| _rev                  | String  | CouchDB's revision id for this entry (probably best not to touch it) |
 
 
 
