@@ -59,6 +59,7 @@ import Grid from '@material-ui/core/Grid';
 import Checkbox from '@material-ui/core/Checkbox';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
 
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
@@ -153,6 +154,7 @@ handlePreview = () => {
   console.log('Preview Button');
 };
 
+
 /**
 * Event Handler for the OK Button on the initial
 * refactor screen. Advances to confirming the variable types
@@ -172,34 +174,35 @@ handleInitialOK = () =>
       component_name : this.selectedRequirement,
       variable_name : {$in:varList}
     }
-  }).then(function(result){
-    console.log("result.docs");
-    console.log(result.docs);
-
-    var variableTypes = [];
-    for (let doc of result.docs)
+  }).then(function(result)
     {
-      let varName = doc.variable_name;
-      let varType = doc.dataType;
+      console.log("result.docs");
+      console.log(result.docs);
 
-      if(varType == "")
+      var variableTypeMap = new Map();
+      for (let doc of result.docs)
       {
-        varType = "undefined";
+        let varName = doc.variable_name;
+        let varType = doc.dataType;
+
+        if(varType == "")
+        {
+          varType = "undefined";
+        }
+
+        variableTypeMap.set(varName, varType);
+
       }
 
-      variableTypes.push( { name: varName, type :varType} );
+      console.log("!!! Show me the Variables!")
+      for(let i of variableTypeMap)
+      {
+        console.log(i);
+      }
 
+      self.setState({variables : variableTypeMap});
     }
-
-    console.log("!!! Show me the Variables!")
-    for(let i of variableTypes)
-    {
-      console.log(i);
-    }
-
-    self.setState({variables : variableTypes});
-
-    }).catch((err) => {
+  ).catch((err) => {
       console.log(err);
     })
 
@@ -310,24 +313,26 @@ updateApplytoAllStatus = () => event => {
 }
 
 
-handleTypeChange = () => event =>
+handleTypeChange = (varName) => event =>
 {
   var value =  event.target.value;
   var name = event.target.name;
 
   console.log("handleTypeChange - " + value + " from: " + name);
 
-  var variablesList = this.state.variables;
-  for (let v of variablesList)
-  {
-    if (v.name == name)
-    {
-      v.type = value;
-    }
-  }
+  var variableTypeMap = this.state.variables;
 
-  this.setState({variables: variablesList});
+  variableTypeMap.set(varName, value);
 
+  this.setState({variables: variableTypeMap});
+
+};
+
+getType = (variableName) =>
+{
+  console.log("Getting variable name for select");
+
+  return this.state.variables.get(variableName)
 }
 
 /*
@@ -513,9 +518,15 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
     break;
 
     case STATE.TYPES:
-      let varList = [];
-      varList = RefactoringUtils.getVariableNames(this.state.selectedRequirement);
-      console.log("VarList = " + varList);
+      console.log("!! Types Case")
+
+      Array.from( this.state.variables.keys()).map( varName =>
+        (
+          console.log(varName + " : " + this.getType(varName))
+        ));
+      console.log("after the map ");
+
+      var self = this;
 
      return(
           <Dialog
@@ -531,21 +542,23 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
             Please check the variable types listed below. Correct any that are wrong and update any that are "Unknown".
             <br/>
               <ul >
-              {this.state.variables.map( (varObj) =>
+              { Array.from( this.state.variables.keys()).map( varName =>
                 (
-                  <li key={varObj.name}>
-                    {varObj.name} :
+                  <li key={varName}>
+                    {varName} :
+
                   <Select
-                    labelId={varObj.name}
-                    id={varObj.name}
-                    name = {varObj.name}
-                    onChange={this.handleTypeChange}
-                    value = {varObj.type}
+                    labelId={varName}
+                    id={varName}
+                    name = {varName}
+                    onChange={self.handleTypeChange(varName)}
+                    value = {self.getType(varName)}
                     >
                     <MenuItem value={"boolean"}>Boolean</MenuItem>
                     <MenuItem value={"integer"}>Integer</MenuItem>
                     <MenuItem value={"undefined"}>Unknown</MenuItem>
                   </Select>
+
                   </li>
                 )
               )
