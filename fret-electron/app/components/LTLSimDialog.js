@@ -686,7 +686,8 @@ var loadedTrace = filepath;
 	var K = loadedTrace.K;
 
 	var cex = loadedTrace.Counterexample;
-    
+    // Andreas: Tried to add this here to deal with traces that were longer than the initial trace length value,
+    // but it seems like it causes issues with traces of length < 4.
 	LTLSimController.setTraceLength(this.state.model, K);
 	let LTLSIM_tracelength = LTLSimController.getTraceLength(this.state.model);
 	var keys=[]

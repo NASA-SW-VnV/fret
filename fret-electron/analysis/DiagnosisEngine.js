@@ -608,6 +608,7 @@ class DiagnosisEngine {
         }
       }
     } catch (error) {
+      console.log(error);            
       this.optLog(error)
       return callback(error);
     }

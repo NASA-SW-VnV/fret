@@ -611,7 +611,7 @@ class RealizabilityContent extends React.Component {
     monolithic: false,
     compositional: false,
     timeout: '',
-    realizableTraceLength: -1,
+    realizableTraceLength: 4,
     LTLSimDialogOpen: false,
     dependenciesExist: false,
     missingDependencies: [],
@@ -1437,22 +1437,21 @@ class RealizabilityContent extends React.Component {
       const {selectedReqs, systemComponentIndex, connectedComponentIndex} = props;
       let systemComponentReport = projectReport.systemComponents[systemComponentIndex];
       let ltlsimRequirements, numberOfSteps, trace;
-      console.log(systemComponentIndex)
-      console.log(systemComponentReport);
+      
       if (compositional) {
         let connectedComponentReport = systemComponentReport.compositional.connectedComponents[connectedComponentIndex];
-        ltlsimRequirements = systemComponentReport.requirements.filter(e => connectedComponentReport.requirements.includes(e.reqid.replace(/-/g,'')));
+        ltlsimRequirements = systemComponentReport.requirements.filter(e => connectedComponentReport.requirements.includes(e.reqid));
         // numberOfSteps = connectedComponentReport.traceInfo ? (Object.keys(connectedComponentReport.traceInfo.Trace[0]).length - 2) : 0;
+      
+
         numberOfSteps = connectedComponentReport.traceInfo ? connectedComponentReport.traceInfo.K : 0;
         trace = connectedComponentReport.traceInfo ? connectedComponentReport.traceInfo.Trace : {};
       } else if (monolithic) {
-        ltlsimRequirements = systemComponentReport.requirements.filter(e => selectedReqs.includes(e.reqid.replace(/-/g,'')));
+        ltlsimRequirements = systemComponentReport.requirements.filter(e => selectedReqs.includes(e.reqid));
         // numberOfSteps = systemComponentReport.monolithic.traceInfo ? (Object.keys(systemComponentReport.monolithic.traceInfo.Trace[0]).length -2) : 0;
         numberOfSteps = systemComponentReport.monolithic.traceInfo ? systemComponentReport.monolithic.traceInfo.K : 0;
         trace = systemComponentReport.monolithic.traceInfo ? systemComponentReport.monolithic.traceInfo.Trace : {};
       }
-
-
 
       var ftExpressions = []
       var ptExpressions = []
@@ -1473,7 +1472,6 @@ class RealizabilityContent extends React.Component {
       }
       
       if (trace && numberOfSteps) {         
-        console.log("LTLSimDialog")
         return(          
           <LTLSimDialog
             open={this.state.LTLSimDialogOpen}

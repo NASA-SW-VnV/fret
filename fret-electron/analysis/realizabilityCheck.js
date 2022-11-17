@@ -119,6 +119,7 @@ export function checkReal(filePath, engine, options) {
     }
     return {result, output};
   } catch (error) {
+    // console.log(filePath)
     // console.log(result)
     // console.log(error)
     // console.log("output",error)
