@@ -314,9 +314,8 @@ class DiagnosisRequirementsTableHead extends React.Component {
       <TableHead>
         <TableRow>
           {importedRequirements.length === 0 &&
-            <TableCell padding="checkbox">
-              <Checkbox
-                id="qa_diagReqTbl_selectAllReqs"
+            <TableCell id="qa_diagReqTbl_selectAllReqs" padding="checkbox">
+              <Checkbox                
                 indeterminate={numSelected > 0 && numSelected < rowCount}
                 checked={numSelected === rowCount}
                 onChange={onSelectAllClick}
