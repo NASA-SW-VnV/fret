@@ -779,7 +779,6 @@ class RealizabilityContent extends React.Component {
       missing.push('kind2');
     }
 
-    //aeval currently returns with a segmentation fault signal when ran with no arguments.
     try {
       if ((process.platform === "linux") || (process.platform === "darwin")){
         execSync('which aeval');
@@ -1433,7 +1432,6 @@ class RealizabilityContent extends React.Component {
     }
 
     let LTLSimComponent = (props) => {
-      // const {projectReport, monolithic, compositional} = this.state;
       const {selectedReqs, systemComponentIndex, connectedComponentIndex} = props;
       let systemComponentReport = projectReport.systemComponents[systemComponentIndex];
       let ltlsimRequirements, numberOfSteps, trace;
@@ -1441,14 +1439,10 @@ class RealizabilityContent extends React.Component {
       if (compositional) {
         let connectedComponentReport = systemComponentReport.compositional.connectedComponents[connectedComponentIndex];
         ltlsimRequirements = systemComponentReport.requirements.filter(e => connectedComponentReport.requirements.includes(e.reqid));
-        // numberOfSteps = connectedComponentReport.traceInfo ? (Object.keys(connectedComponentReport.traceInfo.Trace[0]).length - 2) : 0;
-      
-
         numberOfSteps = connectedComponentReport.traceInfo ? connectedComponentReport.traceInfo.K : 0;
         trace = connectedComponentReport.traceInfo ? connectedComponentReport.traceInfo.Trace : {};
       } else if (monolithic) {
         ltlsimRequirements = systemComponentReport.requirements.filter(e => selectedReqs.includes(e.reqid));
-        // numberOfSteps = systemComponentReport.monolithic.traceInfo ? (Object.keys(systemComponentReport.monolithic.traceInfo.Trace[0]).length -2) : 0;
         numberOfSteps = systemComponentReport.monolithic.traceInfo ? systemComponentReport.monolithic.traceInfo.K : 0;
         trace = systemComponentReport.monolithic.traceInfo ? systemComponentReport.monolithic.traceInfo.Trace : {};
       }
@@ -1611,13 +1605,17 @@ class RealizabilityContent extends React.Component {
                             id="qa_rlzCont_btn_check"
                             disabled={selectedReqs.length === 0 || !dependenciesExist || (dependenciesExist && (selected === '' || missingDependencies.includes(this.getEngineNameAndOptions().name)))}
                             onClick={(event) => this.checkRealizability(event, selectedReqs)}>Check Realizability</MenuItem>
-                            <MenuItem
-                              id="qa_rlzCont_btn_realizSimulate"
-                              disabled={this.disableSimulateRealizableButton(systemComponentIndex, connectedComponentIndex)}
-                              onClick={(event) => this.openLTLSimDialog(event)}
-                            >
-                              {'Simulate Realizable Requirements' + (compositional ? (' ('+ccSelected.toUpperCase()+')') : '')}
-                            </MenuItem>
+                            <Tooltip title={'This action is available only when using the \'JKind\' engine option.'}>
+                              <span>
+                                <MenuItem
+                                  id="qa_rlzCont_btn_realizSimulate"
+                                  disabled={this.disableSimulateRealizableButton(systemComponentIndex, connectedComponentIndex)}
+                                  onClick={(event) => this.openLTLSimDialog(event)}
+                                >
+                                  {'Simulate Realizable Requirements' + (compositional ? (' ('+ccSelected.toUpperCase()+')') : '')}
+                                </MenuItem>
+                              </span>
+                            </Tooltip>
                             <MenuItem 
                               id="qa_rlzCont_btn_diagnose"
                               onClick={(event) => this.diagnoseSpec(event, selectedReqs)}

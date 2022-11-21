@@ -139,4 +139,12 @@ FRET provides means to save a report containing the current results of a given a
 
 Users are also able to load saved reports and inspect them in FRET. Loaded reports are not associated with existing projects in the database. In other words, reports can be loaded even though the original project is not part of the FRET database. To load a report, click on the "Projects" button and select "All Projects". Then, navigate to the realizability tab in the Analysis Portal, and click on the "Load" button. In the new window, select the report to be loaded and click on "Load". The report should now be accessible using the graphical interface.
 
+## Simulate realizable requirements
+
+Note: This option is currently available only when using the 'JKind' engine option to check realizability.
+
+When a specification is declared as realizable, users can observe an indicative execution trace of bounded length, guaranteed to preserve the satisfaction of all involved requirements. To do so, click on "Actions", and then "Simulate Realizable Requirements". The trace is displayed within an instance of LTLSim, and can be further modified using the standard LTLSim interface.
+
+Users can specify the length of the trace, before checking realizability. Click on "Actions", "Change Settings" and modify the trace length value under the applicable engine option.
+
 [Back to FRET home page](../userManual.md)
