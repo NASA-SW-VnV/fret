@@ -270,12 +270,12 @@ let DiagnosisRequirementsTableToolbar = props => {
       {selectEnabled &&
           <div className={classes.toolbar}>
             <Tooltip title="Apply Selection">
-              <Button disabled={numSelected <= 0} className={classes.button} size='small' variant='contained' color='secondary' onClick={() => applySelection()}>
+              <Button id="qa_diagReqTbl_btn_apply" disabled={numSelected <= 0} className={classes.button} size='small' variant='contained' color='secondary' onClick={() => applySelection()}>
                 Apply
               </Button>
             </Tooltip>
             <Tooltip title="Cancel Selection">
-              <Button className={classes.button} size='small' variant='contained' color='secondary' onClick={() => selectEnabler()}>
+              <Button id="qa_diagReqTbl_btn_cancel" className={classes.button} size='small' variant='contained' color='secondary' onClick={() => selectEnabler()}>
                 Cancel
               </Button>
             </Tooltip>
@@ -316,6 +316,7 @@ class DiagnosisRequirementsTableHead extends React.Component {
           {importedRequirements.length === 0 &&
             <TableCell padding="checkbox">
               <Checkbox
+                id="qa_diagReqTbl_selectAllReqs"
                 indeterminate={numSelected > 0 && numSelected < rowCount}
                 checked={numSelected === rowCount}
                 onChange={onSelectAllClick}
@@ -616,7 +617,7 @@ class DiagnosisRequirementsTable extends React.Component {
                       >
                       {true &&
                         <TableCell padding="checkbox">
-                          <Checkbox checked={isSelected}/>
+                          <Checkbox id={"qa_diagReqTbl_"+n.reqid} checked={isSelected}/>
                         </TableCell>
                       }
                         <TableCell id={"qa_diagReqTbl_tc_body_id_"+label}>
@@ -654,7 +655,7 @@ class DiagnosisRequirementsTable extends React.Component {
                         >
                         {true &&
                           <TableCell padding="checkbox">
-                            <Checkbox checked={isSelected}/>
+                            <Checkbox id={"qa_diagReqTbl_"+n.reqid} checked={isSelected}/>
                           </TableCell>
                         }
                         <TableCell id={"qa_diagReqTbl_tc_body_id_"+label}>
