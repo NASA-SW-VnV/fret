@@ -164,6 +164,12 @@ handleInitialOK = () =>
   let varList = RefactoringUtils.getVariableNames(this.state.selectedRequirement);
   console.log("handleInitialOK's var list = " + varList);
 
+  var variableTypeMap = new Map();
+  for(let variable of varList)
+  {
+    variableTypeMap.set(variable, "undefined");
+  }
+
 
   //let variableTypes = []
   var self = this;
@@ -471,9 +477,6 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
                           onChange={this.handleChangeExtract()}
                         />
                       </Grid>
-
-
-
                           <Grid style={{ textAlign: 'right' }} item xs={3}>
                             New Requirement Name:
                           </Grid>
