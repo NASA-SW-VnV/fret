@@ -44,7 +44,7 @@ function makeDummyUpdatedReq(req)
 /**
 * Handles one request to refactor one requirement
 */
-function extractRequirement(req, fragment, destinationName, newID, allRequirements)
+function extractRequirement(req, reqVars, fragment, destinationName, newID, allRequirements)
 {
 	console.log("Extract One");
 
@@ -97,7 +97,7 @@ function extractRequirement(req, fragment, destinationName, newID, allRequiremen
 
   // Step 4
   // Verify
-	var result = compare.compareRequirements(req, dummyUpdatedReq, allRequirements);
+	var result = compare.compareRequirements(req, reqVars, dummyUpdatedReq, allRequirements);
 	console.log("controller, result = " + result);
 	if(result)
 	{
@@ -136,11 +136,9 @@ exports.extractRequirement = extractRequirement;
 /**
 * Handles a request to extract a fragment from all requirements that contain it.
 */
-function extractRequirement_ApplyAll(req, fragment, destinationName, newID, allRequirements)
+function extractRequirement_ApplyAll(req, fragment,  destinationName, newID, allRequirements)
 {
 	console.log("Extract All")
-
-
 
 	// Step 1
 
@@ -204,7 +202,11 @@ function extractRequirement_ApplyAll(req, fragment, destinationName, newID, allR
 
 			// Step 4
 			// Verify
-			result = compare.compareRequirements(kreq, dummyUpdatedReq, allRequirements);
+		// TODO Needs to get the reqVars from here
+		reqVars = {}
+		// modufyTheVars(reqVars) ??
+
+			result = compare.compareRequirements(kreq, reqVars, dummyUpdatedReq, allRequirements);
 			console.log("controller, result = " + result);
 
 			if(!result)

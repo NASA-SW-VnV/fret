@@ -245,7 +245,7 @@ function replaceNuSMVKeywords(value)
 * If there are requirements in the fragList (requirements that
 * were originally fragments) their variables will be included too.
 */
-function getVars(originalReq, newReq, fragList)
+function getVars(originalReq, originalReqVars, newReq, fragList)
 {
   console.log("getVars");
   let varSet = new Set();
@@ -286,7 +286,18 @@ function getVars(originalReq, newReq, fragList)
   ( function(value)
     {
       //console.log("making smv variable: " + value + " : boolean;\n");
-      variables += value + " : boolean;\n";
+      console.log(originalReqVars);
+      type = originalReqVars.get(value); // Big assumption here is that the new requirement doesn't have new variables...
+      // Another big assumption is that none of these are typed as 'undefined'
+      if (type == "integer")
+      {
+        variables += value + " :  0..4 ;\n";
+      }
+      else
+      {
+        variables += value + " : " + type + ";\n";
+      }
+
     }
   )
 
@@ -344,7 +355,7 @@ function getFragmetReqs(fragmentNames, allRequirements)
    return fragments
 }
 
-function generateSMV(originalReq, newReq,n, allRequirements)
+function generateSMV(originalReq, originalReqVars, newReq,n, allRequirements)
 {
   let ltlspecs = [];
   let fragList = [];
@@ -386,7 +397,7 @@ function generateSMV(originalReq, newReq,n, allRequirements)
     }
 
   //  keynum++;
-    let variables = getVars(originalReq, newReq, fragList);
+    let variables = getVars(originalReq, originalReqVars, newReq, fragList);
     let name = originalReq.reqid;
   //  let name = 'n' + keynum + '_' + key.substring(0,key.length - 13).replace(/,/g,'_');
     //	let name = key.substring(0,key.length - 13).replace(/,/g,'_');
@@ -425,8 +436,8 @@ DEFINE
 `;
 }
 
-function callnuXmv (originalReq, newReq,len,n, allRequirements) {
-  let r = generateSMV(originalReq, newReq, n, allRequirements);
+function callnuXmv (originalReq, originalReqVars, newReq,len,n, allRequirements) {
+  let r = generateSMV(originalReq, originalReqVars, newReq, n, allRequirements);
   let nuXmvCode = preamble(r.vars, len) + r.specs.join('\n') + '\n'; //
 
   let nuXmvTempFile = nuXmvTempFilePrefix + '_' + originalReq.reqid + '_' + newReq.reqid + '.smv'
@@ -477,14 +488,14 @@ function compare(originalReq, newReq, len,n) {
 * newReq is the refactored requirement
 * requirementSet is the set of requirements the requirement belongs to
 */
-function compareRequirements(originalReq, newReq, requirementSet)
+function compareRequirements(originalReq, originalReqVars, newReq, requirementSet)
 {
   let len = 11;
   let n = 4;
 
   console.log("+++ Comparing Requirements +++")
 
-  let checkResult = callnuXmv(originalReq, newReq ,len,n, requirementSet);
+  let checkResult = callnuXmv(originalReq, originalReqVars, newReq ,len,n, requirementSet);
 
   if (checkResult)
   {

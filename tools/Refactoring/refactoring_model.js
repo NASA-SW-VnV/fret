@@ -151,7 +151,59 @@ export function FindRequirementsWithFragment(allRequirements, project_name, frag
       return reqsWithFrag;
   //});
 
+export function makeVariableTypeMap(requirement)
+{
+  let varList = RefactoringUtils.getVariableNames(requirement);
+  console.log("handleInitialOK's var list = " + varList);
 
+  var variableTypeMap = new Map();
+  for(let variable of varList)
+  {
+    variableTypeMap.set(variable, "undefined");
+  }
+
+
+  //let variableTypes = []
+  var self = this;
+
+  modeldb.find({
+    selector: {
+      project : requirement.selectedProject,
+      component_name : requirement,
+      variable_name : {$in:varList}
+    }
+  }).then(function(result)
+    {
+      console.log("result.docs");
+      console.log(result.docs);
+
+      var variableTypeMap = new Map();
+      for (let doc of result.docs)
+      {
+        let varName = doc.variable_name;
+        let varType = doc.dataType;
+
+        if(varType == "")
+        {
+          varType = "undefined";
+        }
+
+        variableTypeMap.set(varName, varType);
+
+      }
+
+      console.log("!!! Show me the Variables!")
+      for(let i of variableTypeMap)
+      {
+        console.log(i);
+      }
+
+      return variableTypeMap
+    }
+  ).catch((err) => {
+      console.log(err);
+    })
+}
 
   // console.log(typeof(reqsInProject));
   // console.log(reqsInProject);

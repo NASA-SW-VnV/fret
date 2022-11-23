@@ -231,7 +231,7 @@ handleOk = () => {
   if (this.state.applyToAll == true)
   {
     result = RefactoringController.extractRequirement_ApplyAll(
-      this.state.selectedRequirement, this.state.extractString,
+      this.state.selectedRequirement, this.state.variables, this.state.extractString,
       this.state.newName, newID, this.state.requirements);
 
       console.log("result all = " + result);
@@ -240,7 +240,7 @@ handleOk = () => {
   else {
     // Now this needs all the requirements too, to pass to the compare method
       result = RefactoringController.extractRequirement(
-        this.state.selectedRequirement, this.state.extractString, this.state.newName, newID, this.state.requirements);
+        this.state.selectedRequirement, this.state.variables, this.state.extractString, this.state.newName, newID, this.state.requirements);
 
         console.log("result one = " + result);
         this.setState({refactoringCheckresult: result});
@@ -542,8 +542,25 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
           </DialogTitle>
 
           <DialogContent>
-            Please check the variable types listed below. Correct any that are wrong and update any that are "Unknown".
-            <br/>
+          <Grid spaceing={2}>
+            <Grid style={{ textAlign: 'right' }} item xs={3}>
+              Definition:
+            </Grid>
+            <Grid item xs={9}>
+              <TextField
+                id="definition"
+                multiline
+                fullWidth
+                label="Definition"
+                value={fulltext} />
+            </Grid>
+
+            <Grid style={{textAlign : 'center'}} item xs={3}>
+
+                        Please check the variable types listed below. Correct any that are wrong and update any that are "Unknown".
+            </Grid>
+          </Grid>
+
               <ul >
               { Array.from( this.state.variables.keys()).map( varName =>
                 (
