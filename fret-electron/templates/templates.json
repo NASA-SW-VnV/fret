@@ -514,5 +514,240 @@
         "response": "CCSDS_format"
       }
     ]
+  },
+  {
+    "_id": "template-state-transition",
+    "title": "State Transition",
+    "description": "This template describes a transition of a state-machine. It describes the input state and the guard condition upon which the transition occurs.",
+    "structure": [
+      {
+        "text": "Upon ("
+      },
+      {
+        "field": "input_state"
+      },
+      {
+        "text": " & "
+      },
+      {
+        "field": "condition"
+      },
+      {
+        "text": ") "
+      },
+      {
+        "field": "component"
+      },
+      {
+        "text": " shall at the next timepoint satisfy "
+      },
+      {
+        "field": "output_state"
+      }
+    ],
+    "fields": {
+      "input_state": {
+        "options": [
+          {
+            "suggestion": "state = origin",
+            "description": "The origin state number",
+            "selection": [
+              0,
+              0
+            ]
+          },
+          {
+            "suggestion": "state_proposition",
+            "description": "The origin proposition",
+            "selection": [
+              0,
+              0
+            ]
+          }
+        ],
+        "description": "Specifies the value of the input state that may need to change."
+      },
+      "condition": {
+        "options": [
+          {
+            "suggestion": "boolexpr",
+            "description": "A Boolean expression",
+            "selection": [
+              0,
+              0
+            ]
+          }
+        ],
+        "description": "The guard condition upon which the transition is triggered."
+      },
+      "component": {
+        "options": [
+          {
+            "suggestion": "component",
+            "description": "Replace the text by the name of the target component",
+            "selection": [
+              0,
+              0
+            ]
+          }
+        ],
+        "description": "Specifies the component of the system that the requirement applies to."
+      },
+      "output_state": {
+        "options": [
+          {
+            "suggestion": "state = destination",
+            "description": "The destination state number",
+            "selection": [
+              0,
+              0
+            ]
+          },
+          {
+            "suggestion": "! state_proposition",
+            "description": "The negation of the origin proposition",
+            "selection": [
+              0,
+              0
+            ]
+          }
+        ],
+        "description": "Specifies the value of the output state, reflecting the new value of the input state ."
+      }
+    },
+    "examples": [
+      {
+        "input_state": "state = cruise_control_engaged",
+        "condition": "brake_applied",
+        "component": "cruise_control",
+        "output_state": "state = cruise_control_paused"
+      },
+      {
+        "input_state": "defrost",
+        "condition": "toggle_defrost",
+        "component": "vehicle",
+        "output_state": "! defrost"
+      }
+    ]
+  },
+  {
+    "_id": "template-state-transition-stay-pre",
+    "title": "State Transition Stay Pre",
+    "description": "This template describes for a state machine a transition of a state to itself. It describes the input state and the negation of the disjunction of outgoing guard conditions.",
+    "structure": [
+      {
+        "field": "component"
+      },
+      {
+        "text": " shall always satisfy if preBool(false, "
+      },
+      {
+        "field": "state"
+      },
+      {
+        "text": " & !("
+      },
+      {
+        "field": "outgoing_guard_disjunction"
+      },
+      {
+        "text": ")) then "
+      },
+      {
+        "field": "same_state"
+      }
+    ],
+    "fields": {
+      "component": {
+        "options": [
+          {
+            "suggestion": "component",
+            "description": "Replace the text by the name of the target component",
+            "selection": [
+              0,
+              0
+            ]
+          }
+        ],
+        "description": "Specifies the component of the system that the requirement applies to."
+      },
+      "state": {
+        "options": [
+          {
+            "suggestion": "state = origin",
+            "description": "The origin state number",
+            "selection": [
+              0,
+              0
+            ]
+          },
+          {
+            "suggestion": "state_proposition",
+            "description": "The origin state proposition",
+            "selection": [
+              0,
+              0
+            ]
+          }
+        ],
+        "description": "Specifies the value of the state that it stays at."
+      },
+      "outgoing_guard_disjunction": {
+        "options": [
+          {
+            "suggestion": "(gc1 | gc2)",
+            "description": "The disjunction of the outgoing guard conditions",
+            "selection": [
+              0,
+              0
+            ]
+          },
+          {
+            "suggestion": "gc",
+            "description": "The guard condition of the outgoing transition if there is only one outgoing transition.",
+            "selection": [
+              0,
+              0
+            ]
+          }
+        ],
+        "description": "The disjunction of the outgoing guard conditions from the state."
+      },
+      "same_state": {
+        "options": [
+          {
+            "suggestion": "state = origin",
+            "description": "The origin state number",
+            "selection": [
+              0,
+              0
+            ]
+          },
+          {
+            "suggestion": "state_proposition",
+            "description": "The origin state proposition",
+            "selection": [
+              0,
+              0
+            ]
+          }
+        ],
+        "description": "Specifies the same state."
+      }
+    },
+    "examples": [
+      {
+        "component": "cruise_control",
+        "state": "state = cruise_control_engaged",
+        "outgoing_guard_disjunction": "(brake_applied | turn_off)",
+        "same_state": "state = cruise_control_engaged"
+      },
+      {
+        "component": "vehicle",
+        "state": "defrost",
+        "outgoing_guard_disjunction": "toggle_defrost",
+        "same_state": "defrost"
+      }
+    ]
   }
 ]
