@@ -6,5 +6,6 @@
  * Fragments have the same spacing in all the requirements they are used. E.g. "x = 2" and "x=2" will not be matched. 
  * Variable names in requirements do not contain underscores. (NuSMV doesn't like them, but FRET wont stop you from using them.)
  * Requirements parse as valid FRETISH
+ * Variable names are only repeated within the same component. 
 
  

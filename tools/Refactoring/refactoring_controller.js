@@ -14,10 +14,11 @@ var compare = require("./refactoring_compare");
 //import { v4 as uuidv4 } from 'uuid';
 
 
-exports.test = function test(extractString, newName)
+exports.requirementWithFragement = function requirementWithFragement(allRequirements, project, fragment, req, destinationName)
 {
-	console.log("Refactoring Test: " + extractString + " " + newName);
+	return model.FindRequirementsWithFragment(allRequirements, project, fragment, req.reqid, destinationName);
 };
+
 
 /**
 * returns a new requirement object, with empty fields
@@ -173,7 +174,7 @@ function extractRequirement_ApplyAll(req, fragment,  destinationName, newID, all
 	project = req.project;
 
 	//I think this should contain the req parameter too.
-	let reqKnockons = model.FindRequirementsWithFragment(allRequirements, project, fragment, req.reqid, destinationName);
+	let reqKnockons = requirementWithFragement(allRequirements, project, fragment, req.reqid, destinationName);
 
 	console.log("Lets see what requirements I've got to update...");
 	console.log(reqKnockons);

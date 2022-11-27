@@ -68,6 +68,7 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
+import Divider from '@material-ui/core/Divider';
 
 //import ImageListItemBar from '@material-ui/core/ImageListItemBar';
 //import Tooltip from '@material-ui/core/Tooltip';
@@ -112,7 +113,7 @@ class RefactorRequirementDialog extends React.Component {
     open: false,
     dialogState : STATE.INITIAL,
     selectedRequirement: {},
-    variables: [],
+    variables: {},
     variablesText: "No Variables",
     applyToAll: false,
     refactoringType: '',
@@ -141,6 +142,7 @@ class RefactorRequirementDialog extends React.Component {
   }
 
   handleClose = () => {
+    // Reset the state
     this.setState({ open: false, dialogState: STATE.INITIAL, selectedRequirement: {}, requirements: [], refactoringCheckresult: null, applyToAll: false, refactoringType: '', newName: '', refactoringContent: ''});
     this.state.dialogCloseListener();
   };
@@ -161,56 +163,134 @@ handlePreview = () => {
 */
 handleInitialOK = () =>
 {
-  let varList = RefactoringUtils.getVariableNames(this.state.selectedRequirement);
-  console.log("handleInitialOK's var list = " + varList);
-
-  var variableTypeMap = new Map();
-  for(let variable of varList)
+  if(this.state.applyToAll == false)
   {
-    variableTypeMap.set(variable, "undefined");
+    let varList = RefactoringUtils.getVariableNames(this.state.selectedRequirement);
+    console.log("handleInitialOK's var list = " + varList);
+
+    var variableTypeMap = new Map();
+    for(let variable of varList)
+    {
+      variableTypeMap.set(variable, "undefined");
+    }
+
+    var self = this;
+
+    modeldb.find({
+      selector: {
+        project : this.state.selectedRequirement.selectedProject,
+        //component_name : this.selectedRequirement,
+        variable_name : {$in:varList}
+      }
+    }).then(function(result)
+      {
+        console.log("result.docs");
+        console.log(result.docs);
+
+        var variableTypeMap = new Map();
+        for (let doc of result.docs)
+        {
+          let varName = doc.variable_name;
+          let varType = doc.dataType;
+
+          if(varType == "")
+          {
+            varType = "undefined";
+          }
+
+          variableTypeMap.set(varName, varType);
+
+        }
+
+        console.log("!!! Show me the Variables!")
+        for(let i of variableTypeMap)
+        {
+          console.log(i);
+        }
+
+        let currentVariables = this.state.variables;
+        currentVariables[this_req.reqid] =  variableTypeMap
+
+        self.setState({variables : currentVariables});
+      }
+      ).catch((err) => {
+        console.log(err);
+      })
+  }
+  else{
+
+//     , this.state.variables, this.state.extractString,
+      // , newID,
+
+
+    let applicableRequirements = RefactoringController.requirementWithFragement(this.state.requirements, this.state.selectedRequirement.project, this.state.extractString, this.state.selectedRequirement.reqid, this.state.newName);
+
+    if (applicableRequirements.length >0)
+  	{
+  		//check first
+  		for (var i = 0; i < applicableRequirements.length; i++)
+  		{
+        var variableTypeMap = new Map();
+
+        let this_req = applicableRequirements[i];
+
+        let varList = RefactoringUtils.getVariableNames(this_req);
+        console.log("handleInitialOK's var list = " + varList);
+
+
+        for(let variable of varList)
+        {
+          variableTypeMap.set(variable, "undefined");
+        }
+
+        var self = this;
+
+        modeldb.find({
+          selector: {
+            project : this_req.selectedProject,
+            //component_name : this.selectedRequirement,
+            variable_name : {$in:varList}
+          }
+        }).then(function(result)
+          {
+            console.log("result.docs");
+            console.log(result.docs);
+
+            var variableTypeMap = new Map();
+            for (let doc of result.docs)
+            {
+              let varName = doc.variable_name;
+              let varType = doc.dataType;
+
+              if(varType == "")
+              {
+                varType = "undefined";
+              }
+
+              variableTypeMap.set(varName, varType);
+
+            }
+
+            console.log("!!! Show me the Variables!")
+            for(let i of variableTypeMap)
+            {
+              console.log(i);
+            }
+
+            let currentVariables = this.state.variables;
+            currentVariables[this_req.reqid] =  variableTypeMap
+
+            self.setState({variables : currentVariables});
+          }
+          ).catch((err) => {
+            console.log(err);
+          })
+      }
+
+    }
   }
 
 
-  //let variableTypes = []
-  var self = this;
-
-  modeldb.find({
-    selector: {
-      project : this.state.selectedRequirement.selectedProject,
-      component_name : this.selectedRequirement,
-      variable_name : {$in:varList}
-    }
-  }).then(function(result)
-    {
-      console.log("result.docs");
-      console.log(result.docs);
-
-      var variableTypeMap = new Map();
-      for (let doc of result.docs)
-      {
-        let varName = doc.variable_name;
-        let varType = doc.dataType;
-
-        if(varType == "")
-        {
-          varType = "undefined";
-        }
-
-        variableTypeMap.set(varName, varType);
-
-      }
-
-      console.log("!!! Show me the Variables!")
-      for(let i of variableTypeMap)
-      {
-        console.log(i);
-      }
-
-      self.setState({variables : variableTypeMap});
-    }
-  ).catch((err) => {
-      console.log(err);
-    })
 
   this.setState({dialogState:STATE.TYPES});
   console.log("state's copy of variables = " + this.state.variables);
@@ -218,7 +298,7 @@ handleInitialOK = () =>
 }
 
 /**
-* Event Handler for the OK Button
+* Event Handler for the OK Button on the types dialogue
 * Calls the requested extract requirement method
 */
 handleOk = () => {
@@ -266,57 +346,17 @@ handleChangeExtract = () => event => {
   let extractString = event.target.value
   console.log(extractString);
   this.setState({ extractString: extractString });
-
-  //let varList = RefactoringUtils.getVariableNames(this.state.selectedRequirement);
-
-/*  let componentModel = '';
-    modeldb.find({
-      selector: {
-        project : this.state.selectedRequirement.selectedProject,
-        component_name : this.selectedRequirement,
-      }
-    }).then(function(result){
-      console.log("result.docs");
-      console.log(result.docs);
-
-        //self.synchModelVariablesAndComponents(componentModel);
-      }).catch((err) => {
-        console.log(err);
-      })
-
-  //maybe split the string
-  if(varList.includes(extractString))
-  {
-    console.log("Extract String contains a Variable");
-    let varsInString = [];
-    for (let v of varList)
-    {
-      if (extractString.includes(v))
-      {
-        varsInString.push(v);
-      }
-    }
-
-    console.log(varsInString)
-    this.setState({ variablesText : varsInString });
-  }
-  else
-  {
-    console.log("Extract String doesn't contain a variable")
-
-    this.setState({ variablesText : "No Variables" });
-  }*/
-}
+};
 
 updateNewName = () => event => {
   console.log(event.target.value);
   this.setState({ newName: event.target.value });
-}
+};
 
 updateApplytoAllStatus = () => event => {
   console.log(event.target.checked);
   this.setState({applyToAll: event.target.checked});
-}
+};
 
 
 handleTypeChange = (varName) => event =>
@@ -339,7 +379,7 @@ getType = (variableName) =>
   console.log("Getting variable name for select");
 
   return this.state.variables.get(variableName)
-}
+};
 
 /*
 RefactoringContent(type) {
@@ -555,31 +595,33 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
                 value={fulltext} />
             </Grid>
 
-            <Grid style={{textAlign : 'center'}} item xs={3}>
-
-                        Please check the variable types listed below. Correct any that are wrong and update any that are "Unknown".
+            <Grid style={{textAlign : 'center'}} item xs={12}>
+              Please check the variable types listed below. Correct any that are wrong and update any that are "Unknown".
             </Grid>
           </Grid>
 
               <ul >
-              { Array.from( this.state.variables.keys()).map( varName =>
+              { Array.from( this.state.variables.keys()).map(requirementName =>
                 (
-                  <li key={varName}>
-                    {varName} :
-
-                  <Select
-                    labelId={varName}
-                    id={varName}
-                    name = {varName}
-                    onChange={self.handleTypeChange(varName)}
-                    value = {self.getType(varName)}
-                    >
-                    <MenuItem value={"boolean"}>Boolean</MenuItem>
-                    <MenuItem value={"integer"}>Integer</MenuItem>
-                    <MenuItem value={"undefined"}>Unknown</MenuItem>
-                  </Select>
-
-                  </li>
+                  Array.from(requirementName.keys()).map(varName =>
+                    (
+                      <li key={requirementName_varName}>
+                          {varName} :
+                        <Select
+                              labelId={varName}
+                              id={varName}
+                              name = {varName}
+                              onChange={self.handleTypeChange(varName)}
+                              value = {self.getType(varName)}
+                        >
+                        <MenuItem value={"boolean"}>Boolean</MenuItem>
+                        <MenuItem value={"integer"}>Integer</MenuItem>
+                        <MenuItem value={"undefined"}>Unknown</MenuItem>
+                        </Select>
+                      </li>
+                    )
+                  ),
+                  <Divider variant="inset" component="li" />
                 )
               )
             }

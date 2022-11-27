@@ -150,6 +150,7 @@ export function FindRequirementsWithFragment(allRequirements, project_name, frag
 
       return reqsWithFrag;
   //});
+}
 
 export function makeVariableTypeMap(requirement)
 {
@@ -216,7 +217,7 @@ export function makeVariableTypeMap(requirement)
   //     reqsWithFrag.push(req);
   //   }
   // });
-}
+
 
 // export function AddNewRequirementToDB(req)
 // {
