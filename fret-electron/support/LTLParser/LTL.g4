@@ -52,6 +52,7 @@ bool_expr :
           | <assoc=right> bool_expr implies bool_expr #boolBinary
           | bool_expr equiv bool_expr #boolBinary
           //| bool_expr '=' bool_expr
+	  | 'at' 'the' ('next' | 'previous') 'occurrence' 'of' bool_expr ',' bool_expr #boolOcc
           |  ID (lp ((bool_expr | arithmetic_expr) (',' (bool_expr | arithmetic_expr))*)? rp)? #boolPred
           | t #boolConst
           | f #boolConst

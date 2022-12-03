@@ -168,6 +168,15 @@ LTLASTAnalyzer.prototype.visitBoolBinary = function(ctx) {
     return [op, operand1, operand2];
 };
 
+// Visit a parse tree produced by LTLParser#boolOcc.
+LTLVisitor.prototype.visitBoolOcc = function(ctx) {
+  const tense = ctx.children[2].getText();
+  const op = (tense === 'previous') ? 'prevOcc' : ((tense === 'next') ? 'nextOcc' : tense);
+  const operand1 = this.visit(ctx.bool_expr(0));
+  const operand2 = this.visit(ctx.bool_expr(1));
+  return [op, operand1, operand2]
+}
+
 // Visit a parse tree produced by LTLParser#boolBinaryLTL.
 LTLASTAnalyzer.prototype.visitBoolBinaryLTL = function(ctx) {
     let children = this.visitChildren(ctx);

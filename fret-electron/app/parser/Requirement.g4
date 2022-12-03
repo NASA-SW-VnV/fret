@@ -197,6 +197,7 @@ bool_expr :  ('!' | '~') bool_expr
            // | <assoc=right> bool_expr '=>' bool_expr
           | bool_expr ('->' | '=>'| '<->' | '<=>') bool_expr
 	  | IF bool_expr THEN bool_expr
+	  | AT THE (PREVIOUS | NEXT) OCCURRENCE OF bool_expr ',' bool_expr
           //| bool_expr '=' bool_expr
           | '(' bool_expr ')'
           | numeric_expr RELATIONAL_OP numeric_expr
@@ -254,8 +255,11 @@ MODE : M O D E;
 NEVER : N E V E R;
 NEXT : N E X T;
 NOT : N O T;
+OCCURRENCE : O C C U R R E N C E;
+OF : O F;
 ONLY : O N L Y;
 OR : O R;
+PREVIOUS : P R E V I O U S;
 SATISFY : S A T I S F Y;
 SECOND : S E C (O N D)? S?;
 SHALL : S H A L L;
