@@ -62,6 +62,7 @@ npm-debug.log.*
 analysis/tmp/*
 
 # playwright report and playwright results, playwright test
+playwright.config.js
 playwright-report/*
 test-results/*
 test/e2e/*
