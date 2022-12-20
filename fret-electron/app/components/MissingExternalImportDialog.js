@@ -55,13 +55,11 @@ const styles = theme => ({
 class MissingExternalImportDialog extends React.Component {
   state = {
     open: false,
-    selectBrowse: true,
+    selectBrowse: 'BROWSE',  // BROWSE, NO IMPORT, EXIT
   };
 
   handleClose = () => {
-    const {selectBrowse} = this.state;
-    //console.log('selectBrowse: ', selectBrowse)
-    this.props.handleMissingExternalImportDialogClose(selectBrowse)
+
     this.setState({ open: false });
   };
 
@@ -69,7 +67,7 @@ class MissingExternalImportDialog extends React.Component {
     let self = this;
     //console.log('MissingExternalImportDialog: EXIT selected')
     ipcRenderer.send('closeFRET');
-    self.setState({ selectBrowse: false}).then(()=>{
+    self.setState({ selectBrowse: 'EXIT'}).then(()=>{
       //this.setState({selectBrowse: 'EXIT'})
       let {selectBrowse} = self.state;
       //console.log('action state: ', selectBrowse)
@@ -80,9 +78,20 @@ class MissingExternalImportDialog extends React.Component {
   };
 
   handleBrowse = () => {
-    //console.log('MissingExternalImportDialog: BROWSE selected')
-    this.setState({selectBrowse: true})
+    console.log('MissingExternalImportDialog handleBrowse: BROWSE selected')
+    this.setState({selectBrowse: 'BROWSE'})
+    this.props.browseExtImportFile()
     this.handleClose();
+  };
+
+  handleNoImport = () => {
+    let self = this;
+    console.log('MissingExternalImportDialog handleNoImport: NO IMPORT selected')
+    this.setState({selectBrowse: 'NO IMPORT'})
+    console.log('MissingExternalImportDialog selectBrowse: ', self.state.selectBrowse)
+    this.props.handleNoImport()
+    self.handleClose();
+
   };
 
   componentWillReceiveProps = (props) => {
@@ -101,17 +110,20 @@ class MissingExternalImportDialog extends React.Component {
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
-          <DialogTitle id="alert-dialog-title">File {ext_imp_json_file} not found</DialogTitle>
+          <DialogTitle id="alert-dialog-title">Import json file not found or invalid</DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              Browse for json import file or exit FRET
+              Browse for json import file, continue with no import or exit FRET
             </DialogContentText>
           </DialogContent>
           <DialogActions>
             <Button id="qa_missExtImp_btn_exit" onClick={this.handleExit} color="primary" >
               Exit
             </Button>
-            <Button id="qa_missExtImp_btn_browse" onClick={this.handleBrowse} color="primary" autoFocus>
+            <Button id="qa_missExtImp_btn_noImport" onClick={this.handleNoImport} color="primary" >
+              No import
+            </Button>            
+            <Button id="qa_missExtImp_btn_browse" onClick={this.handleBrowse} color="primary" >
               Browse
             </Button>
           </DialogActions>
@@ -123,6 +135,8 @@ class MissingExternalImportDialog extends React.Component {
 
 MissingExternalImportDialog.propTypes = {
   open: PropTypes.bool.isRequired,
-  handleMissingExternalImportDialogClose: PropTypes.func.isRequired,
+  browseExtImportFile: PropTypes.func.isRequired,
+  handleNoImport: PropTypes.func.isRequired,
+  selection: PropTypes.string.isRequired,
 }
-export default withStyles(styles)(MissingExternalImportDialog);
+export default MissingExternalImportDialog;

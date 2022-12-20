@@ -288,46 +288,6 @@ class MainView extends React.Component {
     dbChangeListener.cancel()
   }
 
-  handleImportExternalTool = () => {
-    const self = this;
-    var homeDir = app.getPath('home');
-    var filepath = ext_imp_json_file;
-    //console.log('expected file in handleImportExternalTool: ', filepath);
-    if (filepath && filepath.length > 0) {
-      //const filepath = filepaths[0];
-      fs.readFile(filepath, function (err,buffer) {
-        if (err) {
-          // throw err;
-          //console.log('err in handleImportExternalTool: ', err);
-          //console.log('err string in handleImportExternalTool: ', String(err));
-          // pop up error not found, give option to quit or access filesystem
-          if (String(err).includes('ENOENT')){
-
-            self.setState({
-              missingExternalImportDialogOpen: true,
-              anchorEl: null
-            });
-          }
-
-
-        } else {
-          try {
-            let data = JSON.parse(buffer);
-            self.setState({
-              externalRequirement : data.requirement,
-              externalVariables : data.variables
-            })
-          } catch (error) {
-            //if invalid JSON
-            console.log(error);
-          }
-          self.handleCreateDialogOpen();
-        }
-      })
-    }
-  }
-
-
   handleImport = () => {
     const self = this;
     var homeDir = app.getPath('home');
@@ -447,6 +407,9 @@ class MainView extends React.Component {
         snackbarOpen: newRequirementCreated,
         lastCreatedRequirementId: newReqId
       });
+      if(process.env.EXTERNAL_TOOL=='1'){
+        //ipcRenderer.send('closeFRET');
+      }
   }
 
   /*
@@ -548,10 +511,59 @@ class MainView extends React.Component {
       anchorEl: null
     })
   }
+  
+  handleNoExtFileImport = () => {
+    this.handleCreateDialogOpen();
+  }
 
-  closeMissingExternalImportDialog = (missingExtImpDialogSelection) => {
-    //console.log('missingExtImpDialogSelection: ', missingExtImpDialogSelection)
-    if (missingExtImpDialogSelection){
+
+  handleImportExternalTool = () => {
+    const self = this;
+    //var homeDir = app.getPath('home');
+    var filepath = ext_imp_json_file;
+    //console.log('expected file in handleImportExternalTool: ', filepath);
+    if (filepath && filepath.length > 0) {
+      //const filepath = filepaths[0];
+      fs.readFile(filepath, function (err,buffer) {
+        if (err) {
+          // throw err;
+          //console.log('err in handleImportExternalTool: ', err);
+          //console.log('err string in handleImportExternalTool: ', String(err));
+          // pop up error not found, give option to quit or access filesystem
+          if (String(err).includes('ENOENT')){
+            // file not found
+            self.setState({
+              missingExternalImportDialogOpen: true,
+              anchorEl: null
+            });
+          }
+
+
+        } else {
+          try {
+            let data = JSON.parse(buffer);
+            // TODO check that data contains valid requirement data.  If not
+            // handle it here.  
+            self.setState({
+              externalRequirement : data.requirement,
+              externalVariables : data.variables
+            })
+            self.handleCreateDialogOpen();
+          } catch (error) {
+            //  empty file  
+            console.log(error);
+            self.setState({
+              missingExternalImportDialogOpen: true,
+              anchorEl: null
+            });         
+          }
+          
+        }
+      })
+    }
+  }
+
+  handleBrowseExtImpFile = () => {
       // call file browser
       const self = this;
       var homeDir = app.getPath('home');
@@ -567,27 +579,40 @@ class MainView extends React.Component {
         ],
         properties: ['openFile']});
 
+        console.log('handleBrowseExtImpFile-filepaths2: ', filepaths2);
+
         if (filepaths2 && filepaths2.length > 0) {
           var data;
           const filepath2 = filepaths2[0];
-          fs.readFile(filepath2, function (err,buffer2) {
-            if (err) throw err;
-            data = JSON.parse(buffer2);
-            //console.log('data: ', data)
-            self.setState({
-              externalRequirement : data.requirement,
-              externalVariables : data.variables
-            })
-            self.handleCreateDialogOpen();
-          });
+          try {
+            fs.readFile(filepath2, function (err,buffer2) {
+              if (err) {
+                self.setState({missingExternalImportDialogOpen: true})
+                throw err;
+              }
+              try {
+                data = JSON.parse(buffer2);
+                //console.log('data: ', data)
+                self.setState({
+                  externalRequirement : data.requirement,
+                  externalVariables : data.variables,
+                  missingExternalImportDialogOpen: false
+                })
+                self.handleCreateDialogOpen();
+              } catch (e){
+                console.log('inside  catch in handleBrowseExtImpFile')
+                self.setState({missingExternalImportDialogOpen: true})
+                console.log(e)                
+              }
+            });
+          } catch (error) {
+            console.log('outside catch in handleBrowseExtImpFile')
+            self.setState({missingExternalImportDialogOpen: true})
+            console.log(err)
+          }
+        } 
 
-
-        }
-    } else {
-      //console.log('exit FRET');
-      ipcRenderer.send('closeFRET');
-    }
-    this.setState({missingExternalImportDialogOpen: false})
+    //if(!self.state.missingExternalImportDialogOpen){self.handleCreateDialogOpen();}
   }
 
   render() {
@@ -779,7 +804,9 @@ class MainView extends React.Component {
           />
           <MissingExternalImportDialog
           open={this.state.missingExternalImportDialogOpen}
-          handleMissingExternalImportDialogClose={this.closeMissingExternalImportDialog}
+          browseExtImportFile={this.handleBrowseExtImpFile}
+          handleNoImport={this.handleNoExtFileImport}
+          selection='BROWSE'
           />
         </div>
         <Snackbar

@@ -82,6 +82,7 @@ const uuidv1 = require('uuid/v1');
 const checkDbFormat = require('../../support/fretDbSupport/checkDBFormat.js');
 const {ipcRenderer} = require('electron');
 const ext_exp_json_file = require('electron').remote.getGlobal('sharedObj').ext_exp_json;
+const ext_exp_json_file_exists = require('electron').remote.getGlobal('sharedObj').exp_exp_json_exists;
 
 const app = require('electron').remote.app;
 const fs = require('fs');
@@ -146,7 +147,8 @@ class CreateRequirementDialog extends React.Component {
     editor: withFields(withReact(createEditor())),
     dialogTop: 0,
     dialogLeft: 0,
-    autoFillVariables: []
+    autoFillVariables: [],
+    existingFileName: '',
   };
 
 
@@ -324,6 +326,13 @@ class CreateRequirementDialog extends React.Component {
     )
     if(process.env.EXTERNAL_TOOL=='1'){
       var filepath = ext_exp_json_file;
+      console.log('export json file name: ', filepath)
+
+      if(ext_exp_json_file_exists){
+        // pop up warning
+        console.log('Overwriting existing external export file: ', ext_exp_json_file);
+      }
+      
       let doc = ({"requirement": {"reqid" :this.state.reqid,
                   "parent_reqid": this.state.parent_reqid,
                   "project": this.state.project,
@@ -335,12 +344,12 @@ class CreateRequirementDialog extends React.Component {
                   "semantics": semantics,
                   "input": input}});
 
-        fs.writeFile(filepath, JSON.stringify(doc, null, 4), (err) => {
-            if(err) {
-                return console.log(err);
-            }
-            ipcRenderer.send('closeFRET');
-        })
+      fs.writeFile(filepath, JSON.stringify(doc, null, 4), (err) => {
+          if(err) {
+            return console.log(err);
+          }
+          ipcRenderer.send('closeFRET');
+      })
     }
 };
 
@@ -471,6 +480,7 @@ class CreateRequirementDialog extends React.Component {
 
     const colorStyle = isRequirementUpdate ? getRequirementStyle({semantics, fulltext},false) : 'req-grey';
     return (
+      <div className={classes.root}>
         <Dialog
           open={this.state.createDialogOpen}
           onClose={this.handleClose}
@@ -635,6 +645,7 @@ class CreateRequirementDialog extends React.Component {
             </div>
           </div>
         </Dialog>
+      </div>
     );
   }
 }
