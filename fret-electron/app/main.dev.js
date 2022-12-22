@@ -70,7 +70,7 @@ if(process.env.EXTERNAL_TOOL=='1'){
   const curDir = process.cwd();
 
   if (typeof process.env.EXTERNAL_EXP_JSON === "undefined"){
-    ext_exp_json_file = path.join(curDir,'requirement.json');
+    ext_exp_json_file = path.join(userDocumentsFolder,'requirement.json');
   } else {
     ext_exp_json_file = process.env.EXTERNAL_EXP_JSON+'.json';
   }
@@ -88,7 +88,7 @@ if(process.env.EXTERNAL_TOOL=='1'){
       //console.log("ext_exp_json_file DOES NOT exist, using defined name: ", ext_exp_json_file);
     } else {
       // directory doesn't exist, use default name
-      ext_exp_json_file = path.join(curDir, 'requirement.json')
+      ext_exp_json_file = path.join(userDocumentsFolder, 'requirement.json')
       console.log("ext_exp_json_file DOES NOT exist, using default name: ", ext_exp_json_file);
     }
   }

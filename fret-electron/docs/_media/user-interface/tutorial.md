@@ -34,5 +34,11 @@ Export and import buttons are available for saving/exporting your requirements o
 More information on how to export is available [here](./export&import/export.md).
 More information on how to import is available [here](./export&import/import.md).
 
+## Interface with external tools
+
+FRET provides an interface for working with the PLCVerif.  FRET can read in PLCVerif requirement, process the requirement with FRET's semantic engine and save resulting formulizations in PLCVerif compatible format.
+
+More information on the FRET and PLCVerif integration is available [here](./external/ext_plcverif.md).
+
 
 [Back to FRET home page](../userManual.md)
