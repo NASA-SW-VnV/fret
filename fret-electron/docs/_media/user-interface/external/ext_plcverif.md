@@ -1,6 +1,6 @@
 # Connecting with external tools
 
-Upon starting the `ext` mode, the FRET requirement editor pops up. A user may then write a requirement, check the requirement semantics by utilizing the produced explanations and the simulator, and finally export the generated formalizations in the form of a JSON file. This new mode also allows to import a variable glossary, in the form a JSON file, into the requirement editor. The variable glossary enables the autocomplete feature of the requirement editor.
+Upon starting the `ext` mode, the FRET requirement editor pops up. A user may then write a requirement, check the requirement semantics by utilizing the produced explanations and the simulator, and finally export the generated formalizations in the form of a JSON file. This new mode also allows users to import a variable glossary, in the form a JSON file, into the requirement editor. The variable glossary enables the autocomplete feature of the requirement editor.
 
 ## How to use the ext mode
 
