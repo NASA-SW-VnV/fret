@@ -1,20 +1,25 @@
-# Interface with PLCVerif
+# Connecting with external tools
 
-FRET provides an interface for working with the PLCVerif software. In using this interface, users can read in a PLCVerif requirement, process and or view this requirement using FRET's capabilities provided on the "Update Requirement" dialog and can save resulting formulizations in a PLCVerif compatible json file.  
+Upon starting the `ext` mode, the FRET requirement editor pops up. A user may then write a requirement, check the requirement semantics by utilizing the produced explanations and the simulator, and finally export the generated formalizations in the form of a JSON file. This new mode also allows to import a variable glossary, in the form a JSON file, into the requirement editor. The variable glossary enables the autocomplete feature of the requirement editor.
 
-Environment variables are used to trigger the PLCVerif interface.  Environment variables are also used to set locations for PLCVerif input and output json file.
+To use the `ext` mode, run FRET with the following command: `npm run ext`
 
-To run FRET using the interface for PLCVerif, set the environment variable EXTERNAL_TOOL to 1 before starting FRET.
+Environment variables can be used to set the locations of 1) the glossary variable file to import  and 2) the formalizations file to export from FRET. Use the `EXTERNAL_IMP_JSON` environment variable for the former and the `EXTERNAL_EXP_JSON` variable for the latter.
 
-To point FRET to a PLCVerif input json file, set the environment variable EXTERNAL_IMP_JSON to the location of that file.  The input json file should have the ".json" file extension but don't include this extension in the environment variable. Upon activating the PLCVerif interface, FRET loads the PLCVerif input json file defined by the EXTERNAL_IMP_JSON environment variable.  If the envirnment variable is undefined or the file defined is not valid, FRET will pop up a dialog that allows users to browse for an input file, continue with no import or exit.
+Here is an example:
+
+ `npm run ext EXTERNAL_IMP_JSON=<Path_to_import_file> EXTERNAL_EXP_JSON=<Path_to_export_file>`
+
+ Notice that you do not need to include the ".json" file extension as part of the paths.
+
+ Upon starting FRET in the `ext` mode,  FRET loads the  input JSON file defined by the `EXTERNAL_IMP_JSON` environment variable.  If the environment variable is undefined or the file defined is not valid, FRET will pop up a dialog that allows users to browse for an input file, continue with no import or exit.
 
 ***
 <img src="../../screen_shots/invalid_json_import.png">
 
 ***
 
-
-Use the environment variable EXTERNAL_EXP_JSON to set the location for the PLCVerif output json file. Don't include the ".json" file extension in the environment variable.  This extension will be automatically added to the output file. After processing and or viewing a requirement, users can save resulting formulizations in a PLCVerif compatible json file by clicking the "update" button.  If the EXTERNAL_EXP_JSON environment variable is defined and the location of the resulting file is valid, FRET will write results to this file.  If the environment variable is undefined or invalid, FRET will write results to a default file named requirement.json in the user Documents directory.  FRET will overwrite existing PLCVerif output file with new results.  FRET automatically exits after writing to PLCVerif output file.
+ After writing a FRETish requirement, users can save the resulting formalizations in json file by clicking the "update" button.  If the EXTERNAL_EXP_JSON environment variable is defined and the location of the resulting file is valid, FRET will write results to this file.  If the environment variable is undefined or invalid, FRET will write results to a default file named requirement.json in the user Documents directory.  If an output file with the same name exists, FRET will overwrite it.  FRET automatically exits after exporting the output file.
 
 
 [Back to the tutorial page](../tutorial.md)
