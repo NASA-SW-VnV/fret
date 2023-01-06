@@ -12,7 +12,7 @@ Here is an example:
 
  `EXTERNAL_IMP_JSON=<Path_to_import_file> EXTERNAL_EXP_JSON=<Path_to_export_file> npm run ext`
 
- Notice that you do not need to include the ".json" file extension as part of the paths.
+Do not include the ".json" file extension as part of the paths.
 
  ## Variable Glossary
 
@@ -23,7 +23,7 @@ Here is an example:
 
 ***
 
-The format of the variable glossary JSON file is an object of an array of docs. Here is an example of a glossary with two variables:
+The format of the variable glossary JSON file is an object of an array variable `docs`. Here is an example of a glossary with two variables:
 
 ```
 "variables": {
@@ -60,7 +60,7 @@ The following screenshot displays how an imported variable glossary looks in the
 
 ## Exporting requirements and their formalizations
 
- After writing a FRETish requirement, users can save the resulting formalizations in json file by clicking the "update" button.  If the EXTERNAL_EXP_JSON environment variable is defined and the location of the resulting file is valid, FRET will write results to this file.  If the environment variable is undefined or invalid, FRET will write results to a default file named requirement.json in the user Documents directory.  If an output file with the same name exists, FRET will overwrite it.  FRET automatically exits after exporting the output file.
+ After writing a FRETish requirement, users can save the resulting formalizations in JSON file by clicking the "update" button.  If the EXTERNAL_EXP_JSON environment variable is defined and the location of the resulting file is valid, FRET will write results to this file.  If the environment variable is undefined or invalid, FRET will write results to a default file named requirement.json in the user Documents directory.  If an output file with the same name exists, FRET will overwrite it.  FRET automatically exits after exporting the output file.
 
 
 [Back to the tutorial page](../tutorial.md)
