@@ -74,7 +74,8 @@ const booleanSimplifications = [
     ['! FALSE',trueFn,'TRUE'],
     ['__p | FALSE',trueFn,'__p'], ['FALSE | __p',trueFn,'__p'],
     ['__p & TRUE',trueFn,'__p'], ['TRUE & __p',trueFn,'__p'],
-    ['__p & FALSE', trueFn, 'FALSE'], ['FALSE & __p', trueFn, 'FALSE']
+  ['__p & FALSE', trueFn, 'FALSE'], ['FALSE & __p', trueFn, 'FALSE'],
+  ['ite(__p, __q, __r)', trueFn, '((__p & __q) | ((! __p) & __r))']
 ];
 
 const pastTimeSimplifications = [
@@ -110,9 +111,9 @@ const futureTemporalConditions = [
     ['persists(__n,__p)',trueFn,'((G[<=__n] __p) & (G[<__n] ! $Right$))'],
     ['occurs(__n,__p)',trueFn,'(((! $Right$) U __p) & (F[<=__n] __p))'],
     // This commented out version assumes there must be a next occurrence of p
-    //['nextOcc(__p,__q)', trueFn, '(X((!__p & !$Right$) U (__p & __q)))'] 
+    // ['nextOcc(__p,__q)', trueFn, '(X((!__p & !$Right$) U (__p & __q)))'] 
     // This version is satisfied if there is no next occurrence of p.
-    ['nextOcc(__p,__q)', trueFn, '(X (((!__p & !$Right$) U __p) => ((!__p & !$Right$) U (__p & __q))) )']
+    ['nextOcc(__p,__q)', trueFn, '($Right$ | (X (((!__p & !$Right$) U __p) => ((!__p & !$Right$) U (__p & __q)))))']
     ]
 
 /*
@@ -133,7 +134,8 @@ const pastTemporalConditions = [
    '(((! (Y TRUE)) & (__init)) | ((! (! Y TRUE) ) & (Y __p)))'],
   ['persisted(__n,__p)',trueFn,'((H[<=__n] __p) & (H[<__n] ! $Left$))'],
   ['occurred(__n,__p)',trueFn,'(((! $Left$) S __p) & (O[<=__n] __p))'],
-  ['prevOcc(__p,__q)', trueFn, '(Z (((! $Left$ & !__p) S __p) => ((! $Left$ & !__p) S (__p & __q))))']
+  //['prevOcc(__p,__q)', trueFn, '(Z (((! $Left$ & !__p) S __p) => ((! $Left$ & !__p) S (__p & __q))))']
+  ['prevOcc(__p,__q)', trueFn, '($Left$ | (Y (((! $Left$ & !__p) S __p) => ((! $Left$ & !__p) S (__p & __q)))))']
 ]
 
 const temporalConditions = pastTemporalConditions.concat(futureTemporalConditions);
