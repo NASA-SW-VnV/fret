@@ -111,6 +111,12 @@ export function RequirementsInProject(project_name)
 */
 export function FindRequirementsWithFragment(allRequirements, project_name, fragment, reqName, destinationName)
 {
+  //console.log("1. allRequirements = " + allRequirements);
+  //console.log("2. project_name = " + project_name);
+  //console.log("3. fragment = " + fragment);
+  //console.log("4. reqName = " + reqName);
+  //console.log("5. destinationName = " + destinationName);
+
   let reqsWithFrag = [];
   // var result = db.allDocs( {include_docs: true, selector:{project:project_name}}, function(err, response) {
   // if (err) { return console.log(err); }

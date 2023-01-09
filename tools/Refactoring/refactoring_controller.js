@@ -14,9 +14,13 @@ var compare = require("./refactoring_compare");
 //import { v4 as uuidv4 } from 'uuid';
 
 
-exports.requirementWithFragement = function requirementWithFragement(allRequirements, project, fragment, req, destinationName)
+/**
+* Finds all the requirements in the given project that contain the given fragment
+* Uses `FindRequirementsWithFragment` in refactoring_model.js
+*/
+exports.requirementWithFragement = function requirementWithFragement(allRequirements, req, fragment,  destinationName)
 {
-	return model.FindRequirementsWithFragment(allRequirements, project, fragment, req.reqid, destinationName);
+	return model.FindRequirementsWithFragment(allRequirements, req.project, fragment, req.reqid, destinationName);
 };
 
 
@@ -137,7 +141,7 @@ exports.extractRequirement = extractRequirement;
 /**
 * Handles a request to extract a fragment from all requirements that contain it.
 */
-function extractRequirement_ApplyAll(req, fragment,  destinationName, newID, allRequirements)
+function extractRequirement_ApplyAll(req, reqVars, fragment,  destinationName, newID, allRequirements)
 {
 	console.log("Extract All")
 
@@ -174,7 +178,7 @@ function extractRequirement_ApplyAll(req, fragment,  destinationName, newID, all
 	project = req.project;
 
 	//I think this should contain the req parameter too.
-	let reqKnockons = requirementWithFragement(allRequirements, project, fragment, req.reqid, destinationName);
+	let reqKnockons = exports.requirementWithFragement(allRequirements, project, fragment, req.reqid, destinationName);
 
 	console.log("Lets see what requirements I've got to update...");
 	console.log(reqKnockons);

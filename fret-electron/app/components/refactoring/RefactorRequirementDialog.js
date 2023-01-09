@@ -113,7 +113,7 @@ class RefactorRequirementDialog extends React.Component {
     open: false,
     dialogState : STATE.INITIAL,
     selectedRequirement: {},
-    variables: {},
+    variables: new Map(),
     variablesText: "No Variables",
     applyToAll: false,
     refactoringType: '',
@@ -208,7 +208,7 @@ handleInitialOK = () =>
           console.log(i);
         }
 
-        let currentVariables = this.state.variables;
+        let currentVariables = self.state.variables;
         currentVariables[this_req.reqid] =  variableTypeMap
 
         self.setState({variables : currentVariables});
@@ -219,80 +219,88 @@ handleInitialOK = () =>
   }
   else{
 
-//     , this.state.variables, this.state.extractString,
-      // , newID,
+    //console.log(this.state.selectedRequirement);
+    //console.log(this.state.selectedRequirement.reqid);
 
+    //Find the requirements that have the fragment in.
+    let applicableRequirements = RefactoringController.requirementWithFragement(this.state.requirements, this.state.selectedRequirement, this.state.extractString, this.state.newName);
 
-    let applicableRequirements = RefactoringController.requirementWithFragement(this.state.requirements, this.state.selectedRequirement.project, this.state.extractString, this.state.selectedRequirement.reqid, this.state.newName);
+    console.log(applicableRequirements);
 
+    //If we have some requirements that contain the fragment we're extracting
     if (applicableRequirements.length >0)
   	{
-  		//check first
+      console.log("^^ applicableRequirements > 0");
+      var variableTypeMap = new Map(); // map to hold varname |-> type
+      var varList = [];
+
+      // For each requirement that has the fragment in...
   		for (var i = 0; i < applicableRequirements.length; i++)
   		{
-        var variableTypeMap = new Map();
-
         let this_req = applicableRequirements[i];
-
-        let varList = RefactoringUtils.getVariableNames(this_req);
+        // Get the variable names embedded in this requirement...
+        let varNames = RefactoringUtils.getVariableNames(this_req);
+        let newVarList = varList.concat(varNames); // Javascript is a silly language
+        varList = newVarList;
         console.log("handleInitialOK's var list = " + varList);
-
-
-        for(let variable of varList)
-        {
-          variableTypeMap.set(variable, "undefined");
-        }
-
-        var self = this;
-
-        modeldb.find({
-          selector: {
-            project : this_req.selectedProject,
-            //component_name : this.selectedRequirement,
-            variable_name : {$in:varList}
-          }
-        }).then(function(result)
-          {
-            console.log("result.docs");
-            console.log(result.docs);
-
-            var variableTypeMap = new Map();
-            for (let doc of result.docs)
-            {
-              let varName = doc.variable_name;
-              let varType = doc.dataType;
-
-              if(varType == "")
-              {
-                varType = "undefined";
-              }
-
-              variableTypeMap.set(varName, varType);
-
-            }
-
-            console.log("!!! Show me the Variables!")
-            for(let i of variableTypeMap)
-            {
-              console.log(i);
-            }
-
-            let currentVariables = this.state.variables;
-            currentVariables[this_req.reqid] =  variableTypeMap
-
-            self.setState({variables : currentVariables});
-          }
-          ).catch((err) => {
-            console.log(err);
-          })
       }
+
+      // ... and add them to the map, mapping varname |-> "undefined" (for now)
+      for(let variable of varList)
+      {
+        variableTypeMap.set(variable, "undefined");
+      }
+
+
+      // Now get the variable types (if they exist) from ModelDB
+
+      var self = this; // Javascript is a silly lanauge
+      var thisProject = this.state.selectedRequirement.selectedProject;
+      modeldb.find({
+        selector: {
+          project : thisProject,
+          variable_name : {$in:varList}
+        }
+      }).then(function(result)
+        {
+          console.log("result.docs");
+          console.log(result.docs);
+
+          //var variableTypeMapModel = new Map();
+          for (let doc of result.docs)
+          {
+            let varName = doc.variable_name;
+            let varType = doc.dataType;
+
+            if(varType == "")
+            {
+              varType = "undefined";
+            }
+
+            variableTypeMap.set(varName, varType);
+
+          }
+
+          console.log("!!! Show me the Variables!")
+          for(let i of variableTypeMap)
+          {
+            console.log(i);
+          }
+
+
+          self.setState({variables : variableTypeMap});
+          self.setState({dialogState:STATE.TYPES});
+        }
+        ).catch((err) => {
+          console.log(err);
+        })
 
     }
   }
 
 
 
-  this.setState({dialogState:STATE.TYPES});
+
   console.log("state's copy of variables = " + this.state.variables);
 
 }
@@ -310,6 +318,7 @@ handleOk = () => {
   var result;
   if (this.state.applyToAll == true)
   {
+
     result = RefactoringController.extractRequirement_ApplyAll(
       this.state.selectedRequirement, this.state.variables, this.state.extractString,
       this.state.newName, newID, this.state.requirements);
@@ -562,12 +571,18 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
 
     case STATE.TYPES:
       console.log("!! Types Case")
+      console.log("Vars = " );
+      console.log(this.state.variables);
 
-      Array.from( this.state.variables.keys()).map( varName =>
-        (
-          console.log(varName + " : " + this.getType(varName))
-        ));
-      console.log("after the map ");
+
+      let reqVariables = []
+      this.state.variables.forEach (function(value, key) {
+        reqVariables.push(key);
+      })
+
+      console.log("Made a list of the object/map")
+
+      console.log(reqVariables);
 
       var self = this;
 
@@ -601,11 +616,10 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
           </Grid>
 
               <ul >
-              { Array.from( this.state.variables.keys()).map(requirementName =>
-                (
-                  Array.from(requirementName.keys()).map(varName =>
+              {
+              reqVariables.map(varName =>
                     (
-                      <li key={requirementName_varName}>
+                      <li key={varName}>
                           {varName} :
                         <Select
                               labelId={varName}
@@ -620,10 +634,10 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
                         </Select>
                       </li>
                     )
-                  ),
+                  ,
                   <Divider variant="inset" component="li" />
                 )
-              )
+
             }
             </ul>
 

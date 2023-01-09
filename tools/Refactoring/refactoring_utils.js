@@ -5,7 +5,6 @@
 exports.getVariableNames = function getVariableNames(requirement)
 {
   let variables = requirement.semantics.variables;
-  console.log(typeof(variables));
 
   // If variables is an object, then I'm going to asssume
   // that it's the version of the requirement with 'regular' and 'modes'
