@@ -105,13 +105,13 @@ class VersionDialog extends React.Component {
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
-          <DialogTitle id="alert-dialog-title">FRET Version</DialogTitle>
+          <DialogTitle id="alert-dialog-title">MU-FRET Version</DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              The Current Version of FRET
+              The Current Version of MU-FRET
             </DialogContentText>
             <div>
-              Fret Version: {this.state.version}
+              MU-FRET Version: {this.state.version}
             </div>
 
           </DialogContent>

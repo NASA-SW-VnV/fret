@@ -91,7 +91,6 @@ class DisplayRequirementDialog extends React.Component {
       dialogCloseListener: props.handleDialogClose,
       openCreateDialog: props.handleCreateDialogOpen,
       openDeleteDialog: props.handleDeleteDialogOpen,
-      openRefactorDialog: props.handleRefactorDialogOpen
     };
   }
 
@@ -180,10 +179,14 @@ class DisplayRequirementDialog extends React.Component {
           open={this.state.open}
           onClose={this.handleClose}
           aria-labelledby="form-dialog-title"
+          maxWidth="md"
         >
-          <ImageList rowHeight='auto' cols={2}>
+
+          <DialogTitle id="form-dialog-title"> <div style ={{textAlign:'left', float:'left'}}>{reqidLabel}</div> <div style={{ float:'right', textAlign: 'right' }}>{projectLabel}</div>  </DialogTitle>
+
+          <DialogContent>
+          <ImageList rowHeight='30' cols={2}>
             <ImageListItem>
-              <DialogTitle id="form-dialog-title">{reqidLabel}
                 <IconButton onClick={this.handleUpdateRequirement} size="small" color="secondary" aria-label="edit" >
                   <Tooltip id="tooltip-icon-edit" title="Edit Requirement">
                     <EditIcon />
@@ -194,16 +197,15 @@ class DisplayRequirementDialog extends React.Component {
                     <DeleteIcon color='error' />
                   </Tooltip>
                 </IconButton>
-              </DialogTitle>
             </ImageListItem>
             <ImageListItem>
-              <DialogTitle style={{ textAlign: 'right' }} id="form-dialog-title">{projectLabel}</DialogTitle>
+
             </ImageListItem>
           </ImageList>
           <Divider />
-          <DialogContent>
+
             <br />
-            <ImageList cols={1} rowHeight='auto' gap={20}>
+            <ImageList cols={1} rowHeight="auto"  gap={10}>
               <ImageListItem>
                 <Typography variant='button'>Rationale</Typography><br/>
                 <Typography color='primary' variant='body1'>{rationale}</Typography>
@@ -233,8 +235,7 @@ DisplayRequirementDialog.propTypes = {
   open: PropTypes.bool.isRequired,
   handleDialogClose: PropTypes.func.isRequired,
   handleCreateDialogOpen: PropTypes.func.isRequired,
-  handleDeleteDialogOpen: PropTypes.func.isRequired,
-  handleRefactorDialogOpen: PropTypes.func.isRequired,
+  handleDeleteDialogOpen: PropTypes.func.isRequired
 };
 
 export default withStyles(styles)(DisplayRequirementDialog);

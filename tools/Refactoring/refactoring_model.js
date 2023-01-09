@@ -12,6 +12,9 @@ const modeldb = require('electron').remote.getGlobal('sharedObj').modeldb;
 //const uuidv1 = require('uuid/v1');
 //const checkDbFormat = require('../../support/fretDbSupport/checkDBFormat.js');
 
+
+
+
 /**
 * Replaces one fragement in a requirement with another
 */
@@ -104,11 +107,17 @@ export function RequirementsInProject(project_name)
 
 
 /**
-* Finds all the requirements in the given project
-* that contain the given fragment
+* Finds all the requirements in the given project that contain the given fragment
 */
 export function FindRequirementsWithFragment(allRequirements, project_name, fragment, reqName, destinationName)
 {
+  console.log("+++ Find Requirements with Fragment +++")
+  console.log("1. allRequirements = " + allRequirements);
+  console.log("2. project_name = " + project_name);
+  console.log("3. fragment = " + fragment);
+  console.log("4. reqName = " + reqName);
+  console.log("5. destinationName = " + destinationName);
+
   let reqsWithFrag = [];
   // var result = db.allDocs( {include_docs: true, selector:{project:project_name}}, function(err, response) {
   // if (err) { return console.log(err); }
@@ -122,6 +131,7 @@ export function FindRequirementsWithFragment(allRequirements, project_name, frag
        console.log(this_req);
 
           let this_req_text = this_req.fulltext;
+          console.log("this_req_text == " + this_req_text)
           if(typeof this_req_text === "undefined")
           {
             console.log("No fulltext, so assuming it's not a requirement.")
@@ -137,7 +147,8 @@ export function FindRequirementsWithFragment(allRequirements, project_name, frag
           else
           {
              console.log(this_req_text);
-             if(this_req_text.includes(fragment))
+             console.log("checking for fragment: " + fragment)
+             if(this_req_text.split(" ").join("").includes(fragment.split(" ").join("")))
              {
                console.log("Pushing " + this_req);
                reqsWithFrag.push(this_req);
@@ -147,8 +158,61 @@ export function FindRequirementsWithFragment(allRequirements, project_name, frag
 
       return reqsWithFrag;
   //});
+}
+
+export function makeVariableTypeMap(requirement)
+{
+  let varList = RefactoringUtils.getVariableNames(requirement);
+  console.log("handleInitialOK's var list = " + varList);
+
+  var variableTypeMap = new Map();
+  for(let variable of varList)
+  {
+    variableTypeMap.set(variable, "undefined");
+  }
 
 
+  //let variableTypes = []
+  var self = this;
+
+  modeldb.find({
+    selector: {
+      project : requirement.selectedProject,
+      component_name : requirement,
+      variable_name : {$in:varList}
+    }
+  }).then(function(result)
+    {
+      console.log("result.docs");
+      console.log(result.docs);
+
+      var variableTypeMap = new Map();
+      for (let doc of result.docs)
+      {
+        let varName = doc.variable_name;
+        let varType = doc.dataType;
+
+        if(varType == "")
+        {
+          varType = "undefined";
+        }
+
+        variableTypeMap.set(varName, varType);
+
+      }
+
+      console.log("!!! Show me the Variables!")
+      for(let i of variableTypeMap)
+      {
+        console.log(i);
+      }
+
+      return variableTypeMap
+    }
+  ).catch((err) => {
+      console.log(err);
+    })
+}
 
   // console.log(typeof(reqsInProject));
   // console.log(reqsInProject);
@@ -161,7 +225,7 @@ export function FindRequirementsWithFragment(allRequirements, project_name, frag
   //     reqsWithFrag.push(req);
   //   }
   // });
-}
+
 
 // export function AddNewRequirementToDB(req)
 // {
