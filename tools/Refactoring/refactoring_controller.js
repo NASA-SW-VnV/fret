@@ -4,22 +4,25 @@
 * 2022
 */
 
-//var FretRequirement = require("./FretRequirement")
+
 var model = require("./refactoring_model");
 var fretSemantics = require("../../fret-electron/app/parser/FretSemantics");
 var compare = require("./refactoring_compare");
-//const {v1:uuidv1} = require('uuid');
-//const uuidv1 = require('uuid/v1');
-//const { v1: uuidv1 } = require('uuid');
-//import { v4 as uuidv4 } from 'uuid';
+const refactoring_utils = require('./refactoring_utils.js')
 
 
 /**
 * Finds all the requirements in the given project that contain the given fragment
 * Uses `FindRequirementsWithFragment` in refactoring_model.js
 */
+
 exports.requirementWithFragement = function requirementWithFragement(allRequirements, req, fragment,  destinationName)
 {
+	console.log(" +++ requirementWithFragement +++")
+	console.log("req = " + req )
+	console.log("req.project = " + req.project)
+	console.log("req.reqid = " + req.reqid)
+
 	return model.FindRequirementsWithFragment(allRequirements, req.project, fragment, req.reqid, destinationName);
 };
 
@@ -100,6 +103,10 @@ function extractRequirement(req, reqVars, fragment, destinationName, newID, allR
 	console.log("~~~~~")
 
 
+
+	  console.log("extractRequirement allRequirements -> ");
+	  console.log(allRequirements);
+
   // Step 4
   // Verify
 	var result = compare.compareRequirements(req, reqVars, dummyUpdatedReq, allRequirements);
@@ -177,8 +184,7 @@ function extractRequirement_ApplyAll(req, reqVars, fragment,  destinationName, n
   // Similar to this method, but the destination requirement already exists.
 	project = req.project;
 
-	//I think this should contain the req parameter too.
-	let reqKnockons = exports.requirementWithFragement(allRequirements, project, fragment, req.reqid, destinationName);
+	let reqKnockons = exports.requirementWithFragement(allRequirements, req, fragment, destinationName);
 
 	console.log("Lets see what requirements I've got to update...");
 	console.log(reqKnockons);
@@ -207,10 +213,13 @@ function extractRequirement_ApplyAll(req, reqVars, fragment,  destinationName, n
 
 			// Step 4
 			// Verify
-		// TODO Needs to get the reqVars from here
-		reqVars = {}
-		// modufyTheVars(reqVars) ??
 
+		  console.log("extractRequirement_ApplyAll allRequirements -> ");
+		  console.log(allRequirements);
+
+			// This call to compareRequirements can reuse reqVars because if we are doing extract all
+			// then `reqvars` will contain all the variables (and types) for all the requirements that
+			// contain the fragment being extracted. 
 			result = compare.compareRequirements(kreq, reqVars, dummyUpdatedReq, allRequirements);
 			console.log("controller, result = " + result);
 

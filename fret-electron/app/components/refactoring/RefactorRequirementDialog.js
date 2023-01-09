@@ -208,10 +208,8 @@ handleInitialOK = () =>
           console.log(i);
         }
 
-        let currentVariables = self.state.variables;
-        currentVariables[this_req.reqid] =  variableTypeMap
-
-        self.setState({variables : currentVariables});
+        self.setState({variables : variableTypeMap});
+        self.setState({dialogState:STATE.TYPES});
       }
       ).catch((err) => {
         console.log(err);
@@ -219,7 +217,8 @@ handleInitialOK = () =>
   }
   else{
 
-    //console.log(this.state.selectedRequirement);
+    console.log("+++ before requirement with Fragment call +++")
+    console.log(" selected Requirement = " + this.state.selectedRequirement);
     //console.log(this.state.selectedRequirement.reqid);
 
     //Find the requirements that have the fragment in.
@@ -297,10 +296,6 @@ handleInitialOK = () =>
 
     }
   }
-
-
-
-
   console.log("state's copy of variables = " + this.state.variables);
 
 }
@@ -318,6 +313,10 @@ handleOk = () => {
   var result;
   if (this.state.applyToAll == true)
   {
+
+
+      console.log("handleOk this.state.requirements -> ");
+      console.log(this.state.requirements);
 
     result = RefactoringController.extractRequirement_ApplyAll(
       this.state.selectedRequirement, this.state.variables, this.state.extractString,

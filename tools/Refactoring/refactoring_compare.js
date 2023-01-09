@@ -282,11 +282,13 @@ function getVars(originalReq, originalReqVars, newReq, fragList)
     }
   }
 
+  // For each variable in the set, add it to the variables string (with a little conversion for the integers)
   varSet.forEach
   ( function(value)
     {
-      //console.log("making smv variable: " + value + " : boolean;\n");
+      console.log("making smv variable: " + value );
       console.log(originalReqVars);
+      console.log(typeof(originalReqVars));
       type = originalReqVars.get(value); // Big assumption here is that the new requirement doesn't have new variables...
       // Another big assumption is that none of these are typed as 'undefined'
       if (type == "integer")
@@ -331,18 +333,29 @@ function mergeFragment(property, fragment)
   return mergedProperty;
 }
 
-function getFragmetReqs(fragmentNames, allRequirements)
+/*
+*
+*/
+function getFragmentReqs(fragmentNames, allRequirements)
 {
   console.log("getting fragment requirements");
    let fragments = [];
    console.log(fragmentNames)
+
+
+     console.log("getFragmentReqs allRequirements -> ");
+     console.log(allRequirements);
+
+
    for (let req of allRequirements)
    {
-     console.log(req.reqid)
+     console.log("-- req = ")
+     console.log(req);
+     console.log("-- reqid = " + req.doc.reqid);
      for (let name of fragmentNames)
      {
        console.log(name);
-       if (req.reqid == name)
+       if (req.doc.reqid == name) //req.doc because allRequirements is actually a list of docs from the database *sigh*
        {
          console.log("req in fragment names")
          fragments.push(req);
@@ -366,13 +379,16 @@ function generateSMV(originalReq, originalReqVars, newReq,n, allRequirements)
   console.log(newReq);
 
 
+  console.log("generateSMV allRequirements -> ");
+  console.log(allRequirements);
+
     let origFT = originalReq.semantics.ftExpanded;
 
     if ("fragments" in originalReq)
     {
       console.log("merging original req")
 
-      let fragments = getFragmetReqs(originalReq.fragments, allRequirements)
+      let fragments = getFragmentReqs(originalReq.fragments, allRequirements)
 
       for (let f of fragments)
       {
@@ -387,7 +403,7 @@ function generateSMV(originalReq, originalReqVars, newReq,n, allRequirements)
     {
       console.log("merging new req")
 
-      let fragments = getFragmetReqs(newReq.fragments, allRequirements)
+      let fragments = getFragmentReqs(newReq.fragments, allRequirements)
       console.log(fragments)
       for (let f of fragments)
       {
@@ -437,6 +453,10 @@ DEFINE
 }
 
 function callnuXmv (originalReq, originalReqVars, newReq,len,n, allRequirements) {
+
+
+    console.log("callnuXmv allRequirements -> ");
+    console.log(allRequirements);
   let r = generateSMV(originalReq, originalReqVars, newReq, n, allRequirements);
   let nuXmvCode = preamble(r.vars, len) + r.specs.join('\n') + '\n'; //
 
@@ -464,19 +484,20 @@ function callnuXmv (originalReq, originalReqVars, newReq,len,n, allRequirements)
   }
 
 // len is the length of the trace; n is the duration as an integer.
-function compare(originalReq, newReq, len,n) {
-    console.log('\n***\nequiv with length: ' + len + ' duration: ' + n);
-
-    //trying to make the original and new reqs into what the methods are expecting
-    //let formalisations = {"original":originalReq, "new":newReq };
-
-    let sames_diffs = callnuXmv(originalReq, newReq ,len,n);
-    let same = sames_diffs.same;
-    let different = sames_diffs.different;
-    console.log('same(' + same.length + '): ' + JSON.stringify(same));
-    console.log('\ndifferent(' + different.length + '): '
-		+ JSON.stringify(different));
-}
+// function compare(originalReq, newReq, len,n) {
+//     console.log('\n***\nequiv with length: ' + len + ' duration: ' + n);
+//
+//     //trying to make the original and new reqs into what the methods are expecting
+//     //let formalisations = {"original":originalReq, "new":newReq };
+//
+//
+//     let sames_diffs = callnuXmv(originalReq, newReq ,len,n);
+//     let same = sames_diffs.same;
+//     let different = sames_diffs.different;
+//     console.log('same(' + same.length + '): ' + JSON.stringify(same));
+//     console.log('\ndifferent(' + different.length + '): '
+// 		+ JSON.stringify(different));
+// }
 
 
 /**
@@ -492,6 +513,10 @@ function compareRequirements(originalReq, originalReqVars, newReq, requirementSe
 {
   let len = 11;
   let n = 4;
+
+
+    console.log("compareRequirements requirementSet -> ");
+    console.log(requirementSet);
 
   console.log("+++ Comparing Requirements +++")
 

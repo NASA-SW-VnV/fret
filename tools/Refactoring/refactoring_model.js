@@ -111,11 +111,12 @@ export function RequirementsInProject(project_name)
 */
 export function FindRequirementsWithFragment(allRequirements, project_name, fragment, reqName, destinationName)
 {
-  //console.log("1. allRequirements = " + allRequirements);
-  //console.log("2. project_name = " + project_name);
-  //console.log("3. fragment = " + fragment);
-  //console.log("4. reqName = " + reqName);
-  //console.log("5. destinationName = " + destinationName);
+  console.log("+++ Find Requirements with Fragment +++")
+  console.log("1. allRequirements = " + allRequirements);
+  console.log("2. project_name = " + project_name);
+  console.log("3. fragment = " + fragment);
+  console.log("4. reqName = " + reqName);
+  console.log("5. destinationName = " + destinationName);
 
   let reqsWithFrag = [];
   // var result = db.allDocs( {include_docs: true, selector:{project:project_name}}, function(err, response) {
@@ -130,6 +131,7 @@ export function FindRequirementsWithFragment(allRequirements, project_name, frag
        console.log(this_req);
 
           let this_req_text = this_req.fulltext;
+          console.log("this_req_text == " + this_req_text)
           if(typeof this_req_text === "undefined")
           {
             console.log("No fulltext, so assuming it's not a requirement.")
