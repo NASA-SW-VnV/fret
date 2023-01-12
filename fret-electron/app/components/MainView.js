@@ -563,11 +563,11 @@ class MainView extends React.Component {
             }
           } catch (error) {
             //  empty file  
-            console.log(error);
+            //console.log('error in JSON.parse for text import: ',error);
             //console.log('setting missingExternalImportDialogReason to empty')
             self.setState({
               missingExternalImportDialogOpen: true,
-              missingExternalImportDialogReason: 'empty',
+              missingExternalImportDialogReason: 'invalid',
               anchorEl: null
             });         
           }
