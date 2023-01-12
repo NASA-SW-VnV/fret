@@ -53,10 +53,16 @@ const styles = theme => ({
 
 
 class MissingExternalImportDialog extends React.Component {
-  state = {
-    open: false,
-    selectBrowse: 'BROWSE',  // BROWSE, NO IMPORT, EXIT
-  };
+
+  constructor(props){
+    super(props);
+    //console.log('constructor of MissingExternalImportDialog, props.reason: ', props.reason)
+    this.state = {
+      open: false,
+      selectBrowse: 'BROWSE',  // BROWSE, NO IMPORT, EXIT
+      reason: props.reason
+    };
+  }
 
   handleClose = () => {
 
@@ -78,7 +84,7 @@ class MissingExternalImportDialog extends React.Component {
   };
 
   handleBrowse = () => {
-    console.log('MissingExternalImportDialog handleBrowse: BROWSE selected')
+    //console.log('MissingExternalImportDialog handleBrowse: BROWSE selected')
     this.setState({selectBrowse: 'BROWSE'})
     this.props.browseExtImportFile()
     this.handleClose();
@@ -86,9 +92,9 @@ class MissingExternalImportDialog extends React.Component {
 
   handleNoImport = () => {
     let self = this;
-    console.log('MissingExternalImportDialog handleNoImport: NO IMPORT selected')
+    //console.log('MissingExternalImportDialog handleNoImport: NO IMPORT selected')
     this.setState({selectBrowse: 'NO IMPORT'})
-    console.log('MissingExternalImportDialog selectBrowse: ', self.state.selectBrowse)
+    //console.log('MissingExternalImportDialog selectBrowse: ', self.state.selectBrowse)
     this.props.handleNoImport()
     self.handleClose();
 
@@ -98,6 +104,7 @@ class MissingExternalImportDialog extends React.Component {
     this.setState({
       open: props.open,
       dialogCloseListener : props.handleDialogClose,
+      reason: props.reason,
     })
   }
 
@@ -110,7 +117,7 @@ class MissingExternalImportDialog extends React.Component {
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
-          <DialogTitle id="alert-dialog-title">Import json file not found or invalid</DialogTitle>
+          <DialogTitle id="qa_missExtImp_title">{'Import json file ' + this.state.reason }</DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
               Browse for json import file, continue with no import or exit FRET
@@ -138,5 +145,6 @@ MissingExternalImportDialog.propTypes = {
   browseExtImportFile: PropTypes.func.isRequired,
   handleNoImport: PropTypes.func.isRequired,
   selection: PropTypes.string.isRequired,
+  reason: PropTypes.string,
 }
 export default MissingExternalImportDialog;

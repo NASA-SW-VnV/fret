@@ -75,12 +75,12 @@ if(process.env.EXTERNAL_TOOL=='1'){
     ext_exp_json_file = process.env.EXTERNAL_EXP_JSON+'.json';
   }
   
-  console.log('ext_exp_json_file: ', ext_exp_json_file)
+  //console.log('ext_exp_json_file: ', ext_exp_json_file)
 
   if (fs.existsSync(ext_exp_json_file)) {
     // path exists, use same file name
     ext_exp_json_file_exists =  true;
-    console.log('ext_exp_json_file_exists: ', ext_exp_json_file_exists)
+    //console.log('ext_exp_json_file_exists: ', ext_exp_json_file_exists)
   } else {
     var dirName = path.dirname(ext_exp_json_file)
     if (fs.existsSync(dirName)) {
@@ -89,7 +89,7 @@ if(process.env.EXTERNAL_TOOL=='1'){
     } else {
       // directory doesn't exist, use default name
       ext_exp_json_file = path.join(userDocumentsFolder, 'requirement.json')
-      console.log("ext_exp_json_file DOES NOT exist, using default name: ", ext_exp_json_file);
+      //console.log("ext_exp_json_file DOES NOT exist, using default name: ", ext_exp_json_file);
     }
   }
 
@@ -97,7 +97,7 @@ if(process.env.EXTERNAL_TOOL=='1'){
   if (fs.existsSync(ext_exp_json_file)) {
     // path exists, use same file name
     ext_exp_json_file_exists =  true;
-    console.log('ext_exp_json_file_exists: ', ext_exp_json_file_exists)
+    //console.log('ext_exp_json_file_exists: ', ext_exp_json_file_exists)
   }  
 
 }
@@ -252,7 +252,7 @@ app.on('ready', async () => {
 } */
 
   ipcMain.on('closeFRET', (evt, arg) => {
-    console.log('main received closeFRET')
+    //console.log('main received closeFRET')
     app.quit();
   })
 

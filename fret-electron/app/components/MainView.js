@@ -220,6 +220,7 @@ class MainView extends React.Component {
     externalRequirement: {},
     externalVariables: {},
     missingExternalImportDialogOpen: false,
+    missingExternalImportDialogReason: 'unknown',
   };
 
   initializeSelectedProject = () => {
@@ -521,7 +522,7 @@ class MainView extends React.Component {
     const self = this;
     //var homeDir = app.getPath('home');
     var filepath = ext_imp_json_file;
-    //console.log('expected file in handleImportExternalTool: ', filepath);
+    //console.log('ext_imp_json_file in handleImportExternalTool: ', filepath);
     if (filepath && filepath.length > 0) {
       //const filepath = filepaths[0];
       fs.readFile(filepath, function (err,buffer) {
@@ -532,8 +533,10 @@ class MainView extends React.Component {
           // pop up error not found, give option to quit or access filesystem
           if (String(err).includes('ENOENT')){
             // file not found
+            //console.log('setting missingExternalImportDialogReason to not found')
             self.setState({
               missingExternalImportDialogOpen: true,
+              missingExternalImportDialogReason: 'not found',
               anchorEl: null
             });
           }
@@ -542,18 +545,29 @@ class MainView extends React.Component {
         } else {
           try {
             let data = JSON.parse(buffer);
-            // TODO check that data contains valid requirement data.  If not
-            // handle it here.  
-            self.setState({
-              externalRequirement : data.requirement,
-              externalVariables : data.variables
-            })
-            self.handleCreateDialogOpen();
+            //console.log('data in JSON.parse: ', data)
+            if(!data.requirement & !data.variables){
+              //  invalid file  
+              //console.log('setting missingExternalImportDialogReason to invalid')
+              self.setState({
+                missingExternalImportDialogOpen: true,
+                missingExternalImportDialogReason: 'invalid',
+                anchorEl: null
+              });         
+            } else {
+              self.setState({
+                externalRequirement : data.requirement,
+                externalVariables : data.variables
+              })
+              self.handleCreateDialogOpen();
+            }
           } catch (error) {
             //  empty file  
             console.log(error);
+            //console.log('setting missingExternalImportDialogReason to empty')
             self.setState({
               missingExternalImportDialogOpen: true,
+              missingExternalImportDialogReason: 'empty',
               anchorEl: null
             });         
           }
@@ -579,7 +593,7 @@ class MainView extends React.Component {
         ],
         properties: ['openFile']});
 
-        console.log('handleBrowseExtImpFile-filepaths2: ', filepaths2);
+        //console.log('handleBrowseExtImpFile-filepaths2: ', filepaths2);
 
         if (filepaths2 && filepaths2.length > 0) {
           var data;
@@ -600,13 +614,13 @@ class MainView extends React.Component {
                 })
                 self.handleCreateDialogOpen();
               } catch (e){
-                console.log('inside  catch in handleBrowseExtImpFile')
+                //console.log('inside  catch in handleBrowseExtImpFile')
                 self.setState({missingExternalImportDialogOpen: true})
                 console.log(e)                
               }
             });
           } catch (error) {
-            console.log('outside catch in handleBrowseExtImpFile')
+            //console.log('outside catch in handleBrowseExtImpFile')
             self.setState({missingExternalImportDialogOpen: true})
             console.log(err)
           }
@@ -807,6 +821,7 @@ class MainView extends React.Component {
           browseExtImportFile={this.handleBrowseExtImpFile}
           handleNoImport={this.handleNoExtFileImport}
           selection='BROWSE'
+          reason={this.state.missingExternalImportDialogReason}
           />
         </div>
         <Snackbar
