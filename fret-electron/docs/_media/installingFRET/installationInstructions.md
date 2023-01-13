@@ -34,6 +34,24 @@ For the installation of FRET on Windows 10 see [Installation_Windows](installati
 For the installation of FRET on Apple M1 machines see notes below.
 
 
+### Using Docker to Create a Linux Executable
+
+Alternatively to the standard installation, Linux users can use a [Docker image](../../../../tools/Scripts/docker) to build an executable binary. To do so, please follow the steps below:
+
+1. cd fret
+2. mv fret/tools/Scripts/docker/Dockerfile .
+3. mv fret/tools/Scripts/docker/generate_executable_Linux.sh .
+4. docker build -t fret-install -f Dockerfile .
+5. mkdir ../fret-desktop (Replace path with your preference)
+6. docker run -v $PWD/../fret-desktop:/tmp/fret -u root -it fret-install:latest /bin/bash
+7. cp ~fret/Desktop/FRET-linux-x64.tgz /tmp/fret/
+8. cd ../fret-desktop
+9. tar -xzvf FRET-linux-x64.tgz
+10. cd FRET-linux-x64
+11. ./FRET (run FRET)
+12. (Optional) If you want to enable use of the simulator, add "path/to/fret-desktop/FRET-linux-x64/resources/app/tools/LTLSIM/ltlsim-core/simulator" to your PATH environment variable.
+
+
 ### Notes
 
 > __Note:__ To run the LTLSIM simulator, a NuSMV (see http://nusmv.fbk.eu/) installation is required. Please make sure that the NuSMV binaries directory is added to the PATH environment variable. Additionally, please add `$PATH_TO_FRET/fret/tools/LTLSIM/ltlsim-core/simulator` to the PATH environment variable.
@@ -54,6 +72,18 @@ For the installation of FRET on Apple M1 machines see notes below.
 - Change leveldown dependency: “5.6.0” under node_modules/pouchdb to “^6.0.3”
 7. cd ..
 8. npm start
+
+> __Note:__ If you encounter GPU-related issues on Ubuntu 22.04 LTS, please follow these steps for a workaround (see also [here]( https://github.com/NASA-SW-VnV/fret/issues/46)):
+1. cd fret/fret-electron
+2. Open package.json in an editor
+3. Find the "scripts" object, change the value of the "start" key from "cross-env NODE_ENV=production electron ./app/" to "cross-env NODE_ENV=production electron --no-sandbox ./app/"
+4. Save and exit the editor
+5. npm start
+
+> __Note:__ If you encounter glibc-related issues when using the executable built by the Docker image, try the following steps:
+1. Open the "Dockerfile" file in an editor (this file should be in the "fret" root folder if you already attempted to build a binary)
+2. Change "FROM ubuntu:latest" to "FROM ubuntu:focal"
+3. Try again the Docker instructions, starting with step 4.
 
 [Back to FRET home page](../userManual.md)
 
