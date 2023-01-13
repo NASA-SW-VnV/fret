@@ -29,14 +29,14 @@ Here are the steps to install and start FRET:
 2. npm run fret-install (please do 'npm run fret-reinstall' instead if you already have a FRET installation)
 3. npm start
 
-For the installation of FRET on Windows 10 see [Installation_Windows](installation_windows.md).
+<!-- For the installation of FRET on Windows 10 see [Installation_Windows](installation_windows.md). -->
 
 For the installation of FRET on Apple M1 machines see notes below.
 
 
-### Using Docker to Create a Linux Executable
+#### Or build executable with Docker Image
 
-Alternatively to the standard installation, Linux users can use a [Docker image](../../../../tools/Scripts/docker) to build an executable binary. To do so, please follow the steps below:
+Alternatively, for Linux users, we provide a [Docker image](../../../../tools/Scripts/docker) to build an executable binary. Here are the steps:
 
 1. cd fret
 2. mv fret/tools/Scripts/docker/Dockerfile .
@@ -48,9 +48,7 @@ Alternatively to the standard installation, Linux users can use a [Docker image]
 8. cd ../fret-desktop
 9. tar -xzvf FRET-linux-x64.tgz
 10. cd FRET-linux-x64
-11. ./FRET (run FRET)
-12. (Optional) If you want to enable use of the simulator, add "path/to/fret-desktop/FRET-linux-x64/resources/app/tools/LTLSIM/ltlsim-core/simulator" to your PATH environment variable.
-
+11. ./FRET
 
 ### Notes
 
@@ -73,7 +71,7 @@ Alternatively to the standard installation, Linux users can use a [Docker image]
 7. cd ..
 8. npm start
 
-> __Note:__ If you encounter GPU-related issues on Ubuntu 22.04 LTS, please follow these steps for a workaround (see also [here]( https://github.com/NASA-SW-VnV/fret/issues/46)):
+> __Note:__ If you encounter GPU-related issues on Ubuntu 22.04 LTS, here is a workaround (see also [here]( https://github.com/NASA-SW-VnV/fret/issues/46)):
 1. cd fret/fret-electron
 2. Open package.json in an editor
 3. Find the "scripts" object, change the value of the "start" key from "cross-env NODE_ENV=production electron ./app/" to "cross-env NODE_ENV=production electron --no-sandbox ./app/"

@@ -1,10 +1,11 @@
+# File author: Ivan Dominguez Perez 
 FROM ubuntu:latest
 
 # Avoid questions during the installation of packages.
 ENV DEBIAN_FRONTEND=noninteractive
 
 # We set the time-zone so that tzdata does not ask for it during installation.
-ENV TZ="America/Los_Angeles" 
+ENV TZ="America/Los_Angeles"
 
 RUN apt-get --yes update
 
