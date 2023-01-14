@@ -1,6 +1,8 @@
 FRET Publications
 -----------------
 
+* Ivan Perez, Anastasia Mavridou, Thomas Pressburger, Alexander Will, and Patrick J. Martin. "Monitoring ROS2: from Requirements to Autonomous Robots". FMAS 2022.
+
 * Andreas Katis, Anastasia Mavridou, Dimitra Giannakopoulou, Thomas Pressburger, Johann Schumann. "Capture, Analyze, Diagnose: Realizability Checking of Requirements in FRET". CAV 2022. ·
 
 * Esther Conrad, Laura Titolo, Dimitra Giannakopoulou, Thomas Pressburger, Aaron Dutle. "A Compositional Proof Framework for FRETish Requirements". CPP 2022.
