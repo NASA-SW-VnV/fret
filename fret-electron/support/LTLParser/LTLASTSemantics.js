@@ -40,8 +40,9 @@ const ltlastAnalyzer = require('./LTLASTAnalyzer').LTLASTAnalyzer;
 const LTLASTAnalyzer = new ltlastAnalyzer();
 
 module.exports = {
-    LTLtoAST,
-    ASTtoLTL
+  LTLtoAST,
+  ASTtoLTL,
+  ASTtoCoCo
 }
 
 // useful utils
@@ -64,6 +65,20 @@ const prefix = { Not : '!', Historically : 'H', Once : 'O', Negate : '-',
 		 PrevTrue : 'Z',
 		 GloballyTimed : 'G',
 	         LookingBackwardsTimed : '<|', LookingForwardsTimed : '|>', Negate : '-'};
+
+// CoCoPrefix and CoCoInfix have no future operators
+
+const CoCoPrefix = { Not : 'not ', Historically : 'H', Once : 'O', Negate : '-',
+		     OnceTimed : 'OT', HistoricallyTimed : 'HT', 
+		     PrevFalse : 'YtoPre', PrevTrue : 'ZtoPre'}
+
+const CoCoInfix = { ExclusiveOr : 'xor', And : 'and', Or : 'or', Implies : '=>', Equiv : '=', Since : 'S', Triggers : 'T', 
+		SinceInclusive : 'SI',
+	        SinceTimed : 'ST', 
+		Plus : '+', Minus : '-', Divide : '/', Mult : '*', Mod : 'mod', Expt : '^',
+		LessThan : '<', LessThanOrEqual : '<=',  NotEqual: '<>', Equal : '=',
+		GreaterThan : '>', GreaterThanOrEqual : '>='
+	      };
 
 function LTLtoAST (LTL) {
   var chars = new antlr4.InputStream(LTL.replace(/=>/g,'->'));
@@ -123,7 +138,57 @@ function ASTtoLTL(ast) {
 
 		       }
 		}
-    } else console.log("LTLtoSMV doesn't know the type of " + ast);
+    } else console.log("ASTtoLTL doesn't know the type of: " + ast);
     return result;
 }
     
+// return a string of the ast printed in CoCoSpec (Lustre) format
+function ASTtoCoCo(ast) {
+    let result = '';
+    if (isBoolean(ast)) result = ast ? 'true' : 'false';
+    else if (isAtom(ast)) result = ast.toString();
+    else if (isArray(ast)) {
+            if (isArray(ast[0])) {
+	    // The 1st element of timed operators is an array: [op,[right,left]]
+	       let op = ast[0][0];
+	       let pre = CoCoPrefix[op];
+               if (pre !== undefined) {
+                 if (!isArray(ast[0][1])) console.log("ASTtoCoCo: Bound error: " + JSON.stringify(ast[0]));
+		 result = ('(' + pre + '(' + ast[0][1][1] + ', ' + ast[0][1][0] + ', ' + ASTtoCoCo(ast[1]) + '))');
+	       }
+               else { let infixChar = CoCoInfix[op];
+	              if (infixChar !== undefined) 
+			result = ('(' + infixChar + '(' + 
+				  ast[0][1][1] + ',' + ast[0][1][0] + ', ' +
+	                ASTtoCoCo(ast[1]) + ', ' + ASTtoCoCo(ast[2]) + '))')
+		      else console.log('ASTtoCoCo: Unknown temporal operator: ' + op)
+		    }
+	   }
+           else { let op = ast[0];
+	          let prefixChar = CoCoPrefix[op];
+	          if (prefixChar !== undefined)
+		    result = (prefixChar + '(' + ASTtoCoCo(ast[1]) + ')');
+		  else { let infixChar = CoCoInfix[op];
+			 if (infixChar !== undefined)
+			     result = ('(' + ASTtoCoCo(ast[1]) + ' ' + infixChar + ' ' + ASTtoCoCo(ast[2]) + ')');
+			 else {
+			     let args = ast.slice(1).map(ASTtoCoCo);
+			     result = (ast[0] + '(' + args.join(',') + ')');
+			 }
+
+		       }
+		}
+    } else console.log("ASTtoCoCo doesn't know the type of " + ast);
+    return result;
+}
+    
+/*
+
+let ex = '(H[0,2] p&q|r) & (H (Y q) -> Z !r) & x != 3 mod abs(-z) & p S[3,3] q xor 3 + 4 * 6 / 7 >= 2 ^ 3 | FALSE'
+let exast = LTLtoAST(ex)
+console.log(ex)
+console.log(JSON.stringify(exast))
+console.log(JSON.stringify(ASTtoCoCo(exast)))
+
+
+*/

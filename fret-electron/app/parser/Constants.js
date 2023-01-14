@@ -78,7 +78,10 @@ module.exports = Object.freeze({
 
   //Configuration - generate svgSemantics
   generateSvgSemantics: true,
-
+  //Configuration - generate ptFinBtw, ftFinBtw, ftInfBtw
+  // (see SemanticsAnalyzer.semantics)
+  generateBetweenSemantics: false,
+  
  // Configuration of testing procedure
   testKey: true,
   testSemantics: true,

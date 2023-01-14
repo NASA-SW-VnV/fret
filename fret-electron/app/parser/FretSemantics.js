@@ -156,9 +156,12 @@ exports.parse = (text) => {
   return exports.parseByCtxRule(text, REQ_BODY_CTX_RULE)
 }
 
-// tests
 
 /*
+// tests
+
+console.log(JSON.stringify(this.compile('In mode m upon p the sw shall always satisfy at the previous occurrence of q, r')))
+
 console.log(JSON.stringify(this.compile('only after p shall the sw , after 2 ticks, satisfy q')))
 
 console.log(JSON.stringify(this.compile('except while flight_mode = landed the sw shall always satisfy alt > 0')))

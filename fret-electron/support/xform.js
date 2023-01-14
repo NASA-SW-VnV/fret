@@ -40,6 +40,7 @@ module.exports = {
     finitizeFT,
     introduceSI,
     transform,
+    transformToAST,
     transformPastTemporalConditions,
     transformFutureTemporalConditions,
     transformTemporalConditions,
@@ -424,6 +425,13 @@ function transform(formulaString,transformation) {
     let transformedAST = transformation(AST);
     let transformedString = astsem.ASTtoLTL(transformedAST);
     return transformedString;
+}
+
+function transformToAST(formulaString,transformation) {
+    let AST = astsem.LTLtoAST(formulaString);
+    if (AST === undefined) console.log("xform.transform couldn't parse '" + formulaString + "'");
+  let transformedAST = transformation(AST);
+  return transformedAST;
 }
 
 function transformPastTemporalConditions (formulaString) {

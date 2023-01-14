@@ -37,7 +37,8 @@ const antlrUtilities = new AntlrUtilities();
 const utilities = require('../../support/utilities');
 const utils = require('../../support/utils');
 const fetchSemantics = require('./FetchSemantics');
-const cocospecSemantics = require('../../support/cocospecSemantics');
+const astsem = require('../../support/LTLParser/LTLASTSemantics');
+//const cocospecSemantics = require('../../support/cocospecSemantics');
 const xform = require('../../support/xform');
 
 var result = {};
@@ -443,6 +444,7 @@ function LAST_is_FALSE (formula) {
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
 SemanticsAnalyzer.prototype.semantics = () => {
+  const startTime = Date.now()
  if (constants.verboseSemanticsAnalyzer) console.log('Semantics result in:\n' + prettyObject(result));
 
  if (result.type === 'freeForm') {
@@ -479,6 +481,7 @@ SemanticsAnalyzer.prototype.semantics = () => {
   let postCond = canon_bool_expr(result.post_condition);
   let stopCond = canon_bool_expr(result.stop_condition);
 
+  // console.log("Before mode: " + (Date.now() - startTime) + " ms")
   // Handle scope mode condition. It could be a boolean expr
   // with a temporal condition.
     if (result.scope.type === 'null') {
@@ -495,6 +498,7 @@ SemanticsAnalyzer.prototype.semantics = () => {
       ///result.scope_mode_coco = modeCondTCxform_coco;
       result.scope_mode_ft = modeCondTCxform_ft;
   }
+  // console.log("After mode: " + (Date.now() - startTime) + " ms")
   // Handle trigger condition
   if (regCond) {
       // regCondTCxform has the temporal conditions rewritten into LTL.
@@ -524,6 +528,7 @@ SemanticsAnalyzer.prototype.semantics = () => {
       ///let regCondLeftCoCo = cocospecSemantics.createCoCoSpecCode(regCondLeftCoCoSubsts)
       ///result.regular_condition_coco = regCondLeftCoCo;
     }
+    // console.log("After precondition: " + (Date.now() - startTime) + " ms")
 
     if (postCond) {
 	let postCondTCxform_pt = xform.transformPastTemporalConditions(postCond);
@@ -546,6 +551,7 @@ SemanticsAnalyzer.prototype.semantics = () => {
 	///let postCondLeftCoCo = cocospecSemantics.createCoCoSpecCode(postCondLeftCoCoSubsts)
         ///result.post_condition_coco = postCondLeftCoCo;
     }
+    // console.log("After postcondition: " + (Date.now() - startTime) + " ms")
 
   if (stopCond) {
       // stopCondTCxform has the temporal conditions rewritten into LTL.
@@ -574,6 +580,8 @@ SemanticsAnalyzer.prototype.semantics = () => {
       ///result.stop_condition_coco = stopCondLeftCoCo;
     }
 
+    // console.log("After stop condition: " + (Date.now() - startTime) + " ms")
+
     //pt and ft are used in the Edit/Update Requirement display
     let fetched_ft = fetchedSemantics.ft.replace(/\$regular_condition\$/g,'$regular_condition_unexp_ft$').replace(/\$post_condition\$/g,'$post_condition_unexp_ft$').replace(/\$stop_condition\$/g,'$stop_condition_unexp_ft$').replace(/\$scope_mode\$/g,'$scope_mode_ft$');
     result.ft_fetched = fetched_ft;
@@ -583,38 +591,47 @@ SemanticsAnalyzer.prototype.semantics = () => {
     result.pt_fetched = fetched_pt;
     result.pt = replaceTemplateVars(fetched_pt);
 
+    // console.log("After setup: " + (Date.now() - startTime) + " ms")
     let fetched_ptExpanded = fetchedSemantics.ptExpanded.replace(/\$regular_condition\$/g,'$regular_condition_SMV_pt$').replace(/\$post_condition\$/g,'$post_condition_SMV_pt$').replace(/\$stop_condition\$/g,'$stop_condition_SMV_pt$').replace(/\$scope_mode\$/g,'$scope_mode_pt$');
     result.ptExpanded_fetched = fetched_ptExpanded;
-    result.ptExpanded = xform.transform(utils.salt2smv(replaceTemplateVars(fetched_ptExpanded)),xform.optimizePT);
+    const ptExpandedAST = xform.transformToAST(utils.salt2smv(replaceTemplateVars(fetched_ptExpanded)),xform.optimizePT);
+    result.ptExpanded = astsem.ASTtoLTL(ptExpandedAST)
+    result.CoCoSpecCode = astsem.ASTtoCoCo(ptExpandedAST)
 
-    const fetched_ptFinBtwExpanded = fetchedSemantics.ptFinBtwExpanded.replace(/\$regular_condition\$/g,'$regular_condition_SMV_pt$').replace(/\$post_condition\$/g,'$post_condition_SMV_pt$').replace(/\$stop_condition\$/g,'$stop_condition_SMV_pt$').replace(/\$scope_mode\$/g,'$scope_mode_pt$');
-    result.ptFinBtwExpanded_fetched = fetched_ptFinBtwExpanded;
-    result.ptFinBtwExpanded = xform.transform(utils.salt2smv(replaceTemplateVars(fetched_ptFinBtwExpanded)),xform.optimizePT);
+    // console.log("After ptExpanded/CoCoSpecCode: " + (Date.now() - startTime) + " ms")
 
     let fetched_ftExpanded = fetchedSemantics.ftExpanded.replace(/\$regular_condition\$/g,'$regular_condition_SMV_ft$').replace(/\$post_condition\$/g,'$post_condition_SMV_ft$').replace(/\$stop_condition\$/g,'$stop_condition_SMV_ft$').replace(/\$scope_mode\$/g,'$scope_mode_ft$');
     result.ftExpanded_fetched = fetched_ftExpanded;
     result.ftExpandedUnoptimized = utils.salt2smv(replaceTemplateVars(fetched_ftExpanded))
     result.ftExpanded = xform.transform(result.ftExpandedUnoptimized,xform.optimizeFT);
+    // console.log("After ftExpanded: " + (Date.now() - startTime) + " ms")
 
     const fetched_ftInfAUExpanded = fetchedSemantics.ftInfAUExpanded.replace(/\$regular_condition\$/g,'$regular_condition_SMV_ft$').replace(/\$post_condition\$/g,'$post_condition_SMV_ft$').replace(/\$stop_condition\$/g,'$stop_condition_SMV_ft$').replace(/\$scope_mode\$/g,'$scope_mode_ft$');
     result.ftInfAUExpanded_fetched = fetched_ftInfAUExpanded;
     result.ftInfAUExpanded = xform.transform(utils.salt2smv(LAST_is_FALSE(replaceTemplateVars(fetched_ftInfAUExpanded))),xform.optimizeFT);
+    // console.log("After ftInfAUExpanded: " + (Date.now() - startTime) + " ms")
       
-    const fetched_ftInfBtwExpanded = fetchedSemantics.ftInfBtwExpanded.replace(/\$regular_condition\$/g,'$regular_condition_SMV_ft$').replace(/\$post_condition\$/g,'$post_condition_SMV_ft$').replace(/\$stop_condition\$/g,'$stop_condition_SMV_ft$').replace(/\$scope_mode\$/g,'$scope_mode_ft$');
-    result.ftInfBtwExpanded_fetched = fetched_ftInfBtwExpanded;
-    result.ftInfBtwExpanded = xform.transform(utils.salt2smv(LAST_is_FALSE(replaceTemplateVars(fetched_ftInfBtwExpanded))),xform.optimizeFT)
+    if (constants.generateBetweenSemantics) {
+      const fetched_ptFinBtwExpanded = fetchedSemantics.ptFinBtwExpanded.replace(/\$regular_condition\$/g,'$regular_condition_SMV_pt$').replace(/\$post_condition\$/g,'$post_condition_SMV_pt$').replace(/\$stop_condition\$/g,'$stop_condition_SMV_pt$').replace(/\$scope_mode\$/g,'$scope_mode_pt$');
+      result.ptFinBtwExpanded_fetched = fetched_ptFinBtwExpanded;
+      result.ptFinBtwExpanded = xform.transform(utils.salt2smv(replaceTemplateVars(fetched_ptFinBtwExpanded)),xform.optimizePT);
+      
+      const fetched_ftInfBtwExpanded = fetchedSemantics.ftInfBtwExpanded.replace(/\$regular_condition\$/g,'$regular_condition_SMV_ft$').replace(/\$post_condition\$/g,'$post_condition_SMV_ft$').replace(/\$stop_condition\$/g,'$stop_condition_SMV_ft$').replace(/\$scope_mode\$/g,'$scope_mode_ft$');
+      result.ftInfBtwExpanded_fetched = fetched_ftInfBtwExpanded;
+      result.ftInfBtwExpanded = xform.transform(utils.salt2smv(LAST_is_FALSE(replaceTemplateVars(fetched_ftInfBtwExpanded))),xform.optimizeFT)
 
-    const fetched_ftFinBtwExpanded = fetchedSemantics.ftFinBtwExpanded.replace(/\$regular_condition\$/g,'$regular_condition_SMV_ft$').replace(/\$post_condition\$/g,'$post_condition_SMV_ft$').replace(/\$stop_condition\$/g,'$stop_condition_SMV_ft$').replace(/\$scope_mode\$/g,'$scope_mode_ft$');
-    result.ftFinBtwExpanded_fetched = fetched_ftFinBtwExpanded;
-    result.ftFinBtwExpanded = xform.transform(utils.salt2smv(replaceTemplateVars(fetched_ftFinBtwExpanded)),xform.optimizeFT);
-
+      const fetched_ftFinBtwExpanded = fetchedSemantics.ftFinBtwExpanded.replace(/\$regular_condition\$/g,'$regular_condition_SMV_ft$').replace(/\$post_condition\$/g,'$post_condition_SMV_ft$').replace(/\$stop_condition\$/g,'$stop_condition_SMV_ft$').replace(/\$scope_mode\$/g,'$scope_mode_ft$');
+      result.ftFinBtwExpanded_fetched = fetched_ftFinBtwExpanded;
+      result.ftFinBtwExpanded = xform.transform(utils.salt2smv(replaceTemplateVars(fetched_ftFinBtwExpanded)),xform.optimizeFT);
+    }
+    // console.log("After Between: " + (Date.now() - startTime) + " ms") 
     /*
     let fetched_coco = fetchedSemantics.CoCoSpecCode.replace(/\$regular_condition\$/g,'$regular_condition_coco$').replace(/\$post_condition\$/g,'$post_condition_coco$').replace(/\$stop_condition\$/g,'$stop_condition_coco$').replace(/\$scope_mode\$/g,'$scope_mode_coco$');
     result.CoCoSpecCode_fetched = fetched_coco;
     let CoCoSpecCodeLTL = replaceTemplateVars(fetched_coco);
     result.CoCoSpecCode = CoCoSpecCodeLTL;
     */
-    result.CoCoSpecCode = cocospecSemantics.createCoCoSpecCode(result.ptExpanded)
+    //result.CoCoSpecCode = cocospecSemantics.createCoCoSpecCode(result.ptExpanded)
     result.component = replaceTemplateVars('$component_name$')
 
     //if (constants.verboseSemanticsAnalyzer) console.log('Semantics result out: ' + JSON.stringify(result));
