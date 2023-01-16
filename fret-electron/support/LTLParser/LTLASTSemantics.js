@@ -81,6 +81,11 @@ const CoCoPrefix = {  Negate : '-', Not : 'not ',
 		      Since : 'S', SinceTimed : 'ST', 
 		      SinceInclusive : 'SI', SinceInclusiveTimed : 'SIT' }
 
+// These CoCoSpec binary operators have their arguments reversed from
+// standard notation; e.g., S(p,q) = q S p. See
+// support/CommonTemplates/LibraryOfOperators.ejs
+const Reversed = ["S","ST","SI","SIT"];
+
 const CoCoInfix = { ExclusiveOr : 'xor', And : 'and', Or : 'or', 
 		    Implies : '=>', Equiv : '=',
 		    Plus : '+', Minus : '-', Divide : '/', Mult : '*', 
@@ -167,7 +172,8 @@ function ASTtoCoCo(ast) {
         if (pre !== undefined) {
 	  const bound = head[1]
           if (!isArray(bound)) console.log("ASTtoCoCo: Bound error: " + JSON.stringify(head));
-	  const args = ast.slice(1).map(ASTtoCoCo);
+	  let args = ast.slice(1).map(ASTtoCoCo);
+	  if (Reversed.includes(pre)) args = args.reverse();
           result = pre + '(' + bound[1] + ', ' + bound[0] + ', ' + args.join(',') + ')';
 	}
 	else console.log('ASTtoCoCo: Unknown timed temporal operator: '
@@ -179,7 +185,8 @@ function ASTtoCoCo(ast) {
 	  result = '(' + ASTtoCoCo(ast[1]) + ' ' + infixChar + ' ' + ASTtoCoCo(ast[2]) + ')'
 	else {
 	  const op = (CoCoPrefix[head] === undefined) ? head : CoCoPrefix[head];
-	  const args = ast.slice(1).map(ASTtoCoCo);
+	  let args = ast.slice(1).map(ASTtoCoCo);
+	  if (Reversed.includes(op)) args = args.reverse();
 	  result = (op + '(' + args.join(',') + ')');
 	}
       }
