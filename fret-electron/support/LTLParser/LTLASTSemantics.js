@@ -51,12 +51,17 @@ const isAtom =   utils.isAtom;
 const isString = utils.isString;
 const isBoolean = utils.isBoolean;
 
-const infix = { ExclusiveOr : 'xor', And : '&', Or : '|', Implies : '->', Equiv : '<->', Since : 'S', Triggers : 'T', 
-		Until : 'U', Releases : 'V', SinceInclusive : 'SI', UntilInclusive : 'UI',
+const infix = { ExclusiveOr : 'xor', And : '&', Or : '|', Implies : '->',
+		Equiv : '<->',
+		Since : 'S', Triggers : 'T', Until : 'U', Releases : 'V',
+		SinceInclusive : 'SI', UntilInclusive : 'UI',
 	        SinceTimed : 'S', UntilTimed : 'U',
-		Plus : '+', Minus : '-', Divide : '/', Mult : '*', Mod : 'mod', Expt : '^',
-		LessThan : '<', LessThanOrEqual : '<=',  NotEqual: '!=', Equal : '=',
-		GreaterThan : '>', GreaterThanOrEqual : '>='
+		SinceInclusiveTimed: 'SI', UntilInclusiveTimed: 'UI', 
+		//TriggersTimed: 'TT', ReleasesTimed: 'VT',
+		Plus : '+', Minus : '-', Divide : '/', Mult : '*', Mod : 'mod',
+		Expt : '^',
+		LessThan : '<', LessThanOrEqual : '<=',  NotEqual: '!=',
+		Equal : '=', GreaterThan : '>', GreaterThanOrEqual : '>='
 	      };
 
 const prefix = { Not : '!', Historically : 'H', Once : 'O', Negate : '-',
@@ -66,18 +71,23 @@ const prefix = { Not : '!', Historically : 'H', Once : 'O', Negate : '-',
 		 GloballyTimed : 'G',
 	         LookingBackwardsTimed : '<|', LookingForwardsTimed : '|>', Negate : '-'};
 
-// CoCoPrefix and CoCoInfix have no future operators
+// CoCoPrefix and CoCoInfix have no future temporal operators
 
-const CoCoPrefix = { Not : 'not ', Historically : 'H', Once : 'O', Negate : '-',
-		     OnceTimed : 'OT', HistoricallyTimed : 'HT', 
-		     PrevFalse : 'YtoPre', PrevTrue : 'ZtoPre'}
+const CoCoPrefix = {  Negate : '-', Not : 'not ', 
+		      Historically : 'H', Once : 'O',
+		      PrevFalse : 'YtoPre', PrevTrue : 'ZtoPre',
+		      HistoricallyTimed : 'HT', OnceTimed : 'OT', 
+		      Triggers : 'T', 
+		      Since : 'S', SinceTimed : 'ST', 
+		      SinceInclusive : 'SI', SinceInclusiveTimed : 'SIT' }
 
-const CoCoInfix = { ExclusiveOr : 'xor', And : 'and', Or : 'or', Implies : '=>', Equiv : '=', Since : 'S', Triggers : 'T', 
-		SinceInclusive : 'SI',
-	        SinceTimed : 'ST', 
-		Plus : '+', Minus : '-', Divide : '/', Mult : '*', Mod : 'mod', Expt : '^',
-		LessThan : '<', LessThanOrEqual : '<=',  NotEqual: '<>', Equal : '=',
-		GreaterThan : '>', GreaterThanOrEqual : '>='
+const CoCoInfix = { ExclusiveOr : 'xor', And : 'and', Or : 'or', 
+		    Implies : '=>', Equiv : '=',
+		    Plus : '+', Minus : '-', Divide : '/', Mult : '*', 
+		    Mod : 'mod', Expt : '^',
+		    LessThan : '<', LessThanOrEqual : '<=',  
+		    NotEqual: '<>', Equal : '=',
+		    GreaterThan : '>', GreaterThanOrEqual : '>='
 	      };
 
 function LTLtoAST (LTL) {
@@ -148,47 +158,45 @@ function ASTtoCoCo(ast) {
     if (isBoolean(ast)) result = ast ? 'true' : 'false';
     else if (isAtom(ast)) result = ast.toString();
     else if (isArray(ast)) {
-            if (isArray(ast[0])) {
-	    // The 1st element of timed operators is an array: [op,[right,left]]
-	       let op = ast[0][0];
-	       let pre = CoCoPrefix[op];
-               if (pre !== undefined) {
-                 if (!isArray(ast[0][1])) console.log("ASTtoCoCo: Bound error: " + JSON.stringify(ast[0]));
-		 result = ('(' + pre + '(' + ast[0][1][1] + ', ' + ast[0][1][0] + ', ' + ASTtoCoCo(ast[1]) + '))');
-	       }
-               else { let infixChar = CoCoInfix[op];
-	              if (infixChar !== undefined) 
-			result = ('(' + infixChar + '(' + 
-				  ast[0][1][1] + ',' + ast[0][1][0] + ', ' +
-	                ASTtoCoCo(ast[1]) + ', ' + ASTtoCoCo(ast[2]) + '))')
-		      else console.log('ASTtoCoCo: Unknown temporal operator: ' + op)
-		    }
-	   }
-           else { let op = ast[0];
-	          let prefixChar = CoCoPrefix[op];
-	          if (prefixChar !== undefined)
-		    result = (prefixChar + '(' + ASTtoCoCo(ast[1]) + ')');
-		  else { let infixChar = CoCoInfix[op];
-			 if (infixChar !== undefined)
-			     result = ('(' + ASTtoCoCo(ast[1]) + ' ' + infixChar + ' ' + ASTtoCoCo(ast[2]) + ')');
-			 else {
-			     let args = ast.slice(1).map(ASTtoCoCo);
-			     result = (ast[0] + '(' + args.join(',') + ')');
-			 }
-
-		       }
-		}
-    } else console.log("ASTtoCoCo doesn't know the type of " + ast);
-    return result;
+      const head = ast[0];
+      if (isArray(head)) {
+	// The 1st element of timed temporal operators is an array:
+	// [op,[right,left]] e.g. ['H', [0,3]]
+	let op = head[0];
+	let pre = CoCoPrefix[op];
+        if (pre !== undefined) {
+	  const bound = head[1]
+          if (!isArray(bound)) console.log("ASTtoCoCo: Bound error: " + JSON.stringify(head));
+	  const args = ast.slice(1).map(ASTtoCoCo);
+          result = pre + '(' + bound[1] + ', ' + bound[0] + ', ' + args.join(',') + ')';
+	}
+	else console.log('ASTtoCoCo: Unknown timed temporal operator: '
+			 + JSON.stringify(head))
+      }
+      else {
+	const infixChar = CoCoInfix[head];
+	if (infixChar !== undefined)
+	  result = '(' + ASTtoCoCo(ast[1]) + ' ' + infixChar + ' ' + ASTtoCoCo(ast[2]) + ')'
+	else {
+	  const op = (CoCoPrefix[head] === undefined) ? head : CoCoPrefix[head];
+	  const args = ast.slice(1).map(ASTtoCoCo);
+	  result = (op + '(' + args.join(',') + ')');
+	}
+      }
+    } else console.log("ASTtoCoCo doesn't know the type of " + JSON.stringify(ast));
+  return result;
 }
-    
+
 /*
 
-let ex = '(H[0,2] p&q|r) & (H (Y q) -> Z !r) & x != 3 mod abs(-z) & p S[3,3] q xor 3 + 4 * 6 / 7 >= 2 ^ 3 | FALSE'
+let ex = '(H[0,2] p&q|r) & (H (Y q) -> Z !r <-> ss) & x != 3 - 2 mod abs(-z) & p S[3,3] q xor 3 + 4 * 6 / 7 >= 2 ^ 3 | FALSE & (p S q) & (qq SI rr) & (uu SI[0,3] vv)'
 let exast = LTLtoAST(ex)
 console.log(ex)
-console.log(JSON.stringify(exast))
-console.log(JSON.stringify(ASTtoCoCo(exast)))
+console.log('\n' + JSON.stringify(exast))
+console.log('\n' + JSON.stringify(ASTtoLTL(exast)))
+console.log('\n' + JSON.stringify(ASTtoCoCo(exast)))
 
-
+ST(3, 3, (((HT(2, 0, ((p and q) or r)) and H((YtoPre(q) => ZtoPre((not (r) = ss))))) and (x <> (3 - (2 mod abs(-(z)))))) and p),(q xor (((3 + ((4 * 6) / 7)) >= (2 ^ 3)) or (((false and S(p,q)) and SI(qq,rr)) and SIT(3, 0, uu,vv)))))
 */
+
+

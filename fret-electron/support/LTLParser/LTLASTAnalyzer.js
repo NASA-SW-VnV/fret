@@ -46,16 +46,18 @@ LTLASTAnalyzer.prototype = Object.create(LTLVisitor.prototype);
 LTLASTAnalyzer.prototype.constructor = LTLASTAnalyzer;
 
 const symbolToOpMap =
-      { Y : 'PrevFalse', Z : 'PrevTrue', H : 'Historically', O : 'Once', S : 'Since', T : 'Triggers',
+      { Y : 'PrevFalse', Z : 'PrevTrue', H : 'Historically', O : 'Once',
+	S : 'Since', T : 'Triggers',
 	SI : 'SinceInclusive', UI : 'UntilInclusive',
-	X : 'Next', G : 'Globally', F : 'Eventually', U : 'Until', V : 'Releases',
+	X : 'Next', G : 'Globally', F : 'Eventually', U : 'Until',
+	V : 'Releases',
 	'<|' : 'LookingBackwards', '|>' : 'LookingForwards',
 	'!' : 'Not', '&' : 'And', '|' : 'Or', '->' : 'Implies', '<->' : 'Equiv',
 	'xor' : 'ExclusiveOr',
-	'+' : 'Plus', '-' : 'Minus', '/' : 'Divide', '*' : 'Mult', 'mod' : 'Mod',
-	'^' : 'Expt',
-	'<' : 'LessThan', '<=' : 'LessThanOrEqual', '!=' : 'NotEqual', '=' : 'Equal',
-	'>' : 'GreaterThan', '>=' : 'GreaterThanOrEqual'
+	'+' : 'Plus', '-' : 'Minus', '/' : 'Divide', '*' : 'Mult', 
+	'mod' : 'Mod', '^' : 'Expt',
+	'<' : 'LessThan', '<=' : 'LessThanOrEqual', '!=' : 'NotEqual', 
+	'=' : 'Equal', '>' : 'GreaterThan', '>=' : 'GreaterThanOrEqual'
       };
 
 function symbolToOp(symbolIn,isTimed) {
@@ -182,8 +184,9 @@ LTLASTAnalyzer.prototype.visitBoolBinaryLTL = function(ctx) {
     let children = this.visitChildren(ctx);
     if (children.length == 4) {
 	let bnd = children[2];
-	return [[children[1],bnd],children[0],children[3]];
-    } else return [children[1],children[0],children[2]]
+        const op = symbolToOp(children[1],true);
+	return [[op,bnd],children[0],children[3]];
+    } else return [symbolToOp(children[1],false),children[0],children[2]]
 };
 
 // Visit a parse tree produced by LTLParser#timedUnaryLTLOp.
@@ -198,7 +201,8 @@ LTLASTAnalyzer.prototype.visitUnaryLTLOp = function(ctx) {
 
 // Visit a parse tree produced by LTLParser#binaryLTLOp.
 LTLASTAnalyzer.prototype.visitBinaryLTLOp = function(ctx) {
-    return symbolToOp(antlrUtilities.getText(ctx),false);
+  //return symbolToOp(antlrUtilities.getText(ctx),false);
+  return antlrUtilities.getText(ctx);
 };
 
 // Visit a parse tree produced by LTLParser#comparisonOp.
