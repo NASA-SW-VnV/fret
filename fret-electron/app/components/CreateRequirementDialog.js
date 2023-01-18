@@ -301,29 +301,6 @@ class CreateRequirementDialog extends React.Component {
       self.createOrUpdateVariables(semantics.variables,semantics.component_name, project, dbid);
     }
 
-    // create req
-    db.put({
-        _id : dbid,
-        _rev : dbrev,
-        reqid : this.state.reqid,
-        parent_reqid : this.state.parent_reqid,
-        project : this.state.project,
-        rationale : this.state.rationale,
-        comments : this.state.comments,
-        status: this.state.status,
-        fulltext : fulltext,
-        semantics : semantics,
-        template : template,
-        input : input
-      }, (err, responses) => {
-        if (err) {
-          self.state.dialogCloseListener(false);
-          return console.log(err);
-        }
-        console.log(responses);
-        self.state.dialogCloseListener(true, newReqId);
-      }
-    )
     if(process.env.EXTERNAL_TOOL=='1'){
       var filepath = ext_exp_json_file;
       console.log('export json file name: ', filepath)
@@ -332,7 +309,7 @@ class CreateRequirementDialog extends React.Component {
         // pop up warning
         console.log('Overwriting existing external export file: ', ext_exp_json_file);
       }
-      
+
       let doc = ({"requirement": {"reqid" :this.state.reqid,
                   "parent_reqid": this.state.parent_reqid,
                   "project": this.state.project,
@@ -350,7 +327,33 @@ class CreateRequirementDialog extends React.Component {
           }
           ipcRenderer.send('closeFRET');
       })
+    } else{
+      // create req
+      db.put({
+          _id : dbid,
+          _rev : dbrev,
+          reqid : this.state.reqid,
+          parent_reqid : this.state.parent_reqid,
+          project : this.state.project,
+          rationale : this.state.rationale,
+          comments : this.state.comments,
+          status: this.state.status,
+          fulltext : fulltext,
+          semantics : semantics,
+          template : template,
+          input : input
+        }, (err, responses) => {
+          if (err) {
+            self.state.dialogCloseListener(false);
+            return console.log(err);
+          }
+          console.log(responses);
+          self.state.dialogCloseListener(true, newReqId);
+        }
+      )
     }
+
+
 };
 
   handleUpdateInstruction = (field) => {
