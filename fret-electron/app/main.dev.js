@@ -57,6 +57,9 @@ var modelDBname = userDocumentsFolder + '/model-db';
 if (process.env.FRET_TESTING) {
   leveldbDBname = userDocumentsFolder + '/fret_sqa/fret-db';
   modelDBname = userDocumentsFolder + '/fret_sqa/model-db';
+} else if (process.env.EXTERNAL_TOOL=='1'){
+  leveldbDBname = userDocumentsFolder + '/fret-ext-db';
+  modelDBname = userDocumentsFolder + '/model-ext-db';
 }
 var leveldbDB = new NodePouchDB(leveldbDBname);
 var modelDB = new NodePouchDB(modelDBname);
@@ -65,7 +68,7 @@ var ext_imp_json_file = '';
 var ext_exp_json_file = '';
 var ext_exp_json_file_exists =  false;
 if(process.env.EXTERNAL_TOOL=='1'){
-  
+
   ext_imp_json_file = process.env.EXTERNAL_IMP_JSON+'.json';
   const curDir = process.cwd();
 
@@ -74,7 +77,7 @@ if(process.env.EXTERNAL_TOOL=='1'){
   } else {
     ext_exp_json_file = process.env.EXTERNAL_EXP_JSON+'.json';
   }
-  
+
   //console.log('ext_exp_json_file: ', ext_exp_json_file)
 
   if (fs.existsSync(ext_exp_json_file)) {
@@ -84,7 +87,7 @@ if(process.env.EXTERNAL_TOOL=='1'){
   } else {
     var dirName = path.dirname(ext_exp_json_file)
     if (fs.existsSync(dirName)) {
-      // if directory exists then use env assignment 
+      // if directory exists then use env assignment
       //console.log("ext_exp_json_file DOES NOT exist, using defined name: ", ext_exp_json_file);
     } else {
       // directory doesn't exist, use default name
@@ -98,7 +101,7 @@ if(process.env.EXTERNAL_TOOL=='1'){
     // path exists, use same file name
     ext_exp_json_file_exists =  true;
     //console.log('ext_exp_json_file_exists: ', ext_exp_json_file_exists)
-  }  
+  }
 
 }
 
