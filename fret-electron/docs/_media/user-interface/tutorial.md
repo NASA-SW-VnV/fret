@@ -38,7 +38,7 @@ More information on how to import is available [here](./export&import/import.md)
 
 FRET provides the `ext`  execution mode to facilitate connection and integration into external tools. The mode, which has been implemented as a node script,  allows users to run the requirement editor, the formalization component, and the requirements simulator as a standalone tool.
 
-More information on the `ext` mode is available [here](./external/ext_plcverif.md).
+More information on the `ext` mode is available [here](./external/ext_tools.md).
 
 
 [Back to FRET home page](../userManual.md)
