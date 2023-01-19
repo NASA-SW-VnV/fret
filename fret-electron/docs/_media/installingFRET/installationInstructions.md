@@ -34,7 +34,7 @@ Here are the steps to install and start FRET:
 For the installation of FRET on Apple M1 machines see notes below.
 
 
-#### Or build executable with Docker Image
+### Build executable with Docker Image
 
 Alternatively, for Linux users, we provide a [Docker image](../../../../tools/Scripts/docker) to build an executable binary. Here are the steps:
 
