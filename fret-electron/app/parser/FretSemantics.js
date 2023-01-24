@@ -40,10 +40,12 @@ const semanticsAnalyzer = new SemanticsAnalyzer();
 const REQ_BODY_CTX_RULE = 'reqt_body'
 
 // Remove white space at beginning and end, and lop off any final dot.
+// Rename apart single capital letters which are temporal operators.
 function trimReqtText(text) {
   let trimmedText = text.trim();
   if (trimmedText.endsWith(".")) trimmedText = trimmedText.slice(0,-1).trim();
-  return trimmedText;
+  const renamed = trimmedText.replace(/\b([AEFGHOSTUVWXYZ])\b/g, 'abc$1def')
+  return renamed;
 }
 
 // Tests that text is just a string starting and ending with double-quotes
