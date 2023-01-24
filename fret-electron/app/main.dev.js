@@ -60,7 +60,20 @@ if (process.env.FRET_TESTING) {
 } else if (process.env.EXTERNAL_TOOL=='1'){
   leveldbDBname = userDocumentsFolder + '/fret-ext-db';
   modelDBname = userDocumentsFolder + '/model-ext-db';
+} 
+
+if (process.env.FRET_MODEL_DB){
+  if (fs.existsSync(process.env.FRET_MODEL_DB)) {
+    modelDBname = process.env.FRET_MODEL_DB;
+  }
 }
+
+if (process.env.FRET_LEVEL_DB){
+  if (fs.existsSync(process.env.FRET_LEVEL_DB)) {
+    leveldbDBname = process.env.FRET_LEVEL_DB;
+  }
+}
+
 var leveldbDB = new NodePouchDB(leveldbDBname);
 var modelDB = new NodePouchDB(modelDBname);
 
