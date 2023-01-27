@@ -40,5 +40,10 @@ FRET provides the `ext`  execution mode to facilitate connection and integration
 
 More information on the `ext` mode is available [here](./external/ext_tools.md).
 
+## FRET databases
+
+FRET uses a database for tracking requirements and another database for tracking model information for analysis tools.  Users can point FRET to which database locations to use.  More info on setting database locations is available [here](./dbPaths.md)
+
+
 
 [Back to FRET home page](../userManual.md)
