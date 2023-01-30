@@ -15,7 +15,6 @@ const refactoring_utils = require('./refactoring_utils.js')
 * Finds all the requirements in the given project that contain the given fragment
 * Uses `FindRequirementsWithFragment` in refactoring_model.js
 */
-
 exports.requirementWithFragement = function requirementWithFragement(allRequirements, req, fragment,  destinationName)
 {
 	console.log(" +++ requirementWithFragement +++")
@@ -63,7 +62,11 @@ function extractRequirement(req, reqVars, fragment, destinationName, newID, allR
 	// Ramos Step 1: Make New requirement
 
 	let newReq = newRequirement();
-	newReq.reqid = destinationName.toUpperCase();
+
+	let fretishDestinationName = destinationName.replace(/ /g, "_").toUpperCase();
+
+
+	newReq.reqid = fretishDestinationName;
 	// New Req needs a new ID
 	newReq._id = newID;
 	// Copying the project name
@@ -80,7 +83,7 @@ function extractRequirement(req, reqVars, fragment, destinationName, newID, allR
 
 
   // New fretish requirement
-	let newFretish = "if " + fragment + " " + component + " shall satisfy " + destinationName.toUpperCase();
+	let newFretish = "if " + fragment + " " + component + " shall satisfy " + fretishDestinationName;
 
 	 newReq.fulltext = newFretish;
 	 // Compile the new semantics and add to the new req
@@ -93,7 +96,7 @@ function extractRequirement(req, reqVars, fragment, destinationName, newID, allR
 
 
 	// Dummy Run on the Dummy Req
-	model.ReplaceFragment(dummyUpdatedReq, fragment, destinationName);
+	model.ReplaceFragment(dummyUpdatedReq, fragment, fretishDestinationName);
 
 
 	console.log("~~~~~")
@@ -120,7 +123,7 @@ function extractRequirement(req, reqVars, fragment, destinationName, newID, allR
 		req.fragments = [newReq.reqid]
 
 		// Replace fragment in original requirement with reference to new requirement
-		model.ReplaceFragment(req, fragment, destinationName);
+		model.ReplaceFragment(req, fragment, fretishDestinationName);
 
 
 		model.AddRequirementToDB(req);
@@ -156,7 +159,11 @@ function extractRequirement_ApplyAll(req, reqVars, fragment,  destinationName, n
 
 	// The destination of the extracted fragment
 	let newReq = newRequirement();
-	newReq.reqid = destinationName.toUpperCase();
+
+	let fretishDestinationName = destinationName.replace(/ /g, "_").toUpperCase();
+
+
+	newReq.reqid = fretishDestinationName;
 	// New Req needs a new ID
 	newReq._id = newID;
 	// Copying the project name
@@ -169,7 +176,7 @@ function extractRequirement_ApplyAll(req, reqVars, fragment,  destinationName, n
 	let component = req.semantics.component_name;
 
   // New fretish requirement
-	let newFretish = "if " + fragment + " " + component + " shall satisfy " + destinationName.toUpperCase();
+	let newFretish = "if " + fragment + " " + component + " shall satisfy " + fretishDestinationName;
 
 	 newReq.fulltext = newFretish;
 	 // Compile the new semantics and add to the new req
@@ -184,7 +191,7 @@ function extractRequirement_ApplyAll(req, reqVars, fragment,  destinationName, n
   // Similar to this method, but the destination requirement already exists.
 	project = req.project;
 
-	let reqKnockons = exports.requirementWithFragement(allRequirements, req, fragment, destinationName);
+	let reqKnockons = exports.requirementWithFragement(allRequirements, req, fragment, fretishDestinationName);
 
 	console.log("Lets see what requirements I've got to update...");
 	console.log(reqKnockons);
@@ -202,7 +209,7 @@ function extractRequirement_ApplyAll(req, reqVars, fragment,  destinationName, n
 			let dummyUpdatedReq = makeDummyUpdatedReq(kreq);
 
 			// Dummy Run on the Dummy Req
-			model.ReplaceFragment(dummyUpdatedReq, fragment, destinationName);
+			model.ReplaceFragment(dummyUpdatedReq, fragment, fretishDestinationName);
 			dummyUpdatedReq.fragments = [newReq.reqid]
 
 			console.log("~~~~~")
@@ -219,7 +226,7 @@ function extractRequirement_ApplyAll(req, reqVars, fragment,  destinationName, n
 
 			// This call to compareRequirements can reuse reqVars because if we are doing extract all
 			// then `reqvars` will contain all the variables (and types) for all the requirements that
-			// contain the fragment being extracted. 
+			// contain the fragment being extracted.
 			result = compare.compareRequirements(kreq, reqVars, dummyUpdatedReq, allRequirements);
 			console.log("controller, result = " + result);
 
@@ -244,7 +251,7 @@ function extractRequirement_ApplyAll(req, reqVars, fragment,  destinationName, n
 				let kreq = reqKnockons[i];
 
 				kreq.fragments = [newReq.reqid]
-				model.ReplaceFragment(kreq, fragment, destinationName);
+				model.ReplaceFragment(kreq, fragment, fretishDestinationName);
 				model.AddRequirementToDB(kreq);
 
 			}
@@ -255,8 +262,6 @@ function extractRequirement_ApplyAll(req, reqVars, fragment,  destinationName, n
 
 		}
 	}
-
-
 	return result;
 }
 exports.extractRequirement_ApplyAll = extractRequirement_ApplyAll;
