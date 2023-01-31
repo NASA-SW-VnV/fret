@@ -333,8 +333,9 @@ function mergeFragment(property, fragment)
   return mergedProperty;
 }
 
-/*
-*
+/**
+* Gets the requirements are extracted fragments.
+* This could become obsolete if we had a central list of them all.
 */
 function getFragmentReqs(fragmentNames, allRequirements)
 {
@@ -346,7 +347,7 @@ function getFragmentReqs(fragmentNames, allRequirements)
      console.log("getFragmentReqs allRequirements -> ");
      console.log(allRequirements);
 
-
+   // Nested loops...would be nice if we could get rid of that.
    for (let req of allRequirements)
    {
      console.log("-- req = ")
@@ -368,6 +369,11 @@ function getFragmentReqs(fragmentNames, allRequirements)
    return fragments
 }
 
+
+/**
+* Generates the SMV file used to check that the original and new requirements
+* behave in the same way.
+*/
 function generateSMV(originalReq, originalReqVars, newReq,n, allRequirements)
 {
   let ltlspecs = [];
@@ -434,6 +440,11 @@ function generateSMV(originalReq, originalReqVars, newReq,n, allRequirements)
   return {specs: ltlspecs,  vars: variables};
 }
 
+/**
+* Returns the common preamble to the SMV file.
+* This defines the variables (both common and specific, via the `variables` parameter)
+* that the specification uses.
+*/
 function preamble(variables, len) {
     return `MODULE main
 VAR
@@ -452,11 +463,10 @@ DEFINE
 `;
 }
 
-function callnuXmv (originalReq, originalReqVars, newReq,len,n, allRequirements) {
-
-
-    console.log("callnuXmv allRequirements -> ");
-    console.log(allRequirements);
+function callnuXmv (originalReq, originalReqVars, newReq,len,n, allRequirements)
+{
+  console.log("callnuXmv allRequirements -> ");
+  console.log(allRequirements);
   let r = generateSMV(originalReq, originalReqVars, newReq, n, allRequirements);
   let nuXmvCode = preamble(r.vars, len) + r.specs.join('\n') + '\n'; //
 
@@ -478,10 +488,7 @@ function callnuXmv (originalReq, originalReqVars, newReq,len,n, allRequirements)
   {
       console.error("nuXmv returned an unexpectedly long array of results. (Length 1 was expected)");
   }
-
-//  return { same: utils.compress(r.keys,boolVec),
-  //  different: utils.compress(r.keys,boolVec,true)}
-  }
+}
 
 // len is the length of the trace; n is the duration as an integer.
 // function compare(originalReq, newReq, len,n) {

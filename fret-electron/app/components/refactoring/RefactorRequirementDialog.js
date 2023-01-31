@@ -42,19 +42,12 @@ import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-//import IconButton from '@material-ui/core/IconButton';
-//import EditIcon from '@material-ui/icons/Edit';
-//import BuildIcon from '@material-ui/icons/Build';
-//import DeleteIcon from '@material-ui/icons/Delete';
 import TextField from '@material-ui/core/TextField';
-//import Divider from '@material-ui/core/Divider';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-//import ImageList from '@material-ui/core/ImageList';
-//import ImageListItem from '@material-ui/core/ImageListItem';
 import Grid from '@material-ui/core/Grid';
 import Checkbox from '@material-ui/core/Checkbox';
 import Select from '@material-ui/core/Select';
@@ -70,12 +63,9 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import Divider from '@material-ui/core/Divider';
 
-//import ImageListItemBar from '@material-ui/core/ImageListItemBar';
-//import Tooltip from '@material-ui/core/Tooltip';
-
 import RefactoringController from '../../../../tools/Refactoring/refactoring_controller';
 import RefactoringUtils from '../../../../tools/Refactoring/refactoring_utils';
-//import RefactoringController from './refactoring_controller';
+
 import { v4 as uuid } from 'uuid';
 
 const sharedObj = require('electron').remote.getGlobal('sharedObj');
@@ -122,8 +112,6 @@ class RefactorRequirementDialog extends React.Component {
     newName: '',
     requirements: [],
     refactoringCheckresult: null,
-
-
   };
 
   componentWillReceiveProps = (props) => {
