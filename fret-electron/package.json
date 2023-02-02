@@ -29,7 +29,7 @@
     "test": "cross-env NODE_ENV=test FRET_TESTING=1 BABEL_DISABLE_CACHE=1 node --trace-warnings -r babel-register ./internals/scripts/RunTests.js",
     "test-all": "npm run lint && npm run flow && npm run build && npm run test sem && npm run test e2e",
     "test-watch": "npm test -- --watch",
-    "clean": "rm -rf node_modules && rm -rf app/node_modules && rm -rf ../tools/LTLSIM/ltlsim-core/node_modules && rm -rf ../tools/LTLSIM/ltlsim-electron/node_modules",
+    "clean": "rimraf app/node_modules && rimraf ../tools/LTLSIM/ltlsim-core/node_modules && rimraf ../tools/LTLSIM/ltlsim-electron/node_modules && rimraf node_modules",
     "fret-install": "npm --prefix ../tools/LTLSIM/ltlsim-core install ../tools/LTLSIM/ltlsim-core && npm install",
     "fret-reinstall": "npm run clean && npm run fret-install"
   },
@@ -135,8 +135,9 @@
     "usePathForSuiteName": "true"
   },
   "devDependencies": {
+    "@babel/core": "^7.20.12",
+    "@babel/register": "^7.18.9",
     "@playwright/test": "^1.22.2",
-    "babel-core": "^6.26.0",
     "babel-eslint": "^8.2.1",
     "babel-jest": "^22.1.0",
     "babel-loader": "^7.1.2",
@@ -150,7 +151,6 @@
     "babel-preset-react-hmre": "^1.1.1",
     "babel-preset-react-optimize": "^1.0.1",
     "babel-preset-stage-0": "^6.24.1",
-    "babel-register": "^6.26.0",
     "chalk": "^2.3.0",
     "concurrently": "^3.5.1",
     "cross-env": "^5.1.3",
