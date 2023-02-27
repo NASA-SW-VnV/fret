@@ -85,6 +85,21 @@ export function AddRequirementToDB(req)
   db.put(req, DBAddCallback)
 }
 
+/**
+* Updates the data types in ModelDB
+* The parameter `docs` should be an array of document objects
+*/
+export function UpdateDataTypes(docs)
+{
+  console.log("Updating Model DB");
+  db.bulkDocs(docs).then(function (result) {
+    console.log("Data Types Updated");
+    console.log(result);  // TODO This is returning ok but is an array of errors! Conflicting updates... might need to blank the rev in the docs // Nope, still broken.
+  }).catch(function (err) {
+    console.log(err);
+  });
+}
+
 
 export function RequirementsInProject(project_name)
 {
@@ -157,7 +172,6 @@ export function FindRequirementsWithFragment(allRequirements, project_name, frag
       }
 
       return reqsWithFrag;
-  //});
 }
 
 export function makeVariableTypeMap(requirement)
@@ -171,8 +185,6 @@ export function makeVariableTypeMap(requirement)
     variableTypeMap.set(variable, "undefined");
   }
 
-
-  //let variableTypes = []
   var self = this;
 
   modeldb.find({

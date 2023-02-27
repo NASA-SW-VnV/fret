@@ -112,6 +112,7 @@ class RefactorRequirementDialog extends React.Component {
     newName: '',
     requirements: [],
     refactoringCheckresult: null,
+    variableDocs : {}
   };
 
   componentWillReceiveProps = (props) => {
@@ -196,7 +197,7 @@ handleInitialOK = () =>
           console.log(i);
         }
 
-        self.setState({variables : variableTypeMap});
+        self.setState({variableDocs: result.docs, variables : variableTypeMap});
         self.setState({dialogState:STATE.TYPES});
       }
       ).catch((err) => {
@@ -253,7 +254,6 @@ handleInitialOK = () =>
           console.log("result.docs");
           console.log(result.docs);
 
-          //var variableTypeMapModel = new Map();
           for (let doc of result.docs)
           {
             let varName = doc.variable_name;
@@ -265,7 +265,6 @@ handleInitialOK = () =>
             }
 
             variableTypeMap.set(varName, varType);
-
           }
 
           console.log("!!! Show me the Variables!")
@@ -275,17 +274,15 @@ handleInitialOK = () =>
           }
 
 
-          self.setState({variables : variableTypeMap});
+          self.setState({variableDocs: result.docs, variables : variableTypeMap});
           self.setState({dialogState:STATE.TYPES});
         }
         ).catch((err) => {
           console.log(err);
         })
-
     }
   }
   console.log("state's copy of variables = " + this.state.variables);
-
 }
 
 /**
@@ -299,10 +296,12 @@ handleOk = () => {
   console.log("apply to all = " + this.state.applyToAll);
   var newID = uuid.v1();
   var result;
+
+  //Update ModelDB
+  RefactoringController.updateVariableTypes(this.state.variableDocs, this.state.variables);
+
   if (this.state.applyToAll == true)
   {
-
-
       console.log("handleOk this.state.requirements -> ");
       console.log(this.state.requirements);
 
@@ -367,7 +366,6 @@ handleTypeChange = (varName) => event =>
   variableTypeMap.set(varName, value);
 
   this.setState({variables: variableTypeMap});
-
 };
 
 getType = (variableName) =>
@@ -455,18 +453,7 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
 */
 
   render() {
-  //  const {classes} = this.props;
   var { project, reqid, parent_reqid, rationale, ltl, semantics, fulltext } = this.state.selectedRequirement
-  //  const reqidLabel = (reqid ? reqid : "None")
-  //  const projectLabel = project ? project : "None"
-  //  var ltlFormula = ltl ? ltl : (semantics ? semantics.ft : undefined);
-  //  var ltlFormulaPt = (semantics ? semantics.pt : undefined);
-  //  var diagramVariables = (semantics ? semantics.diagramVariables : undefined);
-  //  var path = (semantics ? (`../docs/`+ semantics.diagram) : undefined);
-  //  var ltlDescription = semantics ? (semantics.description ? semantics.description : "No description available.") : "No description available.";
-  //  if (!rationale) rationale = 'Not specified'
-  //  if (!parent_reqid) parent_reqid = 'Not specified'
-  //  fulltext += '.'
 
   var dialog_state = this.state.dialogState;
   console.log("Dialog State = " + dialog_state);
@@ -561,15 +548,16 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
       console.log("Vars = " );
       console.log(this.state.variables);
 
+      console.log("variableDocs = " );
+      console.log(this.state.variableDocs);
 
       let reqVariables = []
       this.state.variables.forEach (function(value, key) {
         reqVariables.push(key);
       })
 
-      console.log("Made a list of the object/map")
-
-      console.log(reqVariables);
+     console.log("Made a list of the object/map")
+     console.log(reqVariables);
 
       var self = this;
 

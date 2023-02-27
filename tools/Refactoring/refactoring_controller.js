@@ -266,6 +266,23 @@ function extractRequirement_ApplyAll(req, reqVars, fragment,  destinationName, n
 }
 exports.extractRequirement_ApplyAll = extractRequirement_ApplyAll;
 
+
+function updateVariableTypes(variableDocs, variables)
+{
+	for(let doc in variableDocs)
+	{
+		let varName = doc.variable_name;
+		let varType = variables.get(varName);
+		console.log("setting " + varName + " to type " + varType );
+		doc.dataType = varType;
+		doc._rev = "";
+
+	}
+	model.UpdateDataTypes(variableDocs);
+}
+exports.updateVariableTypes = updateVariableTypes;
+
+
 /**
 * Handles one request to move a definition to another requirement
 * This should have no knock-on effects, since we can only refer to a requirement
