@@ -161,7 +161,7 @@ handleInitialOK = () =>
   if(this.state.applyToAll == false)
   {
     let varList = RefactoringUtils.getVariableNames(this.state.selectedRequirement);
-    console.log("handleInitialOK's var list = " + varList);
+    //console.log("handleInitialOK's var list = " + varList);
 
     var variableTypeMap = new Map();
     for(let variable of varList)
@@ -179,8 +179,8 @@ handleInitialOK = () =>
       }
     }).then(function(result)
       {
-        console.log("result.docs");
-        console.log(result.docs);
+        //console.log("result.docs");
+        //console.log(result.docs);
 
         var variableTypeMap = new Map();
         for (let doc of result.docs)
@@ -197,11 +197,11 @@ handleInitialOK = () =>
 
         }
 
-        console.log("!!! Show me the Variables!")
-        for(let i of variableTypeMap)
-        {
-          console.log(i);
-        }
+        //console.log("!!! Show me the Variables!")
+        //for(let i of variableTypeMap)
+        //{
+        //  console.log(i);
+        //}
 
         self.setState({variableDocs: result.docs, variables : variableTypeMap, dialogState:STATE.TYPES});
 
@@ -212,19 +212,19 @@ handleInitialOK = () =>
   }
   else{
 
-    console.log("+++ before requirement with Fragment call +++")
-    console.log(" selected Requirement = " + this.state.selectedRequirement);
+    //console.log("+++ before requirement with Fragment call +++")
+    //console.log(" selected Requirement = " + this.state.selectedRequirement);
     //console.log(this.state.selectedRequirement.reqid);
 
     //Find the requirements that have the fragment in.
     let applicableRequirements = RefactoringController.requirementWithFragement(this.state.requirements, this.state.selectedRequirement, this.state.extractString, this.state.newName);
 
-    console.log(applicableRequirements);
+    //console.log(applicableRequirements);
 
     //If we have some requirements that contain the fragment we're extracting
     if (applicableRequirements.length >0)
   	{
-      console.log("^^ applicableRequirements > 0");
+      //console.log("^^ applicableRequirements > 0");
       var variableTypeMap = new Map(); // map to hold varname |-> type
       var varList = [];
 
@@ -236,7 +236,7 @@ handleInitialOK = () =>
         let varNames = RefactoringUtils.getVariableNames(this_req);
         let newVarList = varList.concat(varNames); // Javascript is a silly language
         varList = newVarList;
-        console.log("handleInitialOK's var list = " + varList);
+        //console.log("handleInitialOK's var list = " + varList);
       }
 
       // ... and add them to the map, mapping varname |-> "undefined" (for now)
@@ -257,8 +257,8 @@ handleInitialOK = () =>
         }
       }).then(function(result)
         {
-          console.log("result.docs");
-          console.log(result.docs);
+          //console.log("result.docs");
+          //console.log(result.docs);
 
           for (let doc of result.docs)
           {
@@ -273,11 +273,11 @@ handleInitialOK = () =>
             variableTypeMap.set(varName, varType);
           }
 
-          console.log("!!! Show me the Variables!")
-          for(let i of variableTypeMap)
-          {
-            console.log(i);
-          }
+          //console.log("!!! Show me the Variables!")
+          //for(let i of variableTypeMap)
+          //{
+          //  console.log(i);
+          //}
 
 
           self.setState({variableDocs: result.docs, variables : variableTypeMap, dialogState:STATE.TYPES});
@@ -288,7 +288,7 @@ handleInitialOK = () =>
         })
     }
   }
-  console.log("state's copy of variables = " + this.state.variables);
+  //console.log("state's copy of variables = " + this.state.variables);
 }
 
 /**
@@ -296,10 +296,10 @@ handleInitialOK = () =>
 * Calls the requested extract requirement method
 */
 handleOk = () => {
-  console.log('OK Button');
-  console.log(this.state.extractString);
-  console.log(this.state.newName);
-  console.log("apply to all = " + this.state.applyToAll);
+  //console.log('OK Button');
+  //console.log(this.state.extractString);
+  //console.log(this.state.newName);
+  //console.log("apply to all = " + this.state.applyToAll);
   var newID = uuid.v1();
   var result;
 
@@ -325,14 +325,14 @@ handleOk = () => {
 
     if (this.state.applyToAll == true)
     {
-        console.log("handleOk this.state.requirements -> ");
-        console.log(this.state.requirements);
+        //console.log("handleOk this.state.requirements -> ");
+        //console.log(this.state.requirements);
 
       result = RefactoringController.extractRequirement_ApplyAll(
         this.state.selectedRequirement, this.state.variables, this.state.extractString,
         this.state.newName, newID, this.state.requirements);
 
-        console.log("result all = " + result);
+        //console.log("result all = " + result);
 
 
     }
@@ -341,7 +341,7 @@ handleOk = () => {
         result = RefactoringController.extractRequirement(
           this.state.selectedRequirement, this.state.variables, this.state.extractString, this.state.newName, newID, this.state.requirements);
 
-          console.log("result one = " + result);
+          //console.log("result one = " + result);
 
     }
 
@@ -352,6 +352,8 @@ handleOk = () => {
     }
     else
     {
+      console.log("here's the result ->")
+      console.log(result)
       this.setState({dialogState:STATE.RESULT_FALSE, refactoringCheckresult: result});
       return;
     }
@@ -365,23 +367,23 @@ handleOk = () => {
 };
 
 handleRefactoringType = () => event => {
-  console.log(event.target.value);
+
   this.setState({ refactoringType: event.target.value });
 };
 
 handleChangeExtract = () => event => {
   let extractString = event.target.value
-  console.log(extractString);
+
   this.setState({ extractString: extractString });
 };
 
 updateNewName = () => event => {
-  console.log(event.target.value);
+
   this.setState({ newName: event.target.value });
 };
 
 updateApplytoAllStatus = () => event => {
-  console.log(event.target.checked);
+
   this.setState({applyToAll: event.target.checked});
 };
 
@@ -402,7 +404,7 @@ handleTypeChange = (varName) => event =>
 
 getType = (variableName) =>
 {
-  console.log("Getting variable name for select");
+
 
   return this.state.variables.get(variableName)
 };
@@ -488,7 +490,7 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
   var { project, reqid, parent_reqid, rationale, ltl, semantics, fulltext } = this.state.selectedRequirement
 
   var dialog_state = this.state.dialogState;
-  console.log("Dialog State = " + dialog_state);
+  console.log("New Dialog State = " + dialog_state);
 
   switch(dialog_state)
   {
@@ -576,20 +578,14 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
     break;
 
     case STATE.TYPES:
-      console.log("!! Types Case")
-      console.log("Vars = " );
-      console.log(this.state.variables);
 
-      console.log("variableDocs = " );
-      console.log(this.state.variableDocs);
 
       let reqVariables = []
       this.state.variables.forEach (function(value, key) {
         reqVariables.push(key);
       })
 
-     console.log("Made a list of the object/map")
-     console.log(reqVariables);
+
 
       var self = this;
 
@@ -768,8 +764,6 @@ RefactorRequirementDialog.propTypes = {
   open: PropTypes.bool.isRequired,
   handleDialogClose: PropTypes.func.isRequired,
   requirements: PropTypes.array
-//  handleCreateDialogOpen: PropTypes.func.isRequired,
-//  handleDeleteDialogOpen: PropTypes.func.isRequired,
 };
 
 export default withStyles(styles)(RefactorRequirementDialog);
