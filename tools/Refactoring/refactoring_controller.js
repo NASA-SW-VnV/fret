@@ -283,6 +283,7 @@ function updateVariableTypes(variableDocs, variables)
 		let varType = variables.get(varName);
 		console.log("setting " + varName + " to type " + varType );
 		doc.dataType = varType;
+		doc.description = "Variable Type added by Mu-FRET Refactoring Dialogue.";
 
 	}
 	model.UpdateDataTypes(variableDocs);

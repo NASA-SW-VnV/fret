@@ -56,6 +56,7 @@ import FormControl from '@material-ui/core/FormControl';
 
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
+import WarningIcon from '@material-ui/icons/Warning';
 
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -202,8 +203,8 @@ handleInitialOK = () =>
           console.log(i);
         }
 
-        self.setState({variableDocs: result.docs, variables : variableTypeMap});
-        self.setState({dialogState:STATE.TYPES});
+        self.setState({variableDocs: result.docs, variables : variableTypeMap, dialogState:STATE.TYPES});
+
       }
       ).catch((err) => {
         console.log(err);
@@ -599,20 +600,20 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
             aria-labelledby="form-dialog-title"
             maxWidth="md"
           >
-          <DialogTitle id="simple-dialog-title">  Extract Requirement: {this.state.selectedRequirementId} -- Check Types
+          <DialogTitle id="simple-dialog-title">  Check Types Before Extracting Requirement: {this.state.selectedRequirementId}
           </DialogTitle>
 
           <DialogContent>
           <Grid spaceing={2}>
-            <Grid style={{ textAlign: 'right' }} item xs={3}>
+            <Grid item xs={3}>
               Definition:
             </Grid>
             <Grid item xs={9}>
               <TextField
-                id="definition"
+
                 multiline
                 fullWidth
-                label="Definition"
+
                 value={fulltext} />
             </Grid>
 
@@ -621,7 +622,7 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
             </Grid>
           </Grid>
 
-              <ul >
+              <ul>
               {
               reqVariables.map(varName =>
                     (
@@ -633,6 +634,15 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
                               name = {varName}
                               onChange={self.handleTypeChange(varName)}
                               value = {self.getType(varName)}
+                              autoWidth
+                              renderValue={(value) => {
+                                if (value == "undefined") {
+                                  return <div style={{color:'red'}}>{value} <WarningIcon  fontSize="small" /></div> ;
+                                }
+                                else {
+                                  return <div>{value}</div>;
+                                }
+                                }}
                         >
                         <MenuItem value={"boolean"}>Boolean</MenuItem>
                         <MenuItem value={"integer"}>Integer</MenuItem>
@@ -669,7 +679,7 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
           aria-labelledby="form-dialog-title"
           maxWidth="md"
         >
-        <DialogTitle id="simple-dialog-title">  Extract Requirement: {this.state.selectedRequirementId}
+        <DialogTitle id="simple-dialog-title">  Sucessfully Extracted Requirement: {this.state.selectedRequirementId}
         </DialogTitle>
           <DialogContent>
                <DialogContentText>
@@ -695,7 +705,7 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
           aria-labelledby="form-dialog-title"
           maxWidth="md"
         >
-        <DialogTitle id="simple-dialog-title">  Extract Requirement: {this.state.selectedRequirementId}
+        <DialogTitle id="simple-dialog-title">  Extract Requirement Failed: {this.state.selectedRequirementId}
         </DialogTitle>
           <DialogContent>
             <DialogContentText>
@@ -722,7 +732,7 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
             aria-labelledby="form-dialog-title"
             maxWidth="md"
           >
-          <DialogTitle id="simple-dialog-title">  Extract Requirement: {this.state.selectedRequirementId}
+          <DialogTitle id="simple-dialog-title">  Error while Extracting: {this.state.selectedRequirementId}
           </DialogTitle>
             <DialogContent>
               <DialogContentText>
