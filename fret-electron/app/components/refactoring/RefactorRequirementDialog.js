@@ -62,6 +62,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import Divider from '@material-ui/core/Divider';
+import Alert from '@material-ui/lab/Alert';
 
 import RefactoringController from '../../../../tools/Refactoring/refactoring_controller';
 import RefactoringUtils from '../../../../tools/Refactoring/refactoring_utils';
@@ -296,6 +297,10 @@ handleOk = () => {
   console.log("apply to all = " + this.state.applyToAll);
   var newID = uuid.v1();
   var result;
+
+  
+
+
 
   //Update ModelDB
   RefactoringController.updateVariableTypes(this.state.variableDocs, this.state.variables);

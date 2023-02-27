@@ -269,13 +269,20 @@ exports.extractRequirement_ApplyAll = extractRequirement_ApplyAll;
 
 function updateVariableTypes(variableDocs, variables)
 {
-	for(let doc in variableDocs)
+
+	console.log("updateVariableTypes")
+	console.log("variableDocs ->")
+	console.log(variableDocs)
+	console.log()
+	console.log("variables ->")
+	console.log(variables)
+	for(let doc of variableDocs) // of, not int, because javascript is a silly language
 	{
+		console.log(doc)
 		let varName = doc.variable_name;
 		let varType = variables.get(varName);
 		console.log("setting " + varName + " to type " + varType );
 		doc.dataType = varType;
-		doc._rev = "";
 
 	}
 	model.UpdateDataTypes(variableDocs);

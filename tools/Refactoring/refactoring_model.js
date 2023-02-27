@@ -92,9 +92,10 @@ export function AddRequirementToDB(req)
 export function UpdateDataTypes(docs)
 {
   console.log("Updating Model DB");
-  db.bulkDocs(docs).then(function (result) {
+  modeldb.bulkDocs(docs).then(function (result) {
     console.log("Data Types Updated");
     console.log(result);  // TODO This is returning ok but is an array of errors! Conflicting updates... might need to blank the rev in the docs // Nope, still broken.
+    // No, always give it back the _rev fo each document
   }).catch(function (err) {
     console.log(err);
   });
