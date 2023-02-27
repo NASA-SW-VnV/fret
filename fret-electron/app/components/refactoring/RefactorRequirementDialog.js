@@ -62,7 +62,6 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import Divider from '@material-ui/core/Divider';
-import Alert from '@material-ui/lab/Alert';
 
 import RefactoringController from '../../../../tools/Refactoring/refactoring_controller';
 import RefactoringUtils from '../../../../tools/Refactoring/refactoring_utils';
@@ -72,7 +71,7 @@ import { v4 as uuid } from 'uuid';
 const sharedObj = require('electron').remote.getGlobal('sharedObj');
 const modeldb = sharedObj.modeldb;
 const system_dbkeys = sharedObj.system_dbkeys;
-const STATE = {INITIAL:"initial", RESULT_TRUE:"result true", RESULT_FALSE: "result false", TYPES:"types please"};
+const STATE = {INITIAL:"initial", RESULT_TRUE:"result true", RESULT_FALSE: "result false", TYPES:"types please", ERROR_UNDEF : "error-undefined"};
 
 
 const styles = theme => ({
@@ -136,6 +135,11 @@ class RefactorRequirementDialog extends React.Component {
     this.setState({ open: false, dialogState: STATE.INITIAL, selectedRequirement: {}, requirements: [], refactoringCheckresult: null, applyToAll: false, refactoringType: '', newName: '', refactoringContent: ''});
     this.state.dialogCloseListener();
   };
+
+  handleErrorUndefClose = () =>
+  {
+    this.setState({dialogState : STATE.TYPES });
+  }
 
   handleRefactorDialogClose = () => {
     this.setState({ refactorDialogOpen: false });
@@ -275,8 +279,8 @@ handleInitialOK = () =>
           }
 
 
-          self.setState({variableDocs: result.docs, variables : variableTypeMap});
-          self.setState({dialogState:STATE.TYPES});
+          self.setState({variableDocs: result.docs, variables : variableTypeMap, dialogState:STATE.TYPES});
+
         }
         ).catch((err) => {
           console.log(err);
@@ -298,41 +302,63 @@ handleOk = () => {
   var newID = uuid.v1();
   var result;
 
-  
-
-
-
-  //Update ModelDB
-  RefactoringController.updateVariableTypes(this.state.variableDocs, this.state.variables);
-
-  if (this.state.applyToAll == true)
+  var undefinedVars = []
+  var allVarsDefined = true; // we assume, but...
+  //Check for undefindes
+  for (const variable of this.state.variables)
   {
-      console.log("handleOk this.state.requirements -> ");
-      console.log(this.state.requirements);
 
-    result = RefactoringController.extractRequirement_ApplyAll(
-      this.state.selectedRequirement, this.state.variables, this.state.extractString,
-      this.state.newName, newID, this.state.requirements);
-
-      console.log("result all = " + result);
-      this.setState({refactoringCheckresult: result});
-  }
-  else {
-    // Now this needs all the requirements too, to pass to the compare method
-      result = RefactoringController.extractRequirement(
-        this.state.selectedRequirement, this.state.variables, this.state.extractString, this.state.newName, newID, this.state.requirements);
-
-        console.log("result one = " + result);
-        this.setState({refactoringCheckresult: result});
+    if (variable[1] == "undefined")
+    {
+      allVarsDefined = false;
+      console.log("Error - " + variable[0] + " is undefined. Please update its type and try again.");
+      undefinedVars.push(variable)
+    }
   }
 
-  if(result == true)
+  if(allVarsDefined)
   {
-    this.setState({dialogState:STATE.RESULT_TRUE});
+
+    //Update ModelDB
+    RefactoringController.updateVariableTypes(this.state.variableDocs, this.state.variables);
+
+    if (this.state.applyToAll == true)
+    {
+        console.log("handleOk this.state.requirements -> ");
+        console.log(this.state.requirements);
+
+      result = RefactoringController.extractRequirement_ApplyAll(
+        this.state.selectedRequirement, this.state.variables, this.state.extractString,
+        this.state.newName, newID, this.state.requirements);
+
+        console.log("result all = " + result);
+
+
+    }
+    else {
+      // Now this needs all the requirements too, to pass to the compare method
+        result = RefactoringController.extractRequirement(
+          this.state.selectedRequirement, this.state.variables, this.state.extractString, this.state.newName, newID, this.state.requirements);
+
+          console.log("result one = " + result);
+
+    }
+
+    if(result == true)
+    {
+      this.setState({dialogState:STATE.RESULT_TRUE, refactoringCheckresult: result});
+      return;
+    }
+    else
+    {
+      this.setState({dialogState:STATE.RESULT_FALSE, refactoringCheckresult: result});
+      return;
+    }
   }
   else
   {
-    this.setState({dialogState:STATE.RESULT_FALSE});
+    this.setState({dialogState : STATE.ERROR_UNDEF, undefinedVariables : undefinedVars });
+    return;
   }
 
 };
@@ -685,6 +711,44 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
         </Dialog>
       );
     break;
+
+    case STATE.ERROR_UNDEF:
+    // Some of the variables were still undefined
+
+        return(
+          <Dialog
+            open={this.state.open}
+            onClose={this.handleClose}
+            aria-labelledby="form-dialog-title"
+            maxWidth="md"
+          >
+          <DialogTitle id="simple-dialog-title">  Extract Requirement: {this.state.selectedRequirementId}
+          </DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                 <CancelIcon/> Error - the following variables are undefined. Please update its type and try again.
+                 <ul >
+                 {
+                   this.state.undefinedVariables.map(variable =>
+                     (
+                       <li>
+                        {variable[0]} = {variable[1]}
+                       </li>
+                     )
+                   )
+                 }
+                 </ul >
+
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+            <Button onClick={this.handleErrorUndefClose} color="secondary">
+              Close
+            </Button>
+            </DialogActions>
+          </Dialog>
+        );
+      break;
   }
 }
 }
