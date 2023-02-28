@@ -98,7 +98,7 @@ regular_condition
        ;
 
 qualifier_word
-	: (WHEN | UNLESS | WHERE | IF | UPON)
+	: (UPON | WHENEVER | WHEN | UNLESS | WHERE | IF )
         ;
 
 qualified_condition1
@@ -272,6 +272,7 @@ UNLESS : U N L E S S;
 UNTIL : U N T I L;
 UPON : U P O N;
 WHEN : W H E N;
+WHENEVER : W H E N E V E R;
 WHERE : W H E R E;
 WHILE : W H I L E;
 WITHIN : W I T H I N;

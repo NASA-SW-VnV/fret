@@ -174,12 +174,16 @@ RequirementListener.prototype.enterOnly_condition = function(ctx) {
   result.condition = 'only'
 }
 
-RequirementListener.prototype.enterRegular_condition = function(ctx) {
-  if (result.condition == 'null') result.condition = 'regular'
-}
+//RequirementListener.prototype.enterRegular_condition = function(ctx) {
+//  if (result.condition == 'null') result.condition = 'regular'
+//}
 
 RequirementListener.prototype.enterQualifier_word = function(ctx) {
-    result.qualifier_word = antlrUtilities.getText(ctx).toLowerCase().trim();
+  result.qualifier_word = antlrUtilities.getText(ctx).toLowerCase().trim();
+  if (result.qualifier_word === "whenever"
+      && result.condition !== 'regular')
+    result.condition = "noTrigger";
+  else result.condition = "regular";
 }
 
 //RequirementListener.prototype.enterQualifier_word2 = function(ctx) {

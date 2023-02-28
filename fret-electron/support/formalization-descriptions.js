@@ -90,7 +90,8 @@ const sentenceResponse = [
 
 const sentenceCondition = [
   ['-,regular,-,-','TRIGGER: first point in the interval if COND is true and any point in the interval where COND becomes true (from false).'],
-  ['-,null,-,-', 'TRIGGER: first point in the interval.']
+  ['-,null,-,-', 'TRIGGER: first point in the interval.'],
+  ['-,noTrigger,-,-','TRIGGER: every point in the interval where COND is true.']
 ]
 
 const sentenceScope = [

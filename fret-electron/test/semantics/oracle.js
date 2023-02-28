@@ -45,7 +45,7 @@ exports.applyConstraints =
   var modesArray = this.activeScopeIntervals(scope,traceInterval,modeIntervals);
 
   var timingFunction = timing;
-  if (condition == 'regular') {
+  if (condition === 'regular' || condition === 'noTrigger' ) {
     timingFunction = timingFunction + 'Cond'
     //console.log("************  CHECK THIS OUT **************")
   }
@@ -73,6 +73,25 @@ exports.applyConstraints =
 	      }
 	  }
       }
+    else if (condition == 'noTrigger') {
+	  for (let conditionInterval of conditionIntervals) {
+	    let triggerInterval = intervalLogic.intersect(scopeInterval, conditionInterval);
+	      if (testOptions.verboseOracle)
+              console.log('Trigger: scopeInterval: ' + intervalLogic.intervalToString(scopeInterval)
+			  + ' conditionInterval: ' + intervalLogic.intervalToString(conditionInterval)
+			  + ' triggerInterval: ' + JSON.stringify(triggerInterval));
+	      if (triggerInterval.length > 0) {
+		for (let triggerPt = triggerInterval[0].left; triggerPt <= triggerInterval[0].right; triggerPt++) {
+		  const trigger = {point : triggerPt, scope : intervalLogic.createInterval(triggerPt,scopeInterval.right)}
+		   let res = this.checkTimings(n, scope, scopeInterval, trigger,
+					       stopCondIntervals,responseIntervals,
+					       timingFunction, traceInterval)
+		  if (res != null) // null means it's a don't care
+		      resultArray.push(res)
+		}
+	  }
+      }
+    }
       else {
 	  res = this.checkTimings(n, scope, scopeInterval, null, stopCondIntervals,responseIntervals, timingFunction, traceInterval);
           if (res != null) // means it's a don't care

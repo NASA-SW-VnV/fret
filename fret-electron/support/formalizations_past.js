@@ -59,9 +59,11 @@ const SpecialCases =
 	   'historically (FTP implies (not RES))']
       ];
 
+var noTrigger = false;
 
 function determineBaseForm (negate, timing, condition) {
-  var cond = (condition=='regular')?'COND':'null';
+  var cond = (condition=='regular'|condition=='noTrigger')?'COND':'null';
+  noTrigger = condition == 'noTrigger'
   var duration = 'BOUND';
   var property = 'RES';
   var stopCondition = 'STOPCOND'
@@ -141,7 +143,8 @@ function occursBeforeTime (duration, formula) {
 function previous(formula) {return `previous ${formula}`}
 
 function conditionTrigger (cond, left) {
-  return disjunction(`${cond} and previous (not (${cond}))`, `${cond} and ${left}`)
+  if (noTrigger) return cond
+  else return disjunction(`${cond} and previous (not (${cond}))`, `${cond} and ${left}`)
 }
 
 function noCondInterval (cond, start) {

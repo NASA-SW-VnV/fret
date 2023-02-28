@@ -6,7 +6,7 @@ var grammarFileName = "Requirement.g4";
 
 
 var serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964",
-    "\u0003J\u016a\u0004\u0002\t\u0002\u0004\u0003\t\u0003\u0004\u0004\t",
+    "\u0003K\u016a\u0004\u0002\t\u0002\u0004\u0003\t\u0003\u0004\u0004\t",
     "\u0004\u0004\u0005\t\u0005\u0004\u0006\t\u0006\u0004\u0007\t\u0007\u0004",
     "\b\t\b\u0004\t\t\t\u0004\n\t\n\u0004\u000b\t\u000b\u0004\f\t\f\u0004",
     "\r\t\r\u0004\u000e\t\u000e\u0004\u000f\t\u000f\u0004\u0010\t\u0010\u0004",
@@ -66,10 +66,10 @@ var serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964",
     "\u0007\u001e\u0165\n\u001e\f\u001e\u000e\u001e\u0168\u000b\u001e\u0003",
     "\u001e\u0002\u00048:\u001f\u0002\u0004\u0006\b\n\f\u000e\u0010\u0012",
     "\u0014\u0016\u0018\u001a\u001c\u001e \"$&(*,.02468:\u0002\u0010\u0004",
-    "\u0002DDHI\u0004\u0002##??\u0004\u0002\u0018\u0018\u001c\u001c\u0004",
-    "\u0002\u001d\u001d%%\u0005\u0002##<<>@\u0004\u0002  ;;\u0004\u0002\u001a",
+    "\u0002EEIJ\u0004\u0002##??\u0004\u0002\u0018\u0018\u001c\u001c\u0004",
+    "\u0002\u001d\u001d%%\u0005\u0002##<<>A\u0004\u0002  ;;\u0004\u0002\u001a",
     "\u001a22\u0006\u0002\"\"\')5599\u0003\u0002\u0007\b\u0004\u0002--33",
-    "\u0004\u0002\n\nCC\u0003\u0002\u000b\u000e\u0004\u0002\u0015\u0016*",
+    "\u0004\u0002\n\nDD\u0003\u0002\u000b\u000e\u0004\u0002\u0015\u0016*",
     "*\u0004\u0002\u0014\u0014\u0017\u0017\u0002\u0193\u0002=\u0003\u0002",
     "\u0002\u0002\u0004A\u0003\u0002\u0002\u0002\u0006H\u0003\u0002\u0002",
     "\u0002\bM\u0003\u0002\u0002\u0002\nP\u0003\u0002\u0002\u0002\f\u0092",
@@ -91,7 +91,7 @@ var serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964",
     "E\u0005\u0003\u0002\u0002\u0002FI\u0005\n\u0006\u0002GI\u0005\b\u0005",
     "\u0002HF\u0003\u0002\u0002\u0002HG\u0003\u0002\u0002\u0002IK\u0003\u0002",
     "\u0002\u0002JL\u0007\u0005\u0002\u0002KJ\u0003\u0002\u0002\u0002KL\u0003",
-    "\u0002\u0002\u0002L\u0007\u0003\u0002\u0002\u0002MN\u0007E\u0002\u0002",
+    "\u0002\u0002\u0002L\u0007\u0003\u0002\u0002\u0002MN\u0007F\u0002\u0002",
     "N\t\u0003\u0002\u0002\u0002OQ\u0005\f\u0007\u0002PO\u0003\u0002\u0002",
     "\u0002PQ\u0003\u0002\u0002\u0002QS\u0003\u0002\u0002\u0002RT\u0005\u000e",
     "\b\u0002SR\u0003\u0002\u0002\u0002ST\u0003\u0002\u0002\u0002TZ\u0003",
@@ -104,7 +104,7 @@ var serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964",
     "\t\u0003\u0002\u0002dc\u0003\u0002\u0002\u0002de\u0003\u0002\u0002\u0002",
     "ef\u0003\u0002\u0002\u0002fh\u0007%\u0002\u0002gb\u0003\u0002\u0002",
     "\u0002gd\u0003\u0002\u0002\u0002hi\u0003\u0002\u0002\u0002ir\u0005\u001a",
-    "\u000e\u0002jk\u0007A\u0002\u0002kr\u0005\u0018\r\u0002lo\t\u0004\u0002",
+    "\u000e\u0002jk\u0007B\u0002\u0002kr\u0005\u0018\r\u0002lo\t\u0004\u0002",
     "\u0002mp\u0005\u001a\u000e\u0002np\u0005\u0018\r\u0002om\u0003\u0002",
     "\u0002\u0002on\u0003\u0002\u0002\u0002pr\u0003\u0002\u0002\u0002qg\u0003",
     "\u0002\u0002\u0002qj\u0003\u0002\u0002\u0002ql\u0003\u0002\u0002\u0002",
@@ -112,7 +112,7 @@ var serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964",
     "\u0002\u0002uw\t\u0003\u0002\u0002vu\u0003\u0002\u0002\u0002vw\u0003",
     "\u0002\u0002\u0002wx\u0003\u0002\u0002\u0002xz\u0007%\u0002\u0002yt",
     "\u0003\u0002\u0002\u0002yv\u0003\u0002\u0002\u0002z{\u0003\u0002\u0002",
-    "\u0002{\u007f\u0005\u001a\u000e\u0002|}\u0007A\u0002\u0002}\u007f\u0005",
+    "\u0002{\u007f\u0005\u001a\u000e\u0002|}\u0007B\u0002\u0002}\u007f\u0005",
     "\u0018\r\u0002~y\u0003\u0002\u0002\u0002~|\u0003\u0002\u0002\u0002\u007f",
     "\u0093\u0003\u0002\u0002\u0002\u0080\u0082\t\u0003\u0002\u0002\u0081",
     "\u0083\u0007.\u0002\u0002\u0082\u0081\u0003\u0002\u0002\u0002\u0082",
@@ -120,7 +120,7 @@ var serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964",
     "\u0085\u0007%\u0002\u0002\u0085\u0093\u0005\u001a\u000e\u0002\u0086",
     "\u0087\t\u0005\u0002\u0002\u0087\u0093\u0005\u001a\u000e\u0002\u0088",
     "\u0089\u0007<\u0002\u0002\u0089\u008a\u0007%\u0002\u0002\u008a\u0093",
-    "\u0005\u001a\u000e\u0002\u008b\u008c\u0007A\u0002\u0002\u008c\u0093",
+    "\u0005\u001a\u000e\u0002\u008b\u008c\u0007B\u0002\u0002\u008c\u0093",
     "\u0005\u0018\r\u0002\u008d\u0090\t\u0004\u0002\u0002\u008e\u0091\u0005",
     "\u001a\u000e\u0002\u008f\u0091\u0005\u0018\r\u0002\u0090\u008e\u0003",
     "\u0002\u0002\u0002\u0090\u008f\u0003\u0002\u0002\u0002\u0091\u0093\u0003",
@@ -168,7 +168,7 @@ var serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964",
     "\u00d3\u00d4\u0003\u0002\u0002\u0002\u00d4\u00d5\u0003\u0002\u0002\u0002",
     "\u00d5\u00d7\u0005(\u0015\u0002\u00d6\u00d8\u0007\u0006\u0002\u0002",
     "\u00d7\u00d6\u0003\u0002\u0002\u0002\u00d7\u00d8\u0003\u0002\u0002\u0002",
-    "\u00d8\'\u0003\u0002\u0002\u0002\u00d9\u00da\u0007B\u0002\u0002\u00da",
+    "\u00d8\'\u0003\u0002\u0002\u0002\u00d9\u00da\u0007C\u0002\u0002\u00da",
     "\u00ec\u0005*\u0016\u0002\u00db\u00dc\u0007!\u0002\u0002\u00dc\u00ec",
     "\u0005*\u0016\u0002\u00dd\u00de\u0007\u0018\u0002\u0002\u00de\u00ec",
     "\u0005,\u0017\u0002\u00df\u00e0\u0007=\u0002\u0002\u00e0\u00ec\u0005",
@@ -184,9 +184,9 @@ var serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964",
     "\u0002\u00eb\u00e9\u0003\u0002\u0002\u0002\u00eb\u00ea\u0003\u0002\u0002",
     "\u0002\u00ec)\u0003\u0002\u0002\u0002\u00ed\u00ee\u00052\u001a\u0002",
     "\u00ee+\u0003\u0002\u0002\u0002\u00ef\u00f0\u00052\u001a\u0002\u00f0",
-    "-\u0003\u0002\u0002\u0002\u00f1\u00f2\u0007D\u0002\u0002\u00f2/\u0003",
-    "\u0002\u0002\u0002\u00f3\u00f4\u0007D\u0002\u0002\u00f41\u0003\u0002",
-    "\u0002\u0002\u00f5\u00f6\u0007G\u0002\u0002\u00f6\u00f7\u00054\u001b",
+    "-\u0003\u0002\u0002\u0002\u00f1\u00f2\u0007E\u0002\u0002\u00f2/\u0003",
+    "\u0002\u0002\u0002\u00f3\u00f4\u0007E\u0002\u0002\u00f41\u0003\u0002",
+    "\u0002\u0002\u00f5\u00f6\u0007H\u0002\u0002\u00f6\u00f7\u00054\u001b",
     "\u0002\u00f73\u0003\u0002\u0002\u0002\u00f8\u00f9\t\t\u0002\u0002\u00f9",
     "5\u0003\u0002\u0002\u0002\u00fa\u00fb\u00058\u001d\u0002\u00fb7\u0003",
     "\u0002\u0002\u0002\u00fc\u00fd\b\u001d\u0001\u0002\u00fd\u00fe\t\n\u0002",
@@ -199,9 +199,9 @@ var serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964",
     "\u0002\u010b\u010c\u00058\u001d\b\u010c\u012d\u0003\u0002\u0002\u0002",
     "\u010d\u010e\u0007\u000f\u0002\u0002\u010e\u010f\u00058\u001d\u0002",
     "\u010f\u0110\u0007\u0010\u0002\u0002\u0110\u012d\u0003\u0002\u0002\u0002",
-    "\u0111\u0112\u0005:\u001e\u0002\u0112\u0113\u0007F\u0002\u0002\u0113",
+    "\u0111\u0112\u0005:\u001e\u0002\u0112\u0113\u0007G\u0002\u0002\u0113",
     "\u0114\u0005:\u001e\u0002\u0114\u012d\u0003\u0002\u0002\u0002\u0115",
-    "\u0128\u0007D\u0002\u0002\u0116\u0125\u0007\u000f\u0002\u0002\u0117",
+    "\u0128\u0007E\u0002\u0002\u0116\u0125\u0007\u000f\u0002\u0002\u0117",
     "\u011a\u00058\u001d\u0002\u0118\u011a\u0005:\u001e\u0002\u0119\u0117",
     "\u0003\u0002\u0002\u0002\u0119\u0118\u0003\u0002\u0002\u0002\u011a\u0122",
     "\u0003\u0002\u0002\u0002\u011b\u011e\u0007\u0006\u0002\u0002\u011c\u011f",
@@ -228,8 +228,8 @@ var serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964",
     "\u0137\u0003\u0002\u0002\u0002\u0139\u013a\u0003\u0002\u0002\u0002\u013a",
     "9\u0003\u0002\u0002\u0002\u013b\u0139\u0003\u0002\u0002\u0002\u013c",
     "\u013d\b\u001e\u0001\u0002\u013d\u013e\u0007\u0014\u0002\u0002\u013e",
-    "\u015a\u0005:\u001e\b\u013f\u015a\u0007G\u0002\u0002\u0140\u0153\u0007",
-    "D\u0002\u0002\u0141\u0150\u0007\u000f\u0002\u0002\u0142\u0145\u0005",
+    "\u015a\u0005:\u001e\b\u013f\u015a\u0007H\u0002\u0002\u0140\u0153\u0007",
+    "E\u0002\u0002\u0141\u0150\u0007\u000f\u0002\u0002\u0142\u0145\u0005",
     "8\u001d\u0002\u0143\u0145\u0005:\u001e\u0002\u0144\u0142\u0003\u0002",
     "\u0002\u0002\u0144\u0143\u0003\u0002\u0002\u0002\u0145\u014d\u0003\u0002",
     "\u0002\u0002\u0146\u0149\u0007\u0006\u0002\u0002\u0147\u014a\u00058",
@@ -280,9 +280,9 @@ var symbolicNames = [ null, null, null, null, null, null, null, null, null,
                       "MODE", "NEVER", "NEXT", "NOT", "OCCURRENCE", "OF", 
                       "ONLY", "OR", "PREVIOUS", "SATISFY", "SECOND", "SHALL", 
                       "THE", "THEN", "TICK", "TIMEPOINT", "TRUE", "UNLESS", 
-                      "UNTIL", "UPON", "WHEN", "WHERE", "WHILE", "WITHIN", 
-                      "XOR", "ID", "STRING", "RELATIONAL_OP", "NUMBER", 
-                      "DIGITS", "REQT_ID", "WS" ];
+                      "UNTIL", "UPON", "WHEN", "WHENEVER", "WHERE", "WHILE", 
+                      "WITHIN", "XOR", "ID", "STRING", "RELATIONAL_OP", 
+                      "NUMBER", "DIGITS", "REQT_ID", "WS" ];
 
 var ruleNames =  [ "reqts", "reqt", "reqt_body", "freeform", "nasa", "scope", 
                    "reqt_condition", "regular_condition", "qualifier_word", 
@@ -372,17 +372,18 @@ RequirementParser.UNLESS = 58;
 RequirementParser.UNTIL = 59;
 RequirementParser.UPON = 60;
 RequirementParser.WHEN = 61;
-RequirementParser.WHERE = 62;
-RequirementParser.WHILE = 63;
-RequirementParser.WITHIN = 64;
-RequirementParser.XOR = 65;
-RequirementParser.ID = 66;
-RequirementParser.STRING = 67;
-RequirementParser.RELATIONAL_OP = 68;
-RequirementParser.NUMBER = 69;
-RequirementParser.DIGITS = 70;
-RequirementParser.REQT_ID = 71;
-RequirementParser.WS = 72;
+RequirementParser.WHENEVER = 62;
+RequirementParser.WHERE = 63;
+RequirementParser.WHILE = 64;
+RequirementParser.WITHIN = 65;
+RequirementParser.XOR = 66;
+RequirementParser.ID = 67;
+RequirementParser.STRING = 68;
+RequirementParser.RELATIONAL_OP = 69;
+RequirementParser.NUMBER = 70;
+RequirementParser.DIGITS = 71;
+RequirementParser.REQT_ID = 72;
+RequirementParser.WS = 73;
 
 RequirementParser.RULE_reqts = 0;
 RequirementParser.RULE_reqt = 1;
@@ -551,7 +552,7 @@ RequirementParser.prototype.reqt = function() {
         this.match(RequirementParser.T__0);
         this.state = 64;
         _la = this._input.LA(1);
-        if(!(((((_la - 66)) & ~0x1f) == 0 && ((1 << (_la - 66)) & ((1 << (RequirementParser.ID - 66)) | (1 << (RequirementParser.DIGITS - 66)) | (1 << (RequirementParser.REQT_ID - 66)))) !== 0))) {
+        if(!(((((_la - 67)) & ~0x1f) == 0 && ((1 << (_la - 67)) & ((1 << (RequirementParser.ID - 67)) | (1 << (RequirementParser.DIGITS - 67)) | (1 << (RequirementParser.REQT_ID - 67)))) !== 0))) {
         this._errHandler.recoverInline(this);
         }
         else {
@@ -641,6 +642,7 @@ RequirementParser.prototype.reqt_body = function() {
         case RequirementParser.UNLESS:
         case RequirementParser.UPON:
         case RequirementParser.WHEN:
+        case RequirementParser.WHENEVER:
         case RequirementParser.WHERE:
         case RequirementParser.WHILE:
         case RequirementParser.ID:
@@ -812,7 +814,7 @@ RequirementParser.prototype.nasa = function() {
         this.state = 81;
         this._errHandler.sync(this);
         _la = this._input.LA(1);
-        if(_la===RequirementParser.AND || ((((_la - 33)) & ~0x1f) == 0 && ((1 << (_la - 33)) & ((1 << (RequirementParser.IF - 33)) | (1 << (RequirementParser.UNLESS - 33)) | (1 << (RequirementParser.UPON - 33)) | (1 << (RequirementParser.WHEN - 33)) | (1 << (RequirementParser.WHERE - 33)))) !== 0)) {
+        if(_la===RequirementParser.AND || ((((_la - 33)) & ~0x1f) == 0 && ((1 << (_la - 33)) & ((1 << (RequirementParser.IF - 33)) | (1 << (RequirementParser.UNLESS - 33)) | (1 << (RequirementParser.UPON - 33)) | (1 << (RequirementParser.WHEN - 33)) | (1 << (RequirementParser.WHENEVER - 33)) | (1 << (RequirementParser.WHERE - 33)))) !== 0)) {
             this.state = 80;
             this.reqt_condition();
         }
@@ -1386,6 +1388,14 @@ function Qualifier_wordContext(parser, parent, invokingState) {
 Qualifier_wordContext.prototype = Object.create(antlr4.ParserRuleContext.prototype);
 Qualifier_wordContext.prototype.constructor = Qualifier_wordContext;
 
+Qualifier_wordContext.prototype.UPON = function() {
+    return this.getToken(RequirementParser.UPON, 0);
+};
+
+Qualifier_wordContext.prototype.WHENEVER = function() {
+    return this.getToken(RequirementParser.WHENEVER, 0);
+};
+
 Qualifier_wordContext.prototype.WHEN = function() {
     return this.getToken(RequirementParser.WHEN, 0);
 };
@@ -1400,10 +1410,6 @@ Qualifier_wordContext.prototype.WHERE = function() {
 
 Qualifier_wordContext.prototype.IF = function() {
     return this.getToken(RequirementParser.IF, 0);
-};
-
-Qualifier_wordContext.prototype.UPON = function() {
-    return this.getToken(RequirementParser.UPON, 0);
 };
 
 Qualifier_wordContext.prototype.enterRule = function(listener) {
@@ -1432,7 +1438,7 @@ RequirementParser.prototype.qualifier_word = function() {
         this.enterOuterAlt(localctx, 1);
         this.state = 167;
         _la = this._input.LA(1);
-        if(!(((((_la - 33)) & ~0x1f) == 0 && ((1 << (_la - 33)) & ((1 << (RequirementParser.IF - 33)) | (1 << (RequirementParser.UNLESS - 33)) | (1 << (RequirementParser.UPON - 33)) | (1 << (RequirementParser.WHEN - 33)) | (1 << (RequirementParser.WHERE - 33)))) !== 0))) {
+        if(!(((((_la - 33)) & ~0x1f) == 0 && ((1 << (_la - 33)) & ((1 << (RequirementParser.IF - 33)) | (1 << (RequirementParser.UNLESS - 33)) | (1 << (RequirementParser.UPON - 33)) | (1 << (RequirementParser.WHEN - 33)) | (1 << (RequirementParser.WHENEVER - 33)) | (1 << (RequirementParser.WHERE - 33)))) !== 0))) {
         this._errHandler.recoverInline(this);
         }
         else {
