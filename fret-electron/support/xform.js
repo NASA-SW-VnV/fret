@@ -33,6 +33,7 @@
 //const astsem = require('./ASTSemantics');
 const astsem = require('./LTLParser/LTLASTSemantics');
 const utils = require('./utils');
+const constants = require ('../app/parser/Constants');
 
 module.exports = {
     optimizePT,
@@ -246,7 +247,7 @@ function subst(term,sbst) {
 // rule returns null if it didn't apply. Apply the rule.
 function rewrite1(term,rule) {
     if (isAtom(term)) return term;
-    else if (!isArray(term)) console.log('rewrite1 says what is ' + term);
+    else if (!isArray(term)) console.log('rewrite1 says what is ' + JSON.stringify(term));
     else { let r = rule(term);
 	   if (r === null) {
 	       function aux(subterm) {
@@ -383,13 +384,14 @@ function applyTemporalConditionsNoBounds(term) {
 
 // Apply rules exhaustively to term, starting at the bottom again each time a rule applies.
 function rewrite_bottomup(term,rules) {
-    //console.log('term: ' + term);
+    // console.log('term: ' + term);
+    if (isVar(term)) return term
     if (isAtom(term)) { let ra = applyRules(term,rules);
 			let r =  ((ra === null) ? term : ra);
 			//console.log('r: ' + r);
 		        return r;
 		      }
-    else if (!isArray(term)) console.log('rewrite_bottomup says what is ' + term);
+    else if (!isArray(term)) console.log('rewrite_bottomup says what is ' + JSON.stringify(term));
     else { function aux(subterm) {
 	     return rewrite_bottomup(subterm,rules);
            };
@@ -528,6 +530,260 @@ function transformTemporalConditionsNoBounds (formulaString) {
     let result = transform(formulaString,expandTemporalConditionsNoBounds);
     return result;
 }
+
+function linearizeFormula(vars, formulaAST) {    
+    if (isVar(formulaAST)) {
+        return formulaAST;
+    } else if (isAtom(formulaAST)) {
+        if (formulaAST in vars) {
+            let newVar = formulaAST+'_'+vars[formulaAST]
+            vars[formulaAST]--        
+            formulaAST = newVar
+            return formulaAST
+        }
+    } else if (!isArray(formulaAST)) return formulaAST;
+    else {
+        function aux(subterm) {
+            return linearizeFormula(vars, subterm);
+        }
+        return formulaAST.map(aux);
+    }
+    return formulaAST
+}
+
+// Returns e.g. { a : 1, b :
+function getVars (formulaAST, vars = {}) {    
+    if (isVar(formulaAST)) {
+        return formulaAST;
+    } else if (isAtom(formulaAST) && ! constants.predefinedVars.includes(formulaAST)) {
+        if (!(formulaAST in vars)) {
+            vars[formulaAST] = 0;
+        } else {
+            vars[formulaAST]++
+        }
+    } else if (isArray(formulaAST)) {
+        function aux(subterm) {
+         return getVars(subterm, vars);
+        };
+        let varsInSubtrees = formulaAST.slice(1).map(aux);
+        for (var i = 0; i < varsInSubtrees.length; i++) {
+            vars = {...vars, ...varsInSubtrees[i]};
+        }            
+    }
+    return vars;
+}
+
+// function applyFLIP(varName, formulaAST) {
+//     if (isArray(formulaAST)) {
+//         if (varName in getVars(formulaAST)) {
+//             switch (formulaAST[0]) {
+//                 case "And":
+//                     if (varName in getVars(formulaAST[1])) {
+//                         return ["And", applyFLIP(varName, formulaAST[1]), formulaAST[2]]
+//                     } else {
+//                         return ["And", formulaAST[1], applyFLIP(varName, formulaAST[2])]
+//                     }                    
+//                 case "Or":
+//                     if (varName in getVars(formulaAST[1])) {
+//                         return ["And", applyFLIP(varName, formulaAST[1]), ["Not", formulaAST[2]]]
+//                     } else {
+//                         return ["And", ["Not", formulaAST[1]], applyFLIP(varName, formulaAST[2])]
+//                     }
+//                 case "Not":
+//                     return ["Not", applyFLIP(varName, formulaAST[1])]
+//                 case "ExclusiveOr":
+//                     return applyFLIP(varName, ["Or", ["And", formulaAST[1], ["Not", formulaAST[2]]], ["And", ["Not", formulaAST[1]], formulaAST[2]]])
+//                 case "Implies":
+//                     return applyFLIP(varName, ["Or", ["Not", formulaAST[1]], formulaAST[2]])
+//                 case "Equiv":
+//                     return applyFLIP(varName, ["And", ["Implies", formulaAST[1], formulaAST[2]], ["Implies", formulaAST[2], formulaAST[1]]])
+//                 case "Next":
+//                     return ["Next", applyFLIP(varName, formulaAST[1])]
+//                 case "PrevFalse":
+//                     return ["PrevFalse", applyFLIP(varName, formulaAST[1])]
+//                 case "PrevTrue":
+//                     return ["PrevTrue", applyFLIP(varName, formulaAST[1])]
+//                 case "Until":
+//                     if (varName in getVars(formulaAST[1])) {
+//                         return ["And", ["Until", formulaAST[1], formulaAST[2]], ["Until", ["Not", formulaAST[2]], ["And", applyFLIP(varName, formulaAST[1]), ["Not", formulaAST[2]]]]]
+//                     } else {
+//                         return ["And", ["Until", formulaAST[1], formulaAST[2]], ["Releases", ["Not", formulaAST[1], ["Implies", formulaAST[2], applyFLIP(varName, formulaAST[2])]]]]
+//                     }
+//                 case "Releases":
+//                     if (varName in getVars(formulaAST[1])) {
+//                         return ["And", ["Releases", formulaAST[1], formulaAST[2]], ["Until", ["Implies", formulaAST[1], applyFLIP(varName, formulaAST[1])], ["Not", formulaAST[2]]]]
+//                     } else {
+//                         return ["And", ["Releases", formulaAST[1], formulaAST[2]], ["Until", ["Not", formulaAST[1]], applyFLIP(varName, formulaAST[2])]]
+//                     }
+//                 case "Eventually":
+//                     return ["And", ["Eventually", formulaAST[1]], ["Globally", ["Implies", formulaAST[1], applyFLIP(varName, formulaAST[1])]]]
+//                 case "Globally":
+//                     return ["And", ["Globally", formulaAST[1]], ["Eventually", applyFLIP(varName, formulaAST[1])]]
+//                 default:                    
+//                     console.log("Found: "+ formulaAST[0] + ", for which a rule doesn't (currently) exist. Skipping.")
+//                     return formulaAST;
+//             }
+//         } else {
+//             return "FALSE";
+//         }
+//     } else {
+//         return formulaAST;        
+//     }
+// }
+
+function occursIn(x,ast) {
+  if (!isArray(ast)) return (x === ast)
+  else return ast.some((y) => occursIn(x,y))
+}
+
+let negNormalizationRules = [
+  ['! (! __p)', trueFn, '__p'],
+  ['!(__p | __q)', trueFn, '!__p & !__q'],
+  ['!(__p & __q)', trueFn, '!__p | !__q'],
+  ['__p -> __q', trueFn, '!__p | __q'],
+  ['! X __p', trueFn, 'X ! __p'],
+  ['!(__p U __q)', trueFn, '!__p V !__q'],
+  ['!(__p V __q)', trueFn, '!__p U !__q'],
+  ['! G __p', trueFn, 'F ! __p'],
+  ['! F __p', trueFn, 'G ! __p']
+  ]
+
+let negNormalizationRulesParsed = negNormalizationRules.map(parseit)
+
+function applyNegNormalization(term) {
+  return applyTriples(term,negNormalizationRulesParsed)
+}
+
+function doNegNormalization(AST) {
+  const result = rewrite_bottomup(AST,[applyNegNormalization])
+  return result
+}
+
+
+// Note that the F rule introduces a => so the result is not in negation
+// normal form.
+let flipRules = [
+  ['flip(__var,__p)',
+   (sbst) => (! occursIn(sbst['__var'],sbst['__p'])),
+   'FALSE'],
+  
+  ['flip(__var,__var)', trueFn, '__var'],
+  ['flip(__var, ! __var)',trueFn,'! __var'],
+
+  ['flip(__a, __phi_a & __phi_prime)',
+   (sbst) => (occursIn(sbst['__a'],sbst['__phi_a'])),
+   'flip(__a,__phi_a) & __phi_prime'],
+
+  ['flip(__a, __phi_prime & __phi_a)',
+   (sbst) => (occursIn(sbst['__a'],sbst['__phi_a'])),
+   '__phi_prime & flip(__a,__phi_a)'],
+
+  ['flip(__a, __phi_a | __phi_prime)',
+   (sbst) => (occursIn(sbst['__a'],sbst['__phi_a'])),
+   'flip(__a,__phi_a) & !__phi_prime'],
+
+  ['flip(__a, __phi_prime | __phi_a)',
+   (sbst) => (occursIn(sbst['__a'],sbst['__phi_a'])),
+   '!__phi_prime & flip(__a,__phi_a)'],
+
+  ['flip(__a, X __phi_a)',
+    (sbst) => (occursIn(sbst['__a'], sbst['__phi_a'])),
+    'X flip(__a, __phi_a)'],
+  
+  ['flip(__a, __phi_a U __phi_prime)',
+    (sbst) => (occursIn(sbst['__a'], sbst['__phi_a'])),
+    '(__phi_a U __phi_prime) & (!__phi_prime U (flip(__a,__phi_a) & !__phi_prime))'],
+
+  ['flip(__a, __phi_prime U __phi_a)',
+    (sbst) => (occursIn(sbst['__a'], sbst['__phi_a'])),
+    '(__phi_prime U __phi_a) & (!__phi_prime V (__phi_a => flip(__a, __phi_a)))'],
+
+  ['flip(__a, __phi_a V __phi_prime)',
+    (sbst) => (occursIn(sbst['__a'], sbst['__phi_a'])),
+    '(__phi_a V __phi_prime) & ((__phi_a => flip(__a, __phi_a)) U !__phi_prime)'],
+
+  ['flip(__a, __phi_prime V __phi_a)',
+    (sbst) => (occursIn(sbst['__a'], sbst['__phi_a'])),
+    '(__phi_prime V __phi_a) & (!__phi_prime U flip(__a, __phi_a))'],
+
+  ['flip(__a, F __phi_a)',
+   (sbst) => (occursIn(sbst['__a'],sbst['__phi_a'])),
+   '(F __phi_a) & G(__phi_a => flip(__a,__phi_a))'],
+
+  ['flip(__a, G __phi_a)',
+   (sbst) => (occursIn(sbst['__a'],sbst['__phi_a'])),
+   '(G __phi_a) & F flip(__a,__phi_a)']
+]
+
+let flipRulesParsed = flipRules.map(parseit)
+
+function applyFlip(term) {
+  return applyTriples(term,flipRulesParsed)
+}
+
+function doFlips(AST) {
+  const result = rewrite_bottomup(AST,[applyFlip])
+  return result
+}
+
+function testObl(v,formula) {
+  console.log('testObl(' + v + ', "' + formula + ' ")')
+  let formulaAST = astsem.LTLtoAST(formula);
+  let vars = getVars(formulaAST);
+  console.log('getVars: ' + JSON.stringify(vars))
+
+  let conditions = []
+  for (const varName in vars) {
+    for (var i = 0; i <= vars[varName]; i++) {
+        conditions.push(varName+'_'+i);
+    }
+  }
+  console.log('Conditions: ' + JSON.stringify(conditions))
+
+  let linFormulaAST = linearizeFormula(vars, formulaAST)
+  console.log('Linearized Formula: '+ JSON.stringify(astsem.ASTtoLTL(linFormulaAST)))
+
+  let negNormalAST = doNegNormalization(linFormulaAST);
+  console.log('Negation normalized: ' + JSON.stringify(astsem.ASTtoLTL(negNormalAST)))
+
+  let obl = doFlips(['flip', v, negNormalAST])
+  console.log('obligation: ' + JSON.stringify(astsem.ASTtoLTL(obl)))
+}
+
+
+// let formulaAST = astsem.LTLtoAST('G (__p & (F __q))');
+// let formula = 'F (__a | __b)';
+// let formula = 'F (a | b)'
+
+
+//FSM-002
+//formula = '(G ((__standby & (__state_eq_ap_transition_state)) -> (STATE_eq_ap_standby_state))) & F ((__standby & (__state_eq_ap_transition_state)) -> (STATE_eq_ap_standby_state)) & G (((__standby & (__state_eq_ap_transition_state)) -> (STATE_eq_ap_standby_state)) -> (!__standby & (__state_eq_ap_transition_state) & !(__STATE_eq_ap_standby_state)))'
+//formula = 'G (__p -> (F __q))'
+
+
+//LM-001
+//formula = '((G (((! __start_button) & (X __start_button)) -> (X ((! __liquid_level_1) -> __valve_0)))) & (__start_button -> ((! __liquid_level_1) -> __valve_0)))'
+
+//LM-006
+//formula = '((G (((! __liquid_level_2) & (X __liquid_level_2)) -> (X (((__timer_60sec_expire | __emergency_button) V (__stirring_motor | (__timer_60sec_expire | __emergency_button))) | (G __stirring_motor))))) & (__liquid_level_2 -> (((__timer_60sec_expire | __emergency_button) V (__stirring_motor | (__timer_60sec_expire | __emergency_button))) | (G __stirring_motor))))'
+
+
+//let formula = '(__a & __b)'
+//let formula = 'G (__p V (F (__q & __p)))'
+// let formula = 'F (__a | __b)';
+
+let formula = 'F (a | b)';
+testObl('a_0',formula)
+testObl('b_0',formula)
+
+
+
+
+// console.log(JSON.stringify(linFormulaAST));
+// console.log(JSON.stringify(applyFLIP('__q_0', linFormulaAST)))
+// console.log(applyFLIP('__q_0', linFormulaAST))
+// console.log(JSON.stringify(astsem.ASTtoLTL(applyFLIP('__q_0', linFormulaAST))))
+
 
 
 /*

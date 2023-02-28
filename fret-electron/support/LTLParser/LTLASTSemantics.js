@@ -51,6 +51,7 @@ const isArray =  utils.isArray;
 const isAtom =   utils.isAtom;
 const isString = utils.isString;
 const isBoolean = utils.isBoolean;
+const isVar = utils.isVar;
 
 const infix = { ExclusiveOr : 'xor', And : '&', Or : '|', Implies : '->',
 		Equiv : '<->',
@@ -131,6 +132,7 @@ function succinctRange(arithExpr) {
 function ASTtoLTL(ast) {
     var result = '';
     if (isBoolean(ast)) result = ast ? 'TRUE' : 'FALSE';
+    else if (isVar(ast)) result = ast.toString();
     else if (isAtom(ast)) result = ast.toString();
     else if (isArray(ast)) {
            if (isArray(ast[0])) { // the first element of timed operators is an array
