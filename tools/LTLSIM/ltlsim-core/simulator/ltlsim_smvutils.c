@@ -105,10 +105,10 @@ static int _genFSM(ltlsim_model_t *m, int idx, const char *fn, bool doTrace) {
 static int _genState(FILE *fp, unsigned int tmax) {
 
     fprintf(fp, "VAR\n");
-    fprintf(fp, "    t : 0 .. %u;\n", tmax);
+    fprintf(fp, "    t : 0 .. %u;\n", tmax+1);
     fprintf(fp, "ASSIGN\n");
     fprintf(fp, "    init(t) := 0;\n");
-    fprintf(fp, "    next(t) := (t >= %u) ? %u : t + 1;\n", tmax, tmax);
+    fprintf(fp, "    next(t) := (t >= %u) ? %u : t + 1;\n", tmax+1, tmax+1);
     return 0;
 
 }

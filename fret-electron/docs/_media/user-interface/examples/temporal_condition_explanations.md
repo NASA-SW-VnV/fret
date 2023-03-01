@@ -71,11 +71,12 @@ in the following `n` timepoints. So *occurs(2,p)* means that *p* holds
 either at the current timepoint, or at the next timepoint, or at the
 timepoint after that.
 
-Another subtlety: The persist predicate never holds over an entire finite
+Another subtlety: The `persists` predicate never holds over an entire finite
 interval. For example, the requirement *Before mode m the software shall
 always satisfy persists(3, p)* is never satisfied because the `persists`
 predicate can't be satisfied within 2 timepoints of the right end of the
-scope interval.
+scope interval. Similarly, the `occurs` predicate may be false near the end of
+the trace if `p` doesn't occur.
 
 ### Next and Previous Occurrences
 

@@ -108,6 +108,8 @@ const futureTimeSimplifications = [
     ['! (((! __p) & (! __q)) U (! __r))',trueFn, '(__p | __q) V __r'],
     ['TRUE U __p', trueFn, 'F __p'],
     ['FALSE V __p', trueFn, 'G __p'], ['TRUE V __p', trueFn, '__p'],
+    // The next one is a fact about weak until (SMV doesn't have weak until)
+    ['((__p V (__q | __p)) | (G __q))', trueFn, '__p V (__q | __p)'],
     ['F FALSE',trueFn,'FALSE'], ['F TRUE', trueFn, 'TRUE'],
     ['G FALSE',trueFn,'FALSE'], ['G TRUE', trueFn, 'TRUE'],
     ['X TRUE', trueFn, 'TRUE'], ['X FALSE', trueFn, 'FALSE'],
