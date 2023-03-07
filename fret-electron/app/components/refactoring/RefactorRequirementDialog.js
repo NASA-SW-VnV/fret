@@ -1,3 +1,9 @@
+/**
+* Dialog component for refacotring, based on existing FRET Code.
+* @author Matt Luckcuck <m.luckcuck@tutanota.com>
+* Started: May 2022
+*/
+
 // *****************************************************************************
 // Notices:
 //
@@ -32,11 +38,7 @@
 // *****************************************************************************
 
 
-/**
-* Dialog component for refacotring, based on existing FRET Code.
-* @author Matt Luckcuck <m.luckcuck@tutanota.com>
-* Started: May 2022
-*/
+
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
@@ -73,6 +75,7 @@ const sharedObj = require('electron').remote.getGlobal('sharedObj');
 const modeldb = sharedObj.modeldb;
 const system_dbkeys = sharedObj.system_dbkeys;
 const STATE = {INITIAL:"initial", RESULT_TRUE:"result true", RESULT_FALSE: "result false", TYPES:"types please", ERROR_UNDEF : "error-undefined"};
+const unsupported_types = ["undefined", "double", "single",]
 
 
 const styles = theme => ({
@@ -197,12 +200,6 @@ handleInitialOK = () =>
 
         }
 
-        //console.log("!!! Show me the Variables!")
-        //for(let i of variableTypeMap)
-        //{
-        //  console.log(i);
-        //}
-
         self.setState({variableDocs: result.docs, variables : variableTypeMap, dialogState:STATE.TYPES});
 
       }
@@ -212,19 +209,14 @@ handleInitialOK = () =>
   }
   else{
 
-    //console.log("+++ before requirement with Fragment call +++")
-    //console.log(" selected Requirement = " + this.state.selectedRequirement);
-    //console.log(this.state.selectedRequirement.reqid);
-
     //Find the requirements that have the fragment in.
     let applicableRequirements = RefactoringController.requirementWithFragement(this.state.requirements, this.state.selectedRequirement, this.state.extractString, this.state.newName);
 
-    //console.log(applicableRequirements);
 
     //If we have some requirements that contain the fragment we're extracting
     if (applicableRequirements.length >0)
   	{
-      //console.log("^^ applicableRequirements > 0");
+
       var variableTypeMap = new Map(); // map to hold varname |-> type
       var varList = [];
 
@@ -236,7 +228,7 @@ handleInitialOK = () =>
         let varNames = RefactoringUtils.getVariableNames(this_req);
         let newVarList = varList.concat(varNames); // Javascript is a silly language
         varList = newVarList;
-        //console.log("handleInitialOK's var list = " + varList);
+
       }
 
       // ... and add them to the map, mapping varname |-> "undefined" (for now)
@@ -257,8 +249,6 @@ handleInitialOK = () =>
         }
       }).then(function(result)
         {
-          //console.log("result.docs");
-          //console.log(result.docs);
 
           for (let doc of result.docs)
           {
@@ -296,20 +286,15 @@ handleInitialOK = () =>
 * Calls the requested extract requirement method
 */
 handleOk = () => {
-  //console.log('OK Button');
-  //console.log(this.state.extractString);
-  //console.log(this.state.newName);
-  //console.log("apply to all = " + this.state.applyToAll);
   var newID = uuid.v1();
   var result;
 
   var undefinedVars = []
   var allVarsDefined = true; // we assume, but...
-  //Check for undefindes
+  //Check for unsupported variables
   for (const variable of this.state.variables)
   {
-
-    if (variable[1] == "undefined")
+    if (unsupported_types.indexOf(variable[1]) >= 0)
     {
       allVarsDefined = false;
       console.log("Error - " + variable[0] + " is undefined. Please update its type and try again.");
@@ -325,24 +310,14 @@ handleOk = () => {
 
     if (this.state.applyToAll == true)
     {
-        //console.log("handleOk this.state.requirements -> ");
-        //console.log(this.state.requirements);
-
       result = RefactoringController.extractRequirement_ApplyAll(
         this.state.selectedRequirement, this.state.variables, this.state.extractString,
         this.state.newName, newID, this.state.requirements);
-
-        //console.log("result all = " + result);
-
-
     }
     else {
       // Now this needs all the requirements too, to pass to the compare method
         result = RefactoringController.extractRequirement(
           this.state.selectedRequirement, this.state.variables, this.state.extractString, this.state.newName, newID, this.state.requirements);
-
-          //console.log("result one = " + result);
-
     }
 
     if(result == true)
@@ -352,8 +327,6 @@ handleOk = () => {
     }
     else
     {
-      console.log("here's the result ->")
-      console.log(result)
       this.setState({dialogState:STATE.RESULT_FALSE, refactoringCheckresult: result});
       return;
     }
@@ -615,6 +588,8 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
 
             <Grid style={{textAlign : 'center'}} item xs={12}>
               Please check the variable types listed below. Correct any that are wrong and update any that are "Unknown".
+
+              Mu-FRET will use the Integer type for both signed and unsigned integers. Mu-FRET cannot check Single or Double typed variables, so they must be manually changed to Intergers (including any literal values in a requirement, e.g. 2.4).
             </Grid>
           </Grid>
 
@@ -632,7 +607,7 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
                               value = {self.getType(varName)}
                               autoWidth
                               renderValue={(value) => {
-                                if (value == "undefined") {
+                           if (unsupported_types.indexOf(value) >= 0) {
                                   return <div style={{color:'red'}}>{value} <WarningIcon  fontSize="small" /></div> ;
                                 }
                                 else {
