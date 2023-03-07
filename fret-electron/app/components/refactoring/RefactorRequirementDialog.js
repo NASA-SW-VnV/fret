@@ -59,6 +59,7 @@ import FormControl from '@material-ui/core/FormControl';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
 import WarningIcon from '@material-ui/icons/Warning';
+import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
 
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -164,7 +165,6 @@ handleInitialOK = () =>
   if(this.state.applyToAll == false)
   {
     let varList = RefactoringUtils.getVariableNames(this.state.selectedRequirement);
-    //console.log("handleInitialOK's var list = " + varList);
 
     var variableTypeMap = new Map();
     for(let variable of varList)
@@ -177,14 +177,10 @@ handleInitialOK = () =>
     modeldb.find({
       selector: {
         project : this.state.selectedRequirement.selectedProject,
-        //component_name : this.selectedRequirement,
         variable_name : {$in:varList}
       }
     }).then(function(result)
       {
-        //console.log("result.docs");
-        //console.log(result.docs);
-
         var variableTypeMap = new Map();
         for (let doc of result.docs)
         {
@@ -193,7 +189,7 @@ handleInitialOK = () =>
 
           if(varType == "")
           {
-            varType = "undefined";
+            varType = "undefined"; // If the variable has on type in the database, set it to "undefined"
           }
 
           variableTypeMap.set(varName, varType);
@@ -203,9 +199,7 @@ handleInitialOK = () =>
         self.setState({variableDocs: result.docs, variables : variableTypeMap, dialogState:STATE.TYPES});
 
       }
-      ).catch((err) => {
-        console.log(err);
-      })
+      ).catch((err) => {console.log(err); })
   }
   else{
 
@@ -249,7 +243,6 @@ handleInitialOK = () =>
         }
       }).then(function(result)
         {
-
           for (let doc of result.docs)
           {
             let varName = doc.variable_name;
@@ -263,13 +256,6 @@ handleInitialOK = () =>
             variableTypeMap.set(varName, varType);
           }
 
-          //console.log("!!! Show me the Variables!")
-          //for(let i of variableTypeMap)
-          //{
-          //  console.log(i);
-          //}
-
-
           self.setState({variableDocs: result.docs, variables : variableTypeMap, dialogState:STATE.TYPES});
 
         }
@@ -278,7 +264,6 @@ handleInitialOK = () =>
         })
     }
   }
-  //console.log("state's copy of variables = " + this.state.variables);
 }
 
 /**
@@ -377,8 +362,6 @@ handleTypeChange = (varName) => event =>
 
 getType = (variableName) =>
 {
-
-
   return this.state.variables.get(variableName)
 };
 
@@ -479,6 +462,10 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
         <DialogTitle id="simple-dialog-title">  Extract Requirement: {this.state.selectedRequirementId}</DialogTitle>
           <DialogContent>
 
+            <DialogContentText>
+              Copy the part of {this.state.selectedRequirementId} that you want to extract from its Definition into the Extract field, and add the New Requirement Name. The Apply to all Requirements tick box toggles if the extraction will search for the Extract field in all requirements in this project.
+            </DialogContentText>
+
           <Grid container spacing={2} >
 
                       <Grid style={{ textAlign: 'right' }} item xs={3}>
@@ -494,7 +481,7 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
                       </Grid>
 
                       <Grid style={{ textAlign: 'right' }} item xs={3}>
-                        String to Extract:
+                        Extract:
                       </Grid>
                       <Grid item xs={9}>
                         <TextField
@@ -521,7 +508,7 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
                           </Grid>
 
                           <Grid style={{ textAlign: 'right' }} item xs={3}>
-                            Apply to all Matching Fragments:
+                            Apply to all Requirements:
                           </Grid>
                           <Grid item xs={9}>
                             <Checkbox
@@ -573,9 +560,19 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
           </DialogTitle>
 
           <DialogContent>
+            <DialogContentText>
+            Please check the variable types listed below. Correct any that are wrong and update any that are "Unknown". Existing variable types are shown in the analysis portal.<br>
+
+            Mu-FRET will use the Integer type for both signed and Unsigned Integers. If a variable is already set to Unsigned Integer, the list will show a <ErrorOutlineIcon  fontSize="small" /> to warn you. <br>
+
+            Mu-FRET cannot check Single or Double typed variables, so they must be manually changed to Integers (including any literal values in a requirement, e.g. 2.4). If a variable is already set to Single or Double, then the list will show a <WarningIcon  fontSize="small" /> to warn you. <br>
+
+            If any variables are left with Unknown, Single, or Double type, pressing OK will provide a warning. You will not be able to proceed with the refactoring until the types are changed.
+            </DialogContentText>
+
           <Grid spaceing={2}>
             <Grid item xs={3}>
-              Definition:
+              {this.state.selectedRequirementId} Definition:
             </Grid>
             <Grid item xs={9}>
               <TextField
@@ -584,12 +581,6 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
                 fullWidth
 
                 value={fulltext} />
-            </Grid>
-
-            <Grid style={{textAlign : 'center'}} item xs={12}>
-              Please check the variable types listed below. Correct any that are wrong and update any that are "Unknown".
-
-              Mu-FRET will use the Integer type for both signed and unsigned integers. Mu-FRET cannot check Single or Double typed variables, so they must be manually changed to Intergers (including any literal values in a requirement, e.g. 2.4).
             </Grid>
           </Grid>
 
@@ -609,10 +600,15 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
                               renderValue={(value) => {
                            if (unsupported_types.indexOf(value) >= 0) {
                                   return <div style={{color:'red'}}>{value} <WarningIcon  fontSize="small" /></div> ;
-                                }
-                                else {
-                                  return <div>{value}</div>;
-                                }
+                          }
+                          else if (value == "unsigned integer")
+                          {
+                            return <div style={{color:'orange'}}>{value} <ErrorOutlineIcon  fontSize="small" /></div> ;
+                          }
+                          else
+                          {
+                              return <div>{value}</div>;
+                          }
                                 }}
                         >
                         <MenuItem value={"boolean"}>Boolean</MenuItem>
