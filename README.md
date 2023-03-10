@@ -14,7 +14,7 @@ Mu-FRET enables a user to extract parts of a requirement to a new requirement, a
 
 ## Installation 
 
-Installing Mu-FRET is the same as installing FRET, so we include the [FRET installation instructions](fret-electron/docs/installation.md)
+Installing Mu-FRET is the same as installing FRET, so we include the [FRET installation instructions](fret-electron/docs/_media/installingFRET/installationInstructions.md)
 
 ## Publications Presentations and Posters
 
