@@ -130,6 +130,8 @@ function extractRequirement(req, reqVars, fragment, destinationName, newID, allR
 
 	 // Adding extracted requirement
 		 model.AddRequirementToDB(newReq);
+
+		 model.UpdateFragmentVariable(fretishDestinationName, component, req.project)
 	}
 	else
 	{
@@ -261,6 +263,7 @@ function extractRequirement_ApplyAll(req, reqVars, fragment,  destinationName, n
 			model.AddRequirementToDB(newReq);
 
 		}
+		 model.UpdateFragmentVariable(fretishDestinationName, component, req.project)
 	}
 	return result;
 }
@@ -283,7 +286,7 @@ function updateVariableTypes(variableDocs, variables)
 		let varType = variables.get(varName);
 		console.log("setting " + varName + " to type " + varType );
 		doc.dataType = varType;
-		doc.description = "Variable Type added by Mu-FRET Refactoring Dialogue.";
+		doc.description = "Variable Type added by Mu-FRET Refactoring Dialogue.(refactoring_controller.updateVariableTypes())";
 
 	}
 	model.UpdateDataTypes(variableDocs);

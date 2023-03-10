@@ -232,7 +232,6 @@ handleInitialOK = () =>
         variableTypeMap.set(variable, "undefined");
       }
 
-
       // Now get the variable types (if they exist) from ModelDB
 
       var self = this; // Javascript is a silly lanauge
@@ -308,7 +307,7 @@ handleOk = () => {
     }
 
     if(result == true)
-    {
+    {      
       this.setState({dialogState:STATE.RESULT_TRUE, refactoringCheckresult: result});
       return;
     }

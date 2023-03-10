@@ -12,7 +12,31 @@ const modeldb = require('electron').remote.getGlobal('sharedObj').modeldb;
 //const uuidv1 = require('uuid/v1');
 //const checkDbFormat = require('../../support/fretDbSupport/checkDBFormat.js');
 
+/**
+* Set the new variable that is the 'call' to the extracted fragement to be a boolean
+*/
 
+export function UpdateFragmentVariable(fragmentName, component, project)
+{
+  //This feels kinda hacky, but it seems to work ok.
+  console.log("Update Fragement Variable")
+  console.log("1 -> " + fragmentName)
+  console.log("2 -> " + component)
+  console.log("3 -> " + project)
+
+  var doc = {
+    _id : project+component+fragmentName,
+    variable_name : fragmentName,
+    project : project,
+    component_name	: component,
+    description : "Variable Type added by Mu-FRET Refactoring Dialogue. (refactoring_model.UpdateFragmentVariable())",
+    dataType : "boolean"
+   }
+
+
+  modeldb.put(doc).then(function(response){ console.log("modeldb response -> "); console.log(response); }).catch((err) => {console.log(err); })
+
+}
 
 
 /**
@@ -94,8 +118,7 @@ export function UpdateDataTypes(docs)
   console.log("Updating Model DB");
   modeldb.bulkDocs(docs).then(function (result) {
     console.log("Data Types Updated");
-    console.log(result);  // TODO This is returning ok but is an array of errors! Conflicting updates... might need to blank the rev in the docs // Nope, still broken.
-    // No, always give it back the _rev fo each document
+    console.log(result);
   }).catch(function (err) {
     console.log(err);
   });
