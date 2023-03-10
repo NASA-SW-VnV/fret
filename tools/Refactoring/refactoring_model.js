@@ -46,7 +46,7 @@ export function ReplaceFragment(req, fragment, replacement)
 {
   let originalFretish = req.fulltext;
 
-  let updatedFretish = originalFretish.replace(fragment+" ", replacement);
+  let updatedFretish = originalFretish.replace(fragment, replacement);
 
   req.fulltext = updatedFretish;
 
@@ -249,79 +249,3 @@ export function makeVariableTypeMap(requirement)
       console.log(err);
     })
 }
-
-  // console.log(typeof(reqsInProject));
-  // console.log(reqsInProject);
-  //
-  // let reqsWithFrag = [];
-
-  // reqsInProject.forEach((req) => {
-  //   if(req.fulltext.includes(fragment))
-  //   {
-  //     reqsWithFrag.push(req);
-  //   }
-  // });
-
-
-// export function AddNewRequirementToDB(req)
-// {
-//   db.post(req, DBCallback)
-// }
-// exports.AddRequirementToDB = AddRequirementToDB;
-
-/*
-handleCreate = () => {
-  if (! this.state.createDialogOpen){return;}
-  this.setState({
-    createDialogOpen: false
-  });
-  var self = this;
-  const { edittingRequirement, project, reqid, parent_reqid, rationale, comments} = this.state;
-  var requirementFields = this.stepper.getRequirementFields();
-  var { fulltext, semantics, input, template } = requirementFields;
-
-  var newReqId = this.state.reqid;
-  var dbid = edittingRequirement && Object.keys(edittingRequirement).length > 0 ? edittingRequirement._id : uuidv1()
-  var dbrev = edittingRequirement && Object.keys(edittingRequirement).length > 0 ? edittingRequirement._rev : undefined
-  var oldVariables = [];
-  var oldModes = [];
-
-  if (dbrev != undefined){
-    db.get(dbid).then(function(req){
-      if (req.semantics && req.semantics.variables){
-          oldVariables = req.semantics.variables;
-      }
-      self.removeVariables(oldVariables, semantics.variables ? semantics.variables : [], project,
-        semantics.component_name, dbid, req.semantics.component_name, req.project)
-    })
-  }
-  if (semantics && semantics.variables){
-    self.createOrUpdateVariables(semantics.variables,semantics.component_name, project, dbid);
-  }
-
-  // create req
-  db.put({
-      _id : dbid,
-      _rev : dbrev,
-      reqid : this.state.reqid,
-      parent_reqid : this.state.parent_reqid,
-      project : this.state.project,
-      rationale : this.state.rationale,
-      comments : this.state.comments,
-      status: this.state.status,
-      fulltext : fulltext,
-      semantics : semantics,
-      template : template,
-      input : input
-    }, (err, responses) => {
-      if (err) {
-        self.state.dialogCloseListener(false);
-        return console.log(err);
-      }
-      console.log(responses);
-      self.state.dialogCloseListener(true, newReqId);
-    }
-  )
-};
-*/
-//export {AddRequirementToDB, CopyFragment, MoveFragment, ReplaceFragment};

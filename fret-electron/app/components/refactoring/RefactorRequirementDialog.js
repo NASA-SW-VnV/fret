@@ -160,8 +160,6 @@ handlePreview = () => {
 * Event Handler for the OK Button on the initial
 * refactor screen. Advances to confirming the variable types
 */
-
-// TODO has to do something with Unisgned Int
 handleInitialOK = () =>
 {
   if(this.state.applyToAll == false)
@@ -307,7 +305,7 @@ handleOk = () => {
     }
 
     if(result == true)
-    {      
+    {
       this.setState({dialogState:STATE.RESULT_TRUE, refactoringCheckresult: result});
       return;
     }
@@ -331,7 +329,8 @@ handleRefactoringType = () => event => {
 };
 
 handleChangeExtract = () => event => {
-  let extractString = event.target.value
+  let extractString = event.target.value;
+  extractString = extractString.trim();
 
   this.setState({ extractString: extractString });
 };
