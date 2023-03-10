@@ -22,7 +22,7 @@ export function ReplaceFragment(req, fragment, replacement)
 {
   let originalFretish = req.fulltext;
 
-  let updatedFretish = originalFretish.replace(fragment, replacement);
+  let updatedFretish = originalFretish.replace(fragment+" ", replacement);
 
   req.fulltext = updatedFretish;
 

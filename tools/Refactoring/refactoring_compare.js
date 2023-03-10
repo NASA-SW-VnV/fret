@@ -290,9 +290,13 @@ function getVars(originalReq, originalReqVars, newReq, fragList)
       console.log(originalReqVars);
       console.log(typeof(originalReqVars));
       type = originalReqVars.get(value); // Big assumption here is that the new requirement doesn't have new variables...
-      // Another big assumption is that none of these are typed as 'undefined'
+      // Assumes the types are right, UI should prevent incorrect types from coming through.
       if (type == "integer")
       {
+        variables += value + " :  0..4 ;\n";
+      }
+      else if (type == "unsigned integer") // silently treats unsigned integer as an integer
+      {      
         variables += value + " :  0..4 ;\n";
       }
       else

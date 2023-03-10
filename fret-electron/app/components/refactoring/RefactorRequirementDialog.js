@@ -160,6 +160,8 @@ handlePreview = () => {
 * Event Handler for the OK Button on the initial
 * refactor screen. Advances to confirming the variable types
 */
+
+// TODO has to do something with Unisgned Int
 handleInitialOK = () =>
 {
   if(this.state.applyToAll == false)
@@ -192,12 +194,11 @@ handleInitialOK = () =>
             varType = "undefined"; // If the variable has on type in the database, set it to "undefined"
           }
 
-          variableTypeMap.set(varName, varType);
+          variableTypeMap.set(varName, varType); //Put the variable name and type into the map
 
         }
 
-        self.setState({variableDocs: result.docs, variables : variableTypeMap, dialogState:STATE.TYPES});
-
+        self.setState({variableDocs: result.docs, variables : variableTypeMap, dialogState:STATE.TYPES}); // Add the map to the state, and advance to the Types dialogue
       }
       ).catch((err) => {console.log(err); })
   }
@@ -255,13 +256,9 @@ handleInitialOK = () =>
 
             variableTypeMap.set(varName, varType);
           }
-
           self.setState({variableDocs: result.docs, variables : variableTypeMap, dialogState:STATE.TYPES});
-
         }
-        ).catch((err) => {
-          console.log(err);
-        })
+        ).catch((err) => { console.log(err); })
     }
   }
 }
@@ -273,18 +270,22 @@ handleInitialOK = () =>
 handleOk = () => {
   var newID = uuid.v1();
   var result;
+  var varTypeMap = this.state.variables;
+
 
   var undefinedVars = []
   var allVarsDefined = true; // we assume, but...
   //Check for unsupported variables
-  for (const variable of this.state.variables)
+  for (const variable of varTypeMap)
   {
     if (unsupported_types.indexOf(variable[1]) >= 0)
+    // If the variable's type is one we don't support
     {
       allVarsDefined = false;
       console.log("Error - " + variable[0] + " is undefined. Please update its type and try again.");
       undefinedVars.push(variable)
     }
+
   }
 
   if(allVarsDefined)
@@ -293,6 +294,7 @@ handleOk = () => {
     //Update ModelDB
     RefactoringController.updateVariableTypes(this.state.variableDocs, this.state.variables);
 
+    // Both calls below use varTypeMap, just in case unisgned ints have been replaced by ints
     if (this.state.applyToAll == true)
     {
       result = RefactoringController.extractRequirement_ApplyAll(
@@ -561,11 +563,11 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
 
           <DialogContent>
             <DialogContentText>
-            Please check the variable types listed below. Correct any that are wrong and update any that are "Unknown". Existing variable types are shown in the analysis portal.<br>
+            Please check the variable types listed below. Correct any that are wrong and update any that are "Unknown". Existing variable types are shown in the analysis portal.<br/>
 
-            Mu-FRET will use the Integer type for both signed and Unsigned Integers. If a variable is already set to Unsigned Integer, the list will show a <ErrorOutlineIcon  fontSize="small" /> to warn you. <br>
+            Mu-FRET will use the Integer type for both signed and Unsigned Integers. If a variable is already set to Unsigned Integer, the list will show a <ErrorOutlineIcon  fontSize="small" /> to warn you. <br/>
 
-            Mu-FRET cannot check Single or Double typed variables, so they must be manually changed to Integers (including any literal values in a requirement, e.g. 2.4). If a variable is already set to Single or Double, then the list will show a <WarningIcon  fontSize="small" /> to warn you. <br>
+            Mu-FRET cannot check Single or Double typed variables, so they must be manually changed to Integers (including any literal values in a requirement, e.g. 2.4). If a variable is already set to Single or Double, then the list will show a <WarningIcon  fontSize="small" /> to warn you. <br/>
 
             If any variables are left with Unknown, Single, or Double type, pressing OK will provide a warning. You will not be able to proceed with the refactoring until the types are changed.
             </DialogContentText>
@@ -649,9 +651,10 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
         <DialogTitle id="simple-dialog-title">  Sucessfully Extracted Requirement: {this.state.selectedRequirementId}
         </DialogTitle>
           <DialogContent>
-               <DialogContentText>
-                <CheckCircleIcon/> Checks Passed. The original and new requirements behave the same.
-               </DialogContentText>
+              <DialogContentText>
+                The checks have passed and the refactoring is complete. You may Close this dialogue.
+              </DialogContentText>
+              <CheckCircleIcon/> Checks Passed. The original and new requirements behave the same.
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleClose} color="secondary">
@@ -676,9 +679,10 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
         </DialogTitle>
           <DialogContent>
             <DialogContentText>
-               <CancelIcon/> The check failed, the original and new requirement behave differently.
-               Result: {this.state.refactoringCheckresult}
+              The checks have failed and the refactoring was not performed. Please Close this dialogue, review the types and part of the requirement you were trying to extract, and try again.
             </DialogContentText>
+            <CancelIcon/> The check failed, the original and new requirement behave differently.
+            Result: {this.state.refactoringCheckresult}
           </DialogContent>
           <DialogActions>
           <Button onClick={this.handleClose} color="secondary">
@@ -703,6 +707,8 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
           </DialogTitle>
             <DialogContent>
               <DialogContentText>
+                We cannot proceed yet, some of the variable types are still undefined. Please Close this dialogue to return to the types list and try again.
+              </DialogContentText>
                  <CancelIcon/> Error - the following variables are undefined. Please update its type and try again.
                  <ul >
                  {
@@ -715,8 +721,6 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
                    )
                  }
                  </ul >
-
-              </DialogContentText>
             </DialogContent>
             <DialogActions>
             <Button onClick={this.handleErrorUndefClose} color="secondary">

@@ -276,7 +276,7 @@ function updateVariableTypes(variableDocs, variables)
 	console.log()
 	console.log("variables ->")
 	console.log(variables)
-	for(let doc of variableDocs) // of, not int, because javascript is a silly language
+	for(let doc of variableDocs) // "of", not "in", because javascript is a silly language
 	{
 		console.log(doc)
 		let varName = doc.variable_name;
