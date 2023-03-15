@@ -133,6 +133,9 @@ DeleteProjectDialog.propTypes = {
   open: PropTypes.bool.isRequired,
   projectTobeDeleted: PropTypes.string.isRequired,
   handleDialogClose: PropTypes.func.isRequired,
+  selectedProject: PropTypes.string.isRequired,
+  initializeSelectedProject: PropTypes.func.isRequired
+
 }
 
 const mapDispatchToProps = {
