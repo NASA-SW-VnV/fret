@@ -531,7 +531,7 @@ function transformTemporalConditionsNoBounds (formulaString) {
     return result;
 }
 
-function linearizeFormula(vars, formulaAST) {    
+function linearizeFormula(vars, formulaAST) {
     if (isVar(formulaAST)) {
         return formulaAST;
     } else if (isAtom(formulaAST)) {
@@ -641,6 +641,7 @@ let negNormalizationRules = [
   ['!(__p | __q)', trueFn, '!__p & !__q'],
   ['!(__p & __q)', trueFn, '!__p | !__q'],
   ['__p -> __q', trueFn, '!__p | __q'],
+  ['__p = __q', trueFn, '(__p -> __q) & (__q -> __p)'],
   ['! X __p', trueFn, 'X ! __p'],
   ['!(__p U __q)', trueFn, '!__p V !__q'],
   ['!(__p V __q)', trueFn, '!__p U !__q'],
@@ -729,6 +730,7 @@ function doFlips(AST) {
 function testObl(v,formula) {
   console.log('testObl(' + v + ', "' + formula + ' ")')
   let formulaAST = astsem.LTLtoAST(formula);
+  console.log(formulaAST)
   let vars = getVars(formulaAST);
   console.log('getVars: ' + JSON.stringify(vars))
 
@@ -772,9 +774,63 @@ function testObl(v,formula) {
 //let formula = 'G (__p V (F (__q & __p)))'
 // let formula = 'F (__a | __b)';
 
-let formula = 'F (a | b)';
-testObl('a_0',formula)
-testObl('b_0',formula)
+// let formula = 'F (a | b)';
+// let formula = 'F((a = c) = (b = d))'
+// console.log(astsem.LTLtoAST(formula));
+// testObl('a_0', formula)
+
+let formulas = {
+    'FSM-001-fin' : '(LAST V ((((limits & (! standby)) & (! apfail)) & supported) -> pullup))',
+    'FSM-001': '(G ((((limits & (! standby)) & (! apfail)) & supported) -> pullup))',
+    'FSM-002': '(G ((standby & (state_eq_ap_transition_state)) -> (STATE_eq_ap_standby_state)))',
+    'FSM-003': '(G ((((state_eq_ap_transition_state) & good) & supported) -> (STATE_eq_ap_nominal_state)))',
+    'FSM-004': '(G (((! good) & (state_eq_ap_nominal_state)) -> (STATE_eq_ap_maneuver_state)))',
+    'FSM-005': '(G (((state_eq_ap_nominal_state) & standby) -> (STATE_eq_ap_standby_state)))',
+    'FSM-006': '(G ((((state_eq_ap_maneuver_state) & standby) & good) -> (STATE_eq_ap_standby_state)))',
+    'FSM-007': '(G ((((state_eq_ap_maneuver_state) & supported) & good) -> (STATE_eq_ap_transition_state)))',
+    'FSM-008': '(G (((state_eq_ap_standby_state) & (! standby)) -> (STATE_eq_ap_transition_state)))',
+    'FSM-009': '(G (((state_eq_ap_standby_state) & apfail) -> (STATE_eq_ap_maneuver_state)))',
+    'FSM-010': '(G (((senstate_eq_sen_nominal_state) & limits) -> (SENSTATE_eq_sen_fault_state)))',
+    'FSM-011': '(G (((senstate_eq_sen_nominal_state) & (! request)) -> (SENSTATE_eq_sen_transition_state)))',
+    'FSM-012': '(G ((((senstate_eq_sen_fault_state) & (! request)) & (! limits)) -> (SENSTATE_eq_sen_transition_state)))',
+    'FSM-013': '(G (((senstate_eq_sen_transition_state) & request) -> (SENSTATE_eq_sen_nominal_state)))',
+    'LM-006': '((G (((! liquid_level_2) & (X liquid_level_2)) -> (X (((timer_60sec_expire | emergency_button) V (stirring_motor | (timer_60sec_expire | emergency_button))) | (G stirring_motor))))) & (liquid_level_2 -> (((timer_60sec_expire | emergency_button) V (stirring_motor | (timer_60sec_expire | emergency_button))) | (G stirring_motor))))'}
+
+
+let allObligations = []
+for (const formula in formulas) {
+    let formulaAST = astsem.LTLtoAST(formulas[formula]);
+    let vars = getVars(formulaAST);
+
+    let conditions = []
+    for (const varName in vars) {
+        for (var i = 0; i <= vars[varName]; i++) {
+            conditions.push(varName+'_'+i);
+        }
+    }
+    // console.log('Conditions: ' + JSON.stringify(conditions))
+
+    let linFormulaAST = linearizeFormula(vars, formulaAST)
+    // console.log('Linearized Formula: '+ JSON.stringify(astsem.ASTtoLTL(linFormulaAST)))
+
+    let negNormalAST = doNegNormalization(linFormulaAST);
+    // console.log('Negation normalized: ' + JSON.stringify(astsem.ASTtoLTL(negNormalAST)))
+
+    for (const c of conditions) {
+        let obl = doFlips(['flip', c, negNormalAST])
+        // console.log('obligation: ' + JSON.stringify(astsem.ASTtoLTL(obl)))
+        allObligations.push([formula, c, astsem.ASTtoLTL(obl)])
+        // console.log('--'+formula)
+        // console.log('--'+c)
+        // console.log(JSON.stringify(astsem.ASTtoLTL(obl)))
+        console.log('LTLSPEC NAME '+formula+'_'+c+' := !('+astsem.ASTtoLTL(obl)+');')
+        console.log('\n')
+    }    
+}
+// console.log(JSON.stringify(allObligations, null, 3))
+
+// testObl('a_0',formula)
+// testObl('b_0',formula)
 
 
 
