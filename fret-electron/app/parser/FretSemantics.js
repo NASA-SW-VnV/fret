@@ -44,8 +44,16 @@ const REQ_BODY_CTX_RULE = 'reqt_body'
 function trimReqtText(text) {
   let trimmedText = text.trim();
   if (trimmedText.endsWith(".")) trimmedText = trimmedText.slice(0,-1).trim();
-  const renamed = trimmedText.replace(/\b([AEFGHOSTUVWXYZ])\b/g, 'abc$1def')
+  //const renamed = trimmedText.replace(/\b([AEFGHOSTUVWXYZ])\b/g, 'abc$1def')
+  const renamed = trimmedText;
   return renamed;
+}
+
+const reservedWords = /\b(?:[AEFGHOSTUVXYZ]|A[FGX]|BU|E[FGX]|[SU]I|AB[FG]|EB[FG]|MAX|MIN)\b/g
+
+function findReservedWords(text) {
+  const matches = text.match(reservedWords);
+  return (matches ? [{ text : 'These reserved letter combinations cannot be used: ' + matches.join(', ') + '.', type: "error" } ] : []);
 }
 
 // Tests that text is just a string starting and ending with double-quotes
@@ -74,7 +82,8 @@ exports.compile = (text) => {
   var lexer = new RequirementLexer.RequirementLexer(chars);
   var tokens  = new antlr4.CommonTokenStream(lexer);
   var parser = new RequirementParser.RequirementParser(tokens);
-  var annotations = [];
+    //var annotations = [];
+  var annotations = findReservedWords(trimmedText);
   var listener = new AnnotatingErrorListener.AnnotatingErrorListener(annotations);
   parser.removeErrorListeners();
   parser.addErrorListener(listener);
@@ -100,7 +109,7 @@ exports.compilePartialText = (text) => {
   var lexer = new RequirementLexer.RequirementLexer(chars);
   var tokens  = new antlr4.CommonTokenStream(lexer);
   var parser = new RequirementParser.RequirementParser(tokens);
-  var annotations = [];
+  var annotations = findReservedWords(trimmedText);
   var listener = new AnnotatingErrorListener.AnnotatingErrorListener(annotations);
   parser.removeErrorListeners();
   parser.addErrorListener(listener);
@@ -136,7 +145,7 @@ exports.parseByCtxRule = (text, ctxRule) => {
   var lexer = new RequirementLexer.RequirementLexer(chars);
   var tokens  = new antlr4.CommonTokenStream(lexer);
   var parser = new RequirementParser.RequirementParser(tokens);
-  var annotations = [];
+  var annotations = findReservedWords(trimmedText);
   var listener = new AnnotatingErrorListener.AnnotatingErrorListener(annotations);
   parser.removeErrorListeners();
   parser.addErrorListener(listener);

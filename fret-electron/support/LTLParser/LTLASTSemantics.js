@@ -53,7 +53,7 @@ const isBoolean = utils.isBoolean;
 
 const infix = { ExclusiveOr : 'xor', And : '&', Or : '|', Implies : '->',
 		Equiv : '<->',
-		Since : 'S', Triggers : 'T', Until : 'U', Releases : 'V',
+		Since : 'S', Triggers : 'T', Untl : 'U', Releases : 'V',
 		SinceInclusive : 'SI', UntilInclusive : 'UI',
 	        SinceTimed : 'S', UntilTimed : 'U',
 		SinceInclusiveTimed: 'SI', UntilInclusiveTimed: 'UI', 
@@ -65,8 +65,8 @@ const infix = { ExclusiveOr : 'xor', And : '&', Or : '|', Implies : '->',
 	      };
 
 const prefix = { Not : '!', Historically : 'H', Once : 'O', Negate : '-',
-		 OnceTimed : 'O', HistoricallyTimed : 'H', EventuallyTimed : 'F',
-		 Globally : 'G', Eventually : 'F', Next : 'X', PrevFalse : 'Y',
+		 OnceTimed : 'O', HistoricallyTimed : 'H', FutureTimed : 'F',
+		 Globally : 'G', Future : 'F', Nxt : 'X', PrevFalse : 'Y',
 		 PrevTrue : 'Z',
 		 GloballyTimed : 'G',
 	         LookingBackwardsTimed : '<|', LookingForwardsTimed : '|>', Negate : '-'};

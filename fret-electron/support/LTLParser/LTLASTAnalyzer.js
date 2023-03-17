@@ -49,7 +49,7 @@ const symbolToOpMap =
       { Y : 'PrevFalse', Z : 'PrevTrue', H : 'Historically', O : 'Once',
 	S : 'Since', T : 'Triggers',
 	SI : 'SinceInclusive', UI : 'UntilInclusive',
-	X : 'Next', G : 'Globally', F : 'Eventually', U : 'Until',
+	X : 'Nxt', G : 'Globally', F : 'Future', U : 'Untl',
 	V : 'Releases',
 	'<|' : 'LookingBackwards', '|>' : 'LookingForwards',
 	'!' : 'Not', '&' : 'And', '|' : 'Or', '->' : 'Implies', '<->' : 'Equiv',
