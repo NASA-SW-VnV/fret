@@ -9,10 +9,12 @@ FRET is a framework for the elicitation, formalization and understanding of requ
 Take a look at the [FRET demo](https://drive.google.com/open?id=142C-xIw6ar9rSgxz-wAXktYrTwAG0sKw).
 
 Contact
--------
-
-Please contact <fret@lists.nasa.gov> for further information on
-FRET. Detailed information can be found at the [FRET manual](fret-electron/docs/userManual.md).
+=======
+For further information on FRET, please contact <andreas.katis@nasa.gov>,
+<anastasia.mavridou@nasa.gov>, <tom.pressburger@nasa.gov> or issues and
+discussions on GitHub at [https://github.com/NASA-SW-VnV/fret.git](https://github.com/NASA-SW-VnV/fret.git). Detailed
+information can be found in the
+[FRET manual](fret-electron/docs/_media/userManual.md).
 
 Installation
 ------------

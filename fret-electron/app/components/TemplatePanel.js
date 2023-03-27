@@ -92,9 +92,9 @@ class TemplatePanel extends React.Component {
         return(
           <div style={{paddingTop:'24px'}}>
             <FormControl fullWidth>
-              <InputLabel id="select-template-label">Template</InputLabel>
+              <InputLabel id="qa_tpl_select-label">Template</InputLabel>
               <Select
-                id="select-template"
+                id="qa_tpl_select"
                 value={selectedTemplate}
                 onChange={this.handleChange}
                 >
@@ -103,7 +103,7 @@ class TemplatePanel extends React.Component {
                   No template
                 </MenuItem>
                 {templates && templates.map((template, index) => (
-                <MenuItem key={`key-template-${index}`} value={index}>
+                <MenuItem id={"qa_tpl_mi_"+template.title.replace(/\s+/g, '_')} key={`key-template-${index}`} value={index}>
                   {template.title}
                 </MenuItem>
                 ))}
@@ -120,7 +120,7 @@ class TemplateInfo extends React.Component {
     render() {
         const {template} = this.props;
         const patternDescription = (
-          <Typography>{template.description}</Typography>
+          <Typography id="qa_tpl_typ_description" >{template.description}</Typography>
         );
         const examplesList = ( template.examples &&
           <div style={{marginTop:15}}>
@@ -128,6 +128,7 @@ class TemplateInfo extends React.Component {
             {template.examples
               .map((example, index) => {
                 return <Example
+                  id="template_example"
                   template={template}
                   values={example}
                   index={index}

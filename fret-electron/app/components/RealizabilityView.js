@@ -34,7 +34,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+
 import RealizabilityContent from './RealizabilityContent';
+import AnalysisReportContent from './AnalysisReportContent';
 
 const sharedObj = require('electron').remote.getGlobal('sharedObj');
 const constants = require('../parser/Constants');
@@ -42,11 +45,14 @@ const db = sharedObj.db;
 const modeldb = sharedObj.modeldb;
 const system_dbkeys = sharedObj.system_dbkeys;
 const checkDbFormat = require('../../support/fretDbSupport/checkDBFormat.js');
+const fs = require('fs');
+const app = require('electron').remote.app;
+const dialog = require('electron').remote.dialog;
 
 var dbChangeListener;
 let id = 0;
 
-function optLog(str) {if (constants.verboseRealizabilityTesting) console.log(str)}
+function optLog(str) {if (constants.verboseRealizabilityTesting || constants.verboseReportTesting) console.log(str)}
 
 const styles = theme => ({
   root: {
@@ -63,6 +69,10 @@ const styles = theme => ({
 });
 
 class RealizabilityView extends React.Component {
+  
+  state = {
+    importedReport: {}
+  };
 
   constructor(props){
     super(props);
@@ -94,23 +104,62 @@ class RealizabilityView extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (this.props.selectedProject !== prevProps.selectedProject) {
-      this.props.synchStateWithDB();
+      this.setState({
+        importedReport: {}
+      })
     }
   }
 
+  handleLoadClick = (event) => {
+    event.stopPropagation();    
+    var homeDir = app.getPath('home');
+    var filepaths = dialog.showOpenDialogSync({
+      defaultPath: homeDir,
+      title: 'Load Analysis Report',
+      buttonLabel: 'Load',
+      filters: [
+        { name: "Documents", extensions: ['json'] }
+      ],
+      properties: ['openFile']})
+    let report = {};
+
+    try {
+      var fileContent = fs.readFileSync(filepaths[0], 'utf8');
+      report = JSON.parse(fileContent);
+      this.setState({importedReport: report});
+    } catch (err) {       
+      optLog(err);
+    }     
+  };
+
   render() {
-    const self = this;
-    const {classes, selectedProject, existingProjectNames, components, completedComponents, getPropertyInfo, getDelayInfo, getContractInfo} = this.props;
+    const { importedReport } = this.state;
+    const {classes, selectedProject, existingProjectNames, components, completedComponents, getPropertyInfo, getDelayInfo, getContractInfo, variableIdentifierReplacement} = this.props;
 
     if (selectedProject === 'All Projects'){
-      return(
-        <Typography variant='subtitle1'>
-        Please choose a specific project
-        </Typography>
-      );
+      if (Object.keys(importedReport).length === 0) {
+        return(
+          <div style={{alignItems: 'flex-end', display: 'flex', flexWrap: 'wrap'}}>
+            <Typography variant='subtitle1'>
+              Please choose a specific project or load an existing report
+            </Typography>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <Button size="small" variant="contained" color="secondary" onClick={(event) => this.handleLoadClick(event)}>
+                Load
+            </Button>
+          </div>
+        );
+      } else {
+        return (
+          <AnalysisReportContent importedReport={importedReport} handleLoadClick={this.handleLoadClick} optLog={optLog}/>
+        );
+      }
     } else {
       return (
         <div>
+          <Typography variant='h6'>
+            Realizability Analysis: {selectedProject}
+          </Typography>
           <RealizabilityContent
             selectedProject={selectedProject}
             components={components}
@@ -118,6 +167,7 @@ class RealizabilityView extends React.Component {
             getPropertyInfo={getPropertyInfo}
             getDelayInfo={getDelayInfo}
             getContractInfo={getContractInfo}
+            variableIdentifierReplacement={variableIdentifierReplacement}
           />
         </div>
       );
@@ -136,7 +186,8 @@ RealizabilityView.propTypes = {
   completedComponents: PropTypes.array.isRequired,
   getPropertyInfo: PropTypes.func.isRequired,
   getDelayInfo: PropTypes.func.isRequired,
-  getContractInfo: PropTypes.func.isRequired
+  getContractInfo: PropTypes.func.isRequired,
+  variableIdentifierReplacement: PropTypes.func.isRequired
 };
 
 export default withStyles(styles)(RealizabilityView);

@@ -5,17 +5,20 @@ ifeq ($(OS), Windows_NT)
 	CFLAGS += -DWINDOWS
 endif
 
+#If you want to keep the temporary smv files, uncomment the next line.
+#CFLAGS += -DKEEP_TMP_FILES
+
 HEADERS = \
 		ltlsim_commands.h \
 		ltlsim_smvutils.h \
-		ltlsim_types.h 
+		ltlsim_types.h
 OBJECTS = \
 		ltlsim_commands.o \
 		ltlsim_smvutils.o \
-		ltlsim_types.o 
+		ltlsim_types.o
 
 
-ltlsim: $(OBJECTS) 
+ltlsim: $(OBJECTS)
 	$(CC) $@.c $^ -o $@ $(CFLAGS)
 
 %.o: %.c $(HEADERS)

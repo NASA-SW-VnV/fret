@@ -204,6 +204,8 @@ class CirclePacking extends React.Component {
     var circle = g.selectAll("circle")
       .data(nodes)
       .enter().append("circle")
+        .attr("id",function(d) {
+          return "qa_cirPack_circle_"+d.data.name})
         .attr("class", function(d) {
           return getRequirementStyle(d, true)})
         .style("fill", function(d) {return d.children ? color(d.depth) : d.data.doc && d.data.doc.semantics ? ((d.data.doc.semantics.ft === constants.unhandled_semantics || d.data.doc.fulltext === "")  ? "white": "node node--leaf-unformalized") : "white" })
@@ -215,6 +217,8 @@ class CirclePacking extends React.Component {
     var text = g.selectAll("text")
       .data(nodes)
       .enter().append("text")
+        .attr("id",function(d) {
+          return "qa_cirPack_text_"+d.data.name})
         .attr("class", "label")
         .style("fill-opacity", function(d) { return d.parent === global ? 1 : 0; })
         .style("display", function(d) { return d.parent === global ? "inline" : "none"; })

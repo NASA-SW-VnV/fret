@@ -31,10 +31,10 @@
 // AGREEMENT.
 // *****************************************************************************
 const contractSignature = require('ejs-compiled-loader!./ContractSignature.ejs'),
-      libraryOfOperators = require('ejs-compiled-loader!./LibraryOfOperators.ejs'),
-      delayOperators = require('ejs-compiled-loader!./DelayOperators.ejs'),
+      libraryOfOperators = require('ejs-compiled-loader!../CommonTemplates/LibraryOfOperators.ejs'),
+      delayOperators = require('ejs-compiled-loader!../CommonTemplates/DelayOperators.ejs'),
       internalVariables = require('ejs-compiled-loader!./InternalVariables.ejs'),
-      modeDefinitions = require('ejs-compiled-loader!./ModeDefinitions.ejs'),
+      modeDefinitions = require('ejs-compiled-loader!../CommonTemplates/ModeDefinitions.ejs'),
       propertyDefinitions = require('ejs-compiled-loader!./PropertyDefinitions.ejs'),
       complete = require('ejs-compiled-loader!./Complete.ejs');
 

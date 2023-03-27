@@ -1,0 +1,54 @@
+body {
+    background-color: #f9f9fa;
+    background-image: url('../docs/_media/icons/electric-guitar.png');
+    /*background-image: url('startFRET.jpg');*/
+    object-fit: none;
+}
+
+.flex {
+    -webkit-box-flex: 1;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto
+}
+    .loader {
+        border: 5px solid rgba(18, 65, 145, 255);
+        border-radius: 50%;
+        border-top: 5px solid #ffffff;
+        width: 40px;
+        height: 40px;
+        -webkit-animation: spin 1s linear infinite;
+        /* Safari */
+        animation: spin 1s linear infinite;
+        margin: auto;
+        left: 0;
+        right: 0;
+        top: 0px;
+        bottom: 0;
+        position: fixed;
+    }
+
+    /* Safari */
+    @-webkit-keyframes spin {
+        0% {
+            -webkit-transform: rotate(0deg);
+        }
+
+        100% {
+            -webkit-transform: rotate(360deg);
+        }
+    }
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    .center {
+        border: none !important;
+        text-align: center;
+    }

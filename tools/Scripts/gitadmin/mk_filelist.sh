@@ -1,3 +1,4 @@
+#!/bin/sh
 
 export LIST_RAW="L_js_files.txt"
 

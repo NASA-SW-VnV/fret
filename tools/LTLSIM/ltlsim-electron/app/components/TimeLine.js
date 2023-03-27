@@ -117,4 +117,4 @@ TimeLine.defaultProps = {
     orientation: "top"
 }
 
-export default withTheme(withStyles(styles)(TimeLine));
+export default withTheme()(withStyles(styles)(TimeLine));

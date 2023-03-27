@@ -1,0 +1,42 @@
+<%
+var delaysInt = []
+var finalDelays = []
+for (i=0; i < delays.length; i++) {
+  delaysInt.push(parseInt(delays[i]))
+  finalDelays.push(parseInt(delays[i]))
+}
+-%>
+node delay(X:bool;  R:int) returns(Y:bool);
+let
+<%if (delays.length == 0){%>
+  Y = X;<% -%>
+<%}%><% -%>
+<%if (delays.length > 0){%>
+  Y = if (R=0) then X<% -%>
+<%for (i=0; i < delays.length-1; i++) {%>
+    else if (R=<%-delays[i]%>) then delay<%-delays[i]%>(X)<% -%>
+  <%if (!delaysInt.includes(parseInt(delays[i])+1)) {
+    finalDelays.push(parseInt(delays[i])+1)%>
+      else if (R=<%-parseInt(delays[i])+1%>) then delay<%-parseInt(delays[i])+1%>(X)<% -%>
+  <%}%>    
+<%}%><% -%>
+<%if (!delaysInt.includes(parseInt(delays[delays.length-1])+1)) {
+  finalDelays.push(parseInt(delays[delays.length-1])+1)%>
+      else if (R=<%-delays[delays.length-1]%>) then delay<%-delays[delays.length-1]%>(X)
+      else delay<%-parseInt(delays[delays.length-1])+1%>(X);<% -%>
+<%} else {%>
+      else delay<%-delays[delays.length-1]%>(X);<% -%>
+<%}%>
+<%}%>
+tel
+<%for (i=0; i<= finalDelays.length-1; i++) {%>
+node delay<%-finalDelays[i]%>(X:bool) returns(Y:bool);
+var <%for (j=0; j < finalDelays[i]; j++) {%> X_<%-j%>, <%}%>X_<%-finalDelays[i]%> :bool;
+let
+  X_0=X;<% -%>
+<%for (j=1; j <= finalDelays[i]; j++) {%>
+  X_<%-j%>=false -> pre X_<%-j-1%>;<% -%>
+<%}%>
+  Y = X_<%-finalDelays[i]%>;
+tel
+<%}%>

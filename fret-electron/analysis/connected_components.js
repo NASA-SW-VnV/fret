@@ -77,7 +77,7 @@ export function compute_connected_components(contract, output_dep_map){
     var has_intersection = false;  
 
     for(var prop of contract['properties']){        
-        if (!prop.reqid.includes('assumption')) {
+        if (!prop.reqid.toLowerCase().includes('assumption')) {
             var dep_set = output_dep_map[prop.reqid];
         
             if(disjoint_list.length == 0){
@@ -114,15 +114,33 @@ export function compute_connected_components(contract, output_dep_map){
         has_intersection = false;
     }
 
+    //We are not done at this point. Array disjoint_list may contain connected components whose sets
+    //of outputs intersect. We merge such connected components below.
+    if (disjoint_list.length > 1) {
+        let mergedOutputs = disjoint_list.reduce((c,a) => {        
+            for (var i = 0; i < c.length; i++) {
+              if ([...a.outputs].some(v => c[i].outputs.has(v))) {
+                // a.forEach(v => c[i].add(v));
+                [...a.properties].forEach(p => c[i].properties.add(p));
+                [...a.outputs].forEach(o => c[i].outputs.add(o));
+                return c;
+              }
+            }
+            c.push(a);
+            return c;
+        }, []);
+
+        disjoint_list = [].concat(mergedOutputs);
+    }
+
     //add the assumptions
     for(var prop of contract['properties']){
-        if (prop.reqid.includes('assumption')) {
+        if (prop.reqid.toLowerCase().includes('assumption')) {
             for (var connected_component of disjoint_list) {
                 connected_component['properties'].add(prop.reqid)
             }
         }
-    }
-
+    }    
     return disjoint_list;
 }
 
@@ -131,7 +149,6 @@ export function compute_dependency_maps(contract){
      * @returns maps: {'internal':internal_dep_map, 'output':output_dep_map} 
      * Returns mappings from property to dependent internal and output variables
      * */
-
     var output_dep_map = {}; 
     var internal_dep_map = {};
     var assignment_map = {}; 
@@ -170,7 +187,7 @@ export function compute_dependency_maps(contract){
     for(var int_var of contract['internalVariables']){
 
         compute_output_dependencies(int_var.name, internal_dep_map, output_dep_map, false);
-    }    
+    }  
     
     // Get 1st level dependencies
     for(var prop of contract['properties']){
@@ -224,7 +241,7 @@ export function compute_output_dependencies(var_name, internal_dep_map, output_d
     for(var int_var of internal_dep_map[var_name]){
         
 
-        if(!one_level){ 
+        if(!one_level && (int_var !== var_name)){ 
             compute_output_dependencies(int_var, internal_dep_map, output_dep_map);
         }
 

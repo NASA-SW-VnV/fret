@@ -163,9 +163,13 @@ function getCoCoSpecString (ptLTL, form) {
     if (form === 'ptExpanded')
       return cocospecSemantics.createCoCoSpecCode(ptLTL);
     else if (form === 'pt'){
+      if (constants.verboseSemanticsGenerator) console.log('*** getCoCoSpecString given: ' + ptLTL);
       var substitutions = utilities.removePairWithFirstElement(suggestedEndpointRewriteRules(form),'FTP');
+      if (constants.verboseSemanticsGenerator) console.log('*** getCoCoSpecString substs: ' + JSON.stringify(substitutions))
       var newPtLTL = utilities.replaceStrings(substitutions, ptLTL);
+      if (constants.verboseSemanticsGenerator) console.log('*** getCoCoSpecString intermediate: ' + newPtLTL)
       var cocospec = cocospecSemantics.createCoCoSpecCode(newPtLTL);
+      if (constants.verboseSemanticsGenerator) console.log('*** getCoCoSpecString returns: ' + cocospec);
       return cocospec
       //return cocospecSemantics.createCoCoSpecCode(newPtLTL);
     }

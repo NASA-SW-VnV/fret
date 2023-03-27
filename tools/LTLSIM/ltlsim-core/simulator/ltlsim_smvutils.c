@@ -1,9 +1,6 @@
 #include "ltlsim_smvutils.h"
 #include "ltlsim_smvutils_private.h"
 
-// #define DEBUG
-// #define KEEP_TMP_FILES
-
 int ltlsim_analyse(ltlsim_model_t *m, int idx, bool doTrace) {
     char fn[SMV_BUFFER];
     if (idx < 0) {
@@ -28,12 +25,27 @@ int checkNuSMVInstallation(bool doPrint) {
     int status = -1;
     regex_t regex;
     regmatch_t match[1];
-    char *pattern = "This is NuSMV";
+    char *pattern;
+    const char *smv_binary;
+
+    smv_binary = getenv(LTLSIM_BINARY);
+    if (!smv_binary){
+	smv_binary = "nusmv";
+	}
+
+    if (!strcasecmp(smv_binary, "nusmv")){
+ 	pattern = "This is NuSMV";
+	}
+    else {
+ 	pattern = "This is nuXmv";
+	}
 
 #ifdef WINDOWS
-    fp = popen("nusmv.exe -h 2>&1", "r");
+    sprintf(buffer,"%s.exe -h 2>&1",smv_binary);
+    fp = popen(buffer, "r");
 #else
-    fp = popen("nusmv -h 2>&1", "r");
+    sprintf(buffer,"%s -h 2>&1",smv_binary);
+    fp = popen(buffer, "r");
 #endif
 
     if (fp == NULL) {
@@ -45,20 +57,20 @@ int checkNuSMVInstallation(bool doPrint) {
         fprintf(stderr, "[Error] Could not compile regex.\n");
         return status;
     }
-
+    
     while (fgets(buffer, SMV_BUFFER, fp) != NULL) {
         if (doPrint) {
             printf("[NuSMV] %s", buffer);
         }
         if (status && regexec(&regex, buffer, 1, match, 0) == 0) {
-            /* At the first match set the status to 0. Like this the regex
+            /* At the first match set the status to 0. Like this the regex 
             is not executed anymore on the subsequent lines */
             status = 0;
         }
     }
 
     regfree(&regex);
-
+    
     if (pclose(fp) == -1) {
         return -1;
     }
@@ -74,12 +86,12 @@ static int _genFSM(ltlsim_model_t *m, int idx, const char *fn, bool doTrace) {
     if (_genState(fp, m->traceLength > 0 ? m->traceLength-1 : m->traceLength)) {
         fprintf(stderr, "[Error] State generation not successful\n");
         fclose(fp);
-        return -1;
+        return -1;    
     }
     if (_genTrace(fp, m)) {
         fprintf(stderr, "[Error] Trace generation not successful\n");
         fclose(fp);
-        return -1;
+        return -1;    
     }
     if (_genSpec(fp, m, idx, doTrace)) {
         fprintf(stderr, "[Error] Specification generation not successful\n");
@@ -93,11 +105,10 @@ static int _genFSM(ltlsim_model_t *m, int idx, const char *fn, bool doTrace) {
 static int _genState(FILE *fp, unsigned int tmax) {
 
     fprintf(fp, "VAR\n");
-    fprintf(fp, "    %st : 0 .. %u;\n", FSM_TIME_PREFIX, tmax);
+    fprintf(fp, "    t : 0 .. %u;\n", tmax);
     fprintf(fp, "ASSIGN\n");
-    fprintf(fp, "    init(%st) := 0;\n", FSM_TIME_PREFIX);
-    fprintf(fp, "    next(%st) := (%st >= %u) ? %u : %st + 1;\n",
-		FSM_TIME_PREFIX, FSM_TIME_PREFIX, tmax, tmax, FSM_TIME_PREFIX);
+    fprintf(fp, "    init(t) := 0;\n");
+    fprintf(fp, "    next(t) := (t >= %u) ? %u : t + 1;\n", tmax, tmax);
     return 0;
 
 }
@@ -119,9 +130,9 @@ static int _genTrace(FILE *fp, ltlsim_model_t *m) {
                         hasEdges = true;
                     }
                     if (curState) {
-                        fprintf(fp, "        %st <= %d : %s;\n", FSM_TIME_PREFIX, iTime-1, "TRUE");
+                        fprintf(fp, "        t <= %d : %s;\n", iTime-1, "TRUE");
                     } else {
-                        fprintf(fp, "        %st <= %d : %s;\n", FSM_TIME_PREFIX, iTime-1, "FALSE");
+                        fprintf(fp, "        t <= %d : %s;\n", iTime-1, "FALSE");
                     }
                     curState = m->atomics[iAtomic].trace.values[iTime];
                 }
@@ -164,21 +175,11 @@ static int _genSpec(FILE *fp, ltlsim_model_t *m, int idx, bool doTrace) {
 
 static int _genFormulaSpec(FILE *fp, formula_t *f, bool doTrace) {
     int iTime;
-    char f_expr[MAX_EXPRESSION_LENGTH];
-	//
-	// print formula for overall evaluation (ie. without time-point)
-	//
-	// first: replace FTP or LAST
-    _prepFormula(f_expr,f->expression);
-    fprintf(fp, "LTLSPEC NAME %s := %s;\n", f->id, f_expr);
-
-	//
-	// if to generate trace: do for each timepoint t
-	//
+    fprintf(fp, "LTLSPEC NAME %s := %s;\n", f->id, f->expression);
     if (doTrace) {
         for (iTime = 0; iTime < f->trace.length; iTime++) {
-            fprintf(fp, "LTLSPEC NAME %s_%st%d := G((%st=%d) -> (%s));\n",
-                        f->id, FSM_TIME_PREFIX, iTime, FSM_TIME_PREFIX, iTime, f->expression);
+            fprintf(fp, "LTLSPEC NAME %s_t%d := G((t=%d) -> (%s));\n", 
+                        f->id, iTime, iTime, f->expression);
         }
     }
     return 0;
@@ -192,16 +193,9 @@ static int _callSMV(ltlsim_model_t *m, int idx, const char *fn, bool doTrace) {
     const int nMatch = 4;
     regmatch_t matches[nMatch];
     bool value, tmatch = false;
+    const char *smv_binary;
     const char* fpattern = "-- specification[ ]+(.*)[ ]+is[ ]+(true|false)[ ]*";
-    char tpattern[SMV_BUFFER];
-
-    sprintf(tpattern,"-- specification[ ]+G[ ]*\\(%st[ ]*=[ ]*[0-9]+[ ]+->[ ]+(.*)[ ]*\\)[ ]+is[ ]+(true|false)[ ]*",FSM_TIME_PREFIX);
-
-#ifdef DEBUG
-    printf("tpattern=>%s<\n", tpattern);
-#endif
-
-//    const char* tpattern = "-- specification[ ]+G[ ]*\\(t[ ]*=[ ]*[0-9]+[ ]+->[ ]+(.*)[ ]*\\)[ ]+is[ ]+(true|false)[ ]*";
+    const char* tpattern = "-- specification[ ]+G[ ]*\\(t[ ]*=[ ]*[0-9]+[ ]+->[ ]+(.*)[ ]*\\)[ ]+is[ ]+(true|false)[ ]*";
 
     if (regcomp(&fregex, fpattern, REG_EXTENDED)) {
         fprintf(stderr, "[Error] Could not compile regex.\n");
@@ -212,15 +206,18 @@ static int _callSMV(ltlsim_model_t *m, int idx, const char *fn, bool doTrace) {
         return -1;
     }
 
-#ifdef WINDOWS
-    status = snprintf(buffer, SMV_BUFFER, "nusmv.exe -dcx %s", fn);
-#else
-    status = snprintf(buffer, SMV_BUFFER, "nusmv -dcx %s", fn);
-#endif
-#ifdef DEBUG
-    printf("[NuSMV] command: %s", buffer);
-#endif
 
+    smv_binary = getenv(LTLSIM_BINARY);
+    if (!smv_binary){
+	smv_binary = "nusmv";
+	}
+
+#ifdef WINDOWS
+    status = snprintf(buffer, SMV_BUFFER, "%s.exe -dcx %s", smv_binary, fn);
+#else
+    status = snprintf(buffer, SMV_BUFFER, "%s -dcx %s", smv_binary, fn);
+#endif
+    
     if (status < 0) {
         fprintf(stderr, "[Error] Filename too long.\n");
         regfree(&fregex);
@@ -237,15 +234,13 @@ static int _callSMV(ltlsim_model_t *m, int idx, const char *fn, bool doTrace) {
     }
 
     while (fgets(buffer, SMV_BUFFER, fp) != NULL) {
-#ifdef DEBUG
-        printf("[NuSMV] %s", buffer);
-#endif
+        // printf("[NuSMV] %s", buffer);
         if (doTrace) {
             status = regexec(&tregex, buffer, nMatch, matches, 0);
         } else {
             status = 1;
         }
-
+        
         if (status) {
             status = regexec(&fregex, buffer, nMatch, matches, 0);
             if (status) {
@@ -258,10 +253,10 @@ static int _callSMV(ltlsim_model_t *m, int idx, const char *fn, bool doTrace) {
         } else {
             tmatch = true;
         }
-        if (strncmp("true", buffer+matches[2].rm_so,
+        if (strncmp("true", buffer+matches[2].rm_so, 
                 matches[2].rm_eo-matches[2].rm_so) == 0) {
             value = true;
-        } else if (strncmp("false", buffer+matches[2].rm_so,
+        } else if (strncmp("false", buffer+matches[2].rm_so, 
                 matches[2].rm_eo-matches[2].rm_so) == 0) {
             value = false;
         }
@@ -276,9 +271,7 @@ static int _callSMV(ltlsim_model_t *m, int idx, const char *fn, bool doTrace) {
         }
     }
 
-#ifdef DEBUG
-    printf("Done\n");
-#endif
+    // printf("Done\n");
     if (pclose(fp) == -1) {
         regfree(&fregex);
         regfree(&tregex);
@@ -297,24 +290,4 @@ static int _rmFSM(const char *fn) {
     }
 #endif
     return 0;
-}
-
-static void _prepFormula(char *f_expr, const char *expr){
-
-//strncpy(f_expr,expr,MAX_EXPRESSION_LENGTH);
-
-printf(">>>%s<<\n",expr);
-
-char B[MAX_EXPRESSION_LENGTH];
-char A[MAX_EXPRESSION_LENGTH];
-char *l;
-
-strncpy(f_expr,expr,MAX_EXPRESSION_LENGTH);
-
-while((l = strstr(f_expr, "LAST"))){
-printf("      >>>%s<<\n",l);
-	sprintf(B, "%.*s", (int)(l - f_expr), f_expr);
-	sprintf(A, "%s", l + 4);  // length of LAST
-	sprintf(f_expr,"%s%s%s",B,"TRUE",A);
-	}
 }

@@ -129,25 +129,35 @@ class Glossary extends React.Component {
   }
 
   getComponents = async () => {
-    const { projectName } = this.props;
-    const project = await db.find({
-      selector: {
-        project: projectName,
-      }
-    });
-    const components_names = {};
-    project && project.docs.forEach(function (req) {
-      const component_name = req.semantics && req.semantics.component_name;
-      if (component_name && !components_names[component_name]) {
-        components_names[component_name] = [];
-      }
-    });
-    const variables = await modeldb.find({
-      selector: {
-        project: projectName,
-        component_name: { $in: Object.keys(components_names) }
-      }
-    });
+    let variables= {}
+    let components_names = {};
+    if(process.env.EXTERNAL_TOOL !=='1'){
+      const { projectName } = this.props;
+      const project = await db.find({
+        selector: {
+          project: projectName,
+        }
+      });
+
+      project && project.docs.forEach(function (req) {
+        const component_name = req.semantics && req.semantics.component_name;
+        if (component_name && !components_names[component_name]) {
+          components_names[component_name] = [];
+        }
+      });
+
+      variables = await modeldb.find({
+        selector: {
+          project: projectName,
+          component_name: { $in: Object.keys(components_names) }
+        }
+      });
+    } else {
+      variables = this.props.editVariables;
+
+      //TODO: now it only works for one component, update.
+      components_names[variables.docs[0].component_name] = [];
+    }
     variables && variables.docs && variables.docs.forEach(v => {
       const variable = {
         name: v.variable_name || '',
@@ -199,7 +209,8 @@ class Glossary extends React.Component {
   filterVariables = () => {
     const {components, selectedComponent, checked} = this.state;
     const checkedVariableTypes = Object.keys(checked).filter(variableType => checked[variableType]);
-    const filteredVariables = selectedComponent ? components[selectedComponent].filter(variable => checked.Undefined && !variable['variable type'] || checkedVariableTypes.includes(variable['variable type'])).sort(this.sortFunction): [];
+    const filteredVariables = selectedComponent ?
+      components[selectedComponent].filter(variable => checked.Undefined && !variable['variable type'] || checkedVariableTypes.includes(variable['variable type'])).sort(this.sortFunction): [];
     this.setState({filteredVariables})
   }
 
@@ -219,12 +230,13 @@ class Glossary extends React.Component {
         <FormControl>
           <Typography>Component</Typography>
           <Select
+            id="qa_gls_sel_comp"
             classes={{ root: classes.selectRoot }}
             onChange={this.handleComponentChange}
             value={selectedComponent}
           >
             {Object.keys(this.state.components).sort().map(componentName =>
-              <MenuItem key={componentName} value={componentName}>{componentName}</MenuItem>
+              <MenuItem id={"qa_gls_mi_comp_"+componentName} key={componentName} value={componentName}>{componentName}</MenuItem>
             )
             }
           </Select>
@@ -236,8 +248,10 @@ class Glossary extends React.Component {
               <FormControlLabel
                 classes={{label: classes.checkBoxFont}}
                 key={variableType}
+
                 control={
                   <Checkbox
+                    id = {"qa_gls_cb_" + variableType}
                     checked={checked[variableType]}
                     icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
                     checkedIcon={<CheckBoxIcon fontSize="small" />}
@@ -253,6 +267,7 @@ class Glossary extends React.Component {
         </FormControl>
         <div>
           <TreeView
+            id = "qa_gls_tree_var"
             defaultCollapseIcon={<ExpandMoreIcon/>}
             defaultExpandIcon={<ChevronRightIcon/>}
           >
@@ -262,11 +277,13 @@ class Glossary extends React.Component {
               delete variableAttributes.name;
               delete variableAttributes.modeldocId;
               return (<TreeItem key={name}
+                                id={"qa_gls_ti_var_"+name}
                                 nodeId={name}
                                 label={name}
                                 classes={{ group: classes.treeItemGroup, selected: classes.selected, label: classes.itemLabel, content: classes.content }}>
                 {Object.entries(variableAttributes).map(([key, value]) =>
                   <TreeItem nodeId={`${key}: ${value}`}
+                            id={"qa_gls_ti_var_reqs_"+name}
                             key={`${key}: ${value}`}
                             label={
                               <div style={{display: 'flex'}}>
@@ -287,7 +304,8 @@ class Glossary extends React.Component {
 Glossary.propTypes = {
   projectName:PropTypes.string.isRequired,
   setAutoFillVariables: PropTypes.func,
-  requirements: PropTypes.array
+  requirements: PropTypes.array,
+  editVariables: PropTypes.object
 };
 
 export default withStyles(styles)(Glossary);

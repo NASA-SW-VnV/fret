@@ -78,7 +78,7 @@ import CreateProjectDialog from './CreateProjectDialog';
 import DeleteProjectDialog from './DeleteProjectDialog';
 import AppMainContent from './AppMainContent';
 import RequirementImportDialogs from './RequirementImportDialogs';
-
+import MissingExternalImportDialog from './MissingExternalImportDialog';
 import ExportRequirementsDialog from './ExportRequirementsDialog';
 import VersionDialog from './VersionDialog';
 
@@ -94,6 +94,8 @@ const modelSupport = require('../../support/modelDbSupport/populateVariables');
 const checkDbFormat = require('../../support/fretDbSupport/checkDBFormat.js');
 const drawerWidth = 240;
 let dbChangeListener = null;
+const ext_imp_json_file = require('electron').remote.getGlobal('sharedObj').ext_imp_json;
+const {ipcRenderer} = require('electron');
 
 const styles = theme => ({
   root: {
@@ -218,6 +220,10 @@ class MainView extends React.Component {
     importedReqs: [],
     requirements: [],
     changingReqsInBulk: false,
+    externalRequirement: {},
+    externalVariables: {},
+    missingExternalImportDialogOpen: false,
+    missingExternalImportDialogReason: 'unknown',
   };
 
   initializeSelectedProject = () => {
@@ -275,6 +281,10 @@ class MainView extends React.Component {
         this.synchStateWithDB();
       }
     })
+    if(process.env.EXTERNAL_TOOL=='1'){
+      //console.log('env EXTERNAL_TOOL',process.env.EXTERNAL_TOOL);
+      this.handleImportExternalTool();
+    }
   }
 
 
@@ -282,12 +292,11 @@ class MainView extends React.Component {
     dbChangeListener.cancel()
   }
 
-
   handleImport = () => {
     const self = this;
     var homeDir = app.getPath('home');
     const { listOfProjects } = this.state;
-    var filepaths = dialog.showOpenDialog({
+    var filepaths = dialog.showOpenDialogSync({
       defaultPath : homeDir,
       title : 'Import Requirements',
       buttonLabel : 'Import',
@@ -356,7 +365,7 @@ class MainView extends React.Component {
 
   handleExport = () => {
     var homeDir = app.getPath('home');
-    var filepath = dialog.showSaveDialog(
+    var filepath = dialog.showSaveDialogSync(
       {
         defaultPath : homeDir,
         title : 'Export Requirements',
@@ -402,6 +411,9 @@ class MainView extends React.Component {
         snackbarOpen: newRequirementCreated,
         lastCreatedRequirementId: newReqId
       });
+      if(process.env.EXTERNAL_TOOL=='1'){
+        //ipcRenderer.send('closeFRET');
+      }
   }
 
   /*
@@ -516,6 +528,122 @@ class MainView extends React.Component {
       anchorEl: null
     })
   }
+  
+  handleNoExtFileImport = () => {
+    this.handleCreateDialogOpen();
+  }
+
+
+  handleImportExternalTool = () => {
+    const self = this;
+    //var homeDir = app.getPath('home');
+    var filepath = ext_imp_json_file;
+    //console.log('ext_imp_json_file in handleImportExternalTool: ', filepath);
+    if (filepath && filepath.length > 0) {
+      //const filepath = filepaths[0];
+      fs.readFile(filepath, function (err,buffer) {
+        if (err) {
+          // throw err;
+          //console.log('err in handleImportExternalTool: ', err);
+          //console.log('err string in handleImportExternalTool: ', String(err));
+          // pop up error not found, give option to quit or access filesystem
+          if (String(err).includes('ENOENT')){
+            // file not found
+            //console.log('setting missingExternalImportDialogReason to not found')
+            self.setState({
+              missingExternalImportDialogOpen: true,
+              missingExternalImportDialogReason: 'not found',
+              anchorEl: null
+            });
+          }
+
+
+        } else {
+          try {
+            let data = JSON.parse(buffer);
+            //console.log('data in JSON.parse: ', data)
+            if(!data.requirement & !data.variables){
+              //  invalid file  
+              //console.log('setting missingExternalImportDialogReason to invalid')
+              self.setState({
+                missingExternalImportDialogOpen: true,
+                missingExternalImportDialogReason: 'invalid',
+                anchorEl: null
+              });         
+            } else {
+              self.setState({
+                externalRequirement : data.requirement,
+                externalVariables : data.variables
+              })
+              self.handleCreateDialogOpen();
+            }
+          } catch (error) {
+            //  empty file  
+            //console.log('error in JSON.parse for text import: ',error);
+            //console.log('setting missingExternalImportDialogReason to empty')
+            self.setState({
+              missingExternalImportDialogOpen: true,
+              missingExternalImportDialogReason: 'invalid',
+              anchorEl: null
+            });         
+          }
+          
+        }
+      })
+    }
+  }
+
+  handleBrowseExtImpFile = () => {
+      // call file browser
+      const self = this;
+      var homeDir = app.getPath('home');
+      //console.log('calling browser in closeMissingExternalImportDialog');
+      var filepaths2 = dialog.showOpenDialogSync({
+        defaultPath : homeDir,
+        title : 'Import Requirements',
+        buttonLabel : 'Import',
+        filters: [
+          { name: "Documents",
+            extensions: ['json', 'csv']
+          }
+        ],
+        properties: ['openFile']});
+
+        //console.log('handleBrowseExtImpFile-filepaths2: ', filepaths2);
+
+        if (filepaths2 && filepaths2.length > 0) {
+          var data;
+          const filepath2 = filepaths2[0];
+          try {
+            fs.readFile(filepath2, function (err,buffer2) {
+              if (err) {
+                self.setState({missingExternalImportDialogOpen: true})
+                throw err;
+              }
+              try {
+                data = JSON.parse(buffer2);
+                //console.log('data: ', data)
+                self.setState({
+                  externalRequirement : data.requirement,
+                  externalVariables : data.variables,
+                  missingExternalImportDialogOpen: false
+                })
+                self.handleCreateDialogOpen();
+              } catch (e){
+                //console.log('inside  catch in handleBrowseExtImpFile')
+                self.setState({missingExternalImportDialogOpen: true})
+                console.log(e)                
+              }
+            });
+          } catch (error) {
+            //console.log('outside catch in handleBrowseExtImpFile')
+            self.setState({missingExternalImportDialogOpen: true})
+            console.log(err)
+          }
+        } 
+
+    //if(!self.state.missingExternalImportDialogOpen){self.handleCreateDialogOpen();}
+  }
 
   render() {
     const { classes, theme } = this.props;
@@ -527,6 +655,7 @@ class MainView extends React.Component {
           <AppBar className={classNames(classes.appBar, this.state.drawerOpen && classes.appBarShift)}>
             <Toolbar disableGutters={!this.state.drawerOpen}>
               <IconButton
+                id="qa_db_ib_openDrawer"
                 color="inherit"
                 aria-label="open drawer"
                 onClick={this.handleDrawerOpen}
@@ -539,6 +668,7 @@ class MainView extends React.Component {
                   <div className={css.logo_content}>MU-FRET</div>
                   <div style={{paddingLeft: '30px'}}>
                     <Button
+                      id="qa_db_btn_projects"
                       color="secondary"
                       size="small"
                       aria-owns={anchorEl ? 'simple-menu' : null}
@@ -566,9 +696,9 @@ class MainView extends React.Component {
                           return <MenuItem
                                     key={name}
                                     dense>
-                                    <ListItemText primary = {name} onClick={() => this.handleSetProject(name)}/>
-                                    <IconButton onClick={() => this.handleDeleteProject(name)} size="small" aria-label="delete" >
-                                      <Tooltip id="tooltip-icon-delete" title="Delete Project">
+                                    <ListItemText id={"qa_proj_select_"+name.replace(/\s+/g, '_')} primary = {name} onClick={() => this.handleSetProject(name)}/>
+                                    <IconButton id={"qa_proj_del_"+name.replace(/\s+/g, '_')} onClick={() => this.handleDeleteProject(name)} size="small" aria-label="delete" >
+                                      <Tooltip id="project-tooltip-icon-delete" title="Delete Project">
                                       <DeleteIcon color='error'/>
                                       </Tooltip>
                                     </IconButton>
@@ -577,6 +707,7 @@ class MainView extends React.Component {
                       }
                       <MenuItem dense>
                       <Button
+                        id="qa_db_btn_newProject"
                         color="secondary"
                         size="small"
                         onClick={this.handleNewProject}
@@ -587,7 +718,7 @@ class MainView extends React.Component {
                       </MenuItem>
                     </Menu>
                     &nbsp;
-                    <Button variant="contained" onClick={this.handleCreateDialogOpen} color="secondary" size="small" className={classes.button}>
+                    <Button id="qa_db_btn_create" variant="contained" onClick={this.handleCreateDialogOpen} color="secondary" size="small" className={classes.button}>
                       Create
                     </Button>
                   </div>
@@ -604,43 +735,43 @@ class MainView extends React.Component {
           >
             <div className={classes.drawerInner}>
               <div className={classes.drawerHeader}>
-                <IconButton onClick={this.handleDrawerClose}>
+                <IconButton id="qa_db_ib_closeDrawer" onClick={this.handleDrawerClose}>
                   {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
                 </IconButton>
               </div>
               <Divider />
               <List>
               <div>
-                <ListItem button onClick={() => this.setMainContent('dashboard')}>
+                <ListItem id="qa_db_li_dashboard" button onClick={() => this.setMainContent('dashboard')}>
                   <ListItemIcon>
                     <DashboardIcon />
                   </ListItemIcon>
                   <ListItemText primary="Dashboard" />
                 </ListItem>
-                <ListItem button onClick={() => this.setMainContent('requirements')}>
+                <ListItem id="qa_db_li_table" button onClick={() => this.setMainContent('requirements')}>
                   <ListItemIcon>
                     <ListIcon />
                   </ListItemIcon>
                   <ListItemText primary="Requirements" />
                 </ListItem>
-                <ListItem button onClick={() => this.setMainContent('analysis')}>
+                <ListItem id="qa_db_li_analysis" button onClick={() => this.setMainContent('analysis')}>
                   <ListItemIcon>
                     <CodeIcon />
                   </ListItemIcon>
-                  <ListItemText primary="Analysis Portal" />
+                  <ListItemText id="qa_db_li_analysis_portal_text" primary="Analysis Portal" />
                 </ListItem>
               </div>
               </List>
               <Divider />
                 <List>
                 <div>
-                  <ListItem button onClick={() => this.handleImport()}>
+                  <ListItem id="qa_db_li_import" button onClick={() => this.handleImport()}>
                     <ListItemIcon>
                       <ImportIcon />
                     </ListItemIcon>
                     <ListItemText primary="Import" />
                   </ListItem>
-                  <ListItem button onClick={() => this.openExportRequirementsDialog()}>
+                  <ListItem id="qa_db_li_export" button onClick={() => this.openExportRequirementsDialog()}>
                     <ListItemIcon>
                       <ExportIcon />
                     </ListItemIcon>
@@ -651,7 +782,7 @@ class MainView extends React.Component {
               <Divider />
               <List>
               <div>
-              <ListItem button onClick={() => this.setMainContent('help')}>
+              <ListItem id="qa_db_li_help" button onClick={() => this.setMainContent('help')}>
                 <ListItemIcon>
                   <HelpIcon />
                 </ListItemIcon>
@@ -679,7 +810,8 @@ class MainView extends React.Component {
           <CreateRequirementDialog
             open={this.state.createDialogOpen}
             handleCreateDialogClose={this.handleCreateDialogClose}
-            editRequirement={undefined}
+            editRequirement={this.state.externalRequirement}
+            editVariables={this.state.externalVariables}
             selectedProject={this.state.selectedProject}
             existingProjectNames={this.state.listOfProjects}
             requirements={this.state.requirements}
@@ -712,6 +844,13 @@ class MainView extends React.Component {
             csvFields={this.state.csvFields}
             listOfProjects={this.state.listOfProjects}
             importedReqs={this.state.importedReqs}
+          />
+          <MissingExternalImportDialog
+          open={this.state.missingExternalImportDialogOpen}
+          browseExtImportFile={this.handleBrowseExtImpFile}
+          handleNoImport={this.handleNoExtFileImport}
+          selection='BROWSE'
+          reason={this.state.missingExternalImportDialogReason}
           />
         </div>
         <Snackbar

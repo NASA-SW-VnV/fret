@@ -49,15 +49,16 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import Snackbar from '@material-ui/core/Snackbar';
 import Button from '@material-ui/core/Button';
-import ImageList from '@material-ui/core/ImageList';
-import ImageListItem from '@material-ui/core/ImageListItem';
+import Input from '@material-ui/core/Input';
+import InputAdornment from '@material-ui/core/InputAdornment';
 
 import CloseIcon from '@material-ui/icons/Close';
 import DeleteIcon from '@material-ui/icons/Delete';
 import ListIcon from '@material-ui/icons/List';
-// import EditIcon from '@material-ui/icons/Edit';
+import SearchIcon from '@material-ui/icons/Search';
 import AddIcon from '@material-ui/icons/AddCircle';
-import BuildIcon from '@material-ui/icons/Build';
+import TuneIcon from '@material-ui/icons/Tune';
+
 // status icons
 import InProgressIcon from '@material-ui/icons/MoreHoriz';
 import RemoveIcon from '@material-ui/icons/Remove';
@@ -69,7 +70,11 @@ import { lighten } from '@material-ui/core/styles/colorManipulator';
 import DisplayRequirementDialog from './DisplayRequirementDialog';
 import CreateRequirementDialog from './CreateRequirementDialog';
 import DeleteRequirementDialog from './DeleteRequirementDialog';
+
 import RefactorRequirementDialog from './refactoring/RefactorRequirementDialog';
+import BuildIcon from '@material-ui/icons/Build';
+
+import SearchSortableTableDialog from './SearchSortableTableDialog';
 
 
 // select and menu for status column
@@ -88,7 +93,7 @@ const sharedObj = require('electron').remote.getGlobal('sharedObj');
 const db = sharedObj.db;
 const app = require('electron').remote.app;
 const system_dbkeys = sharedObj.system_dbkeys;
-
+const statusType = ['None', 'In Progress', 'Paused', 'Completed', 'Attention', 'Deprecated'];
 
 let counter = 0;
 // status is also saved in database
@@ -152,6 +157,7 @@ class SortableTableHead extends React.Component {
             enableBulkChange &&
             <TableCell padding="checkbox">
               <Checkbox
+                id="qa_tbl_tc_headcheckbox"
                 indeterminate={numSelected > 0 && numSelected < rowCount}
                 checked={numSelected === rowCount}
                 onChange={onSelectAllClick}
@@ -161,6 +167,7 @@ class SortableTableHead extends React.Component {
           {columnHeadings.map(row => {
             return (
               <TableCell
+              id={"qa_tbl_tc_head"+row.id}
                 key={row.id}
                 align={row.numeric?'right':'left'}
                 sortDirection={orderBy === row.id ? order : false}
@@ -223,11 +230,17 @@ const toolbarStyles = theme => ({
   toolbar: {
     display: 'flex',
     flexWrap:'nowrap'
+  },
+  searchInput: {
+    width: 600,
   }
 });
 
 let TableToolbar = props => {
-  const { numSelected, classes, enableBulkChange, bulkChangeEnabler, deleteSelection } = props;
+  const { numSelected, classes, enableBulkChange, bulkChangeEnabler,
+    deleteSelection, handleSearchKeyChange, handleSearchInputChange, clearSearchInput,
+    handleSearchTableDialogOpen, searchInputString } = props;
+
 
   return (
     <Toolbar
@@ -238,7 +251,7 @@ let TableToolbar = props => {
       <div className={classes.title}>
         {
           enableBulkChange &&
-          <Typography color="inherit" variant="subtitle1">
+          <Typography id="qa_tbl_typ_bulkNumSelected" color="inherit" variant="subtitle1">
             {numSelected} selected
           </Typography>
         }
@@ -249,24 +262,67 @@ let TableToolbar = props => {
           <div className={classes.toolbar}>
             <Tooltip title="Delete">
               <IconButton
+                id="qa_tbl_ib_delete"
                 aria-label="Delete"
                 onClick={() =>  deleteSelection()}>
                 <DeleteIcon />
               </IconButton>
             </Tooltip>
             <Tooltip title="Exit Bulk Change">
-              <IconButton aria-label="Close Bulk Change" onClick={() => bulkChangeEnabler()}>
+              <IconButton id="qa_tbl_ib_bulk_exit" aria-label="Close Bulk Change" onClick={() => bulkChangeEnabler()}>
                 <CloseIcon />
               </IconButton>
             </Tooltip>
           </div>
         ) : (
           <div className={classes.toolbar}>
-          <IconButton aria-label="Bulk Change" onClick={() => bulkChangeEnabler()}>
-            <Tooltip title="Bulk Change">
-            <ListIcon color='secondary'/>
-            </Tooltip>
-          </IconButton>
+            <Input
+              className={classes.searchInput}
+              id="qa_tbl_inp_searchRequirements"
+              type = "text"
+              placeholder = "Search requirements"
+              value={searchInputString}
+              onChange={handleSearchInputChange}
+              startAdornment={
+                <Tooltip title="Search requirements">
+                  <InputAdornment position="start">
+                    <SearchIcon id="qa_tbl_ib_searchReq"
+                      color='secondary'
+                      cursor="pointer"
+                      onClick={handleSearchKeyChange}
+                    />
+                  </InputAdornment>
+                </Tooltip>
+              }
+              endAdornment={
+                  <InputAdornment position="end">
+
+                    {searchInputString.length === 0 ? null :
+                      <Tooltip title="Clear search options">
+                        <CloseIcon  id="qa_tbl_ib_clearSearch"
+                          color='secondary'
+                          cursor="pointer"
+                          onClick={() =>  clearSearchInput()}/>
+                      </Tooltip>
+                    }
+
+                    <Tooltip title="Show search options">
+                        <TuneIcon id="qa_tbl_ib_moreSearch"
+                          color='secondary'
+                          cursor="pointer"
+                          onClick={() =>  handleSearchTableDialogOpen()}/>
+                    </Tooltip>
+                  </InputAdornment>
+
+              }
+            />
+
+            <IconButton id="qa_tbl_ib_bulkChange" 
+              aria-label="Bulk Change" onClick={() => bulkChangeEnabler()}>
+              <Tooltip title="Bulk Change">
+              <ListIcon color='secondary'/>
+              </Tooltip>
+            </IconButton>
           </div>
         )}
       </div>
@@ -279,6 +335,11 @@ TableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
   enableBulkChange: PropTypes.bool.isRequired,
   bulkChangeEnabler: PropTypes.func.isRequired,
+  searchInputString: PropTypes.string.isRequired,
+  handleSearchKeyChange: PropTypes.func.isRequired,
+  handleSearchInputChange: PropTypes.func.isRequired,
+  clearSearchInput: PropTypes.func.isRequired,
+  handleSearchTableDialogOpen: PropTypes.func.isRequired,
 };
 
 TableToolbar = withStyles(toolbarStyles)(TableToolbar);
@@ -331,6 +392,12 @@ class SortableTable extends React.Component {
     bulkChangeMode: false,
     deleteUsingCheckBoxes: false,
     refactorDialogOpen: false
+    searchId: [],
+    searchSummary: [],      // array of string
+    searchStatus: [],      // array of string
+    searchHasWords: [],
+    searchInputString: '',
+    searchTableDialogOpen: false,
   };
 
   constructor(props){
@@ -346,32 +413,92 @@ class SortableTable extends React.Component {
     this.mounted = false;
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
     if (this.props.selectedProject !== prevProps.selectedProject) {
-      this.formatData()
+      this.formatData();
       this.setState(
         {
           selected: [],
-          bulkChangeMode: false
+          bulkChangeMode: false,
         });
     }
-    if(this.props.requirements !== prevProps.requirements) {
-      this.formatData()
+    if(this.props.requirements !== prevProps.requirements ){
+        this.formatData()
     }
   }
 
-  formatData() {
+  formatData = () => {
     if (!this.mounted) return;
-
     const { selectedProject, requirements } = this.props;
+    const { searchId, searchSummary, searchStatus, searchHasWords} = this.state;
     const filterOff = selectedProject == 'All Projects'
-    const data = requirements.filter(r => filterOff || r.doc.project == selectedProject)
-        .map(r => {
-          return createData(r.doc._id, r.doc._rev, r.doc.reqid, r.doc.fulltext, r.doc.project, r.doc.status, r.doc.semantics, r.doc.fulltext);
-        });
-      this.setState({
-        data,
-      })
+    const searchStatusLowerCase = searchStatus.map(status => status.toLowerCase());
+    const data = requirements.filter(r => {
+      const idFilter = searchId.length > 0 ? searchId.every(elt => {
+        if(r.doc.reqid.toLowerCase().includes(elt.toLowerCase())) return true;
+        return (r.doc.reqid? false:(elt=='NONE'))
+      }) : true;
+      const summaryFilter = searchSummary.length > 0 ? searchSummary.every(elt => r.doc.fulltext.toLowerCase().includes(elt.toLowerCase())): true;
+      const hasWordsFilter = searchHasWords.length > 0 ? searchHasWords.every(elt => r.doc.fulltext.toLowerCase().includes(elt.toLowerCase()) ||
+       r.doc.reqid.toLowerCase().includes(elt.toLowerCase()) || (r.doc.reqid? false:(elt=='NONE'))): true;
+      const statusFilter = searchStatusLowerCase.length ? r.doc.status ? searchStatusLowerCase.includes(r.doc.status.toLowerCase()) : searchStatusLowerCase.includes('none'): true;
+      return (filterOff || r.doc.project == selectedProject) && idFilter && summaryFilter && statusFilter && hasWordsFilter;
+    }).map(r => {
+      return createData(r.doc._id, r.doc._rev, r.doc.reqid, r.doc.fulltext, r.doc.project, r.doc.status, r.doc.semantics, r.doc.fulltext);
+    });
+    this.setState({
+      data,
+    });
+  }
+
+  setSearch = (idString, summaryString, statusChkBx, hasWordsString) => {
+    const searchId = idString.length ? idString.split(',').map(function(x){return x.trim()}) : [];
+    const searchSummary = summaryString.length ? summaryString.split(',').map(function(x){return x.trim()}) : [];
+    const searchHasWords = hasWordsString.length ? hasWordsString.split(',').map(function(x){return x.trim()}) : [];
+    const searchStatus = Object.keys(statusChkBx).filter(key => statusChkBx[key]);
+
+    // status string
+    let statusString = ' status:';
+    let excludeStatusString = ' -status:';
+    let numTrues = 0;
+    let numStatus = 0;
+    let numNotStatus = 0;
+
+    Object.keys(statusChkBx).forEach(statusType =>{
+      if (statusChkBx[statusType]===true){
+
+        statusString = (numStatus===0)?
+          statusString+statusType:statusString+','+statusType;
+        numTrues = numTrues + 1;
+        numStatus = numStatus +1;
+      }  else {
+        excludeStatusString=(numNotStatus===0)?
+          excludeStatusString+statusType:
+          excludeStatusString+','+statusType;
+        numNotStatus = numNotStatus + 1;
+      }
+    });
+
+    if (numTrues===Object.keys(statusChkBx).length){
+      statusString = ''
+    } else {
+      statusString=(statusString.length<excludeStatusString.length)?
+      statusString:excludeStatusString;
+    }
+    // status string
+
+    const searchInputString = (searchHasWords.length ? hasWordsString+' ' : '') +
+      (searchId.length ? 'id:'+ idString.trim()+' ' : '') +
+      (searchSummary.length ? 'summary:'+summaryString.trim()+' ' : '') +
+      statusString; //(searchStatus.length ? 'status:'+ (searchStatus.length > 1 ? searchStatus.join(','): searchStatus[0]) : '') ;
+    this.setState({
+      searchId,
+      searchSummary,
+      searchStatus,
+      searchHasWords,
+      searchInputString,
+    })
+
   }
 
   handleEnableBulkChange = () => {
@@ -482,6 +609,18 @@ class SortableTable extends React.Component {
     })
   }
 
+  handleSearchTableDialogClose = () => {
+    this.setState({
+      searchTableDialogOpen: false,
+    })
+  }
+
+  handleSearchTableDialogOpen = () => {
+    this.setState({
+      searchTableDialogOpen: true
+    })
+  }
+
   handleCreateDialogClose = (requirementUpdated, newReqId, actionLabel) => {
     this.setState({
       createDialogOpen: false,
@@ -566,24 +705,115 @@ class SortableTable extends React.Component {
     }
   };
 
+  clearSearchInput = () => {
+    this.setState({ searchSummary: [],
+                    searchHasWords: [],
+                    searchId: [],
+                    searchInputString: '',
+                    searchStatus: [],
+                  });
+  };
+
+  handleSearchInputChange = event => {
+    const {value} = event.target
+    this.setState({searchInputString: value}, this.handleSearchKeyChange)
+
+  }
+
+  // parsing seach string into search criteria
+  handleSearchKeyChange = () => {
+    const value = this.state.searchInputString
+    const keyWordsIndexes = [];
+    const indexOfId = value.toLowerCase().indexOf('id:');
+    const indexOfSummary = value.toLowerCase().indexOf('summary:');
+    let indexOfStatus = value.toLowerCase().indexOf('status:');
+    let mstatus = false;
+    if (value.toLowerCase().includes('-status:')){
+      indexOfStatus = indexOfStatus - 1;
+      mstatus = true;
+    }
+    let searchId = [];
+    let searchSummary = [];
+    let searchStatus = [];
+    keyWordsIndexes.push(indexOfId, indexOfSummary, indexOfStatus)
+    if(indexOfId > -1) {
+      let i = indexOfId + 3
+      let searchIdString = '';
+      while (i !== indexOfSummary && i !== indexOfStatus && i < value.length) {
+        searchIdString += value[i];
+        i++;
+      }
+      searchId = searchIdString.split(',').map(elt => elt.trim());
+    }
+    if(indexOfSummary > -1) {
+      let i = indexOfSummary + 8
+      let searchSummaryString = '';
+      while (i >= 0 && i !== indexOfId && i !== indexOfStatus && i < value.length) {
+        searchSummaryString += value[i];
+        i++;
+      }
+      searchSummary = searchSummaryString.split(',').map(elt => elt.trim());
+    }
+    if(indexOfStatus > -1) {
+      let i = mstatus ? indexOfStatus + 8 : indexOfStatus + 7;
+      let searchStatusString = '';
+      while (i >= 0 && i !== indexOfId && i !== indexOfSummary && i < value.length) {
+        searchStatusString += value[i];
+        i++;
+      }
+      if (mstatus) {
+        const excludeStatus = searchStatusString.split(',').map(elt => elt.trim().toLowerCase());
+        //let fullSearchArray = [{ None: true, 'In Progress': true, Paused: true, Completed: true, Attention: true, Deprecated: true},]
+        let searchArray = ['none','in progress','paused','completed','attention','deprecated'];
+        for (let j = 0; j < excludeStatus.length; j++) {
+          if (searchArray.includes(excludeStatus[j])){
+            searchArray = searchArray.filter(e => e !== excludeStatus[j]);
+
+          }
+          searchStatus = searchArray;
+        }
+      } else {
+        searchStatus = searchStatusString.split(',').map(elt => elt.trim());
+      }
+    }
+    let hasWordsString = ''
+    if(indexOfId >= 0 || indexOfSummary >= 0 || indexOfStatus >= 0) {
+      const minFrom = [];
+      indexOfId > -1 && minFrom.push(indexOfId);
+      indexOfSummary > -1 && minFrom.push(indexOfSummary);
+      indexOfStatus > -1 && minFrom.push(indexOfStatus);
+      hasWordsString = value.substring(0, Math.min(...minFrom))
+    } else {
+      hasWordsString = value;
+    }
+    const searchHasWords = hasWordsString.trim().length ? hasWordsString.split(',').map(elt => elt.trim()) : [];
+    this.setState({searchId, searchStatus, searchSummary, searchHasWords})
+  }
+
   render() {
     const { classes, selectedProject, existingProjectNames } = this.props;
     const { data, order, orderBy, selected, rowsPerPage, page, bulkChangeMode,
-       snackBarDisplayInfo, selectionBulkChange, selectedRequirement, deleteUsingCheckBoxes } = this.state;
+       snackBarDisplayInfo, selectionBulkChange, selectedRequirement,
+       deleteUsingCheckBoxes, searchHasWords, searchId, searchStatus, searchSummary,searchInputString } = this.state;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
     const title = 'Requirements: ' + selectedProject
     const selectionForDeletion = deleteUsingCheckBoxes ? selectionBulkChange : [selectedRequirement]
 
     return (
       <div>
-      <Typography variant='h6'>{title}
+      <Typography id="qa_tbl_title" variant='h6'>{title}
       </Typography>
       <Paper className={classes.root}>
         <TableToolbar
           numSelected={selected.length}
           enableBulkChange={bulkChangeMode}
           bulkChangeEnabler={this.handleEnableBulkChange}
-          deleteSelection={this.handleDeleteSelectedRequirements}/>
+          deleteSelection={this.handleDeleteSelectedRequirements}
+          searchInputString={searchInputString}
+          handleSearchKeyChange={this.formatData}
+          handleSearchInputChange={this.handleSearchInputChange}
+          clearSearchInput={this.clearSearchInput}
+          handleSearchTableDialogOpen={this.handleSearchTableDialogOpen}/>
         <div className={classes.tableWrapper}>
           <Table className={classes.table} aria-labelledby="tableTitle" size="small">
             <SortableTableHead
@@ -595,7 +825,7 @@ class SortableTable extends React.Component {
               rowCount={data.length}
               enableBulkChange={bulkChangeMode}
             />
-            <TableBody>{
+            <TableBody id={"qa_tbl_sortableTable_body"}>{
                 stableSort(data, getSorting(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map(n => {
@@ -617,48 +847,50 @@ class SortableTable extends React.Component {
                         selected={isSelected}
                       >
                         <TableCell padding="checkbox">
-                          <Checkbox checked={isSelected} />
+                          <Checkbox id={"qa_tbl_cb_table_body_bulk_"+label} checked={isSelected} />
                         </TableCell>
                         <TableCell >
                           <Select
+                            id={"qa_tbl_sel_bulk_status_"+label}
                             className={`${classes.select} ${colorStyle}`}
                             disableUnderline
                             value={status}
                             onChange={(event) => this.handleChange(event, n)}
                             onClick={event => event.stopPropagation()}
                           >
-                            <MenuItem value="None"/>
-                            <MenuItem value={'in progress'}>
+                            <MenuItem id={"qa_tbl_mi_bulk_status_None_"+label} value="None"/>
+                            <MenuItem id={"qa_tbl_mi_bulk_status_in_progress_"+label} value={'in progress'}>
                               <Tooltip title="In progress"><InProgressIcon/></Tooltip>
                             </MenuItem>
-                            <MenuItem value={'paused'}>
+                            <MenuItem id={"qa_tbl_mi_bulk_status_paused_"+label} value={'paused'}>
                               <Tooltip title="Paused"><PauseIcon/></Tooltip>
                             </MenuItem>
-                            <MenuItem value={'completed'}>
+                            <MenuItem id={"qa_tbl_mi_bulk_status_completed_"+label} value={'completed'}>
                               <Tooltip title="Completed"><CompletedIcon/></Tooltip>
                             </MenuItem>
-                            <MenuItem value={'attention'}>
+                            <MenuItem id={"qa_tbl_mi_bulk_status_attention_"+label} value={'attention'}>
                               <Tooltip title="Attention"><AttentionIcon/></Tooltip>
                             </MenuItem>
-                            <MenuItem value={'deprecated'}>
+                            <MenuItem id={"qa_tbl_mi_bulk_status_deprecated_"+label} value={'deprecated'}>
                               <Tooltip title="Deprecated"><CloseIcon/></Tooltip>
                             </MenuItem>
                           </Select>
                         </TableCell>
                         <TableCell>
-                        <Button color='secondary' onClick={this.handleRequirementDialogOpen(n)}>
+                        <Button id={"qa_tbl_btn_bulk_id_"+label}  color='secondary' onClick={this.handleRequirementDialogOpen(n)}>
                             {label}
                           </Button>
                         </TableCell>
                         <TableCell>
                           <Tooltip title="Add Child Requirement">
-                            <IconButton
+                            <IconButton id={"qa_tbl_ic_bulk_add_child_"+label}
                               aria-label="Add Child Requirement"
                               onClick={this.handleAddChildRequirement(n.reqid, n.project)}>
                               <AddIcon/>
                             </IconButton>
                           </Tooltip>
                         </TableCell>
+
                         <TableCell>
                           <Tooltip id="tooltip-icon-refactor" title="Refactor Requirement">
                             <IconButton onClick={this.handleRefactorRequirement(n)} size="small" color="default" aria-label="refactor" >
@@ -668,6 +900,10 @@ class SortableTable extends React.Component {
                         </ TableCell>
                         <TableCell>{n.summary}</TableCell>
                         <TableCell>{projectLabel}</TableCell>
+
+                        <TableCell id={"qa_tbl_tc_bulk_summary_"+label} >{n.summary}</TableCell>
+                        <TableCell id={"qa_tbl_tc_bulk_project_"+label} >{projectLabel}</TableCell>
+
                       </TableRow>
                     );
                   } else {
@@ -675,43 +911,45 @@ class SortableTable extends React.Component {
                       <TableRow key={n.rowid}>
                         <TableCell >
                           <Select
+                            id={"qa_tbl_sel_not_bulk_status_"+label}
                             className={`${classes.select} ${colorStyle}`}
                             disableUnderline
                             value={status}
                             onChange={(event) => this.handleChange(event, n)}
                           >
-                            <MenuItem value="None"/>
-                            <MenuItem value={'in progress'}>
+                            <MenuItem id={"qa_tbl_mi_not_bulk_status_None_"+label} value="None"/>
+                            <MenuItem id={"qa_tbl_mi_not_bulk_status_in_progress_"+label} value={'in progress'}>
                               <Tooltip title="In progress"><InProgressIcon/></Tooltip>
                             </MenuItem>
-                            <MenuItem value={'paused'}>
+                            <MenuItem id={"qa_tbl_mi_not_bulk_status_paused_"+label} value={'paused'}>
                               <Tooltip title="Paused"><PauseIcon/></Tooltip>
                             </MenuItem>
-                            <MenuItem value={'completed'}>
+                            <MenuItem id={"qa_tbl_mi_not_bulk_status_completed_"+label} value={'completed'}>
                               <Tooltip title="Completed"><CompletedIcon/></Tooltip>
                             </MenuItem>
-                            <MenuItem value={'attention'}>
+                            <MenuItem id={"qa_tbl_mi_not_bulk_status_attention_"+label} value={'attention'}>
                               <Tooltip title="Attention"><AttentionIcon/></Tooltip>
                             </MenuItem>
-                            <MenuItem value={'deprecated'}>
+                            <MenuItem id={"qa_tbl_mi_not_bulk_status_deprecated_"+label} value={'deprecated'}>
                               <Tooltip title="Deprecated"><CloseIcon/></Tooltip>
                             </MenuItem>
                           </Select>
                         </TableCell>
                         <TableCell>
-                        <Button color='secondary' onClick={this.handleRequirementDialogOpen(n)}>
+                        <Button id={"qa_tbl_btn_not_bulk_id_"+label} color='secondary' onClick={this.handleRequirementDialogOpen(n)}>
                               {label}
                             </Button>
                           </TableCell>
                           <TableCell>
                             <Tooltip title="Add Child Requirement">
-                              <IconButton
+                            <IconButton id={"qa_tbl_ib_not_bulk_add_child_"+label}
                                 aria-label="Add Child Requirement"
                                 onClick={this.handleAddChildRequirement(n.reqid, n.project)}>
                                 <AddIcon />
                               </IconButton>
                             </Tooltip>
                           </TableCell>
+<<<<<<< HEAD
                           <TableCell>
                             <Tooltip id="tooltip-icon-refactor" title="Refactor Requirement">
                               <IconButton onClick={this.handleRefactorRequirement(n)} size="small" color="default" aria-label="refactor" >
@@ -721,6 +959,10 @@ class SortableTable extends React.Component {
                           </TableCell>
                         <TableCell>{n.summary}</TableCell>
                         <TableCell>{projectLabel}</TableCell>
+=======
+                        <TableCell id={"qa_tbl_tc_not_bulk_summary_"+label} >{n.summary}</TableCell>
+                        <TableCell id={"qa_tbl_tc_not_bulk_project_"+label} >{projectLabel}</TableCell>
+>>>>>>> upstream/master
                       </TableRow>
                     )
                   }
@@ -734,6 +976,7 @@ class SortableTable extends React.Component {
           </Table>
         </div>
         <TablePagination
+          id="sortable_pagination"
           component="div"
           count={data.length}
           rowsPerPage={rowsPerPage}
@@ -748,6 +991,7 @@ class SortableTable extends React.Component {
           onRowsPerPageChange={this.handleChangeRowsPerPage}
         />
       </Paper>
+<<<<<<< HEAD
         <DisplayRequirementDialog
           selectedRequirement={this.state.selectedRequirement}
           open={this.state.displayRequirementOpen}
@@ -776,6 +1020,39 @@ class SortableTable extends React.Component {
           requirementsToBeDeleted={selectionForDeletion}
           handleDialogClose={this.handleDeleteDialogClose}
         />
+=======
+      <DisplayRequirementDialog
+        selectedRequirement={this.state.selectedRequirement}
+        open={this.state.displayRequirementOpen}
+        handleDialogClose={this.handleRequirementDialogClose}
+        handleCreateDialogOpen={this.handleCreateDialogOpen}
+        handleDeleteDialogClose={this.handleDeleteDialogClose}
+        handleDeleteDialogOpen={this.handleDeleteDialogOpen}/>
+      <CreateRequirementDialog
+        open={this.state.createDialogOpen}
+        handleCreateDialogClose={this.handleCreateDialogClose}
+        selectedProject={this.state.selectedProject}
+        editRequirement={this.state.selectedRequirement}
+        addChildRequirementToParent={this.state.addChildRequirementMode}
+        existingProjectNames={this.props.existingProjectNames}
+        requirements = {this.props.requirements} />
+      <DeleteRequirementDialog
+        open={this.state.deleteDialogOpen}
+        requirementsToBeDeleted={selectionForDeletion}
+        handleDialogClose={this.handleDeleteDialogClose}
+      />
+      <SearchSortableTableDialog
+        open={this.state.searchTableDialogOpen}
+        handleSearchTableDialogOpen={this.handleSearchTableDialogOpen}
+        handleSearchTableDialogClose={this.handleSearchTableDialogClose}
+        handleSearchAction={this.setSearch}
+        filterData={this.formatData}
+        searchId={searchId}
+        searchStatus={searchStatus}
+        searchSummary={searchSummary}
+        searchHasWords={searchHasWords}
+      />
+>>>>>>> upstream/master
       <Snackbar
         anchorOrigin={{
           vertical: 'bottom',

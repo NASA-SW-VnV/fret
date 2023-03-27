@@ -37,8 +37,22 @@ const AnnotatingErrorListener = require('./AnnotatingErrorListener');
 const SemanticsAnalyzer = require('./SemanticsAnalyzer').SemanticsAnalyzer;
 const semanticsAnalyzer = new SemanticsAnalyzer();
 
-
 const REQ_BODY_CTX_RULE = 'reqt_body'
+
+// Remove white space at beginning and end, and lop off any final dot.
+function trimReqtText(text) {
+  let trimmedText = text.trim();
+  if (trimmedText.endsWith(".")) trimmedText = trimmedText.slice(0,-1).trim();
+  return trimmedText;
+}
+
+// Tests that text is just a string starting and ending with double-quotes
+// without unquoted double quotes inside.
+function do_not_formalize(text) {
+  const do_not = (text.length >= 2) && (text.startsWith('"') && text.endsWith('"') &&
+		  (2 == (text.match(/"/g).length - (text.match(/\\"/g) ? (text.match(/\\"/g).length) : 0))))
+  return do_not;
+}
 
 /**
  * Compiles text returns an object with parse or semantics.
@@ -47,7 +61,14 @@ const REQ_BODY_CTX_RULE = 'reqt_body'
  * { collectedSemantics: {...} } is returned.
  */
 exports.compile = (text) => {
-  var chars = new antlr4.InputStream(text.trim());
+  let trimmedText = trimReqtText(text)
+  if (do_not_formalize(trimmedText)) {
+    // Handle reqt that is within string quotes, meaning don't formalize it
+    semanticsAnalyzer.clearResult();
+    semanticsAnalyzer.enterFreeform();
+    return ({ collectedSemantics: semanticsAnalyzer.semantics()})
+  } else {
+  var chars = new antlr4.InputStream(trimmedText);
   var lexer = new RequirementLexer.RequirementLexer(chars);
   var tokens  = new antlr4.CommonTokenStream(lexer);
   var parser = new RequirementParser.RequirementParser(tokens);
@@ -68,10 +89,12 @@ exports.compile = (text) => {
       collectedSemantics: semanticsAnalyzer.semantics()
     })
   }
+  }
 }
 
 exports.compilePartialText = (text) => {
-  var chars = new antlr4.InputStream(text.trim());
+  let trimmedText = trimReqtText(text)
+  var chars = new antlr4.InputStream(trimmedText);
   var lexer = new RequirementLexer.RequirementLexer(chars);
   var tokens  = new antlr4.CommonTokenStream(lexer);
   var parser = new RequirementParser.RequirementParser(tokens);
@@ -82,10 +105,21 @@ exports.compilePartialText = (text) => {
   var tree = parser[REQ_BODY_CTX_RULE]();
   antlr4.tree.ParseTreeWalker.DEFAULT.walk(semanticsAnalyzer, tree);
 
-  return ({
-    parseErrors: annotations.map(a => { return a.text }).join('; '),
-    collectedSemantics: semanticsAnalyzer.semanticsNoFormalization()
-  })
+  let r = {}
+  if (do_not_formalize(trimmedText)) {
+    semanticsAnalyzer.clearResult();
+    semanticsAnalyzer.enterFreeform();
+    r = { parseErrors: "FRET assumes this is free form, so will not try to formalize this.",
+	  collectedSemantics: semanticsAnalyzer.semanticsNoFormalization()
+	};
+  }
+  else {
+    r = { parseErrors: annotations.map(a => { return a.text }).join('; '),
+	  collectedSemantics: semanticsAnalyzer.semanticsNoFormalization()
+	};
+  }
+  //console.log('compilePartialText: ' + JSON.stringify(text.trim()) + "\n" + JSON.stringify(r))
+  return r;
 }
 
 /**
@@ -95,7 +129,8 @@ exports.compilePartialText = (text) => {
  * i.e., { parseTree: {...} }.
  */
 exports.parseByCtxRule = (text, ctxRule) => {
-  var chars = new antlr4.InputStream(text.trim());
+  let trimmedText = trimReqtText(text)
+  var chars = new antlr4.InputStream(trimmedText);
   var lexer = new RequirementLexer.RequirementLexer(chars);
   var tokens  = new antlr4.CommonTokenStream(lexer);
   var parser = new RequirementParser.RequirementParser(tokens);
@@ -124,6 +159,12 @@ exports.parse = (text) => {
 // tests
 
 /*
+console.log(JSON.stringify(this.compile('only after p shall the sw , after 2 ticks, satisfy q')))
+
+console.log(JSON.stringify(this.compile('except while flight_mode = landed the sw shall always satisfy alt > 0')))
+
+console.log(JSON.stringify(this.compile('While flight_mode=3 the sw shall always satisfy x>0')))
+
 console.log(JSON.stringify(this.compile('When p the sw shall, at the next timepoint, satisfy post')))
 
 console.log(JSON.stringify(this.compile('The sw shall, until stop, satisfy post')))

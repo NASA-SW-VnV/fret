@@ -50,22 +50,23 @@ const isAtom =   utils.isAtom;
 const isString = utils.isString;
 const isBoolean = utils.isBoolean;
 
-const infix = { And : '&', Or : '|', Implies : '->', Equiv : '<->', Since : 'S', Triggers : 'T', 
+const infix = { ExclusiveOr : 'xor', And : '&', Or : '|', Implies : '->', Equiv : '<->', Since : 'S', Triggers : 'T', 
 		Until : 'U', Releases : 'V', SinceInclusive : 'SI', UntilInclusive : 'UI',
 	        SinceTimed : 'S', UntilTimed : 'U',
-		Plus : '+', Minus : '-', Divide : '/', Mult : '*', Mod : '%', Expt : '^',
+		Plus : '+', Minus : '-', Divide : '/', Mult : '*', Mod : 'mod', Expt : '^',
 		LessThan : '<', LessThanOrEqual : '<=',  NotEqual: '!=', Equal : '=',
 		GreaterThan : '>', GreaterThanOrEqual : '>='
 	      };
 
 const prefix = { Not : '!', Historically : 'H', Once : 'O', Negate : '-',
 		 OnceTimed : 'O', HistoricallyTimed : 'H', EventuallyTimed : 'F',
-		 Globally : 'G', Eventually : 'F', Next : 'X', Previous : 'Y',
+		 Globally : 'G', Eventually : 'F', Next : 'X', PrevFalse : 'Y',
+		 PrevTrue : 'Z',
 		 GloballyTimed : 'G',
 	         LookingBackwardsTimed : '<|', LookingForwardsTimed : '|>', Negate : '-'};
 
 function LTLtoAST (LTL) {
-  var chars = new antlr4.InputStream(LTL.replace(/\=\>/g,'->'));
+  var chars = new antlr4.InputStream(LTL.replace(/=>/g,'->'));
   var lexer = new LTLLexer.LTLLexer(chars);
   var tokens  = new antlr4.CommonTokenStream(lexer);
   var parser = new LTLParser.LTLParser(tokens);
@@ -84,7 +85,7 @@ function boundToString (range) {
     return '[' + r + ']';
 }
 
-//Change "($duration$ + 1)" to $duration$+1
+//Change "($duration$ + 1)" to $duration$+1 by removing parens and spaces
 function succinctRange(arithExpr) {
     return arithExpr.replace(/\(|\)|\s/g,'')
 }
@@ -126,44 +127,3 @@ function ASTtoLTL(ast) {
     return result;
 }
     
-/*
-const tests = [//'F[<$duration$] 0', // SMV accepts this but won't parse
-	       'F[<$duration$] 0 < 4',
-               'H (p & q) & r | ! s',
-	       'H[<=$duration$] p & FTP -> FALSE',
-	       'F[<$duration$+1] q',
-	       'H[0,5] FTP & p -> TRUE',
-	       'Y Y p S p & FTP',
-	       'p S [<$duration$] q',
-	       '(G F G [>$duration$+1] F [0,3] X p) U (r U[0,2] (s V t))',
-	       'a -> b -> c <-> d',
-	       'p(x,y) & q',
-	       'absError(z,zt) < 3.2',
-	       '-3^x < 3',
-	       '-(3^x) < 3',
-    'a + b() + c(34) < 3.0e2',
-    '0.0 > -3.0e2',
-    'p(3,TRUE)',
-    'p(x,f(x))',
-    'p(3, x > y & y > 0)',
-
-    'H[<=3+1] p',
-    'H[<3*2] p',
-    'H[<=3-1] p',   //doesn't parse, need blanks around minus sign
-    'H[<=3 - 1] p',
-    'H[<=3 + -1] p',
-    'H[<=3+-1] p',
-    '(3 - 4) < (2+3)'
-	      ];
-
-function runTestCase(LTLstr) {
-    console.log(LTLstr);
-    let ast = LTLtoAST(LTLstr);
-    console.log(JSON.stringify(ast));
-    console.log(ASTtoLTL(ast));
-    console.log();
-}
-
-tests.forEach(runTestCase);
-*/
-

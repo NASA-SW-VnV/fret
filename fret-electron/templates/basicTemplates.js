@@ -33,6 +33,7 @@
 const fretTemplatesPath = "./"
 const ed = require(fretTemplatesPath + 'templateEditor')
 var fs = require('fs');
+const sm = require(fretTemplatesPath + 'state_machine')
 
 var all_templates = []
 
@@ -191,6 +192,7 @@ all_templates.push(template_format)
 
 //============ ADD TEMPLATES HERE ============
 
+all_templates = all_templates.concat(sm.make_state_machine_templates())
 
 //============ Creating JSON template file ============
 // finally create json file with semantics

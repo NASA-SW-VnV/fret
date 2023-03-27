@@ -30,43 +30,105 @@
 // ANY SUCH MATTER SHALL BE THE IMMEDIATE, UNILATERAL TERMINATION OF THIS
 // AGREEMENT.
 // *****************************************************************************
+const fs = require('fs');
 const exec = require('child_process').exec;
 const execSync = require('child_process').execSync;
-export function checkRealizability(filePath, options, callback) {
-  var jkindCommand = 'jrealizability '+ options + ' ' + filePath;
-  var output
-  // try {
-  //   output = exec(jkindCommand).toString();
-  // } catch (error) {    
-  //       console.log(error.status)
-  //   console.log(error.message)
-  //   console.log(error.stderr.toString())
-  //   console.log(error.stdout.toString())
-  // }
-  // console.log(output);
-  // return output;
-  exec(jkindCommand, function (err, stdout, stderr) {
+export function checkRealizability(filePath, engine, options, callback) {
+  let command;
+  if (engine === 'jkind'){
+    command = 'jrealizability '+ options + ' ' + filePath;   
+  } else if (engine === 'kind2'){
+    command = 'kind2 ' + options + ' ' + filePath;
+  }
+
+  exec(command, function (err, stdout, stderr) {
     if (err) {
+      if (engine === 'kind2') {
+        var kind2Output = JSON.parse(stdout);
+        var logResults = kind2Output.filter(e => ((e.objectType === "log") && (e.level === "error")))[0];
+        err.message = err.message + '\n' + logResults.value.toString();
+      }
       callback(err);
       console.log(err.status)
       console.log(err.message)
       console.log(stderr.toString())
       console.log(stdout.toString())
     } else {
-      callback(null, stdout);
+      let result, time, traceInfo;
+      if (engine === 'jkind') {
+        result = stdout.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];
+        time = stdout.match(new RegExp('(Time = )(.*?)\\n'))[2];        
+        
+        if (options.includes('json') && result === "REALIZABLE"){
+          var fileContent = fs.readFileSync(filePath+'.json', 'utf8');
+          let output = JSON.parse(fileContent);
+          traceInfo = {K: Object.keys(output.Counterexample[0]).length - 2, Trace: output.Counterexample};
+        } else {          
+          traceInfo = null;
+        }  
+        callback(null, result, time + '\n'+ stderr.toString(), traceInfo);
+      } else {
+        var kind2Output = JSON.parse(stdout);
+        var realizabilityResults = kind2Output.filter(e => e.objectType === "realizabilityCheck")[0];
+        var consistencyResults = kind2Output.filter(e => e.objectType === "satisfiabilityCheck")[0];        
+        var logResults = kind2Output.filter(e => e.objectType === "log")[1];
+        result = (logResults && logResults.value === "Wallclock timeout.") ? "UNKNOWN" : ((consistencyResults && consistencyResults.result === "unsatisfiable") ? "UNREALIZABLE" : realizabilityResults.result.toUpperCase());
+        if (consistencyResults) {
+          time = (realizabilityResults.runtime['value'] + consistencyResults.runtime['value']).toString() + realizabilityResults.runtime['unit'];
+        } else if (realizabilityResults) {
+          time = (realizabilityResults.runtime['value'] + (consistencyResults ? consistencyResults.runtime['value'] : 0)).toString() + realizabilityResults.runtime['unit'];
+        } else {
+          time = "Wallclock timeout."
+        }
+
+        traceInfo = (realizabilityResults && realizabilityResults.deadlockingTrace) ? realizabilityResults.deadlockingTrace : null;
+        callback(null, result, time, traceInfo);
+      }
+      
     }
   })
 
 }
 
-export function checkReal(filePath, options) {
-  var jkindCommand = 'jrealizability '+ options + ' ' + filePath;
-  var output
+export function checkReal(filePath, engine, options) {
+  let command;
+  if (engine === 'jkind'){
+    command = 'jrealizability ' + options + ' ' + filePath;
+  } else {
+    command = 'kind2 ' + options + ' ' + filePath;
+  }
+  var result, output;
   try {
-    output = execSync(jkindCommand).toString();
-    return output;
-  } catch (error) {    
-    return error.stdout.toString();
+    result = execSync(command).toString();
+    // console.log(filePath);
+    // console.log(result);
+    if (engine === 'jkind') {
+      result = result.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];
+      if (options.includes('json')){
+        var fileContent = fs.readFileSync(filePath+'.json', 'utf8');
+        output = JSON.parse(fileContent);
+      } else {
+        output = "";
+      }
+    } else {
+      output = JSON.parse(result);
+      var realizabilityResults = output.filter(e => e.objectType === "realizabilityCheck")[0];      
+      var consistencyResults = output.filter(e => e.objectType === "satisfiabilityCheck")[0];
+      var logResults = output.filter(e => e.objectType === "log")[1];
+      result = (logResults && logResults.value === "Wallclock timeout.") ? "UNKNOWN" : ((consistencyResults && consistencyResults.result === "unsatisfiable") ? "UNREALIZABLE" : realizabilityResults.result.toUpperCase());
+    }
+    return {result, output};
+  } catch (error) {
+    // console.log(filePath)
+    // console.log(result)
+    // console.log(error)
+    // console.log("output",error)
+    // console.log("sdterr",error.stderr.toString())
+    // console.log("signal", error.signal)
+    // console.log("stdout", error.stdout.toString())
+    // console.log("status", error.status)
+    // console.log("pid", error.pid)
+    throw error;
   }
   
 }

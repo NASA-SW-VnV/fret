@@ -37,6 +37,7 @@ import PropTypes from 'prop-types';
 import TimeSeriesChart from './TimeSeriesChart';
 import TimeLine from './TimeLine';
 import TraceDialog from './TraceDialog';
+import TimeSeriesChartSettings from './TimeSeriesChartSettings';
 
 const LTLSimController = require('ltlsim-core').LTLSimController;
 
@@ -45,7 +46,8 @@ class TimeSeriesWidget extends Component {
         super(props);
 
         this.state = {
-            traceDialogOpen: false
+            traceDialogOpen: false,
+	    TimeSeriesChartSettingsOpen: true
         }
 
         this.atomic2chart = this.atomic2chart.bind(this);
@@ -53,39 +55,102 @@ class TimeSeriesWidget extends Component {
         this.handleTraceDialogApply = this.handleTraceDialogApply.bind(this);
         this.handleTraceDialogCancel = this.handleTraceDialogCancel.bind(this);
         this.handleTraceDialogOpen= this.handleTraceDialogOpen.bind(this);
+
+        this.handleTimeSeriesChartSettingsOpen = this.handleTimeSeriesChartSettingsOpen.bind(this);
+        this.handleTimeSeriesChartSettingsCancel = this.handleTimeSeriesChartSettingsCancel.bind(this);
+        this.handleTimeSeriesChartSettingsSave = this.handleTimeSeriesChartSettingsSave.bind(this);
     }
 
-    atomic2chart(key, atomic, fkey) {
+//-------------------------------------------------------------------
+// callbacks for the settings
+//-------------------------------------------------------------------
+	//
+	// open the settings widget
+	//
+handleTimeSeriesChartSettingsOpen() {
+        this.setState({TimeSeriesChartSettingsOpen: true});
+    }
+
+	//
+	// cancel the settings widget
+	//
+handleTimeSeriesChartSettingsCancel() {
+        this.setState({TimeSeriesChartSettingsOpen: false});
+    }
+
+	//
+	// close the settings widget and save values
+	//
+handleTimeSeriesChartSettingsSave(settingsState) {
+        const {minValue, maxValue, deltaValue} = settingsState;
+/*
+        this.setState({
+		TimeSeriesChartSettingsOpen: false,
+		minValue: minValue,
+		maxValue: maxValue,
+		deltaValue: DeltaValue
+		});
+*/
+        this.setState({TimeSeriesChartSettingsOpen: false});
+    }
+
+
+//---------------------------------------------------------------------
+    atomic2chart(key, atomic, fkey, chart_type, canChange, chart_minval, chart_maxval) {
         return ( (atomic === undefined) ? null :
+            <Typography key={'Typo-chart-atomic-' + key + ((fkey) ? '-'+fkey : '')} component="div" >
                     <TimeSeriesChart
+			chart_type={chart_type}
+			chart_minval={chart_minval}
+			chart_maxval={chart_maxval}
                         key={'chart-atomic-' + key + ((fkey) ? '-'+fkey : '')}
+                        id = {"qa_timeSeries_atomic_"+key}
                         data={atomic.trace}
                         name={key}
                         dataKey={key}
                         syncId={this.props.syncId}
-                        canChange={true}
+                        canChange={canChange}
                         onChange={this.props.onChange}
-                        onClick={this.props.onAtomicsChartClick}
+                        onClick={this.handleTimeSeriesChartsettingsOpen}
                     />
+            </Typography>
         );
+/*JSC-0328
+  		   <TimeSeriesChartSettings
+                                    // classes={this}
+                                    open={this.state.TimeSeriesChartSettingsOpen}
+                                    onCancel={this.handleTimeSeriesChartSettingsCancel}
+                                    onSave={this.handleTimeSeriesChartSettingsSave}
+    				    chartType = {chart_type}
+    				    minValue = {2}
+    				    maxValue = {11}
+    				    deltaValue = {1}
+				    varName={key}
+                        	    key={'settings-' + key + ((fkey) ? '-'+fkey : '')}
+                        	    dataKey={key}
+                  />
+*/
     }
 
     formula2chart(key, formula) {
         return ( (formula === undefined) ? null :
                     <TimeSeriesChart
+			chart_type="category"
                         key={'chart-formula-'+key}
+                        id = {"qa_timeSeries_formula_"+key}
                         data={formula.trace}
-                        name={formula.label ? formula.label : key}
+                        name={key}
                         dataKey={key}
                         syncId={this.props.syncId}
+s                       expression={formula.tex}
                         canChange={false}
                         highlight={this.props.displayFormulaEvaluation}
                         onClick={this.props.onFormulaChartClick}
                         chartState={formula.value}
-                        expression={formula.tex}
                         selected={key === this.props.selectedFormula}
                     />
         );
+//JSC0420 TODO: active when LTLSimController format is changes                       expression={formula.tex}
     }
 
     handleTraceDialogOpen() {
@@ -107,10 +172,15 @@ class TimeSeriesWidget extends Component {
                 visibleFormulas,
                 visibleSubformulas,
                 displaySubformulas } = this.props;
-
         const atomicsCharts = this.props.displayAtomicsWithFormulas ? null :
         visibleAtomics.map((akey) => (
-            this.atomic2chart(akey, LTLSimController.getAtomic(model, akey))
+            this.atomic2chart(akey, LTLSimController.getAtomic(model, akey),
+		null,
+            	LTLSimController.getAtomic_type(model, akey),
+            	LTLSimController.getAtomic_canChange(model, akey),
+            	LTLSimController.getAtomic_minval(model, akey),
+            	LTLSimController.getAtomic_maxval(model, akey)
+		)
         ));
 
         const formulasCharts = visibleFormulas
@@ -119,7 +189,14 @@ class TimeSeriesWidget extends Component {
                     .concat( this.props.displayAtomicsWithFormulas ?
                         LTLSimController.getFormula(model, fkey).atomics
                             .map((akey) => (
-                                this.atomic2chart(akey, LTLSimController.getAtomic(model, akey), fkey)
+                                this.atomic2chart(akey,
+				   LTLSimController.getAtomic(model, akey),
+				   fkey,
+            			   LTLSimController.getAtomic_type(model, akey),
+            			   LTLSimController.getAtomic_canChange(model, akey),
+            			   LTLSimController.getAtomic_minval(model, akey),
+            			   LTLSimController.getAtomic_maxval(model, akey)
+				   )
                             )) : []
                     )
                     .concat( this.props.displaySubformulas ?

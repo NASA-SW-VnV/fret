@@ -44,12 +44,66 @@
  */
 import { app, BrowserWindow } from 'electron';
 import MenuBuilder from './menu';
+const {ipcMain} = require('electron');
+const path = require('path');
+const fs = require("fs");
 
 var NodePouchDB = require('pouchdb');
 NodePouchDB.plugin(require('pouchdb-find'));
 var userDocumentsFolder = app.getPath('documents');
-var leveldbDB = new NodePouchDB(userDocumentsFolder + '/fret-db');
-var modelDB = new NodePouchDB(userDocumentsFolder + '/model-db');
+
+var leveldbDBname = userDocumentsFolder + '/fret-db';
+var modelDBname = userDocumentsFolder + '/model-db';
+if (process.env.FRET_TESTING) {
+  leveldbDBname = userDocumentsFolder + '/fret_sqa/fret-db';
+  modelDBname = userDocumentsFolder + '/fret_sqa/model-db';
+} else if (process.env.EXTERNAL_TOOL=='1'){
+  leveldbDBname = userDocumentsFolder + '/fret-ext-db';
+  modelDBname = userDocumentsFolder + '/model-ext-db';
+}
+var leveldbDB = new NodePouchDB(leveldbDBname);
+var modelDB = new NodePouchDB(modelDBname);
+
+var ext_imp_json_file = '';
+var ext_exp_json_file = '';
+var ext_exp_json_file_exists =  false;
+if(process.env.EXTERNAL_TOOL=='1'){
+
+  ext_imp_json_file = process.env.EXTERNAL_IMP_JSON+'.json';
+  const curDir = process.cwd();
+
+  if (typeof process.env.EXTERNAL_EXP_JSON === "undefined"){
+    ext_exp_json_file = path.join(userDocumentsFolder,'requirement.json');
+  } else {
+    ext_exp_json_file = process.env.EXTERNAL_EXP_JSON+'.json';
+  }
+
+  //console.log('ext_exp_json_file: ', ext_exp_json_file)
+
+  if (fs.existsSync(ext_exp_json_file)) {
+    // path exists, use same file name
+    ext_exp_json_file_exists =  true;
+    //console.log('ext_exp_json_file_exists: ', ext_exp_json_file_exists)
+  } else {
+    var dirName = path.dirname(ext_exp_json_file)
+    if (fs.existsSync(dirName)) {
+      // if directory exists then use env assignment
+      //console.log("ext_exp_json_file DOES NOT exist, using defined name: ", ext_exp_json_file);
+    } else {
+      // directory doesn't exist, use default name
+      ext_exp_json_file = path.join(userDocumentsFolder, 'requirement.json')
+      //console.log("ext_exp_json_file DOES NOT exist, using default name: ", ext_exp_json_file);
+    }
+  }
+
+  // check again since ext_exp_json_file may be redefined
+  if (fs.existsSync(ext_exp_json_file)) {
+    // path exists, use same file name
+    ext_exp_json_file_exists =  true;
+    //console.log('ext_exp_json_file_exists: ', ext_exp_json_file_exists)
+  }
+
+}
 
 leveldbDB.info().then(function (info) {
   console.log('We can use PouchDB with LevelDB!');
@@ -89,7 +143,7 @@ leveldbDB.put(baseProps).catch((err) => {
 })
 
 const FRET_PROJECTS_DBKEY = 'FRET_PROJECTS'
-// For backward compatiability, ensure that an object
+// For backward compatibility, ensure that an object
 // that stores all project names is in place.
 leveldbDB.get(FRET_PROJECTS_DBKEY).catch((err) => {
   if (err.status == 404) {
@@ -116,6 +170,9 @@ leveldbDB.get(FRET_PROJECTS_DBKEY).catch((err) => {
 
 const FRET_REALTIME_CONFIG = 'REAL_TIME_CONFIG';
 global.sharedObj = {
+  ext_imp_json: ext_imp_json_file,
+  ext_exp_json: ext_exp_json_file,
+  exp_exp_json_exists: ext_exp_json_file_exists,
   db: leveldbDB,
   modeldb: modelDB,
   system_dbkeys: [ FRET_PROJECTS_DBKEY, FRET_PROPS_DBKEY, FRET_REALTIME_CONFIG ]
@@ -130,7 +187,6 @@ if (process.env.NODE_ENV === 'production') {
 
 if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
   require('electron-debug')();
-  const path = require('path');
   const p = path.join(__dirname, '..', 'app', 'node_modules');
   require('module').globalPaths.push(p);
 }
@@ -144,7 +200,7 @@ const installExtensions = async () => {
   ];
 
   return Promise
-    .all(extensions.map(name => installer.default(installer[name], forceDownload)))
+    .all(extensions.map(name => installer.default(installer[name], {loadExtensionOptions: {allowFileAccess: true}, forceDownload: forceDownload})))
     .catch(console.log);
 };
 
@@ -168,12 +224,39 @@ app.on('ready', async () => {
   }
 
   mainWindow = new BrowserWindow({
-    show: true,
+    webPreferences: {
+      nodeIntegration: true,
+      enableRemoteModule: true
+    },
+    show: false,
     width: 1200,
     height: 1050
   });
 
   mainWindow.loadURL(`file://${__dirname}/app.html`);
+
+/*
+  if(process.env.EXTERNAL_TOOL=='1'){
+    var splash = new BrowserWindow({
+      width: 800,
+      height: 600,
+      transparent: true,
+      frame: false,
+      alwaysOnTop: true
+    });
+
+    splash.loadFile('FRETsplash.html');
+    splash.center();
+    setTimeout(function () {
+      splash.close();
+      mainWindow.center();
+    }, 2000);
+} */
+
+  ipcMain.on('closeFRET', (evt, arg) => {
+    //console.log('main received closeFRET')
+    app.quit();
+  })
 
   // @TODO: Use 'ready-to-show' event
   //        https://github.com/electron/electron/blob/master/docs/api/browser-window.md#using-ready-to-show-event

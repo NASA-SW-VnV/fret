@@ -30,7 +30,8 @@
 // ANY SUCH MATTER SHALL BE THE IMMEDIATE, UNILATERAL TERMINATION OF THIS
 // AGREEMENT.
 // *****************************************************************************
-import React, { Component } from 'react';
+const utils = require('../../support/utils');
+import React, { Component, FunctionComponent } from 'react';
 import PropTypes from 'prop-types';
 import {  withStyles, withTheme } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -46,6 +47,7 @@ import { ResponsiveContainer,
          YAxis,
          ReferenceDot,
          ReferenceLine,
+	 LabelList,
          Tooltip,
          Label } from 'recharts';
 
@@ -69,11 +71,14 @@ const styles = theme => ({
     nametipAnchor: {
         position: 'absolute',
         top: '50%',
-        left: 30,
+//JSC/CAV        left: 30,
+        left: 100,
         width: 60,
-        height: 30,
+//JSC/CAV        height: 30,
+        height: 130,
         marginTop: -15,
-        marginLeft: -30,
+//JSC/CAV        marginLeft: -30,
+        marginLeft: -80,
     },
     nametip:{
         overflowX: 'hidden'
@@ -103,7 +108,8 @@ const styles = theme => ({
     }
 })
 
-const maxNameLength = 5;
+//JSC/CAV const maxNameLength = 5;
+const maxNameLength = 7;
 
 function EmptyTooltip(props) {
     return null;
@@ -191,19 +197,49 @@ class TimeSeriesChart extends Component {
 
     handleMouseUp(event) {
         if (event) {
-            const { dataKey } = this.props;
+            const { dataKey, chart_type, chart_minval, chart_maxval } = this.props;
             const dataIndex = event.activeTooltipIndex;
             let data  = this.state.data.slice();
+	    var NV = 0;
+		    if (chart_type == "category"){
+	                    NV = (data[dataIndex]) ? 0 : 1;
+			    }
+		    else {
+                    	NV = data[dataIndex] + 1.0
+		    	if (NV > chart_maxval){
+			 	NV = chart_minval
+				}
+			}
+
+/*JSC-0420-01
             this.setState((prevState) => {
                 if (!this.state.dragWasActive) {
-                    data[dataIndex] = (data[dataIndex]) ? 0 : 1;
+		    if (chart_type == "category"){
+	                    data[dataIndex] = (data[dataIndex]) ? 0 : 1;
+			    }
+		    else {
+//JSC/CAV                    	data[dataIndex] = data[dataIndex] + 0.1
+//JSC/CAV		    	if (data[dataIndex] > 1.0){
+//JSC/CAV			 	data[dataIndex] = 0.0
+//JSC/CAV				}
+
+                    	data[dataIndex] = data[dataIndex] + 1.0
+		    	if (data[dataIndex] > chart_maxval){
+			 	data[dataIndex] = chart_minval
+				}
+console.log("TSChart: handleMouseUp:setState:number "+data[dataIndex]);
+console.log("TSChart: handleMouseUp:setState:number "+NV);
+
+//JSC-0419			data[dataIndex] = NV;
+			}
                 }
                 return {
                     data
                 };
             });
+*/
 
-            this.props.onChange(dataKey, dataIndex, data);
+            this.props.onChange(dataKey, dataIndex, data, NV);
         }
         this.setState({
             dragActive: false,
@@ -257,10 +293,41 @@ class TimeSeriesChart extends Component {
 
     }
 
+    handleMouseOverDot(event) {
+	// console.log("over-dot")
+	// console.log(event)
+	// console.log("over-dot1")
+        if (event) {
+	    // console.log("over-dot + event")
+            const { dataKey } = this.props;
+            const dataIndex = event.activeTooltipIndex;
+            let data  = this.state.data.slice();
+	    // console.log("OVER: "+ dataIndex)
+        }
+    }
+
     render() {
-        const { classes, theme, canChange, chartState, highlight, expression, selected } = this.props;
+        const { chart_type, classes, theme, canChange, chartState, highlight, expression, selected, chart_minval, chart_maxval } = this.props;
         const primaryColor = theme.palette.primary.main;
         const secondaryColor = theme.palette.secondary.main;
+
+	const JSCEmptyTooltip = ({ active, payload, label }) => {
+	if (active) {
+	   if (this.props.chart_type == "category"){
+		return null;
+		}
+	   else {
+		// console.log("tooltip "+this.props.chart_type + " "+payload[0].value)
+		return (
+			<div className="custom-tooltip">
+				<p className="label">{payload[0].value}</p>
+			</div>
+		);
+		}
+	    }
+	return null;
+        };
+
 
         let fill = "none";
         switch (chartState) {
@@ -282,8 +349,22 @@ class TimeSeriesChart extends Component {
             default:
                 fill = "none";
         }
+		//
+		// fill the background of the dependent
+		// Boolean variables
+		//
+	if (fill === "none" && chart_type === "category" && !canChange){
+                fill = "lightblue";
+		}
 
-        let data = (this.props.canChange) ?
+        var data = []
+        var dataKey=""
+	var lineType="step"
+	if (chart_type === "category"){
+		//
+		// Boolean variables
+		//
+            data = (this.props.canChange) ?
                         this.state.data.map((t, i) => (
                             {
                                 [this.props.dataKey]: (t ? 'TRUE' : 'FALSE'),
@@ -300,22 +381,75 @@ class TimeSeriesChart extends Component {
                                 'TF': ((i === 0) ? 'FALSE' : 'TRUE')
                             }
                         ));
+	    dataKey="TF"
+	    }
+	else {
+            data =
+                        this.state.data.map((t, i) => (
+                            {
+                                [this.props.dataKey]: t,
+                                'false': t,
+                                'true': t,
+                                'VAL': t
+                            }
+                        ))
+	    dataKey="VAL"
+//JSC/CAV	    lineType="linear"
+	    lineType="step"
+	     }
+//	console.log(data)
+//                    <YAxis
+//                        type="category"
+//                        minTickGap={0}
+//                        dataKey="VAL">
+//                        <Label value={name}/>
+//                    </YAxis>
+//-------------------customizedlabel----------------
+const CustomizedLabel: FunctionComponent<any> = (props: any) => {
+  const { x, y, stroke, value, chart_type, chart_minval, chart_maxval } = props;
+
+
+  // console.log("CUST-LABEL=" + chart_type)
+
+  if (chart_type == "category"){
+    return null;
+    }
+  else {
+    return (
+    <text x={x} y={y} dy={-4} fill={stroke} fontSize={10} textAnchor="middle">
+      {value}
+    </text>
+    );
+    }
+};
+
+//-------------------customizedlabel----------------
 
         let longName = this.props.name.length > maxNameLength;
-        let name = (longName) ? this.props.name.slice(0, maxNameLength-1) + "..." : this.props.name;
+      let Oname = ID_to_arithexpr(utils.unreplace_special_chars(this.props.name));
+        let name = (longName) ? Oname.slice(0, maxNameLength-1) + "..." : Oname;
+//console.log("TSC:render: longName="+longName);
+//console.log("TSC:render: origname="+this.props.name);
+//console.log("TSC:render: name="+name);
+//console.log("TSC:render: expression="+expression);
+
         let nameTip = (longName || expression) ?
                         <div>
-                            {((longName) ? this.props.name + ((expression) ? ": " : "") : "")}
-                            {(expression) ? <FormulaRenderer tex={expression}/>: null}
+                            {((longName) ? Oname + ((expression) ? ": " : "") : "")}
+                            {(expression) ? Oname : "" }
                         </div> : null;
+//JSC0420                            {(expression) ? <FormulaRenderer tex={expression}/>: null}
 
+//JSC/CAV            <ResponsiveContainer width="99%" height={75} debounce={0}>
         return (
             <div className={classNames(classes.wrapper, classes.unselectable)}>
 
-            <ResponsiveContainer width="99%" height={75} debounce={0}>
+            <ResponsiveContainer width="99%" height={50} debounce={0}>
                 <LineChart
+                    id={"qa_ltlSim_lc_"+this.props.name.slice(0, 4)}
                     syncId={this.props.syncId}
-                    margin={{top: 10, right: 10, left: 0, bottom: 10}}
+//JSC/CAV                    margin={{top: 10, right: 10, left: 0, bottom: 10}}
+                    margin={{top: 10, right: 10, left: 30, bottom: 10}}
                     data={data}
                     onClick={(this.props.onClick) ? this.handleClick : undefined}
                     onMouseDown={(canChange) ? this.handleMouseDown : undefined}
@@ -328,24 +462,30 @@ class TimeSeriesChart extends Component {
                                     strokeWidth: 4,
                                     strokeOpacity: 0.25,
                                     fill: "none" }}
-                        content={<EmptyTooltip />}
+                        content={<JSCEmptyTooltip />}
                     />
                     <CartesianGrid strokeDasharray="3 3" fill={fill} fillOpacity="0.4"/>
                     <XAxis
+                        id={"qa_ltlSim_xaxis_"+this.props.name.slice(0, 4)}
                         hide
                         domain={[-0.5, this.props.data.length-0.5]}
                         dataKey="time"
                     />
                     <YAxis
-                        type="category"
+                        id={"qa_ltlSim_yaxis_"+this.props.name.slice(0, 4)}
+			type={chart_type}
+//JSC/CAV			domain={[0,1]}
+			domain={[chart_minval,chart_maxval]}
                         minTickGap={0}
-                        dataKey="TF">
+                        dataKey={dataKey}
+                        >
                         <Label value={name}/>
                     </YAxis>
                     <Line
                         name={this.props.name}
+                        id={"qa_ltlSim_ln_1_"+this.props.name.slice(0, 4)}
                         dataKey={this.props.dataKey}
-                        type="step"
+                        type={lineType}
                         stroke={primaryColor}
                         strokeWidth={this.state.hover || selected ?
                                         this.props.strokeWidth*2 :
@@ -353,12 +493,14 @@ class TimeSeriesChart extends Component {
                                     }
                         isAnimationActive={false}
                         onMouseEnter={this.handleMouseEnterLine}
-                        onMouseLeave={this.handleMouseLeaveLine}
-                    />
+                        onMouseLeave={this.handleMouseLeaveLine} >
+			<LabelList content={<CustomizedLabel chart_type={chart_type} />} />
+		    </Line>
                     <Line
                         name={this.props.name}
+                        id={"qa_ltlSim_ln_2_"+this.props.name.slice(0, 4)}
                         dataKey="false"
-                        type="step"
+                        type={lineType}
                         stroke={primaryColor}
                         strokeWidth={0}
                         dot={{
@@ -373,8 +515,9 @@ class TimeSeriesChart extends Component {
                     />
                     <Line
                         name={this.props.name}
+                        id={"qa_ltlSim_ln_3_"+this.props.name.slice(0, 4)}
                         dataKey="true"
-                        type="step"
+                        type={lineType}
                         stroke={primaryColor}
                         strokeWidth={0}
                         dot={{
@@ -391,12 +534,14 @@ class TimeSeriesChart extends Component {
             </ResponsiveContainer>
             {nameTip !== null &&
                 <Nametip
+                    id={"qa_ltlSim_nt_"+this.props.name.slice(0, 4)}
                     title={nameTip}
                     placement="right"
                     classes={{tooltip: classes.nametip}}>
                     <div className={classes.nametipAnchor} />
                 </Nametip>}
-            {chartState === EFormulaStates.BUSY && <CircularProgress size={24} className={classes.progress}/>}
+            {chartState === EFormulaStates.BUSY &&
+              <CircularProgress size={24} id={"qa_ltlSim_cp_"} className={classes.progress}/>}
             </div>
         )
     }
@@ -420,6 +565,9 @@ TimeSeriesChart.propTypes = {
     onMouseLeave: PropTypes.func,
     onChange: PropTypes.func,
     chartState: PropTypes.number,
+    chart_type: PropTypes.string,
+    chart_minval: PropTypes.number,
+    chart_maxval: PropTypes.number,
     selected: PropTypes.bool
 }
 
@@ -434,3 +582,27 @@ TimeSeriesChart.defaultProps = {
 }
 
 export default withTheme(withStyles(styles)(TimeSeriesChart));
+
+function ID_to_arithexpr(ID){
+
+  let v = ID
+          .replace(/^N/g, "")
+          .replace(/_S_/g, " ")
+          .replace(/_D_/g, ".")
+          .replace(/_p_/g, "+")
+          .replace(/_m_/g, "-")
+          .replace(/_mul_/g, "*")
+          .replace(/_div_/g, "/")
+          .replace(/_lp_/g, "(")
+          .replace(/_rp_/g, ")")
+          .replace(/_leq_/g, "<=")
+          .replace(/_lt_/g, "<")
+          .replace(/_gt_/g, ">")
+          .replace(/_geq_/g, ">=")
+          .replace(/_eq_/g, "=")
+          .replace(/_eqeq_/g, "==")
+          ;
+
+return v
+
+}
