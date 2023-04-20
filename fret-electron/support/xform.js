@@ -713,7 +713,34 @@ let flipRules = [
 
   ['flip(__a, G __phi_a)',
    (sbst) => (occursIn(sbst['__a'],sbst['__phi_a'])),
-   '(G __phi_a) & F flip(__a,__phi_a)']
+   '(G __phi_a) & F flip(__a,__phi_a)'],
+
+  //PLTL
+
+  ['flip(__a, Y __phi_a)',
+    (sbst) => (occursIn(sbst['__a'], sbst['__phi_a'])),
+    'Y flip(__a, __phi_a)'],
+  ['flip(__a, Z __phi_a)',
+    (sbst) => (occursIn(sbst['__a'], sbst['__phi_a'])),
+    'Z flip(__a, __phi_a)'],
+  ['flip(__a, __phi_a S __phi_prime)',
+    (sbst) => (occursIn(sbst['__a'], sbst['__phi_a'])),
+    '(__phi_a S __phi_prime) & (!__phi_prime S (flip(__a,__phi_a) & !__phi_prime))'],
+  ['flip(__a, __phi_prime S __phi_a)',
+    (sbst) => (occursIn(sbst['__a'], sbst['__phi_a'])),
+    '(__phi_prime S __phi_a) & (!__phi_prime T (__phi_a => flip(__a, __phi_a)))'],
+  ['flip(__a, __phi_a T __phi_prime)',
+    (sbst) => (occursIn(sbst['__a'], sbst['__phi_a'])),
+    '(__phi_a T __phi_prime) & ((__phi_a => flip(__a, __phi_a) S (! __phi_prime)))'],
+  ['flip(__a, __phi_prime T __phi_a)',
+    (sbst) => (occursIn(sbst['__a'], sbst['__phi_a'])),
+    '(__phi_prime T __phi_a) & (!__phi_prime S flip(__a, __phi_a))'],
+  ['flip(__a, O __phi_a)',
+    (sbst) => (occursIn(sbst['__a'], sbst['__phi_a'])),
+    '(O __phi_a) & H(__phi_a => flip(__a, __phi_a))'],
+  ['flip(__a, H __phi_a)',
+    (sbst) => (occursIn(sbst['__a'], sbst['__phi_a'])),
+    '(H __phi_a) & O flip(__a, __phi_a)']
 ]
 
 let flipRulesParsed = flipRules.map(parseit)
@@ -782,18 +809,32 @@ function testObl(v,formula) {
 let formulas = {
     'FSM-001-fin' : '(LAST V ((((limits & (! standby)) & (! apfail)) & supported) -> pullup))',
     'FSM-001': '(G ((((limits & (! standby)) & (! apfail)) & supported) -> pullup))',
+    'FSM-001-pltl': '(H ((((limits & (! standby)) & (! apfail)) & supported) -> pullup))',
+    'FSM-001-pltl-Y': '(Y ((((limits & (! standby)) & (! apfail)) & supported) -> pullup))',
     'FSM-002': '(G ((standby & (state_eq_ap_transition_state)) -> (STATE_eq_ap_standby_state)))',
+    'FSM-002-pltl': '(H ((standby & (state = ap_transition_state)) -> (STATE = ap_standby_state)))',
     'FSM-003': '(G ((((state_eq_ap_transition_state) & good) & supported) -> (STATE_eq_ap_nominal_state)))',
+    'FSM-003-pltl': '(H ((((state = ap_transition_state) & good) & supported) -> (STATE = ap_nominal_state)))',
     'FSM-004': '(G (((! good) & (state_eq_ap_nominal_state)) -> (STATE_eq_ap_maneuver_state)))',
+    'FSM-004-pltl': '(H (((! good) & (state = ap_nominal_state)) -> (STATE = ap_maneuver_state)))',    
     'FSM-005': '(G (((state_eq_ap_nominal_state) & standby) -> (STATE_eq_ap_standby_state)))',
+    'FSM-005-pltl': '(H (((state = ap_nominal_state) & standby) -> (STATE = ap_standby_state)))',
     'FSM-006': '(G ((((state_eq_ap_maneuver_state) & standby) & good) -> (STATE_eq_ap_standby_state)))',
+    'FSM-006-pltl': '(H ((((state = ap_maneuver_state) & standby) & good) -> (STATE = ap_standby_state)))',
     'FSM-007': '(G ((((state_eq_ap_maneuver_state) & supported) & good) -> (STATE_eq_ap_transition_state)))',
+    'FSM-007-pltl': '(H ((((state = ap_maneuver_state) & supported) & good) -> (STATE = ap_transition_state)))',
     'FSM-008': '(G (((state_eq_ap_standby_state) & (! standby)) -> (STATE_eq_ap_transition_state)))',
+    'FSM-008-pltl': '(H (((state = ap_standby_state) & (! standby)) -> (STATE = ap_transition_state)))',    
     'FSM-009': '(G (((state_eq_ap_standby_state) & apfail) -> (STATE_eq_ap_maneuver_state)))',
+    'FSM-009-pltl': '(H (((state = ap_standby_state) & apfail) -> (STATE = ap_maneuver_state)))',
     'FSM-010': '(G (((senstate_eq_sen_nominal_state) & limits) -> (SENSTATE_eq_sen_fault_state)))',
+    'FSM-010-pltl': '(H (((senstate = sen_nominal_state) & limits) -> (SENSTATE = sen_fault_state)))',
     'FSM-011': '(G (((senstate_eq_sen_nominal_state) & (! request)) -> (SENSTATE_eq_sen_transition_state)))',
+    'FSM-011-pltl': '(H (((senstate = sen_nominal_state) & (! request)) -> (SENSTATE = sen_transition_state)))',
     'FSM-012': '(G ((((senstate_eq_sen_fault_state) & (! request)) & (! limits)) -> (SENSTATE_eq_sen_transition_state)))',
+    'FSM-012-pltl': '(H ((((senstate = sen_fault_state) & (! request)) & (! limits)) -> (SENSTATE = sen_transition_state)))',
     'FSM-013': '(G (((senstate_eq_sen_transition_state) & request) -> (SENSTATE_eq_sen_nominal_state)))',
+    'FSM-013-pltl': '(H (((senstate = sen_transition_state) & request) -> (SENSTATE = sen_nominal_state)))',
     'LM-006': '((G (((! liquid_level_2) & (X liquid_level_2)) -> (X (((timer_60sec_expire | emergency_button) V (stirring_motor | (timer_60sec_expire | emergency_button))) | (G stirring_motor))))) & (liquid_level_2 -> (((timer_60sec_expire | emergency_button) V (stirring_motor | (timer_60sec_expire | emergency_button))) | (G stirring_motor))))'}
 
 
@@ -827,7 +868,7 @@ for (const formula in formulas) {
         console.log('\n')
     }    
 }
-// console.log(JSON.stringify(allObligations, null, 3))
+console.log(JSON.stringify(allObligations, null, 3))
 
 // testObl('a_0',formula)
 // testObl('b_0',formula)
