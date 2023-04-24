@@ -317,7 +317,7 @@ let TableToolbar = props => {
               }
             />
 
-            <IconButton id="qa_tbl_ib_bulkChange" 
+            <IconButton id="qa_tbl_ib_bulkChange"
               aria-label="Bulk Change" onClick={() => bulkChangeEnabler()}>
               <Tooltip title="Bulk Change">
               <ListIcon color='secondary'/>
@@ -391,7 +391,7 @@ class SortableTable extends React.Component {
     selectedProject: 'All Projects',
     bulkChangeMode: false,
     deleteUsingCheckBoxes: false,
-    refactorDialogOpen: false
+    refactorDialogOpen: false,
     searchId: [],
     searchSummary: [],      // array of string
     searchStatus: [],      // array of string
@@ -949,7 +949,7 @@ class SortableTable extends React.Component {
                               </IconButton>
                             </Tooltip>
                           </TableCell>
-<<<<<<< HEAD
+
                           <TableCell>
                             <Tooltip id="tooltip-icon-refactor" title="Refactor Requirement">
                               <IconButton onClick={this.handleRefactorRequirement(n)} size="small" color="default" aria-label="refactor" >
@@ -957,12 +957,9 @@ class SortableTable extends React.Component {
                               </IconButton>
                             </Tooltip>
                           </TableCell>
-                        <TableCell>{n.summary}</TableCell>
-                        <TableCell>{projectLabel}</TableCell>
-=======
                         <TableCell id={"qa_tbl_tc_not_bulk_summary_"+label} >{n.summary}</TableCell>
                         <TableCell id={"qa_tbl_tc_not_bulk_project_"+label} >{projectLabel}</TableCell>
->>>>>>> upstream/master
+
                       </TableRow>
                     )
                   }
@@ -991,36 +988,13 @@ class SortableTable extends React.Component {
           onRowsPerPageChange={this.handleChangeRowsPerPage}
         />
       </Paper>
-<<<<<<< HEAD
-        <DisplayRequirementDialog
-          selectedRequirement={this.state.selectedRequirement}
-          open={this.state.displayRequirementOpen}
-          handleDialogClose={this.handleRequirementDialogClose}
-          handleCreateDialogOpen={this.handleCreateDialogOpen}
-          handleDeleteDialogClose={this.handleDeleteDialogClose}
-          handleDeleteDialogOpen={this.handleDeleteDialogOpen}
-        />
-        <CreateRequirementDialog
-          open={this.state.createDialogOpen}
-          handleCreateDialogClose={this.handleCreateDialogClose}
-          selectedProject={this.state.selectedProject}
-          editRequirement={this.state.selectedRequirement}
-          addChildRequirementToParent={this.state.addChildRequirementMode}
-          existingProjectNames={this.props.existingProjectNames}
-          requirements={this.props.requirements}
-        />
-        <RefactorRequirementDialog
-          selectedRequirement={this.state.selectedRequirement}
-          open={this.state.refactorDialogOpen}
-          handleDialogClose={this.handleRefactorDialogClose}
-          requirements={this.props.requirements}
-        />
-        <DeleteRequirementDialog
-          open={this.state.deleteDialogOpen}
-          requirementsToBeDeleted={selectionForDeletion}
-          handleDialogClose={this.handleDeleteDialogClose}
-        />
-=======
+
+<RefactorRequirementDialog
+  selectedRequirement={this.state.selectedRequirement}
+  open={this.state.refactorDialogOpen}
+  handleDialogClose={this.handleRefactorDialogClose}
+  requirements={this.props.requirements}
+/>
       <DisplayRequirementDialog
         selectedRequirement={this.state.selectedRequirement}
         open={this.state.displayRequirementOpen}
