@@ -13,7 +13,7 @@ const CallNuSMV = require("./CallNuSMV");
 //const formalizations = require(fretParserPath + 'semantics_until_last.json');
 //const constants = require('../../fret-electron/app/parser/Constants');
 
-const nuXmvTempFilePrefix = '/tmp/refactoring-verification';
+const nuXmvTempFilePrefix = './temp/refactoring-verification';
 
 /*const nusmv_keywords = ["MODULE", "DEFINE", "MDEFINE", "CONSTANTS", "VAR", "IVAR", "FROZENVAR",
 "INIT", "TRANS", "INVAR", "SPEC", "CTLSPEC", "LTLSPEC", "PSLSPEC", "COMPUTE",
@@ -296,7 +296,7 @@ function getVars(originalReq, originalReqVars, newReq, fragList)
         variables += value + " :  0..4 ;\n";
       }
       else if (type == "unsigned integer") // silently treats unsigned integer as an integer
-      {      
+      {
         variables += value + " :  0..4 ;\n";
       }
       else
@@ -479,7 +479,7 @@ function callnuXmv (originalReq, originalReqVars, newReq,len,n, allRequirements)
     if (err) return console.log(err);
   });
   console.log('SMV saved in ' + nuXmvTempFile);
-  //Calling nuXmv using the function at "../../fret-electron/test/semantics/CallNuSMV"
+
   let boolVec = CallNuSMV.callNuSMV2(nuXmvTempFile);
   //console.log('\n[' + boolVec + ']\n')
   //console.log("Checking the problem: " + r.keys.length);
@@ -494,21 +494,6 @@ function callnuXmv (originalReq, originalReqVars, newReq,len,n, allRequirements)
   }
 }
 
-// len is the length of the trace; n is the duration as an integer.
-// function compare(originalReq, newReq, len,n) {
-//     console.log('\n***\nequiv with length: ' + len + ' duration: ' + n);
-//
-//     //trying to make the original and new reqs into what the methods are expecting
-//     //let formalisations = {"original":originalReq, "new":newReq };
-//
-//
-//     let sames_diffs = callnuXmv(originalReq, newReq ,len,n);
-//     let same = sames_diffs.same;
-//     let different = sames_diffs.different;
-//     console.log('same(' + same.length + '): ' + JSON.stringify(same));
-//     console.log('\ndifferent(' + different.length + '): '
-// 		+ JSON.stringify(different));
-// }
 
 
 /**
