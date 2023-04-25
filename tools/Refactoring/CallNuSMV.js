@@ -43,7 +43,7 @@ const execSync = require('child_process').execSync;
 
 const verboseNuSMV = false;
 
-const NuSMVTempFile = '/tmp/temp';
+const NuSMVTempFile = './temp/temp';
 
 const NuSMVSubsts = [[' and ', ' & '],
 		     [' or ', ' | '],
