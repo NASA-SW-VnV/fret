@@ -1,22 +1,8 @@
-Mu-FRET
-=============================================
+# Publications, Presentations, and Posters
 
-Introduction
-------------
+Our team have written several academic papers, given presentations, and made posters relating to Mu-FRET.
 
-Mu-FRET is a fork of the [Formal Requirements Elicitation Tool (FRET)](https://github.com/NASA-SW-VnV/fret) by a team at Maynooth University, Ireland. It was created within Use Case 5 of the [Verification and Validation of Automated Systems’ Safety and Security (VALU3S)](https://valu3s.eu/) project. 
-
-FRET is a framework for the elicitation, specification, formalisation and understanding of requirements. It was developed by a Software Verification and Validation team at NASA. In FRET,  users enter system requirements in a structured natural language called FRETISH. FRET automatically translates FRETISH requirements into Past- and Future-Time Metric Temporal Logic.
-
-Mu-FRET extends FRET by adding refactoring functionality. Refactoring, when applied to software, is the process of rearranging the software's internal structure without changing its external behaviour. This is helpful for the maintainability of software, and has similar benefits for requirements.
-
-Mu-FRET enables a user to extract parts of a requirement to a new requirement, allowing the extracted part to be reused. Mu-FRET also formally verifies that the refactored requirement (including the extracted parts) has the same behaviour as the original requirement. This gives confidence that the tool has not inadvertently introduced new (possibly incorrect) behaviour.
-
-## Installation 
-
-Installing Mu-FRET is the same as installing FRET, so we include the [FRET installation instructions](fret-electron/docs/_media/installingFRET/installationInstructions.md)
-
-## Presentations and Poster
+## Presentations and Posters
 
 Our team have given several presentations about both FRET and Mu-FRET as part of the VALU3S project, and produced posters for project demonstration sessions. Below you can find links to videos and slides from the presentations, and links to download the posters.
 
@@ -29,7 +15,7 @@ Our team have given several presentations about both FRET and Mu-FRET as part of
 
 ## Papers
 
-Our team has written several papers about our work for the VALU3S project using FRET and about building Mu-Fret.
+Our team has written several papers about our work for the VALU3S project using FRET and about building Mu-Fret. 
 
 ### Mu-FRET Papers
 
@@ -43,5 +29,9 @@ Our team has written several papers about our work for the VALU3S project using 
 * _FRETting about Requirements: Formalised Requirements for an Aircraft Engine Controller_: A paper published at the REFSQ conference that describes our work using FRET to formalise the requirements of an aircraft engine controller, provided by our Use Case 5 partner. Available: [https://link.springer.com/chapter/10.1007/978-3-030-98464-9_9](https://link.springer.com/chapter/10.1007/978-3-030-98464-9_9) and [https://arxiv.org/abs/2112.04251](https://arxiv.org/abs/2112.04251). The [presentation](mu-fret-docs/presentations/refsq2022-fret.pdf) is also available.
 
 * _A Requirements-Driven Methodology: Formal Modelling and Verification of an Aircraft Engine Controller_: a paper describing using Event-B to formalise and verify systems described using Simulink models, and how we can link this to requirements captured in FRET. Available: [https://link.springer.com/chapter/10.1007/978-3-031-07727-2_21](https://link.springer.com/chapter/10.1007/978-3-031-07727-2_21)
+
+
+
+
 
 

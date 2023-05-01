@@ -1,3 +1,9 @@
+/**
+* Dialog component for refacotring, based on existing FRET Code.
+* @author Matt Luckcuck <m.luckcuck@tutanota.com>
+* Started: May 2022
+*/
+
 // *****************************************************************************
 // Notices:
 //
@@ -32,11 +38,7 @@
 // *****************************************************************************
 
 
-/**
-* Dialog component for refacotring, based on existing FRET Code.
-* @author Matt Luckcuck <m.luckcuck@tutanota.com>
-* Started: May 2022
-*/
+
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
@@ -57,6 +59,7 @@ import FormControl from '@material-ui/core/FormControl';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
 import WarningIcon from '@material-ui/icons/Warning';
+import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
 
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -73,6 +76,7 @@ const sharedObj = require('electron').remote.getGlobal('sharedObj');
 const modeldb = sharedObj.modeldb;
 const system_dbkeys = sharedObj.system_dbkeys;
 const STATE = {INITIAL:"initial", RESULT_TRUE:"result true", RESULT_FALSE: "result false", TYPES:"types please", ERROR_UNDEF : "error-undefined"};
+const unsupported_types = ["undefined", "double", "single",]
 
 
 const styles = theme => ({
@@ -161,7 +165,6 @@ handleInitialOK = () =>
   if(this.state.applyToAll == false)
   {
     let varList = RefactoringUtils.getVariableNames(this.state.selectedRequirement);
-    //console.log("handleInitialOK's var list = " + varList);
 
     var variableTypeMap = new Map();
     for(let variable of varList)
@@ -174,14 +177,10 @@ handleInitialOK = () =>
     modeldb.find({
       selector: {
         project : this.state.selectedRequirement.selectedProject,
-        //component_name : this.selectedRequirement,
         variable_name : {$in:varList}
       }
     }).then(function(result)
       {
-        //console.log("result.docs");
-        //console.log(result.docs);
-
         var variableTypeMap = new Map();
         for (let doc of result.docs)
         {
@@ -190,41 +189,27 @@ handleInitialOK = () =>
 
           if(varType == "")
           {
-            varType = "undefined";
+            varType = "undefined"; // If the variable has on type in the database, set it to "undefined"
           }
 
-          variableTypeMap.set(varName, varType);
+          variableTypeMap.set(varName, varType); //Put the variable name and type into the map
 
         }
 
-        //console.log("!!! Show me the Variables!")
-        //for(let i of variableTypeMap)
-        //{
-        //  console.log(i);
-        //}
-
-        self.setState({variableDocs: result.docs, variables : variableTypeMap, dialogState:STATE.TYPES});
-
+        self.setState({variableDocs: result.docs, variables : variableTypeMap, dialogState:STATE.TYPES}); // Add the map to the state, and advance to the Types dialogue
       }
-      ).catch((err) => {
-        console.log(err);
-      })
+      ).catch((err) => {console.log(err); })
   }
   else{
-
-    //console.log("+++ before requirement with Fragment call +++")
-    //console.log(" selected Requirement = " + this.state.selectedRequirement);
-    //console.log(this.state.selectedRequirement.reqid);
 
     //Find the requirements that have the fragment in.
     let applicableRequirements = RefactoringController.requirementWithFragement(this.state.requirements, this.state.selectedRequirement, this.state.extractString, this.state.newName);
 
-    //console.log(applicableRequirements);
 
     //If we have some requirements that contain the fragment we're extracting
     if (applicableRequirements.length >0)
   	{
-      //console.log("^^ applicableRequirements > 0");
+
       var variableTypeMap = new Map(); // map to hold varname |-> type
       var varList = [];
 
@@ -236,7 +221,7 @@ handleInitialOK = () =>
         let varNames = RefactoringUtils.getVariableNames(this_req);
         let newVarList = varList.concat(varNames); // Javascript is a silly language
         varList = newVarList;
-        //console.log("handleInitialOK's var list = " + varList);
+
       }
 
       // ... and add them to the map, mapping varname |-> "undefined" (for now)
@@ -244,7 +229,6 @@ handleInitialOK = () =>
       {
         variableTypeMap.set(variable, "undefined");
       }
-
 
       // Now get the variable types (if they exist) from ModelDB
 
@@ -257,9 +241,6 @@ handleInitialOK = () =>
         }
       }).then(function(result)
         {
-          //console.log("result.docs");
-          //console.log(result.docs);
-
           for (let doc of result.docs)
           {
             let varName = doc.variable_name;
@@ -272,23 +253,11 @@ handleInitialOK = () =>
 
             variableTypeMap.set(varName, varType);
           }
-
-          //console.log("!!! Show me the Variables!")
-          //for(let i of variableTypeMap)
-          //{
-          //  console.log(i);
-          //}
-
-
           self.setState({variableDocs: result.docs, variables : variableTypeMap, dialogState:STATE.TYPES});
-
         }
-        ).catch((err) => {
-          console.log(err);
-        })
+        ).catch((err) => { console.log(err); })
     }
   }
-  //console.log("state's copy of variables = " + this.state.variables);
 }
 
 /**
@@ -296,25 +265,24 @@ handleInitialOK = () =>
 * Calls the requested extract requirement method
 */
 handleOk = () => {
-  //console.log('OK Button');
-  //console.log(this.state.extractString);
-  //console.log(this.state.newName);
-  //console.log("apply to all = " + this.state.applyToAll);
   var newID = uuid.v1();
   var result;
+  var varTypeMap = this.state.variables;
+
 
   var undefinedVars = []
   var allVarsDefined = true; // we assume, but...
-  //Check for undefindes
-  for (const variable of this.state.variables)
+  //Check for unsupported variables
+  for (const variable of varTypeMap)
   {
-
-    if (variable[1] == "undefined")
+    if (unsupported_types.indexOf(variable[1]) >= 0)
+    // If the variable's type is one we don't support
     {
       allVarsDefined = false;
       console.log("Error - " + variable[0] + " is undefined. Please update its type and try again.");
       undefinedVars.push(variable)
     }
+
   }
 
   if(allVarsDefined)
@@ -323,26 +291,17 @@ handleOk = () => {
     //Update ModelDB
     RefactoringController.updateVariableTypes(this.state.variableDocs, this.state.variables);
 
+    // Both calls below use varTypeMap, just in case unisgned ints have been replaced by ints
     if (this.state.applyToAll == true)
     {
-        //console.log("handleOk this.state.requirements -> ");
-        //console.log(this.state.requirements);
-
       result = RefactoringController.extractRequirement_ApplyAll(
         this.state.selectedRequirement, this.state.variables, this.state.extractString,
         this.state.newName, newID, this.state.requirements);
-
-        //console.log("result all = " + result);
-
-
     }
     else {
       // Now this needs all the requirements too, to pass to the compare method
         result = RefactoringController.extractRequirement(
           this.state.selectedRequirement, this.state.variables, this.state.extractString, this.state.newName, newID, this.state.requirements);
-
-          //console.log("result one = " + result);
-
     }
 
     if(result == true)
@@ -352,8 +311,6 @@ handleOk = () => {
     }
     else
     {
-      console.log("here's the result ->")
-      console.log(result)
       this.setState({dialogState:STATE.RESULT_FALSE, refactoringCheckresult: result});
       return;
     }
@@ -372,7 +329,8 @@ handleRefactoringType = () => event => {
 };
 
 handleChangeExtract = () => event => {
-  let extractString = event.target.value
+  let extractString = event.target.value;
+  extractString = extractString.trim();
 
   this.setState({ extractString: extractString });
 };
@@ -404,8 +362,6 @@ handleTypeChange = (varName) => event =>
 
 getType = (variableName) =>
 {
-
-
   return this.state.variables.get(variableName)
 };
 
@@ -506,6 +462,10 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
         <DialogTitle id="simple-dialog-title">  Extract Requirement: {this.state.selectedRequirementId}</DialogTitle>
           <DialogContent>
 
+            <DialogContentText>
+              Copy the part of {this.state.selectedRequirementId} that you want to extract from its Definition into the Extract field, and add the New Requirement Name. The Apply to all Requirements tick box toggles if the extraction will search for the Extract field in all requirements in this project.
+            </DialogContentText>
+
           <Grid container spacing={2} >
 
                       <Grid style={{ textAlign: 'right' }} item xs={3}>
@@ -521,7 +481,7 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
                       </Grid>
 
                       <Grid style={{ textAlign: 'right' }} item xs={3}>
-                        String to Extract:
+                        Extract:
                       </Grid>
                       <Grid item xs={9}>
                         <TextField
@@ -548,7 +508,7 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
                           </Grid>
 
                           <Grid style={{ textAlign: 'right' }} item xs={3}>
-                            Apply to all Matching Fragments:
+                            Apply to all Requirements:
                           </Grid>
                           <Grid item xs={9}>
                             <Checkbox
@@ -600,9 +560,19 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
           </DialogTitle>
 
           <DialogContent>
+            <DialogContentText>
+            Please check the variable types listed below. Correct any that are wrong and update any that are "Unknown". Existing variable types are shown in the analysis portal.<br/>
+
+            Mu-FRET will use the Integer type for both signed and Unsigned Integers. If a variable is already set to Unsigned Integer, the list will show a <ErrorOutlineIcon  fontSize="small" /> to warn you. <br/>
+
+            Mu-FRET cannot check Single or Double typed variables, so they must be manually changed to Integers (including any literal values in a requirement, e.g. 2.4). If a variable is already set to Single or Double, then the list will show a <WarningIcon  fontSize="small" /> to warn you. <br/>
+
+            If any variables are left with Unknown, Single, or Double type, pressing OK will provide a warning. You will not be able to proceed with the refactoring until the types are changed.
+            </DialogContentText>
+
           <Grid spaceing={2}>
             <Grid item xs={3}>
-              Definition:
+              {this.state.selectedRequirementId} Definition:
             </Grid>
             <Grid item xs={9}>
               <TextField
@@ -611,10 +581,6 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
                 fullWidth
 
                 value={fulltext} />
-            </Grid>
-
-            <Grid style={{textAlign : 'center'}} item xs={12}>
-              Please check the variable types listed below. Correct any that are wrong and update any that are "Unknown".
             </Grid>
           </Grid>
 
@@ -632,12 +598,17 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
                               value = {self.getType(varName)}
                               autoWidth
                               renderValue={(value) => {
-                                if (value == "undefined") {
+                           if (unsupported_types.indexOf(value) >= 0) {
                                   return <div style={{color:'red'}}>{value} <WarningIcon  fontSize="small" /></div> ;
-                                }
-                                else {
-                                  return <div>{value}</div>;
-                                }
+                          }
+                          else if (value == "unsigned integer")
+                          {
+                            return <div style={{color:'orange'}}>{value} <ErrorOutlineIcon  fontSize="small" /></div> ;
+                          }
+                          else
+                          {
+                              return <div>{value}</div>;
+                          }
                                 }}
                         >
                         <MenuItem value={"boolean"}>Boolean</MenuItem>
@@ -678,9 +649,10 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
         <DialogTitle id="simple-dialog-title">  Sucessfully Extracted Requirement: {this.state.selectedRequirementId}
         </DialogTitle>
           <DialogContent>
-               <DialogContentText>
-                <CheckCircleIcon/> Checks Passed. The original and new requirements behave the same.
-               </DialogContentText>
+              <DialogContentText>
+                The checks have passed and the refactoring is complete. You may Close this dialogue.
+              </DialogContentText>
+              <CheckCircleIcon/> Checks Passed. The original and new requirements behave the same.
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleClose} color="secondary">
@@ -705,9 +677,10 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
         </DialogTitle>
           <DialogContent>
             <DialogContentText>
-               <CancelIcon/> The check failed, the original and new requirement behave differently.
-               Result: {this.state.refactoringCheckresult}
+              The checks have failed and the refactoring was not performed. Please Close this dialogue, review the types and part of the requirement you were trying to extract, and try again.
             </DialogContentText>
+            <CancelIcon/> The check failed, the original and new requirement behave differently.
+            Result: {this.state.refactoringCheckresult}
           </DialogContent>
           <DialogActions>
           <Button onClick={this.handleClose} color="secondary">
@@ -732,6 +705,8 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
           </DialogTitle>
             <DialogContent>
               <DialogContentText>
+                We cannot proceed yet, some of the variable types are still undefined. Please Close this dialogue to return to the types list and try again.
+              </DialogContentText>
                  <CancelIcon/> Error - the following variables are undefined. Please update its type and try again.
                  <ul >
                  {
@@ -744,8 +719,6 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
                    )
                  }
                  </ul >
-
-              </DialogContentText>
             </DialogContent>
             <DialogActions>
             <Button onClick={this.handleErrorUndefClose} color="secondary">

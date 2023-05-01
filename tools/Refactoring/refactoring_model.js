@@ -12,7 +12,31 @@ const modeldb = require('electron').remote.getGlobal('sharedObj').modeldb;
 //const uuidv1 = require('uuid/v1');
 //const checkDbFormat = require('../../support/fretDbSupport/checkDBFormat.js');
 
+/**
+* Set the new variable that is the 'call' to the extracted fragement to be a boolean
+*/
 
+export function UpdateFragmentVariable(fragmentName, component, project)
+{
+  //This feels kinda hacky, but it seems to work ok.
+  console.log("Update Fragement Variable")
+  console.log("1 -> " + fragmentName)
+  console.log("2 -> " + component)
+  console.log("3 -> " + project)
+
+  var doc = {
+    _id : project+component+fragmentName,
+    variable_name : fragmentName,
+    project : project,
+    component_name	: component,
+    description : "Variable Type added by Mu-FRET Refactoring Dialogue. (refactoring_model.UpdateFragmentVariable())",
+    dataType : "boolean"
+   }
+
+
+  modeldb.put(doc).then(function(response){ console.log("modeldb response -> "); console.log(response); }).catch((err) => {console.log(err); })
+
+}
 
 
 /**
@@ -94,8 +118,7 @@ export function UpdateDataTypes(docs)
   console.log("Updating Model DB");
   modeldb.bulkDocs(docs).then(function (result) {
     console.log("Data Types Updated");
-    console.log(result);  // TODO This is returning ok but is an array of errors! Conflicting updates... might need to blank the rev in the docs // Nope, still broken.
-    // No, always give it back the _rev fo each document
+    console.log(result);
   }).catch(function (err) {
     console.log(err);
   });
@@ -226,79 +249,3 @@ export function makeVariableTypeMap(requirement)
       console.log(err);
     })
 }
-
-  // console.log(typeof(reqsInProject));
-  // console.log(reqsInProject);
-  //
-  // let reqsWithFrag = [];
-
-  // reqsInProject.forEach((req) => {
-  //   if(req.fulltext.includes(fragment))
-  //   {
-  //     reqsWithFrag.push(req);
-  //   }
-  // });
-
-
-// export function AddNewRequirementToDB(req)
-// {
-//   db.post(req, DBCallback)
-// }
-// exports.AddRequirementToDB = AddRequirementToDB;
-
-/*
-handleCreate = () => {
-  if (! this.state.createDialogOpen){return;}
-  this.setState({
-    createDialogOpen: false
-  });
-  var self = this;
-  const { edittingRequirement, project, reqid, parent_reqid, rationale, comments} = this.state;
-  var requirementFields = this.stepper.getRequirementFields();
-  var { fulltext, semantics, input, template } = requirementFields;
-
-  var newReqId = this.state.reqid;
-  var dbid = edittingRequirement && Object.keys(edittingRequirement).length > 0 ? edittingRequirement._id : uuidv1()
-  var dbrev = edittingRequirement && Object.keys(edittingRequirement).length > 0 ? edittingRequirement._rev : undefined
-  var oldVariables = [];
-  var oldModes = [];
-
-  if (dbrev != undefined){
-    db.get(dbid).then(function(req){
-      if (req.semantics && req.semantics.variables){
-          oldVariables = req.semantics.variables;
-      }
-      self.removeVariables(oldVariables, semantics.variables ? semantics.variables : [], project,
-        semantics.component_name, dbid, req.semantics.component_name, req.project)
-    })
-  }
-  if (semantics && semantics.variables){
-    self.createOrUpdateVariables(semantics.variables,semantics.component_name, project, dbid);
-  }
-
-  // create req
-  db.put({
-      _id : dbid,
-      _rev : dbrev,
-      reqid : this.state.reqid,
-      parent_reqid : this.state.parent_reqid,
-      project : this.state.project,
-      rationale : this.state.rationale,
-      comments : this.state.comments,
-      status: this.state.status,
-      fulltext : fulltext,
-      semantics : semantics,
-      template : template,
-      input : input
-    }, (err, responses) => {
-      if (err) {
-        self.state.dialogCloseListener(false);
-        return console.log(err);
-      }
-      console.log(responses);
-      self.state.dialogCloseListener(true, newReqId);
-    }
-  )
-};
-*/
-//export {AddRequirementToDB, CopyFragment, MoveFragment, ReplaceFragment};
