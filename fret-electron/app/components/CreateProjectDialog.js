@@ -42,7 +42,9 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-const db = require('electron').remote.getGlobal('sharedObj').db;
+const {ipcRenderer} = require('electron');
+import { connect } from "react-redux";
+import { addProject } from '../reducers/allActionsSlice';
 
 const styles = theme => ({
   textField: {
@@ -56,7 +58,7 @@ class CreateProjectDialog extends React.Component {
   state = {
     open: false,
     projectName: '',
-    existingProjectNames: [],
+    listOfProjects: [],
     fieldErrorMessage: ''
   };
 
@@ -71,27 +73,27 @@ class CreateProjectDialog extends React.Component {
   handleOK = () => {
     this.setState({ open: false });
     this.props.handleDialogClose();
-
     const name = this.state.projectName
-
-    db.get('FRET_PROJECTS').then((doc) => {
-      const list = doc.names
-      list.push(name)
-      return db.put({
-        _id: 'FRET_PROJECTS',
-        _rev: doc._rev,
-        names: list
-      })
+    // context isolation
+    var argList = [name]
+    // ipcRenderer call main with argLit and main returns result to update Redux store
+    ipcRenderer.invoke('addProject',argList).then((result) => {
+      console.log('CreateProjectDialog ipcRenderer addProject result.listOfProjects: ', result.listOfProjects)
+      this.props.addProject({ type: 'actions/addProject',
+                              listOfProjects: result.listOfProjects
+                            })
     }).catch((err) => {
       console.log(err);
-    });
+    })
+    
+    this.setState({ projectName: '' });
   }
 
   handleProjectNameChange = () => event => {
-    const { existingProjectNames } = this.props
+    const { listOfProjects } = this.props
     const { projectName } = this.state
     const name = event.target.value
-    if (existingProjectNames.includes(name))  {
+    if (listOfProjects.includes(name))  {
       this.setState({
         fieldErrorMessage : 'Project "' + name + '" already exists'
       })
@@ -158,6 +160,12 @@ CreateProjectDialog.propTypes = {
   classes: PropTypes.object.isRequired,
   open: PropTypes.bool.isRequired,
   handleDialogClose: PropTypes.func.isRequired,
-  existingProjectNames: PropTypes.array.isRequired
+  listOfProjects: PropTypes.array.isRequired
 }
-export default withStyles(styles)(CreateProjectDialog);
+
+
+const mapDispatchToProps = {
+  addProject
+};
+
+export default withStyles(styles)(connect(null,mapDispatchToProps)(CreateProjectDialog));

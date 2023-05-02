@@ -30,9 +30,38 @@
 // ANY SUCH MATTER SHALL BE THE IMMEDIATE, UNILATERAL TERMINATION OF THIS
 // AGREEMENT.
 // *****************************************************************************
-// @flow
-if (process.env.NODE_ENV === 'production') {
-  module.exports = require('./configureStore.prod'); // eslint-disable-line global-require
-} else {
-  module.exports = require('./configureStore.dev'); // eslint-disable-line global-require
+
+import { setChangeRequirementFlag_main } from "./changeRequirementFlag_main";
+
+const fs=require("fs");
+
+import {leveldbDB} from '../../app/main.dev'
+
+export {
+  removeReqsInBulk as removeReqsInBulk
+}
+
+function batchDelete (requirements) {
+  return leveldbDB.bulkDocs(requirements).catch(err => {
+    console.log('error', err)
+  })
+};
+
+
+async function removeReqsInBulk (requirements) {
+  // delete from FRET db requirements in deleteList
+  let deleteList = [];
+  requirements.forEach(r => {
+     deleteList.push({
+       // in dashboard: r.dbkey and r.rev, in sortableTable: r._id and r._rev
+      _id: r.dbkey || r._id,
+      _rev: r.rev || r._rev,
+      _deleted: true
+    });
+  });
+
+  setChangeRequirementFlag_main(true).
+  then(() => batchDelete(deleteList)).
+    then(() => setChangeRequirementFlag_main(false))
+
 }

@@ -30,28 +30,45 @@
 // ANY SUCH MATTER SHALL BE THE IMMEDIATE, UNILATERAL TERMINATION OF THIS
 // AGREEMENT.
 // *****************************************************************************
-import React from 'react';
-import { render } from 'react-dom';
-import { AppContainer } from 'react-hot-loader';
-import Root from './containers/Root';
-import { store, history } from './store/store';
-import './app.global.css';
+const fs=require("fs");
+const sharedObj = require('electron').remote.getGlobal('sharedObj');
+const db = sharedObj.db;
 
-render(
-  <AppContainer>
-    <Root store={store} history={history} />
-  </AppContainer>,
-  document.getElementById('root')
-);
+export {
+  setFRETProps as setFRETProps,
+  addRequirement as addRequirement
+}
 
-if (module.hot) {
-  module.hot.accept('./containers/Root', () => {
-    const NextRoot = require('./containers/Root'); // eslint-disable-line global-require
-    render(
-      <AppContainer>
-        <NextRoot store={store} history={history} />
-      </AppContainer>,
-      document.getElementById('root')
-    );
-  });
+function setFRETProps (doc, updatedFieldColors) {
+  db.put({
+    _id: 'FRET_PROPS',
+    _rev: doc._rev,
+    fieldColors: updatedFieldColors
+  }).catch((err) => {
+        console.log(err)
+   });
+}
+
+function addRequirement (dbid, dbrev, edittedFields, generatedFields) {
+  // create req
+  db.put({
+      _id : dbid,
+      _rev : dbrev,
+      reqid : edittedFields.reqid,
+      parent_reqid : edittedFields.parent_reqid,
+      project : edittedFields.project,
+      rationale : edittedFields.rationale,
+      comments : edittedFields.comments,
+      status: edittedFields.status,
+      fulltext : generatedFields.fulltext,
+      semantics : generatedFields.semantics,
+      template : generatedFields.template,
+      input : generatedFields.input
+    }, (err, responses) => {
+      if (err) {
+        console.log(err);
+        return false;
+      }
+        return true;
+    })
 }

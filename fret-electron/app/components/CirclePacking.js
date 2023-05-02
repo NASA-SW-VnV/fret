@@ -193,8 +193,8 @@ class CirclePacking extends React.Component {
         .style("opacity", 0);
 
     function handleRequirementDialogOpen (req) {
-        req.dbkey = req._id;
-        req.rev = req._rev;
+        //req.dbkey = req._id;
+        //req.rev = req._rev;
         self.setState({
           selectedRequirement: req,
           displayRequirementOpen: true
@@ -354,7 +354,7 @@ class CirclePacking extends React.Component {
         <RequirementDialogs
           selectedRequirement={this.state.selectedRequirement}
           selectedProject={this.props.selectedProject}
-          existingProjectNames={this.props.projects}
+          listOfProjects={this.props.projects}
           displayRequirementOpen={this.state.displayRequirementOpen}
           handleDialogClose={this.handleRequirementDialogClose}
           requirements={this.props.requirements}

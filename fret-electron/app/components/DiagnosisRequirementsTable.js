@@ -697,7 +697,7 @@ DiagnosisRequirementsTable.propTypes = {
   selectedProject: PropTypes.string.isRequired,
   selectedComponent: PropTypes.string.isRequired,
   selectedRequirements: PropTypes.array.isRequired,
-  existingProjectNames: PropTypes.array.isRequired,
+  listOfProjects: PropTypes.array.isRequired,
   connectedComponent : PropTypes.object.isRequired,
   importedRequirements: PropTypes.array.isRequired
 };

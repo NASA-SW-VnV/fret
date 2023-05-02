@@ -30,24 +30,12 @@
 // ANY SUCH MATTER SHALL BE THE IMMEDIATE, UNILATERAL TERMINATION OF THIS
 // AGREEMENT.
 // *****************************************************************************
-// @flow
-import { INCREMENT_COUNTER, DECREMENT_COUNTER } from '../actions/counter';
+export {
+  checkVariableFormat as checkVariableFormat
+}
 
-export type counterStateType = {
-  +counter: number
-};
-
-type actionType = {
-  +type: string
-};
-
-export default function counter(state: number = 0, action: actionType) {
-  switch (action.type) {
-    case INCREMENT_COUNTER:
-      return state + 1;
-    case DECREMENT_COUNTER:
-      return state - 1;
-    default:
-      return state;
-  }
+function checkVariableFormat(variables){
+  if (typeof variables === 'object' && ! Array.isArray(variables) ){
+    return (variables.regular).concat(variables.modes);
+  } else return variables;
 }

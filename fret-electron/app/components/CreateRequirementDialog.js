@@ -74,18 +74,23 @@ import {getRequirementStyle} from "../utils/utilityFunctions";
 import {withReact} from "slate-react";
 import {createEditor, Node, Range, Text, Transforms} from "slate";
 import withFields from "../utils/withFields";
-
-const db = require('electron').remote.getGlobal('sharedObj').db;
-const modeldb = require('electron').remote.getGlobal('sharedObj').modeldb;
+import { AnnotatingErrorListener } from 'ltlsim-core/parser/AnnotatingErrorListener';
+import { createOrUpdateRequirement } from '../reducers/allActionsSlice';
+import { connect } from "react-redux";
 const constants = require('../parser/Constants');
-const uuidv1 = require('uuid/v1');
-const checkDbFormat = require('../../support/fretDbSupport/checkDBFormat.js');
-const {ipcRenderer} = require('electron');
-const ext_exp_json_file = require('electron').remote.getGlobal('sharedObj').ext_exp_json;
-const ext_exp_json_file_exists = require('electron').remote.getGlobal('sharedObj').exp_exp_json_exists;
 
-const app = require('electron').remote.app;
-const fs = require('fs');
+var uuid = require('uuid');
+import { v1 as uuidv1 } from 'uuid';
+//var uuidv1 = require('uuidv1')
+//const uuidv1 = require('uuid/v1');
+const {ipcRenderer} = require('electron');
+//require model methods
+//---
+//const modelDbSetters = require('../../model/modelDbSupport/modelDbSetters.js');
+//const modelDbDelete = require('../../model/modelDbSupport/deleteVariables.js');
+//const fretDbSetters = require('../../model/fretDbSupport/fretDbSetters');
+//const fretDbGetters = require('../../model/fretDbSupport/fretDbGetters');
+//---
 
 
 const formStyles = theme => ({
@@ -127,12 +132,9 @@ const formStyles = theme => ({
 });
 
 
-
 class CreateRequirementDialog extends React.Component {
 
   dialogRef = React.createRef();
-
-
   state = {
     createDialogOpen: false,
     project: null,
@@ -147,8 +149,7 @@ class CreateRequirementDialog extends React.Component {
     editor: withFields(withReact(createEditor())),
     dialogTop: 0,
     dialogLeft: 0,
-    autoFillVariables: [],
-    existingFileName: '',
+    autoFillVariables: []
   };
 
 
@@ -160,12 +161,6 @@ class CreateRequirementDialog extends React.Component {
     this.setDialogPosition();
   }
 
-  componentDidMount = () => {
-    if(process.env.EXTERNAL_TOOL=='1'){
-      console.log('componentDidMount env EXTERNAL_TOOL',process.env.EXTERNAL_TOOL);
-    }
-  }
-
   setDialogPosition = () => {
     if(this.dialogRef && this.dialogRef.current) {
       const { dialogTop, dialogLeft } = this.state;
@@ -175,7 +170,6 @@ class CreateRequirementDialog extends React.Component {
       }
     }
   }
-
 
 
   handleTextFieldFocused = name => event => {
@@ -194,9 +188,6 @@ class CreateRequirementDialog extends React.Component {
     this.setState({ createDialogOpen: false, tabValue: 0 });
     this.state.dialogCloseListener(false);
     this.setAutoFillVariables([]);
-    if(process.env.EXTERNAL_TOOL=='1'){
-      ipcRenderer.send('closeFRET');
-    }
   };
 
   handleSelectedTemplateChange = (selectedTemplate) => {
@@ -207,72 +198,7 @@ class CreateRequirementDialog extends React.Component {
     this.setState({ tabValue });
   };
 
-  createOrUpdateVariables = (variables, componentName, projectName, dbid) => {
-    variables.map(function (variableName) {
-      var modeldbid = projectName + componentName + variableName;
-      modeldb.get(modeldbid).then(function (v) {
-        if(!v.reqs.includes(dbid)) {
-          modeldb.put({
-            ...v,
-            reqs: v.reqs.concat(dbid),
-          })
-        }
-      }).catch(function (err) {
-        if(err && err.name === 'not_found') {
-          modeldb.find({
-            selector: {project: projectName, component_name: componentName},
-            fields: ['modelComponent']
-          }).then(function(result){
-            modeldb.put({
-              _id: modeldbid,
-              project: projectName,
-              component_name: componentName,
-              variable_name: variableName,
-              reqs: [dbid],
-              dataType: '',
-              idType: '',
-              description: '',
-              assignment: '',
-              modeRequirement: '',
-              modeldoc: false,
-              modelComponent: result.docs?(result.docs[0]?result.docs[0].modelComponent:''):'',
-              model_id: ''
-            });
-          }).catch(function (err) {
-            console.log(err);
-        });
-        }
-      })
-    })
-  }
-
-  removeVariables = (oldVariables, newVariables, projectName, componentName, dbid, oldComponent, oldProject) => {
-    const oldvars = checkDbFormat.checkVariableFormat(oldVariables);
-    oldvars.map(function(variableName){
-      var modeldbidOld = oldProject + oldComponent + variableName;
-      if (oldComponent !== componentName || projectName !== oldProject || !newVariables.includes(variableName)){
-        modeldb.get(modeldbidOld).then(function(v) {
-          if (v.reqs && v.reqs.length > 1) {
-            var index = v.reqs.indexOf(dbid);
-            if (index > -1){
-              const newReqs = [...v.reqs];
-              newReqs.splice(index, 1)
-              modeldb.put({
-                ...v,
-                reqs: newReqs,
-              })
-            }
-          } else {
-            modeldb.remove(v);
-          }
-        })
-      }
-    })
-  }
-
-
-
-  handleCreate = () => {
+  handleCreate = async ()  => {
     if (! this.state.createDialogOpen){return;}
     this.setState({
       createDialogOpen: false
@@ -286,75 +212,54 @@ class CreateRequirementDialog extends React.Component {
     var dbid = edittingRequirement && Object.keys(edittingRequirement).length > 0 ? edittingRequirement._id : uuidv1()
     var dbrev = edittingRequirement && Object.keys(edittingRequirement).length > 0 ? edittingRequirement._rev : undefined
     var oldVariables = [];
-    var oldModes = [];
+    var edittedFields = this.state;
+    var reqEditFields ={};
 
-    if (dbrev != undefined){
-      db.get(dbid).then(function(req){
-        if (req.semantics && req.semantics.variables){
-            oldVariables = req.semantics.variables;
-        }
-        self.removeVariables(oldVariables, semantics.variables ? semantics.variables : [], project,
-          semantics.component_name, dbid, req.semantics.component_name, req.project)
-      })
-    }
-    if (semantics && semantics.variables){
-      self.createOrUpdateVariables(semantics.variables,semantics.component_name, project, dbid);
-    }
+    reqEditFields.reqid = edittedFields.reqid;
+    reqEditFields.parent_reqid = edittedFields.parent_reqid;
+    reqEditFields.project = edittedFields.project;
+    reqEditFields.rationale = edittedFields.rationale;
+    reqEditFields.comments = edittedFields.comments;
+    reqEditFields.status = edittedFields.status;
+    reqEditFields.fulltext = edittedFields.fulltext;
+    reqEditFields.semantics = edittedFields.semantics;
+    reqEditFields.template = edittedFields.template;
+    reqEditFields.input = edittedFields.input;
+    var args = [dbid, dbrev, reqEditFields, requirementFields,semantics,project]
 
-    if(process.env.EXTERNAL_TOOL=='1'){
-      var filepath = ext_exp_json_file;
-      console.log('export json file name: ', filepath)
+    // context isolation
+    console.log('CreateRequirementDialog ipcRenderer createOrUpdateRequirement', args);
+    ipcRenderer.invoke('createOrUpdateRequirement',args).then((result) => {
+      console.log('payload2 CreateRequirementDialog createOrUpdateRequirement in : ',result)
+      console.log('result.reqCreated CreateRequirementDialog createOrUpdateRequirement in : ',result.reqCreated)
+      console.log('result.requirements CreateRequirementDialog createOrUpdateRequirement in : ',result.requirements)
+      this.props.createOrUpdateRequirement({ type: 'actions/createOrUpdateRequirement',
+                                              requirements: result.requirements,
+                                              reqCreated: result.reqCreated,
+                                              // analysis
+                                              components : result.components,     
+                                              completedComponents : result.completedComponents, 
+                                              cocospecData : result.cocospecData, 
+                                              cocospecModes : result.cocospecModes,
+                                              // variables
+                                              variable_data : result.variable_data,
+                                              modelComponent : result.modelComponent,                                   
+                                              modelVariables : result.modelVariables,   
+                                              selectedVariable : result.selectedVariable, 
+                                              importedComponents : result.importedComponents,   
+                                              })
+      if (result.reqCreated) {     // TODO fix this
+        self.state.dialogCloseListener(true, newReqId);
+      } else {
+        self.state.dialogCloseListener(false);
+      }                      
+    }).catch((err) => {
+      console.log(err);
+    })
 
-      if(ext_exp_json_file_exists){
-        // pop up warning
-        console.log('Overwriting existing external export file: ', ext_exp_json_file);
-      }
+    this.setState({ projectName: '' });
 
-      let doc = ({"requirement": {"reqid" :this.state.reqid,
-                  "parent_reqid": this.state.parent_reqid,
-                  "project": this.state.project,
-                  "rationale": this.state.rationale,
-                  "comments": this.state.comments,
-                  "status": this.state.status,
-                  "fulltext": fulltext,
-                  "template": template,
-                  "semantics": semantics,
-                  "input": input}});
-
-      fs.writeFile(filepath, JSON.stringify(doc, null, 4), (err) => {
-          if(err) {
-            return console.log(err);
-          }
-          ipcRenderer.send('closeFRET');
-      })
-    } else{
-      // create req
-      db.put({
-          _id : dbid,
-          _rev : dbrev,
-          reqid : this.state.reqid,
-          parent_reqid : this.state.parent_reqid,
-          project : this.state.project,
-          rationale : this.state.rationale,
-          comments : this.state.comments,
-          status: this.state.status,
-          fulltext : fulltext,
-          semantics : semantics,
-          template : template,
-          input : input
-        }, (err, responses) => {
-          if (err) {
-            self.state.dialogCloseListener(false);
-            return console.log(err);
-          }
-          console.log(responses);
-          self.state.dialogCloseListener(true, newReqId);
-        }
-      )
-    }
-
-
-};
+  };
 
   handleUpdateInstruction = (field) => {
     this.setState ({
@@ -409,8 +314,7 @@ class CreateRequirementDialog extends React.Component {
               selectedTemplate: -1,
             }
           );
-      } else if ((props.editRequirement)
-            && Object.keys((props.editRequirement)).length !== 0) {
+      } else if (props.editRequirement) {
         const template = props.editRequirement.template;
         const templateIds = templates.map(t => t._id);
         const selectedTemplate = template && template.id ?
@@ -428,8 +332,8 @@ class CreateRequirementDialog extends React.Component {
             }
           );
       } else {
-        const { selectedProject, existingProjectNames } = props
-        const defaultProject = existingProjectNames.includes(selectedProject) ? selectedProject : existingProjectNames[0]
+        const { selectedProject, listOfProjects } = props
+        const defaultProject = listOfProjects.includes(selectedProject) ? selectedProject : listOfProjects[0]
         this.setState({
           project: defaultProject,
           reqid: '',
@@ -465,7 +369,7 @@ class CreateRequirementDialog extends React.Component {
 
   render() {
     const { edittingRequirement, selectedTemplate, tabValue} = this.state;
-    const { classes, existingProjectNames, addChildRequirementToParent } = this.props;
+    const { classes, listOfProjects, addChildRequirementToParent } = this.props;
     const isRequirementUpdate = !addChildRequirementToParent && (edittingRequirement && Object.keys(edittingRequirement).length > 0)
     const actionLabel = isRequirementUpdate ? 'Update' : 'Create'
     const dialogTitle = actionLabel + ' Requirement'
@@ -483,7 +387,6 @@ class CreateRequirementDialog extends React.Component {
 
     const colorStyle = isRequirementUpdate ? getRequirementStyle({semantics, fulltext},false) : 'req-grey';
     return (
-      <div className={classes.root}>
         <Dialog
           open={this.state.createDialogOpen}
           onClose={this.handleClose}
@@ -571,7 +474,7 @@ class CreateRequirementDialog extends React.Component {
                             }}
                           >
                             {
-                              existingProjectNames.map(name => {
+                              this.props.listOfProjects.map(name => {
                                 return(
                                   <MenuItem id={"qa_crt_select_project_"+name} value={name} key={name}>{name}</MenuItem>
                                 )
@@ -643,12 +546,10 @@ class CreateRequirementDialog extends React.Component {
               projectName={this.state.project}
               setAutoFillVariables={this.setAutoFillVariables}
               requirements={this.props.requirements}
-              editVariables={this.props.editVariables}
               />
             </div>
           </div>
         </Dialog>
-      </div>
     );
   }
 }
@@ -657,12 +558,18 @@ CreateRequirementDialog.propTypes = {
   open: PropTypes.bool.isRequired,
   handleCreateDialogClose: PropTypes.func.isRequired,
   editRequirement: PropTypes.object,
-  editVariables: PropTypes.object,
   addChildRequirementToParent: PropTypes.object,
   selectedProject: PropTypes.string.isRequired,
-  existingProjectNames: PropTypes.array.isRequired,
+  listOfProjects: PropTypes.array.isRequired,
   requirements: PropTypes.array,
   classes: PropTypes.object.isRequired,
 }
 
-export default withStyles(formStyles)(CreateRequirementDialog);
+
+const mapDispatchToProps = {
+  createOrUpdateRequirement
+};
+
+
+export default withStyles(formStyles)
+  (connect(null,mapDispatchToProps)(CreateRequirementDialog));

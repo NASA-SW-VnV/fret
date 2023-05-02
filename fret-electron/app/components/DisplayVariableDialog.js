@@ -56,12 +56,14 @@ import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import NewVariablesDialog from './NewVariablesDialog';
+import { updateVariable_noNewVariables, } from '../reducers/allActionsSlice';
+import { connect } from "react-redux";
 
-const db = require('electron').remote.getGlobal('sharedObj').db;
-const modeldb = require('electron').remote.getGlobal('sharedObj').modeldb;
+const {ipcRenderer} = require('electron');
 
 const lustreExprSemantics = require('../../support/lustreExprSemantics');
 const copilotExprSemantics = require('../../support/copilotExprSemantics');
+
 
 const styles = theme => ({
   container: {
@@ -98,10 +100,11 @@ class DisplayVariableDialog extends React.Component {
     idType: '',
     dataType: '',
     assignment: '',
+    lustreValidAssignment: '',
     copilotAssignment: '',
     moduleName: '',
     modeRequirement: '',
-    modeldoc_id: '',
+    modeldoc_id: '',            // not needed for Redux store
     modelComponent: '',
     errorsCopilot: '',
     errorsLustre: '',
@@ -113,6 +116,14 @@ class DisplayVariableDialog extends React.Component {
     lustreVariables: [],
   }
 
+  componentDidMount() {
+    
+  }  
+
+  componentWillUnmount() {
+
+  }
+  // The following 2 functions are not used.  TBD: check and remove
   handleNewVariables = (variables) => {
     this.openNewVariablesDialog(variables);
   }
@@ -131,6 +142,7 @@ class DisplayVariableDialog extends React.Component {
       copilotVariables: [],
       lustreVariables: [],
       assignment: '',
+      lustreValidAssignment: '',
       copilotAssignment: '',
     });
   }
@@ -151,8 +163,17 @@ class DisplayVariableDialog extends React.Component {
 
     if (name === 'assignment') {
       resultLustre = lustreExprSemantics.compileLustreExpr(event.target.value);
+      //console.log("result Lustre "+resultLustre.variables)
+      let tempAssignment = event.target.value;
+      if (resultLustre.variables) {
+        for (const lustreVar of resultLustre.variables) {
+          var regex = new RegExp('\\b' + lustreVar + '\\b', "g");
+          tempAssignment = tempAssignment.replace(regex, '__'+lustreVar);
+        }
+      }
       this.setState({
         [name]: event.target.value,
+        lustreValidAssignment: tempAssignment,
         errorsLustre: resultLustre.parseErrors ? 'Parse Errors: ' + resultLustre.parseErrors : '',
         lustreVariables: resultLustre.variables ? resultLustre.variables : []
       });
@@ -185,78 +206,58 @@ class DisplayVariableDialog extends React.Component {
   handleUpdate = () => {
     const self = this;
     const { selectedVariable } = this.props;
-    const { description, idType, dataType, assignment, copilotAssignment, modeRequirement, modeldoc_id, modelComponent, lustreVariables, copilotVariables, moduleName } = this.state;
+    const { description, idType, dataType, assignment, lustreValidAssignment, copilotAssignment, modeRequirement, modeldoc_id, modelComponent, lustreVariables, copilotVariables, moduleName } = this.state;
     var modeldbid = selectedVariable._id;
-    var completedVariable = false;
-    var newVariables = [];
     var variables = lustreVariables.concat(copilotVariables);
 
-    if (variables.length) {
-      modeldb.find({
-        selector: {
-          project: selectedVariable.project,
-          component_name: selectedVariable.component_name,
-          modeldoc: false
-        }
-      }).then(function (result) {
-        if(result.docs.length != 0) {
-          variables.forEach(function (v) {
-            if (!result.docs.some(r => r.variable_name === v)) {
-              newVariables.push(v);
-            }
-          })
-          self.handleNewVariables(newVariables);
-        }
-      });
-    }
+    var args = [selectedVariable.project,selectedVariable.component_name,variables, idType,
+      modeldoc_id, dataType, modeldbid, description,assignment,lustreValidAssignment,
+      copilotAssignment,modeRequirement,modelComponent,lustreVariables,copilotVariables,
+      moduleName]
 
-    /*
-     For each Variable Type we need the following:
-      Mode -> Mode Requirement
-      Input/Output -> Model Variable or DataType
-      Internal -> Data Type + Variable Assignment
-      Function -> nothing (moduleName optionally)
-    */
-    if (idType === "Input" || idType === 'Output') {
-      if (modeldoc_id || dataType) {
-        completedVariable = true;
+    // context isolation
+
+    ipcRenderer.invoke('updateVariable_checkNewVariables',args).then(async (result) => {
+      var noNewVariablesResult = result
+      if (result.openNewVariablesDialog){
+        // open new Variable dialog
+        console.log('DisplayVariableDialog invoke updateVariable_checkNewVariables',result)
+        // open new variable dialog
+        const newVariables= result.newVariables
+        self.handleNewVariables(newVariables);
+        await ipcRenderer.invoke('updateVariable_noNewVariables',args).then((result) => {
+          noNewVariablesResult = result
+        }
+        ).catch((err) => {
+          console.log(err);
+        })
       }
-    } else if (modeRequirement || (dataType && (assignment || copilotAssignment)) || (idType === "Function")) {
-      completedVariable = true;
-    }
+      this.props.updateVariable_noNewVariables({ type: 'actions/updateVariable_noNewVariables',
+                                    // analysis
+                                    components : noNewVariablesResult.components,     
+                                    completedComponents : noNewVariablesResult.completedComponents, 
+                                    cocospecData : noNewVariablesResult.cocospecData, 
+                                    cocospecModes : noNewVariablesResult.cocospecModes,                                   
+                                    // variables
+                                    variable_data : noNewVariablesResult.variable_data,
+                                    modelComponent : noNewVariablesResult.modelComponent,                                   
+                                    modelVariables : noNewVariablesResult.modelVariables,   
+                                    selectedVariable : noNewVariablesResult.selectedVariable, 
+                                    importedComponents : noNewVariablesResult.importedComponents,
+                                    })
 
-    modeldb.get(modeldbid).then(function (vdoc) {
-      return modeldb.put({
-        _id: modeldbid,
-        _rev: vdoc._rev,
-        project: vdoc.project,
-        component_name: vdoc.component_name,
-        variable_name: vdoc.variable_name,
-        reqs: vdoc.reqs,
-        dataType: dataType,
-        idType: idType,
-        moduleName: moduleName,
-        description: description,
-        assignment: assignment,
-        copilotAssignment: copilotAssignment,
-        modeRequirement: modeRequirement,
-        modeldoc: false,
-        modeldoc_id: modeldoc_id,
-        modelComponent: modelComponent,
-        completed: completedVariable
-      }).then(function (response){
-        self.state.checkComponentCompleted(vdoc.component_name, vdoc.project);
-      }).catch(function (err) {
-        self.handleClose();
-        return console.log(err);
-      });
-    }).then(() => {
-      this.state.dialogCloseListener(false);
-    });
+    }).catch((err) => {
+      self.handleClose();
+      console.log(err);
+    })
+
+    this.setState({ projectName: '' });
+    self.handleClose();
+
   }
 
   componentWillReceiveProps = (props) => {
-    const { selectedVariable, handleDialogClose, checkComponentCompleted } = props
+    const { selectedVariable, handleDialogClose } = props
     if (Object.keys(selectedVariable).length) {
       this.setState({
         description: selectedVariable.description,
@@ -264,12 +265,12 @@ class DisplayVariableDialog extends React.Component {
         moduleName: selectedVariable.moduleName,
         dataType: selectedVariable.dataType,
         assignment: selectedVariable.assignment,
+        lustreValidAssignment: selectedVariable.lustreValidAssignment,
         copilotAssignment: selectedVariable.copilotAssignment,
         modeRequirement: selectedVariable.modeRequirement,
         modeldoc_id: selectedVariable.modeldoc_id,
         modelComponent: selectedVariable.modelComponent,
         dialogCloseListener: handleDialogClose,
-        checkComponentCompleted : checkComponentCompleted,
       });
     }
   }
@@ -282,6 +283,7 @@ class DisplayVariableDialog extends React.Component {
         dataType: '',
         modeldoc_id: '',
         assignment: '',
+        lustreValidAssignment: '',
         copilotAssignment: '',
         modeRequirement: '',
         moduleName: ''
@@ -292,6 +294,7 @@ class DisplayVariableDialog extends React.Component {
         dataType: 'boolean',
         modeldoc_id: '',
         assignment: '',
+        lustreValidAssignment: '',
         copilotAssignment: '',
         modeRequirement: '',
         moduleName: ''
@@ -301,23 +304,15 @@ class DisplayVariableDialog extends React.Component {
 
   handleChange = event => {
     const self = this;
-    const { selectedVariable } = this.props;
-    const { modelComponent } = this.state;
 
     if (event.target.name === 'modeldoc_id') {
-      modeldb.find({
-        selector: {
-          component_name: modelComponent,
-          project: selectedVariable.project,
-          variable_name: event.target.value
-        }
-      }).then(function (result) {
-        //TODO:Update when higher dimensions allowed
-        self.setState({
-          dataType: result.docs[0].dataType[0],
-          modeldoc_id: event.target.value
-        });
+
+      self.setState({
+        dataType: this.state.dataType,   // TBD querry variable array from store and not querry DB
+        modeldoc_id: event.target.value         // not from db; this is a local state
       });
+
+
     }
     else {
       this.setState({
@@ -328,7 +323,8 @@ class DisplayVariableDialog extends React.Component {
 
   render() {
     const { classes, selectedVariable, modelVariables, open } = this.props;
-    const { idType, errorsLustre, errorsCopilot, checkLustre, checkCoPilot } = this.state;
+
+    const { idType, lustreValidAssignment, errorsLustre, errorsCopilot, checkLustre, checkCoPilot } = this.state;
     return (
       <div>
         <Dialog
@@ -610,7 +606,10 @@ DisplayVariableDialog.propTypes = {
   handleDialogClose: PropTypes.func.isRequired,
   modelVariables: PropTypes.array.isRequired,
   classes: PropTypes.object.isRequired,
-  checkComponentCompleted: PropTypes.func.isRequired
 }
 
-export default withStyles(styles)(DisplayVariableDialog);
+const mapDispatchToProps = {
+  updateVariable_noNewVariables,
+};
+
+export default withStyles(styles)(connect(null,mapDispatchToProps)(DisplayVariableDialog));

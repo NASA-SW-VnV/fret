@@ -52,8 +52,9 @@ import Select from '@material-ui/core/Select';
 
 import Typography from '@material-ui/core/Typography';
 
-
-const requirementsImport = require('../../support/requirementsImport/convertAndImportRequirements');
+const {ipcRenderer} = require('electron');
+import { connect } from "react-redux";
+import { importRequirementsCsv } from '../reducers/allActionsSlice';
 
 
 const styles = theme => ({
@@ -120,7 +121,33 @@ class RequirementImportDialogs extends React.Component {
     else {
       importedInfo.projectField = true;
     }
-    requirementsImport.csvToJsonConvert(importedInfo);
+  
+    const argList = [importedInfo]
+    ipcRenderer.invoke('importRequirementsCsv',argList).then((result) => {
+      this.props.importRequirementsCsv({ type: 'actions/importRequirementsCsv',
+                                      // projects
+                                      listOfProjects : result.listOfProjects,
+                                      // requirements
+                                      requirements : result.requirements,                                       
+                                      // analysis
+                                      components : result.components,     
+                                      completedComponents : result.completedComponents, 
+                                      cocospecData : result.cocospecData, 
+                                      cocospecModes : result.cocospecModes,
+                                      // variables
+                                      variable_data : result.variable_data,
+                                      modelComponent : result.modelComponent,                                   
+                                      modelVariables : result.modelVariables,   
+                                      selectedVariable : result.selectedVariable, 
+                                      importedComponents : result.importedComponents,     
+
+                      })
+    }).catch((err) => {
+      console.log(err);
+    })
+
+    this.setState({ projectName: '' });
+
     this.setState({ open: false });
     this.state.dialogCloseListener();
   }
@@ -170,7 +197,7 @@ class RequirementImportDialogs extends React.Component {
                   className={classes.selectEmpty}
                 >
                 {csvFields.map(v => {
-                    return(<MenuItem 
+                    return(<MenuItem
                       id={"qa_csvImp_mi_id_"+v.replace(/\s+/g, '_')}
                       key={v} value={v}>{v}</MenuItem>)
                 })}
@@ -185,13 +212,13 @@ class RequirementImportDialogs extends React.Component {
                   onChange={this.handleChange('description')}
                   name="description"
                 >
-                  <MenuItem 
+                  <MenuItem
                     id="qa_csvImp_mi_des_None"
                     value="">
                     <em>None</em>
                   </MenuItem>
                 {csvFields.map(v => {
-                    return(<MenuItem 
+                    return(<MenuItem
                       id={"qa_csvImp_mi_des_"+v.replace(/\s+/g, '_')}
                       key={v} value={v}>{v}</MenuItem>)
                 })}
@@ -209,13 +236,13 @@ class RequirementImportDialogs extends React.Component {
                   name="projectCategory"
                   className={classes.selectEmpty}
                 >
-                <MenuItem 
+                <MenuItem
                   id="qa_csvImp_mi_mapCSVfield"
                   value='CSVField'>Map to CSV field</MenuItem>
-                <MenuItem 
+                <MenuItem
                   id="qa_csvImp_mi_pickExistFRETproj"
                   value='ExistingProject'>Pick existing FRET Project</MenuItem>
-                <MenuItem 
+                <MenuItem
                   id="qa_csvImp_mi_createNewProj"
                   value='CreateProject'>Create new Project</MenuItem>
                 </Select>
@@ -270,15 +297,15 @@ class RequirementImportDialogs extends React.Component {
             </div>
             </DialogContent>
             <DialogActions>
-              <Button 
+              <Button
                 id="qa_csvImp_btn_cancel"
-                onClick={this.handleClose} 
+                onClick={this.handleClose}
                 color="primary">
                 Cancel
               </Button>
-              <Button 
+              <Button
                 id="qa_csvImp_btn_ok"
-                onClick={this.handleCloseSupported} 
+                onClick={this.handleCloseSupported}
                 color="primary" autoFocus>
                 OK
               </Button>
@@ -298,4 +325,10 @@ class RequirementImportDialogs extends React.Component {
     importedReqs: PropTypes.array.isRequired
   }
 
-  export default withStyles(styles)(RequirementImportDialogs);
+
+const mapDispatchToProps = {
+  importRequirementsCsv
+};
+
+
+export default withStyles(styles)(connect(null,mapDispatchToProps)(RequirementImportDialogs));

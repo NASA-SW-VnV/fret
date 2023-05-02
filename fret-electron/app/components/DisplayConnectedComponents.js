@@ -160,7 +160,7 @@ class DisplayConnectedComponents extends React.Component {
                 &nbsp;
                 &nbsp;
                 &nbsp;
-                <DiagnosisRequirementsTable selectedProject={selectedProject} existingProjectNames={[selectedProject]}/>
+                <DiagnosisRequirementsTable selectedProject={selectedProject} listOfProjects={[selectedProject]}/>
               </div>
             </DiagnosisProvider>
           </TabContainer>

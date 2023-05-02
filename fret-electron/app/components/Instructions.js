@@ -60,8 +60,8 @@ import css from './Instructions.css';
 import Help from './Help';
 import ColorPicker from './ColorPicker';
 import LTLSimLauncher from './LTLSimLauncher';
-
 import TemplatePanel from './TemplatePanel';
+import Glossary from "./Glossary";
 
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -79,8 +79,9 @@ import {
   timingInstruction,
   responseInstruction
 } from 'examples'
-import Glossary from "./Glossary";
 
+import { connect } from "react-redux";
+import { updateFieldColors } from '../reducers/allActionsSlice';
 
 const instructions = {
   'scopeField' : scopeInstruction,
@@ -91,11 +92,8 @@ const instructions = {
 }
 
 const constants = require('../parser/Constants');
-
 const fieldsWithExplanation = ['scopeField', 'conditionField', 'componentField', 'responseField', 'timingField'];
-const isDev = require('electron-is-dev');
-const db = require('electron').remote.getGlobal('sharedObj').db;
-
+const {ipcRenderer} = require('electron');
 const ltlsim = require('ltlsim-core').ltlsim;
 
 const styles = theme => ({
@@ -196,13 +194,14 @@ class Instructions extends React.Component {
     this.LTLSimStatus = status;
 
     this.state = {
-      fieldColors : {},
+      //fieldColors : {},
       LTLSimDialogOpen: false,
       components: {},
       selectedItem: null,
       ptFormat: 'SMV',
       ftFormat: 'SMV',
-      ftInfinite: false
+      ftExpanded: false,
+      ptExpanded: false
     };
 
     this.openLTLSimDialog = this.openLTLSimDialog.bind(this);
@@ -210,48 +209,36 @@ class Instructions extends React.Component {
   }
 
   componentWillUnmount() {
-    this.mounted = false
+    this.mounted = false;
+
   }
 
-  componentDidMount = () => {
+  componentDidMount = async () => {
     this.mounted = true
     var notationPath = `../docs/_media/user-interface/examples/svgDiagrams/Notation.svg`;
     this.setState({
       notationUrl: notationPath
-    })
+    });
 
-    const db = require('electron').remote.getGlobal('sharedObj').db;
-    db.get('FRET_PROPS').then((doc) => {
-      this.setState({
-        fieldColors: doc.fieldColors
-      })
-    }).catch((err) => {
-      console.log(err)
-    })
   }
 
   openDiagramNotationWindow = () => {
     window.open(this.state.notationUrl);
   }
 
-  handleColorUpdate = (color) => {
+  handleColorUpdate = async (color) => {
     const fieldKey = this.props.field.toLowerCase().replace('field','')
-    let updatedFieldColors;
-    db.get('FRET_PROPS').then((doc) => {
-      updatedFieldColors = doc.fieldColors
-      updatedFieldColors[fieldKey] = color.hex
-      return db.put({
-        _id: 'FRET_PROPS',
-        _rev: doc._rev,
-        fieldColors: updatedFieldColors
-      });
-    }).then(() => {
-      this.setState({
-        fieldColors: updatedFieldColors,
-      })
-    }).catch(function (err) {
+
+    // context isolation
+    var argList = [fieldKey,color];
+    ipcRenderer.invoke('updateFieldColors',argList).then((result) => {
+      console.log('fieldColorsInitialize in Instructions.js result ',result);
+      this.props.updateFieldColors({  type: 'actions/updateFieldColors',
+                                      fieldColors: result.fieldColors})
+    }).catch((err) => {
       console.log(err);
-    });
+    })
+
   }
 
 handleFormatChange = (event) => {
@@ -261,9 +248,13 @@ handleFormatChange = (event) => {
 }
 
 handleSwitchChange =(event) => {
-  if (event.target.name === 'ftInfinite'){
+ if (event.target.name === 'ptExpanded'){
    this.setState({
-     ftInfinite: event.target.checked,
+     ptExpanded: event.target.checked,
+   })
+ } else if (event.target.name === 'ftExpanded'){
+   this.setState({
+     ftExpanded: event.target.checked,
    })
  }
 }
@@ -299,7 +290,7 @@ handleSwitchChange =(event) => {
                             onOpen={this.openLTLSimDialog}
                             onClose={this.closeLTLSimDialog}
                             requirement={requirement}
-            		    project={this.props.projectName}
+            		            project={this.props.projectName}
                             requirementID={requirementID}
                             />;
     }
@@ -356,14 +347,22 @@ handleSwitchChange =(event) => {
             </div>
             <div>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-              <FormControlLabel id="qa_crtAst_sem_btn_switchFutureInfinite"
-                  control={<Switch size="small" checked={this.state.ftInfinite} onChange={this.handleSwitchChange} name="ftInfinite" />}
-                  label="Infinite trace"/>
+            {(this.props.formalization.semantics.ft !== this.props.formalization.semantics.ftExpanded)
+             ?
+              <FormControlLabel id="qa_crtAst_sem_btn_switchFutureEnabled"
+                  control={<Switch size="small" checked={this.state.ftExpanded} onChange={this.handleSwitchChange} name="ftExpanded" />}
+                  label="Expanded"/>
+             :
+             // disable for cases that the SMV form is the same for ft and ftExpanded
+                <FormControlLabel id="qa_crtAst_sem_btn_switchFutureDisabled" disabled
+                    control={<Switch size="small"checked/>}
+                    label="Expanded"/>
+            }
             </div>
             <br />
           </FormGroup> <br />
             <div id="qa_crtAst_sem_typ_futureTimeFormula" className={classes.formula}
-              dangerouslySetInnerHTML={{ __html: (this.state.ftInfinite ? this.props.formalization.semantics.ftInfAUExpanded : this.props.formalization.semantics.ftExpanded)}} />
+              dangerouslySetInnerHTML={{ __html: (this.state.ftExpanded ? this.props.formalization.semantics.ftExpanded: this.props.formalization.semantics.ft) }} />
 
             <br />
             <div id="qa_crtAst_sem_typ_futureTimeComp" className={classes.description} dangerouslySetInnerHTML={{ __html:' Target: '+ this.props.formalization.semantics.component + ' component.'}} />
@@ -393,12 +392,25 @@ handleSwitchChange =(event) => {
           <FormHelperText>Format</FormHelperText>
           </FormControl>
           </div>
+          <div>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          {((this.state.ptFormat === 'SMV') && (this.props.formalization.semantics.pt !== this.props.formalization.semantics.ptExpanded))
+           ?
+            <FormControlLabel id="qa_crtAst_sem_btn_switchPastEnabled"
+                control={<Switch size="small" checked={this.state.ptExpanded} onChange={this.handleSwitchChange} name="ptExpanded" />}
+                label="Expanded"/>
+           :
+           // disable Expanded for Lustre and for cases that the SMV form is the same for pt and ptExpanded
+              <FormControlLabel id="qa_crtAst_sem_btn_switchPastDisabled" disabled
+                  control={<Switch size="small" checked/>}
+                  label="Expanded"/>
+          }
+          </div>
           <br />
-        </FormGroup>
-        <br />
+        </FormGroup> <br />
           <div id="qa_crtAst_sem_typ_pastTimeFormula" className={classes.formula}
           dangerouslySetInnerHTML={{ __html: (this.state.ptFormat=='SMV'
-          ? (this.props.formalization.semantics.ptExpanded)
+          ? (this.state.ptExpanded ? this.props.formalization.semantics.ptExpanded: this.props.formalization.semantics.pt)
           : this.props.formalization.semantics.CoCoSpecCode)}} />
           <br />
           <div id="qa_crtAst_sem_typ_pastTimeComp" className={classes.description} dangerouslySetInnerHTML={{ __html:' Target: '+ this.props.formalization.semantics.component + ' component.'}} />
@@ -505,14 +517,14 @@ handleSwitchChange =(event) => {
   }
 
   renderInstruction(field) {
-    const { classes } = this.props;
+    const { classes, fieldColors } = this.props;
     if (fieldsWithExplanation.includes(field)) {
       const mdsrc = instructions[field]
       return(
         <div id="qa_crtAst_div_explanations">
           <ReactMarkdown source={mdsrc} />
           <ColorPicker
-            initialColorInHex={this.state.fieldColors[field.replace('Field', '').toLowerCase()]}
+            initialColorInHex={fieldColors[field.replace('Field', '').toLowerCase()]}
             handleColorUpdate={this.handleColorUpdate} />
         </div>
       )
@@ -560,8 +572,7 @@ handleSwitchChange =(event) => {
             id = "Glossary"
             projectName={this.props.projectName}
             setAutoFillVariables={this.props.setAutoFillVariables}
-            requirements={this.props.requirements}
-            editVariables={this.props.editVariables}/>
+            requirements={this.props.requirements}/>
         </TabContainer>}
       </div>
     );
@@ -580,8 +591,18 @@ Instructions.propTypes = {
   tabValue: PropTypes.number.isRequired,
   handleTabChange: PropTypes.func.isRequired,
   requirements: PropTypes.array,
-  setAutoFillVariables: PropTypes.func,
-  editVariables: PropTypes.object
+  setAutoFillVariables: PropTypes.func
 };
 
-export default withStyles(styles)(Instructions);
+function mapStateToProps(state) {
+  const fieldColors = state.actionsSlice.completedComponents;
+  return {
+    fieldColors
+  };
+}
+
+const mapDispatchToProps = {
+  updateFieldColors,
+};
+
+export default withStyles(styles)(connect(mapStateToProps,mapDispatchToProps)(Instructions));

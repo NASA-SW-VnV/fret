@@ -42,9 +42,12 @@
  *
  * @flow
  */
-import { app, BrowserWindow } from 'electron';
+
+import { app, BrowserWindow, ipcMain } from 'electron';
 import MenuBuilder from './menu';
-const {ipcMain} = require('electron');
+import FretModel from '../model/FretModel';
+
+console.log('main.dev __dirname: ', __dirname)
 const path = require('path');
 const fs = require("fs");
 
@@ -77,6 +80,7 @@ if (process.env.FRET_LEVEL_DB){
 var leveldbDB = new NodePouchDB(leveldbDBname);
 var modelDB = new NodePouchDB(modelDBname);
 
+var fretModel = new FretModel();
 var ext_imp_json_file = '';
 var ext_exp_json_file = '';
 var ext_exp_json_file_exists =  false;
@@ -182,13 +186,14 @@ leveldbDB.get(FRET_PROJECTS_DBKEY).catch((err) => {
 })
 
 const FRET_REALTIME_CONFIG = 'REAL_TIME_CONFIG';
+const system_DBkeys = [ FRET_PROJECTS_DBKEY, FRET_PROPS_DBKEY, FRET_REALTIME_CONFIG ]
 global.sharedObj = {
   ext_imp_json: ext_imp_json_file,
   ext_exp_json: ext_exp_json_file,
   exp_exp_json_exists: ext_exp_json_file_exists,
   db: leveldbDB,
   modeldb: modelDB,
-  system_dbkeys: [ FRET_PROJECTS_DBKEY, FRET_PROPS_DBKEY, FRET_REALTIME_CONFIG ]
+  system_dbkeys: system_DBkeys
 };
 
 let mainWindow = null;
@@ -219,6 +224,150 @@ const installExtensions = async () => {
 
 
 /**
+ * Add controllers
+ */
+
+ipcMain.handle('closeFRET', async (evt, arg) => {
+  app.quit();
+})
+
+// initialization
+ipcMain.handle('initializeFromDB', async(evt, arg) => {
+  console.log('main.dev initializeFromDB arg: ', arg);
+  const result = await fretModel.initializeFromDB();
+  //console.log('main.dev initializeFromDB result return: ', result);
+  return result
+})
+
+// project slice
+
+ipcMain.handle('selectProject', async (evt, arg) => {
+  console.log('main.dev selectProject called, arg: ', arg);
+  const result = await fretModel.selectProject(evt, arg);
+  console.log('*** main.dev selectProject result.completedComponents: ', result.completedComponents);
+  console.log('*** main.dev selectProject result.importedComponents: ', result.importedComponents);
+
+  return result
+})
+
+ipcMain.handle('addProject', async (evt, arg) => {
+  const result = await fretModel.addProject(evt, arg);
+  //console.log('main.dev addProject result return: ', result);
+  return result
+})
+
+ipcMain.handle('deleteProject', async (evt, arg) => {
+  const result = await fretModel.deleteProject(evt, arg);
+  //console.log('main.dev deleteProject result return: ', result);
+  return result
+})
+
+ipcMain.handle('updateFieldColors', async (evt, arg) => {
+  const result = await fretModel.updateFieldColors(evt, arg);
+  //console.log('main.dev.js updateFieldColors result: ', result)
+  return result
+})
+
+// requirement slice
+ipcMain.handle('createOrUpdateRequirement', async(evt, arg) => {
+  //console.log('main.dev createOrUpdateRequirement arg: ', arg);
+  const result = await fretModel.createOrUpdateRequirement(evt, arg);
+  //console.log('main.dev createOrUpdateRequirement result return: ', result);
+  return result
+})
+
+ipcMain.handle('retrieveRequirement', async(evt, arg) => {
+  const result = await fretModel.retrieveRequirement(evt, arg);
+  //console.log('main.dev retrieveRequirement result: ', result);
+  return result
+})
+
+ipcMain.handle('deleteRequirement', async (evt, arg) => {
+  console.log('main.dev deleteRequirement arg: ', arg);
+  const result = await fretModel.deleteRequirement(evt, arg);
+  return result
+})
+
+ipcMain.handle('importRequirements', async (evt, arg) => {
+  const result = await fretModel.importRequirements(evt, arg)
+  //console.log('main.dev importRequirements result: ', result);
+  return result
+})
+
+ipcMain.handle('importRequirementsCsv', async (evt, arg) => {
+  const result = await fretModel.importRequirementsCsv(evt, arg)
+  return result
+})
+
+ipcMain.handle('formalizeRequirement', async (evt, arg) => {
+  const result = await fretModel.formalizeRequirement(evt, arg);
+  return result
+})
+
+ipcMain.handle('changeRequirementStatus', async (evt, arg) => {
+  const result = await fretModel.changeRequirementStatus(evt, arg);
+  return result
+})
+
+ipcMain.handle('exportRequirements', async (evt, arg) => {
+  const result = await fretModel.exportRequirements(evt, arg);
+  return result
+})
+
+ipcMain.handle('selectVariable', async(evt, arg) => {
+  const result = await fretModel.selectVariable(evt, arg);
+  return result
+})
+
+ipcMain.handle('updateVariable_checkNewVariables', async(evt, arg) => {
+  const result = await fretModel.updateVariable_checkNewVariables(evt, arg);
+  return result
+})
+
+ipcMain.handle('updateVariable_noNewVariables', async(evt, arg) => {
+  const result = await fretModel.updateVariable_noNewVariables(evt, arg);
+  return result
+})
+
+ipcMain.handle('importComponent', async (evt, arg) => {
+  console.log('main.dev.js starting importComponent')
+  const result = await fretModel.importComponent(evt, arg);
+  console.log('main.dev.js returning importComponent')
+  return result
+})
+
+ipcMain.handle('exportComponent', async (evt, arg) => {
+  const result = await fretModel.exportComponent(evt, arg);
+  return result
+})
+
+ipcMain.handle('selectCorspdModelComp', async (evt, arg) => {
+  const result = await fretModel.selectCorspdModelComp(evt, arg);
+  return result
+})
+
+// realizability
+ipcMain.handle('ltlsimSaveJson', async (evt, arg) => {
+  const result = await fretModel.ltlsimLoadProject(evt, arg);
+  return result
+})
+
+ipcMain.handle('checkRealizability', async (evt, arg) => {
+  const result = await fretModel.checkRealizability(evt, arg);
+  return result
+})
+
+ipcMain.handle('rlzDiagUnrealizableRequirement', async (evt, arg) => {
+  const result = await fretModel.rlzDiagUnrealizableRequirement(evt, arg);
+  return result
+})
+
+ipcMain.handle('rlzSaveReport', async (evt, arg) => {
+  const result = await fretModel.rlzSaveReport(evt, arg);
+  return result
+})
+
+/**
  * Add event listeners...
  */
 
@@ -236,16 +385,23 @@ app.on('ready', async () => {
     await installExtensions();
   }
 
-  mainWindow = new BrowserWindow({
-
-    webPreferences: {
-      nodeIntegration: true,
-      enableRemoteModule: true
-    },
-    show: false,
-    width: 1200,
-    height: 1050
-  });
+  try {
+    console.log('main.dev __dirname: ', __dirname)
+    mainWindow = new BrowserWindow({
+      
+      webPreferences: {
+        nodeIntegration: true,   // remove for context isolation
+        enableRemoteModule: true,   // remove for context isolation
+        //contextIsolation: true, // add this for context isolation
+        //preload: path.join(__dirname,'preload.js'),   // add this for context isolation
+      },
+      show: false,
+      width: 1200,
+      height: 1050
+    });
+  } catch(error){
+    console.log(`Error in main.dev : ${error}`);
+  }
 
   mainWindow.loadURL(`file://${__dirname}/app.html`);
 
@@ -299,3 +455,5 @@ app.on('ready', async () => {
   const menuBuilder = new MenuBuilder(mainWindow);
   menuBuilder.buildMenu();
 });
+
+export {leveldbDB, modelDB, system_DBkeys};

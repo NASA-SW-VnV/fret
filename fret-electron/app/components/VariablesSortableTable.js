@@ -62,18 +62,17 @@ import { lighten } from '@material-ui/core/styles/colorManipulator';
 import Toolbar from '@material-ui/core/Toolbar';
 
 import DisplayVariableDialog from './DisplayVariableDialog';
+import { connect } from "react-redux";
+const {ipcRenderer} = require('electron');
+import { importComponent, selectCorspdModelComp, selectVariable,} from '../reducers/allActionsSlice';
 
-const sharedObj = require('electron').remote.getGlobal('sharedObj');
-const modeldb = sharedObj.modeldb;
-
-const fs = require('fs');
 const archiver = require('archiver');
 const app = require('electron').remote.app;
 const dialog = require('electron').remote.dialog;
 const utilities = require('../../support/utilities');
-const uuidv1 = require('uuid/v1');
-
-var dbChangeListener;
+//const uuidv1 = require('uuid/v1');
+var uuid = require('uuid');
+import { v1 as uuidv1 } from 'uuid';
 
 let counter = 0;
 function createData(variable_name, modeldoc_id, idType, dataType, description) {
@@ -213,7 +212,7 @@ let TableComponentBar = props => {
         <FormControl className={classes.modelRoot}>
           <InputLabel htmlFor="component-helper">Corresponding Model Component</InputLabel>
           <Select
-            id="qa_var_sel_corresModComp"
+            id={"qa_var_sel_corresModComp_"+fretComponent}
             key={fretComponent=== undefined ? '' : fretComponent}
             value={modelComponent}
             onChange={handleModelChange}
@@ -225,7 +224,7 @@ let TableComponentBar = props => {
               <em>None</em>
             </MenuItem>
             {importedComponents.map(c => {
-              return (<MenuItem id={"qa_var_mi_corresModComp_"+c} value={c} key={c}>
+              return (<MenuItem id={"qa_var_mi_corresModComp_"+c.replace(/\s+/g, '_')} value={c} key={c}>
                         {c}
                       </MenuItem>)
             })}
@@ -234,7 +233,7 @@ let TableComponentBar = props => {
       </form>
       <Tooltip title='Import model information'>
         <Button size="small" onClick={importComponentModel} 
-          id="qa_var_btn_import"
+          id={"qa_var_btn_import_"+fretComponent}
           color="secondary" variant='contained' >
           Import
         </Button>
@@ -275,106 +274,31 @@ class VariablesSortableTable extends React.Component {
     orderBy: 'variable_name',
     page: 0,
     rowsPerPage: 10,
-    data: [],
-    selectedVariable: {},
     displayVariableOpen: false,
     snackbarOpen: false,
     snackBarDisplayInfo: {},
-    modelComponent: '',
-    modelVariables: [],
     language: '',
-    importedComponents: []
   }
 
 
   constructor(props){
     super(props);
-    dbChangeListener = modeldb.changes({
-      since: 'now',
-      live: true,
-      include_docs: true
-    }).on('change', (change) => {
-        this.synchStateWithModelDB();
-    }).on('complete', function(info) {
-      console.log(info);
-    }).on('error', function (err) {
-      console.log(err);
-    });
+  
   }
 
   componentDidMount() {
-    this.mounted = true;
-    this.synchStateWithModelDB();
+    this.mounted = true; 
   }
 
   componentWillUnmount() {
     this.mounted = false;
-    dbChangeListener.cancel();
   }
 
   componentDidUpdate(prevProps) {
     if (this.props.selectedProject !== prevProps.selectedProject) {
-      this.synchStateWithModelDB();
+      //this.synchStateWithModelDB();
     }
   }
-
-  synchStateWithModelDB(){
-    if (! this.mounted) return;
-    this.synchFRETvariables();
-  }
-
-  synchFRETvariables() {
-    const {selectedProject, selectedComponent} = this.props,
-        self = this;
-    let componentModel = '';
-      modeldb.find({
-        selector: {
-          project : selectedProject,
-          component_name : selectedComponent,
-        }
-      }).then(function(result){
-          self.setState({
-            data: result.docs.map(r => {
-                componentModel = r.modelComponent;
-                return createData(r.variable_name, r.modeldoc_id, r.idType, r.dataType, r.description)
-              }).sort((a, b) => {return a.variable_name > b.variable_name}),
-            modelComponent: componentModel
-          })
-          self.synchModelVariablesAndComponents(componentModel);
-        }).catch((err) => {
-          console.log(err);
-        })
-  };
-
-  synchModelVariablesAndComponents(componentModel){
-    const {selectedProject, selectedComponent} = this.props,
-        self = this;
-    let modelVariables = [],
-        modelComponents = [];
-
-    modeldb.find({
-      selector: {
-        project: selectedProject,
-        modeldoc: true
-      }
-    }).then(function(result){
-      result.docs.forEach(function(v){
-        if (! modelComponents.includes(v.component_name)) {
-          modelComponents.push(v.component_name);
-        }
-        if (v.component_name === componentModel) {
-                  modelVariables.push(v);
-        }
-      })
-      self.setState({
-        modelVariables: modelVariables,
-        importedComponents: modelComponents.sort((a, b) => {return a.toLowerCase().trim() > b.toLowerCase().trim()})
-      })
-    }).catch((err) => {
-      console.log(err);
-    })
-  };
-
 
   handleRequestSort = (event, property) => {
     const orderBy = property;
@@ -396,15 +320,29 @@ class VariablesSortableTable extends React.Component {
   handleVariableDialogOpen = (row) => {
     const {selectedProject, selectedComponent} = this.props;
     if (row.variable_name) {
-      const dbkey = selectedProject + selectedComponent + row.variable_name;
-      modeldb.get(dbkey).then((doc) => {
+
+      var args = [selectedProject + selectedComponent + row.variable_name]
+      // context isolation
+      console.log('ipcRenderer args for selectVariable:', args);
+      ipcRenderer.invoke('selectVariable',args).then((result) => {
+        console.log('ipcRenderer selectVariable result:', result.selectedVariable);
+        this.props.selectVariable({  type: 'actions/selectVariable',
+                                    // variables
+                                    selectedVariable : result.selectedVariable, 
+                                   })
         this.setState({
-          selectedVariable: doc,
           displayVariableOpen: true
         })
       }).catch((err) => {
         console.log(err);
-      });
+      })
+   
+
+
+
+      
+      
+ 
     }
   }
 
@@ -423,67 +361,56 @@ class VariablesSortableTable extends React.Component {
     const modelComponent = event.target.value;
     const {selectedProject, selectedComponent} = this.props;
 
-    this.setState({ modelComponent: modelComponent});
-    modeldb.find({
-      selector: {
-        project: selectedProject,
-        component_name: selectedComponent,
-        modeldoc: false,
-      }
-    }).then(function (result){
-      result.docs.forEach(function(vdoc){
-        modeldb.put({
-            _id: vdoc._id,
-            _rev: vdoc._rev,
-            project: vdoc.project,
-            component_name: vdoc.component_name,
-            variable_name: vdoc.variable_name,
-            reqs: vdoc.reqs,
-            dataType: "",
-            idType: "",
-            tool: vdoc.tool,
-            description: "",
-            assignment: "",
-            copilotAssignment: "",
-            modeRequirement: "",
-            modeldoc: vdoc.modeldoc,
-            modelComponent: modelComponent,
-            modeldoc_id: "",
-          }).then(function (response){
-          }).catch(function (err) {
-             console.log(err);
-          })
-      })
-    })
+    //this.setState({ modelComponent: modelComponent});    ipc call to set modelComponent?  TODO  here
+
+    var args = [modelComponent, selectedProject, selectedComponent]
+    // context isolation
+    console.log('ipcRenderer args for importComponent:', args);
+    ipcRenderer.invoke('selectCorspdModelComp',args).then((result) => {
+     this.props.importComponent({  type: 'components/selectCorspdModelComp',
+                                   // analysis & variables
+                                   variable_data: result.variable_data, 
+                                   components: result.components, 
+                                   modelComponent: result.modelComponent, 
+                                   modelVariables : result.modelVariables, 
+                                   selectedVariable: result.selectedVariable, 
+                                   importedComponents: result.importedComponents,
+                                   completedComponents: result.completedComponents,
+                                   cocospecData: result.cocospecData, 
+                                   cocospecModes: result.cocospecModes, 
+                                 })
+     }).catch((err) => {
+       console.log(err);
+     })
+ 
+
  };
 
  importComponentModel = () => {
-   var homeDir = app.getPath('home');
-   const self = this;
+
    const {selectedProject, selectedComponent} = this.props;
-   var filepaths = dialog.showOpenDialogSync({
-     defaultPath : homeDir,
-     title : 'Import Simulink Model Information',
-     buttonLabel : 'Import',
-     filters: [
-       { name: "Documents", extensions: ['json'] }
-     ],
-     properties: ['openFile']})
-     if (filepaths && filepaths.length > 0) {
-         fs.readFile(filepaths[0], 'utf8',
-               function (err,buffer) {
-             if (err) throw err;
-             let content = utilities.replaceStrings([['\\"id\\"','\"_id\"']], buffer);
-             let data = JSON.parse(content);
-             data.forEach((d) => {
-               d._id = uuidv1();
-               d.project = selectedProject;
-               d.fretComponent = selectedComponent;
-               d.modeldoc = true;
-             })
-             return modeldb.bulkDocs(data).catch((err) => {console.log('error', err);});
-           });
-        }
+   var args = [selectedProject, selectedComponent]
+   // context isolation
+   console.log('ipcRenderer args for importComponent:', args);
+   ipcRenderer.invoke('importComponent',args).then((result) => {
+    this.props.importComponent({  type: 'components/importComponent',
+                                  // analysis & variables
+                                  variable_data: result.variable_data, 
+                                  components: result.components, 
+                                  modelComponent: result.modelComponent, 
+                                  modelVariables : result.modelVariables, 
+                                  selectedVariable: result.selectedVariable, 
+                                  importedComponents: result.importedComponents,
+                                  completedComponents: result.completedComponents,
+                                  cocospecData: result.cocospecData, 
+                                  cocospecModes: result.cocospecModes, 
+                                })
+    }).catch((err) => {
+      console.log(err);
+    })
+
+    this.setState({ projectName: '' });
+
  }
 
   handleSnackbarClose = (event, reason) => {
@@ -494,16 +421,36 @@ class VariablesSortableTable extends React.Component {
   };
 
   render() {
-    const {classes, selectedProject, selectedComponent} = this.props;
-    const {data, order, orderBy, rowsPerPage, page, selectedVariable, modelComponent, importedComponents} = this.state;
-    const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
+    const {classes, selectedProject, selectedComponent, selectedVariable, 
+      modelComponent, importedComponents, variable_data, modelVariables} = this.props;
+
+    console.log('VariableSortableTable.render, selectedProject: ',selectedProject)
+    console.log('VariableSortableTable.render, selectedComponent: ',selectedComponent)
+    console.log('VariableSortableTable.render, selectedVariable: ',selectedVariable)
+    console.log('VariableSortableTable.render, modelComponent: ',modelComponent)
+    console.log('VariableSortableTable.render, variable_data: ',variable_data)
+    console.log('VariableSortableTable.render, importedComponents: ',importedComponents)    
+    console.log('VariableSortableTable.render, modelVariables: ',modelVariables)    
+
+    const comp_variable_data = variable_data[selectedComponent]
+    const comp_modelVariables = modelVariables[selectedComponent]
+    const comp_modelComponent = modelComponent[selectedComponent]
+    const comp_importedComponents = importedComponents[selectedComponent]
+    //console.log('VariableSortableTable.render, comp_variable_data: ',comp_variable_data)
+    console.log('VariableSortableTable.render, comp_variable_data: ',comp_variable_data)
+    console.log('VariableSortableTable.render, comp_modelComponent: ',comp_modelComponent)
+    console.log('VariableSortableTable.render, comp_importedComponents: ',comp_importedComponents)
+    console.log('VariableSortableTable.render, comp_modelVariables: ',comp_modelVariables)
+      
+    const { order, orderBy, rowsPerPage, page} = this.state;
+    const emptyRows = rowsPerPage - Math.min(rowsPerPage, comp_variable_data.length - page * rowsPerPage);
     return(
       <div>
         <Paper className={classes.root}>
         <div className={classes.tableWrapper}>
           <TableComponentBar
-            importedComponents={importedComponents}
-            modelComponent={modelComponent}
+            importedComponents={comp_importedComponents}
+            modelComponent={comp_modelComponent}
             fretComponent={selectedComponent}
             handleModelChange={this.handleModelChange}
             importComponentModel={this.importComponentModel}
@@ -514,10 +461,10 @@ class VariablesSortableTable extends React.Component {
               order={order}
               orderBy={orderBy}
               onRequestSort= {this.handleRequestSort}
-              rowCount={data.length}
+              rowCount={comp_variable_data.length}
             />
             <TableBody id="qa_var_tableBody">{
-              stableSort(data, getSorting(order, orderBy))
+              stableSort(comp_variable_data, getSorting(order, orderBy))
               .slice(page *rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map(n => {
                 const label = n.variable_name ? n.variable_name : 'NONE';
@@ -546,7 +493,7 @@ class VariablesSortableTable extends React.Component {
           </div>
           <TablePagination
             component="div"
-            count={data.length}
+            count={comp_variable_data.length}
             rowsPerPage={rowsPerPage}
             page={page}
             backIconButtonProps={{
@@ -563,8 +510,7 @@ class VariablesSortableTable extends React.Component {
           selectedVariable={selectedVariable}
           open={this.state.displayVariableOpen}
           handleDialogClose={this.handleVariableDialogClose}
-          modelVariables= {this.state.modelVariables}
-          checkComponentCompleted={this.props.checkComponentCompleted}/>
+          modelVariables= {comp_modelVariables}/>
         <Snackbar
           anchorOrigin={{
             vertical: 'bottom',
@@ -600,7 +546,27 @@ VariablesSortableTable.propTypes = {
   classes: PropTypes.object.isRequired,
   selectedProject: PropTypes.string.isRequired,
   selectedComponent: PropTypes.string.isRequired,
-  checkComponentCompleted: PropTypes.func.isRequired
 };
 
-export default withStyles(styles)(VariablesSortableTable);
+function mapStateToProps(state) {
+  const variable_data = state.actionsSlice.variable_data;
+  const modelComponent = state.actionsSlice.modelComponent;
+  const modelVariables = state.actionsSlice.modelVariables;
+  const importedComponents = state.actionsSlice.importedComponents;
+  const selectedVariable = state.actionsSlice.selectedVariable;
+  return {
+    variable_data,
+    modelComponent,
+    modelVariables,
+    importedComponents,
+    selectedVariable
+  };
+}
+
+const mapDispatchToProps = {
+  importComponent,
+  selectCorspdModelComp,
+  selectVariable,
+};
+
+export default withStyles(styles)(connect(mapStateToProps,mapDispatchToProps)(VariablesSortableTable));

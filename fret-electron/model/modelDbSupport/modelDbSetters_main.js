@@ -30,44 +30,48 @@
 // ANY SUCH MATTER SHALL BE THE IMMEDIATE, UNILATERAL TERMINATION OF THIS
 // AGREEMENT.
 // *****************************************************************************
-// @flow
-import type { counterStateType } from '../reducers/counter';
+const fs=require("fs");
+import {modelDB} from '../../app/main.dev'
 
-type actionType = {
-  +type: string
-};
-
-export const INCREMENT_COUNTER = 'INCREMENT_COUNTER';
-export const DECREMENT_COUNTER = 'DECREMENT_COUNTER';
-
-export function increment() {
-  return {
-    type: INCREMENT_COUNTER
-  };
+export {
+  createOrUpdateVariables as createOrUpdateVariables
 }
 
-export function decrement() {
-  return {
-    type: DECREMENT_COUNTER
-  };
-}
-
-export function incrementIfOdd() {
-  return (dispatch: (action: actionType) => void, getState: () => counterStateType) => {
-    const { counter } = getState();
-
-    if (counter % 2 === 0) {
-      return;
-    }
-
-    dispatch(increment());
-  };
-}
-
-export function incrementAsync(delay: number = 1000) {
-  return (dispatch: (action: actionType) => void) => {
-    setTimeout(() => {
-      dispatch(increment());
-    }, delay);
-  };
+function createOrUpdateVariables (variables, componentName, projectName, dbid) {
+  variables.map(function (variableName) {
+    var modeldbid = projectName + componentName + variableName;
+    modelDB.get(modeldbid).then(function (v) {
+      if(!v.reqs.includes(dbid)) {
+        modelDB.put({
+          ...v,
+          reqs: v.reqs.concat(dbid),
+        })
+      }
+    }).catch(function (err) {
+      if(err && err.name === 'not_found') {
+        modelDB.find({
+          selector: {project: projectName, component_name: componentName},
+          fields: ['modelComponent']
+        }).then(function(result){
+          modelDB.put({
+            _id: modeldbid,
+            project: projectName,
+            component_name: componentName,
+            variable_name: variableName,
+            reqs: [dbid],
+            dataType: '',
+            idType: '',
+            description: '',
+            assignment: '',
+            modeRequirement: '',
+            modeldoc: false,
+            modelComponent: result.docs?(result.docs[0]?result.docs[0].modelComponent:''):'',
+            model_id: ''
+          });
+        }).catch(function (err) {
+          console.log(err);
+      });
+      }
+    })
+  })
 }

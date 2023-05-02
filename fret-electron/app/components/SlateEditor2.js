@@ -51,6 +51,11 @@ const FretSemantics = require('../parser/FretSemantics');
 import SlateEditor2Styles from './SlateEditor2.css'
 import TemplateDropdownMenu from './TemplateDropdownMenu';
 import VariablesDropdownMenu from "./VariablesDropDownMenu";
+import { connect } from "react-redux";
+import { formalizeRequirement } from '../reducers/allActionsSlice';
+
+
+const isDev = require('electron-is-dev');
 
 const FIELDS = [
   {
@@ -96,7 +101,7 @@ const styles = theme => ({
   },
   checked: {
     color: theme.palette.secondary.main,
-  },  
+  },
   paper: {
     paddingBottom: 16,
     height: 106,
@@ -104,9 +109,7 @@ const styles = theme => ({
   },
 });
 
-const db = require('electron').remote.getGlobal('sharedObj').db;
-const isDev = require('electron-is-dev');
-var dbChangeListener = undefined;
+
 
 /**
  * Template editor constants
@@ -127,7 +130,7 @@ class SlateEditor2 extends React.Component {
     this.state = {
       editorValue: [],
       inputText: ' ',
-      fieldColors: {},
+      //fieldColors: {},
       menuOptions: [],
       menuIndex: 0,
       selectedField: undefined,
@@ -147,10 +150,9 @@ class SlateEditor2 extends React.Component {
   componentWillUnmount() {
     this.props.onRef(undefined);
     this.mounted = false
-    dbChangeListener.cancel()
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.mounted = true
     var path = `file://${process.resourcesPath}/docs/_media/fretishGrammar/index.html`
     if (isDev)
@@ -158,10 +160,7 @@ class SlateEditor2 extends React.Component {
     this.setState({
       grammarUrl: path
     })
-    db.get('FRET_PROPS').then((doc) => {
-      this.setState({
-        fieldColors: doc.fieldColors
-      })
+
       if (this.props.inputFields) {
         const inputFields = this.props.inputFields
         let editorValue = JSON.parse(JSON.stringify(initialValue))
@@ -179,28 +178,6 @@ class SlateEditor2 extends React.Component {
           editorValue: initialValue,
         })
       }
-    }).catch((err) => {
-      console.log(err)
-    })
-    dbChangeListener = db.changes({
-      since: 'now',
-      live: true,
-      include_docs: true
-    }).on('change', (change) => {
-      if (change.id == 'FRET_PROPS') {
-        const updatedValue = this.state.editorValue
-        if (this.mounted) {
-          this.setState({
-            fieldColors: change.doc.fieldColors,
-            editorValue: updatedValue
-          })
-        }
-      }
-    }).on('complete', function(info) {
-      console.log(info);
-    }).on('error', function (err) {
-      console.log(err);
-    });
 
     this.props.onRef(this)
     this.setState(
@@ -711,7 +688,7 @@ class SlateEditor2 extends React.Component {
                 style={{
                   border: 'none',
                   backgroundColor: 'transparent',
-                  color: this.state.fieldColors[key],
+                  color: this.props.fieldColors[key],
                   fontSize: '10px',
                   margin: '0px'
                 }}
@@ -727,8 +704,8 @@ class SlateEditor2 extends React.Component {
                 style={{
                   border: '2px solid',
                   backgroundColor: 'transparent',
-                  borderColor: this.state.fieldColors[key.toLowerCase()],
-                  color: this.state.fieldColors[key.toLowerCase()],
+                  borderColor: this.props.fieldColors[key.toLowerCase()],
+                  color: this.props.fieldColors[key.toLowerCase()],
                   borderRadius: '20px',
                   fontSize: '10px',
                   cursor: 'hand',
@@ -778,7 +755,7 @@ class SlateEditor2 extends React.Component {
           decorations.push({
             anchor: {path, offset: startOffset},
             focus: {path, offset: endOffset},
-            color: this.state.fieldColors[k.replace("TextRange", "")],
+            color: this.props.fieldColors[k.replace("TextRange", "")],
             type: k
           })
         }
@@ -812,7 +789,7 @@ class SlateEditor2 extends React.Component {
 
   renderLeaf = props => {
     const { attributes, children, leaf } = props
-    const { fieldColors } = this.state
+    const { fieldColors } = this.props
     let style = {};
     if (leaf.isPlaceholder) {
       style = { color: 'gray' };
@@ -1025,4 +1002,18 @@ SlateEditor2.propTypes = {
  * Export.
  */
 
-export default withStyles(styles)(SlateEditor2);
+function mapStateToProps(state) {
+  const fieldColors = state.actionsSlice.fieldColors;
+  return {
+    fieldColors
+  };
+}
+
+
+const mapDispatchToProps = {
+  formalizeRequirement,
+};
+
+
+export default withStyles(styles)(connect(mapStateToProps,mapDispatchToProps)(SlateEditor2));
+

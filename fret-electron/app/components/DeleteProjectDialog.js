@@ -38,10 +38,10 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-const modelDbSupport = require('../../support/modelDbSupport/deleteVariables.js');
-const dbSupport = require('../../support/fretDbSupport/deleteRequirements.js');
+import { connect } from "react-redux";
+import { deleteProject } from '../reducers/allActionsSlice';
 
-const db = require('electron').remote.getGlobal('sharedObj').db;
+const {ipcRenderer} = require('electron');
 
 class DeleteProjectDialog extends React.Component {
   state = {
@@ -60,44 +60,33 @@ class DeleteProjectDialog extends React.Component {
     this.setState({ open: false});
     this.state.dialogCloseListener();
 
-   db.find({
-     selector: {
-       project: this.state.project,
-     }
-   }).then(function (deleteReqsList){
+    // context isolation
+    var argList = [this.state.project ]
+    console.log('ipcRenderer ', argList);
+    ipcRenderer.invoke('deleteProject',argList).then((result) => {
 
-    /*
-      // if requirements is 2 arrays (regulars and modes), concatenate
-      const requirements = deleteReqsList.docs.map(r => {
-        if(r.semantics && typeof r.semantics.variables === "object") {
-          r.semantics.variables = r.semantics.variables.modes.concat(r.semantics.variables.regular);
-        }
-        return r;
-      })
-      */
 
-      dbSupport.removeReqsInBulk(deleteReqsList.docs);
-      modelDbSupport.removeVariablesInBulk(deleteReqsList.docs);
-   })
+      this.props.deleteProject({ type: 'actions/deleteProject',
+                                  // projects
+                                  listOfProjects : result.listOfProjects,
+                                  selectedProject : result.selectedProject,
+                                  // requirements
+                                  requirements : result.requirements, 
+                                  // components
+                                  components : result.components,     
+                                  modelComponent : result.modelComponent, 
+                                  modelVariables : result.modelVariables,   
+                                  selectedVariable : result.selectedVariable, 
+                                  importedComponents : result.importedComponents, 
+                                  completedComponents : result.completedComponents, 
+                                  cocospecData : result.cocospecData, 
+                                  cocospecModes : result.cocospecModes, 
+                              })
 
-   db.get('FRET_PROJECTS').then((doc) => {
-     const list = doc.names
-     const index = list.indexOf(project);
-     if (index > -1) {
-       list.splice(index, 1);
-     }
-     return db.put({
-       _id: 'FRET_PROJECTS',
-       _rev: doc._rev,
-       names: list
-     }).then(() => {
-      if(this.props.selectedProject === project) {
-        this.props.initializeSelectedProject();
-      }
+    }).catch((err) => {
+      console.log(err);
     })
-   }).catch((err) => {
-     console.log(err);
-   });
+   
   };
 
   componentWillReceiveProps = (props) => {
@@ -145,4 +134,9 @@ DeleteProjectDialog.propTypes = {
   projectTobeDeleted: PropTypes.string.isRequired,
   handleDialogClose: PropTypes.func.isRequired,
 }
-export default DeleteProjectDialog;
+
+const mapDispatchToProps = {
+  deleteProject
+};
+
+export default connect(null,mapDispatchToProps)(DeleteProjectDialog);

@@ -46,6 +46,10 @@ import Paper from '@material-ui/core/Paper';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import LTLSimLauncherRealizability from './LTLSimLauncherRealizability';
+//tooltips for variables in cex table
+//hover over requirement => show def. (like in CirclePacking diagram)
+//hover over variable => 
+//	show <kind> = [input, internal, output] : <type> [int, bool...]
 import Tooltip from '@material-ui/core/Tooltip';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
@@ -55,7 +59,6 @@ import Input from '@material-ui/core/Input';
 import { DiagnosisContext } from './DiagnosisProvider';
 
 const ltlsim = require('ltlsim-core').ltlsim;
-const utils = require('../../support/utils');
 
 const tableComponentBarStyles = theme => ({
   root: {
@@ -122,7 +125,7 @@ let TableComponentBar = props => {
           </Select>
         </FormControl>
       </form>
-      {(project !== '') && ltlsimLauncher}
+      {ltlsimLauncher}
     </Toolbar>
   );
 };
@@ -247,7 +250,7 @@ class CounterexampleTable extends React.Component {
           <TableRow key={cex.indexOf(row)}>
             {Object.keys(row).map(function(key, index) {
               if (index === 0) {
-              return(<TableCell id={"qa_counterEx_tc_"+cex.indexOf(row)+"_"+index} key={index}> {utils.unreplace_special_chars(row[key].toString())} </TableCell>);  
+              return(<TableCell id={"qa_counterEx_tc_"+cex.indexOf(row)+"_"+index} key={index}> {row[key].toString()} </TableCell>);  
               } else {
               return(<TableCell id={"qa_counterEx_tc_"+cex.indexOf(row)+"_"+index} key={index} align="right"> {row[key].toString()} </TableCell>);  
               }                        

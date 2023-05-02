@@ -261,7 +261,7 @@ class AnalysisReportContent extends React.Component {
 		                          <DiagnosisRequirementsTable 
 		                            selectedProject={selectedProject}
 		                            selectedComponent={selected.name}
-		                            existingProjectNames={[selectedProject]}
+		                            listOfProjects={[selectedProject]}
 		                            connectedComponent={selected.compositional.connectedComponents[connectedComponentIndex]}
 		                            importedRequirements={selected.requirements}
 		                            selectedRequirements={selected.selectedReqs}
@@ -286,7 +286,7 @@ class AnalysisReportContent extends React.Component {
 		                        <DiagnosisRequirementsTable
 		                          selectedProject={selectedProject}
 		                          selectedComponent={selected.name}
-		                          existingProjectNames={[selectedProject]}
+		                          listOfProjects={[selectedProject]}
 		                          connectedComponent={{}}
 		                          importedRequirements={selected.requirements}
 		                          selectedRequirements={selected.selectedReqs}

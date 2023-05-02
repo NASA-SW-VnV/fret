@@ -48,10 +48,6 @@ import CirclePacking from './CirclePacking';
 import css from './Dashboard.css';
 
 const constants = require('../parser/Constants');
-const sharedObj = require('electron').remote.getGlobal('sharedObj')
-const db = sharedObj.db;
-const system_dbkeys = sharedObj.system_dbkeys;
-
 
 const styles = theme => ({
   root: {
@@ -74,7 +70,7 @@ class Dashboard extends React.Component {
 
   render() {
     const { classes, selectedProject, requirements } = this.props
-
+    
     var numOfRequirements = 0
     var numOfFormalizedRequirements = 0
     var bytesOfRequirements = 0
@@ -82,8 +78,7 @@ class Dashboard extends React.Component {
     var projects = []
     var projectOverviewTitle, projectOverviewValue
 
-    requirements
-      .filter(r => {
+    requirements.filter(r => {
         return selectedProject == 'All Projects' || r.doc.project == selectedProject
       })
       .forEach(r => {

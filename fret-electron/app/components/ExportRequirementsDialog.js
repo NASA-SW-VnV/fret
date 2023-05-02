@@ -44,12 +44,7 @@ import { withStyles } from '@material-ui/core/styles';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
 
-const db = require('electron').remote.getGlobal('sharedObj').db;
-const app = require('electron').remote.app;
-const dialog = require('electron').remote.dialog;
-const fs = require('fs');
-const system_dbkeys = require('electron').remote.getGlobal('sharedObj').system_dbkeys;
-const uuidv1 = require('uuid/v1');
+const {ipcRenderer} = require('electron');
 
 const styles = theme => ({
   container: {
@@ -83,13 +78,13 @@ class ExportRequirementsDialog extends React.Component {
 //                      ({reqid, parent_reqid, project, rationale, comments, fulltext, semantics, input}))(r.doc)
 
         R.forEach((r) => {
-		s=s + "| " + r.reqid +
-		     " | " + r.parent_reqid +
+		s=s + "| " + r.reqid + 
+		     " | " + r.parent_reqid + 
 		     " | " + r.fulltext.replace(/\|/g,",").replace(/\n/g," ").replace(/\r/g,"") +
 		     " | " + r.rationale.replace(/\|/g,",").replace(/\n/g," ").replace(/\r/g,"");
 		s=s + "\n";
         	})
-
+	
 	return s;
 	}
 // REPLACE/Quote UTF-8 chars by \u BLA
@@ -111,52 +106,18 @@ class ExportRequirementsDialog extends React.Component {
 
   handleExport = () => {
     const {project, output_format} = this.state;
-    const filterOff = project == "All Projects";
-    var homeDir = app.getPath('home');
-    var filepath = dialog.showSaveDialogSync(
-      {
-        defaultPath : homeDir,
-        title : 'Export Requirements',
-        buttonLabel : 'Export',
-        filters: [
-          { name: "Documents", extensions: [ output_format ] }
-        ],
-      })
-    if (filepath) {
-      db.allDocs({
-        include_docs: true,
-      }).then((result) => {
-        var filteredReqs = result.rows
-        .filter(r => !system_dbkeys.includes(r.key))
-        .filter(r => filterOff || r.doc.project == project)
-        var filteredResult = []
-        filteredReqs.forEach((r) => {
-          var doc = (({reqid, parent_reqid, project, rationale, comments, fulltext, semantics, input}) =>
-                      ({reqid, parent_reqid, project, rationale, comments, fulltext, semantics, input}))(r.doc)
-          doc._id = uuidv1()
-          filteredResult.push(doc)
-        })
-	//
-	// produce output
-	//
-	var content;
-	console.log(output_format)
-	if (output_format === "md"){
-		content=this.export_to_md(filteredResult, project)
-		}
-	else {
-      content = JSON.stringify(filteredResult, null, 4)
-		}
-        fs.writeFile(filepath, content, (err) => {
-            if(err) {
-                return console.log(err);
-            }
-            console.log("The file was saved!");
-        });
-      }).catch((err) => {
-        console.log(err);
-      });
-    }
+
+    // context isolation
+    var argList = [project, output_format ]
+    console.log('ipcRenderer ', argList);
+    ipcRenderer.invoke('exportRequirements',argList).then((result) => {
+      // export requirements doesn't change any Redux state
+      console.log('Exported requirements in project ',project)
+    }).catch((err) => {
+      console.log(err);
+    })
+
+    this.setState({ projectName: '' });
 
   }
 

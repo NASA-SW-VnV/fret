@@ -39,10 +39,11 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-const db = require('electron').remote.getGlobal('sharedObj').db;
-const modeldb = require('electron').remote.getGlobal('sharedObj').modeldb;
-const modelDbSupport = require('../../support/modelDbSupport/deleteVariables.js');
-const dbSupport = require('../../support/fretDbSupport/deleteRequirements.js');
+//const db = require('electron').remote.getGlobal('sharedObj').db;
+//const modeldb = require('electron').remote.getGlobal('sharedObj').modeldb;
+const {ipcRenderer} = require('electron');
+import { connect } from "react-redux";
+import { deleteRequirement } from '../reducers/allActionsSlice';
 
 class DeleteRequirementDialog extends React.Component {
   state = {
@@ -58,24 +59,49 @@ class DeleteRequirementDialog extends React.Component {
   handleCloseOKtoDelete = () => {
     this.setState({ open: false });
     this.state.dialogCloseListener();
-    // requirements to be removed
-    let { requirements } = this.state;
-    dbSupport.removeReqsInBulk(requirements);
-    modelDbSupport.removeVariablesInBulk(requirements);
+    // requirementsToBeDeleted to be removed
+    let { requirementsToBeDeleted } = this.state;
+
+    // context isolation
+    var argList = requirementsToBeDeleted
+    console.log('ipcRenderer deleteRequirement', argList);
+    ipcRenderer.invoke('deleteRequirement',argList).then((result) => {
+      this.props.deleteRequirement({ type: 'actions/deleteRequirement',
+                                      // projects
+                                      // requirements
+                                      requirements : result.requirements, 
+                                      // analysis
+                                      components : result.components,     
+                                      completedComponents : result.completedComponents, 
+                                      cocospecData : result.cocospecData, 
+                                      cocospecModes : result.cocospecModes,
+                                      // variables
+                                      variable_data : result.variable_data,
+                                      modelComponent : result.modelComponent,                                   
+                                      modelVariables : result.modelVariables,   
+                                      selectedVariable : result.selectedVariable, 
+                                      importedComponents : result.importedComponents,         
+                                    })
+    }).catch((err) => {
+      console.log(err);
+    })
+
   };
 
   componentWillReceiveProps = (props) => {
+    //console.log('DeleteRequirementDialog.componentWillReceiveProps this.props.requirementsToBeDeleted: ', this.props.requirementsToBeDeleted)
     this.setState({
       open: props.open,
-      requirements: props.requirementsToBeDeleted,
+      requirementsToBeDeleted: props.requirementsToBeDeleted,
       dialogCloseListener : props.handleDialogClose,
     })
   }
 
   render() {
-    if (!this.state.requirements) return null
+    //console.log('DeleteRequirementDialog.render this.props.requirementsToBeDeleted: ', this.props.requirementsToBeDeleted)
+    if (!this.props.requirementsToBeDeleted) return null
 
-    const reqids = this.state.requirements.map(r => r.reqid)
+    const reqids = this.props.requirementsToBeDeleted.map(r => r.reqid)
     return (
       <div>
         <Dialog
@@ -111,4 +137,9 @@ DeleteRequirementDialog.propTypes = {
   requirementsToBeDeleted: PropTypes.array.isRequired,
   handleDialogClose: PropTypes.func.isRequired,
 }
-export default DeleteRequirementDialog;
+
+const mapDispatchToProps = {
+  deleteRequirement
+};
+
+export default connect(null,mapDispatchToProps)(DeleteRequirementDialog);

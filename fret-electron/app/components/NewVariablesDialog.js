@@ -39,9 +39,6 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-const db = require('electron').remote.getGlobal('sharedObj').db;
-const modeldb = require('electron').remote.getGlobal('sharedObj').modeldb;
-
 class NewVariablesDialog extends React.Component {
   state = {
     open: false,

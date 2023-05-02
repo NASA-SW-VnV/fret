@@ -30,28 +30,18 @@
 // ANY SUCH MATTER SHALL BE THE IMMEDIATE, UNILATERAL TERMINATION OF THIS
 // AGREEMENT.
 // *****************************************************************************
-import React from 'react';
-import { render } from 'react-dom';
-import { AppContainer } from 'react-hot-loader';
-import Root from './containers/Root';
-import { store, history } from './store/store';
-import './app.global.css';
+const fs=require("fs");
+import {modelDB} from '../../app/main.dev'
 
-render(
-  <AppContainer>
-    <Root store={store} history={history} />
-  </AppContainer>,
-  document.getElementById('root')
-);
+export {
+  getProjectVariables as getProjectVariables
+}
 
-if (module.hot) {
-  module.hot.accept('./containers/Root', () => {
-    const NextRoot = require('./containers/Root'); // eslint-disable-line global-require
-    render(
-      <AppContainer>
-        <NextRoot store={store} history={history} />
-      </AppContainer>,
-      document.getElementById('root')
-    );
+function getProjectVariables (projectName, componentNames) {
+   return modelDB.find({
+    selector: {
+      project: projectName,
+      component_name: { $in: Object.keys(componentNames) }
+    }
   });
 }

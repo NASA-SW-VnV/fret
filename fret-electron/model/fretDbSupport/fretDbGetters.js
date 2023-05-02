@@ -30,14 +30,37 @@
 // ANY SUCH MATTER SHALL BE THE IMMEDIATE, UNILATERAL TERMINATION OF THIS
 // AGREEMENT.
 // *****************************************************************************
-// @flow
-import { combineReducers } from 'redux';
-import { routerReducer as router } from 'react-router-redux';
-import counter from './counter';
+const fs=require("fs");
+const sharedObj = require('electron').remote.getGlobal('sharedObj');
+const db = sharedObj.db;
 
-const rootReducer = combineReducers({
-  counter,
-  router,
-});
+export {
+  getProjectRequirements as getProjectRequirements,
+  getDoc as getDoc,
+  getAllDocs as getAllDocs
+}
 
-export default rootReducer;
+function getProjectRequirements (projectName) {
+   return db.find({
+     selector: {
+       project: projectName,
+     }
+   }).catch((err) => {
+            console.log(err)
+       });
+}
+
+function getDoc (dbid){
+  return  db.get(dbid)
+  .catch((err) => {
+        console.log(err)
+   });
+ }
+
+ function getAllDocs(){
+   return db.allDocs({
+     include_docs: true,
+   }).catch((err) => {
+            console.log(err)
+       });
+ }

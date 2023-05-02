@@ -134,7 +134,7 @@ class RealizabilityView extends React.Component {
 
   render() {
     const { importedReport } = this.state;
-    const {classes, selectedProject, existingProjectNames, components, completedComponents, getPropertyInfo, getDelayInfo, getContractInfo, variableIdentifierReplacement} = this.props;
+    const {classes, selectedProject, listOfProjects, components, completedComponents, getPropertyInfo, getDelayInfo, getContractInfo, variableIdentifierReplacement} = this.props;
 
     if (selectedProject === 'All Projects'){
       if (Object.keys(importedReport).length === 0) {
@@ -178,7 +178,7 @@ class RealizabilityView extends React.Component {
 RealizabilityView.propTypes = {
   classes: PropTypes.object.isRequired,
   selectedProject: PropTypes.string.isRequired,
-  existingProjectNames: PropTypes.array.isRequired,
+  listOfProjects: PropTypes.array.isRequired,
   synchStateWithDB: PropTypes.func.isRequired,
   cocospecData: PropTypes.object.isRequired,
   cocospecModes: PropTypes.object.isRequired,

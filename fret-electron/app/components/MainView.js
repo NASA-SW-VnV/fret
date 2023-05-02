@@ -80,21 +80,19 @@ import RequirementImportDialogs from './RequirementImportDialogs';
 import MissingExternalImportDialog from './MissingExternalImportDialog';
 import ExportRequirementsDialog from './ExportRequirementsDialog';
 
+import { connect } from "react-redux";
+import { addProject,deleteProject, selectProject, initializeStore, importRequirements, } from '../reducers/allActionsSlice';
+
 const app = require('electron').remote.app
 const dialog = require('electron').remote.dialog
-const db = require('electron').remote.getGlobal('sharedObj').db;
+
 const fs = require('fs');
-const uuidv1 = require('uuid/v1');
-const system_dbkeys = require('electron').remote.getGlobal('sharedObj').system_dbkeys;
-const csv2json=require("csvtojson");
-const requirementsImport = require('../../support/requirementsImport/convertAndImportRequirements');
-const modelSupport = require('../../support/modelDbSupport/populateVariables');
-const checkDbFormat = require('../../support/fretDbSupport/checkDBFormat.js');
+
+
 const drawerWidth = 240;
-let dbChangeListener = null;
+
 const ext_imp_json_file = require('electron').remote.getGlobal('sharedObj').ext_imp_json;
 const {ipcRenderer} = require('electron');
-
 const styles = theme => ({
   root: {
     width: '100%',
@@ -206,143 +204,107 @@ class MainView extends React.Component {
     createProjectDialogOpen: false,
     lastCreatedRequirementId: undefined,
     mainContent: 'dashboard',
-    selectedProject: 'All Projects',
     anchorEl: null,
-    listOfProjects: [],
     deleteProjectDialogOpen: false,
     projectTobeDeleted: '',
     exportRequirementsDialogOpen: false,
     requirementImportDialogOpen: false,
     csvFields: [],
     importedReqs: [],
-    requirements: [],
     changingReqsInBulk: false,
-    externalRequirement: {},
-    externalVariables: {},
     missingExternalImportDialogOpen: false,
     missingExternalImportDialogReason: 'unknown',
-  };
+    };
 
-  initializeSelectedProject = () => {
-    this.setState({
-      selectedProject: 'All Projects',
-    })
-  }
+  constructor(props) {
+    super(props);
 
-  synchStateWithDB() {
-    // this function update the requirements in state from database
-    db.allDocs({
-      include_docs: true,
-    }).then((result) => {
-      this.setState({
-        requirements : result.rows.filter(r => !system_dbkeys.includes(r.key)).map(r => {
-          if (r.doc && r.doc.semantics && r.doc.semantics.variables){
-            r.doc.semantics.variables = checkDbFormat.checkVariableFormat(r.doc.semantics.variables);
-          }
-          return r;
-        })
-      })
-    }).catch((err) => {
-      console.log(err);
-    });
   }
 
   componentDidMount = () => {
-    modelSupport.populateVariables();
-    this.synchStateWithDB();
-    db.get('FRET_PROJECTS')
-      .then((result) => {
-      this.setState({
-        listOfProjects : result.names.sort()
-      })
+    // initialize the store from database 1st time here.
+    ipcRenderer.invoke('initializeFromDB',undefined).then((result) => {
+      console.log('MainView ipcRenderer initializeStore ',result);
+      this.props.initializeStore({ type: 'actions/initializeStore',
+                                  // projects
+                                  listOfProjects: result.listOfProjects,
+                                  selectedProject: result.selectedProject,
+                                  fieldColors: result.fieldColors,                                                       
+                                  // requirements
+                                  requirements: result.requirements,                         
+                                  // components
+                                  variable_data: result.variable_data, 
+                                  components: result.components, 
+                                  modelComponent: result.modelComponent, 
+                                  modelVariables : result.modelVariables, 
+                                  selectedVariable: result.selectedVariable, 
+                                  importedComponents: result.importedComponents,
+                                  completedComponents: result.completedComponents,
+                                  cocospecData: result.cocospecData, 
+                                  cocospecModes: result.cocospecModes,                          
+                                  // realizability
+                                  rlz_data: result.rlz_data,
+                                  selectedRlz: result.selectedRlz,
+                                  monolithic: result.monolithic,
+                                  compositional: result.compositional,
+                                  ccSelected: result.ccSelected,
+                                  projectReport: result.projectReport,
+                                  diagnosisRequirements: result.diagnosisRequirements,
+                                  prevState: result.prevState,
+                                  })
     }).catch((err) => {
-      console.log(err)
+      console.log(err);
     })
 
-    dbChangeListener = db.changes({
-      since: 'now',
-      live: true,
-      include_docs: true
-    }).on('change', (change) => {
-      if (change.id == 'FRET_PROJECTS') {
-        this.setState({
-          listOfProjects : change.doc.names.sort()
-        })
-      }
-      else if (change.id == 'REAL_TIME_CONFIG' ) {
-        // synchStateWithDB after finishing importing/deleting and other bulk requirement changes operations
-        this.setState({changingReqsInBulk: change.doc.changingReqsInBulk});
-        this.synchStateWithDB();
-        // !system_dbkeys.includes(change.id): requirement change
-      } else if (!system_dbkeys.includes(change.id) && !this.state.changingReqsInBulk) {
-        this.synchStateWithDB();
-      }
-    })
     if(process.env.EXTERNAL_TOOL=='1'){
-      //console.log('env EXTERNAL_TOOL',process.env.EXTERNAL_TOOL);
+      console.log('env EXTERNAL_TOOL',process.env.EXTERNAL_TOOL);
       this.handleImportExternalTool();
     }
   }
 
-
   componentWillUnmount() {
-    dbChangeListener.cancel()
+
   }
 
   handleImport = () => {
-    const self = this;
-    var homeDir = app.getPath('home');
-    const { listOfProjects } = this.state;
-    var filepaths = dialog.showOpenDialogSync({
-      defaultPath : homeDir,
-      title : 'Import Requirements',
-      buttonLabel : 'Import',
-      filters: [
-        { name: "Documents",
-          extensions: ['json', 'csv']
-        }
-      ],
-      properties: ['openFile']});
-    if (filepaths && filepaths.length > 0) {
-	     const filepath = filepaths[0];
-       //checking the extension of the file
-       const fileExtension = filepath.split('.').pop();
-       if (fileExtension === 'csv'){
-         csv2json().fromFile(filepath).then((importedReqs)=>{
-           let csvFields = Object.keys(importedReqs[0]);
-           self.handleCSVImport(csvFields, importedReqs);
-        }).catch((err) => {
-          console.log(err);
-        });
+    // context isolation
+    var argList = this.props.listOfProjects;
+    console.log('mainView ipcRenderer.invoke importRequirements argList', argList);
+    ipcRenderer.invoke('importRequirements',argList).then((result) => {
 
-       } else if (fileExtension === 'json'){
-         /*
-         // Version using "require" causes error: Cannot find module "."
-         const filepathnoext = filepath.slice(0,-5); // The slice is to remove the .json suffix
-         console.log('*** filepathnoext = ' + JSON.stringify(filepathnoext));
-         data = require(filepathnoext);
+      console.log('MainView ipcRenderer importRequirements result', result);
+      if (result.requirements){
+        console.log('MainView ipcRenderer importRequirements (json)')
+        this.props.importRequirements({ type: 'actions/importRequirements',
+          // projects
+          listOfProjects : result.listOfProjects,
+          // requirements
+          requirements : result.requirements, 
+          // analysis
+          components : result.components,     
+          completedComponents : result.completedComponents, 
+          cocospecData : result.cocospecData, 
+          cocospecModes : result.cocospecModes,
+          // variables
+          variable_data : result.variable_data,
+          modelComponent : result.modelComponent,                                   
+          modelVariables : result.modelVariables,   
+          selectedVariable : result.selectedVariable, 
+          importedComponents : result.importedComponents,         
+        
+        })        
+      }
+      if (result.fileExtension){
+        console.log('MainView ipcRenderer importRequirementsCsv ')
+        this.handleCSVImport(result.csvFields, result.importedReqs)
+      }
 
-         // Version using "readFileSync" causes error: Cannot read property 'shift' of undefined
-         var content = fs.readFileSync(filepath);  // maybe add "utf8" to return a string instead of a buffer
-         var data = JSON.parse(content);
+    }).catch((err) => {
+      console.log(err);
+    })
 
-         // Version using readTextFile defined above, works.
-         readTextFile(filepath, function (text) {
-             let data = JSON.parse(text);
-         })
-         */
-         // Version using readFile, works.
-         fs.readFile(filepath, function (err,buffer) {
-             if (err) throw err;
-             let data = JSON.parse(buffer);
-             requirementsImport.importRequirements(data, listOfProjects);
-              });
-       }
-       else{
-         // when we choose an unsupported file
-         console.log("We do not support yet this file import")
-       }
-    }
+    this.setState({ projectName: '' });
+
   }
 
   handleProjectMenuClick = event => {
@@ -350,52 +312,50 @@ class MainView extends React.Component {
   };
 
   handleSetProject = (name) => {
-    this.setState({
-      selectedProject: name,
+    const self = this
+    var args = [name]
+    ipcRenderer.invoke('selectProject',args).then((result) => {
+      console.log('MainView.handleSetProject, result.components: ', result.components)
+      console.log('MainView.handleSetProject, result.completedComponents: ', result.completedComponents)
+      console.log('MainView.handleSetProject, result.cocospecData: ', result.cocospecData)
+      console.log('MainView.handleSetProject, result.cocospecModes: ', result.cocospecModes)
+      console.log('MainView.handleSetProject, result.variable_data: ', result.variable_data)
+      console.log('MainView.handleSetProject, result.modelComponent: ', result.modelComponent)
+      console.log('MainView.handleSetProject, result.modelVariables: ', result.modelVariables)
+      console.log('MainView.handleSetProject, result.importedComponents: ', result.importedComponents)
+      this.props.selectProject({ type: 'actions/selectProject',
+                                   // projects
+                                  selectedProject : result.selectedProject,
+                                  // requirements
+                                  requirements : result.requirements, 
+                                  // analysis
+                                  components : result.components,     
+                                  completedComponents : result.completedComponents, 
+                                  cocospecData : result.cocospecData, 
+                                  cocospecModes : result.cocospecModes,                                   
+                                  // variables
+                                  variable_data : result.variable_data,
+                                  modelComponent : result.modelComponent,                                   
+                                  modelVariables : result.modelVariables,   
+                                  selectedVariable : result.selectedVariable, 
+                                  importedComponents : result.importedComponents, 
+
+                      })
+
+    }).catch((err) => {
+      console.log(err);
+    })
+    /*
+    self.setState({
       anchorEl: null
-    });
+    });*/
+    this.setState({ projectName: '',anchorEl: null });
+
   }
 
   handleClose = () => {
     this.setState({ anchorEl: null });
   };
-
-  handleExport = () => {
-    var homeDir = app.getPath('home');
-    var filepath = dialog.showSaveDialogSync(
-      {
-        defaultPath : homeDir,
-        title : 'Export Requirements',
-        buttonLabel : 'Export',
-        filters: [
-          { name: "Documents", extensions: ['json'] }
-        ],
-      })
-    if (filepath) {
-      db.allDocs({
-        include_docs: true,
-      }).then((result) => {
-        var filteredReqs = result.rows.filter(r => !system_dbkeys.includes(r.key))
-        var filteredResult = []
-        filteredReqs.forEach((r) => {
-          var doc = (({reqid, parent_reqid, project, rationale, comments, fulltext, semantics, input}) =>
-                      ({reqid, parent_reqid, project, rationale, comments, fulltext, semantics, input}))(r.doc)
-          doc._id = uuidv1()
-          filteredResult.push(doc)
-        })
-        var content = JSON.stringify(filteredResult, null, 4)
-        fs.writeFile(filepath, content, (err) => {
-            if(err) {
-                return console.log(err);
-            }
-            console.log("The file was saved!");
-        });
-      }).catch((err) => {
-        console.log(err);
-      });
-    }
-  }
-
 
   handleCreateDialogOpen = () => {
     this.setState({ createDialogOpen: true});
@@ -408,9 +368,6 @@ class MainView extends React.Component {
         snackbarOpen: newRequirementCreated,
         lastCreatedRequirementId: newReqId
       });
-      if(process.env.EXTERNAL_TOOL=='1'){
-        //ipcRenderer.send('closeFRET');
-      }
   }
 
   /*
@@ -522,7 +479,7 @@ class MainView extends React.Component {
     const self = this;
     //var homeDir = app.getPath('home');
     var filepath = ext_imp_json_file;
-    //console.log('ext_imp_json_file in handleImportExternalTool: ', filepath);
+    console.log('ext_imp_json_file in handleImportExternalTool: ', filepath);
     if (filepath && filepath.length > 0) {
       //const filepath = filepaths[0];
       fs.readFile(filepath, function (err,buffer) {
@@ -545,7 +502,7 @@ class MainView extends React.Component {
         } else {
           try {
             let data = JSON.parse(buffer);
-            //console.log('data in JSON.parse: ', data)
+            console.log('data in JSON.parse: ', data)
             if(!data.requirement & !data.variables){
               //  invalid file  
               //console.log('setting missingExternalImportDialogReason to invalid')
@@ -563,8 +520,8 @@ class MainView extends React.Component {
             }
           } catch (error) {
             //  empty file  
-            //console.log('error in JSON.parse for text import: ',error);
-            //console.log('setting missingExternalImportDialogReason to empty')
+            console.log('error in JSON.parse for text import: ',error);
+            console.log('setting missingExternalImportDialogReason to empty')
             self.setState({
               missingExternalImportDialogOpen: true,
               missingExternalImportDialogReason: 'invalid',
@@ -630,8 +587,8 @@ class MainView extends React.Component {
   }
 
   render() {
-    const { classes, theme } = this.props;
-    const { anchorEl, requirements } = this.state;
+    const { classes, theme, listOfProjects, requirements } = this.props;
+    const { anchorEl } = this.state;
 
     return (
       <div className={classes.root}>
@@ -676,7 +633,7 @@ class MainView extends React.Component {
                         <ListItemText primary = {<b>All Projects</b>} />
                       </MenuItem>
                       {
-                        this.state.listOfProjects.map(name => {
+                        listOfProjects.map(name => {
                           return <MenuItem
                                     key={name}
                                     dense>
@@ -779,41 +736,40 @@ class MainView extends React.Component {
           <main className={classes.content}>
           <AppMainContent
           content={this.state.mainContent}
-          selectedProject={this.state.selectedProject}
-          existingProjectNames={this.state.listOfProjects}
+          selectedProject={this.props.selectedProject}
+          listOfProjects={listOfProjects}
           requirements={requirements}/>
           </main>
           <CreateRequirementDialog
             open={this.state.createDialogOpen}
             handleCreateDialogClose={this.handleCreateDialogClose}
-            editRequirement={this.state.externalRequirement}
-            editVariables={this.state.externalVariables}
-            selectedProject={this.state.selectedProject}
-            existingProjectNames={this.state.listOfProjects}
-            requirements={this.state.requirements}
+            editRequirement={undefined}
+            selectedProject={this.props.selectedProject}
+            listOfProjects={listOfProjects}
+            requirements={requirements}
             />
           <CreateProjectDialog
               open={this.state.createProjectDialogOpen}
               handleDialogClose={this.handleCreateProjectDialogClose}
-              existingProjectNames={this.state.listOfProjects}
+              listOfProjects={listOfProjects}
           />
           <DeleteProjectDialog
             open={this.state.deleteProjectDialogOpen}
             projectTobeDeleted={this.state.projectTobeDeleted}
             handleDialogClose={this.closeDeleteProjectDialog}
-            selectedProject={this.state.selectedProject}
+            selectedProject={this.props.selectedProject}
             initializeSelectedProject={this.initializeSelectedProject}
           />
           <ExportRequirementsDialog
             open={this.state.exportRequirementsDialogOpen}
-            fretProjects={this.state.listOfProjects}
+            fretProjects={listOfProjects}
             handleDialogClose={this.closeExportRequirementsDialog}
           />
           <RequirementImportDialogs
             open={this.state.requirementImportDialogOpen}
             handleDialogClose={this.closeRequirementImportDialog}
             csvFields={this.state.csvFields}
-            listOfProjects={this.state.listOfProjects}
+            listOfProjects={listOfProjects}
             importedReqs={this.state.importedReqs}
           />
           <MissingExternalImportDialog
@@ -861,4 +817,25 @@ MainView.propTypes = {
   theme: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles, { withTheme: true })(MainView);
+function mapStateToProps(state) {
+  const requirements = state.actionsSlice.requirements;
+  const listOfProjects = state.actionsSlice.listOfProjects;
+  const selectedProject = state.actionsSlice.selectedProject;
+  return {
+    requirements,
+    listOfProjects,
+    selectedProject,
+  };
+}
+
+const mapDispatchToProps = {
+  addProject, 
+  deleteProject, 
+  selectProject,
+  initializeStore,
+  importRequirements,
+};
+
+export default withStyles(styles, { withTheme: true })(connect(mapStateToProps,mapDispatchToProps)(MainView));
+
+

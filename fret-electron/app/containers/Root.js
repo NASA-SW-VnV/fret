@@ -33,8 +33,9 @@
 // @flow
 import React, { Component } from 'react';
 import { Provider } from 'react-redux';
-import { ConnectedRouter } from 'react-router-redux';
+import { ConnectedRouter } from 'connected-react-router';
 import Routes from '../routes';
+//import { Route, Switch } from 'react-router'
 
 type Props = {
   store: {},
@@ -42,7 +43,10 @@ type Props = {
 };
 
 export default class Root extends Component<Props> {
+  
   render() {
+    console.log('this.props.store', this.props.store)
+    console.log('this.props.history', this.props.history)
     return (
       <Provider store={this.props.store}>
         <ConnectedRouter history={this.props.history}>

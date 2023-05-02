@@ -30,28 +30,49 @@
 // ANY SUCH MATTER SHALL BE THE IMMEDIATE, UNILATERAL TERMINATION OF THIS
 // AGREEMENT.
 // *****************************************************************************
-import React from 'react';
-import { render } from 'react-dom';
-import { AppContainer } from 'react-hot-loader';
-import Root from './containers/Root';
-import { store, history } from './store/store';
-import './app.global.css';
+const fs=require("fs");
+const sharedObj = require('electron').remote.getGlobal('sharedObj');
+const modeldb = sharedObj.modeldb;
 
-render(
-  <AppContainer>
-    <Root store={store} history={history} />
-  </AppContainer>,
-  document.getElementById('root')
-);
+export {
+  createOrUpdateVariables as createOrUpdateVariables
+}
 
-if (module.hot) {
-  module.hot.accept('./containers/Root', () => {
-    const NextRoot = require('./containers/Root'); // eslint-disable-line global-require
-    render(
-      <AppContainer>
-        <NextRoot store={store} history={history} />
-      </AppContainer>,
-      document.getElementById('root')
-    );
-  });
+function createOrUpdateVariables (variables, componentName, projectName, dbid) {
+  variables.map(function (variableName) {
+    var modeldbid = projectName + componentName + variableName;
+    modeldb.get(modeldbid).then(function (v) {
+      if(!v.reqs.includes(dbid)) {
+        modeldb.put({
+          ...v,
+          reqs: v.reqs.concat(dbid),
+        })
+      }
+    }).catch(function (err) {
+      if(err && err.name === 'not_found') {
+        modeldb.find({
+          selector: {project: projectName, component_name: componentName},
+          fields: ['modelComponent']
+        }).then(function(result){
+          modeldb.put({
+            _id: modeldbid,
+            project: projectName,
+            component_name: componentName,
+            variable_name: variableName,
+            reqs: [dbid],
+            dataType: '',
+            idType: '',
+            description: '',
+            assignment: '',
+            modeRequirement: '',
+            modeldoc: false,
+            modelComponent: result.docs?(result.docs[0]?result.docs[0].modelComponent:''):'',
+            model_id: ''
+          });
+        }).catch(function (err) {
+          console.log(err);
+      });
+      }
+    })
+  })
 }

@@ -30,7 +30,6 @@
 // ANY SUCH MATTER SHALL BE THE IMMEDIATE, UNILATERAL TERMINATION OF THIS
 // AGREEMENT.
 // *****************************************************************************
-const utils = require('../../support/utils');
 import React, { Component, FunctionComponent } from 'react';
 import PropTypes from 'prop-types';
 import {  withStyles, withTheme } from '@material-ui/core/styles';
@@ -212,7 +211,7 @@ class TimeSeriesChart extends Component {
 			}
 
 /*JSC-0420-01
-            this.setState((prevState) => {
+            this.setState((prevState) => {  
                 if (!this.state.dragWasActive) {
 		    if (chart_type == "category"){
 	                    data[dataIndex] = (data[dataIndex]) ? 0 : 1;
@@ -384,13 +383,13 @@ console.log("TSChart: handleMouseUp:setState:number "+NV);
 	    dataKey="TF"
 	    }
 	else {
-            data =
+            data = 
                         this.state.data.map((t, i) => (
                             {
                                 [this.props.dataKey]: t,
                                 'false': t,
                                 'true': t,
-                                'VAL': t
+                                'VAL': t 
                             }
                         ))
 	    dataKey="VAL"
@@ -426,14 +425,14 @@ const CustomizedLabel: FunctionComponent<any> = (props: any) => {
 //-------------------customizedlabel----------------
 
         let longName = this.props.name.length > maxNameLength;
-      let Oname = ID_to_arithexpr(utils.unreplace_special_chars(this.props.name));
+	let Oname = ID_to_arithexpr(this.props.name);
         let name = (longName) ? Oname.slice(0, maxNameLength-1) + "..." : Oname;
 //console.log("TSC:render: longName="+longName);
 //console.log("TSC:render: origname="+this.props.name);
 //console.log("TSC:render: name="+name);
 //console.log("TSC:render: expression="+expression);
 
-        let nameTip = (longName || expression) ?
+        let nameTip = (longName || expression) ? 
                         <div>
                             {((longName) ? Oname + ((expression) ? ": " : "") : "")}
                             {(expression) ? Oname : "" }
@@ -448,8 +447,8 @@ const CustomizedLabel: FunctionComponent<any> = (props: any) => {
                 <LineChart
                     id={"qa_ltlSim_lc_"+this.props.name.slice(0, 4)}
                     syncId={this.props.syncId}
-//JSC/CAV                    margin={{top: 10, right: 10, left: 0, bottom: 10}}
-                    margin={{top: 10, right: 10, left: 30, bottom: 10}}
+//JSC/CAV                    margin={{top: 10, right: 10, left: 0, bottom: 10}} 
+                    margin={{top: 10, right: 10, left: 30, bottom: 10}} 
                     data={data}
                     onClick={(this.props.onClick) ? this.handleClick : undefined}
                     onMouseDown={(canChange) ? this.handleMouseDown : undefined}
@@ -461,7 +460,7 @@ const CustomizedLabel: FunctionComponent<any> = (props: any) => {
                                     stroke: primaryColor,
                                     strokeWidth: 4,
                                     strokeOpacity: 0.25,
-                                    fill: "none" }}
+                                    fill: "none" }} 
                         content={<JSCEmptyTooltip />}
                     />
                     <CartesianGrid strokeDasharray="3 3" fill={fill} fillOpacity="0.4"/>
@@ -496,7 +495,7 @@ const CustomizedLabel: FunctionComponent<any> = (props: any) => {
                         onMouseLeave={this.handleMouseLeaveLine} >
 			<LabelList content={<CustomizedLabel chart_type={chart_type} />} />
 		    </Line>
-                    <Line
+                    <Line 
                         name={this.props.name}
                         id={"qa_ltlSim_ln_2_"+this.props.name.slice(0, 4)}
                         dataKey="false"
@@ -540,7 +539,7 @@ const CustomizedLabel: FunctionComponent<any> = (props: any) => {
                     classes={{tooltip: classes.nametip}}>
                     <div className={classes.nametipAnchor} />
                 </Nametip>}
-            {chartState === EFormulaStates.BUSY &&
+            {chartState === EFormulaStates.BUSY && 
               <CircularProgress size={24} id={"qa_ltlSim_cp_"} className={classes.progress}/>}
             </div>
         )
@@ -585,24 +584,25 @@ export default withTheme(withStyles(styles)(TimeSeriesChart));
 
 function ID_to_arithexpr(ID){
 
-  let v = ID
-          .replace(/^N/g, "")
-          .replace(/_S_/g, " ")
-          .replace(/_D_/g, ".")
-          .replace(/_p_/g, "+")
-          .replace(/_m_/g, "-")
-          .replace(/_mul_/g, "*")
-          .replace(/_div_/g, "/")
-          .replace(/_lp_/g, "(")
-          .replace(/_rp_/g, ")")
-          .replace(/_leq_/g, "<=")
-          .replace(/_lt_/g, "<")
-          .replace(/_gt_/g, ">")
-          .replace(/_geq_/g, ">=")
-          .replace(/_eq_/g, "=")
-          .replace(/_eqeq_/g, "==")
-          ;
+let v = ID
+        .replace(/^N/g, "")
+        .replace(/_S_/g, " ")
+        .replace(/_D_/g, ".")
+        .replace(/_p_/g, "*")
+        .replace(/_m_/g, "-")
+        .replace(/_mul_/g, "*")
+        .replace(/_div_/g, "/")
+        .replace(/_lp_/g, "(")
+        .replace(/_rp_/g, ")")
+        .replace(/_leq_/g, "<=")
+        .replace(/_lt_/g, "<")
+        .replace(/_gt_/g, ">")
+        .replace(/_geq_/g, ">=")
+        .replace(/_eq_/g, "=")
+        .replace(/_eqeq_/g, "==")
+        ;
 
 return v
 
 }
+

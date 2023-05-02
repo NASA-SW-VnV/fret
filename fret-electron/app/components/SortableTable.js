@@ -77,17 +77,13 @@ import MenuItem from '@material-ui/core/MenuItem';
 
 import ExportIcon from '@material-ui/icons/ArrowUpward';
 
-import VariablesView from './VariablesView';
 import * as d3 from "d3";
 import {getRequirementStyle} from "../utils/utilityFunctions";
+import { connect } from "react-redux";
+import { changeRequirementStatus, } from '../reducers/allActionsSlice';
 
-const constants = require('../parser/Constants');
-const sharedObj = require('electron').remote.getGlobal('sharedObj');
-
-const db = sharedObj.db;
-const app = require('electron').remote.app;
-const system_dbkeys = sharedObj.system_dbkeys;
 const statusType = ['None', 'In Progress', 'Paused', 'Completed', 'Attention', 'Deprecated'];
+const {ipcRenderer} = require('electron');
 
 let counter = 0;
 // status is also saved in database
@@ -374,7 +370,7 @@ class SortableTable extends React.Component {
     page: 0,
     rowsPerPage: 10,
     displayRequirementOpen: false,
-    selectedRequirement: {},
+    selectedRequirement: {}, 
     selectionBulkChange: [],
     snackBarDisplayInfo: {},
     addChildRequirementMode: undefined,
@@ -514,16 +510,25 @@ class SortableTable extends React.Component {
 
   handleRequirementDialogOpen = (row) => event => {event.stopPropagation();
     if (row.dbkey) {
-      db.get(row.dbkey).then((doc) => {
-        doc.dbkey = row.dbkey
-        doc.rev = row.rev
+      // context isolation
+      // 
+
+      var argList = [row];
+      // ipcRenderer call main with argLit and main returns result to update Redux store
+      console.log('retrieveRequirement ipcRenderer.invoked in SortableTable.js argList ',argList);
+      ipcRenderer.invoke('retrieveRequirement',argList).then((result) => {
+        console.log('retrieveRequirement  in SortableTable.js result ',result);
+        /*
+        this.props.retrieveRequirement({ type: 'actions/retrieveRequirement',
+                                        //selectedRequirement: result.selectedRequirement,
+                                        }) */
         this.setState({
-          selectedRequirement: doc,
-          displayRequirementOpen: true,
-        })
+          selectedRequirement: result.doc,
+          displayRequirementOpen: true,})        
       }).catch((err) => {
         console.log(err);
-      });
+      })
+
     }
   }
 
@@ -655,14 +660,22 @@ class SortableTable extends React.Component {
   // user select a status option from menu item
   handleChange = (event, row) => {
     event.stopPropagation();
+
     if (row.dbkey) {
-      db.get(row.dbkey).then(function (doc) {
-        return db.put({ ...doc, status: event.target.value }, err => {
-          if (err) {
-            return console.log(err);
-          }
-        });
+
+      // context isolation
+      var args = [row.dbkey, event.target.value];
+      console.log('ipcRenderer ', args);
+      ipcRenderer.invoke('changeRequirementStatus',args).then((result) => {
+        this.props.changeRequirementStatus({  type: 'actions/requirementChangedStatus',
+                                              // requirements
+                                              requirements : result.requirements, 
+                                            })
+      }).catch((err) => {
+        console.log(err);
       })
+
+      this.setState({ projectName: '' });
     }
   };
 
@@ -752,7 +765,7 @@ class SortableTable extends React.Component {
   }
 
   render() {
-    const { classes, selectedProject, existingProjectNames } = this.props;
+    const { classes, selectedProject, listOfProjects } = this.props;
     const { data, order, orderBy, selected, rowsPerPage, page, bulkChangeMode,
        snackBarDisplayInfo, selectionBulkChange, selectedRequirement,
        deleteUsingCheckBoxes, searchHasWords, searchId, searchStatus, searchSummary,searchInputString } = this.state;
@@ -941,7 +954,7 @@ class SortableTable extends React.Component {
         selectedProject={this.state.selectedProject}
         editRequirement={this.state.selectedRequirement}
         addChildRequirementToParent={this.state.addChildRequirementMode}
-        existingProjectNames={this.props.existingProjectNames}
+        listOfProjects={this.props.listOfProjects}
         requirements = {this.props.requirements} />
       <DeleteRequirementDialog
         open={this.state.deleteDialogOpen}
@@ -992,8 +1005,12 @@ class SortableTable extends React.Component {
 SortableTable.propTypes = {
   classes: PropTypes.object.isRequired,
   selectedProject: PropTypes.string.isRequired,
-  existingProjectNames: PropTypes.array.isRequired,
+  listOfProjects: PropTypes.array.isRequired,
   requirements: PropTypes.array.isRequired
 };
 
-export default withStyles(styles)(SortableTable);
+const mapDispatchToProps = {
+  changeRequirementStatus,
+};
+
+export default withStyles(styles)(connect(null,mapDispatchToProps)(SortableTable));

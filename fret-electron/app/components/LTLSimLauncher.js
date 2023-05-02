@@ -130,8 +130,7 @@ export default function LTLSimLauncher(props) {
 function rewriteExpressionForLTLSIM(expression) {
     /* TODO: Remove removal of HTML tags, when parsing and construction of
      * the semantics is changed to give also plain (no HTML) expressions. */
-  return expression
-  /*
+    return expression
             .replace(/<b>/g, "")
             .replace(/<i>/g, "")
             .replace(/<\/b>/g, "")
@@ -147,5 +146,4 @@ function rewriteExpressionForLTLSIM(expression) {
             .replace(/\[<=(\d+)\]/g, "[0, $1]")
             .replace(/\[=(\d+)\]/g, "[$1, $1]")
             .replace(/\[<(\d+)\]/g, (str, p1, offset, s) => (`[0, ${parseInt(p1)-1}]`));
-*/
 }

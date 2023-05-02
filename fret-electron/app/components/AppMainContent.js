@@ -39,9 +39,6 @@ import AnalysisTabs from './AnalysisTabs';
 import Settings from './Settings';
 import Help from './Help';
 import Grammar from './Grammar';
-const sharedObj = require('electron').remote.getGlobal('sharedObj')
-const db = sharedObj.db;
-const system_dbkeys = sharedObj.system_dbkeys;
 
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
@@ -50,13 +47,13 @@ import Tab from '@material-ui/core/Tab';
 class AppMainContent extends React.Component {
 
   render() {
-    const { content, selectedProject, existingProjectNames, requirements }  = this.props
+    const { content, selectedProject, listOfProjects, requirements }  = this.props
     if (content === 'dashboard')
       return <Dashboard selectedProject={selectedProject} requirements={requirements}/>
     if (content === 'requirements')
-      return <SortableTable selectedProject={selectedProject} existingProjectNames={existingProjectNames} requirements={requirements}/>
+      return <SortableTable selectedProject={selectedProject} listOfProjects={listOfProjects} requirements={requirements}/>
       if (content === 'analysis')
-        return <AnalysisTabs selectedProject={selectedProject} existingProjectNames={existingProjectNames}/>
+        return <AnalysisTabs selectedProject={selectedProject} listOfProjects={listOfProjects}/>
     if (content === 'settings')
       return <Settings />
     if (content === 'help')
@@ -69,7 +66,7 @@ class AppMainContent extends React.Component {
 AppMainContent.propTypes = {
   content: PropTypes.string.isRequired,
   selectedProject: PropTypes.string.isRequired,
-  existingProjectNames: PropTypes.array.isRequired,
+  listOfProjects: PropTypes.array.isRequired,
   requirements: PropTypes.array.isRequired
 }
 

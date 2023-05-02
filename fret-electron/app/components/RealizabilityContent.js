@@ -1696,7 +1696,7 @@ class RealizabilityContent extends React.Component {
                                           updateSelectedRequirements={setMessage} 
                                           selectedProject={selectedProject}
                                           selectedComponent={selected.component_name}
-                                          existingProjectNames={[selectedProject]}
+                                          listOfProjects={[selectedProject]}
                                           connectedComponent={projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex]}
                                           importedRequirements={[]}
                                         />
@@ -1723,7 +1723,7 @@ class RealizabilityContent extends React.Component {
                                       updateSelectedRequirements={setMessage}
                                       selectedProject={selectedProject}
                                       selectedComponent={selected.component_name}
-                                      existingProjectNames={[selectedProject]}
+                                      listOfProjects={[selectedProject]}
                                       connectedComponent={{}}
                                       importedRequirements={[]}
                                     />
