@@ -18,4 +18,4 @@ Installing Mu-FRET is the same as installing FRET, so we include the [FRET insta
 
 ## Publications Presentations and Posters
 
-Our team have written several academic papers, given presentations, and made posters relating to Mu-FRET. For full details see our [publications, presentation, and posers list](mu-fret-docs/publications-presentations-posters.md)
+Our team have written several academic papers, given presentations, and made posters relating to Mu-FRET. For full details see our [publications, presentation, and posters list](mu-fret-docs/publications-presentations-posters.md)
