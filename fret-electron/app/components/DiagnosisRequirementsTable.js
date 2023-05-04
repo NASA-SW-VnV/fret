@@ -448,28 +448,7 @@ class DiagnosisRequirementsTable extends React.Component {
     const { selectedProject, selectedComponent, selectedRequirements, updateSelectedRequirements } = this.props
     const filterOff = selectedProject == 'All Projects'
     const { selectedReqs } = this.context;
-/*
-    db.allDocs({
-      include_docs: true,
-    }).then((result) => {
 
-      let dbData = result.rows
-                .filter(r => !system_dbkeys.includes(r.key))
-                .filter(r => filterOff || (r.doc.project === selectedProject && r.doc.semantics.component_name === selectedComponent))
-                .map(r => {
-                  return createData(r.doc._id, r.doc._rev, r.doc.reqid, r.doc.fulltext, r.doc.project)
-                })
-                .sort((a, b) => {return a.reqid > b.reqid})
-      // updateSelectedRequirements(dbData.map(n => n.reqid));
-      this.setState({
-        data: dbData,   // this need to be managed by redux   
-        selected: selectedRequirements,
-        tempSelected: selectedRequirements
-      })
-    }).catch((err) => {
-      optLog(err);
-    });
-    */
     this.setState({
       //data: dbData,   // this need to be managed by redux   
       selected: selectedRequirements,

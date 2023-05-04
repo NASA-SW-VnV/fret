@@ -202,7 +202,7 @@ class DisplayVariableDialog extends React.Component {
     var variables = lustreVariables.concat(copilotVariables);
 
     var args = [selectedVariable.project,selectedVariable.component_name,variables, idType,
-      modeldoc_id, dataType, modeldbid, description,assignment,lustreValidAssignment,
+      modeldoc_id, dataType, modeldbid, description,assignment,
       copilotAssignment,modeRequirement,modelComponent,lustreVariables,copilotVariables,
       moduleName]
 

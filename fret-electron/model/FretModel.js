@@ -734,13 +734,12 @@ export default class FretModel {
 
       var description = args[7]
       var assignment = args[8]
-      var lustreValidAssignment = args[9]
-      var copilotAssignment = args[10]
-      var modeRequirement = args[11]
-      var modelComponent = args[12]
-      var lustreVariables = args[13]
-      var copilotVariables = args[14]
-      var moduleName = args[15]
+      var copilotAssignment = args[9]
+      var modeRequirement = args[10]
+      var modelComponent = args[11]
+      var lustreVariables = args[12]
+      var copilotVariables = args[13]
+      var moduleName = args[14]
 
       var completedVariable = false;
       var newVariables = [];
@@ -788,13 +787,12 @@ export default class FretModel {
 
       var description = args[7]
       var assignment = args[8]
-      var lustreValidAssignment = args[9]
-      var copilotAssignment = args[10]
-      var modeRequirement = args[11]
-      var modelComponent = args[12]
-      var lustreVariables = args[13]
-      var copilotVariables = args[14]
-      var moduleName = args[15]
+      var copilotAssignment = args[9]
+      var modeRequirement = args[10]
+      var modelComponent = args[11]
+      var lustreVariables = args[12]
+      var copilotVariables = args[13]
+      var moduleName = args[14]
 
       var completedVariable = false;
 
@@ -827,7 +825,6 @@ export default class FretModel {
           moduleName: moduleName,
           description: description,
           assignment: assignment,
-          lustreValidAssignment: lustreValidAssignment,
           copilotAssignment: copilotAssignment,
           modeRequirement: modeRequirement,
           modeldoc: false,

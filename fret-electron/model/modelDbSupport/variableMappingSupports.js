@@ -182,7 +182,6 @@ async function  synchModelVariablesAndComponents(componentModel,selectedProject)
       internalVariables: [],
       functions: [],
       assignments: [],
-      lustreValidAssignments: [],
       copilotAssignments: [],
       modes: [],
       properties: []
@@ -200,8 +199,6 @@ async function  synchModelVariablesAndComponents(componentModel,selectedProject)
         variable.type = getCoCoSpecDataType(doc.dataType);
         contract.internalVariables.push(variable);
         // contract.assignments.push(doc.assignment);
-        contract.assignments.push(doc.lustreValidAssignment);
-        contract.lustreValidAssignments.push(doc.lustreValidAssignment);
         contract.copilotAssignments.push(doc.copilotAssignment);
       } else if (doc.idType === 'Mode'){
         if (doc.modeRequirement !== '')
