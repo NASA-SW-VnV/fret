@@ -347,6 +347,12 @@ ipcMain.handle('selectCorspdModelComp', async (evt, arg) => {
 })
 
 // realizability
+
+ipcMain.handle('selectRealizabilityComponent', async (evt, arg) => {
+  const result = await fretModel.selectRealizabilityComponent(evt, arg);
+  return result
+})
+
 ipcMain.handle('ltlsimSaveJson', async (evt, arg) => {
   const result = await fretModel.ltlsimLoadProject(evt, arg);
   return result

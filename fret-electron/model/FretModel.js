@@ -89,7 +89,6 @@ export default class FretModel {
 
         // realizability
         this.rlz_data = []
-        this.selectedRlz = []
         this.monolithic = false
         this.compositional = false
         this.ccSelected = ''
@@ -306,6 +305,7 @@ export default class FretModel {
           completedComponents : this.completedComponents, 
           cocospecData : this.cocospecData, 
           cocospecModes : this.cocospecModes, 
+          rlz_data : this.rlz_data,
         }
         return states
 
@@ -343,6 +343,9 @@ export default class FretModel {
             modelVariables : this.modelVariables,   
             selectedVariable : this.selectedVariable, 
             importedComponents : this.importedComponents,  
+
+            // * realizability
+            rlz_data : this.rlz_data
             
           }
           return states
@@ -1072,9 +1075,15 @@ export default class FretModel {
 
     }
 
-    async checkRealizability(evt,args){
-      console.log('FretModel checkRealizability: ', args)
-      return ({})
+    async selectRealizabilityComponent(evt,args){
+      console.log('FretModel selectRealizabilityComponent: ', args)
+      const component_name = args[0]
+      this.rlz_data = await retrieveRlzRequirements(this.selectedProject,component_name)
+      var states = {
+        // realizability
+        rlz_data : this.rlz_data, 
+      }
+      return states
     }
 
     async diagnoseUnrealizableRequirements(evt,args){

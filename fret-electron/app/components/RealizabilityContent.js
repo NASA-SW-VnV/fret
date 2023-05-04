@@ -126,6 +126,10 @@ var analysisPath = require("os").homedir() + '/Documents/fret-analysis/';
 var dbChangeListener_RealCont;
 var dbChangeListener_CCReq_Tab;
 
+const {ipcRenderer} = require('electron');
+import { selectRealizabilityComponent, } from '../reducers/allActionsSlice';
+import { connect } from "react-redux";
+
 let counter = 0;
 function createData(dbkey, rev, reqid, summary, project) {
   counter += 1;
@@ -891,6 +895,22 @@ class RealizabilityContent extends React.Component {
       } else {
         this.setState({selected: event.target.value});
       }
+
+
+      var args = [selected.component_name]
+      ipcRenderer.invoke('selectRealizabilityComponent',args).then((result) => {
+        console.log('Realizability ipcRenderer selectRealizabilityComponent ',result);
+        this.props.initializeStore({ type: 'actions/selectRealizabilityComponent',
+                       
+                                    // realizability
+                                    rlz_data: result.rlz_data,
+
+                                    })
+      }).catch((err) => {
+        console.log(err);
+      })
+
+
 
     } else if (name === 'monolithic' && !this.state.monolithic) {
       this.setState({monolithic : !this.state.monolithic, compositional : false});
@@ -1784,4 +1804,9 @@ RealizabilityContent.propTypes = {
   variableIdentifierReplacement: PropTypes.func.isRequired
 };
 
-export default withStyles(styles)(RealizabilityContent);
+
+const mapDispatchToProps = {
+  selectRealizabilityComponent, 
+};
+
+export default withStyles(styles)(connect(null,mapDispatchToProps)(RealizabilityContent));

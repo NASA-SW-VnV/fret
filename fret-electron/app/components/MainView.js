@@ -368,6 +368,9 @@ class MainView extends React.Component {
         snackbarOpen: newRequirementCreated,
         lastCreatedRequirementId: newReqId
       });
+      if(process.env.EXTERNAL_TOOL=='1'){
+        //ipcRenderer.send('closeFRET');
+      }
   }
 
   /*

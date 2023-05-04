@@ -60,8 +60,8 @@ import css from './Instructions.css';
 import Help from './Help';
 import ColorPicker from './ColorPicker';
 import LTLSimLauncher from './LTLSimLauncher';
+
 import TemplatePanel from './TemplatePanel';
-import Glossary from "./Glossary";
 
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -79,6 +79,7 @@ import {
   timingInstruction,
   responseInstruction
 } from 'examples'
+import Glossary from "./Glossary";
 
 import { connect } from "react-redux";
 import { updateFieldColors } from '../reducers/allActionsSlice';
@@ -92,6 +93,7 @@ const instructions = {
 }
 
 const constants = require('../parser/Constants');
+
 const fieldsWithExplanation = ['scopeField', 'conditionField', 'componentField', 'responseField', 'timingField'];
 const {ipcRenderer} = require('electron');
 const ltlsim = require('ltlsim-core').ltlsim;
@@ -194,14 +196,12 @@ class Instructions extends React.Component {
     this.LTLSimStatus = status;
 
     this.state = {
-      //fieldColors : {},
       LTLSimDialogOpen: false,
       components: {},
       selectedItem: null,
       ptFormat: 'SMV',
       ftFormat: 'SMV',
-      ftExpanded: false,
-      ptExpanded: false
+      ftInfinite: false
     };
 
     this.openLTLSimDialog = this.openLTLSimDialog.bind(this);
@@ -209,16 +209,15 @@ class Instructions extends React.Component {
   }
 
   componentWillUnmount() {
-    this.mounted = false;
-
+    this.mounted = false
   }
 
-  componentDidMount = async () => {
+  componentDidMount = () => {
     this.mounted = true
     var notationPath = `../docs/_media/user-interface/examples/svgDiagrams/Notation.svg`;
     this.setState({
       notationUrl: notationPath
-    });
+    })
 
   }
 
@@ -248,13 +247,9 @@ handleFormatChange = (event) => {
 }
 
 handleSwitchChange =(event) => {
- if (event.target.name === 'ptExpanded'){
+  if (event.target.name === 'ftInfinite'){
    this.setState({
-     ptExpanded: event.target.checked,
-   })
- } else if (event.target.name === 'ftExpanded'){
-   this.setState({
-     ftExpanded: event.target.checked,
+     ftInfinite: event.target.checked,
    })
  }
 }
@@ -347,22 +342,14 @@ handleSwitchChange =(event) => {
             </div>
             <div>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            {(this.props.formalization.semantics.ft !== this.props.formalization.semantics.ftExpanded)
-             ?
-              <FormControlLabel id="qa_crtAst_sem_btn_switchFutureEnabled"
-                  control={<Switch size="small" checked={this.state.ftExpanded} onChange={this.handleSwitchChange} name="ftExpanded" />}
-                  label="Expanded"/>
-             :
-             // disable for cases that the SMV form is the same for ft and ftExpanded
-                <FormControlLabel id="qa_crtAst_sem_btn_switchFutureDisabled" disabled
-                    control={<Switch size="small"checked/>}
-                    label="Expanded"/>
-            }
+              <FormControlLabel id="qa_crtAst_sem_btn_switchFutureInfinite"
+                  control={<Switch size="small" checked={this.state.ftInfinite} onChange={this.handleSwitchChange} name="ftInfinite" />}
+                  label="Infinite trace"/>
             </div>
             <br />
           </FormGroup> <br />
             <div id="qa_crtAst_sem_typ_futureTimeFormula" className={classes.formula}
-              dangerouslySetInnerHTML={{ __html: (this.state.ftExpanded ? this.props.formalization.semantics.ftExpanded: this.props.formalization.semantics.ft) }} />
+              dangerouslySetInnerHTML={{ __html: (this.state.ftInfinite ? this.props.formalization.semantics.ftInfAUExpanded : this.props.formalization.semantics.ftExpanded)}} />
 
             <br />
             <div id="qa_crtAst_sem_typ_futureTimeComp" className={classes.description} dangerouslySetInnerHTML={{ __html:' Target: '+ this.props.formalization.semantics.component + ' component.'}} />
@@ -392,25 +379,12 @@ handleSwitchChange =(event) => {
           <FormHelperText>Format</FormHelperText>
           </FormControl>
           </div>
-          <div>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          {((this.state.ptFormat === 'SMV') && (this.props.formalization.semantics.pt !== this.props.formalization.semantics.ptExpanded))
-           ?
-            <FormControlLabel id="qa_crtAst_sem_btn_switchPastEnabled"
-                control={<Switch size="small" checked={this.state.ptExpanded} onChange={this.handleSwitchChange} name="ptExpanded" />}
-                label="Expanded"/>
-           :
-           // disable Expanded for Lustre and for cases that the SMV form is the same for pt and ptExpanded
-              <FormControlLabel id="qa_crtAst_sem_btn_switchPastDisabled" disabled
-                  control={<Switch size="small" checked/>}
-                  label="Expanded"/>
-          }
-          </div>
           <br />
-        </FormGroup> <br />
+        </FormGroup>
+        <br />
           <div id="qa_crtAst_sem_typ_pastTimeFormula" className={classes.formula}
           dangerouslySetInnerHTML={{ __html: (this.state.ptFormat=='SMV'
-          ? (this.state.ptExpanded ? this.props.formalization.semantics.ptExpanded: this.props.formalization.semantics.pt)
+          ? (this.props.formalization.semantics.ptExpanded)
           : this.props.formalization.semantics.CoCoSpecCode)}} />
           <br />
           <div id="qa_crtAst_sem_typ_pastTimeComp" className={classes.description} dangerouslySetInnerHTML={{ __html:' Target: '+ this.props.formalization.semantics.component + ' component.'}} />
@@ -572,7 +546,8 @@ handleSwitchChange =(event) => {
             id = "Glossary"
             projectName={this.props.projectName}
             setAutoFillVariables={this.props.setAutoFillVariables}
-            requirements={this.props.requirements}/>
+            requirements={this.props.requirements}
+            editVariables={this.props.editVariables}/>
         </TabContainer>}
       </div>
     );
@@ -591,7 +566,8 @@ Instructions.propTypes = {
   tabValue: PropTypes.number.isRequired,
   handleTabChange: PropTypes.func.isRequired,
   requirements: PropTypes.array,
-  setAutoFillVariables: PropTypes.func
+  setAutoFillVariables: PropTypes.func,
+  editVariables: PropTypes.object
 };
 
 function mapStateToProps(state) {

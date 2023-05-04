@@ -62,6 +62,8 @@ const app = require('electron').remote.app;
 const system_dbkeys = sharedObj.system_dbkeys;
 let dbChangeListener = undefined;
 
+import { connect } from "react-redux";
+
 let counter = 0;
 
 function optLog(str) {if (constants.verboseRealizabilityTesting) console.log(str)}
@@ -383,7 +385,7 @@ class DiagnosisRequirementsTable extends React.Component {
     orderBy: 'reqid',
     selected: [],
     tempSelected: [],
-    data: [],
+    //data: [],
     page: 0,
     rowsPerPage: 10,
     selectedRequirement: {},
@@ -394,22 +396,7 @@ class DiagnosisRequirementsTable extends React.Component {
   constructor(props){
     super(props);
     
-    if (props.importedRequirements.length === 0) {
-      dbChangeListener = db.changes({
-        since: 'now',
-        live: true,
-        include_docs: true
-      }).on('change', (change) => {
-        if (!system_dbkeys.includes(change.id)) {
-          optLog(change);
-          this.synchStateWithDB();
-        }
-      }).on('complete', function(info) {
-        optLog(info);
-      }).on('error', function (err) {
-        optLog(err);
-      });
-    } else {
+    if (props.importedRequirements.length !== 0) {
       this.setState({
         data: props.importedRequirements.map(r => {
           return createData(r._id, r._rev, r.reqid, r.fulltext, r.project);
@@ -422,7 +409,7 @@ class DiagnosisRequirementsTable extends React.Component {
     const { importedRequirements, selectedRequirements } = this.props;
     this.mounted = true;
     if (importedRequirements.length === 0) {
-      this.synchStateWithDB();
+      this.updateSelection();
     } else {
       this.setState({
         data: importedRequirements.map(r => {
@@ -455,23 +442,17 @@ class DiagnosisRequirementsTable extends React.Component {
     }
   }
 
-  synchStateWithDB() {
+  updateSelection() {
     if (!this.mounted) return;
 
     const { selectedProject, selectedComponent, selectedRequirements, updateSelectedRequirements } = this.props
     const filterOff = selectedProject == 'All Projects'
     const { selectedReqs } = this.context;
+/*
     db.allDocs({
       include_docs: true,
     }).then((result) => {
-      optLog(result.rows.filter(r => !system_dbkeys.includes(r.key)));
-    })
 
-    db.allDocs({
-      include_docs: true,
-    }).then((result) => {
-      optLog(result.rows
-                .filter(r => !system_dbkeys.includes(r.key)))
       let dbData = result.rows
                 .filter(r => !system_dbkeys.includes(r.key))
                 .filter(r => filterOff || (r.doc.project === selectedProject && r.doc.semantics.component_name === selectedComponent))
@@ -481,13 +462,21 @@ class DiagnosisRequirementsTable extends React.Component {
                 .sort((a, b) => {return a.reqid > b.reqid})
       // updateSelectedRequirements(dbData.map(n => n.reqid));
       this.setState({
-        data: dbData,
+        data: dbData,   // this need to be managed by redux   
         selected: selectedRequirements,
         tempSelected: selectedRequirements
       })
     }).catch((err) => {
       optLog(err);
     });
+    */
+    this.setState({
+      //data: dbData,   // this need to be managed by redux   
+      selected: selectedRequirements,
+      tempSelected: selectedRequirements
+    })
+
+
   }
 
   handleSelectAllClick = event => {
@@ -702,4 +691,17 @@ DiagnosisRequirementsTable.propTypes = {
   importedRequirements: PropTypes.array.isRequired
 };
 
-export default withStyles(styles)(DiagnosisRequirementsTable);
+
+function mapStateToProps(state) {
+  const rlz_data = state.actionsSlice.rlz_data;
+  return {
+    rlz_data,
+
+  };
+}
+
+export default withStyles(styles)(connect(mapStateToProps)(DiagnosisRequirementsTable));
+
+
+
+//export default withStyles(styles)(DiagnosisRequirementsTable);

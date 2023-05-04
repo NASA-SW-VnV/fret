@@ -42,11 +42,6 @@ import VariablesView from './VariablesView';
 import RealizabilityView from './RealizabilityView';
 import { connect } from "react-redux";
 
-//require model methods
-//---
-//const checkDbFormat = require('../../model/fretDbSupport/checkDBFormat.js');
-//---
-
 const process = require('process');
 const constants = require('../parser/Constants');
 
@@ -80,13 +75,7 @@ class AnalysisTabs extends React.Component {
 
   state = {
     value: 0,         // indicates which tab (variable mapping or realizability)//
-    //components: [],    // for a specific project: this is an array of all the components
-    //completedComponents: [],  // for a specific project: this is an array of all components
-    // that we have completed the variable mappings
-    //cocospecData: {},   // for a specific project: this is an object where each 
-    // key is a component of this project, and the value of each key is an array of variables
-    //cocospecModes: {},  // for a specific project: this is an object where each 
-    // key is a component of this project, and the value of each key is an array of modes
+
   };
 
   constructor(props) {
@@ -228,14 +217,13 @@ class AnalysisTabs extends React.Component {
       internalVariables: [],
       functions: [],
       assignments: [],
-      lustreValidAssignments: [],
       copilotAssignments: [],
       modes: [],
       properties: []
     };
     result.docs.forEach(function(doc){
       var variable ={};
-      variable.name = '__'+doc.variable_name;
+      variable.name = doc.variable_name;
       if (doc.idType === 'Input'){
         variable.type = getCoCoSpecDataType(doc.dataType);
         contract.inputVariables.push(variable);
@@ -245,9 +233,7 @@ class AnalysisTabs extends React.Component {
       } else if (doc.idType === 'Internal'){
         variable.type = getCoCoSpecDataType(doc.dataType);
         contract.internalVariables.push(variable);
-        // contract.assignments.push(doc.assignment);
-        contract.assignments.push(doc.lustreValidAssignment);
-        contract.lustreValidAssignments.push(doc.lustreValidAssignment);
+        contract.assignments.push(doc.assignment);
         contract.copilotAssignments.push(doc.copilotAssignment);
       } else if (doc.idType === 'Mode'){
         if (doc.modeRequirement !== '')
@@ -257,6 +243,29 @@ class AnalysisTabs extends React.Component {
         variable.moduleName = doc.moduleName;
         contract.functions.push(variable);
       }
+    })
+    return contract;
+  }
+
+  variableIdentifierReplacement(contract){
+    contract.inputVariables.forEach(function(input){
+      input.name = utils.replace_special_chars(input.name)
+    })
+    contract.outputVariables.forEach(function(output){
+      output.name = utils.replace_special_chars(output.name)
+    })
+    contract.internalVariables.forEach(function(internal){
+      internal.name = utils.replace_special_chars(internal.name)
+    })
+    contract.assignments.forEach((item, i) => {
+      contract.assignments[i] = utils.replace_special_chars(item);
+    });
+    contract.copilotAssignments.forEach((item, i) => {
+      contract.copilotAssignments[i] = utils.replace_special_chars(item);
+    });
+    contract.modes.forEach(function(mode){
+      mode.name = utils.replace_special_chars(mode.name)
+      mode.assignment = utils.replace_special_chars(mode.assignment)
     })
     return contract;
   }
@@ -302,7 +311,8 @@ class AnalysisTabs extends React.Component {
             getPropertyInfo={this.getPropertyInfo} 
             getDelayInfo={this.getDelayInfo} getContractInfo={this.getContractInfo} 
             components={components.map(e => e.component_name)} completedComponents={completedComponents} 
-            cocospecData={cocospecData} cocospecModes={cocospecModes}/>
+            cocospecData={cocospecData} cocospecModes={cocospecModes}
+            variableIdentifierReplacement={this.variableIdentifierReplacement}/>
           </TabContainer>
         }
         {value === 1 &&
@@ -311,7 +321,8 @@ class AnalysisTabs extends React.Component {
             synchStateWithDB={this.synchStateWithDB} getPropertyInfo={this.getPropertyInfo} 
             getDelayInfo={this.getDelayInfo} getContractInfo={this.getContractInfo} 
             components={components} completedComponents={completedComponents} 
-            cocospecData={cocospecData} cocospecModes={cocospecModes}/>
+            cocospecData={cocospecData} cocospecModes={cocospecModes}
+            variableIdentifierReplacement={this.variableIdentifierReplacement}/>
           </TabContainer>
         }
       </div>

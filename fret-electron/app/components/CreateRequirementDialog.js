@@ -74,23 +74,16 @@ import {getRequirementStyle} from "../utils/utilityFunctions";
 import {withReact} from "slate-react";
 import {createEditor, Node, Range, Text, Transforms} from "slate";
 import withFields from "../utils/withFields";
-import { AnnotatingErrorListener } from 'ltlsim-core/parser/AnnotatingErrorListener';
+
 import { createOrUpdateRequirement } from '../reducers/allActionsSlice';
 import { connect } from "react-redux";
 const constants = require('../parser/Constants');
 
 var uuid = require('uuid');
 import { v1 as uuidv1 } from 'uuid';
-//var uuidv1 = require('uuidv1')
-//const uuidv1 = require('uuid/v1');
+
 const {ipcRenderer} = require('electron');
-//require model methods
-//---
-//const modelDbSetters = require('../../model/modelDbSupport/modelDbSetters.js');
-//const modelDbDelete = require('../../model/modelDbSupport/deleteVariables.js');
-//const fretDbSetters = require('../../model/fretDbSupport/fretDbSetters');
-//const fretDbGetters = require('../../model/fretDbSupport/fretDbGetters');
-//---
+
 
 
 const formStyles = theme => ({
@@ -132,9 +125,12 @@ const formStyles = theme => ({
 });
 
 
+
 class CreateRequirementDialog extends React.Component {
 
   dialogRef = React.createRef();
+
+
   state = {
     createDialogOpen: false,
     project: null,
@@ -149,7 +145,8 @@ class CreateRequirementDialog extends React.Component {
     editor: withFields(withReact(createEditor())),
     dialogTop: 0,
     dialogLeft: 0,
-    autoFillVariables: []
+    autoFillVariables: [],
+    existingFileName: '',
   };
 
 
@@ -161,6 +158,12 @@ class CreateRequirementDialog extends React.Component {
     this.setDialogPosition();
   }
 
+  componentDidMount = () => {
+    if(process.env.EXTERNAL_TOOL=='1'){
+      console.log('componentDidMount env EXTERNAL_TOOL',process.env.EXTERNAL_TOOL);
+    }
+  }
+
   setDialogPosition = () => {
     if(this.dialogRef && this.dialogRef.current) {
       const { dialogTop, dialogLeft } = this.state;
@@ -170,6 +173,7 @@ class CreateRequirementDialog extends React.Component {
       }
     }
   }
+
 
 
   handleTextFieldFocused = name => event => {
@@ -188,6 +192,9 @@ class CreateRequirementDialog extends React.Component {
     this.setState({ createDialogOpen: false, tabValue: 0 });
     this.state.dialogCloseListener(false);
     this.setAutoFillVariables([]);
+    if(process.env.EXTERNAL_TOOL=='1'){
+      ipcRenderer.send('closeFRET');
+    }
   };
 
   handleSelectedTemplateChange = (selectedTemplate) => {
@@ -226,7 +233,7 @@ class CreateRequirementDialog extends React.Component {
     reqEditFields.template = edittedFields.template;
     reqEditFields.input = edittedFields.input;
     var args = [dbid, dbrev, reqEditFields, requirementFields,semantics,project]
-
+    // what if process.env.EXTERNAL_TOOL=='1'
     // context isolation
     console.log('CreateRequirementDialog ipcRenderer createOrUpdateRequirement', args);
     ipcRenderer.invoke('createOrUpdateRequirement',args).then((result) => {
@@ -314,7 +321,8 @@ class CreateRequirementDialog extends React.Component {
               selectedTemplate: -1,
             }
           );
-      } else if (props.editRequirement) {
+      } else if ((props.editRequirement)
+            && Object.keys((props.editRequirement)).length !== 0) {
         const template = props.editRequirement.template;
         const templateIds = templates.map(t => t._id);
         const selectedTemplate = template && template.id ?
@@ -387,6 +395,7 @@ class CreateRequirementDialog extends React.Component {
 
     const colorStyle = isRequirementUpdate ? getRequirementStyle({semantics, fulltext},false) : 'req-grey';
     return (
+      <div className={classes.root}>
         <Dialog
           open={this.state.createDialogOpen}
           onClose={this.handleClose}
@@ -546,10 +555,12 @@ class CreateRequirementDialog extends React.Component {
               projectName={this.state.project}
               setAutoFillVariables={this.setAutoFillVariables}
               requirements={this.props.requirements}
+              //editVariables={this.props.editVariables}  ? do we need KT
               />
             </div>
           </div>
         </Dialog>
+      </div>
     );
   }
 }

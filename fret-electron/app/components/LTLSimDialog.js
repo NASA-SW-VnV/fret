@@ -72,11 +72,9 @@ const app = require('electron').remote.app
 const dialog = require('electron').remote.dialog
 
 const fs = require("fs");
-//require model methods
-//---
-const fretDbGetters = require('../../model/fretDbSupport/fretDbGetters');
-//---
+
 const sharedObj = require('electron').remote.getGlobal('sharedObj');
+const db = sharedObj.db;
 const system_dbkeys = sharedObj.system_dbkeys;
 
 const trace_db_json = "/tmp/fret_traces.json";
@@ -189,8 +187,10 @@ class LTLSimDialog extends Component {
 
 	//
 	// load the suitable Requirement ID from the database into the state
-	//from MODEL
-  fretDbGetters.getAllDocs().then((result) => {
+	//
+    db.allDocs({
+      include_docs: true,
+    }).then((result) => {
       this.setState({
         reqID_data: result.rows
                 .filter(r => !system_dbkeys.includes(r.key))
@@ -368,6 +368,7 @@ class LTLSimDialog extends Component {
 			((logics === "FT") ?
 				reqID_data[i].formula_FT :
 				reqID_data[i].formula_PT)
+		  /*
             		.replace(/<b>/g, "")
             		.replace(/<i>/g, "")
             		.replace(/<\/b>/g, "")
@@ -383,7 +384,7 @@ class LTLSimDialog extends Component {
             		.replace(/\[<=(\d+)\]/g, "[0, $1]")
             		.replace(/\[=(\d+)\]/g, "[$1, $1]")
             		.replace(/\[<(\d+)\]/g, (str, p1, offset, s) => (`[0, ${parseInt(p1)-1}]`));
-
+*/
 	               LTLSimController.setFormulaExpression(
 				model,
 				reqID_R,
@@ -685,8 +686,10 @@ var loadedTrace = filepath;
 	var K = loadedTrace.K;
 
 	var cex = loadedTrace.Counterexample;
+    // Andreas: Tried to add this here to deal with traces that were longer than the initial trace length value,
+    // but it seems like it causes issues with traces of length < 4.
+	LTLSimController.setTraceLength(this.state.model, K);
         let LTLSIM_tracelength = LTLSimController.getTraceLength(this.state.model);
-
 	var keys=[]
 	var vars_trace_type=[]
 	let sanitizedReqIds = this.props.requirementIDs.map(id => id.replace(/ /g,"_")

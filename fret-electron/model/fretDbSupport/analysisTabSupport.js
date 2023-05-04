@@ -167,3 +167,4 @@ async function  checkComponents (components, selectedProject, cocospecData, coco
     }
     return completedComponents
   }
+

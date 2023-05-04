@@ -30,6 +30,7 @@
 // ANY SUCH MATTER SHALL BE THE IMMEDIATE, UNILATERAL TERMINATION OF THIS
 // AGREEMENT.
 // *****************************************************************************
+const utils = require('../../support/utils');
 import React, { Component, FunctionComponent } from 'react';
 import PropTypes from 'prop-types';
 import {  withStyles, withTheme } from '@material-ui/core/styles';
@@ -425,7 +426,7 @@ const CustomizedLabel: FunctionComponent<any> = (props: any) => {
 //-------------------customizedlabel----------------
 
         let longName = this.props.name.length > maxNameLength;
-	let Oname = ID_to_arithexpr(this.props.name);
+      let Oname = ID_to_arithexpr(utils.unreplace_special_chars(this.props.name));
         let name = (longName) ? Oname.slice(0, maxNameLength-1) + "..." : Oname;
 //console.log("TSC:render: longName="+longName);
 //console.log("TSC:render: origname="+this.props.name);
@@ -588,7 +589,7 @@ let v = ID
         .replace(/^N/g, "")
         .replace(/_S_/g, " ")
         .replace(/_D_/g, ".")
-        .replace(/_p_/g, "*")
+          .replace(/_p_/g, "+")
         .replace(/_m_/g, "-")
         .replace(/_mul_/g, "*")
         .replace(/_div_/g, "/")
@@ -605,4 +606,3 @@ let v = ID
 return v
 
 }
-

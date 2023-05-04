@@ -39,17 +39,13 @@ import Button from '@material-ui/core/Button';
 import RealizabilityContent from './RealizabilityContent';
 import AnalysisReportContent from './AnalysisReportContent';
 
-const sharedObj = require('electron').remote.getGlobal('sharedObj');
+
 const constants = require('../parser/Constants');
-const db = sharedObj.db;
-const modeldb = sharedObj.modeldb;
-const system_dbkeys = sharedObj.system_dbkeys;
-const checkDbFormat = require('../../support/fretDbSupport/checkDBFormat.js');
+
 const fs = require('fs');
 const app = require('electron').remote.app;
 const dialog = require('electron').remote.dialog;
 
-var dbChangeListener;
 let id = 0;
 
 function optLog(str) {if (constants.verboseRealizabilityTesting || constants.verboseReportTesting) console.log(str)}
@@ -76,30 +72,15 @@ class RealizabilityView extends React.Component {
 
   constructor(props){
     super(props);
-    dbChangeListener = db.changes({
-      since: 'now',
-      live: true,
-      include_docs: true
-    }).on('change', (change) => {
-      if (!system_dbkeys.includes(change.id)) {
-        this.props.synchStateWithDB();
-        console.log("synch finished");
-      }
-    }).on('complete', function(info) {
-      optLog(info);
-    }).on('error', function (err) {
-      optLog(err);
-    });
+
   }
 
   componentDidMount() {
     this.mounted = true;
-    this.props.synchStateWithDB();
   }
 
   componentWillUnmount() {
     this.mounted = false;
-    dbChangeListener.cancel();
   }
 
   componentDidUpdate(prevProps) {

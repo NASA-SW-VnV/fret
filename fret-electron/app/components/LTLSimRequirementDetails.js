@@ -88,8 +88,9 @@ class LTLSimRequirementDetails extends Component {
 <div>
       		{
 		selreq.map(R_ID => {
-			var ID=R_ID;
-			var Desc="unknown-ID not in DB";
+                    let ID=R_ID;
+                    let Desc;
+                    (selreq.length === 1)? (Desc=description):(Desc="unknown-ID not in DB")
 			for (let i=0; i< allreq.length; i++){
 		            let reqID = allreq[i].reqID;
 		            let reqID_R = reqID.replace(/ /g,"_")

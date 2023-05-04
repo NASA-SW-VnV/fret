@@ -172,7 +172,9 @@ class ComponentSummary extends React.Component {
           componentMapping.model_path = doc.modelComponent;
         }
         var variable = {};
-        variable.variable_name = doc.modeldoc_id;
+        //Variable name in FRETish
+        variable.variable_name = utils.replace_special_chars(doc.variable_name);
+        //Signal path in Simulink model
         variable.variable_path = componentMapping.model_path+'/'+doc.modeldoc_id;
         (doc.idType === 'Input') ? componentInputs.push(variable) : componentOutputs.push(variable);
       }
@@ -237,7 +239,8 @@ ComponentSummary.propTypes = {
   language: PropTypes.string.isRequired,
   getPropertyInfo: PropTypes.func.isRequired,
   getDelayInfo: PropTypes.func.isRequired,
-  getContractInfo: PropTypes.func.isRequired
+  getContractInfo: PropTypes.func.isRequired,
+  variableIdentifierReplacement: PropTypes.func.isRequired
 };
 
 ComponentSummary = withStyles(componentStyles)(ComponentSummary);
@@ -321,7 +324,7 @@ class VariablesView extends React.Component {
                   getPropertyInfo={getPropertyInfo}
                   getDelayInfo={getDelayInfo}
                   getContractInfo={getContractInfo}
-
+                  variableIdentifierReplacement={this.props.variableIdentifierReplacement}
                 />
               </AccordionSummary>
               <Divider />
@@ -352,7 +355,8 @@ VariablesView.propTypes = {
   completedComponents: PropTypes.array.isRequired,
   getPropertyInfo: PropTypes.func.isRequired,
   getDelayInfo: PropTypes.func.isRequired,
-  getContractInfo: PropTypes.func.isRequired
+  getContractInfo: PropTypes.func.isRequired,
+  variableIdentifierReplacement: PropTypes.func.isRequired
 };
 
 export default withStyles(styles)(VariablesView);

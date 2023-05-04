@@ -10,6 +10,7 @@ const allActionsSlice = createSlice({
                           //shall, timing and response.  SlateEditor2.js fieldColors
         // * requirements *
         requirements: [],  // requirements from all proljects
+        projectRequiremnts: [], // requirements for selectedProject
 
         // * analysis *                   
         components: [],             // for a specific project: this is an array of all the components
@@ -29,11 +30,10 @@ const allActionsSlice = createSlice({
         modelVariables : [],   // array of simulink model variables from import filtered by the selected model component  TBD add tests
         selectedVariable: {},  // ui selection
         importedComponents: [], // array of imported simulink model components   
-
+        glossaryVariables: [], // variables for Glossary component
 
         // realizability
-        rlz_data: [],
-        selectedRlz: undefined,
+        rlz_data: [],  // array of requirements given a specific project and system component
         monolithic: undefined,
         compositional: undefined,
         ccSelected: undefined,
@@ -66,7 +66,6 @@ const allActionsSlice = createSlice({
         state.importedComponents = action.payload.importedComponents;
         // realizability 
         state.rlz_data = action.payload.rlz_data;
-        state.selectedRlz = action.payload.selectedRlz;
         state.monolithic = action.payload.monolithic;
         state.compositional = action.payload.compositional;
         state.ccSelected = action.payload.ccSelected;
@@ -92,6 +91,7 @@ const allActionsSlice = createSlice({
         state.modelVariables = action.payload.modelVariables;
         state.importedComponents = action.payload.importedComponents;
         state.selectedVariable = action.payload.selectedVariable;
+        state.rlz_data = action.payload.rlz_data
       },
       selectProject(state, action) {
         console.log('actionsSlice selectProject reducer', action)
@@ -106,6 +106,7 @@ const allActionsSlice = createSlice({
         state.completedComponents = action.payload.completedComponents;
         state.cocospecData = action.payload.cocospecData;
         state.cocospecModes = action.payload.cocospecModes;
+        state.rlz_data = action.payload.rlz_data
       },      
       updateFieldColors(state, action) {
         console.log('actionsSlice updateFieldColors reducer', action)
@@ -124,7 +125,8 @@ const allActionsSlice = createSlice({
         state.importedComponents = action.payload.importedComponents;
         state.completedComponents = action.payload.completedComponents;
         state.cocospecData = action.payload.cocospecData;
-        state.cocospecModes = action.payload.cocospecModes;        
+        state.cocospecModes = action.payload.cocospecModes;     
+        state.rlz_data = action.payload.rlz_data   
       },    
       deleteRequirement(state, action) {
         console.log('actionsSlice deleteRequirement reducer', action)
@@ -235,6 +237,10 @@ const allActionsSlice = createSlice({
       checkRealizability(state, action) {
         console.log('actionsSlice rlzDiagUnrealizableRequirement function', action)
       },      
+      selectRealizabilityComponent(state,action){       
+        console.log('actionsSlice selectRealizabilityComponent function', action)
+        state.rlz_data = action.payload.rlz_data   
+      },       
 
 
     }
@@ -244,7 +250,7 @@ const allActionsSlice = createSlice({
     updateVariable_noNewVariables, selectVariable, exportModel, importRequirements,
     createOrUpdateRequirement, deleteRequirement, importRequirementsCsv, formalizeRequirement,
     changeRequirementStatus, importComponent, exportComponent, selectCorspdModelComp,
-    rlzDiagUnrealizableRequirement, checkRealizability,
+    rlzDiagUnrealizableRequirement, checkRealizability, selectRealizabilityComponent,
    } = allActionsSlice.actions
   export default allActionsSlice.reducer
   
