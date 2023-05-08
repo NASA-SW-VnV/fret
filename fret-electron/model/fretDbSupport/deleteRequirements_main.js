@@ -31,8 +31,6 @@
 // AGREEMENT.
 // *****************************************************************************
 
-import { setChangeRequirementFlag_main } from "./changeRequirementFlag_main";
-
 const fs=require("fs");
 
 import {leveldbDB} from '../../app/main.dev'
@@ -59,9 +57,6 @@ async function removeReqsInBulk (requirements) {
       _deleted: true
     });
   });
-
-  setChangeRequirementFlag_main(true).
-  then(() => batchDelete(deleteList)).
-    then(() => setChangeRequirementFlag_main(false))
+  await batchDelete(deleteList);
 
 }

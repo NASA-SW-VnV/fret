@@ -35,8 +35,10 @@ import {leveldbDB, modelDB, system_DBkeys} from '../app/main.dev'
 import {removeVariablesInBulk, removeVariables } from './modelDbSupport/deleteVariables_main'
 import {removeReqsInBulk} from './fretDbSupport/deleteRequirements_main'
 import { app, dialog} from 'electron'
-import {getContractInfo, getPropertyInfo, getDelayInfo, 
-  synchFRETvariables} from './modelDbSupport/variableMappingSupports'
+import {
+  getContractInfo, getPropertyInfo, getDelayInfo,
+  synchFRETvariables, variableIdentifierReplacement, getMappingInfo
+} from './modelDbSupport/variableMappingSupports'
 //import FretSemantics from './../app/parser/FretSemantics'
 import {export_to_md} from "../app/utils/utilityFunctions";
 //const checkDbFormat = require('./fretDbSupport/checkDBFormat.js');
@@ -982,24 +984,16 @@ export default class FretModel {
             contract.properties = getPropertyInfo(fretResult, contract.outputVariables, component);
             contract.delays = getDelayInfo(fretResult, component);
             if (language === 'cocospec'){
-              let contractVariables = [].concat(contract.inputVariables.concat(contract.outputVariables.concat(contract.internalVariables.concat(contract.functions.concat(contract.modes)))));
-              for (const property of contract.properties){
-                // property.reqid = '__'+property.reqid;
-                for (const contractVar of contractVariables) {
-                  var regex = new RegExp('\\b' + contractVar.name.substring(2) + '\\b', "g");
-                  property.value = property.value.replace(regex, contractVar.name);
-                }
-                if (!contract.internalVariables.includes("__FTP")) {
-                  var regex = new RegExp('\\b' + 'FTP' + '\\b', "g");
-                  property.value = property.value.replace(regex, '__FTP');
-                }
-              }
+              variableIdentifierReplacement(contract)
               archive.append(ejsCache.renderContractCode().contract.complete(contract), {name: contract.componentName+'.lus'})
             } else if (language === 'copilot'){
               contract.internalVariables.push.apply(contract.internalVariables, contract.modes);
               contract.modes.forEach(function(mode) {
                 contract.assignments.push(mode.assignment);
               });
+              variableIdentifierReplacement(contract);
+              archive.append(ejsCacheCoPilot.renderCoPilotSpec().contract.complete(contract), {name: contract.componentName+'.json'})
+
               //  KT todo fix this    archive.append(ejsCacheCoPilot.renderCoPilotSpec().contract.complete(contract), {name: contract.componentName+'.json'})
             }
             // finalize the archive (ie we are done appending files but streams have to finish yet)

@@ -58,24 +58,35 @@ var userDocumentsFolder = app.getPath('documents');
 var leveldbDBname = userDocumentsFolder + '/fret-db';
 var modelDBname = userDocumentsFolder + '/model-db';
 if (process.env.FRET_TESTING) {
+  console.log('process.env.FRET_TESTING: ',process.env.FRET_TESTING)
   leveldbDBname = userDocumentsFolder + '/fret_sqa/fret-db';
   modelDBname = userDocumentsFolder + '/fret_sqa/model-db';
 } else if (process.env.EXTERNAL_TOOL=='1'){
+  console.log('process.env.EXTERNAL_TOOL: ',process.env.EXTERNAL_TOOL)
   leveldbDBname = userDocumentsFolder + '/fret-ext-db';
   modelDBname = userDocumentsFolder + '/model-ext-db';
 } 
 
 if (process.env.FRET_MODEL_DB){
+  console.log('process.env.FRET_MODEL_DB: ',process.env.FRET_MODEL_DB)
   if (fs.existsSync(process.env.FRET_MODEL_DB)) {
     modelDBname = process.env.FRET_MODEL_DB;
+  } else {
+    console.log('fs.existsSync(process.env.FRET_MODEL_DB) return  ',fs.existsSync(process.env.FRET_MODEL_DB))
   }
 }
 
 if (process.env.FRET_LEVEL_DB){
+  console.log('process.env.FRET_LEVEL_DB: ',process.env.FRET_LEVEL_DB)
   if (fs.existsSync(process.env.FRET_LEVEL_DB)) {
     leveldbDBname = process.env.FRET_LEVEL_DB;
+  } else {
+    console.log('fs.existsSync(process.env.FRET_LEVEL_DB) return  ',fs.existsSync(process.env.FRET_LEVEL_DB))
   }
 }
+
+console.log('leveldbDBname: ',leveldbDBname)
+console.log('modelDBname: ',modelDBname)
 
 var leveldbDB = new NodePouchDB(leveldbDBname);
 var modelDB = new NodePouchDB(modelDBname);
