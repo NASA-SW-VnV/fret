@@ -47,11 +47,9 @@ import FormLabel from "@material-ui/core/FormLabel";
 import CheckBoxIcon from "@material-ui/icons/CheckBox";
 import PropTypes from 'prop-types';
 import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
-//require model methods
-//---
-const modelDbGetters = require('../../model/modelDbSupport/modelDbGetters.js');
-const fretDbGetters = require('../../model/fretDbSupport/fretDbGetters.js');
-//---
+const sharedObj = require('electron').remote.getGlobal('sharedObj');
+const modeldb = sharedObj.modeldb;
+const db = require('electron').remote.getGlobal('sharedObj').db;
 
 const styles = theme => ({
   treeItemGroup: {
@@ -131,21 +129,36 @@ class Glossary extends React.Component {
   }
 
   getComponents = async () => {
+    let variables= {}
+    let components_names = {};
+    if(process.env.EXTERNAL_TOOL !=='1'){
     const { projectName } = this.props;
+      const project = await db.find({
+        selector: {
+          project: projectName,
+        }
+      });
 
-    //from MODEL
-    const project = await fretDbGetters.getProjectRequirements(projectName);
-
-    const components_names = {};
     project && project.docs.forEach(function (req) {
       const component_name = req.semantics && req.semantics.component_name;
       if (component_name && !components_names[component_name]) {
         components_names[component_name] = [];
       }
     });
-    //from MODEL
-    const variables = await modelDbGetters.getProjectVariables(projectName, components_names);
 
+      variables = await modeldb.find({
+        selector: {
+          project: projectName,
+          component_name: { $in: Object.keys(components_names) }
+        }
+      });
+    } else {
+      variables = this.props.editVariables;
+      console.log('Glossary ext variables: ', variables)
+
+      //TODO: now it only works for one component, update.
+      components_names[variables.docs[0].component_name] = [];
+    }
     variables && variables.docs && variables.docs.forEach(v => {
       const variable = {
         name: v.variable_name || '',
@@ -197,7 +210,8 @@ class Glossary extends React.Component {
   filterVariables = () => {
     const {components, selectedComponent, checked} = this.state;
     const checkedVariableTypes = Object.keys(checked).filter(variableType => checked[variableType]);
-    const filteredVariables = selectedComponent ? components[selectedComponent].filter(variable => checked.Undefined && !variable['variable type'] || checkedVariableTypes.includes(variable['variable type'])).sort(this.sortFunction): [];
+    const filteredVariables = selectedComponent ?
+      components[selectedComponent].filter(variable => checked.Undefined && !variable['variable type'] || checkedVariableTypes.includes(variable['variable type'])).sort(this.sortFunction): [];
     this.setState({filteredVariables})
   }
 
@@ -210,8 +224,7 @@ class Glossary extends React.Component {
 
 
   render() {
-    const { classes,components } = this.props;
-    console.log('Glossary.render components: ', components)
+    const { classes } = this.props;
     const { selectedComponent, checked, filteredVariables } = this.state;
     return (
       <div>
@@ -292,7 +305,8 @@ class Glossary extends React.Component {
 Glossary.propTypes = {
   projectName:PropTypes.string.isRequired,
   setAutoFillVariables: PropTypes.func,
-  requirements: PropTypes.array
+  requirements: PropTypes.array,
+  editVariables: PropTypes.object
 };
 
 export default withStyles(styles)(Glossary);

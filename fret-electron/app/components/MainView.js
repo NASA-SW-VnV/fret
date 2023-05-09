@@ -93,6 +93,7 @@ const drawerWidth = 240;
 
 const ext_imp_json_file = require('electron').remote.getGlobal('sharedObj').ext_imp_json;
 const {ipcRenderer} = require('electron');
+
 const styles = theme => ({
   root: {
     width: '100%',
@@ -212,6 +213,8 @@ class MainView extends React.Component {
     csvFields: [],
     importedReqs: [],
     changingReqsInBulk: false,
+    externalRequirement: {},
+    externalVariables: {},
     missingExternalImportDialogOpen: false,
     missingExternalImportDialogReason: 'unknown',
     };
@@ -262,6 +265,7 @@ class MainView extends React.Component {
     }
   }
 
+
   componentWillUnmount() {
 
   }
@@ -303,7 +307,7 @@ class MainView extends React.Component {
       console.log(err);
     })
 
-    this.setState({ projectName: '' });
+   
 
   }
 
@@ -349,7 +353,7 @@ class MainView extends React.Component {
     self.setState({
       anchorEl: null
     });*/
-    this.setState({ projectName: '',anchorEl: null });
+    this.setState({ anchorEl: null });
 
   }
 
@@ -746,10 +750,8 @@ class MainView extends React.Component {
           <CreateRequirementDialog
             open={this.state.createDialogOpen}
             handleCreateDialogClose={this.handleCreateDialogClose}
-            editRequirement={undefined}
-            selectedProject={this.props.selectedProject}
-            listOfProjects={listOfProjects}
-            requirements={requirements}
+            editRequirement={this.state.externalRequirement}
+            editVariables={this.state.externalVariables}
             />
           <CreateProjectDialog
               open={this.state.createProjectDialogOpen}

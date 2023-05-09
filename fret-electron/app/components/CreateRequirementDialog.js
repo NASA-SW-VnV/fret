@@ -475,7 +475,7 @@ class CreateRequirementDialog extends React.Component {
                         <FormControl fullWidth>
                           <InputLabel htmlFor="project-field">Project</InputLabel>
                           <Select id="qa_crt_select_project"
-                            value={this.state.project || ''}
+                            value={this.props.projectName || ''}
                             onChange={this.handleTextFieldChange('project')}
                             inputProps={{
                               name: 'project',
@@ -552,10 +552,10 @@ class CreateRequirementDialog extends React.Component {
               handleSelectedTemplateChange={this.handleSelectedTemplateChange}
               tabValue={tabValue}
               handleTabChange={this.handleTabChange}
-              projectName={this.state.project}
+              projectName={this.props.selectedProject}
               setAutoFillVariables={this.setAutoFillVariables}
               requirements={this.props.requirements}
-              //editVariables={this.props.editVariables}  ? do we need KT
+              editVariables={this.props.editVariables}  
               />
             </div>
           </div>
@@ -570,10 +570,19 @@ CreateRequirementDialog.propTypes = {
   handleCreateDialogClose: PropTypes.func.isRequired,
   editRequirement: PropTypes.object,
   addChildRequirementToParent: PropTypes.object,
-  selectedProject: PropTypes.string.isRequired,
-  listOfProjects: PropTypes.array.isRequired,
-  requirements: PropTypes.array,
   classes: PropTypes.object.isRequired,
+}
+
+
+function mapStateToProps(state) {
+  const requirements = state.actionsSlice.requirements;
+  const listOfProjects = state.actionsSlice.listOfProjects;
+  const selectedProject = state.actionsSlice.selectedProject;
+  return {
+    requirements,
+    listOfProjects,
+    selectedProject,
+  };
 }
 
 
@@ -583,4 +592,4 @@ const mapDispatchToProps = {
 
 
 export default withStyles(formStyles)
-  (connect(null,mapDispatchToProps)(CreateRequirementDialog));
+  (connect(mapStateToProps,mapDispatchToProps)(CreateRequirementDialog));
