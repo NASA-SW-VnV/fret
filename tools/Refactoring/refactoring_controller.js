@@ -145,7 +145,6 @@ function extractRequirement(req, reqVars, fragment, destinationName, newID, allR
 
 	console.log(newReq);
 
-  //return [newReq]
 	return result
 }
 exports.extractRequirement = extractRequirement;
@@ -334,7 +333,7 @@ function Rename(requirement, newName)
 
  // Step 2
  // probably get the references to requirement.getName() first ...
-requirement.setName(newName); // Bit cheeky, but I don't think the Model is needed here.
+
 
 // Step 3
 //update the knockons
@@ -360,17 +359,3 @@ function InlineRequirement()
 
 }
 
-
-/*
-let R5_1 = new FretRequirement("UC5_R_5.1", "when (diff(r(i),y(i)) > E) if ((systemParameter(P) > nominalValue + R) | (systemParameter(P) < nominalValue - R) | (systemParameter(P) = null) & (observedThrust = V1) &(pilotInput => setThrust = V2)) Controller shall until (diff(r(i),y(i)) < e) satisfy (settlingTime >= 0) & (settlingTime <= settlingTimeMax) & (observedThrust = V2)");
-
-console.log("Requirement 5.1 " + R5_1) ;
-console.log("");
-
-updates = extractRequirement(R5_1, "(systemParameter(P) > nominalValue + R) | (systemParameter(P) < nominalValue - R) | (systemParameter(P) = null)", "SystemParameters", []);
-
-console.log("Updated Requirement 5.1 " + updates[0]);
-console.log("") ;
-
-console.log("Extracted Requirement " + updates[1]);
-*/

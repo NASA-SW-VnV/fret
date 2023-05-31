@@ -1,43 +1,8 @@
 // BASED ON fret-electron/test/Semantics/callNuSMV.js
 
-// *****************************************************************************
-// Notices:
-//
-// Copyright © 2019, 2021 United States Government as represented by the Administrator
-// of the National Aeronautics and Space Administration. All Rights Reserved.
-//
-// Disclaimers
-//
-// No Warranty: THE SUBJECT SOFTWARE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY OF
-// ANY KIND, EITHER EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED
-// TO, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL CONFORM TO SPECIFICATIONS,
-// ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE,
-// OR FREEDOM FROM INFRINGEMENT, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL BE
-// ERROR FREE, OR ANY WARRANTY THAT DOCUMENTATION, IF PROVIDED, WILL CONFORM TO
-// THE SUBJECT SOFTWARE. THIS AGREEMENT DOES NOT, IN ANY MANNER, CONSTITUTE AN
-// ENDORSEMENT BY GOVERNMENT AGENCY OR ANY PRIOR RECIPIENT OF ANY RESULTS,
-// RESULTING DESIGNS, HARDWARE, SOFTWARE PRODUCTS OR ANY OTHER APPLICATIONS
-// RESULTING FROM USE OF THE SUBJECT SOFTWARE.  FURTHER, GOVERNMENT AGENCY
-// DISCLAIMS ALL WARRANTIES AND LIABILITIES REGARDING THIRD-PARTY SOFTWARE, IF
-// PRESENT IN THE ORIGINAL SOFTWARE, AND DISTRIBUTES IT ''AS IS.''
-//
-// Waiver and Indemnity:  RECIPIENT AGREES TO WAIVE ANY AND ALL CLAIMS AGAINST
-// THE UNITED STATES GOVERNMENT, ITS CONTRACTORS AND SUBCONTRACTORS, AS WELL AS
-// ANY PRIOR RECIPIENT.  IF RECIPIENT'S USE OF THE SUBJECT SOFTWARE RESULTS IN
-// ANY LIABILITIES, DEMANDS, DAMAGES, EXPENSES OR LOSSES ARISING FROM SUCH USE,
-// INCLUDING ANY DAMAGES FROM PRODUCTS BASED ON, OR RESULTING FROM, RECIPIENT'S
-// USE OF THE SUBJECT SOFTWARE, RECIPIENT SHALL INDEMNIFY AND HOLD HARMLESS THE
-// UNITED STATES GOVERNMENT, ITS CONTRACTORS AND SUBCONTRACTORS, AS WELL AS ANY
-// PRIOR RECIPIENT, TO THE EXTENT PERMITTED BY LAW.  RECIPIENT'S SOLE REMEDY FOR
-// ANY SUCH MATTER SHALL BE THE IMMEDIATE, UNILATERAL TERMINATION OF THIS
-// AGREEMENT.
-// *****************************************************************************
 const utils = require('../../fret-electron/support/utils.js');
 const fretParserPath = "../../app/parser/";
-const constants = require('../../fret-electron/app/parser/Constants');
-
-//const intervalLogic = require(fretSupportPath + 'intervalLogic');
-
+const constants = require('../../fret-electron/app/parser/Constants.js');
 const fs = require('fs');
 const execSync = require('child_process').execSync;
 
@@ -62,19 +27,14 @@ read_model -i FILE_NAME ;
 go ;
 check_property ;
 show_property ;
-quit
-`
+quit`
+
 exports.callNuSMV2 = (file_name) => {
     const commands = batchCommands.replace('FILE_NAME',file_name);
     const batchFile = writeSMV('_batch',commands,'batch commands');
-		var NuSMV_command = '$NuSMV_HOME/nusmv -dcx -source ' + batchFile;
-		//var NuSMV_command = '/home/matt/bin/NuSMV-2.6.0-linux64/NuSMV-2.6.0-Linux/bin/nusmv -dcx -source ' + batchFile;
-
-    //var nuXmv_command = '$nuXmv_HOME/bin/nuXmv -dcx -source ' + batchFile;
-    //var nuXmv_command = '/home/matt/bin/nuXmv-2.0.0-Linux/bin/nuXmv -source ' + batchFile;
-    //var nu_command = nuXmv_command;
+		var NuSMV_command = 'nusmv -dcx -source ' + batchFile;
+		
     var nu_command = NuSMV_command;
-    //console.log('command = ' + nu_command);
     var NuSMV_output = '';
     try {
 	NuSMV_output = execSync(nu_command).toString();
@@ -100,8 +60,6 @@ exports.callNuSMV2 = (file_name) => {
 exports.callNuSMV = (file_name) => {
     // -dcx is option to not print out counter-example
     var NuSMV_command = '$NuSMV_HOME/nusmv -dcx ' + file_name;
-    //var nuXmv_command = '$nuXmv_HOME/bin/nuXmv -dcx ' + file_name;
-    //var nu_command = nuXmv_command;
     var nu_command = NuSMV_command;
     //console.log('command = ' + nu_command);
     var NuSMV_output = '';
