@@ -1,4 +1,11 @@
-
+/**
+ * refactoring_compare
+ * 
+ * Supports the comparison of an original version of a requirement
+ * with the refactored version, using NuSMV for model checking.
+ * @author Matt Luckcuck 
+ * 2022
+ */
 const fs = require('fs');
 const execSync = require('child_process').execSync;
 
@@ -10,7 +17,6 @@ const refactoring_utils = require('./refactoring_utils.js')
 const tempPath = './temp/'
 const commandsFileName = 'commands';
 const modelFileName = 'model'
-
 
 const verboseNuSMV = true;
 
@@ -54,10 +60,10 @@ function substitutePlaceholders (ltlspec,n) {
 * The method uses pulls any extracted fragments from the requirement set, using
 * the `fragment` varibale present in a previously refactored requirement.
 *
-* @param originalReq - the original requirement
-* @param originalReqVars - the variables of the original requirement
-* @param newReq - the refactored requirement
-* @param requirementSet - the set of requirements the requirement belongs to
+* @param {Object} originalReq - the original requirement
+* @param {} originalReqVars - the variables of the original requirement
+* @param {Object} newReq - the refactored requirement
+* @param {Set} requirementSet - the set of requirements the requirement belongs to
 */
 function compareRequirements(originalReq, originalReqVars, newReq, requirementSet)
 {
@@ -83,6 +89,7 @@ function compareRequirements(originalReq, originalReqVars, newReq, requirementSe
   return checkResult;
 }
 exports.compareRequirements = compareRequirements;
+
 
 /**
  * Uses NuSMV to check that the originalReq and the newReq translate 

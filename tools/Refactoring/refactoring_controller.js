@@ -1,6 +1,6 @@
 /**
 * Controller code for the refactoring module backend
-* @author Matt Luckcuck <m.luckcuck@tutanota.com>
+* @author Matt Luckcuck 
 * 2022
 */
 
