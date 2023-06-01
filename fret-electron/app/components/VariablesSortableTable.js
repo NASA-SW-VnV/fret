@@ -206,6 +206,7 @@ const tableComponentBarStyles = theme => ({
 
 let TableComponentBar = props => {
   const {classes, handleModelChange, importedComponents, modelComponent, fretComponent, importComponentModel} = props;
+  console.log('importedComponents', importedComponents)
   return(
     <Toolbar className={classNames(classes.root, classes.componentBar)}>
       <form className={classes.formControl} autoComplete="off">
@@ -224,7 +225,7 @@ let TableComponentBar = props => {
               <em>None</em>
             </MenuItem>
             {importedComponents.map(c => {
-              return (<MenuItem id={"qa_var_mi_corresModComp_"+c.replace(/\s+/g, '_')} value={c} key={c}>
+              return (<MenuItem id={"qa_var_mi_corresModComp_"+c.replace(/\s+/g, '_').replace(/(\s|\/)+/g, '_')} value={c} key={c}>
                         {c}
                       </MenuItem>)
             })}
@@ -232,7 +233,7 @@ let TableComponentBar = props => {
         </FormControl>
       </form>
       <Tooltip title='Import model information'>
-        <Button size="small" onClick={importComponentModel} 
+        <Button size="small" onClick={importComponentModel}
           id={"qa_var_btn_import_"+fretComponent}
           color="secondary" variant='contained' >
           Import
@@ -283,11 +284,11 @@ class VariablesSortableTable extends React.Component {
 
   constructor(props){
     super(props);
-  
+
   }
 
   componentDidMount() {
-    this.mounted = true; 
+    this.mounted = true;
   }
 
   componentWillUnmount() {
@@ -328,7 +329,7 @@ class VariablesSortableTable extends React.Component {
         console.log('ipcRenderer selectVariable result:', result.selectedVariable);
         this.props.selectVariable({  type: 'actions/selectVariable',
                                     // variables
-                                    selectedVariable : result.selectedVariable, 
+                                    selectedVariable : result.selectedVariable,
                                    })
         this.setState({
           displayVariableOpen: true
@@ -336,13 +337,13 @@ class VariablesSortableTable extends React.Component {
       }).catch((err) => {
         console.log(err);
       })
-   
 
 
 
-      
-      
- 
+
+
+
+
     }
   }
 
@@ -369,20 +370,20 @@ class VariablesSortableTable extends React.Component {
     ipcRenderer.invoke('selectCorspdModelComp',args).then((result) => {
      this.props.importComponent({  type: 'components/selectCorspdModelComp',
                                    // analysis & variables
-                                   variable_data: result.variable_data, 
-                                   components: result.components, 
-                                   modelComponent: result.modelComponent, 
-                                   modelVariables : result.modelVariables, 
-                                   selectedVariable: result.selectedVariable, 
+                                   variable_data: result.variable_data,
+                                   components: result.components,
+                                   modelComponent: result.modelComponent,
+                                   modelVariables : result.modelVariables,
+                                   selectedVariable: result.selectedVariable,
                                    importedComponents: result.importedComponents,
                                    completedComponents: result.completedComponents,
-                                   cocospecData: result.cocospecData, 
-                                   cocospecModes: result.cocospecModes, 
+                                   cocospecData: result.cocospecData,
+                                   cocospecModes: result.cocospecModes,
                                  })
      }).catch((err) => {
        console.log(err);
      })
- 
+
 
  };
 
@@ -395,15 +396,15 @@ class VariablesSortableTable extends React.Component {
    ipcRenderer.invoke('importComponent',args).then((result) => {
     this.props.importComponent({  type: 'components/importComponent',
                                   // analysis & variables
-                                  variable_data: result.variable_data, 
-                                  components: result.components, 
-                                  modelComponent: result.modelComponent, 
-                                  modelVariables : result.modelVariables, 
-                                  selectedVariable: result.selectedVariable, 
+                                  variable_data: result.variable_data,
+                                  components: result.components,
+                                  modelComponent: result.modelComponent,
+                                  modelVariables : result.modelVariables,
+                                  selectedVariable: result.selectedVariable,
                                   importedComponents: result.importedComponents,
                                   completedComponents: result.completedComponents,
-                                  cocospecData: result.cocospecData, 
-                                  cocospecModes: result.cocospecModes, 
+                                  cocospecData: result.cocospecData,
+                                  cocospecModes: result.cocospecModes,
                                 })
     }).catch((err) => {
       console.log(err);
@@ -421,27 +422,14 @@ class VariablesSortableTable extends React.Component {
   };
 
   render() {
-    const {classes, selectedProject, selectedComponent, selectedVariable, 
+    const {classes, selectedProject, selectedComponent, selectedVariable,
       modelComponent, importedComponents, variable_data, modelVariables} = this.props;
-
-    console.log('VariableSortableTable.render, selectedProject: ',selectedProject)
-    console.log('VariableSortableTable.render, selectedComponent: ',selectedComponent)
-    console.log('VariableSortableTable.render, selectedVariable: ',selectedVariable)
-    console.log('VariableSortableTable.render, modelComponent: ',modelComponent)
-    console.log('VariableSortableTable.render, variable_data: ',variable_data)
-    console.log('VariableSortableTable.render, importedComponents: ',importedComponents)    
-    console.log('VariableSortableTable.render, modelVariables: ',modelVariables)    
 
     const comp_variable_data = variable_data[selectedComponent]
     const comp_modelVariables = modelVariables[selectedComponent]
     const comp_modelComponent = modelComponent[selectedComponent]
-    const comp_importedComponents = importedComponents[selectedComponent]
-    //console.log('VariableSortableTable.render, comp_variable_data: ',comp_variable_data)
-    console.log('VariableSortableTable.render, comp_variable_data: ',comp_variable_data)
-    console.log('VariableSortableTable.render, comp_modelComponent: ',comp_modelComponent)
-    console.log('VariableSortableTable.render, comp_importedComponents: ',comp_importedComponents)
-    console.log('VariableSortableTable.render, comp_modelVariables: ',comp_modelVariables)
-      
+    const comp_importedComponents = importedComponents[selectedComponent] ? importedComponents[selectedComponent].filter(elt => elt) : []
+
     const { order, orderBy, rowsPerPage, page} = this.state;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, comp_variable_data.length - page * rowsPerPage);
     return(
