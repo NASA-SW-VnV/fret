@@ -38,17 +38,12 @@ import Button from '@material-ui/core/Button';
 
 import RealizabilityContent from './RealizabilityContent';
 import AnalysisReportContent from './AnalysisReportContent';
+import { connect } from "react-redux";
 
-
-const constants = require('../parser/Constants');
-
-const fs = require('fs');
 const app = require('electron').remote.app;
 const dialog = require('electron').remote.dialog;
-
+const {ipcRenderer} = require('electron');
 let id = 0;
-
-function optLog(str) {if (constants.verboseRealizabilityTesting || constants.verboseReportTesting) console.log(str)}
 
 const styles = theme => ({
   root: {
@@ -92,30 +87,17 @@ class RealizabilityView extends React.Component {
   }
 
   handleLoadClick = (event) => {
-    event.stopPropagation();    
-    var homeDir = app.getPath('home');
-    var filepaths = dialog.showOpenDialogSync({
-      defaultPath: homeDir,
-      title: 'Load Analysis Report',
-      buttonLabel: 'Load',
-      filters: [
-        { name: "Documents", extensions: ['json'] }
-      ],
-      properties: ['openFile']})
-    let report = {};
-
-    try {
-      var fileContent = fs.readFileSync(filepaths[0], 'utf8');
-      report = JSON.parse(fileContent);
-      this.setState({importedReport: report});
-    } catch (err) {       
-      optLog(err);
-    }     
+    event.stopPropagation();
+    ipcRenderer.invoke('loadRealizabilityReport').then((report) => {
+      this.setState({importedReport: report})
+    }).catch((err) => {
+      console.log(err);
+    });    
   };
 
   render() {
     const { importedReport } = this.state;
-    const {classes, selectedProject, listOfProjects, components, completedComponents, getPropertyInfo, getDelayInfo, getContractInfo, variableIdentifierReplacement} = this.props;
+    const {classes, selectedProject, listOfProjects, components, completedComponents} = this.props;
 
     if (selectedProject === 'All Projects'){
       if (Object.keys(importedReport).length === 0) {
@@ -132,7 +114,7 @@ class RealizabilityView extends React.Component {
         );
       } else {
         return (
-          <AnalysisReportContent importedReport={importedReport} handleLoadClick={this.handleLoadClick} optLog={optLog}/>
+          <AnalysisReportContent importedReport={importedReport} handleLoadClick={this.handleLoadClick}/>
         );
       }
     } else {
@@ -145,10 +127,6 @@ class RealizabilityView extends React.Component {
             selectedProject={selectedProject}
             components={components}
             completedComponents={completedComponents}
-            getPropertyInfo={getPropertyInfo}
-            getDelayInfo={getDelayInfo}
-            getContractInfo={getContractInfo}
-            variableIdentifierReplacement={variableIdentifierReplacement}
           />
         </div>
       );
@@ -160,15 +138,10 @@ RealizabilityView.propTypes = {
   classes: PropTypes.object.isRequired,
   selectedProject: PropTypes.string.isRequired,
   listOfProjects: PropTypes.array.isRequired,
-  synchStateWithDB: PropTypes.func.isRequired,
   cocospecData: PropTypes.object.isRequired,
   cocospecModes: PropTypes.object.isRequired,
   components: PropTypes.array.isRequired,
   completedComponents: PropTypes.array.isRequired,
-  getPropertyInfo: PropTypes.func.isRequired,
-  getDelayInfo: PropTypes.func.isRequired,
-  getContractInfo: PropTypes.func.isRequired,
-  variableIdentifierReplacement: PropTypes.func.isRequired
 };
 
 export default withStyles(styles)(RealizabilityView);

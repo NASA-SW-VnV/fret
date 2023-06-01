@@ -35,14 +35,14 @@ import PropTypes from 'prop-types';
 import Tooltip from '@material-ui/core/Tooltip';
 import Button from '@material-ui/core/Button';
 import { withStyles } from '@material-ui/core/styles';
+import { connect } from "react-redux";
 
+const { ipcRenderer } = require('electron');
 const app = require('electron').remote.app;
 const fs = require('fs');
 const dialog = require('electron').remote.dialog;
 const archiver = require('archiver');
 const constants = require('../parser/Constants');
-
-function optLog(str) {if (constants.verboseRealizabilityTesting) console.log(str)}
 
 const styles = theme => ({
 	vAlign : {
@@ -57,30 +57,11 @@ class SaveRealizabilityReport extends React.Component {
 
 	saveRealizabilityResults = async (event) => {
 		event.stopPropagation();
-		const {projectReport, selectedRequirements} = this.props;		
-		const homeDir = app.getPath('home');
+		const {projectReport} = this.props;
 
-		projectReport.systemComponents = projectReport.systemComponents.filter(sc => sc.monolithic);
-		// const self = this;
-		var filePathObject = await dialog.showSaveDialog({
-          defaultPath : homeDir,
-          title : 'Save realizability results',
-          buttonLabel : 'Save',
-          filters: [
-            { name: "Documents", extensions: ['json'] }
-          ],
-        });
-
-		let filePath = filePathObject.filePath;
-    if (filePath) {
-    	var output = fs.createWriteStream(filePath);
-    	var content = JSON.stringify(projectReport, null, 4);
-    	fs.writeFile(filePath, content, (err) => {
-    		if (err) {
-    			optLog(err);
-    		}
-    	});
-    }
+		ipcRenderer.invoke('saveRealizabilityReport', projectReport).catch((err) => {
+			console.log(err);
+		})
 	}
 
 	render() {

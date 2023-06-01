@@ -65,7 +65,7 @@ if (process.env.FRET_TESTING) {
   console.log('process.env.EXTERNAL_TOOL: ',process.env.EXTERNAL_TOOL)
   leveldbDBname = userDocumentsFolder + '/fret-ext-db';
   modelDBname = userDocumentsFolder + '/model-ext-db';
-} 
+}
 
 if (process.env.FRET_MODEL_DB){
   console.log('process.env.FRET_MODEL_DB: ',process.env.FRET_MODEL_DB)
@@ -260,6 +260,15 @@ ipcMain.handle('selectProject', async (evt, arg) => {
 
   return result
 })
+// project slice
+
+ipcMain.handle('selectProjectRequirements', async (evt, arg) => {
+  return fretModel.selectProjectRequirements(arg);
+})
+
+ipcMain.handle('selectGlossaryVariables', async (evt, args) => {
+  return fretModel.selectGlossaryVariables(...args);
+})
 
 ipcMain.handle('addProject', async (evt, arg) => {
   const result = await fretModel.addProject(evt, arg);
@@ -405,7 +414,7 @@ app.on('ready', async () => {
   try {
     console.log('main.dev __dirname: ', __dirname)
     mainWindow = new BrowserWindow({
-      
+
       webPreferences: {
         nodeIntegration: true,   // remove for context isolation
         enableRemoteModule: true,   // remove for context isolation

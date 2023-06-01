@@ -69,14 +69,8 @@ import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-/*Connected Components*/
-import * as cc_analysis from '../../analysis/connected_components';
 
 /*Realizability checking*/
-import ejsCache_realize from '../../support/RealizabilityTemplates/ejsCache_realize';
-import * as realizability from '../../analysis/realizabilityCheck';
-import DiagnosisEngine from '../../analysis/DiagnosisEngine';
-
 import ChordDiagram from './ChordDiagram';
 import SaveRealizabilityReport from './SaveRealizabilityReport';
 import RealizabilitySettingsDialog from './RealizabilitySettingsDialog';
@@ -111,30 +105,10 @@ import { SelectRequirementsContext } from './SelectRequirementsProvider';
 import realizabilityManual from '../../docs/_media/exports/realizability.md';
 
 const ltlsim = require('ltlsim-core').ltlsim;
-const sharedObj = require('electron').remote.getGlobal('sharedObj');
-const modeldb = sharedObj.modeldb;
-const system_dbkeys = sharedObj.system_dbkeys;
-const db = sharedObj.db;
-const constants = require('../parser/Constants');
-
-const fs = require('fs');
-const { execSync } = require('child_process');
-const process = require('process');
-
-var analysisPath = require("os").homedir() + '/Documents/fret-analysis/';
-
-var dbChangeListener_RealCont;
-var dbChangeListener_CCReq_Tab;
-
 const {ipcRenderer} = require('electron');
-import { selectRealizabilityComponent, } from '../reducers/allActionsSlice';
-import { connect } from "react-redux";
 
-let counter = 0;
-function createData(dbkey, rev, reqid, summary, project) {
-  counter += 1;
-  return { rowid: counter, dbkey, rev, reqid, summary, project };
-}
+import { selectRealizabilityComponent } from '../reducers/allActionsSlice';
+import { connect } from "react-redux";
 
 function desc(a, b, orderBy) {
   var element_a, element_b
@@ -275,324 +249,12 @@ export function ResultIcon(props) {
     )
 }
 
-ResultIcon.propTypes ={
+ResultIcon.propTypes = {
   reskey:  PropTypes.string.isRequired,
   result: PropTypes.string.isRequired,
   time: PropTypes.string.isRequired,
   error: PropTypes.string.isRequired
 }
-
-
-// class CCRequirementsTable extends React.Component {
-//   state = {
-//     order: 'asc',
-//     orderBy: 'reqid',
-//     data: [],
-//     page: 0,
-//     rowsPerPage: 10,
-//     selectedProject: 'All Projects'
-//   };
-
-//   constructor(props){
-//     super(props);
-//   }
-
-//   componentDidMount() {
-//     this.mounted = true;
-//   }
-
-//   componentWillUnmount() {
-//     this.mounted = false;
-//     dbChangeListener_CCReq_Tab.cancel();
-//   }
-
-//   componentDidUpdate(prevProps) {
-//     if (this.props.connectedComponent !== prevProps.connectedComponent) {
-//       this.setState(
-//         {
-//           selected: [],
-//           bulkChangeMode: false
-//         });
-//     }
-//   }
-
-//   synchStateWithDB() {
-//     if (!this.mounted) return;
-
-//     const { selectedProject } = this.props
-//     const filterOff = selectedProject == 'All Projects'
-
-//     db.allDocs({
-//       include_docs: true,
-//     }).then((result) => {
-//       this.optLog(result.rows.filter(r => !system_dbkeys.includes(r.key)));
-//     })
-
-//     db.allDocs({
-//       include_docs: true,
-//     }).then((result) => {
-//       this.optLog(result.rows
-//                 .filter(r => !system_dbkeys.includes(r.key)))
-//       this.setState({
-//         data: result.rows
-//                 .filter(r => !system_dbkeys.includes(r.key))
-//                 .filter(r => filterOff || r.doc.project == selectedProject)
-//                 .map(r => {
-//                   return createData(r.doc._id, r.doc._rev, r.doc.reqid, r.doc.fulltext, r.doc.project)
-//                 })
-//                 .sort((a, b) => {return a.reqid > b.reqid})        
-//       })
-//     }).catch((err) => {
-//       this.optLog(err);
-//     });
-//   }
-
-//   handleRequestSort = (event, property) => {
-//     const orderBy = property;
-//     let order = 'desc';
-
-//     if (this.state.orderBy === property && this.state.order === 'desc') {
-//       order = 'asc';
-//     }
-
-//     this.setState({ order, orderBy });
-//   };
-
-//   handleChangePage = (event, page) => {
-//     this.setState({ page });
-//   };
-
-//   handleChangeRowsPerPage = event => {
-//     this.setState({ rowsPerPage: event.target.value });
-//   };
-
-//   render() {
-//     const { data, order, orderBy, rowsPerPage, page } = this.state;
-//     const rows = [
-//       { id: 'reqid', numeric: false, disablePadding: false, label: 'ID' },
-//       { id: 'summary', numeric: false, disablePadding: false, label: 'Summary' },
-//     ];
-//     const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
-
-//     const { selectedProject, connectedComponent } = this.props
-
-//     return(
-//       <div>
-//         <Paper>
-//           <div>
-//             <Table aria-labelledby="tableTitle" size="medium">
-//               <TableHead>
-//                 <TableRow>
-//                   {rows.map(row => {
-//                     return (
-//                       <TableCell
-//                         id={"qa_rlzCont_tc_head"+row.id}
-//                         key={row.id}
-//                         align={row.numeric?'right':'left'}
-//                         sortDirection={orderBy === row.id ? order : false}
-//                       >
-//                         <Tooltip
-//                           title="Sort"
-//                           placement={row.numeric ? 'bottom-end' : 'bottom-start'}
-//                           enterDelay={300}
-//                         >
-//                           <TableSortLabel
-//                             id={"qa_rlzCont_tc_sort"+row.id}
-//                             active={orderBy === row.id}
-//                             direction={order}
-//                             onClick={this.handleRequestSort(row.id)}
-//                           >
-//                             {row.label}
-//                           </TableSortLabel>
-//                         </Tooltip>
-//                       </TableCell>
-//                     );
-//                   }, this)}
-//                 </TableRow>
-//               </TableHead>
-//               {Object.keys(connectedComponent).length !== 0 ?
-//                 (<TableBody  id="qa_rlzCont_tableBody_1">{
-//                   stableSort(data, getSorting(order, orderBy))
-//                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-//                   .map(n => {
-//                     const label = n.reqid ? n.reqid.replace(/-/g,'') : 'NONE'
-//                     return (
-//                         <TableRow key={n.rowid}>
-//                             <TableCell id={"qa_rlzCont_tc_id"+label}>
-//                               {label}
-//                             </TableCell>
-//                           <TableCell id={"qa_rlzCont_tc_sum"+label}>{n.summary}</TableCell>
-//                         </TableRow>
-//                       )
-//                   })}
-//                   {emptyRows > 0 && (
-//                     <TableRow style={{ height: 49 * emptyRows }}>
-//                       <TableCell colSpan={6} />
-//                     </TableRow>
-//                   )}
-//                 </TableBody>) :
-//                 (<TableBody  id="qa_rlzCont_tableBody_2">{
-//                   stableSort(data, getSorting(order, orderBy))
-//                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-//                   .map(n => {
-//                     const label = n.reqid ? n.reqid.replace(/-/g,'') : 'NONE'
-//                     return (
-//                         <TableRow key={n.rowid}>
-//                           <TableCell>
-//                               {label}
-//                             </TableCell>
-//                           <TableCell>{n.summary}</TableCell>
-//                         </TableRow>
-//                       )
-//                   })}
-//                   {emptyRows > 0 && (
-//                     <TableRow style={{ height: 49 * emptyRows }}>
-//                       <TableCell colSpan={6} />
-//                     </TableRow>
-//                   )}
-//                 </TableBody>)
-//               }
-//             </Table>
-//           </div>
-//           <TablePagination
-//             component="div"
-//             count={data.length}
-//             rowsPerPage={rowsPerPage}
-//             page={page}
-//             backIconButtonProps={{
-//               'aria-label': 'Previous Page',
-//             }}
-//             nextIconButtonProps={{
-//               'aria-label': 'Next Page',
-//             }}
-//             onPageChange={this.handleChangePage}
-//             onRowsPerPageChange={this.handleChangeRowsPerPage}
-//           />
-//         </Paper>
-//       </div>
-//     );
-//   }
-// }
-
-// CCRequirementsTable.propTypes ={
-//   selectedProject: PropTypes.string.isRequired,
-//   connectedComponent: PropTypes.object.isRequired
-// }
-
-
-// function ProjectTableRow(props) {
-//   const {name, result, time, connectedComponentRows} = props;
-//   const [open, setOpen] = React.useState(false);
-
-//   return (
-//     <React.Fragment>
-//       <TableRow>
-//         <TableCell>
-//           <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
-//             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-//           </IconButton>
-//         </TableCell>
-//         <TableCell component="th" scope="row">
-//           {name}
-//         </TableCell>
-//         <TableCell>{determineResultIcon(name, result, time)}</TableCell>
-//       </TableRow>
-//       {Object.keys(connectedComponentRows).length !== 0 &&
-//         <TableRow>
-//           <TableCell colSpan={3}>
-//             <Collapse in={open} timeout="auto" unmountOnExit>
-//                 <Table size="small" aria-label="purchases">
-//                   <TableHead>
-//                     <TableRow>
-//                       <TableCell style={{width: 50}}/>
-//                       <TableCell>Connected Component</TableCell>
-//                       <TableCell>Result</TableCell>
-//                     </TableRow>
-//                   </TableHead>
-//                   <TableBody  id="qa_rlzCont_tableBody_project">
-//                     {Object.keys(connectedComponentRows).map((ccKey) => (
-//                       <TableRow key={name+"_"+ccKey}>
-//                         <TableCell/>
-//                         <TableCell component="th" scope="row">
-//                           {ccKey.toUpperCase()}
-//                         </TableCell>
-//                         <TableCell>{determineResultIcon(ccKey, connectedComponentRows[ccKey].result, {ccKey : connectedComponentRows[ccKey].time})}</TableCell>
-//                       </TableRow>
-//                     ))}
-//                   </TableBody>
-//                 </Table>
-//             </Collapse>
-//           </TableCell>
-//         </TableRow>
-//       }
-//     </React.Fragment>
-//   );
-// }
-
-// ProjectTableRow.propTypes = {
-//  name: PropTypes.string.isRequired,
-//  result: PropTypes.string.isRequired,
-//  time: PropTypes.object.isRequired,
-//  connectedComponentRows: PropTypes.object.isRequired
-// };
-
-// function ProjectSummary(props) {
-//   const {selectedProject, components, compositional, monolithicStatus, compositionalStatus, connectedComponents, time} = props;
-//   var results = compositional ? compositionalStatus : monolithicStatus;
-//   return(
-//     <div>
-//       &nbsp;
-//       &nbsp;
-//       &nbsp;
-//       {components.map(c => (
-//         <Accordion>
-//           <AccordionSummary expandIcon={<ExpandMoreIcon />} id={c.component_name}>
-//             <Typography>
-//               <div style={{display : 'flex', alignItems : 'center', flexWrap : 'wrap'}}>
-//                 {c.component_name}
-//                 &nbsp;
-//                 &nbsp;
-//                 {determineResultIcon(c.component_name, results[c.component_name], time[c.component_name])}
-//               </div>
-//             </Typography>
-//           </AccordionSummary>
-//           <AccordionDetails>
-//             <div style={{width : '100%'}}>
-//             {Object.keys(projectReport['systemComponents'][c.component_name]['compositional']['connectedComponents']).map(ccKey => (
-//               <Accordion>
-//                 <AccordionSummary expandIcon={<ExpandMoreIcon />} id={c.component_name}>
-//                   <Typography>
-//                     <div key={ccKey} style={{display : 'flex', alignItems : 'center', flexWrap : 'wrap'}}>
-//                       {ccKey.toUpperCase()}
-//                       &nbsp;
-//                       &nbsp;
-//                       {determineResultIcon(ccKey, projectReport['systemComponents'][c.component_name]['compositional']['connectedComponents'][ccKey].result, projectReport['systemComponents'][c.component_name]['compositional']['connectedComponents'][ccKey].time)}
-//                     </div>
-//                   </Typography>
-//                 </AccordionSummary>
-//                 <AccordionDetails>
-//                   <Typography>
-//                     {/* <CCRequirementsTable selectedProject={selectedProject} connectedComponent={connectedComponents[c.component_name][ccKey]}/> */}
-//                   </Typography>
-//                 </AccordionDetails>
-//               </Accordion>
-//             ))}
-//             </div>
-//           </AccordionDetails>
-//         </Accordion>
-//       ))}
-//     </div>
-//   )
-// }
-
-// ProjectSummary.propTypes = {
-//   selectedProject: PropTypes.string.isRequired,
-//   components: PropTypes.array.isRequired,
-//   compositional: PropTypes.bool.isRequired,
-//   monolithicStatus: PropTypes.object.isRequired,
-//   compositionalStatus: PropTypes.object.isRequired,
-//   connectedComponents: PropTypes.object.isRequired
-// };
 
 class RealizabilityContent extends React.Component {
 
@@ -617,7 +279,7 @@ class RealizabilityContent extends React.Component {
     timeout: '',
     realizableTraceLength: 4,
     LTLSimDialogOpen: false,
-    dependenciesExist: false,
+    dependenciesExist: true,
     missingDependencies: [],
     helpOpen : false,
     projectReport: {projectName: '', systemComponents: []},
@@ -628,50 +290,12 @@ class RealizabilityContent extends React.Component {
     diagnosisRequirements: [],
     selectedReqs: [],
     setMessage: this.setMessage
-  }
-
-  // Use this for bulk check in the future
-  // handleClick = (event, id) => {
-  //   const { selected } = this.state;
-  //   const selectedIndex = selected.indexOf(id);
-  //   let newSelected = [];
-
-  //   if (selectedIndex === -1) {
-  //     newSelected = newSelected.concat(selected, id);
-  //   } else if (selectedIndex === 0) {
-  //     newSelected = newSelected.concat(selected.slice(1));
-  //   } else if (selectedIndex === selected.length - 1) {
-  //     newSelected = newSelected.concat(selected.slice(0, -1));
-  //   } else if (selectedIndex > 0) {
-  //     newSelected = newSelected.concat(
-  //       selected.slice(0, selectedIndex),
-  //       selected.slice(selectedIndex + 1),
-  //     );
-  //   }
-
-  //   this.setState({ selected: newSelected });
-  // };
-
-  optLog(str) {if (constants.verboseRealizabilityTesting) console.log(str)}
+  }  
 
   constructor(props){
     super(props);
     const self = this;
     self.anchorRef = React.createRef();
-    dbChangeListener_RealCont = modeldb.changes({
-      since: 'now',
-      live: true,
-      include_docs: true
-    }).on('change', (change) => {
-    }).on('complete', function(info) {
-      self.optLog(info);
-    }).on('error', function (err) {
-      self.optLog(err);
-    });
-
-    if (!fs.existsSync(analysisPath)) {
-      fs.mkdirSync(analysisPath);
-    }
 
     let status = ltlsim.check();
     this.LTLSimStatus = status;
@@ -688,145 +312,18 @@ class RealizabilityContent extends React.Component {
   }
 
   isComponentComplete(name) {
-    const {completedComponents, getPropertyInfo, getDelayInfo} = this.props;
+    const {completedComponents} = this.props;
     return completedComponents.includes(name);
   }
 
-  computeConnectedComponents(project, components, completedComponents) {
-    const {getPropertyInfo, getDelayInfo, getContractInfo} = this.props;
-    const {projectReport, selectedReqs} = this.state;    
-
-    const self = this;
-    components.forEach(component => {
-      modeldb.find({
-        selector: {
-          component_name: component.component_name,
-          project: project,
-          completed: true,
-          modeldoc: false
-        }
-      }).then(function (modelResult){
-        var contract = getContractInfo(modelResult);
-        contract.componentName = component.component_name+'Spec';
-        db.find({
-          selector: {
-            project: project
-          }
-        }).then(function (fretResult){
-          if (completedComponents.includes(component.component_name)) {
-            
-            contract.properties = selectedReqs.length === 0 ? 
-              (getPropertyInfo(fretResult, contract.outputVariables, component.component_name)) :
-              (getPropertyInfo(fretResult, contract.outputVariables, component.component_name).filter(p => selectedReqs.includes(p.reqid)));
-
-            contract.delays = getDelayInfo(fretResult, component.component_name);
-            contract = self.renameIDs(contract);
-
-            /* Use contract to determine the output connected components
-               * */
-            var mappings = cc_analysis.compute_dependency_maps(contract);
-            var connected_components = cc_analysis.compute_connected_components(contract, mappings['output']);
-            let ccArray = [];
-            connected_components.forEach(comp => {
-              ccArray.push({
-                ccName: 'cc' + connected_components.indexOf(comp),
-                result: 'UNCHECKED',
-                time: '',
-                requirements: Array.from(comp.properties).map(prop => prop.substring(2)),
-                diagnosisStatus: '',
-                diagnosisReport: '',
-                error: ''
-              })
-            })
-
-            projectReport.systemComponents = [].concat(projectReport.systemComponents.map(obj => {
-              if (obj.name === component.component_name) {
-                return {...obj, 
-                  comments: '',
-                  monolithic: {result: 'UNCHECKED', time: '', diagnosisStatus: '', diagnosisReport: '', error: ''},
-                  compositional: {result: 'UNCHECKED', connectedComponents: ccArray, error: ''},
-                  requirements: fretResult.docs, 
-                  selectedReqs: (selectedReqs.length === 0 ? fretResult.docs.filter(doc => doc.semantics.component_name === component.component_name).map(doc => doc.reqid) : selectedReqs)};
-              }
-              return obj;
-            }))
-
-            let isDecomposable = connected_components.length > 1;
-
-            self.setState({
-              selected: components[0],
-              monolithic: !isDecomposable,
-              compositional: isDecomposable,
-              ccSelected: 'cc0',
-              projectReport: projectReport,
-              selectedReqs: selectedReqs.length === 0 ? fretResult.docs.filter(doc => doc.semantics.component_name === component.component_name).map(doc => doc.reqid) : selectedReqs
-            });              
-          }
-        }).catch((err) => {
-          self.optLog(err);
-        })
-      })
-    });
-  }
-
   checkDependenciesExist() {
-    var missing = this.state.missingDependencies;
-    try {
-      execSync('jkind -help');
-    } catch(err) {
-      missing.push('jkind');
-    }
-
-    try {
-      execSync('kind2 -h');
-    } catch(err) {
-      missing.push('kind2');
-    }
-
-    try {
-      if ((process.platform === "linux") || (process.platform === "darwin")){
-        execSync('which aeval');
-      } else if (process.platform === "win32") {
-        execSync('where aeval');
-      } else {
-        throw "Unknown_OS"
-      }
-
-    } catch (err) {
-      if (err !== "Unknown_OS"){
-        missing.push('aeval');
-      } else {
-        missing.push('aeval - Unknown OS detected');
-      }
-    }
-
-    try {
-      execSync('z3 -h');
-    } catch (err) {
-      missing.push('z3');
-    }
-
-    let validConfigurations = [['kind2', 'z3'], ['jkind', 'z3'], ['jkind', 'z3', 'aeval']]
-    let someConfigurationExists = false;
-    let defaultEngine = 0;
-    for (let i = 0; i < validConfigurations.length; i++) {
-      const reducer = (accumulator, currentValue) => accumulator && (!missing.includes(currentValue));
-      if (validConfigurations[i].reduce(reducer, true)) {
-        someConfigurationExists = true;
-        defaultEngine = i;
-        break;
-      }
-    }
-
-    if (missing.length !== 0) {
+    ipcRenderer.invoke('checkRealizabilityDependencies', this.state.missingDependencies).then((result) => {      
       this.setState({
-        missingDependencies: missing,
-        dependenciesExist: someConfigurationExists,
-        selectedEngine: defaultEngine
-      });
-    } else {
-      this.setState({ dependenciesExist: true});
-    }
+        missingDependencies: result.missingDependencies,
+        dependenciesExist: result.dependenciesExist,
+        selectedEngine: result.selectedEngine
+      });      
+    })      
   }
 
   componentDidMount() {
@@ -843,12 +340,11 @@ class RealizabilityContent extends React.Component {
         projectReport: {projectName: selectedProject, systemComponents: sysComps}
     });
     this.checkDependenciesExist();
-        this.mounted = true;
+    this.mounted = true;  
   }
 
   componentWillUnmount() {
     this.mounted = false;
-    dbChangeListener_RealCont.cancel();
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -880,13 +376,22 @@ class RealizabilityContent extends React.Component {
       })
     }
 
-    if (selected !== prevState.selected || selectedReqs.toString() !== prevState.selectedReqs.toString()) {      
-      this.computeConnectedComponents(selectedProject, [selected], completedComponents);      
+    if (selectedReqs.toString() !== prevState.selectedReqs.toString()) {
+      var args = [selected, projectReport, selectedReqs] 
+      ipcRenderer.invoke('updateConnectedComponents', args).then((updatedContentState) => {
+        this.setState({
+          monolithic: updatedContentState.monolithic,
+          compositional: updatedContentState.compositional,
+          ccSelected: updatedContentState.ccSelected,
+          projectReport: updatedContentState.projectReport,
+          selectedReqs: updatedContentState.selectedReqs
+        })
+      })      
     }
   }
 
   handleChange = name => event => {
-    const {connectedComponents, projectReport, selected} = this.state;
+    const {connectedComponents, projectReport, selected, selectedReqs} = this.state;
     const {completedComponents} = this.props;
 
     if (name === 'selected') {
@@ -897,21 +402,23 @@ class RealizabilityContent extends React.Component {
       }
 
 
-      var args = [selected.component_name]
+      var args = [event.target.value, projectReport, selectedReqs]
       ipcRenderer.invoke('selectRealizabilityComponent',args).then((result) => {
-        console.log('Realizability ipcRenderer selectRealizabilityComponent ',result);
-        this.props.initializeStore({ type: 'actions/selectRealizabilityComponent',
-                       
-                                    // realizability
-                                    rlz_data: result.rlz_data,
+        this.props.selectRealizabilityComponent({
+          type: 'actions/selectRealizabilityComponent',
+          rlz_data: result.rlz_data,
 
-                                    })
+        })
+        this.setState({
+          monolithic: result.connectedComponentInfo.monolithic,
+          compositional: result.connectedComponentInfo.compositional,
+          ccSelected: result.connectedComponentInfo.ccSelected,
+          projectReport: result.connectedComponentInfo.projectReport,
+          selectedReqs: result.connectedComponentInfo.selectedReqs
+        })
       }).catch((err) => {
         console.log(err);
       })
-
-
-
     } else if (name === 'monolithic' && !this.state.monolithic) {
       this.setState({monolithic : !this.state.monolithic, compositional : false});
     } else if (name === 'compositional' && !this.state.compositional) {
@@ -936,110 +443,18 @@ class RealizabilityContent extends React.Component {
   };
 
   diagnoseSpec(event, selectedReqs) {    
-    const {selected, ccSelected, compositional, monolithic, timeout, projectReport, retainFiles} = this.state;
-    const {selectedProject, getPropertyInfo, getDelayInfo, getContractInfo} = this.props
+    const {selected, ccSelected, compositional, monolithic, timeout, projectReport, retainFiles, selectedEngine} = this.state;
+    const {selectedProject} = this.props
     const self = this;
+
+    let currentProjectState = {selected, ccSelected, monolithic, compositional, timeout, projectReport, retainFiles, selectedEngine};
+
     self.setState({actionsMenuOpen: false});
-    var actualTimeout = (timeout === '' ? 900 : timeout);
-
-    var systemComponentIndex = projectReport.systemComponents.findIndex( sc => sc.name === selected.component_name);
-    var connectedComponentIndex = monolithic ? 0 : projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents.findIndex(cc => cc.ccName === ccSelected);
-
-    let nameAndEngine = self.getEngineNameAndOptions();
-    let engineName = nameAndEngine.name;
-    let engineOptions = nameAndEngine.options + actualTimeout;    
-
-    if(compositional) {
-      projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].diagnosisSolver = engineName;
-      projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].diagnosisStatus = 'PROCESSING';
+    ipcRenderer.invoke('diagnoseUnrealizableRequirements', [currentProjectState, selectedReqs]).then((result) => {
       self.setState({
-        projectReport: projectReport
+        projectReport: result.projectReport,
+        diagnosisRequirements: result.diagnosisRequirements
       });
-    } else {
-      projectReport.systemComponents[systemComponentIndex].monolithic.diagnosisSolver = engineName;
-      projectReport.systemComponents[systemComponentIndex].monolithic.diagnosisStatus = 'PROCESSING';
-      self.setState({
-        projectReport: projectReport
-      });
-    }
-
-    modeldb.find({
-      selector: {
-        component_name: selected.component_name,
-        project: selectedProject,
-        completed: true, //for modes that are not completed; these include the ones that correspond to unformalized requirements
-        modeldoc: false
-      }
-    }).then(function (modelResult){
-
-      var contract = getContractInfo(modelResult);
-      contract.componentName = selected.component_name+'Spec';
-
-      db.find({
-        selector: {
-          project: selectedProject
-        }
-      }).then(function (fretResult){
-        contract.properties = getPropertyInfo(fretResult, contract.outputVariables, selected.component_name).filter(p => selectedReqs.includes(p.reqid));
-        contract.delays = getDelayInfo(fretResult, selected.component_name);
-
-        contract = self.renameIDs(contract);
-        projectReport.systemComponents[systemComponentIndex]['requirements'] = fretResult.docs;
-        self.setState({diagnosisRequirements: fretResult.docs})
-
-        return contract;
-      }).then(function (contract){
-        if (compositional) {
-          var ccContract = JSON.parse(JSON.stringify(contract))
-          var ccProperties = contract.properties.filter(p => projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].requirements.includes(p.reqid.substring(2)));
-          ccContract.properties = ccProperties
-
-          let engine = new DiagnosisEngine(ccContract, actualTimeout, 'realizability', engineName, engineOptions);
-          engine.main(function (err, result) {
-            if (err) {
-              projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].diagnosisStatus = 'ERROR';
-              projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].error = err.message+'\n'+err.stdout.toString();
-              self.setState({
-                projectReport: projectReport
-              });
-            } else {
-              projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].diagnosisStatus = 'DIAGNOSED';
-              projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].diagnosisReport = result[1];
-              projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].error = '';
-              self.setState({
-                projectReport: projectReport
-              });
-
-              if (!retainFiles) {
-                self.deleteAnalysisFiles();
-              }
-            }
-          });
-        } else if (monolithic) {
-          let engine = new DiagnosisEngine(contract, actualTimeout, 'realizability', engineName, engineOptions);
-          engine.main(function (err, result) {
-            if (err) {
-              projectReport.systemComponents[systemComponentIndex].monolithic.diagnosisStatus = 'ERROR';
-              projectReport.systemComponents[systemComponentIndex].monolithic.error = err.message+'\n';
-
-              self.setState({
-                projectReport: projectReport
-              });
-            } else {
-              projectReport.systemComponents[systemComponentIndex].monolithic.diagnosisStatus = 'DIAGNOSED';
-              projectReport.systemComponents[systemComponentIndex].monolithic.diagnosisReport = result[1];
-              projectReport.systemComponents[systemComponentIndex].monolithic.error = ''
-              self.setState({
-                projectReport: projectReport
-              });
-
-              if (!retainFiles) {
-                self.deleteAnalysisFiles();
-              }
-            }
-          });
-        }
-      })
     })
   }
 
@@ -1047,96 +462,15 @@ class RealizabilityContent extends React.Component {
   return true;
   }
 
-  deleteAnalysisFiles() {
-    fs.readdir(analysisPath, (err, files) => {
-      if (err) throw err;
-      for (const file of files) {
-        fs.unlink(analysisPath+file.toString(), err => {
-          this.optLog(err)
-          if (err) throw err;
-        });
-      }
-    });
-  }
+  checkRealizability = (event, selectedReqs) => {        
+    const { selected, ccSelected, monolithic, compositional, timeout, realizableTraceLength, projectReport, retainFiles, selectedEngine } = this.state;
+    const {selectedProject, components} = this.props;
 
-  getEngineNameAndOptions() {
-    const {selectedEngine} = this.state;
-    let name, options;
-    switch (selectedEngine) {
-      case 0:
-      //Kind 2 without MBP
-        name = 'kind2';
-        options = '-json --enable CONTRACTCK --timeout '
-        break;
-      case 1:
-      //Kind 2 (MBP)
-        name = 'kind2';
-        options = '-json --enable CONTRACTCK --ae_val_use_ctx false --timeout '
-        break;
-      case 2:
-      //JKind without MBP
-        name = 'jkind';
-        options = '-json -fixpoint -timeout '
-        break;
-      case 3:
-      //JKind+AEVAL (MBP)
-        name = 'jkind';
-        options = '-fixpoint -solver aeval -timeout '
-        break;
-    }
-    return {name, options};
-  }
+    const self = this;    
 
-  renameIDs(contract){
-    const { variableIdentifierReplacement } = this.props;
-    let newContract = variableIdentifierReplacement(contract);
-    let contractVariables = [].concat(newContract.inputVariables.concat(newContract.outputVariables.concat(newContract.internalVariables.concat(newContract.functions.concat(newContract.modes)))));
-
-    for (const contractVar of contractVariables) {
-      contractVar.name = '__'+contractVar.name;
-    }
-
-    newContract.assignments.forEach((item, i) => {
-      for (const contractVar of contractVariables) {
-        var regex = new RegExp('\\b' + contractVar.name.substring(2) + '\\b', "g");
-        newContract.assignments[i] = newContract.assignments[i].replace(
-          regex, contractVar.name);
-      }
-
-      if (!newContract.internalVariables.includes("__FTP")) {
-        var regex = new RegExp('\\b' + 'FTP' + '\\b', "g");
-        newContract.assignments[i] = newContract.assignments[i].replace(
-          regex, '__FTP');
-      }      
-    })
-
-    for (const property of newContract.properties){
-      property.reqid = '__'+property.reqid;
-      for (const contractVar of contractVariables) {
-        var regex = new RegExp('\\b' + contractVar.name.substring(2) + '\\b', "g");
-        property.value = property.value.replace(regex, contractVar.name);
-      }
-      if (!newContract.internalVariables.includes("__FTP")) {
-        var regex = new RegExp('\\b' + 'FTP' + '\\b', "g");
-        property.value = property.value.replace(regex, '__FTP');
-      }
-    }
-
-    return newContract;
-  }
-
-  checkRealizability = (event, selectedReqs) => {
-
-    const {selected, ccSelected, monolithic, compositional, timeout, realizableTraceLength, projectReport, retainFiles} = this.state;
-    const {selectedProject, components, getPropertyInfo, getDelayInfo, getContractInfo} = this.props;
-    const self = this;
     self.setState({actionsMenuOpen: false});
-    var actualTimeout = (timeout === '' ? 900 : timeout);
 
-    let nameAndEngine = self.getEngineNameAndOptions();
-    let engineName = nameAndEngine.name;
-    let engineOptions = nameAndEngine.options + actualTimeout;
-    if (realizableTraceLength > 0 && engineName === 'jkind') engineOptions = engineOptions + ' -tracelength ' + realizableTraceLength;
+    let currentProjectState = {selected, ccSelected, monolithic, compositional, timeout, realizableTraceLength, projectReport, retainFiles, selectedEngine};
 
     var targetComponents;
     if (selected === 'all') {
@@ -1148,177 +482,23 @@ class RealizabilityContent extends React.Component {
     targetComponents.forEach(tC => {
 
       var systemComponentIndex = projectReport.systemComponents.findIndex( sc => sc.name === tC.component_name);
-      self.setState(prevState => {
-        if(monolithic) {
-          prevState.projectReport.systemComponents[systemComponentIndex].monolithic = {
-            solver: engineName,
-            result: 'PROCESSING',
-            time: '',
-            diagnosisStatus: '',
-            diagnosisReport: '',
-            error: ''
-          }
-        } else {
-          prevState.projectReport.systemComponents[systemComponentIndex].compositional.solver = engineName;
-          prevState.projectReport.systemComponents[systemComponentIndex].compositional.result = 'PROCESSING';
-          prevState.projectReport.systemComponents[systemComponentIndex].compositional.error = '';
-          prevState.projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents.forEach(cc => {
-            cc.result = 'PROCESSING';
-            cc.time = '';
-            cc.diagnosisStatus = '';
-            cc.diagnosisReport = '';
-            cc.error = '';
-          })
+
+      if(monolithic) {
+        currentProjectState.projectReport.systemComponents[systemComponentIndex].monolithic = {
+          result: 'PROCESSING'
         }
-        return(prevState);
-      })
+      } else {
+        currentProjectState.projectReport.systemComponents[systemComponentIndex].compositional.result = 'PROCESSING';
+        currentProjectState.projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents.forEach(cc => {
+          cc.result = 'PROCESSING';
+        })
+      }
+    })
 
-
-
-      var checkOutput = '';
-      var ccResults = [];
-      var ccTimes = [];
-      var monolithicResult;
-      var monolithicTIme;
-      var compositionalResult;
-
-      modeldb.find({
-        selector: {
-          component_name: tC.component_name,
-          project: selectedProject,
-          completed: true,
-          modeldoc: false
-        }
-      }).then(function (modelResult){
-        var contract = getContractInfo(modelResult);
-        contract.componentName = tC.component_name+'Spec';
-        db.find({
-          selector: {
-            project: selectedProject
-          }
-        }).then(function (fretResult){
-          contract.properties = getPropertyInfo(fretResult, contract.outputVariables, tC.component_name);
-          contract.delays = getDelayInfo(fretResult, tC.component_name);
-          contract = self.renameIDs(contract);
-          return contract;
-        }).then(function (contract){
-          if (monolithic) {
-              contract.properties = contract.properties.filter(p => selectedReqs.includes(p.reqid.substring(2)))
-              var filePath = analysisPath + tC.component_name+'.lus';
-              var output = fs.openSync(filePath, 'w');
-              var lustreContract = ejsCache_realize.renderRealizeCode(engineName).component.complete(contract);
-
-              fs.writeSync(output, lustreContract);
-                realizability.checkRealizability(filePath, engineName, engineOptions, function(err, result, time, traceInfo) {
-
-                if (err) {
-                  self.setState(prevState => {
-                    prevState.projectReport.systemComponents[systemComponentIndex].monolithic.result = 'ERROR';
-                    prevState.projectReport.systemComponents[systemComponentIndex].monolithic.error = err.message;
-                    return(prevState);
-                  });
-                } else {
-                  self.setState(prevState => {
-                    prevState.projectReport.systemComponents[systemComponentIndex].monolithic.result = result;
-                    prevState.projectReport.systemComponents[systemComponentIndex].monolithic.time = time;
-                    
-                    if (traceInfo && engineName === 'jkind') {
-                      for (var obj of traceInfo.Trace){
-                        obj.name = obj.name.substring(2);
-                      }
-                    }
-                    prevState.projectReport.systemComponents[systemComponentIndex].monolithic.traceInfo = traceInfo;
-                    prevState.projectReport.systemComponents[systemComponentIndex].monolithic.error = '';
-                    return(prevState);
-                  })
-                }
-
-                if (!retainFiles) {
-                  self.deleteAnalysisFiles();
-                }
-              })
-          } else if (compositional) {
-            projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents.forEach(cc => {
-              var filePath = analysisPath + tC.component_name+'_'+cc.ccName+'.lus';
-              var output = fs.openSync(filePath, 'w');
-              var ccContract = JSON.parse(JSON.stringify(contract))
-
-              var ccProperties = contract.properties.filter(p => cc.requirements.includes(p.reqid.substring(2)));
-
-              ccContract.properties = (cc.ccName === ccSelected) ? ccProperties.filter(p => selectedReqs.includes(p.reqid.substring(2))) : ccProperties;
-              var lustreContract = ejsCache_realize.renderRealizeCode(engineName).component.complete(ccContract);
-              fs.writeSync(output, lustreContract);
-
-              realizability.checkRealizability(filePath, engineName, engineOptions, function(err, result, time, traceInfo) {
-                if (err) {
-                  cc.result = 'ERROR';
-                  cc.error = err.message;                  
-                  self.setState(prevState => {
-                    prevState.projectReport = projectReport;
-                    return(prevState);
-                  })
-                  ccResults.push('ERROR');
-                } else {
-
-                  cc.result = result;
-                  cc.time = time;
-                  if (traceInfo && engineName === 'jkind') {
-                    for (var obj of traceInfo.Trace) {
-                      obj.name = obj.name.substring(2);
-                    }
-                  }
-                  cc.traceInfo = traceInfo;
-                  cc.error = '';
-                  self.setState(prevState => {
-                    prevState.projectReport = projectReport;
-                    return(prevState);
-                  })
-                  ccResults.push(cc.result);
-                }
-
-                if (ccResults.length === projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents.length) {
-                  const reducer = (accumulator, currentValue) => accumulator && (currentValue === 'REALIZABLE');
-
-                  if (ccResults.reduce(reducer, true)) {
-                    self.setState(prevState => {
-                      prevState.projectReport.systemComponents[systemComponentIndex].compositional.result = 'REALIZABLE';
-                      return(prevState);
-                    })
-                  } else {
-                    if (ccResults.includes('ERROR')) {
-                      self.setState(prevState => {
-                        prevState.projectReport.systemComponents[systemComponentIndex].compositional.result = 'ERROR';
-                        return(prevState);
-                      })
-                    } else if (ccResults.includes('UNKNOWN')) {
-                      self.setState(prevState => {
-                        prevState.projectReport.systemComponents[systemComponentIndex].compositional.result = 'UNKNOWN';
-                        return(prevState);
-                      })
-                    } else if (ccResults.includes('UNREALIZABLE')) {
-                        self.setState(prevState => {
-                          prevState.projectReport.systemComponents[systemComponentIndex].compositional.result = 'UNREALIZABLE';
-                          return(prevState);
-                        })
-                    } else if (ccResults.includes('INCONSISTENT')) {
-                        self.setState(prevState => {
-                          prevState.projectReport.systemComponents[systemComponentIndex].compositional.result = 'INCONSISTENT'
-                          return(prevState);
-                        })
-                    } else {
-                      self.optLog('Realizability check failed with an unexpected result. Run JKind check over '+filePath+' for more details.')
-                    }
-                  }
-
-                  if (!retainFiles) {
-                    self.deleteAnalysisFiles();
-                  }
-                }
-              })
-            });
-          }
-        });
-      })
+    ipcRenderer.invoke('checkRealizability', [currentProjectState, selectedReqs]).then((result) => {
+      self.setState({
+        projectReport: result
+      });
     })
   }
 
@@ -1404,7 +584,7 @@ class RealizabilityContent extends React.Component {
               reskey={cc.ccName}
               result={cc.result}
               time={cc.time !== undefined ? ' - ' + cc.time : ''}
-              error={cc.error}/>
+              error={cc.error !== undefined ? cc.error : ''}/>
           </div>
         }/>)
       }
@@ -1585,18 +765,6 @@ class RealizabilityContent extends React.Component {
                           style={actionsMargin}
                           label="Monolithic"
                         />
-                        {/*Disable this for now.
-                        <Grid item  >
-                          Monolithic
-                          <Switch
-                            classes={{switchBase: classes.switchBase,track: classes.track}} 
-                            disabled={
-                            selected === '' || (selected !== 'all' && 
-                            (projectReport.systemComponents[systemComponentIndex] ? projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents.length <= 1 : false))
-                            }
-                          />
-                          Compositional
-                        </Grid> */}           
                         {!dependenciesExist &&
                           <Tooltip title={"Dependencies missing for realizability checking. Click \"HELP\" for details."}>
                             <ErrorIcon id="qa_rlzCont_icon_depMissing" className={classes.wrapper} style={{verticalAlign : 'bottom'}} color='error'/>
@@ -1623,7 +791,7 @@ class RealizabilityContent extends React.Component {
                           <Menu id="qa_rlzCont_sel_actions" anchorEl={this.anchorRef.current} open={actionsMenuOpen} onClose={(event) => this.handleActionsMenuClose(event)} MenuListProps={{'aria-labelledby': 'realizability_actions_button'}}>
                             <MenuItem 
                             id="qa_rlzCont_btn_check"
-                            disabled={selectedReqs.length === 0 || !dependenciesExist || (dependenciesExist && (selected === '' || missingDependencies.includes(this.getEngineNameAndOptions().name)))}
+                            disabled={selectedReqs.length === 0 || !dependenciesExist || (dependenciesExist && (selected === '' || missingDependencies.includes('jkind')))}
                             onClick={(event) => this.checkRealizability(event, selectedReqs)}>Check Realizability</MenuItem>
                             <Tooltip title={'This action is available only when using the \'JKind\' engine option.'}>
                               <span>
@@ -1715,6 +883,8 @@ class RealizabilityContent extends React.Component {
                                           selectedRequirements={selectedReqs}
                                           updateSelectedRequirements={setMessage} 
                                           selectedProject={selectedProject}
+                                          projectReport={projectReport}
+                                          systemComponent={selected}
                                           selectedComponent={selected.component_name}
                                           listOfProjects={[selectedProject]}
                                           connectedComponent={projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex]}
@@ -1742,6 +912,8 @@ class RealizabilityContent extends React.Component {
                                       selectedRequirements={selectedReqs}
                                       updateSelectedRequirements={setMessage}
                                       selectedProject={selectedProject}
+                                      projectReport={projectReport}
+                                      systemComponent={selected}
                                       selectedComponent={selected.component_name}
                                       listOfProjects={[selectedProject]}
                                       connectedComponent={{}}
@@ -1754,16 +926,6 @@ class RealizabilityContent extends React.Component {
                             </div>
                           </div>
                         }
-{/*                        {selected === 'all' &&
-                          <ProjectSummary
-                          selectedProject={selectedProject}
-                          components={components}
-                          compositional={compositional}
-                          monolithicStatus={monolithicStatus}
-                          compositionalStatus={compositionalStatus}
-                          connectedComponents={connectedComponents}
-                          time={time}/>
-                        }*/}
                         </div>
                       </div>
                     }
@@ -1798,10 +960,6 @@ RealizabilityContent.propTypes = {
   selectedProject: PropTypes.string.isRequired,
   components: PropTypes.array.isRequired,
   completedComponents: PropTypes.array.isRequired,
-  getPropertyInfo: PropTypes.func.isRequired,
-  getDelayInfo: PropTypes.func.isRequired,
-  getContractInfo: PropTypes.func.isRequired,
-  variableIdentifierReplacement: PropTypes.func.isRequired
 };
 
 

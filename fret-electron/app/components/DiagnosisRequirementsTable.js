@@ -53,20 +53,10 @@ import ListIcon from '@material-ui/icons/List';
 import CloseIcon from '@material-ui/icons/Close';
 import { lighten } from '@material-ui/core/styles/colorManipulator';
 import Typography from '@material-ui/core/Typography';
-
-const sharedObj = require('electron').remote.getGlobal('sharedObj');
-const constants = require('../parser/Constants');
-
-const db = sharedObj.db;
-const app = require('electron').remote.app;
-const system_dbkeys = sharedObj.system_dbkeys;
-let dbChangeListener = undefined;
-
 import { connect } from "react-redux";
 
 let counter = 0;
 
-function optLog(str) {if (constants.verboseRealizabilityTesting) console.log(str)}
 
 function createData(dbkey, rev, reqid, summary, project) {
   counter += 1;
@@ -385,7 +375,7 @@ class DiagnosisRequirementsTable extends React.Component {
     orderBy: 'reqid',
     selected: [],
     tempSelected: [],
-    //data: [],
+    data: [],
     page: 0,
     rowsPerPage: 10,
     selectedRequirement: {},
@@ -426,7 +416,6 @@ class DiagnosisRequirementsTable extends React.Component {
     this.mounted = false;
 
     if (importedRequirements.length === 0) {
-      dbChangeListener.cancel();
     }
   }
 
@@ -444,13 +433,11 @@ class DiagnosisRequirementsTable extends React.Component {
 
   updateSelection() {
     if (!this.mounted) return;
-
-    const { selectedProject, selectedComponent, selectedRequirements, updateSelectedRequirements } = this.props
+    const { selectedProject, selectedComponent, selectedRequirements, updateSelectedRequirements, rlz_data } = this.props
     const filterOff = selectedProject == 'All Projects'
     const { selectedReqs } = this.context;
-
     this.setState({
-      //data: dbData,   // this need to be managed by redux   
+      data: rlz_data,   // this need to be managed by redux   
       selected: selectedRequirements,
       tempSelected: selectedRequirements
     })
@@ -539,9 +526,7 @@ class DiagnosisRequirementsTable extends React.Component {
     const { classes, connectedComponent, importedRequirements } = this.props;
     const { data, order, orderBy, selected, tempSelected, rowsPerPage, page, selectEnabled } = this.state;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
-    
-    optLog(reqs)
-    optLog(color)
+
     return (
       <div>
       <Paper>

@@ -62,6 +62,7 @@ import NotesIcon from "@material-ui/icons/Notes";
 import TimeSeriesWidget from './TimeSeriesWidget';
 import LTLSimRequirementDetails from './LTLSimRequirementDetails';
 import LTLSimAddTraceDialog from './LTLSimAddTraceDialog';
+import {connect} from "react-redux";
 
 const ltlsim = require('ltlsim-core').ltlsim;
 const LTLSimController = require('ltlsim-core').LTLSimController;
@@ -73,9 +74,7 @@ const dialog = require('electron').remote.dialog
 
 const fs = require("fs");
 
-const sharedObj = require('electron').remote.getGlobal('sharedObj');
-const db = sharedObj.db;
-const system_dbkeys = sharedObj.system_dbkeys;
+const system_dbkeys = [ 'FRET_PROJECTS', 'FRET_PROPS', 'REAL_TIME_CONFIG' ]
 
 const trace_db_json = "/tmp/fret_traces.json";
 
@@ -114,7 +113,7 @@ class LTLSimDialog extends Component {
         	LTLSimController.getFormula(model, props.ids[i]).label = props.requirementIDs[i];
 		}
 
-	
+
         this.state = {
             model,
             updateOnce: true,
@@ -187,35 +186,19 @@ class LTLSimDialog extends Component {
 
 	//
 	// load the suitable Requirement ID from the database into the state
-	//
-    db.allDocs({
-      include_docs: true,
-    }).then((result) => {
-      this.setState({
-        reqID_data: result.rows
-                .filter(r => !system_dbkeys.includes(r.key))
-                .filter(r => filterOff || r.doc.project == this.props.project)
-                .map(r => {
-			return {
-			dbkey: r.doc._id, 
-			reqID: r.doc.reqid,
-			formula_FT: r.doc.semantics.ftExpanded,
-			formula_PT: r.doc.semantics.ptExpanded,
-//			component_name: r.doc.semantics.component_name,
-			fulltext: r.doc.fulltext
-			};
-                    })
-      })
-    }).catch((err) => {
-      console.log(err);
-    });
+	//from MODEL
+
+
 
 
 
     }
 
+
+
     //===============================================================
     componentDidMount() {
+      this.updateReqID_data()
 	// this.handleReqSel(this.state.reqID_data[4])
     	if (this.props.CEXFileName !== undefined){
 /*
@@ -243,7 +226,7 @@ class LTLSimDialog extends Component {
 		});
 	console.log("initial eval of variables done")
 */
-	
+
 
     }
 
@@ -301,6 +284,9 @@ class LTLSimDialog extends Component {
         /* Update the formula label, to always display the correct label on the y-axis */
         formula.label = this.props.requirementIDs[i];
         }
+    if(this.props.allRequirements !== prevProps.allRequirements) {
+      this.updateReqID_data()
+    }
 
 
  //    } else {
@@ -309,6 +295,23 @@ class LTLSimDialog extends Component {
  //    	}
 	// }
 	}
+
+  updateReqID_data = () => {
+	const filterOff = false;
+    const reqID_data = this.props.allRequirements.filter(r => !system_dbkeys.includes(r.key))
+      .filter(r => filterOff || r.doc.project == this.props.project).map(r => {
+        return {
+          dbkey: r.doc._id,
+          reqID: r.doc.reqid,
+          formula_FT: r.doc.semantics.ftExpanded,
+          formula_PT: r.doc.semantics.ptExpanded,
+//			component_name: r.doc.semantics.component_name,
+          fulltext: r.doc.fulltext
+        };
+      })
+    this.setState({reqID_data})
+  }
+
 
 	//===============================================================
     handleClickHighlight() {
@@ -1554,25 +1557,6 @@ function setMarginVariableTraces(model) {
     }
 }
 
-    //===============================================================
-function loadReqID(){
-//    const filterOff = selectedProject == 'All Projects'
-    const filterOff = false;
-
-    db.allDocs({
-      include_docs: true,
-    }).then((result) => {
-      this.setState({
-        reqID_data: result.rows
-                .filter(r => !system_dbkeys.includes(r.key))
-                .filter(r => filterOff || r.doc.project == this.props.project)
-                .map(r => {return r.doc.reqid;
-                })
-      })
-    }).catch((err) => {
-      console.log(err);
-    });
-    }
 
 
 //=====================================================================
@@ -1587,8 +1571,16 @@ LTLSimDialog.propTypes = {
     project: PropTypes.string.isRequired,
     requirements: PropTypes.array.isRequired,
     requirementIDs: PropTypes.array.isRequired,
+  allRequirements: PropTypes.array.isRequired,
 	traceID: PropTypes.string.isRequired,
     CEXFileName: PropTypes.object
 };
 
-export default withStyles(styles)(LTLSimDialog)
+function mapStateToProps(state) {
+  return {
+    allRequirements: state.actionsSlice.requirements
+  };
+}
+
+
+export default connect(mapStateToProps)(withStyles(styles)(LTLSimDialog))

@@ -125,7 +125,7 @@ class AnalysisReportContent extends React.Component {
 	};
 
 	render() {
-		const { classes, importedReport, handleLoadClick, optLog } = this.props;
+		const { classes, importedReport, handleLoadClick } = this.props;
 		const { selected, ccSelected, monolithic, compositional } = this.state;
 
 		let tabs = [];
@@ -305,7 +305,6 @@ class AnalysisReportContent extends React.Component {
 AnalysisReportContent.propTypes = {
 	importedReport: PropTypes.object.isRequired,
 	handleLoadClick: PropTypes.func.isRequired,
-	optLog: PropTypes.func.isRequired
 };
 
 export default withStyles(styles)(AnalysisReportContent);

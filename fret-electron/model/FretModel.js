@@ -65,23 +65,24 @@ export default class FretModel {
         // *projects*
         this.listOfProjects = ['All Projects']  // MainView.js list of all projects
         this.selectedProject = 'All Projects'   // MainView.js selected project
-        this.fieldColors = {}   // User selections for scope, condition, component, 
+        this.fieldColors = {}   // User selections for scope, condition, component,
                           //shall, timing and response.  SlateEditor2.js fieldColors
         // *requirements*
         this.requirements = []  // requirements from all proljects
+        this.projectRequirements = [] // requirements from selectedProject
 
         // *analysis*
         this.components = []     // for a specific project: this is an array of all the components
         this.completedComponents = []   // for a specific project: this is an array of all components
         // that we have completed the variable mappings
-        this.cocospecData = {}   // for a specific project: this is an object where each 
+        this.cocospecData = {}   // for a specific project: this is an object where each
         // key is a component of this project, and the value of each key is an array of variables
-        this.cocospecModes = {}   // for a specific project: this is an object where each 
+        this.cocospecModes = {}   // for a specific project: this is an object where each
         // key is a component of this project, and the value of each key is an array of modes
 
         // *variableMapping*
-        this.variable_data = {}  // for a specific project: this is an object where each 
-                                // key is a component of this project, and the value  is 
+        this.variable_data = {}  // for a specific project: this is an object where each
+                                // key is a component of this project, and the value  is
                                 // an array[rowid: counter, variable_name, modeldoc_id, idType, dataType, description]
         this.modelComponent = []  // for a specific project: this is an array of strings for dropdown menu titled 'Corresponding Model Component'
         this.modelVariables  = []   // array of simulink model variables from import filtered by the selected model component
@@ -110,30 +111,31 @@ export default class FretModel {
         fieldColors : this.fieldColors,
 
         // requirements
-        requirements : this.requirements, 
+        requirements : this.requirements,
+        projectRequirements: this.projectRequirements,
 
         // analysis
-        components : this.components,     
-        completedComponents : this.completedComponents, 
-        cocospecData : this.cocospecData, 
-        cocospecModes : this.cocospecModes, 
+        components : this.components,
+        completedComponents : this.completedComponents,
+        cocospecData : this.cocospecData,
+        cocospecModes : this.cocospecModes,
 
         // variables
-        variable_data : this.variable_data, 
-        modelComponent : this.modelComponent, 
-        modelVariables : this.modelVariables,   
-        selectedVariable : this.selectedVariable, 
-        importedComponents : this.importedComponents, 
+        variable_data : this.variable_data,
+        modelComponent : this.modelComponent,
+        modelVariables : this.modelVariables,
+        selectedVariable : this.selectedVariable,
+        importedComponents : this.importedComponents,
 
         // realizability
-        rlz_data : this.rlz_data, 
-        aselectedRlzbc : this.selectedRlz, 
-        monolithic : this.monolithic, 
-        compositional : this.compositional, 
-        ccSelected : this.ccSelected, 
-        projectReport : this.projectReport, 
-        diagnosisRequirements : this.diagnosisRequirements, 
-        prevState : this.prevState, 
+        rlz_data : this.rlz_data,
+        aselectedRlzbc : this.selectedRlz,
+        monolithic : this.monolithic,
+        compositional : this.compositional,
+        ccSelected : this.ccSelected,
+        projectReport : this.projectReport,
+        diagnosisRequirements : this.diagnosisRequirements,
+        prevState : this.prevState,
       }
       return states
     }
@@ -152,28 +154,27 @@ export default class FretModel {
       }
       catch (error){
         console.log(`Error in synchStatesWithDB in FretModel: ${error}`);
-      }   
+      }
     }
 
     async synchProjectsAndRequirmentsWithDB(){
       console.log('FretModel synchProjectsAndRequirmentsWithDB ')
       try {
-        await populateVariables.populateVariables() 
+        await populateVariables.populateVariables()
 
         //projects
         this.listOfProjects = await fretDbGetters.getProjects()
-        this.selectedProject = 'All Projects';
         const doc = await fretDbGetters.getDoc('FRET_PROPS')
         this.fieldColors = doc.fieldColors
 
         // requirements
         this.requirements = await fretDbGetters.getRequirements()
+        this.projectRequirements = await fretDbGetters.getProjectRequirements(this.selectedProject)
 
       }
       catch (error){
         console.log(`Error in synchProjectsAndRequirmentsWithDB in FretModel: ${error}`);
-      }   
-
+      }
 
     }
 
@@ -190,7 +191,7 @@ export default class FretModel {
             this.cocospecData = analysisStates.cocospecData
             this.cocospecModes = analysisStates.cocospecModes
             this.components = analysisStates.components
-            this.completedComponents = analysisStates.completedComponents          
+            this.completedComponents = analysisStates.completedComponents
             //console.log('FretModel.synchAnalysesAndVariablesWithDB calling synchFRETvariables ,analysisStates.components: ',analysisStates.components)
           }
 
@@ -210,11 +211,11 @@ export default class FretModel {
             console.log('FretModel.synchAnalysesAndVariablesWithDB for component: ',component,
                           ', componentVariableMapping.variable_data: ', componentVariableMapping.variable_data)
             console.log('FretModel.synchAnalysesAndVariablesWithDB for component: ',component,
-                          ', componentVariableMapping.modelComponent: ', componentVariableMapping.modelComponent)      
+                          ', componentVariableMapping.modelComponent: ', componentVariableMapping.modelComponent)
             console.log('FretModel.synchAnalysesAndVariablesWithDB for component: ',component,
                           ', componentVariableMapping.modelVariables: ', componentVariableMapping.modelVariables)
             console.log('FretModel.synchAnalysesAndVariablesWithDB for component: ',component,
-                          ', componentVariableMapping.importedComponents: ', componentVariableMapping.importedComponents)                             
+                          ', componentVariableMapping.importedComponents: ', componentVariableMapping.importedComponents)
                           */
             this.variable_data[component] = componentVariableMapping.variable_data
             this.modelComponent[component] = componentVariableMapping.modelComponent
@@ -231,7 +232,7 @@ export default class FretModel {
       }
       catch (error){
         console.log(`Error synchAnalysesAndVariablesWithDB in FretModel: ${error}`);
-      }   
+      }
     }
 
     async initializeFromDB(){
@@ -241,10 +242,10 @@ export default class FretModel {
         /*
         await populateVariables.populateVariables()   // update model-db from fret-db
 
-        //projects        
+        //projects
         this.listOfProjects = await fretDbGetters.getProjects()
         this.selectedProject = 'All Projects';
-        const doc = await fretDbGetters.getDoc('FRET_PROPS');    
+        const doc = await fretDbGetters.getDoc('FRET_PROPS');
         this.fieldColors = doc.fieldColors;
 
         // requirements
@@ -258,7 +259,7 @@ export default class FretModel {
       }
       catch (error){
         console.log(`Could not initializeFromDB in FretModel: ${error}`);
-      }      
+      }
     }
 
     async addProject(evt,argList){
@@ -273,7 +274,7 @@ export default class FretModel {
           } else {
             this.listOfProjects = await fretDbSetters.addProject(projName);
           }
-        } 
+        }
         return {listOfProjects: this.listOfProjects}
       }
       catch (error){
@@ -284,7 +285,7 @@ export default class FretModel {
     async deleteProject(evt,args){
 
       var project = args[0]
-      console.log('FretModel deleteProject: ', project)              
+      console.log('FretModel deleteProject: ', project)
       try {
 
         await fretDbSetters.deleteProject(project)
@@ -297,16 +298,16 @@ export default class FretModel {
           listOfProjects : this.listOfProjects,
           selectedProject : this.selectedProject,
           // requirements
-          requirements : this.requirements, 
+          requirements : this.requirements,
           // analysis & variables
-          components : this.components,     
-          modelComponent : this.modelComponent, 
-          modelVariables : this.modelVariables,   
-          selectedVariable : this.selectedVariable, 
-          importedComponents : this.importedComponents, 
-          completedComponents : this.completedComponents, 
-          cocospecData : this.cocospecData, 
-          cocospecModes : this.cocospecModes, 
+          components : this.components,
+          modelComponent : this.modelComponent,
+          modelVariables : this.modelVariables,
+          selectedVariable : this.selectedVariable,
+          importedComponents : this.importedComponents,
+          completedComponents : this.completedComponents,
+          cocospecData : this.cocospecData,
+          cocospecModes : this.cocospecModes,
           rlz_data : this.rlz_data,
         }
         return states
@@ -329,29 +330,30 @@ export default class FretModel {
 
           var states = {
             // projects
-            selectedProject : this.selectedProject,   
+            selectedProject : this.selectedProject,
             // requirements
-            requirements : this.requirements, 
+            requirements : this.requirements,
+            projectRequirements: this.projectRequirements,
 
             // * analysis
-            components : this.components,   
-            cocospecData : this.cocospecData, 
-            cocospecModes : this.cocospecModes,        
-            completedComponents : this.completedComponents, 
+            components : this.components,
+            cocospecData : this.cocospecData,
+            cocospecModes : this.cocospecModes,
+            completedComponents : this.completedComponents,
 
             // * variableMapping
-            modelComponent : this.modelComponent, 
+            modelComponent : this.modelComponent,
             variable_data : this.variable_data,
-            modelVariables : this.modelVariables,   
-            selectedVariable : this.selectedVariable, 
-            importedComponents : this.importedComponents,  
+            modelVariables : this.modelVariables,
+            selectedVariable : this.selectedVariable,
+            importedComponents : this.importedComponents,
 
             // * realizability
             rlz_data : this.rlz_data
-            
+
           }
           return states
-    
+
       }
       catch (error){
         console.error(`Could not selectProject in FretModel: ${error}`);
@@ -366,7 +368,7 @@ export default class FretModel {
       var fieldColors = doc.fieldColors
       if(arg){
         const fieldKey = arg[0];
-        const color = arg[1];  
+        const color = arg[1];
         fieldColors[fieldKey] = color.hex
       }
       await fretDbSetters.setFRETProps(doc, fieldColors);
@@ -407,7 +409,7 @@ export default class FretModel {
         modelDbSetters.createOrUpdateVariables(semantics.variables, semantics.component_name, project, dbid);
       }
 
-      this.reqCreated = await fretDbSetters.addRequirement(dbid, dbrev, edittedFields, requirementFields)      
+      this.reqCreated = await fretDbSetters.addRequirement(dbid, dbrev, edittedFields, requirementFields)
       this.requirements = await fretDbGetters.getRequirements()
 
       await this.synchAnalysesAndVariablesWithDB()
@@ -415,20 +417,21 @@ export default class FretModel {
       var states = {
         // projects
         requirements : this.requirements,
+        projectRequirements: this.projectRequirements,
         reqCreated: this.reqCreated,
 
         // * analysis
-        components : this.components,   
-        cocospecData : this.cocospecData, 
-        cocospecModes : this.cocospecModes,        
-        completedComponents : this.completedComponents, 
+        components : this.components,
+        cocospecData : this.cocospecData,
+        cocospecModes : this.cocospecModes,
+        completedComponents : this.completedComponents,
 
         // * variableMapping
-        modelComponent : this.modelComponent, 
+        modelComponent : this.modelComponent,
         variable_data : this.variable_data,
-        modelVariables : this.modelVariables,   
-        selectedVariable : this.selectedVariable, 
-        importedComponents : this.importedComponents,  
+        modelVariables : this.modelVariables,
+        selectedVariable : this.selectedVariable,
+        importedComponents : this.importedComponents,
 
       }
       return states
@@ -453,7 +456,7 @@ export default class FretModel {
         doc : doc,
       }
       return states
-        
+
     }
 
     async deleteRequirement(evt, args){
@@ -469,27 +472,27 @@ export default class FretModel {
         var states = {
 
           // requirements
-          requirements : this.requirements, 
-          components : this.components,     
+          requirements : this.requirements,
+          projectRequirements: this.projectRequirements,
           // * analysis
-          components : this.components,   
-          cocospecData : this.cocospecData, 
-          cocospecModes : this.cocospecModes,        
-          completedComponents : this.completedComponents, 
+          components : this.components,
+          cocospecData : this.cocospecData,
+          cocospecModes : this.cocospecModes,
+          completedComponents : this.completedComponents,
 
           // * variableMapping
-          modelComponent : this.modelComponent, 
+          modelComponent : this.modelComponent,
           variable_data : this.variable_data,
-          modelVariables : this.modelVariables,   
-          selectedVariable : this.selectedVariable, 
-          importedComponents : this.importedComponents,  
+          modelVariables : this.modelVariables,
+          selectedVariable : this.selectedVariable,
+          importedComponents : this.importedComponents,
         }
         return states
 
       }
       catch (error){
         console.error(`Could not deleteRequirement in FretModel: ${error}`);
-      }        
+      }
 
     }
 
@@ -504,7 +507,7 @@ export default class FretModel {
         requirements : this.requirements,
       }
       return states
-        
+
     }
 
     async importRequirements(evt,args){
@@ -535,23 +538,23 @@ export default class FretModel {
           var importedReqs = await csv2json().fromFile(filepath)
           let csvFields = Object.keys(importedReqs[0]);
           const csvReturnValue = {fileExtension : 'csv',
-                                  csvFields: csvFields, 
+                                  csvFields: csvFields,
                                   importedReqs: importedReqs}
           return csvReturnValue
           //return returnValue
          } else if (fileExtension === 'json'){
-           /* 
+           /*
            // Version using "require" causes error: Cannot find module "."
            const filepathnoext = filepath.slice(0,-5); // The slice is to remove the .json suffix
            console.log('*** filepathnoext = ' + JSON.stringify(filepathnoext));
            data = require(filepathnoext);
            */
-  
+
            // Version using "readFileSync" causes error: Cannot read property 'shift' of undefined
            var content = fs.readFileSync(filepath);  // maybe add "utf8" to return a string instead of a buffer
            var data = JSON.parse(content);
 
-  
+
            /*
            // Version using readTextFile defined above, works.
            readTextFile(filepath, function (text) {
@@ -559,7 +562,7 @@ export default class FretModel {
            })
            // */
            // Version using readFile, works.
-           
+
            /*
           fs.readFile(filepath, function (err,buffer) {
                if (err) throw err;
@@ -575,9 +578,9 @@ export default class FretModel {
             var data = JSON.parse(content);
             console.log('FretModel.importRequirements data: ', data)
             //from MODEL
-            await requirementsImport.importRequirements(data, listOfProjects);   
+            await requirementsImport.importRequirements(data, listOfProjects);
 */
-            
+
             await requirementsImport.importRequirements(data, listOfProjects)
             await this.synchAnalysesAndVariablesWithDB()
 
@@ -588,31 +591,33 @@ export default class FretModel {
          }
       }
 
-      this.listOfProjects = await fretDbGetters.getProjects();
+      this.listOfProjects = await fretDbGetters.getProjects()
       this.requirements = await fretDbGetters.getRequirements()
+      this.projectRequirements = await fretDbGetters.getProjectRequirements(this.selectProject)
 
       var jsonFilestates = {
         // projects
         listOfProjects : this.listOfProjects,
         // requirements
-        requirements :  this.requirements, 
+        requirements :  this.requirements,
+        projectRequirements: this.projectRequirements,
 
         // * analysis
-        components : this.components,   
-        cocospecData : this.cocospecData, 
-        cocospecModes : this.cocospecModes,        
-        completedComponents : this.completedComponents,  
+        components : this.components,
+        cocospecData : this.cocospecData,
+        cocospecModes : this.cocospecModes,
+        completedComponents : this.completedComponents,
 
         // * variables
-        modelComponent : this.modelComponent, 
+        modelComponent : this.modelComponent,
         variable_data : this.variable_data,
-        modelVariables : this.modelVariables,   
-        selectedVariable : this.selectedVariable, 
-        importedComponents : this.importedComponents,  
+        modelVariables : this.modelVariables,
+        selectedVariable : this.selectedVariable,
+        importedComponents : this.importedComponents,
 
       }
       return jsonFilestates
- 
+
     }
 
     async importRequirementsCsv(evt,args){
@@ -626,22 +631,23 @@ export default class FretModel {
         // projects
         listOfProjects : this.listOfProjects,
         // requirements
-        requirements : this.requirements, 
+        requirements : this.requirements,
+        projectRequirements: this.projectRequirements,
         // * analysis
-        components : this.components,   
-        cocospecData : this.cocospecData, 
-        cocospecModes : this.cocospecModes,        
-        completedComponents : this.completedComponents,  
+        components : this.components,
+        cocospecData : this.cocospecData,
+        cocospecModes : this.cocospecModes,
+        completedComponents : this.completedComponents,
 
         // * variableMapping
-        modelComponent : this.modelComponent, 
+        modelComponent : this.modelComponent,
         variable_data : this.variable_data,
-        modelVariables : this.modelVariables,   
-        selectedVariable : this.selectedVariable, 
-        importedComponents : this.importedComponents,  
+        modelVariables : this.modelVariables,
+        selectedVariable : this.selectedVariable,
+        importedComponents : this.importedComponents,
       }
       return states
- 
+
     }
 
     async exportRequirements(evt,args){
@@ -687,7 +693,7 @@ export default class FretModel {
                 content = JSON.stringify(filteredResult, null, 4)
         }
         //console.log(content)
-      
+
         fs.writeFile(filepath, content, (err) => {
           if(err) {
             return console.log(err);
@@ -718,9 +724,29 @@ export default class FretModel {
       this.requirements = await fretDbGetters.getRequirements()
       var states = {
         // requirements
-        requirements : this.requirements, 
+        requirements : this.requirements,
       }
       return states
+    }
+
+    selectProjectRequirements(projectName) {
+
+      return leveldbDB.find({
+        selector: {
+          project: projectName
+        }
+      })
+
+    }
+
+    async selectGlossaryVariables(projectName, componentsNames) {
+      return modelDB.find({
+        selector: {
+          project: projectName,
+          component_name: { $in: componentsNames }
+        }
+      });
+
     }
 
     async updateVariable_checkNewVariables(evt, args){
@@ -773,7 +799,7 @@ export default class FretModel {
       } else {
         return await this.updateVariable_noNewVariables(evt, args)
       }
- 
+
     }
 
     async updateVariable_noNewVariables(evt, args){
@@ -805,7 +831,7 @@ export default class FretModel {
         Internal -> Data Type + Variable Assignment
         Function -> nothing (moduleName optionally)
       */
-        
+
       if (idType === "Input" || idType === 'Output') {
         if (modeldoc_id || dataType) {
           completedVariable = true;
@@ -813,7 +839,7 @@ export default class FretModel {
       } else if (modeRequirement || (dataType && (assignment || copilotAssignment)) || (idType === "Function")) {
         completedVariable = true;
       }
-  
+
       await modelDB.get(modeldbid).then(function (vdoc) {
         modelDB.put({
           _id: modeldbid,
@@ -841,23 +867,23 @@ export default class FretModel {
       await this.synchAnalysesAndVariablesWithDB()
       var states = {
         // * analysis
-        components : this.components,   
-        cocospecData : this.cocospecData, 
-        cocospecModes : this.cocospecModes,        
-        completedComponents : this.completedComponents,  
+        components : this.components,
+        cocospecData : this.cocospecData,
+        cocospecModes : this.cocospecModes,
+        completedComponents : this.completedComponents,
         // * variableMapping
-        modelComponent : this.modelComponent, 
+        modelComponent : this.modelComponent,
         variable_data : this.variable_data,
-        modelVariables : this.modelVariables,   
-        selectedVariable : this.selectedVariable, 
-        importedComponents : this.importedComponents,  
+        modelVariables : this.modelVariables,
+        selectedVariable : this.selectedVariable,
+        importedComponents : this.importedComponents,
       }
       return states
 
     }
 
     async selectVariable(evt,args){
- 
+
       const dbkey =  args[0]
       await modelDB.get(dbkey).then((doc) => {
         this.selectedVariable = doc
@@ -867,7 +893,7 @@ export default class FretModel {
 
       var states = {
         // * variableMapping
-        selectedVariable : this.selectedVariable,     
+        selectedVariable : this.selectedVariable,
       }
       return states
     }
@@ -907,19 +933,19 @@ export default class FretModel {
                     return modelDB.bulkDocs(data).catch((err) => {console.log('error', err);});
                   });
       }
-   
+
       var states = {
         // * analysis
-        components : this.components,   
-        cocospecData : this.cocospecData, 
-        cocospecModes : this.cocospecModes,        
-        completedComponents : this.completedComponents,  
+        components : this.components,
+        cocospecData : this.cocospecData,
+        cocospecModes : this.cocospecModes,
+        completedComponents : this.completedComponents,
         // * variableMapping
-        modelComponent : this.modelComponent, 
+        modelComponent : this.modelComponent,
         variable_data : this.variable_data,
-        modelVariables : this.modelVariables,   
-        selectedVariable : this.selectedVariable, 
-        importedComponents : this.importedComponents,  
+        modelVariables : this.modelVariables,
+        selectedVariable : this.selectedVariable,
+        importedComponents : this.importedComponents,
       }
       return states
 
@@ -932,7 +958,7 @@ export default class FretModel {
       const homeDir = app.getPath('home');
       console.log('FretModel exportComponent, args: ', args)
       console.log('FretModel exportComponent, homeDir: ', homeDir)
- 
+
       var filepath = dialog.showSaveDialogSync({
         defaultPath : homeDir,
         title : 'Export specification',
@@ -1012,11 +1038,11 @@ export default class FretModel {
       console.log('FretModel selectCorspdModelComp: ', args)
 
       const modelComponent = args[0]
-      const selectedProject = args[1] 
-      const selectedComponent = args[2] 
-  
+      const selectedProject = args[1]
+      const selectedComponent = args[2]
+
       this.modelComponent = modelComponent;
-  
+
       modelDB.find({
         selector: {
           project: selectedProject,
@@ -1051,16 +1077,16 @@ export default class FretModel {
 
       var states = {
         // * analysis
-        components : this.components,   
-        cocospecData : this.cocospecData, 
-        cocospecModes : this.cocospecModes,        
-        completedComponents : this.completedComponents,  
+        components : this.components,
+        cocospecData : this.cocospecData,
+        cocospecModes : this.cocospecModes,
+        completedComponents : this.completedComponents,
         // * variables
-        modelComponent : this.modelComponent, 
+        modelComponent : this.modelComponent,
         variable_data : this.variable_data,
-        modelVariables : this.modelVariables,   
-        selectedVariable : this.selectedVariable, 
-        importedComponents : this.importedComponents,  
+        modelVariables : this.modelVariables,
+        selectedVariable : this.selectedVariable,
+        importedComponents : this.importedComponents,
       }
       return states
 
@@ -1072,7 +1098,7 @@ export default class FretModel {
       this.rlz_data = await retrieveRlzRequirements(this.selectedProject,component_name)
       var states = {
         // realizability
-        rlz_data : this.rlz_data, 
+        rlz_data : this.rlz_data,
       }
       return states
     }

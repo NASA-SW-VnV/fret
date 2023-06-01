@@ -147,106 +147,6 @@ class AnalysisTabs extends React.Component {
   }
   */
 
-  getPropertyInfo(result, outputVariables, component) {
-    var properties = [];
-    result.docs.forEach(function(doc){
-      var property ={};
-      property.allInput = false;
-      if (doc.semantics.component_name === component){
-        if (typeof doc.semantics.CoCoSpecCode !== 'undefined'){
-          if (doc.semantics.CoCoSpecCode !== constants.nonsense_semantics &&
-            doc.semantics.CoCoSpecCode !== constants.undefined_semantics &&
-            doc.semantics.CoCoSpecCode !== constants.unhandled_semantics){
-              property.value = doc.semantics.CoCoSpecCode;
-              property.reqid = doc.reqid;
-              property.fullText = "Req text: " + doc.fulltext;
-              property.fretish = doc.fulltext;
-              //TODO: remove HTLM-tags from ptExpanded
-              property.ptLTL = doc.semantics.ptExpanded.replace(/<b>/g, "").replace(/<i>/g, "").replace(/<\/b>/g, "").replace(/<\/i>/g, "");
-              outputVariables.forEach(function(variable){
-              if (property.value.includes(variable)){
-                  property.allInput = true;
-                }
-              })
-              properties.push(property);
-         }
-       }
-      }
-    })
-    return properties;
-  }
-
-  getDelayInfo(result, component) {
-    var delays = [];
-    result.docs.forEach(function(doc){
-      if (doc.semantics.component_name === component){
-        if (typeof doc.semantics.CoCoSpecCode !== 'undefined'){
-          if (doc.semantics.CoCoSpecCode !== constants.nonsense_semantics &&
-            doc.semantics.CoCoSpecCode !== constants.undefined_semantics &&
-            doc.semantics.CoCoSpecCode !== constants.unhandled_semantics){
-              if (doc.semantics.duration){
-                  if (!delays.includes(doc.semantics.duration)){
-                    delays.push(doc.semantics.duration);
-                  }
-              }
-          }
-        }
-      }
-    })
-    return delays;
-  }
-
-
-
-  getContractInfo(result) {
-    function getCoCoSpecDataType(dataType){
-      if (dataType === 'boolean'){
-         return 'bool';
-      } else if (dataType.includes('int') ){
-        return 'int';
-      } else if (dataType === 'double' || 'single'){
-        return 'real';
-      }
-    }
-
-    var self = this;
-    var contract = {
-      componentName: '',
-      outputVariables: [],
-      inputVariables: [],
-      internalVariables: [],
-      functions: [],
-      assignments: [],
-      copilotAssignments: [],
-      modes: [],
-      properties: []
-    };
-    result.docs.forEach(function(doc){
-      var variable ={};
-      variable.name = doc.variable_name;
-      if (doc.idType === 'Input'){
-        variable.type = getCoCoSpecDataType(doc.dataType);
-        contract.inputVariables.push(variable);
-      } else if (doc.idType === 'Output'){
-        variable.type = getCoCoSpecDataType(doc.dataType);
-        contract.outputVariables.push(variable);
-      } else if (doc.idType === 'Internal'){
-        variable.type = getCoCoSpecDataType(doc.dataType);
-        contract.internalVariables.push(variable);
-        contract.assignments.push(doc.assignment);
-        contract.copilotAssignments.push(doc.copilotAssignment);
-      } else if (doc.idType === 'Mode'){
-        if (doc.modeRequirement !== '')
-          variable.assignment = doc.modeRequirement;
-          contract.modes.push(variable);
-      } else if (doc.idType === 'Function'){
-        variable.moduleName = doc.moduleName;
-        contract.functions.push(variable);
-      }
-    })
-    return contract;
-  }
-
   variableIdentifierReplacement(contract){
     contract.inputVariables.forEach(function(input){
       input.name = utils.replace_special_chars(input.name)
@@ -307,9 +207,7 @@ class AnalysisTabs extends React.Component {
         </AppBar>
         {value === 0 &&
           <TabContainer>
-            <VariablesView selectedProject={selectedProject} listOfProjects={listOfProjects} 
-            getPropertyInfo={this.getPropertyInfo} 
-            getDelayInfo={this.getDelayInfo} getContractInfo={this.getContractInfo} 
+            <VariablesView selectedProject={selectedProject} listOfProjects={listOfProjects}                        
             components={components.map(e => e.component_name)} completedComponents={completedComponents} 
             cocospecData={cocospecData} cocospecModes={cocospecModes}
             variableIdentifierReplacement={this.variableIdentifierReplacement}/>
@@ -317,12 +215,10 @@ class AnalysisTabs extends React.Component {
         }
         {value === 1 &&
           <TabContainer>
-            <RealizabilityView selectedProject={selectedProject} listOfProjects={listOfProjects} 
-            synchStateWithDB={this.synchStateWithDB} getPropertyInfo={this.getPropertyInfo} 
-            getDelayInfo={this.getDelayInfo} getContractInfo={this.getContractInfo} 
+            <RealizabilityView selectedProject={selectedProject} listOfProjects={listOfProjects}
             components={components} completedComponents={completedComponents} 
             cocospecData={cocospecData} cocospecModes={cocospecModes}
-            variableIdentifierReplacement={this.variableIdentifierReplacement}/>
+            />
           </TabContainer>
         }
       </div>
@@ -352,8 +248,3 @@ function mapStateToProps(state) {
 }
 
 export default withStyles(styles, { withTheme: true })(connect(mapStateToProps)(AnalysisTabs));
-
-
-
-
-//export default withStyles(styles)(AnalysisTabs);

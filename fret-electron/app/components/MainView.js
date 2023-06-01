@@ -332,6 +332,7 @@ class MainView extends React.Component {
                                   selectedProject : result.selectedProject,
                                   // requirements
                                   requirements : result.requirements, 
+                                  projectRequirements: result.projectRequirements,
                                   // analysis
                                   components : result.components,     
                                   completedComponents : result.completedComponents, 
