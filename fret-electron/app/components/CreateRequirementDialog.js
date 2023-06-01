@@ -83,7 +83,11 @@ var uuid = require('uuid');
 import { v1 as uuidv1 } from 'uuid';
 
 const {ipcRenderer} = require('electron');
+const ext_exp_json_file = require('electron').remote.getGlobal('sharedObj').ext_exp_json;
+const ext_exp_json_file_exists = require('electron').remote.getGlobal('sharedObj').exp_exp_json_exists;
 
+const app = require('electron').remote.app;
+const fs = require('fs');
 
 
 const formStyles = theme => ({
@@ -235,37 +239,69 @@ class CreateRequirementDialog extends React.Component {
     var args = [dbid, dbrev, reqEditFields, requirementFields,semantics,project]
     // what if process.env.EXTERNAL_TOOL=='1'
     // context isolation
-    console.log('CreateRequirementDialog ipcRenderer createOrUpdateRequirement', args);
-    ipcRenderer.invoke('createOrUpdateRequirement',args).then((result) => {
-      console.log('payload2 CreateRequirementDialog createOrUpdateRequirement in : ',result)
-      console.log('result.reqCreated CreateRequirementDialog createOrUpdateRequirement in : ',result.reqCreated)
-      console.log('result.requirements CreateRequirementDialog createOrUpdateRequirement in : ',result.requirements)
-      this.props.createOrUpdateRequirement({ type: 'actions/createOrUpdateRequirement',
-                                              requirements: result.requirements,
-                                              reqCreated: result.reqCreated,
-                                              // analysis
-                                              components : result.components,     
-                                              completedComponents : result.completedComponents, 
-                                              cocospecData : result.cocospecData, 
-                                              cocospecModes : result.cocospecModes,
-                                              // variables
-                                              variable_data : result.variable_data,
-                                              modelComponent : result.modelComponent,                                   
-                                              modelVariables : result.modelVariables,   
-                                              selectedVariable : result.selectedVariable, 
-                                              importedComponents : result.importedComponents,   
-                                              })
-      if (result.reqCreated) {     // TODO fix this
-        self.state.dialogCloseListener(true, newReqId);
-      } else {
-        self.state.dialogCloseListener(false);
-      }                      
-    }).catch((err) => {
-      console.log(err);
-    })
 
-    this.setState({ projectName: '' });
+    if(process.env.EXTERNAL_TOOL=='1'){
+      var filepath = ext_exp_json_file;
+      console.log('export json file name: ', filepath)
 
+      if(ext_exp_json_file_exists){
+        // pop up warning
+        console.log('Overwriting existing external export file: ', ext_exp_json_file);
+      }
+
+      let doc = ({"requirement": {"reqid" :this.state.reqid,
+                  "parent_reqid": this.state.parent_reqid,
+                  "project": this.state.project,
+                  "rationale": this.state.rationale,
+                  "comments": this.state.comments,
+                  "status": this.state.status,
+                  "fulltext": fulltext,
+                  "template": template,
+                  "semantics": semantics,
+                  "input": input}});
+
+      fs.writeFile(filepath, JSON.stringify(doc, null, 4), (err) => {
+          if(err) {
+            return console.log(err);
+          }
+          ipcRenderer.send('closeFRET');
+      })
+    } else{
+
+
+      //////// *** 
+      console.log('CreateRequirementDialog ipcRenderer createOrUpdateRequirement', args);
+      ipcRenderer.invoke('createOrUpdateRequirement',args).then((result) => {
+        console.log('payload2 CreateRequirementDialog createOrUpdateRequirement in : ',result)
+        console.log('result.reqCreated CreateRequirementDialog createOrUpdateRequirement in : ',result.reqCreated)
+        console.log('result.requirements CreateRequirementDialog createOrUpdateRequirement in : ',result.requirements)
+        this.props.createOrUpdateRequirement({ type: 'actions/createOrUpdateRequirement',
+                                                requirements: result.requirements,
+                                                reqCreated: result.reqCreated,
+                                                // analysis
+                                                components : result.components,     
+                                                completedComponents : result.completedComponents, 
+                                                cocospecData : result.cocospecData, 
+                                                cocospecModes : result.cocospecModes,
+                                                // variables
+                                                variable_data : result.variable_data,
+                                                modelComponent : result.modelComponent,                                   
+                                                modelVariables : result.modelVariables,   
+                                                selectedVariable : result.selectedVariable, 
+                                                importedComponents : result.importedComponents,   
+                                                })
+        if (result.reqCreated) {     // TODO fix this
+          self.state.dialogCloseListener(true, newReqId);
+        } else {
+          self.state.dialogCloseListener(false);
+        }                      
+      }).catch((err) => {
+        console.log(err);
+      })
+
+      this.setState({ projectName: '' });
+  //////// *** 
+    }
   };
 
   handleUpdateInstruction = (field) => {
