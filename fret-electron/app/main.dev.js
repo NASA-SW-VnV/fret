@@ -373,25 +373,42 @@ ipcMain.handle('selectRealizabilityComponent', async (evt, arg) => {
   return result
 })
 
+ipcMain.handle('updateConnectedComponents', async (evt, arg) => {
+  const result = await fretModel.updateConnectedComponents(evt, arg);
+  return result
+})
+
 ipcMain.handle('ltlsimSaveJson', async (evt, arg) => {
   const result = await fretModel.ltlsimLoadProject(evt, arg);
   return result
 })
 
-ipcMain.handle('checkRealizability', async (evt, arg) => {
-  const result = await fretModel.checkRealizability(evt, arg);
+ipcMain.handle('checkRealizabilityDependencies', async(evt, args) => {
+  const result = await fretModel.checkRealizabilityDependencies(evt, args);
   return result
 })
 
-ipcMain.handle('rlzDiagUnrealizableRequirement', async (evt, arg) => {
-  const result = await fretModel.rlzDiagUnrealizableRequirement(evt, arg);
+ipcMain.handle('checkRealizability', async (evt, args) => {
+  const result = await fretModel.checkRealizability(evt, args);
   return result
 })
 
-ipcMain.handle('rlzSaveReport', async (evt, arg) => {
-  const result = await fretModel.rlzSaveReport(evt, arg);
+ipcMain.handle('diagnoseUnrealizableRequirements', async (evt, args) => {
+  const result = await fretModel.diagnoseUnrealizableRequirements(evt, args);
   return result
 })
+
+ipcMain.handle('saveRealizabilityReport', async (evt, arg) => {
+  const result = await fretModel.saveRealizabilityReport(evt, arg);
+  return result
+})
+
+ipcMain.handle('loadRealizabilityReport', async(evt) => {
+  const result = await fretModel.loadRealizabilityReport(evt);
+  return result
+})
+
+
 
 /**
  * Add event listeners...

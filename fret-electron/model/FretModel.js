@@ -35,15 +35,13 @@ import {leveldbDB, modelDB, system_DBkeys} from '../app/main.dev'
 import {removeVariablesInBulk, removeVariables } from './modelDbSupport/deleteVariables_main'
 import {removeReqsInBulk} from './fretDbSupport/deleteRequirements_main'
 import { app, dialog} from 'electron'
-import {
-  getContractInfo, getPropertyInfo, getDelayInfo,
-  synchFRETvariables, variableIdentifierReplacement, getMappingInfo
-} from './modelDbSupport/variableMappingSupports'
+import {getContractInfo, getPropertyInfo, getDelayInfo, 
+  synchFRETvariables} from './modelDbSupport/variableMappingSupports'
 //import FretSemantics from './../app/parser/FretSemantics'
 import {export_to_md} from "../app/utils/utilityFunctions";
 //const checkDbFormat = require('./fretDbSupport/checkDBFormat.js');
 import {synchAnalysisWithDB, } from './fretDbSupport/analysisTabSupport'
-
+import { retrieveRlzRequirements, computeConnectedComponents, checkRealizability, diagnoseSpec, checkDependenciesExist } from './realizabilitySupport/realizabilityUtils'
 //require model methods
 //---
 //import ejsCacheCoPilot from '../support/CoPilotTemplates/ejsCacheCoPilot'   // this causes dev not to work
@@ -164,6 +162,7 @@ export default class FretModel {
 
         //projects
         this.listOfProjects = await fretDbGetters.getProjects()
+        this.selectedProject = 'All Projects';
         const doc = await fretDbGetters.getDoc('FRET_PROPS')
         this.fieldColors = doc.fieldColors
 
@@ -1010,16 +1009,24 @@ export default class FretModel {
             contract.properties = getPropertyInfo(fretResult, contract.outputVariables, component);
             contract.delays = getDelayInfo(fretResult, component);
             if (language === 'cocospec'){
-              variableIdentifierReplacement(contract)
+              let contractVariables = [].concat(contract.inputVariables.concat(contract.outputVariables.concat(contract.internalVariables.concat(contract.functions.concat(contract.modes)))));
+              for (const property of contract.properties){
+                // property.reqid = '__'+property.reqid;
+                for (const contractVar of contractVariables) {
+                  var regex = new RegExp('\\b' + contractVar.name.substring(2) + '\\b', "g");
+                  property.value = property.value.replace(regex, contractVar.name);
+                }
+                if (!contract.internalVariables.includes("__FTP")) {
+                  var regex = new RegExp('\\b' + 'FTP' + '\\b', "g");
+                  property.value = property.value.replace(regex, '__FTP');
+                }
+              }
               archive.append(ejsCache.renderContractCode().contract.complete(contract), {name: contract.componentName+'.lus'})
             } else if (language === 'copilot'){
               contract.internalVariables.push.apply(contract.internalVariables, contract.modes);
               contract.modes.forEach(function(mode) {
                 contract.assignments.push(mode.assignment);
               });
-              variableIdentifierReplacement(contract);
-              archive.append(ejsCacheCoPilot.renderCoPilotSpec().contract.complete(contract), {name: contract.componentName+'.json'})
-
               //  KT todo fix this    archive.append(ejsCacheCoPilot.renderCoPilotSpec().contract.complete(contract), {name: contract.componentName+'.json'})
             }
             // finalize the archive (ie we are done appending files but streams have to finish yet)
@@ -1092,37 +1099,88 @@ export default class FretModel {
 
     }
 
-    async selectRealizabilityComponent(evt,args){
-      console.log('FretModel selectRealizabilityComponent: ', args)
-      const component_name = args[0]
-      this.rlz_data = await retrieveRlzRequirements(this.selectedProject,component_name)
+    async selectRealizabilityComponent(evt,args) {
+      const component = args[0]
+      var connectedComponentInfo = await computeConnectedComponents(this.selectedProject, this.completedComponents, ...args);
+      this.rlz_data = await retrieveRlzRequirements(this.selectedProject,component.component_name)      
       var states = {
-        // realizability
         rlz_data : this.rlz_data,
+        connectedComponentInfo: connectedComponentInfo 
       }
       return states
+
     }
 
-    async diagnoseUnrealizableRequirements(evt,args){
-      console.log('FretModel diagnoseUnrealizableRequirements: ', args)
-      return ({})
+    async updateConnectedComponents(evt, args) {
+      var connectedComponentInfo = await computeConnectedComponents(this.selectedProject, this.completedComponents, ...args);      
+      return connectedComponentInfo
     }
 
-    async saveRealizabilityReport(evt,args){
-      console.log('FretModel saveRealizabilityReport: ', args)
-      return ({})
+    async checkRealizabilityDependencies(evt, args) {      
+      var missingDependencies = await checkDependenciesExist(args);
+      return missingDependencies;
+    }
+
+    async checkRealizability(evt, args) {      
+      var realizabilityResult = checkRealizability(this.selectedProject, this.components, ...args);
+      return realizabilityResult;
+    }
+
+    async diagnoseUnrealizableRequirements(evt, args){
+      var diagnosisResult = await diagnoseSpec(this.selectedProject, ...args);
+      return diagnosisResult;
+    }
+
+    async saveRealizabilityReport(evt, projectReport){
+      const homeDir = app.getPath('home');
+
+      projectReport.systemComponents = projectReport.systemComponents.filter(sc => sc.monolithic);
+
+      var filePathObject = await dialog.showSaveDialog({
+            defaultPath : homeDir,
+            title : 'Save realizability results',
+            buttonLabel : 'Save',
+            filters: [
+              { name: "Documents", extensions: ['json'] }
+            ],
+          });
+
+      let filePath = filePathObject.filePath;
+      if (filePath) {
+        var output = fs.createWriteStream(filePath);
+        var content = JSON.stringify(projectReport, null, 4);
+        fs.writeFile(filePath, content, (err) => {
+          if (err) {
+            console.log(err);
+          }
+        });
+      }
+    }
+
+    async loadRealizabilityReport(evt) {
+      var homeDir = app.getPath('home');
+      var filepaths = dialog.showOpenDialogSync({
+        defaultPath: homeDir,
+        title: 'Load Analysis Report',
+        buttonLabel: 'Load',
+        filters: [
+          { name: "Documents", extensions: ['json'] }
+        ],
+        properties: ['openFile']})
+      let report = {};
+
+      try {
+        var fileContent = fs.readFileSync(filepaths[0], 'utf8');
+        report = JSON.parse(fileContent);
+        return report;
+      } catch (err) {       
+        console.log(err);
+      }
     }
 
     async ltlsimSaveJson(evt,args){
       console.log('FretModel ltlsimSaveJson: ', args)
       return ({})
     }
-
-
-
-
-
-
-
 }
 

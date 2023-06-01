@@ -32,6 +32,7 @@
 // *****************************************************************************
 
 import { modelDB } from '../../app/main.dev';
+const utils = require('../../support/utils'); 
 const constants = require('../../app/parser/Constants');
 
 export {
@@ -39,6 +40,7 @@ export {
     getPropertyInfo as getPropertyInfo,
     getDelayInfo as getDelayInfo,
     synchFRETvariables as synchFRETvariables,
+    variableIdentifierReplacement as variableIdentifierReplacement
   }
 
 
@@ -115,7 +117,7 @@ async function  synchModelVariablesAndComponents(componentModel,selectedProject)
     })
   };
 
-  function   getPropertyInfo(result, outputVariables, component) {
+  function getPropertyInfo(result, outputVariables, component) {
     var properties = [];
     result.docs.forEach(function(doc){
       var property ={};
@@ -186,9 +188,10 @@ async function  synchModelVariablesAndComponents(componentModel,selectedProject)
       modes: [],
       properties: []
     };
+    
     result.docs.forEach(function(doc){
       var variable ={};
-      variable.name = '__'+doc.variable_name;
+      variable.name = doc.variable_name;
       if (doc.idType === 'Input'){
         variable.type = getCoCoSpecDataType(doc.dataType);
         contract.inputVariables.push(variable);
@@ -198,7 +201,7 @@ async function  synchModelVariablesAndComponents(componentModel,selectedProject)
       } else if (doc.idType === 'Internal'){
         variable.type = getCoCoSpecDataType(doc.dataType);
         contract.internalVariables.push(variable);
-        // contract.assignments.push(doc.assignment);
+        contract.assignments.push(doc.assignment);
         contract.copilotAssignments.push(doc.copilotAssignment);
       } else if (doc.idType === 'Mode'){
         if (doc.modeRequirement !== '')
@@ -212,4 +215,26 @@ async function  synchModelVariablesAndComponents(componentModel,selectedProject)
     return contract;
   }
 
+function variableIdentifierReplacement(contract){
+  contract.inputVariables.forEach(function(input){
+    input.name = utils.replace_special_chars(input.name)
+  })
+  contract.outputVariables.forEach(function(output){
+    output.name = utils.replace_special_chars(output.name)
+  })
+  contract.internalVariables.forEach(function(internal){
+    internal.name = utils.replace_special_chars(internal.name)
+  })
+  contract.assignments.forEach((item, i) => {
+    contract.assignments[i] = utils.replace_special_chars(item);
+  });
+  contract.copilotAssignments.forEach((item, i) => {
+    contract.copilotAssignments[i] = utils.replace_special_chars(item);
+  });
+  contract.modes.forEach(function(mode){
+    mode.name = utils.replace_special_chars(mode.name)
+    mode.assignment = utils.replace_special_chars(mode.assignment)
+  })
+  return contract;
+}
 
