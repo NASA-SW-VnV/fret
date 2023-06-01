@@ -1,6 +1,7 @@
 /**
 * Dialog component for refactoring, based on existing FRET Code.
 *
+* @module refactoring/RefactorRequirementDialog
 * @author Matt Luckcuck 
 * Started: May 2022
 */

@@ -3,6 +3,8 @@
  * 
  * Supports the comparison of an original version of a requirement
  * with the refactored version, using NuSMV for model checking.
+ * 
+ * @module Refactoring/refactoring_compare
  * @author Matt Luckcuck 
  * 2022
  */

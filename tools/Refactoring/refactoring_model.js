@@ -1,6 +1,7 @@
 /**
 * Model (lower-level and database) functions for the refactoring module's backend
-* @author Matt Luckcuck <m.luckcuck@tutanota.com>
+* @module Refactoring/refactoring_model
+* @author Matt Luckcuck 
 * 2022
 */
 
@@ -8,14 +9,19 @@
 // Fret's Database Stuff
 const db = require('electron').remote.getGlobal('sharedObj').db;
 const modeldb = require('electron').remote.getGlobal('sharedObj').modeldb;
-//const constants = require('../parser/Constants');
-//const uuidv1 = require('uuid/v1');
-//const checkDbFormat = require('../../support/fretDbSupport/checkDBFormat.js');
 
 /**
-* Set the new variable that is the 'call' to the extracted fragement to be a boolean
 */
 
+/**
+ * Updates the database entry for the new variable that represents the
+ * 'call' to the newly created requirement. Sets the variable, fragmentName,
+ * to be a boolean and adds a description for traceing. 
+
+ * @param {String?} fragmentName 
+ * @param {String?} component 
+ * @param {String?} project 
+ */
 export function UpdateFragmentVariable(fragmentName, component, project)
 {
   //This feels kinda hacky, but it seems to work ok.
@@ -40,8 +46,13 @@ export function UpdateFragmentVariable(fragmentName, component, project)
 
 
 /**
-* Replaces one fragement in a requirement with another
-*/
+ * Replaces one fragement in a requirement with another string.
+ * 
+ * @param {Object} req the requirement in which a fragement is being replaced 
+ * @param {String} fragment the fragment string to be replaced
+ * @param {String} replacement the string to replace the fragment with
+ * @returns {Object} the updated requirement
+ */
 export function ReplaceFragment(req, fragment, replacement)
 {
   let originalFretish = req.fulltext;
@@ -52,10 +63,11 @@ export function ReplaceFragment(req, fragment, replacement)
 
   return req;
 }
-// global.exports.ReplaceFragment = ReplaceFragment;
+
 
 /**
 * Moves a fragement from one requirement to another
+* @todo Implement, should be used by refactoring_controller.MoveDefinition()
 */
 function MoveFragment(sourceReq, fragment, destinationReq)
 {
@@ -65,6 +77,7 @@ function MoveFragment(sourceReq, fragment, destinationReq)
 
 /**
 * Copies a fragement from one requirement to another
+* @todo Implement, intended to be used by refactoring_controller somewhere
 */
 function CopyFragment(fragment, destinationReq)
 {
@@ -81,12 +94,16 @@ function CopyFragment(fragment, destinationReq)
 
   return destinationReq;
 }
-// exports.CopyFragment = CopyFragment;
+
 
 /**
-* The Database Callback function,
+ * The Database Callback function,
 * handles the result from the database
-*/
+
+ * @param {*} err the error message (possibly empty)
+ * @param {*} responses the response from the database
+ * @returns 
+ */
 function DBAddCallback(err, responses)
 {
   if (err) {
@@ -100,9 +117,11 @@ function DBAddCallback(err, responses)
 
 }
 
+
 /**
-* Adds the requirement to the Database
-*/
+ * Adds the requirement, req, to the Database
+ * @param {Object} req the requirement being added to the database
+ */
 export function AddRequirementToDB(req)
 {
   console.log("Adding Requirement: " + req.reqid);
@@ -110,8 +129,9 @@ export function AddRequirementToDB(req)
 }
 
 /**
-* Updates the data types in ModelDB
-* The parameter `docs` should be an array of document objects
+ * Updates the data types in ModelDB
+ * 
+ * @param {Array<Object>} docs array of document objects
 */
 export function UpdateDataTypes(docs)
 {
@@ -125,17 +145,18 @@ export function UpdateDataTypes(docs)
 }
 
 
+/**
+ * Returns the requirments in the project named project_name
+ * 
+ * @param {String} project_name the name of the project
+ * @returns Collection of requirement Objects from the database
+ */
 export function RequirementsInProject(project_name)
 {
-
-  try{
+  try
+  {
     var result = db.allDocs( {include_docs: true, selector:{project:project_name}} );
-
-      // for( var i=0; i<result.rows.length; i++ ) {
-      //     // result.rows[i].id is the document _id
-      //     // result.rows[i].doc is the full document if include_docs is true
-      // }
-      return result;
+    return result;
   }
   catch(err)
   {
@@ -146,8 +167,16 @@ export function RequirementsInProject(project_name)
 
 
 /**
-* Finds all the requirements in the given project that contain the given fragment
-*/
+ * Finds all the requirements in the given project that contain 
+ * the given fragment
+ * 
+ * @param {*} allRequirements collection of all the requirements in the database
+ * @param {String} project_name the name of the project
+ * @param {String} fragment the fragement to be searched for
+ * @param {String} reqName the name of the requirement currently being refactored
+ * @param {String} destinationName the name of the newly created requirement
+ * @returns {Array<Object>} collection of requrement objects that contain the fragment
+ */
 export function FindRequirementsWithFragment(allRequirements, project_name, fragment, reqName, destinationName)
 {
   console.log("+++ Find Requirements with Fragment +++")
@@ -158,9 +187,6 @@ export function FindRequirementsWithFragment(allRequirements, project_name, frag
   console.log("5. destinationName = " + destinationName);
 
   let reqsWithFrag = [];
-  // var result = db.allDocs( {include_docs: true, selector:{project:project_name}}, function(err, response) {
-  // if (err) { return console.log(err); }
-  // // handle result
 
   for( var i=0; i<allRequirements.length; i++ ) {
       let this_req = allRequirements[i].doc
@@ -169,6 +195,8 @@ export function FindRequirementsWithFragment(allRequirements, project_name, frag
        console.log(i);
        console.log(this_req);
 
+          // The structure below is very inefficient, but I needed the print outs
+          // for debugging. Opportunity to rework it. 
           let this_req_text = this_req.fulltext;
           console.log("this_req_text == " + this_req_text)
           if(typeof this_req_text === "undefined")
@@ -198,6 +226,12 @@ export function FindRequirementsWithFragment(allRequirements, project_name, frag
       return reqsWithFrag;
 }
 
+/**
+ * Takes a requirement object and returns a map of its variables to 
+ * their type in the model database.
+ * 
+ * @param {Object} requirement the requirement that will have its variables extracted
+ */
 export function makeVariableTypeMap(requirement)
 {
   let varList = RefactoringUtils.getVariableNames(requirement);
@@ -208,8 +242,6 @@ export function makeVariableTypeMap(requirement)
   {
     variableTypeMap.set(variable, "undefined");
   }
-
-  var self = this;
 
   modeldb.find({
     selector: {
@@ -237,6 +269,7 @@ export function makeVariableTypeMap(requirement)
 
       }
 
+      // Just for debugging
       console.log("!!! Show me the Variables!")
       for(let i of variableTypeMap)
       {
