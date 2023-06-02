@@ -98,7 +98,11 @@ class Glossary extends React.Component {
 
   componentDidMount = () => {
     this.getProjectRequirements();
-  }
+    if (process.env.EXTERNAL_TOOL == '1') {
+      this.setVariablesToComponents();
+    }
+
+    }
 
   createMapDbIdToReqId = () => {
     const { projectRequirements } = this.props;
@@ -124,11 +128,10 @@ class Glossary extends React.Component {
     if(this.props.projectRequirements !== prevProps.projectRequirements) {
       this.setComponentsNames();
     }
-    if(this.state.components !== prevState.components || this.props.editVariables !== prevProps.editVariables) {
+    if(this.state.components !== prevState.components) {
       this.getVariables();
     }
-    if(this.props.variables !== prevProps.variables) {
-      console.log('variables changed')
+    if(this.props.variables !== prevProps.variables || process.env.EXTERNAL_TOOL == '1' && this.props.editVariables !== prevProps.editVariables) {
       this.setVariablesToComponents();
     }
   }
@@ -149,7 +152,6 @@ class Glossary extends React.Component {
   getVariables = async () => {
     if (process.env.EXTERNAL_TOOL !== '1') {
       ipcRenderer.invoke('selectGlossaryVariables', [this.props.projectName, Object.keys(this.state.components)]).then((result) => {
-        console.log('result', result)
         this.props.setGlossaryVariables({
           glossaryVariables: result.docs
         })
@@ -175,15 +177,13 @@ class Glossary extends React.Component {
   setVariablesToComponents = async () => {
     let variables;
     const componentsWithVariables = {...this.state.components}
-    console.log('componentsWithVariables', componentsWithVariables)
-    console.log('components', this.state.components)
-    if(process.env.EXTERNAL_TOOL ==='1'){
+    if(process.env.EXTERNAL_TOOL !=='1'){
+      variables = this.props.variables
+    } else {
       variables = this.props.editVariables.docs;
-
+      console.log('new editVariables', this.props.editVariables)
       //TODO: now it only works for one component, update.
       componentsWithVariables[variables[0].component_name] = [];
-    } else {
-      variables = this.props.variables
     }
     const mapDbIdToReqId =  this.createMapDbIdToReqId();
 
