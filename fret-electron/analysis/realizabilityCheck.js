@@ -33,6 +33,13 @@
 const fs = require('fs');
 const exec = require('child_process').exec;
 const execSync = require('child_process').execSync;
+
+//Andreas: Kind2 changed its exit code behavior with v1.9.0
+//https://kind.cs.uiowa.edu/kind2_user_doc/3_output/3_exit_codes.html
+//code 0 for realizable
+//code 40 for unrealizable
+//code 30 for unknown
+
 export function checkRealizability(filePath, engine, options, callback) {
   let command;
   if (engine === 'jkind'){
@@ -40,19 +47,19 @@ export function checkRealizability(filePath, engine, options, callback) {
   } else if (engine === 'kind2'){
     command = 'kind2 ' + options + ' ' + filePath;
   }
-
   exec(command, function (err, stdout, stderr) {
-    if (err) {
+    if (err && err.code !== 40 && err.code !== 30) {
+      // console.log(err.code)
+      // console.log(err.status)
+      // console.log(err.message)
+      // console.log(stderr.toString())
+      // console.log(stdout.toString())
       if (engine === 'kind2') {
         var kind2Output = JSON.parse(stdout);
         var logResults = kind2Output.filter(e => ((e.objectType === "log") && (e.level === "error")))[0];
         err.message = err.message + '\n' + logResults.value.toString();
       }
       callback(err);
-      console.log(err.status)
-      console.log(err.message)
-      console.log(stderr.toString())
-      console.log(stdout.toString())
     } else {
       let result, time, traceInfo;
       if (engine === 'jkind') {
@@ -70,7 +77,7 @@ export function checkRealizability(filePath, engine, options, callback) {
       } else {
         var kind2Output = JSON.parse(stdout);
         var realizabilityResults = kind2Output.filter(e => e.objectType === "realizabilityCheck")[0];
-        var consistencyResults = kind2Output.filter(e => e.objectType === "satisfiabilityCheck")[0];        
+        var consistencyResults = kind2Output.filter(e => e.objectType === "satisfiabilityCheck")[0];
         var logResults = kind2Output.filter(e => e.objectType === "log")[1];
         result = (logResults && logResults.value === "Wallclock timeout.") ? "UNKNOWN" : ((consistencyResults && consistencyResults.result === "unsatisfiable") ? "UNREALIZABLE" : realizabilityResults.result.toUpperCase());
         if (consistencyResults) {
@@ -91,6 +98,15 @@ export function checkRealizability(filePath, engine, options, callback) {
 }
 
 export function checkReal(filePath, engine, options) {
+
+  function retrieveKind2Result(output) {
+    var realizabilityResults = output.filter(e => e.objectType === "realizabilityCheck")[0];      
+    var consistencyResults = output.filter(e => e.objectType === "satisfiabilityCheck")[0];
+    var logResults = output.filter(e => e.objectType === "log")[1];
+    let result = (logResults && logResults.value === "Wallclock timeout.") ? "UNKNOWN" : ((consistencyResults && consistencyResults.result === "unsatisfiable") ? "UNREALIZABLE" : realizabilityResults.result.toUpperCase());
+    return result;
+  }
+
   let command;
   if (engine === 'jkind'){
     command = 'jrealizability ' + options + ' ' + filePath;
@@ -112,10 +128,7 @@ export function checkReal(filePath, engine, options) {
       }
     } else {
       output = JSON.parse(result);
-      var realizabilityResults = output.filter(e => e.objectType === "realizabilityCheck")[0];      
-      var consistencyResults = output.filter(e => e.objectType === "satisfiabilityCheck")[0];
-      var logResults = output.filter(e => e.objectType === "log")[1];
-      result = (logResults && logResults.value === "Wallclock timeout.") ? "UNKNOWN" : ((consistencyResults && consistencyResults.result === "unsatisfiable") ? "UNREALIZABLE" : realizabilityResults.result.toUpperCase());
+      result = retrieveKind2Result(output);
     }
     return {result, output};
   } catch (error) {
@@ -128,7 +141,14 @@ export function checkReal(filePath, engine, options) {
     // console.log("stdout", error.stdout.toString())
     // console.log("status", error.status)
     // console.log("pid", error.pid)
-    throw error;
+
+    if (engine === 'kind2' && (error.status === 30 || error.status === 40)) {
+      output = JSON.parse(error.stdout.toString());
+      result = retrieveKind2Result(output);
+      return {result, output};
+    } else {
+      throw error;
+    }
   }
   
 }

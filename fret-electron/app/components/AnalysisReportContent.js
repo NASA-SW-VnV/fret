@@ -43,12 +43,10 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Select from '@material-ui/core/Select';
 import Checkbox from '@material-ui/core/Checkbox';
 import InputLabel from '@material-ui/core/InputLabel';
-import Divider from '@material-ui/core/Divider';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Fade from '@material-ui/core/Fade';
-import Paper from '@material-ui/core/Paper';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
@@ -98,12 +96,7 @@ class AnalysisReportContent extends React.Component {
 	}
 
 	handleChange = name => event => {
-	    // const {connectedComponents, projectReport} = this.state;
-	    // const {completedComponents} = this.props;
 	    if (name === 'selected') {
-	      // if (event.target.value === 'all') {
-	      //   this.setState({selected: 'all', monolithic : false, compositional : false});
-	      // } else {
 	      	let isDecomposable = event.target.value.compositional.connectedComponents.length > 1;
 	        this.setState({
 	        	selected: event.target.value,
@@ -111,8 +104,6 @@ class AnalysisReportContent extends React.Component {
 	        	monolithic: !isDecomposable,
 	        	compositional: isDecomposable
 	        });	                     
-	      // }
-
 	    } else if (name === 'monolithic' && !this.state.monolithic) {
 	      this.setState({monolithic : !this.state.monolithic, compositional : false});
 	    } else if (name === 'compositional' && !this.state.compositional) {
@@ -259,11 +250,12 @@ class AnalysisReportContent extends React.Component {
 		                            </Fade>) : <div/>
 		                          }                        
 		                          <DiagnosisRequirementsTable 
+								  	rlzData={selected.requirements}
 		                            selectedProject={selectedProject}
 		                            selectedComponent={selected.name}
 		                            listOfProjects={[selectedProject]}
 		                            connectedComponent={selected.compositional.connectedComponents[connectedComponentIndex]}
-		                            importedRequirements={selected.requirements}
+		                            importedRequirements={true}
 		                            selectedRequirements={selected.selectedReqs}
 		                          />
 		                        </div>
@@ -284,6 +276,7 @@ class AnalysisReportContent extends React.Component {
 		                          </Fade>) : <div/>
 		                        }
 		                        <DiagnosisRequirementsTable
+								  rlzData={selected.requirements}
 		                          selectedProject={selectedProject}
 		                          selectedComponent={selected.name}
 		                          listOfProjects={[selectedProject]}

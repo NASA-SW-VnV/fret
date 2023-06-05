@@ -42,17 +42,13 @@ import CloseIcon from '@material-ui/icons/Close';
 
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import Paper from '@material-ui/core/Paper';
-import Divider from '@material-ui/core/Divider';
 import Tooltip from '@material-ui/core/Tooltip';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 
 
 /* Model component specification */
-import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -75,30 +71,19 @@ import ChordDiagram from './ChordDiagram';
 import SaveRealizabilityReport from './SaveRealizabilityReport';
 import RealizabilitySettingsDialog from './RealizabilitySettingsDialog';
 
-import Collapse from '@material-ui/core/Collapse';
 import ErrorIcon from '@material-ui/icons/Error';
 
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import TableSortLabel from '@material-ui/core/TableSortLabel';
-import TablePagination from '@material-ui/core/TablePagination';
 import DiagnosisRequirementsTable from './DiagnosisRequirementsTable';
 import DiagnosisProvider from './DiagnosisProvider';
-import SelectRequirementsProvider from './SelectRequirementsProvider';
 import Fade from '@material-ui/core/Fade';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Grid from '@material-ui/core/Grid';
-import Switch from '@material-ui/core/Switch'
-import SettingsIcon from '@material-ui/icons/Settings';
 import LTLSimDialog from './LTLSimDialog';
 import { SelectRequirementsContext } from './SelectRequirementsProvider';
 
@@ -348,12 +333,9 @@ class RealizabilityContent extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const {selectedProject, components, completedComponents} = this.props;
-    const {projectReport, selected, ccSelected, selectedReqs} = this.state;    
+    const {selectedProject, components} = this.props;
+    const {projectReport, selected, selectedReqs} = this.state;    
     let sysComps = []
-
-
-    let systemComponentIndex = projectReport.systemComponents.findIndex( sc => sc.name === selected.component_name);
 
     if (selectedProject !== prevProps.selectedProject) {
       this.setState({
@@ -391,34 +373,27 @@ class RealizabilityContent extends React.Component {
   }
 
   handleChange = name => event => {
-    const {connectedComponents, projectReport, selected, selectedReqs} = this.state;
-    const {completedComponents} = this.props;
-
+    const {projectReport, selected, selectedReqs} = this.state;
     if (name === 'selected') {
-      if (event.target.value === 'all') {
-        this.setState({selected: 'all', monolithic : false, compositional : false});
-      } else {
-        this.setState({selected: event.target.value});
+      if (this.isComponentComplete(event.target.value.component_name)) {      
+        var args = [event.target.value, projectReport, selectedReqs]
+        ipcRenderer.invoke('selectRealizabilityComponent',args).then((result) => {
+          this.props.selectRealizabilityComponent({
+            type: 'actions/selectRealizabilityComponent',
+            rlz_data: result.rlz_data,
+          })
+          this.setState({
+            selected: (event.target.value === 'all') ? {selected: 'all', monolithic : false, compositional : false} : event.target.value,
+            monolithic: result.connectedComponentInfo.monolithic,
+            compositional: result.connectedComponentInfo.compositional,
+            ccSelected: result.connectedComponentInfo.ccSelected,
+            projectReport: result.connectedComponentInfo.projectReport,
+            selectedReqs: result.connectedComponentInfo.selectedReqs
+          })
+        }).catch((err) => {
+          console.log(err);
+        })
       }
-
-
-      var args = [event.target.value, projectReport, selectedReqs]
-      ipcRenderer.invoke('selectRealizabilityComponent',args).then((result) => {
-        this.props.selectRealizabilityComponent({
-          type: 'actions/selectRealizabilityComponent',
-          rlz_data: result.rlz_data,
-
-        })
-        this.setState({
-          monolithic: result.connectedComponentInfo.monolithic,
-          compositional: result.connectedComponentInfo.compositional,
-          ccSelected: result.connectedComponentInfo.ccSelected,
-          projectReport: result.connectedComponentInfo.projectReport,
-          selectedReqs: result.connectedComponentInfo.selectedReqs
-        })
-      }).catch((err) => {
-        console.log(err);
-      })
     } else if (name === 'monolithic' && !this.state.monolithic) {
       this.setState({monolithic : !this.state.monolithic, compositional : false});
     } else if (name === 'compositional' && !this.state.compositional) {
@@ -444,7 +419,6 @@ class RealizabilityContent extends React.Component {
 
   diagnoseSpec(event, selectedReqs) {    
     const {selected, ccSelected, compositional, monolithic, timeout, projectReport, retainFiles, selectedEngine} = this.state;
-    const {selectedProject} = this.props
     const self = this;
 
     let currentProjectState = {selected, ccSelected, monolithic, compositional, timeout, projectReport, retainFiles, selectedEngine};
@@ -458,13 +432,9 @@ class RealizabilityContent extends React.Component {
     })
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-  return true;
-  }
-
   checkRealizability = (event, selectedReqs) => {        
     const { selected, ccSelected, monolithic, compositional, timeout, realizableTraceLength, projectReport, retainFiles, selectedEngine } = this.state;
-    const {selectedProject, components} = this.props;
+    const { components } = this.props;
 
     const self = this;    
 
@@ -565,10 +535,9 @@ class RealizabilityContent extends React.Component {
   }
 
   render() {
-    const {classes, selectedProject, components, completedComponents, checkComponentCompleted} = this.props;
+    const {classes, selectedProject, components, rlz_data} = this.props;
     const {order, orderBy, selected, ccSelected, monolithic, compositional, dependenciesExist, missingDependencies, projectReport, actionsMenuOpen, diagnosisRequirements} = this.state;
 
-    let grid;
     var tabs = [];
 
     var systemComponentIndex = projectReport.systemComponents.findIndex( sc => sc.name === selected.component_name );
@@ -697,7 +666,7 @@ class RealizabilityContent extends React.Component {
         <SelectRequirementsContext.Provider value={this.state}>
           <div>
             <SelectRequirementsContext.Consumer>
-                {({selectedReqs, setMessage}) => 
+                {({selectedReqs, setMessage}) =>                            
                   <div>
                     {components.length !== 0 &&
                       <div style={{alignItems: 'flex-end', display: 'flex', flexWrap :'wrap'}}>
@@ -878,18 +847,21 @@ class RealizabilityContent extends React.Component {
                                               &nbsp;
                                             </div>
                                           </Fade>) : <div/>
-                                        }                        
-                                        <DiagnosisRequirementsTable
-                                          selectedRequirements={selectedReqs}
-                                          updateSelectedRequirements={setMessage} 
-                                          selectedProject={selectedProject}
-                                          projectReport={projectReport}
-                                          systemComponent={selected}
-                                          selectedComponent={selected.component_name}
-                                          listOfProjects={[selectedProject]}
-                                          connectedComponent={projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex]}
-                                          importedRequirements={[]}
-                                        />
+                                        }
+                                        {rlz_data &&
+                                          <DiagnosisRequirementsTable
+                                            rlzData={rlz_data}
+                                            selectedRequirements={selectedReqs}
+                                            updateSelectedRequirements={setMessage} 
+                                            selectedProject={selectedProject}
+                                            projectReport={projectReport}
+                                            systemComponent={selected}
+                                            selectedComponent={selected.component_name}
+                                            listOfProjects={[selectedProject]}
+                                            connectedComponent={projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex]}
+                                            importedRequirements={false}                                        
+                                          />
+                                        }
                                       </div>
                                     </DiagnosisProvider>
                                   </TabContainer>
@@ -908,17 +880,20 @@ class RealizabilityContent extends React.Component {
                                         </div>
                                       </Fade>) : <div/>
                                     }
-                                    <DiagnosisRequirementsTable
-                                      selectedRequirements={selectedReqs}
-                                      updateSelectedRequirements={setMessage}
-                                      selectedProject={selectedProject}
-                                      projectReport={projectReport}
-                                      systemComponent={selected}
-                                      selectedComponent={selected.component_name}
-                                      listOfProjects={[selectedProject]}
-                                      connectedComponent={{}}
-                                      importedRequirements={[]}
-                                    />
+                                    {rlz_data &&
+                                      <DiagnosisRequirementsTable
+                                        rlzData={rlz_data}
+                                        selectedRequirements={selectedReqs}
+                                        updateSelectedRequirements={setMessage}
+                                        selectedProject={selectedProject}
+                                        projectReport={projectReport}
+                                        systemComponent={selected}
+                                        selectedComponent={selected.component_name}
+                                        listOfProjects={[selectedProject]}
+                                        connectedComponent={{}}
+                                        importedRequirements={false}
+                                      />
+                                    }
                                     {this.state.LTLSimDialogOpen && <LTLSimComponent selectedReqs={selectedReqs} systemComponentIndex={systemComponentIndex} connectedComponentIndex={connectedComponentIndex}/>}
                                   </div>
                                 </DiagnosisProvider>
@@ -967,4 +942,12 @@ const mapDispatchToProps = {
   selectRealizabilityComponent, 
 };
 
-export default withStyles(styles)(connect(null,mapDispatchToProps)(RealizabilityContent));
+function mapStateToProps(state) {
+  const rlz_data = state.actionsSlice.rlz_data;
+  return {
+    rlz_data,
+
+  };
+}
+
+export default withStyles(styles)(connect(mapStateToProps,mapDispatchToProps)(RealizabilityContent));

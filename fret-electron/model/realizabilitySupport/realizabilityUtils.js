@@ -41,7 +41,6 @@ const { execSync } = require('child_process');
 const process = require('process');
 const fs=require("fs");
 const constants = require('../../app/parser/Constants');
-const checkDbFormat = require('../fretDbSupport/checkDBFormat.js');
 
 var analysisPath = require("os").homedir() + '/Documents/fret-analysis/';
 
@@ -130,26 +129,14 @@ function checkDependenciesExist(missingDependencies) {
   }
 }
 
-let counter = 0;
-
-function createData(dbkey, rev, reqid, summary, project) {
-  counter += 1;
-  return { rowid: counter, dbkey, rev, reqid, summary, project };
-}
-
 async function retrieveRlzRequirements (selectedProject, selectedComponent) {
     const filterOff = selectedProject == "All Projects";
-    let data;
     return leveldbDB.allDocs({
         include_docs: true,
       }).then((result) => {
         let dbData = result.rows
                   .filter(r => !system_DBkeys.includes(r.key))
                   .filter(r => filterOff || (r.doc.project === selectedProject && r.doc.semantics.component_name === selectedComponent))
-                  .map(r => {                    
-                    return createData(r.doc._id, r.doc._rev, r.doc.reqid, r.doc.fulltext, r.doc.project)
-                  })
-                  .sort((a, b) => {return a.reqid > b.reqid})
         return dbData
       }).catch((err) => {
         optLog(err);
@@ -242,7 +229,8 @@ function computeConnectedComponents(project, completedComponents, component,proj
               monolithic: {result: 'UNCHECKED', time: '', diagnosisStatus: '', diagnosisReport: '', error: ''},
               compositional: {result: 'UNCHECKED', connectedComponents: ccArray, error: ''},
               requirements: fretResult.docs, 
-              selectedReqs: (selectedReqs.length === 0 ? fretResult.docs.filter(doc => doc.semantics.component_name === component.component_name).map(doc => doc.reqid) : selectedReqs)};
+              selectedReqs: (selectedReqs.length === 0 ? fretResult.docs.filter(doc => doc.semantics.component_name === component.component_name).map(doc => doc.reqid) : selectedReqs)
+            }
           }
           return obj;
         }))
@@ -254,7 +242,7 @@ function computeConnectedComponents(project, completedComponents, component,proj
           compositional: isDecomposable,
           ccSelected: 'cc0',
           projectReport: projectReport,
-          selectedReqs: selectedReqs.length === 0 ? fretResult.docs.filter(doc => doc.semantics.component_name === component.component_name).map(doc => doc.reqid) : selectedReqs
+          selectedReqs: (selectedReqs.length === 0 ? fretResult.docs.filter(doc => doc.semantics.component_name === component.component_name).map(doc => doc.reqid) : selectedReqs)
         };              
       }
     }).catch((err) => {
@@ -314,8 +302,6 @@ function checkRealizability(selectedProject, components, rlzState, selectedReqs)
   return new Promise((resolve) => {
 
   for (const [i, tC] of targetComponents.entries()) {
-  // targetComponents.forEach(tC => {
-
     var systemComponentIndex = projectReport.systemComponents.findIndex( sc => sc.name === tC.component_name);
 
     if(monolithic) {
@@ -337,12 +323,7 @@ function checkRealizability(selectedProject, components, rlzState, selectedReqs)
       })
     }
 
-    var checkOutput = '';
     var ccResults = [];
-    var ccTimes = [];
-    var monolithicResult;
-    var monolithicTIme;
-    var compositionalResult;
 
     modelDB.find({
       selector: {
@@ -458,7 +439,6 @@ function checkRealizability(selectedProject, components, rlzState, selectedReqs)
       });
     })
   }
-  // )
   })
 }
 

@@ -46,11 +46,7 @@ import Paper from '@material-ui/core/Paper';
 import Tooltip from '@material-ui/core/Tooltip';
 import Checkbox from '@material-ui/core/Checkbox';
 import { DiagnosisContext } from './DiagnosisProvider';
-import { SelectRequirementsContext } from './SelectRequirementsProvider';
 import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import ListIcon from '@material-ui/icons/List';
-import CloseIcon from '@material-ui/icons/Close';
 import { lighten } from '@material-ui/core/styles/colorManipulator';
 import Typography from '@material-ui/core/Typography';
 import { connect } from "react-redux";
@@ -135,6 +131,7 @@ function ccStableSort(array, conflictReqs, selectedReqs, connectedComponent, cmp
   
   if (conflictReqs.length === 0) {
     const ccData = array.filter(el => connectedComponent.requirements.includes(el.reqid));
+    console.log(selectedReqs)
     const notSelectedData = array.filter(el => !selectedReqs.includes(el.reqid));
     const remainingData = array.filter(el => (!connectedComponent.requirements.includes(el.reqid) && !notSelectedData.map(el => el.reqid).includes(el.reqid)));    
 
@@ -193,7 +190,7 @@ function ccStableSort(array, conflictReqs, selectedReqs, connectedComponent, cmp
       return a[1] - b[1];
     });
 
-    return conflictData.concat(sortedAssumptions.map(el => el[0]).concat(sortedCCRemainingData.map(el => el[0]).concat(sortedRemaining.map(el => el[0]).concat(sortedNotSelectedData.map(el => el[0])))));
+    return conflictData.concat(sortedAssumptions.map(el => el[0]).concat(sortedCCRemainingData.map(el => el[0]).concat(sortedRemaining.map(el => el[0]).concat(sortedNotSelectedData.map(el => el[0])))));    
   }
 }
 
@@ -272,13 +269,6 @@ let DiagnosisRequirementsTableToolbar = props => {
               </Button>
             </Tooltip>
           </div>
-        /*) : (
-          <Tooltip title="Select requirements for analysis">
-            <IconButton onClick={() => selectEnabler()}>
-              <ListIcon color='secondary'/>
-            </IconButton>
-          </Tooltip>
-        )*/
       }
     </Toolbar>
   )
@@ -300,12 +290,12 @@ class DiagnosisRequirementsTableHead extends React.Component {
   };
 
   render() {
-    const { onSelectAllClick, order, orderBy, numSelected, rowCount, selectEnabled, importedRequirements } = this.props;
+    const { onSelectAllClick, order, orderBy, numSelected, rowCount, importedRequirements } = this.props;
 
     return (
       <TableHead>
         <TableRow>
-          {importedRequirements.length === 0 &&
+          {!importedRequirements &&
             <TableCell id="qa_diagReqTbl_selectAllReqs" padding="checkbox">
               <Checkbox                
                 indeterminate={numSelected > 0 && numSelected < rowCount}
@@ -352,12 +342,11 @@ DiagnosisRequirementsTableHead.propTypes = {
   orderBy: PropTypes.string.isRequired,
   rowCount: PropTypes.number.isRequired,
   selectEnabled: PropTypes.bool.isRequired,
-  importedRequirements: PropTypes.array.isRequired
+  importedRequirements: PropTypes.bool.isRequired
 };
 
 const styles = theme => ({
   root: {
-    // width: '100%',
     marginTop: theme.spacing(3),
   },
   tableRowSelected: {
@@ -378,66 +367,41 @@ class DiagnosisRequirementsTable extends React.Component {
     data: [],
     page: 0,
     rowsPerPage: 10,
-    selectedRequirement: {},
-    selectedProject: 'All Projects',
     selectEnabled: false
   };
 
   constructor(props){
     super(props);
-    
-    if (props.importedRequirements.length !== 0) {
-      this.setState({
-        data: props.importedRequirements.map(r => {
-          return createData(r._id, r._rev, r.reqid, r.fulltext, r.project);
-        }).sort((a, b) => {return a.reqid > b.reqid})
-      });
-    }
+    this.updateSelection()
   }
 
   componentDidMount() {
     const { importedRequirements, selectedRequirements } = this.props;
     this.mounted = true;
-    if (importedRequirements.length === 0) {
-      this.updateSelection();
-    } else {
-      this.setState({
-        data: importedRequirements.map(r => {
-          return createData(r._id, r._rev, r.reqid, r.fulltext, r.project);
-        }).sort((a, b) => {return a.reqid > b.reqid}),
-        selected: [].concat(selectedRequirements),
-        tempSelected: [].concat(selectedRequirements)
-      });
-    } 
+    this.updateSelection();
   }
 
   componentWillUnmount() {
-    const { importedRequirements } = this.props;
     this.mounted = false;
-
-    if (importedRequirements.length === 0) {
-    }
   }
 
   componentDidUpdate(prevProps) {
-    const { connectedComponent, importedRequirements, selectedRequirements } = this.props;
+    const { importedRequirements, rlzData} = this.props;
 
-    if (connectedComponent && (connectedComponent !== prevProps.connectedComponent)) {
-      if (importedRequirements.length === 0) {
+    if (rlzData && rlzData !== prevProps.rlzData) {
         const {setMessage} = this.context;
         setMessage({reqs : '', color : ''})
-        this.setState({selected: [].concat(selectedRequirements)})
-      }      
+        this.setState({
+          selected: importedRequirements ? rlzData.map(el => el.reqid) : rlzData.map(el => el.doc.reqid),
+          tempSelected: importedRequirements ? rlzData.map(el => el.reqid) : rlzData.map(el => el.doc.reqid),
+        })  
     }
   }
 
   updateSelection() {
     if (!this.mounted) return;
-    const { selectedProject, selectedComponent, selectedRequirements, updateSelectedRequirements, rlz_data } = this.props
-    const filterOff = selectedProject == 'All Projects'
-    const { selectedReqs } = this.context;
+    const { selectedRequirements , rlzData } = this.props    
     this.setState({
-      data: rlz_data,   // this need to be managed by redux   
       selected: selectedRequirements,
       tempSelected: selectedRequirements
     })
@@ -446,10 +410,10 @@ class DiagnosisRequirementsTable extends React.Component {
   }
 
   handleSelectAllClick = event => {
-    const { updateSelectedRequirements } = this.props;
+    const { rlzData } = this.props;
     const { data } = this.state
     if (event.target.checked) {      
-      this.setState({ selectEnabled: true, tempSelected: data.map(n => n.reqid) });
+      this.setState({ selectEnabled: true, tempSelected: rlzData.map(n => n.reqid) });
     } else {
       this.setState({ tempSelected: []});
 
@@ -459,7 +423,6 @@ class DiagnosisRequirementsTable extends React.Component {
   };
 
   handleClick = (event, id) => {
-    const { updateSelectedRequirements } = this.props;
     const { tempSelected } = this.state;
     const selectedIndex = tempSelected.indexOf(id);
     let newSelected = [];
@@ -523,136 +486,150 @@ class DiagnosisRequirementsTable extends React.Component {
 
   render() {
     const { reqs, color } = this.context.state;
-    const { classes, connectedComponent, importedRequirements } = this.props;
-    const { data, order, orderBy, selected, tempSelected, rowsPerPage, page, selectEnabled } = this.state;
-    const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
+    const { classes, connectedComponent, importedRequirements, rlzData } = this.props;
+    const { order, orderBy, selected, tempSelected, rowsPerPage, page, selectEnabled } = this.state;
+    const { selectedRequirements } = this.props;
 
-    return (
+    
+    let requirementsData = [];
+    if (importedRequirements) {
+      requirementsData = rlzData.map(r => {return createData(r._id, r._rev, r.reqid, r.fulltext, r.project);}).sort((a, b) => {return a.reqid > b.reqid})
+    } else {
+      requirementsData = rlzData.map(r => {return createData(r.doc._id, r.doc._rev, r.doc.reqid, r.doc.fulltext, r.doc.project)}).sort((a, b) => {return a.reqid > b.reqid});
+    }
+        
+        
+
+    const emptyRows = rowsPerPage - Math.min(rowsPerPage, requirementsData.length - page * rowsPerPage)
+    return ( 
+           
       <div>
-      <Paper>
-        <div>
-          <DiagnosisRequirementsTableToolbar 
-            numSelected={tempSelected.length}
-            selectEnabled={selectEnabled}
-            selectEnabler={this.handleEnableSelect}
-            applySelection={this.handleApplySelection}
-          />
-          <Table aria-labelledby="tableTitle" size="medium">
-            <DiagnosisRequirementsTableHead              
+      {requirementsData.length > 0 && 
+        <Paper>
+          <div>
+            <DiagnosisRequirementsTableToolbar 
               numSelected={tempSelected.length}
-              order={order}
-              orderBy={orderBy}
-              onSelectAllClick={this.handleSelectAllClick}
-              onRequestSort={this.handleRequestSort}
-              rowCount={data.length}
               selectEnabled={selectEnabled}
-              importedRequirements={importedRequirements}
+              selectEnabler={this.handleEnableSelect}
+              applySelection={this.handleApplySelection}
             />
-            {Object.keys(connectedComponent).length !== 0 ?
-              (<TableBody id="qa_diagReqTbl_tableBody_1">{
-                ccStableSort(data, reqs, selected, connectedComponent, getSorting(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map(n => {
-                  const isSelected = this.isSelected(n.reqid);
-                  const label = n.reqid ? n.reqid.replace(/-/g,'') : 'NONE'
-                  var isInConflict = (reqs.length !== 0 && reqs.includes(label)) ? true : false;
-                  const isInConflictOrCC = (isInConflict || connectedComponent.requirements.includes(n.reqid));               
-                  return (
-                      <TableRow 
-                        key={n.rowid} 
-                        style={{
-                          opacity : isInConflictOrCC ? 1 : .6,
-                          borderStyle: isInConflict ? 'solid' : 'initial', 
-                          borderColor: isInConflict ? color : 'initial'}}
-                        classes={{selected: (isSelected && isInConflictOrCC) ? classes.tableRowSelected : 'initial'}}
-                        onClick={event => { importedRequirements.length === 0 ? this.handleClick(event, n.reqid) : null}}            
-                      >
-                      {true &&
-                        <TableCell padding="checkbox">
-                          <Checkbox id={"qa_diagReqTbl_"+n.reqid} checked={isSelected}/>
-                        </TableCell>
-                      }
-                        <TableCell id={"qa_diagReqTbl_tc_body_id_"+label}>
-                          {label}
-                        </TableCell>
-                        <TableCell id={"qa_diagReqTbl_tc_body_summary_"+label}>{n.summary}</TableCell>
-                      </TableRow>
-                    )
-                })}
-                {emptyRows > 0 && (
-                  <TableRow style={{ height: 49 * emptyRows }}>
-                    <TableCell colSpan={6} />
-                  </TableRow>
-                )}
-              </TableBody>) :
-              (<TableBody id="qa_diagReqTbl_tableBody_2">{
-                stableSort(data, reqs, selected, getSorting(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map(n => {
-                  const isSelected = this.isSelected(n.reqid);
-                  const label = n.reqid ? n.reqid.replace(/-/g,'') : 'NONE'
-                  var isInConflict = (reqs.length !== 0 && reqs.includes(label)) ? true : false;
-                  //var isAssumption = n.reqid.includes('assumption')
-                  //const isInConflictOrAssumptions = (isInConflict || reqs.length === 0  || isAssumption);
-                  const isInConflictOrSelected = (isInConflict || isSelected);
-                  return (
-                      <TableRow
-                        key={n.rowid}
-                        style={{
-                          opacity : isInConflictOrSelected ? 1 : .6,                          
-                          borderStyle: isInConflict ? 'solid' : 'initial', 
-                          borderColor: isInConflict ? color : 'initial'}}
-                        classes={{selected: classes.tableRowSelected}}
-                        onClick={event => (importedRequirements.length === 0 ? this.handleClick(event, n.reqid) : null)}
+            <Table aria-labelledby="tableTitle" size="medium">
+              <DiagnosisRequirementsTableHead              
+                numSelected={tempSelected.length}
+                order={order}
+                orderBy={orderBy}
+                onSelectAllClick={this.handleSelectAllClick}
+                onRequestSort={this.handleRequestSort}
+                rowCount={requirementsData.length}
+                selectEnabled={selectEnabled}
+                importedRequirements={importedRequirements}
+              />
+              {Object.keys(connectedComponent).length !== 0 ?
+                (<TableBody id="qa_diagReqTbl_tableBody_1">{
+                  ccStableSort(requirementsData, reqs, selectedRequirements, connectedComponent, getSorting(order, orderBy))
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map(n => {
+                    const isSelected = this.isSelected(n.reqid);
+                    const label = n.reqid ? n.reqid.replace(/-/g,'') : 'NONE'
+                    var isInConflict = (reqs.length !== 0 && reqs.includes(label)) ? true : false;
+                    const isInConflictOrCC = (isInConflict || connectedComponent.requirements.includes(n.reqid));               
+                    return (
+                        <TableRow 
+                          key={n.rowid} 
+                          style={{
+                            opacity : isInConflictOrCC ? 1 : .6,
+                            borderStyle: isInConflict ? 'solid' : 'initial', 
+                            borderColor: isInConflict ? color : 'initial'}}
+                          classes={{selected: (isSelected && isInConflictOrCC) ? classes.tableRowSelected : 'initial'}}
+                          onClick={event => { !importedRequirements ? this.handleClick(event, n.reqid) : null}}            
                         >
                         {true &&
                           <TableCell padding="checkbox">
                             <Checkbox id={"qa_diagReqTbl_"+n.reqid} checked={isSelected}/>
                           </TableCell>
                         }
-                        <TableCell id={"qa_diagReqTbl_tc_body_id_"+label}>
-                          {label}
-                        </TableCell>
-                        <TableCell id={"qa_diagReqTbl_tc_body_summary_"+label}>{n.summary}</TableCell>
-                      </TableRow>
-                    )
-                })}
-                {emptyRows > 0 && (
-                  <TableRow style={{ height: 49 * emptyRows }}>
-                    <TableCell colSpan={6} />
-                  </TableRow>
-                )}
-              </TableBody>)
-            }
-          </Table>
-        </div>
-        <TablePagination
-          component="div"
-          count={data.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          backIconButtonProps={{
-            'aria-label': 'Previous Page',
-          }}
-          nextIconButtonProps={{
-            'aria-label': 'Next Page',
-          }}
-          onPageChange={this.handleChangePage}
-          onRowsPerPageChange={this.handleChangeRowsPerPage}
-        />
-      </Paper>
+                          <TableCell id={"qa_diagReqTbl_tc_body_id_"+label}>
+                            {label}
+                          </TableCell>
+                          <TableCell id={"qa_diagReqTbl_tc_body_summary_"+label}>{n.summary}</TableCell>
+                        </TableRow>
+                      )
+                  })}
+                  {emptyRows > 0 && (
+                    <TableRow style={{ height: 49 * emptyRows }}>
+                      <TableCell colSpan={6} />
+                    </TableRow>
+                  )}
+                </TableBody>) :
+                (<TableBody id="qa_diagReqTbl_tableBody_2">{
+                  stableSort(requirementsData, reqs, selectedRequirements, getSorting(order, orderBy))
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map(n => {
+                    const isSelected = this.isSelected(n.reqid);
+                    const label = n.reqid ? n.reqid.replace(/-/g,'') : 'NONE'
+                    var isInConflict = (reqs.length !== 0 && reqs.includes(label)) ? true : false;
+                    const isInConflictOrSelected = (isInConflict || isSelected);
+                    return (
+                        <TableRow
+                          key={n.rowid}
+                          style={{
+                            opacity : isInConflictOrSelected ? 1 : .6,                          
+                            borderStyle: isInConflict ? 'solid' : 'initial', 
+                            borderColor: isInConflict ? color : 'initial'}}
+                          classes={{selected: classes.tableRowSelected}}
+                          onClick={event => (!importedRequirements ? this.handleClick(event, n.reqid) : null)}
+                          >
+                          {true &&
+                            <TableCell padding="checkbox">
+                              <Checkbox id={"qa_diagReqTbl_"+n.reqid} checked={isSelected}/>
+                            </TableCell>
+                          }
+                          <TableCell id={"qa_diagReqTbl_tc_body_id_"+label}>
+                            {label}
+                          </TableCell>
+                          <TableCell id={"qa_diagReqTbl_tc_body_summary_"+label}>{n.summary}</TableCell>
+                        </TableRow>
+                      )
+                  })}
+                  {emptyRows > 0 && (
+                    <TableRow style={{ height: 49 * emptyRows }}>
+                      <TableCell colSpan={6} />
+                    </TableRow>
+                  )}
+                </TableBody>)
+              }
+            </Table>
+          </div>
+          <TablePagination
+            component="div"
+            count={requirementsData.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            backIconButtonProps={{
+              'aria-label': 'Previous Page',
+            }}
+            nextIconButtonProps={{
+              'aria-label': 'Next Page',
+            }}
+            onPageChange={this.handleChangePage}
+            onRowsPerPageChange={this.handleChangeRowsPerPage}
+          />
+        </Paper>
+      }
       </div>
     );
+
   }
 }
 
 DiagnosisRequirementsTable.propTypes = {
+  rlzData: PropTypes.array.isRequired,
   selectedProject: PropTypes.string.isRequired,
   selectedComponent: PropTypes.string.isRequired,
   selectedRequirements: PropTypes.array.isRequired,
   listOfProjects: PropTypes.array.isRequired,
   connectedComponent : PropTypes.object.isRequired,
-  importedRequirements: PropTypes.array.isRequired
+  importedRequirements: PropTypes.bool.isRequired
 };
 
 
@@ -666,6 +643,3 @@ function mapStateToProps(state) {
 
 export default withStyles(styles)(connect(mapStateToProps)(DiagnosisRequirementsTable));
 
-
-
-//export default withStyles(styles)(DiagnosisRequirementsTable);
