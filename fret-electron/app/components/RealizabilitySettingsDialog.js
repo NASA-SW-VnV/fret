@@ -35,23 +35,15 @@ import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 
 import Drawer from '@material-ui/core/Drawer';
-import Button from '@material-ui/core/Button';
 import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
 import ListItem from '@material-ui/core/ListItem';
-
-import Dialog from '@material-ui/core/Dialog';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogTitle from '@material-ui/core/DialogTitle';
-
-import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
-import FormHelperText from '@material-ui/core/FormHelperText';
+import InputLabel from '@material-ui/core/InputLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Select from '@material-ui/core/Select';
-import Checkbox from '@material-ui/core/Checkbox';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
@@ -107,9 +99,12 @@ class RealizabilitySettingsDialog extends React.Component {
 		this.props.handleSettingsClose();
 	}
 
-	handleEngineChange = (event) => {		
-		this.setState({selectedEngine: event.target.value});
-		this.props.handleSettingsEngineChange(event.target.value);
+	handleEngineChange = (event, key) => {		
+		//Retrieve value of disabled props from MenuItem child. If disabled, do not proceed with the change.
+		if (!key.props.children.props.children.props.disabled) {
+			this.setState({selectedEngine: event.target.value});
+			this.props.handleSettingsEngineChange(event.target.value);
+		}	
 	}
 
 	handleTimeoutOptionChange = (event, value) => {
@@ -165,7 +160,7 @@ class RealizabilitySettingsDialog extends React.Component {
 								<Select id="qa_rlzSet_sel_engine" key={'engine'} value={selectedEngine ? selectedEngine : 0} onChange={this.handleEngineChange}>
 									<Tooltip
 										key={'kind2'}
-													value={0}
+										value={0}
 										title={missingDependencies.includes('kind2') || missingDependencies.includes('z3') ? 
 										'Option not available because of missing dependencies: ' + missingDependencies.filter(dep => dep === 'kind2' || dep === 'z3').toString() : ''}>
 										<span key={'kind2'}>
@@ -174,31 +169,31 @@ class RealizabilitySettingsDialog extends React.Component {
 									</Tooltip>
 									<Tooltip
 										key={'kind2MBP'}
-													value={1}
+										value={1}
 										title={missingDependencies.includes('kind2') || missingDependencies.includes('z3') ? 
 										'Option not available because of missing dependencies: ' + missingDependencies.filter(dep => dep === 'kind2' || dep === 'z3').toString() : ''}>
 										<span key={'kind2MBP'}>
 											<MenuItem id="qa_rlzSet_mi_kind2MBP" component="div" disabled={missingDependencies.includes('kind2') || missingDependencies.includes('z3')}> Kind 2 + MBP </MenuItem>
 										</span>
 									</Tooltip>
-												<Tooltip
-													key={'jkind'}
-													value={2}
-													title={missingDependencies.includes('jkind') || missingDependencies.includes('z3') ? 
-													'Option not available because of missing dependencies: ' + missingDependencies.filter(dep => dep === 'jkind' || dep === 'z3').toString() : ''}>
-													<span key={'jkind'}>
-														<MenuItem id="qa_rlzSet_mi_jkind" component="div" disabled={missingDependencies.includes('jkind') || missingDependencies.includes('z3')}> JKind </MenuItem>
-													</span>
-												</Tooltip>
-												<Tooltip
-													key={'jkindMBP'}
-													value={3}
-													title={missingDependencies.includes('jkind') || missingDependencies.includes('z3') || missingDependencies.includes('aeval') ? 
-													'Option not available because of missing dependencies: ' + missingDependencies.filter(dep => dep === 'jkind' || dep === 'z3' || dep === 'aeval').toString() : ''}>
-													<span key={'jkindMBP'}>
-														<MenuItem id="qa_rlzSet_mi_jkindMBP" component="div" disabled={missingDependencies.includes('jkind') || missingDependencies.includes('z3') || missingDependencies.includes('aeval')}> JKind + MBP </MenuItem>
-													</span>
-												</Tooltip>
+									<Tooltip
+										key={'jkind'}
+										value={2}
+										title={missingDependencies.includes('jkind') || missingDependencies.includes('z3') ? 
+										'Option not available because of missing dependencies: ' + missingDependencies.filter(dep => dep === 'jkind' || dep === 'z3').toString() : ''}>
+										<span key={'jkind'}>
+											<MenuItem id="qa_rlzSet_mi_jkind" component="div" disabled={missingDependencies.includes('jkind') || missingDependencies.includes('z3')}> JKind </MenuItem>
+										</span>
+									</Tooltip>
+									<Tooltip
+										key={'jkindMBP'}
+										value={3}
+										title={missingDependencies.includes('jkind') || missingDependencies.includes('z3') || missingDependencies.includes('aeval') ? 
+										'Option not available because of missing dependencies: ' + missingDependencies.filter(dep => dep === 'jkind' || dep === 'z3' || dep === 'aeval').toString() : ''}>
+										<span key={'jkindMBP'}>
+											<MenuItem id="qa_rlzSet_mi_jkindMBP" component="div" disabled={missingDependencies.includes('jkind') || missingDependencies.includes('z3') || missingDependencies.includes('aeval')}> JKind + MBP </MenuItem>
+										</span>
+									</Tooltip>
 								</Select>
 							</FormControl>	
           				</ListItem>        				
@@ -241,43 +236,6 @@ class RealizabilitySettingsDialog extends React.Component {
 				</Drawer>
 			</div>
 		);
-
-		// return(
-		// 	<div>
-		// 		<Dialog open={open} onClose={this.handleClose}>
-		// 			<DialogTitle>Realizability Settings</DialogTitle>
-		// 			<DialogContent>
-		// 				<form className={classes.container}>
-		// 				<FormControl className={classes.formControl}>
-		// 					<InputLabel>Engine</InputLabel>
-		// 					<Select key={'engine'} value={selectedEngine ? selectedEngine : 0} onChange={this.handleEngineChange}>
-		// 						<MenuItem value={0}> JKind (default)</MenuItem>
-		// 						<MenuItem value={1}> JKind + MBP </MenuItem>
-		// 						<MenuItem value={2}> Kind 2 </MenuItem>
-		// 						<MenuItem value={3}> Kind 2 + MBP </MenuItem>							
-		// 					</Select>
-		// 				</FormControl>
-		// 	            <FormControlLabel
-		// 	              control={
-		// 	                <Checkbox
-		// 	                  checked={this.state.retainFiles}
-		// 	                  onChange={this.handleRetainFilesOptionChange}      
-		// 	                  color="primary"
-		// 	                  value="retainFiles"
-		// 	                />
-		// 	              }
-		// 	              label="Retain Analysis Files (For debugging purposes)"
-		// 	            />
-		// 	            </form>
-		// 			</DialogContent>
-		// 			<DialogActions>
-		// 				<Button onClick={this.handleClose}>
-		// 					Close
-		// 				</Button>
-		// 			</DialogActions>
-		// 		</Dialog>
-		// 	</div>
-		// );
 	}
 }
 

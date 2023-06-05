@@ -760,7 +760,7 @@ class RealizabilityContent extends React.Component {
                           <Menu id="qa_rlzCont_sel_actions" anchorEl={this.anchorRef.current} open={actionsMenuOpen} onClose={(event) => this.handleActionsMenuClose(event)} MenuListProps={{'aria-labelledby': 'realizability_actions_button'}}>
                             <MenuItem 
                             id="qa_rlzCont_btn_check"
-                            disabled={selectedReqs.length === 0 || !dependenciesExist || (dependenciesExist && (selected === '' || missingDependencies.includes('jkind')))}
+                            disabled={selectedReqs.length === 0 || !dependenciesExist || (dependenciesExist && selected === '')}
                             onClick={(event) => this.checkRealizability(event, selectedReqs)}>Check Realizability</MenuItem>
                             <Tooltip title={'This action is available only when using the \'JKind\' engine option.'}>
                               <span>

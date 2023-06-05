@@ -102,9 +102,10 @@ function checkDependenciesExist(missingDependencies) {
     missingDependencies.push('z3');
   }
 
-  let validConfigurations = [['kind2', 'z3'], ['jkind', 'z3'], ['jkind', 'z3', 'aeval']]
+  //one configuration per engine option
+  let validConfigurations = [['kind2', 'z3'], ['kind2', 'z3'], ['jkind', 'z3'], ['jkind', 'z3', 'aeval']]
   let someConfigurationExists = false;
-  let defaultEngine = 0;
+  let defaultEngine = 0;  
   for (let i = 0; i < validConfigurations.length; i++) {
     const reducer = (accumulator, currentValue) => accumulator && (!missingDependencies.includes(currentValue));
     if (validConfigurations[i].reduce(reducer, true)) {
