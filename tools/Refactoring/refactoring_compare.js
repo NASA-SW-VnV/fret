@@ -63,7 +63,7 @@ function substitutePlaceholders (ltlspec,n) {
 * the `fragment` varibale present in a previously refactored requirement.
 *
 * @param {Object} originalReq - the original requirement
-* @param {} originalReqVars - the variables of the original requirement
+* @param {Map<String, String>} originalReqVars - the variables of the original requirement
 * @param {Object} newReq - the refactored requirement
 * @param {Set} requirementSet - the set of requirements the requirement belongs to
 */
@@ -73,8 +73,8 @@ function compareRequirements(originalReq, originalReqVars, newReq, requirementSe
   let n = 4;
 
 
-    console.log("compareRequirements requirementSet -> ");
-    console.log(requirementSet);
+  console.log("compareRequirements requirementSet -> ");
+  console.log(requirementSet);
 
   console.log("+++ Comparing Requirements +++")
 
@@ -97,12 +97,12 @@ exports.compareRequirements = compareRequirements;
  * Uses NuSMV to check that the originalReq and the newReq translate 
  * to temporal logic that behaves the same.
  * 
- * @param {*} originalReq 
- * @param {*} originalReqVars 
- * @param {*} newReq 
- * @param {*} len 
- * @param {*} n 
- * @param {*} allRequirements 
+ * @param {Object} originalReq 
+ * @param {Map<String, String>} originalReqVars 
+ * @param {Object} newReq 
+ * @param {int} len 
+ * @param {int} n 
+ * @param {Array<Object>} allRequirements 
  * 
  */
 function checkInNuSMV (originalReq, originalReqVars, newReq,len,n, allRequirements)
@@ -142,11 +142,11 @@ function checkInNuSMV (originalReq, originalReqVars, newReq,len,n, allRequiremen
 * Generates the SMV file used to check that the original and new requirements
 * behave in the same way.
 
- * @param {*} originalReq 
- * @param {*} originalReqVars 
- * @param {*} newReq 
- * @param {*} n 
- * @param {*} allRequirements 
+ * @param {Object} originalReq 
+ * @param {Map<String, String>} originalReqVars 
+ * @param {Object} newReq 
+ * @param {int} n 
+ * @param {Array<Object>} allRequirements 
  * @returns 
  */
 function generateSMV(originalReq, originalReqVars, newReq,n, allRequirements)
@@ -214,7 +214,7 @@ function generateSMV(originalReq, originalReqVars, newReq,n, allRequirements)
 * This could become obsolete if we had a central list of them all.
 *
  * @param {*} fragmentNames 
- * @param {*} allRequirements 
+ * @param {Array<Object>} allRequirements 
  * @returns 
  */
 function getFragmentReqs(fragmentNames, allRequirements)
@@ -259,7 +259,7 @@ function getFragmentReqs(fragmentNames, allRequirements)
  * that the specification uses.
  * 
  * @param {*} variables 
- * @param {*} len 
+ * @param {int} len 
  * @returns 
  */
 function preamble(variables, len) {
@@ -320,11 +320,11 @@ function mergeFragment(property, fragment)
  * If there are requirements in the fragList (requirements that
  * were originally fragments) their variables will be included too.
  * 
- * @param {*} originalReq 
- * @param {*} originalReqVars 
- * @param {*} newReq 
- * @param {*} fragList 
- * @returns 
+ * @param {Object} originalReq 
+ * @param {Map<String, String>} originalReqVars 
+ * @param {Object} newReq 
+ * @param {Array<Object>} fragList 
+ * @returns {String} The variable names and types for the SMV file
  */
 function getVars(originalReq, originalReqVars, newReq, fragList)
 {

@@ -62,7 +62,7 @@ function makeDummyUpdatedReq(req)
  * Handles one request to refactor one requirement
  * 
  * @param {Object} req the requirement that is having behaviour extracted from it
- * @param {Map} reqVars map of the req paramter's variables mapped to their types
+ * @param {Map<String, String>} reqVars map of the req paramter's variables mapped to their types
  * @param {String} fragment the fragment to be extracted
  * @param {String} destinationName the name to be given to the newly created requirement
  * @param {*} newID the new (database) UUID for the newly created requirement
@@ -174,7 +174,7 @@ exports.extractRequirement = extractRequirement;
  * Handles a request to extract a fragment from all requirements that contain it.
  * 
 * @param {Object} req the requirement that is having behaviour extracted from it
- * @param {Map} reqVars map of the req paramter's variables mapped to their types
+ * @param {Map<String, String>} reqVars map of the req paramter's variables mapped to their types
  * @param {String} fragment the fragment to be extracted
  * @param {String} destinationName the name to be given to the newly created requirement
  * @param {*} newID the new (database) UUID for the newly created requirement

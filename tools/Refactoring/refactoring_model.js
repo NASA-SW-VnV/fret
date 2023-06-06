@@ -120,6 +120,7 @@ function DBAddCallback(err, responses)
 
 /**
  * Adds the requirement, req, to the Database
+ * 
  * @param {Object} req the requirement being added to the database
  */
 export function AddRequirementToDB(req)
