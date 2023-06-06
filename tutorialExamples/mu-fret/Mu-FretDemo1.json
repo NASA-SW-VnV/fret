@@ -1,0 +1,425 @@
+[
+    {
+        "reqid": "UC5_R_3_1",
+        "parent_reqid": "UC5_R_3",
+        "project": "Mu-Fret Demo",
+        "rationale": "UC5_TC_5:\n* Preconditions: Aircraft is in operating mode M and sensor S value deviates at most +/-R % from nominal value\n* Input conditions/steps: Observed aircraft thrust is at value V1 and pilot input changes from A1 to A2\n* Expected results: Observed aircraft thrust changes and settles to value V2, respecting operating limit objectives (inactiveThreshold.g., upper limit in shaft speed)\n\nUC5_TC_6:\n* Preconditions: Aircraft is in operating mode M and sensor S value is not available (sensor is out of order)\n* Input conditions / steps: Observed aircraft thrust is at value V1 and pilot input changes from A1 to A2\n* Expected results: Observed aircraft thrust changes and settles to value V2, respecting operating limit objectives (inactiveThreshold.g., upper limit in shaft speed)",
+        "comments": "",
+        "fulltext": "when (diff_ref_obs > activeThreshold) if ((sensorValue_S > nominalValue + R) | (sensorValue_S < nominalValue - R) | (sensorValue_S = null) & (observedThrust = V1) & (pilotInput => setThrust = V2))  Controller shall until (diff_ref_obs < inactiveThreshold) satisfy (shaftSpeed >= operatingLowerBound) & (shaftSpeed <= operatingUpperBound) & (observedThrust = V2)",
+        "semantics": {
+            "type": "nasa",
+            "scope": {
+                "type": "null"
+            },
+            "condition": "regular",
+            "timing": "until",
+            "response": "satisfaction",
+            "variables": [
+                "diff_ref_obs",
+                "activeThreshold",
+                "sensorValue_S",
+                "nominalValue",
+                "R",
+                "null",
+                "observedThrust",
+                "V1",
+                "pilotInput",
+                "setThrust",
+                "V2",
+                "inactiveThreshold",
+                "shaftSpeed",
+                "operatingLowerBound",
+                "operatingUpperBound"
+            ],
+            "qualifier_word": "if",
+            "pre_condition": "(( ( sensorValue_S > nominalValue + R ) | ( sensorValue_S < nominalValue - R ) | ( sensorValue_S = null ) & ( observedThrust = V1 ) & ( pilotInput => setThrust = V2 ) ))",
+            "regular_condition": "((( diff_ref_obs > activeThreshold )) & (( ( sensorValue_S > nominalValue + R ) | ( sensorValue_S < nominalValue - R ) | ( sensorValue_S = null ) & ( observedThrust = V1 ) & ( pilotInput => setThrust = V2 ) )))",
+            "conditionTextRange": [
+                0,
+                195
+            ],
+            "component_name": "Controller",
+            "componentTextRange": [
+                198,
+                207
+            ],
+            "stop_condition": "(( diff_ref_obs < inactiveThreshold ))",
+            "timingTextRange": [
+                215,
+                254
+            ],
+            "post_condition": "(( shaftSpeed >= operatingLowerBound ) & ( shaftSpeed <= operatingUpperBound ) & ( observedThrust = V2 ))",
+            "responseTextRange": [
+                256,
+                360
+            ],
+            "diagramVariables": "TC = <b><i>((( diff_ref_obs > activeThreshold )) & (( ( sensorValue_S > nominalValue + R ) | ( sensorValue_S < nominalValue - R ) | ( sensorValue_S = null ) & ( observedThrust = V1 ) & ( pilotInput => setThrust = V2 ) )))</i></b>, SC = <b><i>(( diff_ref_obs < inactiveThreshold ))</i></b>, Response = <b><i>(( shaftSpeed >= operatingLowerBound ) & ( shaftSpeed <= operatingUpperBound ) & ( observedThrust = V2 ))</i></b>.",
+            "description": "ENFORCED: in the interval defined by the entire execution.\nTRIGGER: first point in the interval if <b><i>((( diff_ref_obs > activeThreshold )) & (( ( sensorValue_S > nominalValue + R ) | ( sensorValue_S < nominalValue - R ) | ( sensorValue_S = null ) & ( observedThrust = V1 ) & ( pilotInput => setThrust = V2 ) )))</i></b> is true and any point in the interval where <b><i>((( diff_ref_obs > activeThreshold )) & (( ( sensorValue_S > nominalValue + R ) | ( sensorValue_S < nominalValue - R ) | ( sensorValue_S = null ) & ( observedThrust = V1 ) & ( pilotInput => setThrust = V2 ) )))</i></b> becomes true (from false).\nREQUIRES: for every trigger, RES must remain true until (but not necessarily including) the point where the stop condition holds, or to the end of the interval. If the stop condition never occurs, RES must hold until the end of the scope, or forever.  If the stop condition holds at the trigger, the requirement is satisfied.",
+            "diagram": "_media/user-interface/examples/svgDiagrams/null_regular_until_satisfaction.svg",
+            "regular_condition_unexp_pt": "((diff_ref_obs > activeThreshold) & (((sensorValue_S > (nominalValue + R)) | (sensorValue_S < (nominalValue - R))) | (((sensorValue_S = null) & (observedThrust = V1)) & (pilotInput -> (setThrust = V2)))))",
+            "regular_condition_unexp_ft": "((diff_ref_obs > activeThreshold) & (((sensorValue_S > (nominalValue + R)) | (sensorValue_S < (nominalValue - R))) | (((sensorValue_S = null) & (observedThrust = V1)) & (pilotInput -> (setThrust = V2)))))",
+            "regular_condition_SMV_pt": "((diff_ref_obs > activeThreshold) & (((sensorValue_S > (nominalValue + R)) | (sensorValue_S < (nominalValue - R))) | (((sensorValue_S = null) & (observedThrust = V1)) & (pilotInput -> (setThrust = V2)))))",
+            "regular_condition_SMV_ft": "((diff_ref_obs > activeThreshold) & (((sensorValue_S > (nominalValue + R)) | (sensorValue_S < (nominalValue - R))) | (((sensorValue_S = null) & (observedThrust = V1)) & (pilotInput -> (setThrust = V2)))))",
+            "regular_condition_coco": "((diff_ref_obs>activeThreshold) and (((sensorValue_S>( nominalValue + R )) or (sensorValue_S<( nominalValue - R ))) or (((sensorValue_S=null) and (observedThrust=V1)) and (pilotInput => (setThrust=V2)))))",
+            "post_condition_unexp_pt": "(((shaftSpeed >= operatingLowerBound) & (shaftSpeed <= operatingUpperBound)) & (observedThrust = V2))",
+            "post_condition_unexp_ft": "(((shaftSpeed >= operatingLowerBound) & (shaftSpeed <= operatingUpperBound)) & (observedThrust = V2))",
+            "post_condition_SMV_pt": "(((shaftSpeed >= operatingLowerBound) & (shaftSpeed <= operatingUpperBound)) & (observedThrust = V2))",
+            "post_condition_SMV_ft": "(((shaftSpeed >= operatingLowerBound) & (shaftSpeed <= operatingUpperBound)) & (observedThrust = V2))",
+            "post_condition_coco": "(((shaftSpeed>=operatingLowerBound) and (shaftSpeed<=operatingUpperBound)) and (observedThrust=V2))",
+            "stop_condition_unexp_pt": "(diff_ref_obs < inactiveThreshold)",
+            "stop_condition_SMV_pt": "(diff_ref_obs < inactiveThreshold)",
+            "stop_condition_coco": "(diff_ref_obs<inactiveThreshold)",
+            "stop_condition_unexp_ft": "(diff_ref_obs < inactiveThreshold)",
+            "stop_condition_SMV_ft": "(diff_ref_obs < inactiveThreshold)",
+            "ft": "((LAST V (((! <b><i>((diff_ref_obs > activeThreshold) & (((sensorValue_S > (nominalValue + R)) | (sensorValue_S < (nominalValue - R))) | (((sensorValue_S = null) & (observedThrust = V1)) & (pilotInput -> (setThrust = V2)))))</i></b>) & ((! LAST) & (X <b><i>((diff_ref_obs > activeThreshold) & (((sensorValue_S > (nominalValue + R)) | (sensorValue_S < (nominalValue - R))) | (((sensorValue_S = null) & (observedThrust = V1)) & (pilotInput -> (setThrust = V2)))))</i></b>))) -> (X ((<b><i>(diff_ref_obs < inactiveThreshold)</i></b> V (<b><i>(((shaftSpeed >= operatingLowerBound) & (shaftSpeed <= operatingUpperBound)) & (observedThrust = V2))</i></b> | <b><i>(diff_ref_obs < inactiveThreshold)</i></b>)) | (LAST V <b><i>(((shaftSpeed >= operatingLowerBound) & (shaftSpeed <= operatingUpperBound)) & (observedThrust = V2))</i></b>))))) & (<b><i>((diff_ref_obs > activeThreshold) & (((sensorValue_S > (nominalValue + R)) | (sensorValue_S < (nominalValue - R))) | (((sensorValue_S = null) & (observedThrust = V1)) & (pilotInput -> (setThrust = V2)))))</i></b> -> ((<b><i>(diff_ref_obs < inactiveThreshold)</i></b> V (<b><i>(((shaftSpeed >= operatingLowerBound) & (shaftSpeed <= operatingUpperBound)) & (observedThrust = V2))</i></b> | <b><i>(diff_ref_obs < inactiveThreshold)</i></b>)) | (LAST V <b><i>(((shaftSpeed >= operatingLowerBound) & (shaftSpeed <= operatingUpperBound)) & (observedThrust = V2))</i></b>))))",
+            "pt": "(H ((H (! <b><i>((diff_ref_obs > activeThreshold) & (((sensorValue_S > (nominalValue + R)) | (sensorValue_S < (nominalValue - R))) | (((sensorValue_S = null) & (observedThrust = V1)) & (pilotInput -> (setThrust = V2)))))</i></b>)) | (((! <b><i>(diff_ref_obs < inactiveThreshold)</i></b>) S ((! <b><i>(diff_ref_obs < inactiveThreshold)</i></b>) & (<b><i>((diff_ref_obs > activeThreshold) & (((sensorValue_S > (nominalValue + R)) | (sensorValue_S < (nominalValue - R))) | (((sensorValue_S = null) & (observedThrust = V1)) & (pilotInput -> (setThrust = V2)))))</i></b> & ((Y (! <b><i>((diff_ref_obs > activeThreshold) & (((sensorValue_S > (nominalValue + R)) | (sensorValue_S < (nominalValue - R))) | (((sensorValue_S = null) & (observedThrust = V1)) & (pilotInput -> (setThrust = V2)))))</i></b>)) | FTP)))) -> <b><i>(((shaftSpeed >= operatingLowerBound) & (shaftSpeed <= operatingUpperBound)) & (observedThrust = V2))</i></b>)))",
+            "ptExpanded": "(H ((H (! ((diff_ref_obs > activeThreshold) & (((sensorValue_S > (nominalValue + R)) | (sensorValue_S < (nominalValue - R))) | (((sensorValue_S = null) & (observedThrust = V1)) & (pilotInput -> (setThrust = V2))))))) | (((! (diff_ref_obs < inactiveThreshold)) S ((! (diff_ref_obs < inactiveThreshold)) & (((diff_ref_obs > activeThreshold) & (((sensorValue_S > (nominalValue + R)) | (sensorValue_S < (nominalValue - R))) | (((sensorValue_S = null) & (observedThrust = V1)) & (pilotInput -> (setThrust = V2))))) & ((Y (! ((diff_ref_obs > activeThreshold) & (((sensorValue_S > (nominalValue + R)) | (sensorValue_S < (nominalValue - R))) | (((sensorValue_S = null) & (observedThrust = V1)) & (pilotInput -> (setThrust = V2))))))) | (! (Y TRUE)))))) -> (((shaftSpeed >= operatingLowerBound) & (shaftSpeed <= operatingUpperBound)) & (observedThrust = V2)))))",
+            "ftExpanded": "((LAST V (((! ((diff_ref_obs > activeThreshold) & (((sensorValue_S > (nominalValue + R)) | (sensorValue_S < (nominalValue - R))) | (((sensorValue_S = null) & (observedThrust = V1)) & (pilotInput -> (setThrust = V2)))))) & ((! LAST) & (X ((diff_ref_obs > activeThreshold) & (((sensorValue_S > (nominalValue + R)) | (sensorValue_S < (nominalValue - R))) | (((sensorValue_S = null) & (observedThrust = V1)) & (pilotInput -> (setThrust = V2)))))))) -> (X (((diff_ref_obs < inactiveThreshold) V ((((shaftSpeed >= operatingLowerBound) & (shaftSpeed <= operatingUpperBound)) & (observedThrust = V2)) | (diff_ref_obs < inactiveThreshold))) | (LAST V (((shaftSpeed >= operatingLowerBound) & (shaftSpeed <= operatingUpperBound)) & (observedThrust = V2))))))) & (((diff_ref_obs > activeThreshold) & (((sensorValue_S > (nominalValue + R)) | (sensorValue_S < (nominalValue - R))) | (((sensorValue_S = null) & (observedThrust = V1)) & (pilotInput -> (setThrust = V2))))) -> (((diff_ref_obs < inactiveThreshold) V ((((shaftSpeed >= operatingLowerBound) & (shaftSpeed <= operatingUpperBound)) & (observedThrust = V2)) | (diff_ref_obs < inactiveThreshold))) | (LAST V (((shaftSpeed >= operatingLowerBound) & (shaftSpeed <= operatingUpperBound)) & (observedThrust = V2))))))",
+            "CoCoSpecCode": "(H((H( not ((diff_ref_obs>activeThreshold) and (((sensorValue_S>( nominalValue + R )) or (sensorValue_S<( nominalValue - R ))) or (((sensorValue_S=null) and (observedThrust=V1)) and (pilotInput => (setThrust=V2))))))) or ((SI( (((diff_ref_obs>activeThreshold) and (((sensorValue_S>( nominalValue + R )) or (sensorValue_S<( nominalValue - R ))) or (((sensorValue_S=null) and (observedThrust=V1)) and (pilotInput => (setThrust=V2))))) and ((YtoPre( not ((diff_ref_obs>activeThreshold) and (((sensorValue_S>( nominalValue + R )) or (sensorValue_S<( nominalValue - R ))) or (((sensorValue_S=null) and (observedThrust=V1)) and (pilotInput => (setThrust=V2))))))) or FTP)), ( not (diff_ref_obs<inactiveThreshold)) )) => (((shaftSpeed>=operatingLowerBound) and (shaftSpeed<=operatingUpperBound)) and (observedThrust=V2)))))",
+            "component": "<b><i>Controller</i></b>"
+        },
+        "_id": "866ef2a0-e827-11ed-b2a6-27a2c48b9e53"
+    },
+    {
+        "reqid": "UC5_R_2_1",
+        "parent_reqid": "UC5_R_2",
+        "project": "Mu-Fret Demo",
+        "rationale": "captures UC5_TC_3 and UC5_TC_4 (mostly)\n\nneed to go over the test cases again because this time the diff should change without pilot input?",
+        "comments": "",
+        "fulltext": "when (diff_ref_obs > activeThreshold) if ((sensorValue_S > nominalValue + R) | (sensorValue_S < nominalValue - R) | (sensorValue_S = null) & (!pilotInput => setThrust = V1)  & (observedThrust = V2)) Controller shall until (diff_ref_obs < inactiveThreshold) satisfy (settlingTime >= 0) & (settlingTime <= settlingTimeMax) & (overshoot >= 0) & (overshoot <= overshootMax) & (steadyStateError >= 0) & (steadyStateError <= steadyStateErrorMax) & (observedThrust = V1)",
+        "semantics": {
+            "type": "nasa",
+            "scope": {
+                "type": "null"
+            },
+            "condition": "regular",
+            "timing": "until",
+            "response": "satisfaction",
+            "variables": [
+                "diff_ref_obs",
+                "activeThreshold",
+                "sensorValue_S",
+                "nominalValue",
+                "R",
+                "null",
+                "pilotInput",
+                "setThrust",
+                "V1",
+                "observedThrust",
+                "V2",
+                "inactiveThreshold",
+                "settlingTime",
+                "settlingTimeMax",
+                "overshoot",
+                "overshootMax",
+                "steadyStateError",
+                "steadyStateErrorMax"
+            ],
+            "qualifier_word": "if",
+            "pre_condition": "(( ( sensorValue_S > nominalValue + R ) | ( sensorValue_S < nominalValue - R ) | ( sensorValue_S = null ) & ( ! pilotInput => setThrust = V1 ) & ( observedThrust = V2 ) ))",
+            "regular_condition": "((( diff_ref_obs > activeThreshold )) & (( ( sensorValue_S > nominalValue + R ) | ( sensorValue_S < nominalValue - R ) | ( sensorValue_S = null ) & ( ! pilotInput => setThrust = V1 ) & ( observedThrust = V2 ) )))",
+            "conditionTextRange": [
+                0,
+                197
+            ],
+            "component_name": "Controller",
+            "componentTextRange": [
+                199,
+                208
+            ],
+            "stop_condition": "(( diff_ref_obs < inactiveThreshold ))",
+            "timingTextRange": [
+                216,
+                255
+            ],
+            "post_condition": "(( settlingTime >= 0 ) & ( settlingTime <= settlingTimeMax ) & ( overshoot >= 0 ) & ( overshoot <= overshootMax ) & ( steadyStateError >= 0 ) & ( steadyStateError <= steadyStateErrorMax ) & ( observedThrust = V1 ))",
+            "responseTextRange": [
+                257,
+                462
+            ],
+            "diagramVariables": "TC = <b><i>((( diff_ref_obs > activeThreshold )) & (( ( sensorValue_S > nominalValue + R ) | ( sensorValue_S < nominalValue - R ) | ( sensorValue_S = null ) & ( ! pilotInput => setThrust = V1 ) & ( observedThrust = V2 ) )))</i></b>, SC = <b><i>(( diff_ref_obs < inactiveThreshold ))</i></b>, Response = <b><i>(( settlingTime >= 0 ) & ( settlingTime <= settlingTimeMax ) & ( overshoot >= 0 ) & ( overshoot <= overshootMax ) & ( steadyStateError >= 0 ) & ( steadyStateError <= steadyStateErrorMax ) & ( observedThrust = V1 ))</i></b>.",
+            "description": "ENFORCED: in the interval defined by the entire execution.\nTRIGGER: first point in the interval if <b><i>((( diff_ref_obs > activeThreshold )) & (( ( sensorValue_S > nominalValue + R ) | ( sensorValue_S < nominalValue - R ) | ( sensorValue_S = null ) & ( ! pilotInput => setThrust = V1 ) & ( observedThrust = V2 ) )))</i></b> is true and any point in the interval where <b><i>((( diff_ref_obs > activeThreshold )) & (( ( sensorValue_S > nominalValue + R ) | ( sensorValue_S < nominalValue - R ) | ( sensorValue_S = null ) & ( ! pilotInput => setThrust = V1 ) & ( observedThrust = V2 ) )))</i></b> becomes true (from false).\nREQUIRES: for every trigger, RES must remain true until (but not necessarily including) the point where the stop condition holds, or to the end of the interval. If the stop condition never occurs, RES must hold until the end of the scope, or forever.  If the stop condition holds at the trigger, the requirement is satisfied.",
+            "diagram": "_media/user-interface/examples/svgDiagrams/null_regular_until_satisfaction.svg",
+            "regular_condition_unexp_pt": "((diff_ref_obs > activeThreshold) & (((sensorValue_S > (nominalValue + R)) | (sensorValue_S < (nominalValue - R))) | (((sensorValue_S = null) & ((! pilotInput) -> (setThrust = V1))) & (observedThrust = V2))))",
+            "regular_condition_unexp_ft": "((diff_ref_obs > activeThreshold) & (((sensorValue_S > (nominalValue + R)) | (sensorValue_S < (nominalValue - R))) | (((sensorValue_S = null) & ((! pilotInput) -> (setThrust = V1))) & (observedThrust = V2))))",
+            "regular_condition_SMV_pt": "((diff_ref_obs > activeThreshold) & (((sensorValue_S > (nominalValue + R)) | (sensorValue_S < (nominalValue - R))) | (((sensorValue_S = null) & ((! pilotInput) -> (setThrust = V1))) & (observedThrust = V2))))",
+            "regular_condition_SMV_ft": "((diff_ref_obs > activeThreshold) & (((sensorValue_S > (nominalValue + R)) | (sensorValue_S < (nominalValue - R))) | (((sensorValue_S = null) & ((! pilotInput) -> (setThrust = V1))) & (observedThrust = V2))))",
+            "regular_condition_coco": "((diff_ref_obs>activeThreshold) and (((sensorValue_S>( nominalValue + R )) or (sensorValue_S<( nominalValue - R ))) or (((sensorValue_S=null) and (( not pilotInput) => (setThrust=V1))) and (observedThrust=V2))))",
+            "post_condition_unexp_pt": "(((((((settlingTime >= 0) & (settlingTime <= settlingTimeMax)) & (overshoot >= 0)) & (overshoot <= overshootMax)) & (steadyStateError >= 0)) & (steadyStateError <= steadyStateErrorMax)) & (observedThrust = V1))",
+            "post_condition_unexp_ft": "(((((((settlingTime >= 0) & (settlingTime <= settlingTimeMax)) & (overshoot >= 0)) & (overshoot <= overshootMax)) & (steadyStateError >= 0)) & (steadyStateError <= steadyStateErrorMax)) & (observedThrust = V1))",
+            "post_condition_SMV_pt": "(((((((settlingTime >= 0) & (settlingTime <= settlingTimeMax)) & (overshoot >= 0)) & (overshoot <= overshootMax)) & (steadyStateError >= 0)) & (steadyStateError <= steadyStateErrorMax)) & (observedThrust = V1))",
+            "post_condition_SMV_ft": "(((((((settlingTime >= 0) & (settlingTime <= settlingTimeMax)) & (overshoot >= 0)) & (overshoot <= overshootMax)) & (steadyStateError >= 0)) & (steadyStateError <= steadyStateErrorMax)) & (observedThrust = V1))",
+            "post_condition_coco": "(((((((settlingTime>=0) and (settlingTime<=settlingTimeMax)) and (overshoot>=0)) and (overshoot<=overshootMax)) and (steadyStateError>=0)) and (steadyStateError<=steadyStateErrorMax)) and (observedThrust=V1))",
+            "stop_condition_unexp_pt": "(diff_ref_obs < inactiveThreshold)",
+            "stop_condition_SMV_pt": "(diff_ref_obs < inactiveThreshold)",
+            "stop_condition_coco": "(diff_ref_obs<inactiveThreshold)",
+            "stop_condition_unexp_ft": "(diff_ref_obs < inactiveThreshold)",
+            "stop_condition_SMV_ft": "(diff_ref_obs < inactiveThreshold)",
+            "ft": "((LAST V (((! <b><i>((diff_ref_obs > activeThreshold) & (((sensorValue_S > (nominalValue + R)) | (sensorValue_S < (nominalValue - R))) | (((sensorValue_S = null) & ((! pilotInput) -> (setThrust = V1))) & (observedThrust = V2))))</i></b>) & ((! LAST) & (X <b><i>((diff_ref_obs > activeThreshold) & (((sensorValue_S > (nominalValue + R)) | (sensorValue_S < (nominalValue - R))) | (((sensorValue_S = null) & ((! pilotInput) -> (setThrust = V1))) & (observedThrust = V2))))</i></b>))) -> (X ((<b><i>(diff_ref_obs < inactiveThreshold)</i></b> V (<b><i>(((((((settlingTime >= 0) & (settlingTime <= settlingTimeMax)) & (overshoot >= 0)) & (overshoot <= overshootMax)) & (steadyStateError >= 0)) & (steadyStateError <= steadyStateErrorMax)) & (observedThrust = V1))</i></b> | <b><i>(diff_ref_obs < inactiveThreshold)</i></b>)) | (LAST V <b><i>(((((((settlingTime >= 0) & (settlingTime <= settlingTimeMax)) & (overshoot >= 0)) & (overshoot <= overshootMax)) & (steadyStateError >= 0)) & (steadyStateError <= steadyStateErrorMax)) & (observedThrust = V1))</i></b>))))) & (<b><i>((diff_ref_obs > activeThreshold) & (((sensorValue_S > (nominalValue + R)) | (sensorValue_S < (nominalValue - R))) | (((sensorValue_S = null) & ((! pilotInput) -> (setThrust = V1))) & (observedThrust = V2))))</i></b> -> ((<b><i>(diff_ref_obs < inactiveThreshold)</i></b> V (<b><i>(((((((settlingTime >= 0) & (settlingTime <= settlingTimeMax)) & (overshoot >= 0)) & (overshoot <= overshootMax)) & (steadyStateError >= 0)) & (steadyStateError <= steadyStateErrorMax)) & (observedThrust = V1))</i></b> | <b><i>(diff_ref_obs < inactiveThreshold)</i></b>)) | (LAST V <b><i>(((((((settlingTime >= 0) & (settlingTime <= settlingTimeMax)) & (overshoot >= 0)) & (overshoot <= overshootMax)) & (steadyStateError >= 0)) & (steadyStateError <= steadyStateErrorMax)) & (observedThrust = V1))</i></b>))))",
+            "pt": "(H ((H (! <b><i>((diff_ref_obs > activeThreshold) & (((sensorValue_S > (nominalValue + R)) | (sensorValue_S < (nominalValue - R))) | (((sensorValue_S = null) & ((! pilotInput) -> (setThrust = V1))) & (observedThrust = V2))))</i></b>)) | (((! <b><i>(diff_ref_obs < inactiveThreshold)</i></b>) S ((! <b><i>(diff_ref_obs < inactiveThreshold)</i></b>) & (<b><i>((diff_ref_obs > activeThreshold) & (((sensorValue_S > (nominalValue + R)) | (sensorValue_S < (nominalValue - R))) | (((sensorValue_S = null) & ((! pilotInput) -> (setThrust = V1))) & (observedThrust = V2))))</i></b> & ((Y (! <b><i>((diff_ref_obs > activeThreshold) & (((sensorValue_S > (nominalValue + R)) | (sensorValue_S < (nominalValue - R))) | (((sensorValue_S = null) & ((! pilotInput) -> (setThrust = V1))) & (observedThrust = V2))))</i></b>)) | FTP)))) -> <b><i>(((((((settlingTime >= 0) & (settlingTime <= settlingTimeMax)) & (overshoot >= 0)) & (overshoot <= overshootMax)) & (steadyStateError >= 0)) & (steadyStateError <= steadyStateErrorMax)) & (observedThrust = V1))</i></b>)))",
+            "ptExpanded": "(H ((H (! ((diff_ref_obs > activeThreshold) & (((sensorValue_S > (nominalValue + R)) | (sensorValue_S < (nominalValue - R))) | (((sensorValue_S = null) & ((! pilotInput) -> (setThrust = V1))) & (observedThrust = V2)))))) | (((! (diff_ref_obs < inactiveThreshold)) S ((! (diff_ref_obs < inactiveThreshold)) & (((diff_ref_obs > activeThreshold) & (((sensorValue_S > (nominalValue + R)) | (sensorValue_S < (nominalValue - R))) | (((sensorValue_S = null) & ((! pilotInput) -> (setThrust = V1))) & (observedThrust = V2)))) & ((Y (! ((diff_ref_obs > activeThreshold) & (((sensorValue_S > (nominalValue + R)) | (sensorValue_S < (nominalValue - R))) | (((sensorValue_S = null) & ((! pilotInput) -> (setThrust = V1))) & (observedThrust = V2)))))) | (! (Y TRUE)))))) -> (((((((settlingTime >= 0) & (settlingTime <= settlingTimeMax)) & (overshoot >= 0)) & (overshoot <= overshootMax)) & (steadyStateError >= 0)) & (steadyStateError <= steadyStateErrorMax)) & (observedThrust = V1)))))",
+            "ftExpanded": "((LAST V (((! ((diff_ref_obs > activeThreshold) & (((sensorValue_S > (nominalValue + R)) | (sensorValue_S < (nominalValue - R))) | (((sensorValue_S = null) & ((! pilotInput) -> (setThrust = V1))) & (observedThrust = V2))))) & ((! LAST) & (X ((diff_ref_obs > activeThreshold) & (((sensorValue_S > (nominalValue + R)) | (sensorValue_S < (nominalValue - R))) | (((sensorValue_S = null) & ((! pilotInput) -> (setThrust = V1))) & (observedThrust = V2))))))) -> (X (((diff_ref_obs < inactiveThreshold) V ((((((((settlingTime >= 0) & (settlingTime <= settlingTimeMax)) & (overshoot >= 0)) & (overshoot <= overshootMax)) & (steadyStateError >= 0)) & (steadyStateError <= steadyStateErrorMax)) & (observedThrust = V1)) | (diff_ref_obs < inactiveThreshold))) | (LAST V (((((((settlingTime >= 0) & (settlingTime <= settlingTimeMax)) & (overshoot >= 0)) & (overshoot <= overshootMax)) & (steadyStateError >= 0)) & (steadyStateError <= steadyStateErrorMax)) & (observedThrust = V1))))))) & (((diff_ref_obs > activeThreshold) & (((sensorValue_S > (nominalValue + R)) | (sensorValue_S < (nominalValue - R))) | (((sensorValue_S = null) & ((! pilotInput) -> (setThrust = V1))) & (observedThrust = V2)))) -> (((diff_ref_obs < inactiveThreshold) V ((((((((settlingTime >= 0) & (settlingTime <= settlingTimeMax)) & (overshoot >= 0)) & (overshoot <= overshootMax)) & (steadyStateError >= 0)) & (steadyStateError <= steadyStateErrorMax)) & (observedThrust = V1)) | (diff_ref_obs < inactiveThreshold))) | (LAST V (((((((settlingTime >= 0) & (settlingTime <= settlingTimeMax)) & (overshoot >= 0)) & (overshoot <= overshootMax)) & (steadyStateError >= 0)) & (steadyStateError <= steadyStateErrorMax)) & (observedThrust = V1))))))",
+            "CoCoSpecCode": "(H((H( not ((diff_ref_obs>activeThreshold) and (((sensorValue_S>( nominalValue + R )) or (sensorValue_S<( nominalValue - R ))) or (((sensorValue_S=null) and (( not pilotInput) => (setThrust=V1))) and (observedThrust=V2)))))) or ((SI( (((diff_ref_obs>activeThreshold) and (((sensorValue_S>( nominalValue + R )) or (sensorValue_S<( nominalValue - R ))) or (((sensorValue_S=null) and (( not pilotInput) => (setThrust=V1))) and (observedThrust=V2)))) and ((YtoPre( not ((diff_ref_obs>activeThreshold) and (((sensorValue_S>( nominalValue + R )) or (sensorValue_S<( nominalValue - R ))) or (((sensorValue_S=null) and (( not pilotInput) => (setThrust=V1))) and (observedThrust=V2)))))) or FTP)), ( not (diff_ref_obs<inactiveThreshold)) )) => (((((((settlingTime>=0) and (settlingTime<=settlingTimeMax)) and (overshoot>=0)) and (overshoot<=overshootMax)) and (steadyStateError>=0)) and (steadyStateError<=steadyStateErrorMax)) and (observedThrust=V1)))))",
+            "component": "<b><i>Controller</i></b>"
+        },
+        "_id": "866f8ee0-e827-11ed-b2a6-27a2c48b9e53"
+    },
+    {
+        "reqid": "UC5_R_1",
+        "parent_reqid": "",
+        "project": "Mu-Fret Demo",
+        "rationale": "Under sensor faults, while tracking pilot commands, control objectives shall be satisfied (inactiveThreshold.g. settling time, overshoot, and steady state error will be within predefined, acceptable limits. \n\nThere isn't anything else - not interested in rising time at the moment. \n\nTracking pilot commands: there is a change and might take a few seconds to complete (Settlingtime). \n\nif ((sensorfaults) & (trackingPilotCommands)) Controller shall within settlingTime ticks satisfy  (controlObjectives) - needs a numerical value.\n\nalways (new r0 -> in the future within d (new r0 releases |r0-y0| <=inactiveThreshold))\n\n|r0-y0| = diff. This is difference of reference and controller output\n\nsettling time should be x seconds: if diff >activeThreshold then within x seconds diff <inactiveThreshold (x=10 for example)",
+        "fulltext": "if ((sensorfaults) & (trackingPilotCommands)) Controller shall satisfy (controlObjectives) ",
+        "semantics": {
+            "type": "nasa",
+            "scope": {
+                "type": "null"
+            },
+            "condition": "regular",
+            "timing": "null",
+            "response": "satisfaction",
+            "variables": [
+                "sensorfaults",
+                "trackingPilotCommands",
+                "controlObjectives"
+            ],
+            "qualifier_word": "if",
+            "pre_condition": "(( ( sensorfaults ) & ( trackingPilotCommands ) ))",
+            "regular_condition": "(( ( sensorfaults ) & ( trackingPilotCommands ) ))",
+            "conditionTextRange": [
+                0,
+                44
+            ],
+            "component_name": "Controller",
+            "componentTextRange": [
+                46,
+                55
+            ],
+            "post_condition": "(( controlObjectives ))",
+            "responseTextRange": [
+                63,
+                89
+            ],
+            "diagramVariables": "TC = <b><i>(( ( sensorfaults ) & ( trackingPilotCommands ) ))</i></b>, Response = <b><i>(( controlObjectives ))</i></b>.",
+            "description": "ENFORCED: in the interval defined by the entire execution.\nTRIGGER: first point in the interval if <b><i>(( ( sensorfaults ) & ( trackingPilotCommands ) ))</i></b> is true and any point in the interval where <b><i>(( ( sensorfaults ) & ( trackingPilotCommands ) ))</i></b> becomes true (from false).\nREQUIRES: for every trigger, RES must hold at some time point between (and including) the trigger and the end of the interval.",
+            "diagram": "_media/user-interface/examples/svgDiagrams/null_regular_null_satisfaction.svg",
+            "regular_condition_unexp_pt": "(sensorfaults & trackingPilotCommands)",
+            "regular_condition_unexp_ft": "(sensorfaults & trackingPilotCommands)",
+            "regular_condition_SMV_pt": "(sensorfaults & trackingPilotCommands)",
+            "regular_condition_SMV_ft": "(sensorfaults & trackingPilotCommands)",
+            "regular_condition_coco": "(sensorfaults and trackingPilotCommands)",
+            "post_condition_unexp_pt": "controlObjectives",
+            "post_condition_unexp_ft": "controlObjectives",
+            "post_condition_SMV_pt": "controlObjectives",
+            "post_condition_SMV_ft": "controlObjectives",
+            "post_condition_coco": "controlObjectives",
+            "ft": "((LAST V (((! <b><i>(sensorfaults & trackingPilotCommands)</i></b>) & ((! LAST) & (X <b><i>(sensorfaults & trackingPilotCommands)</i></b>))) -> (X ((! LAST) U <b><i>controlObjectives</i></b>)))) & (<b><i>(sensorfaults & trackingPilotCommands)</i></b> -> ((! LAST) U <b><i>controlObjectives</i></b>)))",
+            "pt": "((H (! <b><i>(sensorfaults & trackingPilotCommands)</i></b>)) | (! ((! <b><i>controlObjectives</i></b>) S ((! <b><i>controlObjectives</i></b>) & (<b><i>(sensorfaults & trackingPilotCommands)</i></b> & ((Y (! <b><i>(sensorfaults & trackingPilotCommands)</i></b>)) | FTP))))))",
+            "ptExpanded": "((H (! (sensorfaults & trackingPilotCommands))) | (! ((! controlObjectives) S ((! controlObjectives) & ((sensorfaults & trackingPilotCommands) & ((Y (! (sensorfaults & trackingPilotCommands))) | (! (Y TRUE))))))))",
+            "ftExpanded": "((LAST V (((! (sensorfaults & trackingPilotCommands)) & ((! LAST) & (X (sensorfaults & trackingPilotCommands)))) -> (X ((! LAST) U controlObjectives)))) & ((sensorfaults & trackingPilotCommands) -> ((! LAST) U controlObjectives)))",
+            "CoCoSpecCode": "((H( not (sensorfaults and trackingPilotCommands))) or ( not (SI( ((sensorfaults and trackingPilotCommands) and ((YtoPre( not (sensorfaults and trackingPilotCommands))) or FTP)), ( not controlObjectives) ))))",
+            "component": "<b><i>Controller</i></b>"
+        },
+        "_id": "866fdd00-e827-11ed-b2a6-27a2c48b9e53"
+    },
+    {
+        "reqid": "UC5_R_2",
+        "parent_reqid": "",
+        "project": "Mu-Fret Demo",
+        "rationale": "Under sensor faults, during regulation of nominal system operation (no change in pilot input), control objectives shall be satisfied (inactiveThreshold.g. settling time, overshoot, and steady state error will be within predefined, acceptable limits) ",
+        "fulltext": "if (sensorfaults) & (!trackingPilotCommands) Controller shall satisfy (controlObjectives)",
+        "semantics": {
+            "type": "nasa",
+            "scope": {
+                "type": "null"
+            },
+            "condition": "regular",
+            "timing": "null",
+            "response": "satisfaction",
+            "variables": [
+                "sensorfaults",
+                "trackingPilotCommands",
+                "controlObjectives"
+            ],
+            "qualifier_word": "if",
+            "pre_condition": "(( sensorfaults ) & ( ! trackingPilotCommands ))",
+            "regular_condition": "(( sensorfaults ) & ( ! trackingPilotCommands ))",
+            "conditionTextRange": [
+                0,
+                43
+            ],
+            "component_name": "Controller",
+            "componentTextRange": [
+                45,
+                54
+            ],
+            "post_condition": "(( controlObjectives ))",
+            "responseTextRange": [
+                62,
+                88
+            ],
+            "diagramVariables": "TC = <b><i>(( sensorfaults ) & ( ! trackingPilotCommands ))</i></b>, Response = <b><i>(( controlObjectives ))</i></b>.",
+            "description": "ENFORCED: in the interval defined by the entire execution.\nTRIGGER: first point in the interval if <b><i>(( sensorfaults ) & ( ! trackingPilotCommands ))</i></b> is true and any point in the interval where <b><i>(( sensorfaults ) & ( ! trackingPilotCommands ))</i></b> becomes true (from false).\nREQUIRES: for every trigger, RES must hold at some time point between (and including) the trigger and the end of the interval.",
+            "diagram": "_media/user-interface/examples/svgDiagrams/null_regular_null_satisfaction.svg",
+            "regular_condition_unexp_pt": "(sensorfaults & (! trackingPilotCommands))",
+            "regular_condition_unexp_ft": "(sensorfaults & (! trackingPilotCommands))",
+            "regular_condition_SMV_pt": "(sensorfaults & (! trackingPilotCommands))",
+            "regular_condition_SMV_ft": "(sensorfaults & (! trackingPilotCommands))",
+            "regular_condition_coco": "(sensorfaults and ( not trackingPilotCommands))",
+            "post_condition_unexp_pt": "controlObjectives",
+            "post_condition_unexp_ft": "controlObjectives",
+            "post_condition_SMV_pt": "controlObjectives",
+            "post_condition_SMV_ft": "controlObjectives",
+            "post_condition_coco": "controlObjectives",
+            "ft": "((LAST V (((! <b><i>(sensorfaults & (! trackingPilotCommands))</i></b>) & ((! LAST) & (X <b><i>(sensorfaults & (! trackingPilotCommands))</i></b>))) -> (X ((! LAST) U <b><i>controlObjectives</i></b>)))) & (<b><i>(sensorfaults & (! trackingPilotCommands))</i></b> -> ((! LAST) U <b><i>controlObjectives</i></b>)))",
+            "pt": "((H (! <b><i>(sensorfaults & (! trackingPilotCommands))</i></b>)) | (! ((! <b><i>controlObjectives</i></b>) S ((! <b><i>controlObjectives</i></b>) & (<b><i>(sensorfaults & (! trackingPilotCommands))</i></b> & ((Y (! <b><i>(sensorfaults & (! trackingPilotCommands))</i></b>)) | FTP))))))",
+            "ptExpanded": "((H (! (sensorfaults & (! trackingPilotCommands)))) | (! ((! controlObjectives) S ((! controlObjectives) & ((sensorfaults & (! trackingPilotCommands)) & ((Y (! (sensorfaults & (! trackingPilotCommands)))) | (! (Y TRUE))))))))",
+            "ftExpanded": "((LAST V (((! (sensorfaults & (! trackingPilotCommands))) & ((! LAST) & (X (sensorfaults & (! trackingPilotCommands))))) -> (X ((! LAST) U controlObjectives)))) & ((sensorfaults & (! trackingPilotCommands)) -> ((! LAST) U controlObjectives)))",
+            "CoCoSpecCode": "((H( not (sensorfaults and ( not trackingPilotCommands)))) or ( not (SI( ((sensorfaults and ( not trackingPilotCommands)) and ((YtoPre( not (sensorfaults and ( not trackingPilotCommands)))) or FTP)), ( not controlObjectives) ))))",
+            "component": "<b><i>Controller</i></b>"
+        },
+        "_id": "86702b20-e827-11ed-b2a6-27a2c48b9e53"
+    },
+    {
+        "reqid": "UC5_R_3",
+        "parent_reqid": "",
+        "project": "Mu-Fret Demo",
+        "rationale": "Under sensor faults, while tracking pilot commands, operating limit objectives shall be satisfied (inactiveThreshold.g. respecting upper limit in shaft speed). Could add other child requirements -> there is more than one shaft. Also temperature limits but not sure yet - not currently in the model.",
+        "fulltext": "if (sensorfaults) & (trackingPilotCommands) Controller shall satisfy (operatingLimitObjectives)",
+        "semantics": {
+            "type": "nasa",
+            "scope": {
+                "type": "null"
+            },
+            "condition": "regular",
+            "timing": "null",
+            "response": "satisfaction",
+            "variables": [
+                "sensorfaults",
+                "trackingPilotCommands",
+                "operatingLimitObjectives"
+            ],
+            "qualifier_word": "if",
+            "pre_condition": "(( sensorfaults ) & ( trackingPilotCommands ))",
+            "regular_condition": "(( sensorfaults ) & ( trackingPilotCommands ))",
+            "conditionTextRange": [
+                0,
+                42
+            ],
+            "component_name": "Controller",
+            "componentTextRange": [
+                44,
+                53
+            ],
+            "post_condition": "(( operatingLimitObjectives ))",
+            "responseTextRange": [
+                61,
+                94
+            ],
+            "diagramVariables": "TC = <b><i>(( sensorfaults ) & ( trackingPilotCommands ))</i></b>, Response = <b><i>(( operatingLimitObjectives ))</i></b>.",
+            "description": "ENFORCED: in the interval defined by the entire execution.\nTRIGGER: first point in the interval if <b><i>(( sensorfaults ) & ( trackingPilotCommands ))</i></b> is true and any point in the interval where <b><i>(( sensorfaults ) & ( trackingPilotCommands ))</i></b> becomes true (from false).\nREQUIRES: for every trigger, RES must hold at some time point between (and including) the trigger and the end of the interval.",
+            "diagram": "_media/user-interface/examples/svgDiagrams/null_regular_null_satisfaction.svg",
+            "regular_condition_unexp_pt": "(sensorfaults & trackingPilotCommands)",
+            "regular_condition_unexp_ft": "(sensorfaults & trackingPilotCommands)",
+            "regular_condition_SMV_pt": "(sensorfaults & trackingPilotCommands)",
+            "regular_condition_SMV_ft": "(sensorfaults & trackingPilotCommands)",
+            "regular_condition_coco": "(sensorfaults and trackingPilotCommands)",
+            "post_condition_unexp_pt": "operatingLimitObjectives",
+            "post_condition_unexp_ft": "operatingLimitObjectives",
+            "post_condition_SMV_pt": "operatingLimitObjectives",
+            "post_condition_SMV_ft": "operatingLimitObjectives",
+            "post_condition_coco": "operatingLimitObjectives",
+            "ft": "((LAST V (((! <b><i>(sensorfaults & trackingPilotCommands)</i></b>) & ((! LAST) & (X <b><i>(sensorfaults & trackingPilotCommands)</i></b>))) -> (X ((! LAST) U <b><i>operatingLimitObjectives</i></b>)))) & (<b><i>(sensorfaults & trackingPilotCommands)</i></b> -> ((! LAST) U <b><i>operatingLimitObjectives</i></b>)))",
+            "pt": "((H (! <b><i>(sensorfaults & trackingPilotCommands)</i></b>)) | (! ((! <b><i>operatingLimitObjectives</i></b>) S ((! <b><i>operatingLimitObjectives</i></b>) & (<b><i>(sensorfaults & trackingPilotCommands)</i></b> & ((Y (! <b><i>(sensorfaults & trackingPilotCommands)</i></b>)) | FTP))))))",
+            "ptExpanded": "((H (! (sensorfaults & trackingPilotCommands))) | (! ((! operatingLimitObjectives) S ((! operatingLimitObjectives) & ((sensorfaults & trackingPilotCommands) & ((Y (! (sensorfaults & trackingPilotCommands))) | (! (Y TRUE))))))))",
+            "ftExpanded": "((LAST V (((! (sensorfaults & trackingPilotCommands)) & ((! LAST) & (X (sensorfaults & trackingPilotCommands)))) -> (X ((! LAST) U operatingLimitObjectives)))) & ((sensorfaults & trackingPilotCommands) -> ((! LAST) U operatingLimitObjectives)))",
+            "CoCoSpecCode": "((H( not (sensorfaults and trackingPilotCommands))) or ( not (SI( ((sensorfaults and trackingPilotCommands) and ((YtoPre( not (sensorfaults and trackingPilotCommands))) or FTP)), ( not operatingLimitObjectives) ))))",
+            "component": "<b><i>Controller</i></b>"
+        },
+        "_id": "8670a050-e827-11ed-b2a6-27a2c48b9e53"
+    },
+    {
+        "reqid": "UC5_R_1_1",
+        "parent_reqid": "UC5_R_1",
+        "project": "Mu-Fret Demo",
+        "rationale": "Under sensor faults, while tracking pilot commands, control objectives shall be satisfied (inactiveThreshold.g. settling time, overshoot, and steady state error will be within predefined, acceptable limits)\n\nFrom Test Cases UC5_TC_1 and UC5_TC_2:\n sensor S value deviates at most +/- R % from nominal value \n sensor S value is not available\n\nR1: when (diff > activeThreshold) if ((sensorfaults) & (trackingPilotCommands)) Controller shall until (diff < inactiveThreshold) satisfy (controlObjectives)\n\nMinimum settlingTime is 0.\n\nNo fixed value for R but 10% is a safe estimate.\n\nThere are 4 sensors\n\nthe '0' in r0 is the time stamp -> changed to r(i) and y(i) to apply to all i",
+        "comments": "settling time",
+        "fulltext": "when (diff_ref_obs > activeThreshold) if ((sensorValue_S > nominalValue + R) | (sensorValue_S < nominalValue - R) | (sensorValue_S = null) & (pilotInput => setThrust = V2)  & (observedThrust = V1) )  Controller shall until (diff_ref_obs < inactiveThreshold) satisfy (settlingTime >= 0) & (settlingTime <= settlingTimeMax) & (overshoot >= 0) & (overshoot <= overshootMax) & (steadyStateError >= 0) & (steadyStateError <= steadyStateErrorMax) & (observedThrust = V2)",
+        "semantics": {
+            "type": "nasa",
+            "scope": {
+                "type": "null"
+            },
+            "condition": "regular",
+            "timing": "until",
+            "response": "satisfaction",
+            "variables": [
+                "diff_ref_obs",
+                "activeThreshold",
+                "sensorValue_S",
+                "nominalValue",
+                "R",
+                "null",
+                "pilotInput",
+                "setThrust",
+                "V2",
+                "observedThrust",
+                "V1",
+                "inactiveThreshold",
+                "settlingTime",
+                "settlingTimeMax",
+                "overshoot",
+                "overshootMax",
+                "steadyStateError",
+                "steadyStateErrorMax"
+            ],
+            "qualifier_word": "if",
+            "pre_condition": "(( ( sensorValue_S > nominalValue + R ) | ( sensorValue_S < nominalValue - R ) | ( sensorValue_S = null ) & ( pilotInput => setThrust = V2 ) & ( observedThrust = V1 ) ))",
+            "regular_condition": "((( diff_ref_obs > activeThreshold )) & (( ( sensorValue_S > nominalValue + R ) | ( sensorValue_S < nominalValue - R ) | ( sensorValue_S = null ) & ( pilotInput => setThrust = V2 ) & ( observedThrust = V1 ) )))",
+            "conditionTextRange": [
+                0,
+                197
+            ],
+            "component_name": "Controller",
+            "componentTextRange": [
+                200,
+                209
+            ],
+            "stop_condition": "(( diff_ref_obs < inactiveThreshold ))",
+            "timingTextRange": [
+                217,
+                256
+            ],
+            "post_condition": "(( settlingTime >= 0 ) & ( settlingTime <= settlingTimeMax ) & ( overshoot >= 0 ) & ( overshoot <= overshootMax ) & ( steadyStateError >= 0 ) & ( steadyStateError <= steadyStateErrorMax ) & ( observedThrust = V2 ))",
+            "responseTextRange": [
+                258,
+                463
+            ],
+            "diagramVariables": "TC = <b><i>((( diff_ref_obs > activeThreshold )) & (( ( sensorValue_S > nominalValue + R ) | ( sensorValue_S < nominalValue - R ) | ( sensorValue_S = null ) & ( pilotInput => setThrust = V2 ) & ( observedThrust = V1 ) )))</i></b>, SC = <b><i>(( diff_ref_obs < inactiveThreshold ))</i></b>, Response = <b><i>(( settlingTime >= 0 ) & ( settlingTime <= settlingTimeMax ) & ( overshoot >= 0 ) & ( overshoot <= overshootMax ) & ( steadyStateError >= 0 ) & ( steadyStateError <= steadyStateErrorMax ) & ( observedThrust = V2 ))</i></b>.",
+            "description": "ENFORCED: in the interval defined by the entire execution.\nTRIGGER: first point in the interval if <b><i>((( diff_ref_obs > activeThreshold )) & (( ( sensorValue_S > nominalValue + R ) | ( sensorValue_S < nominalValue - R ) | ( sensorValue_S = null ) & ( pilotInput => setThrust = V2 ) & ( observedThrust = V1 ) )))</i></b> is true and any point in the interval where <b><i>((( diff_ref_obs > activeThreshold )) & (( ( sensorValue_S > nominalValue + R ) | ( sensorValue_S < nominalValue - R ) | ( sensorValue_S = null ) & ( pilotInput => setThrust = V2 ) & ( observedThrust = V1 ) )))</i></b> becomes true (from false).\nREQUIRES: for every trigger, RES must remain true until (but not necessarily including) the point where the stop condition holds, or to the end of the interval. If the stop condition never occurs, RES must hold until the end of the scope, or forever.  If the stop condition holds at the trigger, the requirement is satisfied.",
+            "diagram": "_media/user-interface/examples/svgDiagrams/null_regular_until_satisfaction.svg",
+            "regular_condition_unexp_pt": "((diff_ref_obs > activeThreshold) & (((sensorValue_S > (nominalValue + R)) | (sensorValue_S < (nominalValue - R))) | (((sensorValue_S = null) & (pilotInput -> (setThrust = V2))) & (observedThrust = V1))))",
+            "regular_condition_unexp_ft": "((diff_ref_obs > activeThreshold) & (((sensorValue_S > (nominalValue + R)) | (sensorValue_S < (nominalValue - R))) | (((sensorValue_S = null) & (pilotInput -> (setThrust = V2))) & (observedThrust = V1))))",
+            "regular_condition_SMV_pt": "((diff_ref_obs > activeThreshold) & (((sensorValue_S > (nominalValue + R)) | (sensorValue_S < (nominalValue - R))) | (((sensorValue_S = null) & (pilotInput -> (setThrust = V2))) & (observedThrust = V1))))",
+            "regular_condition_SMV_ft": "((diff_ref_obs > activeThreshold) & (((sensorValue_S > (nominalValue + R)) | (sensorValue_S < (nominalValue - R))) | (((sensorValue_S = null) & (pilotInput -> (setThrust = V2))) & (observedThrust = V1))))",
+            "regular_condition_coco": "((diff_ref_obs>activeThreshold) and (((sensorValue_S>( nominalValue + R )) or (sensorValue_S<( nominalValue - R ))) or (((sensorValue_S=null) and (pilotInput => (setThrust=V2))) and (observedThrust=V1))))",
+            "post_condition_unexp_pt": "(((((((settlingTime >= 0) & (settlingTime <= settlingTimeMax)) & (overshoot >= 0)) & (overshoot <= overshootMax)) & (steadyStateError >= 0)) & (steadyStateError <= steadyStateErrorMax)) & (observedThrust = V2))",
+            "post_condition_unexp_ft": "(((((((settlingTime >= 0) & (settlingTime <= settlingTimeMax)) & (overshoot >= 0)) & (overshoot <= overshootMax)) & (steadyStateError >= 0)) & (steadyStateError <= steadyStateErrorMax)) & (observedThrust = V2))",
+            "post_condition_SMV_pt": "(((((((settlingTime >= 0) & (settlingTime <= settlingTimeMax)) & (overshoot >= 0)) & (overshoot <= overshootMax)) & (steadyStateError >= 0)) & (steadyStateError <= steadyStateErrorMax)) & (observedThrust = V2))",
+            "post_condition_SMV_ft": "(((((((settlingTime >= 0) & (settlingTime <= settlingTimeMax)) & (overshoot >= 0)) & (overshoot <= overshootMax)) & (steadyStateError >= 0)) & (steadyStateError <= steadyStateErrorMax)) & (observedThrust = V2))",
+            "post_condition_coco": "(((((((settlingTime>=0) and (settlingTime<=settlingTimeMax)) and (overshoot>=0)) and (overshoot<=overshootMax)) and (steadyStateError>=0)) and (steadyStateError<=steadyStateErrorMax)) and (observedThrust=V2))",
+            "stop_condition_unexp_pt": "(diff_ref_obs < inactiveThreshold)",
+            "stop_condition_SMV_pt": "(diff_ref_obs < inactiveThreshold)",
+            "stop_condition_coco": "(diff_ref_obs<inactiveThreshold)",
+            "stop_condition_unexp_ft": "(diff_ref_obs < inactiveThreshold)",
+            "stop_condition_SMV_ft": "(diff_ref_obs < inactiveThreshold)",
+            "ft": "((LAST V (((! <b><i>((diff_ref_obs > activeThreshold) & (((sensorValue_S > (nominalValue + R)) | (sensorValue_S < (nominalValue - R))) | (((sensorValue_S = null) & (pilotInput -> (setThrust = V2))) & (observedThrust = V1))))</i></b>) & ((! LAST) & (X <b><i>((diff_ref_obs > activeThreshold) & (((sensorValue_S > (nominalValue + R)) | (sensorValue_S < (nominalValue - R))) | (((sensorValue_S = null) & (pilotInput -> (setThrust = V2))) & (observedThrust = V1))))</i></b>))) -> (X ((<b><i>(diff_ref_obs < inactiveThreshold)</i></b> V (<b><i>(((((((settlingTime >= 0) & (settlingTime <= settlingTimeMax)) & (overshoot >= 0)) & (overshoot <= overshootMax)) & (steadyStateError >= 0)) & (steadyStateError <= steadyStateErrorMax)) & (observedThrust = V2))</i></b> | <b><i>(diff_ref_obs < inactiveThreshold)</i></b>)) | (LAST V <b><i>(((((((settlingTime >= 0) & (settlingTime <= settlingTimeMax)) & (overshoot >= 0)) & (overshoot <= overshootMax)) & (steadyStateError >= 0)) & (steadyStateError <= steadyStateErrorMax)) & (observedThrust = V2))</i></b>))))) & (<b><i>((diff_ref_obs > activeThreshold) & (((sensorValue_S > (nominalValue + R)) | (sensorValue_S < (nominalValue - R))) | (((sensorValue_S = null) & (pilotInput -> (setThrust = V2))) & (observedThrust = V1))))</i></b> -> ((<b><i>(diff_ref_obs < inactiveThreshold)</i></b> V (<b><i>(((((((settlingTime >= 0) & (settlingTime <= settlingTimeMax)) & (overshoot >= 0)) & (overshoot <= overshootMax)) & (steadyStateError >= 0)) & (steadyStateError <= steadyStateErrorMax)) & (observedThrust = V2))</i></b> | <b><i>(diff_ref_obs < inactiveThreshold)</i></b>)) | (LAST V <b><i>(((((((settlingTime >= 0) & (settlingTime <= settlingTimeMax)) & (overshoot >= 0)) & (overshoot <= overshootMax)) & (steadyStateError >= 0)) & (steadyStateError <= steadyStateErrorMax)) & (observedThrust = V2))</i></b>))))",
+            "pt": "(H ((H (! <b><i>((diff_ref_obs > activeThreshold) & (((sensorValue_S > (nominalValue + R)) | (sensorValue_S < (nominalValue - R))) | (((sensorValue_S = null) & (pilotInput -> (setThrust = V2))) & (observedThrust = V1))))</i></b>)) | (((! <b><i>(diff_ref_obs < inactiveThreshold)</i></b>) S ((! <b><i>(diff_ref_obs < inactiveThreshold)</i></b>) & (<b><i>((diff_ref_obs > activeThreshold) & (((sensorValue_S > (nominalValue + R)) | (sensorValue_S < (nominalValue - R))) | (((sensorValue_S = null) & (pilotInput -> (setThrust = V2))) & (observedThrust = V1))))</i></b> & ((Y (! <b><i>((diff_ref_obs > activeThreshold) & (((sensorValue_S > (nominalValue + R)) | (sensorValue_S < (nominalValue - R))) | (((sensorValue_S = null) & (pilotInput -> (setThrust = V2))) & (observedThrust = V1))))</i></b>)) | FTP)))) -> <b><i>(((((((settlingTime >= 0) & (settlingTime <= settlingTimeMax)) & (overshoot >= 0)) & (overshoot <= overshootMax)) & (steadyStateError >= 0)) & (steadyStateError <= steadyStateErrorMax)) & (observedThrust = V2))</i></b>)))",
+            "ptExpanded": "(H ((H (! ((diff_ref_obs > activeThreshold) & (((sensorValue_S > (nominalValue + R)) | (sensorValue_S < (nominalValue - R))) | (((sensorValue_S = null) & (pilotInput -> (setThrust = V2))) & (observedThrust = V1)))))) | (((! (diff_ref_obs < inactiveThreshold)) S ((! (diff_ref_obs < inactiveThreshold)) & (((diff_ref_obs > activeThreshold) & (((sensorValue_S > (nominalValue + R)) | (sensorValue_S < (nominalValue - R))) | (((sensorValue_S = null) & (pilotInput -> (setThrust = V2))) & (observedThrust = V1)))) & ((Y (! ((diff_ref_obs > activeThreshold) & (((sensorValue_S > (nominalValue + R)) | (sensorValue_S < (nominalValue - R))) | (((sensorValue_S = null) & (pilotInput -> (setThrust = V2))) & (observedThrust = V1)))))) | (! (Y TRUE)))))) -> (((((((settlingTime >= 0) & (settlingTime <= settlingTimeMax)) & (overshoot >= 0)) & (overshoot <= overshootMax)) & (steadyStateError >= 0)) & (steadyStateError <= steadyStateErrorMax)) & (observedThrust = V2)))))",
+            "ftExpanded": "((LAST V (((! ((diff_ref_obs > activeThreshold) & (((sensorValue_S > (nominalValue + R)) | (sensorValue_S < (nominalValue - R))) | (((sensorValue_S = null) & (pilotInput -> (setThrust = V2))) & (observedThrust = V1))))) & ((! LAST) & (X ((diff_ref_obs > activeThreshold) & (((sensorValue_S > (nominalValue + R)) | (sensorValue_S < (nominalValue - R))) | (((sensorValue_S = null) & (pilotInput -> (setThrust = V2))) & (observedThrust = V1))))))) -> (X (((diff_ref_obs < inactiveThreshold) V ((((((((settlingTime >= 0) & (settlingTime <= settlingTimeMax)) & (overshoot >= 0)) & (overshoot <= overshootMax)) & (steadyStateError >= 0)) & (steadyStateError <= steadyStateErrorMax)) & (observedThrust = V2)) | (diff_ref_obs < inactiveThreshold))) | (LAST V (((((((settlingTime >= 0) & (settlingTime <= settlingTimeMax)) & (overshoot >= 0)) & (overshoot <= overshootMax)) & (steadyStateError >= 0)) & (steadyStateError <= steadyStateErrorMax)) & (observedThrust = V2))))))) & (((diff_ref_obs > activeThreshold) & (((sensorValue_S > (nominalValue + R)) | (sensorValue_S < (nominalValue - R))) | (((sensorValue_S = null) & (pilotInput -> (setThrust = V2))) & (observedThrust = V1)))) -> (((diff_ref_obs < inactiveThreshold) V ((((((((settlingTime >= 0) & (settlingTime <= settlingTimeMax)) & (overshoot >= 0)) & (overshoot <= overshootMax)) & (steadyStateError >= 0)) & (steadyStateError <= steadyStateErrorMax)) & (observedThrust = V2)) | (diff_ref_obs < inactiveThreshold))) | (LAST V (((((((settlingTime >= 0) & (settlingTime <= settlingTimeMax)) & (overshoot >= 0)) & (overshoot <= overshootMax)) & (steadyStateError >= 0)) & (steadyStateError <= steadyStateErrorMax)) & (observedThrust = V2))))))",
+            "CoCoSpecCode": "(H((H( not ((diff_ref_obs>activeThreshold) and (((sensorValue_S>( nominalValue + R )) or (sensorValue_S<( nominalValue - R ))) or (((sensorValue_S=null) and (pilotInput => (setThrust=V2))) and (observedThrust=V1)))))) or ((SI( (((diff_ref_obs>activeThreshold) and (((sensorValue_S>( nominalValue + R )) or (sensorValue_S<( nominalValue - R ))) or (((sensorValue_S=null) and (pilotInput => (setThrust=V2))) and (observedThrust=V1)))) and ((YtoPre( not ((diff_ref_obs>activeThreshold) and (((sensorValue_S>( nominalValue + R )) or (sensorValue_S<( nominalValue - R ))) or (((sensorValue_S=null) and (pilotInput => (setThrust=V2))) and (observedThrust=V1)))))) or FTP)), ( not (diff_ref_obs<inactiveThreshold)) )) => (((((((settlingTime>=0) and (settlingTime<=settlingTimeMax)) and (overshoot>=0)) and (overshoot<=overshootMax)) and (steadyStateError>=0)) and (steadyStateError<=steadyStateErrorMax)) and (observedThrust=V2)))))",
+            "component": "<b><i>Controller</i></b>"
+        },
+        "_id": "86713c90-e827-11ed-b2a6-27a2c48b9e53"
+    }
+]
