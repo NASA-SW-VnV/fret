@@ -33,13 +33,10 @@
 // @flow
 import React, { Component } from 'react';
 import { Provider } from 'react-redux';
-import { ConnectedRouter } from 'connected-react-router';
 import Routes from '../routes';
-//import { Route, Switch } from 'react-router'
 
 type Props = {
   store: {},
-  history: {}
 };
 
 export default class Root extends Component<Props> {
@@ -49,9 +46,7 @@ export default class Root extends Component<Props> {
     console.log('this.props.history', this.props.history)
     return (
       <Provider store={this.props.store}>
-        <ConnectedRouter history={this.props.history}>
           <Routes />
-        </ConnectedRouter>
       </Provider>
     );
   }

@@ -918,20 +918,22 @@ export default class FretModel {
         ],
         properties: ['openFile']});
       if (filepaths && filepaths.length > 0) {
-            fs.readFile(filepaths[0], 'utf8',
-                  function (err,buffer) {
-                    if (err) throw err;
-                    let content = utilities.replaceStrings([['\\"id\\"','\"_id\"']], buffer);
-                    let data = JSON.parse(content);
-                    data.forEach((d) => {
-                      d._id = uuidv1();
-                      d.project = selectedProject;
-                      d.fretComponent = selectedComponent;
-                      d.modeldoc = true;
-                    })
-                    return modelDB.bulkDocs(data).catch((err) => {console.log('error', err);});
-                  });
+        try {
+          const buffer = await fs.promises.readFile(filepaths[0], 'utf8')
+          const content = utilities.replaceStrings([['\\"id\\"', '\"_id\"']], buffer);
+          let data = JSON.parse(content);
+          data.forEach((d) => {
+            d._id = uuidv1();
+            d.project = selectedProject;
+            d.fretComponent = selectedComponent;
+            d.modeldoc = true;
+          })
+          await modelDB.bulkDocs(data);
+        } catch (err) {
+          throw err;
+        }
       }
+      await this.synchAnalysesAndVariablesWithDB()
 
       var states = {
         // * analysis
