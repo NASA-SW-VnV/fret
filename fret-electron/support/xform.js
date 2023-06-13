@@ -654,7 +654,10 @@ let negNormalizationRules = [
   ['!(__p S __q)', trueFn, '!__p T !__q'],
   ['!(__p T __q)', trueFn, '!__p S !__q'],
   ['! H __p', trueFn, 'O ! __p'],
-  ['! O __p', trueFn, 'H ! __p']
+  ['! O __p', trueFn, 'H ! __p'],
+
+  //MTL
+
   ]
 
 let negNormalizationRulesParsed = negNormalizationRules.map(parseit)
@@ -748,7 +751,48 @@ let flipRules = [
     '(O __phi_a) & H (__phi_a => flip(__a, __phi_a))'],
   ['flip(__a, H __phi_a)',
     (sbst) => (occursIn(sbst['__a'], sbst['__phi_a'])),
-    '(H __phi_a) & O flip(__a, __phi_a)']
+    '(H __phi_a) & O flip(__a, __phi_a)'],
+
+  //MTL
+  ['flip(__a, __phi_a U[__l,__u] __phi_prime)',
+    (sbst) => (occursIn(sbst['__a'], sbst['__phi_a'])),
+    '(__phi_a U[__l,__u] __phi_prime) & (!__phi_prime U[__l,__u] (flip(__a,__phi_a) & !__phi_prime))'],
+
+  ['flip(__a, __phi_prime U[__l,__u] __phi_a)',
+    (sbst) => (occursIn(sbst['__a'], sbst['__phi_a'])),
+    '(__phi_prime U[__l,__u] __phi_a) & (!__phi_prime V[__l,__u] (__phi_a => flip(__a, __phi_a)))'],
+
+  ['flip(__a, __phi_a V[__l,__u] __phi_prime)',
+    (sbst) => (occursIn(sbst['__a'], sbst['__phi_a'])),
+    '(__phi_a V[__l,__u] __phi_prime) & ((__phi_a => flip(__a, __phi_a)) U[__l,__u] !__phi_prime)'],
+
+  ['flip(__a, __phi_prime V[__l,__u] __phi_a)',
+    (sbst) => (occursIn(sbst['__a'], sbst['__phi_a'])),
+    '(__phi_prime V[__l,__u] __phi_a) & (!__phi_prime U[__l,__u] flip(__a, __phi_a))'],
+  ['flip(__a, F[__l,__u] __phi_a)',
+   (sbst) => (occursIn(sbst['__a'],sbst['__phi_a'])),
+   '(F[__l,__u] __phi_a) & G[__l,__u](__phi_a => flip(__a,__phi_a))'],
+
+  ['flip(__a, G[__l,__u] __phi_a)',
+   (sbst) => (occursIn(sbst['__a'],sbst['__phi_a'])),
+   '(G[__l,__u] __phi_a) & F[__l,__u] flip(__a,__phi_a)'],
+
+  ['flip(__a, __phi_a S[__l,__u] __phi_prime)',
+    (sbst) => (occursIn(sbst['__a'], sbst['__phi_a'])),
+    '(__phi_a S[__l,__u] __phi_prime) & (!__phi_prime S[__l,__u] (flip(__a,__phi_a) & !__phi_prime))'],
+  ['flip(__a, __phi_prime S[__l,__u] __phi_a)',
+    (sbst) => (occursIn(sbst['__a'], sbst['__phi_a'])),
+    '(__phi_prime S[__l,__u] __phi_a) & (!__phi_prime T[__l,__u] (__phi_a => flip(__a, __phi_a)))'],
+  ['flip(__a, __phi_a T[__l,__u] __phi_prime)',
+    (sbst) => (occursIn(sbst['__a'], sbst['__phi_a'])),
+    '(__phi_a T[__l,__u] __phi_prime) & ((__phi_a => flip(__a, __phi_a) S[__l,__u] (! __phi_prime)))'],
+  ['flip(__a, __phi_prime T[__l,__u] __phi_a)',
+    (sbst) => (occursIn(sbst['__a'], sbst['__phi_a'])),
+    '(__phi_prime T[__l,__u] __phi_a) & (!__phi_prime S[__l,__u] flip(__a, __phi_a))'],  
+  ['flip(__a, O[__l,__u] __phi_a)',
+    (sbst) => (occursIn(sbst['__a'], sbst['__phi_a'])), '(O[__l,__u] __phi_a) & H[__l,__u] (__phi_a => flip(__a, __phi_a))'],
+  ['flip(__a, H[__l,__u] __phi_a)',
+    (sbst) => (occursIn(sbst['__a'], sbst['__phi_a'])),'(H[__l,__u] __phi_a) & O[__l,__u] flip(__a, __phi_a)'],  
 ]
 
 let flipRulesParsed = flipRules.map(parseit)
