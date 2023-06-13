@@ -571,7 +571,7 @@ Instructions.propTypes = {
 };
 
 function mapStateToProps(state) {
-  const fieldColors = state.actionsSlice.completedComponents;
+  const fieldColors = state.actionsSlice.fieldColors;
   return {
     fieldColors
   };

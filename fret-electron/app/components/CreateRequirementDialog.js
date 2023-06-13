@@ -152,7 +152,7 @@ class CreateRequirementDialog extends React.Component {
 
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if (prevProps.open !== this.props.open) {
+    if (prevProps.open !== this.props.open && this.props.open) {
       const editor = withFields(withReact(createEditor()));
       this.setState({ editor })
     }
@@ -366,9 +366,13 @@ class CreateRequirementDialog extends React.Component {
         console.log('payload2 CreateRequirementDialog createOrUpdateRequirement in : ',result)
         console.log('result.reqCreated CreateRequirementDialog createOrUpdateRequirement in : ',result.reqCreated)
         console.log('result.requirements CreateRequirementDialog createOrUpdateRequirement in : ',result.requirements)
+        if (result.reqCreated) {
+          self.state.dialogCloseListener(true, newReqId);
+        } else {
+          self.state.dialogCloseListener(false);
+        }
         this.props.createOrUpdateRequirement({ type: 'actions/createOrUpdateRequirement',
                                                 requirements: result.requirements,
-                                                reqCreated: result.reqCreated,
                                                 // analysis
                                                 components : result.components,
                                                 completedComponents : result.completedComponents,
@@ -381,11 +385,7 @@ class CreateRequirementDialog extends React.Component {
                                                 selectedVariable : result.selectedVariable,
                                                 importedComponents : result.importedComponents,
                                                 })
-        if (result.reqCreated) {     // TODO fix this
-          self.state.dialogCloseListener(true, newReqId);
-        } else {
-          self.state.dialogCloseListener(false);
-        }
+
       }).catch((err) => {
         console.log(err);
       })
