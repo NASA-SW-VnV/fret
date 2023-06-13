@@ -231,7 +231,6 @@ class Instructions extends React.Component {
     // context isolation
     var argList = [fieldKey,color];
     ipcRenderer.invoke('updateFieldColors',argList).then((result) => {
-      console.log('fieldColorsInitialize in Instructions.js result ',result);
       this.props.updateFieldColors({  type: 'actions/updateFieldColors',
                                       fieldColors: result.fieldColors})
     }).catch((err) => {

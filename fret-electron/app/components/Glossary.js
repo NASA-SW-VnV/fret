@@ -181,7 +181,7 @@ class Glossary extends React.Component {
       variables = this.props.variables
     } else {
       variables = this.props.editVariables.docs;
-      console.log('new editVariables', this.props.editVariables)
+      // console.log('new editVariables', this.props.editVariables)
       //TODO: now it only works for one component, update.
       componentsWithVariables[variables[0].component_name] = [];
     }

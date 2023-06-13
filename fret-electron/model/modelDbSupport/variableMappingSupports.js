@@ -51,7 +51,7 @@ export {
   }  
 
   async function synchFRETvariables (selectedProject, component) {
-    console.log('variableMappingSupports.synchFRETvariables project: ',selectedProject,' component: ',component)
+    //console.log('variableMappingSupports.synchFRETvariables project: ',selectedProject,' component: ',component)
     
     var modelComponent
     let componentModel = '';
@@ -63,7 +63,7 @@ export {
       }).then(async function(result){
         
         var variable_data =  result.docs.map(r => {
-          console.log('variableMappingSupports.synchFRETvariables: ',r)
+          //console.log('variableMappingSupports.synchFRETvariables: ',r)
           componentModel = r.modelComponent;
                 return createData(r.variable_name, r.modeldoc_id, r.idType, r.dataType, r.description)
               }).sort((a, b) => {return a.variable_name > b.variable_name})
@@ -110,7 +110,7 @@ async function  synchModelVariablesAndComponents(componentModel,selectedProject)
         modelVariables : modelVariables,
         importedComponents : modelComponents.sort(async (a, b) => {return a.toLowerCase().trim() > b.toLowerCase().trim()})
       }
-      console.log('variableMappingSupports.synchModelVariablesAndComponents retResults: ',retResults)
+      //console.log('variableMappingSupports.synchModelVariablesAndComponents retResults: ',retResults)
       return retResults
     }).catch((err) => {
       console.log(err);

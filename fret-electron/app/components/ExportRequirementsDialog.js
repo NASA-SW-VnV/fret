@@ -109,10 +109,9 @@ class ExportRequirementsDialog extends React.Component {
 
     // context isolation
     var argList = [project, output_format ]
-    console.log('ipcRenderer ', argList);
     ipcRenderer.invoke('exportRequirements',argList).then((result) => {
       // export requirements doesn't change any Redux state
-      console.log('Exported requirements in project ',project)
+      // console.log('Exported requirements in project ',project)
     }).catch((err) => {
       console.log(err);
     })

@@ -161,7 +161,7 @@ class CreateRequirementDialog extends React.Component {
 
   componentDidMount = () => {
     if(process.env.EXTERNAL_TOOL=='1'){
-      console.log('componentDidMount env EXTERNAL_TOOL',process.env.EXTERNAL_TOOL);
+      // console.log('componentDidMount env EXTERNAL_TOOL',process.env.EXTERNAL_TOOL);
     }
   }
 
@@ -333,7 +333,7 @@ class CreateRequirementDialog extends React.Component {
 
     if(process.env.EXTERNAL_TOOL=='1'){
       var filepath = ext_exp_json_file;
-      console.log('export json file name: ', filepath)
+      // console.log('export json file name: ', filepath)
 
       if(ext_exp_json_file_exists){
         // pop up warning
@@ -361,11 +361,11 @@ class CreateRequirementDialog extends React.Component {
 
 
       //////// ***
-      console.log('CreateRequirementDialog ipcRenderer createOrUpdateRequirement', args);
+      // console.log('CreateRequirementDialog ipcRenderer createOrUpdateRequirement', args);
       ipcRenderer.invoke('createOrUpdateRequirement',args).then((result) => {
-        console.log('payload2 CreateRequirementDialog createOrUpdateRequirement in : ',result)
-        console.log('result.reqCreated CreateRequirementDialog createOrUpdateRequirement in : ',result.reqCreated)
-        console.log('result.requirements CreateRequirementDialog createOrUpdateRequirement in : ',result.requirements)
+        // console.log('payload2 CreateRequirementDialog createOrUpdateRequirement in : ',result)
+        // console.log('result.reqCreated CreateRequirementDialog createOrUpdateRequirement in : ',result.reqCreated)
+        // console.log('result.requirements CreateRequirementDialog createOrUpdateRequirement in : ',result.requirements)
         if (result.reqCreated) {
           self.state.dialogCloseListener(true, newReqId);
         } else {

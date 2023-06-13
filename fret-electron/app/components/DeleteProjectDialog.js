@@ -62,7 +62,7 @@ class DeleteProjectDialog extends React.Component {
 
     // context isolation
     var argList = [this.state.project ]
-    console.log('ipcRenderer ', argList);
+    // console.log('ipcRenderer ', argList);
     ipcRenderer.invoke('deleteProject',argList).then((result) => {
 
 

@@ -190,10 +190,8 @@ class ComponentSummary extends React.Component {
     const {component, selectedProject, language, getPropertyInfo, getDelayInfo, getContractInfo} = this.props;
     var args = [component, selectedProject, language]
     // context isolation
-    console.log('ipcRenderer args for exportComponent:', args);
     ipcRenderer.invoke('exportComponent',args).then((result) => {
       // no redux state is changed for this action
-      console.log('Variables to model mapping exported :', args);
     }).catch((err) => {
       console.log(err);
     })

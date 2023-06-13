@@ -47,7 +47,7 @@ const allActionsSlice = createSlice({
     reducers: {
       // initializeStore
       initializeStore(state, action) {
-        console.log('actionsSlice initializeStore reducer', action)
+        // console.log('actionsSlice initializeStore reducer', action)
         // projects
         state.listOfProjects = action.payload.listOfProjects;
         state.selectedProject = action.payload.selectedProject;
@@ -77,11 +77,11 @@ const allActionsSlice = createSlice({
 
       // project slice
       addProject(state, action) {
-        console.log('actionsSlice addProject reducer', action)
+        // console.log('actionsSlice addProject reducer', action)
         state.listOfProjects = action.payload.listOfProjects;
       },
       deleteProject(state, action) {
-        console.log('actionsSlice deleteProject reducer', action)
+        // console.log('actionsSlice deleteProject reducer', action)
         state.listOfProjects = action.payload.listOfProjects;
         state.selectedProject = action.payload.selectedProject;
         state.requirements = action.payload.requirements;
@@ -97,7 +97,7 @@ const allActionsSlice = createSlice({
         state.rlz_data = action.payload.rlz_data
       },
       selectProject(state, action) {
-        console.log('actionsSlice selectProject reducer', action)
+        // console.log('actionsSlice selectProject reducer', action)
         state.selectedProject = action.payload.selectedProject
         state.requirements = action.payload.requirements;
         state.projectRequirements = action.payload.projectRequirements;
@@ -113,13 +113,13 @@ const allActionsSlice = createSlice({
         state.rlz_data = action.payload.rlz_data
       },
       updateFieldColors(state, action) {
-        console.log('actionsSlice updateFieldColors reducer', action)
+        // console.log('actionsSlice updateFieldColors reducer', action)
         state.fieldColors = action.payload.fieldColors
       },
 
       // requirement slice
       createOrUpdateRequirement(state, action) {
-        console.log('actionsSlice createOrUpdateRequirement reducer', action)
+        // console.log('actionsSlice createOrUpdateRequirement reducer', action)
         state.requirements = action.payload.requirements
         state.projectRequirements = action.payload.projectRequirements;
         state.variable_data = action.payload.variable_data;
@@ -134,7 +134,7 @@ const allActionsSlice = createSlice({
         state.rlz_data = action.payload.rlz_data
       },
       deleteRequirement(state, action) {
-        console.log('actionsSlice deleteRequirement reducer', action)
+        // console.log('actionsSlice deleteRequirement reducer', action)
         state.requirements = action.payload.requirements;
         state.projectRequirements = action.payload.projectRequirements;
         state.variable_data = action.payload.variable_data;
@@ -148,7 +148,7 @@ const allActionsSlice = createSlice({
         state.cocospecModes = action.payload.cocospecModes;
       },
       importRequirements(state, action) {
-        console.log('actionsSlice importRequirements reducer', action)
+        // console.log('actionsSlice importRequirements reducer', action)
         state.listOfProjects = action.payload.listOfProjects;
         state.requirements = action.payload.requirements;
         state.projectRequirements = action.payload.projectRequirements;
@@ -169,7 +169,7 @@ const allActionsSlice = createSlice({
         state.glossaryVariables = action.payload.glossaryVariables
       },
       importRequirementsCsv(state, action) {
-        console.log('actionsSlice importRequirementsCsv reducer', action)
+        // console.log('actionsSlice importRequirementsCsv reducer', action)
         state.listOfProjects = action.payload.listOfProjects;
         state.requirements = action.payload.requirements;
         state.projectRequirements = action.payload.projectRequirements;
@@ -184,17 +184,17 @@ const allActionsSlice = createSlice({
         state.cocospecModes = action.payload.cocospecModes;
       },
       formalizeRequirement(state, action) {      // TBD add tests
-        console.log('actionsSlice formalizeRequirement reducer', action)
+        // console.log('actionsSlice formalizeRequirement reducer', action)
         state.requirements = action.payload.requirements
       },
       changeRequirementStatus(state, action) {
-        console.log('actionsSlice changeRequirementStatus reducer', action)
+        // console.log('actionsSlice changeRequirementStatus reducer', action)
         state.requirements = action.payload.requirements
       },
 
       //  analysis and variables
       updateVariable_checkNewVariables(state, action) {
-        console.log('variablesSlice updateVariable_checkNewVariables function', action)
+        // console.log('variablesSlice updateVariable_checkNewVariables function', action)
         state.variable_data = action.payload.variable_data;
         state.components = action.payload.components;
         state.modelComponent = action.payload.modelComponent;
@@ -209,7 +209,7 @@ const allActionsSlice = createSlice({
         state.selectedVariable = action.payload.selectedVariable
       },
       updateVariable_noNewVariables(state, action) {     // TBD add tests for newVariables dialog
-        console.log('actionsSlice updateVariable_checkNewVariables function', action)
+        // console.log('actionsSlice updateVariable_checkNewVariables function', action)
         state.variable_data = action.payload.variable_data;
         state.components = action.payload.components;
         state.modelComponent = action.payload.modelComponent;
@@ -221,7 +221,7 @@ const allActionsSlice = createSlice({
         state.cocospecModes = action.payload.cocospecModes;
       },
       importComponent(state, action) {
-        console.log('actionsSlice importComponent function', action)
+        // console.log('actionsSlice importComponent function', action)
         state.variable_data = action.payload.variable_data;
         state.components = action.payload.components;
         state.modelComponent = action.payload.modelComponent;
@@ -233,7 +233,7 @@ const allActionsSlice = createSlice({
         state.cocospecModes = action.payload.cocospecModes;
       },
       selectCorspdModelComp(state, action) {
-        console.log('actionsSlice selectCorspdModelComp function', action)
+        // console.log('actionsSlice selectCorspdModelComp function', action)
         state.variable_data = action.payload.variable_data;
         state.components = action.payload.components;
         state.modelComponent = action.payload.modelComponent;
@@ -246,13 +246,13 @@ const allActionsSlice = createSlice({
       },
       // realizability slice
       rlzDiagUnrealizableRequirement(state, action) {
-        console.log('actionsSlice rlzDiagUnrealizableRequirement function', action)
+        // console.log('actionsSlice rlzDiagUnrealizableRequirement function', action)
       },
       checkRealizability(state, action) {
-        console.log('actionsSlice rlzDiagUnrealizableRequirement function', action)
+        // console.log('actionsSlice rlzDiagUnrealizableRequirement function', action)
       },
       selectRealizabilityComponent(state,action){
-        console.log('actionsSlice selectRealizabilityComponent function', action)
+        // console.log('actionsSlice selectRealizabilityComponent function', action)
         state.rlz_data = action.payload.rlz_data
       },
 

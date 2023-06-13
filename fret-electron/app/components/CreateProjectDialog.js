@@ -78,7 +78,7 @@ class CreateProjectDialog extends React.Component {
     var argList = [name]
     // ipcRenderer call main with argLit and main returns result to update Redux store
     ipcRenderer.invoke('addProject',argList).then((result) => {
-      console.log('CreateProjectDialog ipcRenderer addProject result.listOfProjects: ', result.listOfProjects)
+      // console.log('CreateProjectDialog ipcRenderer addProject result.listOfProjects: ', result.listOfProjects)
       this.props.addProject({ type: 'actions/addProject',
                               listOfProjects: result.listOfProjects
                             })

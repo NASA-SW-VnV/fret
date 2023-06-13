@@ -206,7 +206,6 @@ const tableComponentBarStyles = theme => ({
 
 let TableComponentBar = props => {
   const {classes, handleModelChange, importedComponents, modelComponent, fretComponent, importComponentModel} = props;
-  console.log('importedComponents', importedComponents)
   return(
     <Toolbar className={classNames(classes.root, classes.componentBar)}>
       <form className={classes.formControl} autoComplete="off">
@@ -324,9 +323,7 @@ class VariablesSortableTable extends React.Component {
 
       var args = [selectedProject + selectedComponent + row.variable_name]
       // context isolation
-      console.log('ipcRenderer args for selectVariable:', args);
       ipcRenderer.invoke('selectVariable',args).then((result) => {
-        console.log('ipcRenderer selectVariable result:', result.selectedVariable);
         this.props.selectVariable({  type: 'actions/selectVariable',
                                     // variables
                                     selectedVariable : result.selectedVariable,
@@ -366,7 +363,6 @@ class VariablesSortableTable extends React.Component {
 
     var args = [modelComponent, selectedProject, selectedComponent]
     // context isolation
-    console.log('ipcRenderer args for importComponent:', args);
     ipcRenderer.invoke('selectCorspdModelComp',args).then((result) => {
      this.props.importComponent({  type: 'components/selectCorspdModelComp',
                                    // analysis & variables
@@ -392,7 +388,6 @@ class VariablesSortableTable extends React.Component {
    const {selectedProject, selectedComponent} = this.props;
    var args = [selectedProject, selectedComponent]
    // context isolation
-   console.log('ipcRenderer args for importComponent:', args);
    ipcRenderer.invoke('importComponent',args).then((result) => {
     this.props.importComponent({  type: 'components/importComponent',
                                   // analysis & variables

@@ -212,7 +212,7 @@ class DisplayVariableDialog extends React.Component {
       var noNewVariablesResult = result
       if (result.openNewVariablesDialog){
         // open new Variable dialog
-        console.log('DisplayVariableDialog invoke updateVariable_checkNewVariables',result)
+        // console.log('DisplayVariableDialog invoke updateVariable_checkNewVariables',result)
         // open new variable dialog
         const newVariables= result.newVariables
         self.handleNewVariables(newVariables);

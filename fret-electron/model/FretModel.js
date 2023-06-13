@@ -140,7 +140,7 @@ export default class FretModel {
 
     async synchStatesWithDB(){
 
-      console.log('FretModel synchStatesWithDB ')
+      // console.log('FretModel synchStatesWithDB ')
       try {
         await this.synchProjectsAndRequirmentsWithDB()
 
@@ -156,7 +156,7 @@ export default class FretModel {
     }
 
     async synchProjectsAndRequirmentsWithDB(){
-      console.log('FretModel synchProjectsAndRequirmentsWithDB ')
+      // console.log('FretModel synchProjectsAndRequirmentsWithDB ')
       try {
         await populateVariables.populateVariables()
 
@@ -181,7 +181,7 @@ export default class FretModel {
 
       // if a project is selected, update project dependent states
       // in AnalysisTab and VariableView
-      console.log('FretModel.synchAnalysesAndVariablesWithDB started')
+      // console.log('FretModel.synchAnalysesAndVariablesWithDB started')
       try {
         // components, cocospecModes, cocospecData, and completedComponents
         const analysisStates = await synchAnalysisWithDB(this.selectedProject)
@@ -199,7 +199,7 @@ export default class FretModel {
           this.modelComponent = {}
           this.modelVariables = {}
           this.importedComponents = {}
-          console.log('FretModel.synchAnalysesAndVariablesWithDB looping through components calling synchFRETvariables')
+          // console.log('FretModel.synchAnalysesAndVariablesWithDB looping through components calling synchFRETvariables')
           await Promise.all(this.components.map(async (comp) => {
             var component = comp.component_name
             var componentVariableMapping =  await synchFRETvariables(this.selectedProject,component)
@@ -235,7 +235,7 @@ export default class FretModel {
     }
 
     async initializeFromDB(){
-      console.log('FretModel initializeFromDB ')
+      // console.log('FretModel initializeFromDB ')
       try {
 
         /*
@@ -262,7 +262,7 @@ export default class FretModel {
     }
 
     async addProject(evt,argList){
-      console.log('FretModel addProject: ', argList)
+      // console.log('FretModel addProject: ', argList)
       const projName = argList[0]
       try {
         // TBD check that no existing project has projName
@@ -284,7 +284,7 @@ export default class FretModel {
     async deleteProject(evt,args){
 
       var project = args[0]
-      console.log('FretModel deleteProject: ', project)
+      // console.log('FretModel deleteProject: ', project)
       try {
 
         await fretDbSetters.deleteProject(project)
@@ -320,7 +320,7 @@ export default class FretModel {
 
     async selectProject(evt,args){
       var projName = args[0]
-      console.log('FretModel selectProject: ', projName)
+      // console.log('FretModel selectProject: ', projName)
       this.selectedProject = projName
 
       try {
@@ -459,7 +459,7 @@ export default class FretModel {
     }
 
     async deleteRequirement(evt, args){
-      console.log('FretModel deleteRequirement: ', args)
+      // console.log('FretModel deleteRequirement: ', args)
       var requirements = args
 
       try {
@@ -496,7 +496,7 @@ export default class FretModel {
     }
 
     formalizeRequirement(evt, args){
-      console.log('FretModel formalizeRequirement arg: ', arg)
+      // console.log('FretModel formalizeRequirement arg: ', arg)
       var reqName = args[0];
 
       // need code
@@ -510,9 +510,9 @@ export default class FretModel {
     }
 
     async importRequirements(evt,args){
-      console.log('FretModel importRequirements: ', args)
+      // console.log('FretModel importRequirements: ', args)
       await leveldbDB.info().then(function (info) {
-        console.log('levelDB infor: ',info);
+        // console.log('levelDB infor: ',info);
       })
 
       var homeDir = app.getPath('home');
@@ -528,7 +528,7 @@ export default class FretModel {
         ],
         properties: ['openFile']});
       if (filepaths && filepaths.length > 0) {
-        console.log('FretModel.importRequirements filepaths: ', filepaths)
+        // console.log('FretModel.importRequirements filepaths: ', filepaths)
          const filepath = filepaths[0];
          //checking the extension of the file
          const fileExtension = filepath.split('.').pop();
@@ -650,7 +650,7 @@ export default class FretModel {
     }
 
     async exportRequirements(evt,args){
-      console.log('FretModel exportRequirements: ', args)
+      // console.log('FretModel exportRequirements: ', args)
       var project =  args[0];
       var output_format =  args[1];
       const filterOff = project == "All Projects";
@@ -682,14 +682,14 @@ export default class FretModel {
         // produce output
         //
         var content;
-        console.log(output_format)
+        // console.log(output_format)
         if (output_format === "md"){
-          console.log("MD")
+          // console.log("MD")
           content=export_to_md(filteredResult, project)
           }
         else {
-          console.log("JSON")
-                content = JSON.stringify(filteredResult, null, 4)
+          // console.log("JSON")
+          content = JSON.stringify(filteredResult, null, 4)
         }
         //console.log(content)
 
@@ -697,7 +697,7 @@ export default class FretModel {
           if(err) {
             return console.log(err);
           }
-          console.log("The file was saved!");
+          // console.log("The file was saved!");
           });
             }).catch((err) => {
               console.log(err);
@@ -708,7 +708,7 @@ export default class FretModel {
     }
 
     async changeRequirementStatus(evt,args){
-      console.log('FretModel changeRequirementStatus: ', args)
+      // console.log('FretModel changeRequirementStatus: ', args)
       var dbkey = args[0]
       var statusValue = args[1]
 
@@ -749,7 +749,7 @@ export default class FretModel {
     }
 
     async updateVariable_checkNewVariables(evt, args){
-      console.log('FretModel updateVariable_checkNewVariables: ', args)
+      // console.log('FretModel updateVariable_checkNewVariables: ', args)
 
       var project = args[0]
       var component_name = args[1]
@@ -786,7 +786,7 @@ export default class FretModel {
                 newVariables.push(v);
               }
             })
-            console.log('FretModel.updateVariable_checkNewVariables calling handleNewVariables, newVariables: newVariables')
+            // console.log('FretModel.updateVariable_checkNewVariables calling handleNewVariables, newVariables: newVariables')
             // return to viewers openNewVariablesDialog
             openNewVariablesDialog = true
           }
@@ -802,7 +802,7 @@ export default class FretModel {
     }
 
     async updateVariable_noNewVariables(evt, args){
-      console.log('FretModel updateVariable_checkNewVariables: ', args)
+      // console.log('FretModel updateVariable_checkNewVariables: ', args)
 
       var project = args[0]
       var component_name = args[1]
@@ -898,10 +898,10 @@ export default class FretModel {
     }
 
     async importComponent(evt,args){     // TBD add tests
-      console.log('FretModel importComponent: ', args)
+      // console.log('FretModel importComponent: ', args)
 
       leveldbDB.info().then(function (info) {
-        console.log(info);
+        // console.log(info);
       })
 
       var homeDir = app.getPath('home');
@@ -957,8 +957,8 @@ export default class FretModel {
       var selectedProject = args[1];
       var language = args[2];
       const homeDir = app.getPath('home');
-      console.log('FretModel exportComponent, args: ', args)
-      console.log('FretModel exportComponent, homeDir: ', homeDir)
+      // console.log('FretModel exportComponent, args: ', args)
+      // console.log('FretModel exportComponent, homeDir: ', homeDir)
 
       var filepath = dialog.showSaveDialogSync({
         defaultPath : homeDir,
@@ -998,8 +998,8 @@ export default class FretModel {
           contract.componentName = component+'Spec';
           archive.pipe(output);
           if (language === 'cocospec' && modelResult.docs[0].modelComponent != ""){
-            console.log('FretModel exportComponent, modelResult: ', modelResult)
-            console.log('FretModel exportComponent, contract.componentName: ', contract.componentName)
+            // console.log('FretModel exportComponent, modelResult: ', modelResult)
+            // console.log('FretModel exportComponent, contract.componentName: ', contract.componentName)
             var variableMapping = getMappingInfo(modelResult, contract.componentName);
             archive.append(JSON.stringify(variableMapping), {name: 'cocospecMapping'+component+'.json'});
           }
@@ -1044,7 +1044,7 @@ export default class FretModel {
     }
 
     async selectCorspdModelComp(evt,args){       // TBD add tests
-      console.log('FretModel selectCorspdModelComp: ', args)
+      // console.log('FretModel selectCorspdModelComp: ', args)
 
       const modelComponent = args[0]
       const selectedProject = args[1]
@@ -1181,7 +1181,7 @@ export default class FretModel {
     }
 
     async ltlsimSaveJson(evt,args){
-      console.log('FretModel ltlsimSaveJson: ', args)
+      // console.log('FretModel ltlsimSaveJson: ', args)
       return ({})
     }
 }

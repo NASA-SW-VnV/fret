@@ -131,7 +131,7 @@ function ccStableSort(array, conflictReqs, selectedReqs, connectedComponent, cmp
   
   if (conflictReqs.length === 0) {
     const ccData = array.filter(el => connectedComponent.requirements.includes(el.reqid));
-    console.log(selectedReqs)
+    // console.log(selectedReqs)
     const notSelectedData = array.filter(el => !selectedReqs.includes(el.reqid));
     const remainingData = array.filter(el => (!connectedComponent.requirements.includes(el.reqid) && !notSelectedData.map(el => el.reqid).includes(el.reqid)));    
 

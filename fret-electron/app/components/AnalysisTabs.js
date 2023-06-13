@@ -175,11 +175,11 @@ class AnalysisTabs extends React.Component {
       completedComponents, cocospecData, cocospecModes} = this.props;
     const {value} = this.state;
 
-    console.log('AnalysisTabs.render, value: ',value)
-    console.log('AnalysisTabs.render, components: ',components)
-    console.log('AnalysisTabs.render, completedComponents: ',completedComponents)
-    console.log('AnalysisTabs.render, cocospecData: ',cocospecData)
-    console.log('AnalysisTabs.render, cocospecModes: ',cocospecModes)
+    // console.log('AnalysisTabs.render, value: ',value)
+    // console.log('AnalysisTabs.render, components: ',components)
+    // console.log('AnalysisTabs.render, completedComponents: ',completedComponents)
+    // console.log('AnalysisTabs.render, cocospecData: ',cocospecData)
+    // console.log('AnalysisTabs.render, cocospecModes: ',cocospecModes)
 
 
 

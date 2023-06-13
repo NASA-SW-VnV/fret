@@ -227,7 +227,6 @@ class MainView extends React.Component {
   componentDidMount = () => {
     // initialize the store from database 1st time here.
     ipcRenderer.invoke('initializeFromDB',undefined).then((result) => {
-      console.log('MainView ipcRenderer initializeStore ',result);
       this.props.initializeStore({ type: 'actions/initializeStore',
                                   // projects
                                   listOfProjects: result.listOfProjects,
@@ -260,7 +259,6 @@ class MainView extends React.Component {
     })
 
     if(process.env.EXTERNAL_TOOL=='1'){
-      console.log('env EXTERNAL_TOOL',process.env.EXTERNAL_TOOL);
       this.handleImportExternalTool();
     }
   }
@@ -273,12 +271,9 @@ class MainView extends React.Component {
   handleImport = () => {
     // context isolation
     var argList = this.props.listOfProjects;
-    console.log('mainView ipcRenderer.invoke importRequirements argList', argList);
     ipcRenderer.invoke('importRequirements',argList).then((result) => {
 
-      console.log('MainView ipcRenderer importRequirements result', result);
       if (result.requirements){
-        console.log('MainView ipcRenderer importRequirements (json)')
         this.props.importRequirements({ type: 'actions/importRequirements',
           // projects
           listOfProjects : result.listOfProjects,
@@ -299,7 +294,6 @@ class MainView extends React.Component {
         })        
       }
       if (result.fileExtension){
-        console.log('MainView ipcRenderer importRequirementsCsv ')
         this.handleCSVImport(result.csvFields, result.importedReqs)
       }
 
@@ -319,14 +313,14 @@ class MainView extends React.Component {
     const self = this
     var args = [name]
     ipcRenderer.invoke('selectProject',args).then((result) => {
-      console.log('MainView.handleSetProject, result.components: ', result.components)
-      console.log('MainView.handleSetProject, result.completedComponents: ', result.completedComponents)
-      console.log('MainView.handleSetProject, result.cocospecData: ', result.cocospecData)
-      console.log('MainView.handleSetProject, result.cocospecModes: ', result.cocospecModes)
-      console.log('MainView.handleSetProject, result.variable_data: ', result.variable_data)
-      console.log('MainView.handleSetProject, result.modelComponent: ', result.modelComponent)
-      console.log('MainView.handleSetProject, result.modelVariables: ', result.modelVariables)
-      console.log('MainView.handleSetProject, result.importedComponents: ', result.importedComponents)
+      // console.log('MainView.handleSetProject, result.components: ', result.components)
+      // console.log('MainView.handleSetProject, result.completedComponents: ', result.completedComponents)
+      // console.log('MainView.handleSetProject, result.cocospecData: ', result.cocospecData)
+      // console.log('MainView.handleSetProject, result.cocospecModes: ', result.cocospecModes)
+      // console.log('MainView.handleSetProject, result.variable_data: ', result.variable_data)
+      // console.log('MainView.handleSetProject, result.modelComponent: ', result.modelComponent)
+      // console.log('MainView.handleSetProject, result.modelVariables: ', result.modelVariables)
+      // console.log('MainView.handleSetProject, result.importedComponents: ', result.importedComponents)
       this.props.selectProject({ type: 'actions/selectProject',
                                    // projects
                                   selectedProject : result.selectedProject,
@@ -487,7 +481,7 @@ class MainView extends React.Component {
     const self = this;
     //var homeDir = app.getPath('home');
     var filepath = ext_imp_json_file;
-    console.log('ext_imp_json_file in handleImportExternalTool: ', filepath);
+    // console.log('ext_imp_json_file in handleImportExternalTool: ', filepath);
     if (filepath && filepath.length > 0) {
       //const filepath = filepaths[0];
       fs.readFile(filepath, function (err,buffer) {
@@ -510,10 +504,10 @@ class MainView extends React.Component {
         } else {
           try {
             let data = JSON.parse(buffer);
-            console.log('data in JSON.parse: ', data)
+            // console.log('data in JSON.parse: ', data)
             if(!data.requirement & !data.variables){
               //  invalid file  
-              //console.log('setting missingExternalImportDialogReason to invalid')
+              //// console.log('setting missingExternalImportDialogReason to invalid')
               self.setState({
                 missingExternalImportDialogOpen: true,
                 missingExternalImportDialogReason: 'invalid',

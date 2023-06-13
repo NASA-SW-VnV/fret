@@ -96,7 +96,7 @@ class DisplayRequirementDialog extends React.Component {
   }
 
   componentWillReceiveProps = (props) => {
-    console.log('DisplayRequirementDialog.componentWillReceiveProps selectedRequirement', props.selectedRequirement)
+    // console.log('DisplayRequirementDialog.componentWillReceiveProps selectedRequirement', props.selectedRequirement)
     this.setState({
       selectedRequirement: props.selectedRequirement,
       open: props.open,
@@ -153,8 +153,8 @@ class DisplayRequirementDialog extends React.Component {
 
   render() {
     const {classes} = this.props;
-    console.log('DisplayRequirementDialog.render state selectedRequirement', this.state.selectedRequirement)
-    console.log('DisplayRequirementDialog.render props selectedRequirement', this.props.selectedRequirement)
+    // console.log('DisplayRequirementDialog.render state selectedRequirement', this.state.selectedRequirement)
+    // console.log('DisplayRequirementDialog.render props selectedRequirement', this.props.selectedRequirement)
     var { project, reqid, parent_reqid, rationale, ltl, semantics, fulltext } = this.props.selectedRequirement
     const reqidLabel = (reqid ? reqid : "None")
     const projectLabel = project ? project : "None"

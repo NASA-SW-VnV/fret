@@ -48,7 +48,7 @@ export {
 async function synchAnalysisWithDB (selectedProject) {
     var data;
     var retVal;
-    console.log('analysisTabSupport.synchAnalysisWithDB selectedProject ', selectedProject)
+    // console.log('analysisTabSupport.synchAnalysisWithDB selectedProject ', selectedProject)
     
     return leveldbDB.find({
         selector: {
@@ -77,7 +77,6 @@ async function synchAnalysisWithDB (selectedProject) {
 
         retVal.completedComponents =  await checkComponents(retVal.components, selectedProject, 
           retVal.cocospecData, retVal.cocospecModes,[]);
-        console.log('completed analysisTabSupport.synchAnalysisWithDB retVal ', retVal)
         return retVal
       }).catch((err) => {
         console.log('analysisTabSupport.synchAnalysisWithDB error: ',err);

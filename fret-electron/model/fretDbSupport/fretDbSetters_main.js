@@ -90,7 +90,6 @@ async function addProject(projName){
   return await leveldbDB.get('FRET_PROJECTS').then((doc) => {
     var list = doc.names
     list.push(projName)
-    console.log('1 FretModel addProject list: ', list)
     leveldbDB.put({
       _id: 'FRET_PROJECTS',
       _rev: doc._rev,

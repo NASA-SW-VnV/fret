@@ -63,12 +63,12 @@ async function csvToJsonConvert (importedInfo) {
 async function importRequirements (data, projects) {
 
   //console.log('convertAndImportRequirements.importRequirements data: ', data)
-  console.log('convertAndImportRequirements.importRequirements projects: ', projects)
+  // console.log('convertAndImportRequirements.importRequirements projects: ', projects)
 
   data.forEach((d) => {
     if (d.project && !projects.includes(d.project)){
       projects.push(d.project);
-      console.log('convertAndImportRequirements.importRequirements pushing project: ', d.project)
+      //console.log('convertAndImportRequirements.importRequirements pushing project: ', d.project)
     }
   })
   //If new projects were introduced through the imported reqs, update FRET_PROJECTS in db
@@ -82,21 +82,21 @@ async function importRequirements (data, projects) {
     console.log(err);
   }).then(() => {
     // KT return setChangeRequirementFlag_main(true)
-    console.log('Not setting setChangeRequirementFlag_main')
+    //console.log('Not setting setChangeRequirementFlag_main')
   }).
   then(() => {
     leveldbDB.bulkDocs(data)
-    console.log('convertAndImportRequirements.importRequirements leveldbDB.bulkDocs(data): ')
+    //console.log('convertAndImportRequirements.importRequirements leveldbDB.bulkDocs(data): ')
   }).
     then(() => {
       // KT setChangeRequirementFlag_main(false);
       modelSupport.populateVariables();
-      console.log('convertAndImportRequirements.importRequirements last then: ')
+      //console.log('convertAndImportRequirements.importRequirements last then: ')
     }).
   catch((err) => {
     console.log(err);
   });
-  console.log('end convertAndImportRequirements.importRequirements data: ')
+  ('end convertAndImportRequirements.importRequirements data: ')
 
 }
 

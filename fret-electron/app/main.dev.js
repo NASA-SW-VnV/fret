@@ -47,7 +47,7 @@ import { app, BrowserWindow, ipcMain } from 'electron';
 import MenuBuilder from './menu';
 import FretModel from '../model/FretModel';
 
-console.log('main.dev __dirname: ', __dirname)
+// console.log('main.dev __dirname: ', __dirname)
 const path = require('path');
 const fs = require("fs");
 
@@ -58,35 +58,35 @@ var userDocumentsFolder = app.getPath('documents');
 var leveldbDBname = userDocumentsFolder + '/fret-db';
 var modelDBname = userDocumentsFolder + '/model-db';
 if (process.env.FRET_TESTING) {
-  console.log('process.env.FRET_TESTING: ',process.env.FRET_TESTING)
+  // console.log('process.env.FRET_TESTING: ',process.env.FRET_TESTING)
   leveldbDBname = userDocumentsFolder + '/fret_sqa/fret-db';
   modelDBname = userDocumentsFolder + '/fret_sqa/model-db';
 } else if (process.env.EXTERNAL_TOOL=='1'){
-  console.log('process.env.EXTERNAL_TOOL: ',process.env.EXTERNAL_TOOL)
+  // console.log('process.env.EXTERNAL_TOOL: ',process.env.EXTERNAL_TOOL)
   leveldbDBname = userDocumentsFolder + '/fret-ext-db';
   modelDBname = userDocumentsFolder + '/model-ext-db';
 }
 
 if (process.env.FRET_MODEL_DB){
-  console.log('process.env.FRET_MODEL_DB: ',process.env.FRET_MODEL_DB)
+  // console.log('process.env.FRET_MODEL_DB: ',process.env.FRET_MODEL_DB)
   if (fs.existsSync(process.env.FRET_MODEL_DB)) {
     modelDBname = process.env.FRET_MODEL_DB;
   } else {
-    console.log('fs.existsSync(process.env.FRET_MODEL_DB) return  ',fs.existsSync(process.env.FRET_MODEL_DB))
+    // console.log('fs.existsSync(process.env.FRET_MODEL_DB) return  ',fs.existsSync(process.env.FRET_MODEL_DB))
   }
 }
 
 if (process.env.FRET_LEVEL_DB){
-  console.log('process.env.FRET_LEVEL_DB: ',process.env.FRET_LEVEL_DB)
+  // console.log('process.env.FRET_LEVEL_DB: ',process.env.FRET_LEVEL_DB)
   if (fs.existsSync(process.env.FRET_LEVEL_DB)) {
     leveldbDBname = process.env.FRET_LEVEL_DB;
   } else {
-    console.log('fs.existsSync(process.env.FRET_LEVEL_DB) return  ',fs.existsSync(process.env.FRET_LEVEL_DB))
+    // console.log('fs.existsSync(process.env.FRET_LEVEL_DB) return  ',fs.existsSync(process.env.FRET_LEVEL_DB))
   }
 }
 
-console.log('leveldbDBname: ',leveldbDBname)
-console.log('modelDBname: ',modelDBname)
+// console.log('leveldbDBname: ',leveldbDBname)
+// console.log('modelDBname: ',modelDBname)
 
 var leveldbDB = new NodePouchDB(leveldbDBname);
 var modelDB = new NodePouchDB(modelDBname);
@@ -244,7 +244,7 @@ ipcMain.handle('closeFRET', async (evt, arg) => {
 
 // initialization
 ipcMain.handle('initializeFromDB', async(evt, arg) => {
-  console.log('main.dev initializeFromDB arg: ', arg);
+  // console.log('main.dev initializeFromDB arg: ', arg);
   const result = await fretModel.initializeFromDB();
   //console.log('main.dev initializeFromDB result return: ', result);
   return result
@@ -253,10 +253,10 @@ ipcMain.handle('initializeFromDB', async(evt, arg) => {
 // project slice
 
 ipcMain.handle('selectProject', async (evt, arg) => {
-  console.log('main.dev selectProject called, arg: ', arg);
+  // console.log('main.dev selectProject called, arg: ', arg);
   const result = await fretModel.selectProject(evt, arg);
-  console.log('*** main.dev selectProject result.completedComponents: ', result.completedComponents);
-  console.log('*** main.dev selectProject result.importedComponents: ', result.importedComponents);
+  // console.log('*** main.dev selectProject result.completedComponents: ', result.completedComponents);
+  // console.log('*** main.dev selectProject result.importedComponents: ', result.importedComponents);
 
   return result
 })
@@ -303,7 +303,7 @@ ipcMain.handle('retrieveRequirement', async(evt, arg) => {
 })
 
 ipcMain.handle('deleteRequirement', async (evt, arg) => {
-  console.log('main.dev deleteRequirement arg: ', arg);
+  // console.log('main.dev deleteRequirement arg: ', arg);
   const result = await fretModel.deleteRequirement(evt, arg);
   return result
 })
@@ -350,9 +350,9 @@ ipcMain.handle('updateVariable_noNewVariables', async(evt, arg) => {
 })
 
 ipcMain.handle('importComponent', async (evt, arg) => {
-  console.log('main.dev.js starting importComponent')
+  // console.log('main.dev.js starting importComponent')
   const result = await fretModel.importComponent(evt, arg);
-  console.log('main.dev.js returning importComponent')
+  // console.log('main.dev.js returning importComponent')
   return result
 })
 
@@ -429,7 +429,7 @@ app.on('ready', async () => {
   }
 
   try {
-    console.log('main.dev __dirname: ', __dirname)
+    // console.log('main.dev __dirname: ', __dirname)
     mainWindow = new BrowserWindow({
 
       webPreferences: {

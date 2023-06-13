@@ -114,7 +114,7 @@ class ColorPicker extends React.Component {
             Bubble Color :
           </span>
           <div style={ styles.swatch } onClick={ this.handleClick }>
-            <div style={ styles.color } />
+            <div style={ styles.color } id="qa_crtAst_div_assistantColorPicker"/>
           </div>
         </div>
         { this.state.displayColorPicker ? <div style={ styles.popover }>

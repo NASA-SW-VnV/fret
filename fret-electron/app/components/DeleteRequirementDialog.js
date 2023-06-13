@@ -64,7 +64,7 @@ class DeleteRequirementDialog extends React.Component {
 
     // context isolation
     var argList = requirementsToBeDeleted
-    console.log('ipcRenderer deleteRequirement', argList);
+    // console.log('ipcRenderer deleteRequirement', argList);
     ipcRenderer.invoke('deleteRequirement',argList).then((result) => {
       this.props.deleteRequirement({ type: 'actions/deleteRequirement',
                                       // projects

@@ -515,9 +515,7 @@ class SortableTable extends React.Component {
 
       var argList = [row];
       // ipcRenderer call main with argLit and main returns result to update Redux store
-      console.log('retrieveRequirement ipcRenderer.invoked in SortableTable.js argList ',argList);
       ipcRenderer.invoke('retrieveRequirement',argList).then((result) => {
-        console.log('retrieveRequirement  in SortableTable.js result ',result);
         /*
         this.props.retrieveRequirement({ type: 'actions/retrieveRequirement',
                                         //selectedRequirement: result.selectedRequirement,
@@ -665,7 +663,6 @@ class SortableTable extends React.Component {
 
       // context isolation
       var args = [row.dbkey, event.target.value];
-      console.log('ipcRenderer ', args);
       ipcRenderer.invoke('changeRequirementStatus',args).then((result) => {
         this.props.changeRequirementStatus({  type: 'actions/requirementChangedStatus',
                                               // requirements
