@@ -96,6 +96,12 @@ function stableSort(array, conflictReqs, selectedReqs, cmp) {
     return stabilizedThis.map(el => el[0]).concat(sortedNotSelectedData.map(el => el[0]));
   } else {    
     const conflictData = array.filter(el => conflictReqs.includes(el.reqid.replace(/-/g,'')));
+    const sortedConflictData = conflictData.map((el, index) => [el, index]);
+    sortedConflictData.sort((a, b) => {
+      const order = cmp(a[0], b[0]);
+      if (order !== 0) return order;
+      return a[1] - b[1];
+    });
 
     const notSelectedData = array.filter(el => !selectedReqs.includes(el.reqid));
     const assumptionData = array.filter(el => (el.reqid.toLowerCase().includes('assumption') && !notSelectedData.map(el => el.reqid).includes(el.reqid)));
@@ -123,7 +129,7 @@ function stableSort(array, conflictReqs, selectedReqs, cmp) {
       return a[1] - b[1];
     });
 
-    return conflictData.concat(sortedAssumptions.map(el => el[0]).concat(sortedRemaining.map(el => el[0]).concat(sortedNotSelectedData.map(el => el[0]))));
+    return sortedConflictData.map(el => el[0]).concat(sortedAssumptions.map(el => el[0]).concat(sortedRemaining.map(el => el[0]).concat(sortedNotSelectedData.map(el => el[0]))));
   }
 }
 
@@ -131,7 +137,13 @@ function ccStableSort(array, conflictReqs, selectedReqs, connectedComponent, cmp
   
   if (conflictReqs.length === 0) {
     const ccData = array.filter(el => connectedComponent.requirements.includes(el.reqid));
-    // console.log(selectedReqs)
+    const sortedccData = ccData.map((el, index) => [el, index]);
+    sortedccData.sort((a, b) => {
+      const order = cmp(a[0], b[0]);
+      if (order !== 0) return order;
+      return a[1] - b[1];
+    });
+
     const notSelectedData = array.filter(el => !selectedReqs.includes(el.reqid));
     const remainingData = array.filter(el => (!connectedComponent.requirements.includes(el.reqid) && !notSelectedData.map(el => el.reqid).includes(el.reqid)));    
 
@@ -149,9 +161,16 @@ function ccStableSort(array, conflictReqs, selectedReqs, connectedComponent, cmp
       return a[1] - b[1];
     });
 
-    return ccData.concat(sortedRemaining.map(el => el[0]).concat(sortedNotSelectedData.map(el => el[0])));
+    return sortedccData.map(el => el[0]).concat(sortedRemaining.map(el => el[0]).concat(sortedNotSelectedData.map(el => el[0])));
   } else {
     const conflictData = array.filter(el => conflictReqs.includes(el.reqid.replace(/-/g,'')));
+    const sortedConflictData = conflictData.map((el, index) => [el, index]);
+    sortedConflictData.sort((a, b) => {
+      const order = cmp(a[0], b[0]);
+      if (order !== 0) return order;
+      return a[1] - b[1];
+    });
+
     const notSelectedData = array.filter(el => !selectedReqs.includes(el.reqid));
     
     const assumptionData = array.filter(el => (el.reqid.toLowerCase().includes('assumption') && !notSelectedData.map(el => el.reqid).includes(el.reqid)));
@@ -189,8 +208,8 @@ function ccStableSort(array, conflictReqs, selectedReqs, connectedComponent, cmp
       if (order !== 0) return order;
       return a[1] - b[1];
     });
-
-    return conflictData.concat(sortedAssumptions.map(el => el[0]).concat(sortedCCRemainingData.map(el => el[0]).concat(sortedRemaining.map(el => el[0]).concat(sortedNotSelectedData.map(el => el[0])))));    
+    
+    return sortedConflictData.map(el => el[0]).concat(sortedAssumptions.map(el => el[0]).concat(sortedCCRemainingData.map(el => el[0]).concat(sortedRemaining.map(el => el[0]).concat(sortedNotSelectedData.map(el => el[0])))));    
   }
 }
 
@@ -386,15 +405,20 @@ class DiagnosisRequirementsTable extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { importedRequirements, rlzData} = this.props;
+    const { connectedComponent, selectedRequirements, importedRequirements, rlzData} = this.props;
+    const {setMessage} = this.context;
 
-    if (rlzData && rlzData !== prevProps.rlzData) {
-        const {setMessage} = this.context;
+    if (rlzData && rlzData !== prevProps.rlzData) {        
         setMessage({reqs : '', color : ''})
         this.setState({
           selected: importedRequirements ? rlzData.map(el => el.reqid) : rlzData.map(el => el.doc.reqid),
           tempSelected: importedRequirements ? rlzData.map(el => el.reqid) : rlzData.map(el => el.doc.reqid),
         })  
+    } else if (connectedComponent && (connectedComponent !== prevProps.connectedComponent)) {
+      if (!importedRequirements) {
+        setMessage({reqs : '', color : ''})
+        this.setState({selected: [].concat(selectedRequirements)})
+      }
     }
   }
 
