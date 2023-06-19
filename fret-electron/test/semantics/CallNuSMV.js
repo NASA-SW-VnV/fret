@@ -70,17 +70,12 @@ exports.callNuSMV2 = (file_name) => {
     //var NuSMV_command = 'NuSMV 
     //var NuSMV_command = '$NuSMV_HOME/bin/NuSMV -dcx -source ' + batchFile;
     //var nuXmv_command = '$nuXmv_HOME/bin/nuXmv -dcx -source ' + batchFile;
-<<<<<<< HEAD
-    var nuXmv_command = '/home/matt/bin/nuXmv-2.0.0-Linux/bin/nuXmv -source ' + batchFile;
-    var nu_command = nuXmv_command;
-    //var nu_command = NuSMV_command;
-=======
     //var nuXmv_command = '$nuXmv_HOME/bin/nuXmv -source ' + batchFile;
     //var nu_command = nuXmv_command;
 
     // -dcx is option to not print out counter-example
     var nu_command = constants.semanticsTestEngine + ' -dcx -source ' + batchFile;
->>>>>>> upstream/master
+
     //console.log('command = ' + nu_command);
     var NuSMV_output = '';
     try {

@@ -1026,7 +1026,7 @@ class SortableTable extends React.Component {
         searchSummary={searchSummary}
         searchHasWords={searchHasWords}
       />
->>>>>>> upstream/master
+
       <Snackbar
         anchorOrigin={{
           vertical: 'bottom',

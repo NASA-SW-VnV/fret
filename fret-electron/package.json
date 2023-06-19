@@ -1,7 +1,7 @@
 {
   "name": "fret",
   "productName": "MU-FRET",
-  "version": "2.1.2-mu.fret",
+  "version": "2.2.0-mu.fret",
   "description": "MU-FRET",
   "scripts": {
     "build": "concurrently \"npm run build-main\" \"npm run build-renderer\"",
@@ -82,7 +82,7 @@
     "url": "https://github.com/valu3s-mu/mu-fret"
   },
   "author": {
-    "name": "",
+    "name": "Matt Luckcuck",
     "email": "",
     "url": ""
   },
@@ -91,17 +91,13 @@
     "url": "https://babelfish.arc.nasa.gov/jira/projects/FRET/issues"
   },
   "keywords": [
-    "electron",
-    "boilerplate",
-    "react",
-    "redux",
-    "flow",
-    "sass",
-    "webpack",
-    "hot",
-    "reload"
+    "FRET",
+    "Mu-FRET",
+    "refactoring",
+    "requirements engineering",
+    "model checking"
   ],
-  "homepage": "https://github.com/chentsulin/electron-react-boilerplate#readme",
+  "homepage": "https://github.com/valu3s-mu/mu-fret",
   "jest": {
     "reporters": [
       "default",

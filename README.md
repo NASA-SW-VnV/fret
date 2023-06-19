@@ -10,8 +10,14 @@ FRET is a framework for the elicitation, specification, formalisation and unders
 
 Mu-FRET extends FRET by adding refactoring functionality. Refactoring, when applied to software, is the process of rearranging the software's internal structure without changing its external behaviour. This is helpful for the maintainability of software, and has similar benefits for requirements.
 
-
 Mu-FRET enables a user to extract parts of a requirement to a new requirement, allowing the extracted part to be reused. Mu-FRET also formally verifies that the refactored requirement (including the extracted parts) has the same behaviour as the original requirement. This gives confidence that the tool has not inadvertently introduced new (possibly incorrect) behaviour.
+
+## Mu-FRET Team
+
+* [Matt Luckcuck](https://orcid.org/0000-0002-6444-9312)
+* [Oisín Sheridan](https://orcid.org/0000-0002-8613-2500)
+* [Marie Farrell](https://orcid.org/0000-0001-7708-3877)
+* [Rosemary Monahan](https://orcid.org/0000-0003-3886-4675)
 
 ## Presentations Posters and Videos
 
@@ -25,7 +31,7 @@ Our team have given several presentations about both FRET and Mu-FRET as part of
 
 
 ### Presentation Slides
- 
+
 * [_FRETing about Requirements: Formalised Requirements for an Aircraft Engine Controller_](mu-fret-docs/presentations/refsq2022-fret.pdf) (slides PDF): conference presentation about our work using FRET to formalise the requirements of an aircraft engine controller, provided by our Use Case 5 partner. The accompanying publication can be found on the [publisher's page](https://doi.org/10.1007/978-3-030-98464-9_9) or Open Access on [arXiv](https://arxiv.org/abs/2112.04251).
 * [Demonstration Session slides](mu-fret-docs/presentations/goteburg-nuim.pdf) (PDF) from the General Assembly meeting in Gothenburg. These high-level slides gave us a visual aid while we were demonstrating progress using FRET and Mu-FRET in the VALU3S project. 
 * [Demonstration Session slides](mu-fret-docs/presentations/hamburg-nuim.pdf) (PDF) from the General Assembly meeting in Hamburg, providing an update on the slides from the Gothenburg meeting. These high-level slides gave us a visual aid while we were demonstrating progress using FRET and Mu-FRET in the VALU3S project. 
@@ -117,10 +123,3 @@ Mu-FRET is built with a few assumptions about requirements and usage, which we d
   - Single and Double variables cannot be supported, even though FRETISH allows direct comparisons to real numbers (e.g. `variable > 2.4`) NuSMV does not support `real constants`.
   - The Mu-FRET refactoring UI warns users about these problems if variables have already been assigned an unsupported type.
 
-
-## Mu-FRET Team
-
-* [Matt Luckcuck](https://orcid.org/0000-0002-6444-9312)
-* [Oisín Sheridan](https://orcid.org/0000-0002-8613-2500)
-* [Marie Farrell](https://orcid.org/0000-0001-7708-3877)
-* [Rosemary Monahan](https://orcid.org/0000-0003-3886-4675)
