@@ -420,9 +420,9 @@ class VariablesSortableTable extends React.Component {
     const {classes, selectedProject, selectedComponent, selectedVariable,
       modelComponent, importedComponents, variable_data, modelVariables} = this.props;
 
-    const comp_variable_data = variable_data[selectedComponent]
-    const comp_modelVariables = modelVariables[selectedComponent]
-    const comp_modelComponent = modelComponent[selectedComponent]
+    const comp_variable_data = variable_data[selectedComponent] || []
+    const comp_modelVariables = modelVariables[selectedComponent] || []
+    const comp_modelComponent = modelComponent[selectedComponent] || []
     const comp_importedComponents = importedComponents[selectedComponent] ? importedComponents[selectedComponent].filter(elt => elt) : []
 
     const { order, orderBy, rowsPerPage, page} = this.state;

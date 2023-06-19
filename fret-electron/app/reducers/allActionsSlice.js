@@ -101,16 +101,17 @@ const allActionsSlice = createSlice({
         state.selectedProject = action.payload.selectedProject
         state.requirements = action.payload.requirements;
         state.projectRequirements = action.payload.projectRequirements;
-        state.variable_data = action.payload.variable_data;
         state.components = action.payload.components;
-        state.modelComponent = action.payload.modelComponent;
-        state.modelVariables = action.payload.modelVariables;
-        state.selectedVariable = action.payload.selectedVariable;
-        state.importedComponents = action.payload.importedComponents;
         state.completedComponents = action.payload.completedComponents;
         state.cocospecData = action.payload.cocospecData;
         state.cocospecModes = action.payload.cocospecModes;
         state.rlz_data = action.payload.rlz_data
+      },
+      mapVariables(state, action) {
+        state.variable_data = action.payload.variable_data;
+        state.modelComponent = action.payload.modelComponent;
+        state.modelVariables = action.payload.modelVariables;
+        state.importedComponents = action.payload.importedComponents;
       },
       updateFieldColors(state, action) {
         // console.log('actionsSlice updateFieldColors reducer', action)
@@ -263,7 +264,7 @@ const allActionsSlice = createSlice({
   export const { initializeStore, addProject, deleteProject, selectProject,updateFieldColors,
     updateVariable_noNewVariables, selectVariable, exportModel, importRequirements,
     createOrUpdateRequirement, deleteRequirement, importRequirementsCsv, formalizeRequirement,
-    changeRequirementStatus, importComponent, exportComponent, selectCorspdModelComp,
+    changeRequirementStatus, importComponent, exportComponent, selectCorspdModelComp, mapVariables,
     rlzDiagUnrealizableRequirement, checkRealizability, selectRealizabilityComponent, setGlossaryProjectRequirements, setGlossaryVariables
    } = allActionsSlice.actions
   export default allActionsSlice.reducer

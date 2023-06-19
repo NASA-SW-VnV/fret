@@ -260,6 +260,10 @@ ipcMain.handle('selectProject', async (evt, arg) => {
 
   return result
 })
+ipcMain.handle('mapVariables', async (evt, components) => {
+  const result = await fretModel.mapVariables(components);
+  return result
+})
 // project slice
 
 ipcMain.handle('selectProjectRequirements', async (evt, arg) => {

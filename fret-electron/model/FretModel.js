@@ -35,7 +35,7 @@ import {leveldbDB, modelDB, system_DBkeys} from '../app/main.dev'
 import {removeVariablesInBulk, removeVariables } from './modelDbSupport/deleteVariables_main'
 import {removeReqsInBulk} from './fretDbSupport/deleteRequirements_main'
 import { app, dialog} from 'electron'
-import {getContractInfo, getPropertyInfo, getDelayInfo, 
+import {getContractInfo, getPropertyInfo, getDelayInfo,
   synchFRETvariables} from './modelDbSupport/variableMappingSupports'
 //import FretSemantics from './../app/parser/FretSemantics'
 import {export_to_md} from "../app/utils/utilityFunctions";
@@ -181,7 +181,6 @@ export default class FretModel {
 
       // if a project is selected, update project dependent states
       // in AnalysisTab and VariableView
-      // console.log('FretModel.synchAnalysesAndVariablesWithDB started')
       try {
         // components, cocospecModes, cocospecData, and completedComponents
         const analysisStates = await synchAnalysisWithDB(this.selectedProject)
@@ -191,47 +190,37 @@ export default class FretModel {
             this.cocospecModes = analysisStates.cocospecModes
             this.components = analysisStates.components
             this.completedComponents = analysisStates.completedComponents
-            //console.log('FretModel.synchAnalysesAndVariablesWithDB calling synchFRETvariables ,analysisStates.components: ',analysisStates.components)
           }
 
           // for each component, we want to call synchFRETvariables
-          this.variable_data = {}
-          this.modelComponent = {}
-          this.modelVariables = {}
-          this.importedComponents = {}
-          // console.log('FretModel.synchAnalysesAndVariablesWithDB looping through components calling synchFRETvariables')
-          await Promise.all(this.components.map(async (comp) => {
-            var component = comp.component_name
-            var componentVariableMapping =  await synchFRETvariables(this.selectedProject,component)
-            /*
-            console.log('FretModel.synchAnalysesAndVariablesWithDB for component: ',component,
-                          ', componentVariableMapping: ', componentVariableMapping)
-
-            console.log('FretModel.synchAnalysesAndVariablesWithDB for component: ',component,
-                          ', componentVariableMapping.variable_data: ', componentVariableMapping.variable_data)
-            console.log('FretModel.synchAnalysesAndVariablesWithDB for component: ',component,
-                          ', componentVariableMapping.modelComponent: ', componentVariableMapping.modelComponent)
-            console.log('FretModel.synchAnalysesAndVariablesWithDB for component: ',component,
-                          ', componentVariableMapping.modelVariables: ', componentVariableMapping.modelVariables)
-            console.log('FretModel.synchAnalysesAndVariablesWithDB for component: ',component,
-                          ', componentVariableMapping.importedComponents: ', componentVariableMapping.importedComponents)
-                          */
-            this.variable_data[component] = componentVariableMapping.variable_data
-            this.modelComponent[component] = componentVariableMapping.modelComponent
-            this.modelVariables[component] = componentVariableMapping.modelVariables
-            this.importedComponents[component] = componentVariableMapping.importedComponents
-
-          }))
-
-          //console.log('FretModel.synchAnalysesAndVariablesWithDB ended, this.variable_data: ', this.variable_data)
-          //console.log('FretModel.synchAnalysesAndVariablesWithDB ended, this.modelComponent: ', this.modelComponent)
-          //console.log('FretModel.synchAnalysesAndVariablesWithDB ended, this.modelVariables: ', this.modelVariables)
-          //console.log('FretModel.synchAnalysesAndVariablesWithDB ended, this.importedComponents: ', this.importedComponents)
 
       }
       catch (error){
         console.log(`Error synchAnalysesAndVariablesWithDB in FretModel: ${error}`);
       }
+    }
+
+    async mapVariables (components) {
+      this.variable_data = {}
+      this.modelComponent = {}
+      this.modelVariables = {}
+      this.importedComponents = {}
+      await Promise.all(components.map(async (comp) => {
+        var component = comp.component_name
+
+        var componentVariableMapping =  await synchFRETvariables(this.selectedProject,component)
+        this.variable_data[component] = componentVariableMapping.variable_data
+        this.modelComponent[component] = componentVariableMapping.modelComponent
+        this.modelVariables[component] = componentVariableMapping.modelVariables
+        this.importedComponents[component] = componentVariableMapping.importedComponents
+
+      }))
+    return {
+      variable_data: this.variable_data,
+      modelComponent: this.modelComponent,
+      modelVariables: this.modelVariables,
+      importedComponents: this.importedComponents
+    }
     }
 
     async initializeFromDB(){

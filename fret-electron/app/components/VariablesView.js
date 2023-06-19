@@ -187,7 +187,7 @@ class ComponentSummary extends React.Component {
 
   exportComponentCode = event => {
     event.stopPropagation();
-    const {component, selectedProject, language, getPropertyInfo, getDelayInfo, getContractInfo} = this.props;
+    const {component, selectedProject, language} = this.props;
     var args = [component, selectedProject, language]
     // context isolation
     ipcRenderer.invoke('exportComponent',args).then((result) => {
@@ -235,9 +235,6 @@ ComponentSummary.propTypes = {
   completed: PropTypes.bool.isRequired,
   selectedProject: PropTypes.string.isRequired,
   language: PropTypes.string.isRequired,
-  getPropertyInfo: PropTypes.func.isRequired,
-  getDelayInfo: PropTypes.func.isRequired,
-  getContractInfo: PropTypes.func.isRequired,
   variableIdentifierReplacement: PropTypes.func.isRequired
 };
 
@@ -278,7 +275,7 @@ class VariablesView extends React.Component {
 
   render() {
     const self = this;
-    const {classes, selectedProject, listOfProjects, components, completedComponents, cocospecData, cocospecModes, getPropertyInfo, getDelayInfo, getContractInfo} = this.props;
+    const {classes, selectedProject, listOfProjects, components, completedComponents, cocospecData, cocospecModes} = this.props;
     const{language}= this.state;
 
     return (
@@ -319,9 +316,6 @@ class VariablesView extends React.Component {
                   completed = {completedComponents.includes(component)}
                   selectedProject={selectedProject}
                   language={language}
-                  getPropertyInfo={getPropertyInfo}
-                  getDelayInfo={getDelayInfo}
-                  getContractInfo={getContractInfo}
                   variableIdentifierReplacement={this.props.variableIdentifierReplacement}
                 />
               </AccordionSummary>
@@ -351,9 +345,6 @@ VariablesView.propTypes = {
   cocospecModes: PropTypes.object.isRequired,
   components: PropTypes.array.isRequired,
   completedComponents: PropTypes.array.isRequired,
-  getPropertyInfo: PropTypes.func.isRequired,
-  getDelayInfo: PropTypes.func.isRequired,
-  getContractInfo: PropTypes.func.isRequired,
   variableIdentifierReplacement: PropTypes.func.isRequired
 };
 

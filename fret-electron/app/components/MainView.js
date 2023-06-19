@@ -81,7 +81,14 @@ import MissingExternalImportDialog from './MissingExternalImportDialog';
 import ExportRequirementsDialog from './ExportRequirementsDialog';
 
 import { connect } from "react-redux";
-import { addProject,deleteProject, selectProject, initializeStore, importRequirements, } from '../reducers/allActionsSlice';
+import {
+  addProject,
+  deleteProject,
+  selectProject,
+  initializeStore,
+  importRequirements,
+  mapVariables,
+} from '../reducers/allActionsSlice';
 
 const app = require('electron').remote.app
 const dialog = require('electron').remote.dialog
@@ -231,19 +238,19 @@ class MainView extends React.Component {
                                   // projects
                                   listOfProjects: result.listOfProjects,
                                   selectedProject: result.selectedProject,
-                                  fieldColors: result.fieldColors,                                                       
+                                  fieldColors: result.fieldColors,
                                   // requirements
-                                  requirements: result.requirements,                         
+                                  requirements: result.requirements,
                                   // components
-                                  variable_data: result.variable_data, 
-                                  components: result.components, 
-                                  modelComponent: result.modelComponent, 
-                                  modelVariables : result.modelVariables, 
-                                  selectedVariable: result.selectedVariable, 
+                                  variable_data: result.variable_data,
+                                  components: result.components,
+                                  modelComponent: result.modelComponent,
+                                  modelVariables : result.modelVariables,
+                                  selectedVariable: result.selectedVariable,
                                   importedComponents: result.importedComponents,
                                   completedComponents: result.completedComponents,
-                                  cocospecData: result.cocospecData, 
-                                  cocospecModes: result.cocospecModes,                          
+                                  cocospecData: result.cocospecData,
+                                  cocospecModes: result.cocospecModes,
                                   // realizability
                                   rlz_data: result.rlz_data,
                                   selectedRlz: result.selectedRlz,
@@ -278,20 +285,20 @@ class MainView extends React.Component {
           // projects
           listOfProjects : result.listOfProjects,
           // requirements
-          requirements : result.requirements, 
+          requirements : result.requirements,
           // analysis
-          components : result.components,     
-          completedComponents : result.completedComponents, 
-          cocospecData : result.cocospecData, 
+          components : result.components,
+          completedComponents : result.completedComponents,
+          cocospecData : result.cocospecData,
           cocospecModes : result.cocospecModes,
           // variables
           variable_data : result.variable_data,
-          modelComponent : result.modelComponent,                                   
-          modelVariables : result.modelVariables,   
-          selectedVariable : result.selectedVariable, 
-          importedComponents : result.importedComponents,         
-        
-        })        
+          modelComponent : result.modelComponent,
+          modelVariables : result.modelVariables,
+          selectedVariable : result.selectedVariable,
+          importedComponents : result.importedComponents,
+
+        })
       }
       if (result.fileExtension){
         this.handleCSVImport(result.csvFields, result.importedReqs)
@@ -301,7 +308,7 @@ class MainView extends React.Component {
       console.log(err);
     })
 
-   
+
 
   }
 
@@ -313,34 +320,26 @@ class MainView extends React.Component {
     const self = this
     var args = [name]
     ipcRenderer.invoke('selectProject',args).then((result) => {
-      // console.log('MainView.handleSetProject, result.components: ', result.components)
-      // console.log('MainView.handleSetProject, result.completedComponents: ', result.completedComponents)
-      // console.log('MainView.handleSetProject, result.cocospecData: ', result.cocospecData)
-      // console.log('MainView.handleSetProject, result.cocospecModes: ', result.cocospecModes)
-      // console.log('MainView.handleSetProject, result.variable_data: ', result.variable_data)
-      // console.log('MainView.handleSetProject, result.modelComponent: ', result.modelComponent)
-      // console.log('MainView.handleSetProject, result.modelVariables: ', result.modelVariables)
-      // console.log('MainView.handleSetProject, result.importedComponents: ', result.importedComponents)
       this.props.selectProject({ type: 'actions/selectProject',
                                    // projects
                                   selectedProject : result.selectedProject,
                                   // requirements
-                                  requirements : result.requirements, 
+                                  requirements : result.requirements,
                                   projectRequirements: result.projectRequirements,
                                   // analysis
-                                  components : result.components,     
-                                  completedComponents : result.completedComponents, 
-                                  cocospecData : result.cocospecData, 
-                                  cocospecModes : result.cocospecModes,                                   
-                                  // variables
-                                  variable_data : result.variable_data,
-                                  modelComponent : result.modelComponent,                                   
-                                  modelVariables : result.modelVariables,   
-                                  selectedVariable : result.selectedVariable, 
-                                  importedComponents : result.importedComponents, 
-
+                                  components : result.components,
+                                  completedComponents : result.completedComponents,
+                                  cocospecData : result.cocospecData,
+                                  cocospecModes : result.cocospecModes,
                       })
-
+      return result.components
+    }).then((components) => ipcRenderer.invoke('mapVariables', components)).then((result) => {
+      this.props.mapVariables({ type: 'actions/mapVariables',
+          variable_data : result.variable_data,
+          modelComponent : result.modelComponent,
+          modelVariables : result.modelVariables,
+          importedComponents : result.importedComponents,
+        })
     }).catch((err) => {
       console.log(err);
     })
@@ -471,7 +470,7 @@ class MainView extends React.Component {
       anchorEl: null
     })
   }
-  
+
   handleNoExtFileImport = () => {
     this.handleCreateDialogOpen();
   }
@@ -506,13 +505,13 @@ class MainView extends React.Component {
             let data = JSON.parse(buffer);
             // console.log('data in JSON.parse: ', data)
             if(!data.requirement & !data.variables){
-              //  invalid file  
-              //// console.log('setting missingExternalImportDialogReason to invalid')
+              //  invalid file
+              //console.log('setting missingExternalImportDialogReason to invalid')
               self.setState({
                 missingExternalImportDialogOpen: true,
                 missingExternalImportDialogReason: 'invalid',
                 anchorEl: null
-              });         
+              });
             } else {
               self.setState({
                 externalRequirement : data.requirement,
@@ -521,16 +520,16 @@ class MainView extends React.Component {
               self.handleCreateDialogOpen();
             }
           } catch (error) {
-            //  empty file  
+            //  empty file
             console.log('error in JSON.parse for text import: ',error);
             console.log('setting missingExternalImportDialogReason to empty')
             self.setState({
               missingExternalImportDialogOpen: true,
               missingExternalImportDialogReason: 'invalid',
               anchorEl: null
-            });         
+            });
           }
-          
+
         }
       })
     }
@@ -575,7 +574,7 @@ class MainView extends React.Component {
               } catch (e){
                 //console.log('inside  catch in handleBrowseExtImpFile')
                 self.setState({missingExternalImportDialogOpen: true})
-                console.log(e)                
+                console.log(e)
               }
             });
           } catch (error) {
@@ -583,7 +582,7 @@ class MainView extends React.Component {
             self.setState({missingExternalImportDialogOpen: true})
             console.log(err)
           }
-        } 
+        }
 
     //if(!self.state.missingExternalImportDialogOpen){self.handleCreateDialogOpen();}
   }
@@ -829,11 +828,12 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-  addProject, 
-  deleteProject, 
+  addProject,
+  deleteProject,
   selectProject,
   initializeStore,
   importRequirements,
+  mapVariables,
 };
 
 export default withStyles(styles, { withTheme: true })(connect(mapStateToProps,mapDispatchToProps)(MainView));
