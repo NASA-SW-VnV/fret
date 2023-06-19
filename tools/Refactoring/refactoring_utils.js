@@ -1,7 +1,16 @@
 /**
-* Gets the variable names out of the requirement's
-* JSON object.
-*/
+ * Utility methods to help the refactoring code.
+ * 
+ * @module Refactoring/refactoring_utils
+ * @author Matt Luckcuck
+ */
+
+/**
+ * Gets the variable names out of the requirement parameter's JSON object.
+ * 
+ * @param {Object} requirement the requirement 
+ * @returns {Array} array of variable names
+ */
 exports.getVariableNames = function getVariableNames(requirement)
 {
   let variables = requirement.semantics.variables;

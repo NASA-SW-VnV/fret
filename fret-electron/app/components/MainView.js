@@ -480,6 +480,7 @@ class MainView extends React.Component {
   }
 
   openVersionDialog = () => {
+    console.log("Open Version Dialog pressed")
     this.setState({
       versionDialogOpen: true,
       anchorEl: null
