@@ -28,7 +28,7 @@ using the operators
 * **|** (or)
 * **=>** or **->** (implies)
 * **<=>** or **<->** (equivalence, biconditional)
-* **xor** (exclusive OR)
+* **xor** (exclusive OR)\
 
 Boolean or numerical variables correspond to signals or variables in the
 component.
@@ -38,14 +38,17 @@ when exporting requirements for verification. Check the user manual under
 "Exporting for Analysis" for more details.
 
 Parentheses **(** **)** are used as usual. Please use parentheses as much as
-possible to avoid mistakes and misunderstandings.
+possible to avoid mistakes and misunderstandings.  
 
-> __Important Note:__ [Restrictions](../restrictions.md)
 
-Examples:
+#### Restrictions
+The following uppercase identifiers cannot be used as variables in boolean and arithmetic expressions:
 
+`A E F G H O S T U V X Y Z AF AG AX BU EF EG EX SI UI ABF ABG EBF EBG MAX MIN LAST`.  
+
+[//]: # (If you have some of those in your requirements, the database fret-db may not be able to be read. Also, the Simulator will not give correct results.)
+
+#### Examples
 * **upon** powered_on
 * **if** (limits & !standby & !apfail & supported)
 * **when** ((level(tank1) < 0.3) & (altitude > 1000)) **is false**
-
-

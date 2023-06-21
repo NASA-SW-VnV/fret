@@ -14,7 +14,7 @@ The **only** modes mean that when the system is not in the specified relationshi
 (i.e., the system is not **in**/**after**/**before** the mode) the response
 must not occur.
 
-#### Examples:
+#### Examples
 
 * _(global)_ The system shall always satisfy count >= 0
 * **After** boot mode the system shall immediately satisfy prompt_for_password
