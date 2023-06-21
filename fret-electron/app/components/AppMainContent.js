@@ -49,7 +49,7 @@ class AppMainContent extends React.Component {
   render() {
     const { content, selectedProject, listOfProjects, requirements }  = this.props
     if (content === 'dashboard')
-      return <Dashboard selectedProject={selectedProject} requirements={requirements}/>
+      return <Dashboard selectedProject={selectedProject} requirements={requirements} listOfProjects={listOfProjects}/>
     if (content === 'requirements')
       return <SortableTable selectedProject={selectedProject} listOfProjects={listOfProjects} requirements={requirements}/>
       if (content === 'analysis')

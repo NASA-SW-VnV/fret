@@ -69,13 +69,12 @@ class Dashboard extends React.Component {
   }
 
   render() {
-    const { classes, selectedProject, requirements } = this.props
-    
+    const { classes, selectedProject, requirements, listOfProjects} = this.props
+
     var numOfRequirements = 0
     var numOfFormalizedRequirements = 0
     var bytesOfRequirements = 0
     var components = []
-    var projects = []
     var projectOverviewTitle, projectOverviewValue
 
     requirements.filter(r => {
@@ -92,13 +91,11 @@ class Dashboard extends React.Component {
           if (!components.includes(component_name))
             components.push(component_name)
         }
-        if (!projects.includes(req.project))
-          projects.push(req.project)
       })
 
     if (selectedProject == 'All Projects') {
       projectOverviewTitle = 'Total Projects'
-      projectOverviewValue = projects.length.toString()
+      projectOverviewValue = listOfProjects.length.toString()
 
     } else {
       projectOverviewTitle = 'Current Project'
@@ -106,7 +103,6 @@ class Dashboard extends React.Component {
     }
 
     const percentageOfFormalized = numOfRequirements == 0 ? '0' : (numOfFormalizedRequirements/numOfRequirements * 100).toFixed(2)
-
     return (
       <div className={classes.root}>
         <ImageList rowHeight={120} className={classes.ImageList} cols={5} gap={4}>
@@ -130,7 +126,7 @@ class Dashboard extends React.Component {
             <ListSubheader color='primary' disableGutters={true}>Hierarchical Cluster</ListSubheader>
             </List>
             <Divider />
-            <CirclePacking selectedProject={selectedProject} projects={projects} requirements={requirements}/>
+            <CirclePacking selectedProject={selectedProject} projects={listOfProjects} requirements={requirements}/>
           </ImageListItem>
           <ImageListItem cols={2} rows={6}>
             <List>
@@ -148,7 +144,8 @@ class Dashboard extends React.Component {
 Dashboard.propTypes = {
   classes: PropTypes.object.isRequired,
   selectedProject: PropTypes.string.isRequired,
-  requirements: PropTypes.array.isRequired
+  requirements: PropTypes.array.isRequired,
+  listOfProjects: PropTypes.array.isRequired
 
 }
 
