@@ -198,15 +198,24 @@ function union(l1,l2) {
     return r;
 }
 
+/**
+ * This function rewrites an expression produced by FRET formalization.
+ * The bounds in bounded LTL operators 
+ * ([<=t] -> [0, t], [=t] -> [t, t], [<t] -> [0, t-1], 
+ * expressions containing "t+1" are rewritten
+ * such that "t+1" is evaluated to an integer
+ * @param {string} expression the expression that should be modified
+ * @returns {string} the modified expression
+*/
 function salt2smv(ptForm) {
-    ptForm = ptForm.replace(/\<\w\>/g,'').replace(/\<\/\w\>/g,'') // Remove html tags
-	.replace(/\=\>/g,'->')
-        .replace(/\[<=(\d+)\s*\w*\s*\]/g, "[0, $1]")
-        .replace(/\[<=(\d+)\s*\w*\s*\+1\]/g, (str, p1, offset, s) => (`[0, ${parseInt(p1)+1}]`))
-        .replace(/\[<(\d+)\s*\w*\s*\]/g, (str, p1, offset, s) => (`[0, ${parseInt(p1)-1}]`))
-        .replace(/\[<(\d+)\s*\w*\s*\+1\]/g, "[0, $1]")
+    ptForm = ptForm.replace(/\<[bi]\>/g,'').replace(/\<\/[bi]\>/g,'') // Remove html tags
+	.replace(/=>/g,'->')
+        .replace(/\[<=(\d+)\s*\w*\s*\]/g, "[0,$1]")
+        .replace(/\[<=(\d+)\s*\w*\s*\+1\]/g, (str, p1, offset, s) => (`[0,${parseInt(p1)+1}]`))
+        .replace(/\[<(\d+)\s*\w*\s*\]/g, (str, p1, offset, s) => (`[0,${parseInt(p1)-1}]`))
+        .replace(/\[<(\d+)\s*\w*\s*\+1\]/g, "[0,$1]")
 	.replace(/\[=(\d+)\s*\w*\s*\]/g, "[$1,$1]")
-        .replace(/\[=(\d+)\s*\w*\s*\+1\]/g, (str, p1, offset, s) => (`[${parseInt(p1)+1}, ${parseInt(p1)+1}]`))
+        .replace(/\[=(\d+)\s*\w*\s*\+1\]/g, (str, p1, offset, s) => (`[${parseInt(p1)+1},${parseInt(p1)+1}]`))
     return ptForm;
 }
 
@@ -241,6 +250,81 @@ function divide(n,a) {
     return [take(n,a), drop(n,a)];
 }
 
+function invert_map (obj) {
+  let r = {};
+  for (let key in obj) {r[obj[key]] = key}
+  return r
+}
+
+function map_if_defined (M,x) {
+  // Return M[x] if defined, else x.
+  const y = M[x];
+  return y ? y : x;
+}
+
+function string_nonempty_intersection(s1,s2) {
+  return s1.split("").some((c) => s2.includes(c))
+}
+
+const special_char_map = { "." : "_DOT_", "%" : "_PRC_", 
+			   "#" : "_HSH_", "$" : "_DOL_", "&" : "_AMP_",
+			   "@" : "_ATS_", "!" : "_BNG_", "?" : "_QUS_",
+			   "-" : "_HYP_", "*" : "_AST_", "=" : "_EQU_",
+			   "^" : "_CRT_", " " : "_SPC_", "+" : "_PLS_",
+			   ";" : "_SEM_" , ":" : "_CLN_", "," : "_CMA_",
+			   "/" : "_FSL_", "\\" : "_BSL_", 
+			   "|" : "_VBR_", "~" : "_TLD_",
+			   "<" : "_LAN_", ">" : "_RAN_",
+			   "(" : "_LPR_", ")" : "_RPR_",
+			   "{" : "_LCB_", "}" : "_RCB_",
+			   "[" : "_LSQ_", "]" : "_RSQ_",
+			   "'" : "_SQT_", '"' : "_DQT_", "`" : "_BQT_"
+			 }
+
+const special_chars = Object.keys(special_char_map).join("")
+const special_chars_needing_quotes = special_chars.replace(/[\.%]/g,'')
+const unspecial_char_map = invert_map(special_char_map)
+
+function map_char(c) {
+  return map_if_defined(special_char_map,c);
+}
+
+function map_string(str) {
+    let str2 = str.replace(/\\"/g,'"') // \" is mapped to "
+    return str2.split("").map(map_char).join("");
+}
+
+function replace_special_chars_within_identifiers(str) {
+    // Replace . and % within identifers, which must start with a letter
+    if (str) {
+	const str2 = str.replace(/(^|[^\w])([A-Za-z]\w*)([\.%])/g,(match,p1,p2,p3,offset,strng) => (p1 + p2 + map_char(p3)))
+	return ((str2 === str) ? str : replace_special_chars_within_identifiers(str2))
+    }
+    else return str;
+}
+
+function replace_special_chars_within_quoted_identifiers(str) {
+    // Replace special chars within and including double quotes
+    if (str) {
+      const str_chars = str.replace(/(".*?[^\\]")/g,
+				    (match,p1,offset,strng) => map_string(p1))
+      return str_chars
+    }
+    else return str;
+}
+
+function replace_special_chars(str) {
+    const str_dots = replace_special_chars_within_identifiers(str)
+    const str_chars = replace_special_chars_within_quoted_identifiers(str_dots)
+    return str_chars
+}
+
+function unreplace_special_chars(str) {
+  let r = str.replace(/(_[A-Z][A-Z][A-Z]_)/g,
+		      (match,p1,offset,strng) =>
+		      map_if_defined(unspecial_char_map,p1));
+  return r;
+}
 
 module.exports = {
     arrayLast,
@@ -259,17 +343,33 @@ module.exports = {
     isIntegerString,
     setProp,
     isEqual,
+    map_if_defined,
+    invert_map,
+    map_string,
+    replace_special_chars,
+    unreplace_special_chars,
     union,
     unionSets,
     compress,
     take,
     drop,
     divide,
-    salt2smv
+    salt2smv,
+    string_nonempty_intersection
 }
 
-
 /*
+
+var testcases = [
+    'a.b_e +c.3.d.3*4.56e7',
+    '4.5e7+aaa.bbb',
+    'foo_bar.global_c +c.3.d.3*4.56e7',
+  '"foo_bar.global_c +c.3.d.3*4.56e7"',
+    'a4.5e7'
+]
+
+testcases.forEach((tc) => {console.log(tc + ' --> ' + replace_special_chars(tc) + ' -->  ' + unreplace_special_chars(replace_special_chars(tc)))})
+
 console.log('gen');
 for (let i = 0; i < 10; i++) console.log(genRandomIntervals(12,3))
 console.log('get');

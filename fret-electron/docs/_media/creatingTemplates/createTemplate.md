@@ -11,7 +11,7 @@ Additionally, a user may create their own templates by using the templates edito
 
 As shown in the above screenshot, a user can use the following functions to create a new template:
 * `newTemplate`: Specifies the name of the template, e.g., Change State.
-* `tenplateSummary`: Provides a summary of the template and what types of requirements it describes.
+* `templateSummary`: Provides a summary of the template and what types of requirements it describes.
 * `templateStructure`: Provides the FRETish text that will appear in the FRET requirement editor. Square brackets are used for fields that must be instantiated by the user, e.g., component, input_state, etc.
 * `fieldDescription`: Provides a description of each field that must be instantiated by the user.
 * `addOption`: Provides input options for each field that can be instantiated by the user. Notice that multiple options can be added for each such field, e.g., condition has three options.

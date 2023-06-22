@@ -26,11 +26,10 @@ We provide a set of example requirements that can be directly [imported](./user-
 
 ## FRET Team
 
-[Dimitra Giannakopoulou](https://ti.arc.nasa.gov/profile/dimitra/),
 [Andreas Katis](https://andreaskatis.github.io/),
 [Anastasia Mavridou](http://amavridou.com/),
 [Tom Pressburger](https://ti.arc.nasa.gov/profile/ttp/),
 [Johann Schumann](https://ti.arc.nasa.gov/profile/schumann/),
 [Khanh Trinh](https://www.researchgate.net/profile/Khanh-Trinh-3).
 
-*Alumni and Interns*: David Bushnell, Tanja de Jong, George (Yorgo) Karamanolis, David Kooi, Julian Rhein, Nija Shi.
+*Alumni and Interns*: Milan Bhandari, David Bushnell, Tanja de Jong, Dimitra Giannakopoulou, Kelly Ho, George (Yorgo) Karamanolis, David Kooi, Jessica Phelan, Julian Rhein, Daniel Riley, Nija Shi.

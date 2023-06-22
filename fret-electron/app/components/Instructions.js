@@ -61,7 +61,16 @@ import Help from './Help';
 import ColorPicker from './ColorPicker';
 import LTLSimLauncher from './LTLSimLauncher';
 
-import TemplatePanel from './TemplatePanel'
+import TemplatePanel from './TemplatePanel';
+
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
+import FormGroup from '@material-ui/core/FormGroup';
 
 import {
   scopeInstruction,
@@ -116,6 +125,11 @@ const styles = theme => ({
     fontFamily: 'sans-serif',
     fontSize: '14px'
   },
+  buttonDescription: {
+  color: theme.palette.primary.main,
+  fontFamily: 'sans-serif',
+  fontSize: '6px'
+},
   variableDescription: {
     color: theme.palette.primary.main,
     fontFamily: 'sans-serif',
@@ -153,6 +167,10 @@ const styles = theme => ({
     fontSize: theme.typography.pxToRem(15),
     fontWeight: theme.typography.fontWeightRegular
   },
+  formControl: {
+  margin: theme.spacing(1),
+  minWidth: 120,
+  }
 });
 
 function TabContainer(props) {
@@ -182,6 +200,9 @@ class Instructions extends React.Component {
       LTLSimDialogOpen: false,
       components: {},
       selectedItem: null,
+      ptFormat: 'SMV',
+      ftFormat: 'SMV',
+      ftInfinite: false
     };
 
     this.openLTLSimDialog = this.openLTLSimDialog.bind(this);
@@ -233,6 +254,20 @@ class Instructions extends React.Component {
     });
   }
 
+handleFormatChange = (event) => {
+ this.setState({
+   ptFormat: event.target.value,
+ });
+}
+
+handleSwitchChange =(event) => {
+  if (event.target.name === 'ftInfinite'){
+   this.setState({
+     ftInfinite: event.target.checked,
+   })
+ }
+}
+
   openLTLSimDialog() {
     this.setState({LTLSimDialogOpen: true});
   }
@@ -264,28 +299,34 @@ class Instructions extends React.Component {
                             onOpen={this.openLTLSimDialog}
                             onClose={this.closeLTLSimDialog}
                             requirement={requirement}
+            		    project={this.props.projectName}
                             requirementID={requirementID}
                             />;
     }
 
-    if ((ft !== constants.unhandled_semantics) && (ft !== constants.nonsense_semantics) && (ft !== constants.undefined_semantics) && (diagram !== constants.undefined_svg))
+    //Check if FTP appears in the formulas to display clarification message.
+    var ftpInFT = this.props.formalization.semantics.ft ? this.props.formalization.semantics.ft.replace(/[()(<b>)(<i>)(</b>)(</i>)]/g,'').split(" ").includes("FTP") : false;
+    var ftpInPT = this.props.formalization.semantics.pt ? this.props.formalization.semantics.pt.replace(/[()(<b>)(<i>)(</b>)(</i>)]/g,'').split(" ").includes("FTP") : false;
+
+    if ((ft !== constants.unhandled_semantics) && (ft !== constants.nonsense_semantics)
+    && (ft !== constants.undefined_semantics) && (diagram !== constants.undefined_svg))
     return(
       <div>
       <br />
-        <div className={classes.description} dangerouslySetInnerHTML={{ __html: this.props.formalization.semantics.description}} />
+        <div id="qa_crtAst_sem_desc" className={classes.description} dangerouslySetInnerHTML={{ __html: this.props.formalization.semantics.description}} />
         <br />
         <div className={css.imgWrap}>
-        <img src= {path}/>
+        <img id="qa_crtAst_sem_img" src= {path}/>
         </div>
-        <div className={classes.variableDescription} dangerouslySetInnerHTML={{ __html: this.props.formalization.semantics.diagramVariables}} />
+        <div id="qa_crtAst_sem_imgFooter" className={classes.variableDescription} dangerouslySetInnerHTML={{ __html: this.props.formalization.semantics.diagramVariables}} />
         <br />
         <Accordion>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography className={classes.heading}>Diagram Semantics</Typography>
+          <Typography id="qa_crtAst_sem_typ_diagramSem" className={classes.heading}>Diagram Semantics</Typography>
         </AccordionSummary>
         <AccordionDetails>
         <div className={css.notationWrap}>
-        <img src= {notationPath}/>
+        <img id="qa_crtAst_sem_img_diagramSem" src= {notationPath}/>
         </div>
         </AccordionDetails>
       </Accordion>
@@ -296,25 +337,73 @@ class Instructions extends React.Component {
         <br />
         <Accordion>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography className={classes.heading}>Future Time LTL</Typography>
+          <Typography id="qa_crtAst_sem_typ_futureTime" className={classes.heading}>Future Time LTL</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <div>
-            <div className={classes.formula} dangerouslySetInnerHTML={{ __html: this.props.formalization.semantics.ft }} />
+          <FormGroup row>
+          <div>
+          <FormControl>
+            <Select
+              labelId="select-disabled-label"
+              id="qa_crtAst_sem_sel_future"
+              value={this.state.ftFormat}
+            >
+            <MenuItem id="qa_crtAst_sem_mi_futureSmv" value='SMV' key='SMV'>SMV</MenuItem>
+            </Select>
+            <FormHelperText>Format</FormHelperText>
+            </FormControl>
+            </div>
+            <div>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              <FormControlLabel id="qa_crtAst_sem_btn_switchFutureInfinite"
+                  control={<Switch size="small" checked={this.state.ftInfinite} onChange={this.handleSwitchChange} name="ftInfinite" />}
+                  label="Infinite trace"/>
+            </div>
             <br />
-            <div className={classes.description} dangerouslySetInnerHTML={{ __html:' Target: '+ this.props.formalization.semantics.component + ' component.'}} />
+          </FormGroup> <br />
+            <div id="qa_crtAst_sem_typ_futureTimeFormula" className={classes.formula}
+              dangerouslySetInnerHTML={{ __html: (this.state.ftInfinite ? this.props.formalization.semantics.ftInfAUExpanded : this.props.formalization.semantics.ftExpanded)}} />
+
+            <br />
+            <div id="qa_crtAst_sem_typ_futureTimeComp" className={classes.description} dangerouslySetInnerHTML={{ __html:' Target: '+ this.props.formalization.semantics.component + ' component.'}} />
+            {ftpInFT &&
+              <div className={classes.description} dangerouslySetInnerHTML={{ __html:' FTP: First Time Point.'}} />}
           </div>
         </AccordionDetails>
       </Accordion>
       <Accordion>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography className={classes.heading}>Past Time LTL</Typography>
+          <Typography id="qa_crtAst_sem_typ_pastTime" className={classes.heading}>Past Time LTL</Typography>
         </AccordionSummary>
         <AccordionDetails>
         <div>
-          <div className={classes.formula} dangerouslySetInnerHTML={{ __html: this.props.formalization.semantics.pt}} />
+        <FormGroup row>
+        <div>
+        <FormControl>
+          <Select
+            labelId="format"
+            id="qa_crtAst_sem_sel_past"
+            value={this.state.ptFormat}
+            onChange={this.handleFormatChange}
+          >
+            <MenuItem id="qa_crtAst_sem_mi_pastSmv" value='SMV' key='SMV'>SMV</MenuItem>
+            <MenuItem id="qa_crtAst_sem_mi_pastLustre" value='Lustre' key='Lustre'>Lustre</MenuItem>
+          </Select>
+          <FormHelperText>Format</FormHelperText>
+          </FormControl>
+          </div>
           <br />
-          <div className={classes.description} dangerouslySetInnerHTML={{ __html:' Target: '+ this.props.formalization.semantics.component + ' component.'}} />
+        </FormGroup>
+        <br />
+          <div id="qa_crtAst_sem_typ_pastTimeFormula" className={classes.formula}
+          dangerouslySetInnerHTML={{ __html: (this.state.ptFormat=='SMV'
+          ? (this.props.formalization.semantics.ptExpanded)
+          : this.props.formalization.semantics.CoCoSpecCode)}} />
+          <br />
+          <div id="qa_crtAst_sem_typ_pastTimeComp" className={classes.description} dangerouslySetInnerHTML={{ __html:' Target: '+ this.props.formalization.semantics.component + ' component.'}} />
+          {ftpInPT &&
+              <div className={classes.description} dangerouslySetInnerHTML={{ __html:' FTP: First Time Point.'}} />}
         </div>
         </AccordionDetails>
       </Accordion>
@@ -340,6 +429,8 @@ class Instructions extends React.Component {
             <div className={classes.formula} dangerouslySetInnerHTML={{ __html: this.props.formalization.semantics.ft}} />
             <br />
             <div className={classes.description} dangerouslySetInnerHTML={{ __html:' Target: '+ this.props.formalization.semantics.component + ' component.'}} />
+          {ftpInFT &&
+              <div className={classes.description} dangerouslySetInnerHTML={{ __html:' FTP: First Time Point.'}} />}
           </div>
           </AccordionDetails>
         </Accordion>
@@ -352,6 +443,8 @@ class Instructions extends React.Component {
             <div className={classes.formula} dangerouslySetInnerHTML={{ __html: this.props.formalization.semantics.pt}} />
             <br />
             <div className={classes.description} dangerouslySetInnerHTML={{ __html:' Target: '+ this.props.formalization.semantics.component + ' component.'}} />
+            {ftpInPT &&
+              <div className={classes.description} dangerouslySetInnerHTML={{ __html:' FTP: First Time Point.'}} />}
           </div>
           </AccordionDetails>
         </Accordion>
@@ -416,7 +509,7 @@ class Instructions extends React.Component {
     if (fieldsWithExplanation.includes(field)) {
       const mdsrc = instructions[field]
       return(
-        <div>
+        <div id="qa_crtAst_div_explanations">
           <ReactMarkdown source={mdsrc} />
           <ColorPicker
             initialColorInHex={this.state.fieldColors[field.replace('Field', '').toLowerCase()]}
@@ -426,7 +519,7 @@ class Instructions extends React.Component {
     }
     else if (field === 'semantics'){
       return(
-        <div style={{display: 'block'}}>
+        <div id="qa_crtAst_div_semanticPanel" style={{display: 'block'}}>
           {this.renderFormula()}
         </div>
       )
@@ -434,7 +527,7 @@ class Instructions extends React.Component {
       return (
         <div>
           <div style={{paddingBottom:20}}>
-            <Typography variant='subtitle1' color='primary'>Ready to speak FRETish?</Typography>
+            <Typography id="qa_ast_typ_speakFRETish" variant='subtitle1' color='primary'>Ready to speak FRETish?</Typography>
           </div>
           <div>
             <Typography color='primary'>Please use the editor on your left to write your requirement or pick a predefined template from the TEMPLATES tab.</Typography>
@@ -455,18 +548,20 @@ class Instructions extends React.Component {
           indicatorColor="secondary"
           textColor="secondary"
           centered>
-          <Tab label="Assistant"/>
-          <Tab label="Templates"/>
-          <Tab label="Glossary"/>
+          <Tab id="qa_crt_tab_assistant" label="Assistant"/>
+          <Tab id="qa_crt_tab_templates" label="Templates"/>
+          <Tab id="qa_crt_tab_glossary" label="Glossary"/>
         </Tabs>
         {tabValue === 0 && <TabContainer>{this.renderInstruction(field)}</TabContainer>}
         {tabValue === 1 &&
         <TabContainer>{this.renderTemplate(templates, selectedTemplate, handleSelectedTemplateChange)}</TabContainer>}
         {tabValue === 2 && <TabContainer>
           <Glossary
+            id = "Glossary"
             projectName={this.props.projectName}
             setAutoFillVariables={this.props.setAutoFillVariables}
-            requirements={this.props.requirements}/>
+            requirements={this.props.requirements}
+            editVariables={this.props.editVariables}/>
         </TabContainer>}
       </div>
     );
@@ -477,6 +572,7 @@ Instructions.propTypes = {
   field: PropTypes.string,
   grammarRule: PropTypes.string,
   formalization: PropTypes.object,
+  projectName: PropTypes.string.isRequired,
   requirement: PropTypes.string.isRequired,
   requirementID: PropTypes.string.isRequired,
   templates: PropTypes.array.isRequired,
@@ -484,7 +580,8 @@ Instructions.propTypes = {
   tabValue: PropTypes.number.isRequired,
   handleTabChange: PropTypes.func.isRequired,
   requirements: PropTypes.array,
-  setAutoFillVariables: PropTypes.func
+  setAutoFillVariables: PropTypes.func,
+  editVariables: PropTypes.object
 };
 
 export default withStyles(styles)(Instructions);

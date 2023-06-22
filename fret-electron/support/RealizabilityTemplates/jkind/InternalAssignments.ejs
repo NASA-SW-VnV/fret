@@ -1,0 +1,14 @@
+<%var ftpExists = false%>
+<%for (i=0; i < internalVariables.length; i++) {
+	if (internalVariables[i].name === '__FTP') { ftpExists = true; break; }
+	else { continue; }
+}%>
+<%var ftp = ftpExists ? '' : '__FTP = true -> false;'%>
+<%- ftp -%>
+
+<%for (i=0; i < internalVariables.length; i++) {%>
+<%var semiColon = assignments[i].endsWith(';') ? '' : ';'%>
+<%- internalVariables[i].name %> = <%- assignments[i] %><%- semiColon -%><%}%>
+<%for (i=0; i < modes.length; i++) {%>
+<%var semiColon = modes[i].assignment.endsWith(';') ? '' : ';'%>
+<%- modes[i].name %> = <%- modes[i].assignment %><%- semiColon -%><%}%>

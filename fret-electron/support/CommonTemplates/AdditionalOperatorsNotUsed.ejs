@@ -1,0 +1,64 @@
+--First Time Point
+node FTP() returns (X:bool);
+let
+  X = true -> false;
+tel
+
+node toInt (b: bool) returns (n: int) ;
+let
+  n = if b then 1 else 0;
+tel
+
+node count (b: bool) returns (n: int) ;
+let
+  n = (0 -> pre n) + toInt(b);
+tel
+
+-- First state in Mode
+node FM(M:bool) returns (X:bool);
+let
+X = M and not pre M;
+tel
+
+--The previous state was the last state in Mode
+node postLM(M:bool) returns (X:bool);
+let
+X = false -> FM(not M);
+tel
+
+node First( X : bool ) returns ( Y : bool );
+let
+  Y = X -> pre Y;
+tel
+
+--Timed Once: less than or equal to N
+node OTlore(const N: int; X: bool;) returns (Y: bool);
+    var C:int;
+let
+    C = if X then 0
+        else (-1 -> pre C + (if pre C <0 then 0 else 1));
+
+    Y = First(X)
+        ->
+        (if C < 0  then false
+         else C <= N
+        );
+tel
+
+-- Timed Historically: less than or equal to N
+node HTlore(const N: int; X: bool; ) returns (Y: bool);
+let
+  Y = not OTlore(N, not X);
+tel
+
+-- Timed Since: less than or equal to N
+node STlore(const N: int; X: bool; Y: bool; )  returns (Z: bool);
+let
+  Z = S(X, Y) and OTlore(N, X);
+tel
+
+-- Timed Since Inclusive: less than or equal to N
+node SITlore(const N: int; X: bool; Y: bool; )  returns (Z: bool);
+let
+  Z = SI(X,Y) and OTlore(N, X);
+tel

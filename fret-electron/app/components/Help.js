@@ -110,10 +110,11 @@ class Help extends React.Component {
               <Step key={label}>
                 <StepLabel>{label}</StepLabel>
                 <StepContent>
-                  <Typography>{getStepContent(index)}</Typography>
+                  <Typography id={"qa_help_label_"+label}>{getStepContent(index)}</Typography>
                   <div className={classes.actionsContainer}>
                     <div>
                       <Button
+                        id={"help_button_"+label}
                         disabled={activeStep === 0}
                         onClick={this.handleBack}
                         className={classes.button}

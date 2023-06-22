@@ -75,6 +75,27 @@ class ExportRequirementsDialog extends React.Component {
     projects:[]
   };
 
+  export_to_md = (R, P) => {
+	var s="# Requirements for Project `"+ P + "`\n";
+
+	s = s + "|ID|P-ID| Text | Rationale |" + "\n";
+	s = s + "|---|---|---|---|" + "\n";
+//                      ({reqid, parent_reqid, project, rationale, comments, fulltext, semantics, input}))(r.doc)
+
+        R.forEach((r) => {
+		s=s + "| " + r.reqid +
+		     " | " + r.parent_reqid +
+		     " | " + r.fulltext.replace(/\|/g,",").replace(/\n/g," ").replace(/\r/g,"") +
+		     " | " + r.rationale.replace(/\|/g,",").replace(/\n/g," ").replace(/\r/g,"");
+		s=s + "\n";
+        	})
+
+	return s;
+	}
+// REPLACE/Quote UTF-8 chars by \u BLA
+//  replace( /[\\\"\x00-\x1f\x7f-\uffff]/g, function (a) {
+//                return '\\u' + ('0000' + a.charCodeAt(0).toString(16)).slice(-4);
+//            })
 
   handleClose = () => {
     this.setState({ open: false });
@@ -89,16 +110,16 @@ class ExportRequirementsDialog extends React.Component {
   };
 
   handleExport = () => {
-    const {project} = this.state;
+    const {project, output_format} = this.state;
     const filterOff = project == "All Projects";
     var homeDir = app.getPath('home');
-    var filepath = dialog.showSaveDialog(
+    var filepath = dialog.showSaveDialogSync(
       {
         defaultPath : homeDir,
         title : 'Export Requirements',
         buttonLabel : 'Export',
         filters: [
-          { name: "Documents", extensions: ['json'] }
+          { name: "Documents", extensions: [ output_format ] }
         ],
       })
     if (filepath) {
@@ -115,7 +136,17 @@ class ExportRequirementsDialog extends React.Component {
           doc._id = uuidv1()
           filteredResult.push(doc)
         })
-        var content = JSON.stringify(filteredResult, null, 4)
+	//
+	// produce output
+	//
+	var content;
+	console.log(output_format)
+	if (output_format === "md"){
+		content=this.export_to_md(filteredResult, project)
+		}
+	else {
+      content = JSON.stringify(filteredResult, null, 4)
+		}
         fs.writeFile(filepath, content, (err) => {
             if(err) {
                 return console.log(err);
@@ -134,7 +165,8 @@ class ExportRequirementsDialog extends React.Component {
       open: props.open,
       projects: props.fretProjects,
       dialogCloseListener : props.handleDialogClose,
-      project: ''
+      project: '',
+      output_format: 'json'
     })
   }
 
@@ -181,6 +213,28 @@ class ExportRequirementsDialog extends React.Component {
                   {name}
                 </MenuItem>
               ))}
+            </TextField>
+            <TextField
+              id="standard-select-format"
+              select
+              label="Select output format"
+              className={classes.textField}
+              value={this.state.output_format}
+              onChange={this.handleChange('output_format')}
+              SelectProps={{
+                MenuProps: {
+                  className: classes.menu,
+                },
+              }}
+//              helperText="Please select a project"
+              margin="normal"
+            >
+            <MenuItem key={"JSON"} value={"json"}>
+                  JSON
+            </MenuItem>
+            <MenuItem key={"MD"} value={"md"}>
+                  Markdown (MD)
+            </MenuItem>
             </TextField>
           </DialogContent>
           <DialogActions>

@@ -72,14 +72,14 @@ class NewVariablesDialog extends React.Component {
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
-          <DialogTitle id="alert-dialog-title">{"The following new variables were introduced in the assignment(s): " + this.state.variables.join(", ")+"."}</DialogTitle>
+          <DialogTitle id="qa_nvd_alert_dialog">{"The following new variables were introduced in the assignment(s): " + this.state.variables.join(", ")+"."}</DialogTitle>
           <DialogContent>
-            <DialogContentText id="alert-dialog-description">
+            <DialogContentText id="qa_nvd_contentText">
               Please update the assignment(s) to only include existing variables.
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.handleClose} color="primary" autoFocus>
+            <Button id="qa_nvd_btn_ok" onClick={this.handleClose} color="primary" autoFocus>
               OK
             </Button>
           </DialogActions>

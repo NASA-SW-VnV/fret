@@ -107,12 +107,14 @@ class Feeds extends React.Component {
     var listitems = null;
     listitems = recentRequirements.map((r) => {
         var title = r.doc.project + ' ' + r.doc.reqid
+        var title_qa = title.replace(/\s+/g, '_');
         var icon = (r.doc.ltl || (r.doc.semantics && r.doc.semantics.ft !== constants.nonsense_semantics && r.doc.semantics.ft !== constants.undefined_semantics && r.doc.semantics.ft !== constants.unhandled_semantics))  ? null : <UnformalizedIcon color='error' />
         const highlighterStyle =  r.doc.project == selectedProject ? classes.highlighter : {}
 
         return(
         <ListItem key = {r.doc._id} disableGutters={false}>
           <ListItemText
+            id={"qa_db_lit_feeds_"+title_qa}
             primary = {<span className={highlighterStyle}>{title}</span>}
             secondary= {r.doc.fulltext}
           />
@@ -138,7 +140,7 @@ class Feeds extends React.Component {
 
     return (
       <div className={classes.root}>
-        <List className={classes.list}>
+        <List id="qa_db_list_feeds" className={classes.list}>
           {this.renderListItems()}
         </List>
       </div>

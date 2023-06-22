@@ -38,15 +38,6 @@ const NuSMVParser = require('./NuSMVParser/NuSMVParser');
 const nuSMVAnalyzer = require('./nuSMVAnalyzer').nuSMVAnalyzer;
 const NuSMVAnalyzer = new nuSMVAnalyzer();
 
-exports.CoCoSpecSubsts = [
-												['\\<->', '<=>'],
-												['\\->', '=>'],
-												['\\!=', '<>'],
-												['\\&', 'and'],
-		                    ['\\|', 'or'],
-                        ['\\!', 'not'],
-		                   ];
-
 exports.createCoCoSpecCode = (ptLTL) => {
   var chars = new antlr4.InputStream(ptLTL);
   var lexer = new NuSMVLexer.NuSMVLexer(chars);
@@ -56,3 +47,4 @@ exports.createCoCoSpecCode = (ptLTL) => {
   var tree = parser.ltlExpr();
   return NuSMVAnalyzer.visit(tree);
 };
+

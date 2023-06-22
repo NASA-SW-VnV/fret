@@ -36,33 +36,82 @@ import Tooltip from '@material-ui/core/Tooltip';
 import LTLSimDialog from './LTLSimDialog';
 
 export default function LTLSimLauncher(props) {
-    const {open, semantics, status, onOpen, onClose, requirement,requirementID} = props;
+    const {open, semantics, status, onOpen, onClose, project, requirement,requirementID} = props;
+
+    var ftExpressions = []
+    var ptExpressions = []
+    var requirements = []
+    var requirementIDs = []
+    var IDs = []
 
     const ftExpression = rewriteExpressionForLTLSIM(semantics.ftExpanded);
     const ptExpression = rewriteExpressionForLTLSIM(semantics.ptExpanded);
 
+	//
+	// mock-up list
+	//
+	ftExpressions = ftExpressions.concat(ftExpression)
+	ptExpressions = ptExpressions.concat(ptExpression)
+
+	requirements = requirements.concat(requirement)
+
+	requirementIDs = requirementIDs.concat(requirementID)
+
+	let reqID_R =requirementID.replace(/ /g,"_")
+			  .replace(/-/g,"_")
+			  .replace(/\./g,"_")
+			  .replace(/\+/g,"_")
+	IDs = IDs.concat(reqID_R)
+//	IDs = IDs.concat("TEST_01")
+
+
+    if (false){
+	    ftExpressions = ftExpressions.concat(ftExpression)
+    	ptExpressions = ptExpressions.concat(ptExpression)
+    	requirements = requirements.concat(requirement)
+	    requirementIDs = requirementIDs.concat(requirementID + "_2")
+	    //IDs = IDs.concat("MYFSM-006_2")
+//	    IDs = IDs.concat("REQ2")
+//	    IDs = IDs.concat("TEST_01" + "_2")
+	var requirementID2="TEST-01"
+	let reqID_R2 =requirementID2.replace(/ /g,"_")
+			  .replace(/-/g,"_")
+			  .replace(/\./g,"_")
+			  .replace(/\+/g,"_")
+	IDs = IDs.concat(reqID_R2)
+        }
+
+//JSC/CAV                id="REQ" 
     return (status.ltlsim && status.nusmv) ?
             (<div>
                 <Tooltip title="Launch interactive simulation" >
-                <Button color="secondary" onClick={onOpen}>
+                <Button id="qa_crtAst_btn_simulate" color="secondary" onClick={onOpen}>
                     Simulate
                 </Button>
                 </Tooltip>
                 <LTLSimDialog
                 open={open}
-                id="REQ" 
-                ftExpression={ftExpression}
-                ptExpression={ptExpression}
+                ids={IDs}
+                logics="FT"
+                ftExpressions={ftExpressions}
+                ptExpressions={ptExpressions}
                 onClose={onClose}
-                requirement={requirement}
-                requirementID={requirementID}
+		project={project}
+                requirements={requirements}
+                requirementIDs={requirementIDs}
+//JSC-NOM-0415		CEXFileName="/home/johann/Desktop/FSMSpec_FSM007FSM006.lus.json"
+//        	traceID="CEX-1"
+//		CEXFileName="/home/johann/Desktop/CEX-ANDREAS.json"
+//		CEXFileName="/home/johann/Desktop/FSMSpec_FSM007FSM006.lus.json"
+        	traceID=""
                 />
             </div>) :
-            (<Tooltip title={status.ltlsim ?
-                "Can't find a running NuSMV installation. Make sure to install NuSMV and add it to the PATH envinronment variable." :
-                "Can't find a running ltlsim installation. Make sure to install ltlsim-core and NuSMV as described in the installation instructions."}>
+            (<Tooltip id="a_crtAst_btn_simulate_tooltip"
+                title={status.ltlsim ?
+                "Can't find a running NuSMV/nuXmv installation. Make sure to install NuSMV/nuXmv and add it to the PATH envinronment variable." :
+                "Can't find a running ltlsim installation. Make sure to install ltlsim-core and NuSMV/nuXmv as described in the installation instructions."}>
                 <div>
-                    <Button color="secondary" disabled>
+                    <Button id="qa_crtAst_btn_simulate_disabled" color="secondary" disabled>
                     Simulate
                     </Button>
                 </div>
@@ -81,13 +130,22 @@ export default function LTLSimLauncher(props) {
 function rewriteExpressionForLTLSIM(expression) {
     /* TODO: Remove removal of HTML tags, when parsing and construction of
      * the semantics is changed to give also plain (no HTML) expressions. */
-    return expression
+  return expression
+  /*
             .replace(/<b>/g, "")
             .replace(/<i>/g, "")
             .replace(/<\/b>/g, "")
             .replace(/<\/i>/g, "")
+// arithmetic V0.0
+//            .replace(/([0-9A-Za-z_]+) < ([0-9A-Za-z_]+)/g, "$1_lt_$2")
+//            .replace(/([0-9A-Za-z_]+) > ([0-9A-Za-z_]+)/g, "$1_gt_$2")
+//            .replace(/([0-9A-Za-z_]+) <= ([0-9A-Za-z_]+)/g, "$1_le_$2")
+//            .replace(/([0-9A-Za-z_]+) >= ([0-9A-Za-z_]+)/g, "$1_ge_$2")
+//            .replace(/([0-9A-Za-z_]+) = ([0-9A-Za-z_]+)/g, "$1_eq_$2")
+// end arithmetic
             .replace(/(\d+)\+1/g, (str, p1, offset, s) => (`${parseInt(p1)+1}`))
             .replace(/\[<=(\d+)\]/g, "[0, $1]")
             .replace(/\[=(\d+)\]/g, "[$1, $1]")
             .replace(/\[<(\d+)\]/g, (str, p1, offset, s) => (`[0, ${parseInt(p1)-1}]`));
+*/
 }

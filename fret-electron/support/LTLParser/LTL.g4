@@ -52,6 +52,7 @@ bool_expr :
           | <assoc=right> bool_expr implies bool_expr #boolBinary
           | bool_expr equiv bool_expr #boolBinary
           //| bool_expr '=' bool_expr
+	  | 'at' 'the' ('next' | 'previous') 'occurrence' 'of' bool_expr ',' bool_expr #boolOcc
           |  ID (lp ((bool_expr | arithmetic_expr) (',' (bool_expr | arithmetic_expr))*)? rp)? #boolPred
           | t #boolConst
           | f #boolConst
@@ -84,7 +85,8 @@ mult : '*' ;
 
 div : '/' ;
 
-mod : '%' ;
+mod : 'mod' | 'Mod' |  'MOD' ;
+//mod : MOD;
 
 plus : '+' ;
 
@@ -98,7 +100,7 @@ and  : '&' ;
 
 or : '|' ;
 
-xor : 'xor' ;
+xor : 'xor'| 'Xor' | 'xOR' | 'xOr' | 'XOR' ;
 
 implies : '->';
 
@@ -109,6 +111,11 @@ f : 'FALSE';
 t  : 'TRUE';
 
 ID : [_a-zA-Z$][_a-zA-Z0-9$]* ;
+
+//MOD : [mM][oO][dD];
+//fragment M : [mM];
+//fragment O : [oO];
+//fragment D : [dD];
 
 NUMBER :
          '-'? NATNUM '.' [0-9]+ EXP?

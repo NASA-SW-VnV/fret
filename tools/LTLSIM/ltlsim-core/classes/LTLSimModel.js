@@ -34,7 +34,11 @@ module.exports = class LTLSimModel {
     constructor(traceLength) {
         this.atomics = {
             keys : [],
-            values : {}
+            values : {},
+	    type : [],
+	    canChange : [],
+	    minval : [],
+	    maxval : []
         };
         this.formulas = {
             keys : [],

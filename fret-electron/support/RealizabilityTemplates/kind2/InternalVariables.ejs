@@ -1,0 +1,16 @@
+(*@contract
+
+<%var ftpExists = false%>
+<%for (i=0; i < internalVariables.length; i++) {
+	if (internalVariables[i].name === '__FTP') { ftpExists = true; break; }
+	else { continue; }
+}%>
+<%var ftp = ftpExists ? '' : 'var __FTP : bool = true -> false;'%>
+<%- ftp -%>
+
+<%for (i=0; i < internalVariables.length; i++) {%>
+<%var semiColon = assignments[i].endsWith(';') ? '' : ';'%>
+var <%- internalVariables[i].name %> : <%- internalVariables[i].type %> = <%- assignments[i] %><%- semiColon -%><%}%>
+<%for (i=0; i < modes.length; i++) {%>
+<%var semiColon = modes[i].assignment.endsWith(';') ? '' : ';'%>
+var <%- modes[i].name %> : <%- modes[i].type %>= <%- modes[i].assignment %><%- semiColon -%><%}%>
