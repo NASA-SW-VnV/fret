@@ -187,10 +187,8 @@ class DisplayRequirementDialog extends React.Component {
           maxWidth="md"
         >
 
-          <DialogTitle id="form-dialog-title"> <div style ={{textAlign:'left', float:'left'}}>{reqidLabel}</div> <div style={{ float:'right', textAlign: 'right' }}>{projectLabel}</div>  </DialogTitle>
-
-          <DialogContent>
-          <ImageList rowHeight='30' cols={2}>
+          <DialogTitle id="form-dialog-title">
+          <ImageList rowHeight="auto" cols={2}>
             <ImageListItem>
                 <DialogTitle id="qa_disReq_dt_reqId">{reqidLabel}
                   <IconButton id="qa_disReq_ic_edit" onClick={this.handleUpdateRequirement} size="small" color="secondary" aria-label="edit" >
@@ -209,8 +207,9 @@ class DisplayRequirementDialog extends React.Component {
               <DialogTitle style={{textAlign: 'right'}} id="qa_disReq_dt_project">{projectLabel}</DialogTitle>
             </ImageListItem>
           </ImageList>
+          </DialogTitle>
           <Divider />
-
+          <DialogContent>
             <br />
             <ImageList cols={1} rowHeight="auto"  gap={10}>
               <ImageListItem>
