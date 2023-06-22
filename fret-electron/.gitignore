@@ -68,3 +68,4 @@ test-results/*
 test/e2e/*
 test-reports/*
 
+temp/*
