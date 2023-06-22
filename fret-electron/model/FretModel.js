@@ -146,8 +146,10 @@ export default class FretModel {
 
         // if a project is selected, update project dependent states
         // in AnalysisTab and VariableView
-        if (!this.selectedProject === 'All Projects'){
+        console.log('this.selectedProject', this.selectedProject)
+        if (this.selectedProject !== 'All Projects'){
           await this.synchAnalysesAndVariablesWithDB()
+          await this.mapVariables(this.components)
         }
       }
       catch (error){
@@ -162,7 +164,6 @@ export default class FretModel {
 
         //projects
         this.listOfProjects = await fretDbGetters.getProjects()
-        this.selectedProject = 'All Projects';
         const doc = await fretDbGetters.getDoc('FRET_PROPS')
         this.fieldColors = doc.fieldColors
 
@@ -401,6 +402,7 @@ export default class FretModel {
       this.requirements = await fretDbGetters.getRequirements()
 
       await this.synchAnalysesAndVariablesWithDB()
+      await this.mapVariables(this.components)
 
       var states = {
         // projects
@@ -571,6 +573,8 @@ export default class FretModel {
 
             await requirementsImport.importRequirements(data, listOfProjects)
             await this.synchAnalysesAndVariablesWithDB()
+           await this.mapVariables(this.components)
+
 
          }
          else{
@@ -853,6 +857,8 @@ export default class FretModel {
       })
 
       await this.synchAnalysesAndVariablesWithDB()
+      await this.mapVariables(this.components)
+
       var states = {
         // * analysis
         components : this.components,
@@ -923,6 +929,8 @@ export default class FretModel {
         }
       }
       await this.synchAnalysesAndVariablesWithDB()
+      await this.mapVariables(this.components)
+
 
       var states = {
         // * analysis
@@ -1093,26 +1101,26 @@ export default class FretModel {
     async selectRealizabilityComponent(evt,args) {
       const component = args[0]
       var connectedComponentInfo = await computeConnectedComponents(this.selectedProject, this.completedComponents, ...args);
-      this.rlz_data = await retrieveRlzRequirements(this.selectedProject,component.component_name)      
+      this.rlz_data = await retrieveRlzRequirements(this.selectedProject,component.component_name)
       var states = {
         rlz_data : this.rlz_data,
-        connectedComponentInfo: connectedComponentInfo 
+        connectedComponentInfo: connectedComponentInfo
       }
       return states
 
     }
 
     async updateConnectedComponents(evt, args) {
-      var connectedComponentInfo = await computeConnectedComponents(this.selectedProject, this.completedComponents, ...args);      
+      var connectedComponentInfo = await computeConnectedComponents(this.selectedProject, this.completedComponents, ...args);
       return connectedComponentInfo
     }
 
-    async checkRealizabilityDependencies(evt, args) {      
+    async checkRealizabilityDependencies(evt, args) {
       var missingDependencies = await checkDependenciesExist(args);
       return missingDependencies;
     }
 
-    async checkRealizability(evt, args) {      
+    async checkRealizability(evt, args) {
       var realizabilityResult = checkRealizability(this.selectedProject, this.components, ...args);
       return realizabilityResult;
     }
@@ -1164,7 +1172,7 @@ export default class FretModel {
         var fileContent = fs.readFileSync(filepaths[0], 'utf8');
         report = JSON.parse(fileContent);
         return report;
-      } catch (err) {       
+      } catch (err) {
         console.log(err);
       }
     }
