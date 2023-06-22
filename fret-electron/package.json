@@ -1,7 +1,7 @@
 {
   "name": "fret",
   "productName": "MU-FRET",
-  "version": "2.1.2-mu.fret",
+  "version": "2.2.0-mu.fret",
   "description": "MU-FRET",
   "scripts": {
     "build": "concurrently \"npm run build-main\" \"npm run build-renderer\"",
@@ -10,6 +10,7 @@
     "build-renderer": "cross-env NODE_ENV=production node --trace-warnings -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.renderer.prod.js --colors",
     "dev": "cross-env START_HOT=1 node -r babel-register ./internals/scripts/CheckPortInUse.js && cross-env START_HOT=1 npm run start-renderer-dev",
     "electron-rebuild": "electron-rebuild --parallel --force --types prod,dev,optional --module-dir app",
+    "ext": "cross-env EXTERNAL_TOOL=1 npm run dev",
     "flow": "flow",
     "flow-typed": "rimraf flow-typed/npm && flow-typed install --overwrite || true",
     "lint": "cross-env NODE_ENV=development eslint --cache --format=node_modules/eslint-formatter-pretty .",
@@ -25,13 +26,12 @@
     "start": "cross-env NODE_ENV=production electron ./app/",
     "start-main-dev": "cross-env HOT=1 NODE_ENV=development electron -r babel-register ./app/main.dev",
     "start-renderer-dev": "cross-env NODE_ENV=development node --trace-warnings -r babel-register ./node_modules/webpack-dev-server/bin/webpack-dev-server --config webpack.config.renderer.dev.js",
-    "test": "cross-env NODE_ENV=test BABEL_DISABLE_CACHE=1 node --trace-warnings -r babel-register ./internals/scripts/RunTests.js",
-    "test-all": "npm run lint && npm run flow && npm run build && npm run test && npm run test-e2e",
-    "test-e2e": "cross-env NODE_ENV=test BABEL_DISABLE_CACHE=1 node --trace-warnings -r babel-register ./internals/scripts/RunTests.js e2e",
+    "test": "cross-env NODE_ENV=test FRET_TESTING=1 BABEL_DISABLE_CACHE=1 node --trace-warnings -r babel-register ./internals/scripts/RunTests.js",
+    "test-all": "npm run lint && npm run flow && npm run build && npm run test sem && npm run test e2e",
     "test-watch": "npm test -- --watch",
     "clean": "rm -rf node_modules && rm -rf app/node_modules && rm -rf ../tools/LTLSIM/ltlsim-core/node_modules && rm -rf ../tools/LTLSIM/ltlsim-electron/node_modules",
-    "fret-install": "npm install ../tools/LTLSIM/ltlsim-core && npm install",
-    "fret-reinstall": "npm run clean && npm install ../tools/LTLSIM/ltlsim-core && npm install"
+    "fret-install": "npm --prefix ../tools/LTLSIM/ltlsim-core install ../tools/LTLSIM/ltlsim-core && npm install",
+    "fret-reinstall": "npm run clean && npm run fret-install"
   },
   "browserslist": "electron 1.6",
   "build": {
@@ -82,7 +82,7 @@
     "url": "https://github.com/valu3s-mu/mu-fret"
   },
   "author": {
-    "name": "",
+    "name": "Matt Luckcuck",
     "email": "",
     "url": ""
   },
@@ -91,17 +91,13 @@
     "url": "https://babelfish.arc.nasa.gov/jira/projects/FRET/issues"
   },
   "keywords": [
-    "electron",
-    "boilerplate",
-    "react",
-    "redux",
-    "flow",
-    "sass",
-    "webpack",
-    "hot",
-    "reload"
+    "FRET",
+    "Mu-FRET",
+    "refactoring",
+    "requirements engineering",
+    "model checking"
   ],
-  "homepage": "https://github.com/chentsulin/electron-react-boilerplate#readme",
+  "homepage": "https://github.com/valu3s-mu/mu-fret",
   "jest": {
     "reporters": [
       "default",
@@ -135,6 +131,7 @@
     "usePathForSuiteName": "true"
   },
   "devDependencies": {
+    "@playwright/test": "^1.22.2",
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.2.1",
     "babel-jest": "^22.1.0",
@@ -156,7 +153,7 @@
     "cross-spawn": "^6.0.4",
     "css-loader": "^0.28.9",
     "detect-port": "^1.2.2",
-    "electron": "^3.0.0",
+    "electron": "^11.5.0",
     "electron-builder": "^20.31.2",
     "electron-devtools-installer": "^3.1.1",
     "electron-rebuild": "^1.8.2",
@@ -184,14 +181,17 @@
     "identity-obj-proxy": "^3.0.0",
     "jest": "^22.1.4",
     "minimist": "^1.2.0",
-    "node-sass": "^4.7.2",
+    "node-sass": "^6.0.1",
     "npm-logical-tree": "^1.2.1",
+    "playwright": "^1.22.2",
+    "react-hot-loader": "^4.3.11",
     "react-test-renderer": "^16.2.0",
     "redux-logger": "^3.0.6",
     "rimraf": "^2.6.2",
-    "sass-loader": "^6.0.6",
     "sinon": "^4.2.2",
-    "spectron": "^3.8.0",
+    "spectron": "^13.0.0",
+    "spectron-fake-dialog": "0.0.1",
+    "stream": "0.0.2",
     "style-loader": "^0.20.1",
     "stylefmt": "^6.0.0",
     "stylelint": "^8.4.0",
@@ -230,13 +230,13 @@
     "jest-junit": "^5.1.0",
     "ltlsim-core": "file:../tools/LTLSIM/ltlsim-core",
     "mathjs": "^4.0.1",
+    "node-html-parser": "^5.3.3",
     "node-uuid": "^1.4.8",
     "product-iterable": "^3.0.1",
     "raw-loader": "^0.5.1",
     "react": "^16.8.0",
     "react-color": "^2.14.1",
     "react-dom": "^16.3.2",
-    "react-hot-loader": "^4.3.11",
     "react-json-view": "^1.16.1",
     "react-markdown": "^3.4.1",
     "react-mathjax2": "0.0.2",
@@ -246,7 +246,7 @@
     "react-router-redux": "^5.0.0-alpha.6",
     "react-stars": "^2.2.5",
     "recharts": "^1.4.1",
-    "redux": "^3.7.2",
+    "redux": "^4.1.2",
     "redux-thunk": "^2.2.0",
     "slate": "^0.57.1",
     "slate-history": "^0.59.0",

@@ -65,9 +65,12 @@ module.exports = Object.freeze({
   //testTiming : ['always','null','immediately','eventually', 'never', 'for','within','after'],
   testResponse : ['satisfaction'/*,'action','order','not_order'*/].sort(),
 
+  semanticsTestEngine: 'NuSMV', // can also be 'nuXmv'. Path to their binary should be in PATH
+
 // Configuration - console logs
   verboseTesting: false,
   verboseRealizabilityTesting: false,
+  verboseReportTesting: false,
   verboseSemanticsAnalyzer: false,
   verboseSemanticsGenerator: false,
   verboseCacheSemantics:false,
@@ -110,6 +113,6 @@ module.exports = Object.freeze({
   // variable mapping dialog. When, from the analysis portal, we
   // handle export of future-time formalizations, then we can add
   // persists and occurs to the list of predefined vars.
-  predefinedVars: ["persisted","occurred"]//,"persists","occurs"
+  predefinedVars: ["persisted","occurred","prevOcc","nextOcc","preBool","preInt","preReal","absReal","absInt","minReal","minInt","maxReal","maxInt","FTP","ite"]//,"persists","occurs"
 
 });

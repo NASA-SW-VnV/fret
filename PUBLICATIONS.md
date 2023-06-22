@@ -1,6 +1,16 @@
 FRET Publications
 -----------------
 
+* Ivan Perez, Anastasia Mavridou, Thomas Pressburger, Alexander Will, and Patrick J. Martin. "Monitoring ROS2: from Requirements to Autonomous Robots". FMAS 2022.
+
+* Andreas Katis, Anastasia Mavridou, Dimitra Giannakopoulou, Thomas Pressburger, Johann Schumann. "Capture, Analyze, Diagnose: Realizability Checking of Requirements in FRET". CAV 2022. ·
+
+* Esther Conrad, Laura Titolo, Dimitra Giannakopoulou, Thomas Pressburger, Aaron Dutle. "A Compositional Proof Framework for FRETish Requirements". CPP 2022.
+
+* Ivan Perez, Anastasia Mavridou, Tom Pressburger, Alwyn Goodloe, Dimitra Giannakopoulou. "Automated Translation of Natural Language Requirements to Runtime Monitors". TACAS 2022.
+
+* Anastasia Mavridou, Andreas Katis, Dimitra Giannakopoulou, David Kooi, Thomas Pressburger, Michael W. Whalen. "From Partial to Global Assume-Guarantee Contracts: Compositional Realizability Analysis in FRET". FM 2021.
+
 * Dimitra Giannakopoulou, Thomas Pressburger, Anastasia Mavridou, Johann Schumann (2021). "Automated formalization of structured natural language requirements". Information and Software Technology (IST) Journal, Special Section on REFSQ’20.
 
 * Dimitra Giannakopoulou, Andreas Katis, Anastasia Mavridou, Thomas Pressburger. "Compositional Realizability Checking with FRET". NASA/TM–2021–20210013008, March 2021.

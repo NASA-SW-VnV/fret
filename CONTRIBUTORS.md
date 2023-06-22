@@ -1,7 +1,6 @@
 FRET Team
 ---------
 
-* [Dimitra Giannakopoulou](https://ti.arc.nasa.gov/profile/dimitra/)
 * [Andreas Katis](https://andreaskatis.github.io/)
 * [Anastasia Mavridou](https://ti.arc.nasa.gov/profile/amavrido/)
 * [Tom Pressburger](https://ti.arc.nasa.gov/profile/ttp/)
@@ -11,11 +10,16 @@ FRET Team
 Alumni and Interns
 ------------------
 
+* Milan Bhandari
 * David Bushnell
 * Tanja de Jong
+* Dimitra Giannakopoulou
+* Kelly Ho
 * George (Yorgo) Karamanolis
 * David Kooi
+* Jessica Phelan
 * Julian Rhein
+* Daniel Riley
 * Nija Shi
 
 

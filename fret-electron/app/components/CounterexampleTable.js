@@ -45,11 +45,7 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-
-//tooltips for variables in cex table
-//hover over requirement => show def. (like in CirclePacking diagram)
-//hover over variable => 
-//	show <kind> = [input, internal, output] : <type> [int, bool...]
+import LTLSimLauncherRealizability from './LTLSimLauncherRealizability';
 import Tooltip from '@material-ui/core/Tooltip';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
@@ -57,6 +53,9 @@ import { lighten } from '@material-ui/core/styles/colorManipulator';
 import classNames from 'classnames';
 import Input from '@material-ui/core/Input';
 import { DiagnosisContext } from './DiagnosisProvider';
+
+const ltlsim = require('ltlsim-core').ltlsim;
+const utils = require('../../support/utils');
 
 const tableComponentBarStyles = theme => ({
   root: {
@@ -91,8 +90,22 @@ const tableComponentBarStyles = theme => ({
 });
 
 let TableComponentBar = props => {
-  const {classes, handleChange, cexConflictName, conflicts, menuItems} = props;  
-  
+  const {classes, handleChange, cexConflictName, conflicts, menuItems, numberOfSteps, cex, LTLSimStatus, LTLSimDialogOpen, openLTLSimDialog, closeLTLSimDialog, requirements, project} = props;
+
+  const cexConflictRequirements = cexConflictName.substring(1,cexConflictName.length-1).split(", ");
+
+  const conflictRequirementObjects = requirements.filter(e => cexConflictRequirements.includes(e.reqid.replace(/-/g,'')));  
+
+  var ltlsimLauncher = <LTLSimLauncherRealizability
+                      open={LTLSimDialogOpen}
+                      semantics={conflictRequirementObjects[0].semantics}
+                      status={LTLSimStatus}
+                      onOpen={openLTLSimDialog}
+                      onClose={closeLTLSimDialog}
+                      requirement={conflictRequirementObjects}
+                      project={project}
+                      CEXFileName={{'K': numberOfSteps, 'Counterexample': cex}}
+                      />;
   return(
     <Toolbar className={classNames(classes.root, classes.componentBar)}>
       <form className={classes.formControl} autoComplete="off">
@@ -102,12 +115,14 @@ let TableComponentBar = props => {
             key={cexConflictName === undefined ? '' : cexConflictName}
             value={cexConflictName}
             onChange={handleChange}
+            id="qa_counterEx_sel"
             input={<Input name="component" id="component-helper" />}
           >
             {menuItems}
           </Select>
         </FormControl>
       </form>
+      {(project !== '') && ltlsimLauncher}
     </Toolbar>
   );
 };
@@ -117,7 +132,9 @@ TableComponentBar.propTypes = {
   handleChange: PropTypes.func.isRequired,
   cexConflictName: PropTypes.string.isRequired,
   conflicts: PropTypes.array.isRequired,
-  menuItems: PropTypes.array.isRequired
+  menuItems: PropTypes.array.isRequired,
+  LTLSimDialogOpen: PropTypes.bool.isRequired,
+  project: PropTypes.string.isRequired
 }
 
 TableComponentBar = withStyles(tableComponentBarStyles)(TableComponentBar);
@@ -148,23 +165,38 @@ class CounterexampleTable extends React.Component {
   state = {
   	numberOfSteps : undefined,
   	cex : undefined,
-    deps : []
+    deps : [],
+    LTLSimDialogOpen: false
   };
 
   constructor(props) {
   	super(props);
+    let status = ltlsim.check();
+    this.LTLSimStatus = status;
+
   	this.state = { 
-  		numberOfSteps : this.props.cexTableData[this.props.currentConflicts[0]].K,
-		  cexConflictName : this.props.cexTableData[this.props.currentConflicts[0]].props,  		
+  		numberOfSteps : this.props.cexTableData[this.props.currentConflicts[0]].traceLength,
+		  cexConflictName : this.props.cexTableData[this.props.currentConflicts[0]].requirements,  		
   		cex : this.props.cexTableData[this.props.currentConflicts[0]].Counterexample,
+      LTLSimDialogOpen: false
       // deps: this.props.cexTableData[this.props.currentConflicts[0]].Dependencies
     };
+    this.openLTLSimDialog = this.openLTLSimDialog.bind(this);
+    this.closeLTLSimDialog = this.closeLTLSimDialog.bind(this);
+  }
+
+  openLTLSimDialog() {
+    this.setState({LTLSimDialogOpen: true});
+  }
+
+  closeLTLSimDialog() {
+    this.setState({LTLSimDialogOpen: false});
   }
 
   handleChange = event => {
     this.setState({ 
-    	numberOfSteps : this.props.cexTableData[event.target.value].K,
-		  cexConflictName : this.props.cexTableData[event.target.value].props,
+    	numberOfSteps : this.props.cexTableData[event.target.value].traceLength,
+		  cexConflictName : this.props.cexTableData[event.target.value].requirements,
     	cex : this.props.cexTableData[event.target.value].Counterexample,
     	// deps : this.props.cexTableData[event.target.value].Dependencies,
       [event.target.name]: event.target.value
@@ -178,8 +210,8 @@ class CounterexampleTable extends React.Component {
   componentDidUpdate(prevProps) {
   	if (this.props.currentConflicts !== prevProps.currentConflicts) {
   		this.setState({
-  			numberOfSteps : this.props.cexTableData[this.props.currentConflicts[0]].K,
-  			cexConflictName : this.props.cexTableData[this.props.currentConflicts[0]].props,
+  			numberOfSteps : this.props.cexTableData[this.props.currentConflicts[0]].traceLength,
+  			cexConflictName : this.props.cexTableData[this.props.currentConflicts[0]].requirements,
   			cex : this.props.cexTableData[this.props.currentConflicts[0]].Counterexample,
         // deps : this.props.cexTableData[this.props.currentConflicts[0]].Dependencies
   		});    
@@ -188,12 +220,15 @@ class CounterexampleTable extends React.Component {
   }
 
   render() {
-  	const {classes, allConflicts, currentConflicts, cexTableData} = this.props;
-  	const {numberOfSteps, cex, cexConflictName, deps} = this.state;
+  	const {classes, allConflicts, currentConflicts, cexTableData, requirements, project} = this.props;
+  	const {numberOfSteps, cex, cexConflictName, deps, LTLSimDialogOpen} = this.state;
   	var menuItems = [];
   	for (var i = 0; i < currentConflicts.length; i++) {
+      var conflictLabel = allConflicts.indexOf(currentConflicts[i])+1;
   		menuItems.push(
-		(<MenuItem key={i} value={currentConflicts[i]}>
+		(<MenuItem key={i}
+      id={"qa_counterEx_mi_Conflict_"+conflictLabel}
+      value={currentConflicts[i]} >
       Conflict {allConflicts.indexOf(currentConflicts[i])+1}
 			</MenuItem>)
 		);
@@ -208,28 +243,39 @@ class CounterexampleTable extends React.Component {
 
   	var tableRows = [];
     
-    //Filter out JKind local variables from cex data, then create table row for everything else
-    // cex.filter(row => !locs.includes(row.name)).map...
     cex.map(row => (tableRows.push(
           <TableRow key={cex.indexOf(row)}>
-            {Object.keys(row).map(function(key, index) {          
-              return(<TableCell key={index} align="right"> {row[key].toString()} </TableCell>);
+            {Object.keys(row).map(function(key, index) {
+              if (index === 0) {
+              return(<TableCell id={"qa_counterEx_tc_"+cex.indexOf(row)+"_"+index} key={index}> {utils.unreplace_special_chars(row[key].toString())} </TableCell>);  
+              } else {
+              return(<TableCell id={"qa_counterEx_tc_"+cex.indexOf(row)+"_"+index} key={index} align="right"> {row[key].toString()} </TableCell>);  
+              }                        
             })}
           </TableRow>)))
-           
+         
   	return (
   		<div>
       <Paper className={classes.root}>              
-        <TableComponentBar
+        <TableComponentBar id="qa_counterEx_menuList_conflicts"
           handleChange={this.handleChange}
           cexConflictName={cexConflictName}
           conflicts={allConflicts}
           menuItems={menuItems}
+          numberOfSteps={numberOfSteps}
+          cex={cex}
+          LTLSimStatus={this.LTLSimStatus}
+          LTLSimDialogOpen={LTLSimDialogOpen}
+          openLTLSimDialog={this.openLTLSimDialog}
+          closeLTLSimDialog={this.closeLTLSimDialog}
+          requirements={requirements}
+          project={project}
         />
-				<Table className={classes.table}>
-				  <TableHead>
-				    <TableRow>
-				      <TableCell className={classes.header} align="right">Variable name</TableCell>
+				<Table className={classes.table} id="qa_counterEx_table">
+          <caption>FTP: First Time Point.</caption>
+				  <TableHead id="qa_counterEx_tableHead">
+				    <TableRow id="qa_counterEx_tableRow">
+				      <TableCell className={classes.header}>Variable name</TableCell>
 				      <TableCell className={classes.header} align="right">Variable type</TableCell>
 				      {tableHeaders}
 				    </TableRow>
@@ -244,22 +290,12 @@ class CounterexampleTable extends React.Component {
   }
 }
 
-      // <FormControl>
-      // <InputLabel htmlFor="component-helper">Counterexample for conflict:</InputLabel>
-      // <Select
-        // name={cexConflictName}
-        // value={cexConflictName}
-        // onChange={this.handleChange}
-      // >
-      // {menuItems}
-      // </Select>
-      // </FormControl>
-
 CounterexampleTable.propTypes = {
   allConflicts: PropTypes.array.isRequired,  
   currentConflicts: PropTypes.array.isRequired,
   cexTableData: PropTypes.object.isRequired,
-  colors: PropTypes.array.isRequired
+  colors: PropTypes.array.isRequired,
+  project: PropTypes.string.isRequired
 }
 
 export default withStyles(styles)(CounterexampleTable);

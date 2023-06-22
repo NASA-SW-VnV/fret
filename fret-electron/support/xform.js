@@ -42,7 +42,11 @@ module.exports = {
     transform,
     transformPastTemporalConditions,
     transformFutureTemporalConditions,
-    transformTemporalConditions
+    transformTemporalConditions,
+    transformPastTemporalConditionsNoBounds,
+    transformFutureTemporalConditionsNoBounds,
+    transformTemporalConditionsNoBounds
+
 }
 
 const isArray = utils.isArray;
@@ -69,15 +73,20 @@ const booleanSimplifications = [
     [ '(! (__p & __q)) & (! (__r | __q))', trueFn, '(! __q) & (! __r)'],
     ['! FALSE',trueFn,'TRUE'],
     ['__p | FALSE',trueFn,'__p'], ['FALSE | __p',trueFn,'__p'],
-    ['__p & TRUE',trueFn,'__p'], ['TRUE & __p',trueFn,'__p']
+    ['__p & TRUE',trueFn,'__p'], ['TRUE & __p',trueFn,'__p'],
+  ['__p & FALSE', trueFn, 'FALSE'], ['FALSE & __p', trueFn, 'FALSE'],
+  ['ite(__p, __q, __r)', trueFn, '((__p & __q) | ((! __p) & __r))']
 ];
 
 const pastTimeSimplifications = [
-    	  [ '! H ! __p', trueFn, 'O __p'],
-	  [ '! O ! __p', trueFn, 'H __p'],
-	  ['__p S (__p & FTP)', trueFn, 'H __p'],
-	  ['__p S (__p & ! Y TRUE)', trueFn, 'H __p'],
-	  ['__p S (FTP & __p)', trueFn, 'H __p']
+  [ '! H ! __p', trueFn, 'O __p'],
+  [ '! O ! __p', trueFn, 'H __p'],
+  ['__p S (__p & FTP)', trueFn, 'H __p'],
+  ['__p S (__p & ! Y TRUE)', trueFn, 'H __p'],
+  ['__p S (FTP & __p)', trueFn, 'H __p'],
+  ['(Y TRUE) & (Y __p)', trueFn, '(Y __p)'],
+  ['(! (Y TRUE)) | (Y __p)', trueFn, '(Z __p)']
+  
           // -xtltl flag given to SALT does this: [ '__p | <| [] __p', trueFn, 'O __p'] 
 	  // For "regular,within":
 	  // Text substitution done in substitutionsCustomizeFret in SemanticsGenerator.js
@@ -100,15 +109,50 @@ const finitizeFuture = [
 
 const futureTemporalConditions = [
     ['persists(__n,__p)',trueFn,'((G[<=__n] __p) & (G[<__n] ! $Right$))'],
-    ['occurs(__n,__p)',trueFn,'(((! $Right$) U __p) & (F[<=__n] __p))']
+    ['occurs(__n,__p)',trueFn,'(((! $Right$) U __p) & (F[<=__n] __p))'],
+    // This commented out version assumes there must be a next occurrence of p
+    // ['nextOcc(__p,__q)', trueFn, '(X((!__p & !$Right$) U (__p & __q)))'] 
+    // This version is satisfied if there is no next occurrence of p.
+    ['nextOcc(__p,__q)', trueFn, '($Right$ | (X (((!__p & !$Right$) U __p) => ((!__p & !$Right$) U (__p & __q)))))']
     ]
 
+/*
+function nonBoolConstant(v) {
+  return (v != true) & (v != false);
+}
+*/
+
 const pastTemporalConditions = [
-    ['persisted(__n,__p)',trueFn,'((H[<=__n] __p) & (H[<__n] ! $Left$))'],
-    ['occurred(__n,__p)',trueFn,'(((! $Left$) S __p) & (O[<=__n] __p))']
+  ['FTP', trueFn, '(! (Y TRUE))'],
+  //These special cases are unnecessary due to booleanSimplifications 
+  //['preBool(FALSE,__p)',trueFn,'((! $Left$) & (Y __p))'],
+  //['preBool(TRUE,__p)',trueFn,'($Left$ | (Y __p))'],
+  // This is the mode sensitive version.
+  // ['preBool(__init,__p)', trueFn, //(sbst) => nonBoolConstant(sbst["__init"]),
+  //'(($Left$ & __init) | ((! $Left$) & (Y __p)))'],
+  ['preBool(__init,__p)', trueFn, //(sbst) => nonBoolConstant(sbst["__init"]),
+   '(((! (Y TRUE)) & (__init)) | ((! (! Y TRUE) ) & (Y __p)))'],
+  ['persisted(__n,__p)',trueFn,'((H[<=__n] __p) & (H[<__n] ! $Left$))'],
+  ['occurred(__n,__p)',trueFn,'(((! $Left$) S __p) & (O[<=__n] __p))'],
+  //['prevOcc(__p,__q)', trueFn, '(Z (((! $Left$ & !__p) S __p) => ((! $Left$ & !__p) S (__p & __q))))']
+  ['prevOcc(__p,__q)', trueFn, '($Left$ | (Y (((! $Left$ & !__p) S __p) => ((! $Left$ & !__p) S (__p & __q)))))']
 ]
 
 const temporalConditions = pastTemporalConditions.concat(futureTemporalConditions);
+
+const futureTemporalConditionsNoBounds = [
+    ['persists(__n,__p)',trueFn,'(G[<=__n] __p)'],
+    ['occurs(__n,__p)',trueFn,'(F[<=__n] __p)'],
+    ['nextOcc(__p,__q)', trueFn, '(X((!__p) U (__p & __q)))']
+    ]
+
+const pastTemporalConditionsNoBounds = [
+    ['persisted(__n,__p)',trueFn,'(H[<=__n] __p)'],
+    ['occurred(__n,__p)',trueFn,'(O[<=__n] __p)'],
+    ['prevOcc(__p,__q)', trueFn, '(Y ((!__p) S (__p & __q)))']
+]
+
+const temporalConditionsNoBounds = pastTemporalConditionsNoBounds.concat(futureTemporalConditionsNoBounds);
 
 // pat has variables which are strings prefixed with '__'. Return null if no match else
 // a hashmap of variables to subterms of term.
@@ -225,6 +269,11 @@ const parsedPastTemporalConditions = pastTemporalConditions.map(parseit)
 const parsedFutureTemporalConditions = futureTemporalConditions.map(parseit)
 const parsedTemporalConditions = temporalConditions.map(parseit);
 
+const parsedPastTemporalConditionsNoBounds = pastTemporalConditionsNoBounds.map(parseit)
+const parsedFutureTemporalConditionsNoBounds = futureTemporalConditionsNoBounds.map(parseit)
+const parsedTemporalConditionsNoBounds = temporalConditionsNoBounds.map(parseit);
+
+
 function applyPtSimplifications (term) {
     return applyTriples(term,ptSimplifications);
 }
@@ -247,6 +296,18 @@ function applyFutureTemporalConditions(term) {
 
 function applyTemporalConditions(term) {
     return applyTriples(term,parsedTemporalConditions);
+}
+
+function applyPastTemporalConditionsNoBounds(term) {
+    return applyTriples(term,parsedPastTemporalConditionsNoBounds);
+}
+
+function applyFutureTemporalConditionsNoBounds(term) {
+    return applyTriples(term,parsedFutureTemporalConditionsNoBounds);
+}
+
+function applyTemporalConditionsNoBounds(term) {
+    return applyTriples(term,parsedTemporalConditionsNoBounds);
 }
 
 // Apply rules exhaustively to term, starting at the bottom again each time a rule applies.
@@ -312,24 +373,44 @@ function introduceSI(ptAST) {
     return result;
 }
 
-const pastTemporalConditionRules = [applyPastTemporalConditions];
-const futureTemporalConditionRules = [applyFutureTemporalConditions];
-const temporalConditionRules = [applyTemporalConditions];
+const pastTemporalConditionsRules = [applyPastTemporalConditions];
+const futureTemporalConditionsRules = [applyFutureTemporalConditions];
+const temporalConditionsRules = [applyTemporalConditions];
 
 function expandPastTemporalConditions (ast) {
-    let result = rewrite_bottomup(ast,pastTemporalConditionRules);
+    let result = rewrite_bottomup(ast,pastTemporalConditionsRules);
     return result;
 }
 
 function expandFutureTemporalConditions (ast) {
-    let result = rewrite_bottomup(ast,futureTemporalConditionRules);
+    let result = rewrite_bottomup(ast,futureTemporalConditionsRules);
     return result;
 }
 
 function expandTemporalConditions (ast) {
-    let result = rewrite_bottomup(ast,temporalConditionRules);
+    let result = rewrite_bottomup(ast,temporalConditionsRules);
     return result;
 }
+
+const pastTemporalConditionsNoBoundsRules = [applyPastTemporalConditionsNoBounds];
+const futureTemporalConditionsNoBoundsRules = [applyFutureTemporalConditionsNoBounds];
+const temporalConditionsNoBoundsRules = [applyTemporalConditionsNoBounds];
+
+function expandPastTemporalConditionsNoBounds (ast) {
+    let result = rewrite_bottomup(ast,pastTemporalConditionsNoBoundsRules);
+    return result;
+}
+
+function expandFutureTemporalConditionsNoBounds (ast) {
+    let result = rewrite_bottomup(ast,futureTemporalConditionsNoBoundsRules);
+    return result;
+}
+
+function expandTemporalConditionsNoBounds (ast) {
+    let result = rewrite_bottomup(ast,temporalConditionsNoBoundsRules);
+    return result;
+}
+
 
 function transform(formulaString,transformation) {
     //let AST = astsem.SMVtoAST(formulaString);
@@ -352,6 +433,21 @@ function transformFutureTemporalConditions (formulaString) {
 
 function transformTemporalConditions (formulaString) {
     let result = transform(formulaString,expandTemporalConditions);
+    return result;
+}
+
+function transformPastTemporalConditionsNoBounds (formulaString) {
+    let result = transform(formulaString,expandPastTemporalConditionsNoBounds);
+    return result;
+}
+
+function transformFutureTemporalConditionsNoBounds (formulaString) {
+    let result = transform(formulaString,expandFutureTemporalConditionsNoBounds);
+    return result;
+}
+
+function transformTemporalConditionsNoBounds (formulaString) {
+    let result = transform(formulaString,expandTemporalConditionsNoBounds);
     return result;
 }
 
@@ -451,6 +547,16 @@ function optimizeSemantics() {
     }
 }
 optimizeSemantics()
+*/
+
+/*
+console.log(transformTemporalConditions("persisted(3,!p) & occurred(4,p)"))
+console.log(transformTemporalConditionsNoBounds("persisted(3,!p) & occurred(4,p)"))
+console.log(transformPastTemporalConditions("persisted(3,!p) & occurred(4,p)"))
+console.log(transformPastTemporalConditionsNoBounds("persisted(3,!p) & occurred(4,p)"))
+console.log(transformFutureTemporalConditions("persists(3,!p) & occurs(4,p)"))
+console.log(transformFutureTemporalConditionsNoBounds("persists(3,!p) & occurs(4,p)"))
+console.log(transformTemporalConditions("m"))
 */
 
 /*

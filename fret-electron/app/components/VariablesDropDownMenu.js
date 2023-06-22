@@ -39,7 +39,7 @@ function VariablesDropdownMenu(props) {
   const {position, options, selection, onClick} = props;
 
   return (
-    <div
+    <div id = "qa_vdm_menu"
       style={{
         top: `${position ? position[0] : -9999}px`,
         left: `${position ? position[1] : -9999}px`,
@@ -55,6 +55,7 @@ function VariablesDropdownMenu(props) {
       }}>
       {options.map((option, i) => (
         <ListItem
+          id = {"qa_vdm_var_"+option}
           key={option}
           selected={i === selection}
           button

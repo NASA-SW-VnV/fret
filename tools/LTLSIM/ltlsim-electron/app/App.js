@@ -31,13 +31,14 @@
 // AGREEMENT.
 // *****************************************************************************
 import React, { Component } from 'react';
-import { MuiThemeProvider, createTheme } from '@material-ui/core/styles';
+//JSC import { MuiThemeProvider, createTheme } from '@material-ui/core/styles';
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import secondaryColor from '@material-ui/core/colors/cyan';
 import primaryColor from '@material-ui/core/colors/blueGrey';
 
 import MainView from './components/MainView';
 
-const theme = createTheme({
+const theme = createMuiTheme({
   palette: {
     primary: { main: primaryColor[800] },
     secondary: { main: secondaryColor['400'] },

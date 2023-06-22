@@ -49,13 +49,15 @@ const styles = theme => ({
     root: {
         position: 'sticky',
         padding: theme.spacing(),
-        paddingTop: theme.spacing(4),
+//JSC/CAV        paddingTop: theme.spacing(4),
+        paddingTop: theme.spacing(2),
         bottom: 0
     },
     details: {
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center'
+        flexDirection: 'row'
+//        display: 'flex',
+//        flexDirection: 'row',
+//        alignItems: 'center'
     },
     content: {
         color: theme.palette.primary.main,
@@ -75,24 +77,41 @@ const styles = theme => ({
 
 class LTLSimRequirementDetails extends Component {
     render() {
-        const {classes, requirementID, description} = this.props;
-
+        const {classes, requirementID, description, allreq, selreq} = this.props;
         return (
           <div className={classes.root}>
             <Accordion>
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <AccordionSummary id="qa_ltlSim_ib_as_reqs" expandIcon={<ExpandMoreIcon />}>
                 <Typography className={classes.heading}>Requirements in FRETish</Typography>
               </AccordionSummary>
               <AccordionDetails>
-                <div>
-                  <Typography className={classes.heading}>
-                    <b>{requirementID}</b>: {description}
-                    </Typography>
-                </div>
-              </AccordionDetails>
-            </Accordion>
-          </div>
-        )
+            <div>
+      		    {
+                  selreq.map(R_ID => {
+                    let ID=R_ID;
+                    let Desc;
+                    (selreq.length === 1)? (Desc=description):(Desc="unknown-ID not in DB")
+                    for (let i=0; i< allreq.length; i++){
+                      let reqID = allreq[i].reqID;
+                      let reqID_R = reqID.replace(/ /g,"_")
+                                         .replace(/-/g,"_")
+                                         .replace(/\./g,"_")
+                                         .replace(/\+/g,"_")
+                      if (reqID_R == R_ID){
+                        Desc=allreq[i].fulltext
+                        ID=reqID;
+                        break;
+                      }
+                    }
+                	return(<div key={"LTLSimRequirementDetails_"+R_ID}><Typography id="qa_ltlSim_typ_reqId">
+                  		<b key={ID}>{ID}</b>: {Desc}
+                  	</Typography></div>)})
+                }
+              </div>
+            </AccordionDetails>
+          </Accordion>
+        </div>
+      )
     }
 }
 

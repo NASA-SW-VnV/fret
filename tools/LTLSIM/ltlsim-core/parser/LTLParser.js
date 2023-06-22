@@ -31,16 +31,16 @@
 // AGREEMENT.
 // *****************************************************************************
 const antlr4 = require('antlr4');
-const NuSMVLexer = require('nusmvparser').NuSMVLexer;
-const NuSMVParser = require('nusmvparser').NuSMVParser;
+const LTLSIM_NuSMVLexer = require('ltlsim_nusmvparser').LTLSIM_NuSMVLexer;
+const LTLSIM_NuSMVParser = require('ltlsim_nusmvparser').LTLSIM_NuSMVParser;
 const AnnotatingErrorListener = require('./AnnotatingErrorListener').AnnotatingErrorListener;
 const LTLAnalyzer = require('./LTLAnalyzer').LTLAnalyzer;
 
 exports.parse = function parse(input) {
     let chars = new antlr4.InputStream(input);
-    let lexer = new NuSMVLexer(chars);
+    let lexer = new LTLSIM_NuSMVLexer(chars);
     let tokens = new antlr4.CommonTokenStream(lexer);
-    let parser = new NuSMVParser(tokens);
+    let parser = new LTLSIM_NuSMVParser(tokens);
     var annotations = [];
     var errorListener = new AnnotatingErrorListener(annotations);
     parser.removeErrorListeners();
@@ -48,27 +48,88 @@ exports.parse = function parse(input) {
     let analyzer = new LTLAnalyzer();
     parser.buildParseTrees = true;
 
+console.log("Parsing...")
     let tree = parser.ltlExpr();
     let result = {
         expression: "",
-        atomics: [],
+        atomics_name: [],
+        atomics_type: [],
+        atomics_canChange: [],
+        atomics_minval: [],
+        atomics_maxval: [],
+        atomics_aex: [],
         subexpressions: [],
         errors: []
     };
 
+console.log("Parse: annotation length="+ annotations.length)
     if (annotations.length > 0) {
+console.log("Parsing...: w/annotations")
+console.log(annotations)
         result.errors = annotations.map((a) => (a.text));
     } else {
+console.log("Parsing...: starting visitor")
         let expression = analyzer.visit(tree);
-        result.expression = expression;
-        result.atomics = analyzer.atomics;
+console.log("Parsing...: visitor done")
+console.log("expression:")
+console.log(expression)
+console.log("subexpression:")
+console.log(analyzer.subexpressions)
+console.log("atomics:")
+console.log(analyzer.atomics_name)
+console.log(analyzer.atomics_type)
+console.log(analyzer.atomics_canChange)
+console.log(analyzer.min_value)
+console.log(analyzer.max_value)
+console.log(analyzer.atomics_aex)
+        result.expression = expression.text;
+
+//JSC         result.atomics_name = analyzer.atomics_name;
+
+        result.atomics_name = [];
+	for (var i=0; i < analyzer.atomics_name.length;i++){
+		console.log("FOOOO: "+ analyzer.atomics_name[i])
+		console.log("FOOOO: "+ arithexpr_to_ID(analyzer.atomics_name[i]))
+		result.atomics_name = result.atomics_name.concat(
+				arithexpr_to_ID(analyzer.atomics_name[i])
+				)
+		}
+        result.atomics_aex = analyzer.atomics_name;
+
+        result.atomics_type = analyzer.atomics_type;
+        result.atomics_canChange = analyzer.atomics_canChange;
+        result.atomics_minval = analyzer.atomics_minval;
+        result.atomics_maxval = analyzer.atomics_maxval;
         result.subexpressions = analyzer.subexpressions;
         if (result.subexpressions.length > 0) {
             let lastSubexpression = result.subexpressions[result.subexpressions.length-1];
-            if (lastSubexpression === expression.trim()) {
+            if (lastSubexpression === expression.text.trim()) {
                 result.subexpressions.splice(result.subexpressions.length-1, 1);
             }
         }
     }
     return result;
+}
+
+function arithexpr_to_ID(expr){
+
+let v = expr
+	.replace(/^[0-9]/g, "N")
+	.replace(/ /g, "_S_")
+	.replace(/\+/g, "_p_")
+	.replace(/-/g, "_m_")
+	.replace(/\*/g, "_mul_")
+	.replace(/\//g, "_div_")
+	.replace(/\(/g, "_lp_")
+	.replace(/\)/g, "_rp_")
+	.replace(/<=/g, "_leq_")
+	.replace(/</g, "_lt_")
+	.replace(/>=/g, "_geq_")
+	.replace(/>/g, "_gt_")
+	.replace(/==/g, "_eqeq_")
+	.replace(/=/g, "_eq_")
+	;
+
+return v
+
 }

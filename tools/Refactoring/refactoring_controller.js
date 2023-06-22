@@ -1,6 +1,7 @@
 /**
 * Controller code for the refactoring module backend
-* @author Matt Luckcuck <m.luckcuck@tutanota.com>
+* @module Refactoring/refactoring_controller
+* @author Matt Luckcuck 
 * 2022
 */
 
@@ -35,7 +36,15 @@ function newRequirement()
 	return {fulltext: '', parent_reqid: '', project: '',rationale: '', reqid: '', semantics: '', _id: ''};
 };
 
-
+/**
+ * Returns a dummy requirement object, with the reqid, fulltext, 
+ * semantics.ftExpands, and semantics.variables copied from the req paramter.
+ * This is used to test-run the refactoring and becomes hte new requirement if 
+ * NuSMC check passes.
+ * 
+ * @param {Object} req The original requirement to copy
+ * @returns A dummy requirement object, copied form the req parameter
+ */
 function makeDummyUpdatedReq(req)
 {
 	let dummyUpdatedReq = {}
@@ -48,9 +57,18 @@ function makeDummyUpdatedReq(req)
 	return dummyUpdatedReq
 }
 
+
 /**
-* Handles one request to refactor one requirement
-*/
+ * Handles one request to refactor one requirement
+ * 
+ * @param {Object} req the requirement that is having behaviour extracted from it
+ * @param {Map<String, String>} reqVars map of the req paramter's variables mapped to their types
+ * @param {String} fragment the fragment to be extracted
+ * @param {String} destinationName the name to be given to the newly created requirement
+ * @param {*} newID the new (database) UUID for the newly created requirement
+ * @param {Array<Object>} allRequirements List of all the other requirements in the project
+ * @returns {Boolean} True if NuSMV says that the original and refactored requirement behaves the same.
+ */
 function extractRequirement(req, reqVars, fragment, destinationName, newID, allRequirements)
 {
 	console.log("Extract One");
@@ -145,14 +163,25 @@ function extractRequirement(req, reqVars, fragment, destinationName, newID, allR
 
 	console.log(newReq);
 
-  //return [newReq]
 	return result
 }
 exports.extractRequirement = extractRequirement;
 
 /**
-* Handles a request to extract a fragment from all requirements that contain it.
-*/
+*
+
+/**
+ * Handles a request to extract a fragment from all requirements that contain it.
+ * 
+* @param {Object} req the requirement that is having behaviour extracted from it
+ * @param {Map<String, String>} reqVars map of the req paramter's variables mapped to their types
+ * @param {String} fragment the fragment to be extracted
+ * @param {String} destinationName the name to be given to the newly created requirement
+ * @param {*} newID the new (database) UUID for the newly created requirement
+ * @param {Array<Object>} allRequirements List of all the other requirements in the project
+ * @returns {Boolean} True if NuSMV says that the original and refactored requirement behaves the same.
+ */
+
 function extractRequirement_ApplyAll(req, reqVars, fragment,  destinationName, newID, allRequirements)
 {
 	console.log("Extract All")
@@ -269,7 +298,13 @@ function extractRequirement_ApplyAll(req, reqVars, fragment,  destinationName, n
 }
 exports.extractRequirement_ApplyAll = extractRequirement_ApplyAll;
 
-
+/**
+ * Updates the variable types in the database using the types that the
+ * user added on the RefactorRequirementDialog's TYPES input fields. 
+ * 
+ * @param {Object?} variableDocs collection of database documents for the variables in this project
+ * @param {Map} variables Map of variable names to type names
+ */
 function updateVariableTypes(variableDocs, variables)
 {
 
@@ -298,6 +333,7 @@ exports.updateVariableTypes = updateVariableTypes;
 * Handles one request to move a definition to another requirement
 * This should have no knock-on effects, since we can only refer to a requirement
 * not a definition within a requirement.
+* @todo Implement
 */
 function MoveDefinition(sourceReq, definition, destinationReq)
 {
@@ -322,6 +358,7 @@ model.MoveFragment(sourceReq, definition, destinationReq) // Not yet working
 /**
 * Handles on request to rename a requirement, including the knock-on effect to
 * other requirements that reference this requirement
+* @todo Implement
 */
 function Rename(requirement, newName)
 {
@@ -334,7 +371,7 @@ function Rename(requirement, newName)
 
  // Step 2
  // probably get the references to requirement.getName() first ...
-requirement.setName(newName); // Bit cheeky, but I don't think the Model is needed here.
+
 
 // Step 3
 //update the knockons
@@ -348,6 +385,7 @@ return requirement
 /**
 * Handles one request to inline a requirement, including the knock-on effects to
 * other requirements that reference the requirement being inlined.
+* @todo Implement
 */
 function InlineRequirement()
 {
@@ -360,17 +398,3 @@ function InlineRequirement()
 
 }
 
-
-/*
-let R5_1 = new FretRequirement("UC5_R_5.1", "when (diff(r(i),y(i)) > E) if ((systemParameter(P) > nominalValue + R) | (systemParameter(P) < nominalValue - R) | (systemParameter(P) = null) & (observedThrust = V1) &(pilotInput => setThrust = V2)) Controller shall until (diff(r(i),y(i)) < e) satisfy (settlingTime >= 0) & (settlingTime <= settlingTimeMax) & (observedThrust = V2)");
-
-console.log("Requirement 5.1 " + R5_1) ;
-console.log("");
-
-updates = extractRequirement(R5_1, "(systemParameter(P) > nominalValue + R) | (systemParameter(P) < nominalValue - R) | (systemParameter(P) = null)", "SystemParameters", []);
-
-console.log("Updated Requirement 5.1 " + updates[0]);
-console.log("") ;
-
-console.log("Extracted Requirement " + updates[1]);
-*/

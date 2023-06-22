@@ -123,10 +123,10 @@ class CreateProjectDialog extends React.Component {
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">{"New Project"}</DialogTitle>
-        <DialogContent style={{ height: '75px' }}>
+        <DialogContent id="qa_newProj_dc_projectName" style={{ height: '75px' }}>
           <TextField
+            id="qa_newProj_tf_projectName" 
             autoFocus
-            id="project-name"
             label="Project Name"
             className={classes.textField}
             value={this.state.projectName}
@@ -136,10 +136,11 @@ class CreateProjectDialog extends React.Component {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={this.handleClose}>
+          <Button id="qa_newProj_btn_cancel" onClick={this.handleClose}>
             Cancel
           </Button>
           <Button
+            id="qa_newProj_btn_ok" 
             onClick={this.handleOK}
             color="secondary"
             variant='contained'

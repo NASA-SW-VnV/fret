@@ -1,5 +1,5 @@
 ---
-title: FRET (Unofficial) Development Guide V0.1
+title: FRET (Unofficial) Development Guide V0.2
 author: Matt Luckcuck
 ---
 

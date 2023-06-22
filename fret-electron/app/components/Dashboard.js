@@ -115,19 +115,19 @@ class Dashboard extends React.Component {
     return (
       <div className={classes.root}>
         <ImageList rowHeight={120} className={classes.ImageList} cols={5} gap={4}>
-          <ImageListItem cols={1}>
+          <ImageListItem id="qa_db_ili_projects" cols={1}>
             <Widget statistics={projectOverviewValue} title={projectOverviewTitle}/>
           </ImageListItem>
-          <ImageListItem cols={1}>
+          <ImageListItem id="qa_db_ili_requirements" cols={1}>
             <Widget statistics={numOfRequirements.toString()} title='Total Requirements'/>
           </ImageListItem>
-          <ImageListItem cols={1}>
+          <ImageListItem id="qa_db_ili_formalized" cols={1}>
             <Widget statistics={percentageOfFormalized} title='Formalized Requirements' unit='%'/>
           </ImageListItem>
-          <ImageListItem cols={1}>
+          <ImageListItem id="qa_db_ili_sysComps" cols={1}>
             <Widget statistics={components.length.toString()} title='System Components'/>
           </ImageListItem>
-          <ImageListItem cols={1}>
+          <ImageListItem id="qa_db_ili_reqSize" cols={1}>
             <Widget statistics={bytesOfRequirements.toString()} title='Requirement Size' unit='bytes'/>
           </ImageListItem>
           <ImageListItem cols={3} rows={6}>

@@ -1,0 +1,5 @@
+var <%for (i=0; i < internalVariables.length; i++) {%><%if (internalVariables[i].name !== '__FTP') {%><%-
+internalVariables[i].name %>:<%- internalVariables[i].type -%>; <%}%><%}%><%for (i=0;  i < modes.length;  i++) {%><%- modes[i].name %>:<%- modes[i].type -%>; <%}%><%for (i=0;  i < properties.length;  i++) {%><%var newid = properties[i].reqid.replace(/[^a-zA-Z0-9_~]/g,'_')%><%- newid %>:bool; <%}%>__FTP: bool; 
+
+let
+

@@ -25,8 +25,10 @@ for example 12 seconds or 5.5 minutes. Time units can be one of the following:
 Note that the time units are not checked, converted or reasoned about by FRET. FRET exports verification code to analysis tools, which are in charge of interpreting the time
 units. Check the user manual under "Exporting for Analysis" for more details.
 
-STOP_CONDITION is a boolean expression. The timing **before** means that the
+STOP_CONDITION is a Boolean expression. The timing **before** means that the
 response must happen at least once before the STOP_CONDITION holds.
+
+> __Important Note:__ [Restrictions](../restrictions.md)
 
 Examples:
 * **immediately:** **In** roll_hold **mode RollAutopilot shall immediately satisfy if** (roll_angle

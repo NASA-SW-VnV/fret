@@ -1,0 +1,15 @@
+{
+  "name": "ltlsim_nusmvparser",
+  "version": "1.0.0",
+  "description": "NuSMV parser with arithmetic expr for the FRET/LTLSIM project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "LTLSIM_NuSMV",
+    "LTLSIMAEX",
+    "parser"
+  ],
+  "author": "Johann Schumann, Anastasia Mavridou"
+}

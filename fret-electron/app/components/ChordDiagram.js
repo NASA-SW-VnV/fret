@@ -187,7 +187,7 @@ class ChordDiagram extends React.Component {
 		  	var requirementNames = [];
 		  	var conflictNames = [];
 		  	// var propNames = Object.keys(content.Dependencies);
-		  	var propNames = content.Properties;
+		  	var propNames = content.Requirements;
 		  	for (var i = 0; i < propNames.length; i++) {
 			    	var contains = false;
 			    	var propName = propNames[i];
@@ -226,7 +226,7 @@ class ChordDiagram extends React.Component {
 
 			//create dependency map for requirement -> list of cexs
 			for (var i = 0; i < counterexamples.length; i++) {
-				var conflict = counterexamples[i].props;
+				var conflict = counterexamples[i].requirements;
 				// var conflict = conflictNames[i];
 				var cex = counterexamples[i];
 				// cex.Dependencies = content.Dependencies;
@@ -286,12 +286,7 @@ class ChordDiagram extends React.Component {
 			    .startAngle(startAngle)
 			    .endAngle(endAngle);
 
-			//Tooltip for arc labels
-			var div = d3.select("body").append("div")	
-			    .attr("class", "tooltip")				
-			    .style("opacity", 0);
-
-      var g = svg
+	        var g = svg
 				.datum(chorddiag)
 				.append("g")
 				.selectAll("g")
@@ -304,24 +299,11 @@ class ChordDiagram extends React.Component {
 		  		.style("fill", function(d) { return (names[d.index] === "" ? "none" : (requirementNames.includes(names[d.index]) ?  "#D3D3D3" : fill(d.index))); })
 		  		.style("cursor", "pointer")
 		  		.attr("d", arc)
+				//.attr("id",function(d){return "qa_chordDia_svg_path_"+names[d.index];})
 
 			//Labeling sections on the arcs
 			g.append("svg:text")
 				.each(function(d) { d.angle = ((d.startAngle + d.endAngle) / 2) + offset;})
-  			.on("mouseover", function(d, i) {		
-		      div.transition()		
-		          .duration(200)		
-		          .style("opacity", .9);		
-		      div	.text(names[i])	
-		          .style("left", (d3.event.pageX) + "px")		
-		          .style("top", (d3.event.pageY - 28) + "px")
-		          .style("width", "auto");	
-		    })
-				.on("mouseout", function(d) {		
-		      div.transition()		
-		          .duration(500)		
-		          .style("opacity", 0);	
-		  	})
 				.attr("dy", ".35em")
 				.style("font-size", "12px")
 				.style("cursor", "pointer")
@@ -333,6 +315,7 @@ class ChordDiagram extends React.Component {
 					+ "translate(" + (innerRadius + 40) + ")"
 					+ (d.angle > Math.PI ? "rotate(180)" : "");
 		  		})
+			    .attr("id",function(d,i){return "qa_chordDia_svg_text_reqId_"+names[i].replace(/\s+/g, '_');})
 		  		.text(function(d,i) { return names[i]; });
 
 
@@ -353,7 +336,7 @@ class ChordDiagram extends React.Component {
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-		if(prevProps.selectedReport.Properties.toString() !== this.props.selectedReport.Properties.toString()) {
+		if(prevProps.selectedReport.Requirements.toString() !== this.props.selectedReport.Requirements.toString()) {
 			this.optLog(prevProps)
 			this.optLog(this.props)
 			this.setState({cexTableData : []});
@@ -384,8 +367,10 @@ class ChordDiagram extends React.Component {
 	    				currentConflicts={this.state.currentConflicts}
 	    				cexTableData={this.state.cexTableData}
 	    				colors={this.state.colors}
+	    				project={this.props.selectedProject}
+	    				requirements={this.props.requirements}
     				/>
-	          	</Grid>);
+	        </Grid>);
 	    }
 
 	    return(
@@ -399,5 +384,7 @@ class ChordDiagram extends React.Component {
 
 ChordDiagram.propTypes = {
   selectedReport: PropTypes.object.isRequired,
+  selectedProject: PropTypes.string.isRequired,
+  requirements: PropTypes.array.isRequired
 }
 export default ChordDiagram

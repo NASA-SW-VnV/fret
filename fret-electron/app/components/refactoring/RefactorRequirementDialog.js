@@ -1,48 +1,17 @@
 /**
-* Dialog component for refacotring, based on existing FRET Code.
-* @author Matt Luckcuck <m.luckcuck@tutanota.com>
+* Dialog component for refactoring, based on existing FRET Code.
+*
+* @module refactoring/RefactorRequirementDialog
+* @author Matt Luckcuck 
 * Started: May 2022
 */
 
-// *****************************************************************************
-// Notices:
-//
-// Copyright © 2019, 2021 United States Government as represented by the Administrator
-// of the National Aeronautics and Space Administration. All Rights Reserved.
-//
-// Disclaimers
-//
-// No Warranty: THE SUBJECT SOFTWARE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY OF
-// ANY KIND, EITHER EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED
-// TO, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL CONFORM TO SPECIFICATIONS,
-// ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE,
-// OR FREEDOM FROM INFRINGEMENT, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL BE
-// ERROR FREE, OR ANY WARRANTY THAT DOCUMENTATION, IF PROVIDED, WILL CONFORM TO
-// THE SUBJECT SOFTWARE. THIS AGREEMENT DOES NOT, IN ANY MANNER, CONSTITUTE AN
-// ENDORSEMENT BY GOVERNMENT AGENCY OR ANY PRIOR RECIPIENT OF ANY RESULTS,
-// RESULTING DESIGNS, HARDWARE, SOFTWARE PRODUCTS OR ANY OTHER APPLICATIONS
-// RESULTING FROM USE OF THE SUBJECT SOFTWARE.  FURTHER, GOVERNMENT AGENCY
-// DISCLAIMS ALL WARRANTIES AND LIABILITIES REGARDING THIRD-PARTY SOFTWARE, IF
-// PRESENT IN THE ORIGINAL SOFTWARE, AND DISTRIBUTES IT ''AS IS.''
-//
-// Waiver and Indemnity:  RECIPIENT AGREES TO WAIVE ANY AND ALL CLAIMS AGAINST
-// THE UNITED STATES GOVERNMENT, ITS CONTRACTORS AND SUBCONTRACTORS, AS WELL AS
-// ANY PRIOR RECIPIENT.  IF RECIPIENT'S USE OF THE SUBJECT SOFTWARE RESULTS IN
-// ANY LIABILITIES, DEMANDS, DAMAGES, EXPENSES OR LOSSES ARISING FROM SUCH USE,
-// INCLUDING ANY DAMAGES FROM PRODUCTS BASED ON, OR RESULTING FROM, RECIPIENT'S
-// USE OF THE SUBJECT SOFTWARE, RECIPIENT SHALL INDEMNIFY AND HOLD HARMLESS THE
-// UNITED STATES GOVERNMENT, ITS CONTRACTORS AND SUBCONTRACTORS, AS WELL AS ANY
-// PRIOR RECIPIENT, TO THE EXTENT PERMITTED BY LAW.  RECIPIENT'S SOLE REMEDY FOR
-// ANY SUCH MATTER SHALL BE THE IMMEDIATE, UNILATERAL TERMINATION OF THIS
-// AGREEMENT.
-// *****************************************************************************
-
-
 
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
-import Typography from '@material-ui/core/Typography';
+import { v4 as uuid } from 'uuid';
+
+import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -54,28 +23,28 @@ import Grid from '@material-ui/core/Grid';
 import Checkbox from '@material-ui/core/Checkbox';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
+import Divider from '@material-ui/core/Divider';
 
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
 import WarningIcon from '@material-ui/icons/Warning';
 import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
 
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListSubheader from '@material-ui/core/ListSubheader';
-import Divider from '@material-ui/core/Divider';
 
 import RefactoringController from '../../../../tools/Refactoring/refactoring_controller';
 import RefactoringUtils from '../../../../tools/Refactoring/refactoring_utils';
 
-import { v4 as uuid } from 'uuid';
 
 const sharedObj = require('electron').remote.getGlobal('sharedObj');
 const modeldb = sharedObj.modeldb;
-const system_dbkeys = sharedObj.system_dbkeys;
+/**
+ * Constants for the states the application can be in.
+ */
 const STATE = {INITIAL:"initial", RESULT_TRUE:"result true", RESULT_FALSE: "result false", TYPES:"types please", ERROR_UNDEF : "error-undefined"};
+
+/**
+ * List of variable types that NuSMV (and therefore Mu-FRET) does not support
+ */
 const unsupported_types = ["undefined", "double", "single",]
 
 
@@ -103,7 +72,23 @@ const styles = theme => ({
   }
 });
 
-class RefactorRequirementDialog extends React.Component {
+/**
+ * Provides the dialogue for refactoring, which guides the user through
+ * the extract requirements refactoring and calls methods 
+ * in refactoring_compare.js
+ * 
+ * The dialogue has five states, for different parts of the process: 
+ * INITIAL, is the initial state where the user hasn't started refactoring yet;
+ * TYPES, is the second state, where the user checks the types of the variables;
+ * ERROR_UNDEF, is the state where some of the types were undefined in the TYPES state;
+ * RESULT_TRUE, is the state where the NuSMV checks pass;
+ * RESULT_FALSE, is the state where the NuSMV checks fail 
+ * (which the user should hopefully never see). * 
+ * 
+ * @extends React.Component
+ */
+class RefactorRequirementDialog extends React.Component 
+{
   state = {
     open: false,
     dialogState : STATE.INITIAL,
@@ -125,43 +110,62 @@ class RefactorRequirementDialog extends React.Component {
       selectedRequirement: props.selectedRequirement,
       open: props.open,
       dialogCloseListener: props.handleDialogClose,
-      selectedRequirementId: props.selectedRequirement.reqid,
       requirements: props.requirements
     });
   }
 
+  /**
+   * Opens the refactor requirements dialogue
+   */
   handleRefactorRequirement = () => {
     this.handleClose();
     this.state.openRefactorDialog();
   }
 
+  /**
+   * Closes the refactor requirements dialogue
+   */
   handleClose = () => {
     // Reset the state
     this.setState({ open: false, dialogState: STATE.INITIAL, selectedRequirement: {}, requirements: [], refactoringCheckresult: null, applyToAll: false, refactoringType: '', newName: '', refactoringContent: ''});
     this.state.dialogCloseListener();
   };
 
+  /**
+   * Advance the state to TYPES, where the user checks the types of the variables
+   */
   handleErrorUndefClose = () =>
   {
     this.setState({dialogState : STATE.TYPES });
   }
 
+  /**
+   * Callback, used by SortableTable.js (I think)
+   */
   handleRefactorDialogClose = () => {
     this.setState({ refactorDialogOpen: false });
 
   };
 
-handlePreview = () => {
-  console.log('Preview Button');
-};
+  /**
+   * Unused draft event handler for the preview button
+   */
+  handlePreview = () => {
+    console.log('Preview Button');
+  };
 
 
 /**
 * Event Handler for the OK Button on the initial
-* refactor screen. Advances to confirming the variable types
+* refactor screen. Advances the state to TYPES.
 */
 handleInitialOK = () =>
 {
+  /**
+   * @TODO Interesting corner case here, if the user inputs a fragment that doesn't
+   * exist, then the state never advances
+   */
+
   if(this.state.applyToAll == false)
   {
     let varList = RefactoringUtils.getVariableNames(this.state.selectedRequirement);
@@ -323,11 +327,12 @@ handleOk = () => {
 
 };
 
-handleRefactoringType = () => event => {
 
-  this.setState({ refactoringType: event.target.value });
-};
-
+/**
+ * Updates the string that should be extracted from a requirement, the 'fragment'.
+ * Stores this in the state variable extractString.
+ * 
+ */
 handleChangeExtract = () => event => {
   let extractString = event.target.value;
   extractString = extractString.trim();
@@ -335,17 +340,32 @@ handleChangeExtract = () => event => {
   this.setState({ extractString: extractString });
 };
 
+/**
+ * Updates the name of the new requirement.
+ * Stores this in the state vaiable newName.
+ *  
+ */
 updateNewName = () => event => {
 
   this.setState({ newName: event.target.value });
 };
 
+/**
+ * Updates the (boolean) state variable applyToAll, indicates 
+ * if the user has selected that the extract requirement functionality 
+ * should check all the requirements for the fragment to extract.
+ * 
+ */
 updateApplytoAllStatus = () => event => {
 
   this.setState({applyToAll: event.target.checked});
 };
 
-
+/**
+ * Updates the type of a variable in the states variables map
+ * @param {String?} varName 
+ *  
+ */
 handleTypeChange = (varName) => event =>
 {
   var value =  event.target.value;
@@ -360,110 +380,43 @@ handleTypeChange = (varName) => event =>
   this.setState({variables: variableTypeMap});
 };
 
+/**
+ * Returns the type of the variable called variableName, as
+ * stored in the state's variables Map
+ * 
+ * @param {String?} variableName the name of a variable
+ * @returns {String?} the type of the variable called variableName
+ */
 getType = (variableName) =>
 {
   return this.state.variables.get(variableName)
 };
 
-/*
-RefactoringContent(type) {
-//  const type = this.state.refactoringType;
 
-  if (type === -1) {
-    console.log('equals false');
-      return (' ');
-  } else if (type === 1) {
-    console.log('equals extract');
-    return (<Grid container spacing={2} >
-      <Grid style={{ textAlign: 'right' }} item xs={6}>
-        New Requirement Name:
-      </Grid>
-      <Grid item xs={6}>
-        <TextField id="newReqName" label="New Name" />
-      </Grid>
-
-      <Grid style={{ textAlign: 'right' }} item xs={6}>
-        Apply to all available fragments:
-      </Grid>
-      <Grid item xs={6}>
-        <Checkbox
-          inputProps={{ 'aria-label': 'controlled' }}
-        />
-      </Grid>
-    </Grid>
-    );
-  } else if (type === 0) {
-    console.log('equals others');
-    return (' ');
-  }
-}
-*/
-
-/*
-renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) {
-  const { classes } = this.props;
-  if (ltlFormula || ltlFormulaPt) {
-    return (
-      <div>
-        <Typography variant="button">
-          Semantic Description
-        </Typography>
-        <br />
-        <div color="primary" variant="body1" dangerouslySetInnerHTML={{ __html: ltlDescription }} />
-        <br />
-        <Typography variant="button">
-          Semantic Diagram
-        </Typography>
-        <div className={classes.imgWrap}>
-          <img src={path} />
-        </div>
-        <div className={classes.variableDescription} dangerouslySetInnerHTML={{ __html: diagramVariables }} />
-        <br />
-        <Typography variant='button' color='primary'>
-        Future Time Formula
-        </Typography>
-        <br />
-        <div className={classes.formula} dangerouslySetInnerHTML={{ __html: ltlFormula}} />
-        <Typography variant='button' color='primary'>
-        <br />
-        Past Time Formula
-        </Typography>
-        <br />
-        <div className={classes.formula} dangerouslySetInnerHTML={{ __html: ltlFormulaPt}} />
-        <br />
-    </div>)}
-    else
-      return(
-        <div>
-          <Typography variant='button'>Formalization</Typography>
-          <br />
-          <Typography variant='body1' color='primary'>Not Applicable</Typography>
-        </div>)
-  }
-*/
-
-  render() {
-  var { project, reqid, parent_reqid, rationale, ltl, semantics, fulltext } = this.state.selectedRequirement
-
-  var dialog_state = this.state.dialogState;
-  console.log("New Dialog State = " + dialog_state);
-
-  switch(dialog_state)
+  render() 
   {
-    case STATE.INITIAL:
-    return (
-      <div>
-        <Dialog
-          open={this.state.open}
-          onClose={this.handleClose}
-          aria-labelledby="form-dialog-title"
-          maxWidth="md"
-        >
-        <DialogTitle id="simple-dialog-title">  Extract Requirement: {this.state.selectedRequirementId}</DialogTitle>
+    
+    var { project, reqid, parent_reqid, rationale, ltl, semantics, fulltext } = this.state.selectedRequirement
+
+    var dialog_state = this.state.dialogState;
+    console.log("New Dialog State = " + dialog_state);
+
+    switch(dialog_state)
+    {
+      case STATE.INITIAL:
+        return (
+        <div>
+          <Dialog
+            open={this.state.open}
+            onClose={this.handleClose}
+            aria-labelledby="form-dialog-title"
+            maxWidth="md"
+          >
+        <DialogTitle id="simple-dialog-title">  Extract Requirement: {reqid}</DialogTitle>
           <DialogContent>
 
             <DialogContentText>
-              Copy the part of {this.state.selectedRequirementId} that you want to extract from its Definition into the Extract field, and add the New Requirement Name. The Apply to all Requirements tick box toggles if the extraction will search for the Extract field in all requirements in this project.
+              Copy the part of {reqid} that you want to extract from its Definition into the Extract field, and add the New Requirement Name. The Apply to all Requirements tick box toggles if the extraction will search for the Extract field in all requirements in this project.
             </DialogContentText>
 
           <Grid container spacing={2} >
@@ -537,7 +490,7 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
     );
     break;
 
-    case STATE.TYPES:
+      case STATE.TYPES:
 
 
       let reqVariables = []
@@ -556,7 +509,7 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
             aria-labelledby="form-dialog-title"
             maxWidth="md"
           >
-          <DialogTitle id="simple-dialog-title">  Check Types Before Extracting Requirement: {this.state.selectedRequirementId}
+          <DialogTitle id="simple-dialog-title">  Check Types Before Extracting Requirement: {reqid}
           </DialogTitle>
 
           <DialogContent>
@@ -572,7 +525,7 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
 
           <Grid spaceing={2}>
             <Grid item xs={3}>
-              {this.state.selectedRequirementId} Definition:
+              {reqid} Definition:
             </Grid>
             <Grid item xs={9}>
               <TextField
@@ -646,7 +599,7 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
           aria-labelledby="form-dialog-title"
           maxWidth="md"
         >
-        <DialogTitle id="simple-dialog-title">  Sucessfully Extracted Requirement: {this.state.selectedRequirementId}
+        <DialogTitle id="simple-dialog-title">  Sucessfully Extracted Requirement: {reqid}
         </DialogTitle>
           <DialogContent>
               <DialogContentText>
@@ -661,8 +614,7 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
           </DialogActions>
         </Dialog>
       );
-
-    break;
+      break;
 
     case STATE.RESULT_FALSE:
     // Check has failed. The user should probably never see this
@@ -673,7 +625,7 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
           aria-labelledby="form-dialog-title"
           maxWidth="md"
         >
-        <DialogTitle id="simple-dialog-title">  Extract Requirement Failed: {this.state.selectedRequirementId}
+        <DialogTitle id="simple-dialog-title">  Extract Requirement Failed: {reqid}
         </DialogTitle>
           <DialogContent>
             <DialogContentText>
@@ -689,7 +641,7 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
           </DialogActions>
         </Dialog>
       );
-    break;
+      break;
 
     case STATE.ERROR_UNDEF:
     // Some of the variables were still undefined
@@ -701,7 +653,7 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
             aria-labelledby="form-dialog-title"
             maxWidth="md"
           >
-          <DialogTitle id="simple-dialog-title">  Error while Extracting: {this.state.selectedRequirementId}
+          <DialogTitle id="simple-dialog-title">  Error while Extracting: {reqid}
           </DialogTitle>
             <DialogContent>
               <DialogContentText>
@@ -728,7 +680,7 @@ renderFormula(ltlFormula, ltlDescription, ltlFormulaPt, diagramVariables, path) 
           </Dialog>
         );
       break;
-  }
+    }
 }
 }
 

@@ -42,17 +42,6 @@ var vars = [];
 var types = {}; // object that maps variable names to type identifiers
 const reservedWords = ['TRUE','FALSE','T','abs'];
 
-
-function salt2smv(ptForm) {
-    ptForm = ptForm.replace(/\<\w\>/g,'').replace(/\<\/\w\>/g,'')
-	.replace(/\=\>/g,'->')
-        .replace(/\[<=(\d+)\s*\w*\s*\]/g, "[0, $1]")
-        .replace(/\[<(\d+)\s*\w*\s*\]/g, (str, p1, offset, s) => (`[0, ${p1-1}]`))
-	.replace(/\[=(\d+)\s*\w*\s*\]/g, "[$1,$1]")
-        .replace(/\[<(\d+)\s*\w*\s*\+1]/g, "[0,$1]");
-    return ptForm;
-}
-
 function processReqts(reqts) {
     assertions = [];
     conditions = [];

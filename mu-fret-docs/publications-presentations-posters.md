@@ -1,21 +1,29 @@
-# Publications, Presentations, and Posters
-
-Our team have written several academic papers, given presentations, and made posters relating to Mu-FRET.
-
-## Presentations and Posters
+# Papers, Presentations, Posters, and Videos
 
 Our team have given several presentations about both FRET and Mu-FRET as part of the VALU3S project, and produced posters for project demonstration sessions. Below you can find links to videos and slides from the presentations, and links to download the posters.
 
-* [_Formalising Verifiable Requirements_](https://www.youtube.com/watch?v=FQGKbYCbxPY) (YouTube): a VALU3S training presentation covering our use of FRET to formalise the requirements of Use Case 5. 
+
+### Videos 
+
+* [_Formalising Verifiable Requirements_](https://www.youtube.com/watch?v=FQGKbYCbxPY) (YouTube): a VALU3S training presentation covering our use of FRET to formalise the requirements of Use Case 5.
+
+* [_Extract Requirement Demo_](https://github.com/valu3s-mu/demo-videos/blob/main/Mu-FRET%20Extract%20Requirement%20Demo.mkv) (~47 MB): a video demonstrating how Mu-FRET's Extract Requirement refactoring works.
+
+
+### Presentation Slides
+
 * [_FRETing about Requirements: Formalised Requirements for an Aircraft Engine Controller_](mu-fret-docs/presentations/refsq2022-fret.pdf) (slides PDF): conference presentation about our work using FRET to formalise the requirements of an aircraft engine controller, provided by our Use Case 5 partner. The accompanying publication can be found on the [publisher's page](https://doi.org/10.1007/978-3-030-98464-9_9) or Open Access on [arXiv](https://arxiv.org/abs/2112.04251).
 * [Demonstration Session slides](mu-fret-docs/presentations/goteburg-nuim.pdf) (PDF) from the General Assembly meeting in Gothenburg. These high-level slides gave us a visual aid while we were demonstrating progress using FRET and Mu-FRET in the VALU3S project. 
 * [Demonstration Session slides](mu-fret-docs/presentations/hamburg-nuim.pdf) (PDF) from the General Assembly meeting in Hamburg, providing an update on the slides from the Gothenburg meeting. These high-level slides gave us a visual aid while we were demonstrating progress using FRET and Mu-FRET in the VALU3S project. 
+
+### Posters
+
 * [_Classical Formal Verification Driven by Formal Requirements_](mu-fret-docs/posters/NUIM-Classical_Formal_Verification_Driven_by_Formal_Requirements.pdf) (poster PDF): a poster from the VALU3S project that describes how our work combines FRET with several verification methods.
 * [_Modular Formal Requirements-Driven Verification_](mu-fret-docs/posters/NUIM-Modular_Formal_Requirements-Driven_Verification.pdf) (poster PDF): a poster from the VALU3S project that describes Mu-FRET, explaining how we have improved FRET to enable it to perform refactoring.
 
 ## Papers
 
-Our team has written several papers about our work for the VALU3S project using FRET and about building Mu-Fret. 
+Our team has written several papers about our work for the VALU3S project using FRET and about building Mu-Fret.
 
 ### Mu-FRET Papers
 
@@ -31,7 +39,4 @@ Our team has written several papers about our work for the VALU3S project using 
 * _A Requirements-Driven Methodology: Formal Modelling and Verification of an Aircraft Engine Controller_: a paper describing using Event-B to formalise and verify systems described using Simulink models, and how we can link this to requirements captured in FRET. Available: [https://link.springer.com/chapter/10.1007/978-3-031-07727-2_21](https://link.springer.com/chapter/10.1007/978-3-031-07727-2_21)
 
 
-
-
-
-
+## 

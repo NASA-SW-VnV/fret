@@ -47,6 +47,8 @@ const sharedObj = require('electron').remote.getGlobal('sharedObj');
 const constants = require('../parser/Constants');
 const db = sharedObj.db;
 const modeldb = sharedObj.modeldb;
+const system_dbkeys = sharedObj.system_dbkeys;
+const utils = require('../../support/utils');
 
 const styles = theme => ({
   root: {
@@ -76,7 +78,7 @@ TabContainer.propTypes = {
 };
 
 class AnalysisTabs extends React.Component {
-  
+
   state = {
     value: 0,
     components: [],
@@ -173,9 +175,42 @@ class AnalysisTabs extends React.Component {
     const self = this;
     const {components} = self.state;
     const {selectedProject} = self.props;
-    components.forEach(function(component){
-        self.checkComponentCompleted(component.component_name, selectedProject);
+    self.checkComponentCompleted2(components, selectedProject);
+  }
 
+    checkComponentCompleted2(components, project) {
+    const {cocospecData, cocospecModes,completedComponents} = this.state;
+    const self = this;
+    let checkCounter = 0;
+    components.forEach(function (component) {
+      let component_name = component.component_name;
+      var dataAndModesLength = cocospecData[component_name] ? cocospecData[component_name].length : 0;
+      modeldb.find({
+        selector: {
+          component_name: component_name,
+          project: project,
+          completed: true,
+          modeldoc: false
+        }
+      }).then(function (result) {
+        if (result.docs.length === dataAndModesLength && dataAndModesLength !== 0){
+          if (!completedComponents.includes(component_name))
+           completedComponents.push(component_name);
+           checkCounter++;
+        } else {
+          var index = completedComponents.indexOf(component_name);
+          if (index > -1) completedComponents.splice(index, 1);
+          checkCounter++;
+        }
+        if (checkCounter === components.length){
+          self.setState({
+            completedComponents : [].concat(completedComponents)
+          })
+        }
+      }).catch(function (err) {
+        console.log(err);
+        return false;
+      })
     })
   }
 
@@ -201,7 +236,8 @@ class AnalysisTabs extends React.Component {
       self.setState({
         cocospecData: data.cocospecData,
         cocospecModes: data.cocospecModes,
-        components: data.components.sort((a, b) => {return a.component_name.toLowerCase().trim() > b.component_name.toLowerCase().trim()})
+        components: data.components.sort((a, b) => {return a.component_name.toLowerCase().trim() > b.component_name.toLowerCase().trim()}),
+        completedComponents: []
       })
       self.checkComponents();
     }).catch((err) => {
@@ -229,7 +265,7 @@ class AnalysisTabs extends React.Component {
         if (index > -1) completedComponents.splice(index, 1);
       }
       self.setState({
-        completedComponents : completedComponents
+        completedComponents : [].concat(completedComponents)
       })
     }).catch(function (err) {
       console.log(err);
@@ -275,12 +311,10 @@ class AnalysisTabs extends React.Component {
             doc.semantics.CoCoSpecCode !== constants.undefined_semantics &&
             doc.semantics.CoCoSpecCode !== constants.unhandled_semantics){
               if (doc.semantics.duration){
-                doc.semantics.duration.forEach(function(duration){
-                  if (!delays.includes(duration)) {
-                    delays.push(duration);
+                  if (!delays.includes(doc.semantics.duration)){
+                    delays.push(doc.semantics.duration);
                   }
-                })
-             }
+              }
           }
         }
       }
@@ -339,6 +373,29 @@ class AnalysisTabs extends React.Component {
     return contract;
   }
 
+  variableIdentifierReplacement(contract){
+    contract.inputVariables.forEach(function(input){
+      input.name = utils.replace_special_chars(input.name)
+    })
+    contract.outputVariables.forEach(function(output){
+      output.name = utils.replace_special_chars(output.name)
+    })
+    contract.internalVariables.forEach(function(internal){
+      internal.name = utils.replace_special_chars(internal.name)
+    })
+    contract.assignments.forEach((item, i) => {
+      contract.assignments[i] = utils.replace_special_chars(item);
+    });
+    contract.copilotAssignments.forEach((item, i) => {
+      contract.copilotAssignments[i] = utils.replace_special_chars(item);
+    });
+    contract.modes.forEach(function(mode){
+      mode.name = utils.replace_special_chars(mode.name)
+      mode.assignment = utils.replace_special_chars(mode.assignment)
+    })
+    return contract;
+  }
+
   render() {
     const {classes, selectedProject, existingProjectNames} = this.props;
     const {value, components, completedComponents, cocospecData, cocospecModes} = this.state;
@@ -353,25 +410,48 @@ class AnalysisTabs extends React.Component {
             variant="scrollable"
             scrollButtons="auto"
           >
-            <Tab label="Variable Mapping" />
-            {process.platform === "win32" ? 
+            <Tab id="qa_var_tab" label="Variable Mapping" />
+            {process.platform === "win32" ?
               <Tooltip title={'Realizability checking is currently not supported in Windows OS'}>
                 <span>
-                  <Tab disabled label="Realizability" />            
-                </span>              
+                  <Tab id="qa_rlz_tab_win" disabled label="Realizability" />
+                </span>
               </Tooltip> :
-              <Tab label="Realizability"/>
-            }            
+              <Tab id="qa_rlz_tab" label="Realizability"/>              
+            }
           </Tabs>
         </AppBar>
         {value === 0 &&
           <TabContainer>
-            <VariablesView selectedProject={selectedProject} existingProjectNames={existingProjectNames} synchStateWithDB={this.synchStateWithDB} checkComponentCompleted={this.checkComponentCompleted} getPropertyInfo={this.getPropertyInfo} getDelayInfo={this.getDelayInfo} getContractInfo={this.getContractInfo} components={components.map(e => e.component_name)} completedComponents={completedComponents} cocospecData={cocospecData} cocospecModes={cocospecModes}/>
+            <VariablesView
+            selectedProject={selectedProject}
+            existingProjectNames={existingProjectNames}
+            synchStateWithDB={this.synchStateWithDB}
+            checkComponentCompleted={this.checkComponentCompleted}
+            getPropertyInfo={this.getPropertyInfo}
+            getDelayInfo={this.getDelayInfo}
+            getContractInfo={this.getContractInfo}
+            components={components.map(e => e.component_name)}
+            completedComponents={completedComponents}
+            cocospecData={cocospecData}
+            cocospecModes={cocospecModes}
+            variableIdentifierReplacement={this.variableIdentifierReplacement}/>
           </TabContainer>
         }
         {value === 1 &&
           <TabContainer>
-            <RealizabilityView selectedProject={selectedProject} existingProjectNames={existingProjectNames} synchStateWithDB={this.synchStateWithDB} getPropertyInfo={this.getPropertyInfo} getDelayInfo={this.getDelayInfo} getContractInfo={this.getContractInfo} components={components} completedComponents={completedComponents} cocospecData={cocospecData} cocospecModes={cocospecModes}/>
+            <RealizabilityView
+            selectedProject={selectedProject}
+            existingProjectNames={existingProjectNames}
+            synchStateWithDB={this.synchStateWithDB}
+            getPropertyInfo={this.getPropertyInfo}
+            getDelayInfo={this.getDelayInfo}
+            getContractInfo={this.getContractInfo}
+            components={components}
+            completedComponents={completedComponents}
+            cocospecData={cocospecData}
+            cocospecModes={cocospecModes}
+            variableIdentifierReplacement={this.variableIdentifierReplacement}/>
           </TabContainer>
         }
       </div>

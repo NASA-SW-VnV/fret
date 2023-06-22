@@ -32,5 +32,6 @@ expressions has a meaning like **In** for mode variables. Here are some
 examples:
 
 * **While** mode = 4 the watch shall always satisfy alarm_icon_on
+* **While** persisted(4,high_temperature) the monitor shall until shutoff satisfy alarm_on
 * **Before** taxiing & receivedClearance the plane shall always satisfy !takeoff
 * **After** landed & powerOff the doors shall within 3 seconds satisfy unlocked
