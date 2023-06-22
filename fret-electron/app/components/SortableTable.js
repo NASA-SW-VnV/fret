@@ -584,6 +584,16 @@ class SortableTable extends React.Component {
     // });
   }
 
+  //Oisín: This simpler method gets passed to DisplayRequirementDialog to
+  //allow refactoring from there.
+  //(We already know which requirement we want, so we just need to show the
+  // refactoring dialog).
+  handleRefactorfromDialog = () => {
+    this.setState({
+      refactorDialogOpen: true
+    })
+  }
+
   handleRefactorDialogClose = () => {
     this.setState({
       refactorDialogOpen: false
@@ -989,19 +999,23 @@ class SortableTable extends React.Component {
         />
       </Paper>
 
-<RefactorRequirementDialog
-  selectedRequirement={this.state.selectedRequirement}
-  open={this.state.refactorDialogOpen}
-  handleDialogClose={this.handleRefactorDialogClose}
-  requirements={this.props.requirements}
-/>
+      <RefactorRequirementDialog
+        selectedRequirement={this.state.selectedRequirement}
+        open={this.state.refactorDialogOpen}
+        handleDialogClose={this.handleRefactorDialogClose}
+        requirements={this.props.requirements}
+      />
+
       <DisplayRequirementDialog
         selectedRequirement={this.state.selectedRequirement}
         open={this.state.displayRequirementOpen}
         handleDialogClose={this.handleRequirementDialogClose}
         handleCreateDialogOpen={this.handleCreateDialogOpen}
         handleDeleteDialogClose={this.handleDeleteDialogClose}
-        handleDeleteDialogOpen={this.handleDeleteDialogOpen}/>
+        handleDeleteDialogOpen={this.handleDeleteDialogOpen}
+        //Oisín: added this so we can refactor straight from the dialog
+        handleRefactorDialogOpen={this.handleRefactorfromDialog}
+        />
       <CreateRequirementDialog
         open={this.state.createDialogOpen}
         handleCreateDialogClose={this.handleCreateDialogClose}

@@ -50,6 +50,9 @@ import ImageListItem from '@material-ui/core/ImageListItem';
 import ImageListItemBar from '@material-ui/core/ImageListItemBar';
 import Tooltip from '@material-ui/core/Tooltip';
 
+import RefactorRequirementDialog from './refactoring/RefactorRequirementDialog';
+import BuildIcon from '@material-ui/icons/Build';
+
 const styles = theme => ({
   formula: {
     color: theme.palette.primary.main,
@@ -91,6 +94,7 @@ class DisplayRequirementDialog extends React.Component {
       dialogCloseListener: props.handleDialogClose,
       openCreateDialog: props.handleCreateDialogOpen,
       openDeleteDialog: props.handleDeleteDialogOpen,
+      openRefactorDialog: props.handleRefactorDialogOpen
     };
   }
 
@@ -108,10 +112,13 @@ class DisplayRequirementDialog extends React.Component {
   handleRefactorRequirement = () => {
     console.log('Handle Refactor requirement');
     console.log(this.state.openRefactorDialog);
-    console.log(this.props.handleRefactorDialogOpen);
+    //console.log(this.props.handleRefactorDialogOpen);
     this.handleClose();
-    this.props.handleRefactorDialogOpen();
+    //this.props.handleRefactorDialogOpen();
     this.state.openRefactorDialog();
+    //Oisín: I don't think there's any actual need to set the function to a state variable
+    //(calling it as a prop seems to work fine), but I think it's best to follow
+    //the existing format
   }
 
   handleDeleteRequirement = () => {
@@ -196,6 +203,11 @@ class DisplayRequirementDialog extends React.Component {
                     <EditIcon />
                     </Tooltip>
                   </IconButton>
+                  <IconButton id="qa_disReq_ic_refactor" onClick={this.handleRefactorRequirement} size="small" color="default" aria-label="refactor" >
+                    <Tooltip id="tooltip-icon-build" title="Refactor Requirement">
+                    <BuildIcon />
+                    </Tooltip>
+                  </IconButton>
                   <IconButton id="qa_disReq_ic_delete" onClick={this.handleDeleteRequirement} size="small" aria-label="delete" >
                     <Tooltip id="tooltip-icon-delete" title="Delete Requirement">
                     <DeleteIcon color='error'/>
@@ -241,7 +253,8 @@ DisplayRequirementDialog.propTypes = {
   open: PropTypes.bool.isRequired,
   handleDialogClose: PropTypes.func.isRequired,
   handleCreateDialogOpen: PropTypes.func.isRequired,
-  handleDeleteDialogOpen: PropTypes.func.isRequired
+  handleDeleteDialogOpen: PropTypes.func.isRequired,
+  handleRefactorDialogOpen: PropTypes.func.isRequired
 };
 
 export default withStyles(styles)(DisplayRequirementDialog);
