@@ -102,7 +102,10 @@ class RefactorRequirementDialog extends React.Component
     newName: '',
     requirements: [],
     refactoringCheckresult: null,
-    variableDocs : {}
+    variableDocs : {},
+    //New variables for invalid fragments
+    fragmentNotFoundinSelected: false,
+    fragmentNotFoundInAll: false,
   };
 
   componentWillReceiveProps = (props) => {
@@ -127,7 +130,7 @@ class RefactorRequirementDialog extends React.Component
    */
   handleClose = () => {
     // Reset the state
-    this.setState({ open: false, dialogState: STATE.INITIAL, selectedRequirement: {}, requirements: [], refactoringCheckresult: null, applyToAll: false, refactoringType: '', newName: '', refactoringContent: ''});
+    this.setState({ open: false, dialogState: STATE.INITIAL, selectedRequirement: {}, requirements: [], refactoringCheckresult: null, applyToAll: false, refactoringType: '', newName: '', refactoringContent: '', fragmentNotFoundinSelected: false, fragmentNotFoundinAll: false});
     this.state.dialogCloseListener();
   };
 
@@ -166,43 +169,51 @@ handleInitialOK = () =>
    * exist, then the state never advances
    */
 
+  //Oisín: Reset the error messages
+  this.setState({fragmentNotFoundinSelected: false, fragmentNotFoundinAll: false});
+
   if(this.state.applyToAll == false)
   {
-    let varList = RefactoringUtils.getVariableNames(this.state.selectedRequirement);
+    if(this.fragmentInCurrent() == false){
+      this.setState({fragmentNotFoundinSelected: true});
+    }else{
+      let varList = RefactoringUtils.getVariableNames(this.state.selectedRequirement);
 
-    var variableTypeMap = new Map();
-    for(let variable of varList)
-    {
-      variableTypeMap.set(variable, "undefined");
-    }
-
-    var self = this;
-
-    modeldb.find({
-      selector: {
-        project : this.state.selectedRequirement.selectedProject,
-        variable_name : {$in:varList}
-      }
-    }).then(function(result)
+      var variableTypeMap = new Map();
+      for(let variable of varList)
       {
-        var variableTypeMap = new Map();
-        for (let doc of result.docs)
-        {
-          let varName = doc.variable_name;
-          let varType = doc.dataType;
+        variableTypeMap.set(variable, "undefined");
+      }
 
-          if(varType == "")
+      var self = this;
+
+      modeldb.find({
+        selector: {
+          project : this.state.selectedRequirement.selectedProject,
+          variable_name : {$in:varList}
+        }
+      }).then(function(result)
+        {
+          var variableTypeMap = new Map();
+          for (let doc of result.docs)
           {
-            varType = "undefined"; // If the variable has on type in the database, set it to "undefined"
+            let varName = doc.variable_name;
+            let varType = doc.dataType;
+
+            if(varType == "")
+            {
+              varType = "undefined"; // If the variable has no type in the database, set it to "undefined"
+            }
+
+            variableTypeMap.set(varName, varType); //Put the variable name and type into the map
+
           }
 
-          variableTypeMap.set(varName, varType); //Put the variable name and type into the map
-
+          self.setState({variableDocs: result.docs, variables : variableTypeMap, dialogState:STATE.TYPES}); // Add the map to the state, and advance to the Types dialogue
+          //self.setState({fragmentNotFoundinSelected: false, fragmentNotFoundinAll: false});
         }
-
-        self.setState({variableDocs: result.docs, variables : variableTypeMap, dialogState:STATE.TYPES}); // Add the map to the state, and advance to the Types dialogue
-      }
-      ).catch((err) => {console.log(err); })
+        ).catch((err) => {console.log(err); })
+    }
   }
   else{
 
@@ -258,11 +269,27 @@ handleInitialOK = () =>
             variableTypeMap.set(varName, varType);
           }
           self.setState({variableDocs: result.docs, variables : variableTypeMap, dialogState:STATE.TYPES});
+          //self.setState({fragmentNotFoundinSelected: false, fragmentNotFoundinAll: false});
         }
         ).catch((err) => { console.log(err); })
+    }else{
+      this.setState({fragmentNotFoundinAll: true});
     }
   }
 }
+
+
+fragmentInCurrent = () => {
+  let fragment = this.state.extractString;
+  let this_req_text = this.state.selectedRequirement.fulltext;
+
+  if(this_req_text.split(" ").join("").includes(fragment.split(" ").join(""))) {
+    return true;
+  }else {
+    return false;
+  }
+}
+
 
 /**
 * Event Handler for the OK Button on the types dialogue
@@ -471,6 +498,12 @@ getType = (variableName) =>
                           </Grid>
                     </Grid>
 
+            {this.state.fragmentNotFoundinSelected == true &&
+              <p style={{ color: "red" }}>Specified fragment not found in selected requirement</p>
+            }
+            {this.state.fragmentNotFoundinAll == true &&
+              <p style={{ color: "red" }}>Specified fragment not found in selected project</p>
+            }
 
             </DialogContent>
             <DialogActions>
