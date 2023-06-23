@@ -210,7 +210,6 @@ handleInitialOK = () =>
           }
 
           self.setState({variableDocs: result.docs, variables : variableTypeMap, dialogState:STATE.TYPES}); // Add the map to the state, and advance to the Types dialogue
-          //self.setState({fragmentNotFoundinSelected: false, fragmentNotFoundinAll: false});
         }
         ).catch((err) => {console.log(err); })
     }
@@ -269,7 +268,6 @@ handleInitialOK = () =>
             variableTypeMap.set(varName, varType);
           }
           self.setState({variableDocs: result.docs, variables : variableTypeMap, dialogState:STATE.TYPES});
-          //self.setState({fragmentNotFoundinSelected: false, fragmentNotFoundinAll: false});
         }
         ).catch((err) => { console.log(err); })
     }else{
