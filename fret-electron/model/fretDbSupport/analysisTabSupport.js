@@ -49,7 +49,7 @@ async function synchAnalysisWithDB (selectedProject) {
     var data;
     var retVal;
     // console.log('analysisTabSupport.synchAnalysisWithDB selectedProject ', selectedProject)
-    
+
     return leveldbDB.find({
         selector: {
           project: selectedProject,
@@ -75,7 +75,7 @@ async function synchAnalysisWithDB (selectedProject) {
           completedComponents: []
         }
 
-        retVal.completedComponents =  await checkComponents(retVal.components, selectedProject, 
+        retVal.completedComponents =  await checkComponents(retVal.components, selectedProject,
           retVal.cocospecData, retVal.cocospecModes,[]);
         return retVal
       }).catch((err) => {
@@ -135,10 +135,10 @@ async function  checkComponents (components, selectedProject, cocospecData, coco
     var completedComponents = []
     let checkCounter = 0;
     if(components){
-      components.forEach(function (component) {
+      await Promise.all(components.map(function (component) {
         let component_name = component.component_name;
         var dataAndModesLength = cocospecData[component_name] ? cocospecData[component_name].length : 0;
-        modelDB.find({
+        return modelDB.find({
           selector: {
             component_name: component_name,
             project: selectedProject,
@@ -162,7 +162,7 @@ async function  checkComponents (components, selectedProject, cocospecData, coco
           console.log(err);
           return false;
         })
-      })
+      }))
     }
     return completedComponents
   }

@@ -65,3 +65,21 @@ export const getRequirementStyle = (requirement, isNode) => {
   }
   return style;
 }
+
+export const export_to_md = (R, P) => {
+  var s="# Requirements for Project `"+ P + "`\n";
+
+  s = s + "|ID|P-ID| Text | Rationale |" + "\n";
+  s = s + "|---|---|---|---|" + "\n";
+//                      ({reqid, parent_reqid, project, rationale, comments, fulltext, semantics, input}))(r.doc)
+
+  R.forEach((r) => {
+    s=s + "| " + r.reqid +
+      " | " + r.parent_reqid +
+      " | " + r.fulltext.replace(/\|/g,",").replace(/\n/g," ").replace(/\r/g,"") +
+      " | " + r.rationale.replace(/\|/g,",").replace(/\n/g," ").replace(/\r/g,"");
+    s=s + "\n";
+  })
+
+  return s;
+}

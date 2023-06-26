@@ -72,6 +72,7 @@ async function getProjects(){
       return doc.names;        
     }).catch((err) => {
       console.log(err);
+      return []
     });
 }
 
