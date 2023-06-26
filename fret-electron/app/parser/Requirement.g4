@@ -42,6 +42,7 @@ freeform :
 nasa
         : (scope)? (reqt_condition)?
           (component SHALL | SHALL component)
+    	  (probability)?
           (timing)? response
         ;
 // Note: "while" was introduced because we can't have
@@ -101,6 +102,14 @@ component
 response : satisfaction;
 
 satisfaction : SATISFY post_condition ;
+
+probability : (',')? WITH probability_aux (',')? ;
+
+probability_aux :
+     WHAT PROB |
+     PROB RELATIONAL_OP prob_num ;
+
+prob_num : NUMBER ;
 
 timing
          : (',')? timing_aux (',')?
@@ -189,6 +198,7 @@ OF : O F;
 ONLY : O N L Y;
 OR : O R;
 PREVIOUS : P R E V I O U S;
+PROB : P R O B A B I L I T Y;
 SAME : S A M E;
 SATISFY : S A T I S F Y;
 SECOND : S E C (O N D)? S?;
@@ -201,10 +211,12 @@ TRUE : T R U E;
 UNLESS : U N L E S S;
 UNTIL : U N T I L;
 UPON : U P O N;
+WHAT : W H A T;
 WHEN : W H E N;
 WHENEVER : W H E N E V E R;
 WHERE : W H E R E;
 WHILE : W H I L E;
+WITH : W I T H;
 WITHIN : W I T H I N;
 XOR : X O R;
 

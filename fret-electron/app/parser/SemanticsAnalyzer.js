@@ -69,6 +69,7 @@ function initialize(type) {
       type: type,
       scope : { type : 'null' },
       condition: 'null',
+      probability: 'null',
       timing: 'null',
       response: 'action',
       variables: []
@@ -233,6 +234,18 @@ RequirementListener.prototype.enterPost_condition = function(ctx) {
     let pc = '(' + antlrUtilities.getText(ctx).trim() + ')';
     let pc2 = pc.replace(/ then /gi, ' => ').replace(/(\(| )(if )/gi,((match,p1,offset,str) => p1));
     result.post_condition = pc2;
+}
+
+RequirementListener.prototype.enterProbability_aux = function(ctx) {
+    const prob = antlrUtilities.getText(ctx).trim().split(' ');
+    const selector = prob[0].toLowerCase()
+    if (selector === "what") result.probability = ['query']
+    else if (selector === "probability") result.probability = [prob[1],prob[2]]
+    else console.log('enterProbability: unknown keyword')
+}
+
+RequirementListener.prototype.exitProbability = function(ctx) {
+    result.probabilityTextRange = [ctx.start.start, ctx.stop.stop]
 }
 
 const atWords = {'first' : 'immediately',
@@ -552,7 +565,7 @@ SemanticsAnalyzer.prototype.semantics = () => {
   // conditions. Actually, the only difference between the "correct"
   // and IST definitions is the following:
   // "SMVftExtright2": "($scope_mode$ & (LAST | X (! $scope_mode$)))"
-  // IST: "SMVftExtright": "($scope_mode$ & (! LAST) & X (! $scope_mode$))",  
+  // IST: "SMVftExtright": "($scope_mode$ & (! LAST) & X (! $scope_mode$))",
 
   const ftleftSMV = fetchedSemantics.endpoints.SMVftExtleft2;
   const ftrightSMV = fetchedSemantics.endpoints.SMVftExtright2;
@@ -570,10 +583,10 @@ SemanticsAnalyzer.prototype.semantics = () => {
     // formula with $Left$ or $Right$ (see
     // e.g. futureTemporalConditionsNoBounds in support/xform.js)
     // unlike the other conditions.
- 
+
     if (result.scope.type === 'null') {
       // These should never appear in formalizations
-      result.scope_mode_pt = "BAD_PT"; 
+      result.scope_mode_pt = "BAD_PT";
       result.scope_mode_ft = "BAD_FT"
     } else {
       // the scope_mode field only exists when scope.type !== 'null'
@@ -592,7 +605,7 @@ SemanticsAnalyzer.prototype.semantics = () => {
       // regCondTCxform has the temporal conditions rewritten into LTL.
       const regCondTCxform_pt = xform.transformPastTemporalConditions(regCond)
     if (constants.verboseSemanticsAnalyzer) console.log("regCondTCxform_pt: " + JSON.stringify(regCondTCxform_pt));
-    
+
       const regCondTCxform_ft = xform.transformFutureTemporalConditions(regCond)
 
       // regCondUnexp_pt,_ft have the endpoints unexpanded e.g. FTP,
@@ -688,14 +701,14 @@ SemanticsAnalyzer.prototype.semantics = () => {
     // Do infinite future with the after/until semantics
     const fetched_ftInfAUExpanded = rename(fetchedSemantics.ftInfAUExpanded,'SMV','ft')
     result.ftInfAUExpanded = instantiateInf(fetched_ftInfAUExpanded)
-    
+
     if (constants.verboseSemanticsAnalyzer) console.log("After ftInfAUExpanded: " + (Date.now() - startTime) + " ms")
-      
+
     if (constants.generateBetweenSemantics) {
       // Do past, with the between semantics
       const fetched_ptFinBtwExpanded = rename(fetchedSemantics.ptFinBtwExpanded,'SMV','pt')
       result.ptFinBtwExpanded = instantiate(fetched_ptFinBtwExpanded, true);
-      
+
       // Do infinite future, with the between semantics.
       const fetched_ftInfBtwExpanded = rename(fetchedSemantics.ftInfBtwExpanded,'SMV','ft')
       result.ftInfBtwExpanded = instantiateInf(fetched_ftInfBtwExpanded);

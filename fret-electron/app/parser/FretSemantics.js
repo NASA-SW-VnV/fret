@@ -73,10 +73,10 @@ function do_not_formalize(text) {
 // Check for uses of reserved words and trailing unparsed input.
 // Assumes the parse tree has been walked.
 function checkReqt(trimmedText) {
-  let reqtErrors = []; 
+  let reqtErrors = [];
   const {conds,responseEnd} = semanticsAnalyzer.conditions();
   const reserved = findReservedWords(conds.join(" "));
-  if (reserved.length > 0) 
+  if (reserved.length > 0)
     reqtErrors.push(reserved)
   if (responseEnd !== 0 && trimmedText.length - 1 !== responseEnd)
     reqtErrors.push("Trailing unparsed input: '" + trimmedText.slice(responseEnd + 1) + "'")
@@ -134,7 +134,7 @@ exports.compilePartialText = (text) => {
   parser.addErrorListener(listener);
   var tree = parser[REQ_BODY_CTX_RULE]();
   antlr4.tree.ParseTreeWalker.DEFAULT.walk(semanticsAnalyzer, tree);
-  
+
   let r = {}
   if (do_not_formalize(trimmedText)) {
     semanticsAnalyzer.clearResult();
@@ -192,7 +192,7 @@ exports.parseByCtxRule = (text, ctxRule) => {
   return result
 }
 
-// Like parseByCtxRule but checks for uses of reserved words in conditions and 
+// Like parseByCtxRule but checks for uses of reserved words in conditions and
 // trailing unparsed input
 exports.parseByCtxRuleAndAnalyze = (text, ctxRule) => {
   let trimmedText = trimReqtText(text)
@@ -214,7 +214,7 @@ exports.parseByCtxRuleAndAnalyze = (text, ctxRule) => {
     result.parseErrors = annotations.map(a => a.text).join('; ')
   else {
     antlr4.tree.ParseTreeWalker.DEFAULT.walk(semanticsAnalyzer, tree);
-    const reqtErrors = checkReqt(trimmedText) 
+    const reqtErrors = checkReqt(trimmedText)
     if (reqtErrors.length > 0) result.parseErrors = reqtErrors
     else result.parseTree = tree;
   }
@@ -233,15 +233,15 @@ exports.parseAndAnalyze = (text) => {
 }
 
 /*
-// 
+// tests
 console.log('compile: ' + JSON.stringify(this.compile('the sw shall satisfy p:q')))
 console.log('compilePartialText: ' + JSON.stringify(this.compilePartialText('the sw shall satisfy p:q')))
 
 console.log('parseAndAnalyze: ' + JSON.stringify(this.parseAndAnalyze('the sw shall satisfy p:q')))
-*/
 
-/*
-// tests
+console.log(JSON.stringify(this.compile('whenever p the sw shall with probability <= 0.5 eventually satisfy q')))
+
+console.log(JSON.stringify(this.compile('whenever p the sw shall with what probability eventually satisfy q')))
 
 // fails, needs a space before -
 console.log(JSON.stringify(this.compile('the sw shall satisfy x-y>0')))
