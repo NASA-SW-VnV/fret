@@ -29,7 +29,7 @@ Here are the steps to install and start FRET:
 2. npm run fret-install (please do 'npm run fret-reinstall' instead if you already have a FRET installation)
 3. npm start
 
-<!-- For the installation of FRET on Windows 10 see [Installation_Windows](installation_windows.md). -->
+For the installation of FRET on Windows 10 see [Installation_Windows](installation_windows.md).
 
 For the installation of FRET on Apple M1 machines see notes below.
 
