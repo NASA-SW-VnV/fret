@@ -45,6 +45,7 @@ import { retrieveRlzRequirements, computeConnectedComponents, checkRealizability
 //require model methods
 //---
 //import ejsCacheCoPilot from '../support/CoPilotTemplates/ejsCacheCoPilot'   // this causes dev not to work
+import ejsCache from '../support/CoCoSpecTemplates/ejsCache';
 const modelDbSetters = require('./modelDbSupport/modelDbSetters_main.js');
 const modelDbDelete = require('./modelDbSupport/deleteVariables_main.js');
 const fretDbSetters = require('./fretDbSupport/fretDbSetters_main');
