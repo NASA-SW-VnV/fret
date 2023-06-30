@@ -206,6 +206,7 @@ async function  synchModelVariablesAndComponents(componentModel,selectedProject)
       } else if (doc.idType === 'Mode'){
         if (doc.modeRequirement !== '')
           variable.assignment = doc.modeRequirement;
+          variable.type = getCoCoSpecDataType(doc.dataType);
           contract.modes.push(variable);
       } else if (doc.idType === 'Function'){
         variable.moduleName = doc.moduleName;
