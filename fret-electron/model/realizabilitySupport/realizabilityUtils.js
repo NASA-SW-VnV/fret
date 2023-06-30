@@ -145,7 +145,7 @@ async function retrieveRlzRequirements (selectedProject, selectedComponent) {
   }
 
 function renameIDs(contract){
-    let newContract = variableIdentifierReplacement(contract);
+    let newContract = variableIdentifierReplacement(contract);    
     let contractVariables = [].concat(newContract.inputVariables.concat(newContract.outputVariables.concat(newContract.internalVariables.concat(newContract.functions.concat(newContract.modes)))));
 
     for (const contractVar of contractVariables) {
@@ -165,6 +165,26 @@ function renameIDs(contract){
           regex, '__FTP');
       }      
     })
+
+    if (newContract.modes) {        
+        let modeAssignments = newContract.modes.map(el => el.assignment)
+
+        modeAssignments.forEach((item, i) => {
+          for (const contractVar of contractVariables) {
+            var regex = new RegExp('\\b' + contractVar.name.substring(2) + '\\b', "g");
+            newContract.modes[i].assignment = newContract.modes[i].assignment.replace(
+              regex, contractVar.name);
+          }
+
+          if (!newContract.internalVariables.includes("__FTP")) {
+            var regex = new RegExp('\\b' + 'FTP' + '\\b', "g");
+
+            newContract.modes[i].assignment = newContract.modes[i].assignment.replace(
+              regex, '__FTP');
+          }      
+        })
+    }
+    console.log('Hiiiiii '+newContract.modes)
 
     for (const property of newContract.properties){
       property.reqid = '__'+property.reqid;
