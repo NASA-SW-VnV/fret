@@ -39,13 +39,11 @@ import {getContractInfo, getPropertyInfo, getDelayInfo,
   synchFRETvariables} from './modelDbSupport/variableMappingSupports'
 //import FretSemantics from './../app/parser/FretSemantics'
 import {export_to_md} from "../app/utils/utilityFunctions";
-//const checkDbFormat = require('./fretDbSupport/checkDBFormat.js');
 import {synchAnalysisWithDB, } from './fretDbSupport/analysisTabSupport'
 import { retrieveRlzRequirements, computeConnectedComponents, checkRealizability, diagnoseSpec, checkDependenciesExist } from './realizabilitySupport/realizabilityUtils'
-//require model methods
-//---
-//import ejsCacheCoPilot from '../support/CoPilotTemplates/ejsCacheCoPilot'   // this causes dev not to work
 import ejsCache from '../support/CoCoSpecTemplates/ejsCache';
+import ejsCacheCoPilot from '../support/CoPilotTemplates/ejsCacheCoPilot';
+
 const modelDbSetters = require('./modelDbSupport/modelDbSetters_main.js');
 const modelDbDelete = require('./modelDbSupport/deleteVariables_main.js');
 const fretDbSetters = require('./fretDbSupport/fretDbSetters_main');
