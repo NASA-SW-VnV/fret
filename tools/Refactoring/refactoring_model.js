@@ -204,6 +204,10 @@ export function FindRequirementsWithFragment(allRequirements, project_name, frag
           {
             console.log("No fulltext, so assuming it's not a requirement.")
           }
+          else if(this_req.project != project_name) //Oisín: I don't like this bracketing style, but consistency (:
+          {
+            console.log("Different project, skip")
+          }
           else if(this_req.req_id == destinationName)
           {
             console.log("Found the destination requirement. Skip")

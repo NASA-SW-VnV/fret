@@ -106,6 +106,8 @@ class RefactorRequirementDialog extends React.Component
     //New variables for invalid fragments
     fragmentNotFoundinSelected: false,
     fragmentNotFoundInAll: false,
+    //String with the IDs of any requirements to be refactored
+    applicableRequirementsNames: "",    
   };
 
   componentWillReceiveProps = (props) => {
@@ -130,7 +132,7 @@ class RefactorRequirementDialog extends React.Component
    */
   handleClose = () => {
     // Reset the state
-    this.setState({ open: false, dialogState: STATE.INITIAL, selectedRequirement: {}, requirements: [], refactoringCheckresult: null, applyToAll: false, refactoringType: '', newName: '', refactoringContent: '', fragmentNotFoundinSelected: false, fragmentNotFoundinAll: false});
+    this.setState({ open: false, dialogState: STATE.INITIAL, selectedRequirement: {}, requirements: [], refactoringCheckresult: null, applyToAll: false, refactoringType: '', newName: '', refactoringContent: '', fragmentNotFoundinSelected: false, fragmentNotFoundinAll: false, applicableRequirementsNames: ""});
     this.state.dialogCloseListener();
   };
 
@@ -219,6 +221,7 @@ handleInitialOK = () =>
     //Find the requirements that have the fragment in.
     let applicableRequirements = RefactoringController.requirementWithFragement(this.state.requirements, this.state.selectedRequirement, this.state.extractString, this.state.newName);
 
+    let applicableRequirementsNames = [];
 
     //If we have some requirements that contain the fragment we're extracting
     if (applicableRequirements.length >0)
@@ -236,7 +239,12 @@ handleInitialOK = () =>
         let newVarList = varList.concat(varNames); // Javascript is a silly language
         varList = newVarList;
 
+        //Oisín: Add the requirement names to a list, so we can display them to the user
+        applicableRequirementsNames.push(" " + this_req.reqid);
       }
+      applicableRequirementsNames.sort();
+      this.setState({applicableRequirementsNames: applicableRequirementsNames.toString()})
+
 
       // ... and add them to the map, mapping varname |-> "undefined" (for now)
       for(let variable of varList)
@@ -276,7 +284,7 @@ handleInitialOK = () =>
   }
 }
 
-
+//Oisín: Checks if the entered fragment is present in the selected requirement
 fragmentInCurrent = () => {
   let fragment = this.state.extractString;
   let this_req_text = this.state.selectedRequirement.fulltext;
@@ -486,7 +494,7 @@ getType = (variableName) =>
                           </Grid>
 
                           <Grid style={{ textAlign: 'right' }} item xs={3}>
-                            Apply to all Requirements:
+                            Apply to all Requirements in {this.state.selectedRequirement.project}:
                           </Grid>
                           <Grid item xs={9}>
                             <Checkbox
@@ -529,9 +537,11 @@ getType = (variableName) =>
         reqVariables.push(key);
       })
 
-
-
       var self = this;
+
+      let dialogTitle = this.state.applyToAll ?
+                          "Check Types Before Extracting:" :
+                          "Check Types Before Extracting Requirement:" + reqid;
 
      return(
           <Dialog
@@ -540,10 +550,16 @@ getType = (variableName) =>
             aria-labelledby="form-dialog-title"
             maxWidth="md"
           >
-          <DialogTitle id="simple-dialog-title">  Check Types Before Extracting Requirement: {reqid}
+          <DialogTitle id="simple-dialog-title">  {dialogTitle}
           </DialogTitle>
 
           <DialogContent>
+
+            {//Oisín: List of applicable requirements, to be displayed only when Apply to All is selected
+            }
+            {this.state.applyToAll && ("Requirements to be refactored: " + this.state.applicableRequirementsNames)}
+            {this.state.applyToAll && <br/>}
+
             <DialogContentText>
             Please check the variable types listed below. Correct any that are wrong and update any that are "Unknown". Existing variable types are shown in the analysis portal.<br/>
 
