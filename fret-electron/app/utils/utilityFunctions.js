@@ -62,6 +62,10 @@ export const getRequirementStyle = (requirement, isNode) => {
     if(!requirement.parent){
       style = `node--root ${style}`
     }
+    if(requirement.data.doc && (requirement.data.doc.isFragment
+          || requirement.data.doc.rationale.startsWith("EXTRACT REQUIREMENT:"))){//Second check is here for older fragments
+      style = "node node--fragment";
+    }
   }
   return style;
 }

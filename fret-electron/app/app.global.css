@@ -50,6 +50,10 @@ body {
   fill: white;
 }
 
+.node--fragment {
+  fill: mediumpurple;
+}
+
 .req-unformalized {
   color: #E57373;
 }

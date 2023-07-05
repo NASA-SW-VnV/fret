@@ -89,6 +89,8 @@ function extractRequirement(req, reqVars, fragment, destinationName, newID, allR
 	newReq._id = newID;
 	// Copying the project name
 	newReq.project = req.project;
+	// Oisín: Marking New Req as a fragment
+	newReq.isFragment = true;
 
 	newReq.rationale = "EXTRACT REQUIREMENT: extracted " + fragment + " from " + req.reqid;
 	console.log("Made New Requirement")
@@ -199,6 +201,9 @@ function extractRequirement_ApplyAll(req, reqVars, fragment,  destinationName, n
 	newReq._id = newID;
 	// Copying the project name
 	newReq.project = req.project;
+	// Oisín: Marking New Req as a fragment
+	newReq.isFragment = true;
+
 
 	newReq.rationale = "EXTRACT REQUIREMENT: extracted " + fragment + " from " + req.reqid;
 
