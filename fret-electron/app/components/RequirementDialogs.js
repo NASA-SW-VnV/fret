@@ -44,6 +44,8 @@ import DisplayRequirementDialog from './DisplayRequirementDialog';
 import CreateRequirementDialog from './CreateRequirementDialog';
 import DeleteRequirementDialog from './DeleteRequirementDialog';
 
+import RefactorRequirementDialog from './refactoring/RefactorRequirementDialog';
+
 
 const styles = theme => ({
 });
@@ -69,6 +71,10 @@ class RequirementDialogs extends React.Component {
   handleRefactorDialogOpen = () => {
     console.log('handleRefactorDialogOpen');
     this.setState({ refactorDialogOpen: true });
+  }
+
+  handleRefactorDialogClose = () => {
+    this.setState({refactorDialogOpen: false});
   }
 
   handleDeleteDialogClose = () => {
@@ -117,6 +123,7 @@ class RequirementDialogs extends React.Component {
           handleCreateDialogOpen={this.handleCreateDialogOpen}
           handleDeleteDialogClose={this.handleDeleteDialogClose}
           handleDeleteDialogOpen={this.handleDeleteDialogOpen}
+          handleRefactorDialogOpen={this.handleRefactorDialogOpen}
         />
         <CreateRequirementDialog
           open={this.state.createDialogOpen}
@@ -133,6 +140,13 @@ class RequirementDialogs extends React.Component {
           requirementsToBeDeleted={[selectedRequirement]}
           handleDialogClose={this.handleDeleteDialogClose}
         />
+        <RefactorRequirementDialog
+          selectedRequirement={selectedRequirement}
+          open={this.state.refactorDialogOpen}
+          handleDialogClose={this.handleRefactorDialogClose}
+          requirements={this.props.requirements}
+        />
+
         <Snackbar
           anchorOrigin={{
           vertical: 'bottom',
