@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="850px" height="600px">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="850px" height="650px">
 <svg>
 
 <defs>
@@ -61,6 +61,11 @@
 <rect width="135" height="65" style="fill:lightgray" />
 </g>
 
+<g id="Condition">
+  <!--Defines the condition box-->
+  <rect width="135" height="23" style="fill:#eeffff" />
+</g>
+
 <g id="Timing_within">
   <!--Defines the orange box-->
   <rect width="60" height="23" style="fill:orange" />
@@ -71,11 +76,11 @@
 <g id="Timing_after">
   <!--Defines the red box-->
   <rect width="60" height="23" style="fill:red" />
-  <!-- Defines the red box lenght-->
+  <!-- Defines the red box length -->
   <text x="25" y="18" font-family="sans-serif" font-size="18px" font-weight="normal" fill="black">n</text>
   <!--Defines the green box-->
   <rect x="60" width="30" height="23" style="fill:green"/>
-  <!-- Defines the green box lenght-->
+  <!-- Defines the green box length -->
   <text x="70" y="18" font-family="sans-serif" font-size="18px" font-weight="normal" fill="black">1</text>
 </g>
 
@@ -93,7 +98,7 @@
 </g>
 
 <g id="Timing_always">
-  <!--Defines the red box-->
+  <!--Defines the green box-->
   <rect width="135" height="23" style="fill:green"/>
 </g>
 
@@ -108,13 +113,13 @@
 </g>
 
 <g id="Timing_negation_eventually">
-  <!--Defines the orange box-->
+  <!--Defines the speckled orange box-->
   <rect width="135" height="23" style="fill: url(#myPattern);"/>
 </g>
 
 <g id="Infinity">
   <rect width="20" height="23" style="fill:yellow"/>
-  <!-- Defines the green box lenght-->
+  <!-- Defines the green box length -->
   <text x="3" y="18" font-family="sans-serif" font-size="18px" font-weight="normal" fill="black">∞</text>
 </g>
 </defs>
@@ -127,41 +132,47 @@
 </text>
 <text x="10" y="102" font-family="sans-serif" font-size="24px" font-weight="bold" fill="black"> Intervals </text>
 <text x="180" y="147" font-family="sans-serif" font-size="22px" font-weight="normal" fill="black"> Scope interval</text>
-<use xlink:href="#Timing_eventually" x ="10" y="200"/>
-<text y="185" font-family="sans-serif" font-size="22px" font-weight="normal" fill="black">
-   <tspan x="180" dy="1.2em">Response must hold at least somewhere in this interval</tspan>
+<use xlink:href="#Condition" x ="10" y="200"/>
+<text y="185" font-family="sans-serif" font-size="22px" font-weight="normal" fill="black>">
+   <tspan x="180" dy="1.2em">An interval where condition holds</tspan>
  </text>
- <use xlink:href="#Timing_negation_eventually" x ="10" y="250"/>
- <text y="235" font-family="sans-serif" font-size="22px" font-weight="normal" fill="black">
-    <tspan x="180" dy="1.2em">Negation of response must hold at least somewhere in this interval </tspan>
-  </text>
-  <use xlink:href="#Timing_always" x ="10" y="300"/>
+<use xlink:href="#Timing_eventually" x ="10" y="250"/>
+<text y="235" font-family="sans-serif" font-size="22px" font-weight="normal" fill="black">
+   <tspan x="180" dy="1.2em">Response must hold at least once somewhere in this interval</tspan>
+ </text>
+<use xlink:href="#Timing_negation_eventually" x ="10" y="300"/>
  <text y="285" font-family="sans-serif" font-size="22px" font-weight="normal" fill="black">
+    <tspan x="180" dy="1.2em">Response must not hold at least once somewhere in this interval </tspan>
+  </text>
+<use xlink:href="#Timing_always" x ="10" y="350"/>
+ <text y="335" font-family="sans-serif" font-size="22px" font-weight="normal" fill="black">
     <tspan x="180" dy="1.2em">Response must hold everywhere in this interval</tspan>
  </text>
 
- <use xlink:href="#Timing_never" x ="10" y="350"/>
- <text y="335" font-family="sans-serif" font-size="22px" font-weight="normal" fill="black">
+ <use xlink:href="#Timing_never" x ="10" y="400"/>
+ <text y="385" font-family="sans-serif" font-size="22px" font-weight="normal" fill="black">
     <tspan x="180" dy="1.2em">Response must not hold anywhere in this interval</tspan>
  </text>
 
- <use xlink:href="#Timing_immediately" x="40" y="405"/>
- <use xlink:href="#Timing_only_immediately" x="100" y="405"/>
- <text y="385" font-family="sans-serif" font-size="22px" font-weight="normal" fill="black">
+ <use xlink:href="#Timing_immediately" x="40" y="455"/>
+ <use xlink:href="#Timing_only_immediately" x="100" y="455"/>
+ <text y="435" font-family="sans-serif" font-size="22px" font-weight="normal" fill="black">
     <tspan x="180" dy="1.2em">Response must hold/must not hold at the indicated timepoint</tspan>
  </text>
 
- <circle cx="70" cy="450" r="6" fill="black"/>
- <circle cx="82" cy="450" r="6" fill="black"/>
- <text y="435" font-family="sans-serif" font-size="22px" font-weight="normal" fill="black">
+ <circle cx="70" cy="500" r="6" fill="black"/>
+ <circle cx="82" cy="500" r="6" fill="black"/>
+ <text y="485" font-family="sans-serif" font-size="22px" font-weight="normal" fill="black">
     <tspan x="180" dy="1.2em">Consecutive time points</tspan>
  </text>
 
- <text x="10" y="500" font-family="sans-serif" font-size="24px" font-weight="bold" fill="black"> Interval lengths </text>
- <text x="15" y="525" font-family="sans-serif" font-size="22px" font-weight="normal" fill="black"> n : Bounded interval length </text>
- <text x="10" y="559" font-family="sans-serif" font-size="24px" font-weight="bold" fill="black"> Conditions </text>
- <text x="15" y="585" font-family="sans-serif" font-size="22px"
-       font-weight="normal" fill="black"> TC : Triggering condition</text>
- <text x="270" y="585" font-family="sans-serif" font-size="22px"
+ <text x="10" y="550" font-family="sans-serif" font-size="24px" font-weight="bold" fill="black"> Interval lengths </text>
+ <text x="15" y="575" font-family="sans-serif" font-size="22px" font-weight="normal" fill="black"> n : Bounded interval length </text>
+ <text x="10" y="609" font-family="sans-serif" font-size="24px" font-weight="bold" fill="black"> Conditions </text>
+ <text x="15" y="635" font-family="sans-serif" font-size="22px"
+       font-weight="normal" fill="black"> TC : Edge-trigger condition</text>
+ <text x="290" y="635" font-family="sans-serif" font-size="22px"
+       font-weight="normal" fill="black"> C : Condition</text>
+ <text x="430" y="635" font-family="sans-serif" font-size="22px"
        font-weight="normal" fill="black"> SC : Stop condition</text>
 </svg>

@@ -7,9 +7,13 @@
        </pattern>
 
 <rect x ="200" y="65" width="300" height="65" stroke="#D5DBDB" stroke-width="2" fill="#D5DBDB " />
+<rect x ="215" y="74.66666666666666" width="258" height="21.666666666666668" stroke="#eeffff" stroke-width="2" fill="#eeffff " />
 <rect x ="200" y="65" width="135" height="65" stroke="black" stroke-width="4" fill="none " />
 <text x = "207" y="82" font-family="sans-serif" font-size="17px"     font-weight="normal" text-anchor="start" alignment-baseline="middle" fill="black">M</text>
 
+
+    <line x1 = "235" y1 ="40" x2="235" y2 = "155"     stroke = "black" stroke-width = "3" ></line>
+<text x = "235" y="25" font-family="sans-serif" font-size="20px"     font-weight="normal" text-anchor="middle" alignment-baseline="middle" fill="black">C</text>
 
     <marker id="Arrowhead" markerWidth="4" markerHeight="2.67" orient="auto"
       refX="0" refY="1.33" >
@@ -17,11 +21,11 @@
   </marker>
     
 
-    <path d="m 200 94 v15" stroke = "red" stroke-width = "7" marker-end="url(#Arrowhead)"/>
+    <path d="m 235 94 v15" stroke = "red" stroke-width = "7" marker-end="url(#Arrowhead)"/>
     
 
 
-    <circle cx = "200" cy = "130" r = "6" fill = "black" />
+    <circle cx = "235" cy = "130" r = "6" fill = "black" />
     
 
   <path d="M 10 130 h 500" stroke="#000" stroke-width="3" fill="none"/>

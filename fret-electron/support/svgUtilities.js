@@ -176,7 +176,7 @@ class Rectangle {
   middleX() {return (this.getX() + this.rightX())/2}
   middleY() {return (this.getY() + this.bottomY())/2}
 
-  // tl = top left; cm = center middle
+  // tl = top left; cm = center middle; ml = middle left
   addBoxId(name="M", color="black", position = "tl") {
       var textsize = Math.max(Math.floor((this.width)/8), 17);
       var txt = new Text(name, textsize, color);
@@ -189,8 +189,10 @@ class Rectangle {
         txt.setAlignment("middle");
         textX = this.middleX();
         textY = this.middleY();
+      } 
+      else if (position === "ml") {
+	textY = textY + 22;
       }
-
 
       txt.setPosition(textX, textY)
 

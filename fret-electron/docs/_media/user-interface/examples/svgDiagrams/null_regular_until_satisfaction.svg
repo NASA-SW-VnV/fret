@@ -7,6 +7,7 @@
        </pattern>
 
 <rect x ="80" y="65" width="420" height="65" stroke="#D5DBDB" stroke-width="2" fill="#D5DBDB " />
+<rect x ="240" y="74.66666666666666" width="233" height="21.666666666666668" stroke="#eeffff" stroke-width="2" fill="#eeffff " />
 <rect x ="240" y="108.33333333333333" width="70" height="21.666666666666668" stroke="green" stroke-width="2" fill="green " />
 
     <line x1 = "80" y1 ="40" x2="80" y2 = "155"     stroke = "blue" stroke-width = "3" ></line>

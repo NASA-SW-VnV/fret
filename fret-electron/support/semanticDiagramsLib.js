@@ -33,10 +33,10 @@
 const {Rectangle,Text, placeRight, placeBelow, placeMiddle, createMode,VerticalLine,Circle,Arrow} = require('./svgUtilities')
 const fs = require('fs');
 const M = {width:135, height: 65, x: 200, bw: 4}
-const condShiftSimple = 30;
+const condShiftSimple = 35;
 const condShiftExtended = 160;
-const condRectXShift = 30;
-const condRectYShift = 10;
+const condRectXShift = 20;
+const condRectYShift = 12;
 const durationBoxLength = 60;
 const DottedPattern = `
       <pattern id="dottedPattern"
@@ -136,10 +136,10 @@ class semanticDiagram{
     this.verticalLineBottomY = this.canvas.getTimelineYPos()+25;
   }
   //add mode box if needed
-  addMode(width, height, x, bw) {
+    addMode(width, height, x, bw, textpos = 'tl') {
     var rect = new Rectangle(width, height, 'none','black',bw);
     rect.setPosition(x, this.canvas.getTimelineYPos()-height)
-    rect.addBoxId();
+    rect.addBoxId("M","black",textpos);
     this.canvas.addDiagram(rect, true);
     this.mode = rect;
   }
@@ -157,7 +157,8 @@ class semanticDiagram{
   }
 
   timingRect(color,scopeObj,isShort=false){
-    var conditionLine = scopeObj.trigger;
+      var conditionLine = (this.condition === "regular") ? scopeObj.trigger :
+	  (this.condition === "noTrigger" ? scopeObj.noTrigger : null)
     var stopCondition = scopeObj.stopCond;
     var scope = scopeObj.scope;
     var start = (conditionLine)? conditionLine.getX() : scope.getX();
@@ -170,17 +171,18 @@ class semanticDiagram{
     return(rect);
   }
 
-  // type is trigger, notrigger or stopcond
+  // type is trigger, noTrigger or stopCond
   condRect(scopeObj,type) {
-    const conditionLine = (type === "trigger") ? scopeObj.trigger : scopeObj.notrigger;
+    //console.log('type: ' + type + ' scopeObj: ' + JSON.stringify(scopeObj))
+    const conditionLine = (type === "trigger") ? scopeObj.trigger : scopeObj.noTrigger;
     const stopCondition = scopeObj.stopCond;
-    const scope = scopeObj.scope;
+    const scopeRect = scopeObj.scope;
     const start = (type === "trigger") ? conditionLine.getX() :
-	  (type === "notrigger") ? (conditionLine.getX() - condRectXShift) : 0;
-    const end = (stopCondition) ? (stopCondition.getX() + condRectXShift) : (scope.rightX() - condRectXShift);
+	  ((type === "noTrigger") ? (conditionLine.getX() - condRectXShift) : 0);
+    const end = (stopCondition) ? (stopCondition.getX() + condRectXShift) : (scopeRect.rightX() - condRectXShift - 7);
     const rectW = end - start;
-    const rectH = scope.getH()/3;
-    const rectYPos = scope.bottomY()- 2 * rectH - condRectYShift;
+    const rectH = scopeRect.getH()/3;
+    const rectYPos = scopeRect.bottomY()- 2 * rectH - condRectYShift;
     const rect = new Rectangle(rectW,rectH,condColor,'none',0,start,rectYPos);
     return(rect);
   }
@@ -191,15 +193,19 @@ class semanticDiagram{
   }
 
   createTiming(timing, sc){
-    if(timing == "before" || timing == "until"){this.addCondition("stopCond","all")}
+    if(timing == "before" || timing == "until") {
+	this.addCondition("stopCond","first")
+    }
 
     var searchScope = this.scope;
     var isOnlyScope = searchScope.startsWith("only");
-    var color = (isOnlyScope)? timings.get(timing)[1] : timings.get(timing)[0];
+    var color = (isOnlyScope) ? timings.get(timing)[1] : timings.get(timing)[0];
     var arrowColor = (isOnlyScope)? "red" : "green";
     var isShort = timings.get(timing)[2];
     var arrow = undefined;
-    var arrowXPos = (this.condition == "regular")? sc.trigger.getX() : sc.scope.getX();
+      //if (this.condition === "noTrigger") console.log("noTrigger scope: " + JSON.stringify(sc));
+      var arrowXPos = (this.condition == "regular")? sc.trigger.getX() :
+	  ((this.condition === "noTrigger" && sc.noTrigger) ? sc.noTrigger.getX() :sc.scope.getX());
     var arrowYPos = this.canvas.getTimelineYPos();
     var rectangle = this.timingRect(color,sc,isShort);
 
@@ -209,7 +215,7 @@ class semanticDiagram{
         break;
       case "next":
           arrow = this.makeTimingArrow(arrowXPos,arrowYPos,arrowColor,2);
-        break;
+          break;
       case "after":
           arrowYPos = (isOnlyScope == true)? arrowYPos-rectangle.getH() : arrowYPos;
           arrowXPos = rectangle.rightX();
@@ -226,21 +232,25 @@ class semanticDiagram{
     return (arrow);
 }
 
-  //type can be "trigger" or "stopcond" or "notrigger"
+  //type can be "trigger" or "stopCond" or "noTrigger"
   //whereInScope values can be:   1. first     2. last     3. all
   addCondition(type,whereInScope="first") {
     var line = null;
-    var name = (type == "trigger")? "TC" : ((type = "notrigger") ? "C" : "SC")
+    const name = (type === "trigger") ? "TC" :
+	  ((type === "noTrigger") ? "C" :
+	   ((type === "stopCond") ? "SC" :
+	    "Unknown condition type in addCondition"))
     switch(whereInScope){
       case "first":
-      line = new VerticalLine(this.scopes[0].scope.getX()+this.condShift(type),                               this.verticalLineTopY,this.verticalLineBottomY,name);
-      this.scopes[0][type] = line;
-      if (type !== "stopcond") {
-        const condrect = this.condRect(this.scopes[0].scope, type)
-        this.canvas.addDiagram(condrect,true);
-      }
-      this.canvas.addDiagram(line,true);
-      break;
+	line = new VerticalLine(this.scopes[0].scope.getX()+this.condShift(type),                                this.verticalLineTopY,this.verticalLineBottomY,
+				name);
+	this.scopes[0][type] = line;
+	if (type !== "stopCond") {
+            const condrect = this.condRect(this.scopes[0], type)
+            this.canvas.addDiagram(condrect,false);
+	}
+	this.canvas.addDiagram(line,true);
+	break;
     case "last":
         line = new VerticalLine(this.scopes.scope[this.scopes.length-1]+this.condShift(type),
                                         this.verticalLineTopY, this.verticalLineBottomY,name);
@@ -252,9 +262,9 @@ class semanticDiagram{
         line = new VerticalLine(sc.scope.getX()+this.condShift(type),
                                 this.verticalLineTopY,this.verticalLineBottomY,name);
         sc[type] = line;
-	if (type !== "stopcond") {
-        const condrect = this.condRect(sc.scope, type)
-        this.canvas.addDiagram(condrect,true);
+	if (type !== "stopCond") {
+            const condrect = this.condRect(sc.scope, type)
+            this.canvas.addDiagram(condrect,false);
 	}
         this.canvas.addDiagram(line,true);
 
@@ -279,16 +289,18 @@ class semanticDiagram{
       for (var sc of this.scopes){
         /*we do not want to add the timing rectangle
         if there is no trigger AND there is regular condition*/
-        if(!(this.condition == "regular" && sc.trigger==null)){
+          if(!((this.condition == "regular" && sc.trigger == null)
+	       || (this.condition == "noTrigger" && sc.noTrigger == null))){
             this.createTiming(this.timing,sc);
         }
       }
   }
 
   addScope(){
-    //scopes == in, before, after, notin, onlyIn, onlyBefore, onlyAfter,null
-    if(this.scope != 'null'){
-      this.addMode(M.width, M.height, M.x, M.bw);
+    //scopes == null, in, before, after, notin, onlyIn, onlyBefore, onlyAfter
+    if(this.scope !== 'null'){
+	this.addMode(M.width, M.height, M.x, M.bw,
+		     (this.scope === 'onlyAfter' && this.condition !== 'null') ? 'ml' : 'tl');
     }
     switch(this.scope){
       case "in":
@@ -313,12 +325,15 @@ class semanticDiagram{
       this.addScopeBetween(this.canvas.getTimelineStartX(),this.mode.rightX());
       break;
       case "null":
-      var begTimeX = this.canvas.getTimelineStartX()+70;
-      var begTime = new VerticalLine(begTimeX,this.verticalLineTopY,this.verticalLineBottomY,"Beginning of Time",
-      "blue","blue");
-      this.canvas.addDiagram(begTime,true);
-      this.addScopeBetween(this.canvas.getTimelineStartX()+70,this.canvas.getTimelineEndX());
-      break;
+	var begTimeX = this.canvas.getTimelineStartX()+70;
+	var begTime = new VerticalLine(begTimeX,this.verticalLineTopY,
+				       this.verticalLineBottomY,
+				       "Beginning of Time",
+				       "blue","blue");
+	this.canvas.addDiagram(begTime,true);
+	this.addScopeBetween(this.canvas.getTimelineStartX()+70,
+			     this.canvas.getTimelineEndX());
+	break;
       default: console.log("Unexpected Scope Value");
     }
   }
@@ -329,8 +344,8 @@ class semanticDiagram{
     if(this.condition === "regular"){
       this.addCondition("trigger","first")
     }
-    else if (this.condition === "notrigger") {
-      this.addCondition("notrigger","first")
+    else if (this.condition === "noTrigger") {
+      this.addCondition("noTrigger","first")
     }
     this.addTiming();
 
