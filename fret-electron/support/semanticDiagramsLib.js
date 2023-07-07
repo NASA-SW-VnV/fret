@@ -232,7 +232,7 @@ class semanticDiagram{
           this.canvas.addDiagram(rectangle);
         break;
     case "before" :
-	if (count == 1 || isOnlyScope) {
+	if ((count == 1) || isOnlyScope) {
 	    this.canvas.addDiagram(rectangle);
 	}
 	break;
@@ -306,7 +306,7 @@ class semanticDiagram{
 	count = count + 1;
         /* We do not want to add the timing rectangle
         if there is no trigger AND there is regular condition 
-	or count == 1 &(in/notin,null,before or onlyIn,null,until)
+	or count == 2 & (in/notin,null,before or onlyIn,null,until)
 	*/
 
         if(!((this.condition == "regular" && sc.trigger == null)
