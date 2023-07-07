@@ -7,14 +7,14 @@
        </pattern>
 
 <rect x ="338" y="65" width="162" height="65" stroke="#D5DBDB" stroke-width="2" fill="#D5DBDB " />
-<rect x ="353" y="74.66666666666666" width="120" height="21.666666666666668" stroke="#eeffff" stroke-width="2" fill="#eeffff " />
+<rect x ="353" y="74.66666666666666" width="120" height="21.666666666666668" stroke="#a0dbfd" stroke-width="2" fill="#a0dbfd " />
 <rect x ="373" y="108.33333333333333" width="70" height="21.666666666666668" stroke="green" stroke-width="2" fill="green " />
 <rect x ="200" y="65" width="135" height="65" stroke="black" stroke-width="4" fill="none " />
 <text x = "207" y="82" font-family="sans-serif" font-size="17px"     font-weight="normal" text-anchor="start" alignment-baseline="middle" fill="black">M</text>
 
 
     <line x1 = "373" y1 ="40" x2="373" y2 = "155"     stroke = "black" stroke-width = "3" ></line>
-<text x = "373" y="25" font-family="sans-serif" font-size="20px"     font-weight="normal" text-anchor="middle" alignment-baseline="middle" fill="black">C</text>
+<text x = "373" y="25" font-family="sans-serif" font-size="20px"     font-weight="normal" text-anchor="middle" alignment-baseline="middle" fill="black">CC</text>
 
     <line x1 = "443" y1 ="40" x2="443" y2 = "155"     stroke = "black" stroke-width = "3" ></line>
 <text x = "443" y="25" font-family="sans-serif" font-size="20px"     font-weight="normal" text-anchor="middle" alignment-baseline="middle" fill="black">SC</text>

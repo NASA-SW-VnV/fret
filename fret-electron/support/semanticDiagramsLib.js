@@ -45,7 +45,7 @@ const DottedPattern = `
        <circle cx="6" cy="6" r="3" style="stroke: none; fill: orange" />
        <!-- end pattern -->
        </pattern>`
-const condColor = '#eeffff' // light bluegreen
+const condColor = '#a0dbfd' // light bluegreen
 
 function fillDottedPattern() {
   return "url(#dottedPattern)"
@@ -193,10 +193,12 @@ class semanticDiagram{
   }
 
   createTiming(timing, sc){
-    if(timing == "before" || timing == "until") {
+    if(timing == "before") {
 	this.addCondition("stopCond","first")
     }
-
+    if(timing == "until") {
+	this.addCondition("stopCond","all")
+    }
     var searchScope = this.scope;
     var isOnlyScope = searchScope.startsWith("only");
     var color = (isOnlyScope) ? timings.get(timing)[1] : timings.get(timing)[0];
@@ -237,7 +239,7 @@ class semanticDiagram{
   addCondition(type,whereInScope="first") {
     var line = null;
     const name = (type === "trigger") ? "TC" :
-	  ((type === "noTrigger") ? "C" :
+	  ((type === "noTrigger") ? "CC" :
 	   ((type === "stopCond") ? "SC" :
 	    "Unknown condition type in addCondition"))
     switch(whereInScope){

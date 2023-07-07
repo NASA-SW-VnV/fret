@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="850px" height="650px">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="850px" height="700px">
 <svg>
 
 <defs>
@@ -63,7 +63,7 @@
 
 <g id="Condition">
   <!--Defines the condition box-->
-  <rect width="135" height="23" style="fill:#eeffff" />
+  <rect width="135" height="23" style="fill:#a0dbfd" />
 </g>
 
 <g id="Timing_within">
@@ -133,24 +133,24 @@
 <text x="10" y="102" font-family="sans-serif" font-size="24px" font-weight="bold" fill="black"> Intervals </text>
 <text x="180" y="147" font-family="sans-serif" font-size="22px" font-weight="normal" fill="black"> Scope interval</text>
 <use xlink:href="#Condition" x ="10" y="200"/>
-<text y="185" font-family="sans-serif" font-size="22px" font-weight="normal" fill="black>">
+<text y="193" font-family="sans-serif" font-size="22px" font-weight="normal" fill="black>">
    <tspan x="180" dy="1.2em">An interval where condition holds</tspan>
  </text>
 <use xlink:href="#Timing_eventually" x ="10" y="250"/>
-<text y="235" font-family="sans-serif" font-size="22px" font-weight="normal" fill="black">
+<text y="243" font-family="sans-serif" font-size="22px" font-weight="normal" fill="black">
    <tspan x="180" dy="1.2em">Response must hold at least once somewhere in this interval</tspan>
  </text>
 <use xlink:href="#Timing_negation_eventually" x ="10" y="300"/>
- <text y="285" font-family="sans-serif" font-size="22px" font-weight="normal" fill="black">
+ <text y="292" font-family="sans-serif" font-size="22px" font-weight="normal" fill="black">
     <tspan x="180" dy="1.2em">Response must not hold at least once somewhere in this interval </tspan>
   </text>
 <use xlink:href="#Timing_always" x ="10" y="350"/>
- <text y="335" font-family="sans-serif" font-size="22px" font-weight="normal" fill="black">
+ <text y="343" font-family="sans-serif" font-size="22px" font-weight="normal" fill="black">
     <tspan x="180" dy="1.2em">Response must hold everywhere in this interval</tspan>
  </text>
 
  <use xlink:href="#Timing_never" x ="10" y="400"/>
- <text y="385" font-family="sans-serif" font-size="22px" font-weight="normal" fill="black">
+ <text y="393" font-family="sans-serif" font-size="22px" font-weight="normal" fill="black">
     <tspan x="180" dy="1.2em">Response must not hold anywhere in this interval</tspan>
  </text>
 
@@ -170,9 +170,17 @@
  <text x="15" y="575" font-family="sans-serif" font-size="22px" font-weight="normal" fill="black"> n : Bounded interval length </text>
  <text x="10" y="609" font-family="sans-serif" font-size="24px" font-weight="bold" fill="black"> Conditions </text>
  <text x="15" y="635" font-family="sans-serif" font-size="22px"
-       font-weight="normal" fill="black"> TC : Edge-trigger condition</text>
+       font-weight="normal" fill="black"> TC : Trigger Condition</text>
+<!--
  <text x="290" y="635" font-family="sans-serif" font-size="22px"
        font-weight="normal" fill="black"> C : Condition</text>
- <text x="430" y="635" font-family="sans-serif" font-size="22px"
-       font-weight="normal" fill="black"> SC : Stop condition</text>
+-->
+ <text x="290" y="635" font-family="sans-serif" font-size="22px"
+       font-weight="normal" fill="black"> SC : Stop Condition</text>
+
+ <text x="15" y="660" font-family="sans-serif" font-size="22px"
+       font-weight="normal" fill="black"> CC : Continuous Condition, arbitrary time
+ point satisfying the condition</text>
+
+ 
 </svg>

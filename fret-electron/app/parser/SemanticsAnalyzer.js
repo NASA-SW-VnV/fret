@@ -383,10 +383,12 @@ function canon_bool_expr(expr) {
 function createVariableDescription(scope, condition, timing, response, stop_condition) {
   var description = '';
   if (scope.type !== 'null' && scope.type !== 'unhandled'){
-    description += 'M = $scope_mode$,, ';
+    description += 'M = $scope_mode$, ';
   }
-  if (condition !=='null'){
+  if (condition == 'regular'){
     description += 'TC = $regular_condition$, '
+  } else if (condition == 'noTrigger') {
+      description += 'CC = $regular_condition$, '
   }
 
   if (timing=== 'after' || timing == 'within' || timing == 'for'){
