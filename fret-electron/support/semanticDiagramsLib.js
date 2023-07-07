@@ -192,22 +192,24 @@ class semanticDiagram{
     this.canvas.addDiagram(arrow,true);
   }
 
-  createTiming(timing, sc){
-    if(timing == "before") {
-	this.addCondition("stopCond","first")
-    }
-    if(timing == "until") {
-	this.addCondition("stopCond","all")
-    }
+    createTiming(timing, sc, count){
     var searchScope = this.scope;
     var isOnlyScope = searchScope.startsWith("only");
+    if(timing == "before") {
+	this.addCondition("stopCond", isOnlyScope ? "first" : "first")
+    }
+    if(timing == "until") {
+	this.addCondition("stopCond", isOnlyScope ? "first" : "first")
+    }
     var color = (isOnlyScope) ? timings.get(timing)[1] : timings.get(timing)[0];
     var arrowColor = (isOnlyScope)? "red" : "green";
     var isShort = timings.get(timing)[2];
     var arrow = undefined;
       //if (this.condition === "noTrigger") console.log("noTrigger scope: " + JSON.stringify(sc));
-      var arrowXPos = (this.condition == "regular")? sc.trigger.getX() :
-	  ((this.condition === "noTrigger" && sc.noTrigger) ? sc.noTrigger.getX() :sc.scope.getX());
+    var arrowXPos = (this.condition === "regular") ?
+	  sc.trigger.getX() :
+	((this.condition === "noTrigger" && sc.noTrigger)
+	 ? sc.noTrigger.getX() : sc.scope.getX());
     var arrowYPos = this.canvas.getTimelineYPos();
     var rectangle = this.timingRect(color,sc,isShort);
 
@@ -229,6 +231,17 @@ class semanticDiagram{
           if(isOnlyScope){this.canvas.addDiagram(orText,true)}
           this.canvas.addDiagram(rectangle);
         break;
+    case "before" :
+	if (count == 1 || isOnlyScope) {
+	    this.canvas.addDiagram(rectangle);
+	}
+	break;
+    case "until" :
+	if (count == 1 || !isOnlyScope) {
+	    this.canvas.addDiagram(rectangle);
+	}
+	break;
+
       default: this.canvas.addDiagram(rectangle);
     }
     return (arrow);
@@ -288,12 +301,17 @@ class semanticDiagram{
   }
 
   addTiming(){
+      let count = 0;
       for (var sc of this.scopes){
-        /*we do not want to add the timing rectangle
-        if there is no trigger AND there is regular condition*/
-          if(!((this.condition == "regular" && sc.trigger == null)
+	count = count + 1;
+        /* We do not want to add the timing rectangle
+        if there is no trigger AND there is regular condition 
+	or count == 1 &(in/notin,null,before or onlyIn,null,until)
+	*/
+
+        if(!((this.condition == "regular" && sc.trigger == null)
 	       || (this.condition == "noTrigger" && sc.noTrigger == null))){
-            this.createTiming(this.timing,sc);
+              this.createTiming(this.timing,sc,count);
         }
       }
   }

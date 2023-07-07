@@ -20,9 +20,6 @@
     <line x1 = "115" y1 ="40" x2="115" y2 = "155"     stroke = "black" stroke-width = "3" ></line>
 <text x = "115" y="25" font-family="sans-serif" font-size="20px"     font-weight="normal" text-anchor="middle" alignment-baseline="middle" fill="black">SC</text>
 
-    <line x1 = "443" y1 ="40" x2="443" y2 = "155"     stroke = "black" stroke-width = "3" ></line>
-<text x = "443" y="25" font-family="sans-serif" font-size="20px"     font-weight="normal" text-anchor="middle" alignment-baseline="middle" fill="black">SC</text>
-
   <path d="M 10 130 h 500" stroke="#000" stroke-width="3" fill="none"/>
 <path d="M 500 130 l -14.26 4.64v -9.28z" stroke="#000" stroke-width="0"/>
 

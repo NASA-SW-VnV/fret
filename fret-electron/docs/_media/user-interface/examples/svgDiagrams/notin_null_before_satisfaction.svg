@@ -9,7 +9,6 @@
 <rect x ="10" y="65" width="190" height="65" stroke="#D5DBDB" stroke-width="2" fill="#D5DBDB " />
 <rect x ="338" y="65" width="162" height="65" stroke="#D5DBDB" stroke-width="2" fill="#D5DBDB " />
 <rect x ="10" y="108.33333333333333" width="105" height="21.666666666666668" stroke="orange" stroke-width="2" fill="orange " />
-<rect x ="338" y="108.33333333333333" width="162" height="21.666666666666668" stroke="orange" stroke-width="2" fill="orange " />
 <rect x ="200" y="65" width="135" height="65" stroke="black" stroke-width="4" fill="none " />
 <text x = "207" y="82" font-family="sans-serif" font-size="17px"     font-weight="normal" text-anchor="start" alignment-baseline="middle" fill="black">M</text>
 
