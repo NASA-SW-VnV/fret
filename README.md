@@ -27,7 +27,7 @@ Our team have given several presentations about both FRET and Mu-FRET as part of
 ### Videos 
 * [_Formalising Verifiable Requirements_](https://www.youtube.com/watch?v=FQGKbYCbxPY) (YouTube): a VALU3S training presentation covering our use of FRET to formalise the requirements of Use Case 5.
 
-* [_Extract Requirement Demo_](https://github.com/valu3s-mu/demo-videos/blob/main/Mu-FRET%20Extract%20Requirement%20Demo.mkv) (~47 MB): a video demonstrating how Mu-FRET's Extract Requirement refactoring works.
+* [_Extract Requirement Demos_](https://github.com/valu3s-mu/demo-videos) (~47 MB): a repository of videos demonstrating how Mu-FRET's Extract Requirement refactoring works.
 
 
 ### Presentation Slides
@@ -123,10 +123,9 @@ This is a similar problem to the typeface errors, in that Node is just failing t
 
 ## Usage
 
-### Running Mu-FRET
+To start using Mu-FRET, once it has been installed (see above) open a terminal/command prompt inside the `fret-electron` directory and run `npm start`.
 
-
-Assuming that Mu-FRET is installed (see above), open a terminal/command prompt inside the `fret-electron` directory and run `npm start`
+Further information about the Mu-FRET user experience can be found in the [FRET User Manual](fret-electron/docs/_media/userManual.md).
 
 ### Assumptions
 
