@@ -40,11 +40,16 @@ export {
 }
 
 function extractSemantics (text) {
-  const result = FretSemantics.compile(text)
-  if (result.parseErrors)
+  try {
+    const result = FretSemantics.compile(text)
+    if (result.parseErrors)
+      return {}
+    else if (result.collectedSemantics) {
+      return result.collectedSemantics
+    }
+  }
+  catch (err) {
     return {}
-  else if (result.collectedSemantics){
-    return result.collectedSemantics
   }
 };
 
