@@ -59,15 +59,14 @@ Our team has written several papers about our work for the VALU3S project using 
 * _A Requirements-Driven Methodology: Formal Modelling and Verification of an Aircraft Engine Controller_: a paper describing using Event-B to formalise and verify systems described using Simulink models, and how we can link this to requirements captured in FRET. Available: [https://link.springer.com/chapter/10.1007/978-3-031-07727-2_21](https://link.springer.com/chapter/10.1007/978-3-031-07727-2_21)
 
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-Our team have written several academic papers, given presentations, and made posters relating to Mu-FRET. For full details see our [publications, presentation, and posters list](mu-fret-docs/publications-presentations-posters.md)
-=======
->>>>>>> valu3s
-=======
+## The VALU3S Project
+
+The work on Mu-FRET begain as part of the VALU3S project, information about which can be found in the project's [web-based repository](https://repo.valu3s.eu). As part of [Use Case 5](https://repo.valu3s.eu/use-cases/aircraft-engine-controller), we incorporated FRET into our requirements ellicitation process as part of a workflow called [VeRFoR: Verifying and Refactoring Formalised Requirements](https://repo.valu3s.eu/use-cases/aircraft-engine-controller/workflow/verfor). The repository contains further information on [Mu-FRET's place in the project](https://repo.valu3s.eu/tools/improved-developed-tool/mu-fret), and the [associated demonstration](https://repo.valu3s.eu/use-cases/demonstrators-evaluation-results-1/demo-6).
+
+
 ## Installation 
 
-Mu-FRET is built on FRET, so installing Mu-FRET is the same procedure as for FRET but **NuSMV must be installed for Mu-FRET to work**. Below are the basic steps to install Mu-FRET, but for more detailed instructions, dependencies, and notes, please check the [FRET installation instructions](fret-electron/docs/_media/installingFRET/installationInstructions.md).
+Mu-FRET is built on FRET, so installing Mu-FRET is the same procedure as for FRET but **NuSMV must be installed for Mu-FRET to work**. Below are the basic steps to install Mu-FRET, but for more detailed instructions, dependencies, and notes, please check the [FRET installation instructions](fret-electron/docs/_media/installingFRET/installationInstructions.md). If installing on Windows, see also the [Windows installation instructions](fret-electron/docs/_media/installingFRET/installation_windows.md)
 
 ### Mu-FRET Installation 
 
@@ -102,6 +101,26 @@ Aborting batch mode
 3. Then, open a terminal/command prompt in the `fret-electron` of the Mu-FRET distribution and run `npm run fret-install` (or `npm run fret-reinstall` instead if you have previously installed Mu-FRET).
 
 
+### Common Errors
+
+As FRET and Mu-FRET are still very much in-development, there are a few issues that crop up with some regularity during installation. All commands listed here should be run from `/mu-fret/fret-electron` unless stated otherwise.
+
+`Error: Cannot find module 'babel-register'`  
+This error is common, and is an issue with the FRET's dependencies. To fix this, uninstall the module to remove it from the dependencies, and install some replacements:  
+- ` npm uninstall babel-register --save-dev`  
+- ` npm install @babel/core @babel/register --save-dev`
+
+You may encounter some errors regarding missing typefaces; specifically, the most common ones are `typeface-gloria-hallelujah`, `typeface-roboto` and `typeface-indie-flower`. To get around this, navigate to the /app folder and install them manually:
+- `cd app`
+- `npm install typeface-gloria-hallelujah`  
+  (If you had errors for other typeface packages, install those the same way)
+- `cd ..` (to go back to fret-electron)
+
+`npm ERR! Could not install from “node_modules\ejs-compiled-loader\ejs@git+https:\github.com\nemanjan00\ejs.git” as it does not contain a package.json file.`  
+This is a similar problem to the typeface errors, in that Node is just failing to install this package for some reason. Again, the solution is to install the package manually before attempting the Mu-FRET installation again:
+- `npm install ejs-compiled-loader`
+
+
 ## Usage
 
 ### Running Mu-FRET
@@ -128,6 +147,3 @@ Mu-FRET is built with a few assumptions about requirements and usage, which we d
   - Unsigned Integers will be treated as Integers – this is consistent with FRET's approach to exporting requirements to CoCo Spec, where any integer (signed or unsigned) in Simulink will become an integer variable in CoCo Spec/Lustre.
   - Single and Double variables cannot be supported, even though FRETISH allows direct comparisons to real numbers (e.g. `variable > 2.4`) NuSMV does not support `real constants`.
   - The Mu-FRET refactoring UI warns users about these problems if variables have already been assigned an unsupported type.
-
-
->>>>>>> master
