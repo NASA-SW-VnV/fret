@@ -57,7 +57,12 @@ import { formalizeRequirement } from '../reducers/allActionsSlice';
 
 const isDev = require('electron-is-dev');
 
-const FIELDS = [
+//switch: https://mui.com/material-ui/react-switch/#system-CustomizedSwitches.js
+//import Switch from '@material-ui/core/Switch';
+import { Switch } from '@material-ui/core';
+import { FormControlLabel} from '@material-ui/core';
+
+const FIELDSORIGINAL = [
   {
     label: "Scope",
     key: "scope",
@@ -95,6 +100,15 @@ const FIELDS = [
     isDisabled: false,
   }
 ]
+var FIELDSWITHPROP = FIELDSORIGINAL.slice(); //copy FIELDS (not pointer as only using =)
+FIELDSWITHPROP.splice(4, 0, { //add probability after "Shall"
+  label: "Probability",
+  key: "probability",
+  isRequired: true,
+  isDisabled: false,
+});
+
+
 const styles = theme => ({
   bar: {
     backgroundColor: theme.palette.secondary.main,
@@ -131,13 +145,14 @@ class SlateEditor2 extends React.Component {
       editorValue: [],     // The Dom of the Editable of this Slate class
       inputText: ' ',      // all requirement texts
       //fieldColors: {},
-      menuOptions: [],     // field template options (scope,conditions, components, timing, responses) buble drop down menu
-      menuIndex: 0,        // menu index for both field drop down and glossary menu
-      selectedField: undefined,    // selected field when in template mode
-      search: '',        // search string for glossary autofill
-      variables: [],     // filtered variables for glossary autofill
-      beforeRange: null,  // for tracking glossary autofill search string
-      position: null,    // position for dropdown menu in editable (template field or glossary)
+      menuOptions: [],
+      menuIndex: 0,
+      selectedField: undefined,
+      search: '',
+      variables: [],
+      beforeRange: null,
+      position: null,
+      FIELDS: []
     }
 
 
@@ -158,7 +173,8 @@ class SlateEditor2 extends React.Component {
     if (isDev)
       path = `file://${__dirname}/../docs/_media/fretishGrammar/index.html`
     this.setState({
-      grammarUrl: path
+      grammarUrl: path,
+      FIELDS: FIELDSORIGINAL
     })
 
       if (this.props.inputFields) {
@@ -214,6 +230,20 @@ class SlateEditor2 extends React.Component {
             }
           }
   }
+
+switchHandler = (event) => {
+  let switchBoolean = event.target.checked;
+  if (switchBoolean){
+    this.setState({
+     FIELDS: FIELDSWITHPROP
+    })
+  }
+  else{
+    this.setState({
+      FIELDS: FIELDSORIGINAL
+     })
+  }
+};
 
   // Externally referenced by CreateRequirementDialog
   getRequirementFields = () => {
@@ -455,7 +485,7 @@ class SlateEditor2 extends React.Component {
       } else if(variables.length > 1){
         // glossary autofill
         //this.props.editor.redo()
-      } else {        
+      } else {
         this.props.editor.redo();
       }
     } else if (event.key.length === 1) {
@@ -1070,13 +1100,35 @@ class SlateEditor2 extends React.Component {
             padding: '10px',
           }}>
           <div className={SlateEditor2Styles.showGrammarBtn}>
+
+          <Tooltip title="Activate probabilistic FRETish">
+          <FormControlLabel
+            id="qa_crt_ib_activate_probability"
+            control={
+              <Switch
+                onChange={this.switchHandler}
+              />
+            }
+            style={{
+            position:'relative',
+            left:'20px',
+            top:'-40px',}}>
+            <Tooltip title="Activate Probabilistic logic">
+            </Tooltip>
+          </FormControlLabel>
+          </Tooltip>
+          </div>
+          <br />
+
+          <div className={SlateEditor2Styles.showGrammarBtn}>
           <IconButton id="qa_crt_ib_question" onClick={this.openGrammarWindow} style={{padding:'2px'}}>
             <Tooltip title="See Grammar">
             <HelpIcon />
             </Tooltip>
           </IconButton>
           </div>
-        {FIELDS.map(({label, key, isRequired, isDisabled}) => {
+        {
+        this.state.FIELDS.map(({label, key, isRequired, isDisabled}) => {
           const title = label + (isRequired ? '*' : '')
           if (isDisabled) {
             return(
@@ -1206,6 +1258,9 @@ class SlateEditor2 extends React.Component {
           break
         case 'componentTextRange':
           style = { color: fieldColors.component };
+          break
+        case 'probabilityTextRange':
+          style = { color: fieldColors.probability };
           break
         case 'timingTextRange':
           style = { color: fieldColors.timing };
@@ -1419,4 +1474,3 @@ const mapDispatchToProps = {
 };
 
 export default withStyles(styles)(connect(mapStateToProps,mapDispatchToProps)(SlateEditor2));
-
