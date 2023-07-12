@@ -36,7 +36,7 @@ const fs = require("fs");
 var NodePouchDB = require('pouchdb');
 NodePouchDB.plugin(require('pouchdb-find'));
 var home = require("os").homedir();
-var userDocumentsFolder = path.join(home,'Documents');   
+var userDocumentsFolder = path.join(home,'Documents');
 
 var leveldbDBname = userDocumentsFolder + '/fret-db';
 var modelDBname = userDocumentsFolder + '/model-db';
@@ -74,7 +74,7 @@ if (process.env.FRET_LEVEL_DB){
 var leveldbDB = new NodePouchDB(leveldbDBname);
 var modelDB = new NodePouchDB(modelDBname);
 
-leveldbDB.info().then(function (info) {  
+leveldbDB.info().then(function (info) {
 }).catch(function (err) {
   console.error('Error for LevelDB');
   console.error(err);
@@ -98,7 +98,8 @@ const baseProps = {
     condition: '#FB9E00',
     component: '#68BC00',
     shall: '#000000',
-    timing: '#009CE0',
+    probability: '#009CE0',
+    timing: '#0062B1',
     response: '#653294'
   }
 }
