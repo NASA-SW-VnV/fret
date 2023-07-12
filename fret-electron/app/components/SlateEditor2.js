@@ -62,7 +62,7 @@ const isDev = require('electron-is-dev');
 import { Switch } from '@material-ui/core';
 import { FormControlLabel} from '@material-ui/core';
 
-const FIELDSORIGINAL = [
+const fieldsoriginal = [
   {
     label: "Scope",
     key: "scope",
@@ -100,8 +100,8 @@ const FIELDSORIGINAL = [
     isDisabled: false,
   }
 ]
-var FIELDSWITHPROP = FIELDSORIGINAL.slice(); //copy FIELDS (not pointer as only using =)
-FIELDSWITHPROP.splice(4, 0, { //add probability after "Shall"
+var fieldswithprop = fieldsoriginal.slice(); //copy fields (not pointer as only using =)
+fieldswithprop.splice(4, 0, { //add probability after "Shall"
   label: "Probability",
   key: "probability",
   isRequired: true,
@@ -152,7 +152,7 @@ class SlateEditor2 extends React.Component {
       variables: [],
       beforeRange: null,
       position: null,
-      FIELDS: []
+      fields: []
     }
 
 
@@ -174,7 +174,7 @@ class SlateEditor2 extends React.Component {
       path = `file://${__dirname}/../docs/_media/fretishGrammar/index.html`
     this.setState({
       grammarUrl: path,
-      FIELDS: FIELDSORIGINAL
+      fields: fieldsoriginal
     })
 
       if (this.props.inputFields) {
@@ -235,12 +235,12 @@ switchHandler = (event) => {
   let switchBoolean = event.target.checked;
   if (switchBoolean){
     this.setState({
-     FIELDS: FIELDSWITHPROP
+     fields: fieldswithprop
     })
   }
   else{
     this.setState({
-      FIELDS: FIELDSORIGINAL
+      fields: fieldsoriginal
      })
   }
 };
@@ -1128,7 +1128,7 @@ switchHandler = (event) => {
           </IconButton>
           </div>
         {
-        this.state.FIELDS.map(({label, key, isRequired, isDisabled}) => {
+        this.state.fields.map(({label, key, isRequired, isDisabled}) => {
           const title = label + (isRequired ? '*' : '')
           if (isDisabled) {
             return(
