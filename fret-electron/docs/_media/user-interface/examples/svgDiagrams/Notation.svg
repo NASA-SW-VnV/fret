@@ -179,7 +179,7 @@
        font-weight="normal" fill="black"> SC : Stop Condition</text>
 
  <text x="15" y="660" font-family="sans-serif" font-size="22px"
-       font-weight="normal" fill="black"> CC : Continuous Condition, arbitrary time
+       font-weight="normal" fill="black"> CC : Continual Condition, any time
  point satisfying the condition</text>
 
  

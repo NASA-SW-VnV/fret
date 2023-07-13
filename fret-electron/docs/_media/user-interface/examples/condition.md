@@ -7,9 +7,9 @@ taking into account scope and timing. A condition can be either:
 where the condition becomes true after being false, or the
 condition is true at the beginning of a scope interval;
 
-* a _no-trigger_ condition, meaning the response holds whenever the condition holds.
+* a _continual_ condition, meaning the response holds **_whenever_** the condition holds.
 
-A no-trigger condition is introduced by the keyword **whenever**.
+A continual condition is introduced by the keyword **whenever**.
 A trigger condition is introduced by the keyword **upon** (or **when**,
 **where**, **if**).
 The condition can be a sequence of Boolean expressions, optionally connected
@@ -54,7 +54,7 @@ and arithmetic expressions:
 * **Upon** powered_on the component shall immediately satisfy bootup
 * **Whenever** intruder the alarm shall immediately satisfy sound
 
-The contrast between trigger and no-trigger conditions is shown in the following two
+The contrast between trigger and continuous conditions is shown in the following two
 examples, in the case where at some point p holds forever:
 
 * Upon p the software shall eventually satisfy q
