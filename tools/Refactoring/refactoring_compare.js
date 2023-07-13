@@ -173,7 +173,7 @@ function generateSMV(originalReq, originalReqVars, newReq,n, allRequirements)
 
       for (let f of fragments)
       {
-        origFT = mergeFragment(origFT, f)
+        origFT = mergeFragment(origFT, f.doc)//Oisin: can maybe fix by changing 'f' to 'f.doc'
         fragList.push(f)
       }
     }
@@ -188,7 +188,7 @@ function generateSMV(originalReq, originalReqVars, newReq,n, allRequirements)
       console.log(fragments)
       for (let f of fragments)
       {
-        newFT = mergeFragment(newFT, f)
+        newFT = mergeFragment(newFT, f.doc)//Oisin: can maybe fix by changing 'f' to 'f.doc
         fragList.push(f)
       }
     }
@@ -295,7 +295,7 @@ function mergeFragment(property, fragment)
   console.log("mergeFragment")
   let mergedProperty = property;
 
-  let frag_condition = fragment.semantics.pre_condition;
+  let frag_condition = fragment.semantics.pre_condition; //Oisín: Error here
 
   console.log(frag_condition);
 
@@ -351,7 +351,7 @@ function getVars(originalReq, originalReqVars, newReq, fragList)
     console.log("Processing the FragList... " + fragList )
     for (let f of fragList)
     {
-      let fragVars = refactoring_utils.getVariableNames(f);
+      let fragVars = refactoring_utils.getVariableNames(f.doc); //Oisín: Error here. Changing 'f' to 'f.doc
       for (let v of fragVars)
       {
         varSet.add(v);
