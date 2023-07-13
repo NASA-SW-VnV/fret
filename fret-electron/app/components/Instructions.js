@@ -76,6 +76,7 @@ import {
   scopeInstruction,
   conditionInstruction,
   componentInstruction,
+  probabilityInstruction,
   timingInstruction,
   responseInstruction
 } from 'examples'
@@ -88,13 +89,14 @@ const instructions = {
   'scopeField' : scopeInstruction,
   'conditionField' : conditionInstruction,
   'componentField' : componentInstruction,
+  'probabilityField' : probabilityInstruction,
   'responseField' : responseInstruction,
   'timingField' :  timingInstruction
 }
 
 const constants = require('../parser/Constants');
 
-const fieldsWithExplanation = ['scopeField', 'conditionField', 'componentField', 'responseField', 'timingField'];
+const fieldsWithExplanation = ['scopeField', 'conditionField', 'componentField', 'probabilityField', 'responseField', 'timingField'];
 const {ipcRenderer} = require('electron');
 const ltlsim = require('ltlsim-core').ltlsim;
 

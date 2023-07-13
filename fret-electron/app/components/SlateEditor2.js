@@ -107,6 +107,7 @@ fieldswithprop.splice(4, 0, { //add probability after "Shall"
   isRequired: true,
   isDisabled: false,
 });
+fieldswithprop.splice(0,1);
 
 
 const styles = theme => ({

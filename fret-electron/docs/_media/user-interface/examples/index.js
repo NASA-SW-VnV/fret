@@ -33,5 +33,6 @@
 exports.scopeInstruction = require('./scope.md')
 exports.conditionInstruction = require('./condition.md')
 exports.componentInstruction = require('./component.md')
+exports.probabilityInstruction = require('./probability.md')
 exports.timingInstruction = require('./timing.md')
 exports.responseInstruction = require('./response.md')
