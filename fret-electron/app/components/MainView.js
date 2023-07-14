@@ -563,7 +563,7 @@ class MainView extends React.Component {
           try {
             let data = JSON.parse(buffer);
             //console.log('data in JSON.parse: ', data)
-            if(!data.requirement & !data.variables){
+            if(!data.requirement && !data.variables){
               //  invalid file  
               //console.log('setting missingExternalImportDialogReason to invalid')
               self.setState({
