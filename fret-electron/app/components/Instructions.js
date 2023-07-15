@@ -263,11 +263,18 @@ handleSwitchChange =(event) => {
     this.setState({LTLSimDialogOpen: false});
   }
 
+  isProbabilistic(){
+    if (this.props.formalization.semantics.probability=="null")
+      return true
+    return false
+  }
+
   renderFormula() {
     const { classes, requirement, requirementID} = this.props;
     var { ft, description, diagram, type } = this.props.formalization.semantics;
     var path = `../docs/`+this.props.formalization.semantics.diagram;
     var notationPath = `../docs/_media/user-interface/examples/svgDiagrams/Notation.svg`;
+    var isprobabilistic = this.isProbabilistic();
 
     if (type === 'nasa'){
       /* TODO: Currently, formalization.semantics contains HTML beautified expression
@@ -299,7 +306,8 @@ handleSwitchChange =(event) => {
     && (ft !== constants.undefined_semantics) && (diagram !== constants.undefined_svg))
     return(
       <div>
-      <br />
+      {isprobabilistic && <div>
+        <br />
         <div id="qa_crtAst_sem_desc" className={classes.description} dangerouslySetInnerHTML={{ __html: this.props.formalization.semantics.description}} />
         <br />
         <div className={css.imgWrap}>
@@ -318,8 +326,9 @@ handleSwitchChange =(event) => {
         </AccordionDetails>
       </Accordion>
         <br /><br />
+        </div> }
         <Typography variant='subtitle1' color='primary'>
-        Formalizations
+        Formalization
         </Typography>
         <br />
         <Accordion>
@@ -328,7 +337,7 @@ handleSwitchChange =(event) => {
         </AccordionSummary>
         <AccordionDetails>
           <div>
-          <FormGroup row>
+          {isprobabilistic && <FormGroup row>
           <div>
           <FormControl>
             <Select
@@ -348,7 +357,8 @@ handleSwitchChange =(event) => {
                   label="Infinite trace"/>
             </div>
             <br />
-          </FormGroup> <br />
+          </FormGroup>}
+          {isprobabilistic && <br />}
             <div id="qa_crtAst_sem_typ_futureTimeFormula" className={classes.formula}
               dangerouslySetInnerHTML={{ __html: (this.state.ftInfinite ? this.props.formalization.semantics.ftInfAUExpanded : this.props.formalization.semantics.ftExpanded)}} />
 
@@ -359,7 +369,7 @@ handleSwitchChange =(event) => {
           </div>
         </AccordionDetails>
       </Accordion>
-      <Accordion>
+      {isprobabilistic && <Accordion>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <Typography id="qa_crtAst_sem_typ_pastTime" className={classes.heading}>Past Time LTL</Typography>
         </AccordionSummary>
@@ -393,9 +403,9 @@ handleSwitchChange =(event) => {
               <div className={classes.description} dangerouslySetInnerHTML={{ __html:' FTP: First Time Point.'}} />}
         </div>
         </AccordionDetails>
-      </Accordion>
+      </Accordion>}
       <br />
-      {ltlsimLauncher}
+      {isprobabilistic && ltlsimLauncher}
       </div>)
       if ((ft !== constants.unhandled_semantics) && (ft !== constants.nonsense_semantics) && (ft !== constants.undefined_semantics) && (diagram === constants.undefined_svg))
       return(
