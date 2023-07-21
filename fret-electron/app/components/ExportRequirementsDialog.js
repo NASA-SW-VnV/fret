@@ -62,12 +62,17 @@ const styles = theme => ({
   menu: {
     width: 200,
   },
+  dataTypeMenu: {
+    width: 250,
+  },
 });
 
 class ExportRequirementsDialog extends React.Component {
   state = {
     open: false,
-    projects:[]
+    projects:[],
+    project: 'All Projects',
+    dataType: 'requirements',
   };
 
   export_to_md = (R, P) => {
@@ -78,13 +83,13 @@ class ExportRequirementsDialog extends React.Component {
 //                      ({reqid, parent_reqid, project, rationale, comments, fulltext, semantics, input}))(r.doc)
 
         R.forEach((r) => {
-		s=s + "| " + r.reqid + 
-		     " | " + r.parent_reqid + 
+		s=s + "| " + r.reqid +
+		     " | " + r.parent_reqid +
 		     " | " + r.fulltext.replace(/\|/g,",").replace(/\n/g," ").replace(/\r/g,"") +
 		     " | " + r.rationale.replace(/\|/g,",").replace(/\n/g," ").replace(/\r/g,"");
 		s=s + "\n";
         	})
-	
+
 	return s;
 	}
 // REPLACE/Quote UTF-8 chars by \u BLA
@@ -109,14 +114,10 @@ class ExportRequirementsDialog extends React.Component {
 
     // context isolation
     var argList = [project, output_format ]
-    ipcRenderer.invoke('exportRequirements',argList).then((result) => {
-      // export requirements doesn't change any Redux state
-      // console.log('Exported requirements in project ',project)
-    }).catch((err) => {
+    const channel = this.state.dataType === 'requirements' ? 'exportRequirements' : this.state.dataType === 'variables' ? 'exportVariables' : 'exportRequirementsAndVariables'
+    ipcRenderer.invoke(channel, argList).catch((err) => {
       console.log(err);
     })
-
-    this.setState({ projectName: '' });
 
   }
 
@@ -125,13 +126,18 @@ class ExportRequirementsDialog extends React.Component {
       open: props.open,
       projects: props.fretProjects,
       dialogCloseListener : props.handleDialogClose,
-      project: '',
-      output_format: 'json'
+      project: 'All Projects',
+      output_format: 'json',
+      dataType: 'requirements',
     })
   }
 
   handleChange = name => event => {
-    this.setState({ [name]: event.target.value });
+    const { value } = event.target
+    if(name === 'dataType' && value && value.includes('variables')) {
+      this.setState({ output_format:  'json'});
+    }
+    this.setState({ [name]:  value});
   };
 
   render() {
@@ -142,6 +148,7 @@ class ExportRequirementsDialog extends React.Component {
         <Dialog
           open={this.state.open}
           onClose={this.handleClose}
+          maxWidth="md"
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
@@ -151,7 +158,7 @@ class ExportRequirementsDialog extends React.Component {
               Select specific project or export all requirements by selecting All Projects.
             </DialogContentText>
             <TextField
-              id="standard-select-project"
+              id="qa_export_select_project"
               select
               label="Select"
               className={classes.textField}
@@ -165,17 +172,42 @@ class ExportRequirementsDialog extends React.Component {
               helperText="Please select a project"
               margin="normal"
             >
-            <MenuItem key={"All Projects"} value={"All Projects"}>
+            <MenuItem key={"All Projects"} value={"All Projects"} id="qa_export_mi_AllProjects">
                   {<b>All Projects</b>}
                 </MenuItem>
             {this.state.projects.map(name => (
-                <MenuItem key={name} value={name}>
+                <MenuItem key={name} value={name} id={"qa_export_mi_"+name}>
                   {name}
                 </MenuItem>
               ))}
             </TextField>
             <TextField
-              id="standard-select-format"
+              id="qa_export_select_dataType"
+              select
+              label="Select data type"
+              className={classes.textField}
+              value={this.state.dataType}
+              onChange={this.handleChange('dataType')}
+              SelectProps={{
+                MenuProps: {
+                  className: classes.dataTypeMenu,
+                },
+              }}
+              //              helperText="Please select a project"
+              margin="normal"
+            >
+              <MenuItem key={"requirements"} value={"requirements"} id="qa_export_mi_requirements">
+                Requirements
+              </MenuItem>
+              <MenuItem key={"variables"} value={"variables"} id="qa_export_mi_variables">
+                Variables
+              </MenuItem>
+              <MenuItem key={"requirements-variables"} value={"requirements-variables"} id="qa_export_mi_reqsAndVars">
+                Requirements & Variables
+              </MenuItem>
+            </TextField>
+            <TextField
+              id="qa_export_select_dataFormat"
               select
               label="Select output format"
               className={classes.textField}
@@ -189,19 +221,19 @@ class ExportRequirementsDialog extends React.Component {
 //              helperText="Please select a project"
               margin="normal"
             >
-            <MenuItem key={"JSON"} value={"json"}>
+            <MenuItem key={"JSON"} value={"json"} id="qa_export_mi_json">
                   JSON
             </MenuItem>
-            <MenuItem key={"MD"} value={"md"}>
+            <MenuItem key={"MD"} value={"md"} disabled={this.state.dataType && this.state.dataType.includes('variables')} id="qa_export_mi_md">
                   Markdown (MD)
             </MenuItem>
             </TextField>
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.handleClose} color="primary">
+            <Button onClick={this.handleClose} color="primary" id="qa_export_btn_cancel">
               Cancel
             </Button>
-            <Button onClick={this.handleCloseOKtoExport} color="primary" autoFocus>
+            <Button onClick={this.handleCloseOKtoExport} color="primary"  id="qa_export_btn_ok" autoFocus>
               OK
             </Button>
           </DialogActions>

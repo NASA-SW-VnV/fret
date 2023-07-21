@@ -177,6 +177,7 @@ export default class FretModel {
 
     }
 
+
     async synchAnalysesAndVariablesWithDB(){
 
       // if a project is selected, update project dependent states
@@ -500,10 +501,6 @@ export default class FretModel {
     }
 
     async importRequirements(evt,args){
-      // console.log('FretModel importRequirements: ', args)
-      await leveldbDB.info().then(function (info) {
-        // console.log('levelDB infor: ',info);
-      })
 
       var homeDir = app.getPath('home');
       var listOfProjects  = args;
@@ -517,6 +514,7 @@ export default class FretModel {
           }
         ],
         properties: ['openFile']});
+      let areThereIgnoredVariables = false;
       if (filepaths && filepaths.length > 0) {
         // console.log('FretModel.importRequirements filepaths: ', filepaths)
          const filepath = filepaths[0];
@@ -543,34 +541,32 @@ export default class FretModel {
            var content = fs.readFileSync(filepath);  // maybe add "utf8" to return a string instead of a buffer
            var data = JSON.parse(content);
 
+           let requirements = [];
+           let variables = [] ;
 
-           /*
-           // Version using readTextFile defined above, works.
-           readTextFile(filepath, function (text) {
-               let data = JSON.parse(text);
-           })
-           // */
-           // Version using readFile, works.
+           if(Array.isArray(data) && data.length > 0) {
+             if(data[0].reqid) {
+               requirements = data;
+             } else {
+               variables = data;
+             }
+           }else {
+             if (data.requirements) {
+               requirements = data.requirements
+             }
 
-           /*
-          fs.readFile(filepath, function (err,buffer) {
-               if (err) throw err;
-               //console.log('buffer: ', buffer)
-               let data = JSON.parse(buffer);
-               //console.log('FretModel.importRequirements data: ', data)
-               //from MODEL
-               requirementsImport.importRequirements(data, listOfProjects);
-            });
-            */
-/*
-            var content = fs.readFileSync(filepath);  // maybe add "utf8" to return a string instead of a buffer
-            var data = JSON.parse(content);
-            console.log('FretModel.importRequirements data: ', data)
-            //from MODEL
-            await requirementsImport.importRequirements(data, listOfProjects);
-*/
+             if (data.variables) {
+               variables = data.variables
+             }
+           }
 
-            await requirementsImport.importRequirements(data, listOfProjects)
+           if(requirements.length) {
+             await requirementsImport.importRequirements(requirements, listOfProjects)
+           }
+           if(variables.length) {
+             const createdVariables = await requirementsImport.importVariables(variables)
+             areThereIgnoredVariables = variables.length - createdVariables.length > 0
+           }
             await this.synchAnalysesAndVariablesWithDB()
            await this.mapVariables(this.components)
 
@@ -605,6 +601,7 @@ export default class FretModel {
         modelVariables : this.modelVariables,
         selectedVariable : this.selectedVariable,
         importedComponents : this.importedComponents,
+        areThereIgnoredVariables,
 
       }
       return jsonFilestates
@@ -641,61 +638,120 @@ export default class FretModel {
 
     }
 
-    async exportRequirements(evt,args){
-      // console.log('FretModel exportRequirements: ', args)
-      var project =  args[0];
-      var output_format =  args[1];
-      const filterOff = project == "All Projects";
-      var homeDir = app.getPath('home');
-      var filepath = dialog.showSaveDialogSync(
-        {
-          defaultPath : homeDir,
-          title : 'Export Requirements',
-          buttonLabel : 'Export',
-          filters: [
-            { name: "Documents", extensions: [ output_format ] }
-          ],
-        })
+  exportRequirementsAndVariables = async (_, args) => {
+      const [project, output_format] = args;
+      const filepath = this.selectExportFilePath(output_format)
       if (filepath) {
-        leveldbDB.allDocs({
+        const filterOff = project == "All Projects";
+        const requirements = []
+        await leveldbDB.allDocs({
+          include_docs: true,
+        }).then((result) => {
+          var filteredReqs = result.rows
+            .filter(r => !system_DBkeys.includes(r.key))
+            .filter(r => filterOff || r.doc.project == project)
+          filteredReqs.forEach((r) => {
+            var doc = (({reqid, parent_reqid, project, rationale, comments, fulltext, semantics, input}) =>
+              ({reqid, parent_reqid, project, rationale, comments, fulltext, semantics, input}))(r.doc)
+            doc._id = uuidv1()
+            requirements.push(doc)
+          })
+        }).catch((err) => {
+          console.log(err);
+        });
+        const variables = []
+        const selector = filterOff ? {} : {project: project}
+        await modelDB.find({
+          selector
+        }).then((result) => {
+          console.log('result', result)
+          result.docs.forEach(variable => {
+            delete variable._rev
+            delete variable.modeldoc
+            variables.push(variable)
+          })
+        }).catch((err) => {
+          console.log(err);
+        });
+        this.writeFile({requirements, variables}, output_format, filepath, project)
+      }
+    }
+
+    exportVariables =async (_, args) => {
+      const [project, output_format] = args;
+      const filepath = this.selectExportFilePath(output_format)
+      if (filepath) {
+        const content = []
+        const filterOff = project == "All Projects";
+        const selector = filterOff ? {} : {project: project}
+        await modelDB.find({
+          selector
+        }).then((result) => {
+          console.log('result', result)
+          result.docs.forEach(variable => {
+            delete variable._rev
+            delete variable.modeldoc
+            content.push(variable)
+          })
+        }).catch((err) => {
+          console.log(err);
+        });
+        this.writeFile(content, output_format, filepath, project)
+      }
+    }
+
+  selectExportFilePath = (output_format) => {
+    var homeDir = app.getPath('home');
+    var filepath = dialog.showSaveDialogSync(
+      {
+        defaultPath : homeDir,
+        title : 'Export Requirements',
+        buttonLabel : 'Export',
+        filters: [
+          { name: "Documents", extensions: [ output_format ] }
+        ],
+      })
+    return filepath
+  }
+  writeFile(data, output_format, filepath, project) {
+      var content;
+      if (output_format === "md"){
+        content=export_to_md(data, project)
+      }
+      else {
+        content = JSON.stringify(data, null, 4)
+      }
+
+      fs.writeFile(filepath, content, (err) => {
+        if(err) {
+          return console.log(err);
+        }
+      });
+  }
+
+    async exportRequirements(evt,args){
+      const [project, output_format] = args;
+      const filepath = this.selectExportFilePath(output_format)
+      if(filepath){
+      const filteredResult = []
+      const filterOff = project == "All Projects";
+      await leveldbDB.allDocs({
           include_docs: true,
         }).then((result) => {
           var filteredReqs = result.rows
           .filter(r => !system_DBkeys.includes(r.key))
           .filter(r => filterOff || r.doc.project == project)
-          var filteredResult = []
           filteredReqs.forEach((r) => {
             var doc = (({reqid, parent_reqid, project, rationale, comments, fulltext, semantics, input}) =>
                         ({reqid, parent_reqid, project, rationale, comments, fulltext, semantics, input}))(r.doc)
             doc._id = uuidv1()
             filteredResult.push(doc)
           })
-        //
-        // produce output
-        //
-        var content;
-        // console.log(output_format)
-        if (output_format === "md"){
-          // console.log("MD")
-          content=export_to_md(filteredResult, project)
-          }
-        else {
-          // console.log("JSON")
-          content = JSON.stringify(filteredResult, null, 4)
-        }
-        //console.log(content)
-
-        fs.writeFile(filepath, content, (err) => {
-          if(err) {
-            return console.log(err);
-          }
-          // console.log("The file was saved!");
-          });
             }).catch((err) => {
               console.log(err);
         });
+      this.writeFile(filteredResult, output_format, filepath, project)
       }
-
       return ({})
     }
 
@@ -730,11 +786,10 @@ export default class FretModel {
 
     }
 
-    async selectGlossaryVariables(projectName, componentsNames) {
+    async selectGlossaryVariables(projectName) {
       return modelDB.find({
         selector: {
           project: projectName,
-          component_name: { $in: componentsNames }
         }
       });
 

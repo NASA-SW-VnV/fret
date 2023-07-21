@@ -98,6 +98,7 @@ class Glossary extends React.Component {
 
   componentDidMount = () => {
     this.getProjectRequirements();
+    this.getVariables();
     if (process.env.EXTERNAL_TOOL == '1') {
       this.setVariablesToComponents();
     }
@@ -117,6 +118,7 @@ class Glossary extends React.Component {
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (prevProps.projectName !== this.props.projectName) {
       this.getProjectRequirements();
+      this.getVariables();
       this.setState({selectedComponent: ''})
     }
     if(prevState.selectedComponent !== this.state.selectedComponent || prevState.checked !== this.state.checked){
@@ -127,9 +129,6 @@ class Glossary extends React.Component {
     }
     if(this.props.projectRequirements !== prevProps.projectRequirements) {
       this.setComponentsNames();
-    }
-    if(this.state.components !== prevState.components) {
-      this.getVariables();
     }
     if(this.props.variables !== prevProps.variables || process.env.EXTERNAL_TOOL == '1' && this.props.editVariables !== prevProps.editVariables) {
       this.setVariablesToComponents();
@@ -151,7 +150,8 @@ class Glossary extends React.Component {
 
   getVariables = async () => {
     if (process.env.EXTERNAL_TOOL !== '1') {
-      ipcRenderer.invoke('selectGlossaryVariables', [this.props.projectName, Object.keys(this.state.components)]).then((result) => {
+      ipcRenderer.invoke('selectGlossaryVariables', [this.props.projectName]).then((result) => {
+        console.log('result', result.docs)
         this.props.setGlossaryVariables({
           glossaryVariables: result.docs
         })
@@ -217,6 +217,9 @@ class Glossary extends React.Component {
           }
         })
         variable['reqs'] = variableRequirements.sort().join(', ');
+      }
+      if(!componentsWithVariables[v.component_name]) {
+        componentsWithVariables[v.component_name] = [];
       }
       componentsWithVariables[v.component_name].push(variable);
     })

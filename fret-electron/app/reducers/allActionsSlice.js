@@ -11,17 +11,9 @@ const allActionsSlice = createSlice({
         // * requirements *
         requirements: [],  // requirements from all proljects
         projectRequirements: [], // requirements for selectedProject
+        glossaryProjectRequirements: [],
 
-        // * analysis *
-        components: [],             // for a specific project: this is an array of all the components
-        completedComponents: [],    // for a specific project: this is an array of all components
-                                    // that we have completed the variable mappings
-        cocospecData: {},     // for a specific project: this is an object where each
-                              // key is a component of this project, and the value of each key is an array of variables
-        cocospecModes: {},    // for a specific project: this is an object where each
-                              // key is a component of this project, and the value of each key is an array of modes
-
-        // variables
+        // * variables *
         variable_data: {},   // for a specific project: this is an object where each
                               // key is a component of this project, and the value  is
                               // an array[rowid: counter, variable_name, modeldoc_id, idType, dataType, description]
@@ -32,6 +24,15 @@ const allActionsSlice = createSlice({
         importedComponents: [], // array of imported simulink model components
         glossaryVariables: [], // variables for Glossary component
 
+        // * analysis *
+        components: [],             // for a specific project: this is an array of all the components
+        completedComponents: [],    // for a specific project: this is an array of all components
+                                    // that we have completed the variable mappings
+        cocospecData: {},     // for a specific project: this is an object where each
+                              // key is a component of this project, and the value of each key is an array of variables
+        cocospecModes: {},    // for a specific project: this is an object where each
+                              // key is a component of this project, and the value of each key is an array of modes
+
         // realizability
         rlz_data: [],  // array of requirements given a specific project and system component
         monolithic: undefined,
@@ -39,8 +40,8 @@ const allActionsSlice = createSlice({
         ccSelected: undefined,
         projectReport: undefined,
         diagnosisRequirements: undefined,
-        prevState: undefined,
-        glossaryProjectRequirements: []
+        //prevState: undefined,
+
 
       },
 
@@ -72,7 +73,7 @@ const allActionsSlice = createSlice({
         state.compositional = action.payload.compositional;
         state.ccSelected = action.payload.ccSelected;
         state.diagnosisRequirements = action.payload.diagnosisRequirements;
-        state.prevState = action.payload.prevState;
+        //state.prevState = action.payload.prevState;
       },
 
       // project slice

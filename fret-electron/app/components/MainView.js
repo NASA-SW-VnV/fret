@@ -89,6 +89,7 @@ import {
   importRequirements,
   mapVariables,
 } from '../reducers/allActionsSlice';
+import ImportedVariablesWarningDialog from "./ImportedVariablesWarningDialog";
 
 const app = require('electron').remote.app
 const dialog = require('electron').remote.dialog
@@ -224,6 +225,7 @@ class MainView extends React.Component {
     externalVariables: {},
     missingExternalImportDialogOpen: false,
     missingExternalImportDialogReason: 'unknown',
+    warningDialogOpen: false,
     };
 
   constructor(props) {
@@ -300,6 +302,7 @@ class MainView extends React.Component {
 
         })
       }
+      this.setState({warningDialogOpen: result.areThereIgnoredVariables})
       if (result.fileExtension){
         this.handleCSVImport(result.csvFields, result.importedReqs)
       }
@@ -385,6 +388,13 @@ class MainView extends React.Component {
     this.setState(
       {
         createProjectDialogOpen: false,
+      });
+  }
+
+  handleWarningDialogClose = () => {
+    this.setState(
+      {
+        warningDialogOpen: false,
       });
   }
 
@@ -589,7 +599,7 @@ class MainView extends React.Component {
 
   render() {
     const { classes, theme, listOfProjects, requirements } = this.props;
-    const { anchorEl } = this.state;
+    const { anchorEl, warningDialogOpen } = this.state;
 
     return (
       <div className={classes.root}>
@@ -778,6 +788,7 @@ class MainView extends React.Component {
           selection='BROWSE'
           reason={this.state.missingExternalImportDialogReason}
           />
+          <ImportedVariablesWarningDialog open={warningDialogOpen} handleClose={this.handleWarningDialogClose}/>
         </div>
         <Snackbar
           anchorOrigin={{

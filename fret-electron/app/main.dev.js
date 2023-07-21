@@ -338,6 +338,16 @@ ipcMain.handle('exportRequirements', async (evt, arg) => {
   return result
 })
 
+ipcMain.handle('exportVariables', async (evt, arg) => {
+  const result = await fretModel.exportVariables(evt, arg);
+  return result
+})
+
+ipcMain.handle('exportRequirementsAndVariables', async (evt, arg) => {
+  const result = await fretModel.exportRequirementsAndVariables(evt, arg);
+  return result
+})
+
 ipcMain.handle('selectVariable', async(evt, arg) => {
   const result = await fretModel.selectVariable(evt, arg);
   return result
