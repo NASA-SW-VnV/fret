@@ -108,22 +108,22 @@ Aborting batch mode
 As FRET and Mu-FRET are still very much in-development, there are a few issues that crop up with some regularity during installation. All commands listed here should be run from `/mu-fret/fret-electron` unless stated otherwise.
 
 1. `Error: Cannot find module 'babel-register'`  
-  This error is common, and is an issue with the FRET's dependencies. To fix this, uninstall the module to remove it from the dependencies, and install some replacements:  
-  - ` npm uninstall babel-register --save-dev`  
-  - ` npm install @babel/core @babel/register --save-dev`
+    This error is common, and is an issue with the FRET's dependencies. To fix this, uninstall the module to remove it from the dependencies, and install some replacements:  
+    - ` npm uninstall babel-register --save-dev`  
+    - ` npm install @babel/core @babel/register --save-dev`
 
 2. You may encounter some errors regarding missing typefaces; specifically, the most common ones are `typeface-gloria-hallelujah`, `typeface-roboto` and `typeface-indie-flower`. To get around this, navigate to the /app folder and install them manually:
-  - `cd app`
-  - `npm install typeface-gloria-hallelujah`  
-  (If you had errors for other typeface packages, install those the same way)
-  - `cd ..` (to go back to fret-electron)
+    - `cd app`
+    - `npm install typeface-gloria-hallelujah`  
+    (If you had errors for other typeface packages, install those the same way)
+    - `cd ..` (to go back to fret-electron)
 
 3. `npm ERR! Could not install from “node_modules\ejs-compiled-loader\ejs@git+https:\github.com\nemanjan00\ejs.git” as it does not contain a package.json file.`  
-  This is a similar problem to the typeface errors, in that Node is just failing to install this package for some reason. Again, the solution is to install the package manually before attempting the Mu-FRET installation again:
-  - `npm install ejs-compiled-loader`
+    This is a similar problem to the typeface errors, in that Node is just failing to install this package for some reason. Again, the solution is to install the package manually before attempting the Mu-FRET installation again:
+    - `npm install ejs-compiled-loader`
 
 4. `ValueError: invalid mode: 'rU' while trying to load binding.gyp`
-  This is a problem with the version of Python being used. After trying to fix the problem by running `npm config set python python2.7.18` and installing [pyenv](https://github.com/pyenv/pyenv), we found that each was overridden by the version specified in the system's PATH variable and so it was necessary to add Python 2.7.18 there, above Python 3.x.
+    This is a problem with the version of Python being used. After trying to fix the problem by running `npm config set python python2.7.18` and installing [pyenv](https://github.com/pyenv/pyenv), we found that each was overridden by the version specified in the system's PATH variable and so it was necessary to add Python 2.7.18 there, above Python 3.x.
 
 
 ## Usage
