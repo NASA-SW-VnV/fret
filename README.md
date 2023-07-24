@@ -40,6 +40,8 @@ Our team have given several presentations about both FRET and Mu-FRET as part of
 
 * [_Classical Formal Verification Driven by Formal Requirements_](mu-fret-docs/posters/NUIM-Classical_Formal_Verification_Driven_by_Formal_Requirements.pdf) (poster PDF): a poster from the VALU3S project that describes how our work combines FRET with several verification methods.
 * [_Modular Formal Requirements-Driven Verification_](mu-fret-docs/posters/NUIM-Modular_Formal_Requirements-Driven_Verification.pdf) (poster PDF): a poster from the VALU3S project that describes Mu-FRET, explaining how we have improved FRET to enable it to perform refactoring.
+* [_Refactoring Requirements and MU-FRET's Place in the VeRFoR Toolchain_](mu-fret-docs/posters/Refactoring_Requirements_and_MU-FRETs_Place_in_the_VeRFoR_Toolchain.pdf) (poster PDF): a poster from the VALU3S Summer School in 2023 which describes the purpose of refactoring in MU-FRET and locates it in toolchains used in VALU3S.
+* [_Using Mu-FRET for Parent-Child Relationship, and comparisons with EARS_](mu-fret-docs/posters/Using_Mu-FRET_for_Parent-Child_Relationships_and_Comparisons_with_EARS.pdf) (poster PDF): a poster from the VALU3S Summer School in 2023 which showcases the MU-FRET user interface and contrasts FRET with a competing structured natural language for requirements elicitation, EARS.
 
 ## Papers
 
