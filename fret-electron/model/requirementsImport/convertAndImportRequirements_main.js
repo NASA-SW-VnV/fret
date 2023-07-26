@@ -33,12 +33,15 @@
 import { setChangeRequirementFlag_main } from "../fretDbSupport/changeRequirementFlag_main";
 
 const fs=require("fs");
-import {leveldbDB} from '../../app/main.dev'
+import {leveldbDB, modelDB} from '../../app/main.dev'
+import fretDbGetters from "../fretDbSupport/fretDbGetters_main";
+
 const modelSupport = require('../modelDbSupport/populateVariables_main');
 
 export {
   importRequirements as importRequirements,
-  csvToJsonConvert as csvToJsonConvert
+  csvToJsonConvert as csvToJsonConvert,
+  importVariables as importVariables
 }
 
 //Requirement ID and Description are the default values
@@ -68,7 +71,6 @@ async function importRequirements (data, projects) {
   data.forEach((d) => {
     if (d.project && !projects.includes(d.project)){
       projects.push(d.project);
-      //console.log('convertAndImportRequirements.importRequirements pushing project: ', d.project)
     }
   })
   //If new projects were introduced through the imported reqs, update FRET_PROJECTS in db
@@ -96,10 +98,26 @@ async function importRequirements (data, projects) {
   catch((err) => {
     console.log(err);
   });
-  ('end convertAndImportRequirements.importRequirements data: ')
 
 }
 
+async function importVariables (variables) {
+  const projectsList = new Set(await getAllProjects());
+  const variablesToSave = variables.filter(({project, component_name}) => projectsList.has(project) && !!component_name);
+  await modelDB.bulkDocs(variablesToSave);
+  return variablesToSave;
+}
+
+
+
+function getAllProjects () {
+  return leveldbDB.get('FRET_PROJECTS').then((doc) => {
+    return doc.names;
+  }).catch((err) => {
+    console.log(err);
+    return []
+  });
+}
 // change so that everything goes to rationale by default except what is in map
 function translateFields (rid, text, project, projectField){
   //TODO: we probably shouldnt accept empty strings as an input; apply this check at the UI level
