@@ -359,7 +359,7 @@ class CreateRequirementDialog extends React.Component {
       })
     } else{
 
-
+      //console.log('UI createOrUpdateRequirement dbid: ',dbid)
       //////// ***
       // console.log('CreateRequirementDialog ipcRenderer createOrUpdateRequirement', args);
       ipcRenderer.invoke('createOrUpdateRequirement',args).then((result) => {

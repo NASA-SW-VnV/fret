@@ -398,6 +398,7 @@ export default class FretModel {
         modelDbSetters.createOrUpdateVariables(semantics.variables, semantics.component_name, project, dbid);
       }
 
+      //console.log('FretModel createUpdateReq, dbid for addRequirement: ',dbid)
       this.reqCreated = await fretDbSetters.addRequirement(dbid, dbrev, edittedFields, requirementFields)
       this.requirements = await fretDbGetters.getRequirements()
 
@@ -651,9 +652,11 @@ export default class FretModel {
             .filter(r => !system_DBkeys.includes(r.key))
             .filter(r => filterOff || r.doc.project == project)
           filteredReqs.forEach((r) => {
-            var doc = (({reqid, parent_reqid, project, rationale, comments, fulltext, semantics, input}) =>
-              ({reqid, parent_reqid, project, rationale, comments, fulltext, semantics, input}))(r.doc)
-            doc._id = uuidv1()
+            var doc = (({reqid, parent_reqid, project, rationale, comments, fulltext, semantics, input, _id}) =>
+              ({reqid, parent_reqid, project, rationale, comments, fulltext, semantics, input, _id}))(r.doc)
+            //console.log('FretModel exportReq, before _id',r.doc._id)
+            //doc._id = uuidv1()
+            //console.log('FretModel exportReq, after _id',doc._id)
             requirements.push(doc)
           })
         }).catch((err) => {
@@ -664,7 +667,7 @@ export default class FretModel {
         await modelDB.find({
           selector
         }).then((result) => {
-          console.log('result', result)
+          //console.log('result', result)
           result.docs.forEach(variable => {
             delete variable._rev
             delete variable.modeldoc
@@ -687,7 +690,7 @@ export default class FretModel {
         await modelDB.find({
           selector
         }).then((result) => {
-          console.log('result', result)
+          //console.log('result', result)
           result.docs.forEach(variable => {
             delete variable._rev
             delete variable.modeldoc
