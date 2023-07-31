@@ -31,6 +31,9 @@
 % // AGREEMENT.
 % // *****************************************************************************
 
+% If you want to use this on a model with CoCoSim contracts, start CoCoSim first.
+
+
 function [ir_struct, json_model] = fret_IR( model_full_path, output_dir )
 
     %% Initialisation
@@ -60,7 +63,8 @@ function [ir_struct, json_model] = fret_IR( model_full_path, output_dir )
     end
 
     try
-        ir_struct =  fret_subsystems_struct(file_name, ir_struct);
+        systemChoice = chooseSubsystem(file_name);
+        ir_struct =  fret_subsystems_struct(systemChoice, ir_struct);
     catch
         Cmd = [file_name, '([], [], [], ''term'');'];
         eval(Cmd);
@@ -76,7 +80,12 @@ function [ir_struct, json_model] = fret_IR( model_full_path, output_dir )
 
 
     %% Saving the json ir
-    json_model = jsonencode(ir_struct);
+    releaseValue = string(version('-release'));
+    if releaseValue < "2021a"
+        json_model = jsonencode(ir_struct);
+    else
+        json_model = jsonencode(ir_struct, PrettyPrint=true);
+    end
     json_model = strrep(json_model,'\/','/');
     % essayer d'enlever le escape des slash si possible pour l'esthétique
 
@@ -85,7 +94,7 @@ function [ir_struct, json_model] = fret_IR( model_full_path, output_dir )
         output_dir = parent;
     end
     if df_export
-        file_json = [file_name '_forFRET.json'];
+        file_json = [get_param(systemChoice, 'Name') '_forFRET.json'];
         % Open or create the file
         file_path = fullfile(output_dir, file_json);
         fid = fopen(file_path, 'w');
@@ -95,19 +104,62 @@ function [ir_struct, json_model] = fret_IR( model_full_path, output_dir )
     end
 end
 
+function [choice] = chooseSubsystem(file_name)
+
+    %% Find all non-mask (Sub)systems and prompt user to select target as root.
+
+    content = find_system(file_name, 'LookUnderMasks', 'all', 'FollowLinks', 'on','BlockType','SubSystem');
+    
+    promptList="\n\nList of Subsystems:\n------------------------\n\n";
+    numOfSubSystems = numel(content);
+    count=1;
+    for i=1:numOfSubSystems
+        if isempty(Simulink.Mask.get(content{i}))
+            promptList = strcat(promptList, int2str(count), ': ', content{i}, '\n');
+            count = count+1;
+        end
+    end
+    
+    indexChoice = input(strcat(promptList, "\n------------------------\n\n", sprintf('Select subsystem from the list above (index value) [default: 1]: ')));
+    if isempty(indexChoice)
+        indexChoice = 1;
+    end
+    while ~ (isfinite(indexChoice) & indexChoice == floor(indexChoice) & indexChoice >=1 & indexChoice <= numOfSubSystems)
+        indexChoice = input('Incorrect value entered. Please provide an option from the list using the corresponding integer index value [default: 1]: ');
+    end
+
+    choice = content{indexChoice};
+end
 
 function ir_struct = fret_subsystems_struct( block_path, ir_struct )
     blockTypesFret = {'Inport', 'Outport'};
-    content = find_system(block_path, 'LookUnderMasks', 'all', 'FollowLinks', 'on');
+    
+    %Andreas: Removing recursive option as it is not currently needed.
+    %Ask user if they want to recursively retrieve all the information, starting with the selected (Sub)system as root.
+    % recursiveChoice = upper(input('Apply recursively? Y/N [default: N]: ','s'));
+    % if isempty(recursiveChoice)
+    %     recursiveChoice = 'N';
+    % end
+
+    % if ~ (recursiveChoice == 'Y' | recursiveChoice == 'N')
+    %   recursiveChoice = 'N';  
+    % end
+
+    % if recursiveChoice == 'Y'
+    %     content = find_system(block_path, 'LookUnderMasks', 'all', 'FollowLinks', 'on');
+    % else
+    
+    content = find_system(block_path);
 
     % IR of all blocks contained in the subsystem or block_diagram
     for i=1:numel(content)
         try
             blkType = get_param(content{i}, 'BlockType');
+            isParentNotMask = isempty(Simulink.Mask.get(get_param(content{i}, 'Parent')));
         catch
             continue;
         end
-        if ismember(blkType, blockTypesFret)
+        if ismember(blkType, blockTypesFret) & isParentNotMask
             ir_struct{end+1} = fret_common_struct(content{i});
         end
 
