@@ -83,8 +83,9 @@ var uuid = require('uuid');
 import { v1 as uuidv1 } from 'uuid';
 
 const {ipcRenderer} = require('electron');
-const path = require('path');
-const fs = require("fs");
+const ext_exp_json_file = require('electron').remote.getGlobal('sharedObj').ext_exp_json;
+const ext_exp_json_file_exists = require('electron').remote.getGlobal('sharedObj').exp_exp_json_exists;
+const fs = require('fs');
 
 
 const formStyles = theme => ({
@@ -212,124 +213,30 @@ class CreateRequirementDialog extends React.Component {
       createDialogOpen: false
     });
     var self = this;
+    const { edittingRequirement, project, reqid, parent_reqid, rationale, comments} = this.state;
+    var requirementFields = this.stepper.getRequirementFields();
+    var { fulltext, semantics, input, template } = requirementFields;
 
+    var newReqId = this.state.reqid;
+    var dbid = edittingRequirement && Object.keys(edittingRequirement).length > 0 ? edittingRequirement._id : uuidv1()
+    var dbrev = edittingRequirement && Object.keys(edittingRequirement).length > 0 ? edittingRequirement._rev : undefined
+    var oldVariables = [];
+    var edittedFields = this.state;
+    var reqEditFields ={};
 
-    if(process.env.EXTERNAL_TOOL=='1'){
-      var ext_exp_json_file = '';
-      var ext_exp_json_file_exists =  false;
-      var userDocumentsFolder = '/Users/ktrinh/Documents'
-
-
-
-      if (typeof process.env.EXTERNAL_EXP_JSON === "undefined"){
-        ext_exp_json_file = path.join(userDocumentsFolder,'requirement.json');
-      } else {
-        ext_exp_json_file = process.env.EXTERNAL_EXP_JSON+'.json';
-      }
-
-      console.log('ext_exp_json_file: ', ext_exp_json_file)
-
-      if (fs.existsSync(ext_exp_json_file)) {
-        // path exists, use same file name
-        ext_exp_json_file_exists =  true;
-        console.log('ext_exp_json_file_exists: ', ext_exp_json_file_exists)
-      } else {
-          // directory doesn't exist, use default name
-          ext_exp_json_file = path.join(userDocumentsFolder, 'requirement.json')
-          ext_exp_json_file_exists =  true;
-          console.log('ext_exp_json_file_exists: ', ext_exp_json_file_exists)
-      }
-
-
-
-
-      var filepath = ext_exp_json_file;
-      console.log('export json file name: ', filepath)
-
-      if(ext_exp_json_file_exists){
-        // pop up warning
-        console.log('Overwriting existing external export file: ', ext_exp_json_file);
-      }
-
-      let doc = ({"requirement": {"reqid" :this.state.reqid,
-                  "parent_reqid": this.state.parent_reqid,
-                  "project": this.state.project,
-                  "rationale": this.state.rationale,
-                  "comments": this.state.comments,
-                  "status": this.state.status,
-                  "fulltext": fulltext,
-                  "template": template,
-                  "semantics": semantics,
-                  "input": input}});
-
-      fs.writeFile(filepath, JSON.stringify(doc, null, 4), (err) => {
-          if(err) {
-            return console.log(err);
-          }
-          ipcRenderer.send('closeFRET');
-      })
-    } else{
-
-
-
-
-
-      const { edittingRequirement, project, reqid, parent_reqid, rationale, comments} = this.state;
-      var requirementFields = this.stepper.getRequirementFields();
-      var { fulltext, semantics, input, template } = requirementFields;
-
-      var newReqId = this.state.reqid;
-      var dbid = edittingRequirement && Object.keys(edittingRequirement).length > 0 ? edittingRequirement._id : uuidv1()
-      var dbrev = edittingRequirement && Object.keys(edittingRequirement).length > 0 ? edittingRequirement._rev : undefined
-      var oldVariables = [];
-      var edittedFields = this.state;
-      var reqEditFields ={};
-
-      reqEditFields.reqid = edittedFields.reqid;
-      reqEditFields.parent_reqid = edittedFields.parent_reqid;
-      reqEditFields.project = edittedFields.project;
-      reqEditFields.rationale = edittedFields.rationale;
-      reqEditFields.comments = edittedFields.comments;
-      reqEditFields.status = edittedFields.status;
-      reqEditFields.fulltext = edittedFields.fulltext;
-      reqEditFields.semantics = edittedFields.semantics;
-      reqEditFields.template = edittedFields.template;
-      reqEditFields.input = edittedFields.input;
-      var args = [dbid, dbrev, reqEditFields, requirementFields,semantics,project]
-      // what if process.env.EXTERNAL_TOOL=='1'
-      // context isolation
-      console.log('CreateRequirementDialog ipcRenderer createOrUpdateRequirement', args);
-      ipcRenderer.invoke('createOrUpdateRequirement',args).then((result) => {
-        console.log('payload2 CreateRequirementDialog createOrUpdateRequirement in : ',result)
-        console.log('result.reqCreated CreateRequirementDialog createOrUpdateRequirement in : ',result.reqCreated)
-        console.log('result.requirements CreateRequirementDialog createOrUpdateRequirement in : ',result.requirements)
-        this.props.createOrUpdateRequirement({ type: 'actions/createOrUpdateRequirement',
-                                                requirements: result.requirements,
-                                                reqCreated: result.reqCreated,
-                                                // analysis
-                                                components : result.components,
-                                                completedComponents : result.completedComponents,
-                                                cocospecData : result.cocospecData,
-                                                cocospecModes : result.cocospecModes,
-                                                // variables
-                                                variable_data : result.variable_data,
-                                                modelComponent : result.modelComponent,
-                                                modelVariables : result.modelVariables,
-                                                selectedVariable : result.selectedVariable,
-                                                importedComponents : result.importedComponents,
-                                                })
-        if (result.reqCreated) {     // TODO fix this
-          self.state.dialogCloseListener(true, newReqId);
-        } else {
-          self.state.dialogCloseListener(false);
-        }
-      }).catch((err) => {
-        console.log(err);
-      })
-
-
-
-    }
+    reqEditFields.reqid = edittedFields.reqid;
+    reqEditFields.parent_reqid = edittedFields.parent_reqid;
+    reqEditFields.project = edittedFields.project;
+    reqEditFields.rationale = edittedFields.rationale;
+    reqEditFields.comments = edittedFields.comments;
+    reqEditFields.status = edittedFields.status;
+    reqEditFields.fulltext = edittedFields.fulltext;
+    reqEditFields.semantics = edittedFields.semantics;
+    reqEditFields.template = edittedFields.template;
+    reqEditFields.input = edittedFields.input;
+    var args = [dbid, dbrev, reqEditFields, requirementFields,semantics,project]
+    // what if process.env.EXTERNAL_TOOL=='1'
+    // context isolation
 
     if(process.env.EXTERNAL_TOOL=='1'){
       var filepath = ext_exp_json_file;
@@ -359,7 +266,7 @@ class CreateRequirementDialog extends React.Component {
       })
     } else{
 
-      //console.log('UI createOrUpdateRequirement dbid: ',dbid)
+
       //////// ***
       // console.log('CreateRequirementDialog ipcRenderer createOrUpdateRequirement', args);
       ipcRenderer.invoke('createOrUpdateRequirement',args).then((result) => {
