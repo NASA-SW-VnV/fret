@@ -35,7 +35,7 @@ import {leveldbDB, modelDB, system_DBkeys} from '../app/main.dev'
 import {removeVariablesInBulk, removeVariables } from './modelDbSupport/deleteVariables_main'
 import {removeReqsInBulk} from './fretDbSupport/deleteRequirements_main'
 import { app, dialog} from 'electron'
-import {getContractInfo, getPropertyInfo, getDelayInfo,
+import {getContractInfo, getPropertyInfo, getDelayInfo, getMappingInfo,
   synchFRETvariables} from './modelDbSupport/variableMappingSupports'
 //import FretSemantics from './../app/parser/FretSemantics'
 import {export_to_md} from "../app/utils/utilityFunctions";

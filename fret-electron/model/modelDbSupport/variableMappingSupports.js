@@ -39,6 +39,7 @@ export {
     getContractInfo as getContractInfo,
     getPropertyInfo as getPropertyInfo,
     getDelayInfo as getDelayInfo,
+    getMappingInfo as getMappingInfo,
     synchFRETvariables as synchFRETvariables,
     variableIdentifierReplacement as variableIdentifierReplacement
   }
@@ -164,6 +165,32 @@ async function  synchModelVariablesAndComponents(componentModel,selectedProject)
       }
     })
     return delays;
+  }
+
+  function getMappingInfo(result, contractName) {
+    var mapping = {};
+    var componentMapping = {};
+    var componentInputs = [];
+    var componentOutputs = [];
+    componentMapping.contract_name = contractName;
+    componentMapping.model_path = '';
+    result.docs.forEach(function(doc){
+      if (doc.idType === 'Input' || doc.idType === 'Output'){
+        if (componentMapping.model_path === ''){
+          componentMapping.model_path = doc.modelComponent;
+        }
+        var variable = {};
+        //Variable name in FRETish
+        variable.variable_name = utils.replace_special_chars(doc.variable_name);
+        //Signal path in Simulink model
+        variable.variable_path = componentMapping.model_path+'/'+doc.modeldoc_id;
+        (doc.idType === 'Input') ? componentInputs.push(variable) : componentOutputs.push(variable);
+      }
+    })
+    componentMapping.Inputs = componentInputs;
+    componentMapping.Outputs = componentOutputs;
+    mapping[contractName] = componentMapping;
+    return mapping;
   }
 
   function getContractInfo(result) {
