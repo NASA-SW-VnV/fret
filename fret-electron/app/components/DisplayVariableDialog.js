@@ -104,6 +104,8 @@ class DisplayVariableDialog extends React.Component {
     moduleName: '',
     modeRequirement: '',
     modeldoc_id: '',            // not needed for Redux store
+    modeldoc_vectorSize: 1,
+    modeldoc_index: 1,
     modelComponent: '',
     errorsCopilot: '',
     errorsLustre: '',
@@ -302,10 +304,31 @@ class DisplayVariableDialog extends React.Component {
     var result = this.props.modelVariables.filter(v => {return v.variable_name === event.target.value});
 
     if (event.target.name === 'modeldoc_id') {
-        self.setState({
-          dataType: result[0].dataType[0],
-          modeldoc_id: event.target.value         // not from db; this is a local state
-        });
+        // self.setState({
+        //   dataType: result[0].dataType[0],
+        //   modeldoc_id: event.target.value         // not from db; this is a local state
+        // });
+      const { modelVariables } = self.props;      
+      let modelVariableIndex = modelVariables.map(v => v.variable_name).indexOf(event.target.value);
+
+      /*
+      Each Simulink signal is additionally defined by its dimensions. The "dimensions" field is a non-empty array of length >= 2. Vector dimensions are arrays of the form [1, m], Matrix dimensions are arrays of the form [n, m, z, ...]. Each element in these arrays represents the size of the corresponding dimension. Scalars (vectors of length 1) always have a dimension value of [1,1].
+      
+      CoCoSim supports matrix/vector signals, but internally decomposes them into scalars for verification, each scalar corresponding to an element of the original matrix/vector.
+      
+      Given a N-dimensional matrix, N > 2, CoCoSim reshapes it to a 1xM vector, where M is the product of the sizes of the N dimensions. For example a 3x6x7 matrix signal in the original Simulink model ("dimensions" : [3, 6, 7]) is reshaped to a 1x126 vector for the purposes of CoCoSim verification.
+
+      FRET does not have native support for matrices/vectors, so every FRET variable can be viewed as a scalar, conceptually. Currently, mapping FRET variables to elements of Simulink matrices/vectors is possible, by mapping to the reshaped Simulink  signal, then selecting a valid index value. The result is a FRET variable being mapped to an element of the reshaped vector signal.
+
+      */
+
+      let modelVariableVectorSize = modelVariableIndex > -1 ? modelVariables[modelVariableIndex].dimensions.reduce( (a, b) => a * b, 1) : 1;
+
+      self.setState({
+        dataType: this.state.dataType,   // TBD querry variable array from store and not querry DB
+        modeldoc_id: event.target.value,         // not from db; this is a local state
+        modeldoc_vectorSize: modelVariableVectorSize
+      });
     }
     else {
       this.setState({
@@ -314,9 +337,19 @@ class DisplayVariableDialog extends React.Component {
     }
   }
 
+	handleVectorIndexChange = (event, value) => {
+    const {modeldoc_vectorSize} = this.state;    
+    
+		var reg = new RegExp('^([1-9])([0-9]*)$');    
+	    if ((reg.test(event.target.value) && (event.target.value >= 1 && event.target.value <= modeldoc_vectorSize)) || event.target.value === '') {
+	      this.setState({modeldoc_index: event.target.value});
+	    }
+	}  
+
   render() {
     const { classes, selectedVariable, modelVariables, open } = this.props;
-    const { idType, errorsLustre, errorsCopilot, checkLustre, checkCoPilot } = this.state;
+    const { idType, errorsLustre, errorsCopilot, checkLustre, checkCoPilot, modeldoc_id, modeldoc_vectorSize } = this.state;
+
     return (
       <div>
         <Dialog
@@ -415,28 +448,41 @@ class DisplayVariableDialog extends React.Component {
                     </Select>
                   </FormControl>
                   :
-                  <FormControl className={classes.formControl}>
-                    <InputLabel htmlFor="modeldoc_id-simple">Model Variable*</InputLabel>
-                    <Select
-                      id="qa_disVar_sel_modelVar"
-                      key={selectedVariable}
-                      value={this.state.modeldoc_id}
-                      onChange={this.handleChange}
-                      inputProps={{
-                        name: 'modeldoc_id',
-                        id: 'modeldoc_id-simple',
-                      }}>
-                      <MenuItem id="qa_disVar_mi_modelVar_none" value="">
-                        <em>None</em>
-                      </MenuItem>
-                      {modelVariables.map(v => {
-                        if ((this.state.idType === "Input" && v.portType === "Inport") || (this.state.idType === "Output" && v.portType === "Outport")) {
-                          return (<MenuItem id={"qa_disVar_mi_modelVar_"+v.variable_name} value={v.variable_name} key={v.variable_name}>{v.variable_name}</MenuItem>)
-                        }
+                  (<div>
+                    <FormControl className={classes.formControl}>
+                      <InputLabel htmlFor="modeldoc_id-simple">Model Variable*</InputLabel>
+                      <Select
+                        id="qa_disVar_sel_modelVar"
+                        key={selectedVariable}
+                        value={this.state.modeldoc_id}
+                        onChange={this.handleChange}
+                        inputProps={{
+                          name: 'modeldoc_id',
+                          id: 'modeldoc_id-simple',
+                        }}>
+                        <MenuItem id="qa_disVar_mi_modelVar_none" value="">
+                          <em>None</em>
+                        </MenuItem>
+                        {modelVariables.map(v => {
+                          if ((this.state.idType === "Input" && v.portType === "Inport") || (this.state.idType === "Output" && v.portType === "Outport")) {
+                            return (<MenuItem id={"qa_disVar_mi_modelVar_"+v.variable_name} value={v.variable_name} key={v.variable_name}>{v.variable_name}</MenuItem>)
+                          }
 
-                      })}
-                    </Select>
-                  </FormControl> :
+                        })}
+                      </Select>
+                    </FormControl>
+                    {(modeldoc_id.length > 0 && modeldoc_vectorSize > 1) && 
+                      <TextField
+                        required
+                        className={classes.formControl}
+                        id="qa_disVar_mi_vectorIndex"
+                        label={"Vector Index ( Value in [1," + modeldoc_vectorSize + "] )"}
+                        value={this.state.modeldoc_index}
+                        onChange={this.handleVectorIndexChange}      
+                        InputLabelProps={{ shrink: true }}
+                      />
+                    }
+                  </div>) :
                 (idType === 'Function') ?
                   <TextField
                     id="qa_disVar_tf_funcModName"
