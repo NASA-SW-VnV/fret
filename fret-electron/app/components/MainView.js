@@ -641,7 +641,7 @@ class MainView extends React.Component {
                         onClick={() =>  this.handleSetProject('All Projects')}
                         dense
                         >
-                        <ListItemText primary = {<b>All Projects</b>} />
+                        <ListItemText id="qa_proj_select_All_Projects" primary = {<b>All Projects</b>} />
                       </MenuItem>
                       {
                         listOfProjects.map(name => {
