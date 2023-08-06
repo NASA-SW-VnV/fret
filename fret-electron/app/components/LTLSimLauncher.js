@@ -48,7 +48,7 @@ export default function LTLSimLauncher(props) {
     const ptExpression = rewriteExpressionForLTLSIM(semantics.ptExpanded);
 
 	//
-	// mock-up list
+	// mock-up list (singleton list for initial call)
 	//
 	ftExpressions = ftExpressions.concat(ftExpression)
 	ptExpressions = ptExpressions.concat(ptExpression)
@@ -62,26 +62,8 @@ export default function LTLSimLauncher(props) {
 			  .replace(/\./g,"_")
 			  .replace(/\+/g,"_")
 	IDs = IDs.concat(reqID_R)
-//	IDs = IDs.concat("TEST_01")
 
 
-    if (false){
-	    ftExpressions = ftExpressions.concat(ftExpression)
-    	ptExpressions = ptExpressions.concat(ptExpression)
-    	requirements = requirements.concat(requirement)
-	    requirementIDs = requirementIDs.concat(requirementID + "_2")
-	    //IDs = IDs.concat("MYFSM-006_2")
-//	    IDs = IDs.concat("REQ2")
-//	    IDs = IDs.concat("TEST_01" + "_2")
-	var requirementID2="TEST-01"
-	let reqID_R2 =requirementID2.replace(/ /g,"_")
-			  .replace(/-/g,"_")
-			  .replace(/\./g,"_")
-			  .replace(/\+/g,"_")
-	IDs = IDs.concat(reqID_R2)
-        }
-
-//JSC/CAV                id="REQ" 
     return (status.ltlsim && status.nusmv) ?
             (<div>
                 <Tooltip title="Launch interactive simulation" >
@@ -99,10 +81,6 @@ export default function LTLSimLauncher(props) {
 		project={project}
                 requirements={requirements}
                 requirementIDs={requirementIDs}
-//JSC-NOM-0415		CEXFileName="/home/johann/Desktop/FSMSpec_FSM007FSM006.lus.json"
-//        	traceID="CEX-1"
-//		CEXFileName="/home/johann/Desktop/CEX-ANDREAS.json"
-//		CEXFileName="/home/johann/Desktop/FSMSpec_FSM007FSM006.lus.json"
         	traceID=""
                 />
             </div>) :
@@ -119,33 +97,8 @@ export default function LTLSimLauncher(props) {
 }
 
 /**
- * Tis function rewrites an expression produced by FRET formalization for LTLSIM.
- * This includes removing html-tags (<b>, <i>) and replacing specific notations for
- * the bounds in bounded LTL operators ([<=t] -> [0, t], [=t] -> [t, t],
- * [<t] -> [0, t-1], expressions containing "t+1" are rewritten such that "t+1" is
- * evaluated to an integer)
- * @param {string} expression the expression that should be modified
- * @returns {string} the modified expression
+ OBSOLETE
 */
 function rewriteExpressionForLTLSIM(expression) {
-    /* TODO: Remove removal of HTML tags, when parsing and construction of
-     * the semantics is changed to give also plain (no HTML) expressions. */
-    return expression
-  /*
-            .replace(/<b>/g, "")
-            .replace(/<i>/g, "")
-            .replace(/<\/b>/g, "")
-            .replace(/<\/i>/g, "")
-// arithmetic V0.0
-//            .replace(/([0-9A-Za-z_]+) < ([0-9A-Za-z_]+)/g, "$1_lt_$2")
-//            .replace(/([0-9A-Za-z_]+) > ([0-9A-Za-z_]+)/g, "$1_gt_$2")
-//            .replace(/([0-9A-Za-z_]+) <= ([0-9A-Za-z_]+)/g, "$1_le_$2")
-//            .replace(/([0-9A-Za-z_]+) >= ([0-9A-Za-z_]+)/g, "$1_ge_$2")
-//            .replace(/([0-9A-Za-z_]+) = ([0-9A-Za-z_]+)/g, "$1_eq_$2")
-// end arithmetic
-            .replace(/(\d+)\+1/g, (str, p1, offset, s) => (`${parseInt(p1)+1}`))
-            .replace(/\[<=(\d+)\]/g, "[0, $1]")
-            .replace(/\[=(\d+)\]/g, "[$1, $1]")
-            .replace(/\[<(\d+)\]/g, (str, p1, offset, s) => (`[0, ${parseInt(p1)-1}]`));
-*/
+  return expression
 }
