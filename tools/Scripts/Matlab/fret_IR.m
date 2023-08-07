@@ -149,7 +149,7 @@ function ir_struct = fret_subsystems_struct( block_path, ir_struct )
     %     content = find_system(block_path, 'LookUnderMasks', 'all', 'FollowLinks', 'on');
     % else
     
-    content = find_system(block_path);
+    content = find_system(block_path, 'SearchDepth', 1, 'LookUnderMasks', 'all');
 
     % IR of all blocks contained in the subsystem or block_diagram
     for i=1:numel(content)
