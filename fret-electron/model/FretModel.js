@@ -386,10 +386,11 @@ export default class FretModel {
         var req = await fretDbGetters.getDoc(dbid)
         if (req.semantics && req.semantics.variables){
           oldVariables = req.semantics.variables;
-        }
+
           //from MODEL
         await modelDbDelete.removeVariables(oldVariables, semantics.variables ? semantics.variables : [], project,
           semantics.component_name, dbid, req.semantics.component_name, req.project)
+        }
 
       }
 
@@ -1239,4 +1240,3 @@ export default class FretModel {
       return ({})
     }
 }
-
