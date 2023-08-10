@@ -66,7 +66,7 @@ function deleteAnalysisFiles() {
   });
 }
 
-function checkDependenciesExist(missingDependencies) {  
+function checkDependenciesExist(missingDependencies) {
   try {
     execSync('jkind -help');
   } catch(err) {
@@ -105,7 +105,7 @@ function checkDependenciesExist(missingDependencies) {
   //one configuration per engine option
   let validConfigurations = [['kind2', 'z3'], ['kind2', 'z3'], ['jkind', 'z3'], ['jkind', 'z3', 'aeval']]
   let someConfigurationExists = false;
-  let defaultEngine = 0;  
+  let defaultEngine = 0;
   for (let i = 0; i < validConfigurations.length; i++) {
     const reducer = (accumulator, currentValue) => accumulator && (!missingDependencies.includes(currentValue));
     if (validConfigurations[i].reduce(reducer, true)) {
@@ -145,12 +145,12 @@ async function retrieveRlzRequirements (selectedProject, selectedComponent) {
   }
 
 function renameIDs(contract){
-    let newContract = variableIdentifierReplacement(contract);    
+    let newContract = variableIdentifierReplacement(contract);
     let contractVariables = [].concat(newContract.inputVariables.concat(newContract.outputVariables.concat(newContract.internalVariables.concat(newContract.functions.concat(newContract.modes)))));
 
     for (const contractVar of contractVariables) {
       contractVar.name = '__'+contractVar.name;
-    }    
+    }
 
     newContract.assignments.forEach((item, i) => {
       for (const contractVar of contractVariables) {
@@ -163,10 +163,10 @@ function renameIDs(contract){
         var regex = new RegExp('\\b' + 'FTP' + '\\b', "g");
         newContract.assignments[i] = newContract.assignments[i].replace(
           regex, '__FTP');
-      }      
+      }
     })
 
-    if (newContract.modes) {        
+    if (newContract.modes) {
         let modeAssignments = newContract.modes.map(el => el.assignment)
 
         modeAssignments.forEach((item, i) => {
@@ -181,10 +181,9 @@ function renameIDs(contract){
 
             newContract.modes[i].assignment = newContract.modes[i].assignment.replace(
               regex, '__FTP');
-          }      
+          }
         })
     }
-    console.log('Hiiiiii '+newContract.modes)
 
     for (const property of newContract.properties){
       property.reqid = '__'+property.reqid;
@@ -219,7 +218,7 @@ function computeConnectedComponents(project, completedComponents, component,proj
       }
     }).then(function (fretResult){
       if (completedComponents.includes(component.component_name)) {
-        contract.properties = selectedReqs.length === 0 ? 
+        contract.properties = selectedReqs.length === 0 ?
           (getPropertyInfo(fretResult, contract.outputVariables, component.component_name)) :
           (getPropertyInfo(fretResult, contract.outputVariables, component.component_name).filter(p => selectedReqs.includes(p.reqid)));
 
@@ -245,11 +244,11 @@ function computeConnectedComponents(project, completedComponents, component,proj
 
         projectReport.systemComponents = [].concat(projectReport.systemComponents.map(obj => {
           if (obj.name === component.component_name) {
-            return {...obj, 
+            return {...obj,
               comments: '',
               monolithic: {result: 'UNCHECKED', time: '', diagnosisStatus: '', diagnosisReport: '', error: ''},
               compositional: {result: 'UNCHECKED', connectedComponents: ccArray, error: ''},
-              requirements: fretResult.docs, 
+              requirements: fretResult.docs,
               selectedReqs: (selectedReqs.length === 0 ? fretResult.docs.filter(doc => doc.semantics.component_name === component.component_name).map(doc => doc.reqid) : selectedReqs)
             }
           }
@@ -264,7 +263,7 @@ function computeConnectedComponents(project, completedComponents, component,proj
           ccSelected: 'cc0',
           projectReport: projectReport,
           selectedReqs: (selectedReqs.length === 0 ? fretResult.docs.filter(doc => doc.semantics.component_name === component.component_name).map(doc => doc.reqid) : selectedReqs)
-        };              
+        };
       }
     }).catch((err) => {
       optLog(err)
@@ -381,7 +380,7 @@ function checkRealizability(selectedProject, components, rlzState, selectedReqs)
               } else {
                   rlzState.projectReport.systemComponents[systemComponentIndex].monolithic.result = result;
                   rlzState.projectReport.systemComponents[systemComponentIndex].monolithic.time = time;
-                  
+
                   if (traceInfo && engineName === 'jkind') {
                     for (var obj of traceInfo.Trace){
                       obj.name = obj.name.substring(2);
@@ -412,7 +411,7 @@ function checkRealizability(selectedProject, components, rlzState, selectedReqs)
 
               if (err) {
                 cc.result = 'ERROR';
-                cc.error = err.message;                  
+                cc.error = err.message;
                 rlzState.projectReport = projectReport;
                 ccResults.push('ERROR');
               } else {
@@ -456,7 +455,7 @@ function checkRealizability(selectedProject, components, rlzState, selectedReqs)
               }
             })
           });
-        }                
+        }
       });
     })
   }
@@ -472,17 +471,17 @@ function diagnoseSpec(selectedProject, rlzState, selectedReqs) {
 
   let nameAndEngine = getEngineNameAndOptions(selectedEngine);
   let engineName = nameAndEngine.name;
-  let engineOptions = nameAndEngine.options + actualTimeout;    
+  let engineOptions = nameAndEngine.options + actualTimeout;
 
   if(compositional) {
     projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].diagnosisSolver = engineName;
     projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].diagnosisStatus = 'PROCESSING';
-      
+
     rlzState.projectReport = projectReport;
 
   } else {
     projectReport.systemComponents[systemComponentIndex].monolithic.diagnosisSolver = engineName;
-    projectReport.systemComponents[systemComponentIndex].monolithic.diagnosisStatus = 'PROCESSING';    
+    projectReport.systemComponents[systemComponentIndex].monolithic.diagnosisStatus = 'PROCESSING';
     rlzState.projectReport = projectReport;
   }
 
