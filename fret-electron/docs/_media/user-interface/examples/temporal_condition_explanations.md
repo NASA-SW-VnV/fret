@@ -30,6 +30,9 @@ unformalized in the future-time formalization of the requirement; similarly,
 the future-time predicates appear unformalized in the past-time
 formalization of the requirement.
  
+In what follows, the variable `n` must be a literal integer (i.e., 1, 2);
+e.g., not a variable name.
+
 The past-time predicates are `persisted(n,p)` and `occurred(n,p)`. Here `p`
 is any boolean expression, which may include temporal predicates itself. The
 predicate `persisted` means that `p` has held true for the previous `n` time
