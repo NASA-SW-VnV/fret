@@ -28,7 +28,7 @@ using the operators
 * **|** (or)
 * **=>** or **->** (implies)
 * **<=>** or **<->** (equivalence, biconditional)
-* **xor** (exclusive OR)\
+* **xor** (exclusive OR)
 
 Boolean or numerical variables correspond to signals or variables in the
 component.
