@@ -238,7 +238,7 @@ class MainView extends React.Component {
     ipcRenderer.invoke('initializeFromDB',undefined).then((result) => {
       this.props.initializeStore({ type: 'actions/initializeStore',
                                   // projects
-                                  listOfProjects: result.listOfProjects,
+                                  listOfProjects: result.listOfProjects.sort(),
                                   selectedProject: result.selectedProject,
                                   fieldColors: result.fieldColors,
                                   // requirements
@@ -285,7 +285,7 @@ class MainView extends React.Component {
       if (result.requirements){
         this.props.importRequirements({ type: 'actions/importRequirements',
           // projects
-          listOfProjects : result.listOfProjects,
+          listOfProjects : result.listOfProjects.sort(),
           // requirements
           requirements : result.requirements,
           // analysis
@@ -632,7 +632,7 @@ class MainView extends React.Component {
                       <KeyboardArrowDownIcon className={classes.rightIcon} fontSize="small"/>
                     </Button>
                     <Menu
-                      id="simple-menu"
+                      id="qa_proj_menu"
                       anchorEl={anchorEl}
                       open={Boolean(anchorEl)}
                       onClose={this.handleClose}

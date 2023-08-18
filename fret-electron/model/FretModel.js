@@ -386,11 +386,10 @@ export default class FretModel {
         var req = await fretDbGetters.getDoc(dbid)
         if (req.semantics && req.semantics.variables){
           oldVariables = req.semantics.variables;
-
+        }
           //from MODEL
         await modelDbDelete.removeVariables(oldVariables, semantics.variables ? semantics.variables : [], project,
           semantics.component_name, dbid, req.semantics.component_name, req.project)
-        }
 
       }
 
@@ -1105,39 +1104,42 @@ export default class FretModel {
       const selectedProject = args[1]
       const selectedComponent = args[2]
 
-      this.modelComponent = modelComponent;
-
-      modelDB.find({
+      await modelDB.find({
         selector: {
           project: selectedProject,
           component_name: selectedComponent,
           modeldoc: false,
         }
       }).then(function (result){
-        result.docs.forEach(function(vdoc){
+        return Promise.all(result.docs.map(function(vdoc){
           modelDB.put({
-              _id: vdoc._id,
-              _rev: vdoc._rev,
-              project: vdoc.project,
-              component_name: vdoc.component_name,
-              variable_name: vdoc.variable_name,
-              reqs: vdoc.reqs,
-              dataType: "",
-              idType: "",
-              tool: vdoc.tool,
-              description: "",
-              assignment: "",
-              copilotAssignment: "",
-              modeRequirement: "",
-              modeldoc: vdoc.modeldoc,
-              modelComponent: modelComponent,
-              modeldoc_id: "",
-            }).then(function (response){
-            }).catch(function (err) {
-               console.log(err);
-            })
-        })
+            _id: vdoc._id,
+            _rev: vdoc._rev,
+            project: vdoc.project,
+            component_name: vdoc.component_name,
+            variable_name: vdoc.variable_name,
+            reqs: vdoc.reqs,
+            dataType: "",
+            idType: "",
+            tool: vdoc.tool,
+            description: "",
+            assignment: "",
+            copilotAssignment: "",
+            modeRequirement: "",
+            modeldoc: vdoc.modeldoc,
+            modelComponent: modelComponent,
+            modeldoc_id: "",
+          }).then(function (response){
+          }).catch(function (err) {
+            console.log(err);
+          })
+        }))
       })
+      var componentVariableMapping =  await synchFRETvariables(selectedProject,selectedComponent)
+      this.variable_data[selectedComponent] = componentVariableMapping.variable_data
+      this.modelComponent[selectedComponent] = componentVariableMapping.modelComponent
+      this.modelVariables[selectedComponent] = componentVariableMapping.modelVariables
+      this.importedComponents[selectedComponent] = componentVariableMapping.importedComponents
 
       var states = {
         // * analysis
@@ -1240,3 +1242,4 @@ export default class FretModel {
       return ({})
     }
 }
+
