@@ -599,7 +599,7 @@ class LTLSimDialog extends Component {
           		{ name: "Trace", extensions: ['csv','json'] }
         		],
       			});
-		 if (filepath && filepath.length == 0) {
+		 if (!filepath || filepath.length == 0) {
 			// cancel
 			return;
 			}
