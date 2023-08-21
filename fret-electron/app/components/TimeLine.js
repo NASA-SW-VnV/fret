@@ -33,10 +33,10 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import { withStyles, withTheme } from '@material-ui/core/styles';
-import { ResponsiveContainer, 
-         LineChart, 
-         XAxis, 
-         YAxis, 
+import { ResponsiveContainer,
+         LineChart,
+         XAxis,
+         YAxis,
          Line,
          ReferenceDot,
          Tooltip } from 'recharts';
@@ -69,15 +69,15 @@ class TimeLine extends Component {
                         width={600}
                         height={50}
                         data={data}
-//JSC/CAV                        margin={{top: 10, right: 10, left: 0, bottom: 10}} 
-                        margin={{top: 10, right: 10, left: 30, bottom: 10}} 
+//JSC/CAV                        margin={{top: 10, right: 10, left: 0, bottom: 10}}
+                        margin={{top: 10, right: 10, left: 30, bottom: 10}}
                         syncId={this.props.syncId}
                         onClick={(this.props.onClick) ? this.props.onClick : undefined} >
-                        <Tooltip 
+                        <Tooltip
                             cursor={{ stroke: 'red', strokeWidth: 2 }}
                             content={()=>(null)}/>
                         <XAxis
-                            domain={[this.props.tStart, this.props.tEnd]} 
+                            domain={[this.props.tStart, this.props.tEnd]}
                             orientation={this.props.orientation}
                         />
                         <YAxis
@@ -85,22 +85,22 @@ class TimeLine extends Component {
                             interval="preserveStartEnd"
                             minTickGap={0}
                         />
-                        <Line 
+                        <Line
                             name="TIMELINE"
                             type="step"
-                            dataKey="TIMELINE" 
+                            dataKey="TIMELINE"
                             stroke={primaryColor}
                             strokeWidth={this.props.strokeWidth}
-                            isAnimationActive={false} 
+                            isAnimationActive={false}
                         />
                     </LineChart>
-                </ResponsiveContainer>  
+                </ResponsiveContainer>
             </div>
         )
     }
 }
 
-TimeLine.proptypes = {
+TimeLine.propTypes = {
     classes: PropTypes.object.isRequired,
     theme: PropTypes.object.isRequired,
     tStart: PropTypes.number.isRequired,
