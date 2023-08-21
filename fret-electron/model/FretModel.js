@@ -1082,7 +1082,7 @@ export default class FretModel {
               contract.modes.forEach(function(mode) {
                 contract.assignments.push(mode.assignment);
               });
-              //  KT todo fix this    archive.append(ejsCacheCoPilot.renderCoPilotSpec().contract.complete(contract), {name: contract.componentName+'.json'})
+              archive.append(ejsCacheCoPilot.renderCoPilotSpec().contract.complete(contract), {name: contract.componentName+'.json'})
             }
             // finalize the archive (ie we are done appending files but streams have to finish yet)
             archive.finalize();
