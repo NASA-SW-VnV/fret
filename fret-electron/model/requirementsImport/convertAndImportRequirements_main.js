@@ -103,7 +103,7 @@ async function importRequirements (data, projects) {
 
 async function importVariables (variables) {
   const projectsList = new Set(await getAllProjects());
-  const variablesToSave = variables.filter(({project, component_name}) => projectsList.has(project) && !!component_name);
+  const variablesToSave = variables.filter(({project, component_name, file_path}) => (projectsList.has(project) && !!component_name) || !!file_path);
   await modelDB.bulkDocs(variablesToSave);
   return variablesToSave;
 }
