@@ -104,6 +104,8 @@ function  setVariablesAndModes(result){
                 const variables = checkDbFormat.checkVariableFormat(req.semantics.variables);
 
                 variables.forEach(function(variable){
+                  //Do not count First Time Point variable
+                if (variable !== "FTP"){
                 if (!data.variablesData.includes(req.project + req.semantics.component_name + variable)){
                   if (!(req.semantics.component_name in data.cocospecData)){
                     data.cocospecData[req.semantics.component_name] = [];
@@ -112,6 +114,7 @@ function  setVariablesAndModes(result){
                   data.cocospecData[req.semantics.component_name].push(createData(variable, req.semantics.component_name, req.project, ''));
                   data.variablesData.push(req.project + req.semantics.component_name + variable);
                 }
+              }
               })
             }
           }
@@ -132,11 +135,16 @@ function  setVariablesAndModes(result){
 
 
 async function  checkComponents (components, selectedProject, cocospecData, cocospecModes,completedComponents) {
+  // console.log("analysisTabSupport, selectedProject: " + selectedProject);
+  // console.log("analysisTabSupport, components: " + components);
+
     var completedComponents = []
     let checkCounter = 0;
     if(components){
       await Promise.all(components.map(function (component) {
         let component_name = component.component_name;
+        // console.log("analysisTabSupport, cocospecData: " + JSON.stringify(cocospecData[component_name]));
+        // console.log("analysisTabSupport, cocospecDataLength: " + cocospecData[component_name].length)
         var dataAndModesLength = cocospecData[component_name] ? cocospecData[component_name].length : 0;
         return modelDB.find({
           selector: {
@@ -146,6 +154,7 @@ async function  checkComponents (components, selectedProject, cocospecData, coco
             modeldoc: false
           }
         }).then(function (result) {
+          // console.log("analysisTabSupport, result: " + result.docs.length)
           if (result.docs.length === dataAndModesLength && dataAndModesLength !== 0){
             if (!completedComponents.includes(component_name))
             completedComponents.push(component_name);
@@ -164,6 +173,6 @@ async function  checkComponents (components, selectedProject, cocospecData, coco
         })
       }))
     }
+    // console.log("analysisTabSupport, completedComponents: " + completedComponents)
     return completedComponents
   }
-

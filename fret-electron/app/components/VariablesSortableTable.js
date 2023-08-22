@@ -246,7 +246,7 @@ TableComponentBar.propTypes = {
   classes: PropTypes.object.isRequired,
   handleModelChange: PropTypes.func.isRequired,
   importedComponents: PropTypes.array.isRequired,
-  modelComponent: PropTypes.string.isRequired,
+  modelComponent: PropTypes.array.isRequired,
   importComponentModel: PropTypes.func.isRequired
 }
 
