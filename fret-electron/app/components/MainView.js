@@ -302,7 +302,7 @@ class MainView extends React.Component {
 
         })
       }
-      this.setState({warningDialogOpen: result.areThereIgnoredVariables})
+      this.setState({warningDialogOpen: !!result.areThereIgnoredVariables})
       if (result.fileExtension){
         this.handleCSVImport(result.csvFields, result.importedReqs)
       }
