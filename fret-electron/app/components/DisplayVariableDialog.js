@@ -116,8 +116,8 @@ class DisplayVariableDialog extends React.Component {
   }
 
   componentDidMount() {
-    
-  }  
+
+  }
 
   componentWillUnmount() {
 
@@ -225,15 +225,15 @@ class DisplayVariableDialog extends React.Component {
       }
       this.props.updateVariable_noNewVariables({ type: 'actions/updateVariable_noNewVariables',
                                     // analysis
-                                    components : noNewVariablesResult.components,     
-                                    completedComponents : noNewVariablesResult.completedComponents, 
-                                    cocospecData : noNewVariablesResult.cocospecData, 
-                                    cocospecModes : noNewVariablesResult.cocospecModes,                                   
+                                    components : noNewVariablesResult.components,
+                                    completedComponents : noNewVariablesResult.completedComponents,
+                                    cocospecData : noNewVariablesResult.cocospecData,
+                                    cocospecModes : noNewVariablesResult.cocospecModes,
                                     // variables
                                     variable_data : noNewVariablesResult.variable_data,
-                                    modelComponent : noNewVariablesResult.modelComponent,                                   
-                                    modelVariables : noNewVariablesResult.modelVariables,   
-                                    selectedVariable : noNewVariablesResult.selectedVariable, 
+                                    modelComponent : noNewVariablesResult.modelComponent,
+                                    modelVariables : noNewVariablesResult.modelVariables,
+                                    selectedVariable : noNewVariablesResult.selectedVariable,
                                     importedComponents : noNewVariablesResult.importedComponents,
                                     })
 
@@ -292,15 +292,13 @@ class DisplayVariableDialog extends React.Component {
 
   handleChange = event => {
     const self = this;
+    var result = this.props.modelVariables.filter(v => {return v.variable_name === event.target.value});
 
     if (event.target.name === 'modeldoc_id') {
-
-      self.setState({
-        dataType: this.state.dataType,   // TBD querry variable array from store and not querry DB
-        modeldoc_id: event.target.value         // not from db; this is a local state
-      });
-
-
+        self.setState({
+          dataType: result[0].dataType[0],
+          modeldoc_id: event.target.value         // not from db; this is a local state
+        });
     }
     else {
       this.setState({
