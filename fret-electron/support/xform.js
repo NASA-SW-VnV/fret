@@ -86,11 +86,11 @@ const pastTimeSimplifications = [
   ['__p S (FTP & __p)', trueFn, 'H __p'],
   ['(Y TRUE) & (Y __p)', trueFn, '(Y __p)'],
   ['(! (Y TRUE)) | (Y __p)', trueFn, '(Z __p)']
-  
-          // -xtltl flag given to SALT does this: [ '__p | <| [] __p', trueFn, 'O __p'] 
+
+          // -xtltl flag given to SALT does this: [ '__p | <| [] __p', trueFn, 'O __p']
 	  // For "regular,within":
 	  // Text substitution done in substitutionsCustomizeFret in SemanticsGenerator.js
-	  //['<|[=$duration$] __p', trueFn, 'O[=$duration$] __p'], 
+	  //['<|[=$duration$] __p', trueFn, 'O[=$duration$] __p'],
 ];
 
 const futureTimeSimplifications = [
@@ -111,7 +111,7 @@ const futureTemporalConditions = [
     ['persists(__n,__p)',trueFn,'((G[<=__n] __p) & (G[<__n] ! $Right$))'],
     ['occurs(__n,__p)',trueFn,'(((! $Right$) U __p) & (F[<=__n] __p))'],
     // This commented out version assumes there must be a next occurrence of p
-    // ['nextOcc(__p,__q)', trueFn, '(X((!__p & !$Right$) U (__p & __q)))'] 
+    // ['nextOcc(__p,__q)', trueFn, '(X((!__p & !$Right$) U (__p & __q)))']
     // This version is satisfied if there is no next occurrence of p.
     ['nextOcc(__p,__q)', trueFn, '($Right$ | (X (((!__p & !$Right$) U __p) => ((!__p & !$Right$) U (__p & __q)))))']
     ]
@@ -124,7 +124,7 @@ function nonBoolConstant(v) {
 
 const pastTemporalConditions = [
   ['FTP', trueFn, '(! (Y TRUE))'],
-  //These special cases are unnecessary due to booleanSimplifications 
+  //These special cases are unnecessary due to booleanSimplifications
   //['preBool(FALSE,__p)',trueFn,'((! $Left$) & (Y __p))'],
   //['preBool(TRUE,__p)',trueFn,'($Left$ | (Y __p))'],
   // This is the mode sensitive version.
@@ -182,7 +182,7 @@ function mergeSubsts(sbst1,sbst2) {
     return r
 }
 
-// given term which may include variables, do the substitution  
+// given term which may include variables, do the substitution
 function subst(term,sbst) {
     if (isVar(term)) {
 	let x = sbst[term];
@@ -277,7 +277,7 @@ const parsedTemporalConditionsNoBounds = temporalConditionsNoBounds.map(parseit)
 function applyPtSimplifications (term) {
     return applyTriples(term,ptSimplifications);
 }
-   
+
 function applyFtSimplifications (term) {
     return applyTriples(term,ftSimplifications);
 }
@@ -318,7 +318,7 @@ function rewrite_bottomup(term,rules) {
 			//console.log('r: ' + r);
 		        return r;
 		      }
-    else if (!isArray(term)) console.log('rewrite_bottomup says what is ' + term);
+    //else if (!isArray(term)) console.log('rewrite_bottomup says what is ' + term);
     else { function aux(subterm) {
 	     return rewrite_bottomup(subterm,rules);
            };
@@ -497,7 +497,7 @@ function rule_simplifyAbsorber(term) {
 	} else return null;
     } else return null;
 }
-	
+
 // simplify ['+'] to 0 and ['+', A] to A
 function rule_simplifyUnit(term) {
     if (isArray(term)) {
@@ -517,7 +517,7 @@ function rule_simplifyReflexive(term) {
     if (sbst !== null && reflexiveOps.includes(sbst['__rel']))
 	return true;
     else return null;
-}	
+}
 */
 
 /*

@@ -152,6 +152,4 @@ async  function populateVariables() {
     }).catch((err) => {
       console.log(err);
     })
-
-    console.log('exiting populateVariables')
   }
