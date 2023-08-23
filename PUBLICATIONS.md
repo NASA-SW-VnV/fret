@@ -1,9 +1,10 @@
 FRET Publication Lists
 ======================
 
-Categorized Publication List
-----------------------------
+We maintain two publication lists: 1. FRET publications [categorized into topics](#categorized-publication-list) and 2. FRET publications [in chronological order](#chronological-publication-list).
 
+# Categorized Publication List
+------------------------------
 ### Tool paper
 
 * Dimitra Giannakopoulou, Anastasia Mavridou, Thomas Pressburger, Julian Rhein, Johann Schumann, Nija Shi. [Formal Requirements Elicitation with FRET](https://ntrs.nasa.gov/api/citations/20200001989/downloads/20200001989.pdf), REFSQ 2020, Tool Paper.
@@ -78,11 +79,11 @@ DSN-W 2023.
 REFSQ 2023.
 
 
-Chronological Publication List
-------------------------------
+# Chronological Publication List
+-----------------------------------
 
 * Zsófia Ádám, Ignacio D. Lopez-Miguel, Anastasia Mavridou, Thomas Pressburger, Marcin Bęś, Enrique Blanco Viñuela, Andreas Katis, Jean-Charles Tournier, Khanh V. Trinh, Borja Fernandez Adiego.
-[From Natural Language Requirements to the Verification of Programmable Logic Controllers: Integrating FRET into PLCverif](https://ntrs.nasa.gov/api/citations/20190033980/downloads/20190033980.pdf),
+[From Natural Language Requirements to the Verification of Programmable Logic Controllers: Integrating FRET into PLCverif](https://link.springer.com/chapter/10.1007/978-3-031-33170-1_21),
 NFM 2023.
 
 * Zsófia Ádám, Ignacio D. Lopez-Miguel, Anastasia Mavridou, Thomas Pressburger, Marcin Bęś, Enrique Blanco Viñuela, Andreas Katis, Jean-Charles Tournier, Khanh V. Trinh, Borja Fernandez Adiego. "Automated Verification of Programmable Logic Controller Programs against Structured Natural Language Requirements",  NASA/TM–20230003752, March 2023.
