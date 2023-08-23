@@ -145,7 +145,6 @@ export default class FretModel {
 
         // if a project is selected, update project dependent states
         // in AnalysisTab and VariableView
-        console.log('this.selectedProject', this.selectedProject)
         if (this.selectedProject !== 'All Projects'){
           await this.synchAnalysesAndVariablesWithDB()
           await this.mapVariables(this.components)
@@ -259,7 +258,7 @@ export default class FretModel {
         const list =  await fretDbGetters.getProjects();
         if (projName) {
           if (list.includes(projName)){
-            console.log('FretModel.addProject ', projName, 'already in project list')
+            //console.log('FretModel.addProject ', projName, 'already in project list')
           } else {
             this.listOfProjects = await fretDbSetters.addProject(projName);
           }
@@ -666,10 +665,8 @@ export default class FretModel {
         await modelDB.find({
           selector
         }).then((result) => {
-          //console.log('result', result)
           result.docs.forEach(variable => {
             delete variable._rev
-            delete variable.modeldoc
             variables.push(variable)
           })
         }).catch((err) => {
@@ -689,10 +686,8 @@ export default class FretModel {
         await modelDB.find({
           selector
         }).then((result) => {
-          //console.log('result', result)
           result.docs.forEach(variable => {
             delete variable._rev
-            delete variable.modeldoc
             content.push(variable)
           })
         }).catch((err) => {
@@ -1128,6 +1123,7 @@ export default class FretModel {
             modeldoc: vdoc.modeldoc,
             modelComponent: modelComponent,
             modeldoc_id: "",
+            completed: vdoc.completed
           }).then(function (response){
           }).catch(function (err) {
             console.log(err);

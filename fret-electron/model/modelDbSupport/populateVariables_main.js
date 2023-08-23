@@ -118,12 +118,15 @@ async  function populateVariables() {
                   reqs: [],
                   dataType: '',
                   idType: '' ,
+                  moduleName: '',
                   description: '',
                   assignment: '',
+                  copilotAssignment: '',
                   modeRequirement: '',
                   modeldoc: false,
                   modelComponent: '',
-                  model_id: ''
+                  modeldoc_id: '',
+                  completed: false
                 };
                 mapIdsToVariables[variableId] = newVariable;
                 requirementVariables[variableId] = [dbId];

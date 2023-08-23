@@ -61,12 +61,15 @@ function createOrUpdateVariables (variables, componentName, projectName, dbid) {
             reqs: [dbid],
             dataType: '',
             idType: '',
+            moduleName:'',
             description: '',
             assignment: '',
+            copilotAssignment: '',
             modeRequirement: '',
             modeldoc: false,
             modelComponent: result.docs?(result.docs[0]?result.docs[0].modelComponent:''):'',
-            model_id: ''
+            modeldoc_id: '',
+            completed: false,
           });
         }).catch(function (err) {
           console.log(err);

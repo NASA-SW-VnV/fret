@@ -114,13 +114,16 @@ async function removeVariablesInBulk (requirements) {
           reqs: [],
           dataType: '',
           idType: '' ,
+          moduleName: '',
           description: '',
           assignment: '',
-          modeRequirement: '',
-          modeldoc: false,
-          modelComponent: '',
-          model_id: '',
-          _deleted: true})
+          copilotAssignment: '',
+           modeRequirement: '',
+           modeldoc: false,
+           modelComponent: '',
+           modeldoc_id: '',
+           completed: false,
+          deleted: true})
       }
     })
   })).then(() => {
