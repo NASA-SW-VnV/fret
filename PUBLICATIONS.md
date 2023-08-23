@@ -6,7 +6,7 @@ Categorized Publication List
 
 ### Tool paper
 
-* Dimitra Giannakopoulou, Anastasia Mavridou, Thomas Pressburger, Julian Rhein, Johann Schumann, Nija Shi. [Formal Requirements Elicitation with FRET](https://ieeexplore.ieee.org/abstract/document/10207116), REFSQ 2020, Tool Paper.
+* Dimitra Giannakopoulou, Anastasia Mavridou, Thomas Pressburger, Julian Rhein, Johann Schumann, Nija Shi. [Formal Requirements Elicitation with FRET](https://ntrs.nasa.gov/api/citations/20200001989/downloads/20200001989.pdf), REFSQ 2020, Tool Paper.
 
 ### Case studies
 
@@ -20,7 +20,7 @@ NASA/TM–20220017032, April 2023.
 
 * Hamza Bourbouh, Marie Farrell, Anastasia Mavridou, Irfan Sljivo, Guillaume Brat, Louise A. Dennis, Michael Fisher. [Integrating Formal Verification and Assurance: An Inspection Rover Case Study](https://link.springer.com/chapter/10.1007/978-3-030-76384-8_4), NFM 2021.
 
-* Hamza Bourbouh, Marie Farrell, Anastasia Mavridou, Irfan Sljivo. [Integration and Evaluation of the AdvoCATE, FRET, CoCoSim, and Event-B Tools on the Inspection Rover Case Study](https://ntrs.nasa.gov/api/citations/20220000049/downloads/Technical_Report_Copilot_FRET%20(4).pdf), NASA/TM–2020–20205011049, March 2020.
+* Hamza Bourbouh, Marie Farrell, Anastasia Mavridou, Irfan Sljivo. [Integration and Evaluation of the AdvoCATE, FRET, CoCoSim, and Event-B Tools on the Inspection Rover Case Study](https://ntrs.nasa.gov/api/citations/20205011049/downloads/FOLRover_TR_NASATemplate%20(4).pdf), NASA/TM–2020–20205011049, March 2020.
 
 * Anastasia Mavridou, Hamza Bourbouh, Dimitra Giannakopoulou, Tom Pressburger, Pierre-Loic Garoche, Johann Schumann. [The Ten Lockheed Martin Cyber-Physical Challenges: Formalized, Analyzed, and Explained](https://ieeexplore.ieee.org/abstract/document/9218211), RE 2020, Industry track.
 
