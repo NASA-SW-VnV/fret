@@ -20,6 +20,8 @@ NASA/TM–20220017032, April 2023.
 
 * Hamza Bourbouh, Marie Farrell, Anastasia Mavridou, Irfan Sljivo, Guillaume Brat, Louise A. Dennis, Michael Fisher. "Integrating Formal Verification and Assurance: An Inspection Rover Case Study", NFM 2021.
 
+* Hamza Bourbouh, Marie Farrell, Anastasia Mavridou, Irfan Sljivo. "Integration and Evaluation of the AdvoCATE, FRET, CoCoSim, and Event-B Tools on the Inspection Rover Case Study", NASA/TM–2020–20205011049, March 2020.
+
 * Anastasia Mavridou, Hamza Bourbouh, Dimitra Giannakopoulou, Tom Pressburger, Pierre-Loic Garoche, Johann Schumann. “The Ten Lockheed Martin Cyber-Physical Challenges: Formalized, Analyzed, and Explained”, RE 2020, Industry track.
 
 * Anastasia Mavridou, Hamza Bourbouh, Pierre-Loic Garoche, Mohammad Hejase. "Evaluation of the FRET and CoCoSim tools on the Ten Lockheed Martin Cyber-Physical Challenge Problems", NASA/TM-2019-220374, August 2019.
@@ -35,6 +37,9 @@ NASA/TM–20220017032, April 2023.
 ### Consistency and realizability checking of requirements
 
 * Andreas Katis, Anastasia Mavridou, Dimitra Giannakopoulou, Thomas Pressburger, Johann Schumann. "Capture, Analyze, Diagnose: Realizability Checking of Requirements in FRET", CAV 2022. 
+
+* Andreas Katis, Anastasia Mavridou, Dimitra Giannakopoulou, Thomas Pressburger, Johann Schumann. "Realizability checking of requirements in FRET", NASA/TM–20220007510, April 2022.
+
 
 * Anastasia Mavridou, Andreas Katis, Dimitra Giannakopoulou, David Kooi, Thomas Pressburger, Michael W. Whalen. "From Partial to Global Assume-Guarantee Contracts: Compositional Realizability Analysis in FRET", FM 2021.
 
@@ -59,6 +64,10 @@ NFM 2023.
 * Ivan Perez, Anastasia Mavridou, Tom Pressburger, Alwyn Goodloe, Dimitra Giannakopoulou. "Automated Translation of Natural Language Requirements to Runtime Monitors", TACAS 2022.
 
 * Ivan Perez, Anastasia Mavridou, Thomas Pressburger, Alexander Will, and Patrick J. Martin. "Monitoring ROS2: from Requirements to Autonomous Robots", FMAS 2022.
+
+* Ivan Perez, Anastasia Mavridou, Thomas Pressburger, Alwyn Goodloe, Dimitra Giannakopoulou.
+"Integrating FRET with Copilot: Automated Translation of Natural Language Requirements to Runtime Monitors", NASA/TM–20220000049, January 2022.
+
 
 * Aaron Dutle, Cesar A. Munoz, Esther Conrad, Alwyn Goodloe, Laura Titolo, Ivan Perez, Swee Balachandran, Dimitra Giannakopoulou, Anastasia Mavridou, Thomas Pressburger. "From Requirements to Autonomous Flight: An Overview of the Monitoring ICAROUS Project", FMAS 2020.
 
