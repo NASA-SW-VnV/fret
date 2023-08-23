@@ -53,7 +53,7 @@ NASA/TM–20220017032, April 2023.
 [From Natural Language Requirements to the Verification of Programmable Logic Controllers: Integrating FRET into PLCverif](https://link.springer.com/chapter/10.1007/978-3-031-33170-1_21),
 NFM 2023.
 
-* Zsófia Ádám, Ignacio D. Lopez-Miguel, Anastasia Mavridou, Thomas Pressburger, Marcin Bęś, Enrique Blanco Viñuela, Andreas Katis, Jean-Charles Tournier, Khanh V. Trinh, Borja Fernandez Adiego. "Automated Verification of Programmable Logic Controller Programs against Structured Natural Language Requirements",  NASA/TM–20230003752, March 2023.
+* Zsófia Ádám, Ignacio D. Lopez-Miguel, Anastasia Mavridou, Thomas Pressburger, Marcin Bęś, Enrique Blanco Viñuela, Andreas Katis, Jean-Charles Tournier, Khanh V. Trinh, Borja Fernandez Adiego. [Automated Verification of Programmable Logic Controller Programs against Structured Natural Language Requirements](https://ntrs.nasa.gov/api/citations/20230003752/downloads/TechnicalReport_NASA_FRET_PLCverif.pdf),  NASA/TM–20230003752, March 2023.
 
 * Carlos Mao de Ferro, Anastasia Mavridou, Michael Dille, Francisco Martins.
 [Simplifying Requirements Formalization for Resource-Constrained Mission-Critical Software](https://ieeexplore.ieee.org/abstract/document/10207116),
@@ -86,7 +86,7 @@ REFSQ 2023.
 [From Natural Language Requirements to the Verification of Programmable Logic Controllers: Integrating FRET into PLCverif](https://link.springer.com/chapter/10.1007/978-3-031-33170-1_21),
 NFM 2023.
 
-* Zsófia Ádám, Ignacio D. Lopez-Miguel, Anastasia Mavridou, Thomas Pressburger, Marcin Bęś, Enrique Blanco Viñuela, Andreas Katis, Jean-Charles Tournier, Khanh V. Trinh, Borja Fernandez Adiego. "Automated Verification of Programmable Logic Controller Programs against Structured Natural Language Requirements",  NASA/TM–20230003752, March 2023.
+* Zsófia Ádám, Ignacio D. Lopez-Miguel, Anastasia Mavridou, Thomas Pressburger, Marcin Bęś, Enrique Blanco Viñuela, Andreas Katis, Jean-Charles Tournier, Khanh V. Trinh, Borja Fernandez Adiego. [Automated Verification of Programmable Logic Controller Programs against Structured Natural Language Requirements](https://ntrs.nasa.gov/api/citations/20230003752/downloads/TechnicalReport_NASA_FRET_PLCverif.pdf), NASA/TM–20230003752, March 2023.
 
 * Carlos Mao de Ferro, Anastasia Mavridou, Michael Dille, Francisco Martins.
 [Simplifying Requirements Formalization for Resource-Constrained Mission-Critical Software](https://ieeexplore.ieee.org/abstract/document/10207116),
@@ -125,7 +125,7 @@ NASA/TM–20220017032, April 2023.
 
 * Hamza Bourbouh, Marie Farrell, Anastasia Mavridou, Irfan Sljivo, Guillaume Brat, Louise A. Dennis, Michael Fisher. [Integrating Formal Verification and Assurance: An Inspection Rover Case Study](https://link.springer.com/chapter/10.1007/978-3-030-76384-8_4), NFM 2021.
 
-* Hamza Bourbouh, Marie Farrell, Anastasia Mavridou, Irfan Sljivo. [Integration and Evaluation of the AdvoCATE, FRET, CoCoSim, and Event-B Tools on the Inspection Rover Case Study](https://ntrs.nasa.gov/api/citations/20220000049/downloads/Technical_Report_Copilot_FRET%20(4).pdf), NASA/TM–2020–20205011049, March 2020.
+* Hamza Bourbouh, Marie Farrell, Anastasia Mavridou, Irfan Sljivo. [Integration and Evaluation of the AdvoCATE, FRET, CoCoSim, and Event-B Tools on the Inspection Rover Case Study](https://ntrs.nasa.gov/api/citations/20205011049/downloads/FOLRover_TR_NASATemplate%20(4).pdf), NASA/TM–2020–20205011049, March 2020.
 
 * Anastasia Mavridou, Hamza Bourbouh, Dimitra Giannakopoulou, Tom Pressburger, Pierre-Loic Garoche, Johann Schumann. [The Ten Lockheed Martin Cyber-Physical Challenges: Formalized, Analyzed, and Explained](https://ieeexplore.ieee.org/abstract/document/9218211), RE 2020, Industry track.
 
@@ -135,7 +135,7 @@ NASA/TM–20220017032, April 2023.
 
 * Anastasia Mavridou, Hamza Bourbouh, Pierre Loic Garoche, Dimitra Giannakopoulou, Thomas Pressburger, Johann Schumann. [Bridging the Gap Between Requirements and Simulink Model Analysis](https://web.archive.org/web/20220306000546id_/http://ceur-ws.org/Vol-2584/PT-paper9.pdf), REFSQ 2020, Poster Paper.
 
-* Dimitra Giannakopoulou, Anastasia Mavridou, Thomas Pressburger, Julian Rhein, Johann Schumann, Nija Shi. [Formal Requirements Elicitation with FRET](https://ieeexplore.ieee.org/abstract/document/10207116), REFSQ 2020, Tool Paper.
+* Dimitra Giannakopoulou, Anastasia Mavridou, Thomas Pressburger, Julian Rhein, Johann Schumann, Nija Shi. [Formal Requirements Elicitation with FRET](https://ntrs.nasa.gov/api/citations/20200001989/downloads/20200001989.pdf), REFSQ 2020, Tool Paper.
 
 * Anastasia Mavridou, Hamza Bourbouh, Pierre-Loic Garoche, Mohammad Hejase. [Evaluation of the FRET and CoCoSim tools on the Ten Lockheed Martin Cyber-Physical Challenge Problems](https://scholar.google.com/citations?view_op=view_citation&hl=en&user=1974sCAAAAAJ&cstart=20&pagesize=80&sortby=pubdate&citation_for_view=1974sCAAAAAJ:qUcmZB5y_30C), NASA/TM-2019-220374, August 2019.
 
