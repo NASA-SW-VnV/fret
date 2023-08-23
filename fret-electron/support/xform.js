@@ -318,7 +318,7 @@ function rewrite_bottomup(term,rules) {
 			//console.log('r: ' + r);
 		        return r;
 		      }
-    //else if (!isArray(term)) console.log('rewrite_bottomup says what is ' + term);
+    else if (!isArray(term)) console.log('rewrite_bottomup says what is ' + term);
     else { function aux(subterm) {
 	     return rewrite_bottomup(subterm,rules);
            };
