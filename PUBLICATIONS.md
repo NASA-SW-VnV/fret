@@ -28,7 +28,7 @@ NASA/TM–20220017032, April 2023.
 
 * Esther Conrad, Laura Titolo, Dimitra Giannakopoulou, Thomas Pressburger, Aaron Dutle. "A Compositional Proof Framework for FRETish Requirements", CPP 2022.
 
-* Dimitra Giannakopoulou, Thomas Pressburger, Anastasia Mavridou, Johann Schumann (2021). "Automated formalization of structured natural language requirements", Information and Software Technology (IST) Journal, Special Section on REFSQ’20.
+* Dimitra Giannakopoulou, Thomas Pressburger, Anastasia Mavridou, Johann Schumann (2021). "Automated formalization of structured natural language requirements", Information and Software Technology (IST) Journal, 137, 106590, Special Section on REFSQ’20, 2021.
 
 * Dimitra Giannakopoulou, Thomas Pressburger, Anastasia Mavridou, Johann Schumann. "Generation of Formal Requirements from Structured Natural Language", REFSQ 2020.
 
@@ -106,7 +106,7 @@ NASA/TM–20220017032, April 2023.
 
 * Anastasia Mavridou, Andreas Katis, Dimitra Giannakopoulou, David Kooi, Thomas Pressburger, Michael W. Whalen. "From Partial to Global Assume-Guarantee Contracts: Compositional Realizability Analysis in FRET", FM 2021.
 
-* Dimitra Giannakopoulou, Thomas Pressburger, Anastasia Mavridou, Johann Schumann (2021). "Automated formalization of structured natural language requirements", Information and Software Technology (IST) Journal, Special Section on REFSQ’20.
+* Dimitra Giannakopoulou, Thomas Pressburger, Anastasia Mavridou, Johann Schumann (2021). "Automated formalization of structured natural language requirements", Information and Software Technology (IST) Journal 137, 106590, Special Section on REFSQ’20, 2021.
 
 * Dimitra Giannakopoulou, Andreas Katis, Anastasia Mavridou, Thomas Pressburger. "Compositional Realizability Checking with FRET", NASA/TM–2021–20210013008, March 2021.
 
