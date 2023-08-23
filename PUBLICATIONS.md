@@ -49,7 +49,7 @@ NASA/TM–20220017032, April 2023.
 ### Connection with verification tools
 
 * Zsófia Ádám, Ignacio D. Lopez-Miguel, Anastasia Mavridou, Thomas Pressburger, Marcin Bęś, Enrique Blanco Viñuela, Andreas Katis, Jean-Charles Tournier, Khanh V. Trinh, Borja Fernandez Adiego.
-[From Natural Language Requirements to the Verification of Programmable Logic Controllers: Integrating FRET into PLCverif](https://ntrs.nasa.gov/api/citations/20190033980/downloads/20190033980.pdf),
+[From Natural Language Requirements to the Verification of Programmable Logic Controllers: Integrating FRET into PLCverif](https://link.springer.com/chapter/10.1007/978-3-031-33170-1_21),
 NFM 2023.
 
 * Zsófia Ádám, Ignacio D. Lopez-Miguel, Anastasia Mavridou, Thomas Pressburger, Marcin Bęś, Enrique Blanco Viñuela, Andreas Katis, Jean-Charles Tournier, Khanh V. Trinh, Borja Fernandez Adiego. "Automated Verification of Programmable Logic Controller Programs against Structured Natural Language Requirements",  NASA/TM–20230003752, March 2023.
