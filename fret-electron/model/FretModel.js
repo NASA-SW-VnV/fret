@@ -1124,7 +1124,7 @@ export default class FretModel {
             modeldoc: vdoc.modeldoc,
             modelComponent: modelComponent,
             modeldoc_id: "",
-            completed: vdoc.completed
+            completed: false
           }).then(function (response){
           }).catch(function (err) {
             console.log(err);
