@@ -1,8 +1,8 @@
-# How to import requirements and variables in FRET
+# How to import a FRET project
 
-FRET allows users to import requirements in two different formats: 1) CSV and 2) JSON.  Additionally, FRET allows users to import variables in JSON format.  An import JSON file may contain both requirements and variables.   
+FRET allows users to import projects in two different formats: 1) CSV and 2) JSON. A JSON file must adhere to the format that FRET exports to (read [here](./export.md) about how to export a FRET project).
 
-To import requirements and variables, click the **downward arrow** button.
+To import a FRET project, click the **downward arrow** button.
 ***
 <img src="../../screen_shots/Import-1.png">
 

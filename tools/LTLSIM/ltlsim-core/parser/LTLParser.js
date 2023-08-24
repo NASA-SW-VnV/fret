@@ -48,7 +48,7 @@ exports.parse = function parse(input) {
     let analyzer = new LTLAnalyzer();
     parser.buildParseTrees = true;
 
-console.log("Parsing...")
+// console.log("Parsing...")
     let tree = parser.ltlExpr();
     let result = {
         expression: "",
@@ -62,34 +62,34 @@ console.log("Parsing...")
         errors: []
     };
 
-console.log("Parse: annotation length="+ annotations.length)
-    if (annotations.length > 0) {
-console.log("Parsing...: w/annotations")
-console.log(annotations)
-        result.errors = annotations.map((a) => (a.text));
-    } else {
-console.log("Parsing...: starting visitor")
-        let expression = analyzer.visit(tree);
-console.log("Parsing...: visitor done")
-console.log("expression:")
-console.log(expression)
-console.log("subexpression:")
-console.log(analyzer.subexpressions)
-console.log("atomics:")
-console.log(analyzer.atomics_name)
-console.log(analyzer.atomics_type)
-console.log(analyzer.atomics_canChange)
-console.log(analyzer.min_value)
-console.log(analyzer.max_value)
-console.log(analyzer.atomics_aex)
-        result.expression = expression.text;
+// console.log("Parse: annotation length="+ annotations.length)
+//     if (annotations.length > 0) {
+// console.log("Parsing...: w/annotations")
+// console.log(annotations)
+//         result.errors = annotations.map((a) => (a.text));
+//     } else {
+// console.log("Parsing...: starting visitor")
+//         let expression = analyzer.visit(tree);
+// console.log("Parsing...: visitor done")
+// console.log("expression:")
+// console.log(expression)
+// console.log("subexpression:")
+// console.log(analyzer.subexpressions)
+// console.log("atomics:")
+// console.log(analyzer.atomics_name)
+// console.log(analyzer.atomics_type)
+// console.log(analyzer.atomics_canChange)
+// console.log(analyzer.min_value)
+// console.log(analyzer.max_value)
+// console.log(analyzer.atomics_aex)
+//         result.expression = expression.text;
 
 //JSC         result.atomics_name = analyzer.atomics_name;
 
         result.atomics_name = [];
 	for (var i=0; i < analyzer.atomics_name.length;i++){
-		console.log("FOOOO: "+ analyzer.atomics_name[i])
-		console.log("FOOOO: "+ arithexpr_to_ID(analyzer.atomics_name[i]))
+		// console.log("FOOOO: "+ analyzer.atomics_name[i])
+		// console.log("FOOOO: "+ arithexpr_to_ID(analyzer.atomics_name[i]))
 		result.atomics_name = result.atomics_name.concat(
 				arithexpr_to_ID(analyzer.atomics_name[i])
 				)
