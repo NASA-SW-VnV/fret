@@ -62,15 +62,15 @@ exports.parse = function parse(input) {
         errors: []
     };
 
-// console.log("Parse: annotation length="+ annotations.length)
-//     if (annotations.length > 0) {
-// console.log("Parsing...: w/annotations")
-// console.log(annotations)
-//         result.errors = annotations.map((a) => (a.text));
-//     } else {
-// console.log("Parsing...: starting visitor")
-//         let expression = analyzer.visit(tree);
-// console.log("Parsing...: visitor done")
+//console.log("Parse: annotation length="+ annotations.length)
+    if (annotations.length > 0) {
+//console.log("Parsing...: w/annotations")
+//console.log(annotations)
+        result.errors = annotations.map((a) => (a.text));
+    } else {
+//console.log("Parsing...: starting visitor")
+        let expression = analyzer.visit(tree);
+//console.log("Parsing...: visitor done")
 // console.log("expression:")
 // console.log(expression)
 // console.log("subexpression:")
@@ -82,7 +82,7 @@ exports.parse = function parse(input) {
 // console.log(analyzer.min_value)
 // console.log(analyzer.max_value)
 // console.log(analyzer.atomics_aex)
-//         result.expression = expression.text;
+        result.expression = expression.text;
 
 //JSC         result.atomics_name = analyzer.atomics_name;
 
