@@ -1,6 +1,6 @@
 # How to export requirements and variables from FRET
 
-FRET users can export and share their requirements and variables.  FRET exports requirements in JSON or Markdown format. Fret exports variables in JSON format.
+FRET users can export and share their requirements and variables.  FRET exports requirements in JSON or Markdown format. FRET exports variables in JSON format.
 
 To export requirements or to export requirements and variables from your FRET installation, click the **upward arrow** button.
 ***
