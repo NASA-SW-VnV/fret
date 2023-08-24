@@ -151,7 +151,7 @@ class Glossary extends React.Component {
   getVariables = async () => {
     if (process.env.EXTERNAL_TOOL !== '1') {
       ipcRenderer.invoke('selectGlossaryVariables', [this.props.projectName]).then((result) => {
-        console.log('result', result.docs)
+        //console.log('result', result.docs)
         this.props.setGlossaryVariables({
           glossaryVariables: result.docs
         })
