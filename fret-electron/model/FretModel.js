@@ -885,6 +885,7 @@ export default class FretModel {
       }
 
       await modelDB.get(modeldbid).then(function (vdoc) {
+        //if a field is undefined, it will not create an entry
         modelDB.put({
           _id: modeldbid,
           _rev: vdoc._rev,

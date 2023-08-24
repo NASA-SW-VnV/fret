@@ -99,53 +99,6 @@ class AnalysisTabs extends React.Component {
   handleChange = (event, value) => {
   this.setState({ value });
   };
-/*
-  setVariablesAndModes(result){
-    var data = {
-      cocospecData: {},
-      cocospecModes: {},
-      variablesData: [],
-      modesData: [],
-      components: []
-    };
-
-    result.docs.forEach(function(req){
-      if (typeof req.semantics !== 'undefined'){
-        if (typeof req.semantics.ft !== 'undefined'){
-          if (req.semantics.ft !== constants.nonsense_semantics
-            && req.semantics.ft !== constants.undefined_semantics
-            && req.semantics.ft !== constants.unhandled_semantics){
-            if (typeof req.semantics.variables !== 'undefined') {
-              //from MODEL
-                const variables = checkDbFormat.checkVariableFormat(req.semantics.variables);
-
-                variables.forEach(function(variable){
-                if (!data.variablesData.includes(req.project + req.semantics.component_name + variable)){
-                  if (!(req.semantics.component_name in data.cocospecData)){
-                    data.cocospecData[req.semantics.component_name] = [];
-                    data.components.push({"component_name" : req.semantics.component_name, "result" : "UNCHECKED", "details" : "NONE"});
-                  }
-                  data.cocospecData[req.semantics.component_name].push(createData(variable, req.semantics.component_name, req.project, ''));
-                  data.variablesData.push(req.project + req.semantics.component_name + variable);
-                }
-              })
-            }
-          }
-        }
-        if (typeof req.semantics.scope_mode !== 'undefined'){
-          if (!data.modesData.includes(req.project + req.semantics.component_name + req.semantics.scope_mode)){
-            if (!(req.semantics.component_name in data.cocospecModes)){
-              data.cocospecModes[req.semantics.component_name] = [];
-            }
-            data.cocospecModes[req.semantics.component_name].push(createData(req.semantics.scope_mode, req.semantics.component_name, req.project, ''));
-            data.modesData.push(req.project + req.semantics.component_name + req.semantics.scope_mode);
-          }
-        }
-      }
-    })
-    return data;
-  }
-  */
 
   variableIdentifierReplacement(contract){
     contract.inputVariables.forEach(function(input){
@@ -171,7 +124,7 @@ class AnalysisTabs extends React.Component {
   }
 
   render() {
-    const {classes, selectedProject, listOfProjects,components, 
+    const {classes, selectedProject, listOfProjects,components,
       completedComponents, cocospecData, cocospecModes} = this.props;
     const {value} = this.state;
 
@@ -207,8 +160,8 @@ class AnalysisTabs extends React.Component {
         </AppBar>
         {value === 0 &&
           <TabContainer>
-            <VariablesView selectedProject={selectedProject} listOfProjects={listOfProjects}                        
-            components={components.map(e => e.component_name)} completedComponents={completedComponents} 
+            <VariablesView selectedProject={selectedProject} listOfProjects={listOfProjects}
+            components={components.map(e => e.component_name)} completedComponents={completedComponents}
             cocospecData={cocospecData} cocospecModes={cocospecModes}
             variableIdentifierReplacement={this.variableIdentifierReplacement}/>
           </TabContainer>
@@ -216,7 +169,7 @@ class AnalysisTabs extends React.Component {
         {value === 1 &&
           <TabContainer>
             <RealizabilityView selectedProject={selectedProject} listOfProjects={listOfProjects}
-            components={components} completedComponents={completedComponents} 
+            components={components} completedComponents={completedComponents}
             cocospecData={cocospecData} cocospecModes={cocospecModes}
             />
           </TabContainer>
