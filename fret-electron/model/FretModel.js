@@ -787,6 +787,7 @@ export default class FretModel {
       return modelDB.find({
         selector: {
           project: projectName,
+          modeldoc: false
         }
       });
 
