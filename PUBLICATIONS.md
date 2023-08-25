@@ -7,7 +7,7 @@ We maintain two publication lists: 1. FRET publications [categorized into topics
 ------------------------------
 ### Tool paper
 
-* Dimitra Giannakopoulou, Anastasia Mavridou, Thomas Pressburger, Julian Rhein, Johann Schumann, Nija Shi. [Formal Requirements Elicitation with FRET](https://ntrs.nasa.gov/api/citations/20200001989/downloads/20200001989.pdf), REFSQ 2020, Tool Paper.
+* Dimitra Giannakopoulou, Anastasia Mavridou, Thomas Pressburger, Julian Rhein, Johann Schumann, Nija Shi. [Formal Requirements Elicitation with FRET](https://ceur-ws.org/Vol-2584/PT-paper4.pdf), REFSQ 2020, Tool Paper.
 
 ### Case studies
 
@@ -59,7 +59,7 @@ NFM 2023.
 [Simplifying Requirements Formalization for Resource-Constrained Mission-Critical Software](https://ieeexplore.ieee.org/abstract/document/10207116),
 DSN-W 2023.
 
-* Anastasia Mavridou, Hamza Bourbouh, Pierre Loic Garoche, Dimitra Giannakopoulou, Thomas Pressburger, Johann Schumann. [Bridging the Gap Between Requirements and Simulink Model Analysis](https://web.archive.org/web/20220306000546id_/http://ceur-ws.org/Vol-2584/PT-paper9.pdf), REFSQ 2020, Poster Paper.
+* Anastasia Mavridou, Hamza Bourbouh, Pierre Loic Garoche, Dimitra Giannakopoulou, Thomas Pressburger, Johann Schumann. [Bridging the Gap Between Requirements and Simulink Model Analysis](/https://ceur-ws.org/Vol-2584/PT-paper9.pdf), REFSQ 2020, Poster Paper.
 
 ### Connection with runtime monitoring tools
 
@@ -133,9 +133,9 @@ NASA/TM–20220017032, April 2023.
 
 * Dimitra Giannakopoulou, Thomas Pressburger, Anastasia Mavridou, Johann Schumann. [Generation of Formal Requirements from Structured Natural Language](https://link.springer.com/chapter/10.1007/978-3-030-44429-7_2), REFSQ 2020.
 
-* Anastasia Mavridou, Hamza Bourbouh, Pierre Loic Garoche, Dimitra Giannakopoulou, Thomas Pressburger, Johann Schumann. [Bridging the Gap Between Requirements and Simulink Model Analysis](https://web.archive.org/web/20220306000546id_/http://ceur-ws.org/Vol-2584/PT-paper9.pdf), REFSQ 2020, Poster Paper.
+* Anastasia Mavridou, Hamza Bourbouh, Pierre Loic Garoche, Dimitra Giannakopoulou, Thomas Pressburger, Johann Schumann. [Bridging the Gap Between Requirements and Simulink Model Analysis](https://ceur-ws.org/Vol-2584/PT-paper9.pdf), REFSQ 2020, Poster Paper.
 
-* Dimitra Giannakopoulou, Anastasia Mavridou, Thomas Pressburger, Julian Rhein, Johann Schumann, Nija Shi. [Formal Requirements Elicitation with FRET](https://ntrs.nasa.gov/api/citations/20200001989/downloads/20200001989.pdf), REFSQ 2020, Tool Paper.
+* Dimitra Giannakopoulou, Anastasia Mavridou, Thomas Pressburger, Julian Rhein, Johann Schumann, Nija Shi. [Formal Requirements Elicitation with FRET](https://ceur-ws.org/Vol-2584/PT-paper4.pdf), REFSQ 2020, Tool Paper.
 
 * Anastasia Mavridou, Hamza Bourbouh, Pierre-Loic Garoche, Mohammad Hejase. [Evaluation of the FRET and CoCoSim tools on the Ten Lockheed Martin Cyber-Physical Challenge Problems](https://scholar.google.com/citations?view_op=view_citation&hl=en&user=1974sCAAAAAJ&cstart=20&pagesize=80&sortby=pubdate&citation_for_view=1974sCAAAAAJ:qUcmZB5y_30C), NASA/TM-2019-220374, August 2019.
 
