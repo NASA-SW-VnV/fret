@@ -353,13 +353,17 @@ class RealizabilityContent extends React.Component {
         sysComps.push({name: component.component_name})
       }
       this.setState({
+        monolithic: false,
+        compositional: false,
+        selected: '',
+        ccSelected: '',
         projectReport: {...projectReport, systemComponents: sysComps},
         selectedReqs: []
       })
     }
 
-    if (selectedReqs.toString() !== prevState.selectedReqs.toString()) {
-      var args = [selected, projectReport, selectedReqs] 
+    if (selectedReqs.toString() !== prevState.selectedReqs.toString() && selected) {
+      var args = [selected, projectReport, selectedReqs]
       ipcRenderer.invoke('updateConnectedComponents', args).then((updatedContentState) => {
         this.setState({
           monolithic: updatedContentState.monolithic,
