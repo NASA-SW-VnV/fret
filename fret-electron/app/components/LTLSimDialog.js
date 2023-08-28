@@ -225,9 +225,8 @@ class LTLSimDialog extends Component {
             return {
               dbkey: r._id,
               reqID: r.reqid,
-              formula_FT: r.semantics.ftExpanded,
-              formula_PT: r.semantics.ptExpanded,
-//			component_name: r.doc.semantics.component_name,
+              formula_FT: r.semantics !== undefined ? r.semantics.ftExpanded : "",
+              formula_PT: r.semantics !== undefined ? r.semantics.ptExpanded : "",
               fulltext: r.fulltext
             };
           })
