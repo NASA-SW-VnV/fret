@@ -436,8 +436,8 @@ class DiagnosisRequirementsTable extends React.Component {
   handleSelectAllClick = event => {
     const { rlzData } = this.props;
     const { data } = this.state
-    if (event.target.checked) {      
-      this.setState({ selectEnabled: true, tempSelected: rlzData.map(n => n.reqid) });
+    if (event.target.checked) {
+      this.setState({ selectEnabled: true, tempSelected: rlzData.map(n => n.reqid || n.doc.reqid) });
     } else {
       this.setState({ tempSelected: []});
 
