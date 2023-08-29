@@ -123,7 +123,7 @@ async function  synchModelVariablesAndComponents(componentModel,selectedProject)
     result.docs.forEach(function(doc){
       var property ={};
       property.allInput = false;
-      if (doc.semantics.component_name === component){
+      if (doc.semantics && doc.semantics.component_name === component){
         if (typeof doc.semantics.CoCoSpecCode !== 'undefined'){
           if (doc.semantics.CoCoSpecCode !== constants.nonsense_semantics &&
             doc.semantics.CoCoSpecCode !== constants.undefined_semantics &&
@@ -150,7 +150,7 @@ async function  synchModelVariablesAndComponents(componentModel,selectedProject)
   function getDelayInfo(result, component) {
     var delays = [];
     result.docs.forEach(function(doc){
-      if (doc.semantics.component_name === component){
+      if (doc.semantics && doc.semantics.component_name === component){
         if (typeof doc.semantics.CoCoSpecCode !== 'undefined'){
           if (doc.semantics.CoCoSpecCode !== constants.nonsense_semantics &&
             doc.semantics.CoCoSpecCode !== constants.undefined_semantics &&
