@@ -76,7 +76,7 @@ class LTLSimAddTraceDialog extends Component {
 
     handleTraceDescriptionChange = event => {
         let newDescription = event.target.value;
-	console.log("TRACE_DESCR: " + newDescription);
+	//console.log("TRACE_DESCR: " + newDescription);
         this.setState({
           traceDescription: newDescription
         });
@@ -93,15 +93,15 @@ class LTLSimAddTraceDialog extends Component {
     }
 
     handleCancel() {
-	console.log("LTLSIM-TRACE-DIALOG-cancel")
-	console.log(this.props)
+	//console.log("LTLSIM-TRACE-DIALOG-cancel")
+	//console.log(this.props)
         this.resetState();
         this.props.onCancel();
     }
 
     handleSave() {
-	console.log("LTLSIM-TRACE-DIALOG-Save")
-	console.log(this.props)
+	//console.log("LTLSIM-TRACE-DIALOG-Save")
+	//console.log(this.props)
         this.props.onSave(this.state);
     }
 
@@ -114,7 +114,7 @@ class LTLSimAddTraceDialog extends Component {
 	    traceDescription: this.props.traceDescription
         })
     }
-    
+
 //------------------------------------------------------------------------
 //------------------------------------------------------------------------
     saveToReq(){
@@ -158,7 +158,7 @@ class LTLSimAddTraceDialog extends Component {
 //========================================================================
     render() {
         return (
-            <Dialog 
+            <Dialog
                 open={this.props.open}
                 onClose={this.handleCancel}
                 aria-labelledby="edit-trace">
@@ -166,7 +166,7 @@ class LTLSimAddTraceDialog extends Component {
 		  {"Trace for Requirement "+ this.props.reqID}</DialogTitle>
                 <DialogContent>
                     <form>
-                        <TextField 
+                        <TextField
                             id="qa_ltlSimAdd_tf_traceID"
                             label="Trace ID"
                             type="text"
@@ -175,7 +175,7 @@ class LTLSimAddTraceDialog extends Component {
                             value={this.state.traceID}
                             onChange={this.handleTraceIDChange}
                         />
-                        <TextField 
+                        <TextField
                             id="qa_ltlSimAdd_tf_description"
                             label="Description"
                             type="text"
@@ -188,7 +188,7 @@ class LTLSimAddTraceDialog extends Component {
                     </form>
                 </DialogContent>
                 <DialogActions>
-                    <Button 
+                    <Button
                         id="qa_ltlSimAdd_btn_cancel"
                         onClick={this.handleCancel}
                         color="primary">
@@ -238,7 +238,7 @@ class LTLSimAddTraceDialog extends Component {
         )
     }
 }
-//                    <Button 
+//                    <Button
 //                        disabled={false}   // {this.state.tosave === 0}
 //                        onClick={this.handleSave}
 //                        color="secondary">

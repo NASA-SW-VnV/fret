@@ -95,7 +95,7 @@ header line of the LTLSIM window
 ### Requirements
 This menu `Req` allows the user to add (or remove) additional requirements from
 the current project to be included into the analysis. Clicking opens a selection
-menue of possible requirements. Requirement names that are shown in gray are already selected; clicking on those hides that requirement from the visualization.
+menu of possible requirements. Requirement names that are shown in gray are already selected; clicking on those hides that requirement from the visualization.
 The first line shows the requirement name, from which LTLSIM was called. This
 requirement cannot be hidden
 
@@ -122,11 +122,11 @@ to provide a name and description for the current trace.
 ***
 
 ### Importing Traces
-Clikcking on the DownArrow opens a file selection dialog to import a trace
+Clicking on the DownArrow opens a file selection dialog to import a trace
 in CSV or JSON format.
 
 In the CVS format, the first line contains the variable names, subsequent
-lines the values. Dependent variables, corresponding to arithmetic expressions, must be preceeded by a `*`, as shown in the following example. The trace export automatically performs this operation during saving the trace.
+lines the values. Dependent variables, corresponding to arithmetic expressions, must be preceded by a `*`, as shown in the following example. The trace export automatically performs this operation during saving the trace.
 
 ```
 LAST,xxx,*xxx_S__lt__S_2_S_
