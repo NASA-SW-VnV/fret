@@ -808,15 +808,23 @@ console.log("TODO: update the traces")
 	this.state.activeTraces = this.state.activeTraces.concat(newActiveTraces);
     	}
 
-    //===============================================================
-    // FUNCTION handleLoadTraces(origin) {
-    // load traces from json data-base in "trace_db_json"
-    //
-    handleLoadTraces(origin) {
-        this.setState((prevState) => {
-	  let { model, traces, activeTraces} = prevState;
-	   var content = fs.readFileSync(trace_db_json);
-	   var loadedTraces = JSON.parse(content);
+  //===============================================================
+  // FUNCTION handleLoadTraces(origin) {
+  // load traces from json data-base in "trace_db_json"
+  //
+  handleLoadTraces(origin) {
+         var content = fs.readFileSync(trace_db_json, (err) => {
+              if(err) {
+                      console.log("The JSON DB file could not be opened!");
+                      return console.log(err);
+                      }
+              });
+      if (content){
+      this.setState((prevState) => {
+
+	       let { model, traces, activeTraces} = prevState;
+	        //var content = fs.readFileSync(trace_db_json);
+	        var loadedTraces = JSON.parse(content);
 
 	    //
             // populate the activeTraces and traces lists
@@ -858,7 +866,9 @@ console.log("TODO: update the traces")
             /* Call LTL simulation after the state was updated */
             this.update();
         });
+        }
     }
+
 
     	//===============================================================
     	// FUNCTION handleSaveTraces(origin) {
