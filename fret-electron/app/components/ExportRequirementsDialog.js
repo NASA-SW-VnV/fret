@@ -118,7 +118,6 @@ class ExportRequirementsDialog extends React.Component {
     ipcRenderer.invoke(channel, argList).catch((err) => {
       console.log(err);
     })
-
   }
 
   componentWillReceiveProps = (props) => {
@@ -199,11 +198,11 @@ class ExportRequirementsDialog extends React.Component {
               <MenuItem key={"requirements"} value={"requirements"} id="qa_export_mi_requirements">
                 Requirements
               </MenuItem>
-              
+
               {/* <MenuItem key={"variables"} value={"variables"} id="qa_export_mi_variables">
                 Variables
               </MenuItem> */}
-              
+
               <MenuItem key={"requirements-variables"} value={"requirements-variables"} id="qa_export_mi_reqsAndVars">
                 Requirements & Variables
               </MenuItem>
