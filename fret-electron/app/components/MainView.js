@@ -69,6 +69,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import NotesIcon from "@material-ui/icons/Notes";
 import DeleteIcon from '@material-ui/icons/Delete';
+import LoopIcon from '@material-ui/icons/Loop';
 import Tooltip from '@material-ui/core/Tooltip';
 
 import css from './MainView.css';
@@ -90,6 +91,7 @@ import {
   mapVariables,
 } from '../reducers/allActionsSlice';
 import ImportedVariablesWarningDialog from "./ImportedVariablesWarningDialog";
+const FretSemantics = require('../parser/FretSemantics');
 
 const app = require('electron').remote.app
 const dialog = require('electron').remote.dialog
@@ -424,6 +426,50 @@ class MainView extends React.Component {
       )
   }
 
+//TODO: Move this to the model
+  handleCalculateProjectSemantics = (name) => {
+    db.find({
+      selector: {
+        project: name,
+      }
+    }).then(function (requirements){
+      //console.log(requirements)
+      requirements.docs.forEach((r) => {
+        let semantics = {}
+        const result = FretSemantics.compile(r.fulltext)
+        if (result.collectedSemantics)
+          semantics = result.collectedSemantics
+        //console.log(JSON.stringify(semantics))
+        //console.log(JSON.stringify(r.semantics))
+        if (JSON.stringify(semantics) !== JSON.stringify(r.semantics)){
+          db.put({
+              _id : r._id,
+              _rev : r._rev,
+              reqid : r.reqid,
+              parent_reqid : r.parent_reqid,
+              project : r.project,
+              rationale : r.rationale,
+              comments : r.comments,
+              status: r.status,
+              fulltext : r.fulltext,
+              semantics : semantics,
+              template : r.template,
+              input : r.input
+            }, (err, responses) => {
+              if (err) {
+                console.log(err);
+              }
+              //console.log(responses);
+            }
+          )
+        }
+      })
+    }).catch((err) => {
+      console.log(err);
+    });
+    this.setState({ anchorEl: null });
+  }
+
   handleDeleteProject = (name) => {
     this.openDeleteProjectDialog(name)
   }
@@ -436,6 +482,8 @@ class MainView extends React.Component {
     })
   }
 
+
+
   closeDeleteProjectDialog = () => {
     this.setState({
       deleteProjectDialogOpen: false,
@@ -443,7 +491,6 @@ class MainView extends React.Component {
       anchorEl: null
     })
   }
-
 
   openExportRequirementsDialog = () => {
     this.setState({
@@ -649,6 +696,11 @@ class MainView extends React.Component {
                                     key={name}
                                     dense>
                                     <ListItemText id={"qa_proj_select_"+name.replace(/\s+/g, '_')} primary = {name} onClick={() => this.handleSetProject(name)}/>
+                                    <IconButton id={"qa_proj_cal_"+name.replace(/\s+/g, '_')} onClick={() => this.handleCalculateProjectSemantics(name)} size="small" aria-label="calculate" >
+                                      <Tooltip id="project-tooltip-icon-calculate" title="Calculate Semantics">
+                                      <LoopIcon/>
+                                      </Tooltip>
+                                    </IconButton>
                                     <IconButton id={"qa_proj_del_"+name.replace(/\s+/g, '_')} onClick={() => this.handleDeleteProject(name)} size="small" aria-label="delete" >
                                       <Tooltip id="project-tooltip-icon-delete" title="Delete Project">
                                       <DeleteIcon color='error'/>
@@ -848,5 +900,3 @@ const mapDispatchToProps = {
 };
 
 export default withStyles(styles, { withTheme: true })(connect(mapStateToProps,mapDispatchToProps)(MainView));
-
-
