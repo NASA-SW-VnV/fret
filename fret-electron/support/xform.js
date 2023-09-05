@@ -81,11 +81,14 @@ const booleanSimplifications = [
 const pastTimeSimplifications = [
   [ '! H ! __p', trueFn, 'O __p'],
   [ '! O ! __p', trueFn, 'H __p'],
+  [ 'TRUE S __p', trueFn, 'O __p'],
   ['__p S (__p & FTP)', trueFn, 'H __p'],
   ['__p S (__p & ! Y TRUE)', trueFn, 'H __p'],
   ['__p S (FTP & __p)', trueFn, 'H __p'],
+  ['((Y TRUE) & __p) S __q', trueFn, '__p S __q'],
   ['(Y TRUE) & (Y __p)', trueFn, '(Y __p)'],
-  ['(! (Y TRUE)) | (Y __p)', trueFn, '(Z __p)']
+  ['(! (Y TRUE)) | (Y __p)', trueFn, '(Z __p)'],
+  ['(Y __p) | (! (Y TRUE))', trueFn, '(Z __p)']
 
           // -xtltl flag given to SALT does this: [ '__p | <| [] __p', trueFn, 'O __p']
 	  // For "regular,within":
@@ -96,6 +99,8 @@ const pastTimeSimplifications = [
 const futureTimeSimplifications = [
     ['! ((! __p) U __q)', trueFn, '__p V ! __q'],
     ['! (((! __p) & (! __q)) U (! __r))',trueFn, '(__p | __q) V __r'],
+    ['TRUE U __p', trueFn, 'F __p'],
+    ['FALSE V __p', trueFn, 'G __p'],
     ['F FALSE',trueFn,'FALSE'],
     ['G FALSE',trueFn,'FALSE'],
     ['F[< __p] FALSE',trueFn,'FALSE'],
@@ -550,6 +555,7 @@ optimizeSemantics()
 */
 
 /*
+console.log(optimizeFT(astsem.LTLtoAST('FALSE | ite(safe,green,red)')))
 console.log(transformTemporalConditions("persisted(3,!p) & occurred(4,p)"))
 console.log(transformTemporalConditionsNoBounds("persisted(3,!p) & occurred(4,p)"))
 console.log(transformPastTemporalConditions("persisted(3,!p) & occurred(4,p)"))
@@ -557,7 +563,7 @@ console.log(transformPastTemporalConditionsNoBounds("persisted(3,!p) & occurred(
 console.log(transformFutureTemporalConditions("persists(3,!p) & occurs(4,p)"))
 console.log(transformFutureTemporalConditionsNoBounds("persists(3,!p) & occurs(4,p)"))
 console.log(transformTemporalConditions("m"))
-*/
+
 
 /*
 console.log(transform('persisted(3,temp>100)',expandTemporalConditions));

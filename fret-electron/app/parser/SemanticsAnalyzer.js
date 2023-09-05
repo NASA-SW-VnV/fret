@@ -429,9 +429,15 @@ function SALTExpr2SMV (expr) {
    return '(' + get_LTL_from_old_SALT('assert ' + expr).slice(8).trim() + ')';
 }
 
+/*
 function LAST_is_FALSE (formula) {
     const rewritten_formula = formula.replace(/& \(! LAST\)/g, '').replace(/\(! LAST\) &/g,'').replace(/\(! LAST\) U/g,'F').replace(/LAST/g,'FALSE')
     return rewritten_formula
+}
+*/
+
+function LAST_is_FALSE (formula) {
+  return formula.replace(/\bLAST\b/g, 'FALSE');
 }
 
 //----------------------------------------------------------------------
@@ -463,7 +469,7 @@ SemanticsAnalyzer.prototype.semantics = () => {
   // ptleftSMV has the endpoints expanded into ptLTL
   let ptleftSMV = fetchedSemantics.endpoints.SMVptExtleft;
   // ptleftCoCo is the same as ptleftSMV except that FTP is *not* expanded.
-  let ptleftCoCo = ptleftSMV.replace(/\(!(\s)*\(Y TRUE\)\)/g, 'FTP');
+  ///let ptleftCoCo = ptleftSMV.replace(/\(!(\s)*\(Y TRUE\)\)/g, 'FTP');
   let ptrightSMV = fetchedSemantics.endpoints.SMVptExtright;
 
   let ftleftSMV = fetchedSemantics.endpoints.SMVftExtleft;
@@ -477,16 +483,16 @@ SemanticsAnalyzer.prototype.semantics = () => {
   // with a temporal condition.
     if (result.scope.type === 'null') {
       result.scope_mode_pt = "BAD_PT";
-      result.scope_mode_coco = "BAD_COCO";
+      ///result.scope_mode_coco = "BAD_COCO";
       result.scope_mode_ft = "BAD_FT"
     } else {
       // the scope_mode field only exists when scope.type !== 'null'
       let modeCond = canon_bool_expr(result.scope_mode);
       let modeCondTCxform_pt = xform.transformPastTemporalConditionsNoBounds(modeCond)
-      let modeCondTCxform_coco = cocospecSemantics.createCoCoSpecCode(modeCondTCxform_pt)
+      ///let modeCondTCxform_coco = cocospecSemantics.createCoCoSpecCode(modeCondTCxform_pt)
       let modeCondTCxform_ft = xform.transformFutureTemporalConditionsNoBounds(modeCond)
       result.scope_mode_pt = modeCondTCxform_pt;
-      result.scope_mode_coco = modeCondTCxform_coco;
+      ///result.scope_mode_coco = modeCondTCxform_coco;
       result.scope_mode_ft = modeCondTCxform_ft;
   }
   // Handle trigger condition
@@ -513,10 +519,10 @@ SemanticsAnalyzer.prototype.semantics = () => {
       // rewritten into LTL
       // An occurrence of $Right$ means that a future temporal operator
       // (persists, occurs) was present and CoCoSpec can't do anything with that
-      let regCondLeftCoCoSubsts = regCondTCxform_pt.replace(/\$Left\$/g, ptleftCoCo).replace(/\$scope_mode\$/g,result.scope_mode_pt); // scope_mode_coco
-      result.regular_condition_coco_smv = regCondLeftCoCoSubsts;
-      let regCondLeftCoCo = cocospecSemantics.createCoCoSpecCode(regCondLeftCoCoSubsts)
-      result.regular_condition_coco = regCondLeftCoCo;
+      ///let regCondLeftCoCoSubsts = regCondTCxform_pt.replace(/\$Left\$/g, ptleftCoCo).replace(/\$scope_mode\$/g,result.scope_mode_pt); // scope_mode_coco
+      ///result.regular_condition_coco_smv = regCondLeftCoCoSubsts;
+      ///let regCondLeftCoCo = cocospecSemantics.createCoCoSpecCode(regCondLeftCoCoSubsts)
+      ///result.regular_condition_coco = regCondLeftCoCo;
     }
 
     if (postCond) {
@@ -535,10 +541,10 @@ SemanticsAnalyzer.prototype.semantics = () => {
 	let postCondSMV_ft = postCondTCxform_ft.replace(/\$Right\$/g,ftrightSMV).replace(/\$scope_mode\$/g,'$scope_mode_ft$');
 	result.post_condition_SMV_ft = postCondSMV_ft;
 
-        let postCondLeftCoCoSubsts = postCondTCxform_pt.replace(/\$Left\$/g,ptleftCoCo).replace(/\$scope_mode\$/g,result.scope_mode_pt);
-        result.post_condition_coco_smv = postCondLeftCoCoSubsts;
-	let postCondLeftCoCo = cocospecSemantics.createCoCoSpecCode(postCondLeftCoCoSubsts)
-        result.post_condition_coco = postCondLeftCoCo;
+        ///let postCondLeftCoCoSubsts = postCondTCxform_pt.replace(/\$Left\$/g,ptleftCoCo).replace(/\$scope_mode\$/g,result.scope_mode_pt);
+        ///result.post_condition_coco_smv = postCondLeftCoCoSubsts;
+	///let postCondLeftCoCo = cocospecSemantics.createCoCoSpecCode(postCondLeftCoCoSubsts)
+        ///result.post_condition_coco = postCondLeftCoCo;
     }
 
   if (stopCond) {
@@ -562,10 +568,10 @@ SemanticsAnalyzer.prototype.semantics = () => {
       // rewritten into LTL
       // $Right$ means that a future temporal operator (persists, occurs)
       // was present and CoCoSpec can't do anything with that.
-      let stopCondLeftCoCoSubsts = stopCondTCxform_pt.replace(/\$Left\$/g, ptleftCoCo).replace(/\$scope_mode\$/g,result.scope_mode_pt);
-      result.stop_condition_coco_smv = stopCondLeftCoCoSubsts;
-      let stopCondLeftCoCo = cocospecSemantics.createCoCoSpecCode(stopCondLeftCoCoSubsts)
-      result.stop_condition_coco = stopCondLeftCoCo;
+      ///let stopCondLeftCoCoSubsts = stopCondTCxform_pt.replace(/\$Left\$/g, ptleftCoCo).replace(/\$scope_mode\$/g,result.scope_mode_pt);
+      ///result.stop_condition_coco_smv = stopCondLeftCoCoSubsts;
+      ///let stopCondLeftCoCo = cocospecSemantics.createCoCoSpecCode(stopCondLeftCoCoSubsts)
+      ///result.stop_condition_coco = stopCondLeftCoCo;
     }
 
     //pt and ft are used in the Edit/Update Requirement display
@@ -583,29 +589,32 @@ SemanticsAnalyzer.prototype.semantics = () => {
 
     const fetched_ptFinBtwExpanded = fetchedSemantics.ptFinBtwExpanded.replace(/\$regular_condition\$/g,'$regular_condition_SMV_pt$').replace(/\$post_condition\$/g,'$post_condition_SMV_pt$').replace(/\$stop_condition\$/g,'$stop_condition_SMV_pt$').replace(/\$scope_mode\$/g,'$scope_mode_pt$');
     result.ptFinBtwExpanded_fetched = fetched_ptFinBtwExpanded;
-    result.ptFinBtwExpanded = utils.salt2smv(replaceTemplateVars(fetched_ptFinBtwExpanded));
+    result.ptFinBtwExpanded = xform.transform(utils.salt2smv(replaceTemplateVars(fetched_ptFinBtwExpanded)),xform.optimizePT);
 
     let fetched_ftExpanded = fetchedSemantics.ftExpanded.replace(/\$regular_condition\$/g,'$regular_condition_SMV_ft$').replace(/\$post_condition\$/g,'$post_condition_SMV_ft$').replace(/\$stop_condition\$/g,'$stop_condition_SMV_ft$').replace(/\$scope_mode\$/g,'$scope_mode_ft$');
     result.ftExpanded_fetched = fetched_ftExpanded;
-    result.ftExpanded = utils.salt2smv(replaceTemplateVars(fetched_ftExpanded))
+    result.ftExpandedUnoptimized = utils.salt2smv(replaceTemplateVars(fetched_ftExpanded))
+    result.ftExpanded = xform.transform(result.ftExpandedUnoptimized,xform.optimizeFT);
 
     const fetched_ftInfAUExpanded = fetchedSemantics.ftInfAUExpanded.replace(/\$regular_condition\$/g,'$regular_condition_SMV_ft$').replace(/\$post_condition\$/g,'$post_condition_SMV_ft$').replace(/\$stop_condition\$/g,'$stop_condition_SMV_ft$').replace(/\$scope_mode\$/g,'$scope_mode_ft$');
     result.ftInfAUExpanded_fetched = fetched_ftInfAUExpanded;
-    result.ftInfAUExpanded = utils.salt2smv(LAST_is_FALSE(replaceTemplateVars(fetched_ftInfAUExpanded)));
+    result.ftInfAUExpanded = xform.transform(utils.salt2smv(LAST_is_FALSE(replaceTemplateVars(fetched_ftInfAUExpanded))),xform.optimizeFT);
       
     const fetched_ftInfBtwExpanded = fetchedSemantics.ftInfBtwExpanded.replace(/\$regular_condition\$/g,'$regular_condition_SMV_ft$').replace(/\$post_condition\$/g,'$post_condition_SMV_ft$').replace(/\$stop_condition\$/g,'$stop_condition_SMV_ft$').replace(/\$scope_mode\$/g,'$scope_mode_ft$');
     result.ftInfBtwExpanded_fetched = fetched_ftInfBtwExpanded;
-    result.ftInfBtwExpanded = utils.salt2smv(LAST_is_FALSE(replaceTemplateVars(fetched_ftInfBtwExpanded)));
+    result.ftInfBtwExpanded = xform.transform(utils.salt2smv(LAST_is_FALSE(replaceTemplateVars(fetched_ftInfBtwExpanded))),xform.optimizeFT)
 
     const fetched_ftFinBtwExpanded = fetchedSemantics.ftFinBtwExpanded.replace(/\$regular_condition\$/g,'$regular_condition_SMV_ft$').replace(/\$post_condition\$/g,'$post_condition_SMV_ft$').replace(/\$stop_condition\$/g,'$stop_condition_SMV_ft$').replace(/\$scope_mode\$/g,'$scope_mode_ft$');
     result.ftFinBtwExpanded_fetched = fetched_ftFinBtwExpanded;
-    result.ftFinBtwExpanded = utils.salt2smv(replaceTemplateVars(fetched_ftFinBtwExpanded));
+    result.ftFinBtwExpanded = xform.transform(utils.salt2smv(replaceTemplateVars(fetched_ftFinBtwExpanded)),xform.optimizeFT);
 
+    /*
     let fetched_coco = fetchedSemantics.CoCoSpecCode.replace(/\$regular_condition\$/g,'$regular_condition_coco$').replace(/\$post_condition\$/g,'$post_condition_coco$').replace(/\$stop_condition\$/g,'$stop_condition_coco$').replace(/\$scope_mode\$/g,'$scope_mode_coco$');
     result.CoCoSpecCode_fetched = fetched_coco;
     let CoCoSpecCodeLTL = replaceTemplateVars(fetched_coco);
     result.CoCoSpecCode = CoCoSpecCodeLTL;
-
+    */
+    result.CoCoSpecCode = cocospecSemantics.createCoCoSpecCode(result.ptExpanded)
     result.component = replaceTemplateVars('$component_name$')
 
     //if (constants.verboseSemanticsAnalyzer) console.log('Semantics result out: ' + JSON.stringify(result));
