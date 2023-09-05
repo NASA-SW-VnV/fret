@@ -28,8 +28,10 @@ units. Check the user manual under "Exporting for Analysis" for more details.
 STOP_CONDITION is a Boolean expression. The timing **before** means that the
 response must happen at least once before the STOP_CONDITION holds.
 
-#### Restrictions
-The following uppercase identifiers cannot be used as variables in boolean and arithmetic expressions:
+### Restrictions
+
+The following uppercase identifiers cannot be used as variables in boolean
+and arithmetic expressions:
 
 `A E F G H O S T U V X Y Z AF AG AX BU EF EG EX SI UI ABF ABG EBF EBG MAX MIN LAST`.  
 

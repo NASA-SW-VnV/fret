@@ -431,6 +431,7 @@ function transform(formulaString,transformation) {
     let AST = astsem.LTLtoAST(formulaString);
     if (AST === undefined) console.log("xform.transform couldn't parse '" + formulaString + "'");
     let transformedAST = transformation(AST);
+  if (transformedAST === undefined) console.log("xform.transform transformed '" + formulaString + "' into undefined")
     let transformedString = astsem.ASTtoLTL(transformedAST);
     return transformedString;
 }

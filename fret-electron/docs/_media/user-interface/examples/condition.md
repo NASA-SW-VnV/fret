@@ -1,17 +1,19 @@
 #### Condition (optional)
 
-specifies the trigger condition after which the requirement shall hold,
-taking into account scope. Trigger means the requirement holds **upon** a
-condition becoming true; i.e., at the point
+specifies the condition after which the response shall hold,
+taking into account scope and timing. A condition can be either:
+
+* a _trigger_ condition, meaning the requirement holds **_upon_** a condition becoming true; i.e., at the point
 where the condition becomes true after being false, or the
-condition is true at the beginning of a scope interval.
+condition is true at the beginning of a scope interval;
 
+* a _no-trigger_ condition, meaning the response holds whenever the condition holds.
+
+A no-trigger condition is introduced by the keyword **whenever**.
+A trigger condition is introduced by the keyword **upon** (or **when**,
+**where**, **if**).
 The condition can be a sequence of Boolean expressions, optionally connected
-by the keywords *and* and *or*. Individual Boolean Expressions can be
-qualified by keywords
-
-* **unless**
-* **upon**, **when**, **where**, **if** (these have identical meaning in FRETish)
+by the keywords *and* and *or*.
 
 Validity of each Boolean Expression _BEXP_ can be optionally stated by writing
 "_BEXP_ is **true**" (same as _BEXP_) or "_BEXP_ is **false**" (same as !
@@ -40,15 +42,23 @@ when exporting requirements for verification. Check the user manual under
 Parentheses **(** **)** are used as usual. Please use parentheses as much as
 possible to avoid mistakes and misunderstandings.  
 
+### Restrictions
 
-#### Restrictions
-The following uppercase identifiers cannot be used as variables in boolean and arithmetic expressions:
+The following uppercase identifiers cannot be used as variables in boolean
+and arithmetic expressions:
 
 `A E F G H O S T U V X Y Z AF AG AX BU EF EG EX SI UI ABF ABG EBF EBG MAX MIN LAST`.  
 
-[//]: # (If you have some of those in your requirements, the database fret-db may not be able to be read. Also, the Simulator will not give correct results.)
+##### EXAMPLES
 
-#### Examples
-* **upon** powered_on
-* **if** (limits & !standby & !apfail & supported)
-* **when** ((level(tank1) < 0.3) & (altitude > 1000)) **is false**
+* **Upon** powered_on the component shall immediately satisfy bootup
+* **Whenever** intruder the alarm shall immediately satisfy sound
+
+The contrast between trigger and no-trigger conditions is shown in the following two
+examples, in the case where at some point p holds forever:
+
+* Upon p the software shall eventually satisfy q
+* Whenever p the software shall eventually satisfy q
+
+In the first, q must be satisfied at least once.
+In the second, q must be satisfied infinitely often.
