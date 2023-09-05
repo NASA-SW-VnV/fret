@@ -72,24 +72,30 @@ const booleanSimplifications = [
     [ '(! __p) & ! (__p & __q)', trueFn, '! __p'],
     [ '__p & ! ((! __p) & __q)', trueFn, '__p'],
     [ '(! (__p & __q)) & (! (__r | __q))', trueFn, '(! __q) & (! __r)'],
-    ['! FALSE',trueFn,'TRUE'],
+    ['! FALSE',trueFn,'TRUE'], ['! TRUE', trueFn, 'FALSE'],
     ['__p | FALSE',trueFn,'__p'], ['FALSE | __p',trueFn,'__p'],
+    ['__p | TRUE',trueFn,'TRUE'], ['TRUE | __p',trueFn,'TRUE'],
     ['__p & TRUE',trueFn,'__p'], ['TRUE & __p',trueFn,'__p'],
-  ['__p & FALSE', trueFn, 'FALSE'], ['FALSE & __p', trueFn, 'FALSE'],
-  ['ite(__p, __q, __r)', trueFn, '((__p & __q) | ((! __p) & __r))']
+    ['__p & FALSE', trueFn, 'FALSE'], ['FALSE & __p', trueFn, 'FALSE'],
+    ['TRUE => __p', trueFn, '__p'],   ['FALSE => __p', trueFn, 'TRUE'],
+    ['ite(__p, __q, __r)', trueFn, '((__p & __q) | ((! __p) & __r))']
 ];
 
 const pastTimeSimplifications = [
+  ['O FALSE',trueFn,'FALSE'], ['O TRUE', trueFn, 'TRUE'],
+  ['H FALSE',trueFn,'FALSE'], ['H TRUE', trueFn, 'TRUE'],
   [ '! H ! __p', trueFn, 'O __p'],
   [ '! O ! __p', trueFn, 'H __p'],
   [ 'TRUE S __p', trueFn, 'O __p'],
   ['__p S (__p & FTP)', trueFn, 'H __p'],
+  ['__p S (__p & Z FALSE)', trueFn, 'H __p'],
   ['__p S (__p & ! Y TRUE)', trueFn, 'H __p'],
   ['__p S (FTP & __p)', trueFn, 'H __p'],
   ['((Y TRUE) & __p) S __q', trueFn, '__p S __q'],
   ['(Y TRUE) & (Y __p)', trueFn, '(Y __p)'],
   ['(! (Y TRUE)) | (Y __p)', trueFn, '(Z __p)'],
-  ['(Y __p) | (! (Y TRUE))', trueFn, '(Z __p)']
+  ['(Y __p) | (! (Y TRUE))', trueFn, '(Z __p)'],
+  ['O Z __p', trueFn, 'TRUE']
 
           // -xtltl flag given to SALT does this: [ '__p | <| [] __p', trueFn, 'O __p']
 	  // For "regular,within":
@@ -101,11 +107,11 @@ const futureTimeSimplifications = [
     ['! ((! __p) U __q)', trueFn, '__p V ! __q'],
     ['! (((! __p) & (! __q)) U (! __r))',trueFn, '(__p | __q) V __r'],
     ['TRUE U __p', trueFn, 'F __p'],
-    ['FALSE V __p', trueFn, 'G __p'],
-    ['F FALSE',trueFn,'FALSE'],
-    ['G FALSE',trueFn,'FALSE'],
-    ['F[< __p] FALSE',trueFn,'FALSE'],
-    ['F[<= __p] FALSE',trueFn,'FALSE']
+    ['FALSE V __p', trueFn, 'G __p'], ['TRUE V __p', trueFn, '__p'],
+    ['F FALSE',trueFn,'FALSE'], ['F TRUE', trueFn, 'TRUE'],
+    ['G FALSE',trueFn,'FALSE'], ['G TRUE', trueFn, 'TRUE'],
+    ['X TRUE', trueFn, 'TRUE'], ['X FALSE', trueFn, 'FALSE'],
+    ['F[< __p] FALSE',trueFn,'FALSE'], ['F[<= __p] FALSE',trueFn,'FALSE']
 ];
 
 const finitizeFuture = [
