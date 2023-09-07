@@ -3,6 +3,8 @@ FRET Publication Lists
 
 We maintain two publication lists: 1. FRET publications [categorized into topics](#categorized-publication-list) and 2. FRET publications [in chronological order](#chronological-publication-list).
 
+We thank the community for using FRET. [Here](#external-publications) is a list of publications written by researchers and practitioners that have not been involved in FRET's development.
+
 # Categorized Publication List
 ------------------------------
 ### Tool paper
@@ -79,6 +81,23 @@ DSN-W 2023.
 REFSQ 2023.
 
 
+### External publications
+
+* Joseph Kiniry, Alexanders Bakst, Simon Hansen, Michal Podhradsky, and Andrew Bivin. [The HARDENS Final Report](https://github.com/GaloisInc/HARDENS/blob/develop/docs/HARDENS_Final_Report_Jan_2023.pdf), Galois Inc Technical Report, January 2023.
+
+* Zsófia Ádám. [Formulating Requirements with FRET for PLCVerif](https://cds.cern.ch/record/2826074/files/cern_report_zsofia_adam.pdf), CERN (European Organization for Nuclear Research) Technical Report, September 2022.
+
+* Marie Farrell, Matt Luckcuck, Oisin Sheridan, Rosemary Monahan. [Towards Refactoring FRETish Requirements](https://link.springer.com/chapter/10.1007/978-3-031-06773-0_14), NFM 2022.
+
+* Marie Farrell, Matt Luckcuck, Oisin Sheridan, Rosemary Monahan. [FRETting About Requirements: Formalised Requirements For An Aircraft Engine Controller](https://link.springer.com/chapter/10.1007/978-3-030-98464-9_9), REFSQ 2022.
+
+* Matt Luckcuck, Marie Farrell, Oisin Sheridan, Rosemary Monahan. [A Methodology For Developing A Verifiable Aircraft Engine Controller From Formal Requirements](https://ieeexplore.ieee.org/abstract/document/9843589), IEEE Aeroconf 2022.
+
+* Marie Farrell, Nikos Mavrakis, Angelo Ferrando, Clare Dixon, Yang Gao. [Formal Modelling and Runtime Verification of Autonomous Grasping for Active Debris Removal](https://www.frontiersin.org/articles/10.3389/frobt.2021.639282/full), Frontiers in Robotics and AI 2022.
+
+* Marie Farrell, Nikos Mavrakis, Angelo Ferrando, Clare Dixon, Yang Gao. [Journal-First: Formal Modelling and Runtime Verification of Autonomous Grasping for Active Debris Removal](https://link.springer.com/chapter/10.1007/978-3-031-07727-2_3), iFM 2022.
+
+
 # Chronological Publication List
 -----------------------------------
 
@@ -104,7 +123,19 @@ REFSQ 2023.
 [Using FRET to Create, Analyze and Monitor Requirements for a Lift Plus Cruise Case Study](https://ntrs.nasa.gov/api/citations/20220017032/downloads/TechnicalReport_Lift_Plus_Cruise_FRET_case_study%20(4).pdf),
 NASA/TM–20220017032, April 2023.
 
+* Joseph Kiniry, Alexanders Bakst, Simon Hansen, Michal Podhradsky, and Andrew Bivin. [The HARDENS Final Report](https://github.com/GaloisInc/HARDENS/blob/develop/docs/HARDENS_Final_Report_Jan_2023.pdf), Galois Inc, January 2023.
+
 * Ivan Perez, Anastasia Mavridou, Tom Pressburger, Alwyn Goodloe, Dimitra Giannakopoulou. [Automated Translation of Natural Language Requirements to Runtime Monitors](https://link.springer.com/chapter/10.1007/978-3-030-99524-9_21), TACAS 2022.
+
+* Zsófia Ádám. [Formulating Requirements with FRET for PLCVerif](https://cds.cern.ch/record/2826074/files/cern_report_zsofia_adam.pdf), CERN (European Organization for Nuclear Research) Technical Report, September 2022.
+
+* Marie Farrell, Matt Luckcuck, Oisin Sheridan, Rosemary Monahan. [Towards Refactoring FRETish Requirements](https://link.springer.com/chapter/10.1007/978-3-031-06773-0_14), NFM 2022.
+
+* Marie Farrell, Matt Luckcuck, Oisin Sheridan, Rosemary Monahan. [FRETting About Requirements: Formalised Requirements For An Aircraft Engine Controller](https://link.springer.com/chapter/10.1007/978-3-030-98464-9_9), REFSQ 2022.
+
+* Matt Luckcuck, Marie Farrell, Oisin Sheridan, Rosemary Monahan. [A Methodology For Developing A Verifiable Aircraft Engine Controller From Formal Requirements](https://ieeexplore.ieee.org/abstract/document/9843589), IEEE Aeroconf 2022.
+
+* Marie Farrell, Nikos Mavrakis, Angelo Ferrando, Clare Dixon, Yang Gao. [Formal Modelling and Runtime Verification of Autonomous Grasping for Active Debris Removal](https://www.frontiersin.org/articles/10.3389/frobt.2021.639282/full), Frontiers in Robotics and AI 2022.
 
 * Ivan Perez, Anastasia Mavridou, Thomas Pressburger, Alexander Will, and Patrick J. Martin. [Monitoring ROS2: from Requirements to Autonomous Robots](https://arxiv.org/pdf/2209.14030.pdf), FMAS 2022.
 
