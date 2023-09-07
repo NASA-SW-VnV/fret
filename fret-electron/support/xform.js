@@ -121,9 +121,13 @@ const finitizeFuture = [
     ['F __p', trueFn, '(!LAST) U __p']
 ];
 
+function nIsNumber (sbst) {
+  return utils.isNumberString(sbst.__n);
+}
+
 const futureTemporalConditions = [
-    ['persists(__n,__p)',trueFn,'((G[<=__n] __p) & (G[<__n] ! $Right$))'],
-    ['occurs(__n,__p)',trueFn,'(((! $Right$) U __p) & (F[<=__n] __p))'],
+    ['persists(__n,__p)',nIsNumber,'((G[<=__n] __p) & (G[<__n] ! $Right$))'],
+    ['occurs(__n,__p)',nIsNumber,'(((! $Right$) U __p) & (F[<=__n] __p))'],
     // This commented out version assumes there must be a next occurrence of p
     // ['nextOcc(__p,__q)', trueFn, '(X((!__p & !$Right$) U (__p & __q)))']
     // This version is satisfied if there is no next occurrence of p.
@@ -146,8 +150,8 @@ const pastTemporalConditions = [
   //'(($Left$ & __init) | ((! $Left$) & (Y __p)))'],
   ['preBool(__init,__p)', trueFn, //(sbst) => nonBoolConstant(sbst["__init"]),
    '(((! (Y TRUE)) & (__init)) | ((! (! Y TRUE) ) & (Y __p)))'],
-  ['persisted(__n,__p)',trueFn,'((H[<=__n] __p) & (H[<__n] ! $Left$))'],
-  ['occurred(__n,__p)',trueFn,'(((! $Left$) S __p) & (O[<=__n] __p))'],
+  ['persisted(__n,__p)',nIsNumber,'((H[<=__n] __p) & (H[<__n] ! $Left$))'],
+  ['occurred(__n,__p)',nIsNumber,'(((! $Left$) S __p) & (O[<=__n] __p))'],
   //['prevOcc(__p,__q)', trueFn, '(Z (((! $Left$ & !__p) S __p) => ((! $Left$ & !__p) S (__p & __q))))']
   ['prevOcc(__p,__q)', trueFn, '($Left$ | (Y (((! $Left$ & !__p) S __p) => ((! $Left$ & !__p) S (__p & __q)))))']
 ]
