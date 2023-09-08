@@ -3,7 +3,7 @@ FRET Publication Lists
 
 We maintain two publication lists: 1. FRET publications [categorized into topics](#categorized-publication-list) and 2. FRET publications [in chronological order](#chronological-publication-list).
 
-We thank the community for using FRET. [Here](#external-publications) is a list of publications written by researchers and practitioners that have not been involved in FRET's development.
+We thank the community for using FRET. [Here](#external-publications) is a list of FRET-related publications written by researchers and practitioners that have not been involved in FRET's development.
 
 # Categorized Publication List
 ------------------------------
