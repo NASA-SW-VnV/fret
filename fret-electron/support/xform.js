@@ -91,6 +91,7 @@ const pastTimeSimplifications = [
   ['__p S (__p & Z FALSE)', trueFn, 'H __p'],
   ['__p S (__p & ! Y TRUE)', trueFn, 'H __p'],
   ['__p S (FTP & __p)', trueFn, 'H __p'],
+  ['! ((! __p) S (! __p))', trueFn, '__p'],
   ['((Y TRUE) & __p) S __q', trueFn, '__p S __q'],
   ['(Y TRUE) & (Y __p)', trueFn, '(Y __p)'],
   ['(! (Y TRUE)) | (Y __p)', trueFn, '(Z __p)'],
@@ -112,6 +113,7 @@ const futureTimeSimplifications = [
     ['((__p V (__q | __p)) | (G __q))', trueFn, '__p V (__q | __p)'],
     ['F FALSE',trueFn,'FALSE'], ['F TRUE', trueFn, 'TRUE'],
     ['G FALSE',trueFn,'FALSE'], ['G TRUE', trueFn, 'TRUE'],
+    ['G[__l,__h] TRUE', trueFn, 'TRUE'],
     ['X TRUE', trueFn, 'TRUE'], ['X FALSE', trueFn, 'FALSE'],
     ['F[< __p] FALSE',trueFn,'FALSE'], ['F[<= __p] FALSE',trueFn,'FALSE']
 ];
@@ -122,12 +124,12 @@ const finitizeFuture = [
 ];
 
 function nIsNumber (sbst) {
-  return utils.isNumberString(sbst.__n);
+  return utils.isIntegerString(sbst.__n);
 }
 
 const futureTemporalConditions = [
-    ['persists(__n,__p)',nIsNumber,'((G[<=__n] __p) & (G[<__n] ! $Right$))'],
-    ['occurs(__n,__p)',nIsNumber,'(((! $Right$) U __p) & (F[<=__n] __p))'],
+    ['persists(__n,__p)', nIsNumber ,'((G[<=__n] __p) & (G[<__n] ! $Right$))'],
+    ['occurs(__n,__p)', nIsNumber,'(((! $Right$) U __p) & (F[<=__n] __p))'],
     // This commented out version assumes there must be a next occurrence of p
     // ['nextOcc(__p,__q)', trueFn, '(X((!__p & !$Right$) U (__p & __q)))']
     // This version is satisfied if there is no next occurrence of p.
@@ -150,8 +152,8 @@ const pastTemporalConditions = [
   //'(($Left$ & __init) | ((! $Left$) & (Y __p)))'],
   ['preBool(__init,__p)', trueFn, //(sbst) => nonBoolConstant(sbst["__init"]),
    '(((! (Y TRUE)) & (__init)) | ((! (! Y TRUE) ) & (Y __p)))'],
-  ['persisted(__n,__p)',nIsNumber,'((H[<=__n] __p) & (H[<__n] ! $Left$))'],
-  ['occurred(__n,__p)',nIsNumber,'(((! $Left$) S __p) & (O[<=__n] __p))'],
+  ['persisted(__n,__p)', nIsNumber,'((H[<=__n] __p) & (H[<__n] ! $Left$))'],
+  ['occurred(__n,__p)', nIsNumber,'(((! $Left$) S __p) & (O[<=__n] __p))'],
   //['prevOcc(__p,__q)', trueFn, '(Z (((! $Left$ & !__p) S __p) => ((! $Left$ & !__p) S (__p & __q))))']
   ['prevOcc(__p,__q)', trueFn, '($Left$ | (Y (((! $Left$ & !__p) S __p) => ((! $Left$ & !__p) S (__p & __q)))))']
 ]
@@ -159,14 +161,14 @@ const pastTemporalConditions = [
 const temporalConditions = pastTemporalConditions.concat(futureTemporalConditions);
 
 const futureTemporalConditionsNoBounds = [
-    ['persists(__n,__p)',trueFn,'(G[<=__n] __p)'],
-    ['occurs(__n,__p)',trueFn,'(F[<=__n] __p)'],
+    ['persists(__n,__p)',nIsNumber,'(G[<=__n] __p)'],
+    ['occurs(__n,__p)',nIsNumber,'(F[<=__n] __p)'],
     ['nextOcc(__p,__q)', trueFn, '(X((!__p) U (__p & __q)))']
     ]
 
 const pastTemporalConditionsNoBounds = [
-    ['persisted(__n,__p)',trueFn,'(H[<=__n] __p)'],
-    ['occurred(__n,__p)',trueFn,'(O[<=__n] __p)'],
+    ['persisted(__n,__p)',nIsNumber,'(H[<=__n] __p)'],
+    ['occurred(__n,__p)',nIsNumber,'(O[<=__n] __p)'],
     ['prevOcc(__p,__q)', trueFn, '(Y ((!__p) S (__p & __q)))']
 ]
 

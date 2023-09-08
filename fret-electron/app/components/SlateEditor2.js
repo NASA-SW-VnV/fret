@@ -649,7 +649,7 @@ class SlateEditor2 extends React.Component {
                       : undefined
     return (
       <div style={{width: 600, height: 100}}>
-        <Typography variant='caption' color='error'>{message}</Typography>
+        <Typography variant='caption' color='error' id='qa_crt_typo_parse_err'>{message}</Typography>
       </div>
     )
   }
