@@ -422,7 +422,9 @@ ipcMain.handle('loadRealizabilityReport', async(evt) => {
   return result
 })
 
-
+ipcMain.handle('calculateProjectSemantics', async(evt, projectName) => {
+  await fretModel.calculateProjectSemantics(projectName);
+})
 
 /**
  * Add event listeners...

@@ -54,6 +54,7 @@ const requirementsImport = require('./requirementsImport/convertAndImportRequire
 const fs = require('fs');
 const archiver = require('archiver');
 import { v1 as uuidv1 } from 'uuid';
+import FretSemantics from "../app/parser/FretSemantics";
 const csv2json=require("csvtojson");
 const utilities = require('../support/utilities');
 
@@ -1238,4 +1239,31 @@ export default class FretModel {
       // console.log('FretModel ltlsimSaveJson: ', args)
       return ({})
     }
+
+    calculateProjectSemantics = async (projectName) => {
+      const requirements = await this.selectProjectRequirements(projectName)
+      await Promise.all(requirements.docs.map((r) => {
+        let semantics = {}
+        const result = FretSemantics.compile(r.fulltext)
+        if (result.collectedSemantics)
+          semantics = result.collectedSemantics
+        if (JSON.stringify(semantics) !== JSON.stringify(r.semantics)){
+          return leveldbDB.put({
+              _id : r._id,
+              _rev : r._rev,
+              reqid : r.reqid,
+              parent_reqid : r.parent_reqid,
+              project : r.project,
+              rationale : r.rationale,
+              comments : r.comments,
+              status: r.status,
+              fulltext : r.fulltext,
+              semantics : semantics,
+              template : r.template,
+              input : r.input
+            })
+        }
+      }))
+    }
+
 }

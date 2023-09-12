@@ -426,47 +426,8 @@ class MainView extends React.Component {
       )
   }
 
-//TODO: Move this to the model
   handleCalculateProjectSemantics = (name) => {
-    db.find({
-      selector: {
-        project: name,
-      }
-    }).then(function (requirements){
-      //console.log(requirements)
-      requirements.docs.forEach((r) => {
-        let semantics = {}
-        const result = FretSemantics.compile(r.fulltext)
-        if (result.collectedSemantics)
-          semantics = result.collectedSemantics
-        //console.log(JSON.stringify(semantics))
-        //console.log(JSON.stringify(r.semantics))
-        if (JSON.stringify(semantics) !== JSON.stringify(r.semantics)){
-          db.put({
-              _id : r._id,
-              _rev : r._rev,
-              reqid : r.reqid,
-              parent_reqid : r.parent_reqid,
-              project : r.project,
-              rationale : r.rationale,
-              comments : r.comments,
-              status: r.status,
-              fulltext : r.fulltext,
-              semantics : semantics,
-              template : r.template,
-              input : r.input
-            }, (err, responses) => {
-              if (err) {
-                console.log(err);
-              }
-              //console.log(responses);
-            }
-          )
-        }
-      })
-    }).catch((err) => {
-      console.log(err);
-    });
+    ipcRenderer.invoke('calculateProjectSemantics', name);
     this.setState({ anchorEl: null });
   }
 
@@ -481,8 +442,6 @@ class MainView extends React.Component {
       anchorEl: null
     })
   }
-
-
 
   closeDeleteProjectDialog = () => {
     this.setState({
