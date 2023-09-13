@@ -54,9 +54,9 @@ class LTLSimAddTraceDialog extends Component {
             traceID: "",				// user defined label
             traceDescription: "",		// user defined description
             trace: "",
-	    saveTo: "",
-	    anchorEl_save: null,
-	    tosave: false
+	          saveTo: "",
+	          anchorEl_save: null,
+	          tosave: false
         }
         this.handleCancel = this.handleCancel.bind(this);
         this.handleSave = this.handleSave.bind(this);
@@ -126,20 +126,20 @@ class LTLSimAddTraceDialog extends Component {
 		})
 	}
 
-//------------------------------------------------------------------------
-    saveToComponent(){
-	this.setState({
-		saveTo: "Component",
-        	anchorEl_save: null
-		},()=>{
-        	this.props.onSave(this.state);
-		})
-	}
+// //------------------------------------------------------------------------
+//     saveToComponent(){
+// 	this.setState({
+// 		saveTo: "Component",
+//         	anchorEl_save: null
+// 		},()=>{
+//         	this.props.onSave(this.state);
+// 		})
+// 	}
 
 //------------------------------------------------------------------------
     saveToProject(){
 	this.setState({
-		saveTo: "Component",
+		saveTo: "Project",
         	anchorEl_save: null
 		},()=>{
         	this.props.onSave(this.state);
@@ -218,13 +218,13 @@ class LTLSimAddTraceDialog extends Component {
                         >
 			Requirement
                       </MenuItem>
-                      <MenuItem
+                      {/*<MenuItem
                         id="qa_ltlSimAdd_mi_Component"
                         onClick={() =>  this.saveToComponent()}
                         dense
                         >
 			Component
-                      </MenuItem>
+                      </MenuItem>*/}
                       <MenuItem
                         id="qa_ltlSimAdd_mi_Project"
                         onClick={() =>  this.saveToProject()}
