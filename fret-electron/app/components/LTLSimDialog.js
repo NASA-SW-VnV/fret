@@ -326,6 +326,7 @@ class LTLSimDialog extends Component {
 	// (checked by this.update())
     for (let i=0; i< this.props.requirementIDs.length; i++){
         let formula = LTLSimController.getFormula(model, this.props.ids[i]);
+        console.log(formula)
   	if (((this.props.open && !prevProps.open) || updateOnce) &&
             formula && formula.parseErrors.length === 0) {
 	    LTLSimController.evalModel(model);
@@ -691,7 +692,7 @@ console.log("TODO: update the traces")
 	//
     loadCEXTrace(filepath) {
 	var loadedTrace = filepath;
-	var K = loadedTrace.K;
+	var K = loadedTrace.K < 4 ? 4 : K;
 
 	var cex = loadedTrace.Counterexample;
     		// TODO: Andreas: Tried to add this here to deal with
@@ -773,7 +774,7 @@ console.log("TODO: update the traces")
 		var varType = vars_trace_type[idx];
 		    var val = 0
 		    if (step < K){
-		    	val = cex[idx]["Step "+step.toString()];
+		    	val = cex[idx]["Step "+step.toString()] ? cex[idx]["Step "+step.toString()] : 0;
 			}
 		    else {
 			if (varType == "bool"){
