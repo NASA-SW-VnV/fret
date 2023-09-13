@@ -78,7 +78,8 @@ export function checkRealizability(filePath, engine, options, callback) {
         var kind2Output = JSON.parse(stdout);
         var realizabilityResults = kind2Output.filter(e => e.objectType === "realizabilityCheck")[0];
         var consistencyResults = kind2Output.filter(e => e.objectType === "satisfiabilityCheck")[0];
-        var logResults = kind2Output.filter(e => e.objectType === "log")[1];
+        var logResultsArray = kind2Output.filter(e => e.objectType === "log");
+        var logResults = logResultsArray[logResultsArray.length-1];
         result = (logResults && logResults.value === "Wallclock timeout.") ? "UNKNOWN" : ((consistencyResults && consistencyResults.result === "unsatisfiable") ? "UNREALIZABLE" : realizabilityResults.result.toUpperCase());
         if (consistencyResults) {
           time = (realizabilityResults.runtime['value'] + consistencyResults.runtime['value']).toString() + realizabilityResults.runtime['unit'];
@@ -102,7 +103,8 @@ export function checkReal(filePath, engine, options) {
   function retrieveKind2Result(output) {
     var realizabilityResults = output.filter(e => e.objectType === "realizabilityCheck")[0];      
     var consistencyResults = output.filter(e => e.objectType === "satisfiabilityCheck")[0];
-    var logResults = output.filter(e => e.objectType === "log")[1];
+    var logResultsArray = output.filter(e => e.objectType === "log");
+    var logResults = logResultsArray[logResultsArray.length-1];
     let result = (logResults && logResults.value === "Wallclock timeout.") ? "UNKNOWN" : ((consistencyResults && consistencyResults.result === "unsatisfiable") ? "UNREALIZABLE" : realizabilityResults.result.toUpperCase());
     return result;
   }
