@@ -31,8 +31,8 @@ To view and edit the requirements in your project in a tabular form, select the 
 
 Export and import buttons are available for saving/exporting your requirements or importing requirements written by other users in FRET.
 
-More information on how to export is available [here](./export&import/export.md).
-More information on how to import is available [here](./export&import/import.md).
+More information on how to export is available [here](./exportImport/export.md).
+More information on how to import is available [here](./exportImport/import.md).
 
 ## Connecting with external tools
 
