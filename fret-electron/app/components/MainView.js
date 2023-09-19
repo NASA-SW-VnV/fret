@@ -88,7 +88,7 @@ import {
   selectProject,
   initializeStore,
   importRequirements,
-  mapVariables,
+  mapVariables, formalizeRequirement,
 } from '../reducers/allActionsSlice';
 import ImportedVariablesWarningDialog from "./ImportedVariablesWarningDialog";
 const FretSemantics = require('../parser/FretSemantics');
@@ -426,8 +426,9 @@ class MainView extends React.Component {
       )
   }
 
-  handleCalculateProjectSemantics = (name) => {
-    ipcRenderer.invoke('calculateProjectSemantics', name);
+  handleCalculateProjectSemantics = async (name) => {
+    const result = await ipcRenderer.invoke('calculateProjectSemantics', name);
+    this.props.formalizeRequirement({ type: 'actions/formalizeRequirement', requirements: result.requirements})
     this.setState({ anchorEl: null });
   }
 
@@ -856,6 +857,7 @@ const mapDispatchToProps = {
   initializeStore,
   importRequirements,
   mapVariables,
+  formalizeRequirement
 };
 
 export default withStyles(styles, { withTheme: true })(connect(mapStateToProps,mapDispatchToProps)(MainView));

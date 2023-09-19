@@ -1247,7 +1247,7 @@ export default class FretModel {
         const result = FretSemantics.compile(r.fulltext)
         if (result.collectedSemantics)
           semantics = result.collectedSemantics
-        if ( ( r.semantics === undefined  ) || (JSON.stringify(semantics) !== JSON.stringify(r.semantics)) ){
+        if (JSON.stringify(semantics) !== JSON.stringify(r.semantics)){
           return leveldbDB.put({
               _id : r._id,
               _rev : r._rev,
@@ -1264,6 +1264,11 @@ export default class FretModel {
             })
         }
       }))
+      await this.synchProjectsAndRequirmentsWithDB()
+      return {
+        requirements: this.requirements
+      }
+
     }
 
 }
