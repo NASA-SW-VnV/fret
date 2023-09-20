@@ -692,7 +692,7 @@ console.log("TODO: update the traces")
 	//
     loadCEXTrace(filepath) {
 	var loadedTrace = filepath;
-	var K = loadedTrace.K < 4 ? 4 : K;
+	var K = loadedTrace.K < 4 ? 4 : loadedTrace.K;
 
 	var cex = loadedTrace.Counterexample;
     		// TODO: Andreas: Tried to add this here to deal with
