@@ -11,7 +11,7 @@ mv components/Grammar.js x.js;
 sed -e 's+Page from '\''\.\./\.\./docs/_media+Page from '\''../docs/_media+' x.js >components/Grammar.js;
 rm x.js;
 mv components/Instructions.js x.js;
-sed -e 's+\.\./docs/+docs/+' x.js > components/Instructions.js;
+sed -e 's+\.\./docs/+docs/+' -e 's+from '\''examples+from '\''docs/_media/user-interface/examples+' x.js > components/Instructions.js;
 rm x.js;
 mv components/SlateEditor2.js x.js; 
 sed -e 's+\.\./docs/+docs/+' x.js > components/SlateEditor2.js;
@@ -55,8 +55,13 @@ rm x.json;
 
 
 cd ..
+
+mv model/realizabilitySupport/realizabilityUtils.js x.js;
+sed -e 's+\.\./\.\./analysis/+analysis/+' x.js > model/realizabilitySupport/realizabilityUtils.js;
+rm x.js;
+
 mv package.json x.json;
-sed -e 's+docs/_media+app/docs/_media+'     -e 's+\.\./tools/LTLSIM+app/tools/LTLSIM+' x.json > package.json;
+sed -e 's+docs/_media+app/docs/_media+'     -e 's+\.\./tools/LTLSIM+app/tools/LTLSIM+' -e 's+production electron ./app/+production electron --no-sandbox ./app/+' x.json > package.json;
 rm x.json;
 mv webpack.config.base.js x.js;
 sed -e 's+docs/_media+app/docs/_media+' x.js > webpack.config.base.js;
