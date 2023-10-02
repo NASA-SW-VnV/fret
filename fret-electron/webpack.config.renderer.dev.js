@@ -45,7 +45,7 @@ import webpack from 'webpack';
 import chalk from 'chalk';
 import merge from 'webpack-merge';
 import { spawn, execSync } from 'child_process';
-import ExtractTextPlugin from 'extract-text-webpack-plugin';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import baseConfig from './webpack.config.base';
 import CheckNodeEnv from './internals/scripts/CheckNodeEnv';
 
@@ -78,7 +78,8 @@ export default merge.smart(baseConfig, {
 
   output: {
     publicPath: `http://localhost:${port}/dist/`,
-    filename: 'renderer.dev.js'
+    filename: 'renderer.dev.js',
+    libraryTarget: 'commonjs2'
   },
 
   module: {
@@ -96,7 +97,7 @@ export default merge.smart(baseConfig, {
               // before react-hot-loader/babel
               'transform-class-properties',
               'transform-es2015-classes',
-              'react-hot-loader/babel'
+              'react-hot-loader/babel',
             ],
           }
         }
@@ -229,16 +230,13 @@ export default merge.smart(baseConfig, {
   },
 
   plugins: [
+    /*
     new webpack.DllReferencePlugin({
       context: process.cwd(),
       manifest: require(manifest),
       sourceType: 'var',
     }),
-
-    new webpack.HotModuleReplacementPlugin({
-      multiStep: true
-    }),
-
+    */
     new webpack.NoEmitOnErrorsPlugin(),
 
     /**
@@ -261,7 +259,7 @@ export default merge.smart(baseConfig, {
       debug: true
     }),
 
-    new ExtractTextPlugin({
+    new MiniCssExtractPlugin({
       filename: '[name].css'
     }),
   ],
@@ -273,25 +271,30 @@ export default merge.smart(baseConfig, {
 
   devServer: {
     port,
-    publicPath,
     compress: true,
-    noInfo: true,
-    stats: 'errors-only',
-    inline: true,
-    lazy: false,
     hot: true,
-    headers: { 'Access-Control-Allow-Origin': '*' },
-    contentBase: path.join(__dirname, 'dist'),
-    watchOptions: {
-      aggregateTimeout: 300,
-      ignored: /node_modules/,
-      poll: 100
+    client: {
+      reconnect: 0
     },
+    static: {
+      directory: path.join(__dirname, 'dist'),
+      watch: {
+        aggregateTimeout: 300,
+        ignored: /node_modules/,
+        poll: 100
+      },
+    },
+    headers: { 'Access-Control-Allow-Origin': '*' },
+    devMiddleware: {
+      stats: 'errors-only',
+      publicPath,
+    },
+
     historyApiFallback: {
       verbose: true,
       disableDotRule: false,
     },
-    before() {
+    onBeforeSetupMiddleware() {
       if (process.env.START_HOT) {
         console.log('Starting Main Process...');
         spawn(

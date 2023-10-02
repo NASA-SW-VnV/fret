@@ -38,7 +38,7 @@ import RequirementDialogs from './RequirementDialogs';
 
 const constants = require('../parser/Constants');
 
-const sharedObj = require('electron').remote.getGlobal('sharedObj');
+const sharedObj =require('@electron/remote').getGlobal('sharedObj');
 const db = sharedObj.db;
 const system_dbkeys = sharedObj.system_dbkeys;
 

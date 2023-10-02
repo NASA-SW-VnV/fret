@@ -53,6 +53,13 @@ export default {
       use: {
         loader: 'babel-loader',
         options: {
+          presets: [
+            ['@babel/preset-env',
+              {
+                modules: 'commonjs'
+              }],
+            '@babel/preset-react',
+            '@babel/preset-flow'],
           cacheDirectory: true
         }
       }
@@ -91,6 +98,5 @@ export default {
       NODE_ENV: 'production'
     }),
 
-    new webpack.NamedModulesPlugin(),
   ],
 };

@@ -73,8 +73,8 @@ const LTLSimController = require('ltlsim-core').LTLSimController;
 const EFormulaStates = require('ltlsim-core').EFormulaStates;
 
 	// access for files and database
-const app = require('electron').remote.app
-const dialog = require('electron').remote.dialog
+const app =require('@electron/remote').app
+const dialog =require('@electron/remote').dialog
 
 const fs = require("fs");
 
@@ -326,7 +326,6 @@ class LTLSimDialog extends Component {
 	// (checked by this.update())
     for (let i=0; i< this.props.requirementIDs.length; i++){
         let formula = LTLSimController.getFormula(model, this.props.ids[i]);
-        console.log(formula)
   	if (((this.props.open && !prevProps.open) || updateOnce) &&
             formula && formula.parseErrors.length === 0) {
 	    LTLSimController.evalModel(model);
@@ -625,20 +624,20 @@ class LTLSimDialog extends Component {
 				{
 	    			traceID: NewTraceID,
 	    			traceDescription: "imported from "+filepath[0],
-				    theTrace: trace,
-				    saveToReqID: saveToReqID,
-				    saveToComponent: saveToComponent,
-				    saveToProject: saveToProject
+				theTrace: trace,
+				saveToReqID: saveToReqID,
+				saveToComponent: saveToComponent,
+				saveToProject: saveToProject
 				} );
 
 			let NewTraces = traces.concat(NewTraceID);
 
         		return {
-				         traceIDCnt: NTC,
-	    			     traceID: NewTraceID,
-				         traces: NewTraces,
-	    		       traceDescription: "imported from "+filepath[0],
-	    			     activeTraces: newActiveTraces
+				traceIDCnt: NTC,
+	    			traceID: NewTraceID,
+				traces: NewTraces,
+	    			traceDescription: "imported from "+filepath[0],
+	    			activeTraces: newActiveTraces
             			};
 			}
 		else {
@@ -1416,7 +1415,7 @@ for (let i=0; i< reqID_data.length; i++){
                         <ListItemText inset primary = {'Load/Project'} />
                       </MenuItem>
                       <MenuItem
-					              id="qa_ltlSim_mi_traceLoadRequirement"
+					    id="qa_ltlSim_mi_traceLoadRequirement"
                         onClick={() =>  this.handleLoadTraces('Requirement')}
                         dense
                         >
@@ -1429,7 +1428,7 @@ for (let i=0; i< reqID_data.length; i++){
                         dense
                         >
                         <ListItemIcon><NotesIcon color="primary"/></ListItemIcon>
-                        <ListItemText inset primary = {'Save [JSON]'} />
+                        <ListItemText inset primary = {'Save [JSON])'} />
                       </MenuItem>
                       {
                         (this.state.traces || []).map(traceID => {

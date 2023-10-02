@@ -93,15 +93,15 @@ import {
 import ImportedVariablesWarningDialog from "./ImportedVariablesWarningDialog";
 const FretSemantics = require('../parser/FretSemantics');
 
-const app = require('electron').remote.app
-const dialog = require('electron').remote.dialog
+const app =require('@electron/remote').app
+const dialog =require('@electron/remote').dialog
 
 const fs = require('fs');
 
 
 const drawerWidth = 240;
 
-const ext_imp_json_file = require('electron').remote.getGlobal('sharedObj').ext_imp_json;
+const ext_imp_json_file =require('@electron/remote').getGlobal('sharedObj').ext_imp_json;
 const {ipcRenderer} = require('electron');
 
 const styles = theme => ({

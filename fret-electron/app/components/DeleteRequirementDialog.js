@@ -39,8 +39,6 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-//const db = require('electron').remote.getGlobal('sharedObj').db;
-//const modeldb = require('electron').remote.getGlobal('sharedObj').modeldb;
 const {ipcRenderer} = require('electron');
 import { connect } from "react-redux";
 import { deleteRequirement } from '../reducers/allActionsSlice';
@@ -69,18 +67,18 @@ class DeleteRequirementDialog extends React.Component {
       this.props.deleteRequirement({ type: 'actions/deleteRequirement',
                                       // projects
                                       // requirements
-                                      requirements : result.requirements, 
+                                      requirements : result.requirements,
                                       // analysis
-                                      components : result.components,     
-                                      completedComponents : result.completedComponents, 
-                                      cocospecData : result.cocospecData, 
+                                      components : result.components,
+                                      completedComponents : result.completedComponents,
+                                      cocospecData : result.cocospecData,
                                       cocospecModes : result.cocospecModes,
                                       // variables
                                       variable_data : result.variable_data,
-                                      modelComponent : result.modelComponent,                                   
-                                      modelVariables : result.modelVariables,   
-                                      selectedVariable : result.selectedVariable, 
-                                      importedComponents : result.importedComponents,         
+                                      modelComponent : result.modelComponent,
+                                      modelVariables : result.modelVariables,
+                                      selectedVariable : result.selectedVariable,
+                                      importedComponents : result.importedComponents,
                                     })
     }).catch((err) => {
       console.log(err);

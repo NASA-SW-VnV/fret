@@ -41,7 +41,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import { withStyles } from '@material-ui/core/styles';
 
 const {ipcRenderer} = require('electron');
-const ext_imp_json_file = require('electron').remote.getGlobal('sharedObj').ext_imp_json;
+const ext_imp_json_file =require('@electron/remote').getGlobal('sharedObj').ext_imp_json;
 
 const styles = theme => ({
   textField: {
@@ -129,7 +129,7 @@ class MissingExternalImportDialog extends React.Component {
             </Button>
             <Button id="qa_missExtImp_btn_noImport" onClick={this.handleNoImport} color="primary" >
               No import
-            </Button>            
+            </Button>
             <Button id="qa_missExtImp_btn_browse" onClick={this.handleBrowse} color="primary" >
               Browse
             </Button>

@@ -44,6 +44,7 @@
  */
 
 import { app, BrowserWindow, ipcMain } from 'electron';
+require('@electron/remote/main').initialize()
 import MenuBuilder from './menu';
 import FretModel from '../model/FretModel';
 
@@ -451,7 +452,7 @@ app.on('ready', async () => {
       webPreferences: {
         nodeIntegration: true,   // remove for context isolation
         enableRemoteModule: true,   // remove for context isolation
-        //contextIsolation: true, // add this for context isolation
+        contextIsolation: false, // add this for context isolation
         //preload: path.join(__dirname,'preload.js'),   // add this for context isolation
       },
       show: false,
@@ -461,7 +462,7 @@ app.on('ready', async () => {
   } catch(error){
     console.log(`Error in main.dev : ${error}`);
   }
-
+  require('@electron/remote/main').enable(mainWindow.webContents)
   mainWindow.loadURL(`file://${__dirname}/app.html`);
 
 /*

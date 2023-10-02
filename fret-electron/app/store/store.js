@@ -11,4 +11,4 @@ const store = configureStore({
   }
 })
 
-export default { store, history };
+export { store, history };

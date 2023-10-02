@@ -40,8 +40,8 @@ import RealizabilityContent from './RealizabilityContent';
 import AnalysisReportContent from './AnalysisReportContent';
 import { connect } from "react-redux";
 
-const app = require('electron').remote.app;
-const dialog = require('electron').remote.dialog;
+const app =require('@electron/remote').app;
+const dialog =require('@electron/remote').dialog;
 const {ipcRenderer} = require('electron');
 let id = 0;
 
@@ -60,7 +60,7 @@ const styles = theme => ({
 });
 
 class RealizabilityView extends React.Component {
-  
+
   state = {
     importedReport: {}
   };
@@ -92,7 +92,7 @@ class RealizabilityView extends React.Component {
       this.setState({importedReport: report})
     }).catch((err) => {
       console.log(err);
-    });    
+    });
   };
 
   render() {

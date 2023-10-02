@@ -40,7 +40,7 @@ import { schemeCategory20c as colors} from 'd3-scale';
 import css from './RadialBarChart.css';
 const constants = require('../parser/Constants');
 
-const db = require('electron').remote.getGlobal('sharedObj').db;
+const db =require('@electron/remote').getGlobal('sharedObj').db;
 var dbChangeListener = undefined;
 
 const style = {

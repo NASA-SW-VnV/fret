@@ -67,8 +67,8 @@ const {ipcRenderer} = require('electron');
 import { importComponent, selectCorspdModelComp, selectVariable,} from '../reducers/allActionsSlice';
 
 const archiver = require('archiver');
-const app = require('electron').remote.app;
-const dialog = require('electron').remote.dialog;
+const app =require('@electron/remote').app;
+const dialog =require('@electron/remote').dialog;
 const utilities = require('../../support/utilities');
 //const uuidv1 = require('uuid/v1');
 var uuid = require('uuid');

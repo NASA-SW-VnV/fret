@@ -83,8 +83,8 @@ var uuid = require('uuid');
 import { v1 as uuidv1 } from 'uuid';
 
 const {ipcRenderer} = require('electron');
-const ext_exp_json_file = require('electron').remote.getGlobal('sharedObj').ext_exp_json;
-const ext_exp_json_file_exists = require('electron').remote.getGlobal('sharedObj').exp_exp_json_exists;
+const ext_exp_json_file =require('@electron/remote').getGlobal('sharedObj').ext_exp_json;
+const ext_exp_json_file_exists =require('@electron/remote').getGlobal('sharedObj').exp_exp_json_exists;
 const fs = require('fs');
 
 

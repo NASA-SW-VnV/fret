@@ -38,9 +38,9 @@ import { withStyles } from '@material-ui/core/styles';
 import { connect } from "react-redux";
 
 const { ipcRenderer } = require('electron');
-const app = require('electron').remote.app;
+const app =require('@electron/remote').app;
 const fs = require('fs');
-const dialog = require('electron').remote.dialog;
+const dialog =require('@electron/remote').dialog;
 const archiver = require('archiver');
 const constants = require('../parser/Constants');
 
@@ -71,7 +71,7 @@ class SaveRealizabilityReport extends React.Component {
 				<span onClick={this.saveRealizabilityResults}>
 					Save Report
 				</span>
-			</Tooltip>			
+			</Tooltip>
 		);
 
 	}
