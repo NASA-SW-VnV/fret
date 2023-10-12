@@ -130,7 +130,7 @@ class Glossary extends React.Component {
     if(this.props.projectRequirements !== prevProps.projectRequirements) {
       this.setComponentsNames();
     }
-    if(this.props.variables !== prevProps.variables || process.env.EXTERNAL_TOOL == '1' && this.props.editVariables !== prevProps.editVariables) {
+    if(this.props.variables !== prevProps.variables || this.state.components !== prevState.components ||  process.env.EXTERNAL_TOOL == '1' && this.props.editVariables !== prevProps.editVariables) {
       this.setVariablesToComponents();
     }
   }

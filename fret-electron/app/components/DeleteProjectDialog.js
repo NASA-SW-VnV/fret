@@ -134,7 +134,6 @@ DeleteProjectDialog.propTypes = {
   projectTobeDeleted: PropTypes.string.isRequired,
   handleDialogClose: PropTypes.func.isRequired,
   selectedProject: PropTypes.string.isRequired,
-  initializeSelectedProject: PropTypes.func.isRequired
 
 }
 
