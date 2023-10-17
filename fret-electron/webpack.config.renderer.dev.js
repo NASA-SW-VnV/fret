@@ -70,8 +70,6 @@ export default merge.smart(baseConfig, {
 
   entry: [
     'react-hot-loader/patch',
-    `webpack-dev-server/client?http://localhost:${port}/`,
-    'webpack/hot/only-dev-server',
     path.join(__dirname, 'app/index.js'),
   ],
 
@@ -251,15 +249,10 @@ export default merge.smart(baseConfig, {
     __dirname: false,
     __filename: false
   },
-
   devServer: {
     port,
-    // host: publicPath,
     compress: true,
     hot: true,
-    client: {
-      reconnect: 0
-    },
     static: {
       directory: path.join(__dirname, 'dist'),
       watch: {
@@ -271,7 +264,6 @@ export default merge.smart(baseConfig, {
     headers: { 'Access-Control-Allow-Origin': '*' },
     devMiddleware: {
       stats: 'errors-only',
-      publicPath,
     },
 
     historyApiFallback: {

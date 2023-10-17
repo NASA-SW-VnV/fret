@@ -102,7 +102,6 @@ class Glossary extends React.Component {
     if (process.env.EXTERNAL_TOOL == '1') {
       this.setVariablesToComponents();
     }
-
     }
 
   createMapDbIdToReqId = () => {
@@ -130,7 +129,8 @@ class Glossary extends React.Component {
     if(this.props.projectRequirements !== prevProps.projectRequirements) {
       this.setComponentsNames();
     }
-    if(this.props.variables !== prevProps.variables || this.state.components !== prevState.components ||  process.env.EXTERNAL_TOOL == '1' && this.props.editVariables !== prevProps.editVariables) {
+    if(this.props.variables !== prevProps.variables || this.props.projectRequirements !== prevProps.projectRequirements ||  process.env.EXTERNAL_TOOL == '1' && this.props.editVariables !== prevProps.editVariables) {
+      this.setComponentsNames();
       this.setVariablesToComponents();
     }
   }
