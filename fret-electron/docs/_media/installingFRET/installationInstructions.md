@@ -39,8 +39,8 @@ For the installation of FRET on Apple M1 machines see notes below.
 Alternatively, for Linux users, we provide a [Docker image](../../../../tools/Scripts/docker) to build an executable binary. Here are the steps:
 
 1. `cd fret`
-2. `mv fret/tools/Scripts/docker/Dockerfile .`
-3. `mv fret/tools/Scripts/docker/generate_executable_Linux.sh .`
+2. `mv tools/Scripts/docker/Dockerfile .`
+3. `mv tools/Scripts/docker/generate_executable_Linux.sh .`
 4. `docker build -t fret-install -f Dockerfile .`
 5. `mkdir ../fret-desktop (Replace path with your preference)`
 6. `docker run -v $PWD/../fret-desktop:/tmp/fret -u root -it fret-install:latest /bin/bash`
