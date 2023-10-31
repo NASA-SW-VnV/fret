@@ -35,6 +35,7 @@ import {leveldbDB, modelDB} from '../../app/main.dev'
 import fretDbGetters from "../fretDbSupport/fretDbGetters_main";
 
 const modelSupport = require('../modelDbSupport/populateVariables_main');
+export const Default_Project_name = 'Default';
 
 export {
   importRequirements as importRequirements,
@@ -76,7 +77,7 @@ async function importRequirements (data, projects) {
     return leveldbDB.put({
       _id: 'FRET_PROJECTS',
       _rev: doc._rev,
-      names: projects
+      names: projects.filter(project => project !== Default_Project_name)
     })
   }).catch((err) => {
     console.log(err);

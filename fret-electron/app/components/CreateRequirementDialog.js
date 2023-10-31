@@ -374,8 +374,8 @@ class CreateRequirementDialog extends React.Component {
             }
           );
       } else {
-        const { selectedProject, listOfProjects } = props
-        const defaultProject = listOfProjects.includes(selectedProject) ? selectedProject : listOfProjects[0]
+        const { selectedProject } = props
+        const defaultProject = selectedProject === 'All Projects' ? 'Default' : selectedProject
         this.setState({
           project: defaultProject,
           reqid: '',

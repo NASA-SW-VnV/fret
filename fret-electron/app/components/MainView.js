@@ -661,9 +661,9 @@ class MainView extends React.Component {
                                       <LoopIcon/>
                                       </Tooltip>
                                     </IconButton>
-                                    <IconButton id={"qa_proj_del_"+name.replace(/\s+/g, '_')} onClick={() => this.handleDeleteProject(name)} size="small" aria-label="delete" >
+                                    <IconButton id={"qa_proj_del_"+name.replace(/\s+/g, '_')} onClick={() => this.handleDeleteProject(name)} size="small" aria-label="delete" disabled={name === 'Default'} >
                                       <Tooltip id="project-tooltip-icon-delete" title="Delete Project">
-                                      <DeleteIcon color='error'/>
+                                      <DeleteIcon color={name === 'Default' ? 'disabled': 'error'}/>
                                       </Tooltip>
                                     </IconButton>
                                   </MenuItem>

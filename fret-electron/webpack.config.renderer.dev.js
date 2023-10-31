@@ -70,6 +70,8 @@ export default merge.smart(baseConfig, {
 
   entry: [
     'react-hot-loader/patch',
+    `webpack-dev-server/client?http://localhost:${port}/`,
+    'webpack/hot/only-dev-server',
     path.join(__dirname, 'app/index.js'),
   ],
 
@@ -253,6 +255,7 @@ export default merge.smart(baseConfig, {
     port,
     compress: true,
     hot: true,
+    host: 'localhost',
     static: {
       directory: path.join(__dirname, 'dist'),
       watch: {
