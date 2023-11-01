@@ -859,10 +859,11 @@ function testObl(v,formula) {
 // testObl('a_0', formula)
 
 let formulas = {
-    'Default_State_Entry_Manual': '(H (((FSM_State_eq_Manual) & (Z (! (FSM_State_eq_Manual)))) -> (FSM_State_eq_Manual_RoverIdle_Idle)))',
-    'DZR_CharacterizeZone_Acquire_to_DZR_CharacterizeZone_Transmit': '(H ((Y (((FSM_State_eq_DZR_CharacterizeZone_Acquire) & ED_2) & (Z (! ((FSM_State_eq_DZR_CharacterizeZone_Acquire) & ED_2))))) -> ((FSM_State_eq_DZR_CharacterizeZone_Transmit) | (! (Y TRUE)))))',
-    'Event_Statusing_EA_2': '(H (EA_2 <-> ((H[0,3] (F_confirmationSentToNL | (F_confirmationReceivedFromNF & F_isLeader))) & (H[0,2] (Y TRUE)))))',
-    'Parameter_List_DnrSnrTransition_DZRCloseout_TransferData':'(H ((FSM_State_eq_DnrSnrTransition_DZRCloseout_TransferData) -> (((controllerType_eq_1) & (activity_eq_3)) & (velocity_eq_0))))'
+    'DZR_CharacterizeZone_Acquire_to_DZR_CharacterizeZone_Transmit': '(H ((Y (((((FSM_State_eq_DZR_CharacterizeZone_Acquire) & ED_2) & (! EA_1)) & (! EB_2)) & (Z (! ((((FSM_State_eq_DZR_CharacterizeZone_Acquire) & ED_2) & (! EA_1)) & (! EB_2)))))) -> ((FSM_State_eq_DZR_CharacterizeZone_Transmit) | (! (Y TRUE)))))'
+    // 'Default_State_Entry_Manual': '(H (((FSM_State_eq_Manual) & (Z (! (FSM_State_eq_Manual)))) -> (FSM_State_eq_Manual_RoverIdle_Idle)))',
+    // 'DZR_CharacterizeZone_Acquire_to_DZR_CharacterizeZone_Transmit': '(H ((Y (((FSM_State_eq_DZR_CharacterizeZone_Acquire) & ED_2) & (Z (! ((FSM_State_eq_DZR_CharacterizeZone_Acquire) & ED_2))))) -> ((FSM_State_eq_DZR_CharacterizeZone_Transmit) | (! (Y TRUE)))))',
+    // 'Event_Statusing_EA_2': '(H (EA_2 <-> ((H[0,3] (F_confirmationSentToNL | (F_confirmationReceivedFromNF & F_isLeader))) & (H[0,2] (Y TRUE)))))',
+    // 'Parameter_List_DnrSnrTransition_DZRCloseout_TransferData':'(H ((FSM_State_eq_DnrSnrTransition_DZRCloseout_TransferData) -> (((controllerType_eq_1) & (activity_eq_3)) & (velocity_eq_0))))'
     // 'FSM-001-fin' : '(LAST V ((((limits & (! standby)) & (! apfail)) & supported) -> pullup))',
     // 'FSM-001': '(G ((((limits & (! standby)) & (! apfail)) & supported) -> pullup))',
     // 'FSM-001-pltl': '(H ((((limits & (! standby)) & (! apfail)) & supported) -> pullup))',    
