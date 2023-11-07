@@ -1227,8 +1227,10 @@ export default class FretModel {
     let report = {};
 
     try {
-      var fileContent = fs.readFileSync(filepaths[0], 'utf8');
-      report = JSON.parse(fileContent);
+      if (filepaths && filepaths.length > 0) {
+        var fileContent = fs.readFileSync(filepaths[0], 'utf8');
+        report = JSON.parse(fileContent);
+      }
       return report;
     } catch (err) {
       console.log(err);
