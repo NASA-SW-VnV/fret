@@ -56,6 +56,7 @@ const isVar = utils.isVar;
 const isAtom = utils.isAtom;
 const setProp = utils.setProp;
 const isEqual = utils.isEqual;
+const isString = utils.isString;
 
 const identities = { And : true, Or : false, Plus : 0, Mult : 1 };
 const absorbers = { And : false, Or : true, Mult : 0 };
@@ -555,7 +556,7 @@ function linearizeFormula(vars, formulaAST) {
 function getVars (formulaAST, vars = {}) {    
     if (isVar(formulaAST)) {
         return formulaAST;
-    } else if (isAtom(formulaAST) && ! constants.predefinedVars.includes(formulaAST)) {
+    } else if (isString(formulaAST) && ! constants.predefinedVars.includes(formulaAST)) {
         if (!(formulaAST in vars)) {
             vars[formulaAST] = 0;
         } else {
