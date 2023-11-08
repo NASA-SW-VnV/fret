@@ -36,6 +36,7 @@ const RequirementParser = require('./RequirementParser');
 const AnnotatingErrorListener = require('./AnnotatingErrorListener');
 const SemanticsAnalyzer = require('./SemanticsAnalyzer').SemanticsAnalyzer;
 const semanticsAnalyzer = new SemanticsAnalyzer();
+const utils = require('../../support/utils')
 
 const REQ_BODY_CTX_RULE = 'reqt_body'
 
@@ -49,10 +50,12 @@ function trimReqtText(text) {
   return renamed;
 }
 
+
 const reservedWords = /\b(?:[AEFGHOSTUVXYZ]|A[FGX]|BU|E[FGX]|[SU]I|AB[FG]|EB[FG]|MAX|MIN)\b/g
 
 function findReservedWords(text) {
-  const matches = text.match(reservedWords);
+  text = utils.replace_special_chars(text);
+  const matches = text.match(reservedWords);//remaining.match(reservedWords);
   return (matches ? [{ text : 'These reserved letter combinations cannot be used: ' + matches.join(', ') + '.', type: "error" } ] : []);
 }
 
@@ -83,7 +86,7 @@ exports.compile = (text) => {
   var tokens  = new antlr4.CommonTokenStream(lexer);
   var parser = new RequirementParser.RequirementParser(tokens);
     //var annotations = [];
-  var annotations = findReservedWords(trimmedText);
+  var annotations = [] // findReservedWords(trimmedText);
   var listener = new AnnotatingErrorListener.AnnotatingErrorListener(annotations);
   parser.removeErrorListeners();
   parser.addErrorListener(listener);
@@ -96,6 +99,12 @@ exports.compile = (text) => {
   } else {
     semanticsAnalyzer.clearResult();
     antlr4.tree.ParseTreeWalker.DEFAULT.walk(semanticsAnalyzer, tree);
+    const conds = semanticsAnalyzer.conditions().join(" ");
+    const reserved = findReservedWords(conds)
+    if (reserved.length > 0) return ({
+      parseErrors: reserved.map(a => { return a.text }).join('; ')
+    })
+    else
     return ({
       collectedSemantics: semanticsAnalyzer.semantics()
     })
@@ -109,13 +118,13 @@ exports.compilePartialText = (text) => {
   var lexer = new RequirementLexer.RequirementLexer(chars);
   var tokens  = new antlr4.CommonTokenStream(lexer);
   var parser = new RequirementParser.RequirementParser(tokens);
-  var annotations = findReservedWords(trimmedText);
+  var annotations = []//findReservedWords(trimmedText);
   var listener = new AnnotatingErrorListener.AnnotatingErrorListener(annotations);
   parser.removeErrorListeners();
   parser.addErrorListener(listener);
   var tree = parser[REQ_BODY_CTX_RULE]();
   antlr4.tree.ParseTreeWalker.DEFAULT.walk(semanticsAnalyzer, tree);
-
+  
   let r = {}
   if (do_not_formalize(trimmedText)) {
     semanticsAnalyzer.clearResult();
@@ -125,6 +134,9 @@ exports.compilePartialText = (text) => {
 	};
   }
   else {
+    const conds = semanticsAnalyzer.conditions().join(" ");
+    const reserved = findReservedWords(conds)
+    annotations = annotations.concat(reserved);
     r = { parseErrors: annotations.map(a => { return a.text }).join('; '),
 	  collectedSemantics: semanticsAnalyzer.semanticsNoFormalization()
 	};
@@ -145,7 +157,7 @@ exports.parseByCtxRule = (text, ctxRule) => {
   var lexer = new RequirementLexer.RequirementLexer(chars);
   var tokens  = new antlr4.CommonTokenStream(lexer);
   var parser = new RequirementParser.RequirementParser(tokens);
-  var annotations = findReservedWords(trimmedText);
+  var annotations = []; //findReservedWords(trimmedText);
   var listener = new AnnotatingErrorListener.AnnotatingErrorListener(annotations);
   parser.removeErrorListeners();
   parser.addErrorListener(listener);
@@ -160,6 +172,34 @@ exports.parseByCtxRule = (text, ctxRule) => {
   return result
 }
 
+// Like parseByCtxRule but checks for uses of reserved words in conditions
+exports.parseByCtxRuleAndAnalyze = (text, ctxRule) => {
+  let trimmedText = trimReqtText(text)
+  var chars = new antlr4.InputStream(trimmedText);
+  var lexer = new RequirementLexer.RequirementLexer(chars);
+  var tokens  = new antlr4.CommonTokenStream(lexer);
+  var parser = new RequirementParser.RequirementParser(tokens);
+  var annotations = []; //findReservedWords(trimmedText);
+  var listener = new AnnotatingErrorListener.AnnotatingErrorListener(annotations);
+  parser.removeErrorListeners();
+  parser.addErrorListener(listener);
+  var tree = parser[ctxRule]();
+
+  var result = new Object()
+  if (annotations.length > 0) {
+    result.parseErrors = annotations.map(a => { return a.text }).join('; ')
+  } else {
+    antlr4.tree.ParseTreeWalker.DEFAULT.walk(semanticsAnalyzer, tree);
+    const conds = semanticsAnalyzer.conditions().join(" ");
+    const reserved = findReservedWords(conds);
+    if (reserved.length > 0)
+      result.parseErrors = reserved.map(a => { return a.text }).join('; ');
+    else result.parseTree = tree;
+  }
+  return result;
+}
+
+
 /**
  * Parses text by REQ_BODY_CTX_RULE.
  */
@@ -167,6 +207,9 @@ exports.parse = (text) => {
   return exports.parseByCtxRule(text, REQ_BODY_CTX_RULE)
 }
 
+exports.parseAndAnalyze = (text) => {
+  return exports.parseByCtxRuleAndAnalyze(text, REQ_BODY_CTX_RULE)
+}
 
 /*
 // tests

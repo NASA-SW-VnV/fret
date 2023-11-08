@@ -588,8 +588,8 @@ class SlateEditor2 extends React.Component {
    }
 
    enableSemantics = () => {
-     const result = FretSemantics.parse(this.getTextInEditor())
-     return (result.parseErrors && result.parseErrors.length > 0)
+     const result = FretSemantics.parseAndAnalyze(this.getTextInEditor())
+     return (result.parseErrors && result.parseErrors.length > 0);
    }
 
    extractSemantics = () => {

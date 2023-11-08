@@ -447,6 +447,12 @@ function LAST_is_FALSE (formula) {
   return formula.replace(/\bLAST\b/g, 'FALSE');
 }
 
+SemanticsAnalyzer.prototype.conditions = () => {
+  const parts = { component : result.component_name, scope_condition: result.scope_mode, pre_condition: result.regular_condition,  stop_condition: result.stop_condition,  post_condition: result.post_condition};
+  const conds = [parts.scope_condition, parts.pre_condition, parts.stop_condition, parts.post_condition];
+  return conds.filter(x => x ? true : false); // remove undefined conditions
+}
+
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
 SemanticsAnalyzer.prototype.semantics = () => {
