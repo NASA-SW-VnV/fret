@@ -232,7 +232,7 @@
     "@material-ui/lab": "^4.0.0-alpha.57",
     "@reduxjs/toolkit": "^1.9.0",
     "antlr4": "4.8.0",
-    "archiver": "^3.0.0",
+    "archiver": "^6.0.0",
     "babel-plugin-flow-react-proptypes": "^24.1.2",
     "classnames": "^2.2.6",
     "command-exists": "^1.2.9",

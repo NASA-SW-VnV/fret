@@ -272,6 +272,9 @@ let TableToolbar = props => {
               placeholder = "Search requirements"
               value={searchInputString}
               onChange={handleSearchInputChange}
+              onKeyDown={(e) => {
+                e.key === 'Enter' ? handleSearchKeyChange() : null
+              }}
               startAdornment={
                 <Tooltip title="Search requirements">
                   <InputAdornment position="start">
