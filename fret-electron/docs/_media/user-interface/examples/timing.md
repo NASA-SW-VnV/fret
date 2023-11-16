@@ -22,22 +22,20 @@ for example 12 seconds or 5 minutes. Time units can be one of the following:
 * **minute** or **minutes**
 * **hour** or **hours**
 
-Note that the time units are not checked, converted or reasoned about by FRET. FRET exports verification code to analysis tools, which are in charge of interpreting the time
-units. Check the user manual under "Exporting for Analysis" for more details.
+**NOTE:** Time units are currently ignored: they are not checked, converted
+or reasoned about by FRET. To FRET, all the units mean "time points" (or
+"time steps"); e.g., 3 ticks means the same as 3 seconds, which means the
+same as 3 microseconds. FRET exports verification code to analysis tools,
+which are in charge of interpreting the time units. Check the user manual
+under "Exporting for Analysis" for more details.
 
-STOP_CONDITION is a Boolean expression. The timing **before** means that the
-response must happen at least once before the STOP_CONDITION holds.
+STOP_CONDITION is a Boolean expression (see help for the Condition
+field). The timing **before** means that the response must happen at least
+once strictly before the STOP_CONDITION holds. The timing **until** means
+that the response must hold at least until strictly before the
+STOP_Condition holds.
 
-### Restrictions
-
-The following uppercase identifiers cannot be used as variables in boolean
-and arithmetic expressions:
-
-`A E F G H O S T U V X Y Z AF AG AX BU EF EG EX SI UI ABF ABG EBF EBG MAX MIN LAST`.  
-
-[//]: # (If you have some of those in your requirements, the database fret-db may not be able to be read. Also, the Simulator will not give correct results.)
-
-#### Examples
+#### EXAMPLES
 * **immediately:** **In** roll_hold **mode RollAutopilot shall immediately satisfy if** (roll_angle
   < 6.0 & roll_angle > -6.0) **then** roll_hold_reference = 0.0
 * **next:** **When** currentOverload **the** circuitBreaker **shall,
@@ -54,3 +52,18 @@ and arithmetic expressions:
   **ticks, satisfy** output=10
 * **until:** **In** CountdownMode **the** system **shall, until** Count = 0, **satisfy** Count > 0
 * **before:** **The** system **shall, before** TakeOff, **satisfy** CheckListTasksCompleted
+
+#### RESTRICTIONS
+
+The following identifiers cannot be used as variables in Boolean
+and arithmetic expressions:
+
+`MODULE, DEFINE, MDEFINE, CONSTANTS, VAR, IVAR, FROZENVAR, INIT, TRANS,
+INVAR, SPEC, CTLSPEC, LTLSPEC, PSLSPEC, COMPUTE, NAME, INVARSPEC, FAIRNESS,
+JUSTICE, COMPASSION, ISA, ASSIGN, CONSTRAINT, SIMPWFF, CTLWFF, LTLWFF,
+PSLWFF, COMPWFF, IN, MIN, MAX, MIRROR, PRED, PREDICATES, process, array,
+boolean, bool, integer, real, word, word1, signed, unsigned, extend, resize,
+sizeof, uwconst, swconst, EX, AX, EF, AF, EG, AG, E, F, O, G, H, X, Y, Z, A,
+U, S, V, T, BU, EBF, ABF, EBG, ABG, case, esac, init, union, xor, xnor, self,
+count, abs, max, min, mod, of, in, next`.  
+

@@ -1,4 +1,4 @@
-#### Condition (optional)
+### Condition (optional)
 
 specifies the condition after which the response shall hold,
 taking into account scope and timing. A condition can be either:
@@ -42,14 +42,7 @@ when exporting requirements for verification. Check the user manual under
 Parentheses **(** **)** are used as usual. Please use parentheses as much as
 possible to avoid mistakes and misunderstandings.  
 
-### Restrictions
-
-The following uppercase identifiers cannot be used as variables in boolean
-and arithmetic expressions:
-
-`A E F G H O S T U V X Y Z AF AG AX BU EF EG EX SI UI ABF ABG EBF EBG MAX MIN LAST`.  
-
-##### EXAMPLES
+#### EXAMPLES
 
 * **Upon** powered_on the component shall immediately satisfy bootup
 * **Whenever** intruder the alarm shall immediately satisfy sound
@@ -62,3 +55,18 @@ examples, in the case where at some point p holds forever:
 
 In the first, q must be satisfied at least once.
 In the second, q must be satisfied infinitely often.
+
+#### RESTRICTIONS
+
+The following identifiers cannot be used as variables in Boolean
+and arithmetic expressions:
+
+`MODULE, DEFINE, MDEFINE, CONSTANTS, VAR, IVAR, FROZENVAR, INIT, TRANS,
+INVAR, SPEC, CTLSPEC, LTLSPEC, PSLSPEC, COMPUTE, NAME, INVARSPEC, FAIRNESS,
+JUSTICE, COMPASSION, ISA, ASSIGN, CONSTRAINT, SIMPWFF, CTLWFF, LTLWFF,
+PSLWFF, COMPWFF, IN, MIN, MAX, MIRROR, PRED, PREDICATES, process, array,
+boolean, bool, integer, real, word, word1, signed, unsigned, extend, resize,
+sizeof, uwconst, swconst, EX, AX, EF, AF, EG, AG, E, F, O, G, H, X, Y, Z, A,
+U, S, V, T, BU, EBF, ABF, EBG, ABG, case, esac, init, union, xor, xnor, self,
+count, abs, max, min, mod, of, in, next`.  
+

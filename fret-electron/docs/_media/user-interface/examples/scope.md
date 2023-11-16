@@ -14,7 +14,7 @@ The **only** modes mean that when the system is not in the specified relationshi
 (i.e., the system is not **in**/**after**/**before** the mode) the response
 must not occur.
 
-#### Examples
+#### EXAMPLES
 
 * _(global)_ The system shall always satisfy count >= 0
 * **After** boot mode the system shall immediately satisfy prompt_for_password
@@ -35,3 +35,18 @@ examples:
 * **While** persisted(4,high_temperature) the monitor shall until shutoff satisfy alarm_on
 * **Before** taxiing & receivedClearance the plane shall always satisfy !takeoff
 * **After** landed & powerOff the doors shall within 3 seconds satisfy unlocked
+
+#### RESTRICTIONS
+
+The following identifiers cannot be used as variables in Boolean
+and arithmetic expressions:
+
+`MODULE, DEFINE, MDEFINE, CONSTANTS, VAR, IVAR, FROZENVAR, INIT, TRANS,
+INVAR, SPEC, CTLSPEC, LTLSPEC, PSLSPEC, COMPUTE, NAME, INVARSPEC, FAIRNESS,
+JUSTICE, COMPASSION, ISA, ASSIGN, CONSTRAINT, SIMPWFF, CTLWFF, LTLWFF,
+PSLWFF, COMPWFF, IN, MIN, MAX, MIRROR, PRED, PREDICATES, process, array,
+boolean, bool, integer, real, word, word1, signed, unsigned, extend, resize,
+sizeof, uwconst, swconst, EX, AX, EF, AF, EG, AG, E, F, O, G, H, X, Y, Z, A,
+U, S, V, T, BU, EBF, ABF, EBG, ABG, case, esac, init, union, xor, xnor, self,
+count, abs, max, min, mod, of, in, next`.  
+
