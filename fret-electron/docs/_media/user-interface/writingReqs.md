@@ -32,7 +32,15 @@ While typing the body of a requirement, FRET parses the requirement and recogniz
 > __Note:__ The Boolean operators allowed in the boolean expression *while* scope, condition, *until* and *before* timings, and response fields are: `!` (negation), `&` (conjunction), `|` (disjunction), `xor` (exclusive or),  `->` or `=>` (implication), `<->` or `<=>` (equivalence). An alternative phrasing for implication is `if p then q`. There are nine predefined temporal predicates: , `preBool`, `preInt`, `preReal`, `persisted`, `occurred`, `persists`, `occurs`, `prevOcc` and `nextOcc`. See [Temporal Condition Help](./examples/temporal_condition_explanations.md). 
 The arithmetic comparison operators are `=, !=, <, >, <=, >=`. The arithmetic operators are `+, -, *, /, mod`, and `^` (exponentiation). Arithmetic terms and predicates are in standard form; e.g., `f(x,y)`,  `p(x,y,z)`. 
 
-> __Important Note:__ [Restrictions](./restrictions.md)
+> __Reserved Words:__ The following cannot be used as variables in Boolean and arithmetic expressions:  
+`A, ABF, ABG, AF, AG, ASSIGN, AX, BU, COMPASSION, COMPUTE, COMPWFF,
+CONSTANTS, CONSTRAINT, CTLSPEC, CTLWFF, DEFINE, E, EBF, EBG, EF, EG, EX, F,
+FAIRNESS, FROZENVAR, G, H, IN, INIT, INVAR, INVARSPEC, ISA, IVAR, JUSTICE,
+LTLSPEC, LTLWFF, MAX, MDEFINE, MIN, MIRROR, MODULE, NAME, O, PRED,
+PREDICATES, PSLSPEC, PSLWFF, S, SIMPWFF, SPEC, T, TRANS, U, V, VAR, X, Y, Z`  
+`abs, array, bool, boolean, case, count, esac, extend, in, init, integer,
+max, min, mod, next, of, process, real, resize, self, signed, sizeof,
+swconst, union, unsigned, uwconst, word, word1, xnor, xor`.
 
 ### Templates tab
 
