@@ -237,11 +237,14 @@ RequirementListener.prototype.enterPost_condition = function(ctx) {
 }
 
 RequirementListener.prototype.enterProbability_aux = function(ctx) {
-    const prob = antlrUtilities.getText(ctx).trim().split(' ');
-    const selector = prob[0].toLowerCase()
-    if (selector === "what") result.probability = ['query']
-    else if (selector === "probability") result.probability = [prob[1],prob[2]]
-    else console.log('enterProbability: unknown keyword')
+  const prob = antlrUtilities.getText(ctx).trim().split(' ');
+  const selector = prob[0].toLowerCase()
+  if (selector === "what") result.probability = 'query'
+  else if (selector === "probability") {
+    result.probability = 'bound';
+    result.probability_bound = [prob[1],prob[2]];
+  }
+  else console.log('enterProbability: unknown keyword')
 }
 
 RequirementListener.prototype.exitProbability = function(ctx) {
