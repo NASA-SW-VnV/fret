@@ -406,7 +406,7 @@ class SortableTable extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (this.props.selectedProject !== prevProps.selectedProject) {
-      this.formatData();
+      this.clearSearchInput();
       this.setState(
         {
           selected: [],
@@ -439,6 +439,7 @@ class SortableTable extends React.Component {
     });
     this.setState({
       data,
+      page: 0
     });
   }
 
@@ -685,7 +686,9 @@ class SortableTable extends React.Component {
                     searchId: [],
                     searchInputString: '',
                     searchStatus: [],
-                  });
+                  }, () => {
+      this.formatData();
+    });
   };
 
   handleSearchInputChange = event => {
