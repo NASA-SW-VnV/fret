@@ -30,7 +30,7 @@
     "test": "cross-env NODE_ENV=test FRET_TESTING=1 BABEL_DISABLE_CACHE=1 node --trace-warnings -r @babel/register ./internals/scripts/RunTests.js",
     "test-all": "npm run lint && npm run flow && npm run build && npm run test sem && npm run test e2e",
     "test-watch": "npm test -- --watch",
-    "clean": "rimraf app/node_modules && rimraf ../tools/LTLSIM/ltlsim-core/node_modules && rimraf ../tools/LTLSIM/ltlsim-electron/node_modules && rimraf node_modules",
+    "clean": "test -f ./node_modules/.bin/rimraf && rimraf app/node_modules && rimraf ../tools/LTLSIM/ltlsim-core/node_modules && rimraf ../tools/LTLSIM/ltlsim-electron/node_modules && rimraf node_modules || true",
     "fret-install": "npm install && npm --prefix ../tools/LTLSIM/ltlsim-core install ../tools/LTLSIM/ltlsim-core",
     "fret-reinstall": "npm run clean && npm run fret-install"
   },
