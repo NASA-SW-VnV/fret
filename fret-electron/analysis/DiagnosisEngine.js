@@ -127,7 +127,7 @@ class DiagnosisEngine {
       var localMap = new Map();
 
       for (let eng in this.engines) {
-        var propertyList = this.engines[eng].properties.map(p => p.reqid);
+        var propertyList = this.engines[eng].properties.map(p => p.reqid).filter(id => !id.toLowerCase().includes('assumption'));
         var filePath = this.tmppath+this.engines[eng].componentName+(minimal ? '_minimal' : '')+'.lus';
         var output = fs.openSync(filePath, 'w');      
         var lustreContract = ejsCache_realize.renderRealizeCode(this.engineName).component.complete(this.engines[eng]);
@@ -189,13 +189,13 @@ class DiagnosisEngine {
 
       var complements = [];
       var conflictExists = false;
-      var properties = contract.properties.map(p => p.reqid);
+      var properties = contract.properties.map(p => p.reqid).filter(id => !id.toLowerCase().includes('assumption'));
       var propID = properties.join('');
       for (var i = 0; i < n; i++) {
         var partition = this.getPartition(properties, n, i, false);
         if (!this.realizableMap.has(partition.join(''))) {
           var slicedContract = JSON.parse(JSON.stringify(this.contract));
-          slicedContract.properties = this.contract.properties.filter(p => partition.includes(p.reqid));
+          slicedContract.properties = this.contract.properties.filter(p => partition.includes(p.reqid) || p.reqid.toLowerCase().includes('assumption'));
           this.registerPartitionProcess(slicedContract);
         } else if (this.realizableMap.get(partition.join('')) === "UNREALIZABLE" && !this.minConflicts.has(partition.join(''))) {
           conflictExists = true;
@@ -239,7 +239,7 @@ class DiagnosisEngine {
         var complID = complProps.join('');
         if (!this.realizableMap.has(complID)) {
           var slicedContract = JSON.parse(JSON.stringify(this.contract));
-          slicedContract.properties = this.contract.properties.filter(p => complProps.includes(p.reqid));      
+          slicedContract.properties = this.contract.properties.filter(p => complProps.includes(p.reqid) || p.reqid.toLowerCase().includes('assumption'));
           this.registerPartitionProcess(slicedContract);
         } else if (this.realizableMap.get(complID) === "UNREALIZABLE" && !this.minConflicts.has(complID)) {
           conflictExists = true;
@@ -293,7 +293,7 @@ class DiagnosisEngine {
         for (const [unrealKey, unrealValue] of unrealMap.entries()) {
           if (unrealKey.length > 1) {          
             var slicedContract = JSON.parse(JSON.stringify(this.contract));
-            slicedContract.properties = this.contract.properties.filter(p => unrealKey.includes(p.reqid));
+            slicedContract.properties = this.contract.properties.filter(p => unrealKey.includes(p.reqid) || p.reqid.toLowerCase().includes('assumption'));
             slicedContract.componentName = this.contract.componentName + '_' + unrealKey.join('').replace(/-/g,'');
             if (this.minConflicts.has(unrealKey.join(''))) {
               minConflicts.push(unrealKey);
@@ -324,7 +324,7 @@ class DiagnosisEngine {
 
         for (const [unrealKey, unrealValue] of unrealMap.entries()) {
           var slicedContract = JSON.parse(JSON.stringify(this.contract));
-          slicedContract.properties = this.contract.properties.filter(p => unrealKey.includes(p.reqid));
+          slicedContract.properties = this.contract.properties.filter(p => unrealKey.includes(p.reqid) || p.reqid.toLowerCase().includes('assumption'));
           slicedContract.componentName = this.contract.componentName + '_' + unrealKey.join('').replace(/-/g,'');        
           if (this.minConflicts.has(unrealKey.join(''))) {
             minConflicts.push(unrealKey);
