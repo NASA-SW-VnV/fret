@@ -509,7 +509,7 @@ class DiagnosisEngine {
               var properties = this.contract.properties.map(p => p.reqid);
               
               var slicedContract = JSON.parse(JSON.stringify(this.contract));
-              slicedContract.properties = this.contract.properties.filter(x => !hittingSet.includes(x.reqid));       
+              slicedContract.properties = this.contract.properties.filter(x => !hittingSet.includes(x.reqid) || x.reqid.toLowerCase().includes('assumption'));       
 
               var propID = slicedContract.properties.map(p => p. reqid).join('');
               if (this.realizableMap.has(propID)) {
@@ -590,7 +590,7 @@ class DiagnosisEngine {
         for (const [conflKey, conflValue] of this.minConflicts.entries()) {
           var confList = conflValue;
           var slicedContract = JSON.parse(JSON.stringify(this.contract));
-          slicedContract.properties = this.contract.properties.filter(p => confList.includes(p.reqid));
+          slicedContract.properties = this.contract.properties.filter(p => confList.includes(p.reqid) || p.reqid.toLowerCase().includes('assumption'));
           this.registerPartitionProcess(slicedContract);
         }
         const results = this.runEnginesAndGatherResults(true);
