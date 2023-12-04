@@ -238,9 +238,10 @@ class MainView extends React.Component {
   componentDidMount = () => {
     // initialize the store from database 1st time here.
     ipcRenderer.invoke('initializeFromDB',undefined).then((result) => {
+      const defaultProject = result.listOfProjects.shift();
       this.props.initializeStore({ type: 'actions/initializeStore',
                                   // projects
-                                  listOfProjects: result.listOfProjects.sort(),
+                                  listOfProjects: [defaultProject, ...result.listOfProjects.sort()],
                                   selectedProject: result.selectedProject,
                                   fieldColors: result.fieldColors,
                                   // requirements
@@ -285,9 +286,10 @@ class MainView extends React.Component {
     ipcRenderer.invoke('importRequirements',argList).then((result) => {
 
       if (result.requirements){
+        const defaultProject = result.listOfProjects.shift();
         this.props.importRequirements({ type: 'actions/importRequirements',
           // projects
-          listOfProjects : result.listOfProjects.sort(),
+          listOfProjects : [defaultProject, ...result.listOfProjects.sort()],
           // requirements
           requirements : result.requirements,
           // analysis
@@ -644,6 +646,17 @@ class MainView extends React.Component {
                       open={Boolean(anchorEl)}
                       onClose={this.handleClose}
                     >
+                      <MenuItem dense>
+                        <Button
+                          id="qa_db_btn_newProject"
+                          color="secondary"
+                          size="small"
+                          onClick={this.handleNewProject}
+                          style={{ textTransform : 'none' }}
+                        >
+                          New Project...
+                        </Button>
+                      </MenuItem>
                       <MenuItem
                         onClick={() =>  this.handleSetProject('All Projects')}
                         dense
@@ -669,17 +682,6 @@ class MainView extends React.Component {
                                   </MenuItem>
                         })
                       }
-                      <MenuItem dense>
-                      <Button
-                        id="qa_db_btn_newProject"
-                        color="secondary"
-                        size="small"
-                        onClick={this.handleNewProject}
-                        style={{ textTransform : 'none' }}
-                      >
-                        New Project...
-                      </Button>
-                      </MenuItem>
                     </Menu>
                     &nbsp;
                     <Button id="qa_db_btn_create" variant="contained" onClick={this.handleCreateDialogOpen} color="secondary" size="small" className={classes.button}>
