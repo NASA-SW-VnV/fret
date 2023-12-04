@@ -601,7 +601,7 @@ class DiagnosisEngine {
               unknownSets.push(key);
             }
           }
-          return callback("Something went wrong during diagnosis.\nRequirements: " + unknownSets);
+          return callback("Diagnosis failed due to 'unknown' result (engine timeout or solver failure).\nRequirements: " + unknownSets);
         } else {
         this.computeDiagnoses();
         return callback(null, ["UNREALIZABLE", this.combineReports()])

@@ -546,7 +546,7 @@ function diagnoseSpec(selectedProject, rlzState, selectedReqs) {
           engine.main(function (err, result) {
             if (err) {
               projectReport.systemComponents[systemComponentIndex].monolithic.diagnosisStatus = 'ERROR';
-              projectReport.systemComponents[systemComponentIndex].monolithic.error = err.message+'\n';
+              projectReport.systemComponents[systemComponentIndex].monolithic.error = err;
 
                 rlzState.projectReport = projectReport
             } else {
