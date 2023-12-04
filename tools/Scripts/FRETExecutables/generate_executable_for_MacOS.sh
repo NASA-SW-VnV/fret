@@ -101,4 +101,4 @@ npx electron-packager .
 
 
 #Wrap MAC-OS executable
-tar zcvf ~/Desktop/FRET_PACK-darwin-x64/
+tar zcvf ~/Desktop/FRET-darwin-x64.tgz FRET-darwin-x64/
