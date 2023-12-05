@@ -2,7 +2,7 @@
 
 ### Dependencies
 
- * [NodeJS](https://nodejs.org/en/download/) (use any version between v15.14.x - v16.16.x)
+ * [NodeJS](https://nodejs.org/en/download/) (use any version between v16.16.x - v18.18.x)
  * Python (Version >=2. Note: if you are having issues using 3.11 or later, use 3.10) 
  * (Optional) [NuSMV](http://nusmv.fbk.eu/)
  * (Optional) [JKind](https://github.com/andrewkatis/jkind-1/releases/latest)
