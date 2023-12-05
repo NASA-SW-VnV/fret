@@ -95,23 +95,23 @@ exports.compile = (text) => {
   parser.addErrorListener(listener);
   var tree = parser[REQ_BODY_CTX_RULE]();
 
-  if (annotations.length > 0) {
-    return ({
-      parseErrors: annotations.map(a => { return a.text }).join('; ')
-    })
-  } else {
-    semanticsAnalyzer.clearResult();
-    antlr4.tree.ParseTreeWalker.DEFAULT.walk(semanticsAnalyzer, tree);
-    const conds = semanticsAnalyzer.conditions().join(" ");
-    const reserved = findReservedWords(conds)
-    if (reserved.length > 0) return ({
-      parseErrors: reserved.map(a => { return a.text }).join('; ')
-    })
-    else
-    return ({
-      collectedSemantics: semanticsAnalyzer.semantics()
-    })
-  }
+  if (annotations.length > 0)
+    return {parseErrors: annotations.map(a => { return a.text }).join('; ' )}
+
+  semanticsAnalyzer.clearResult();
+  antlr4.tree.ParseTreeWalker.DEFAULT.walk(semanticsAnalyzer, tree);
+
+  const {conds,responseEnd} = semanticsAnalyzer.conditions();
+  const reserved = findReservedWords(conds.join(" "))
+  let parseErrors = [];
+  if (reserved.length > 0) 
+    parseErrors.push(reserved.map(a => { return a.text }).join('; '))
+  //console.log("Text length: " + trimmedText.length + " responseEnd: " + responseEnd)
+  if (responseEnd !== 0 && trimmedText.length - 1 !== responseEnd)
+    parseErrors.push("Trailing unparsed input: " + trimmedText.slice(responseEnd + 1))
+  if (parseErrors.length !== 0)
+    return {parseErrors: parseErrors.join('; ')}
+  else return {collectedSemantics: semanticsAnalyzer.semantics()}
   }
 }
 
@@ -121,7 +121,7 @@ exports.compilePartialText = (text) => {
   var lexer = new RequirementLexer.RequirementLexer(chars);
   var tokens  = new antlr4.CommonTokenStream(lexer);
   var parser = new RequirementParser.RequirementParser(tokens);
-  var annotations = []//findReservedWords(trimmedText);
+  var annotations = [];
   var listener = new AnnotatingErrorListener.AnnotatingErrorListener(annotations);
   parser.removeErrorListeners();
   parser.addErrorListener(listener);
@@ -137,9 +137,13 @@ exports.compilePartialText = (text) => {
 	};
   }
   else {
-    const conds = semanticsAnalyzer.conditions().join(" ");
-    const reserved = findReservedWords(conds)
+    const {conds,responseEnd} = semanticsAnalyzer.conditions();
+    if (responseEnd !== 0 && trimmedText.length - 1 !== responseEnd)
+      annotations = annotations.concat([{text: 'Trailing unparsed input: '
+					 + trimmedText.slice(responseEnd + 1)}])
+    const reserved = findReservedWords(conds.join(" "))
     annotations = annotations.concat(reserved);
+    //console.log("Text length: " + trimmedText.length + " responseEnd: " + responseEnd)
     r = { parseErrors: annotations.map(a => { return a.text }).join('; '),
 	  collectedSemantics: semanticsAnalyzer.semanticsNoFormalization()
 	};
@@ -175,7 +179,8 @@ exports.parseByCtxRule = (text, ctxRule) => {
   return result
 }
 
-// Like parseByCtxRule but checks for uses of reserved words in conditions
+// Like parseByCtxRule but checks for uses of reserved words in conditions and 
+// trailing unparsed input
 exports.parseByCtxRuleAndAnalyze = (text, ctxRule) => {
   let trimmedText = trimReqtText(text)
   var chars = new antlr4.InputStream(trimmedText);
@@ -193,12 +198,18 @@ exports.parseByCtxRuleAndAnalyze = (text, ctxRule) => {
     result.parseErrors = annotations.map(a => { return a.text }).join('; ')
   } else {
     antlr4.tree.ParseTreeWalker.DEFAULT.walk(semanticsAnalyzer, tree);
-    const conds = semanticsAnalyzer.conditions().join(" ");
-    const reserved = findReservedWords(conds);
-    if (reserved.length > 0)
-      result.parseErrors = reserved.map(a => { return a.text }).join('; ');
-    else result.parseTree = tree;
-  }
+    const {conds,responseEnd} = semanticsAnalyzer.conditions();
+    const reserved = findReservedWords(conds.join(" "));
+    let parseErrors = [];
+    if (reserved.length > 0) 
+      parseErrors.push(reserved.map(a => { return a.text }).join('; '))
+    //console.log("Text length: " + trimmedText.length + " responseEnd: " + responseEnd)
+    if (responseEnd !== 0 && trimmedText.length - 1 !== responseEnd)
+      parseErrors.push("Trailing unparsed input: " + trimmedText.slice(responseEnd + 1))
+    if (parseErrors.length !== 0)
+      result.parseErrors = parseErrors.join('; ')
+    else result.parseTree = tree; 
+    }
   return result;
 }
 
