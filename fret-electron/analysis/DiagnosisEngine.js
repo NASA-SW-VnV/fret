@@ -107,17 +107,17 @@ class DiagnosisEngine {
     for (var i = 0; i < conflicts.length; i++) {
       var conflID = conflicts[i].join('');
       if (!this.minConflicts.has(conflID)) {
+        this.optLog("\nNew unique conflict:\n"+JSON.stringify(conflicts[i]));
         this.minConflicts.set(conflID, conflicts[i]);
       }
     }
   }
 
   registerPartitionProcess(contract) {
-    // console.log("Index before registering "+this.diagnosticQueryIndex);
+    this.optLog("\nRegistering query for requirements:\n\n"+JSON.stringify(contract.properties.map(p => p.reqid)));
     contract.componentName = this.contract.componentName+'_'+'diagnosticQuery'+'_'+this.diagnosticQueryIndex; 
     this.diagnosticQueryIndex++;
     this.engines.push(contract);
-    // console.log("Index after registering "+this.diagnosticQueryIndex);
   }
 
   //this method should be extended in the future if more checks are added, other than realizability
@@ -128,6 +128,7 @@ class DiagnosisEngine {
 
       for (let eng in this.engines) {
         var propertyList = this.engines[eng].properties.map(p => p.reqid).filter(id => !id.toLowerCase().includes('assumption'));
+        this.optLog("\nRunning query for properties:\n\n"+propertyList);
         var filePath = this.tmppath+this.engines[eng].componentName+(minimal ? '_minimal' : '')+'.lus';
         var output = fs.openSync(filePath, 'w');      
         var lustreContract = ejsCache_realize.renderRealizeCode(this.engineName).component.complete(this.engines[eng]);
@@ -172,9 +173,14 @@ class DiagnosisEngine {
           checkOutput = realizabilityCheck.checkReal(filePath, this.engineName, this.engineOptions);
           var result = checkOutput.result;
           localMap.set(propertyList, result);
+          this.optLog("\nResult for properties "+JSON.stringify(propertyList)+":\n\n"+result);
+          this.optLog("\nCurrent localMap:\n\n");
+          this.optLog(localMap);
         }
       }
       this.engines = [];
+      this.optLog("\nMap of results for registered engines:\n\n")
+      this.optLog(localMap);
       return localMap;
     } catch (error) {
       throw error;
@@ -182,6 +188,7 @@ class DiagnosisEngine {
   }
 
   deltaDebug(contract, n) {
+    this.optLog("Entering deltaDebug. Contract: "+contract.properties.map(p => p.reqid)+", n = "+n);
     try {
       var partitionMap = new Map();
       var complementsMap = new Map();
@@ -193,6 +200,7 @@ class DiagnosisEngine {
       var propID = properties.join('');
       for (var i = 0; i < n; i++) {
         var partition = this.getPartition(properties, n, i, false);
+        this.optLog("Partition: "+JSON.stringify(partition));
         if (!this.realizableMap.has(partition.join(''))) {
           var slicedContract = JSON.parse(JSON.stringify(this.contract));
           slicedContract.properties = this.contract.properties.filter(p => partition.includes(p.reqid) || p.reqid.toLowerCase().includes('assumption'));
@@ -203,11 +211,14 @@ class DiagnosisEngine {
         }
 
         if (n !== 2) {
+         this.optLog("Complement: "+JSON.stringify(this.getPartition(properties, n, i, true)))
          complements.push(this.getPartition(properties, n, i, true));
         }
       }
-      if (partitionMap.size === 0) {
+      if (partitionMap.size === 0 && this.engines.length > 0) {
         partitionMap = this.runEnginesAndGatherResults(false);
+        this.optLog("\nNew partition results:\n\n")
+        this.optLog(partitionMap);
         if (Array.from(partitionMap.values()).includes("UNKNOWN")) {
           const unknownSets = []
           for (let [key, val] of partitionMap) {
@@ -251,8 +262,10 @@ class DiagnosisEngine {
         }
       }
 
-      if (complementsMap.size === 0) {
+      if (complementsMap.size === 0 && this.engines.length > 0) {
         complementsMap = this.runEnginesAndGatherResults(false);
+        this.optLog("\nNew complements results:\n\n")
+        this.optLog(complementsMap);
         if (Array.from(complementsMap.values()).includes("UNKNOWN")) {
           const unknownSets = []
           for (let [key, val] of complementsMap) {
@@ -340,12 +353,12 @@ class DiagnosisEngine {
       }
 
       if (minConflicts.length === 0 && n < properties.length) {
-        this.optLog('No minimal conflicts, but n < # of properties')
+        this.optLog('No minimal conflicts, but n < # of properties (n = '+n+', #properties = '+properties.length+')')
         var tmpConflicts = this.deltaDebug(contract, Math.min(properties.length, 2*n));
         if (tmpConflicts.toString().startsWith("UNKNOWN")) {
               return tmpConflicts;
         }
-        this.optLog(tmpConflicts);
+        this.optLog("No unknown results. List of new conflicts: "+tmpConflicts);
         minConflicts = minConflicts.concat(tmpConflicts);
         this.addUniqueConflicts(tmpConflicts);      
       }
@@ -410,10 +423,17 @@ class DiagnosisEngine {
         return conflicts;
       }
       if (conflicts.length !== 0) {
-        this.root.setLabel(conflicts[0]);
-        this.unlabeled = this.unlabeled.concat(this.root.children);
-        this.addUniqueConflicts(conflicts);
-        this.labeled.push(this.root);
+        if (conflicts[0].join('') !== this.contract.properties.map(p => p.reqid).filter(id => !id.toLowerCase().includes('assumption')).join('')) {
+          this.root.setLabel(conflicts[0]);
+          this.unlabeled = this.unlabeled.concat(this.root.children);
+          this.addUniqueConflicts(conflicts);
+          this.labeled.push(this.root);
+        } else {
+          //the entire spec is the minimal conflict
+          this.root.setLabel(conflicts[0]);
+          this.addUniqueConflicts(conflicts);
+          this.labeled.push(this.root);
+        }
       } else {
         this.registerPartitionProcess(this.contract);
         var resMap = this.runEnginesAndGatherResults(false);
@@ -426,7 +446,7 @@ class DiagnosisEngine {
           }
           return "UNKNOWN - Requirements: " + unknownSets;        
         }
-        var propList = this.contract.properties.map(p => p.reqid); 
+        var propList = this.contract.properties.map(p => p.reqid).filter(id => !id.toLowerCase().includes('assumption')); 
         var propID = propList.join('')
         for (const [resKey, resValue] of resMap.entries()){
           if (resKey.join('') === propID && resValue === "REALIZABLE") {
@@ -492,10 +512,20 @@ class DiagnosisEngine {
       combinedReport.Counterexamples.push({'traceLength' : report.K, 'requirements' : conflKey, 'Counterexample' : report.Counterexample})
       combinedReport.Conflicts.push({'Conflict' : conflKey});
     }
+    this.optLog("Generated report:\n"+JSON.stringify(combinedReport));
     return combinedReport;
   }
 
   main(callback) {
+    let engineArgumentsObj = {
+      contract: this.contract,
+      timeout: this.timeout,
+      check: this.check,
+      engineName: this.engineName,
+      engineOptions: this.engineOptions
+    };
+    fs.writeFile(analysisPath+'diagnosisObject.json', JSON.stringify(engineArgumentsObj), 'utf8', callback);
+
     try {      
       var rootResult = this.labelRootNode();
       if (rootResult && rootResult.toString().startsWith("UNKNOWN")) {
@@ -511,7 +541,7 @@ class DiagnosisEngine {
               var slicedContract = JSON.parse(JSON.stringify(this.contract));
               slicedContract.properties = this.contract.properties.filter(x => !hittingSet.includes(x.reqid) || x.reqid.toLowerCase().includes('assumption'));       
 
-              var propID = slicedContract.properties.map(p => p. reqid).join('');
+              var propID = slicedContract.properties.map(p => p.reqid).filter(id => !id.toLowerCase().includes('assumption')).join('');
               if (this.realizableMap.has(propID)) {
                 if (this.realizableMap.get(propID) === "REALIZABLE") {
                   var label = ['done'];
@@ -574,15 +604,15 @@ class DiagnosisEngine {
       }
 
       // HS Tree print : Parent <-- Node --> List of children
-      // for (let i in this.labeled) {
-      //   if (this.labeled[i].getParent() !== null) {
-      //     this.optLog(JSON.stringify(this.labeled[i].getParent().getLabel()) + " <---- " + this.labeled[i].getParentEdge() +
-      //      " ---- " + JSON.stringify(this.labeled[i].getLabel()) + " ----> " + JSON.stringify(this.labeled[i].getChildren().map(c => c.getLabel())))
-      //   } else {
-      //     this.optLog("Root <---- " + JSON.stringify(this.labeled[i].getLabel()) + " ----> " + 
-      //       JSON.stringify(this.labeled[i].getChildren().map(c => c.getLabel())))
-      //   }
-      // }
+      for (let i in this.labeled) {
+        if (this.labeled[i].getParent() !== null) {
+          this.optLog(JSON.stringify(this.labeled[i].getParent().getLabel()) + " <---- " + this.labeled[i].getParentEdge() +
+           " ---- " + JSON.stringify(this.labeled[i].getLabel()) + " ----> " + JSON.stringify(this.labeled[i].getChildren().map(c => c.getLabel())))
+        } else {
+          this.optLog("Root <---- " + JSON.stringify(this.labeled[i].getLabel()) + " ----> " + 
+            JSON.stringify(this.labeled[i].getChildren().map(c => c.getLabel())))
+        }
+      }
 
       if (this.minConflicts.length === 0) {
         return callback(null, ["REALIZABLE", []])

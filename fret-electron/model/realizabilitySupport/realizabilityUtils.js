@@ -549,7 +549,7 @@ function diagnoseSpec(selectedProject, rlzState, selectedReqs) {
               projectReport.systemComponents[systemComponentIndex].monolithic.error = err;
 
                 rlzState.projectReport = projectReport
-            } else {
+            } else if (result) {
               projectReport.systemComponents[systemComponentIndex].monolithic.diagnosisStatus = 'DIAGNOSED';
               projectReport.systemComponents[systemComponentIndex].monolithic.diagnosisReport = result[1];
               projectReport.systemComponents[systemComponentIndex].monolithic.error = ''
