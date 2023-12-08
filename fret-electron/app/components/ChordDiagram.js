@@ -99,12 +99,13 @@ class ChordDiagram extends React.Component {
 			        .style("fill-opacity", .8);
 
 			    var reqs = '';
+				let conflictNamesJoined = conflictNames.filter(name => name !== '').map(name => Array.isArray(name) ? name.join('') : name)
 				if (i > conflictNames.length -1) {
 					var nameoffset = i - conflictNames.length;
 					var data = requirementConflicts[requirementNames[nameoffset]].sort();
-					const conflictColors = colors.filter(c => data.includes(conflictNames[colors.indexOf(c)]))
+					const conflictColors = colors.filter(c => data.includes(conflictNamesJoined[colors.indexOf(c)]))
 					chordObj.setState({
-						allConflicts : conflictNames,
+						allConflicts : conflictNamesJoined,
 						currentConflicts : data,
 						cexTableData : cexTables,
 						colors : conflictColors
@@ -115,8 +116,8 @@ class ChordDiagram extends React.Component {
 					var data = [conflictNames[i]].sort();
 					const conflictColors = colors.filter(c => data.includes(conflictNames[colors.indexOf(c)]))
 					chordObj.setState({
-						allConflicts : conflictNames,
-						currentConflicts : data,
+						allConflicts : conflictNamesJoined,
+						currentConflicts : data.map(d => Array.isArray(d) ? d.join('') : d),
 						cexTableData : cexTables,
 						colors : conflictColors
 					})
@@ -129,14 +130,10 @@ class ChordDiagram extends React.Component {
 			function createCDMatrix(names, requirementNames) {
 				var matrix = math.zeros(names.length, names.length);
 				matrix.forEach(function (value, index, matrix) {
-				  if (names[index[0]] !== "" & names[index[1]] !== "" &
-				  	 names[index[0]] !== names[index[1]]) {
+				  if (names[index[0]] !== "" & names[index[1]] !== "" & names[index[0]] !== names[index[1]]) {
 					var tmpName0 = names[index[0]];
-					var nameSplit0 = tmpName0.replace(/\[|\]/g, "").split(", ");
 					var tmpName1 = names[index[1]];
-					var nameSplit1 = tmpName1.replace(/\[|\]/g, "").split(", ");
-
-				  	if (nameSplit1.includes(tmpName0) || nameSplit0.includes(tmpName1)) {
+					if (tmpName1.includes(tmpName0) || tmpName0.includes(tmpName1)) {
 				  		if (!(requirementNames.includes(names[index[1]]) & requirementNames.includes(names[index[0]]))) {
 				  			matrix.subset(math.index(index[0],index[1]), 1);
 				  		}
@@ -192,7 +189,8 @@ class ChordDiagram extends React.Component {
 			    	var contains = false;
 			    	var propName = propNames[i];
 			    for (var j = 0; j < content.Conflicts.length; j++) {
-			      if (content.Conflicts[j].Conflict.includes(propName)) {
+				  let parsedConflict = content.Conflicts[j].Conflict;
+				  if (parsedConflict.includes(propName)) {
 			        contains = true;
 			      }
 			    }
@@ -202,9 +200,11 @@ class ChordDiagram extends React.Component {
 		  	}
 		  	
 		  	for (var i = 0; i < content.Conflicts.length; i++) {
-		    	conflictNames.push(content.Conflicts[i].Conflict);
-		    	// conflictNames.push("Conflict " + (i+1));
+				let parsedConflict = content.Conflicts[i].Conflict;
+				conflictNames.push(parsedConflict);
 		  	}
+			this.optLog("Conflict names:")
+			this.optLog(conflictNames)
 
 			requirementNames.sort();
 			conflictNames.sort();
@@ -227,23 +227,27 @@ class ChordDiagram extends React.Component {
 			//create dependency map for requirement -> list of cexs
 			for (var i = 0; i < counterexamples.length; i++) {
 				var conflict = counterexamples[i].requirements;
-				// var conflict = conflictNames[i];
 				var cex = counterexamples[i];
-				// cex.Dependencies = content.Dependencies;
-				cexTables[conflict] = cex;
+				//The check below is to support older reports where 'conflict' was an array string, including braces.
+				let conflictID = Array.isArray(conflict) ? conflict.join('') : conflict;
+				cexTables[conflictID] = cex;
 				for (var j = 0; j < requirementNames.length; j++) {
 					if (conflict.includes(requirementNames[j])) {
 						requirementCexs[requirementNames[j]].push(cex);
-						requirementConflicts[requirementNames[j]].push(conflict);
+						requirementConflicts[requirementNames[j]].push(conflictID);
 					}
 				}
 			}
 
 
 			requirementNames.push("");
+			this.optLog("Requirement names:")
+			this.optLog(requirementNames)
 			conflictNames.push("");
 			var names = conflictNames;
-			names = names.concat(requirementNames);	
+			names = names.concat(requirementNames);
+			this.optLog("Names:")
+			this.optLog(names)
 
 			//2d matrix to be used for diagram. Both rows and columns contain the req names, then the conflicts, in that order. Empty values are necessary to split the circle into two arcs.
 			var matrix = createCDMatrix(names, requirementNames);

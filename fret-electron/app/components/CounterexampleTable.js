@@ -37,16 +37,12 @@ import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
-import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
-import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import LTLSimLauncherRealizability from './LTLSimLauncherRealizability';
-import Tooltip from '@material-ui/core/Tooltip';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import { lighten } from '@material-ui/core/styles/colorManipulator';
@@ -90,11 +86,9 @@ const tableComponentBarStyles = theme => ({
 });
 
 let TableComponentBar = props => {
-  const {classes, handleChange, cexConflictName, conflicts, menuItems, numberOfSteps, cex, LTLSimStatus, LTLSimDialogOpen, openLTLSimDialog, closeLTLSimDialog, requirements, project} = props;
+  const {classes, handleChange, cexConflictName, menuItems, numberOfSteps, cex, LTLSimStatus, LTLSimDialogOpen, openLTLSimDialog, closeLTLSimDialog, requirements, project} = props;
 
-  const cexConflictRequirements = cexConflictName.substring(1,cexConflictName.length-1).split(", ");
-
-  const conflictRequirementObjects = requirements.filter(e => cexConflictRequirements.includes(e.reqid.replace(/-/g,'')));  
+  const conflictRequirementObjects = requirements.filter(e => cexConflictName.includes(e.reqid.replace(/-/g,'')));  
 
   var ltlsimLauncher = <LTLSimLauncherRealizability
                       open={LTLSimDialogOpen}
@@ -112,8 +106,8 @@ let TableComponentBar = props => {
         <FormControl className={classes.modelRoot}>
           <InputLabel htmlFor="component-helper">Counterexample for</InputLabel>
           <Select
-            key={cexConflictName === undefined ? '' : cexConflictName}
-            value={cexConflictName}
+            key={cexConflictName === undefined ? '' : (Array.isArray(cexConflictName) ? cexConflictName.join('') : cexConflictName)}
+            value={Array.isArray(cexConflictName) ? cexConflictName.join('') : cexConflictName}
             onChange={handleChange}
             id="qa_counterEx_sel"
             input={<Input name="component" id="component-helper" />}
@@ -130,7 +124,6 @@ let TableComponentBar = props => {
 TableComponentBar.propTypes = {
   classes: PropTypes.object.isRequired,
   handleChange: PropTypes.func.isRequired,
-  cexConflictName: PropTypes.string.isRequired,
   conflicts: PropTypes.array.isRequired,
   menuItems: PropTypes.array.isRequired,
   LTLSimDialogOpen: PropTypes.bool.isRequired,
@@ -173,13 +166,11 @@ class CounterexampleTable extends React.Component {
   	super(props);
     let status = ltlsim.check();
     this.LTLSimStatus = status;
-
-  	this.state = { 
-  		numberOfSteps : this.props.cexTableData[this.props.currentConflicts[0]].traceLength,
+  	this.state = {
+      numberOfSteps : this.props.cexTableData[this.props.currentConflicts[0]].traceLength,
 		  cexConflictName : this.props.cexTableData[this.props.currentConflicts[0]].requirements,  		
   		cex : this.props.cexTableData[this.props.currentConflicts[0]].Counterexample,
       LTLSimDialogOpen: false
-      // deps: this.props.cexTableData[this.props.currentConflicts[0]].Dependencies
     };
     this.openLTLSimDialog = this.openLTLSimDialog.bind(this);
     this.closeLTLSimDialog = this.closeLTLSimDialog.bind(this);
@@ -198,7 +189,6 @@ class CounterexampleTable extends React.Component {
     	numberOfSteps : this.props.cexTableData[event.target.value].traceLength,
 		  cexConflictName : this.props.cexTableData[event.target.value].requirements,
     	cex : this.props.cexTableData[event.target.value].Counterexample,
-    	// deps : this.props.cexTableData[event.target.value].Dependencies,
       [event.target.name]: event.target.value
     })
     this.context.setMessage({
@@ -213,7 +203,6 @@ class CounterexampleTable extends React.Component {
   			numberOfSteps : this.props.cexTableData[this.props.currentConflicts[0]].traceLength,
   			cexConflictName : this.props.cexTableData[this.props.currentConflicts[0]].requirements,
   			cex : this.props.cexTableData[this.props.currentConflicts[0]].Counterexample,
-        // deps : this.props.cexTableData[this.props.currentConflicts[0]].Dependencies
   		});    
   	}
 

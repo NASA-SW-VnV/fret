@@ -50,6 +50,7 @@ import Button from '@material-ui/core/Button';
 import { lighten } from '@material-ui/core/styles/colorManipulator';
 import Typography from '@material-ui/core/Typography';
 import { connect } from "react-redux";
+import { json } from 'd3';
 
 let counter = 0;
 
@@ -395,7 +396,6 @@ class DiagnosisRequirementsTable extends React.Component {
   }
 
   componentDidMount() {
-    const { importedRequirements, selectedRequirements } = this.props;
     this.mounted = true;
     this.updateSelection();
   }
@@ -555,7 +555,10 @@ class DiagnosisRequirementsTable extends React.Component {
                   .map(n => {
                     const isSelected = this.isSelected(n.reqid);
                     const label = n.reqid ? n.reqid.replace(/-/g,'') : 'NONE'
-                    var isInConflict = (reqs.length !== 0 && reqs.includes(label)) ? true : false;
+                    //Previous versions of FRET had reqs as an array string, including braces. The check below accounts for these cases.
+                    const isReqsArrayString = (reqs[0] === '[' && reqs[reqs.length-1] === ']' && reqs.includes(','));
+                    const reqsArray = isReqsArrayString ? reqs.substring(1,reqs.length-1).split(", ") : reqs;
+                    var isInConflict = (reqsArray.length !== 0 && reqsArray.includes(label)) ? true : false;
                     const isInConflictOrCC = (isInConflict || connectedComponent.requirements.includes(n.reqid));               
                     return (
                         <TableRow 
@@ -591,7 +594,10 @@ class DiagnosisRequirementsTable extends React.Component {
                   .map(n => {
                     const isSelected = this.isSelected(n.reqid);
                     const label = n.reqid ? n.reqid.replace(/-/g,'') : 'NONE'
-                    var isInConflict = (reqs.length !== 0 && reqs.includes(label)) ? true : false;
+                    //Previous versions of FRET had reqs as an array string, including braces. The check below accounts for these cases.
+                    const isReqsArrayString = (reqs[0] === '[' && reqs[reqs.length-1] === ']' && reqs.includes(','));
+                    const reqsArray = isReqsArrayString ? reqs.substring(1,reqs.length-1).split(", ") : reqs;
+                    var isInConflict = (reqsArray.length !== 0 && reqsArray.includes(label)) ? true : false;
                     const isInConflictOrSelected = (isInConflict || isSelected);
                     return (
                         <TableRow

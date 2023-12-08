@@ -166,8 +166,8 @@ class DiagnosisEngine {
                 newJsonOutput.Counterexample.push(signalInfo);
               }
               jsonOutput = newJsonOutput;
-            }         
-            this.counterExamples.set('['+propertyList.toString()+']', jsonOutput);
+            }
+            this.counterExamples.set(propertyList, jsonOutput);
           }
         } else {
           checkOutput = realizabilityCheck.checkReal(filePath, this.engineName, this.engineOptions);
@@ -499,10 +499,10 @@ class DiagnosisEngine {
     combinedReport['Requirements'] = properties;
 
     for (var [conflKey, report] of this.counterExamples.entries()) {
-      conflKey = conflKey.replace(/-/g,'').replace(/,/g,', ')
+      conflKey = conflKey.map(k => k.replace(/-/g,'').replace(/,/g,', '))
       for (const property of properties) {
         var regex = new RegExp('\\b' + '__'+property + '\\b', "g");
-        conflKey = conflKey.replace(regex, property);
+        conflKey = conflKey.map(k => k.replace(regex, property));
       }
 
       for (var obj of report.Counterexample){
