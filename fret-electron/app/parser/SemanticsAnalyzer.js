@@ -234,9 +234,13 @@ RequirementListener.prototype.enterPost_condition = function(ctx) {
     result.post_condition = pc2;
 }
 
+const atWords = {'same' : 'immediately', 'initially' : 'immediately', 'next' : 'next',
+		 'last' : 'finally'};
+
 RequirementListener.prototype.enterTiming = function(ctx) {
-  var text = antlrUtilities.getText(ctx).replace(',', '').trim().split(' ')[0].toLowerCase();
-  result.timing = (text === 'at') ? 'next' : text;
+  const words = antlrUtilities.getText(ctx).replace(',', '').trim().toLowerCase().split(' ');
+  const text = words[0];
+  result.timing = (text === 'at') ? atWords[words[2]) : ((text === 'initially') : 'immediately' : text);
 }
 
 RequirementListener.prototype.exitTiming = function(ctx) {

@@ -73,6 +73,8 @@ function determineBaseForm (negate, timing, condition) {
     case 'immediately':
         main_formula = (negate=='true') ? notImmediately(property, cond):immediately(property, cond);
         break;
+    case 'finally':
+        main_formula = (negate == 'true') ? notFinally(property, cond) : Finally(property,cond);
     case 'next':
         main_formula = (negate=='true') ? notNext(property, cond):next(property, cond);
         break;
@@ -176,6 +178,19 @@ function immediately(property, cond='null') {
 
 function notImmediately(property, cond='null') {
   return(immediately(negate(property), cond))
+}
+
+function Finally(property, cond='null') {
+  var formula = property
+  if (cond != 'null') {
+    formula = disjunction(noCondInterval(cond,left),
+                          property)
+  }
+  return (formula)
+}
+
+function notFinally(property, cond='null') {
+  return Finally(negate(property),cond);
 }
 
 function next(property, cond='null') {

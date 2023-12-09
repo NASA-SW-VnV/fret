@@ -55,13 +55,13 @@ module.exports = Object.freeze({
   // Consider some automatic check or generation with the grammar or SemanticsAnalyzer
   fullScope : /*['null'],//*/['null', 'in', 'onlyAfter', 'after', 'onlyBefore', 'before', 'onlyIn', 'notin'].sort(),
   fullCondition : /*['regular'],//*/ ['null', 'regular', 'noTrigger'/*, 'only'*/].sort(),
-    fullTiming : /*['within'],//*/['always','null','immediately','eventually', 'never', 'for','within','after','until','before','next'].sort(),
+  fullTiming : /*['within'],//*/['always','null','immediately','eventually', 'never', 'for','within','after','until','before','next',','finally'].sort(),
   fullResponse : ['satisfaction'],//*/['satisfaction','action','order','not_order'].sort(),
 
   // We want to test with Bamboo only the combinations of keys for which semantics has been defined and tested -- to get more meaningful test results
   testScope : ['null', 'in', 'onlyAfter', 'after', 'onlyBefore', 'before', 'onlyIn', 'notin'].sort(),
   testCondition : ['null', 'regular'].sort(),
-  testTiming : ['always','null','immediately','eventually', 'never', 'for','within','after','until','before','next'].sort(),
+  testTiming : ['always','null','immediately','eventually', 'never', 'for','within','after','until','before','next','finally'].sort(),
   //testTiming : ['always','null','immediately','eventually', 'never', 'for','within','after'],
   testResponse : ['satisfaction'/*,'action','order','not_order'*/].sort(),
 

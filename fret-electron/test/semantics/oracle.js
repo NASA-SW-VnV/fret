@@ -110,6 +110,8 @@ var isNegated = scope.includes('only');
 switch (functionCase) {
   case 'immediately': constraints = immediately(scopeInterval, responseIntervals, isNegated); break;
   case 'immediatelyCond': constraints = immediatelyCond(responseIntervals, trigger, isNegated); break;
+  case 'finally': constraints = Finally(scopeInterval, responseIntervals, isNegated); break;
+  case 'finallyCond': constraints = FinallyCond(scopeInterval,responseIntervals, trigger, isNegated); break;
   case 'next': constraints = next(scopeInterval, responseIntervals, isNegated); break;
   case 'nextCond': constraints = nextCond(responseIntervals, trigger, isNegated); break;
   case 'always': constraints = always(scopeInterval, responseIntervals, isNegated); break;
@@ -248,6 +250,15 @@ function immediately(scopeInterval, responseIntervals, negate=false) {
 // immediately when conditions are around
 function immediatelyCond(responseIntervals, trigger, negate=false) {
 	return immediately(trigger.scope, responseIntervals, negate)
+}
+
+function Finally(scopeInterval, responseIntervals, negate=false) {
+  var pos = intervalLogic.includesPointMultiple(responseIntervals, scopeInterval.right);
+  return (negate?!pos:pos)
+}
+
+function FinallyCond(scopeInterval, responseIntervals, trigger, negate=false) {
+  return Finally(trigger.scope, responseIntervals, negate);
 }
 
 function next(scopeInterval, responseIntervals, negate=false) {

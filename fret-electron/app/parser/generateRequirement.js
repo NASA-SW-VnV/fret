@@ -63,6 +63,7 @@ var timingWords = {
   for: [' for 10 secs'],
   after: [' after 10 secs'],
   immediately: [' immediately'],
+  finally: [' finally'],
   eventually: [' eventually'],
   always: [' always'],
   never: [' never'],

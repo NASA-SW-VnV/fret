@@ -144,8 +144,9 @@ timing_aux :
          | AFTER duration_lower
 	 | UNTIL stop_condition
  	 | BEFORE stop_condition
-	 | AT THE NEXT TIMEPOINT
-         | IMMEDIATELY
+	 | AT THE (NEXT | SAME | LAST) TIMEPOINT
+         | (IMMEDIATELY | INITIALLY)
+	 } FINALLY
          | EVENTUALLY
          | ALWAYS
          | NEVER
@@ -240,13 +241,15 @@ DURING : D U R I N G;
 EVENTUALLY : E V E N T U A L L Y;
 EXCEPT : E X C E P T;
 FALSE : F A L S E;
+FINALLY : F I N A L L Y;
 FOR : F O R;
 HOUR : H O U R S?;
 IF : I F;
 IMMEDIATELY : I M M E D I A T E L Y;
 IN : I N;
+INITIALLY : I N I T I A L L Y;
 IS : I S;
-//LAST : L A S T;
+LAST : L A S T;
 MICROSECOND : M I C R O S E C (O N D)? S?;
 MILLISECOND : M I L L I S E C (O N D)? S?;
 MINUTE : M I N U T E S?;
@@ -260,6 +263,7 @@ OF : O F;
 ONLY : O N L Y;
 OR : O R;
 PREVIOUS : P R E V I O U S;
+SAME : S A M E;
 SATISFY : S A T I S F Y;
 SECOND : S E C (O N D)? S?;
 SHALL : S H A L L;

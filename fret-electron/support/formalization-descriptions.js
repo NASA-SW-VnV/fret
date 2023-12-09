@@ -59,6 +59,7 @@ const NegateFormula =
 const sentenceTime = [
   ['-,-,immediately,-', 'REQUIRES: for every trigger, if trigger holds then RES also holds at the same time point.'],
   ['-,-,next,-', 'REQUIRES: for every trigger, RES must hold at the next time step.'],
+  ['-,-,finally,-', 'REQUIRES: for every trigger, if trigger holds then RES holds at the end of the interval.'],
   ['-,-,eventually,-', 'REQUIRES: for every trigger, RES must hold at some time point between (and including) the trigger and the end of the interval.'],
   ['-,-,never,-', 'REQUIRES: for every trigger, RES must be false at all time points between (and including) the trigger and the end of the interval.'],
   ['-,-,always,-', 'REQUIRES: for every trigger, RES must hold at all time points between (and including) the trigger and the end of the interval.'],
@@ -72,6 +73,7 @@ const sentenceTime = [
 
 const sentenceNegatedTime = [
     ['-,-,immediately,-', 'REQUIRES: for every trigger, trigger and RES cannot hold at the same time point.'],
+    ['-,-,finally,-', 'REQUIRES: for every trigger, trigger and RES cannot hold at the last time point of the interval.'],
     ['-,-,next,-', 'REQUIRES: for every trigger, RES cannot hold at the next time point.'],
     ['-,-,eventually,-', 'REQUIRES: for every trigger, RES must be false at all time points between (and including) the trigger and the end of the interval.'],
     ['-,-,never,-', 'REQUIRES: for every trigger, RES must hold at some time point between (and including) the trigger and the end of the interval.'],
