@@ -314,6 +314,15 @@ class ChordDiagram extends React.Component {
 		  		.attr("d", arc)
 				//.attr("id",function(d){return "qa_chordDia_svg_path_"+names[d.index];})
 
+			var tooltip = d3.select("body")
+				.append("div")
+				.attr("class", "tooltip")
+				.style("width","max-content")
+				.style("position", "absolute")
+				.style("z-index", "10")
+				.style("visibility", "hidden");
+
+
 			//Labeling sections on the arcs
 			g.append("svg:text")
 				.each(function(d) { d.angle = ((d.startAngle + d.endAngle) / 2) + offset;})
@@ -329,7 +338,10 @@ class ChordDiagram extends React.Component {
 					+ (d.angle > Math.PI ? "rotate(180)" : "");
 		  		})
 			    .attr("id",function(d,i){return "qa_chordDia_svg_text_reqId_"+names[i].replace(/\s+/g, '_');})
-		  		.text(function(d,i) { return names[i]; });
+		  		.text(function(d,i) { return names[i]; })
+				  .on("mouseover", function(d, i){tooltip.text(names[i]); return tooltip.style("visibility", "visible");})
+				  .on("mousemove", function(){return tooltip.style("top", (d3.event.pageY-10)+"px").style("left",(d3.event.pageX+10)+"px");})
+				  .on("mouseout", function(){return tooltip.style("visibility", "hidden");});
 
 
 			//Inner chords		  
