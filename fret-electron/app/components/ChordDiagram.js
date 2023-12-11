@@ -100,13 +100,17 @@ class ChordDiagram extends React.Component {
 
 			    var reqs = '';
 				let conflictNamesJoined = conflictNames.filter(name => name !== '').map(name => Array.isArray(name) ? name.join('') : name)
+
 				if (i > conflictNames.length -1) {
 					var nameoffset = i - conflictNames.length;
 					var data = requirementConflicts[requirementNames[nameoffset]].sort();
-					const conflictColors = colors.filter(c => data.includes(conflictNamesJoined[colors.indexOf(c)]))
+
+					let dataJoined = data.map(d => Array.isArray(d) ? d.join('') : d);
+					const conflictColors = colors.filter(c => dataJoined.includes(conflictNamesJoined[colors.indexOf(c)]))
+
 					chordObj.setState({
 						allConflicts : conflictNamesJoined,
-						currentConflicts : data,
+						currentConflicts : dataJoined,
 						cexTableData : cexTables,
 						colors : conflictColors
 					})
@@ -114,10 +118,12 @@ class ChordDiagram extends React.Component {
 					setMessage({reqs : reqs, color : conflictColors[0]})
 				} else {
 					var data = [conflictNames[i]].sort();
-					const conflictColors = colors.filter(c => data.includes(conflictNames[colors.indexOf(c)]))
+					let dataJoined = data.map(d => Array.isArray(d) ? d.join('') : d);
+					const conflictColors = colors.filter(c => dataJoined.includes(conflictNamesJoined[colors.indexOf(c)]))
+
 					chordObj.setState({
 						allConflicts : conflictNamesJoined,
-						currentConflicts : data.map(d => Array.isArray(d) ? d.join('') : d),
+						currentConflicts : dataJoined,
 						cexTableData : cexTables,
 						colors : conflictColors
 					})
@@ -229,12 +235,15 @@ class ChordDiagram extends React.Component {
 				var conflict = counterexamples[i].requirements;
 				var cex = counterexamples[i];
 				//The check below is to support older reports where 'conflict' was an array string, including braces.
-				let conflictID = Array.isArray(conflict) ? conflict.join('') : conflict;
+				console.log(conflict)
+				let conflictID = Array.isArray(conflict) ? conflict.join('') : conflict;				
+				console.log("ConflictID:")
+				console.log(conflictID)
 				cexTables[conflictID] = cex;
 				for (var j = 0; j < requirementNames.length; j++) {
 					if (conflict.includes(requirementNames[j])) {
 						requirementCexs[requirementNames[j]].push(cex);
-						requirementConflicts[requirementNames[j]].push(conflictID);
+						requirementConflicts[requirementNames[j]].push(conflict);
 					}
 				}
 			}
