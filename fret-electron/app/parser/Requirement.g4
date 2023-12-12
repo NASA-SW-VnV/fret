@@ -146,7 +146,7 @@ timing_aux :
  	 | BEFORE stop_condition
 	 | AT THE (NEXT | SAME | LAST) TIMEPOINT
          | (IMMEDIATELY | INITIALLY)
-	 } FINALLY
+	 | FINALLY
          | EVENTUALLY
          | ALWAYS
          | NEVER

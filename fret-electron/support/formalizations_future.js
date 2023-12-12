@@ -102,7 +102,7 @@ function negate(str) {return utilities.negate(str)}
 function parenthesize(str) {return utilities.parenthesize(str)}
 function disjunction(str1, str2) {return utilities.disjunction([str1, str2])}
 function conjunction(str1, str2) {return utilities.conjunction([str1, str2])}
-//function implication(str1, str2) {return utilities.implication([str1, str2])}
+function implication(str1, str2) {return utilities.implication([str1, str2])}
 
 // if we are on infinite semantics then we set LAST=FALSE
 function conditionTrigger(cond) {
@@ -124,7 +124,7 @@ function notImmediately(property) {
                 }
 
 function Finally(property,endsScope='ENDSCOPE') {
-  return eventually(conjunction(endScope,property))
+  return always(implication(endsScope,property))
 }
 
 function notFinally(property, endsScope='ENDSCOPE') {

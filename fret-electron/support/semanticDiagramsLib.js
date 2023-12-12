@@ -63,6 +63,7 @@ const timings = new Map([
   ["until",["green",fillDottedPattern(),false]],
   ["null",["orange","red",false]],
   ["immediately",["green","red",false]],
+  ["finally",["green","red",false]],
   ["next",["green","red",false]],
   ["after",["red","orange",true]]]);
 
@@ -192,7 +193,7 @@ class semanticDiagram{
     this.canvas.addDiagram(arrow,true);
   }
 
-    createTiming(timing, sc, count){
+  createTiming(timing, sc, count){
     var searchScope = this.scope;
     var isOnlyScope = searchScope.startsWith("only");
     if(timing == "before") {
@@ -214,35 +215,38 @@ class semanticDiagram{
     var rectangle = this.timingRect(color,sc,isShort);
 
     switch(timing){
-      case "immediately":
-          arrow = this.makeTimingArrow(arrowXPos,arrowYPos,arrowColor,1);
-        break;
-      case "next":
-          arrow = this.makeTimingArrow(arrowXPos,arrowYPos,arrowColor,2);
-          break;
-      case "after":
-          arrowYPos = (isOnlyScope == true)? arrowYPos-rectangle.getH() : arrowYPos;
-          arrowXPos = rectangle.rightX();
-          arrow = this.makeTimingArrow(arrowXPos,arrowYPos,arrowColor,2);
-          //or text:
-          var orText = new Text("OR","13","black","sans-serif","normal",arrowXPos-13,arrowYPos-10);
-          orText.setAlignment("middle");
-          //we only want the "or" text if the scope is an only scope
-          if(isOnlyScope){this.canvas.addDiagram(orText,true)}
-          this.canvas.addDiagram(rectangle);
-        break;
+    case "immediately":
+      arrow = this.makeTimingArrow(arrowXPos,arrowYPos,arrowColor,1);
+      break;
+    case "next":
+      arrow = this.makeTimingArrow(arrowXPos,arrowYPos,arrowColor,2);
+      break;
+    case "finally":
+      arrow = this.makeTimingArrow(sc.scope.getX() + sc.scope.getW(),arrowYPos,arrowColor,1);
+      break;
+    case "after":
+      arrowYPos = (isOnlyScope == true)? arrowYPos-rectangle.getH() : arrowYPos;
+      arrowXPos = rectangle.rightX();
+      arrow = this.makeTimingArrow(arrowXPos,arrowYPos,arrowColor,2);
+      //or text:
+      var orText = new Text("OR","13","black","sans-serif","normal",arrowXPos-13,arrowYPos-10);
+      orText.setAlignment("middle");
+      //we only want the "or" text if the scope is an only scope
+      if(isOnlyScope){this.canvas.addDiagram(orText,true)}
+      this.canvas.addDiagram(rectangle);
+      break;
     case "before" :
-	if ((count == 1) || isOnlyScope) {
-	    this.canvas.addDiagram(rectangle);
-	}
-	break;
+      if ((count == 1) || isOnlyScope) {
+	this.canvas.addDiagram(rectangle);
+      }
+      break;
     case "until" :
-	if (count == 1 || !isOnlyScope) {
-	    this.canvas.addDiagram(rectangle);
-	}
-	break;
+      if (count == 1 || !isOnlyScope) {
+	this.canvas.addDiagram(rectangle);
+      }
+      break;
 
-      default: this.canvas.addDiagram(rectangle);
+    default: this.canvas.addDiagram(rectangle);
     }
     return (arrow);
 }
