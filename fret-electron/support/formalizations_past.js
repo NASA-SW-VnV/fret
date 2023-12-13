@@ -73,8 +73,9 @@ function determineBaseForm (negate, timing, condition) {
     case 'immediately':
         main_formula = (negate=='true') ? notImmediately(property, cond):immediately(property, cond);
         break;
-    case 'finally':
-        main_formula = (negate == 'true') ? notFinally(property, cond) : Finally(property,cond);
+  case 'finally':
+    main_formula = (negate == 'true') ? notFinally(property, cond) : Finally(property,cond);
+    break;
     case 'next':
         main_formula = (negate=='true') ? notNext(property, cond):next(property, cond);
         break;
