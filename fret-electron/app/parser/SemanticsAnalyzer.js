@@ -234,7 +234,10 @@ RequirementListener.prototype.enterPost_condition = function(ctx) {
     result.post_condition = pc2;
 }
 
-const atWords = {'same' : 'immediately', 'next' : 'next', 'last' : 'finally'};
+const atWords = {'first' : 'immediately',
+		 'same' : 'immediately',
+		 'next' : 'next',
+		 'last' : 'finally'};
 
 RequirementListener.prototype.enterTiming = function(ctx) {
   const words = antlrUtilities.getText(ctx).replace(',', '').trim().toLowerCase().split(/\s+/);

@@ -144,7 +144,7 @@ timing_aux :
          | AFTER duration_lower
 	 | UNTIL stop_condition
  	 | BEFORE stop_condition
-	 | AT THE (NEXT | SAME | LAST) TIMEPOINT
+	 | AT THE (FIRST | SAME | NEXT | LAST) TIMEPOINT
          | (IMMEDIATELY | INITIALLY)
 	 | FINALLY
          | EVENTUALLY
@@ -242,6 +242,7 @@ EVENTUALLY : E V E N T U A L L Y;
 EXCEPT : E X C E P T;
 FALSE : F A L S E;
 FINALLY : F I N A L L Y;
+FIRST : F I R S T;
 FOR : F O R;
 HOUR : H O U R S?;
 IF : I F;

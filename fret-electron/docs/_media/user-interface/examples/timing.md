@@ -2,8 +2,9 @@
 
 specifies the time points or time intervals, where a response has to occur once scope and condition(s) are satisfied. Supported options are
 
-* **immediately**
+* **immediately**, **initially**, **at the first timepoint**, **at the same timepoint** (synonyms)
 * **at the next timepoint**
+* **finally**, **at the last timepoint** (synonyms)
 * **eventually**
 * **always**
 * **never**
@@ -22,7 +23,7 @@ for example 12 seconds or 5 minutes. Time units can be one of the following:
 * **minute** or **minutes**
 * **hour** or **hours**
 
-**NOTE:** Time units are currently ignored: they are not checked, converted
+**NOTE: Time units are currently ignored**: they are not checked, converted
 or reasoned about by FRET. To FRET, all the units mean "time points" (or
 "time steps"); e.g., 3 ticks means the same as 3 seconds, which means the
 same as 3 microseconds. FRET exports verification code to analysis tools,
@@ -36,10 +37,12 @@ that the response must hold at least until strictly before the
 STOP_Condition holds.
 
 #### EXAMPLES
-* **immediately:** **In** roll_hold **mode RollAutopilot shall immediately satisfy if** (roll_angle
+* **immediately:** **In** roll_hold **mode** RollAutopilot **shall immediately satisfy if** (roll_angle
   < 6.0 & roll_angle > -6.0) **then** roll_hold_reference = 0.0
 * **next:** **When** currentOverload **the** circuitBreaker **shall,
   at the next timepoint, satisfy** shutoff
+* **finally:** **In** flight **mode**, **the** vehicle **shall finally
+  satisfy** landingMode_initiated
 * **eventually:** **In** landingMode **the** system **shall eventually satisfy**
   LandingGearLowered
 * **always:** **The** autopilot **shall always satisfy if** allGood **then**

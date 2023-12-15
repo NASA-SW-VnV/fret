@@ -47,7 +47,7 @@ possible to avoid mistakes and misunderstandings.
 * **Upon** powered_on the component shall immediately satisfy bootup
 * **Whenever** intruder the alarm shall immediately satisfy sound
 
-The contrast between trigger and continuous conditions is shown in the following two
+The contrast between trigger and continual conditions is shown in the following two
 examples, in the case where at some point p holds forever:
 
 * Upon p the software shall eventually satisfy q
