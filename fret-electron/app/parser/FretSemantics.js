@@ -108,7 +108,7 @@ exports.compile = (text) => {
     parseErrors.push(reserved.map(a => { return a.text }).join('; '))
   //console.log("Text length: " + trimmedText.length + " responseEnd: " + responseEnd)
   if (responseEnd !== 0 && trimmedText.length - 1 !== responseEnd)
-    parseErrors.push("Trailing unparsed input: " + trimmedText.slice(responseEnd + 1))
+    parseErrors.push("Trailing unparsed input: '" + trimmedText.slice(responseEnd + 1) + "'")
   if (parseErrors.length !== 0)
     return {parseErrors: parseErrors.join('; ')}
   else return {collectedSemantics: semanticsAnalyzer.semantics()}
@@ -139,8 +139,8 @@ exports.compilePartialText = (text) => {
   else {
     const {conds,responseEnd} = semanticsAnalyzer.conditions();
     if (responseEnd !== 0 && trimmedText.length - 1 !== responseEnd)
-      annotations = annotations.concat([{text: 'Trailing unparsed input: '
-					 + trimmedText.slice(responseEnd + 1)}])
+      annotations = annotations.concat([{text: "Trailing unparsed input: '"
+					 + trimmedText.slice(responseEnd + 1) + "'"}])
     const reserved = findReservedWords(conds.join(" "))
     annotations = annotations.concat(reserved);
     //console.log("Text length: " + trimmedText.length + " responseEnd: " + responseEnd)
@@ -205,7 +205,7 @@ exports.parseByCtxRuleAndAnalyze = (text, ctxRule) => {
       parseErrors.push(reserved.map(a => { return a.text }).join('; '))
     //console.log("Text length: " + trimmedText.length + " responseEnd: " + responseEnd)
     if (responseEnd !== 0 && trimmedText.length - 1 !== responseEnd)
-      parseErrors.push("Trailing unparsed input: " + trimmedText.slice(responseEnd + 1))
+      parseErrors.push("Trailing unparsed input: '" + trimmedText.slice(responseEnd + 1) + "'")
     if (parseErrors.length !== 0)
       result.parseErrors = parseErrors.join('; ')
     else result.parseTree = tree; 
