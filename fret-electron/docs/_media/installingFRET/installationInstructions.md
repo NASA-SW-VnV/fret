@@ -59,8 +59,7 @@ Alternatively, for Linux users, we provide a [Docker image](../../../../tools/Sc
 
 > __Note:__ FRET can run with either **python 2.x** or **python 3.x**. You can config FRET to specify which version of python to use. For example, to use python2 executable, run the following: `npm config set python /usr/bin/python2.x`
 
-> __Note:__ We have added package-lock.json files, as recommended by nodeJS, to assist the installation of FRET. These files were previously untracked (prior to release 3.1). If you get an "untracked working tree files error" when pulling the new code,
-please delete your local package-lock.json files.
+> __Note:__ We have added package-lock.json files, as recommended by nodeJS, to assist the installation of FRET. These files were previously untracked (prior to release 3.1). If you get an "untracked working tree files error" when pulling the new code, please delete your local package-lock.json files.
 
 > __Note:__ Compiling on Windows machines requires  **gcc** and the [node-gyp prerequisites](https://github.com/nodejs/node-gyp#on-windows).
 
