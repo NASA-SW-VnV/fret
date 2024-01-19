@@ -48,8 +48,14 @@ PrismPropVisitor.prototype.visitPathGroup = function(ctx) {
 
 // Visit a parse tree produced by PrismPropParser#pathBoundedBinary.
 PrismPropVisitor.prototype.visitPathBoundedBinary = function(ctx) {
-  const children = this.visitChildren(ctx);
-  return [children[1], children[2][0], children[2][1], children[0], children[3]];
+  const op = this.visit(ctx.binaryBoundedPathOp(0));
+  const arg1 = this.visit(ctx.stateFormula(0));
+  const arg2 = this.visit(ctx.stateFormula(1));
+  const tb = this.visit(ctx.timeBound(0))
+  return [op, tb[0], tb[1], arg1, arg2]
+//  const children = this.visitChildren(ctx);
+//  console.log(JSON.stringify(children))
+//  return [children[1], children[2][0], children[2][1], children[0], children[3]];
 };
 
 
@@ -58,7 +64,6 @@ PrismPropVisitor.prototype.visitPathUnary = function(ctx) {
   const children = this.visitChildren(ctx);
   return [children[0],children[2]];
 };
-
 
 // Visit a parse tree produced by PrismPropParser#pathBinaryL.
 PrismPropVisitor.prototype.visitPathBinaryL = function(ctx) {
@@ -71,10 +76,9 @@ PrismPropVisitor.prototype.visitPathITE = function(ctx) {
   const condition = this.visit(ctx.pathFormula(0))
   const thenPart = this.visit(ctx.pathFormula(1))
   const elsePart = this.visit(ctx.pathFormula(2))
-  return ['ITE', condition, thenPart, elsePart]
-
+  const functor = this.visit(ctx.lite(0))
+  return [functor, condition, thenPart, elsePart]
 };
-
 
 // Visit a parse tree produced by PrismPropParser#pathState.
 PrismPropVisitor.prototype.visitPathState = function(ctx) {
@@ -106,32 +110,36 @@ PrismPropVisitor.prototype.visitPathNegate = function(ctx) {
 
 // Visit a parse tree produced by PrismPropParser#unaryPathOp.
 PrismPropVisitor.prototype.visitUnaryPathOp = function(ctx) {
-  const op = aus.getText(ctx).trim();
-  const unaryMap = { X : 'Nxt', F : 'Future', G : 'Global' }
-  return unaryMap[op];
+  return this.visitChildren(ctx)[0];
+  //const op = aus.getText(ctx).trim();
+  //const unaryMap = { X : 'Nxt', F : 'Future', G : 'Global' }
+  //return unaryMap[op];
 };
 
 
 // Visit a parse tree produced by PrismPropParser#unaryBoundedPathOp.
 PrismPropVisitor.prototype.visitUnaryBoundedPathOp = function(ctx) {
-  const op = aus.getText(ctx).trim();
-  const unaryMap = { F : 'FutureBounded', G : 'GlobalBounded' }
-  return unaryMap[op];
+  return this.visitChildren(ctx)[0] + 'Timed';
+  //const op = aus.getText(ctx).trim();
+  //const unaryMap = { F : 'FutureBounded', G : 'GlobalBounded' }
+  //return unaryMap[op];
 };
 
 // Visit a parse tree produced by PrismPropParser#binaryBoundedPathOp.
 PrismPropVisitor.prototype.visitBinaryBoundedPathOp = function(ctx) {
-  const op = aus.getText(ctx).trim();
-  const binaryMap = { U : 'UntlBounded', R : 'ReleasesBounded' }
-  return binaryMap[op];
+  return this.visitChildren(ctx)[0] + 'Timed';
+  //const op = aus.getText(ctx).trim();
+  //const binaryMap = { U : 'UntlBounded', R : 'ReleasesBounded' }
+  //return binaryMap[op];
 };
 
 
 // Visit a parse tree produced by PrismPropParser#binaryPathOpL.
 PrismPropVisitor.prototype.visitBinaryPathOp = function(ctx) {
-  const op = aus.getText(ctx).trim();
-  const binaryMap = { U : 'Untl', R : 'Releases', W : 'WeakUntl' }
-  return binaryMap[op];
+  return this.visitChildren(ctx)[0];
+  //const op = aus.getText(ctx).trim();
+  //const binaryMap = { U : 'Untl', R : 'Releases', W : 'WeakUntl' }
+  //return binaryMap[op];
 };
 
 
@@ -151,7 +159,7 @@ PrismPropVisitor.prototype.visitTimeRange = function(ctx) {
 
 // Visit a parse tree produced by PrismPropParser#stateConst.
 PrismPropVisitor.prototype.visitStateConst = function(ctx) {
-  const c = aus.getText(ctxt).trim();
+  const c = aus.getText(ctx).trim();
   if (c === 'true') return true;
   else if (c === 'false') return false;
   else console.log('visitStateConst error: ' + JSON.stringify(c))
@@ -176,7 +184,8 @@ PrismPropVisitor.prototype.visitStateITE = function(ctx) {
   const condition = this.visit(ctx.stateFormula(0))
   const thenPart = this.visit(ctx.stateFormula(1))
   const elsePart = this.visit(ctx.stateFormula(2))
-  return ['ITE', condition, thenPart, elsePart]
+  const functor = this.visit(ctx.lite(0))
+  return [functor, condition, thenPart, elsePart]
 }
 
 // Visit a parse tree produced by PrismPropParser#stateNegate.
@@ -281,7 +290,7 @@ PrismPropVisitor.prototype.visitUntil = function(ctx) {
 
 // Visit a parse tree produced by PrismPropParser#weakUntil.
 PrismPropVisitor.prototype.visitWeakUntil = function(ctx) {
-  return 'UntlWeak'
+  return 'WeakUntl'
 };
 
 
@@ -454,6 +463,9 @@ PrismPropVisitor.prototype.visitQuery = function(ctx) {
 
 // Visit a parse tree produced by PrismPropParser#probOp.
 PrismPropVisitor.prototype.visitProbOp = function(ctx) {
+  // This isn't used because it could also be Pquery,
+  // depending on the probability bound. See 
+  // visitProbBoolFormula and visitProbQuery
   return 'PBool'
 };
 
