@@ -26,6 +26,8 @@ function PrismPropToAST (PrismProp) {
   return PrismPropASTAnalyzer.visit(tree);
 };
 
+// Whether to print ast of if-then-else expression using
+// infix format p ? q : r. Otherwise it is printed as ite(p,q,r)
 let ternaryITE = true;
 
 const infix = { And : '&', Or : '|', Implies : '=>',
@@ -47,9 +49,20 @@ const prefix = { Not : '!', Negate : '-',
 function boundToString(arg1, arg2) {
   const c = infix[arg1];
   if (c === undefined)
+    // arg1 is not an infix comparison operator, so assume bound
+    // is of the form [number,number]
     return '[' + ASTtoPrismProp(arg1) + ',' + ASTtoPrismProp(arg2) + ']';
   else
     return c + '(' + ASTtoPrismProp(arg2) + ')';
+}
+
+// If ast is an expression witha a prefix operator, parenthesize it.
+// For example, it puts in parens around the "X" in "p & (X (r))"
+function ParenASTtoPrismProp(ast){
+  const str = ASTtoPrismProp(ast);
+  if (isArray(ast) && (prefix[ast[0]] !== undefined))
+    return '(' + str + ')';
+  else return str;
 }
 
 // return a string of the ast printed in Prism Property format
@@ -66,21 +79,23 @@ function ASTtoPrismProp(ast) {
       else {
 	const prefixChar = prefix[op];
 	if (prefixChar !== undefined) {
+	  // op is a prefix operator
 	  if (op === 'GloballyTimed' || op === 'FutureTimed') {
 	    const bound = boundToString(ast[1],ast[2]);
-	    result = '(' + prefixChar + bound + ' ' + ASTtoPrismProp(ast[3]) + ')';
+	    result = prefixChar + bound + ' (' + ASTtoPrismProp(ast[3]) + ')';
 	  }
-	  else result = '(' + prefixChar + ' ' + ASTtoPrismProp(ast[1]) + ')';
+	  else result = prefixChar + ' (' + ASTtoPrismProp(ast[1]) + ')';
 	}
 	else {
 	  const infixChar = infix[op];
 	  if (infixChar !== undefined) {
+	    // op is a binary infix operator
 	    if (op === 'UntlTimed' || op === 'ReleasesTimed') {
 	      const bound = boundToString(ast[1],ast[2]);
-	      result = '(' + ASTtoPrismProp(ast[3]) + ' ' + infixChar + bound + ' ' + ASTtoPrismProp(ast[4]) + ')'
+	      result = '(' + ParenASTtoPrismProp(ast[3]) + ' ' + infixChar + bound + ' ' + ParenASTtoPrismProp(ast[4]) + ')'
 	    }
 	    else 
-	    result = ('(' + ASTtoPrismProp(ast[1]) + ' ' + infixChar + ' ' + ASTtoPrismProp(ast[2]) + ')');
+	    result = ('(' + ParenASTtoPrismProp(ast[1]) + ' ' + infixChar + ' ' + ParenASTtoPrismProp(ast[2]) + ')');
 	  }
 	  else {
 	    let args = ast.slice(1).map(ASTtoPrismProp);

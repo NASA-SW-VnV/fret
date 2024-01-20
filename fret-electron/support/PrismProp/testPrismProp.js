@@ -36,15 +36,34 @@ let exs2 = [
   'P>=0.3[F (p?r:d=3)]',
   'true | false',
   'd <= d + -1 * 2.0 / (d - 3.0)',
-  'P>=1[(p W[0,10] r)]',
-  '(! p => r <=> r | p & r)'
+  '(! p => r <=> r | p & r)',
+  'P>=0[F (G (p))]'
   ]
+
+let exErrors = [
+  // error: weak until doesn't have a timed version
+  'P>=1[(p W[0,10] r)]', 
+  // error: time-bounded operators not supported in LTL
+  'P>=0.4[(G<=3(!p)) & (F[4,4]p)]' 
+]
 
 function testEx(ex) {
   const ast = prismSem.PrismPropToAST(ex);
-  const astPrinted = prismSem.ASTtoPrismProp(ast)
-  console.log(ex + '\n' + JSON.stringify(ast) + '\n' + astPrinted +'\n')
-  //console.log(astPrinted + '\n')
+  const astStringified = JSON.stringify(ast)
+  const astPrinted = prismSem.ASTtoPrismProp(ast);
+  const astPrintedParsed = prismSem.PrismPropToAST(astPrinted);
+  const astPrintedParsedStringified = JSON.stringify(astPrintedParsed)
+  if (astStringified !== astPrintedParsedStringified) console.log('!! ERROR')
+
+  // If this is uncommented, it will print the example, the AST from
+  // the parse of the example, the printed AST, and then the parse
+  // of the printed AST.
+  //console.log(ex + '\n' + astStringified + '\n' + astPrinted +'\n' + astPrintedParsedStringified + '\n')
+
+  // If this is uncommented, it will create a PRISM property file
+  // format list of printed ASTs, which can be ingested by PRISM to
+  // check for PRISM parse errors.
+  console.log(astPrinted + '\n')
 }
 
 exs.forEach(testEx)
