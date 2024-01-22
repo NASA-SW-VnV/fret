@@ -40,11 +40,20 @@ let exs2 = [
   'P>=0[F (G (p))]'
   ]
 
+  let exs3 = [
+'P>=1[G (r => p)]',
+'P>=1[G (r => P>0.9[p])]',
+'P>=1[G (r => P>0.9[F (p)])]',
+'P>=1[G (r => P>0.9[X (p)])]',
+'P>=1[ (G (((! r) & (X (r))) => (X (p))))] & (r => (P>=1 [p]))',
+'P>=1[ G ( (!r & (X (r)))  => ( P=?[ (X ( r & p))] / P=?[X (r)] )>0.1)] & (r => P>0.9[p])'
+]
+
 let exErrors = [
   // error: weak until doesn't have a timed version
-  'P>=1[(p W[0,10] r)]', 
+  'P>=1[(p W[0,10] r)]',
   // error: time-bounded operators not supported in LTL
-  'P>=0.4[(G<=3(!p)) & (F[4,4]p)]' 
+  'P>=0.4[(G<=3(!p)) & (F[4,4]p)]'
 ]
 
 function testEx(ex) {
@@ -68,4 +77,4 @@ function testEx(ex) {
 
 exs.forEach(testEx)
 exs2.forEach(testEx)
-
+exs3.forEach(testEx)
