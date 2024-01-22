@@ -36,12 +36,6 @@ PrismPropVisitor.prototype.visitPathBoundedBinary = function(ctx) {
 };
 
 
-// Visit a parse tree produced by PrismPropParser#pathBinarL.
-PrismPropVisitor.prototype.visitPathBinarL = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
 // Visit a parse tree produced by PrismPropParser#pathUnary.
 PrismPropVisitor.prototype.visitPathUnary = function(ctx) {
   return this.visitChildren(ctx);

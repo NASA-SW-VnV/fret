@@ -47,15 +47,6 @@ PrismPropListener.prototype.exitPathBoundedBinary = function(ctx) {
 };
 
 
-// Enter a parse tree produced by PrismPropParser#pathBinarL.
-PrismPropListener.prototype.enterPathBinarL = function(ctx) {
-};
-
-// Exit a parse tree produced by PrismPropParser#pathBinarL.
-PrismPropListener.prototype.exitPathBinarL = function(ctx) {
-};
-
-
 // Enter a parse tree produced by PrismPropParser#pathUnary.
 PrismPropListener.prototype.enterPathUnary = function(ctx) {
 };

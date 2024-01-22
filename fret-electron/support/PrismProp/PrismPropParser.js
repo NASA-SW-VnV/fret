@@ -671,52 +671,6 @@ PathBoundedBinaryContext.prototype.accept = function(visitor) {
 };
 
 
-function PathBinarLContext(parser, ctx) {
-	PathFormulaContext.call(this, parser);
-    PathFormulaContext.prototype.copyFrom.call(this, ctx);
-    return this;
-}
-
-PathBinarLContext.prototype = Object.create(PathFormulaContext.prototype);
-PathBinarLContext.prototype.constructor = PathBinarLContext;
-
-PrismPropParser.PathBinarLContext = PathBinarLContext;
-
-PathBinarLContext.prototype.pathFormula = function(i) {
-    if(i===undefined) {
-        i = null;
-    }
-    if(i===null) {
-        return this.getTypedRuleContexts(PathFormulaContext);
-    } else {
-        return this.getTypedRuleContext(PathFormulaContext,i);
-    }
-};
-
-PathBinarLContext.prototype.limplies = function() {
-    return this.getTypedRuleContext(LimpliesContext,0);
-};
-PathBinarLContext.prototype.enterRule = function(listener) {
-    if(listener instanceof PrismPropListener ) {
-        listener.enterPathBinarL(this);
-	}
-};
-
-PathBinarLContext.prototype.exitRule = function(listener) {
-    if(listener instanceof PrismPropListener ) {
-        listener.exitPathBinarL(this);
-	}
-};
-
-PathBinarLContext.prototype.accept = function(visitor) {
-    if ( visitor instanceof PrismPropVisitor ) {
-        return visitor.visitPathBinarL(this);
-    } else {
-        return visitor.visitChildren(this);
-    }
-};
-
-
 function PathUnaryContext(parser, ctx) {
 	PathFormulaContext.call(this, parser);
     PathFormulaContext.prototype.copyFrom.call(this, ctx);
@@ -796,6 +750,10 @@ PathBinaryLContext.prototype.lor = function() {
 
 PathBinaryLContext.prototype.liff = function() {
     return this.getTypedRuleContext(LiffContext,0);
+};
+
+PathBinaryLContext.prototype.limplies = function() {
+    return this.getTypedRuleContext(LimpliesContext,0);
 };
 PathBinaryLContext.prototype.enterRule = function(listener) {
     if(listener instanceof PrismPropListener ) {
@@ -1214,7 +1172,7 @@ PrismPropParser.prototype.pathFormula = function(_p) {
                     break;
 
                 case 4:
-                    localctx = new PathBinarLContext(this, new PathFormulaContext(this, _parentctx, _parentState));
+                    localctx = new PathBinaryLContext(this, new PathFormulaContext(this, _parentctx, _parentState));
                     this.pushNewRecursionContext(localctx, _startState, PrismPropParser.RULE_pathFormula);
                     this.state = 154;
                     if (!( this.precpred(this._ctx, 6))) {

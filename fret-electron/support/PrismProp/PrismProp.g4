@@ -11,7 +11,7 @@ pathFormula :
            | pathFormula land pathFormula                                    #pathBinaryL
            | pathFormula lor pathFormula                                     #pathBinaryL
            | pathFormula liff pathFormula                                    #pathBinaryL
-           | pathFormula limplies pathFormula                                #pathBinarL
+           | pathFormula limplies pathFormula                                #pathBinaryL
            | pathFormula lite pathFormula colon pathFormula                  #pathITE
            | unaryPathOp lpr pathFormula rpr                                 #pathUnary
            | unaryBoundedPathOp timeBound lpr stateFormula rpr               #pathBoundedUnary
