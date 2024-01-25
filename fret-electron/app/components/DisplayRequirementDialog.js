@@ -173,25 +173,28 @@ class DisplayRequirementDialog extends React.Component {
           onClose={this.handleClose}
           aria-labelledby="form-dialog-title"
         >
+        <DialogTitle>
           <ImageList rowHeight='auto' cols={2}>
             <ImageListItem>
-                <DialogTitle id="qa_disReq_dt_reqId">{reqidLabel}
-                  <IconButton id="qa_disReq_ic_edit" onClick={this.handleUpdateRequirement} size="small" color="secondary" aria-label="edit" >
-                    <Tooltip id="tooltip-icon-edit" title="Edit Requirement">
-                    <EditIcon />
-                    </Tooltip>
-                  </IconButton>
-                  <IconButton id="qa_disReq_ic_delete" onClick={this.handleDeleteRequirement} size="small" aria-label="delete" >
-                    <Tooltip id="tooltip-icon-delete" title="Delete Requirement">
-                    <DeleteIcon color='error'/>
-                    </Tooltip>
-                  </IconButton>
-                </DialogTitle>
+              <div style={{display:'flex'}}>
+                <Typography variant='h6' id="qa_disReq_dt_reqId">{reqidLabel}</Typography>
+                <IconButton id="qa_disReq_ic_edit" onClick={this.handleUpdateRequirement} size="small" color="secondary" aria-label="edit" >
+                  <Tooltip id="tooltip-icon-edit" title="Edit Requirement">
+                  <EditIcon />
+                  </Tooltip>
+                </IconButton>
+                <IconButton id="qa_disReq_ic_delete" onClick={this.handleDeleteRequirement} size="small" aria-label="delete" >
+                  <Tooltip id="tooltip-icon-delete" title="Delete Requirement">
+                  <DeleteIcon color='error'/>
+                  </Tooltip>
+                </IconButton>
+              </div>
             </ImageListItem>
             <ImageListItem>
-              <DialogTitle style={{textAlign: 'right'}} id="qa_disReq_dt_project">{projectLabel}</DialogTitle>
+              <Typography variant='h6' style={{textAlign: 'right'}} id="qa_disReq_dt_project">{projectLabel}</Typography>
             </ImageListItem>
           </ImageList>
+        </DialogTitle>
           <Divider/>
           <DialogContent>
             <br/>
