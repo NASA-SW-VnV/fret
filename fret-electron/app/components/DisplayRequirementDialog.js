@@ -177,7 +177,9 @@ class DisplayRequirementDialog extends React.Component {
           <ImageList rowHeight='auto' cols={2}>
             <ImageListItem>
               <div style={{display:'flex'}}>
-                <Typography variant='h6' id="qa_disReq_dt_reqId">{reqidLabel}</Typography>
+                <Tooltip title={reqidLabel} id="qa_disReq_dt_reqId">
+                  <Typography noWrap variant='h6' id="qa_disReq_dt_reqId">{reqidLabel}</Typography>
+                </Tooltip>
                 <IconButton id="qa_disReq_ic_edit" onClick={this.handleUpdateRequirement} size="small" color="secondary" aria-label="edit" >
                   <Tooltip id="tooltip-icon-edit" title="Edit Requirement">
                   <EditIcon />
@@ -191,7 +193,9 @@ class DisplayRequirementDialog extends React.Component {
               </div>
             </ImageListItem>
             <ImageListItem>
-              <Typography variant='h6' style={{textAlign: 'right'}} id="qa_disReq_dt_project">{projectLabel}</Typography>
+              <Tooltip title={projectLabel} id="qa_disReq_dt_project">
+                <Typography noWrap variant='h6' style={{textAlign: 'right'}}>{projectLabel}</Typography>
+              </Tooltip>
             </ImageListItem>
           </ImageList>
         </DialogTitle>
