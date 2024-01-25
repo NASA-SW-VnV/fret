@@ -273,7 +273,7 @@
     "redux-thunk": "^2.2.0",
     "slate": "^0.101.5",
     "slate-history": "^0.100.0",
-    "slate-react": "^0.57.1",
+    "slate-react": "^0.60.17",
     "source-map-support": "^0.5.3",
     "uuid": "^9.0.0"
   },

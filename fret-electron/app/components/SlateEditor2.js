@@ -128,16 +128,16 @@ class SlateEditor2 extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      editorValue: [],
-      inputText: ' ',
+      editorValue: [],     // The Dom of the Editable of this Slate class
+      inputText: ' ',      // all requirement texts 
       //fieldColors: {},
-      menuOptions: [],
-      menuIndex: 0,
-      selectedField: undefined,
-      search: '',
-      variables: [],
-      beforeRange: null,
-      position: null,
+      menuOptions: [],     // field template options (scope,conditions, components, timing, responses) buble drop down menu
+      menuIndex: 0,        // menu index for both field drop down and glossary menu
+      selectedField: undefined,    // selected field when in template mode
+      search: '',        // search string for glossary autofill
+      variables: [],     // filtered variables for glossary autofill
+      beforeRange: null,  // for tracking glossary autofill search string
+      position: null,    // position for dropdown menu in editable (template field or glossary)
     }
 
 
@@ -344,6 +344,7 @@ class SlateEditor2 extends React.Component {
   }
 
   handleDropdownSelection(index) {
+    // for both field drop down menu and variable drop down menu
     const {template} = this.props;
     const selection = this.props.editor.selection;
     const start = selection && Range.start(selection);
@@ -505,6 +506,10 @@ class SlateEditor2 extends React.Component {
       }, () => {
         if (newIndex >= 0) this.scrollToOption(newIndex)
       })
+    } else if (isKeyHotkey('shift+arrowup', event)) {
+
+    } else if (isKeyHotkey('shift+arrowdown', event)) {
+
     } else if (isKeyHotkey('arrowleft', event)) {
       /* Arrow left moves the cursor, this is working fine */
     } else if (isKeyHotkey('arrowright', event)) {
@@ -530,19 +535,29 @@ class SlateEditor2 extends React.Component {
        * current selection backwards by one word */
       event.preventDefault();
       const {anchor} = this.props.editor.selection;
-      const oldAnchor = JSON.parse(JSON.stringify(anchor));
       Transforms.move(this.props.editor, { distance: 1, unit: 'word', reverse: true})
       const {focus} = this.props.editor.selection;
-      Transforms.select(this.props.editor, {focus, anchor: oldAnchor});
+      Transforms.select(this.props.editor, {anchor: anchor, focus: focus, reverse: true});
     } else if (isKeyHotkey('mod+shift+arrowright', event)) {
       /* Ctrl/Cmd + shift + right moves the focus of the
        * current selection forward by one word */
       event.preventDefault();
       const {anchor} = this.props.editor.selection;
-      const oldAnchor = JSON.parse(JSON.stringify(anchor));
       Transforms.move(this.props.editor, { distance: 1, unit: 'word', reverse: false})
       const {focus} = this.props.editor.selection;
-      Transforms.select(this.props.editor, {focus, anchor: oldAnchor});
+      Transforms.select(this.props.editor, {anchor: anchor, focus: focus});
+    } else if (isKeyHotkey('shift+arrowright', event)) {
+
+    } else if (isKeyHotkey('shift+arrowleft', event)) {
+ 
+    } else if(isKeyHotkey('shift+home', event)) {
+      //console.log('hot key home or end: allowing defaultBehavior')
+    } else if(isKeyHotkey('shift+end', event)) {
+      //console.log('hot key home or end: allowing defaultBehavior')      
+    } else if(isKeyHotkey('home', event)) {
+      //console.log('hot key home or end: allowing defaultBehavior')
+    } else if(isKeyHotkey('end', event)) {
+      //console.log('hot key home or end: allowing defaultBehavior')
     } else {
       event.preventDefault();
     }
@@ -643,6 +658,7 @@ class SlateEditor2 extends React.Component {
   }
 
   renderConsole = () => {
+    // error messages area under the slate
     const {inputText, errors } = this.state
     const message = (inputText || inputText.length > 0)
                       ? ((errors) ? 'Parse Errors: ' + errors : undefined)
@@ -766,6 +782,7 @@ class SlateEditor2 extends React.Component {
   }
 
   renderElement(props) {
+    // if field-element render text in buble
     switch(props.element.type) {
         case 'field-element':
           return (
@@ -783,11 +800,14 @@ class SlateEditor2 extends React.Component {
               {props.children}
             </span>);
       default:
+        // default is normal text
         return <p {...props.attributes}>{props.children}</p>
     }
   }
 
   renderLeaf = props => {
+    // applies color for various fields according to 
+    // leaf.isPlaceholder or leaf.type
     const { attributes, children, leaf } = props
     const { fieldColors } = this.props
     let style = {};
@@ -821,6 +841,7 @@ class SlateEditor2 extends React.Component {
   }
 
   renderEditor = () => {
+    // process slate data then render slate editor
     const { template } = this.props;
     const { menuOptions, menuIndex, editorValue, variables, position } = this.state;
     const hasFields = Boolean(template);
@@ -842,7 +863,7 @@ class SlateEditor2 extends React.Component {
      * The current options are stored the component state and set in
      * handleEditorValueChange, based on the current cursor position
      * (selection) in the editor */
-    let menu = undefined;
+    let menu = undefined;   //if shown, only one of field template or glossary dropdown menu 
     if (hasFields && menuOptions && menuOptions.length > 0 && position) {
       menu = <TemplateDropdownMenu
         options={menuOptions}
@@ -919,6 +940,7 @@ function isEqualPath(start, end) {
 
 
 function getFieldNode(editor) {
+  // field-element nodes are buble with text in Editable
   let parent = getParent(editor);
   return (isMany(editor) ? false : parent && parent.type === 'field-element') ? parent : undefined;
 }
@@ -994,7 +1016,7 @@ SlateEditor2.propTypes = {
   classes: PropTypes.object.isRequired,
   updateInstruction: PropTypes.func.isRequired,
   updateSemantics: PropTypes.func.isRequired,
-  inputFields: PropTypes.object,
+  inputFields: PropTypes.object,  // requirement fullText
   grammarRule: PropTypes.string,
   template: PropTypes.object
 }
