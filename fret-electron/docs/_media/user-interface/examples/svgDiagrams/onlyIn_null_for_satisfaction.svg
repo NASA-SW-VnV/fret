@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="500px" height="160px">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="507px" height="160px">
       <pattern id="dottedPattern"
        x="10" y="9" width="10" height="10" patternUnits="userSpaceOnUse" >
        <!-- start pattern-->
@@ -18,7 +18,7 @@
 <text x = "207" y="82" font-family="sans-serif" font-size="17px"     font-weight="normal" text-anchor="start" alignment-baseline="middle" fill="black">M</text>
 
 
-  <path d="M 10 130 h 500" stroke="#000" stroke-width="3" fill="none"/>
+  <path d="M 10 130 h 490" stroke="#000" stroke-width="3" fill="none"/>
 <path d="M 500 130 l -14.26 4.64v -9.28z" stroke="#000" stroke-width="0"/>
 
 </svg>
