@@ -67,11 +67,18 @@ const timings = new Map([
   ["next",["green","red",false]],
   ["after",["red","orange",true]]]);
 
+// The Canvas extends this far past the shaded area to accomdate
+// downwards arrow used with the "finally" timing
+const pastEnd = 7;
+
+// Timeline is shortened by this amount, so that the arrow is right at
+// the end of the shaded region and not past it.
+const pastEnd2 = pastEnd + 3; 
+
 function setTimeline(startx, endx, y, lineWidth=3) {return(`
-  <path d="M ${startx} ${y} h ${endx}" stroke="#000" stroke-width="${lineWidth}" fill="none"/>`
+  <path d="M ${startx} ${y} h ${endx - pastEnd2}" stroke="#000" stroke-width="${lineWidth}" fill="none"/>`
   + "\n" + // arrow
   `<path d="M ${endx} ${y} l -14.26 4.64v -9.28z" stroke="#000" stroke-width="0"/>`)}
-
 
 class Canvas {
   // class methods
@@ -93,7 +100,7 @@ class Canvas {
   }
 
   save(name) {
-    var headerText = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${this.width}px" height="${this.height}px">`
+    var headerText = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${this.width + pastEnd}px" height="${this.height}px">`
     
 
     // defines the dotted pattern
