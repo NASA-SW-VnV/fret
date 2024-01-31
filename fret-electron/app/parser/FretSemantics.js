@@ -74,12 +74,18 @@ function do_not_formalize(text) {
 // Assumes the parse tree has been walked.
 function checkReqt(trimmedText) {
   let reqtErrors = [];
-  const {conds,responseEnd} = semanticsAnalyzer.conditions();
+  const {conds,responseEnd,probability} = semanticsAnalyzer.conditions();
   const reserved = findReservedWords(conds.join(" "));
   if (reserved.length > 0)
     reqtErrors.push(reserved)
   if (responseEnd !== 0 && trimmedText.length - 1 !== responseEnd)
     reqtErrors.push("Trailing unparsed input: '" + trimmedText.slice(responseEnd + 1) + "'")
+  if (probability) {
+    const {op,p} = probability;
+    const x = Number(p)
+    if (x < 0 || x > 1 || (op === '>' && x >= 1) || (op === '<' && x <= 0))
+      reqtErrors.push("Illegal probability: " + p)
+  }
   return reqtErrors.join('; ')
 }
 

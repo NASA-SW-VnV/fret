@@ -476,7 +476,8 @@ SemanticsAnalyzer.prototype.conditions = () => {
   const conds = [parts.scope_condition, parts.pre_condition, parts.stop_condition, parts.post_condition];
   const responseTextRange = result.responseTextRange
   return {conds: conds.filter(x => x ? true : false),
-	  responseEnd: utils.isArray(responseTextRange) ? responseTextRange[1] : 0
+	  responseEnd: utils.isArray(responseTextRange) ? responseTextRange[1] : 0,
+	  probability: (result.probability === 'bound') ? {op: result.probability_bound[0], p: result.probability_bound[1]} : undefined
 	 }; // remove undefined conditions
 }
 
