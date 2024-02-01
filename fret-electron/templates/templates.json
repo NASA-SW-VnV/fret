@@ -645,7 +645,7 @@
         "field": "state"
       },
       {
-        "text": " & !("
+        "text": " & !( "
       },
       {
         "field": "outgoing_guard_disjunction"
