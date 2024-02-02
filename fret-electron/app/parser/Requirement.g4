@@ -32,11 +32,11 @@
 // *****************************************************************************
 grammar Requirement ; // 16
 
-reqts   :    reqt +
-        ;
+//reqts   :    reqt +
+//        ;
 
-reqt    :    'requirement' (DIGITS | ID | REQT_ID) ':' reqt_body
-    ;
+//reqt    :    'requirement' (DIGITS | ID | REQT_ID) ':' reqt_body ;
+//reqt    :    'requirement' (ID) ':' reqt_body ;
 
 reqt_body : (nasa | freeform) ('.')?
           ;
@@ -303,11 +303,11 @@ fragment EXP :
 
 fragment INT : '0' | [1-9][0-9]* ;
 
-DIGITS :    '0'..'9'+
-    ;
+//DIGITS :    '0'..'9'+
+//    ;
 
 
-REQT_ID :    ('a'..'z'|'A'..'Z'|'0'..'9') ('a'..'z'|'A'..'Z'|'0'..'9'|'_'|'-'|'.')* ;
+//REQT_ID :    ('a'..'z'|'A'..'Z'|'0'..'9') ('a'..'z'|'A'..'Z'|'0'..'9'|'_'|'-'|'.')* ;
 
 //PREDICATE  :    ('A'..'Z') ('a'..'z'|'A'..'Z'|'0'..'9'|'_')* ;
 

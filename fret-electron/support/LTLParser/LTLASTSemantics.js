@@ -197,6 +197,7 @@ function ASTtoCoCo(ast) {
 /*
 
 let ex = '(H[0,2] p&q|r) & (H (Y q) -> Z !r <-> ss) & x != 3 - 2 mod abs(-z) & p S[3,3] q xor 3 + 4 * 6 / 7 >= 2 ^ 3 | FALSE & (p S q) & (qq SI rr) & (uu SI[0,3] vv)'
+ex = 'H x-y<3'
 let exast = LTLtoAST(ex)
 console.log(ex)
 console.log('\n' + JSON.stringify(exast))

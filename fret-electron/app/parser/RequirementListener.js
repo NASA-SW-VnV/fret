@@ -11,24 +11,6 @@ function RequirementListener() {
 RequirementListener.prototype = Object.create(antlr4.tree.ParseTreeListener.prototype);
 RequirementListener.prototype.constructor = RequirementListener;
 
-// Enter a parse tree produced by RequirementParser#reqts.
-RequirementListener.prototype.enterReqts = function(ctx) {
-};
-
-// Exit a parse tree produced by RequirementParser#reqts.
-RequirementListener.prototype.exitReqts = function(ctx) {
-};
-
-
-// Enter a parse tree produced by RequirementParser#reqt.
-RequirementListener.prototype.enterReqt = function(ctx) {
-};
-
-// Exit a parse tree produced by RequirementParser#reqt.
-RequirementListener.prototype.exitReqt = function(ctx) {
-};
-
-
 // Enter a parse tree produced by RequirementParser#reqt_body.
 RequirementListener.prototype.enterReqt_body = function(ctx) {
 };

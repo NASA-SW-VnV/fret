@@ -103,6 +103,9 @@ exports.compile = (text) => {
   var parser = new RequirementParser.RequirementParser(tokens);
   var annotations = [];
   var listener = new AnnotatingErrorListener.AnnotatingErrorListener(annotations);
+  lexer.removeErrorListeners();
+  lexer.addErrorListener(listener);
+
   parser.removeErrorListeners();
   parser.addErrorListener(listener);
   var tree = parser[REQ_BODY_CTX_RULE]();
@@ -124,6 +127,9 @@ exports.compilePartialText = (text) => {
   var parser = new RequirementParser.RequirementParser(tokens);
   var annotations = [];
   var listener = new AnnotatingErrorListener.AnnotatingErrorListener(annotations);
+  lexer.removeErrorListeners();
+  lexer.addErrorListener(listener);
+
   parser.removeErrorListeners();
   parser.addErrorListener(listener);
   var tree = parser[REQ_BODY_CTX_RULE]();
@@ -170,6 +176,9 @@ exports.parseByCtxRule = (text, ctxRule) => {
   var parser = new RequirementParser.RequirementParser(tokens);
   var annotations = []; //findReservedWords(trimmedText);
   var listener = new AnnotatingErrorListener.AnnotatingErrorListener(annotations);
+  lexer.removeErrorListeners();
+  lexer.addErrorListener(listener);
+
   parser.removeErrorListeners();
   parser.addErrorListener(listener);
   var tree = parser[ctxRule]();
@@ -193,6 +202,9 @@ exports.parseByCtxRuleAndAnalyze = (text, ctxRule) => {
   var parser = new RequirementParser.RequirementParser(tokens);
   var annotations = [];
   var listener = new AnnotatingErrorListener.AnnotatingErrorListener(annotations);
+  lexer.removeErrorListeners();
+  lexer.addErrorListener(listener);
+
   parser.removeErrorListeners();
   parser.addErrorListener(listener);
   var tree = parser[ctxRule]();
@@ -221,7 +233,18 @@ exports.parseAndAnalyze = (text) => {
 }
 
 /*
+// 
+console.log('compile: ' + JSON.stringify(this.compile('the sw shall satisfy p:q')))
+console.log('compilePartialText: ' + JSON.stringify(this.compilePartialText('the sw shall satisfy p:q')))
+
+console.log('parseAndAnalyze: ' + JSON.stringify(this.parseAndAnalyze('the sw shall satisfy p:q')))
+*/
+
+/*
 // tests
+
+// fails, needs a space before -
+console.log(JSON.stringify(this.compile('the sw shall satisfy x-y>0')))
 
 console.log(JSON.stringify(this.compile('In mode m upon p the sw shall always satisfy at the previous occurrence of q, r')))
 
