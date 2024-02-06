@@ -68,7 +68,7 @@ state_machine_templates.push(ed.createFinalTemplateObject())
 ed.newTemplate("template-state-transition-stay-pre","State Transition Stay Pre");
 ed.templateSummary("This template describes for a state machine a transition of a state to itself. \
 It describes the input state and the negation of the disjunction of outgoing guard conditions.")
-ed.templateStructure('[component] shall always satisfy if preBool(false, [state] & !([outgoing_guard_disjunction])) then [same_state]')
+ed.templateStructure('[component] shall always satisfy if preBool(false, [state] & !( [outgoing_guard_disjunction] )) then [same_state]')
 
 ed.fieldDescription('component', "Specifies the component of the system that the requirement applies to.")
 ed.addOption('component', 'component',"Replace the text by the name of the target component")
