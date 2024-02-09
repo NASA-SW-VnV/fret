@@ -68,6 +68,9 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 
 const {ipcRenderer} = require('electron');
+const app =require('@electron/remote').app
+const dialog =require('@electron/remote').dialog
+
 
 import analysisPortalManual from '../../docs/_media/ExportingForAnalysis/analysisInsideFRET.md';
 
@@ -188,7 +191,18 @@ class ComponentSummary extends React.Component {
   exportComponentCode = event => {
     event.stopPropagation();
     const {component, selectedProject, language} = this.props;
-    var args = [component, selectedProject, language]
+
+    const homeDir = app.getPath('home');
+    var filepath = dialog.showSaveDialogSync({
+      defaultPath : homeDir,
+      title : 'Export specification',
+      buttonLabel : 'Export',
+      filters: [
+        { name: "Documents", extensions: ['zip'] }
+      ],
+    });
+
+    var args = [component, selectedProject, language, filepath]
     // context isolation
     ipcRenderer.invoke('exportComponent',args).then((result) => {
       // no redux state is changed for this action

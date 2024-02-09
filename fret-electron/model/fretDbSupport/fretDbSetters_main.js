@@ -31,7 +31,7 @@
 // AGREEMENT.
 // *****************************************************************************
 const fs=require("fs");
-import {leveldbDB} from '../../app/main.dev'
+import {leveldbDB} from '../fretDB'
 import { removeReqsInBulk } from './deleteRequirements_main';
 import { removeVariablesInBulk } from '../modelDbSupport/deleteVariables_main';
 const fretDbGetters = require('./fretDbGetters_main')

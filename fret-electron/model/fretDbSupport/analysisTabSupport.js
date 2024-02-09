@@ -30,7 +30,7 @@
 // ANY SUCH MATTER SHALL BE THE IMMEDIATE, UNILATERAL TERMINATION OF THIS
 // AGREEMENT.
 // *****************************************************************************
-import {leveldbDB, modelDB} from '../../app/main.dev'
+import {leveldbDB, modelDB} from '../fretDB'
 const constants = require('../../app/parser/Constants');
 const checkDbFormat = require('../fretDbSupport/checkDBFormat.js');
 

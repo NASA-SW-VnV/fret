@@ -43,6 +43,7 @@ import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
+import {selectExportFilePath} from "../utils/utilityFunctions";
 
 const {ipcRenderer} = require('electron');
 
@@ -111,9 +112,9 @@ class ExportRequirementsDialog extends React.Component {
 
   handleExport = () => {
     const {project, output_format} = this.state;
+    var filepath = selectExportFilePath(output_format)
 
-    // context isolation
-    var argList = [project, output_format ]
+    var argList = [project, output_format, filepath ]
     const channel = this.state.dataType === 'requirements' ? 'exportRequirements' : this.state.dataType === 'variables' ? 'exportVariables' : 'exportRequirementsAndVariables'
     ipcRenderer.invoke(channel, argList).catch((err) => {
       console.log(err);

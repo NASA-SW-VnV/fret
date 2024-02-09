@@ -31,7 +31,7 @@
 // AGREEMENT.
 // *****************************************************************************
 const fs=require("fs");
-import {modelDB} from '../../app/main.dev'
+import {modelDB} from '../fretDB'
 
 export {
   getProjectVariables as getProjectVariables

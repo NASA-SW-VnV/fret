@@ -33,7 +33,7 @@
 
 const fs=require("fs");
 
-import {leveldbDB} from '../../app/main.dev'
+import {leveldbDB} from '../fretDB'
 
 export {
   removeReqsInBulk as removeReqsInBulk

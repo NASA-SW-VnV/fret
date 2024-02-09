@@ -51,10 +51,6 @@ import UnformalizedIcon from '@material-ui/icons/Warning';
 import Tooltip from '@material-ui/core/Tooltip';
 import Divider from '@material-ui/core/Divider';
 const constants = require('../parser/Constants');
-const sharedObj =require('@electron/remote').getGlobal('sharedObj')
-const db = sharedObj.db;
-const system_dbkeys = sharedObj.system_dbkeys;
-
 
 const styles = theme => ({
   root: {

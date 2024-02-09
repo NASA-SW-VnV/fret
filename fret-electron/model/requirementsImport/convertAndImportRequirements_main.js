@@ -31,7 +31,7 @@
 // AGREEMENT.
 // *****************************************************************************
 const fs=require("fs");
-import {leveldbDB, modelDB} from '../../app/main.dev'
+import {leveldbDB, modelDB} from '../fretDB'
 import fretDbGetters from "../fretDbSupport/fretDbGetters_main";
 
 const modelSupport = require('../modelDbSupport/populateVariables_main');

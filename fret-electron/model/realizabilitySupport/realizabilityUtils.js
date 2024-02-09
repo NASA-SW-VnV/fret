@@ -30,7 +30,7 @@
 // ANY SUCH MATTER SHALL BE THE IMMEDIATE, UNILATERAL TERMINATION OF THIS
 // AGREEMENT.
 // *****************************************************************************
-import {leveldbDB, modelDB, system_DBkeys} from '../../app/main.dev'
+import {leveldbDB, modelDB, system_DBkeys} from '../fretDB'
 import { getContractInfo, getPropertyInfo, getDelayInfo, variableIdentifierReplacement } from '../modelDbSupport/variableMappingSupports'
 import * as cc_analysis from '../../analysis/connected_components';
 import ejsCache_realize from '../../support/RealizabilityTemplates/ejsCache_realize';

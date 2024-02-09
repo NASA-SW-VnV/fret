@@ -41,7 +41,6 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import { withStyles } from '@material-ui/core/styles';
 
 const {ipcRenderer} = require('electron');
-const ext_imp_json_file =require('@electron/remote').getGlobal('sharedObj').ext_imp_json;
 
 const styles = theme => ({
   textField: {

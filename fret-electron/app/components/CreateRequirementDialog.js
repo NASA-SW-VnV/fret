@@ -83,10 +83,9 @@ var uuid = require('uuid');
 import { v1 as uuidv1 } from 'uuid';
 
 const {ipcRenderer} = require('electron');
-const ext_exp_json_file =require('@electron/remote').getGlobal('sharedObj').ext_exp_json;
-const ext_exp_json_file_exists =require('@electron/remote').getGlobal('sharedObj').exp_exp_json_exists;
+const app =require('@electron/remote').app
 const fs = require('fs');
-
+const path = require('path');
 
 const formStyles = theme => ({
   accordion: {
@@ -239,13 +238,43 @@ class CreateRequirementDialog extends React.Component {
     // context isolation
 
     if(process.env.EXTERNAL_TOOL=='1'){
-      var filepath = ext_exp_json_file;
-      // console.log('export json file name: ', filepath)
 
+      var userDocumentsFolder = app.getPath('documents');
+      var ext_exp_json_file = '';
+      var ext_exp_json_file_exists =  false;
+
+      if (typeof process.env.EXTERNAL_EXP_JSON === "undefined"){
+        ext_exp_json_file = path.join(userDocumentsFolder,'requirement.json');
+      } else {
+        ext_exp_json_file = process.env.EXTERNAL_EXP_JSON+'.json';
+      }
+
+      if (fs.existsSync(ext_exp_json_file)) {
+        // path exists, use same file name
+        ext_exp_json_file_exists =  true;
+      } else {
+        var dirName = path.dirname(ext_exp_json_file)
+        if (fs.existsSync(dirName)) {
+          // if directory exists then use env assignment
+        } else {
+          // directory doesn't exist, use default name
+          ext_exp_json_file = path.join(userDocumentsFolder, 'requirement.json')
+        }
+      }
+    
+      // check again since ext_exp_json_file may be redefined
+      if (fs.existsSync(ext_exp_json_file)) {
+        // path exists, use same file name
+        ext_exp_json_file_exists =  true;
+        console.log('ext_exp_json_file_exists: ', ext_exp_json_file_exists)
+      }
+    
       if(ext_exp_json_file_exists){
         // pop up warning
         console.log('Overwriting existing external export file: ', ext_exp_json_file);
       }
+
+      var filepath = ext_exp_json_file;
 
       let doc = ({"requirement": {"reqid" :this.state.reqid,
                   "parent_reqid": this.state.parent_reqid,

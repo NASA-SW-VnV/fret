@@ -31,7 +31,7 @@
 // AGREEMENT.
 // *****************************************************************************
 
-import { modelDB } from '../../app/main.dev';
+import { modelDB } from '../fretDB';
 const utils = require('../../support/utils'); 
 const constants = require('../../app/parser/Constants');
 

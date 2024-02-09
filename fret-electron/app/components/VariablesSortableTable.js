@@ -386,7 +386,18 @@ class VariablesSortableTable extends React.Component {
  importComponentModel = () => {
 
    const {selectedProject, selectedComponent} = this.props;
-   var args = [selectedProject, selectedComponent]
+
+   var homeDir = app.getPath('home');
+   var filepaths = dialog.showOpenDialogSync({
+     defaultPath : homeDir,
+     title : 'Import Simulink Model Information',
+     buttonLabel : 'Import',
+     filters: [
+       { name: "Documents", extensions: ['json'] }
+     ],
+     properties: ['openFile']});
+
+   var args = [selectedProject, selectedComponent, filepaths]
    // context isolation
    ipcRenderer.invoke('importComponent',args).then((result) => {
     this.props.importComponent({  type: 'components/importComponent',

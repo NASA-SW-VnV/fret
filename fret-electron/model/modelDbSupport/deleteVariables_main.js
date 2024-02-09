@@ -33,7 +33,7 @@
 const fs=require("fs");
 
 const checkDbFormat = require('../fretDbSupport/checkDBFormat.js');
-import {modelDB} from '../../app/main.dev'
+import {modelDB} from '../fretDB'
 
 export {
   removeVariablesInBulk as removeVariablesInBulk,

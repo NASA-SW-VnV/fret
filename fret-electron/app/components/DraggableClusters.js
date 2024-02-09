@@ -40,10 +40,6 @@ import Typography from '@material-ui/core/Typography';
 
 import './DraggableClusters.css';
 const constants = require('../parser/Constants');
-const sharedObj =require('@electron/remote').getGlobal('sharedObj')
-const db = sharedObj.db;
-const system_dbkeys = sharedObj.system_dbkeys;
-
 
 const styles = theme => ({
   root: {

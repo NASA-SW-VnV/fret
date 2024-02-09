@@ -31,7 +31,7 @@
 // AGREEMENT.
 // *****************************************************************************
 //const fs=require("fs");
-import {leveldbDB, modelDB} from '../../app/main.dev'
+import {leveldbDB, modelDB} from '../fretDB'
 const FretSemantics = require('../../app/parser/FretSemantics');
 const checkDbFormat = require('../fretDbSupport/checkDBFormat.js');
 

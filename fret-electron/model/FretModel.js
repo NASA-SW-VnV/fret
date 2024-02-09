@@ -31,10 +31,9 @@
 // AGREEMENT.
 // *****************************************************************************
 
-import {leveldbDB, modelDB, system_DBkeys} from '../app/main.dev'
+import {leveldbDB, modelDB, system_DBkeys} from './fretDB'
 import {removeVariablesInBulk, removeVariables } from './modelDbSupport/deleteVariables_main'
 import {removeReqsInBulk} from './fretDbSupport/deleteRequirements_main'
-import { app, dialog} from 'electron'
 import {getContractInfo, getPropertyInfo, getDelayInfo, getMappingInfo,
   synchFRETvariables} from './modelDbSupport/variableMappingSupports'
 //import FretSemantics from './../app/parser/FretSemantics'
@@ -502,18 +501,8 @@ export default class FretModel {
 
   async importRequirements(evt,args){
 
-    var homeDir = app.getPath('home');
-    var listOfProjects  = args;
-    var filepaths = dialog.showOpenDialogSync({
-      defaultPath : homeDir,
-      title : 'Import Requirements',
-      buttonLabel : 'Import',
-      filters: [
-        { name: "Documents",
-          extensions: ['json', 'csv']
-        }
-      ],
-      properties: ['openFile']});
+    const [listOfProjects, filepaths ] = args;
+
     let areThereIgnoredVariables = false;
     if (filepaths && filepaths.length > 0) {
       // console.log('FretModel.importRequirements filepaths: ', filepaths)
@@ -639,8 +628,8 @@ export default class FretModel {
   }
 
   exportRequirementsAndVariables = async (_, args) => {
-    const [project, output_format] = args;
-    const filepath = this.selectExportFilePath(output_format)
+    
+    const [project, output_format, filepath] = args;
     if (filepath) {
       const filterOff = project == "All Projects";
       const requirements = []
@@ -678,8 +667,7 @@ export default class FretModel {
   }
 
   exportVariables =async (_, args) => {
-    const [project, output_format] = args;
-    const filepath = this.selectExportFilePath(output_format)
+    const [project, output_format, filepath] = args;
     if (filepath) {
       const content = []
       const filterOff = project == "All Projects";
@@ -698,19 +686,6 @@ export default class FretModel {
     }
   }
 
-  selectExportFilePath = (output_format) => {
-    var homeDir = app.getPath('home');
-    var filepath = dialog.showSaveDialogSync(
-      {
-        defaultPath : homeDir,
-        title : 'Export Requirements',
-        buttonLabel : 'Export',
-        filters: [
-          { name: "Documents", extensions: [ output_format ] }
-        ],
-      })
-    return filepath
-  }
   writeFile(data, output_format, filepath, project) {
     var content;
     if (output_format === "md"){
@@ -728,8 +703,7 @@ export default class FretModel {
   }
 
   async exportRequirements(evt,args){
-    const [project, output_format] = args;
-    const filepath = this.selectExportFilePath(output_format)
+    const [project, output_format, filepath] = args;
     if(filepath){
       const filteredResult = []
       const filterOff = project == "All Projects";
@@ -953,19 +927,8 @@ export default class FretModel {
       // console.log(info);
     })
 
-    var homeDir = app.getPath('home');
-    var selectedProject = args[0];
-    var selectedComponent = args[1];
+    const [selectedProject, selectedComponent, filepaths ]= args;
 
-
-    var filepaths = dialog.showOpenDialogSync({
-      defaultPath : homeDir,
-      title : 'Import Simulink Model Information',
-      buttonLabel : 'Import',
-      filters: [
-        { name: "Documents", extensions: ['json'] }
-      ],
-      properties: ['openFile']});
     if (filepaths && filepaths.length > 0) {
       try {
         const buffer = await fs.promises.readFile(filepaths[0], 'utf8')
@@ -1004,22 +967,8 @@ export default class FretModel {
   }
 
   async exportComponent(evt,args){
-    var component = args[0];
-    var selectedProject = args[1];
-    var language = args[2];
-    const homeDir = app.getPath('home');
-    // console.log('FretModel exportComponent, args: ', args)
-    // console.log('FretModel exportComponent, homeDir: ', homeDir)
 
-    var filepath = dialog.showSaveDialogSync({
-      defaultPath : homeDir,
-      title : 'Export specification',
-      buttonLabel : 'Export',
-      filters: [
-        { name: "Documents", extensions: ['zip'] }
-      ],
-    });
-
+    var [component, selectedProject, language, filepath ]= args;
     if (filepath) {
       // create a file to stream archive data to.
       var output = fs.createWriteStream(filepath);
@@ -1188,21 +1137,10 @@ export default class FretModel {
     return diagnosisResult;
   }
 
-  async saveRealizabilityReport(evt, projectReport){
-    const homeDir = app.getPath('home');
+  async saveRealizabilityReport(evt, projectReport, filePath){
 
     projectReport.systemComponents = projectReport.systemComponents.filter(sc => sc.monolithic);
 
-    var filePathObject = await dialog.showSaveDialog({
-      defaultPath : homeDir,
-      title : 'Save realizability results',
-      buttonLabel : 'Save',
-      filters: [
-        { name: "Documents", extensions: ['json'] }
-      ],
-    });
-
-    let filePath = filePathObject.filePath;
     if (filePath) {
       var output = fs.createWriteStream(filePath);
       var content = JSON.stringify(projectReport, null, 4);
@@ -1214,16 +1152,8 @@ export default class FretModel {
     }
   }
 
-  async loadRealizabilityReport(evt) {
-    var homeDir = app.getPath('home');
-    var filepaths = dialog.showOpenDialogSync({
-      defaultPath: homeDir,
-      title: 'Load Analysis Report',
-      buttonLabel: 'Load',
-      filters: [
-        { name: "Documents", extensions: ['json'] }
-      ],
-      properties: ['openFile']})
+  async loadRealizabilityReport(evt, filepaths) {
+
     let report = {};
 
     try {

@@ -31,7 +31,7 @@
 // AGREEMENT.
 // *****************************************************************************
 const fs=require("fs");
-import {leveldbDB, system_DBkeys} from '../../app/main.dev'
+import {leveldbDB, system_DBkeys} from '../fretDB'
 const checkDbFormat = require('./checkDBFormat.js');
 
 export {

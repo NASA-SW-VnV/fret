@@ -83,3 +83,18 @@ export const export_to_md = (R, P) => {
 
   return s;
 }
+
+export const selectExportFilePath = (output_format) => {
+  var homeDir = app.getPath('home');
+  var filepath = dialog.showSaveDialogSync(
+    {
+      defaultPath : homeDir,
+      title : 'Export Requirements',
+      buttonLabel : 'Export',
+      filters: [
+        { name: "Documents", extensions: [ output_format ] }
+      ],
+    })
+  return filepath
+}
+

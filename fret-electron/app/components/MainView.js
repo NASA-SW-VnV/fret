@@ -101,7 +101,6 @@ const fs = require('fs');
 
 const drawerWidth = 240;
 
-const ext_imp_json_file =require('@electron/remote').getGlobal('sharedObj').ext_imp_json;
 const {ipcRenderer} = require('electron');
 
 const styles = theme => ({
@@ -281,8 +280,20 @@ class MainView extends React.Component {
   }
 
   handleImport = () => {
-    // context isolation
-    var argList = this.props.listOfProjects;
+
+    var homeDir = app.getPath('home');
+    var filepaths = dialog.showOpenDialogSync({
+      defaultPath : homeDir,
+      title : 'Import Requirements',
+      buttonLabel : 'Import',
+      filters: [
+        { name: "Documents",
+          extensions: ['json', 'csv']
+        }
+      ],
+      properties: ['openFile']});
+
+    var argList = [this.props.listOfProjects, filepaths];
     ipcRenderer.invoke('importRequirements',argList).then((result) => {
 
       if (result.requirements){
@@ -497,7 +508,10 @@ class MainView extends React.Component {
 
   handleImportExternalTool = () => {
     const self = this;
-    //var homeDir = app.getPath('home');
+
+    var ext_imp_json_file = '';
+    ext_imp_json_file = process.env.EXTERNAL_IMP_JSON+'.json';
+
     var filepath = ext_imp_json_file;
     // console.log('ext_imp_json_file in handleImportExternalTool: ', filepath);
     if (filepath && filepath.length > 0) {
@@ -517,8 +531,6 @@ class MainView extends React.Component {
               anchorEl: null
             });
           }
-
-
         } else {
           try {
             let data = JSON.parse(buffer);
