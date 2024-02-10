@@ -30,7 +30,7 @@ int checkNuSMVInstallation(bool doPrint) {
 
     smv_binary = getenv(LTLSIM_BINARY);
     if (!smv_binary){
-	smv_binary = "nusmv";
+	smv_binary = nusmvBinaryName;
 	}
 
     if (!strcasecmp(smv_binary, "nusmv")){
@@ -222,7 +222,7 @@ static int _callSMV(ltlsim_model_t *m, int idx, const char *fn, bool doTrace) {
 
     smv_binary = getenv(LTLSIM_BINARY);
     if (!smv_binary){
-	smv_binary = "nusmv";
+	smv_binary = nusmvBinaryName;
 	}
 
 #ifdef WINDOWS

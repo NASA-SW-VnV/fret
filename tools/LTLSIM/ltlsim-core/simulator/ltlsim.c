@@ -121,6 +121,8 @@
 #include "ltlsim_commands.h"
 #include "ltlsim_smvutils.h"
 
+char *nusmvBinaryName = "NuSMV";
+
 /** \brief Print the help to the command line. 
  */
 void print_help();
@@ -154,8 +156,14 @@ int main(int argc, char *argv[])
                     printf("[LTLSIM] Up and running ...\n");
                     status = checkNuSMVInstallation(false);
                     if (status) {
-                        print_nusmv_error();
-                        return -1;
+                        nusmvBinaryName = "nusmv";
+                        status = checkNuSMVInstallation(false);
+                        if (status) {
+                            print_nusmv_error();
+                            return -1;
+                        } else {
+                            printf("[NUSMV] Up and running ...\n");
+                        }
                     } else {
                         printf("[NUSMV] Up and running ...\n");
                     }
@@ -204,8 +212,11 @@ int main(int argc, char *argv[])
 
     
     if (checkNuSMVInstallation(false)) {
-        print_nusmv_error();
-        status = -1;
+        nusmvBinaryName = "nusmv";
+        if (checkNuSMVInstallation(false)) {
+            print_nusmv_error();
+            status = -1;
+        }
     } 
 
     if (status == 0) {
