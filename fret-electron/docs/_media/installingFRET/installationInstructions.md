@@ -4,6 +4,7 @@
 
  * [NodeJS](https://nodejs.org/en/download/) (use any version between v16.16.x - v18.18.x)
  * Python (Version >=2. Note: if you are having issues using 3.11 or later, use 3.10)
+ * `gcc`, `g++`, `make`
  * (Optional) [NuSMV](http://nusmv.fbk.eu/)
  * (Optional) [JKind](https://github.com/andrewkatis/jkind-1/releases/latest)
  * (Optional) [Kind 2](https://github.com/kind2-mc/kind2/blob/develop/README.rst)
@@ -29,7 +30,7 @@ Here are the steps to install and start FRET:
 2. npm run fret-install (please do 'npm run fret-reinstall' instead if you already have a FRET installation)
 3. npm start
 
-For the installation of FRET on Windows 10 see [Installation_Windows](installation_windows.md).
+For the installation of FRET on Windows see [Installation_Windows](installation_windows.md).
 
 For the installation of FRET on Apple M1 machines see notes below.
 
@@ -50,6 +51,7 @@ Alternatively, for Linux users, we provide a [Docker image](../../../../tools/Sc
 10. `tar -xzvf FRET-linux-x64.tgz`
 11. `cd FRET-linux-x64`
 12. `./FRET` (or `./FRET --no-sandbox` if the application doesn't load)
+    * (Optional) We provide a script [template](../../../../tools/Scripts/runfret.sh) that runs FRET given temporary, predefined environment variables for the application and any optional dependencies (an example for NuSMV is given). Please note that, before using the script for the first time, you need to edit its contents to provide appropriate path values to the environment variables. See the file for further details.
 
 ### Notes
 
