@@ -97,7 +97,10 @@ function [ir_struct, json_model] = fret_IR( model_full_path, output_dir )
         file_json = [get_param(systemChoice, 'Name') '_forFRET.json'];
         % Open or create the file
         file_path = fullfile(output_dir, file_json);
-        fid = fopen(file_path, 'w');
+        [fid, message] = fopen(file_path,'w');
+        if fid < 0
+            error('Failed to open file %s. Message: %s\n', file_path, message);
+        end
         % Write in the file
         fprintf(fid, '%s\n', json_model);
         fclose(fid);
