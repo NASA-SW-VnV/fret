@@ -13,13 +13,13 @@ CheckNodeEnv('production');
 export default merge.smart(baseConfig, {
   devtool: 'source-map',
 
-  target: 'electron-main',
+  target: 'node',
 
-  entry: './app/main.dev',
+  entry: './app/testRlz1',
 
   output: {
     path: __dirname,
-    filename: './app/main.prod.js'
+    filename: './app/fretCli.js'
   },
 
   plugins: [
