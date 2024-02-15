@@ -15,7 +15,7 @@ export default merge.smart(baseConfig, {
 
   target: 'node',
 
-  entry: './app/testRlz1',
+  entry: './app/cliInputs',
 
   output: {
     path: __dirname,
