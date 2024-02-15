@@ -174,6 +174,7 @@ const pastTemporalConditionsNoBounds = [
 
 const temporalConditionsNoBounds = pastTemporalConditionsNoBounds.concat(futureTemporalConditionsNoBounds);
 
+/*
 // pat has variables which are strings prefixed with '__'. Return null if no match else
 // a hashmap of variables to subterms of term.
 function matchAST(pat,term) {
@@ -215,7 +216,7 @@ function subst(term,sbst) {
 	return term.map(aux);
     } else console.log('subst says: what type is ' + term)
 }
-
+*/
 /*
 // rule returns null if it didn't apply. Apply the rule.
 function rewrite1(term,rule) {
@@ -252,8 +253,8 @@ function applyTriple(term,triple) {
     let pat = triple[0];
     let replacement = triple[2];
     let cond = triple[1];
-    let sbst = matchAST(pat,term)
-    if (sbst !== null && cond(sbst)) return subst(replacement,sbst);
+    let sbst = utils.matchAST(pat,term)
+    if (sbst !== null && cond(sbst)) return utils.subst(replacement,sbst);
     else return null;
 }
 
@@ -351,13 +352,12 @@ function rewrite_bottomup(term,rules) {
 }
 
 function rule_SinceInclusive (term) {
-    let sbst = matchAST(['Since','__p',['And','__p','__q']],term);
-    //console.log(sbst);
-    if (sbst !== null) return ['SinceInclusive',sbst['__p'], sbst['__q']];
-    else { let sbst = matchAST(['Since','__p',['And','__q','__p']]);
-	   if (sbst !== null) return ['SinceInclusive',sbst['__p'], sbst['__q']];
-	   else return null;
-	 }
+  let sbst = ustils.matchAST(['Since','__p',['And','__p','__q']],term);
+  if (sbst !== null) return ['SinceInclusive',sbst['__p'], sbst['__q']];
+  else { let sbst = utils.matchAST(['Since','__p',['And','__q','__p']]);
+	 if (sbst !== null) return ['SinceInclusive',sbst['__p'], sbst['__q']];
+	 else return null;
+       }
 }
 
 const optimizePTrules = [applyPtSimplifications];

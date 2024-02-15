@@ -198,6 +198,52 @@ function union(l1,l2) {
     return r;
 }
 
+// pat has variables which are strings prefixed with '__'. Return null if no match else
+// a hashmap of variables to subterms of term.
+function matchAST(pat,term) {
+    if (isVar(pat)) return setProp({},pat,term)
+    else if (isAtom(pat)) return ((pat === term) ? {} : null)
+    else if (isArray(pat)) {
+	if (isArray(term) && (pat.length === term.length)) {
+	    var merged = {};
+	    for (let i = 0; i < pat.length; i++) {
+		let m = matchAST(pat[i],term[i])
+		if (m === null) return null
+		else merged = mergeSubsts(merged,m);
+	    }
+	    return merged;
+	} else return null;
+    } else console.log('matchAST says: what type is ' + pat)
+}
+
+function mergeSubsts(sbst1,sbst2) {
+    let keys1 = Object.keys(sbst1);
+    let keys2 = Object.keys(sbst2);
+    let intersection = keys1.filter((x) => keys2.includes(x));
+    let isConsistent = intersection.every((v) => isEqual(sbst1[v],sbst2[v]))
+    let r = isConsistent ? {...sbst1,...sbst2} : null
+    //console.log('mergeSubsts: sbst1: ' + JSON.stringify(sbst1) + ' sbst2: ' + JSON.stringify(sbst2) + ' consistent?: '  + isConsistent + ' result: ' + JSON.stringify(r))
+    return r
+}
+
+// given term which may include variables, do the substitution
+function subst(term,sbst) {
+    if (isVar(term)) {
+	let x = sbst[term];
+	return ((x === undefined) ? term : x);
+    } else if (isAtom(term)) { return term; }
+    else if (isArray(term)) {
+	function aux(subterm) {
+	    return subst(subterm,sbst)
+	}
+	return term.map(aux);
+    } else console.log('subst says: what type is ' + term)
+}
+
+
+
+
+
 /**
  * This function rewrites an expression produced by FRET formalization.
  * The bounds in bounded LTL operators 
@@ -343,6 +389,8 @@ module.exports = {
     isIntegerString,
     setProp,
     isEqual,
+  matchAST,
+  subst,
     map_if_defined,
     invert_map,
     map_string,

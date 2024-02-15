@@ -32,6 +32,7 @@
 // *****************************************************************************
 const constants = require('../../app/parser/Constants');
 const utilities = require('../utilities');
+//const xform = require('../xform');
 const utils = require('../utils');
 const antlr4 = require('antlr4/index');
 const LTLLexer = require('./LTLLexer');
@@ -94,6 +95,12 @@ const CoCoInfix = { ExclusiveOr : 'xor', And : 'and', Or : 'or',
 		    NotEqual: '<>', Equal : '=',
 		    GreaterThan : '>', GreaterThanOrEqual : '>='
 	      };
+
+function introduce_SinceInclusive (term) {
+  let sbst = utils.matchAST(['Since','__p',['And','__p','__q']],term);
+  if (sbst !== null) return ['SinceInclusive',sbst['__p'], sbst['__q']];
+  return term;
+}
 
 function LTLtoAST (LTL) {
   var chars = new antlr4.InputStream(LTL.replace(/=>/g,'->'));
@@ -184,8 +191,11 @@ function ASTtoCoCo(ast) {
 	if (infixChar !== undefined)
 	  result = '(' + ASTtoCoCo(ast[1]) + ' ' + infixChar + ' ' + ASTtoCoCo(ast[2]) + ')'
 	else {
-	  const op = (CoCoPrefix[head] === undefined) ? head : CoCoPrefix[head];
-	  let args = ast.slice(1).map(ASTtoCoCo);
+	  const ast2 = introduce_SinceInclusive(ast);
+	  const head = ast2[0];
+	  const ccpre = CoCoPrefix[head]
+	  const op = (ccpre === undefined) ? head : ccpre;
+	  let args = ast2.slice(1).map(ASTtoCoCo);
 	  if (Reversed.includes(op)) args = args.reverse();
 	  result = (op + '(' + args.join(',') + ')');
 	}
@@ -198,12 +208,16 @@ function ASTtoCoCo(ast) {
 
 let ex = '(H[0,2] p&q|r) & (H (Y q) -> Z !r <-> ss) & x != 3 - 2 mod abs(-z) & p S[3,3] q xor 3 + 4 * 6 / 7 >= 2 ^ 3 | FALSE & (p S q) & (qq SI rr) & (uu SI[0,3] vv)'
 ex = 'H x-y<3'
+
+ex = '(((O[=$duration$] ($regular_condition$ & (! $post_condition$))) -> (O[<$duration$] (($scope_mode$ & (Z (! $scope_mode$))) | $post_condition$))) S (((O[=$duration$] ($regular_condition$ & (! $post_condition$))) -> (O[<$duration$] (($scope_mode$ & (Z (! $scope_mode$))) | $post_condition$))) & ($scope_mode$ & (Z (! $scope_mode$)))))'
 let exast = LTLtoAST(ex)
 console.log(ex)
 console.log('\n' + JSON.stringify(exast))
 console.log('\n' + JSON.stringify(ASTtoLTL(exast)))
 console.log('\n' + JSON.stringify(ASTtoCoCo(exast)))
+*/
 
+/*
 ST(3, 3, (((HT(2, 0, ((p and q) or r)) and H((YtoPre(q) => ZtoPre((not (r) = ss))))) and (x <> (3 - (2 mod abs(-(z)))))) and p),(q xor (((3 + ((4 * 6) / 7)) >= (2 ^ 3)) or (((false and S(p,q)) and SI(qq,rr)) and SIT(3, 0, uu,vv)))))
 */
 
