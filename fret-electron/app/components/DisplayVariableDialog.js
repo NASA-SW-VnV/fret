@@ -115,14 +115,6 @@ class DisplayVariableDialog extends React.Component {
     lustreVariables: [],
   }
 
-  componentDidMount() {
-
-  }
-
-  componentWillUnmount() {
-
-  }
-  // The following 2 functions are not used.  TBD: check and remove
   handleNewVariables = (variables) => {
     this.openNewVariablesDialog(variables);
   }
@@ -137,11 +129,6 @@ class DisplayVariableDialog extends React.Component {
   closeNewVariablesDialog = () => {
     this.setState({
       newVariablesDialogOpen: false,
-      newVariables: [],
-      copilotVariables: [],
-      lustreVariables: [],
-      assignment: '',
-      copilotAssignment: '',
     });
   }
 
@@ -207,43 +194,42 @@ class DisplayVariableDialog extends React.Component {
       moduleName]
 
     // context isolation
-
     ipcRenderer.invoke('updateVariable_checkNewVariables',args).then(async (result) => {
       var noNewVariablesResult = result
+      let newVariables = [];
       if (result.openNewVariablesDialog){
-        // open new Variable dialog
-        // console.log('DisplayVariableDialog invoke updateVariable_checkNewVariables',result)
-        // open new variable dialog
-        const newVariables= result.newVariables
+        //console.log('DisplayVariableDialog invoke updateVariable_checkNewVariables',result)
+        newVariables= result.newVariables
         self.handleNewVariables(newVariables);
+      }
+      if (newVariables.length == 0){
         await ipcRenderer.invoke('updateVariable_noNewVariables',args).then((result) => {
           noNewVariablesResult = result
         }
         ).catch((err) => {
           console.log(err);
         })
-      }
-      this.props.updateVariable_noNewVariables({ type: 'actions/updateVariable_noNewVariables',
-                                    // analysis
-                                    components : noNewVariablesResult.components,
-                                    completedComponents : noNewVariablesResult.completedComponents,
-                                    cocospecData : noNewVariablesResult.cocospecData,
-                                    cocospecModes : noNewVariablesResult.cocospecModes,
-                                    // variables
-                                    variable_data : noNewVariablesResult.variable_data,
-                                    modelComponent : noNewVariablesResult.modelComponent,
-                                    modelVariables : noNewVariablesResult.modelVariables,
-                                    selectedVariable : noNewVariablesResult.selectedVariable,
-                                    importedComponents : noNewVariablesResult.importedComponents,
-                                    })
+        this.props.updateVariable_noNewVariables({ type: 'actions/updateVariable_noNewVariables',
+                  // analysis
+                  components : noNewVariablesResult.components,
+                  completedComponents : noNewVariablesResult.completedComponents,
+                  cocospecData : noNewVariablesResult.cocospecData,
+                  cocospecModes : noNewVariablesResult.cocospecModes,
+                  // variables
+                  variable_data : noNewVariablesResult.variable_data,
+                  modelComponent : noNewVariablesResult.modelComponent,
+                  modelVariables : noNewVariablesResult.modelVariables,
+                  selectedVariable : noNewVariablesResult.selectedVariable,
+                  importedComponents : noNewVariablesResult.importedComponents,
+                  })
+        this.setState({ projectName: '' });
+        self.handleClose();
+        }
+      }).catch((err) => {
+        self.handleClose();
+        console.log(err);
+      })
 
-    }).catch((err) => {
-      self.handleClose();
-      console.log(err);
-    })
-
-    this.setState({ projectName: '' });
-    self.handleClose();
 
   }
 
