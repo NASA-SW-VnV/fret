@@ -31,6 +31,10 @@
 // AGREEMENT.
 // *****************************************************************************
 const constants = require('../parser/Constants');
+
+const app =require('@electron/remote').app
+const dialog =require('@electron/remote').dialog
+
 export const getRequirementStyle = (requirement, isNode) => {
   let style;
   if(!isNode) {
