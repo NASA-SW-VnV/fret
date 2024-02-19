@@ -15,7 +15,7 @@ export default merge.smart(baseConfig, {
 
   target: 'node',
 
-  entry: './app/cliInputs',
+  entry: './app/fretCLI',
 
   output: {
     path: __dirname,
