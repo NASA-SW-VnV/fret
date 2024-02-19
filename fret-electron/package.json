@@ -238,6 +238,7 @@
     "classnames": "^2.2.6",
     "command-exists": "^1.2.9",
     "csv": "^6.3.6",
+    "commander": "^12.0.0",    
     "d3": "^4.13.0",
     "d3-svg-annotation": "^2.2.0",
     "devtron": "^1.4.0",
