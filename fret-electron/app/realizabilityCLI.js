@@ -1,10 +1,12 @@
 const fs = require('fs');
+const path = require('path');
+
 import { checkRealizability, computeConnectedComponents, checkDependenciesExist } from '../model/realizabilitySupport/realizabilityUtils.js'
 
 export {checkRealizabilityCLI as checkRealizabilityCLI};
 
 function checkRealizabilityCLI(program, project, component, timeout, solver, options) {
-  console.log(JSON.stringify(options))
+  // console.log(JSON.stringify(options))
   let dependencyCheck = checkDependenciesExist([]);
   if (dependencyCheck.dependenciesExist) {      
     let solverChoice;
@@ -45,8 +47,14 @@ function checkRealizabilityCLI(program, project, component, timeout, solver, opt
           if (options.json) {
             let output = JSON.stringify(out, undefined, 4);
             if (options.out) {
-              var outputFile = fs.openSync(options.out, 'w');
-              fs.writeSync(outputFile, output);
+              try {
+                let fullPath = path.resolve(options.out);
+                var outputFile = fs.openSync(fullPath, 'w');
+                fs.writeSync(outputFile, output);
+                console.log('Saved results to '+fullPath);
+              } catch (err) {
+                program.error('Something went wrong when writing to file. Details:\n'+err)
+              }
             } else {
               console.log(output);
             }
