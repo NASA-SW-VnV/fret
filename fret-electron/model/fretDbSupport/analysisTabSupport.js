@@ -55,6 +55,11 @@ async function synchAnalysisWithDB (selectedProject) {
           project: selectedProject,
         }
       }).then(async function (result){
+        
+        if (result.docs.length === 0 && result.warning.startsWith("No matching index found")) {
+          throw new Error('Project "'+selectedProject+'" was not found.')
+        }
+
         data = setVariablesAndModes(result);
         data.components.forEach(function(component){
           if (typeof data.cocospecData[component] !== 'undefined'){
@@ -79,9 +84,8 @@ async function synchAnalysisWithDB (selectedProject) {
           retVal.cocospecData, retVal.cocospecModes,[]);
         return retVal
       }).catch((err) => {
-        console.log('analysisTabSupport.synchAnalysisWithDB error: ',err);
+        throw err
       });
-
   }
 
 function  setVariablesAndModes(result){
