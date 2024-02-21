@@ -223,15 +223,15 @@ class ComponentSummary extends React.Component {
 
     ipcRenderer.invoke('exportTestObligations', args).then((result) => {
       this.setState({snackbarOpen: true, numberOfObligations: result.numOfObligations});
-      
+
       const zip = new JSZip();
       result.files.forEach(file => {
         zip.file(file.name, file.content)
       })
-      
+
       zip.generateAsync({type:"blob"}).then(function(content) {
-        saveAs(content, component+'.zip');        
-      });  
+        saveAs(content, component+'.zip');
+      });
 
     }).catch((err) => {
       console.log(err);
@@ -242,7 +242,7 @@ class ComponentSummary extends React.Component {
     event.stopPropagation();
     this.setState({actionsMenuOpen: !this.state.actionsMenuOpen})
   };
-    
+
   handleActionsMenuClose = (event) => {
     if (this.anchorRef.current && this.anchorRef.current.contains(event.target)) {
       return;
@@ -274,22 +274,22 @@ class ComponentSummary extends React.Component {
               Export
           </Button>
           </span>
-        </Tooltip>     
+        </Tooltip>
       );
-    } else if (completed && language && language === 'cocospec') {    
+    } else if (completed && language && language === 'cocospec') {
       return (
         <div className={classes.wrapper}>
-          <Button          
+          <Button
             ref={this.anchorRef}
-            size="small" variant="contained" color="secondary"          
+            size="small" variant="contained" color="secondary"
             endIcon={<KeyboardArrowDownIcon />}
             onClick={(event) => this.handleActionsClick(event)}>
-            Export        
+            Export
           </Button>
           <Menu anchorEl={this.anchorRef.current} open={this.state.actionsMenuOpen} onClose={(event) => this.handleActionsMenuClose(event)}>
             <div>
               <MenuItem onClick={this.exportComponentCode}>Verification Code</MenuItem>
-              <MenuItem onClick={this.exportTestObligations('ptLTL')}>Test Obligations</MenuItem>                
+              <MenuItem onClick={this.exportTestObligations('ptLTL')}>Test Obligations</MenuItem>
             </div>
           </Menu>
           <Snackbar
@@ -314,8 +314,8 @@ class ComponentSummary extends React.Component {
               <CloseIcon />
             </IconButton>
           ]} />
-        </div>   
-      )      
+        </div>
+      )
     } else if (smvCompleted && language && language === 'smv') {
       if (language === 'smv' && !isBooleanComponent) {
         return (
@@ -326,24 +326,24 @@ class ComponentSummary extends React.Component {
                   Export
               </Button>
             </span>
-          </Tooltip>          
+          </Tooltip>
         )
       } else {
         return (
           <div className={classes.wrapper}>
-            <Button          
+            <Button
               ref={this.anchorRef}
-              size="small" variant="contained" color="secondary"          
+              size="small" variant="contained" color="secondary"
               endIcon={<KeyboardArrowDownIcon />}
               onClick={(event) => this.handleActionsClick(event)}>
-              Export        
+              Export
             </Button>
             <Menu anchorEl={this.anchorRef.current} open={this.state.actionsMenuOpen} onClose={(event) => this.handleActionsMenuClose(event)}>
               <div>
                 <MenuItem onClick={this.exportTestObligations('ftLTL')}>Test Obligations (Future Time LTL - Infinite trace)</MenuItem>
                 <MenuItem onClick={this.exportTestObligations('ftLTL-fin')}>Test Obligations (Future Time LTL - Finite trace)</MenuItem>
                 <MenuItem onClick={this.exportTestObligations('ptLTL')}>Test Obligations (Past Time LTL)</MenuItem>
-              </div>            
+              </div>
             </Menu>
             <Snackbar
             anchorOrigin={{
@@ -367,7 +367,7 @@ class ComponentSummary extends React.Component {
                 <CloseIcon />
               </IconButton>
             ]} />
-          </div>   
+          </div>
         )
       }
     } else {
