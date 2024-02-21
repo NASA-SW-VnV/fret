@@ -70,7 +70,8 @@ function do_not_formalize(text) {
   return do_not;
 }
 
-// Check for uses of reserved words and trailing unparsed input.
+// Check for uses of reserved words, trailing unparsed input,
+// and invalid probabilities.
 // Assumes the parse tree has been walked.
 function checkReqt(trimmedText) {
   let reqtErrors = [];
