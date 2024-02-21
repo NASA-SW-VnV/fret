@@ -32,7 +32,7 @@
 // *****************************************************************************
 
 import { modelDB } from '../fretDB';
-const utils = require('../../support/utils'); 
+const utils = require('../../support/utils');
 const constants = require('../../app/parser/Constants');
 const cocospecSemantics = require('../../support/cocospecSemantics');
 const xform = require('../../support/xform');
@@ -53,11 +53,11 @@ let counter = 0;
 function createData(variable_name, modeldoc_id, idType, dataType, description) {
   counter += 1;
   return { rowid: counter, variable_name, modeldoc_id, idType, dataType, description};
-}  
+}
 
 async function synchFRETvariables (selectedProject, component) {
   //console.log('variableMappingSupports.synchFRETvariables project: ',selectedProject,' component: ',component)
-  
+
   var modelComponent
   let componentModel = '';
   return modelDB.find({
@@ -66,7 +66,7 @@ async function synchFRETvariables (selectedProject, component) {
         component_name : component,
       }
     }).then(async function(result){
-      
+
       var variable_data =  result.docs.map(r => {
         //console.log('variableMappingSupports.synchFRETvariables: ',r)
         componentModel = r.modelComponent;
@@ -191,7 +191,7 @@ function getMappingInfo(result, contractName) {
       if (doc.busObject && doc.busObjects) {
         variable.busDimensions = doc.busObjects.filter(bo => bo.Name === doc.busObject)[0].Elements.length;
       }
-      if (doc.busElementIndex >= 0) {          
+      if (doc.busElementIndex >= 0) {
         //Javascript array indices start at 0, MATLAB starts at 1
         variable.busElementIndex = doc.busElementIndex+1;
       }
@@ -215,7 +215,7 @@ function getSMVDataType(dataType) {
     return dataType;
   } else if (dataType.includes('int') ){
     return 'integer';
-  }    
+  }
 }
 
 function getCoCoSpecDataType(dataType){
@@ -226,7 +226,7 @@ function getCoCoSpecDataType(dataType){
   } else if (dataType === 'double' || 'single'){
     return 'real';
   }
-}  
+}
 
 function getDataType(dataType, language) {
   if (language === 'smv') {
@@ -249,7 +249,7 @@ function getContractInfo(result, language) {
     modes: [],
     properties: []
   };
-  
+
   result.docs.forEach(function(doc){
     var variable ={};
     variable.name = doc.variable_name;
@@ -306,6 +306,8 @@ function getObligationInfo(doc, outputVariables, component, language, fragment){
                 obligationProperty.ptLTL = obligation;
                 properties.push(obligationProperty);
               }
+              //TODO: replace with value once generation is done
+              property.PCTL = "";
               outputVariables.forEach(function(variable){
               if (property.value.includes(variable)){
                   property.allInput = true;
@@ -314,13 +316,13 @@ function getObligationInfo(doc, outputVariables, component, language, fragment){
           }
         }
       } else {
-        
+
         property.reqid = doc.reqid;
         property.fullText = "Req text: " + doc.fulltext;
         property.fretish = doc.fulltext;
-        
+
         let obligationsSMV;
-        
+
         if (fragment === 'ptLTL') {
           property.value = doc.semantics.ptExpanded;
           property.ptLTL = doc.semantics.ptExpanded.replace(/<b>/g, "").replace(/<i>/g, "").replace(/<\/b>/g, "").replace(/<\/i>/g, "");
@@ -345,7 +347,7 @@ function getObligationInfo(doc, outputVariables, component, language, fragment){
           obligationProperty.fullText = "Req text: " + doc.fulltext;
           obligationProperty.fretish = doc.fulltext;
           properties.push(obligationProperty);
-        }        
+        }
       }
     }
   return properties;
@@ -373,5 +375,3 @@ function variableIdentifierReplacement(contract){
   })
   return contract;
 }
-
-
