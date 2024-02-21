@@ -2,9 +2,9 @@
 [
 <% for (i=0; i < properties.length; i++) {%>
   <%if(i < properties.length-1) {%>
-{"CoCoSpecCode": "<%- properties[i].value%>", "fretish": <%- JSON.stringify(properties[i].fretish)%>, "name": "<%- properties[i].reqid%>", "pCTL": "<%- properties[i].PCTL%>", "ptLTL": "<%- properties[i].ptLTL%>" },
+{"CoCoSpecCode": "<%- properties[i].value%>", "fretish": <%- JSON.stringify(properties[i].fretish)%>, "name": "<%- properties[i].reqid%>", "PCTL": "<%- properties[i].PCTL%>", "ptLTL": "<%- properties[i].ptLTL%>" },
 <%} else {%>
-{"CoCoSpecCode": "<%- properties[i].value%>", "fretish": <%- JSON.stringify(properties[i].fretish)%>, "name": "<%- properties[i].reqid%>", "pCTL": "<%- properties[i].PCTL%>", "ptLTL": "<%- properties[i].ptLTL%>" }
+{"CoCoSpecCode": "<%- properties[i].value%>", "fretish": <%- JSON.stringify(properties[i].fretish)%>, "name": "<%- properties[i].reqid%>", "PCTL": "<%- properties[i].PCTL%>", "ptLTL": "<%- properties[i].ptLTL%>" }
   <%}%>
  <%}%>
 ]
