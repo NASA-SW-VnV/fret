@@ -15,11 +15,11 @@ export default merge.smart(baseConfig, {
 
   target: 'node',
 
-  entry: './app/fretCLI',
+  entry: './app/cli/fretCLI',
 
   output: {
     path: __dirname,
-    filename: './app/fretCli.js'
+    filename: './app/cli/fretCLI.main.js'
   },
 
   plugins: [
