@@ -1,0 +1,8 @@
+#!/bin/sh
+# Script to simplify required command calls.
+# To use it, follow these steps first:
+#   1. Assign the full path of your fret installation to the fretpath variable.
+#      Example: fretpath='/home/akatis/git/fret/fret-electron'
+#   2. Add the full path of this script to your PATH variable.
+fretpath=
+npm run --prefix $fretpath --silent start-cli -- "$@"
