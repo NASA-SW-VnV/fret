@@ -74,8 +74,7 @@ if (process.env.FRET_LEVEL_DB){
 var leveldbDB = new NodePouchDB(leveldbDBname);
 var modelDB = new NodePouchDB(modelDBname);
 
-leveldbDB.info().then(function (info) {
-  console.log('We can use PouchDB with LevelDB!');
+leveldbDB.info().then(function (info) {  
 }).catch(function (err) {
   console.error('Error for LevelDB');
   console.error(err);
@@ -105,10 +104,9 @@ const baseProps = {
 }
 
 leveldbDB.put(baseProps).catch((err) => {
-  if (err.name === "conflict")
-    console.log('Initial base properties have been persisted.')
-  else
+  if (err.name !== "conflict") {
     console.log(err)
+  }
 })
 
 const FRET_PROJECTS_DBKEY = 'FRET_PROJECTS'
