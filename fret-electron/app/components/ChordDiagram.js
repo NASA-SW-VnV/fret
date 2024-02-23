@@ -39,8 +39,6 @@ import CounterexampleTable from './CounterexampleTable';
 
 import { DiagnosisContext } from './DiagnosisProvider';
 
-const fs = require('fs')
-const path = require("path")
 const constants = require('../parser/Constants');
 
 class ChordDiagram extends React.Component {
