@@ -73,7 +73,7 @@ export function checkRealizability(filePath, engine, options, callback) {
         } else {          
           traceInfo = null;
         }  
-        callback(null, result, time + '\n'+ stderr.toString(), traceInfo);
+        callback(null, result, time, traceInfo);
       } else {
         var kind2Output = JSON.parse(stdout);
         var realizabilityResults = kind2Output.filter(e => e.objectType === "realizabilityCheck")[0];
