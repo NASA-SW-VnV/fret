@@ -30,9 +30,10 @@
 // ANY SUCH MATTER SHALL BE THE IMMEDIATE, UNILATERAL TERMINATION OF THIS
 // AGREEMENT.
 // *****************************************************************************
-import {leveldbDB, modelDB} from '../fretDB'
+import {modelDB} from '../fretDB'
 const constants = require('../../app/parser/Constants');
 const checkDbFormat = require('../fretDbSupport/checkDBFormat.js');
+const fretDBGetters = require('../fretDbSupport/fretDbGetters_main.js');
 
 export {
     synchAnalysisWithDB as synchAnalysisWithDB,
@@ -48,18 +49,9 @@ export {
 async function synchAnalysisWithDB (selectedProject) {
     var data;
     var retVal;
-    // console.log('analysisTabSupport.synchAnalysisWithDB selectedProject ', selectedProject)
 
-    return leveldbDB.find({
-        selector: {
-          project: selectedProject,
-        }
-      }).then(async function (result){
-        
-        if (result.docs.length === 0 && result.warning.startsWith("No matching index found")) {
-          throw new Error('Project "'+selectedProject+'" was not found.')
-        }
-
+    return fretDBGetters.getProjectRequirements(selectedProject).then(async function (result){
+      if (result.docs.length > 0) {
         data = setVariablesAndModes(result);
         data.components.forEach(function(component){
           if (typeof data.cocospecData[component] !== 'undefined'){
@@ -83,6 +75,14 @@ async function synchAnalysisWithDB (selectedProject) {
         retVal.completedComponents =  await checkComponents(retVal.components, selectedProject,
           retVal.cocospecData, retVal.cocospecModes,[]);
         return retVal
+      } else {
+        //Andreas: Currently a good portion of the code in FretModel.js functions on the base that
+        //An object {docs: [], ...} is returned from leveldbDB.find() when projectName = 'All Projects'.
+        //The same object will be returned for non-existing projects though, so I am accounting for this below.
+        //Normally, we shouldn't need to check the value of projectName at this level.
+        //This is needed to properly handle non-existing projects in the CLI.    
+        throw new Error('Project "'+selectedProject+'" was not found.')
+      }
       }).catch((err) => {
         throw err
       });
