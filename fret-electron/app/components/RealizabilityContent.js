@@ -302,7 +302,7 @@ class RealizabilityContent extends React.Component {
   }
 
   checkDependenciesExist() {
-    ipcRenderer.invoke('checkRealizabilityDependencies', this.state.missingDependencies).then((result) => {      
+    ipcRenderer.invoke('checkRealizabilityDependencies').then((result) => {      
       this.setState({
         missingDependencies: result.missingDependencies,
         dependenciesExist: result.dependenciesExist,

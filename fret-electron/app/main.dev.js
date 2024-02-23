@@ -247,8 +247,8 @@ ipcMain.handle('ltlsimSaveJson', async (evt, arg) => {
   return result
 })
 
-ipcMain.handle('checkRealizabilityDependencies', async(evt, args) => {
-  const result = await fretModel.checkRealizabilityDependencies(evt, args);
+ipcMain.handle('checkRealizabilityDependencies', async(evt) => {
+  const result = await fretModel.checkRealizabilityDependencies(evt);
   return result
 })
 

@@ -164,7 +164,7 @@ export default class FretModel {
       this.fieldColors = doc.fieldColors
 
       // requirements
-      this.requirements = await fretDbGetters.getRequirements()
+      this.requirements = await fretDbGetters.getRequirements()      
       this.projectRequirements = await fretDbGetters.getProjectRequirements(this.selectedProject)
 
     }
@@ -275,8 +275,8 @@ export default class FretModel {
     try {
 
       await fretDbSetters.deleteProject(project)
-      if (this.selectProject === project){
-        this.selectProject = 'All Projects'
+      if (this.selectedProject === project){
+        this.selectedProject = 'All Projects'
       }
       await this.synchStatesWithDB()
       var states = {
@@ -534,7 +534,7 @@ export default class FretModel {
 
     this.listOfProjects = [Default_Project_name, ...await fretDbGetters.getProjects()]
     this.requirements = await fretDbGetters.getRequirements()
-    this.projectRequirements = await fretDbGetters.getProjectRequirements(this.selectProject)
+    this.projectRequirements = await fretDbGetters.getProjectRequirements(this.selectedProject)
 
     var jsonFilestates = {
       // projects
@@ -1081,8 +1081,8 @@ export default class FretModel {
     return connectedComponentInfo
   }
 
-  async checkRealizabilityDependencies(evt, args) {
-    var missingDependencies = await checkDependenciesExist(args);
+  async checkRealizabilityDependencies(evt) {
+    var missingDependencies = await checkDependenciesExist();
     return missingDependencies;
   }
 

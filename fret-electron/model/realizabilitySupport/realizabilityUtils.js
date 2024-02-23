@@ -30,12 +30,13 @@
 // ANY SUCH MATTER SHALL BE THE IMMEDIATE, UNILATERAL TERMINATION OF THIS
 // AGREEMENT.
 // *****************************************************************************
-import {leveldbDB, modelDB, system_DBkeys} from '../fretDB'
+import { modelDB, system_DBkeys } from '../fretDB'
 import { getContractInfo, getPropertyInfo, getDelayInfo, variableIdentifierReplacement } from '../modelDbSupport/variableMappingSupports'
 import * as cc_analysis from '../../analysis/connected_components';
 import ejsCache_realize from '../../support/RealizabilityTemplates/ejsCache_realize';
 import * as realizability from '../../analysis/realizabilityCheck';
 import DiagnosisEngine from '../../analysis/DiagnosisEngine';
+import { getProjectRequirements, getAllDocs } from '../fretDbSupport/fretDbGetters_main';
 
 const { execSync } = require('child_process');
 const process = require('process');
@@ -66,7 +67,8 @@ function deleteAnalysisFiles() {
   });
 }
 
-function checkDependenciesExist(missingDependencies) {
+function checkDependenciesExist() {
+  let missingDependencies = [];
   try {
     execSync('jkind -help');
   } catch(err) {
@@ -132,9 +134,7 @@ function checkDependenciesExist(missingDependencies) {
 
 async function retrieveRlzRequirements (selectedProject, selectedComponent) {
     const filterOff = selectedProject == "All Projects";
-    return leveldbDB.allDocs({
-        include_docs: true,
-      }).then((result) => {
+    return getAllDocs().then((result) => {
         let dbData = result.rows
                   .filter(r => !system_DBkeys.includes(r.key))
                   .filter(r => filterOff || (r.doc.project === selectedProject && r.doc.semantics.component_name === selectedComponent))
@@ -212,11 +212,8 @@ function computeConnectedComponents(project, completedComponents, component,proj
   }).then(function (modelResult){
     var contract = getContractInfo(modelResult);
     contract.componentName = component.component_name+'Spec';
-    return leveldbDB.find({
-      selector: {
-        project: project
-      }
-    }).then(function (fretResult){
+
+    return getProjectRequirements(project).then(fretResult => {
       if (completedComponents.includes(component.component_name)) {
         contract.properties = selectedReqs.length === 0 ?
           (getPropertyInfo(fretResult, contract.outputVariables, component.component_name)) :
@@ -355,11 +352,8 @@ function checkRealizability(selectedProject, components, rlzState, selectedReqs)
     }).then(function (modelResult){
       var contract = getContractInfo(modelResult);
       contract.componentName = tC.component_name+'Spec';
-      leveldbDB.find({
-        selector: {
-          project: selectedProject
-        }
-      }).then(function (fretResult){
+
+      getProjectRequirements(selectedProject).then(fretResult => {
         contract.properties = getPropertyInfo(fretResult, contract.outputVariables, tC.component_name);
         contract.delays = getDelayInfo(fretResult, tC.component_name);
         contract = renameIDs(contract);
@@ -408,7 +402,7 @@ function checkRealizability(selectedProject, components, rlzState, selectedReqs)
             var lustreContract = ejsCache_realize.renderRealizeCode(engineName).component.complete(ccContract);
             fs.writeSync(output, lustreContract);
             realizability.checkRealizability(filePath, engineName, engineOptions, function(err, result, time, traceInfo) {
-
+              
               if (err) {
                 cc.result = 'ERROR';
                 cc.error = err.message;
@@ -498,11 +492,7 @@ function diagnoseSpec(selectedProject, rlzState, selectedReqs) {
       var contract = getContractInfo(modelResult);
       contract.componentName = selected.component_name+'Spec';
 
-      leveldbDB.find({
-        selector: {
-          project: selectedProject
-        }
-      }).then(function (fretResult){
+      getProjectRequirements(selectedProject).then(fretResult => {
         contract.properties = getPropertyInfo(fretResult, contract.outputVariables, selected.component_name).filter(p => selectedReqs.includes(p.reqid));
         contract.delays = getDelayInfo(fretResult, selected.component_name);
 
@@ -519,7 +509,7 @@ function diagnoseSpec(selectedProject, rlzState, selectedReqs) {
 
           let engine = new DiagnosisEngine(ccContract, actualTimeout, 'realizability', engineName, engineOptions);
           engine.main(function (err, result) {
-            if (err) {
+            if (err) {              
               projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].diagnosisStatus = 'ERROR';
               projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].error = err.message+'\n'+err.stdout.toString();
 
