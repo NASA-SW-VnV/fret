@@ -5,3 +5,6 @@ logs
 # OSX
 .DS_Store
 tools/Scripts/.DS_Store
+
+# CLI example script
+tools/Scripts/cli/fretcli
