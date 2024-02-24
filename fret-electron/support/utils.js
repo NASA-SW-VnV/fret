@@ -184,6 +184,14 @@ function isEqual (value, other) {
 
 };
 
+function sameAST(form1, form2) {
+  if (isAtom(form1) && isAtom(form2)) return form1 === form2
+  else if (isArray(form1) && isArray(form2)
+	   && form1.length == form2.length)
+    return form1.every((x,i) => sameAST(x,form2[i]))
+  else return false
+}
+
 function unionSets(setA, setB) {
     let _union = new Set(setA);
     for (let elem of setB) {
@@ -240,10 +248,67 @@ function subst(term,sbst) {
     } else console.log('subst says: what type is ' + term)
 }
 
+function nonTemporalSubst(repl,pat,form) {
+  if (isAtom(form)) {
+    if (isEqual(pat, form)) return repl
+    else return form
+  } else if (isArray(form)) {
+      if (isTemporalOp(form[0])) return form
+    else if (sameAST(pat,form)) return repl
+    else return [form[0]].concat(form.slice(1).map((subform) =>
+						    nonTemporalSubst(repl,pat,subform)))
+  } else console.log('nonTemporalSubst says what type is ' +
+		     JSON.stringify(form))
+}
+
+function extractConjuncts(term) {
+  let cjs = []
+  function aux(term) {
+    // console.log(JSON.stringify(term))
+    if (isArray(term)) {
+      if (term[0] === 'And') term.slice(1).forEach(aux)
+      else cjs.push(term)
+    }
+    else if (isAtom(term)) cjs.push(term)
+    else console.log('!! extractConjuncts: what type is ' + JSON.strinngify(term))
+  }
+  aux(term)
+  return cjs
+}
+
+const temporalOps = ['Future', 'FutureTimed',
+		     'Globally', 'GloballyTimed',
+		     'Nxt',
+		     'Untl', 'UntlTimed', 'WeakUntl',
+		     'Releases', 'ReleasesTimed' ]
+
+function isTemporalOp(op) {
+  return temporalOps.includes(op)
+}
+
+function isTemporalFormula(form) {
+  if (isAtom(form)) return false
+  else if (isArray(form))
+    return isTemporalOp(form[0]) || form.slice(1).some(isTemporalFormula)
+  else console.log('isTemporalFormula: unhandled case')
+}
+
+function simplifyImplication(form) {
+  if (isArray(form) && form[0] === 'Implies') {
+    const antecedents = extractConjuncts(form[1])
+    let consequent = form[2]
+    for (const a of antecedents) {
+      if (!isTemporalFormula(a))
+	consequent = nonTemporalSubst(true,a,consequent)
+    }
+    return ['Implies', form[1], consequent]
+  } else return null
+}
+
 /**
  * This function rewrites an expression produced by FRET formalization.
  * The bounds in bounded LTL operators are translated to SMV format.
- * [<=t] --> [0, t], [=t] --> [t, t], [<t] --> [0, t-1], 
+ * [<=t] --> [0, t], [=t] --> [t, t], [<t] --> [0, t-1],
  * Expressions containing "t+1" are rewritten
  * such that "t+1" is evaluated to an integer.
  * Units, e.g., "seconds", are discarded.
@@ -309,13 +374,13 @@ function string_nonempty_intersection(s1,s2) {
   return s1.split("").some((c) => s2.includes(c))
 }
 
-const special_char_map = { "." : "_DOT_", "%" : "_PRC_", 
+const special_char_map = { "." : "_DOT_", "%" : "_PRC_",
 			   "#" : "_HSH_", "$" : "_DOL_", "&" : "_AMP_",
 			   "@" : "_ATS_", "!" : "_BNG_", "?" : "_QUS_",
 			   "-" : "_HYP_", "*" : "_AST_", "=" : "_EQU_",
 			   "^" : "_CRT_", " " : "_SPC_", "+" : "_PLS_",
 			   ";" : "_SEM_" , ":" : "_CLN_", "," : "_CMA_",
-			   "/" : "_FSL_", "\\" : "_BSL_", 
+			   "/" : "_FSL_", "\\" : "_BSL_",
 			   "|" : "_VBR_", "~" : "_TLD_",
 			   "<" : "_LAN_", ">" : "_RAN_",
 			   "(" : "_LPR_", ")" : "_RPR_",
@@ -403,7 +468,29 @@ module.exports = {
     string_nonempty_intersection
 }
 
+
+
 /*
+let implEx = ["Implies","r",["GreaterThan",["Divide",["PQuery",["And","r",["Nxt",["And","r","p"]]]],["PQuery","r"]],"0.1"]]
+console.log(JSON.stringify(implEx) + '\n' + JSON.stringify(simplifyImplication(implEx)))
+
+let implEx2 = ["Implies",["And",["Not","r"],["Nxt","r"]],["GreaterThan",["Divide",["PQuery",["And",["Not","r"],["Nxt",["And","r","p"]]]],["PQuery",["Nxt","r"]]],"0.1"]]
+console.log(JSON.stringify(implEx) + '\n' + JSON.stringify(simplifyImplication(implEx2)))
+
+let probEx = ["And",["PBool","GreaterThanOrEqual","1",["Globally",["Implies",["And",["Not","r"],["Nxt","r"]],["GreaterThan",["Divide",["PQuery",["And",["Not","r"],["Nxt",["And","r","p"]]]],["PQuery",["Nxt","r"]]],"0.1"]]]],["Implies","r",["PBool","GreaterThan","0.9","p"]]]
+
+let ex1 = ['P','>=',1,['And',['Not','p'],['And',['Nxt', ['Not','p']],['Nxt',['Nxt','q']]]]]
+console.log(JSON.stringify(ex1))
+console.log(JSON.stringify(nonTemporalSubst(true,['Not','p'],ex1)))
+
+console.log("is temp", JSON.stringify(isTemporalFormula(['Implies', ['Untl','p','q'],true])),
+	    JSON.stringify(isTemporalFormula(['And',['Or',true, true], false])))
+
+let land = ['And',['Or',true],['And',['And', 'p', 'q'],['Negate',3]]]
+console.log(sameAST(land,land))
+o
+
+console.log(JSON.stringify(land) + '\nConjuncts: ' + JSON.stringify(extractConjuncts(land)))
 
 var testcases = [
     'a.b_e +c.3.d.3*4.56e7',
@@ -440,7 +527,7 @@ console.log(isEqual(['a',3],['a',3]))
 console.log(isEqual(['a',{car : 3, cdr : 4}],['a',{car : 3, cdr : 4}]))
 console.log(isEqual(['a',{car : 3, cdr : 4}],['a',{cdr : 4, car : 3}]))
 console.log(isEqual([2,5,[1,2],[3,4]],[2,5,[1,2],[3,4]]))
-console.log(isVar('?x'))	
+console.log(isVar('?x'))
 console.log(isAtom(3))
 console.log(isAtom('a'))
 console.log(isArray(['a']))
@@ -448,6 +535,3 @@ let l1 = [1,2,3];
 let l2 = [4,5,6];
 console.log('union: ' + JSON.stringify(union(l1,l2)) + ' ' + JSON.stringify(l1));
 */
-
-
-

@@ -49,6 +49,10 @@ let exs2 = [
 'P>=1[ G ( (!r & (X (r)))  => ( P=?[ (X ( r & p))] / P=?[X (r)] )>0.1)] & (r => P>0.9[p])'
 ]
 
+let exs4 = [
+  'P>=1[ G ( (!r & (X (r)))  => ( P=?[!r & (X ( r & p))] / P=?[X (r)] )>0.1)] & (r => P>0.9[p])'
+  ]
+
 let exErrors = [
   // error: weak until doesn't have a timed version
   'P>=1[(p W[0,10] r)]',
@@ -75,6 +79,7 @@ function testEx(ex) {
   console.log(astPrinted + '\n')
 }
 
-exs.forEach(testEx)
-exs2.forEach(testEx)
-exs3.forEach(testEx)
+//exs.forEach(testEx)
+//exs2.forEach(testEx)
+//exs3.forEach(testEx)
+exs4.forEach(testEx)
