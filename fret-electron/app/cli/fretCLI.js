@@ -1,8 +1,8 @@
 const { program, Option } = require('commander');
 
-import { compile } from '../parser/FretSemantics.js';
 import { parseSolverValue, parseIntegerValue, printProgramError} from './cliUtils.js';
 import { checkRealizabilityCLI } from './realizabilityCLI.js';
+import { formalizeCLI } from './formalizeCLI.js'
 import { listCLI } from './listCLI.js'
 
 program
@@ -52,37 +52,14 @@ program
   .command('formalize')
   .description('returns specified formalization for valid FRETish sentences')
   .argument('<fretish>', 'FRETish sentence')
-  .addOption(new Option('-l, --logic <value>','Formula logic').choices(["ft", "ft-fin", "pt"]))
+  .addOption(new Option('-l, --logic <value>','Formula logic').choices(["ft-inf", "ft-fin", "pt"]))
   .addOption(new Option('-lang, --language', 'Language for past-time').choices(["smv","lustre"]).implies({ logic: 'pt' }))
   .action((text, options) => {
-    let formalizations = compile(text).collectedSemantics
-    let formalizationChoiceValue;
-    console.log(options.logic)
-    switch (formalizationChoice) {
-        case 'ft':
-            formalizationChoiceValue = 'ftInfAUExpanded';
-            break;
-        case 'ft-fin':
-            formalizationChoiceValue = 'ft';
-            break;
-        case 'pt':
-            switch (languageChoice) {
-                case 'smv':
-                    formalizationChoiceValue = 'ptExpanded';
-                    break;
-                case 'lustre':
-                    formalizationChoiceValue = 'CoCoSpecCode';
-                    break;
-                default:
-                    formalizationChoiceValue = 'ptExpanded';
-            }
-            break;
-        default:
-            formalizationChoiceValue = 'ftInfAUExpanded';
-    }
-    
-    let formalization = formalizations[formalizationChoiceValue]
-    console.log(JSON.stringify(formalization))
+    try {
+      formalizeCLI(text, options);
+    } catch (err) {
+      printProgramError(err);
+    }    
   })
 
 program.parse();
