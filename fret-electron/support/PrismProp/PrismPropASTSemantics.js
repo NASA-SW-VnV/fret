@@ -13,6 +13,7 @@ const isBoolean = utils.isBoolean;
 
 module.exports = {
   PrismPropToAST,
+  PrismExprToAST,
   ASTtoPrismProp
 }
 
@@ -24,7 +25,18 @@ function PrismPropToAST (PrismProp) {
   parser.buildParseTrees = true;
   var tree = parser.stateFormula();
   return PrismPropASTAnalyzer.visit(tree);
+}
+
+function PrismExprToAST (PrismProp) {
+  var chars = new antlr4.InputStream(PrismProp);
+  var lexer = new PrismPropLexer.PrismPropLexer(chars);
+  var tokens  = new antlr4.CommonTokenStream(lexer);
+  var parser = new PrismPropParser.PrismPropParser(tokens);
+  parser.buildParseTrees = true;
+  var tree = parser.arithExpr();
+  return PrismPropASTAnalyzer.visit(tree);
 };
+
 
 // Whether to print ast of if-then-else expression using
 // infix format p ? q : r. Otherwise it is printed as ite(p,q,r)

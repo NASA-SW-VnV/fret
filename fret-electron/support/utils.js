@@ -224,11 +224,12 @@ function matchAST(pat,term) {
     } else console.log('matchAST says: what type is ' + pat)
 }
 
+// use sameAST instead of isEqual
 function mergeSubsts(sbst1,sbst2) {
     let keys1 = Object.keys(sbst1);
     let keys2 = Object.keys(sbst2);
     let intersection = keys1.filter((x) => keys2.includes(x));
-    let isConsistent = intersection.every((v) => isEqual(sbst1[v],sbst2[v]))
+    let isConsistent = intersection.every((v) => sameAST(sbst1[v],sbst2[v]))
     let r = isConsistent ? {...sbst1,...sbst2} : null
     //console.log('mergeSubsts: sbst1: ' + JSON.stringify(sbst1) + ' sbst2: ' + JSON.stringify(sbst2) + ' consistent?: '  + isConsistent + ' result: ' + JSON.stringify(r))
     return r
@@ -250,10 +251,10 @@ function subst(term,sbst) {
 
 function nonTemporalSubst(repl,pat,form) {
   if (isAtom(form)) {
-    if (isEqual(pat, form)) return repl
+    if (sameAST(pat, form)) return repl
     else return form
   } else if (isArray(form)) {
-      if (isTemporalOp(form[0])) return form
+    if (isTemporalOp(form[0])) return form
     else if (sameAST(pat,form)) return repl
     else return [form[0]].concat(form.slice(1).map((subform) =>
 						    nonTemporalSubst(repl,pat,subform)))
@@ -296,17 +297,24 @@ function isTemporalFormula(form) {
 function simplifyImplication(form) {
   if (isArray(form) && form[0] === 'Implies') {
     const antecedents = extractConjuncts(form[1])
+    const nonTempAnts = antecedents.filter(a => !isTemporalFormula(a))
+    if (nonTempAnts.length === 0) return null;
     let consequent = form[2]
-    for (const a of antecedents) {
-      if (!isTemporalFormula(a))
-	consequent = nonTemporalSubst(true,a,consequent)
+    let unchanged = true;
+    for (const a of nonTempAnts) {
+      const c = nonTemporalSubst(true,a,consequent)
+      if (!sameAST(c,consequent)) {
+	unchanged = false;
+	consequent = c;
+      }
     }
-    return ['Implies', form[1], consequent]
+    return (unchanged ? null : ['Implies', form[1], consequent])
   } else return null
 }
 
 /**
  * This function rewrites an expression produced by FRET formalization.
+ * It changes => to -> and removes html tags.
  * The bounds in bounded LTL operators are translated to SMV format.
  * [<=t] --> [0, t], [=t] --> [t, t], [<t] --> [0, t-1],
  * Expressions containing "t+1" are rewritten
@@ -450,9 +458,11 @@ module.exports = {
     isFloatString,
     isIntegerString,
     setProp,
-    isEqual,
+  isEqual,
+  sameAST,
   matchAST,
   subst,
+  simplifyImplication,
     map_if_defined,
     invert_map,
     map_string,
@@ -468,20 +478,27 @@ module.exports = {
     string_nonempty_intersection
 }
 
-
-
 /*
+
+function testImplSimp(ast) {
+  console.log('\nimplEx: ' + JSON.stringify(ast) + '\nAfter simplification: ' + JSON.stringify(simplifyImplication(ast)))
+}
+
 let implEx = ["Implies","r",["GreaterThan",["Divide",["PQuery",["And","r",["Nxt",["And","r","p"]]]],["PQuery","r"]],"0.1"]]
-console.log(JSON.stringify(implEx) + '\n' + JSON.stringify(simplifyImplication(implEx)))
 
 let implEx2 = ["Implies",["And",["Not","r"],["Nxt","r"]],["GreaterThan",["Divide",["PQuery",["And",["Not","r"],["Nxt",["And","r","p"]]]],["PQuery",["Nxt","r"]]],"0.1"]]
-console.log(JSON.stringify(implEx) + '\n' + JSON.stringify(simplifyImplication(implEx2)))
+
+testImplSimp(implEx)
+
+testImplSimp(implEx2)
 
 let probEx = ["And",["PBool","GreaterThanOrEqual","1",["Globally",["Implies",["And",["Not","r"],["Nxt","r"]],["GreaterThan",["Divide",["PQuery",["And",["Not","r"],["Nxt",["And","r","p"]]]],["PQuery",["Nxt","r"]]],"0.1"]]]],["Implies","r",["PBool","GreaterThan","0.9","p"]]]
 
+
+
 let ex1 = ['P','>=',1,['And',['Not','p'],['And',['Nxt', ['Not','p']],['Nxt',['Nxt','q']]]]]
-console.log(JSON.stringify(ex1))
-console.log(JSON.stringify(nonTemporalSubst(true,['Not','p'],ex1)))
+console.log('ex1: ' + JSON.stringify(ex1) + ' with !p replaced: ' +
+JSON.stringify(nonTemporalSubst(true,['Not','p'],ex1)))
 
 console.log("is temp", JSON.stringify(isTemporalFormula(['Implies', ['Untl','p','q'],true])),
 	    JSON.stringify(isTemporalFormula(['And',['Or',true, true], false])))
