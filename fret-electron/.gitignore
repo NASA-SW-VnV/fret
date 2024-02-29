@@ -54,9 +54,10 @@ dist
 dll
 main.js
 main.js.map
-cli/fretCLI.main.js
-cli/fretCLI.main.js.map
-
+app/cli/fretCLI.main.js
+app/cli/fretCLI.main.dev.js
+app/cli/fretCLI.main.js.map
+app/cli/fretCLI.main.
 
 .idea
 npm-debug.log.*
