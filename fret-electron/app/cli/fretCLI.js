@@ -51,9 +51,9 @@ program
 program
   .command('formalize')
   .description('returns specified formalization for valid FRETish sentences')
-  .argument('<fretish>', 'FRETish sentence')
+  .argument('<fretish>', 'FRETish sentence in single quotes (example: \'sw shall satisfy x\') ')
   .addOption(new Option('-l, --logic <value>','Formula logic').choices(["ft-inf", "ft-fin", "pt"]))
-  .addOption(new Option('-lang, --language', 'Language for past-time').choices(["smv","lustre"]).implies({ logic: 'pt' }))
+  .addOption(new Option('-lang, --language <value>', 'Language for past-time').choices(["smv","lustre"]).implies({ logic: 'pt' }))
   .action((text, options) => {
     try {
       formalizeCLI(text, options);

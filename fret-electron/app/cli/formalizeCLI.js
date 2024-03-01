@@ -16,7 +16,7 @@ function formalizeCLI(text, options) {
                 formalizationChoice = 'ftExpanded';
                 break;
             case 'pt':
-                switch (languageChoice) {
+                switch (options.language) {
                     case 'smv':
                         formalizationChoice = 'ptExpanded';
                         break;
