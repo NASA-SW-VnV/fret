@@ -221,9 +221,9 @@ var serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964",
     "\u0002\u0002\u0002\u015d\u015e\u0007!\u0002\u0002\u015eY\u0003\u0002",
     "\u0002\u0002\u015f\u0160\u0007\"\u0002\u0002\u0160[\u0003\u0002\u0002",
     "\u0002\u0161\u0162\u0005\u0014\u000b\u0002\u0162]\u0003\u0002\u0002",
-    "\u0002\u0163\u0164\u0007$\u0002\u0002\u0164_\u0003\u0002\u0002\u0002",
-    "\u0013\u008e\u00a6\u00a8\u00ae\u00b2\u00b6\u00bb\u00c6\u00d8\u00f0\u00f2",
-    "\u0100\u0105\u010c\u0110\u0112\u013f"].join("");
+    "\u0002\u0163\u0164\u0005\u0014\u000b\u0002\u0164_\u0003\u0002\u0002",
+    "\u0002\u0013\u008e\u00a6\u00a8\u00ae\u00b2\u00b6\u00bb\u00c6\u00d8\u00f0",
+    "\u00f2\u0100\u0105\u010c\u0110\u0112\u013f"].join("");
 
 
 var atn = new antlr4.atn.ATNDeserializer().deserialize(serializedATN);
@@ -5134,8 +5134,8 @@ function ProbNumContext(parser, parent, invokingState) {
 ProbNumContext.prototype = Object.create(antlr4.ParserRuleContext.prototype);
 ProbNumContext.prototype.constructor = ProbNumContext;
 
-ProbNumContext.prototype.NUMBER = function() {
-    return this.getToken(PrismPropParser.NUMBER, 0);
+ProbNumContext.prototype.arithExpr = function() {
+    return this.getTypedRuleContext(ArithExprContext,0);
 };
 
 ProbNumContext.prototype.enterRule = function(listener) {
@@ -5170,7 +5170,7 @@ PrismPropParser.prototype.probNum = function() {
     try {
         this.enterOuterAlt(localctx, 1);
         this.state = 353;
-        this.match(PrismPropParser.NUMBER);
+        this.arithExpr(0);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
 	        localctx.exception = re;

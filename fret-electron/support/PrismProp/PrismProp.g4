@@ -98,7 +98,7 @@ query : '=?' ;
 // operators that apply to a state; i.e., to paths leaving the state
 probOp : 'P' ;
 time : arithExpr ;
-probNum : NUMBER ;
+probNum : arithExpr ;
 
 ID: [_a-zA-Z][_a-zA-Z0-9]* ;
 NUMBER : NATNUM ('.' [0-9]+)? ;

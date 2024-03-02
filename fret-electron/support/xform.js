@@ -156,8 +156,13 @@ function nIsNumber (sbst) {
   return utils.isIntegerString(sbst.__n);
 }
 
+function mnIsNumber(sbst) {
+    return utils.isIntegerString(sbst.__m) && utils.isIntegerString(sbst.__n)
+}
+
 const futureTemporalConditions = [
     ['persists(__n,__p)', nIsNumber ,'((G[<=__n] __p) & (G[<__n] ! $Right$))'],
+    ['persists(__m,__n,__p)', mnIsNumber ,'((G[__m,__n] __p) & (G[<__n] ! $Right$))'],
     ['occurs(__n,__p)', nIsNumber,'(((! $Right$) U __p) & (F[<=__n] __p))'],
     // This commented out version assumes there must be a next occurrence of p
     // ['nextOcc(__p,__q)', trueFn, '(X((!__p & !$Right$) U (__p & __q)))']
@@ -182,7 +187,9 @@ const pastTemporalConditions = [
   ['preBool(__init,__p)', trueFn, //(sbst) => nonBoolConstant(sbst["__init"]),
    '((Z FALSE) & __init) | ((Y TRUE) & (Y __p))'],
   ['persisted(__n,__p)', nIsNumber,'((H[<=__n] __p) & (H[<__n] ! $Left$))'],
+  ['persisted(__m,__n,__p)',mnIsNumber,'(H[__m,__n]__p) & (H[<__n] ! $Left$)'],
   ['occurred(__n,__p)', nIsNumber,'(((! $Left$) S __p) & (O[<=__n] __p))'],
+  //['occurred(__min,__max,__p)', minMaxAreNumbers,'( & (O[__min,__max] __p))'],
   //['prevOcc(__p,__q)', trueFn, '(Z (((! $Left$ & !__p) S __p) => ((! $Left$ & !__p) S (__p & __q))))']
   ['prevOcc(__p,__q)', trueFn, '($Left$ | (Y (((! $Left$ & !__p) S __p) => ((! $Left$ & !__p) S (__p & __q)))))']
 ]
@@ -209,7 +216,10 @@ const probExprs = [
 ]
 
 const probFormulas = [
-  ['true & __p',trueFn,'__p']
+  ['P=?[__p] >= __r',trueFn,'P>=__r[__p]'],
+  //['true & __p',trueFn,'__p'] Boolean simplifications deal with this.
+  // Fortunately TRUE and true have the same abstract syntax (the
+  // boolean value "true").
 ]
 
 /*
@@ -327,7 +337,7 @@ const parsedTemporalConditionsNoBounds = indexTriples(temporalConditionsNoBounds
 
 const parsedProbExprSimplifications = probExprs.map(parsePrismExprTriple)
 const parsedProbFormulaSimplifications = probFormulas.map(parsePrismFormulaTriple)
-const probSimplifications = parsedProbExprSimplifications.concat(parsedProbFormulaSimplifications)
+const probSimplifications = parsedProbExprSimplifications.concat(parsedProbFormulaSimplifications).concat(ftSimplifications)
 
 function applyProbSimplifications(formOrExpr) {
   return applyTriples(formOrExpr,probSimplifications)
@@ -968,6 +978,7 @@ console.log(transform('((H ((((FALSE & (Z (! FALSE))) & (Z (H (! FALSE)))) & (Y 
 
 */
 
+<<<<<<< HEAD
 /*
 
 let xx = 'persists(3,p)'
@@ -990,8 +1001,15 @@ testapply(x3)
 /*
 console.log(transform('((((((! FALSE) & (! LAST)) & (X FALSE)) | LAST) V (((((! FALSE) & (! LAST)) & (X FALSE)) | LAST) -> r)) | FALSE)',optimizeFT))
 
+=======
+>>>>>>> e2bcf76f (persists/ed(m,n,p) and pattern variables allowed in P formulas)
 
 let form = 'P>=1[!p & X(p) => P=?[!p & X(p) & X(q)]/P=?[!p & X(p)] >= 0.8]'
+let form2 = 'P=?[p] >= 0.8'
+
+let form3 = 'P>=1[p => P=?[p & X(q)]/P=?[p] >= 0.8]'
+
+let form4 = 'P>=1[(G[0,3](p)) => P=?[(G[0,3](p)) & X(q)]/P=?[(G[0,3](p))] >= 0.8]'
 
 function testProb(form) {
   console.log('Formula = ' + form)
@@ -1005,8 +1023,12 @@ function testProb(form) {
   console.log('simplifyPrismProp = ' + s)
 }
 
-testProb(form)
+//testProb(form)
+//testProb(form2)
+testProb(form3)
+//testProb(form4)
 
+/*
 console.log(optimizeFT(astsem.LTLtoAST('FALSE | ite(safe,green,red)')))
 console.log(transformTemporalConditions("persisted(3,!p) & occurred(4,p)"))
 console.log(transformTemporalConditionsNoBounds("persisted(3,!p) & occurred(4,p)"))
@@ -1016,9 +1038,12 @@ console.log(transformFutureTemporalConditions("persists(3,!p) & occurs(4,p)"))
 console.log(transformFutureTemporalConditionsNoBounds("persists(3,!p) & occurs(4,p)"))
 console.log(transformTemporalConditions("m"))
 
+<<<<<<< HEAD
 */
 
 /*
+=======
+>>>>>>> e2bcf76f (persists/ed(m,n,p) and pattern variables allowed in P formulas)
 console.log(transform('persisted(3,temp>100)',expandTemporalConditions));
 console.log(transform('(G ((!(((! m) & (! FALSE) & X m) & (!FALSE))) | ((((! m) & (! FALSE) & X m) & (!FALSE)) & (X ((((m & (! FALSE)) & X (! m)) | FALSE) V post))))) & (m -> ((m & X !m) V post))',optimizeFT))
 console.log(JSON.stringify(trueFn))
