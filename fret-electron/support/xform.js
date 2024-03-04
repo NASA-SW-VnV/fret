@@ -532,7 +532,10 @@ function transformTemporalConditionsNoBounds (formulaString) {
     return result;
 }
 
-function linearizeFormula(vars, formulaAST) {
+//This function replaces multiple occurences of the same atomic proposition with indexed variants.
+//For example, if atomic proposition `a` appears 2 times in the formula, its occurences will be
+//replaced with two new atomic propositions, `a_0` and `a_1`.
+function linearizeFormulaAST(vars, formulaAST) {
     if (isVar(formulaAST)) {
         return formulaAST;
     } else if (isAtom(formulaAST)) {
@@ -545,11 +548,31 @@ function linearizeFormula(vars, formulaAST) {
     } else if (!isArray(formulaAST)) return formulaAST;
     else {
         function aux(subterm) {
-            return linearizeFormula(vars, subterm);
+            return linearizeFormulaAST(vars, subterm);
         }
         return formulaAST.map(aux);
     }
     return formulaAST
+}
+
+//This function is the inverse of linearizeFormulaAST i.e., it replaces indexed variants with the original atomic proposition.
+function delinearizeFormulaAST(varsObj, formulaAST) {
+    let conditionVars = Object.keys(varsObj);
+    if (isVar(formulaAST)) {
+        return formulaAST;
+    } else if (isAtom(formulaAST)) {
+        if (conditionVars.includes(formulaAST)) {
+            formulaAST = varsObj[formulaAST];
+            return formulaAST;
+        }
+    } else if (!isArray(formulaAST)) return formulaAST;
+    else {
+        function aux(subterm) {
+            return delinearizeFormulaAST(varsObj, subterm);
+        }
+        return formulaAST.map(aux);
+    }
+    return formulaAST;
 }
 
 // Returns e.g. { a : 1, b :
@@ -573,64 +596,6 @@ function getVars (formulaAST, vars = {}) {
     }
     return vars;
 }
-
-// function applyFLIP(varName, formulaAST) {
-//     if (isArray(formulaAST)) {
-//         if (varName in getVars(formulaAST)) {
-//             switch (formulaAST[0]) {
-//                 case "And":
-//                     if (varName in getVars(formulaAST[1])) {
-//                         return ["And", applyFLIP(varName, formulaAST[1]), formulaAST[2]]
-//                     } else {
-//                         return ["And", formulaAST[1], applyFLIP(varName, formulaAST[2])]
-//                     }                    
-//                 case "Or":
-//                     if (varName in getVars(formulaAST[1])) {
-//                         return ["And", applyFLIP(varName, formulaAST[1]), ["Not", formulaAST[2]]]
-//                     } else {
-//                         return ["And", ["Not", formulaAST[1]], applyFLIP(varName, formulaAST[2])]
-//                     }
-//                 case "Not":
-//                     return ["Not", applyFLIP(varName, formulaAST[1])]
-//                 case "ExclusiveOr":
-//                     return applyFLIP(varName, ["Or", ["And", formulaAST[1], ["Not", formulaAST[2]]], ["And", ["Not", formulaAST[1]], formulaAST[2]]])
-//                 case "Implies":
-//                     return applyFLIP(varName, ["Or", ["Not", formulaAST[1]], formulaAST[2]])
-//                 case "Equiv":
-//                     return applyFLIP(varName, ["And", ["Implies", formulaAST[1], formulaAST[2]], ["Implies", formulaAST[2], formulaAST[1]]])
-//                 case "Next":
-//                     return ["Next", applyFLIP(varName, formulaAST[1])]
-//                 case "PrevFalse":
-//                     return ["PrevFalse", applyFLIP(varName, formulaAST[1])]
-//                 case "PrevTrue":
-//                     return ["PrevTrue", applyFLIP(varName, formulaAST[1])]
-//                 case "Until":
-//                     if (varName in getVars(formulaAST[1])) {
-//                         return ["And", ["Until", formulaAST[1], formulaAST[2]], ["Until", ["Not", formulaAST[2]], ["And", applyFLIP(varName, formulaAST[1]), ["Not", formulaAST[2]]]]]
-//                     } else {
-//                         return ["And", ["Until", formulaAST[1], formulaAST[2]], ["Releases", ["Not", formulaAST[1], ["Implies", formulaAST[2], applyFLIP(varName, formulaAST[2])]]]]
-//                     }
-//                 case "Releases":
-//                     if (varName in getVars(formulaAST[1])) {
-//                         return ["And", ["Releases", formulaAST[1], formulaAST[2]], ["Until", ["Implies", formulaAST[1], applyFLIP(varName, formulaAST[1])], ["Not", formulaAST[2]]]]
-//                     } else {
-//                         return ["And", ["Releases", formulaAST[1], formulaAST[2]], ["Until", ["Not", formulaAST[1]], applyFLIP(varName, formulaAST[2])]]
-//                     }
-//                 case "Eventually":
-//                     return ["And", ["Eventually", formulaAST[1]], ["Globally", ["Implies", formulaAST[1], applyFLIP(varName, formulaAST[1])]]]
-//                 case "Globally":
-//                     return ["And", ["Globally", formulaAST[1]], ["Eventually", applyFLIP(varName, formulaAST[1])]]
-//                 default:                    
-//                     console.log("Found: "+ formulaAST[0] + ", for which a rule doesn't (currently) exist. Skipping.")
-//                     return formulaAST;
-//             }
-//         } else {
-//             return "FALSE";
-//         }
-//     } else {
-//         return formulaAST;        
-//     }
-// }
 
 function occursIn(x,ast) {
   if (!isArray(ast)) return (x === ast)
@@ -658,7 +623,14 @@ let negNormalizationRules = [
   ['! O __p', trueFn, 'H ! __p'],
 
   //MTL
-
+  ['!(__p U[__l, __u] __q)', trueFn, '!__p V[__l, __u] !__q'],
+  ['!(__p V[__l, __u] __q)', trueFn, '!__p U[__l, __u] !__q'],
+  ['! G[__l, __u] __p', trueFn, 'F[__l, __u] ! __p'],
+  ['! F[__l, __u] __p', trueFn, 'G[__l, __u] ! __p'],
+  ['!(__p S[__l, __u] __q)', trueFn, '!__p T[__l, __u] !__q'],
+  ['!(__p T[__l, __u] __q)', trueFn, '!__p S[__l, __u] !__q'],
+  ['! H[__l, __u] __p', trueFn, 'O[__l, __u] ! __p'],
+  ['! O[__l, __u] __p', trueFn, 'H[__l, __u] ! __p'],  
   ]
 
 let negNormalizationRulesParsed = negNormalizationRules.map(parseit)
@@ -822,7 +794,7 @@ function testObl(v,formula) {
   }
   console.log('Conditions: ' + JSON.stringify(conditions))
 
-  let linFormulaAST = linearizeFormula(vars, formulaAST)
+  let linFormulaAST = linearizeFormulaAST(vars, formulaAST)
   console.log('Linearized Formula: '+ JSON.stringify(astsem.ASTtoLTL(linFormulaAST)))
 
   let negNormalAST = doNegNormalization(linFormulaAST);
@@ -833,118 +805,44 @@ function testObl(v,formula) {
 }
 
 
-// let formulaAST = astsem.LTLtoAST('G (__p & (F __q))');
-// let formula = 'F (__a | __b)';
-// let formula = 'F (a | b)'
-
-
-//FSM-002
-//formula = '(G ((__standby & (__state_eq_ap_transition_state)) -> (STATE_eq_ap_standby_state))) & F ((__standby & (__state_eq_ap_transition_state)) -> (STATE_eq_ap_standby_state)) & G (((__standby & (__state_eq_ap_transition_state)) -> (STATE_eq_ap_standby_state)) -> (!__standby & (__state_eq_ap_transition_state) & !(__STATE_eq_ap_standby_state)))'
-//formula = 'G (__p -> (F __q))'
-
-
-//LM-001
-//formula = '((G (((! __start_button) & (X __start_button)) -> (X ((! __liquid_level_1) -> __valve_0)))) & (__start_button -> ((! __liquid_level_1) -> __valve_0)))'
-
-//LM-006
-//formula = '((G (((! __liquid_level_2) & (X __liquid_level_2)) -> (X (((__timer_60sec_expire | __emergency_button) V (__stirring_motor | (__timer_60sec_expire | __emergency_button))) | (G __stirring_motor))))) & (__liquid_level_2 -> (((__timer_60sec_expire | __emergency_button) V (__stirring_motor | (__timer_60sec_expire | __emergency_button))) | (G __stirring_motor))))'
-
-
-//let formula = '(__a & __b)'
-//let formula = 'G (__p V (F (__q & __p)))'
-// let formula = 'F (__a | __b)';
-
-// let formula = 'F (a | b)';
-// let formula = 'F((a = c) = (b = d))'
-// console.log(astsem.LTLtoAST(formula));
-// testObl('a_0', formula)
-
-let formulas = {
-    // 'DZR_CharacterizeZone_Acquire_to_DZR_CharacterizeZone_Transmit':'(H ((Y ((FSM_State_eq_DZR_CharacterizeZone_Acquire) & (Z (! (FSM_State_eq_DZR_CharacterizeZone_Acquire))))) -> ((ED_2 -> (FSM_State_eq_DZR_CharacterizeZone_Transmit)) | (! (Y TRUE)))))',
-    'DZR_CharacterizeZone_Acquire_to_DZR_CharacterizeZone_Transmit': '(H ((Y ((FSM_State_eq_DZR_CharacterizeZone_Acquire) & (Z (! (FSM_State_eq_DZR_CharacterizeZone_Acquire))))) -> ((((ED_2 & (! EA_1)) & (! EB_2)) -> (FSM_State_eq_DZR_CharacterizeZone_Transmit)) | (! (Y TRUE)))))',
-    // 'DZR_CharacterizeZone_Acquire_to_DZR_CharacterizeZone_Transmit': '(H ((Y (((((FSM_State_eq_DZR_CharacterizeZone_Acquire) & ED_2) & (! EA_1)) & (! EB_2)) & (Z (! ((((FSM_State_eq_DZR_CharacterizeZone_Acquire) & ED_2) & (! EA_1)) & (! EB_2)))))) -> ((FSM_State_eq_DZR_CharacterizeZone_Transmit) | (! (Y TRUE)))))'
-    // 'Default_State_Entry_Manual': '(H (((FSM_State_eq_Manual) & (Z (! (FSM_State_eq_Manual)))) -> (FSM_State_eq_Manual_RoverIdle_Idle)))',
-    // 'DZR_CharacterizeZone_Acquire_to_DZR_CharacterizeZone_Transmit': '(H ((Y (((FSM_State_eq_DZR_CharacterizeZone_Acquire) & ED_2) & (Z (! ((FSM_State_eq_DZR_CharacterizeZone_Acquire) & ED_2))))) -> ((FSM_State_eq_DZR_CharacterizeZone_Transmit) | (! (Y TRUE)))))',
-    // 'Event_Statusing_EA_2': '(H (EA_2 <-> ((H[0,3] (F_confirmationSentToNL | (F_confirmationReceivedFromNF & F_isLeader))) & (H[0,2] (Y TRUE)))))',
-    // 'Parameter_List_DnrSnrTransition_DZRCloseout_TransferData':'(H ((FSM_State_eq_DnrSnrTransition_DZRCloseout_TransferData) -> (((controllerType_eq_1) & (activity_eq_3)) & (velocity_eq_0))))'
-    // 'FSM-001-fin' : '(LAST V ((((limits & (! standby)) & (! apfail)) & supported) -> pullup))',
-    // 'FSM-001': '(G ((((limits & (! standby)) & (! apfail)) & supported) -> pullup))',
-    // 'FSM-001-pltl': '(H ((((limits & (! standby)) & (! apfail)) & supported) -> pullup))',    
-    // 'FSM-001-pltl-Y': '(Y ((((limits & (! standby)) & (! apfail)) & supported) -> pullup))',
-    //'FSM-001v2-pltl': '(H (((autopilot & Y autopilot  & Y limits ) & (Y (! (autopilot & Y autopilot  & Y limits )) | FTP)) ->  (pullup)))',
-    // 'FSM-001v3-pltl': '(H ((((htlore3_autopilot & htlore3_notpreprelimits & Y limits ) & ((Y (! (htlore3_autopilot & htlore3_notpreprelimits & Y limits ))) | FTP)) ->  (pullup))))',
-    // 'FSM-002': '(G ((standby & (state_eq_ap_transition_state)) -> (STATE_eq_ap_standby_state)))',
-    // 'FSM-002-pltl': '(H ((standby & (state = ap_transition_state)) -> (STATE = ap_standby_state)))',
-    // 'FSM-003': '(G ((((state_eq_ap_transition_state) & good) & supported) -> (STATE_eq_ap_nominal_state)))',
-    // 'FSM-003-pltl': '(H ((((state = ap_transition_state) & good) & supported) -> (STATE = ap_nominal_state)))',
-    // 'FSM-004': '(G (((! good) & (state_eq_ap_nominal_state)) -> (STATE_eq_ap_maneuver_state)))',
-    // 'FSM-004-pltl': '(H (((! good) & (state = ap_nominal_state)) -> (STATE = ap_maneuver_state)))',    
-    // 'FSM-005': '(G (((state_eq_ap_nominal_state) & standby) -> (STATE_eq_ap_standby_state)))',
-    // 'FSM-005-pltl': '(H (((state = ap_nominal_state) & standby) -> (STATE = ap_standby_state)))',
-    // 'FSM-006': '(G ((((state_eq_ap_maneuver_state) & standby) & good) -> (STATE_eq_ap_standby_state)))',
-    // 'FSM-006-pltl': '(H ((((state = ap_maneuver_state) & standby) & good) -> (STATE = ap_standby_state)))',
-    // 'FSM-007': '(G ((((state_eq_ap_maneuver_state) & supported) & good) -> (STATE_eq_ap_transition_state)))',
-    // 'FSM-007-pltl': '(H ((((state = ap_maneuver_state) & supported) & good) -> (STATE = ap_transition_state)))',
-    // 'FSM-008': '(G (((state_eq_ap_standby_state) & (! standby)) -> (STATE_eq_ap_transition_state)))',
-    // 'FSM-008-pltl': '(H (((state = ap_standby_state) & (! standby)) -> (STATE = ap_transition_state)))',    
-    // 'FSM-009': '(G (((state_eq_ap_standby_state) & apfail) -> (STATE_eq_ap_maneuver_state)))',
-    // 'FSM-009-pltl': '(H (((state = ap_standby_state) & apfail) -> (STATE = ap_maneuver_state)))',
-    // 'FSM-010': '(G (((senstate_eq_sen_nominal_state) & limits) -> (SENSTATE_eq_sen_fault_state)))',
-    // 'FSM-010-pltl': '(H (((senstate = sen_nominal_state) & limits) -> (SENSTATE = sen_fault_state)))',
-    // 'FSM-011': '(G (((senstate_eq_sen_nominal_state) & (! request)) -> (SENSTATE_eq_sen_transition_state)))',
-    // 'FSM-011-pltl': '(H (((senstate = sen_nominal_state) & (! request)) -> (SENSTATE = sen_transition_state)))',
-    // 'FSM-012': '(G ((((senstate_eq_sen_fault_state) & (! request)) & (! limits)) -> (SENSTATE_eq_sen_transition_state)))',
-    // 'FSM-012-pltl': '(H ((((senstate = sen_fault_state) & (! request)) & (! limits)) -> (SENSTATE = sen_transition_state)))',
-    // 'FSM-013': '(G (((senstate_eq_sen_transition_state) & request) -> (SENSTATE_eq_sen_nominal_state)))',
-    // 'FSM-013-pltl': '(H (((senstate = sen_transition_state) & request) -> (SENSTATE = sen_nominal_state)))',
-    // 'LM-006': '((G (((! liquid_level_2) & (X liquid_level_2)) -> (X (((timer_60sec_expire | emergency_button) V (stirring_motor | (timer_60sec_expire | emergency_button))) | (G stirring_motor))))) & (liquid_level_2 -> (((timer_60sec_expire | emergency_button) V (stirring_motor | (timer_60sec_expire | emergency_button))) | (G stirring_motor))))'
-}
-
-
 let allObligations = []
-for (const formula in formulas) {
-    let formulaAST = astsem.LTLtoAST(formulas[formula]);
-    let vars = getVars(formulaAST);
 
+//For each input LTL formula:
+//1. Retrieve AST from formula
+//2. Replace arithmetic expressions with atomic propositions (abstractArithExprsInAST)
+//3. Linearize AST (linearizeFormulaAST)
+//4. Transform AST to Negation Normal Form (doNegNormalization)
+//5. For each condition:
+//      5.1 Apply FLIP rules to generate trap formula AST (doFlips)
+//      5.2 De-Linearize trap formula's AST (delinearizeFormulaAST)
+//      5.3 Re-introduce arithmetic expressions that were abstracted in step 2 (concretizeArithExprsInAST)
+//      5.4 Transform AST to LTL (ATtoLTL)
+
+for (const formula in formulas) {    
+    let formulaAST = astsem.LTLtoAST(formulas[formula]);
+    let { result, abstractions } = astsem.abstractArithExprsInAST(formulaAST);
+    let abstractedFormulaAST = result;
+    let vars = getVars(abstractedFormulaAST);
     let conditions = []
+    let conditionsToVars = {}
     for (const varName in vars) {
         for (var i = 0; i <= vars[varName]; i++) {
-            conditions.push(varName+'_'+i);
+            let indexedVarName = varName+'_'+i
+            conditions.push(indexedVarName);
+            conditionsToVars[indexedVarName] = varName;
         }
     }
-    // console.log('Conditions: ' + JSON.stringify(conditions))
 
-    let linFormulaAST = linearizeFormula(vars, formulaAST)
-    // console.log('Linearized Formula: '+ JSON.stringify(astsem.ASTtoLTL(linFormulaAST)))
-
+    let linFormulaAST = linearizeFormulaAST(vars, abstractedFormulaAST)
     let negNormalAST = doNegNormalization(linFormulaAST);
-    // console.log('Negation normalized: ' + JSON.stringify(astsem.ASTtoLTL(negNormalAST)))
 
     for (const c of conditions) {
-        let obl = doFlips(['flip', c, negNormalAST])
-        // console.log('obligation: ' + JSON.stringify(astsem.ASTtoLTL(obl)))
-        allObligations.push([formula, c, astsem.ASTtoLTL(obl)])
-        // console.log('--'+formula)
-        // console.log('--'+c)
-        // console.log(JSON.stringify(astsem.ASTtoLTL(obl)))
-        console.log('LTLSPEC NAME '+formula+'_'+c+' := !('+astsem.ASTtoLTL(obl)+');')
-        console.log('\n')
+        let trapFormulaAST = doFlips(['flip', c, negNormalAST])
+        let delinTrapFormulaAST = delinearizeFormulaAST(conditionsToVars, trapFormulaAST);
+        let concreteTrapFormulaAST = astsem.concretizeArithExprsInAST(delinTrapFormulaAST, abstractions);
+        allObligations.push([formula, c, astsem.ASTtoLTL(concreteTrapFormulaAST)])
     }    
 }
-console.log(JSON.stringify(allObligations, null, 3))
-
-// testObl('a_0',formula)
-// testObl('b_0',formula)
-
-
-
-
-// console.log(JSON.stringify(linFormulaAST));
-// console.log(JSON.stringify(applyFLIP('__q_0', linFormulaAST)))
-// console.log(applyFLIP('__q_0', linFormulaAST))
-// console.log(JSON.stringify(astsem.ASTtoLTL(applyFLIP('__q_0', linFormulaAST))))
-
-
 
 /*
 function rule_NotOfNot (term) {

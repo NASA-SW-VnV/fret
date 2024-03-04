@@ -43,7 +43,9 @@ const LTLASTAnalyzer = new ltlastAnalyzer();
 module.exports = {
   LTLtoAST,
   ASTtoLTL,
-  ASTtoCoCo
+  ASTtoCoCo,
+  abstractArithExprsInAST,
+  concretizeArithExprsInAST
 }
 
 // useful utils
@@ -204,6 +206,100 @@ function ASTtoCoCo(ast) {
       }
     } else console.log("ASTtoCoCo doesn't know the type of " + JSON.stringify(ast));
   return result;
+}
+
+//This function replaces arithmetic expression trees in a AST with atomic propositions.
+//It is currently used in the generation of FLIP trap formulas/obligations.
+function abstractArithExprsInAST(ast) {
+	let abstractions = {}
+    var result = []
+    if (isArray(ast)) {        
+		if (isArray(ast[0])) {
+			//Timed operators
+			let head = ast[0];
+			if (prefix[head[0]]) {
+				let abstractSubAST = abstractArithExprsInAST(ast[1]);
+				abstractions = abstractSubAST.abstractions;
+				result = [head, abstractSubAST.result];
+			} else {
+				let abstractedSubAST_1 = abstractArithExprsInAST(ast[1]);
+				let abstractedSubAST_2 = abstractArithExprsInAST(ast[2]);
+				abstractions = {...abstractedSubAST_1.abstractions,...abstractedSubAST_2.abstractions}
+				result = [head, abstractedSubAST_1.result, abstractedSubAST_2.result];
+			}
+		} else if (prefix[ast[0]]) {
+			if (ast[0] === 'Negate') {
+				let abstractedSubAST = ast[0]+'_'+abstractArithExprsInAST(ast[1]).result
+				abstractions[abstractedSubAST] = ast;
+				result = abstractedSubAST
+			} else {
+				let abstractSubAST = abstractArithExprsInAST(ast[1]);
+				abstractions = abstractSubAST.abstractions
+				result = [ast[0], abstractSubAST.result]
+			}
+		} else if (infix[ast[0]]) {
+			switch (ast[0]) {
+				case 'Plus':            
+				case 'Minus':
+				case 'Divide':
+				case 'Mult':
+				case 'Mod':
+				case 'Expt':
+				case 'LessThan':
+				case 'LessThanOrEqual':
+				case 'NotEqual':
+				case 'Equal':
+				case 'GreaterThan':
+				case 'GreaterThanOrEqual':
+					let abstractedSubAST = abstractArithExprsInAST(ast[1]).result+'_'+ast[0]+'_'+abstractArithExprsInAST(ast[2]).result
+					abstractions[abstractedSubAST] = ast;            
+					result = abstractedSubAST;
+					break;
+				default:
+					let abstractedSubAST_1 = abstractArithExprsInAST(ast[1]);
+					let abstractedSubAST_2 = abstractArithExprsInAST(ast[2]);
+					abstractions = {...abstractedSubAST_1.abstractions,...abstractedSubAST_2.abstractions}
+					result = [ast[0], abstractedSubAST_1.result, abstractedSubAST_2.result]
+			}
+		} else if (isVar(ast) || isAtom(ast)) {
+			abstractions = {}			
+        	result = ast;
+		}
+    } else if (isVar(ast) || isAtom(ast)) {	
+		abstractions = {}		
+		result = ast;
+	} else console.log("abstractArithExprsInAST doesn't know the type of: " + ast);
+    return { result, abstractions };
+}
+
+//This function re-introduces arithmetic expressions back to an arithmetic-abstracted AST.
+//Input abstractions is an object with atomic propositions as keys and arithmetic expressions trees as values.
+//It is currently used in the generation of FLIP trap formulas/obligations.
+function concretizeArithExprsInAST(ast, abstractions) {
+	let result = [];
+	if (isArray(ast)) {
+		if (isArray(ast[0])) {
+			let head = ast[0]
+			if (prefix[head[0]]) {
+				result = [ast[0], concretizeArithExprsInAST(ast[1], abstractions)]
+			} else {
+				result = [ast[0], concretizeArithExprsInAST(ast[1], abstractions), concretizeArithExprsInAST(ast[2], abstractions)]
+			}
+		} else if (prefix[ast[0]]) {
+			result = [ast[0], concretizeArithExprsInAST(ast[1], abstractions)]
+		} else if (infix[ast[0]]) {
+			result = [ast[0], concretizeArithExprsInAST(ast[1], abstractions), concretizeArithExprsInAST(ast[2], abstractions)]
+		} else if (isString(ast[0])) {
+			result = abstractions[ast];
+		} else if (isBoolean(ast) || isVar(ast)) {
+			result = ast;
+		} else console.log("concretizeArithExprsInAST doesn't know the type of: " + ast);
+	} else if (isString(ast)) {
+		result = abstractions[ast]
+	} else if (isBoolean(ast) || isVar(ast)) {
+		result = ast
+	} else console.log("concretizeArithExprsInAST doesn't know the type of: " + ast);
+	return result;
 }
 
 /*
