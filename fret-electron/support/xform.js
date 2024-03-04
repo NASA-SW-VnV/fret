@@ -47,8 +47,8 @@ module.exports = {
     transformTemporalConditions,
     transformPastTemporalConditionsNoBounds,
     transformFutureTemporalConditionsNoBounds,
-    transformTemporalConditionsNoBounds
-
+    transformTemporalConditionsNoBounds,
+    generateFLIPObligations
 }
 
 const isArray = utils.isArray;
@@ -805,8 +805,6 @@ function testObl(v,formula) {
 }
 
 
-let allObligations = []
-
 //For each input LTL formula:
 //1. Retrieve AST from formula
 //2. Replace arithmetic expressions with atomic propositions (abstractArithExprsInAST)
@@ -817,31 +815,33 @@ let allObligations = []
 //      5.2 De-Linearize trap formula's AST (delinearizeFormulaAST)
 //      5.3 Re-introduce arithmetic expressions that were abstracted in step 2 (concretizeArithExprsInAST)
 //      5.4 Transform AST to LTL (ATtoLTL)
-
-for (const formula in formulas) {    
-    let formulaAST = astsem.LTLtoAST(formulas[formula]);
-    let { result, abstractions } = astsem.abstractArithExprsInAST(formulaAST);
-    let abstractedFormulaAST = result;
-    let vars = getVars(abstractedFormulaAST);
-    let conditions = []
-    let conditionsToVars = {}
-    for (const varName in vars) {
-        for (var i = 0; i <= vars[varName]; i++) {
-            let indexedVarName = varName+'_'+i
-            conditions.push(indexedVarName);
-            conditionsToVars[indexedVarName] = varName;
+function generateFLIPObligations(formulas) {
+    let allObligations = []
+    for (const formula in formulas) {    
+        let formulaAST = astsem.LTLtoAST(formulas[formula]);        
+        let { result, abstractions } = astsem.abstractArithExprsInAST(formulaAST);
+        let abstractedFormulaAST = result;        
+        let vars = getVars(abstractedFormulaAST);
+        let conditions = []
+        let conditionsToVars = {}
+        for (const varName in vars) {
+            for (var i = 0; i <= vars[varName]; i++) {
+                let indexedVarName = varName+'_'+i
+                conditions.push(indexedVarName);
+                conditionsToVars[indexedVarName] = varName;
+            }
         }
+
+        let linFormulaAST = linearizeFormulaAST(vars, abstractedFormulaAST)        
+        let negNormalAST = doNegNormalization(linFormulaAST);        
+        for (const c of conditions) {
+            let trapFormulaAST = doFlips(['flip', c, negNormalAST])
+            let delinTrapFormulaAST = delinearizeFormulaAST(conditionsToVars, trapFormulaAST);
+            let concreteTrapFormulaAST = astsem.concretizeArithExprsInAST(delinTrapFormulaAST, abstractions);
+            allObligations.push([formula, c, astsem.ASTtoLTL(concreteTrapFormulaAST)])
+        }    
     }
-
-    let linFormulaAST = linearizeFormulaAST(vars, abstractedFormulaAST)
-    let negNormalAST = doNegNormalization(linFormulaAST);
-
-    for (const c of conditions) {
-        let trapFormulaAST = doFlips(['flip', c, negNormalAST])
-        let delinTrapFormulaAST = delinearizeFormulaAST(conditionsToVars, trapFormulaAST);
-        let concreteTrapFormulaAST = astsem.concretizeArithExprsInAST(delinTrapFormulaAST, abstractions);
-        allObligations.push([formula, c, astsem.ASTtoLTL(concreteTrapFormulaAST)])
-    }    
+    return allObligations;
 }
 
 /*

@@ -31,8 +31,6 @@
 // AGREEMENT.
 // *****************************************************************************
 import React from 'react';
-import ReactDOM from 'react-dom';
-import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
@@ -49,6 +47,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import ExportIcon from '@material-ui/icons/ArrowUpward';
 import ImportIcon from '@material-ui/icons/ArrowDownward';
 import { saveAs } from 'file-saver';
+
 /* Accordion Imports */
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
@@ -58,14 +57,13 @@ import Divider from '@material-ui/core/Divider';
 import Button from '@material-ui/core/Button';
 
 import VariablesSortableTable from './VariablesSortableTable';
-import ejsCache from '../../support/CoCoSpecTemplates/ejsCache';
-import ejsCacheCoPilot from '../../support/CoPilotTemplates/ejsCacheCoPilot';
-
-import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
+import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
+import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
+import Snackbar from '@material-ui/core/Snackbar';
 
 const {ipcRenderer} = require('electron');
 
@@ -160,6 +158,13 @@ const componentStyles = theme => ({
 
 class ComponentSummary extends React.Component {
 
+  state = {
+    actionsMenuOpen: false,
+    snackbarOpen: false,
+    numberOfObligations: 0
+  }
+
+  anchorRef = React.createRef();
   getMappingInfo(result, contractName) {
     var mapping = {};
     var componentMapping = {};
@@ -188,6 +193,7 @@ class ComponentSummary extends React.Component {
 
   exportComponentCode = event => {
     event.stopPropagation();
+    this.setState({actionsMenuOpen: false})
 
     const {component, selectedProject, language} = this.props;
     var args = [component, selectedProject, language]
@@ -206,14 +212,40 @@ class ComponentSummary extends React.Component {
     }).catch((err) => {
       console.log(err);
     })
+  }
 
-    this.setState({ projectName: '' });
+  exportTestObligations = event => {
+    event.stopPropagation();
+    this.setState({actionsMenuOpen: false})
+    const {component, selectedProject, language} = this.props;
+    var args = [component, selectedProject, language];
 
+    ipcRenderer.invoke('exportTestObligations', args).then((result) => {
+      this.setState({snackbarOpen: true, numberOfObligations: result})
+    }).catch((err) => {
+      console.log(err);
+    })
+  }
+
+  handleActionsClick = (event) => {
+    event.stopPropagation();
+    this.setState({actionsMenuOpen: !this.state.actionsMenuOpen})
+  };
+    
+  handleActionsMenuClose = (event) => {
+    if (this.anchorRef.current && this.anchorRef.current.contains(event.target)) {
+      return;
+    }
+    this.setState({actionsMenuOpen: false})
+  }
+
+  handleSnackbarClose = (event) => {
+    this.setState({snackbarOpen: false});
   }
 
   render() {
     const {classes, component, completed, language} = this.props;
-    if ((completed && language)|| language === 'copilot'){
+    if (language === 'copilot'){
       return (
         <Tooltip title='Export verification code.'>
         <span>
@@ -223,11 +255,49 @@ class ComponentSummary extends React.Component {
               Export
           </Button>
           </span>
-        </Tooltip>
+        </Tooltip>     
+      );
+    } else if (completed && language && language === 'cocospec') {
+      return (
+        <div className={classes.wrapper}>
+          <Button          
+            ref={this.anchorRef}
+            size="small" variant="contained" color="secondary"          
+            endIcon={<KeyboardArrowDownIcon />}
+            onClick={(event) => this.handleActionsClick(event)}>
+            Export        
+          </Button>
+          <Menu anchorEl={this.anchorRef.current} open={this.state.actionsMenuOpen} onClose={(event) => this.handleActionsMenuClose(event)}>
+            <MenuItem onClick={this.exportComponentCode}>Verification Code</MenuItem>          
+            <MenuItem onClick={this.exportTestObligations}>Test Obligations</MenuItem>                    
+          </Menu>
+          <Snackbar
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'center',
+          }}
+          open={this.state.snackbarOpen}
+          autoHideDuration={6000}
+          onClose={this.handleSnackbarClose}
+          snackbarcontentprops={{
+            'aria-describedby': 'message-id',
+          }}
+          message={<span id="message-id">{'Generated '+this.state.numberOfObligations+' test obligations.'}</span>}
+          action={[
+            <IconButton
+              key="close"
+              aria-label="Close"
+              color="inherit"
+              onClick={this.handleSnackbarClose}
+            >
+              <CloseIcon />
+            </IconButton>
+          ]} />
+        </div>   
       );
     } else {
       return (
-          <Tooltip title='To export verification code, please complete mandatory variable fields and export language first.'>
+          <Tooltip title='To export verification code or test obligations, please complete mandatory variable fields and export language first.'>
             <span>
               <Button id={"qa_var_btn_export_"+component}
                  size="small" color="secondary" disabled variant='contained' className={classes.buttonControl}>

@@ -34,7 +34,7 @@
 import {leveldbDB, modelDB, system_DBkeys} from './fretDB'
 import {removeVariablesInBulk, removeVariables } from './modelDbSupport/deleteVariables_main'
 import {removeReqsInBulk} from './fretDbSupport/deleteRequirements_main'
-import {getContractInfo, getPropertyInfo, getDelayInfo, getMappingInfo,
+import {getContractInfo, getPropertyInfo, getDelayInfo, getMappingInfo, getObligationInfo,
   synchFRETvariables, variableIdentifierReplacement} from './modelDbSupport/variableMappingSupports'
 //import FretSemantics from './../app/parser/FretSemantics'
 import {export_to_md} from "../app/utils/utilityFunctions";
@@ -1088,6 +1088,71 @@ export default class FretModel {
     })
     return files
 
+  }
+
+  async exportTestObligations(evt, args) {
+    let [component, selectedProject, language] = args;
+    const homeDir = app.getPath('home');
+    var filepath = dialog.showSaveDialogSync({
+          defaultPath : homeDir,
+          title : 'Export test obligations',
+          buttonLabel : 'Export',
+          filters: [
+            { name: "Documents", extensions: ['zip'] }
+          ],
+        });
+
+      if (filepath) {
+        // create a file to stream archive data to.
+        var output = fs.createWriteStream(filepath);
+        var archive = archiver('zip', {
+          zlib: { level: 9 } // Sets the compression level.
+        });
+        // listen for all archive data to be written
+        // 'close' event is fired only when a file descriptor is involved
+        output.on('close', function() {
+          console.log('archiver has been finalized and the output file descriptor has closed.');
+        });
+        // good practice to catch this error explicitly
+        archive.on('error', function(err) {
+          throw err;
+        });
+
+        return modelDB.find({
+          selector: {
+            component_name: component,
+            project: selectedProject,
+            completed: true, //for modes that are not completed; these include the ones that correspond to unformalized requirements
+            modeldoc: false
+          }
+        }).then(function (modelResult){
+          let contract = getContractInfo(modelResult);
+          contract.componentName = component+'Spec';
+          archive.pipe(output);
+          if (language === 'cocospec' && modelResult.docs[0].modelComponent != ""){
+            var variableMapping = getMappingInfo(modelResult, contract.componentName);
+            archive.append(JSON.stringify(variableMapping), {name: 'cocospecMapping'+component+'.json'});
+          }
+          return leveldbDB.find({
+            selector: {
+              project: selectedProject
+            }
+          }).then(function (fretResult){
+            contract.properties = getObligationInfo(fretResult, contract.outputVariables, component);
+            contract.delays = getDelayInfo(fretResult, component);
+            if (language === 'cocospec'){
+              
+              contract = variableIdentifierReplacement(contract);
+              archive.append(ejsCache.renderContractCode().contract.complete(contract), {name: contract.componentName+'.lus'})
+            }
+            // finalize the archive (ie we are done appending files but streams have to finish yet)
+            archive.finalize();
+            return contract.properties.length;
+          }).catch((err) => {
+            console.log(err);
+          })
+      })
+    }
   }
 
   async selectCorspdModelComp(evt,args){       // TBD add tests

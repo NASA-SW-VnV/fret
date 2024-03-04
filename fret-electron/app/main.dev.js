@@ -235,6 +235,11 @@ ipcMain.handle('exportComponent', async (evt, arg) => {
   return result
 })
 
+ipcMain.handle('exportTestObligations', async (evt, arg) => {
+  const result = await fretModel.exportTestObligations(evt, arg);
+  return result
+})
+
 ipcMain.handle('selectCorspdModelComp', async (evt, arg) => {
   const result = await fretModel.selectCorspdModelComp(evt, arg);
   return result

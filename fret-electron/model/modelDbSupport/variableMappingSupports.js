@@ -34,227 +34,274 @@
 import { modelDB } from '../fretDB';
 const utils = require('../../support/utils'); 
 const constants = require('../../app/parser/Constants');
+const cocospecSemantics = require('../../support/cocospecSemantics');
+const xform = require('../../support/xform');
 
 export {
-    getContractInfo as getContractInfo,
-    getPropertyInfo as getPropertyInfo,
-    getDelayInfo as getDelayInfo,
-    getMappingInfo as getMappingInfo,
-    synchFRETvariables as synchFRETvariables,
-    variableIdentifierReplacement as variableIdentifierReplacement
-  }
+  getContractInfo as getContractInfo,
+  getPropertyInfo as getPropertyInfo,
+  getDelayInfo as getDelayInfo,
+  getMappingInfo as getMappingInfo,
+  getObligationInfo as getObligationInfo,
+  synchFRETvariables as synchFRETvariables,
+  variableIdentifierReplacement as variableIdentifierReplacement
+}
 
 
-  let counter = 0;
-  function createData(variable_name, modeldoc_id, idType, dataType, description) {
-    counter += 1;
-    return { rowid: counter, variable_name, modeldoc_id, idType, dataType, description};
-  }  
+let counter = 0;
+function createData(variable_name, modeldoc_id, idType, dataType, description) {
+  counter += 1;
+  return { rowid: counter, variable_name, modeldoc_id, idType, dataType, description};
+}  
 
-  async function synchFRETvariables (selectedProject, component) {
-    //console.log('variableMappingSupports.synchFRETvariables project: ',selectedProject,' component: ',component)
-    
-    var modelComponent
-    let componentModel = '';
-    return modelDB.find({
-        selector: {
-          project : selectedProject,
-          component_name : component,
-        }
-      }).then(async function(result){
-        
-        var variable_data =  result.docs.map(r => {
-          //console.log('variableMappingSupports.synchFRETvariables: ',r)
-          componentModel = r.modelComponent;
-                return createData(r.variable_name, r.modeldoc_id, r.idType, r.dataType, r.description)
-              }).sort((a, b) => {return a.variable_name > b.variable_name})
-        modelComponent= componentModel
+async function synchFRETvariables (selectedProject, component) {
+  //console.log('variableMappingSupports.synchFRETvariables project: ',selectedProject,' component: ',component)
+  
+  var modelComponent
+  let componentModel = '';
+  return modelDB.find({
+      selector: {
+        project : selectedProject,
+        component_name : component,
+      }
+    }).then(async function(result){
+      
+      var variable_data =  result.docs.map(r => {
+        //console.log('variableMappingSupports.synchFRETvariables: ',r)
+        componentModel = r.modelComponent;
+              return createData(r.variable_name, r.modeldoc_id, r.idType, r.dataType, r.description)
+            }).sort((a, b) => {return a.variable_name > b.variable_name})
+      modelComponent= componentModel
 
-        var modelVars_importedComps =  await synchModelVariablesAndComponents(componentModel,selectedProject);
+      var modelVars_importedComps =  await synchModelVariablesAndComponents(componentModel,selectedProject);
 
-        //console.log('variableMappingSupports.synchFRETvariables ended variable_data: ',variable_data)
-        //console.log('variableMappingSupports.synchFRETvariables ended modelComponent: ',modelComponent)
-        //console.log('variableMappingSupports.synchFRETvariables ended modelVariables: ',modelVars_importedComps.modelVariables)
-        //console.log('variableMappingSupports.synchFRETvariables ended importedComponents: ',modelVars_importedComps.importedComponents)
+      //console.log('variableMappingSupports.synchFRETvariables ended variable_data: ',variable_data)
+      //console.log('variableMappingSupports.synchFRETvariables ended modelComponent: ',modelComponent)
+      //console.log('variableMappingSupports.synchFRETvariables ended modelVariables: ',modelVars_importedComps.modelVariables)
+      //console.log('variableMappingSupports.synchFRETvariables ended importedComponents: ',modelVars_importedComps.importedComponents)
 
-        return {  variable_data: variable_data,
-                  modelComponent: modelComponent,
-                  modelVariables : modelVars_importedComps.modelVariables,
-                  importedComponents: modelVars_importedComps.importedComponents
-                }
-      }).catch((err) => {
-          console.log(err);
-      })
- 
-  }
+      return {  variable_data: variable_data,
+                modelComponent: modelComponent,
+                modelVariables : modelVars_importedComps.modelVariables,
+                importedComponents: modelVars_importedComps.importedComponents
+              }
+    }).catch((err) => {
+        console.log(err);
+    })
+
+}
 
 async function  synchModelVariablesAndComponents(componentModel,selectedProject){
 
-    let modelVariables = [],
-        modelComponents = [];
+  let modelVariables = [],
+      modelComponents = [];
 
-    return modelDB.find({
-      selector: {
-        project: selectedProject,
-        modeldoc: true
+  return modelDB.find({
+    selector: {
+      project: selectedProject,
+      modeldoc: true
+    }
+  }).then(function(result){
+    result.docs.forEach(async function(v){
+      if (! modelComponents.includes(v.component_name)) {
+        modelComponents.push(v.component_name);
       }
-    }).then(function(result){
-      result.docs.forEach(async function(v){
-        if (! modelComponents.includes(v.component_name)) {
-          modelComponents.push(v.component_name);
-        }
-        if (v.component_name === componentModel) {
-                  modelVariables.push(v);
-        }
-      })
-      var retResults = {
-        modelVariables : modelVariables,
-        importedComponents : modelComponents.sort(async (a, b) => {return a.toLowerCase().trim() > b.toLowerCase().trim()})
-      }
-      //console.log('variableMappingSupports.synchModelVariablesAndComponents retResults: ',retResults)
-      return retResults
-    }).catch((err) => {
-      console.log(err);
-    })
-  };
-
-  function getPropertyInfo(result, outputVariables, component) {
-    var properties = [];
-    result.docs.forEach(function(doc){
-      var property ={};
-      property.allInput = false;
-      if (doc.semantics && doc.semantics.component_name === component){
-        if (typeof doc.semantics.CoCoSpecCode !== 'undefined'){
-          if (doc.semantics.CoCoSpecCode !== constants.nonsense_semantics &&
-            doc.semantics.CoCoSpecCode !== constants.undefined_semantics &&
-            doc.semantics.CoCoSpecCode !== constants.unhandled_semantics){
-              property.value = doc.semantics.CoCoSpecCode;
-              property.reqid = doc.reqid;
-              property.fullText = "Req text: " + doc.fulltext;
-              property.fretish = doc.fulltext;
-              //TODO: remove HTLM-tags from ptExpanded
-              property.ptLTL = doc.semantics.ptExpanded.replace(/<b>/g, "").replace(/<i>/g, "").replace(/<\/b>/g, "").replace(/<\/i>/g, "");
-              outputVariables.forEach(function(variable){
-              if (property.value.includes(variable)){
-                  property.allInput = true;
-                }
-              })
-              properties.push(property);
-         }
-       }
+      if (v.component_name === componentModel) {
+                modelVariables.push(v);
       }
     })
-    return properties;
-  }
+    var retResults = {
+      modelVariables : modelVariables,
+      importedComponents : modelComponents.sort(async (a, b) => {return a.toLowerCase().trim() > b.toLowerCase().trim()})
+    }
+    //console.log('variableMappingSupports.synchModelVariablesAndComponents retResults: ',retResults)
+    return retResults
+  }).catch((err) => {
+    console.log(err);
+  })
+};
 
-  function getDelayInfo(result, component) {
-    var delays = [];
-    result.docs.forEach(function(doc){
-      if (doc.semantics && doc.semantics.component_name === component){
-        if (typeof doc.semantics.CoCoSpecCode !== 'undefined'){
-          if (doc.semantics.CoCoSpecCode !== constants.nonsense_semantics &&
-            doc.semantics.CoCoSpecCode !== constants.undefined_semantics &&
-            doc.semantics.CoCoSpecCode !== constants.unhandled_semantics){
-              if (doc.semantics.duration){
-                  if (!delays.includes(doc.semantics.duration)){
-                    delays.push(doc.semantics.duration);
-                  }
+function getPropertyInfo(result, outputVariables, component) {
+  var properties = [];
+  result.docs.forEach(function(doc){
+    var property ={};
+    property.allInput = false;
+    if (doc.semantics && doc.semantics.component_name === component){
+      if (typeof doc.semantics.CoCoSpecCode !== 'undefined'){
+        if (doc.semantics.CoCoSpecCode !== constants.nonsense_semantics &&
+          doc.semantics.CoCoSpecCode !== constants.undefined_semantics &&
+          doc.semantics.CoCoSpecCode !== constants.unhandled_semantics){
+            property.value = doc.semantics.CoCoSpecCode;
+            property.reqid = doc.reqid;
+            property.fullText = "Req text: " + doc.fulltext;
+            property.fretish = doc.fulltext;
+            //TODO: remove HTLM-tags from ptExpanded
+            property.ptLTL = doc.semantics.ptExpanded.replace(/<b>/g, "").replace(/<i>/g, "").replace(/<\/b>/g, "").replace(/<\/i>/g, "");
+            outputVariables.forEach(function(variable){
+            if (property.value.includes(variable)){
+                property.allInput = true;
               }
-          }
+            })
+            properties.push(property);
         }
-      }
-    })
-    return delays;
-  }
-
-  function getMappingInfo(result, contractName) {
-    var mapping = {};
-    var componentMapping = {};
-    var componentInputs = [];
-    var componentOutputs = [];
-    componentMapping.contract_name = contractName;
-    componentMapping.model_path = '';
-    result.docs.forEach(function(doc){
-      if (doc.idType === 'Input' || doc.idType === 'Output'){
-        if (componentMapping.model_path === ''){
-          componentMapping.model_path = doc.modelComponent;
-        }
-        var variable = {};
-        //Variable name in FRETish
-        variable.variable_name = utils.replace_special_chars(doc.variable_name);
-        //Signal path in Simulink model
-        variable.variable_path = componentMapping.model_path+'/'+doc.modeldoc_id;
-        if (doc.busObject && doc.busObjects) {
-          variable.busDimensions = doc.busObjects.filter(bo => bo.Name === doc.busObject)[0].Elements.length;
-        }
-        if (doc.busElementIndex >= 0) {          
-          //Javascript array indices start at 0, MATLAB starts at 1
-          variable.busElementIndex = doc.busElementIndex+1;
-        }
-        if (doc.modeldoc_vectorSize) {
-          variable.dimensions = [1, doc.modeldoc_vectorSize];
-        }
-        if (doc.modeldoc_vectorIndex) {
-          variable.index = doc.modeldoc_vectorIndex;
-        }
-        (doc.idType === 'Input') ? componentInputs.push(variable) : componentOutputs.push(variable);
-      }
-    })
-    componentMapping.Inputs = componentInputs;
-    componentMapping.Outputs = componentOutputs;
-    mapping[contractName] = componentMapping;
-    return mapping;
-  }
-
-  function getContractInfo(result) {
-    function getCoCoSpecDataType(dataType){
-      if (dataType === 'boolean'){
-         return 'bool';
-      } else if (dataType.includes('int') ){
-        return 'int';
-      } else if (dataType === 'double' || 'single'){
-        return 'real';
       }
     }
+  })
+  return properties;
+}
 
-    var contract = {
-      componentName: '',
-      outputVariables: [],
-      inputVariables: [],
-      internalVariables: [],
-      functions: [],
-      assignments: [],
-      copilotAssignments: [],
-      modes: [],
-      properties: []
-    };
-    
-    result.docs.forEach(function(doc){
-      var variable ={};
-      variable.name = doc.variable_name;
-      if (doc.idType === 'Input'){
-        variable.type = getCoCoSpecDataType(doc.dataType);
-        contract.inputVariables.push(variable);
-      } else if (doc.idType === 'Output'){
-        variable.type = getCoCoSpecDataType(doc.dataType);
-        contract.outputVariables.push(variable);
-      } else if (doc.idType === 'Internal'){
-        variable.type = getCoCoSpecDataType(doc.dataType);
-        contract.internalVariables.push(variable);
-        contract.assignments.push(doc.assignment);
-        contract.copilotAssignments.push(doc.copilotAssignment);
-      } else if (doc.idType === 'Mode'){
-        if (doc.modeRequirement !== '')
-          variable.assignment = doc.modeRequirement;
-          variable.type = getCoCoSpecDataType(doc.dataType);
-          contract.modes.push(variable);
-      } else if (doc.idType === 'Function'){
-        variable.moduleName = doc.moduleName;
-        contract.functions.push(variable);
+function getDelayInfo(result, component) {
+  var delays = [];
+  result.docs.forEach(function(doc){
+    if (doc.semantics && doc.semantics.component_name === component){
+      if (typeof doc.semantics.CoCoSpecCode !== 'undefined'){
+        if (doc.semantics.CoCoSpecCode !== constants.nonsense_semantics &&
+          doc.semantics.CoCoSpecCode !== constants.undefined_semantics &&
+          doc.semantics.CoCoSpecCode !== constants.unhandled_semantics){
+            if (doc.semantics.duration){
+                if (!delays.includes(doc.semantics.duration)){
+                  delays.push(doc.semantics.duration);
+                }
+            }
+        }
       }
-    })
-    return contract;
+    }
+  })
+  return delays;
+}
+
+function getMappingInfo(result, contractName) {
+  var mapping = {};
+  var componentMapping = {};
+  var componentInputs = [];
+  var componentOutputs = [];
+  componentMapping.contract_name = contractName;
+  componentMapping.model_path = '';
+  result.docs.forEach(function(doc){
+    if (doc.idType === 'Input' || doc.idType === 'Output'){
+      if (componentMapping.model_path === ''){
+        componentMapping.model_path = doc.modelComponent;
+      }
+      var variable = {};
+      //Variable name in FRETish
+      variable.variable_name = utils.replace_special_chars(doc.variable_name);
+      //Signal path in Simulink model
+      variable.variable_path = componentMapping.model_path+'/'+doc.modeldoc_id;
+      if (doc.busObject && doc.busObjects) {
+        variable.busDimensions = doc.busObjects.filter(bo => bo.Name === doc.busObject)[0].Elements.length;
+      }
+      if (doc.busElementIndex >= 0) {          
+        //Javascript array indices start at 0, MATLAB starts at 1
+        variable.busElementIndex = doc.busElementIndex+1;
+      }
+      if (doc.modeldoc_vectorSize) {
+        variable.dimensions = [1, doc.modeldoc_vectorSize];
+      }
+      if (doc.modeldoc_vectorIndex) {
+        variable.index = doc.modeldoc_vectorIndex;
+      }
+      (doc.idType === 'Input') ? componentInputs.push(variable) : componentOutputs.push(variable);
+    }
+  })
+  componentMapping.Inputs = componentInputs;
+  componentMapping.Outputs = componentOutputs;
+  mapping[contractName] = componentMapping;
+  return mapping;
+}
+
+function getContractInfo(result) {
+  function getCoCoSpecDataType(dataType){
+    if (dataType === 'boolean'){
+        return 'bool';
+    } else if (dataType.includes('int') ){
+      return 'int';
+    } else if (dataType === 'double' || 'single'){
+      return 'real';
+    }
   }
+
+  var contract = {
+    componentName: '',
+    outputVariables: [],
+    inputVariables: [],
+    internalVariables: [],
+    functions: [],
+    assignments: [],
+    copilotAssignments: [],
+    modes: [],
+    properties: []
+  };
+  
+  result.docs.forEach(function(doc){
+    var variable ={};
+    variable.name = doc.variable_name;
+    if (doc.idType === 'Input'){
+      variable.type = getCoCoSpecDataType(doc.dataType);
+      contract.inputVariables.push(variable);
+    } else if (doc.idType === 'Output'){
+      variable.type = getCoCoSpecDataType(doc.dataType);
+      contract.outputVariables.push(variable);
+    } else if (doc.idType === 'Internal'){
+      variable.type = getCoCoSpecDataType(doc.dataType);
+      contract.internalVariables.push(variable);
+      contract.assignments.push(doc.assignment);
+      contract.copilotAssignments.push(doc.copilotAssignment);
+    } else if (doc.idType === 'Mode'){
+      if (doc.modeRequirement !== '')
+        variable.assignment = doc.modeRequirement;
+        variable.type = getCoCoSpecDataType(doc.dataType);
+        contract.modes.push(variable);
+    } else if (doc.idType === 'Function'){
+      variable.moduleName = doc.moduleName;
+      contract.functions.push(variable);
+    }
+  })
+  return contract;
+}
+
+function getObligationInfo(result, outputVariables, component){
+  var properties = [];
+  result.docs.forEach(function(doc){
+    var property ={};
+    property.allInput = false;
+    if (doc.semantics.component_name === component){
+      if (typeof doc.semantics.CoCoSpecCode !== 'undefined'){
+        if (doc.semantics.CoCoSpecCode !== constants.nonsense_semantics &&
+          doc.semantics.CoCoSpecCode !== constants.undefined_semantics &&
+          doc.semantics.CoCoSpecCode !== constants.unhandled_semantics){
+            property.value = doc.semantics.CoCoSpecCode;
+            property.reqid = doc.reqid;
+            property.fullText = "Req text: " + doc.fulltext;
+            property.fretish = doc.fulltext;
+            //TODO: remove HTLM-tags from ptExpanded
+            property.ptLTL = doc.semantics.ptExpanded.replace(/<b>/g, "").replace(/<i>/g, "").replace(/<\/b>/g, "").replace(/<\/i>/g, "");
+            let obligationsSMV = xform.generateFLIPObligations({[property.reqid]: property.ptLTL});
+            // let counter = 0;
+            for (const obl of obligationsSMV) {
+              let [formula, condition, obligation] = obl;
+              let obligationLustre = cocospecSemantics.createCoCoSpecCode(obligation);
+              let obligationProperty = {}
+              obligationProperty.allInput = false;
+              obligationProperty.value = obligationLustre;
+              // obligationProperty.reqid = doc.reqid + counter;
+              obligationProperty.reqid = doc.reqid +'_'+condition;
+              obligationProperty.fullText = "Req text: " + doc.fulltext;
+              obligationProperty.fretish = doc.fulltext;
+              obligationProperty.ptLTL = obligationLustre;
+              properties.push(obligationProperty);
+              // counter++;
+            }
+            outputVariables.forEach(function(variable){
+            if (property.value.includes(variable)){
+                property.allInput = true;
+              }
+            })
+        }
+      }
+    }
+  })
+  return properties;
+}
 
 function variableIdentifierReplacement(contract){
   contract.inputVariables.forEach(function(input){

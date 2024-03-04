@@ -290,12 +290,12 @@ function concretizeArithExprsInAST(ast, abstractions) {
 		} else if (infix[ast[0]]) {
 			result = [ast[0], concretizeArithExprsInAST(ast[1], abstractions), concretizeArithExprsInAST(ast[2], abstractions)]
 		} else if (isString(ast[0])) {
-			result = abstractions[ast];
+			result = (ast[0] in abstractions) ? abstractions[ast] : ast[0];
 		} else if (isBoolean(ast) || isVar(ast)) {
 			result = ast;
 		} else console.log("concretizeArithExprsInAST doesn't know the type of: " + ast);
 	} else if (isString(ast)) {
-		result = abstractions[ast]
+		result = (ast in abstractions) ? abstractions[ast] : ast;
 	} else if (isBoolean(ast) || isVar(ast)) {
 		result = ast
 	} else console.log("concretizeArithExprsInAST doesn't know the type of: " + ast);
