@@ -814,7 +814,8 @@ function testObl(v,formula) {
 //      5.1 Apply FLIP rules to generate trap formula AST (doFlips)
 //      5.2 De-Linearize trap formula's AST (delinearizeFormulaAST)
 //      5.3 Re-introduce arithmetic expressions that were abstracted in step 2 (concretizeArithExprsInAST)
-//      5.4 Transform AST to LTL (ATtoLTL)
+//      5.4 Negate trap formula AST
+//      5.5 Transform AST to LTL (ATtoLTL)
 function generateFLIPObligations(formulas) {
     let allObligations = []
     for (const formula in formulas) {    
@@ -838,7 +839,8 @@ function generateFLIPObligations(formulas) {
             let trapFormulaAST = doFlips(['flip', c, negNormalAST])
             let delinTrapFormulaAST = delinearizeFormulaAST(conditionsToVars, trapFormulaAST);
             let concreteTrapFormulaAST = astsem.concretizeArithExprsInAST(delinTrapFormulaAST, abstractions);
-            allObligations.push([formula, c, astsem.ASTtoLTL(concreteTrapFormulaAST)])
+            let negateTrapFormulaAST = ['Not', concreteTrapFormulaAST];
+            allObligations.push([formula, c, astsem.ASTtoLTL(negateTrapFormulaAST)])
         }    
     }
     return allObligations;
