@@ -184,6 +184,12 @@ async function  synchModelVariablesAndComponents(componentModel,selectedProject)
         variable.variable_name = utils.replace_special_chars(doc.variable_name);
         //Signal path in Simulink model
         variable.variable_path = componentMapping.model_path+'/'+doc.modeldoc_id;
+        if (doc.modeldoc_vectorSize) {
+          variable.dimensions = [1, doc.modeldoc_vectorSize];
+        }
+        if (doc.modeldoc_index) {
+          variable.index = doc.modeldoc_index;
+        }
         (doc.idType === 'Input') ? componentInputs.push(variable) : componentOutputs.push(variable);
       }
     })

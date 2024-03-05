@@ -205,7 +205,7 @@ class DisplayVariableDialog extends React.Component {
   handleUpdate = () => {
     const self = this;
     const { selectedVariable } = this.props;
-    const { description, idType, dataType, assignment, copilotAssignment, modeRequirement, modeldoc_id, modelComponent, lustreVariables, copilotVariables, moduleName } = this.state;
+    const { description, idType, dataType, assignment, copilotAssignment, modeRequirement, modeldoc_id, modelComponent, lustreVariables, copilotVariables, moduleName, modeldoc_vectorSize, modeldoc_index} = this.state;
     var modeldbid = selectedVariable._id;
     var completedVariable = false;
     var newVariables = [];
@@ -214,7 +214,7 @@ class DisplayVariableDialog extends React.Component {
     var args = [selectedVariable.project,selectedVariable.component_name,variables, idType,
       modeldoc_id, dataType, modeldbid, description,assignment,
       copilotAssignment,modeRequirement,modelComponent,lustreVariables,copilotVariables,
-      moduleName]
+      moduleName, modeldoc_vectorSize, modeldoc_index]
 
     // context isolation
     ipcRenderer.invoke('updateVariable_checkNewVariables',args).then(async (result) => {
@@ -268,6 +268,8 @@ class DisplayVariableDialog extends React.Component {
         copilotAssignment: selectedVariable.copilotAssignment,
         modeRequirement: selectedVariable.modeRequirement,
         modeldoc_id: selectedVariable.modeldoc_id,
+        modeldoc_vectorSize: selectedVariable.modeldoc_vectorSize,
+        modeldoc_index: selectedVariable.modeldoc_index,
         modelComponent: selectedVariable.modelComponent,
         dialogCloseListener: handleDialogClose,
       });
@@ -325,9 +327,9 @@ class DisplayVariableDialog extends React.Component {
       let modelVariableVectorSize = modelVariableIndex > -1 ? modelVariables[modelVariableIndex].dimensions.reduce( (a, b) => a * b, 1) : 1;
 
       self.setState({
-        dataType: this.state.dataType,   // TBD querry variable array from store and not querry DB
+        dataType: result[0].dataType[0],   // TBD querry variable array from store and not querry DB
         modeldoc_id: event.target.value,         // not from db; this is a local state
-        modeldoc_vectorSize: modelVariableVectorSize
+        modeldoc_vectorSize: modelVariableVectorSize         
       });
     }
     else {

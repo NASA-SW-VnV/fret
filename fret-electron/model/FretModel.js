@@ -914,6 +914,8 @@ export default class FretModel {
     var lustreVariables = args[12]
     var copilotVariables = args[13]
     var moduleName = args[14]
+    var modeldoc_vectorSize = args[15]
+    var modeldoc_index = args[16]
 
     var completedVariable = false;
 
@@ -951,6 +953,8 @@ export default class FretModel {
         modeRequirement: modeRequirement,
         modeldoc: false,
         modeldoc_id: modeldoc_id,
+        modeldoc_vectorSize: modeldoc_vectorSize,
+        modeldoc_index: modeldoc_index,
         modelComponent: modelComponent,
         completed: completedVariable
       }).catch(function (err) {
