@@ -275,21 +275,17 @@ function getObligationInfo(result, outputVariables, component){
             property.fretish = doc.fulltext;
             //TODO: remove HTLM-tags from ptExpanded
             property.ptLTL = doc.semantics.ptExpanded.replace(/<b>/g, "").replace(/<i>/g, "").replace(/<\/b>/g, "").replace(/<\/i>/g, "");
-            let obligationsSMV = xform.generateFLIPObligations({[property.reqid]: property.ptLTL});
-            // let counter = 0;
-            for (const obl of obligationsSMV) {
+            let obligationsLustre = xform.generateFLIPObligations({[property.reqid]: property.ptLTL}, 'cocospec');
+            for (const obl of obligationsLustre) {
               let [formula, condition, obligation] = obl;
-              let obligationLustre = cocospecSemantics.createCoCoSpecCode(obligation);
               let obligationProperty = {}
               obligationProperty.allInput = false;
-              obligationProperty.value = obligationLustre;
-              // obligationProperty.reqid = doc.reqid + counter;
+              obligationProperty.value = obligation;
               obligationProperty.reqid = doc.reqid +'_'+condition;
               obligationProperty.fullText = "Req text: " + doc.fulltext;
               obligationProperty.fretish = doc.fulltext;
-              obligationProperty.ptLTL = obligationLustre;
+              obligationProperty.ptLTL = obligation;
               properties.push(obligationProperty);
-              // counter++;
             }
             outputVariables.forEach(function(variable){
             if (property.value.includes(variable)){

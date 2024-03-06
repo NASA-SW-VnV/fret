@@ -44,7 +44,7 @@ module.exports = {
   LTLtoAST,
   ASTtoLTL,
   ASTtoCoCo,
-  abstractArithExprsInAST,
+  abstractArithExprsAndNonMonotonicOpsInAST,
   concretizeArithExprsInAST
 }
 
@@ -210,7 +210,7 @@ function ASTtoCoCo(ast) {
 
 //This function replaces arithmetic expression trees in a AST with atomic propositions.
 //It is currently used in the generation of FLIP trap formulas/obligations.
-function abstractArithExprsInAST(ast) {
+function abstractArithExprsAndNonMonotonicOpsInAST(ast) {
 	let abstractions = {}
     var result = []
     if (isArray(ast)) {        
@@ -218,22 +218,22 @@ function abstractArithExprsInAST(ast) {
 			//Timed operators
 			let head = ast[0];
 			if (prefix[head[0]]) {
-				let abstractSubAST = abstractArithExprsInAST(ast[1]);
+				let abstractSubAST = abstractArithExprsAndNonMonotonicOpsInAST(ast[1]);
 				abstractions = abstractSubAST.abstractions;
 				result = [head, abstractSubAST.result];
 			} else {
-				let abstractedSubAST_1 = abstractArithExprsInAST(ast[1]);
-				let abstractedSubAST_2 = abstractArithExprsInAST(ast[2]);
+				let abstractedSubAST_1 = abstractArithExprsAndNonMonotonicOpsInAST(ast[1]);
+				let abstractedSubAST_2 = abstractArithExprsAndNonMonotonicOpsInAST(ast[2]);
 				abstractions = {...abstractedSubAST_1.abstractions,...abstractedSubAST_2.abstractions}
 				result = [head, abstractedSubAST_1.result, abstractedSubAST_2.result];
 			}
 		} else if (prefix[ast[0]]) {
 			if (ast[0] === 'Negate') {
-				let abstractedSubAST = ast[0]+'_'+abstractArithExprsInAST(ast[1]).result
+				let abstractedSubAST = ast[0]+'_'+abstractArithExprsAndNonMonotonicOpsInAST(ast[1]).result
 				abstractions[abstractedSubAST] = ast;
 				result = abstractedSubAST
 			} else {
-				let abstractSubAST = abstractArithExprsInAST(ast[1]);
+				let abstractSubAST = abstractArithExprsAndNonMonotonicOpsInAST(ast[1]);
 				abstractions = abstractSubAST.abstractions
 				result = [ast[0], abstractSubAST.result]
 			}
@@ -251,13 +251,15 @@ function abstractArithExprsInAST(ast) {
 				case 'Equal':
 				case 'GreaterThan':
 				case 'GreaterThanOrEqual':
-					let abstractedSubAST = abstractArithExprsInAST(ast[1]).result+'_'+ast[0]+'_'+abstractArithExprsInAST(ast[2]).result
+				case 'Equiv':
+				case 'xor':
+					let abstractedSubAST = abstractArithExprsAndNonMonotonicOpsInAST(ast[1]).result+'_'+ast[0]+'_'+abstractArithExprsAndNonMonotonicOpsInAST(ast[2]).result
 					abstractions[abstractedSubAST] = ast;            
 					result = abstractedSubAST;
 					break;
 				default:
-					let abstractedSubAST_1 = abstractArithExprsInAST(ast[1]);
-					let abstractedSubAST_2 = abstractArithExprsInAST(ast[2]);
+					let abstractedSubAST_1 = abstractArithExprsAndNonMonotonicOpsInAST(ast[1]);
+					let abstractedSubAST_2 = abstractArithExprsAndNonMonotonicOpsInAST(ast[2]);
 					abstractions = {...abstractedSubAST_1.abstractions,...abstractedSubAST_2.abstractions}
 					result = [ast[0], abstractedSubAST_1.result, abstractedSubAST_2.result]
 			}
@@ -268,7 +270,7 @@ function abstractArithExprsInAST(ast) {
     } else if (isVar(ast) || isAtom(ast)) {	
 		abstractions = {}		
 		result = ast;
-	} else console.log("abstractArithExprsInAST doesn't know the type of: " + ast);
+	} else console.log("abstractArithExprsAndNonMonotonicOpsInAST doesn't know the type of: " + ast);
     return { result, abstractions };
 }
 

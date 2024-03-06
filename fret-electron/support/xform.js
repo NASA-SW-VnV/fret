@@ -807,7 +807,7 @@ function testObl(v,formula) {
 
 //For each input LTL formula:
 //1. Retrieve AST from formula
-//2. Replace arithmetic expressions with atomic propositions (abstractArithExprsInAST)
+//2. Replace arithmetic expressions with atomic propositions (abstractArithExprsAndNonMonotonicOpsInAST)
 //3. Linearize AST (linearizeFormulaAST)
 //4. Transform AST to Negation Normal Form (doNegNormalization)
 //5. For each condition:
@@ -815,12 +815,12 @@ function testObl(v,formula) {
 //      5.2 De-Linearize trap formula's AST (delinearizeFormulaAST)
 //      5.3 Re-introduce arithmetic expressions that were abstracted in step 2 (concretizeArithExprsInAST)
 //      5.4 Negate trap formula AST
-//      5.5 Transform AST to LTL (ATtoLTL)
-function generateFLIPObligations(formulas) {
+//      5.5 Transform AST to LTL or CoCoSpec (ASTtoLTL, ASTtoCoCo)
+function generateFLIPObligations(formulas, format) {
     let allObligations = []
     for (const formula in formulas) {    
         let formulaAST = astsem.LTLtoAST(formulas[formula]);        
-        let { result, abstractions } = astsem.abstractArithExprsInAST(formulaAST);
+        let { result, abstractions } = astsem.abstractArithExprsAndNonMonotonicOpsInAST(formulaAST);
         let abstractedFormulaAST = result;        
         let vars = getVars(abstractedFormulaAST);
         let conditions = []
@@ -833,14 +833,18 @@ function generateFLIPObligations(formulas) {
             }
         }
 
-        let linFormulaAST = linearizeFormulaAST(vars, abstractedFormulaAST)        
+        let linFormulaAST = linearizeFormulaAST(vars, abstractedFormulaAST)
         let negNormalAST = doNegNormalization(linFormulaAST);        
         for (const c of conditions) {
             let trapFormulaAST = doFlips(['flip', c, negNormalAST])
-            let delinTrapFormulaAST = delinearizeFormulaAST(conditionsToVars, trapFormulaAST);
+            let delinTrapFormulaAST = delinearizeFormulaAST(conditionsToVars, trapFormulaAST);            
             let concreteTrapFormulaAST = astsem.concretizeArithExprsInAST(delinTrapFormulaAST, abstractions);
             let negateTrapFormulaAST = ['Not', concreteTrapFormulaAST];
-            allObligations.push([formula, c, astsem.ASTtoLTL(negateTrapFormulaAST)])
+            if (format === 'cocospec') {
+                allObligations.push([formula, c, astsem.ASTtoCoCo(negateTrapFormulaAST)])                
+            } else {
+                allObligations.push([formula, c, astsem.ASTtoLTL(negateTrapFormulaAST)])
+            }
         }    
     }
     return allObligations;
