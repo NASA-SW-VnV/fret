@@ -57,7 +57,7 @@ module.exports = Object.freeze({
   fullCondition : /*['regular'],//*/ ['null', 'regular', 'noTrigger'/*, 'only'*/].sort(),
   fullTiming : /*['within'],//*/['always','null','immediately','eventually', 'never', 'for','within','after','until','before','next','finally'].sort(),
   fullResponse : ['satisfaction'],//*/['satisfaction','action','order','not_order'].sort(),
-  fullProbability : /*['null'],//*/['null', 'bound'/*, 'query'*/].sort(),
+  fullProbability : /*['null'],//*/['almostsure', 'bound'/*, 'query'*/].sort(),
 
   // We want to test with Bamboo only the combinations of keys for which semantics has been defined and tested -- to get more meaningful test results
   testScope : ['null', 'in', 'onlyAfter', 'after', 'onlyBefore', 'before', 'onlyIn', 'notin'].sort(),
