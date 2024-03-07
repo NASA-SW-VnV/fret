@@ -35,7 +35,7 @@ const constants = require('../app/parser/Constants');
 const utilities = require(fretSupportPath + 'utilities')
 
 
-const BaseForm = [ // negate,timing,condition
+const Response = [ // negate,timing,condition
   ['false,immediately,-', immediately('RES')],
   ['true,immediately,-', notImmediately('RES')],
   ['false,finally,-', Finally('RES')], // "finally" is a Javascript keyword but Finally isn't.
@@ -134,3 +134,36 @@ function notWithin(property, duration) {
  function notBeforeTiming(property,stopcond) {
      return untilTiming(negate(property),stopcond);
  }
+
+ export.getProbabilisticFormalization = (key, negate, bound) => {
+
+ let response = utilities.matchingBase([negate,key[3],key[1]], Response);
+ if (response == 'no_match')
+   return constants.undefined_semantics;
+let baseform ;
+  if (key[2].includes('almostsure')) {
+    baseform = parenthesize('P >= 1 [' + response +']');
+  }
+  else if (key[2].includes('bound')) {
+    baseform = parenthesize('P ' + bound+ ' [' + response +']');
+  }
+  let generalForm;
+  if (key[1].includes('null')){
+    generalForm = baseform;
+  }
+  else {
+    let trigger, jointEvent, conditioningEvent, ftpForm;
+    if (key[1].includes('notrigger')){
+      trigger = 'COND';
+      jointEvent = conjunction('COND',response);
+      conditioningEvent = 'COND';
+      tpForm = 'true';
+    } else if (key[1].includes('regular')){
+      trigger = conjunction(negation('COND'), 'X COND');
+    }
+  }
+
+
+
+
+  }
