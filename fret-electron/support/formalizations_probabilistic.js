@@ -157,9 +157,12 @@ let baseform ;
       trigger = 'COND';
       jointEvent = conjunction('COND',response);
       conditioningEvent = 'COND';
-      tpForm = 'true';
+      ftpForm = 'true';
     } else if (key[1].includes('regular')){
       trigger = conjunction(negation('COND'), 'X COND');
+      jointEvent = 'X '+ parenthesize(conjunction('COND',response));
+      conditioningEvent = 'X COND';
+      ftpForm = parenthesize(implication('COND', baseform));
     }
   }
 
