@@ -16,6 +16,12 @@ let
 Z = X or (Y and (false -> pre Z));
 tel
 
+--Y triggered X
+node T(X,Y: bool) returns(Z:bool);
+let
+Z = (X and (Y or (true -> pre Z)));
+tel
+
 --Once
 node O(X:bool) returns (Y:bool);
 let
@@ -56,6 +62,12 @@ tel
 node SIT( L: int;  R: int; X: bool; Y: bool) returns (Z: bool);
 let
   Z = SI(X, Y) and OT(L, R, X);
+tel
+
+-- Timed Triggered: general case
+node TT( L: int;  R: int; X: bool; Y: bool)  returns (Z: bool);
+let
+  Z = T(X, Y) or HT(L, R, X);
 tel
 
 -- Pre for integers, with an initial value at FTP
