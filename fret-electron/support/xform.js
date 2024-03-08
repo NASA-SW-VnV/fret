@@ -34,6 +34,7 @@
 const astsem = require('./LTLParser/LTLASTSemantics');
 const utils = require('./utils');
 const constants = require ('../app/parser/Constants');
+const { negate } = require('./utilities');
 
 module.exports = {
     optimizePT,
@@ -840,8 +841,11 @@ function generateFLIPObligations(formulas, format) {
             let delinTrapFormulaAST = delinearizeFormulaAST(conditionsToVars, trapFormulaAST);            
             let concreteTrapFormulaAST = astsem.concretizeArithExprsInAST(delinTrapFormulaAST, abstractions);
             let negateTrapFormulaAST = ['Not', concreteTrapFormulaAST];
+            let negNormalTrapFormulaAST = doNegNormalization(negateTrapFormulaAST);
             if (format === 'cocospec') {
-                allObligations.push([formula, c, astsem.ASTtoCoCo(negateTrapFormulaAST)])                
+                //Optimize past-time formula since we know it's a CoCoSpec export.                
+                let optimizedTrapFormulaAST = optimizePT(negNormalTrapFormulaAST);
+                allObligations.push([formula, c, astsem.ASTtoCoCo(optimizedTrapFormulaAST)])                
             } else {
                 allObligations.push([formula, c, astsem.ASTtoLTL(negateTrapFormulaAST)])
             }
