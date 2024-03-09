@@ -954,7 +954,7 @@ export default class FretModel {
         modeldoc: false,
         modeldoc_id: modeldoc_id,
         modeldoc_vectorSize: modeldoc_vectorSize,
-        modeldoc_index: modeldoc_index,
+        modeldoc_index: Number(modeldoc_index),
         modelComponent: modelComponent,
         completed: completedVariable
       }).catch(function (err) {
