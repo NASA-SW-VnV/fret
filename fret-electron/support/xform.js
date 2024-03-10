@@ -608,7 +608,7 @@ let negNormalizationRules = [
   ['!(__p | __q)', trueFn, '!__p & !__q'],
   ['!(__p & __q)', trueFn, '!__p | !__q'],
   ['__p -> __q', trueFn, '!__p | __q'],
-  ['__p = __q', trueFn, '(__p -> __q) & (__q -> __p)'],
+  ['__p <-> __q', trueFn, '(__p -> __q) & (__q -> __p)'],
   ['! X __p', trueFn, 'X ! __p'],
   ['!(__p U __q)', trueFn, '!__p V !__q'],
   ['!(__p V __q)', trueFn, '!__p U !__q'],
