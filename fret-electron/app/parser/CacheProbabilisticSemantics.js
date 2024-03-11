@@ -35,6 +35,7 @@ const SemanticsGenerator = require(fretParserPath + 'SemanticsGenerator').Semant
 const semanticsGenerator = new SemanticsGenerator();
 const constants = require(fretParserPath + 'Constants');
 const utilities = require('../../support/utilities');
+const formalizations = require('../../support/formalizations_probabilistic');
 
 var ProductIterable = require('product-iterable');
 var fs = require('fs');
@@ -64,8 +65,8 @@ var product = new ProductIterable(...Object.values(fieldRanges));
 // We initialize our semantics
 var FRETSemantics = utilities.createKeyStructObj(Object.values(fieldRanges), semanticsObjUndefined);
 
-createProbabilisticSemantics(product, {sem:'infinite'},{pctl:'pctl'});
-}
+createProbabilisticSemantics(product);
+
 
 // finally create json file with semantics
 var semanticsJSONname = 'probabilisticSemantics.json';
@@ -75,5 +76,21 @@ fs.writeFile(semanticsJSONname, JSON.stringify(FRETSemantics,undefined,2), funct
      }
 });
 
-function createProbabilisticSemantics(product,options,properties) {
+function createProbabilisticSemantics(product) {
+
+  var keyIterator = product[Symbol.iterator]();
+  var iterator = keyIterator.next();
+
+  while (!iterator.done) {
+      var key = iterator.value.toString()
+      //console.log(key)
+      //console.log(iterator.value[0]+"\n"); // condition
+      //console.log(iterator.value[1]+"\n"); // probability
+      //console.log(iterator.value[2]+"\n"); // timing
+      //console.log(iterator.value[3]+"\n"); // response
+      FRETSemantics[key].pctl= formalizations.getProbabilisticFormalization(iterator.value[0], iterator.value[1], iterator.value[2], iterator.value[3], bound = 'bound');
+      //console.log("=====================");
+     iterator = keyIterator.next();
+    }
+
 }

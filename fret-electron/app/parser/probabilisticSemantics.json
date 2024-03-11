@@ -1,0 +1,218 @@
+{
+  "noTrigger,almostsure,after,satisfaction": {
+    "pctl": "(P >= 1 [ G(((COND)implies((P = ? [((COND) and ((((G[<=BOUND] ((not (RES))))) and ((F[<=BOUNDPLUSONE] (RES))))))])/(P = ? [COND])bound)))] & true)"
+  },
+  "noTrigger,almostsure,always,satisfaction": {
+    "pctl": "(P >= 1 [ G(((COND)implies((P = ? [((COND) and ((G RES)))])/(P = ? [COND])bound)))] & true)"
+  },
+  "noTrigger,almostsure,before,satisfaction": {
+    "pctl": "(P >= 1 [ G(((COND)implies((P = ? [((COND) and ((RES R (not (STOPCOND)))))])/(P = ? [COND])bound)))] & true)"
+  },
+  "noTrigger,almostsure,eventually,satisfaction": {
+    "pctl": "(P >= 1 [ G(((COND)implies((P = ? [((COND) and ((F RES)))])/(P = ? [COND])bound)))] & true)"
+  },
+  "noTrigger,almostsure,finally,satisfaction": {
+    "pctl": "(P >= 1 [ G(((COND)implies((P = ? [((COND) and ((G true)))])/(P = ? [COND])bound)))] & true)"
+  },
+  "noTrigger,almostsure,for,satisfaction": {
+    "pctl": "(P >= 1 [ G(((COND)implies((P = ? [((COND) and ((G[<=BOUND] (RES))))])/(P = ? [COND])bound)))] & true)"
+  },
+  "noTrigger,almostsure,immediately,satisfaction": {
+    "pctl": "(P >= 1 [ G(((COND)implies((P = ? [((COND) and (RES))])/(P = ? [COND])bound)))] & true)"
+  },
+  "noTrigger,almostsure,never,satisfaction": {
+    "pctl": "(P >= 1 [ G(((COND)implies((P = ? [((COND) and ((G (not (RES)))))])/(P = ? [COND])bound)))] & true)"
+  },
+  "noTrigger,almostsure,next,satisfaction": {
+    "pctl": "(P >= 1 [ G(((COND)implies((P = ? [((COND) and ((X (RES))))])/(P = ? [COND])bound)))] & true)"
+  },
+  "noTrigger,almostsure,null,satisfaction": {
+    "pctl": "(P >= 1 [ G(((COND)implies((P = ? [((COND) and ((F RES)))])/(P = ? [COND])bound)))] & true)"
+  },
+  "noTrigger,almostsure,until,satisfaction": {
+    "pctl": "(P >= 1 [ G(((COND)implies((P = ? [((COND) and ((STOPCOND R ((RES) or (STOPCOND)))))])/(P = ? [COND])bound)))] & true)"
+  },
+  "noTrigger,almostsure,within,satisfaction": {
+    "pctl": "(P >= 1 [ G(((COND)implies((P = ? [((COND) and ((F[<=BOUND] (RES))))])/(P = ? [COND])bound)))] & true)"
+  },
+  "noTrigger,bound,after,satisfaction": {
+    "pctl": "(P >= 1 [ G(((COND)implies((P = ? [((COND) and ((((G[<=BOUND] ((not (RES))))) and ((F[<=BOUNDPLUSONE] (RES))))))])/(P = ? [COND])bound)))] & true)"
+  },
+  "noTrigger,bound,always,satisfaction": {
+    "pctl": "(P >= 1 [ G(((COND)implies((P = ? [((COND) and ((G RES)))])/(P = ? [COND])bound)))] & true)"
+  },
+  "noTrigger,bound,before,satisfaction": {
+    "pctl": "(P >= 1 [ G(((COND)implies((P = ? [((COND) and ((RES R (not (STOPCOND)))))])/(P = ? [COND])bound)))] & true)"
+  },
+  "noTrigger,bound,eventually,satisfaction": {
+    "pctl": "(P >= 1 [ G(((COND)implies((P = ? [((COND) and ((F RES)))])/(P = ? [COND])bound)))] & true)"
+  },
+  "noTrigger,bound,finally,satisfaction": {
+    "pctl": "(P >= 1 [ G(((COND)implies((P = ? [((COND) and ((G true)))])/(P = ? [COND])bound)))] & true)"
+  },
+  "noTrigger,bound,for,satisfaction": {
+    "pctl": "(P >= 1 [ G(((COND)implies((P = ? [((COND) and ((G[<=BOUND] (RES))))])/(P = ? [COND])bound)))] & true)"
+  },
+  "noTrigger,bound,immediately,satisfaction": {
+    "pctl": "(P >= 1 [ G(((COND)implies((P = ? [((COND) and (RES))])/(P = ? [COND])bound)))] & true)"
+  },
+  "noTrigger,bound,never,satisfaction": {
+    "pctl": "(P >= 1 [ G(((COND)implies((P = ? [((COND) and ((G (not (RES)))))])/(P = ? [COND])bound)))] & true)"
+  },
+  "noTrigger,bound,next,satisfaction": {
+    "pctl": "(P >= 1 [ G(((COND)implies((P = ? [((COND) and ((X (RES))))])/(P = ? [COND])bound)))] & true)"
+  },
+  "noTrigger,bound,null,satisfaction": {
+    "pctl": "(P >= 1 [ G(((COND)implies((P = ? [((COND) and ((F RES)))])/(P = ? [COND])bound)))] & true)"
+  },
+  "noTrigger,bound,until,satisfaction": {
+    "pctl": "(P >= 1 [ G(((COND)implies((P = ? [((COND) and ((STOPCOND R ((RES) or (STOPCOND)))))])/(P = ? [COND])bound)))] & true)"
+  },
+  "noTrigger,bound,within,satisfaction": {
+    "pctl": "(P >= 1 [ G(((COND)implies((P = ? [((COND) and ((F[<=BOUND] (RES))))])/(P = ? [COND])bound)))] & true)"
+  },
+  "null,almostsure,after,satisfaction": {
+    "pctl": "(P >= 1 [(((G[<=BOUND] ((not (RES))))) and ((F[<=BOUNDPLUSONE] (RES))))])"
+  },
+  "null,almostsure,always,satisfaction": {
+    "pctl": "(P >= 1 [(G RES)])"
+  },
+  "null,almostsure,before,satisfaction": {
+    "pctl": "(P >= 1 [(RES R (not (STOPCOND)))])"
+  },
+  "null,almostsure,eventually,satisfaction": {
+    "pctl": "(P >= 1 [(F RES)])"
+  },
+  "null,almostsure,finally,satisfaction": {
+    "pctl": "(P >= 1 [(G true)])"
+  },
+  "null,almostsure,for,satisfaction": {
+    "pctl": "(P >= 1 [(G[<=BOUND] (RES))])"
+  },
+  "null,almostsure,immediately,satisfaction": {
+    "pctl": "(P >= 1 [RES])"
+  },
+  "null,almostsure,never,satisfaction": {
+    "pctl": "(P >= 1 [(G (not (RES)))])"
+  },
+  "null,almostsure,next,satisfaction": {
+    "pctl": "(P >= 1 [(X (RES))])"
+  },
+  "null,almostsure,null,satisfaction": {
+    "pctl": "(P >= 1 [(F RES)])"
+  },
+  "null,almostsure,until,satisfaction": {
+    "pctl": "(P >= 1 [(STOPCOND R ((RES) or (STOPCOND)))])"
+  },
+  "null,almostsure,within,satisfaction": {
+    "pctl": "(P >= 1 [(F[<=BOUND] (RES))])"
+  },
+  "null,bound,after,satisfaction": {
+    "pctl": "(P bound [(((G[<=BOUND] ((not (RES))))) and ((F[<=BOUNDPLUSONE] (RES))))])"
+  },
+  "null,bound,always,satisfaction": {
+    "pctl": "(P bound [(G RES)])"
+  },
+  "null,bound,before,satisfaction": {
+    "pctl": "(P bound [(RES R (not (STOPCOND)))])"
+  },
+  "null,bound,eventually,satisfaction": {
+    "pctl": "(P bound [(F RES)])"
+  },
+  "null,bound,finally,satisfaction": {
+    "pctl": "(P bound [(G true)])"
+  },
+  "null,bound,for,satisfaction": {
+    "pctl": "(P bound [(G[<=BOUND] (RES))])"
+  },
+  "null,bound,immediately,satisfaction": {
+    "pctl": "(P bound [RES])"
+  },
+  "null,bound,never,satisfaction": {
+    "pctl": "(P bound [(G (not (RES)))])"
+  },
+  "null,bound,next,satisfaction": {
+    "pctl": "(P bound [(X (RES))])"
+  },
+  "null,bound,null,satisfaction": {
+    "pctl": "(P bound [(F RES)])"
+  },
+  "null,bound,until,satisfaction": {
+    "pctl": "(P bound [(STOPCOND R ((RES) or (STOPCOND)))])"
+  },
+  "null,bound,within,satisfaction": {
+    "pctl": "(P bound [(F[<=BOUND] (RES))])"
+  },
+  "regular,almostsure,after,satisfaction": {
+    "pctl": "(P >= 1 [ G((((((not (COND))) and (X COND)))implies((P = ? [X (((COND) and ((((G[<=BOUND] ((not (RES))))) and ((F[<=BOUNDPLUSONE] (RES)))))))])/(P = ? [X COND])bound)))] & (((COND)implies((P >= 1 [(((G[<=BOUND] ((not (RES))))) and ((F[<=BOUNDPLUSONE] (RES))))])))))"
+  },
+  "regular,almostsure,always,satisfaction": {
+    "pctl": "(P >= 1 [ G((((((not (COND))) and (X COND)))implies((P = ? [X (((COND) and ((G RES))))])/(P = ? [X COND])bound)))] & (((COND)implies((P >= 1 [(G RES)])))))"
+  },
+  "regular,almostsure,before,satisfaction": {
+    "pctl": "(P >= 1 [ G((((((not (COND))) and (X COND)))implies((P = ? [X (((COND) and ((RES R (not (STOPCOND))))))])/(P = ? [X COND])bound)))] & (((COND)implies((P >= 1 [(RES R (not (STOPCOND)))])))))"
+  },
+  "regular,almostsure,eventually,satisfaction": {
+    "pctl": "(P >= 1 [ G((((((not (COND))) and (X COND)))implies((P = ? [X (((COND) and ((F RES))))])/(P = ? [X COND])bound)))] & (((COND)implies((P >= 1 [(F RES)])))))"
+  },
+  "regular,almostsure,finally,satisfaction": {
+    "pctl": "(P >= 1 [ G((((((not (COND))) and (X COND)))implies((P = ? [X (((COND) and ((G true))))])/(P = ? [X COND])bound)))] & (((COND)implies((P >= 1 [(G true)])))))"
+  },
+  "regular,almostsure,for,satisfaction": {
+    "pctl": "(P >= 1 [ G((((((not (COND))) and (X COND)))implies((P = ? [X (((COND) and ((G[<=BOUND] (RES)))))])/(P = ? [X COND])bound)))] & (((COND)implies((P >= 1 [(G[<=BOUND] (RES))])))))"
+  },
+  "regular,almostsure,immediately,satisfaction": {
+    "pctl": "(P >= 1 [ G((((((not (COND))) and (X COND)))implies((P = ? [X (((COND) and (RES)))])/(P = ? [X COND])bound)))] & (((COND)implies((P >= 1 [RES])))))"
+  },
+  "regular,almostsure,never,satisfaction": {
+    "pctl": "(P >= 1 [ G((((((not (COND))) and (X COND)))implies((P = ? [X (((COND) and ((G (not (RES))))))])/(P = ? [X COND])bound)))] & (((COND)implies((P >= 1 [(G (not (RES)))])))))"
+  },
+  "regular,almostsure,next,satisfaction": {
+    "pctl": "(P >= 1 [ G((((((not (COND))) and (X COND)))implies((P = ? [X (((COND) and ((X (RES)))))])/(P = ? [X COND])bound)))] & (((COND)implies((P >= 1 [(X (RES))])))))"
+  },
+  "regular,almostsure,null,satisfaction": {
+    "pctl": "(P >= 1 [ G((((((not (COND))) and (X COND)))implies((P = ? [X (((COND) and ((F RES))))])/(P = ? [X COND])bound)))] & (((COND)implies((P >= 1 [(F RES)])))))"
+  },
+  "regular,almostsure,until,satisfaction": {
+    "pctl": "(P >= 1 [ G((((((not (COND))) and (X COND)))implies((P = ? [X (((COND) and ((STOPCOND R ((RES) or (STOPCOND))))))])/(P = ? [X COND])bound)))] & (((COND)implies((P >= 1 [(STOPCOND R ((RES) or (STOPCOND)))])))))"
+  },
+  "regular,almostsure,within,satisfaction": {
+    "pctl": "(P >= 1 [ G((((((not (COND))) and (X COND)))implies((P = ? [X (((COND) and ((F[<=BOUND] (RES)))))])/(P = ? [X COND])bound)))] & (((COND)implies((P >= 1 [(F[<=BOUND] (RES))])))))"
+  },
+  "regular,bound,after,satisfaction": {
+    "pctl": "(P >= 1 [ G((((((not (COND))) and (X COND)))implies((P = ? [X (((COND) and ((((G[<=BOUND] ((not (RES))))) and ((F[<=BOUNDPLUSONE] (RES)))))))])/(P = ? [X COND])bound)))] & (((COND)implies((P bound [(((G[<=BOUND] ((not (RES))))) and ((F[<=BOUNDPLUSONE] (RES))))])))))"
+  },
+  "regular,bound,always,satisfaction": {
+    "pctl": "(P >= 1 [ G((((((not (COND))) and (X COND)))implies((P = ? [X (((COND) and ((G RES))))])/(P = ? [X COND])bound)))] & (((COND)implies((P bound [(G RES)])))))"
+  },
+  "regular,bound,before,satisfaction": {
+    "pctl": "(P >= 1 [ G((((((not (COND))) and (X COND)))implies((P = ? [X (((COND) and ((RES R (not (STOPCOND))))))])/(P = ? [X COND])bound)))] & (((COND)implies((P bound [(RES R (not (STOPCOND)))])))))"
+  },
+  "regular,bound,eventually,satisfaction": {
+    "pctl": "(P >= 1 [ G((((((not (COND))) and (X COND)))implies((P = ? [X (((COND) and ((F RES))))])/(P = ? [X COND])bound)))] & (((COND)implies((P bound [(F RES)])))))"
+  },
+  "regular,bound,finally,satisfaction": {
+    "pctl": "(P >= 1 [ G((((((not (COND))) and (X COND)))implies((P = ? [X (((COND) and ((G true))))])/(P = ? [X COND])bound)))] & (((COND)implies((P bound [(G true)])))))"
+  },
+  "regular,bound,for,satisfaction": {
+    "pctl": "(P >= 1 [ G((((((not (COND))) and (X COND)))implies((P = ? [X (((COND) and ((G[<=BOUND] (RES)))))])/(P = ? [X COND])bound)))] & (((COND)implies((P bound [(G[<=BOUND] (RES))])))))"
+  },
+  "regular,bound,immediately,satisfaction": {
+    "pctl": "(P >= 1 [ G((((((not (COND))) and (X COND)))implies((P = ? [X (((COND) and (RES)))])/(P = ? [X COND])bound)))] & (((COND)implies((P bound [RES])))))"
+  },
+  "regular,bound,never,satisfaction": {
+    "pctl": "(P >= 1 [ G((((((not (COND))) and (X COND)))implies((P = ? [X (((COND) and ((G (not (RES))))))])/(P = ? [X COND])bound)))] & (((COND)implies((P bound [(G (not (RES)))])))))"
+  },
+  "regular,bound,next,satisfaction": {
+    "pctl": "(P >= 1 [ G((((((not (COND))) and (X COND)))implies((P = ? [X (((COND) and ((X (RES)))))])/(P = ? [X COND])bound)))] & (((COND)implies((P bound [(X (RES))])))))"
+  },
+  "regular,bound,null,satisfaction": {
+    "pctl": "(P >= 1 [ G((((((not (COND))) and (X COND)))implies((P = ? [X (((COND) and ((F RES))))])/(P = ? [X COND])bound)))] & (((COND)implies((P bound [(F RES)])))))"
+  },
+  "regular,bound,until,satisfaction": {
+    "pctl": "(P >= 1 [ G((((((not (COND))) and (X COND)))implies((P = ? [X (((COND) and ((STOPCOND R ((RES) or (STOPCOND))))))])/(P = ? [X COND])bound)))] & (((COND)implies((P bound [(STOPCOND R ((RES) or (STOPCOND)))])))))"
+  },
+  "regular,bound,within,satisfaction": {
+    "pctl": "(P >= 1 [ G((((((not (COND))) and (X COND)))implies((P = ? [X (((COND) and ((F[<=BOUND] (RES)))))])/(P = ? [X COND])bound)))] & (((COND)implies((P bound [(F[<=BOUND] (RES))])))))"
+  }
+}

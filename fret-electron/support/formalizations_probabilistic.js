@@ -37,26 +37,16 @@ const utilities = require(fretSupportPath + 'utilities')
 
 const Response = [ // negate,timing,condition
   ['false,immediately,-', immediately('RES')],
-  ['true,immediately,-', notImmediately('RES')],
   ['false,finally,-', Finally('RES')], // "finally" is a Javascript keyword but Finally isn't.
-  ['true,finally,-', notFinally('RES')],
   ['false,next,-', next('RES')],
-  ['true,next,-', notNext('RES')],
   ['false,eventually|null,-', eventually('RES')],
-  ['true,eventually|null,-', notEventually('RES')],
   ['false,always,-', always('RES')],
-  ['true,always,-', notAlways('RES')],
   ['false,never,-', never('RES')],
-  ['true,never,-', notNever('RES')],
   ['false,within,-', within('RES','BOUND')],
-  ['true,within,-', notWithin('RES','BOUND')],
   ['false,for,-', throughout('RES','BOUND')],
-  ['true,for,-', notThroughout('RES','BOUND')],
-  //TODO: I have removed after for now
+  ['false,after,-', afterTiming('RES','BOUND')],
   ['false,until,-', untilTiming('RES','STOPCOND')],
-  ['true,until,-', notUntilTiming('RES','STOPCOND')],
-  ['false,before,-', beforeTiming('RES','STOPCOND')], // scope also named before
-  ['true,before,-', notBeforeTiming('RES','STOPCOND')]
+  ['false,before,-', beforeTiming('RES','STOPCOND')] // scope also named before
 ]
 
 function negate(str) {return utilities.negate(str)}
@@ -69,104 +59,81 @@ function immediately(property) {
       return property
     }
 
-function notImmediately(property) {
-        return(immediately(negate(property)))
+function Finally(property) {
+  return always('true');
 }
 
 function next(property) {
             return parenthesize(`X (${property})`);
           }
 
-function notNext(property) {
-                return next(negate(property))
-}
-
 function always(property) {
             return parenthesize(`G ${property}`);
           }
-
-function notAlways(property) {
-            return eventually(negate(property))
-            }
 
 function eventually(property) {
         return parenthesize(`F ${property}`);
   }
 
-function notEventually(property) {
-                  return always(negate(property))
-          }
 
 function never(property) { // always not
-                  return always(negate(property)) }
-
-function notNever(property) { // eventually
-                  return eventually(property) }
+        return always(negate(property)) }
 
 function throughout(property, duration) {
-  return parenthesize(`G[<=${duration}] (${property})`);
+        return parenthesize(`G[<=${duration}] (${property})`);
   }
 
-function notThroughout(property, duration) {
-  return (within(negate(property), duration))
- }
+function afterTiming(property, duration) {
+      return conjunction(throughout(negate(property), duration),
+                 within(property, duration + 'PLUSONE'))
+  }
 
- function within(property, duration) {
-       return parenthesize(`F[<=${duration}] (${property})`);
+function within(property, duration) {
+        return parenthesize(`F[<=${duration}] (${property})`);
      }
 
-function notWithin(property, duration) {
-   return throughout(negate(property), duration)
- }
-
- function untilTiming(property,stopcond) {
+function untilTiming(property,stopcond) {
    return parenthesize(`${stopcond} R ${disjunction(property,stopcond)}`);
- }
-
- function notUntilTiming(property,stopcond) {
-     return beforeTiming(negate(property),stopcond)
  }
 
  function beforeTiming(property,stopcond) {
      return parenthesize(`${property} R ${negate(stopcond)}`);
  }
 
- function notBeforeTiming(property,stopcond) {
-     return untilTiming(negate(property),stopcond);
- }
 
- export.getProbabilisticFormalization = (key, negate, bound) => {
-
- let response = utilities.matchingBase([negate,key[3],key[1]], Response);
- if (response == 'no_match')
+ exports.getProbabilisticFormalization = (condition, probability, timing, response, bound) => {
+ let response_alg = utilities.matchingBase(['false',timing,condition], Response);
+ if (response_alg == 'no_match')
    return constants.undefined_semantics;
+
 let baseform ;
-  if (key[2].includes('almostsure')) {
-    baseform = parenthesize('P >= 1 [' + response +']');
+  if (probability.includes('almostsure')) {
+    baseform = parenthesize('P >= 1 [' + response_alg +']');
   }
-  else if (key[2].includes('bound')) {
-    baseform = parenthesize('P ' + bound+ ' [' + response +']');
+  else if (probability.includes('bound')) {
+    baseform = parenthesize('P ' + bound + ' [' + response_alg +']');
   }
+  //console.log('baseform ' + baseform)
   let generalForm;
-  if (key[1].includes('null')){
+  if (condition.includes('null')){
     generalForm = baseform;
   }
   else {
     let trigger, jointEvent, conditioningEvent, ftpForm;
-    if (key[1].includes('notrigger')){
+    if (condition.includes('noTrigger')){
       trigger = 'COND';
-      jointEvent = conjunction('COND',response);
+      jointEvent = conjunction('COND',response_alg);
       conditioningEvent = 'COND';
       ftpForm = 'true';
-    } else if (key[1].includes('regular')){
-      trigger = conjunction(negation('COND'), 'X COND');
-      jointEvent = 'X '+ parenthesize(conjunction('COND',response));
+    } else if (condition.includes('regular')){
+      trigger = conjunction(negate('COND'), 'X COND');
+      jointEvent = 'X '+ parenthesize(conjunction('COND',response_alg));
       conditioningEvent = 'X COND';
       ftpForm = parenthesize(implication('COND', baseform));
     }
+    let conditionalForm = parenthesize('P = ? [' + jointEvent + ']') + '/' + parenthesize('P = ? [' + conditioningEvent + ']') + bound ;
+     generalForm = parenthesize('P >= 1 [ G' + parenthesize(implication(trigger, conditionalForm))+'] & ' + ftpForm );
   }
-
-
-
-
+  //console.log('generalForm ' + generalForm)
+  return generalForm;
   }
