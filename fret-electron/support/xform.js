@@ -1038,12 +1038,6 @@ console.log(transformFutureTemporalConditions("persists(3,!p) & occurs(4,p)"))
 console.log(transformFutureTemporalConditionsNoBounds("persists(3,!p) & occurs(4,p)"))
 console.log(transformTemporalConditions("m"))
 
-<<<<<<< HEAD
-*/
-
-/*
-=======
->>>>>>> e2bcf76f (persists/ed(m,n,p) and pattern variables allowed in P formulas)
 console.log(transform('persisted(3,temp>100)',expandTemporalConditions));
 console.log(transform('(G ((!(((! m) & (! FALSE) & X m) & (!FALSE))) | ((((! m) & (! FALSE) & X m) & (!FALSE)) & (X ((((m & (! FALSE)) & X (! m)) | FALSE) V post))))) & (m -> ((m & X !m) V post))',optimizeFT))
 console.log(JSON.stringify(trueFn))

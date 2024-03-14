@@ -271,7 +271,7 @@ function extractConjuncts(term) {
       else cjs.push(term)
     }
     else if (isAtom(term)) cjs.push(term)
-    else console.log('!! extractConjuncts: what type is ' + JSON.strinngify(term))
+    else console.log('!! extractConjuncts: what type is ' + JSON.stringify(term))
   }
   aux(term)
   return cjs
@@ -294,6 +294,29 @@ function isTemporalFormula(form) {
   else console.log('isTemporalFormula: unhandled case')
 }
 
+function nonTemporalSubst(repl,pat,form) {
+  let changed = false;
+  function aux(repl,pat,form) {
+    if (isAtom(form)) {
+      if (sameAST(pat, form)) {
+	changed = true;
+	return repl
+      }
+    else return form
+    } else if (isArray(form)) {
+        if (isTemporalOp(form[0])) return form
+        else if (sameAST(pat,form)) {
+          changed = true;
+          return repl
+	}
+        else return [form[0]].concat(form.slice(1).map((subform) =>
+						       aux(repl,pat,subform)))
+    } else console.log('nonTemporalSubst says: what type is ' +
+		     JSON.stringify(form))
+  }
+  return [aux(repl,pat,form),changed]
+}
+
 function simplifyImplication(form) {
   if (isArray(form) && form[0] === 'Implies') {
     const antecedents = extractConjuncts(form[1])
@@ -302,8 +325,14 @@ function simplifyImplication(form) {
     let consequent = form[2]
     let unchanged = true;
     for (const a of nonTempAnts) {
-      const c = nonTemporalSubst(true,a,consequent)
-      if (!sameAST(c,consequent)) {
+      let pat = a;
+      let repl = true;
+      if (isArray(a) & a[0] === 'Not') {
+	pat = a[1];
+	repl = false;
+      }
+      const [c,changed] = nonTemporalSubst(repl,pat,consequent)
+      if (changed) {
 	unchanged = false;
 	consequent = c;
       }
@@ -478,11 +507,14 @@ module.exports = {
     string_nonempty_intersection
 }
 
-/*
+
 
 function testImplSimp(ast) {
   console.log('\nimplEx: ' + JSON.stringify(ast) + '\nAfter simplification: ' + JSON.stringify(simplifyImplication(ast)))
 }
+
+
+/*
 
 let implEx = ["Implies","r",["GreaterThan",["Divide",["PQuery",["And","r",["Nxt",["And","r","p"]]]],["PQuery","r"]],"0.1"]]
 
@@ -492,9 +524,9 @@ testImplSimp(implEx)
 
 testImplSimp(implEx2)
 
+
+
 let probEx = ["And",["PBool","GreaterThanOrEqual","1",["Globally",["Implies",["And",["Not","r"],["Nxt","r"]],["GreaterThan",["Divide",["PQuery",["And",["Not","r"],["Nxt",["And","r","p"]]]],["PQuery",["Nxt","r"]]],"0.1"]]]],["Implies","r",["PBool","GreaterThan","0.9","p"]]]
-
-
 
 let ex1 = ['P','>=',1,['And',['Not','p'],['And',['Nxt', ['Not','p']],['Nxt',['Nxt','q']]]]]
 console.log('ex1: ' + JSON.stringify(ex1) + ' with !p replaced: ' +
