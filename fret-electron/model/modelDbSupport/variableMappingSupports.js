@@ -184,11 +184,18 @@ async function  synchModelVariablesAndComponents(componentModel,selectedProject)
         variable.variable_name = utils.replace_special_chars(doc.variable_name);
         //Signal path in Simulink model
         variable.variable_path = componentMapping.model_path+'/'+doc.modeldoc_id;
+        if (doc.busObject && doc.busObjects) {
+          variable.busDimensions = doc.busObjects.filter(bo => bo.Name === doc.busObject)[0].Elements.length;
+        }
+        if (doc.busElementIndex >= 0) {          
+          //Javascript array indices start at 0, MATLAB starts at 1
+          variable.busElementIndex = doc.busElementIndex+1;
+        }
         if (doc.modeldoc_vectorSize) {
           variable.dimensions = [1, doc.modeldoc_vectorSize];
         }
-        if (doc.modeldoc_index) {
-          variable.index = doc.modeldoc_index;
+        if (doc.modeldoc_vectorIndex) {
+          variable.index = doc.modeldoc_vectorIndex;
         }
         (doc.idType === 'Input') ? componentInputs.push(variable) : componentOutputs.push(variable);
       }

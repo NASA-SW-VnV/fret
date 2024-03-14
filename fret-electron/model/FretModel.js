@@ -896,26 +896,9 @@ export default class FretModel {
   }
 
   async updateVariable_noNewVariables(evt, args){
-    // console.log('FretModel updateVariable_checkNewVariables: ', args)
 
-    var project = args[0]
-    var component_name = args[1]
-    var variables = args[2]
-    var idType = args[3]
-    var modeldoc_id = args[4]
-    var dataType = args[5]
-    var modeldbid = args[6]
-
-    var description = args[7]
-    var assignment = args[8]
-    var copilotAssignment = args[9]
-    var modeRequirement = args[10]
-    var modelComponent = args[11]
-    var lustreVariables = args[12]
-    var copilotVariables = args[13]
-    var moduleName = args[14]
-    var modeldoc_vectorSize = args[15]
-    var modeldoc_index = args[16]
+    var [project, component_name, variables, idType, modeldoc_id, dataType, modeldbid, description, assignment, 
+          copilotAssignment, modeRequirement, modelComponent, lustreVariables, copilotVariables, moduleName, busObjects, selectedBusObject, selectedBusElement, modeldoc_vectorSize, modeldoc_vectorIndex] = args;
 
     var completedVariable = false;
 
@@ -953,8 +936,11 @@ export default class FretModel {
         modeRequirement: modeRequirement,
         modeldoc: false,
         modeldoc_id: modeldoc_id,
+        busObjects: busObjects,
+        busObject: selectedBusObject,
+        busElementIndex: selectedBusElement,        
         modeldoc_vectorSize: modeldoc_vectorSize,
-        modeldoc_index: Number(modeldoc_index),
+        modeldoc_vectorIndex: Number(modeldoc_vectorIndex),
         modelComponent: modelComponent,
         completed: completedVariable
       }).catch(function (err) {
@@ -1016,6 +1002,7 @@ export default class FretModel {
           d.project = selectedProject;
           d.fretComponent = selectedComponent;
           d.modeldoc = true;
+          d.busObjects = data[0].Declarations.BusObjects
         })
         await modelDB.bulkDocs(data);
       } catch (err) {

@@ -33,26 +33,18 @@
 import React, {Fragment} from 'react';
 import {withStyles} from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
-import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import EditIcon from '@material-ui/icons/Edit';
-import DeleteIcon from '@material-ui/icons/Delete';
 import TextField from '@material-ui/core/TextField';
-import Divider from '@material-ui/core/Divider';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
-import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 
-import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import NewVariablesDialog from './NewVariablesDialog';
@@ -104,8 +96,16 @@ class DisplayVariableDialog extends React.Component {
     moduleName: '',
     modeRequirement: '',
     modeldoc_id: '',            // not needed for Redux store
-    modeldoc_vectorSize: 1,
-    modeldoc_index: 1,
+
+    //Vector signal state variables for the vector's size and the variable's index in the vector
+    modeldoc_vectorSize: undefined,
+    modeldoc_vectorIndex: undefined,
+
+    //Bus signal state variables for the Bus Object ({Name, Dimensions, Elements}) and the variable's index in the bus elements
+    busObjects: {},
+    selectedBusObject: undefined,
+    selectedBusElement: undefined,        
+
     modelComponent: '',
     errorsCopilot: '',
     errorsLustre: '',
@@ -157,7 +157,6 @@ class DisplayVariableDialog extends React.Component {
       });
     } else if (name === 'copilotAssignment') {
       resultCopilot = copilotExprSemantics.compileCopilotExpr(event.target.value);
-      //console.log("result Copilot "+resultCopilot.variables)
       this.setState({
         [name]: event.target.value,
         errorsCopilot: resultCopilot.parseErrors ? 'Parse Errors: ' + resultCopilot.parseErrors : '',
@@ -205,23 +204,21 @@ class DisplayVariableDialog extends React.Component {
   handleUpdate = () => {
     const self = this;
     const { selectedVariable } = this.props;
-    const { description, idType, dataType, assignment, copilotAssignment, modeRequirement, modeldoc_id, modelComponent, lustreVariables, copilotVariables, moduleName, modeldoc_vectorSize, modeldoc_index} = this.state;
+    const { description, idType, dataType, assignment, copilotAssignment, modeRequirement, modeldoc_id, modelComponent, lustreVariables, copilotVariables, moduleName, busObjects, selectedBusObject, selectedBusElement, modeldoc_vectorSize, modeldoc_vectorIndex} = this.state;
     var modeldbid = selectedVariable._id;
-    var completedVariable = false;
-    var newVariables = [];
+
     var variables = lustreVariables.concat(copilotVariables);
 
     var args = [selectedVariable.project,selectedVariable.component_name,variables, idType,
       modeldoc_id, dataType, modeldbid, description,assignment,
       copilotAssignment,modeRequirement,modelComponent,lustreVariables,copilotVariables,
-      moduleName, modeldoc_vectorSize, modeldoc_index]
+      moduleName, busObjects, selectedBusObject, selectedBusElement, modeldoc_vectorSize, modeldoc_vectorIndex]
 
     // context isolation
     ipcRenderer.invoke('updateVariable_checkNewVariables',args).then(async (result) => {
       var noNewVariablesResult = result
       let newVariables = [];
       if (result.openNewVariablesDialog){
-        //console.log('DisplayVariableDialog invoke updateVariable_checkNewVariables',result)
         newVariables= result.newVariables
         self.handleNewVariables(newVariables);
       }
@@ -232,6 +229,7 @@ class DisplayVariableDialog extends React.Component {
         ).catch((err) => {
           console.log(err);
         })
+
         this.props.updateVariable_noNewVariables({ type: 'actions/updateVariable_noNewVariables',
                   // analysis
                   components : noNewVariablesResult.components,
@@ -268,8 +266,11 @@ class DisplayVariableDialog extends React.Component {
         copilotAssignment: selectedVariable.copilotAssignment,
         modeRequirement: selectedVariable.modeRequirement,
         modeldoc_id: selectedVariable.modeldoc_id,
+        selectedBusObject: selectedVariable.busObject,
+        selectedBusElement: selectedVariable.busElementIndex,
+        busObjects: selectedVariable.busObjects,
         modeldoc_vectorSize: selectedVariable.modeldoc_vectorSize,
-        modeldoc_index: selectedVariable.modeldoc_index,
+        modeldoc_vectorIndex: selectedVariable.modeldoc_vectorIndex,
         modelComponent: selectedVariable.modelComponent,
         dialogCloseListener: handleDialogClose,
       });
@@ -286,7 +287,10 @@ class DisplayVariableDialog extends React.Component {
         assignment: '',
         copilotAssignment: '',
         modeRequirement: '',
-        moduleName: ''
+        moduleName: '',
+        selectedBusElement: undefined,
+        modeldoc_vectorSize: undefined,
+        modeldoc_vectorIndex: undefined
       });
     } else {
       self.setState({
@@ -301,38 +305,86 @@ class DisplayVariableDialog extends React.Component {
     }
   }
 
-  handleChange = event => {
-    const self = this;
-    var result = this.props.modelVariables.filter(v => {return v.variable_name === event.target.value});
+  createCustomBusObject = (busDimensions) => {   
+    let numSignals = busDimensions[1];
+    let signalsDimensions = busDimensions.slice(2);
 
-    if (event.target.name === 'modeldoc_id') {
-        // self.setState({
-        //   dataType: result[0].dataType[0],
-        //   modeldoc_id: event.target.value         // not from db; this is a local state
-        // });
-      const { modelVariables } = self.props;      
-      let modelVariableIndex = modelVariables.map(v => v.variable_name).indexOf(event.target.value);
-
-      /*
-      Each Simulink signal is additionally defined by its dimensions. The "dimensions" field is a non-empty array of length >= 2. Vector dimensions are arrays of the form [1, m], Matrix dimensions are arrays of the form [n, m, z, ...]. Each element in these arrays represents the size of the corresponding dimension. Scalars (vectors of length 1) always have a dimension value of [1,1].
-      
-      CoCoSim supports matrix/vector signals, but internally decomposes them into scalars for verification, each scalar corresponding to an element of the original matrix/vector.
-      
-      Given a N-dimensional matrix, N > 2, CoCoSim reshapes it to a 1xM vector, where M is the product of the sizes of the N dimensions. For example a 3x6x7 matrix signal in the original Simulink model ("dimensions" : [3, 6, 7]) is reshaped to a 1x126 vector for the purposes of CoCoSim verification.
-
-      FRET does not have native support for matrices/vectors, so every FRET variable can be viewed as a scalar, conceptually. Currently, mapping FRET variables to elements of Simulink matrices/vectors is possible, by mapping to the reshaped Simulink  signal, then selecting a valid index value. The result is a FRET variable being mapped to an element of the reshaped vector signal.
-
-      */
-
-      let modelVariableVectorSize = modelVariableIndex > -1 ? modelVariables[modelVariableIndex].dimensions.reduce( (a, b) => a * b, 1) : 1;
-
-      self.setState({
-        dataType: result[0].dataType[0],   // TBD querry variable array from store and not querry DB
-        modeldoc_id: event.target.value,         // not from db; this is a local state
-        modeldoc_vectorSize: modelVariableVectorSize         
-      });
+    //Create array [[s<i>d1,s<i>d2]], 1<= i <=numSignals
+    let actualSignalsDimensions = []
+    for (var i=0; i<=numSignals-1;i++) {
+      let dimension1 = signalsDimensions.shift();
+      let dimension2 = signalsDimensions.shift();
+      actualSignalsDimensions.push(dimension1*dimension2);
     }
-    else {
+    let autoBusObject = {Name: 'Custom', Elements: []}
+    for(var i=0; i<=actualSignalsDimensions.length-1;i++) {
+      autoBusObject.Elements.push({variable_name:i+1, dimensions:actualSignalsDimensions[i]});
+    }
+    return [autoBusObject];
+  }
+
+  handleVectorsAndBuses = (event, busObjects, dataType, modelVariableDimensions) => {
+    //Bus signals seem to have their dataType defined as an array of types.
+    //the first dimension of bus signals is negative
+    if (dataType === 'auto' && modelVariableDimensions[0] < 0) {
+      this.setState({
+        modeldoc_id: event.target.value,
+        busObjects: [...this.createCustomBusObject(modelVariableDimensions), ...busObjects],
+        selectedBusObject: '',
+        selectedBusElement: ''
+      })     
+    } else if (busObjects && busObjects.map(b => b.Name).includes(dataType)) {
+      this.setState({
+        modeldoc_id: event.target.value,
+        busObjects: busObjects,
+        selectedBusObject: busObjects.filter(bdt => bdt.Name === dataType)[0].Name,
+        selectedBusElement: ''
+      })
+    } else {
+        /*
+        Each Simulink signal is additionally defined by its dimensions. The "dimensions" field is a non-empty array of length >= 2. Vector dimensions are arrays of the form [1, m], Matrix dimensions are arrays of the form [n, m, z, ...]. Each element in these arrays represents the size of the corresponding dimension. Scalars (vectors of length 1) always have a dimension value of [1,1].
+        
+        CoCoSim supports matrix/vector signals, but internally decomposes them into scalars for verification, each scalar corresponding to an element of the original matrix/vector.
+        
+        Given a N-dimensional matrix, N > 2, CoCoSim reshapes it to a 1xM vector, where M is the product of the sizes of the N dimensions. For example a 3x6x7 matrix signal in the original Simulink model ("dimensions" : [3, 6, 7]) is reshaped to a 1x126 vector for the purposes of CoCoSim verification.
+
+        FRET does not have native support for matrices/vectors, so every FRET variable can be viewed as a scalar, conceptually. Currently, mapping FRET variables to elements of Simulink matrices/vectors is possible, by mapping to the reshaped Simulink  signal, then selecting a valid index value. The result is a FRET variable being mapped to an element of the reshaped vector signal.
+
+        */
+
+        let modelVariableVectorSize = modelVariableDimensions.reduce( (a, b) => a * b, 1);
+        if (modelVariableVectorSize > 1){
+          this.setState({
+            dataType: dataType,
+            modeldoc_id: event.target.value,
+            modeldoc_vectorSize: modelVariableVectorSize,
+            modeldoc_vectorIndex: ''
+          });
+        } else {
+          this.setState({
+            dataType: dataType,
+            modeldoc_id: event.target.value
+          });
+        }
+    }
+  }
+
+  handleChange = event => {    
+    const self = this;
+    const { modelVariables } = self.props;    
+    if (event.target.name === 'modeldoc_id') {      
+      var result = modelVariables.filter(v => {return v.variable_name === event.target.value})[0];
+      let dataType = result.dataType[0];              
+      let modelVariableDimensions = result.dimensions;
+      if (modelVariableDimensions) {
+        this.handleVectorsAndBuses(event, result.busObjects, dataType, modelVariableDimensions);
+      } else {
+        self.setState({
+          dataType: dataType,   // TBD querry variable array from store and not querry DB
+          modeldoc_id: event.target.value,         // not from db; this is a local state
+        });
+      }
+    } else {
       this.setState({
         [event.target.name]: event.target.value
       });
@@ -344,14 +396,88 @@ class DisplayVariableDialog extends React.Component {
     
 		var reg = new RegExp('^([1-9])([0-9]*)$');    
 	    if ((reg.test(event.target.value) && (event.target.value >= 1 && event.target.value <= modeldoc_vectorSize)) || event.target.value === '') {
-	      this.setState({modeldoc_index: event.target.value});
+	      this.setState({modeldoc_vectorIndex: event.target.value});
 	    }
-	}  
+	}
+
+
+  handleBusObjectChange = (event) => {
+    this.setState({
+      selectedBusObject: event.target.value
+    })
+  }
+
+  handleBusElementChange = (event) => {
+    let { busObjects, selectedBusObject } = this.state;
+    
+    //Simulink model information had custom busObjects (Declarations.BusObjects)    
+    let busElements = busObjects.filter(bo => bo.Name === selectedBusObject)[0].Elements
+    let elementDimensions = busElements[event.target.value].dimensions
+    let elementDataType = busElements[event.target.value].dataType
+    if ( elementDimensions > 1) {
+      this.setState({
+        dataType: elementDataType ?? '',
+        selectedBusElement: event.target.value,
+        modeldoc_vectorSize: elementDimensions,
+        modeldoc_vectorIndex: ''  
+      })
+    } else {
+      this.setState({
+        dataType: elementDataType ?? '',
+        selectedBusElement: event.target.value,
+        modeldoc_vectorSize: undefined,
+        modeldoc_vectorIndex: undefined
+      });
+    }
+  }
+
+  getBusObjects = (busObjects) => {
+    return busObjects.map((o, index) => {
+      return(<MenuItem id={"qa_disVar_mi_busObj_"+o.variable_name} key={o.Name} value={o.Name}>{o.Name}</MenuItem>)
+    })
+  }
+
+  getBusElements = (busObject) => {
+      let busElements = busObject.Elements
+      return busElements.map((e, index) => {
+        return(<MenuItem id={"qa_disVar_mi_busObjElem_"+e.variable_name} key ={e.variable_name} value={index}>{e.variable_name}</MenuItem>)
+      })
+  }
+
+  dataTypeField = () => {
+    const { classes, selectedVariable } = this.props;
+
+    return(
+      <FormControl className={classes.formControl}>
+      <InputLabel htmlFor="dataType-simple">Data Type*</InputLabel>
+      <Select id="qa_disVar_sel_dataType"
+              key={selectedVariable}
+              value={this.state.dataType}
+              onChange={this.handleChange}
+              inputProps={{
+                name: 'dataType',
+                id: 'dataType-simple',
+              }}>
+        <MenuItem
+          id="qa_disVar_mi_dataType_None"
+          value=""
+        >
+          <em>None</em>
+        </MenuItem>
+        <MenuItem id="qa_disVar_mi_dataType_boolean" value="boolean" >boolean</MenuItem>
+        <MenuItem id="qa_disVar_mi_dataType_integer" value="integer" >integer</MenuItem>
+        <MenuItem id="qa_disVar_mi_dataType_unsigned_integer" value="unsigned integer" >unsigned integer</MenuItem>
+        <MenuItem id="qa_disVar_mi_dataType_single" value="single">single</MenuItem>
+        <MenuItem id="qa_disVar_mi_dataType_double" value="double">double</MenuItem>
+      </Select>
+    </FormControl>
+    )
+  }
 
   render() {
     const { classes, selectedVariable, modelVariables, open } = this.props;
-    const { idType, errorsLustre, errorsCopilot, checkLustre, checkCoPilot, modeldoc_id, modeldoc_vectorSize } = this.state;
-
+    const { idType, errorsLustre, errorsCopilot, checkLustre, checkCoPilot, modeldoc_id, modeldoc_vectorSize, modeldoc_vectorIndex, selectedBusObject, selectedBusElement, busObjects } = this.state;
+    
     return (
       <div>
         <Dialog
@@ -426,29 +552,7 @@ class DisplayVariableDialog extends React.Component {
               </FormControl>
               {(idType === 'Input' || idType === 'Output') ?
                 (selectedVariable.modelComponent === undefined || selectedVariable.modelComponent === "")  ?
-                  <FormControl className={classes.formControl}>
-                    <InputLabel htmlFor="dataType-simple">Data Type*</InputLabel>
-                    <Select id="qa_disVar_sel_dataType"
-                            key={selectedVariable}
-                            value={this.state.dataType}
-                            onChange={this.handleChange}
-                            inputProps={{
-                              name: 'dataType',
-                              id: 'dataType-simple',
-                            }}>
-                      <MenuItem
-                        id="qa_disVar_mi_dataType_None"
-                        value=""
-                      >
-                        <em>None</em>
-                      </MenuItem>
-                      <MenuItem id="qa_disVar_mi_dataType_boolean" value="boolean" >boolean</MenuItem>
-                      <MenuItem id="qa_disVar_mi_dataType_integer" value="integer" >integer</MenuItem>
-                      <MenuItem id="qa_disVar_mi_dataType_unsigned_integer" value="unsigned integer" >unsigned integer</MenuItem>
-                      <MenuItem id="qa_disVar_mi_dataType_single" value="single">single</MenuItem>
-                      <MenuItem id="qa_disVar_mi_dataType_double" value="double">double</MenuItem>
-                    </Select>
-                  </FormControl>
+                  this.dataTypeField()
                   :
                   (<div>
                     <FormControl className={classes.formControl}>
@@ -462,9 +566,6 @@ class DisplayVariableDialog extends React.Component {
                           name: 'modeldoc_id',
                           id: 'modeldoc_id-simple',
                         }}>
-                        <MenuItem id="qa_disVar_mi_modelVar_none" value="">
-                          <em>None</em>
-                        </MenuItem>
                         {modelVariables.map(v => {
                           if ((this.state.idType === "Input" && v.portType === "Inport") || (this.state.idType === "Output" && v.portType === "Outport")) {
                             return (<MenuItem id={"qa_disVar_mi_modelVar_"+v.variable_name} value={v.variable_name} key={v.variable_name}>{v.variable_name}</MenuItem>)
@@ -473,16 +574,53 @@ class DisplayVariableDialog extends React.Component {
                         })}
                       </Select>
                     </FormControl>
-                    {(modeldoc_id.length > 0 && modeldoc_vectorSize > 1) && 
-                      <TextField
-                        required
-                        className={classes.formControl}
-                        id="qa_disVar_mi_vectorIndex"
-                        label={"Vector Index ( Value in [1," + modeldoc_vectorSize + "] )"}
-                        value={this.state.modeldoc_index}
-                        onChange={this.handleVectorIndexChange}      
-                        InputLabelProps={{ shrink: true }}
-                      />
+                    {(selectedBusObject !== undefined) &&
+                      <FormControl className={classes.formControl}>
+                      <InputLabel htmlFor="busObject-simple">Bus Object*</InputLabel>
+                      <Select
+                        id="qa_disVar_sel_busObject"
+                        key={selectedVariable+'_busObject'}
+                        value={selectedBusObject}
+                        onChange={this.handleBusObjectChange}
+                        inputProps={{
+                          name: 'busObject',
+                          id: 'busObject-simple',
+                        }}>
+                        {this.getBusObjects(busObjects)}
+                      </Select>
+                    </FormControl>                      
+                    }
+                    {((selectedBusObject && selectedBusElement !== undefined)) &&
+                      <FormControl className={classes.formControl}>
+                        <InputLabel htmlFor="busElement-simple">Bus Element*</InputLabel>
+                        <Select
+                          id="qa_disVar_sel_busElement"
+                          key={selectedVariable+'_busElement'}
+                          value={selectedBusElement}
+                          onChange={this.handleBusElementChange}
+                          inputProps={{
+                            name: 'busElement',
+                            id: 'busElement-simple',
+                          }}>
+                          {this.getBusElements(busObjects.filter(bo => bo.Name === selectedBusObject)[0])}
+                        </Select>
+                      </FormControl>
+                    }
+                    {
+                      (modeldoc_id.length > 0 && modeldoc_vectorSize > 1) && 
+                        <TextField
+                          required
+                          className={classes.formControl}
+                          id="qa_disVar_mi_vectorIndex"
+                          label={"Vector Index ( Value in [1," + modeldoc_vectorSize + "] )"}
+                          value={modeldoc_vectorIndex}
+                          onChange={this.handleVectorIndexChange}      
+                          InputLabelProps={{ shrink: true }}
+                        />                      
+                    }
+                    {
+                      selectedBusObject === 'Custom' &&
+                      this.dataTypeField()
                     }
                   </div>) :
                 (idType === 'Function') ?

@@ -1,5 +1,4 @@
 let
-var __FTP: bool = true -> false;
 <%for (i=0; i < internalVariables.length; i++) {%>
 <%var semiColon = assignments[i].endsWith(';') ? '' : ';'%>
 var <%- internalVariables[i].name %>: <%- internalVariables[i].type %> = <%- assignments[i] %><%- semiColon -%><%}%>
