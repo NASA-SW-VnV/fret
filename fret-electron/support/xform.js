@@ -50,7 +50,11 @@ module.exports = {
     transformPastTemporalConditionsNoBounds,
     transformFutureTemporalConditionsNoBounds,
     transformTemporalConditionsNoBounds,
+<<<<<<< HEAD
     generateFLIPObligations
+=======
+    simplifyPrismProp
+>>>>>>> 3a37b0a7 (occurred/occurs(m,n,p), export simplifyPrismProp)
 }
 
 const isArray = utils.isArray;
@@ -163,7 +167,8 @@ function mnIsNumber(sbst) {
 const futureTemporalConditions = [
     ['persists(__n,__p)', nIsNumber ,'((G[<=__n] __p) & (G[<__n] ! $Right$))'],
     ['persists(__m,__n,__p)', mnIsNumber ,'((G[__m,__n] __p) & (G[<__n] ! $Right$))'],
-    ['occurs(__n,__p)', nIsNumber,'(((! $Right$) U __p) & (F[<=__n] __p))'],
+  ['occurs(__n,__p)', nIsNumber,'(((! $Right$) U __p) & (F[<=__n] __p))'],
+  ['occurs(__m,__n,__p)', mnIsNumber,'(!$Right) U[__m,__n] __p'],
     // This commented out version assumes there must be a next occurrence of p
     // ['nextOcc(__p,__q)', trueFn, '(X((!__p & !$Right$) U (__p & __q)))']
     // This version is satisfied if there is no next occurrence of p.
@@ -189,7 +194,8 @@ const pastTemporalConditions = [
   ['persisted(__n,__p)', nIsNumber,'((H[<=__n] __p) & (H[<__n] ! $Left$))'],
   ['persisted(__m,__n,__p)',mnIsNumber,'(H[__m,__n]__p) & (H[<__n] ! $Left$)'],
   ['occurred(__n,__p)', nIsNumber,'(((! $Left$) S __p) & (O[<=__n] __p))'],
-  //['occurred(__min,__max,__p)', minMaxAreNumbers,'( & (O[__min,__max] __p))'],
+  ['occurred(__m,__n,__p)', mnIsNumber,'(! $Left$) S[__m,__n] __p'],
+
   //['prevOcc(__p,__q)', trueFn, '(Z (((! $Left$ & !__p) S __p) => ((! $Left$ & !__p) S (__p & __q))))']
   ['prevOcc(__p,__q)', trueFn, '($Left$ | (Y (((! $Left$ & !__p) S __p) => ((! $Left$ & !__p) S (__p & __q)))))']
 ]
@@ -198,13 +204,17 @@ const temporalConditions = pastTemporalConditions.concat(futureTemporalCondition
 
 const futureTemporalConditionsNoBounds = [
     ['persists(__n,__p)',nIsNumber,'(G[<=__n] __p)'],
+    ['persists(__m,__n,__p)', mnIsNumber,'G[__m,__n] __p'],
     ['occurs(__n,__p)',nIsNumber,'(F[<=__n] __p)'],
+    ['occurs(__m,__n,__p)',mnIsNumber,'(F[__m,__n] __p)'],
     ['nextOcc(__p,__q)', trueFn, '(X((!__p) U (__p & __q)))']
     ]
 
 const pastTemporalConditionsNoBounds = [
     ['persisted(__n,__p)',nIsNumber,'(H[<=__n] __p)'],
+    ['persisted(__m,__n,__p)',mnIsNumber,'(H[__m,__n] __p)'],
     ['occurred(__n,__p)',nIsNumber,'(O[<=__n] __p)'],
+    ['occurred(__m,__n,__p)',mnIsNumber,'(O[__m,__n] __p)'],
     ['prevOcc(__p,__q)', trueFn, '(Y ((!__p) S (__p & __q)))']
 ]
 
@@ -978,7 +988,6 @@ console.log(transform('((H ((((FALSE & (Z (! FALSE))) & (Z (H (! FALSE)))) & (Y 
 
 */
 
-<<<<<<< HEAD
 /*
 
 let xx = 'persists(3,p)'
@@ -1001,18 +1010,10 @@ testapply(x3)
 /*
 console.log(transform('((((((! FALSE) & (! LAST)) & (X FALSE)) | LAST) V (((((! FALSE) & (! LAST)) & (X FALSE)) | LAST) -> r)) | FALSE)',optimizeFT))
 
-=======
->>>>>>> e2bcf76f (persists/ed(m,n,p) and pattern variables allowed in P formulas)
 
-let form = 'P>=1[!p & X(p) => P=?[!p & X(p) & X(q)]/P=?[!p & X(p)] >= 0.8]'
-let form2 = 'P=?[p] >= 0.8'
-
-let form3 = 'P>=1[p => P=?[p & X(q)]/P=?[p] >= 0.8]'
-
-let form4 = 'P>=1[(G[0,3](p)) => P=?[(G[0,3](p)) & X(q)]/P=?[(G[0,3](p))] >= 0.8]'
-
+/*
 function testProb(form) {
-  console.log('Formula = ' + form)
+  console.log('\nFormula = ' + form)
   const parsedForm = prismASTsem.PrismPropToAST(form)
   console.log('AST = ' + JSON.stringify(parsedForm))
   const parsedFormOpt = optimizeProb(parsedForm)
@@ -1023,12 +1024,18 @@ function testProb(form) {
   console.log('simplifyPrismProp = ' + s)
 }
 
-//testProb(form)
-//testProb(form2)
-testProb(form3)
-//testProb(form4)
+let form = 'P>=1[!p & X(p) => P=?[!p & X(p) & X(q)]/P=?[!p & X(p)] >= 0.8]'
+let form2 = 'P=?[p] >= 0.8'
 
-/*
+let form3 = 'P>=1[p => P=?[p & X(q)]/P=?[p] >= 0.8]'
+
+let form4 = 'P>=1[(G[0,3](p)) => P=?[(G[0,3](p)) & X(q)]/P=?[(G[0,3](p))] >= 0.8]'
+
+testProb(form)
+testProb(form2)
+testProb(form3)
+testProb(form4)
+
 console.log(optimizeFT(astsem.LTLtoAST('FALSE | ite(safe,green,red)')))
 console.log(transformTemporalConditions("persisted(3,!p) & occurred(4,p)"))
 console.log(transformTemporalConditionsNoBounds("persisted(3,!p) & occurred(4,p)"))
