@@ -474,24 +474,49 @@ class SlateEditor2 extends React.Component {
         this.handleDropdownSelection();
       }
     } else if (isKeyHotkey('arrowup', event)) {
-      /* Arrow up is supressed */
-      event.preventDefault();
-      let newIndex = -1;
-      this.setState(prevState => {
-        const { menuIndex, menuOptions, variables } = prevState;
-        let newIndex;
-        if (menuOptions && menuOptions.length > 0) {
-          newIndex = menuIndex <= 0 ? menuOptions.length - 1 : menuIndex - 1;
-        } else if(variables.length > 0) {
-          newIndex = menuIndex <= 0 ? variables.length - 1 : menuIndex - 1;
-        }
-        return { menuIndex: newIndex }
 
-      }, () => {
-        if (newIndex >= 0) this.scrollToOption(newIndex)
-      })
+      const numLeaves = this.props.editor.children[0].children.length; // if numLeaves > 1, using template
+      if(numLeaves > 1){
+        event.preventDefault();
+        let newIndex = -1;
+        this.setState(prevState => {
+          const { menuIndex, menuOptions, variables } = prevState;
+          let newIndex;
+          if (menuOptions && menuOptions.length > 0) {
+            newIndex = menuIndex <= 0 ? menuOptions.length - 1 : menuIndex - 1;
+          } else if(variables.length > 0) {
+            newIndex = menuIndex <= 0 ? variables.length - 1 : menuIndex - 1;
+          }
+          return { menuIndex: newIndex }
+
+        }, () => {
+          if (newIndex >= 0) this.scrollToOption(newIndex)
+        })
+      } else {
+        // non templated, allow default behavior
+      }
+
     } else if (isKeyHotkey('arrowdown', event)) {
-      /* Arrow down is supressed */
+      const numLeaves = this.props.editor.children[0].children.length; // if numLeaves > 1, using template
+      if(numLeaves > 1){
+        event.preventDefault();
+        let newIndex = -1;
+        this.setState(prevState => {
+          const { menuIndex, menuOptions, variables } = prevState;
+          let newIndex;
+          if (menuOptions && menuOptions.length > 0) {
+            newIndex = menuIndex >= menuOptions.length - 1 ? 0 : menuIndex + 1;
+          } else if(variables.length > 0) {
+            newIndex = menuIndex <= 0 ? variables.length - 1 : menuIndex + 1;
+          }
+          return { menuIndex: newIndex }
+        }, () => {
+          if (newIndex >= 0) this.scrollToOption(newIndex)
+        })
+      } else {
+        // non templated, allow default behavior
+      }
+      /* Arrow down is supressed
       event.preventDefault();
       let newIndex = -1;
       this.setState(prevState => {
@@ -506,6 +531,7 @@ class SlateEditor2 extends React.Component {
       }, () => {
         if (newIndex >= 0) this.scrollToOption(newIndex)
       })
+*/
     } else if (isKeyHotkey('shift+arrowup', event)) {
 
     } else if (isKeyHotkey('shift+arrowdown', event)) {
