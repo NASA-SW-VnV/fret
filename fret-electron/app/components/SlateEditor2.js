@@ -533,9 +533,15 @@ class SlateEditor2 extends React.Component {
       })
 */
     } else if (isKeyHotkey('shift+arrowup', event)) {
-
+      const numLeaves = this.props.editor.children[0].children.length; // if numLeaves > 1, using template
+      if(numLeaves > 1){
+        event.preventDefault();
+      }
     } else if (isKeyHotkey('shift+arrowdown', event)) {
-
+      const numLeaves = this.props.editor.children[0].children.length; // if numLeaves > 1, using template
+      if(numLeaves > 1){
+        event.preventDefault();
+      }
     } else if (isKeyHotkey('arrowleft', event)) {
       /* Arrow left moves the cursor, this is working fine */
     } else if (isKeyHotkey('arrowright', event)) {
@@ -761,6 +767,57 @@ class SlateEditor2 extends React.Component {
       }
     } else if(isKeyHotkey('home', event)) {
       //console.log('hot key home or end: allowing defaultBehavior')
+
+      const textLength = Editor.string(this.props.editor, []).length;
+      const numLeaves = this.props.editor.children[0].children.length; // if numLeaves > 1, using template
+      var origRange = this.props.editor.selection;
+      const {anchor} = this.props.editor.selection;
+      var origAnchor = anchor;
+      const origPath = origRange.focus.path;
+      const origOffset = origRange.focus.offset;
+      var origDomRange = ReactEditor.toDOMRange(this.props.editor, origRange);
+      var origRect = origDomRange.getBoundingClientRect();  // bottom right corner is focus bottom
+      const origTop = origRect.top;
+
+      var editorStartPoint = Editor.start(this.props.editor, [])
+      var editorEndPoint = Editor.end(this.props.editor, [])
+      var domRange = ReactEditor.toDOMRange(this.props.editor, {anchor: editorStartPoint, focus: editorEndPoint});
+      var editorRect = domRange.getBoundingClientRect();
+      const editorTop = editorRect.top;
+      const topDifference = 5.
+
+      if(numLeaves > 1){
+        // if not buble, allow defaultBehavior
+        var finalEndPoint = editorStartPoint;
+        if(this.state.selectedField){
+          if((origTop - editorTop) > topDifference ){
+            // not on top line
+            // current focus is not on first line, need to figure out start of current line
+            // Using a template.
+            // 1. start with node where current focus is and walk up stream to determine first node
+            // 2. if origNode, start with orig offset, if not, start with 0 to determine first offset
+            var lastPathIndex2 = origPath[1]
+            // look for last path
+            for (let i = lastPathIndex2-1; i > 0; i--) {
+              var curNodeStart = Editor.start(this.props.editor, [0,i])
+              var curNodeEnd = Editor.end(this.props.editor, [0,i])
+              const curNodeRange = {anchor: curNodeStart, focus: curNodeEnd}
+              var curDomRange = ReactEditor.toDOMRange(this.props.editor, curNodeRange);
+              var curRect = curDomRange.getBoundingClientRect();
+              var curRectTop = curRect.top;
+              const nextLineCriterion = 10.
+              if((origTop - curRectTop)>nextLineCriterion){
+                break;
+              }
+              lastPathIndex2 = i;
+            }
+            finalEndPoint = {path: [0,lastPathIndex2], offset: 0};
+          }
+          Transforms.select(this.props.editor,  {anchor: finalEndPoint, focus: finalEndPoint, reverse: false})
+        }
+      } else {
+        // allow defaultBehavior
+      }
     } else if(isKeyHotkey('end', event)) {
       //console.log('hot key home or end: allowing defaultBehavior')
 
@@ -1326,11 +1383,9 @@ function mapStateToProps(state) {
   };
 }
 
-
 const mapDispatchToProps = {
   formalizeRequirement,
 };
-
 
 export default withStyles(styles)(connect(mapStateToProps,mapDispatchToProps)(SlateEditor2));
 
