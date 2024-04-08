@@ -39,6 +39,8 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { withStyles } from '@material-ui/core/styles';
+import { readAndParseCSVFile, readAndParseJSONFile } from '../utils/utilityFunctions';
+
 
 const {ipcRenderer} = require('electron');
 
@@ -61,6 +63,7 @@ class MissingExternalImportDialog extends React.Component {
       selectBrowse: 'BROWSE',  // BROWSE, NO IMPORT, EXIT
       reason: props.reason
     };
+    this.extImportFileInput = React.createRef();
   }
 
   handleClose = () => {
@@ -82,11 +85,19 @@ class MissingExternalImportDialog extends React.Component {
     });
   };
 
-  handleBrowse = () => {
+  handleBrowse = async (event) => {
     //console.log('MissingExternalImportDialog handleBrowse: BROWSE selected')
-    this.setState({selectBrowse: 'BROWSE'})
-    this.props.browseExtImportFile()
-    this.handleClose();
+    try {
+      const file = event.target.files[0]
+      const replaceString = false;
+      const data = await readAndParseJSONFile(file, replaceString);
+      this.setState({selectBrowse: 'BROWSE'})
+      this.props.browseExtImportFile(data)
+      this.handleClose();
+    } catch (error) {
+      this.setState({missingExternalImportDialogOpen: true})
+      console.log('Error reading import file: ', error)
+    }
   };
 
   handleNoImport = () => {
@@ -129,9 +140,23 @@ class MissingExternalImportDialog extends React.Component {
             <Button id="qa_missExtImp_btn_noImport" onClick={this.handleNoImport} color="primary" >
               No import
             </Button>
-            <Button id="qa_missExtImp_btn_browse" onClick={this.handleBrowse} color="primary" >
+            <Button id="qa_missExtImp_btn_browse" onClick={() => {
+                    this.extImportFileInput.current.click()}} color="primary" >
               Browse
             </Button>
+
+            <input
+              id="qa_missExtImp_btn_browse_input"
+              ref={this.extImportFileInput}
+              type="file"
+              onClick={(event)=> {
+                event.target.value = null
+              }}
+              onChange={this.handleBrowse}
+              style={{ display: 'none' }}
+              accept=".csv, .json"
+            />
+
           </DialogActions>
         </Dialog>
       </div>

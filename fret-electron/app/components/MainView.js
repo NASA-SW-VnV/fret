@@ -91,10 +91,12 @@ import {
   mapVariables, formalizeRequirement,
 } from '../reducers/allActionsSlice';
 import ImportedVariablesWarningDialog from "./ImportedVariablesWarningDialog";
+import csv from 'csv';
+import { readAndParseCSVFile, readAndParseJSONFile } from '../utils/utilityFunctions';
+import Error from '@material-ui/icons/Error';
+
 const FretSemantics = require('../parser/FretSemantics');
 
-const app =require('@electron/remote').app
-const dialog =require('@electron/remote').dialog
 
 const fs = require('fs');
 
@@ -231,6 +233,7 @@ class MainView extends React.Component {
 
   constructor(props) {
     super(props);
+    this.requirementsFileInput = React.createRef();
 
   }
 
@@ -279,21 +282,35 @@ class MainView extends React.Component {
 
   }
 
-  handleImport = () => {
+  handleImport = async (event) => {
+    //console.log('handleImport')
+    try {
+      const file = event.target.files[0]
+      const fileExtension = file.name.split('.').pop().toLowerCase();
+      // check file extension
+      if('csv' === fileExtension) {
+        const importedReqs = await readAndParseCSVFile(file);
+        this.setState({
+          csvFields: Object.keys(importedReqs[0]),
+          importedReqs: importedReqs
+        })
+        this.openRequirementImportDialog()
+      } else if('json' === fileExtension) {
+        const replaceString = false;
+        const data = await readAndParseJSONFile(file, replaceString);
+        this.handleJSONImport(data)
+      } else {
+        console.log('We do not support yet this file import')
+      }
+    } catch (error) {
+      console.log('Error reading import file: ', error)
+    }
 
-    var homeDir = app.getPath('home');
-    var filepaths = dialog.showOpenDialogSync({
-      defaultPath : homeDir,
-      title : 'Import Requirements',
-      buttonLabel : 'Import',
-      filters: [
-        { name: "Documents",
-          extensions: ['json', 'csv']
-        }
-      ],
-      properties: ['openFile']});
+  }
 
-    var argList = [this.props.listOfProjects, filepaths];
+  handleJSONImport = (data) => {
+
+    var argList = [this.props.listOfProjects, data];
     ipcRenderer.invoke('importRequirements',argList).then((result) => {
 
       if (result.requirements){
@@ -318,9 +335,6 @@ class MainView extends React.Component {
         })
       }
       this.setState({warningDialogOpen: !!result.areThereIgnoredVariables})
-      if (result.fileExtension){
-        this.handleCSVImport(result.csvFields, result.importedReqs)
-      }
 
     }).catch((err) => {
       console.log(err);
@@ -479,13 +493,6 @@ class MainView extends React.Component {
     })
   }
 
-  handleCSVImport = (csvFields, importedReqs) => {
-      this.setState({
-        csvFields: csvFields,
-        importedReqs: importedReqs
-      })
-    this.openRequirementImportDialog()
-  }
 
   openRequirementImportDialog = () => {
     this.setState({
@@ -566,56 +573,21 @@ class MainView extends React.Component {
     }
   }
 
-  handleBrowseExtImpFile = () => {
-      // call file browser
+  handleBrowseExtImpFile = (data) => {
       const self = this;
-      var homeDir = app.getPath('home');
-      //console.log('calling browser in closeMissingExternalImportDialog');
-      var filepaths2 = dialog.showOpenDialogSync({
-        defaultPath : homeDir,
-        title : 'Import Requirements',
-        buttonLabel : 'Import',
-        filters: [
-          { name: "Documents",
-            extensions: ['json', 'csv']
-          }
-        ],
-        properties: ['openFile']});
+      try {
+        self.setState({
+          externalRequirement : data.requirement,
+          externalVariables : data.variables,
+          missingExternalImportDialogOpen: false
+        })
+        self.handleCreateDialogOpen();
 
-        //console.log('handleBrowseExtImpFile-filepaths2: ', filepaths2);
+      } catch (error) {
+          self.setState({missingExternalImportDialogOpen: true})
+          console.log(err)
+      }
 
-        if (filepaths2 && filepaths2.length > 0) {
-          var data;
-          const filepath2 = filepaths2[0];
-          try {
-            fs.readFile(filepath2, function (err,buffer2) {
-              if (err) {
-                self.setState({missingExternalImportDialogOpen: true})
-                throw err;
-              }
-              try {
-                data = JSON.parse(buffer2);
-                //console.log('data: ', data)
-                self.setState({
-                  externalRequirement : data.requirement,
-                  externalVariables : data.variables,
-                  missingExternalImportDialogOpen: false
-                })
-                self.handleCreateDialogOpen();
-              } catch (e){
-                //console.log('inside  catch in handleBrowseExtImpFile')
-                self.setState({missingExternalImportDialogOpen: true})
-                console.log(e)
-              }
-            });
-          } catch (error) {
-            //console.log('outside catch in handleBrowseExtImpFile')
-            self.setState({missingExternalImportDialogOpen: true})
-            console.log(err)
-          }
-        }
-
-    //if(!self.state.missingExternalImportDialogOpen){self.handleCreateDialogOpen();}
   }
 
   render() {
@@ -743,11 +715,24 @@ class MainView extends React.Component {
               <Divider />
                 <List>
                 <div>
-                  <ListItem id="qa_db_li_import" button onClick={() => this.handleImport()}>
+                  <ListItem id="qa_db_li_import" button onClick={() => {
+                    this.requirementsFileInput.current.click()
+                  }}>
                     <ListItemIcon>
                       <ImportIcon />
                     </ListItemIcon>
                     <ListItemText primary="Import" />
+                    <input
+                      id="qa_db_li_import_input"
+                      ref={this.requirementsFileInput}
+                      type="file"
+                      onClick={(event)=> {
+                        event.target.value = null
+                      }}
+                      onChange={this.handleImport}
+                      style={{ display: 'none' }}
+                      accept=".csv, .json"
+                    />
                   </ListItem>
                   <ListItem id="qa_db_li_export" button onClick={() => this.openExportRequirementsDialog()}>
                     <ListItemIcon>

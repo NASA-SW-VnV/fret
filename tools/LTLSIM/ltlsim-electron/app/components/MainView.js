@@ -73,7 +73,7 @@ if (process.env.LTL_TESTCASE){
 console.log(base + ":" + id + ":" + tense );
 
 	process.env.LTL_FORMULAID=id;
-	process.env.LTL_FORMULAFILE= 
+	process.env.LTL_FORMULAFILE=
 		process.env.LTL_PATH +process.env.LTL_TESTCASE + ".txt";
 	process.env.LTL_TRACEFILE=
 		process.env.LTL_PATH +"/"+base + "_trace_" + tense + ".txt";
@@ -105,7 +105,7 @@ console.log(process.env.LTL_FORMULAFILE)
 if (process.env.LTL_FORMULAFILE){
 	if (fs.existsSync(process.env.LTL_FORMULAFILE) == true){
 		console.log("loading formula file ="+process.env.LTL_FORMULAFILE);
-		LTLSimController.addFormulaFromFile(model, 
+		LTLSimController.addFormulaFromFile(model,
 			formulaID, process.env.LTL_FORMULAFILE);
 		}
 	else {
@@ -116,14 +116,14 @@ if (process.env.LTL_FORMULAFILE){
 	}
 else {
 	console.log("LTL_FORMULAFILE Variable not set");
-	LTLSimController.addFormula(model, formulaID, 
+	LTLSimController.addFormula(model, formulaID,
 		"(G[0, 4] hello) -> (F[0,4] world)");
 	}
-		
+
 if (process.env.LTL_TRACEFILE){
 	if (fs.existsSync(process.env.LTL_TRACEFILE) == true){
 		console.log("loading trace file ="+process.env.LTL_TRACEFILE);
-		LTLSimController.addTrace(model, process.env.LTL_TRACEFILE);
+		LTLSimController.addTrace(model, process.env.LTL_TRACEFILE);  // KT TBD fix this to pass data
 		}
 	else {
 		console.error("LTL-sim: trace file "+
@@ -209,7 +209,7 @@ function ArrowIcon(props) {
         </SvgIcon>
     )
 }
-  
+
 class MainView extends Component {
     constructor(props) {
         super(props);
@@ -226,10 +226,10 @@ class MainView extends Component {
                         dataKey: "",
                         settings: settings,
                         formulaDialogOpen: false
-                     }; 
+                     };
 
         let status = ltlsim.check();
-        /* Save to a member variable, not to the state, to have 
+        /* Save to a member variable, not to the state, to have
         this independent from react updates */
         this.LTLSimStatus = status;
 
@@ -255,7 +255,7 @@ class MainView extends Component {
         }
     }
 
-    handleFormulaDialogApply(dialogState) { 
+    handleFormulaDialogApply(dialogState) {
         this.setState((prevState) => {
             const { label, expression, oldLabel } = dialogState;
             let {model, settings, visibleFormulas, visibleSubformulas, selectedFormula} = prevState;
@@ -269,7 +269,7 @@ class MainView extends Component {
                     }
                 }
             } else if (LTLSimController.getFormulaKeys(model).indexOf(oldLabel) !== -1) {
-                
+
                 /* Change the formula label */
                 LTLSimController.setFormulaLabel(model, oldLabel, label);
                 let formula = LTLSimController.getFormula(model, label);
@@ -355,7 +355,7 @@ class MainView extends Component {
             formulaDialogOpen: true
         })
     }
-    
+
     handleFormulaDialogCancel() {
         this.setState({
             formulaDialogOpen: false
@@ -379,7 +379,7 @@ class MainView extends Component {
             })
             return {
                 model
-            }; 
+            };
         }, () => {
             this.updateVisibleFormulas();
         })
@@ -431,7 +431,7 @@ class MainView extends Component {
     )}
 
     handleFormulaSelection(key, subformulaIndex) { return ( () => {
-            this.setState((prevState) => { 
+            this.setState((prevState) => {
                 /* Subformula clicked */
                 if (subformulaIndex !== undefined) {
                     let {visibleSubformulas} = prevState;
@@ -472,7 +472,7 @@ class MainView extends Component {
                         }
                 }
             }, () => {this.updateVisibleFormulas();});
-        }     
+        }
     )}
 
     //---------------------------------------------------------------
@@ -483,7 +483,7 @@ class MainView extends Component {
             let { model } = prevState;
 
 console.log("JSC-E EVAL_ARITH_HERE")
-	
+
 
             LTLSimController.setAtomicTraceEval(model, dataKey, trace);
 
@@ -519,14 +519,14 @@ console.log("JSC-E EVAL_ARITH_HERE")
             } else {
                 return {}
             }
-            
+
         });
     }
 
     handleLtlsimSimulate(formulaFilter) {
         this.setState((prevState) => {
             let {model, traceLength, visibleSubformulas} = prevState;
-            let simFilter = formulaFilter.map((f) => (LTLSimController.getFilter(model, f, 
+            let simFilter = formulaFilter.map((f) => (LTLSimController.getFilter(model, f,
                 prevState.settings.focusOnSelection ? visibleSubformulas : false)));
 
             /* Set all simulated formulas to busy */
@@ -544,10 +544,10 @@ console.log("JSC-E EVAL_ARITH_HERE")
             })
 
             ltlsim.simulate(
-                model, 
-                simFilter, 
+                model,
+                simFilter,
                 true,
-                this.handleLtlsimResult, 
+                this.handleLtlsimResult,
                 undefined,
                 undefined);
 
@@ -557,14 +557,14 @@ console.log("JSC-E EVAL_ARITH_HERE")
         })
     }
 
-    handleLtlsimResult(id, sid, value, trace) {  
+    handleLtlsimResult(id, sid, value, trace) {
         // console.log(`${id}${sid ? ' ('+sid+')' : ''}: ${trace} (${value ? "VALIDATED" : "VIOLATED"})`)
         this.setState((prevState) => {
             let {model} = prevState;
             if (LTLSimController.getFormulaKeys(model).indexOf(id) !== -1) {
                 LTLSimController.setFormulaTrace(model, id, sid, trace);
-                LTLSimController.setFormulaValue(model, id, sid, value ? 
-                                                    EFormulaStates.VALIDATED : 
+                LTLSimController.setFormulaValue(model, id, sid, value ?
+                                                    EFormulaStates.VALIDATED :
                                                     EFormulaStates.VIOLATED);
                 return { model };
             } else {
@@ -581,7 +581,7 @@ console.log("JSC-E EVAL_ARITH_HERE")
                 if (formula === undefined || formula === null) {
                     return false;
                 } else {
-                    if (formula.value === EFormulaStates.UNKNOWN || 
+                    if (formula.value === EFormulaStates.UNKNOWN ||
                         formula.value === EFormulaStates.BUSY ) {
                         return true;
                     } else {
@@ -604,7 +604,7 @@ console.log("JSC-E EVAL_ARITH_HERE")
     render() {
         const { classes } = this.props;
         const { model,
-                visibleAtomics,  
+                visibleAtomics,
                 visibleFormulas,
                 visibleSubformulas,
                 settings,
@@ -617,26 +617,26 @@ console.log("JSC-E EVAL_ARITH_HERE")
         const visibleChartFormulas = LTLSimController.getFormulaKeys(model).filter((fkey) => (
             visibleFormulas.indexOf(fkey) !== -1
         ));
-                
+
         return (
             <Fragment>
                 <CssBaseline />
                 <div className={classes.root}>
                     <div className={classes.appFrame}>
-                        <AppBar 
+                        <AppBar
                             position="static"
                             className={classes.appBar} >
                             <Toolbar className={classes.toolbar}>
                                 <div className={classes.grow} >
-                                    <Button 
+                                    <Button
                                         color="secondary"
                                         variant="contained"
                                         onClick={this.handleFormulaDialogOpen}>
-                                        Create    
+                                        Create
                                     </Button>
                                 </div>
-                                <Tooltip title={settings.focusOnSelection ? 
-                                    "Switch to overview mode (display several formulas and no subexpressions)" : 
+                                <Tooltip title={settings.focusOnSelection ?
+                                    "Switch to overview mode (display several formulas and no subexpressions)" :
                                     "Switch to focussed mode (Display only one formula, and select which subexpressions to display)"}>
                                     <IconButton
                                         color={settings.focusOnSelection ? "secondary" : "inherit"}
@@ -644,8 +644,8 @@ console.log("JSC-E EVAL_ARITH_HERE")
                                         <FocusOnFormulaIcon />
                                     </IconButton>
                                 </Tooltip>
-                                <Tooltip title={settings.displayFormulaEvaluation ? 
-                                    "Turn off formula highlight (colors the formula according to the overall valuation)" : 
+                                <Tooltip title={settings.displayFormulaEvaluation ?
+                                    "Turn off formula highlight (colors the formula according to the overall valuation)" :
                                     "Turn on formula highlight (colors the formula according to the overall valuation)"}>
                                     <IconButton
                                     color={settings.displayFormulaEvaluation ? "secondary" : "inherit"}
@@ -655,7 +655,7 @@ console.log("JSC-E EVAL_ARITH_HERE")
                                 </Tooltip>
                             </Toolbar>
                         </AppBar>
-                        <Drawer 
+                        <Drawer
                             className={classes.drawer}
                             variant="permanent"
                             classes={{
@@ -664,8 +664,8 @@ console.log("JSC-E EVAL_ARITH_HERE")
                         >
                             <div className={classes.toolbar}/>
                             <Divider />
-                            <SidebarList 
-                                model={model} 
+                            <SidebarList
+                                model={model}
                                 visibleAtomics={visibleAtomics}
                                 visibleFormulas={visibleFormulas}
                                 visibleSubformulas={visibleSubformulas}
@@ -679,11 +679,11 @@ console.log("JSC-E EVAL_ARITH_HERE")
                         <main className={classes.main}>
                             <div className={classes.content}>
                             <div className={classes.toolbar} />
-                            {(this.LTLSimStatus.ltlsim && this.LTLSimStatus.nusmv) ? 
+                            {(this.LTLSimStatus.ltlsim && this.LTLSimStatus.nusmv) ?
                              <div>
-                                {LTLSimController.getFormulaKeys(model).length > 0 && 
-                                    <TimeSeriesWidget 
-                                        model={model} 
+                                {LTLSimController.getFormulaKeys(model).length > 0 &&
+                                    <TimeSeriesWidget
+                                        model={model}
                                         visibleAtomics={visibleChartAtomics}
                                         visibleFormulas={visibleChartFormulas}
                                         visibleSubformulas={visibleSubformulas}
@@ -697,25 +697,25 @@ console.log("JSC-E EVAL_ARITH_HERE")
                                         displaySubformulas={settings.focusOnSelection}
                                         selectedFormula={selectedFormula}
                                     />}
-                                {LTLSimController.getFormulaKeys(model).length === 0 && 
+                                {LTLSimController.getFormulaKeys(model).length === 0 &&
                                     <div className={classes.arrowContainer}>
-                                        <ArrowIcon 
-                                            className={classes.arrowIcon} 
+                                        <ArrowIcon
+                                            className={classes.arrowIcon}
                                             color="secondary"
                                             fontSize="large"/>
                                         <Typography variant="h5">
                                             Create new formula to begin
                                         </Typography>
                                     </div>}
-                                {selectedFormula && 
-                                    <FormulaDetails 
+                                {selectedFormula &&
+                                    <FormulaDetails
                                         fkey={selectedFormula}
-                                        model={model} 
+                                        model={model}
                                         actions
                                         onDialogApply={this.handleFormulaDialogApply}
                                         onDelete={this.handleFormulaDelete}
                                     />}
-                                <FormulaDialog 
+                                <FormulaDialog
                                     open={this.state.formulaDialogOpen}
                                     create={true}
                                     fkey={""}
@@ -723,14 +723,14 @@ console.log("JSC-E EVAL_ARITH_HERE")
                                     onCancel={this.handleFormulaDialogCancel}
                                     onApply={this.handleFormulaDialogApply}
                                 />
-                            </div> : 
+                            </div> :
                             <div className={classes.flexContainer}>
                                 <ErrorIcon color="error" fontSize="large" className={classes.errorIcon} />
                                 <Typography variant="h6" >
-                                    {this.LTLSimStatus.ltlsim ? 
+                                    {this.LTLSimStatus.ltlsim ?
                                     "Can't find a running NuSMV installation. Make sure to install NuSMV and add it to the PATH envinronment variable." :
                                     "Can't find a running ltlsim installation. Make sure to install ltlsim-core and NuSMV as described in the installation instructions."}
-                                </Typography> 
+                                </Typography>
                             </div>
                             }
                             </div>
@@ -745,5 +745,5 @@ console.log("JSC-E EVAL_ARITH_HERE")
 MainView.propTypes = {
     classes: PropTypes.object.isRequired
 };
-  
+
 export default withStyles(styles)(MainView);

@@ -182,16 +182,19 @@ ipcMain.handle('changeRequirementStatus', async (evt, arg) => {
 
 ipcMain.handle('exportRequirements', async (evt, arg) => {
   const result = await fretModel.exportRequirements(evt, arg);
+  console.log('exportRequirements: ', result)
   return result
 })
 
 ipcMain.handle('exportVariables', async (evt, arg) => {
   const result = await fretModel.exportVariables(evt, arg);
+  console.log('exportVariables: ', result)
   return result
 })
 
 ipcMain.handle('exportRequirementsAndVariables', async (evt, arg) => {
   const result = await fretModel.exportRequirementsAndVariables(evt, arg);
+  console.log('exportRequirementsAndVariables: ', result)
   return result
 })
 
@@ -256,16 +259,6 @@ ipcMain.handle('checkRealizability', async (evt, args) => {
 
 ipcMain.handle('diagnoseUnrealizableRequirements', async (evt, args) => {
   const result = await fretModel.diagnoseUnrealizableRequirements(evt, args);
-  return result
-})
-
-ipcMain.handle('saveRealizabilityReport', async (evt, arg) => {
-  const result = await fretModel.saveRealizabilityReport(evt, arg);
-  return result
-})
-
-ipcMain.handle('loadRealizabilityReport', async(evt) => {
-  const result = await fretModel.loadRealizabilityReport(evt);
   return result
 })
 

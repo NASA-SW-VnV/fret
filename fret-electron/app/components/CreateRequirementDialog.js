@@ -83,9 +83,9 @@ var uuid = require('uuid');
 import { v1 as uuidv1 } from 'uuid';
 
 const {ipcRenderer} = require('electron');
-const app =require('@electron/remote').app
 const fs = require('fs');
 const path = require('path');
+import { saveAs } from 'file-saver';
 
 const formStyles = theme => ({
   accordion: {
@@ -249,6 +249,7 @@ class CreateRequirementDialog extends React.Component {
         ext_exp_json_file = process.env.EXTERNAL_EXP_JSON+'.json';
       }
 
+      // TBD replace fs.existSync with web based method
       if (fs.existsSync(ext_exp_json_file)) {
         // path exists, use same file name
         ext_exp_json_file_exists =  true;
@@ -261,14 +262,14 @@ class CreateRequirementDialog extends React.Component {
           ext_exp_json_file = path.join(userDocumentsFolder, 'requirement.json')
         }
       }
-    
+
       // check again since ext_exp_json_file may be redefined
       if (fs.existsSync(ext_exp_json_file)) {
         // path exists, use same file name
         ext_exp_json_file_exists =  true;
         console.log('ext_exp_json_file_exists: ', ext_exp_json_file_exists)
       }
-    
+
       if(ext_exp_json_file_exists){
         // pop up warning
         console.log('Overwriting existing external export file: ', ext_exp_json_file);
@@ -287,12 +288,15 @@ class CreateRequirementDialog extends React.Component {
                   "semantics": semantics,
                   "input": input}});
 
-      fs.writeFile(filepath, JSON.stringify(doc, null, 4), (err) => {
-          if(err) {
-            return console.log(err);
-          }
-          ipcRenderer.send('closeFRET');
-      })
+      try {
+        var content = JSON.stringify(doc, null, 4);
+        var blob = new Blob([content],{type:"text/plain;charset=utf-8"});
+        saveAs(blob,filepath);
+        ipcRenderer.send('closeFRET');
+      } catch (error) {
+        return console.log(error);
+      }
+
     } else{
 
 

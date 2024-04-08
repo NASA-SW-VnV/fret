@@ -51,11 +51,9 @@ const populateVariables = require('./modelDbSupport/populateVariables_main')
 const requirementsImport = require('./requirementsImport/convertAndImportRequirements_main');
 
 const fs = require('fs');
-const archiver = require('archiver');
 import { v1 as uuidv1 } from 'uuid';
 import FretSemantics from "../app/parser/FretSemantics";
 import {Default_Project_name} from "./requirementsImport/convertAndImportRequirements_main";
-const csv2json=require("csvtojson");
 const utilities = require('../support/utilities');
 export default class FretModel {
   constructor(){
@@ -501,71 +499,38 @@ export default class FretModel {
 
   async importRequirements(evt,args){
 
-    const [listOfProjects, filepaths ] = args;
+    const [listOfProjects, data ] = args;
 
     let areThereIgnoredVariables = false;
-    if (filepaths && filepaths.length > 0) {
-      // console.log('FretModel.importRequirements filepaths: ', filepaths)
-      const filepath = filepaths[0];
-      //checking the extension of the file
-      const fileExtension = filepath.split('.').pop();
-      //console.log('fileExtension : ',fileExtension)
-      if (fileExtension === 'csv'){
-        var importedReqs = await csv2json().fromFile(filepath)
-        let csvFields = Object.keys(importedReqs[0]);
-        const csvReturnValue = {fileExtension : 'csv',
-          csvFields: csvFields,
-          importedReqs: importedReqs}
-        return csvReturnValue
-        //return returnValue
-      } else if (fileExtension === 'json'){
-        /*
-        // Version using "require" causes error: Cannot find module "."
-        const filepathnoext = filepath.slice(0,-5); // The slice is to remove the .json suffix
-        console.log('*** filepathnoext = ' + JSON.stringify(filepathnoext));
-        data = require(filepathnoext);
-        */
 
-        // Version using "readFileSync" causes error: Cannot read property 'shift' of undefined
-        var content = fs.readFileSync(filepath);  // maybe add "utf8" to return a string instead of a buffer
-        var data = JSON.parse(content);
+      let requirements = [];
+      let variables = [] ;
 
-        let requirements = [];
-        let variables = [] ;
-
-        if(Array.isArray(data) && data.length > 0) {
-          if(data[0].reqid) {
-            requirements = data;
-          } else {
-            variables = data;
-          }
-        }else {
-          if (data.requirements) {
-            requirements = data.requirements
-          }
-
-          if (data.variables) {
-            variables = data.variables
-          }
+      if(Array.isArray(data) && data.length > 0) {
+        if(data[0].reqid) {
+          requirements = data;
+        } else {
+          variables = data;
+        }
+      }else {
+        if (data.requirements) {
+          requirements = data.requirements
         }
 
-        if(requirements.length) {
-          await requirementsImport.importRequirements(requirements, listOfProjects)
+        if (data.variables) {
+          variables = data.variables
         }
-        if(variables.length) {
-          const createdVariables = await requirementsImport.importVariables(variables)
-          areThereIgnoredVariables = variables.length - createdVariables.length > 0
-        }
-        await this.synchAnalysesAndVariablesWithDB()
-        await this.mapVariables(this.components)
-
-
       }
-      else{
-        // when we choose an unsupported file
-        console.log("We do not support yet this file import")
+
+      if(requirements.length) {
+        await requirementsImport.importRequirements(requirements, listOfProjects)
       }
-    }
+      if(variables.length) {
+        const createdVariables = await requirementsImport.importVariables(variables)
+        areThereIgnoredVariables = variables.length - createdVariables.length > 0
+      }
+      await this.synchAnalysesAndVariablesWithDB()
+      await this.mapVariables(this.components)
 
     this.listOfProjects = [Default_Project_name, ...await fretDbGetters.getProjects()]
     this.requirements = await fretDbGetters.getRequirements()
@@ -628,11 +593,12 @@ export default class FretModel {
   }
 
   exportRequirementsAndVariables = async (_, args) => {
-    
-    const [project, output_format, filepath] = args;
-    if (filepath) {
+
+    const [project, output_format] = args;
+    //if (filepath) {
       const filterOff = project == "All Projects";
       const requirements = []
+      const files = []
       await leveldbDB.allDocs({
         include_docs: true,
       }).then((result) => {
@@ -662,13 +628,18 @@ export default class FretModel {
       }).catch((err) => {
         console.log(err);
       });
-      this.writeFile({requirements, variables}, output_format, filepath, project)
-    }
+      const content = this.getFileContent({requirements, variables}, output_format, project)
+      const file = {content: content, name: 'fretRequirementsVariables'+'.json' }
+      files.push(file);
+
+      return files
+    //}
   }
 
   exportVariables =async (_, args) => {
-    const [project, output_format, filepath] = args;
-    if (filepath) {
+    const [project, output_format] = args;
+    const files = []
+    //if (filepath) {
       const content = []
       const filterOff = project == "All Projects";
       const selector = filterOff ? {} : {project: project}
@@ -682,29 +653,33 @@ export default class FretModel {
       }).catch((err) => {
         console.log(err);
       });
-      this.writeFile(content, output_format, filepath, project)
-    }
+      content = this.getFileContent(content, output_format, project);
+      const file = {content: content, name: 'fretVariables'+'.json' }
+      files.push(file);
+    //}
+    return files
   }
 
-  writeFile(data, output_format, filepath, project) {
+  getFileContent(data, output_format, project) {
     var content;
-    if (output_format === "md"){
-      content=export_to_md(data, project)
-    }
-    else {
-      content = JSON.stringify(data, null, 4)
+    try {
+      if (output_format === "md"){
+        content=export_to_md(data, project)
+      }
+      else {
+        content = JSON.stringify(data, null, 4)
+      }
+      return content
+    } catch (error) {
+      return console.log(error);
     }
 
-    fs.writeFile(filepath, content, (err) => {
-      if(err) {
-        return console.log(err);
-      }
-    });
   }
 
   async exportRequirements(evt,args){
-    const [project, output_format, filepath] = args;
-    if(filepath){
+    const [project, output_format] = args;
+    const files = []
+    //if(filepath){
       const filteredResult = []
       const filterOff = project == "All Projects";
       await leveldbDB.allDocs({
@@ -722,9 +697,11 @@ export default class FretModel {
       }).catch((err) => {
         console.log(err);
       });
-      this.writeFile(filteredResult, output_format, filepath, project)
-    }
-    return ({})
+      const content = this.getFileContent(filteredResult, output_format, project);
+      const file = {content: content, name: 'fretRequirements'+'.json' }
+      files.push(file);
+    //}
+    return files
   }
 
   async changeRequirementStatus(evt,args){
@@ -927,13 +904,12 @@ export default class FretModel {
       // console.log(info);
     })
 
-    const [selectedProject, selectedComponent, filepaths ]= args;
+    const [selectedProject, selectedComponent, data ]= args;
 
-    if (filepaths && filepaths.length > 0) {
       try {
-        const buffer = await fs.promises.readFile(filepaths[0], 'utf8')
-        const content = utilities.replaceStrings([['\\"id\\"', '\"_id\"']], buffer);
-        let data = JSON.parse(content);
+        //const buffer = await fs.promises.readFile(filepaths[0], 'utf8')
+        //const content = utilities.replaceStrings([['\\"id\\"', '\"_id\"']], buffer);
+        //let data = JSON.parse(content);
         data.forEach((d) => {
           d._id = uuidv1();
           d.project = selectedProject;
@@ -944,7 +920,7 @@ export default class FretModel {
       } catch (err) {
         throw err;
       }
-    }
+
     await this.synchAnalysesAndVariablesWithDB()
     await this.mapVariables(this.components)
 
@@ -967,79 +943,62 @@ export default class FretModel {
   }
 
   async exportComponent(evt,args){
+    var component = args[0];
+    var selectedProject = args[1];
+    var language = args[2];
+    const files = []
+    await modelDB.find({
+      selector: {
+        component_name: component,
+        project: selectedProject,
+        completed: true, //for modes that are not completed; these include the ones that correspond to unformalized requirements
+        modeldoc: false
+      }
+    }).then(function (modelResult){
 
-    var [component, selectedProject, language, filepath ]= args;
-    if (filepath) {
-      // create a file to stream archive data to.
-      var output = fs.createWriteStream(filepath);
-      var archive = archiver('zip', {
-        zlib: { level: 9 } // Sets the compression level.
-      });
-      // listen for all archive data to be written
-      // 'close' event is fired only when a file descriptor is involved
-      output.on('close', function() {
-        console.log('archiver has been finalized and the output file descriptor has closed.');
-      });
-      // good practice to catch this error explicitly
-      archive.on('error', function(err) {
-        throw err;
-      });
-
-      modelDB.find({
+      let contract = getContractInfo(modelResult);
+      contract.componentName = component+'Spec';
+      if (language === 'cocospec' && modelResult.docs[0].modelComponent != ""){
+        var variableMapping = getMappingInfo(modelResult, contract.componentName);
+        const file = {content: JSON.stringify(variableMapping, undefined, 4), name: 'cocospecMapping'+component+'.json' }
+        files.push(file);
+      }
+      return leveldbDB.find({
         selector: {
-          component_name: component,
-          project: selectedProject,
-          completed: true, //for modes that are not completed; these include the ones that correspond to unformalized requirements
-          modeldoc: false
+          project: selectedProject
         }
-      }).then(function (modelResult){
-
-        let contract = getContractInfo(modelResult);
-        contract.componentName = component+'Spec';
-        archive.pipe(output);
-        if (language === 'cocospec' && modelResult.docs[0].modelComponent != ""){
-          // console.log('FretModel exportComponent, modelResult: ', modelResult)
-          // console.log('FretModel exportComponent, contract.componentName: ', contract.componentName)
-          var variableMapping = getMappingInfo(modelResult, contract.componentName);
-          archive.append(JSON.stringify(variableMapping), {name: 'cocospecMapping'+component+'.json'});
-        }
-        leveldbDB.find({
-          selector: {
-            project: selectedProject
-          }
-        }).then(function (fretResult){
-          contract.properties = getPropertyInfo(fretResult, contract.outputVariables, component);
-          contract.delays = getDelayInfo(fretResult, component);
-          if (language === 'cocospec'){
-            let contractVariables = [].concat(contract.inputVariables.concat(contract.outputVariables.concat(contract.internalVariables.concat(contract.functions.concat(contract.modes)))));
-            for (const property of contract.properties){
-              // property.reqid = '__'+property.reqid;
-              for (const contractVar of contractVariables) {
-                var regex = new RegExp('\\b' + contractVar.name.substring(2) + '\\b', "g");
-                property.value = property.value.replace(regex, contractVar.name);
-              }
-              if (!contract.internalVariables.includes("__FTP")) {
-                var regex = new RegExp('\\b' + 'FTP' + '\\b', "g");
-                property.value = property.value.replace(regex, '__FTP');
-              }
+      }).then(function (fretResult){
+        contract.properties = getPropertyInfo(fretResult, contract.outputVariables, component);
+        contract.delays = getDelayInfo(fretResult, component);
+        if (language === 'cocospec'){
+          let contractVariables = [].concat(contract.inputVariables.concat(contract.outputVariables.concat(contract.internalVariables.concat(contract.functions.concat(contract.modes)))));
+          for (const property of contract.properties){
+            // property.reqid = '__'+property.reqid;
+            for (const contractVar of contractVariables) {
+              var regex = new RegExp('\\b' + contractVar.name.substring(2) + '\\b', "g");
+              property.value = property.value.replace(regex, contractVar.name);
             }
-            archive.append(ejsCache.renderContractCode().contract.complete(contract), {name: contract.componentName+'.lus'})
-          } else if (language === 'copilot'){
-            contract.internalVariables.push.apply(contract.internalVariables, contract.modes);
-            contract.modes.forEach(function(mode) {
-              contract.assignments.push(mode.assignment);
-            });
-            archive.append(ejsCacheCoPilot.renderCoPilotSpec().contract.complete(contract), {name: contract.componentName+'.json'})
+            if (!contract.internalVariables.includes("__FTP")) {
+              var regex = new RegExp('\\b' + 'FTP' + '\\b', "g");
+              property.value = property.value.replace(regex, '__FTP');
+            }
           }
-          // finalize the archive (ie we are done appending files but streams have to finish yet)
-          archive.finalize();
+          const file = {content: ejsCache.renderContractCode().contract.complete(contract), name: contract.componentName+'.lus' }
+          files.push(file);
+        } else if (language === 'copilot'){
+          contract.internalVariables.push.apply(contract.internalVariables, contract.modes);
+          contract.modes.forEach(function(mode) {
+            contract.assignments.push(mode.assignment);
+          });
+          const file = {content: ejsCacheCoPilot.renderCoPilotSpec().contract.complete(contract), name: contract.componentName+'.json' }
+          files.push(file);
+        }
 
-        }).catch((err) => {
-          console.log(err);
-        })
+      }).catch((err) => {
+        console.log(err);
       })
-    }
-    return ({})
+    })
+    return files
 
   }
 
@@ -1135,36 +1094,6 @@ export default class FretModel {
   async diagnoseUnrealizableRequirements(evt, args){
     var diagnosisResult = await diagnoseSpec(this.selectedProject, ...args);
     return diagnosisResult;
-  }
-
-  async saveRealizabilityReport(evt, projectReport, filePath){
-
-    projectReport.systemComponents = projectReport.systemComponents.filter(sc => sc.monolithic);
-
-    if (filePath) {
-      var output = fs.createWriteStream(filePath);
-      var content = JSON.stringify(projectReport, null, 4);
-      fs.writeFile(filePath, content, (err) => {
-        if (err) {
-          console.log(err);
-        }
-      });
-    }
-  }
-
-  async loadRealizabilityReport(evt, filepaths) {
-
-    let report = {};
-
-    try {
-      if (filepaths && filepaths.length > 0) {
-        var fileContent = fs.readFileSync(filepaths[0], 'utf8');
-        report = JSON.parse(fileContent);
-      }
-      return report;
-    } catch (err) {
-      console.log(err);
-    }
   }
 
   async ltlsimSaveJson(evt,args){

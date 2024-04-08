@@ -36,13 +36,9 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Button from '@material-ui/core/Button';
 import { withStyles } from '@material-ui/core/styles';
 import { connect } from "react-redux";
+import { saveAs } from 'file-saver';
 
 const { ipcRenderer } = require('electron');
-const app =require('@electron/remote').app;
-const fs = require('fs');
-const dialog =require('@electron/remote').dialog;
-const archiver = require('archiver');
-const constants = require('../parser/Constants');
 
 const styles = theme => ({
 	vAlign : {
@@ -56,12 +52,20 @@ class SaveRealizabilityReport extends React.Component {
 	}
 
 	saveRealizabilityResults = async (event) => {
-		event.stopPropagation();
-		const {projectReport} = this.props;
+    try {
+      event.stopPropagation();
+      const {projectReport} = this.props;
+      projectReport.systemComponents = projectReport.systemComponents.filter(sc => sc.monolithic);
+      var content = JSON.stringify(projectReport, null, 4);
+      var blob = new Blob([content],{type:"text/plain;charset=utf-8"});
+      saveAs(blob,"realizabilityReport.json");
+      //ipcRenderer.invoke('saveRealizabilityReport', projectReport).catch((err) => {
+      //	console.log(err);
+      //})
+    } catch (error) {
+      console.log(err);
+    }
 
-		ipcRenderer.invoke('saveRealizabilityReport', projectReport).catch((err) => {
-			console.log(err);
-		})
 	}
 
 	render() {

@@ -39,10 +39,9 @@ import Button from '@material-ui/core/Button';
 import RealizabilityContent from './RealizabilityContent';
 import AnalysisReportContent from './AnalysisReportContent';
 import { connect } from "react-redux";
+import { saveAs } from 'file-saver';
+import { readAndParseJSONFile } from '../utils/utilityFunctions';
 
-const app =require('@electron/remote').app;
-const dialog =require('@electron/remote').dialog;
-const {ipcRenderer} = require('electron');
 let id = 0;
 
 const styles = theme => ({
@@ -67,7 +66,7 @@ class RealizabilityView extends React.Component {
 
   constructor(props){
     super(props);
-
+    this.loadRealizabilityReport = React.createRef();
   }
 
   componentDidMount() {
@@ -86,13 +85,24 @@ class RealizabilityView extends React.Component {
     }
   }
 
-  handleLoadClick = (event) => {
+  handleLoadClick = async(event) => {
     event.stopPropagation();
-    ipcRenderer.invoke('loadRealizabilityReport').then((report) => {
-      this.setState({importedReport: report})
-    }).catch((err) => {
-      console.log(err);
-    });
+
+    try {
+      const file = event.target.files[0]
+      const fileExtension = file.name.split('.').pop().toLowerCase();
+      if('json' === fileExtension) {
+        const replaceString = false;
+        const report = await readAndParseJSONFile(file, replaceString);
+        this.setState({importedReport: report})
+      } else {
+        console.log('We only support json file import for relizability report')
+      }
+
+    } catch (error) {
+      console.log(error);
+    }
+
   };
 
   render() {
@@ -107,9 +117,22 @@ class RealizabilityView extends React.Component {
               Please choose a specific project or load an existing report
             </Typography>
             &nbsp;&nbsp;&nbsp;&nbsp;
-            <Button size="small" variant="contained" color="secondary" onClick={(event) => this.handleLoadClick(event)}>
+            <Button id="qa_rlzView_input_import" size="small"
+              variant="contained" color="secondary"
+              onClick={(event) => this.loadRealizabilityReport.current.click(event)}>
                 Load
             </Button>
+            <input
+                      id="qa_rlzView_input_import"
+                      ref={this.loadRealizabilityReport}
+                      type="file"
+                      onClick={(event)=> {
+                        event.target.value = null
+                      }}
+                      onChange={this.handleLoadClick}
+                      style={{ display: 'none' }}
+                      accept=".json"
+            />
           </div>
         );
       } else {

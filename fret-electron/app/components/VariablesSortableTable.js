@@ -65,12 +65,9 @@ import DisplayVariableDialog from './DisplayVariableDialog';
 import { connect } from "react-redux";
 const {ipcRenderer} = require('electron');
 import { importComponent, selectCorspdModelComp, selectVariable,} from '../reducers/allActionsSlice';
+import { readAndParseCSVFile, readAndParseJSONFile } from '../utils/utilityFunctions';
 
-const archiver = require('archiver');
-const app =require('@electron/remote').app;
-const dialog =require('@electron/remote').dialog;
 const utilities = require('../../support/utilities');
-//const uuidv1 = require('uuid/v1');
 var uuid = require('uuid');
 import { v1 as uuidv1 } from 'uuid';
 
@@ -206,6 +203,26 @@ const tableComponentBarStyles = theme => ({
 
 let TableComponentBar = props => {
   const {classes, handleModelChange, importedComponents, modelComponent, fretComponent, importComponentModel} = props;
+  const fileInput = React.useRef();
+
+  let handleImportComponentModel = async  (event) => {
+    try {
+      const file = event.target.files[0]
+      const fileExtension = file.name.split('.').pop().toLowerCase();
+      // check file extension
+      if('json' === fileExtension) {
+        const replaceString = true;
+        const data = await readAndParseJSONFile(file, replaceString);
+        importComponentModel(data)
+      } else {
+        console.log('We do not support yet this file import')
+      }
+    } catch (error) {
+      console.log('Error reading import file: ', error)
+    }
+
+  }
+
   return(
     <Toolbar className={classNames(classes.root, classes.componentBar)}>
       <form className={classes.formControl} autoComplete="off">
@@ -232,12 +249,23 @@ let TableComponentBar = props => {
         </FormControl>
       </form>
       <Tooltip title='Import model information'>
-        <Button size="small" onClick={importComponentModel}
+        <Button size="small" onClick={()=>fileInput.current.click()}
           id={"qa_var_btn_import_"+fretComponent}
           color="secondary" variant='contained' >
           Import
         </Button>
       </Tooltip>
+      <input
+          id={"qa_var_btn_import_input_"+fretComponent}
+          ref={fileInput}
+          type="file"
+          onClick={(event)=> {
+            event.target.value = null
+          }}
+          onChange={handleImportComponentModel}
+            style={{ display: 'none' }}
+            accept=".json"
+        />
     </Toolbar>
   );
 };
@@ -383,21 +411,13 @@ class VariablesSortableTable extends React.Component {
 
  };
 
- importComponentModel = () => {
+
+ importComponentModel = (data) => {
 
    const {selectedProject, selectedComponent} = this.props;
 
-   var homeDir = app.getPath('home');
-   var filepaths = dialog.showOpenDialogSync({
-     defaultPath : homeDir,
-     title : 'Import Simulink Model Information',
-     buttonLabel : 'Import',
-     filters: [
-       { name: "Documents", extensions: ['json'] }
-     ],
-     properties: ['openFile']});
 
-   var args = [selectedProject, selectedComponent, filepaths]
+   var args = [selectedProject, selectedComponent, data]
    // context isolation
    ipcRenderer.invoke('importComponent',args).then((result) => {
     this.props.importComponent({  type: 'components/importComponent',

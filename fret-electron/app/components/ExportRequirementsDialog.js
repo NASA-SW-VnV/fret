@@ -43,7 +43,8 @@ import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
-import {selectExportFilePath} from "../utils/utilityFunctions";
+import { saveAs } from 'file-saver';
+import JSZip from "jszip";
 
 const {ipcRenderer} = require('electron');
 
@@ -112,11 +113,26 @@ class ExportRequirementsDialog extends React.Component {
 
   handleExport = () => {
     const {project, output_format} = this.state;
-    var filepath = selectExportFilePath(output_format)
 
-    var argList = [project, output_format, filepath ]
+    var argList = [project, output_format ]
     const channel = this.state.dataType === 'requirements' ? 'exportRequirements' : this.state.dataType === 'variables' ? 'exportVariables' : 'exportRequirementsAndVariables'
-    ipcRenderer.invoke(channel, argList).catch((err) => {
+    ipcRenderer.invoke(channel, argList).then((result) => {
+      const fileName = 'fretRequirementsVariables.zip';
+      const zip = new JSZip();
+      console.log('Export RequirementDialogHandleExport result: ', result)
+
+      result.forEach(file => {
+        zip.file(file.name, file.content)
+      })
+
+      zip.generateAsync({type:"blob"}).then(function(content) {
+        // see FileSaver.js
+        saveAs(content, fileName);
+      });
+
+
+
+    }).catch((err) => {
       console.log(err);
     })
   }

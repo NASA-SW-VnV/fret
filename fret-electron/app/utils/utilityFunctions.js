@@ -31,9 +31,14 @@
 // AGREEMENT.
 // *****************************************************************************
 const constants = require('../parser/Constants');
+const utilities = require('../../support/utilities');
+import csv from 'csv';
 
-const app =require('@electron/remote').app
-const dialog =require('@electron/remote').dialog
+// remove
+//const app =require('@electron/remote/main').app
+//const dialog =require('@electron/remote/main').dialog
+//const app =require('@electron/remote').app;
+//const dialog =require('@electron/remote').dialog;
 
 export const getRequirementStyle = (requirement, isNode) => {
   let style;
@@ -88,17 +93,55 @@ export const export_to_md = (R, P) => {
   return s;
 }
 
-export const selectExportFilePath = (output_format) => {
-  var homeDir = app.getPath('home');
-  var filepath = dialog.showSaveDialogSync(
-    {
-      defaultPath : homeDir,
-      title : 'Export Requirements',
-      buttonLabel : 'Export',
-      filters: [
-        { name: "Documents", extensions: [ output_format ] }
-      ],
-    })
-  return filepath
+export const readAndParseJSONFile = (file, replaceString) => {
+  try {
+    return new Promise((resolve, reject) => {
+      const fileReader = new FileReader();
+      fileReader.onloadend = (e) => {
+        try {
+          var buffer = fileReader.result;
+          var content = buffer;
+          if (replaceString){
+            content = utilities.replaceStrings([['\\"id\\"', '\"_id\"']], buffer);
+          }
+          const data  = JSON.parse(content);
+          resolve(data);
+        } catch (err) {
+          console.log('invalid format')
+          reject(err)
+        }
+      };
+      fileReader.readAsText(file);
+    });
+  } catch (error) {
+    console.log('Error reading import file: ', error)
+  }
+
 }
+
+export const readAndParseCSVFile = (file) => {
+
+  try {
+    return new Promise((resolve, reject) => {
+      const fileReader = new FileReader();
+      fileReader.onloadend = (e) => {
+        const content = fileReader.result;
+        csv.parse(content, {columns: true}, (err, data) => {
+          if(err) {
+            console.log('invalid format')
+            reject(err)
+          }
+          resolve(data);
+        });
+      };
+      fileReader.readAsText(file);
+    });
+  } catch (error) {
+    console.log('Error reading import file: ', error)
+  }
+
+}
+
+
+
 

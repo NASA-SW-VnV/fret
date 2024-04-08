@@ -48,7 +48,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import ExportIcon from '@material-ui/icons/ArrowUpward';
 import ImportIcon from '@material-ui/icons/ArrowDownward';
-
+import { saveAs } from 'file-saver';
 /* Accordion Imports */
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
@@ -68,11 +68,9 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 
 const {ipcRenderer} = require('electron');
-const app =require('@electron/remote').app
-const dialog =require('@electron/remote').dialog
-
 
 import analysisPortalManual from '../../docs/_media/ExportingForAnalysis/analysisInsideFRET.md';
+import JSZip from "jszip";
 
 const styles = theme => ({
   root: {
@@ -190,22 +188,21 @@ class ComponentSummary extends React.Component {
 
   exportComponentCode = event => {
     event.stopPropagation();
+
     const {component, selectedProject, language} = this.props;
-
-    const homeDir = app.getPath('home');
-    var filepath = dialog.showSaveDialogSync({
-      defaultPath : homeDir,
-      title : 'Export specification',
-      buttonLabel : 'Export',
-      filters: [
-        { name: "Documents", extensions: ['zip'] }
-      ],
-    });
-
-    var args = [component, selectedProject, language, filepath]
-    // context isolation
+    var args = [component, selectedProject, language]
     ipcRenderer.invoke('exportComponent',args).then((result) => {
-      // no redux state is changed for this action
+      const zip = new JSZip();
+      console.log('Export VariableView result: ', result)
+
+      result.forEach(file => {
+        zip.file(file.name, file.content)
+      })
+
+      zip.generateAsync({type:"blob"}).then(function(content) {
+        // see FileSaver.js
+        saveAs(content, 'components.zip');
+      });
     }).catch((err) => {
       console.log(err);
     })
