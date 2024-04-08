@@ -1126,28 +1126,40 @@ export default class FretModel {
             modeldoc: false
           }
         }).then(function (modelResult){
-          let contract = getContractInfo(modelResult);
-          contract.componentName = component+'Spec';
           archive.pipe(output);
           if (language === 'cocospec' && modelResult.docs[0].modelComponent != ""){
-            var variableMapping = getMappingInfo(modelResult, contract.componentName);
+            var variableMapping = getMappingInfo(modelResult, component+'Spec');
             archive.append(JSON.stringify(variableMapping), {name: 'cocospecMapping'+component+'.json'});
           }
+
           return leveldbDB.find({
             selector: {
               project: selectedProject
             }
           }).then(function (fretResult){
-            contract.properties = getObligationInfo(fretResult, contract.outputVariables, component);
-            contract.delays = getDelayInfo(fretResult, component);
-            if (language === 'cocospec'){
+            function generateObligationFile(doc) {
+              var localModelResult = {...modelResult}
+              localModelResult.docs = localModelResult.docs.filter(modelDoc => doc.semantics.variables.includes(modelDoc.variable_name))
+              let contract = getContractInfo(localModelResult);
+              contract.componentName = component+'Spec';
               
-              contract = variableIdentifierReplacement(contract);
-              archive.append(ejsCache.renderContractCode().contract.complete(contract), {name: contract.componentName+'.lus'})
+  
+              contract.properties = getObligationInfo(doc, contract.outputVariables, component);
+              contract.delays = getDelayInfo(fretResult, component);
+              if (language === 'cocospec'){                
+                contract = variableIdentifierReplacement(contract);
+                archive.append(ejsCache.renderContractCode().contract.complete(contract), {name: contract.componentName+'_'+doc.reqid+'.lus'})
+              }
+              return contract.properties.length;              
             }
+
+            var filePromises = fretResult.docs.filter(doc => doc.semantics.component_name === component).map(doc => generateObligationFile(doc))
             // finalize the archive (ie we are done appending files but streams have to finish yet)
-            archive.finalize();
-            return contract.properties.length;
+            
+            return Promise.all(filePromises).then(numOfObligations => {
+              archive.finalize();
+              return numOfObligations.reduce((accumulator, currentValue) => { return accumulator + currentValue },0)
+            });
           }).catch((err) => {
             console.log(err);
           })

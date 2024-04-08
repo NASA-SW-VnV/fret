@@ -259,9 +259,8 @@ function getContractInfo(result) {
   return contract;
 }
 
-function getObligationInfo(result, outputVariables, component){
+function getObligationInfo(doc, outputVariables, component){
   var properties = [];
-  result.docs.forEach(function(doc){
     var property ={};
     property.allInput = false;
     if (doc.semantics.component_name === component){
@@ -295,7 +294,6 @@ function getObligationInfo(result, outputVariables, component){
         }
       }
     }
-  })
   return properties;
 }
 
