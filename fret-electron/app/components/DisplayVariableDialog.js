@@ -352,8 +352,8 @@ class DisplayVariableDialog extends React.Component {
 
         */
 
-        let modelVariableVectorSize = modelVariableDimensions.reduce( (a, b) => a * b, 1);
-        if (modelVariableVectorSize > 1){
+        let modelVariableVectorSize = modelVariableDimensions.slice(1).reduce( (a, b) => a * b, 1);
+        if (modelVariableDimensions[0] > 1){
           this.setState({
             dataType: dataType,
             modeldoc_id: event.target.value,

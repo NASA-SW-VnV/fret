@@ -1139,6 +1139,7 @@ export default class FretModel {
           }).then(function (fretResult){
             function generateObligationFile(doc) {
               var localModelResult = {...modelResult}
+
               localModelResult.docs = localModelResult.docs.filter(modelDoc => doc.semantics.variables.includes(modelDoc.variable_name))
               let contract = getContractInfo(localModelResult);
               contract.componentName = component+'Spec';
@@ -1153,7 +1154,7 @@ export default class FretModel {
               return contract.properties.length;              
             }
 
-            var filePromises = fretResult.docs.filter(doc => doc.semantics.component_name === component).map(doc => generateObligationFile(doc))
+            var filePromises = fretResult.docs.filter(resultDoc => resultDoc.semantics.component_name === component).map(filteredDoc => generateObligationFile(filteredDoc))
             // finalize the archive (ie we are done appending files but streams have to finish yet)
             
             return Promise.all(filePromises).then(numOfObligations => {
