@@ -1150,7 +1150,7 @@ export default class FretModel {
               //     then, if we don't perform this step the resulting Lustre file will not have a variable declaration for the input.
               var modelVariables = [...doc.semantics.variables];
               for (const modelDoc of localModelResult.docs) {
-                if (modelDoc.assignment) {
+                if (modelDoc.assignment && modelDoc.assignmentVariables && modelDoc.assignmentVariables.length > 0) {
                   const assignmentVariables = modelDoc.assignmentVariables;
                   for (const assignVar of assignmentVariables) {
                     if (modelVariables.indexOf(assignVar) === -1) {
