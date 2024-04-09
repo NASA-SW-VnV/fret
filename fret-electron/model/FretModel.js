@@ -58,7 +58,6 @@ import {createRequirements} from "./fretDbSupport/fretDbSetters_main";
 import {createVariables} from "./modelDbSupport/modelDbSetters_main";
 import {getProjectVariables} from "./modelDbSupport/modelDbGetters_main";
 const utilities = require('../support/utilities');
-const lustreExprSemantics = require('../support/lustreExprSemantics');
 
 export default class FretModel {
   constructor(){
