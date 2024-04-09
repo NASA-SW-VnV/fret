@@ -58,6 +58,8 @@ import {createRequirements} from "./fretDbSupport/fretDbSetters_main";
 import {createVariables} from "./modelDbSupport/modelDbSetters_main";
 import {getProjectVariables} from "./modelDbSupport/modelDbGetters_main";
 const utilities = require('../support/utilities');
+const lustreExprSemantics = require('../support/lustreExprSemantics');
+
 export default class FretModel {
   constructor(){
     // *projects*
@@ -932,6 +934,7 @@ export default class FretModel {
         moduleName: moduleName,
         description: description,
         assignment: assignment,
+        assignmentVariables: lustreVariables,
         copilotAssignment: copilotAssignment,
         modeRequirement: modeRequirement,
         modeldoc: false,
@@ -1140,7 +1143,26 @@ export default class FretModel {
             function generateObligationFile(doc) {
               var localModelResult = {...modelResult}
 
-              localModelResult.docs = localModelResult.docs.filter(modelDoc => doc.semantics.variables.includes(modelDoc.variable_name))
+              //Gather only the relevant variables from the project's model db.
+              //This includes:
+              //  1. All the variables that appear explicitly in the FRETish requirements
+              //  2. All the variables that the internal variables depend on. This is important because we are generating a Lustre file
+              //     per requirement. If, for example, a requirement contains an internal variable that is referrencing some input variable
+              //     then, if we don't perform this step the resulting Lustre file will not have a variable declaration for the input.
+              var modelVariables = [...doc.semantics.variables];
+              for (const modelDoc of localModelResult.docs) {
+                if (modelDoc.assignment) {
+                  const assignmentVariables = modelDoc.assignmentVariables;
+                  for (const assignVar of assignmentVariables) {
+                    if (modelVariables.indexOf(assignVar) === -1) {
+                      modelVariables.push(assignVar);
+                    }
+                  }
+                }
+              }
+
+              localModelResult.docs = localModelResult.docs.filter(modelDoc => (modelVariables.includes(modelDoc.variable_name)))
+
               let contract = getContractInfo(localModelResult);
               contract.componentName = component+'Spec';
               
@@ -1195,6 +1217,7 @@ export default class FretModel {
           tool: vdoc.tool,
           description: "",
           assignment: "",
+          assignmentVariables:[],
           copilotAssignment: "",
           modeRequirement: "",
           modeldoc: vdoc.modeldoc,
