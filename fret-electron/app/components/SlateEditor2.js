@@ -104,7 +104,7 @@ var fieldswithprop = fieldsoriginal.slice(); //copy fields (not pointer as only 
 fieldswithprop.splice(4, 0, { //add probability after "Shall"
   label: "Probability",
   key: "probability",
-  isRequired: true,
+  isRequired: false,
   isDisabled: false,
 });
 fieldswithprop.splice(0,1);

@@ -1,14 +1,13 @@
-#### Probability (mandatory)
+### Probability (optional)
 
-Specifies the probability assigned to the response field. 
+Specifies the probability assigned to the response field. The probability field can be left empty; i.e., the requirement is not probabilistic, or can be instantiated with the following phrase "**with probability** _RELATIONAL_OP_ _prob_num_", where:
 
-Supported options are:
-* **with probability** RELATIONAL_OP prob_num, which requires that the probability is above or below a given bound.
-* **with what probability**, which queries the probability bound or range such that the response is satisfied.
-
+* _RELATIONAL_OP_ is a numeric comparison operator;
+* _prob_num_ is a number between 0 and 1 inclusive.
 
 
-Examples:
-* robot shall with probability > 0.2 always satisfy action
-* robot shall with what probability always satisfy action
+#### EXAMPLES
 
+* The software shall **with probability > 0.9999** for 1000 seconds satisfy !error
+* Whenever error, the rover shall **with probability > 0.98** always satisfy ! collision
+* The rover shall **with probability < 0.01** eventually satisfy battery_depleted
