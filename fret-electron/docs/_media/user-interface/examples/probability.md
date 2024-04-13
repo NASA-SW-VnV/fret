@@ -1,6 +1,6 @@
 ### Probability (optional)
 
-Specifies the probability assigned to the response field. The probability field can be left empty; i.e., the requirement is not probabilistic, or can be instantiated with the following phrase "**with probability** _RELATIONAL_OP_ _prob_num_", where:
+Specifies the probability assigned to the timed response. The probability field can be left empty; i.e., the requirement is not probabilistic, or can be instantiated with the following phrase "**with probability** _RELATIONAL_OP_ _prob_num_", where:
 
 * _RELATIONAL_OP_ is a numeric comparison operator;
 * _prob_num_ is a number between 0 and 1 inclusive.
