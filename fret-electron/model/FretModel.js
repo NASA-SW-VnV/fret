@@ -1149,8 +1149,8 @@ export default class FretModel {
               //     per requirement. If, for example, a requirement contains an internal variable that is referrencing some input variable
               //     then, if we don't perform this step the resulting Lustre file will not have a variable declaration for the input.
               var modelVariables = [...doc.semantics.variables];
-              for (const modelDoc of localModelResult.docs) {
-                if (modelDoc.assignment && modelDoc.assignmentVariables && modelDoc.assignmentVariables.length > 0) {
+              for (const modelDoc of localModelResult.docs) {                
+                if (modelVariables.includes(modelDoc.variable_name) && modelDoc.assignment && modelDoc.assignmentVariables && modelDoc.assignmentVariables.length > 0) {
                   const assignmentVariables = modelDoc.assignmentVariables;
                   for (const assignVar of assignmentVariables) {
                     if (modelVariables.indexOf(assignVar) === -1) {
@@ -1160,7 +1160,7 @@ export default class FretModel {
                 }
               }
 
-              localModelResult.docs = localModelResult.docs.filter(modelDoc => (modelVariables.includes(modelDoc.variable_name)))
+              localModelResult.docs = localModelResult.docs.filter(modelDoc => (modelVariables.includes(modelDoc.variable_name)))              
 
               let contract = getContractInfo(localModelResult);
               contract.componentName = component+'Spec';
