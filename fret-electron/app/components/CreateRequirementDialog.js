@@ -78,6 +78,7 @@ import withFields from "../utils/withFields";
 import { createOrUpdateRequirement } from '../reducers/allActionsSlice';
 import { connect } from "react-redux";
 const constants = require('../parser/Constants');
+const app =require('@electron/remote').app
 
 var uuid = require('uuid');
 import { v1 as uuidv1 } from 'uuid';
@@ -288,15 +289,12 @@ class CreateRequirementDialog extends React.Component {
                   "semantics": semantics,
                   "input": input}});
 
-      try {
-        var content = JSON.stringify(doc, null, 4);
-        var blob = new Blob([content],{type:"text/plain;charset=utf-8"});
-        saveAs(blob,filepath);
-        ipcRenderer.send('closeFRET');
-      } catch (error) {
-        return console.log(error);
-      }
-
+      fs.writeFile(filepath, JSON.stringify(doc, null, 4), (err) => {
+          if(err) {
+            return console.log(err);
+          }
+          ipcRenderer.send('closeFRET');
+      })
     } else{
 
 

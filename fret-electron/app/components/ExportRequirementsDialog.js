@@ -117,23 +117,19 @@ class ExportRequirementsDialog extends React.Component {
     var argList = [project, output_format ]
     const channel = this.state.dataType === 'requirements' ? 'exportRequirements' : this.state.dataType === 'variables' ? 'exportVariables' : 'exportRequirementsAndVariables'
     ipcRenderer.invoke(channel, argList).then((result) => {
-      const fileName = 'fretRequirementsVariables.zip';
-      const zip = new JSZip();
-      console.log('Export RequirementDialogHandleExport result: ', result)
-
       result.forEach(file => {
-        zip.file(file.name, file.content)
-      })
-
-      zip.generateAsync({type:"blob"}).then(function(content) {
+        //var content = JSON.stringify(file.content, null, 4);
+        const content = file.content;
+        const fileName = file.name;
+        var blob = new Blob([content],{type:"text/plain;charset=utf-8"});
         // see FileSaver.js
-        saveAs(content, fileName);
+        saveAs(blob, fileName);
       });
 
 
 
     }).catch((err) => {
-      console.log(err);
+      console.log('error in ExportRequirementsDialog:handleExport: ', err);
     })
   }
 
