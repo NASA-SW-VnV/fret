@@ -86,9 +86,10 @@ class RealizabilityView extends React.Component {
   }
 
   handleLoadClick = async(event) => {
-    event.stopPropagation();
+
 
     try {
+      event.stopPropagation();
       const file = event.target.files[0]
       const fileExtension = file.name.split('.').pop().toLowerCase();
       if('json' === fileExtension) {
@@ -117,13 +118,13 @@ class RealizabilityView extends React.Component {
               Please choose a specific project or load an existing report
             </Typography>
             &nbsp;&nbsp;&nbsp;&nbsp;
-            <Button id="qa_rlzView_input_import" size="small"
+            <Button id="qa_rlzView_btn_load" size="small"
               variant="contained" color="secondary"
               onClick={(event) => this.loadRealizabilityReport.current.click(event)}>
                 Load
             </Button>
             <input
-                      id="qa_rlzView_input_import"
+                      id="qa_rlzView_input_load"
                       ref={this.loadRealizabilityReport}
                       type="file"
                       onClick={(event)=> {

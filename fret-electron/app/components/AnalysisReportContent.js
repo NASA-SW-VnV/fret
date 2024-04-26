@@ -76,13 +76,17 @@ const styles = theme => ({
 
 
 class AnalysisReportContent extends React.Component {
-	
-	state = {
-		selected: '',
-		ccSelected: '',
-		monolithic: false,
-		compositional: false
-	}
+
+  constructor(props){
+    super(props);
+    this.state = {
+      selected: '',
+      ccSelected: '',
+      monolithic: false,
+      compositional: false
+    }
+    this.loadNewReportInput = React.createRef();
+  }
 
 	componentDidUpdate(prevProps) {
 		if (this.props.importedReport !== prevProps.importedReport) {
@@ -90,7 +94,7 @@ class AnalysisReportContent extends React.Component {
 				selected: '',
 				ccSelected: '',
 				monolithic: false,
-				compositional: false							
+				compositional: false
 			})
 		}
 	}
@@ -103,7 +107,7 @@ class AnalysisReportContent extends React.Component {
 	        	ccSelected: isDecomposable ? 'cc0' : '',
 	        	monolithic: !isDecomposable,
 	        	compositional: isDecomposable
-	        });	                     
+	        });
 	    } else if (name === 'monolithic' && !this.state.monolithic) {
 	      this.setState({monolithic : !this.state.monolithic, compositional : false});
 	    } else if (name === 'compositional' && !this.state.compositional) {
@@ -127,7 +131,7 @@ class AnalysisReportContent extends React.Component {
 			if (compositional) {
 				for (const cc of selected.compositional.connectedComponents) {
 					tabs.push(
-						<Tab 
+						<Tab
 							key={cc.ccName}
 							value={cc.ccName}
 							label={
@@ -135,7 +139,7 @@ class AnalysisReportContent extends React.Component {
 									{cc.ccName}
 									&nbsp;
 									<ResultIcon reskey={cc.ccName} result ={cc.result} time={cc.time} error={cc.error}/>
-								</div>							
+								</div>
 							}
 						/>
 					)
@@ -146,7 +150,7 @@ class AnalysisReportContent extends React.Component {
 			diagStatus = monolithic ? selected.monolithic.diagnosisStatus : selected.compositional.connectedComponents[connectedComponentIndex].diagnosisStatus;
 			diagReport = monolithic ? selected.monolithic.diagnosisReport : selected.compositional.connectedComponents[connectedComponentIndex].diagnosisReport;
 		}
-		
+
 		return (
 			<div>
 				<Typography variant='h6'>
@@ -157,12 +161,12 @@ class AnalysisReportContent extends React.Component {
 					<Grid container alignItems="flex-end">
 						<FormControl className={classes.formControl}>
 							<InputLabel>System Component</InputLabel>
-							<Select value={selected} onChange={this.handleChange('selected')}>
+							<Select id="qa_analysisRptCont_sel_sysComp" value={selected} onChange={this.handleChange('selected')}>
 								{importedReport.systemComponents.map(sc => {
 									return(
 										<Tooltip key={sc.name} value={sc} title=''>
 											<span key={sc.name}>
-												<MenuItem key={sc.name}>
+												<MenuItem key={sc.name} id={"qa_rlzCont_mi_sysComp_"+sc.name}>
 													<div key={sc.name} style={{display : 'flex', alignItems : 'center'}}>
 														{sc.name}
 														&nbsp;
@@ -175,7 +179,7 @@ class AnalysisReportContent extends React.Component {
 								})}
 							</Select>
 						</FormControl>
-						<FormControlLabel 
+						<FormControlLabel
 							disabled={selected === '' || selected.compositional.connectedComponents.length <= 1}
 							control={
 								<Checkbox checked={compositional} onChange={this.handleChange('compositional')} color="primary"/>
@@ -191,10 +195,22 @@ class AnalysisReportContent extends React.Component {
 							style={{marginRight: '60%'}}
 						/>
 						<div>
-							<Button size="small" variant="contained" color="secondary" onClick={(event) => handleLoadClick(event)}>
+							<Button size="small" variant="contained" color="secondary" onClick={(event) =>
+                this.loadNewReportInput.current.click(event)}>
 								Load New Report
 							</Button>
-						</div>					
+              <input
+                id="qa_analysisRpt_input_newRpt"
+                ref={this.loadNewReportInput}
+                type="file"
+                onClick={(event)=> {
+                  event.target.value = null
+                }}
+                onChange={handleLoadClick}
+                style={{ display: 'none' }}
+                accept=".json"
+              />
+						</div>
 					</Grid>
 				</div>
 					{selected !== '' && selected !== 'all' &&
@@ -219,7 +235,7 @@ class AnalysisReportContent extends React.Component {
 				                  &nbsp;
 				                  &nbsp;
 				                </div>
-		                	}                  		
+		                	}
 		                  {compositional &&
 		                    <div>
 		                    <AppBar position="static" color="default">
@@ -248,8 +264,8 @@ class AnalysisReportContent extends React.Component {
 		                                &nbsp;
 		                              </div>
 		                            </Fade>) : <div/>
-		                          }                        
-		                          <DiagnosisRequirementsTable 
+		                          }
+		                          <DiagnosisRequirementsTable
 								  	rlzData={selected.requirements}
 		                            selectedProject={selectedProject}
 		                            selectedComponent={selected.name}
@@ -292,7 +308,7 @@ class AnalysisReportContent extends React.Component {
 		            }
 			</div>
 		);
-	}	
+	}
 }
 
 AnalysisReportContent.propTypes = {
