@@ -207,7 +207,7 @@ class ComponentSummary extends React.Component {
 
       zip.generateAsync({type:"blob"}).then(function(content) {
         // see FileSaver.js
-        saveAs(content, 'components.zip');
+        saveAs(content, component+'.zip');
       });
     }).catch((err) => {
       console.log(err);
@@ -221,7 +221,17 @@ class ComponentSummary extends React.Component {
     var args = [component, selectedProject, language];
 
     ipcRenderer.invoke('exportTestObligations', args).then((result) => {
-      this.setState({snackbarOpen: true, numberOfObligations: result})
+      this.setState({snackbarOpen: true, numberOfObligations: result.numOfObligations});
+      
+      const zip = new JSZip();
+      result.files.forEach(file => {
+        zip.file(file.name, file.content)
+      })
+      
+      zip.generateAsync({type:"blob"}).then(function(content) {
+        saveAs(content, component+'.zip');        
+      });  
+
     }).catch((err) => {
       console.log(err);
     })

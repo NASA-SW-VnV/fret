@@ -50,7 +50,6 @@ const fretDbGetters = require('./fretDbSupport/fretDbGetters_main');
 const populateVariables = require('./modelDbSupport/populateVariables_main')
 const requirementsImport = require('./requirementsImport/convertAndImportRequirements_main');
 
-const fs = require('fs');
 import { v1 as uuidv1 } from 'uuid';
 import FretSemantics from "../app/parser/FretSemantics";
 import {Default_Project_name} from "./requirementsImport/convertAndImportRequirements_main";
@@ -1094,99 +1093,72 @@ export default class FretModel {
 
   async exportTestObligations(evt, args) {
     let [component, selectedProject, language] = args;
-    const homeDir = app.getPath('home');
-    var filepath = dialog.showSaveDialogSync({
-          defaultPath : homeDir,
-          title : 'Export test obligations',
-          buttonLabel : 'Export',
-          filters: [
-            { name: "Documents", extensions: ['zip'] }
-          ],
-        });
+    const files = [];
+    return modelDB.find({
+        selector: {
+          component_name: component,
+          project: selectedProject,
+          completed: true, //for modes that are not completed; these include the ones that correspond to unformalized requirements
+          modeldoc: false
+        }
+      }).then(function (modelResult){
+        if (language === 'cocospec' && modelResult.docs[0].modelComponent != ""){
+          var variableMapping = getMappingInfo(modelResult, component+'Spec');
+          const file = {content: JSON.stringify(variableMapping, undefined, 4), name: 'cocospecMapping'+component+'.json' }            
+          files.push(file);
+        }
 
-      if (filepath) {
-        // create a file to stream archive data to.
-        var output = fs.createWriteStream(filepath);
-        var archive = archiver('zip', {
-          zlib: { level: 9 } // Sets the compression level.
-        });
-        // listen for all archive data to be written
-        // 'close' event is fired only when a file descriptor is involved
-        output.on('close', function() {
-          console.log('archiver has been finalized and the output file descriptor has closed.');
-        });
-        // good practice to catch this error explicitly
-        archive.on('error', function(err) {
-          throw err;
-        });
-
-        return modelDB.find({
+        return leveldbDB.find({
           selector: {
-            component_name: component,
-            project: selectedProject,
-            completed: true, //for modes that are not completed; these include the ones that correspond to unformalized requirements
-            modeldoc: false
+            project: selectedProject
           }
-        }).then(function (modelResult){
-          archive.pipe(output);
-          if (language === 'cocospec' && modelResult.docs[0].modelComponent != ""){
-            var variableMapping = getMappingInfo(modelResult, component+'Spec');
-            archive.append(JSON.stringify(variableMapping), {name: 'cocospecMapping'+component+'.json'});
-          }
+        }).then(function (fretResult){
+          function generateObligationFile(doc) {
+            var localModelResult = {...modelResult}
 
-          return leveldbDB.find({
-            selector: {
-              project: selectedProject
-            }
-          }).then(function (fretResult){
-            function generateObligationFile(doc) {
-              var localModelResult = {...modelResult}
-
-              //Gather only the relevant variables from the project's model db.
-              //This includes:
-              //  1. All the variables that appear explicitly in the FRETish requirements
-              //  2. All the variables that the internal variables depend on. This is important because we are generating a Lustre file
-              //     per requirement. If, for example, a requirement contains an internal variable that is referrencing some input variable
-              //     then, if we don't perform this step the resulting Lustre file will not have a variable declaration for the input.
-              var modelVariables = [...doc.semantics.variables];
-              for (const modelDoc of localModelResult.docs) {                
-                if (modelVariables.includes(modelDoc.variable_name) && modelDoc.assignment && modelDoc.assignmentVariables && modelDoc.assignmentVariables.length > 0) {
-                  const assignmentVariables = modelDoc.assignmentVariables;
-                  for (const assignVar of assignmentVariables) {
-                    if (modelVariables.indexOf(assignVar) === -1) {
-                      modelVariables.push(assignVar);
-                    }
+            //Gather only the relevant variables from the project's model db.
+            //This includes:
+            //  1. All the variables that appear explicitly in the FRETish requirements
+            //  2. All the variables that the internal variables depend on. This is important because we are generating a Lustre file
+            //     per requirement. If, for example, a requirement contains an internal variable that is referrencing some input variable
+            //     then, if we don't perform this step the resulting Lustre file will not have a variable declaration for the input.
+            var modelVariables = [...doc.semantics.variables];
+            for (const modelDoc of localModelResult.docs) {                
+              if (modelVariables.includes(modelDoc.variable_name) && modelDoc.assignment && modelDoc.assignmentVariables && modelDoc.assignmentVariables.length > 0) {
+                const assignmentVariables = modelDoc.assignmentVariables;
+                for (const assignVar of assignmentVariables) {
+                  if (modelVariables.indexOf(assignVar) === -1) {
+                    modelVariables.push(assignVar);
                   }
                 }
               }
-
-              localModelResult.docs = localModelResult.docs.filter(modelDoc => (modelVariables.includes(modelDoc.variable_name)))              
-
-              let contract = getContractInfo(localModelResult);
-              contract.componentName = component+'Spec';
-              
-  
-              contract.properties = getObligationInfo(doc, contract.outputVariables, component);
-              contract.delays = getDelayInfo(fretResult, component);
-              if (language === 'cocospec'){                
-                contract = variableIdentifierReplacement(contract);
-                archive.append(ejsCache.renderContractCode().contract.complete(contract), {name: contract.componentName+'_'+doc.reqid+'.lus'})
-              }
-              return contract.properties.length;              
             }
 
-            var filePromises = fretResult.docs.filter(resultDoc => resultDoc.semantics.component_name === component).map(filteredDoc => generateObligationFile(filteredDoc))
-            // finalize the archive (ie we are done appending files but streams have to finish yet)
+            localModelResult.docs = localModelResult.docs.filter(modelDoc => (modelVariables.includes(modelDoc.variable_name)))              
+
+            let contract = getContractInfo(localModelResult);
+            contract.componentName = component+'Spec';
             
-            return Promise.all(filePromises).then(numOfObligations => {
-              archive.finalize();
-              return numOfObligations.reduce((accumulator, currentValue) => { return accumulator + currentValue },0)
-            });
-          }).catch((err) => {
-            console.log(err);
-          })
-      })
-    }
+
+            contract.properties = getObligationInfo(doc, contract.outputVariables, component);
+            contract.delays = getDelayInfo(fretResult, component);
+            if (language === 'cocospec'){                
+              contract = variableIdentifierReplacement(contract);
+              const file = {content: ejsCache.renderContractCode().contract.complete(contract), name: contract.componentName+'_'+doc.reqid+'.lus' }
+              files.push(file);
+            }
+            return contract.properties.length;              
+          }
+
+          var filePromises = fretResult.docs.filter(resultDoc => resultDoc.semantics.component_name === component).map(filteredDoc => generateObligationFile(filteredDoc))       
+          
+          return Promise.all(filePromises).then(numOfObligations => {              
+            return {files: files, numOfObligations: numOfObligations.reduce((accumulator, currentValue) => { return accumulator + currentValue },0)}
+          });
+        }).catch((err) => {
+          console.log(err);
+        })
+    })
   }
 
   async selectCorspdModelComp(evt,args){       // TBD add tests
