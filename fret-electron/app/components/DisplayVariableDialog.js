@@ -177,6 +177,27 @@ class DisplayVariableDialog extends React.Component {
 
   handleClose = () => {
     this.state.dialogCloseListener(false);
+    // reset all states
+    this.setState({
+      focus: '',
+      description: '',
+      idType: '',
+      dataType: '',
+      assignment: '',
+      copilotAssignment: '',
+      moduleName: '',
+      modeRequirement: '',
+      modeldoc_id: '',            // not needed for Redux store
+      modelComponent: '',
+      errorsCopilot: '',
+      errorsLustre: '',
+      checkLustre: true,
+      checkCoPilot: false,
+      newVariablesDialogOpen: false,
+      newVariables: [],
+      copilotVariables: [],
+      lustreVariables: [],
+    })
   };
 
   handleUpdate = () => {

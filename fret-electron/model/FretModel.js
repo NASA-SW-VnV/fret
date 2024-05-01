@@ -629,7 +629,7 @@ export default class FretModel {
         console.log(err);
       });
       const content = this.getFileContent({requirements, variables}, output_format, project)
-      const file = {content: content, name: 'fretRequirementsVariables'+output_format }
+      const file = {content: content, name: 'fretRequirementsVariables.'+output_format }
       files.push(file);
 
       return files
@@ -654,7 +654,7 @@ export default class FretModel {
         console.log(err);
       });
       content = this.getFileContent(content, output_format, project);
-      const file = {content: content, name: 'fretVariables'+output_format }
+      const file = {content: content, name: 'fretVariables.'+output_format }
       files.push(file);
     //}
     return files
@@ -698,7 +698,7 @@ export default class FretModel {
         console.log(err);
       });
       const content = this.getFileContent(filteredResult, output_format, project);
-      const file = {content: content, name: 'fretRequirements'+output_format }
+      const file = {content: content, name: 'fretRequirements.'+output_format }
       files.push(file);
     //}
     return files
