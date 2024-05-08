@@ -40,7 +40,10 @@ Finally, run FRET:
 npm start #(or npm start --sandbox, if you encounter issues with Ubuntu 22.04 LTS or later)
 ```
 
-To install optional dependencies (NuSMV, Z3, jkind, kind2), do so using their **Linux** binaries. It appears that Windows binaries may also be usable, but we have not tested them extensively. From within the WSL Ubuntu distribution, download the respective binary to a folder of your choice and make it accessible by adding its full path to the distribution's PATH environment variable. For further details, consult our [Notes](installationInstructions.md#notes) section.
+To install optional dependencies ( [NuSMV](http://nusmv.fbk.eu/),
+ [JKind](https://github.com/andrewkatis/jkind-1/releases/latest),
+ [Kind 2](https://github.com/kind2-mc/kind2/blob/develop/README.rst),
+ [Z3](https://github.com/Z3Prover/z3/releases) ), do so using their **Linux** binaries. From within the WSL Ubuntu distribution, download the respective binary to a folder of your choice and make it accessible by adding its full path to the distribution's PATH environment variable. For further details, consult our [Notes](installationInstructions.md#notes) section.
 
 ## Cygwin
 
@@ -63,17 +66,27 @@ To do so, follow the Microsoft tutorial at https://docs.microsoft.com/en-us/wind
 
 ### Test the nvm Installation
 
-In a powershell, issue `nvm ls`. Unless you already have a version of nodejs installed under windows, no output should be produced.
+In a Powershell window, run 
+```
+nvm ls
+```
+Unless you already have a version of nodejs installed under windows, no output should be produced.
 
-Type `nvm list available` to show, which nodejs versions are available.
-For FRET, we suggest to install 10.15.0.
-This can be accomplished by `nvm install 10.15.0`.
+Type 
+```
+nvm list available
+```
+to show, which nodejs versions are available.
+For FRET, we suggest to install a version between 16.16.x and 18.18.x.
+This can be accomplished, for example by 
+
+```
+nvm install 16.16.0
+````
+
 After the installation, the `nvm ls` should list the installed version:
 
-<img src="./_media/screen_shots/nvm_installed_nodejs.png">
-
-
-Make sure that you select the version 10.15.X as the currently active one.
+<img src="../screen_shots/nvm_installed_nodejs.png">
 
 ### Download FRET
 
@@ -118,7 +131,7 @@ Similarly, type `gcc` in the terminal.
 It should respond with `gcc: fatal error: no input files`.
 If `command not found` is shown, the C compiler has not been installed properly.
 
-<img src="./_media/screen_shots/cygwin_test_prerequisites.png">
+<img src="../screen_shots/cygwin_test_prerequisites.png">
 
 ### Install FRET
 
@@ -133,7 +146,7 @@ failed) installation of FRET
 Finally, type `npm start` to launch FRET
 
 
-<img src="./_media/screen_shots/fret-on-windows.png">
+<img src="../screen_shots/fret-on-windows.png">
 
 
 Notes:
@@ -151,3 +164,6 @@ do a `npm run fret-reinstall`.
 The NuSMV model checker is necessary to run the LTL-simulator. To install NuSMV, download and install the Windows binary from https://nusmv.fbk.eu/ . After the installation is complete, make sure that NuSMV is accessible via the Windows terminal (PowerShell) by running 'nusmv -h'.
 
 
+[Back to FRET home page](../userManual.md)
+
+[Back to the FRET README](../../../../README.md)
