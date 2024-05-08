@@ -6,18 +6,12 @@ The FRET CLI was created to provide means of access to FRET features using a com
 2. Perform realizability checking of a system component and diagnosis of unrealizable components. All of the configuration options that are available in FRET area also available for use here (e.g. compositional realizability checking, engine options, saving reports).
 3. Output the metric temporal logic formula of choice, for a valid FRETish input.
 
-## Installation
-
-To enable access to the CLI, you need to build the corresponding component from source, using the following command under `fret/fret-electron`:
-
-```
-npm run build-cli
-```
-
 > [!NOTE]
 > In order to use the realizability checking feature, additional installation of dependencies is required. See the [realizability checking manual](../exports/realizabilityManual.md#dependencies) for further details.
 
-After the installation is completed, you have full access to the CLI using the command:
+## Usage
+
+Users have full access to the CLI using the following command under `fret/fret-electron`:
 
 ```
 npm run start-cli
@@ -26,7 +20,6 @@ npm run start-cli
 > [!TIP]
 > In order to minimize the required command's length, we recommend using the provided `sh` script under `fret/tools/Scripts/cli/fretcli`. Further modification of the script is required before it can be used. See the [script content](../../../../tools/Scripts/cli/fretcli) for further details.
 
-## Usage
 
 The main list of commands are shown below.
 
