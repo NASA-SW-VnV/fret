@@ -1,6 +1,6 @@
 # Exporting to Analysis tools
 
-For analysis or testing, FRET allows users to export requirements in formats that can be digested by other analysis tools. We have connected FRET with [CoCoSim](./cocosim.md) and [Copilot](./copilot.md) through the FRET analysis portal.
+For analysis, FRET allows users to export requirements in formats that can be digested by other analysis tools. We have connected FRET with [CoCoSim](./cocosim.md) and [Copilot](./copilot.md) through the FRET analysis portal.
 
 Below we present a step-by-step guide of the [FRET analysis portal](#fretanalysisportal).
 
@@ -64,11 +64,6 @@ No variable information is required for Copilot. Optionally, the user can follow
 
 ***4b. CoCoSpec code generation***
 
-For CoCoSpec, users have two export options:
-
-1. Verification Code: This option generates a CoCoSpec specification for the FRETish requirements of the selected system component.
-2. Test Obligations: This option generates one CoCoSpec file per FRETish requirement. Each file contains a set of test obligations that can be used in requirements-based testing frameworks to achieve coverage of the input FRETish requirement.
-
 To generate CoCoSpec code, for each variable, the following information must be entered by the user; i.e.,
 * data type (i.e., bool, int, real, etc),
 * variable type (i.e., input, output, internal, mode, function),
@@ -107,12 +102,11 @@ To complete the information of a variable, please click on the corresponding FRE
 
 **5. Click on the Export button and save the generated code**
 
-Once all mandatory fields have been completed for all the variables/modes of a component, then the export button becomes enabled for CoCoSpec code generation. Clicking the button exposes two options to choose from: generating verification code or test obligations.
+Once all mandatory fields have been completed for all the variables/modes of a component, then the export button becomes enabled for CoCoSpec code generation.
 
 ***
-<img src="../screen_shots/AnalysisPortal5_new.png">  
-<img src="../screen_shots/AnalysisPortal5_cocospec_options.png">
-
+<img src="../screen_shots/AnalysisPortal5.png"> 
+ 
 ***
 
 Since there are no mandatory fields for Copilot, the export buttons are always enabled.
