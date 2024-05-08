@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "description": "FRET",
   "scripts": {
-    "fret-install": "npm install && npm --prefix ../tools/LTLSIM/ltlsim-core install ../tools/LTLSIM/ltlsim-core",
+    "fret-install": "npm install && npm --prefix ../tools/LTLSIM/ltlsim-core install ../tools/LTLSIM/ltlsim-core && npm run build-cli",
     "fret-reinstall": "npm run clean && npm run fret-install",
     "clean": "test -f ./node_modules/.bin/rimraf && rimraf app/node_modules && rimraf ../tools/LTLSIM/ltlsim-core/node_modules && rimraf ../tools/LTLSIM/ltlsim-electron/node_modules && rimraf node_modules || true",
     "postinstall": "node -r @babel/register internals/scripts/CheckNativeDep.js && npm run flow-typed && npm run build-dll && electron-builder install-app-deps && node node_modules/fbjs-scripts/node/check-dev-engines.js package.json",
