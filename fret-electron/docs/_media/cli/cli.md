@@ -17,6 +17,12 @@ Users have full access to the CLI using the following command under `fret/fret-e
 npm run start-cli
 ```
 
+Some commands provide additional options (for example `-l` in `formalize` command). To pass these options to the the CLI app, instead of node, the command above must be slightly adjusted to
+
+```
+npm run start-cli --
+```
+
 > [!TIP]
 > In order to minimize the required command's length, we recommend using the provided `sh` script under `fret/tools/Scripts/cli/fretcli`. Further modification of the script is required before it can be used. See the [script content](../../../../tools/Scripts/cli/fretcli) for further details.
 
@@ -62,6 +68,36 @@ Options:
   -h, --help           display help for command
 ```
 
+An example run of the `realizability` command is shown below (the `--silent` option is used to supress output related to NodeJS).
+
+```
+fret/fret-electron$ npm run --silent start-cli -- realizability --solver jkind --diagnose --timeout 200 Liquid_mixer liquid_mixer
+Checking realizability for Liquid_mixer:liquid_mixer...
+
+Specification is unrealizable.
+Diagnosing unrealizable connected component: cc2 ...
+Result: UNREALIZABLE
+Number of connected components (cc): 6
+┌─────────┬────────────────┬──────────┐
+│ (index) │     Result     │   Time   │
+├─────────┼────────────────┼──────────┤
+│   cc0   │  'REALIZABLE'  │ '0.659s' │
+│   cc1   │  'REALIZABLE'  │ '0.81s'  │
+│   cc2   │ 'UNREALIZABLE' │ '0.609s' │
+│   cc3   │  'REALIZABLE'  │ '0.998s' │
+│   cc4   │  'REALIZABLE'  │ '0.904s' │
+│   cc5   │  'REALIZABLE'  │ '1.058s' │
+└─────────┴────────────────┴──────────┘
+
+Diagnosis results for connected component cc2:
+┌────────────┬──────────────────────┐
+│  (index)   │     Requirements     │
+├────────────┼──────────────────────┤
+│ Conflict 1 │ [ 'LM001', 'LM009' ] │
+└────────────┴──────────────────────┘
+```
+
+
 A detailed list of commands and options for the `formalize` command are shown below. The available `-l, --logic` values have the following meaning:
 
 - `ft-inf`: Pure Future-time Metric Temporal Logic (Infinite Trace)
@@ -82,4 +118,13 @@ Options:
   -l, --logic <value>        Formula logic (choices: "ft-inf", "ft-fin", "pt")
   -lang, --language <value>  Language for past-time (choices: "smv", "lustre")
   -h, --help                 display help for command
+```
+
+An example run using the `formalize` command can be seen below.
+
+```
+fret/fret-electron$ npm run --silent start-cli -- formalize -l ft-fin 'sw shall within 500 ticks satisfy x'
+
+((F[0,500] x) | (F[0,499] LAST))
+
 ```
