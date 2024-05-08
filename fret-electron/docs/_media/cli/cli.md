@@ -128,3 +128,7 @@ fret/fret-electron$ npm run --silent start-cli -- formalize -l ft-fin 'sw shall 
 ((F[0,500] x) | (F[0,499] LAST))
 
 ```
+
+[Back to FRET home page](../userManual.md)
+
+[Back to the FRET README](../../../../README.md)
