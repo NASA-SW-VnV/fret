@@ -34,12 +34,6 @@ const constants = require('../parser/Constants');
 const utilities = require('../../support/utilities');
 import csv from 'csv';
 
-// remove
-//const app =require('@electron/remote/main').app
-//const dialog =require('@electron/remote/main').dialog
-//const app =require('@electron/remote').app;
-//const dialog =require('@electron/remote').dialog;
-
 export const getRequirementStyle = (requirement, isNode) => {
   let style;
   if(!isNode) {
