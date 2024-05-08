@@ -19,6 +19,7 @@ FRET is a framework for the elicitation, specification, formalization and unders
 * [Exporting for analysis](./ExportingForAnalysis/analysis.md)
 * [Realizability checking](./exports/realizabilityManual.md)
 * [FRETish grammar](./fretishGrammar/index.html ':include width=100% height=800px')
+* [FRET Command Line Interface (CLI)](./cli/cli.md)
 
 #### FRET Example Requirements
 
