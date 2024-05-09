@@ -47,6 +47,8 @@ Commands:
   help [command]                                 display help for command
 ```
 
+
+## Realizability checking
 A detailed list of commands and options for the `realizability` command are shown below.
 
 ```
@@ -97,7 +99,7 @@ Diagnosis results for connected component cc2:
 └────────────┴──────────────────────┘
 ```
 
-
+## Generating formalizations
 A detailed list of commands and options for the `formalize` command are shown below. The available `-l, --logic` values have the following meaning:
 
 - `ft-inf`: Pure Future-time Metric Temporal Logic (Infinite Trace)

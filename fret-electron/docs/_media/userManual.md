@@ -10,16 +10,18 @@ FRET is a framework for the elicitation, specification, formalization and unders
 
 
 * [Installing FRET](./installingFRET/installationInstructions.md)
-* [FRET interface](./user-interface/tutorial.md)
-* [Writing requirements](./user-interface/writingReqs.md)
-* [Importing requirements](./user-interface/exportImport/import.md)
-* [Exporting requirements](./user-interface/exportImport/export.md)
-* [Semantics](./semantics/semanticsOverview.md)
-* [Using the simulator](./UsingTheSimulator/ltlsim.md)
-* [Exporting for analysis](./ExportingForAnalysis/analysis.md)
-* [Realizability checking](./exports/realizabilityManual.md)
-* [FRETish grammar](./fretishGrammar/index.html ':include width=100% height=800px')
+* [FRETish grammar](./fretishGrammar/index.pdf)
+* [FRET Graphical User Interface (GUI)](./user-interface/tutorial.md)
+    * [Writing requirements](./user-interface/writingReqs.md)
+    * [Importing requirements](./user-interface/exportImport/import.md)
+    * [Exporting requirements](./user-interface/exportImport/export.md)
+    * [Semantics](./semantics/semanticsOverview.md)
+    * [Using the simulator](./UsingTheSimulator/ltlsim.md)
+    * [Exporting for analysis](./ExportingForAnalysis/analysis.md)
+    * [Realizability checking](./exports/realizabilityManual.md)
 * [FRET Command Line Interface (CLI)](./cli/cli.md)
+    * [Generating Formalizations](./cli/cli.md#Generating-formalizations)
+    * [Realizability checking](./cli/cli.md#Realizability-checking)
 
 #### FRET Example Requirements
 
