@@ -14,7 +14,7 @@ We thank the community for using FRET. [Here](#external-publications) is a list 
 ### Case studies
 
 * Gricel Vazquez, Anastasia Mavridou, Marie Farrell, Tom Pressurger, Radu Calinescu.
-Robotics: A New Mission for FRET Requirements,
+[Robotics: A New Mission for FRET Requirements](https://pure.manchester.ac.uk/ws/portalfiles/portal/298664527/NFM2024.pdf),
 NFM 2024.
 
 * Mohammad Hejase, Andreas Katis, Anastasia Mavridou.
@@ -22,7 +22,7 @@ NFM 2024.
 AIAA SCITECH 2024.
 
 * Irfan Sljivo, Anastasia Mavridou, Johann Schumann, Ivan Perez, Pavlo G. Vlastos, Corey Carter.
-[Dynamic Assurance of Autonomous Systems through Ground Control Software](https://arc.aiaa.org/doi/abs/10.2514/6.2024-1208), AIAA SCITECH 2024.
+[Dynamic Assurance of Autonomous Systems through Ground Control Software](https://ntrs.nasa.gov/api/citations/20230018233/downloads/SciTech2024_Final.pdf), AIAA SCITECH 2024.
 
 * Thomas Pressburger, Andreas Katis, Aaron Dutle, Anastasia Mavridou.
 [Authoring, Analyzing, and Monitoring Requirements for a Lift-Plus-Cruise Aircraft](https://link.springer.com/chapter/10.1007/978-3-031-29786-1_21),
@@ -99,7 +99,7 @@ REFSQ 2023.
 ### External publications
 
 * Nathaniel Benz, Irfan Sjivo, Pavlo G. Vlastos, Aaron Woodard, Corey Carter, Mohammad Hejase.
-[The Troupe System: An autonomous multi-agent rover swarm](https://arc.aiaa.org/doi/abs/10.2514/6.2024-2894),
+[The Troupe System: An autonomous multi-agent rover swarm](https://ntrs.nasa.gov/api/citations/20240000218/downloads/SciTech_2024_TroupeSystem.pdf),
 AIAA SCITECH 2024.
 
 * Austin B. Probe, S. Will Chambers, Amalaye Oyake, Matthew Deans, Guillaume Brat, Nick Cramer, Brian Kempa, Brian Roberts, Kimberly Hambuchen.
@@ -128,7 +128,7 @@ the Integration of FRET and PLCverif,
 NFM 2024.
 
 * Gricel Vazquez, Anastasia Mavridou, Marie Farrell, Tom Pressurger, Radu Calinescu.
-Robotics: A New Mission for FRET Requirements,
+[Robotics: A New Mission for FRET Requirements](https://pure.manchester.ac.uk/ws/portalfiles/portal/298664527/NFM2024.pdf),
 NFM 2024.
 
 * Mohammad Hejase, Andreas Katis, Anastasia Mavridou.
@@ -136,10 +136,10 @@ NFM 2024.
 AIAA SCITECH 2024.
 
 * Irfan Sljivo, Anastasia Mavridou, Johann Schumann, Ivan Perez, Pavlo G. Vlastos, Corey Carter.
-[Dynamic Assurance of Autonomous Systems through Ground Control Software](https://arc.aiaa.org/doi/abs/10.2514/6.2024-1208), AIAA SCITECH 2024.
+[Dynamic Assurance of Autonomous Systems through Ground Control Software](https://ntrs.nasa.gov/api/citations/20230018233/downloads/SciTech2024_Final.pdf), AIAA SCITECH 2024.
 
 * Nathaniel Benz, Irfan Sjivo, Pavlo G. Vlastos, Aaron Woodard, Corey Carter, Mohammad Hejase.
-[The Troupe System: An autonomous multi-agent rover swarm](https://arc.aiaa.org/doi/abs/10.2514/6.2024-2894),
+[The Troupe System: An autonomous multi-agent rover swarm](https://ntrs.nasa.gov/api/citations/20240000218/downloads/SciTech_2024_TroupeSystem.pdf),
 AIAA SCITECH 2024.
 
 * Austin B. Probe, S. Will Chambers, Amalaye Oyake, Matthew Deans, Guillaume Brat, Nick Cramer, Brian Kempa, Brian Roberts, Kimberly Hambuchen.
