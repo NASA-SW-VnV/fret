@@ -13,6 +13,17 @@ We thank the community for using FRET. [Here](#external-publications) is a list 
 
 ### Case studies
 
+* Gricel Vazquez, Anastasia Mavridou, Marie Farrell, Tom Pressurger, Radu Calinescu.
+Robotics: A New Mission for FRET Requirements,
+NFM 2024.
+
+* Mohammad Hejase, Andreas Katis, Anastasia Mavridou.
+[Design, formalization, and verification of decision making for intelligent systems](https://arc.aiaa.org/doi/abs/10.2514/6.2024-2409),
+AIAA SCITECH 2024.
+
+* Irfan Sljivo, Anastasia Mavridou, Johann Schumann, Ivan Perez, Pavlo G. Vlastos, Corey Carter.
+[Dynamic Assurance of Autonomous Systems through Ground Control Software](https://arc.aiaa.org/doi/abs/10.2514/6.2024-1208), AIAA SCITECH 2024.
+
 * Thomas Pressburger, Andreas Katis, Aaron Dutle, Anastasia Mavridou.
 [Authoring, Analyzing, and Monitoring Requirements for a Lift-Plus-Cruise Aircraft](https://link.springer.com/chapter/10.1007/978-3-031-29786-1_21),
 REFSQ 2023.
@@ -51,6 +62,10 @@ NASA/TM–20220017032, April 2023.
 
 ### Connection with verification tools
 
+* Xaver Fink, Anastasia Mavridou, Andreas Katis, Borja Fernandez Adiego.
+Verifying PLC Programs via Monitors: Extending
+the Integration of FRET and PLCverif, NFM 2024.
+
 * Zsófia Ádám, Ignacio D. Lopez-Miguel, Anastasia Mavridou, Thomas Pressburger, Marcin Bęś, Enrique Blanco Viñuela, Andreas Katis, Jean-Charles Tournier, Khanh V. Trinh, Borja Fernandez Adiego.
 [From Natural Language Requirements to the Verification of Programmable Logic Controllers: Integrating FRET into PLCverif](https://link.springer.com/chapter/10.1007/978-3-031-33170-1_21),
 NFM 2023.
@@ -83,6 +98,13 @@ REFSQ 2023.
 
 ### External publications
 
+* Nathaniel Benz, Irfan Sjivo, Pavlo G. Vlastos, Aaron Woodard, Corey Carter, Mohammad Hejase.
+[The Troupe System: An autonomous multi-agent rover swarm](https://arc.aiaa.org/doi/abs/10.2514/6.2024-2894),
+AIAA SCITECH 2024.
+
+* Austin B. Probe, S. Will Chambers, Amalaye Oyake, Matthew Deans, Guillaume Brat, Nick Cramer, Brian Kempa, Brian Roberts, Kimberly Hambuchen.
+[Space ROS: An Open-Source Framework for Space Robotics and Flight Software](https://ntrs.nasa.gov/api/citations/20220017761/downloads/Space_ROS_SciTech.pdf), AIAA SCITECH 2023.
+
 * Joseph Kiniry, Alexanders Bakst, Simon Hansen, Michal Podhradsky, and Andrew Bivin. [The HARDENS Final Report](https://github.com/GaloisInc/HARDENS/blob/develop/docs/HARDENS_Final_Report_Jan_2023.pdf), Galois Inc Technical Report, January 2023.
 
 * Zsófia Ádám. [Formulating Requirements with FRET for PLCVerif](https://cds.cern.ch/record/2826074/files/cern_report_zsofia_adam.pdf), CERN (European Organization for Nuclear Research) Technical Report, September 2022.
@@ -100,6 +122,28 @@ REFSQ 2023.
 
 # Chronological Publication List
 -----------------------------------
+* Xaver Fink, Anastasia Mavridou, Andreas Katis, Borja Fernandez Adiego.
+Verifying PLC Programs via Monitors: Extending
+the Integration of FRET and PLCverif,
+NFM 2024.
+
+* Gricel Vazquez, Anastasia Mavridou, Marie Farrell, Tom Pressurger, Radu Calinescu.
+Robotics: A New Mission for FRET Requirements,
+NFM 2024.
+
+* Mohammad Hejase, Andreas Katis, Anastasia Mavridou.
+[Design, formalization, and verification of decision making for intelligent systems](https://arc.aiaa.org/doi/abs/10.2514/6.2024-2409),
+AIAA SCITECH 2024.
+
+* Irfan Sljivo, Anastasia Mavridou, Johann Schumann, Ivan Perez, Pavlo G. Vlastos, Corey Carter.
+[Dynamic Assurance of Autonomous Systems through Ground Control Software](https://arc.aiaa.org/doi/abs/10.2514/6.2024-1208), AIAA SCITECH 2024.
+
+* Nathaniel Benz, Irfan Sjivo, Pavlo G. Vlastos, Aaron Woodard, Corey Carter, Mohammad Hejase.
+[The Troupe System: An autonomous multi-agent rover swarm](https://arc.aiaa.org/doi/abs/10.2514/6.2024-2894),
+AIAA SCITECH 2024.
+
+* Austin B. Probe, S. Will Chambers, Amalaye Oyake, Matthew Deans, Guillaume Brat, Nick Cramer, Brian Kempa, Brian Roberts, Kimberly Hambuchen.
+[Space ROS: An Open-Source Framework for Space Robotics and Flight Software](https://ntrs.nasa.gov/api/citations/20220017761/downloads/Space_ROS_SciTech.pdf), AIAA SCITECH 2023.
 
 * Zsófia Ádám, Ignacio D. Lopez-Miguel, Anastasia Mavridou, Thomas Pressburger, Marcin Bęś, Enrique Blanco Viñuela, Andreas Katis, Jean-Charles Tournier, Khanh V. Trinh, Borja Fernandez Adiego.
 [From Natural Language Requirements to the Verification of Programmable Logic Controllers: Integrating FRET into PLCverif](https://link.springer.com/chapter/10.1007/978-3-031-33170-1_21),

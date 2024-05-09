@@ -21,6 +21,7 @@ Alumni and Interns
 * Julian Rhein
 * Daniel Riley
 * Nija Shi
+* Gricel Vazquez
 
 
 FRET Before Open Sourcing
