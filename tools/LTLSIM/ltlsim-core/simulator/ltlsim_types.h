@@ -10,10 +10,8 @@
 #include <string.h>
 #include <stdbool.h>
 
-//JSC #define MAX_EXPRESSION_LENGTH 512 //!< Maximum number of characters for expressions
 #define MAX_EXPRESSION_LENGTH 65536 //!< Maximum number of characters for expressions ttp:was 4096
 #define MAX_IDENTIFIER_LENGTH 128 //!< Maximum number of characters for idetifiers
-//JSC #define MAX_COMMAND_LENGTH 660 //!< Maximum length of commands
 #define MAX_COMMAND_LENGTH (MAX_EXPRESSION_LENGTH+MAX_IDENTIFIER_LENGTH) //!< Maximum length of commands
 #define MAX_FORMULAS 128 //!< Maximum number of formulas
 #define MAX_ATOMICS 128 //!< Maximum number of atomics

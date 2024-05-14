@@ -71,13 +71,10 @@ const styles = theme => ({
     nametipAnchor: {
         position: 'absolute',
         top: '50%',
-//JSC/CAV        left: 30,
         left: 100,
         width: 60,
-//JSC/CAV        height: 30,
         height: 130,
         marginTop: -15,
-//JSC/CAV        marginLeft: -30,
         marginLeft: -80,
     },
     nametip:{
@@ -108,7 +105,6 @@ const styles = theme => ({
     }
 })
 
-//JSC/CAV const maxNameLength = 5;
 const maxNameLength = 7;
 
 function EmptyTooltip(props) {
@@ -211,34 +207,6 @@ class TimeSeriesChart extends Component {
 				}
 			}
 
-/*JSC-0420-01
-            this.setState((prevState) => {  
-                if (!this.state.dragWasActive) {
-		    if (chart_type == "category"){
-	                    data[dataIndex] = (data[dataIndex]) ? 0 : 1;
-			    }
-		    else {
-//JSC/CAV                    	data[dataIndex] = data[dataIndex] + 0.1
-//JSC/CAV		    	if (data[dataIndex] > 1.0){
-//JSC/CAV			 	data[dataIndex] = 0.0
-//JSC/CAV				}
-
-                    	data[dataIndex] = data[dataIndex] + 1.0
-		    	if (data[dataIndex] > chart_maxval){
-			 	data[dataIndex] = chart_minval
-				}
-console.log("TSChart: handleMouseUp:setState:number "+data[dataIndex]);
-console.log("TSChart: handleMouseUp:setState:number "+NV);
-
-//JSC-0419			data[dataIndex] = NV;
-			}
-                }
-                return {
-                    data
-                };
-            });
-*/
-
             this.props.onChange(dataKey, dataIndex, data, NV);
         }
         this.setState({
@@ -294,15 +262,10 @@ console.log("TSChart: handleMouseUp:setState:number "+NV);
     }
 
     handleMouseOverDot(event) {
-	// console.log("over-dot")
-	// console.log(event)
-	// console.log("over-dot1")
         if (event) {
-	    // console.log("over-dot + event")
             const { dataKey } = this.props;
             const dataIndex = event.activeTooltipIndex;
             let data  = this.state.data.slice();
-	    // console.log("OVER: "+ dataIndex)
         }
     }
 
@@ -311,13 +274,12 @@ console.log("TSChart: handleMouseUp:setState:number "+NV);
         const primaryColor = theme.palette.primary.main;
         const secondaryColor = theme.palette.secondary.main;
 
-	const JSCEmptyTooltip = ({ active, payload, label }) => {
+	const TSCTooltip = ({ active, payload, label }) => {
 	if (active) {
 	   if (this.props.chart_type == "category"){
 		return null;
 		}
 	   else {
-		// console.log("tooltip "+this.props.chart_type + " "+payload[0].value)
 		return (
 			<div className="custom-tooltip">
 				<p className="label">{payload[0].value}</p>
@@ -394,22 +356,14 @@ console.log("TSChart: handleMouseUp:setState:number "+NV);
                             }
                         ))
 	    dataKey="VAL"
-//JSC/CAV	    lineType="linear"
+		// optional: linear interpolation for analog traces    lineType="linear"
 	    lineType="step"
 	     }
-//	console.log(data)
-//                    <YAxis
-//                        type="category"
-//                        minTickGap={0}
-//                        dataKey="VAL">
-//                        <Label value={name}/>
-//                    </YAxis>
+
 //-------------------customizedlabel----------------
 const CustomizedLabel: FunctionComponent<any> = (props: any) => {
   const { x, y, stroke, value, chart_type, chart_minval, chart_maxval } = props;
 
-
-  // console.log("CUST-LABEL=" + chart_type)
 
   if (chart_type == "category"){
     return null;
@@ -423,24 +377,17 @@ const CustomizedLabel: FunctionComponent<any> = (props: any) => {
     }
 };
 
-//-------------------customizedlabel----------------
+//-------------------/customizedlabel----------------
 
-        let longName = this.props.name.length > maxNameLength;
+      let longName = this.props.name.length > maxNameLength;
       let Oname = ID_to_arithexpr(utils.unreplace_special_chars(this.props.name));
         let name = (longName) ? Oname.slice(0, maxNameLength-1) + "..." : Oname;
-//console.log("TSC:render: longName="+longName);
-//console.log("TSC:render: origname="+this.props.name);
-//console.log("TSC:render: name="+name);
-//console.log("TSC:render: expression="+expression);
 
         let nameTip = (longName || expression) ? 
                         <div>
                             {((longName) ? Oname + ((expression) ? ": " : "") : "")}
                             {(expression) ? Oname : "" }
                         </div> : null;
-//JSC0420                            {(expression) ? <FormulaRenderer tex={expression}/>: null}
-
-//JSC/CAV            <ResponsiveContainer width="99%" height={75} debounce={0}>
         return (
             <div className={classNames(classes.wrapper, classes.unselectable)}>
 
@@ -448,7 +395,6 @@ const CustomizedLabel: FunctionComponent<any> = (props: any) => {
                 <LineChart
                     id={"qa_ltlSim_lc_"+this.props.name.slice(0, 4)}
                     syncId={this.props.syncId}
-//JSC/CAV                    margin={{top: 10, right: 10, left: 0, bottom: 10}} 
                     margin={{top: 10, right: 10, left: 30, bottom: 10}} 
                     data={data}
                     onClick={(this.props.onClick) ? this.handleClick : undefined}
@@ -462,7 +408,7 @@ const CustomizedLabel: FunctionComponent<any> = (props: any) => {
                                     strokeWidth: 4,
                                     strokeOpacity: 0.25,
                                     fill: "none" }} 
-                        content={<JSCEmptyTooltip />}
+                        content={<TSCTooltip />}
                     />
                     <CartesianGrid strokeDasharray="3 3" fill={fill} fillOpacity="0.4"/>
                     <XAxis
@@ -474,7 +420,6 @@ const CustomizedLabel: FunctionComponent<any> = (props: any) => {
                     <YAxis
                         id={"qa_ltlSim_yaxis_"+this.props.name.slice(0, 4)}
 			type={chart_type}
-//JSC/CAV			domain={[0,1]}
 			domain={[chart_minval,chart_maxval]}
                         minTickGap={0}
                         dataKey={dataKey}

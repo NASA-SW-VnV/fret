@@ -51,7 +51,7 @@ class LTLSimAddTraceDialog extends Component {
         super(props)
         this.state = {
             reqID: "",				// RO req ID
-            traceID: "",				// user defined label
+            traceID: "",			// user defined label
             traceDescription: "",		// user defined description
             trace: "",
 	          saveTo: "",
@@ -62,13 +62,10 @@ class LTLSimAddTraceDialog extends Component {
         this.handleSave = this.handleSave.bind(this);
         this.handleTraceIDChange = this.handleTraceIDChange.bind(this);
         this.handleTraceDescriptionChange = this.handleTraceDescriptionChange.bind(this);
-//        this.handleExpressionChange = this.handleExpressionChange.bind(this);
     }
 
     handleTraceIDChange = event => {
         const label = event.target.value;
-//        const oldLabel = this.state.oldLabel;
-//        const labelError = testLabel(label, oldLabel, formulaKeys);
         this.setState({
           traceID: label
         });
@@ -76,16 +73,12 @@ class LTLSimAddTraceDialog extends Component {
 
     handleTraceDescriptionChange = event => {
         let newDescription = event.target.value;
-	//console.log("TRACE_DESCR: " + newDescription);
         this.setState({
           traceDescription: newDescription
         });
     };
 
     resetState() {
-//        const {fkey, model} = this.props;
-//        let formula = LTLSimController.getFormula(model, fkey);
-//        const expression = (formula === undefined) ? "" : formula.expression;
         this.setState({
 	    anchorEl_save: null,
 	    tosave: false
@@ -93,20 +86,15 @@ class LTLSimAddTraceDialog extends Component {
     }
 
     handleCancel() {
-	//console.log("LTLSIM-TRACE-DIALOG-cancel")
-	//console.log(this.props)
         this.resetState();
         this.props.onCancel();
     }
 
     handleSave() {
-	//console.log("LTLSIM-TRACE-DIALOG-Save")
-	//console.log(this.props)
         this.props.onSave(this.state);
     }
 
     componentWillReceiveProps() {
-//        this.resetState();
         this.setState({
 	    tosave: false,
 	    reqID: this.props.reqID,
@@ -238,12 +226,6 @@ class LTLSimAddTraceDialog extends Component {
         )
     }
 }
-//                    <Button
-//                        disabled={false}   // {this.state.tosave === 0}
-//                        onClick={this.handleSave}
-//                        color="secondary">
-//                        Save to Requirement
-//                    </Button>
 
 LTLSimAddTraceDialog.propTypes = {
     classes: PropTypes.object.isRequired,
@@ -254,7 +236,6 @@ LTLSimAddTraceDialog.propTypes = {
     reqID: PropTypes.string.isRequired,
     traceID: PropTypes.string.isRequired,
     traceDescription: PropTypes.string.isRequired
-//    saveTo: PropTypes.string
 }
 
 export default LTLSimAddTraceDialog

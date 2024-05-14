@@ -100,9 +100,7 @@ LTLAnalyzer.prototype.visitPlHolders = function(ctx) {
  
 // Visit a parse tree produced by LTLSIM_NuSMVParser#boolCompare.
 LTLSIM_NuSMVVisitor.prototype.visitBoolCompare = function(ctx) {
-// TODO:
 	let arithabbr = this.handleArithExpression(ctx);
-	//JSC-01return arithabbr.text;
 	return {text: arithabbr.text, code: ""};
 }; 
 
@@ -113,7 +111,6 @@ LTLSIM_NuSMVVisitor.prototype.visitSimpleBoolExpr = function(ctx) {
 
 
   // Visit a parse tree produced by NuSMVParser#simpleExpr.
-//TODO
   LTLAnalyzer.prototype.visitSimpleExpr = function(ctx) {
 	if (isArithExpression(ctx)){
 		let arithabbr = this.handleArithExpression(ctx);
@@ -272,13 +269,11 @@ LTLSIM_NuSMVVisitor.prototype.visitSimpleBoolExpr = function(ctx) {
 // Visit a parse tree produced by LTLSIM_NuSMVParser#LParith.
 LTLSIM_NuSMVVisitor.prototype.visitLParith = function(ctx) {
     return {text: ctx.getText() + " " , code: ""};
-   // return "lp";
 };
 
 // Visit a parse tree produced by LTLSIM_NuSMVParser#RParith.
 LTLSIM_NuSMVVisitor.prototype.visitRParith = function(ctx) {
     return {text: ctx.getText() + " " , code: ""};
-   // return "rp";
 };
 
   
@@ -361,21 +356,21 @@ LTLAnalyzer.prototype.handleArithExpression = function(ctx) {
     	var Lexpr = {text: "", code:[]};
       Lexpr.text = '';
     	Lexpr.code = [];
-console.log("handleArithExpression:")
-console.log(ctx.getText())
-console.log(ctx.children[0].children.length)
-console.log("CH0: "+ctx.children[0].getText());
-console.log("CH1: "+ctx.children[1].getText());
-console.log("CH2: "+ctx.children[2].getText());
-console.log(ctx.children[0].children)
+// console.log("handleArithExpression:")
+// console.log(ctx.getText())
+// console.log(ctx.children[0].children.length)
+// console.log("CH0: "+ctx.children[0].getText());
+// console.log("CH1: "+ctx.children[1].getText());
+// console.log("CH2: "+ctx.children[2].getText());
+// console.log(ctx.children[0].children)
 	if (ctx.children[0].children.length > 0){
     	    var C= this.visitChildren(ctx.children[0]);
-console.log("CHILD:")
-console.log(C)
-console.log("/CHILD:")
+// console.log("CHILD:")
+// console.log(C)
+// console.log("/CHILD:")
 
 	    if (C[0] == undefined){
-console.log("C undefined")
+// console.log("C undefined")
 		Lexpr.text = ctx.children[0].getText();
 		Lexpr.code = Lexpr.text;
 		// is a Terminal
@@ -389,12 +384,12 @@ console.log("C undefined")
     			}
 		}
 	    else {
-console.log("C not undefined")
+// console.log("C not undefined")
 	
 	    var i=0;
             while (i < C.length){
                 var child = C[i];
-console.log(child)
+// console.log(child)
         	if (child != null && child != undefined) {
             		Lexpr.text += child.text;
             		Lexpr.code = Lexpr.code.concat(child.code);
@@ -404,26 +399,26 @@ console.log(child)
 	     }
 	    }
 	else {
-console.log("NO1")
+// console.log("NO1")
 	    Lexpr.text = ctx.children[0].getText();
 	    Lexpr.code  = [ "NO1_"+ Lexpr.text];
 	    }
 	     
-console.log("LExpr="+Lexpr.text)
-console.log("LExpr="+Lexpr.code)
+// console.log("LExpr="+Lexpr.text)
+// console.log("LExpr="+Lexpr.code)
 
 
     	var Rexpr = {text: "", code:[]};
 
-console.log(ctx.children[2])
-console.log(this.visit(ctx.children[2]))
+// console.log(ctx.children[2])
+// console.log(this.visit(ctx.children[2]))
 	if (ctx.children[2].children.length > 1){
     	    var C= this.visitChildren(ctx.children[2]);
-console.log(C)
+// console.log(C)
 	    i=0;
             while (i < C.length){
                 var child = C[i];
-console.log(child)
+// console.log(child)
         	if (child != null && child != undefined) {
             		Rexpr.text += child.text;
 			          Rexpr.code = Rexpr.code.concat(child.code);
@@ -432,12 +427,12 @@ console.log(child)
 	        }
 	    }
 	else {
-console.log("NO2")
+// console.log("NO2")
 	    Rexpr.text = ctx.children[2].getText();
 	    Rexpr.code = [ "NO2_" + Rexpr.text];
 	    }
-console.log("RExpr="+Rexpr.text)
-console.log("RExpr="+Rexpr.code)
+// console.log("RExpr="+Rexpr.text)
+// console.log("RExpr="+Rexpr.code)
 
 //	let Lexpr = ctx.children[0].getText();
 //	let Rexpr = ctx.children[2].getText();
@@ -452,17 +447,17 @@ console.log("RExpr="+Rexpr.code)
 
 	let code = Lexpr.code.concat(Rexpr.code.concat(CMP));
 	
-	console.log("handleArithExpr: code=")
-	console.log(code)
-	console.log("handleArithExpr: text=")
-	console.log(abbr)
+// 	console.log("handleArithExpr: code=")
+// 	console.log(code)
+// 	console.log("handleArithExpr: text=")
+// 	console.log(abbr)
 	
 
-	console.log("this")
-	console.log(this)
+// 	console.log("this")
+// 	console.log(this)
 
       	let s = abbr.trim();
-	console.log("handleArith:" + s)
+// 	console.log("handleArith:" + s)
       	if (this.abbr.indexOf(s) === -1 && this.abbr.indexOf(s) === -1) {
        		this.abbr.push(s);
 		}
@@ -511,7 +506,7 @@ LTLAnalyzer.prototype.handleArithExpression = function(ctx) {
 
 // Visit a parse tree produced by LTLSIM_NuSMVParser#arith.
 LTLSIM_NuSMVVisitor.prototype.visitArith = function(ctx) {
-// NUMBER in arith
+	// NUMBER in arith
   var pARITH=ctx.getText().replace(/\./,"_D_");
   return {text: pARITH + " ", code: "ARITH"+ctx.getText()};
 };
@@ -520,27 +515,23 @@ LTLSIM_NuSMVVisitor.prototype.visitArith = function(ctx) {
 // Visit a parse tree produced by LTLSIM_NuSMVParser#arithGroup.
 LTLSIM_NuSMVVisitor.prototype.visitArithGroup = function(ctx) {
   return this.visitSubExpr(ctx);
-  // return {text: ctx.getText() + " ", code: "ARITHGRP"};
 };
 
 
 // Visit a parse tree produced by LTLSIM_NuSMVParser#arithBinary.
 LTLSIM_NuSMVVisitor.prototype.visitArithBinary = function(ctx) {
     return this.visitSubExpr(ctx);
-    // return {text: ctx.getText() + "FOOBAR ", code: ctx.getText()};
 };
 
 // Visit a parse tree produced by LTLSIM_NuSMVParser#arithUnary.
 LTLSIM_NuSMVVisitor.prototype.visitArithUnary = function(ctx) {
     return this.visitSubExpr(ctx);
-    // return {text: ctx.getText() + " ", code: ctx.getText()};
 };
 
 
 // Visit a parse tree produced by LTLSIM_NuSMVParser#arithTerm.
 LTLSIM_NuSMVVisitor.prototype.visitArithTerm = function(ctx) {
   let ID = ctx.children[0];
-//        (ctx.children[ctx.children.length-1] instanceof RpContext);
   let atomic = ID.getText();
   if (this.atomics_name.indexOf(atomic) === -1) {
       this.atomics_name.push(atomic);

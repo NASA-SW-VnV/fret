@@ -484,7 +484,7 @@ class LTLSimDialog extends Component {
 
 		}
 	else {
-		console.log("TODO: updating existing trace");
+		// updating existing traces file, i.e. overwrite
 		const newActiveTraces = activeTraces;
 
 	        var JTrace = JSON.stringify(newActiveTraces, null, 4)
@@ -894,7 +894,8 @@ console.log("TODO: update the traces")
 
 
     //===============================================================
-// TODO 082023
+    // function handleSelectTask
+    //
     // setting trace to named trace (existing)
     handleSelectTask(name){
       this.setState(() => {
@@ -913,13 +914,14 @@ console.log("TODO: update the traces")
 		traceDescription: NC.traceDescription
 		};
 	}, () => {
-//		this.handleLtlsimSimulate();
 		this.update();
 		}
 	    );
       	}
 
     //===============================================================
+    // function handleSelectNewTask
+    // make a new trace
     handleSelectNewTask(name){
       this.setState(() =>{
 
@@ -941,14 +943,14 @@ console.log("TODO: update the traces")
 		traceDescription: ""
 		};
 	}, () => {
-//			this.handleLtlsimSimulate();
-			this.update();
-			}
+		this.update();
+		}
 	);
 
       	}
 
     //===============================================================
+    //
     handleClose = () => {
     this.setState({ anchorEl: null });
     };
@@ -977,13 +979,11 @@ console.log("TODO: update the traces")
 	//
         this.setState({ anchorEl_Req: null });
 
-
 	}
 
     //===============================================================
     handleReqSel(ReqID){
       this.setState((prevState) => {
-//	Object.keys(prevState).forEach((prop)=> console.log(prop))
 	const {model, logics, visibleRequirementIDs, reqID_data} = prevState;
 	const {reqID,formula_PT,formula_FT} = ReqID;
         const {requirementIDs } = this.props;
@@ -993,7 +993,6 @@ console.log("TODO: update the traces")
 			  .replace(/\./g,"_")
 			  .replace(/\+/g,"_")
 for (let i=0; i< reqID_data.length; i++){
-//	Object.keys(reqID_data[i]).forEach((prop)=> console.log(prop))
 	}
 	// need to also sanitize the 1st undeleteable ID
 	let reqID0_R =requirementIDs[0].replace(/ /g,"_")
@@ -1030,24 +1029,16 @@ for (let i=0; i< reqID_data.length; i++){
 
 	if (F != undefined){
 
-	let FF = F.replace(/<b>/g, "")
-            .replace(/<i>/g, "")
-            .replace(/<\/b>/g, "")
-            .replace(/<\/i>/g, "")
-// arithmetic V0.0
-//            .replace(/([0-9A-Za-z_]+) < ([0-9A-Za-z_]+)/g, "$1_lt_$2")
-//            .replace(/([0-9A-Za-z_]+) > ([0-9A-Za-z_]+)/g, "$1_gt_$2")
-//            .replace(/([0-9A-Za-z_]+) <= ([0-9A-Za-z_]+)/g, "$1_le_$2")
-//            .replace(/([0-9A-Za-z_]+) >= ([0-9A-Za-z_]+)/g, "$1_ge_$2")
-//            .replace(/([0-9A-Za-z_]+) = ([0-9A-Za-z_]+)/g, "$1_eq_$2")
-// end arithmetic
-            .replace(/<\/i>/g, "")
-            .replace(/(\d+)\+1/g, (str, p1, offset, s) => (`${parseInt(p1)+1}`))
-            .replace(/\[<=(\d+)\]/g, "[0, $1]")
-            .replace(/\[=(\d+)\]/g, "[$1, $1]")
-            .replace(/\[<(\d+)\]/g, (str, p1, offset, s) => (`[0, ${parseInt(p1)-1}]`));
+	   let FF = F.replace(/<b>/g, "")
+            	.replace(/<i>/g, "")
+            	.replace(/<\/b>/g, "")
+            	.replace(/<\/i>/g, "")
+                .replace(/<\/i>/g, "")
+                .replace(/(\d+)\+1/g, (str, p1, offset, s) => (`${parseInt(p1)+1}`))
+                .replace(/\[<=(\d+)\]/g, "[0, $1]")
+                .replace(/\[=(\d+)\]/g, "[$1, $1]")
+                .replace(/\[<(\d+)\]/g, (str, p1, offset, s) => (`[0, ${parseInt(p1)-1}]`));
 
-	//TODO: REWRITE the reqID to be in "ident-form"
 		//
 		// load in the formula depending on the current
 		// logic
@@ -1068,7 +1059,6 @@ for (let i=0; i< reqID_data.length; i++){
 		}
 	}
 	}, () => {
-//		this.handleLtlsimSimulate();
 		this.update();
 		}
 	    );
@@ -1159,13 +1149,11 @@ for (let i=0; i< reqID_data.length; i++){
             }
 
 
-// JOHANN
 	    visibleRequirementIDs.forEach(reqID => {
                 /* Set the simulated formula and subformulas to busy */
                 LTLSimController.setFormulaValue(model, reqID,
 			"", EFormulaStates.UNKNOWN);
 		});
-//JSC-=NEW: filter vs formulaFilter below
             ltlsim.simulate(
                 model,
                 formulaFilter,
@@ -1213,7 +1201,7 @@ for (let i=0; i< reqID_data.length; i++){
         })
     }
 
-//==========================================================
+    //===============================================================
       handleLtlsimResult_FT(id, sid, value, trace) {
         this.setState((prevState) => {
             let {model} = prevState;
@@ -1229,10 +1217,10 @@ for (let i=0; i< reqID_data.length; i++){
         })
     }
 
+    //===============================================================
     handleLtlsimResult_PT(id, sid, value, trace) {
         this.setState((prevState) => {
             let {model} = prevState;
-//JSC/CAV-4            let {model} = this.State;
             if (LTLSimController.getFormulaKeys(model).indexOf(id) !== -1) {
                 LTLSimController.setFormulaTrace(model, id, sid, trace);
 
@@ -1250,34 +1238,15 @@ for (let i=0; i< reqID_data.length; i++){
     }
 
 
-//=========================================================
+    //===============================================================
     update() {
         let { model, visibleSubformulas, visibleRequirementIDs} = this.state;
         const { ids } = this.props;
-//JSC-0612
 	// from MainView
         let formulaFilter = visibleRequirementIDs.filter((f) => {
                 let formula = LTLSimController.getFormula(model, f);
 		//JSC
 		return true;
-                if (formula === undefined || formula === null) {
-                    return false;
-                } else {
-                    if (formula.value === EFormulaStates.UNKNOWN ||
-                        formula.value === EFormulaStates.BUSY ) {
-                        return true;
-                    } else {
-                        let subexpressions = visibleRequirementIDs[f];
-                        if (subexpressions && false) {
-                            return formula.subexpressions
-                                    .filter((s, i) => (subexpressions.indexOf(i) !== -1))
-                                    .some((s) => (s.value === EFormulaStates.UNKNOWN ||
-                                                  s.value === EFormulaStates.BUSY));
-                        } else {
-                            return false;
-     			}
-                    }
-                }
             });
 
       LTLSimController.evalModel(model);
@@ -1290,7 +1259,6 @@ for (let i=0; i< reqID_data.length; i++){
         const { classes, open, onClose, requirements, ids, requirementIDs } = this.props;
         let { model, visibleSubformulas, highlight, anchorEl, anchorEl_Req, logics, traceID, reqID_data, visibleRequirementIDs } = this.state;
         let formula = LTLSimController.getFormula(model, ids[0]);
-//JSC/CAV        const displayID = requirementID ? requirementID : "REQ";
         const displayID = requirementIDs[0] ? requirementIDs[0] : "FSM-006";
 
         if (formula !== undefined && formula !== null) {
@@ -1359,7 +1327,6 @@ for (let i=0; i< reqID_data.length; i++){
                                     <ListItemIcon><NotesIcon color="secondary"/></ListItemIcon>
                                     <ListItemText inset
 				       disableTypography
-//                                       primary = {this.props.project+" "+reqID.reqID} />
 			  	       primary = {<Typography style={{ color: '#A0A0A0'}}>{this.props.project+":"+reqID.reqID}</Typography>} />
                                   </MenuItem>
 				  }
@@ -1560,7 +1527,6 @@ function setMarginVariableTraces(model) {
     }
 }
 
-    //===============================================================
 
 
 //=====================================================================
@@ -1568,14 +1534,14 @@ LTLSimDialog.propTypes = {
     classes: PropTypes.object.isRequired,
     open: PropTypes.bool.isRequired,
     ids: PropTypes.array.isRequired,
-	logics: PropTypes.string.isRequired,
+    logics: PropTypes.string.isRequired,
     ptExpressions: PropTypes.array.isRequired,
     ftExpressions: PropTypes.array.isRequired,
     onClose: PropTypes.func.isRequired,
     project: PropTypes.string.isRequired,
     requirements: PropTypes.array.isRequired,
     requirementIDs: PropTypes.array.isRequired,
-	traceID: PropTypes.string.isRequired,
+    traceID: PropTypes.string.isRequired,
     CEXFileName: PropTypes.object
 };
 

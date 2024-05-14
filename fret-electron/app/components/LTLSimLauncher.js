@@ -44,8 +44,8 @@ export default function LTLSimLauncher(props) {
     var requirementIDs = []
     var IDs = []
 
-    const ftExpression = rewriteExpressionForLTLSIM(semantics.ftExpanded);
-    const ptExpression = rewriteExpressionForLTLSIM(semantics.ptExpanded);
+    const ftExpression = semantics.ftExpanded;
+    const ptExpression = semantics.ptExpanded;
 
 	//
 	// mock-up list (singleton list for initial call)
@@ -96,9 +96,3 @@ export default function LTLSimLauncher(props) {
             </Tooltip>)
 }
 
-/**
- OBSOLETE
-*/
-function rewriteExpressionForLTLSIM(expression) {
-  return expression
-}

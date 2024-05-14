@@ -32,25 +32,6 @@
 // *****************************************************************************
 const LTLAEXVisitor = require('ltlsim_nusmvparser').LTLAEXVisitor;
 const LTLAEX = require('ltlsim_nusmvparser').LTLAEX; 
-//JSC0418 const LpContext = LTLAEX.LpContext;
-//JSC0418 const RpContext = LTLAEX.RpContext;
-//const ComparisonOpContext = LTLAEX.ComparisonOpContext;
-
-//function isSubExpression(ctx) {
-//  return ctx && ctx.parentCtx && !isParenthesesExpression(ctx) && isParenthesesExpression(ctx.parentCtx);
-//}
-//
-//function isArithExpression(ctx) {
-//  return ctx.children && 
-//        (ctx.children[1] instanceof ComparisonOpContext);
-//}
-
-
-//function isParenthesesExpression(ctx) {
-//  return ctx.children && 
-//        (ctx.children[0] instanceof LpContext) && 
-//        (ctx.children[ctx.children.length-1] instanceof RpContext);
-//}
 
 var LTLAEXAnalyzer = function(model) {
     LTLAEXVisitor.call(this);
@@ -116,7 +97,6 @@ LTLAEXVisitor.prototype.visitRParith = function(ctx) {
 // Visit a parse tree produced by LTLAEX#arith.
 // NUMBER in arith
 LTLAEXVisitor.prototype.visitArith = function(ctx) {
-	// var val = parseFloat(mytraces[i][id],10);
     var val = parseFloat(ctx.getText(),6);
     var arr = new Array(this.model.traceLength).fill(val);
     return {text:ctx.getText(), val: arr };

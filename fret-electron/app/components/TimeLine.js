@@ -69,7 +69,6 @@ class TimeLine extends Component {
                         width={600}
                         height={50}
                         data={data}
-//JSC/CAV                        margin={{top: 10, right: 10, left: 0, bottom: 10}}
                         margin={{top: 10, right: 10, left: 30, bottom: 10}}
                         syncId={this.props.syncId}
                         onClick={(this.props.onClick) ? this.props.onClick : undefined} >

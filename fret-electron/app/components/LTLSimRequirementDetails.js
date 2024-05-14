@@ -49,15 +49,11 @@ const styles = theme => ({
     root: {
         position: 'sticky',
         padding: theme.spacing(),
-//JSC/CAV        paddingTop: theme.spacing(4),
         paddingTop: theme.spacing(2),
         bottom: 0
     },
     details: {
         flexDirection: 'row'
-//        display: 'flex',
-//        flexDirection: 'row',
-//        alignItems: 'center'
     },
     content: {
         color: theme.palette.primary.main,
@@ -91,7 +87,6 @@ class LTLSimRequirementDetails extends Component {
                     let ID=R_ID;
                     let Desc;
 		    
-		    //if (selreq.length === 1){
 		    if ((selreq.length === 1)|| (R_ID == requirementID)) {
 			Desc = description;
 			// ID = ID;

@@ -83,14 +83,6 @@ handleTimeSeriesChartSettingsCancel() {
 	//
 handleTimeSeriesChartSettingsSave(settingsState) {
         const {minValue, maxValue, deltaValue} = settingsState;
-/*
-        this.setState({
-		TimeSeriesChartSettingsOpen: false,
-		minValue: minValue,
-		maxValue: maxValue,
-		deltaValue: DeltaValue
-		});
-*/
         this.setState({TimeSeriesChartSettingsOpen: false});
     }
 
@@ -115,21 +107,6 @@ handleTimeSeriesChartSettingsSave(settingsState) {
                     />
             </Typography>
         );
-/*JSC-0328
-  		   <TimeSeriesChartSettings
-                                    // classes={this}
-                                    open={this.state.TimeSeriesChartSettingsOpen}
-                                    onCancel={this.handleTimeSeriesChartSettingsCancel}
-                                    onSave={this.handleTimeSeriesChartSettingsSave}
-    				    chartType = {chart_type}
-    				    minValue = {2}
-    				    maxValue = {11}
-    				    deltaValue = {1}
-				    varName={key}
-                        	    key={'settings-' + key + ((fkey) ? '-'+fkey : '')}
-                        	    dataKey={key}
-                  />
-*/
     }
 
     formula2chart(key, formula) {
@@ -150,7 +127,6 @@ s                       expression={formula.tex}
                         selected={key === this.props.selectedFormula}
                     />
         );
-//JSC0420 TODO: active when LTLSimController format is changes                       expression={formula.tex}
     }
 
     handleTraceDialogOpen() {
