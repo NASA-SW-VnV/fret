@@ -18,7 +18,7 @@ When you open the FRET distribution, you will see the following directory struct
 .
 ├── fret-electron
 ├── tools
-├── tutorialExamples
+├── caseStudies
 ├── CONTRIBUTORS.md
 ├── LICENSE.pdf
 └── README.md
@@ -41,7 +41,7 @@ When you open the FRET distribution, you will see the following directory struct
 
 > __Note:__ To run the LTLSIM simulator, a NuSMV (see http://nusmv.fbk.eu/) installation is required. Please make sure that the NuSMV binaries directory is added to the PATH environment variable. Additionally, please add `$PATH_TO_FRET/fret/tools/LTLSIM/ltlsim-core/simulator` to the PATH environment variable.
 
-> __Note:__ To perform realizability checking, additional dependencies must be installed (e.g., JKind or Kind2). Read the realizability checking [Dependencies](../exports/realizabilityManual.md) section for details.
+> __Note:__ To perform realizability checking, additional dependencies must be installed. Read the realizability checking [Dependencies](../exports/realizabilityManual.md) section for details.
 
 > __Note:__ You can config FRET to specify which version of python to use. For example, to use python3 executable, run the following: `npm config set python /usr/bin/python3.x`
 
