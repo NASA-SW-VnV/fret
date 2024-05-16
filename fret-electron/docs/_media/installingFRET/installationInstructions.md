@@ -1,4 +1,4 @@
-# Installing FRET
+# Installing and running FRET
 
 ### Dependencies
 
@@ -10,7 +10,7 @@
  * (Optional) [Kind 2](https://github.com/kind2-mc/kind2/blob/develop/README.rst)
  * (Optional) [Z3](https://github.com/Z3Prover/z3/releases)
 
-### Download and Install
+### Install and Run
 
 When you open the FRET distribution, you will see the following directory structure:
 
@@ -29,7 +29,7 @@ When you open the FRET distribution, you will see the following directory struct
   1. cd fret-electron
   2. npm run fret-install (please do 'npm run fret-reinstall' instead if you already have a FRET installation)
   3. npm start
-  
+
 
 * Alternatively, for Linux users, we provide a Docker image to build an executable. See [Building executables](buildingExecutables.md).
 
