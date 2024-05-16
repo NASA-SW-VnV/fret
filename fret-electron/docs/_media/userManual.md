@@ -9,7 +9,7 @@
 FRET is a framework for the elicitation, specification, formalization and understanding of requirements. Users enter system requirements in a specialized natural language. FRET helps understanding and review of semantics by utilizing a variety of forms for each requirement: natural language description, formal mathematical logics, and diagrams. Requirements can be defined in a hierarchical fashion and can be exported in a variety of forms to be used by analysis tools.
 
 
-* [Installing FRET](./installingFRET/installationInstructions.md)
+* [Installing and Running FRET](./installingFRET/installationInstructions.md)
 * [FRETish grammar](./fretishGrammar/index.pdf)
 * [FRET Graphical User Interface (GUI)](./user-interface/tutorial.md)
     * [Writing requirements](./user-interface/writingReqs.md)
@@ -35,4 +35,4 @@ We provide a set of example requirements that can be directly [imported](./user-
 [Johann Schumann](https://ti.arc.nasa.gov/profile/schumann/),
 [Khanh Trinh](https://www.researchgate.net/profile/Khanh-Trinh-3).
 
-*Alumni and Interns*: Milan Bhandari, David Bushnell, Tanja de Jong, Dimitra Giannakopoulou, Kelly Ho, George (Yorgo) Karamanolis, David Kooi, Jessica Phelan, Julian Rhein, Daniel Riley, Nija Shi.
+*Alumni and Interns*: Milan Bhandari, David Bushnell, Tanja de Jong, Dimitra Giannakopoulou, Kelly Ho, George (Yorgo) Karamanolis, David Kooi, Jessica Phelan, Julian Rhein, Daniel Riley, Nija Shi, Gricel Vazquez.
