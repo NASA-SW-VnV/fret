@@ -1,0 +1,1565 @@
+{
+    "requirements": [
+        {
+            "reqid": "LPC_TB_STAY_ON_NEXT",
+            "parent_reqid": "",
+            "project": "LPC_mini",
+            "rationale": "",
+            "comments": "",
+            "fulltext": "Whenever lift_mode = thrust_borne & kgs <= 20.0 & hover_control_mode the vehicle shall at the next timepoint satisfy lift_mode = thrust_borne",
+            "status": "",
+            "semantics": {
+                "type": "nasa",
+                "scope": {
+                    "type": "null"
+                },
+                "condition": "noTrigger",
+                "timing": "next",
+                "response": "satisfaction",
+                "variables": [
+                    "lift_mode",
+                    "thrust_borne",
+                    "kgs",
+                    "hover_control_mode"
+                ],
+                "qualifier_word": "whenever",
+                "pre_condition": "(lift_mode = thrust_borne & kgs <= 20.0 & hover_control_mode)",
+                "regular_condition": "(lift_mode = thrust_borne & kgs <= 20.0 & hover_control_mode)",
+                "conditionTextRange": [
+                    0,
+                    67
+                ],
+                "component_name": "vehicle",
+                "componentTextRange": [
+                    69,
+                    79
+                ],
+                "timingTextRange": [
+                    87,
+                    107
+                ],
+                "post_condition": "(lift_mode = thrust_borne)",
+                "responseTextRange": [
+                    109,
+                    140
+                ],
+                "diagramVariables": "CC = <b><i>(lift_mode = thrust_borne & kgs <= 20.0 & hover_control_mode)</i></b>, Response = <b><i>(lift_mode = thrust_borne)</i></b>.",
+                "description": "ENFORCED: in the interval defined by the entire execution.\nTRIGGER: every point in the interval where <b><i>(lift_mode = thrust_borne & kgs <= 20.0 & hover_control_mode)</i></b> is true.\nREQUIRES: for every trigger, RES must hold at the next time step.",
+                "diagram": "_media/user-interface/examples/svgDiagrams/null_noTrigger_next_satisfaction.svg",
+                "scope_mode_pt": "BAD_PT",
+                "scope_mode_ft": "BAD_FT",
+                "regular_condition_unexp_pt": "(((lift_mode = thrust_borne) & (kgs <= 20.0)) & hover_control_mode)",
+                "regular_condition_unexp_ft": "(((lift_mode = thrust_borne) & (kgs <= 20.0)) & hover_control_mode)",
+                "regular_condition_SMV_pt": "(((lift_mode = thrust_borne) & (kgs <= 20.0)) & hover_control_mode)",
+                "regular_condition_SMV_ft": "(((lift_mode = thrust_borne) & (kgs <= 20.0)) & hover_control_mode)",
+                "post_condition_unexp_pt": "(lift_mode = thrust_borne)",
+                "post_condition_unexp_ft": "(lift_mode = thrust_borne)",
+                "post_condition_SMV_pt": "(lift_mode = thrust_borne)",
+                "post_condition_SMV_ft": "(lift_mode = thrust_borne)",
+                "ft_fetched": "(LAST V ($regular_condition_unexp_ft$ -> (LAST | (X $post_condition_unexp_ft$))))",
+                "ft": "(LAST V ((((lift_mode = thrust_borne) & (kgs <= 20.0)) & hover_control_mode) -> (LAST | (X (lift_mode = thrust_borne)))))",
+                "pt_fetched": "(H ((Y $regular_condition_unexp_pt$) -> ($post_condition_unexp_pt$ | FTP)))",
+                "pt": "(H ((Y (((lift_mode = thrust_borne) & (kgs <= 20.0)) & hover_control_mode)) -> ((lift_mode = thrust_borne) | FTP)))",
+                "ptExpanded_fetched": "(H ((Y $regular_condition_SMV_pt$) -> ($post_condition_SMV_pt$ | (! (Y TRUE)))))",
+                "ptExpanded": "(H ((Y (((lift_mode = thrust_borne) & (kgs <= 20.0)) & hover_control_mode)) -> ((lift_mode = thrust_borne) | (! (Y TRUE)))))",
+                "CoCoSpecCode": "H((YtoPre((((lift_mode = thrust_borne) and (kgs <= 20.0)) and hover_control_mode)) => ((lift_mode = thrust_borne) or not (YtoPre(true)))))",
+                "ftExpanded_fetched": "(LAST V ($regular_condition_SMV_ft$ -> (LAST | (X $post_condition_SMV_ft$))))",
+                "ftExpandedUnoptimized": "(LAST V ((((lift_mode = thrust_borne) & (kgs <= 20.0)) & hover_control_mode) -> (LAST | (X (lift_mode = thrust_borne)))))",
+                "ftExpanded": "(LAST V ((((lift_mode = thrust_borne) & (kgs <= 20.0)) & hover_control_mode) -> (LAST | (X (lift_mode = thrust_borne)))))",
+                "ftInfAUExpanded_fetched": "(G ($regular_condition_SMV_ft$ -> (X $post_condition_SMV_ft$)))",
+                "ftInfAUExpanded": "(G ((((lift_mode = thrust_borne) & (kgs <= 20.0)) & hover_control_mode) -> (X (lift_mode = thrust_borne))))",
+                "component": "vehicle"
+            },
+            "_id": "1958ecc0-9a0b-11ee-80d9-a77c0c691f6d"
+        },
+        {
+            "reqid": "LPC_STB_STAY_ON_NEXT",
+            "parent_reqid": "",
+            "project": "LPC_mini",
+            "rationale": "",
+            "comments": "",
+            "fulltext": "Whenever lift_mode = semi_thrust_borne & kias <= 40.0 & (kgs > 20.0 | !hover_control_mode) the vehicle shall at the next timepoint satisfy lift_mode = semi_thrust_borne",
+            "status": "",
+            "semantics": {
+                "type": "nasa",
+                "scope": {
+                    "type": "null"
+                },
+                "condition": "noTrigger",
+                "timing": "next",
+                "response": "satisfaction",
+                "variables": [
+                    "lift_mode",
+                    "semi_thrust_borne",
+                    "kias",
+                    "kgs",
+                    "hover_control_mode"
+                ],
+                "qualifier_word": "whenever",
+                "pre_condition": "(lift_mode = semi_thrust_borne & kias <= 40.0 & ( kgs > 20.0 | ! hover_control_mode ))",
+                "regular_condition": "(lift_mode = semi_thrust_borne & kias <= 40.0 & ( kgs > 20.0 | ! hover_control_mode ))",
+                "conditionTextRange": [
+                    0,
+                    89
+                ],
+                "component_name": "vehicle",
+                "componentTextRange": [
+                    91,
+                    101
+                ],
+                "timingTextRange": [
+                    109,
+                    129
+                ],
+                "post_condition": "(lift_mode = semi_thrust_borne)",
+                "responseTextRange": [
+                    131,
+                    167
+                ],
+                "diagramVariables": "CC = <b><i>(lift_mode = semi_thrust_borne & kias <= 40.0 & ( kgs > 20.0 | ! hover_control_mode ))</i></b>, Response = <b><i>(lift_mode = semi_thrust_borne)</i></b>.",
+                "description": "ENFORCED: in the interval defined by the entire execution.\nTRIGGER: every point in the interval where <b><i>(lift_mode = semi_thrust_borne & kias <= 40.0 & ( kgs > 20.0 | ! hover_control_mode ))</i></b> is true.\nREQUIRES: for every trigger, RES must hold at the next time step.",
+                "diagram": "_media/user-interface/examples/svgDiagrams/null_noTrigger_next_satisfaction.svg",
+                "scope_mode_pt": "BAD_PT",
+                "scope_mode_ft": "BAD_FT",
+                "regular_condition_unexp_pt": "(((lift_mode = semi_thrust_borne) & (kias <= 40.0)) & ((kgs > 20.0) | (! hover_control_mode)))",
+                "regular_condition_unexp_ft": "(((lift_mode = semi_thrust_borne) & (kias <= 40.0)) & ((kgs > 20.0) | (! hover_control_mode)))",
+                "regular_condition_SMV_pt": "(((lift_mode = semi_thrust_borne) & (kias <= 40.0)) & ((kgs > 20.0) | (! hover_control_mode)))",
+                "regular_condition_SMV_ft": "(((lift_mode = semi_thrust_borne) & (kias <= 40.0)) & ((kgs > 20.0) | (! hover_control_mode)))",
+                "post_condition_unexp_pt": "(lift_mode = semi_thrust_borne)",
+                "post_condition_unexp_ft": "(lift_mode = semi_thrust_borne)",
+                "post_condition_SMV_pt": "(lift_mode = semi_thrust_borne)",
+                "post_condition_SMV_ft": "(lift_mode = semi_thrust_borne)",
+                "ft_fetched": "(LAST V ($regular_condition_unexp_ft$ -> (LAST | (X $post_condition_unexp_ft$))))",
+                "ft": "(LAST V ((((lift_mode = semi_thrust_borne) & (kias <= 40.0)) & ((kgs > 20.0) | (! hover_control_mode))) -> (LAST | (X (lift_mode = semi_thrust_borne)))))",
+                "pt_fetched": "(H ((Y $regular_condition_unexp_pt$) -> ($post_condition_unexp_pt$ | FTP)))",
+                "pt": "(H ((Y (((lift_mode = semi_thrust_borne) & (kias <= 40.0)) & ((kgs > 20.0) | (! hover_control_mode)))) -> ((lift_mode = semi_thrust_borne) | FTP)))",
+                "ptExpanded_fetched": "(H ((Y $regular_condition_SMV_pt$) -> ($post_condition_SMV_pt$ | (! (Y TRUE)))))",
+                "ptExpanded": "(H ((Y (((lift_mode = semi_thrust_borne) & (kias <= 40.0)) & ((kgs > 20.0) | (! hover_control_mode)))) -> ((lift_mode = semi_thrust_borne) | (! (Y TRUE)))))",
+                "CoCoSpecCode": "H((YtoPre((((lift_mode = semi_thrust_borne) and (kias <= 40.0)) and ((kgs > 20.0) or not (hover_control_mode)))) => ((lift_mode = semi_thrust_borne) or not (YtoPre(true)))))",
+                "ftExpanded_fetched": "(LAST V ($regular_condition_SMV_ft$ -> (LAST | (X $post_condition_SMV_ft$))))",
+                "ftExpandedUnoptimized": "(LAST V ((((lift_mode = semi_thrust_borne) & (kias <= 40.0)) & ((kgs > 20.0) | (! hover_control_mode))) -> (LAST | (X (lift_mode = semi_thrust_borne)))))",
+                "ftExpanded": "(LAST V ((((lift_mode = semi_thrust_borne) & (kias <= 40.0)) & ((kgs > 20.0) | (! hover_control_mode))) -> (LAST | (X (lift_mode = semi_thrust_borne)))))",
+                "ftInfAUExpanded_fetched": "(G ($regular_condition_SMV_ft$ -> (X $post_condition_SMV_ft$)))",
+                "ftInfAUExpanded": "(G ((((lift_mode = semi_thrust_borne) & (kias <= 40.0)) & ((kgs > 20.0) | (! hover_control_mode))) -> (X (lift_mode = semi_thrust_borne))))",
+                "component": "vehicle"
+            },
+            "_id": "50bf5be0-9a0b-11ee-80d9-a77c0c691f6d"
+        },
+        {
+            "reqid": "LPC_REACH_HOVER_12",
+            "parent_reqid": "",
+            "project": "LPC_mini",
+            "rationale": "",
+            "comments": "",
+            "fulltext": "The vehicle shall within 12 ticks satisfy lift_mode = thrust_borne",
+            "semantics": {
+                "type": "nasa",
+                "scope": {
+                    "type": "null"
+                },
+                "condition": "null",
+                "timing": "within",
+                "response": "satisfaction",
+                "variables": [
+                    "lift_mode",
+                    "thrust_borne"
+                ],
+                "component_name": "vehicle",
+                "componentTextRange": [
+                    0,
+                    10
+                ],
+                "duration": "12",
+                "timingTextRange": [
+                    18,
+                    32
+                ],
+                "post_condition": "(lift_mode = thrust_borne)",
+                "responseTextRange": [
+                    34,
+                    65
+                ],
+                "diagramVariables": " n = <b><i>12</i></b>, Response = <b><i>(lift_mode = thrust_borne)</i></b>.",
+                "description": "ENFORCED: in the interval defined by the entire execution.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must hold at some point with distance <= <b><i>12</i></b> from the trigger (i.e., at trigger, trigger+1, ..., or trigger+<b><i>12</i></b>). If the interval ends sooner than trigger+<b><i>12</i></b>, then RES need not hold.",
+                "diagram": "_media/user-interface/examples/svgDiagrams/null_null_within_satisfaction.svg",
+                "scope_mode_pt": "BAD_PT",
+                "scope_mode_coco": "BAD_COCO",
+                "scope_mode_ft": "BAD_FT",
+                "post_condition_unexp_pt": "(lift_mode = thrust_borne)",
+                "post_condition_unexp_ft": "(lift_mode = thrust_borne)",
+                "post_condition_SMV_pt": "(lift_mode = thrust_borne)",
+                "post_condition_SMV_ft": "(lift_mode = thrust_borne)",
+                "post_condition_coco_smv": "(lift_mode = thrust_borne)",
+                "post_condition_coco": "(lift_mode = thrust_borne)",
+                "ft_fetched": "((F[<=$duration$] $post_condition_unexp_ft$) | (F[<$duration$] LAST))",
+                "ft": "((F[<=12] (lift_mode = thrust_borne)) | (F[<12] LAST))",
+                "pt_fetched": "(H ((H (! $post_condition_unexp_pt$)) -> (O[<$duration$] FTP)))",
+                "pt": "(H ((H (! (lift_mode = thrust_borne))) -> (O[<12] FTP)))",
+                "ptExpanded_fetched": "(H ((H (! $post_condition_SMV_pt$)) -> (O[<$duration$] (! (Y TRUE)))))",
+                "ptExpanded": "(H ((H (! (lift_mode = thrust_borne))) -> (O[0,11] (! (Y TRUE)))))",
+                "ptFinBtwExpanded_fetched": "(H ((H (! $post_condition_SMV_pt$)) -> (O[<$duration$] (! (Y TRUE)))))",
+                "ptFinBtwExpanded": "(H ((H (! (lift_mode = thrust_borne))) -> (O[0,11] (! (Y TRUE)))))",
+                "ftExpanded_fetched": "((F[<=$duration$] $post_condition_SMV_ft$) | (F[<$duration$] LAST))",
+                "ftExpanded": "((F[0,12] (lift_mode = thrust_borne)) | (F[0,11] LAST))",
+                "ftInfAUExpanded_fetched": "(F[<=$duration$] $post_condition_SMV_ft$)",
+                "ftInfAUExpanded": "(F[0,12] (lift_mode = thrust_borne))",
+                "ftInfBtwExpanded_fetched": "(F[<=$duration$] $post_condition_SMV_ft$)",
+                "ftInfBtwExpanded": "(F[0,12] (lift_mode = thrust_borne))",
+                "ftFinBtwExpanded_fetched": "((F[<=$duration$] $post_condition_SMV_ft$) | (F[<$duration$] LAST))",
+                "ftFinBtwExpanded": "((F[0,12] (lift_mode = thrust_borne)) | (F[0,11] LAST))",
+                "CoCoSpecCode_fetched": "(H((H( not $post_condition_coco$)) => (OT($duration$-1,0,FTP))))",
+                "CoCoSpecCode": "(H((H( not (lift_mode = thrust_borne))) => (OT(12-1,0,FTP))))",
+                "component": "vehicle"
+            },
+            "_id": "79b83250-5fd9-11ed-9cbe-ffd8cbaa6d62"
+        },
+        {
+            "reqid": "LPC_SWB_TO_STB",
+            "parent_reqid": "",
+            "project": "LPC_mini",
+            "rationale": "",
+            "comments": "",
+            "fulltext": "Upon lift_mode = semi_wing_borne & kias <= 30.0 the vehicle shall at  the next timepoint satisfy lift_mode = semi_thrust_borne",
+            "semantics": {
+                "type": "nasa",
+                "scope": {
+                    "type": "null"
+                },
+                "condition": "regular",
+                "timing": "next",
+                "response": "satisfaction",
+                "variables": [
+                    "lift_mode",
+                    "semi_wing_borne",
+                    "kias",
+                    "semi_thrust_borne"
+                ],
+                "qualifier_word": "upon",
+                "pre_condition": "(lift_mode = semi_wing_borne & kias <= 30.0)",
+                "regular_condition": "(lift_mode = semi_wing_borne & kias <= 30.0)",
+                "conditionTextRange": [
+                    0,
+                    46
+                ],
+                "component_name": "vehicle",
+                "componentTextRange": [
+                    48,
+                    58
+                ],
+                "timingTextRange": [
+                    66,
+                    87
+                ],
+                "post_condition": "(lift_mode = semi_thrust_borne)",
+                "responseTextRange": [
+                    89,
+                    125
+                ],
+                "diagramVariables": "TC = <b><i>(lift_mode = semi_wing_borne & kias <= 30.0)</i></b>, Response = <b><i>(lift_mode = semi_thrust_borne)</i></b>.",
+                "description": "ENFORCED: in the interval defined by the entire execution.\nTRIGGER: first point in the interval if <b><i>(lift_mode = semi_wing_borne & kias <= 30.0)</i></b> is true and any point in the interval where <b><i>(lift_mode = semi_wing_borne & kias <= 30.0)</i></b> becomes true (from false).\nREQUIRES: for every trigger, RES must hold at the next time step.",
+                "diagram": "_media/user-interface/examples/svgDiagrams/null_regular_next_satisfaction.svg",
+                "scope_mode_pt": "BAD_PT",
+                "scope_mode_coco": "BAD_COCO",
+                "scope_mode_ft": "BAD_FT",
+                "regular_condition_unexp_pt": "((lift_mode = semi_wing_borne) & (kias <= 30.0))",
+                "regular_condition_unexp_ft": "((lift_mode = semi_wing_borne) & (kias <= 30.0))",
+                "regular_condition_SMV_pt": "((lift_mode = semi_wing_borne) & (kias <= 30.0))",
+                "regular_condition_SMV_ft": "((lift_mode = semi_wing_borne) & (kias <= 30.0))",
+                "regular_condition_coco_smv": "((lift_mode = semi_wing_borne) & (kias <= 30.0))",
+                "regular_condition_coco": "((lift_mode = semi_wing_borne) and (kias <= 30.0))",
+                "post_condition_unexp_pt": "(lift_mode = semi_thrust_borne)",
+                "post_condition_unexp_ft": "(lift_mode = semi_thrust_borne)",
+                "post_condition_SMV_pt": "(lift_mode = semi_thrust_borne)",
+                "post_condition_SMV_ft": "(lift_mode = semi_thrust_borne)",
+                "post_condition_coco_smv": "(lift_mode = semi_thrust_borne)",
+                "post_condition_coco": "(lift_mode = semi_thrust_borne)",
+                "ft_fetched": "((LAST V (((! $regular_condition_unexp_ft$) & ((! LAST) & (X $regular_condition_unexp_ft$))) -> (X (LAST | (X $post_condition_unexp_ft$))))) & ($regular_condition_unexp_ft$ -> (LAST | (X $post_condition_unexp_ft$))))",
+                "ft": "((LAST V (((! ((lift_mode = semi_wing_borne) & (kias <= 30.0))) & ((! LAST) & (X ((lift_mode = semi_wing_borne) & (kias <= 30.0))))) -> (X (LAST | (X (lift_mode = semi_thrust_borne)))))) & (((lift_mode = semi_wing_borne) & (kias <= 30.0)) -> (LAST | (X (lift_mode = semi_thrust_borne)))))",
+                "pt_fetched": "(H ((Y ($regular_condition_unexp_pt$ & ((Y (! $regular_condition_unexp_pt$)) | FTP))) -> ($post_condition_unexp_pt$ | FTP)))",
+                "pt": "(H ((Y (((lift_mode = semi_wing_borne) & (kias <= 30.0)) & ((Y (! ((lift_mode = semi_wing_borne) & (kias <= 30.0)))) | FTP))) -> ((lift_mode = semi_thrust_borne) | FTP)))",
+                "ptExpanded_fetched": "(H ((Y ($regular_condition_SMV_pt$ & ((Y (! $regular_condition_SMV_pt$)) | (! (Y TRUE))))) -> ($post_condition_SMV_pt$ | (! (Y TRUE)))))",
+                "ptExpanded": "(H ((Y (((lift_mode = semi_wing_borne) & (kias <= 30.0)) & ((Y (! ((lift_mode = semi_wing_borne) & (kias <= 30.0)))) | (! (Y TRUE))))) -> ((lift_mode = semi_thrust_borne) | (! (Y TRUE)))))",
+                "ptFinBtwExpanded_fetched": "(H ((Y ($regular_condition_SMV_pt$ & ((Y (! $regular_condition_SMV_pt$)) | (! (Y TRUE))))) -> ($post_condition_SMV_pt$ | (! (Y TRUE)))))",
+                "ptFinBtwExpanded": "(H ((Y (((lift_mode = semi_wing_borne) & (kias <= 30.0)) & ((Y (! ((lift_mode = semi_wing_borne) & (kias <= 30.0)))) | (! (Y TRUE))))) -> ((lift_mode = semi_thrust_borne) | (! (Y TRUE)))))",
+                "ftExpanded_fetched": "((LAST V (((! $regular_condition_SMV_ft$) & ((! LAST) & (X $regular_condition_SMV_ft$))) -> (X (LAST | (X $post_condition_SMV_ft$))))) & ($regular_condition_SMV_ft$ -> (LAST | (X $post_condition_SMV_ft$))))",
+                "ftExpanded": "((LAST V (((! ((lift_mode = semi_wing_borne) & (kias <= 30.0))) & ((! LAST) & (X ((lift_mode = semi_wing_borne) & (kias <= 30.0))))) -> (X (LAST | (X (lift_mode = semi_thrust_borne)))))) & (((lift_mode = semi_wing_borne) & (kias <= 30.0)) -> (LAST | (X (lift_mode = semi_thrust_borne)))))",
+                "ftInfAUExpanded_fetched": "((G (((! $regular_condition_SMV_ft$) & (X $regular_condition_SMV_ft$)) -> (X (X $post_condition_SMV_ft$)))) & ($regular_condition_SMV_ft$ -> (X $post_condition_SMV_ft$)))",
+                "ftInfAUExpanded": "((G (((! ((lift_mode = semi_wing_borne) & (kias <= 30.0))) & (X ((lift_mode = semi_wing_borne) & (kias <= 30.0)))) -> (X (X (lift_mode = semi_thrust_borne))))) & (((lift_mode = semi_wing_borne) & (kias <= 30.0)) -> (X (lift_mode = semi_thrust_borne))))",
+                "ftInfBtwExpanded_fetched": "((G (((! $regular_condition_SMV_ft$) & (X $regular_condition_SMV_ft$)) -> (X (X $post_condition_SMV_ft$)))) & ($regular_condition_SMV_ft$ -> (X $post_condition_SMV_ft$)))",
+                "ftInfBtwExpanded": "((G (((! ((lift_mode = semi_wing_borne) & (kias <= 30.0))) & (X ((lift_mode = semi_wing_borne) & (kias <= 30.0)))) -> (X (X (lift_mode = semi_thrust_borne))))) & (((lift_mode = semi_wing_borne) & (kias <= 30.0)) -> (X (lift_mode = semi_thrust_borne))))",
+                "ftFinBtwExpanded_fetched": "((LAST V (((! $regular_condition_SMV_ft$) & ((! LAST) & (X $regular_condition_SMV_ft$))) -> (X (LAST | (X $post_condition_SMV_ft$))))) & ($regular_condition_SMV_ft$ -> (LAST | (X $post_condition_SMV_ft$))))",
+                "ftFinBtwExpanded": "((LAST V (((! ((lift_mode = semi_wing_borne) & (kias <= 30.0))) & ((! LAST) & (X ((lift_mode = semi_wing_borne) & (kias <= 30.0))))) -> (X (LAST | (X (lift_mode = semi_thrust_borne)))))) & (((lift_mode = semi_wing_borne) & (kias <= 30.0)) -> (LAST | (X (lift_mode = semi_thrust_borne)))))",
+                "CoCoSpecCode_fetched": "(H((YtoPre($regular_condition_coco$ and ((YtoPre( not $regular_condition_coco$)) or FTP))) => ($post_condition_coco$ or FTP)))",
+                "CoCoSpecCode": "(H((YtoPre(((lift_mode = semi_wing_borne) and (kias <= 30.0)) and ((YtoPre( not ((lift_mode = semi_wing_borne) and (kias <= 30.0)))) or FTP))) => ((lift_mode = semi_thrust_borne) or FTP)))",
+                "component": "vehicle"
+            },
+            "_id": "79b85961-5fd9-11ed-9cbe-ffd8cbaa6d62"
+        },
+        {
+            "reqid": "LPC_STB_TO_SWB",
+            "parent_reqid": "",
+            "project": "LPC_mini",
+            "rationale": "",
+            "comments": "",
+            "fulltext": "Upon lift_mode = semi_thrust_borne & kias > 40.0 the vehicle shall at the next timepoint satisfy lift_mode = semi_wing_borne",
+            "semantics": {
+                "type": "nasa",
+                "scope": {
+                    "type": "null"
+                },
+                "condition": "regular",
+                "timing": "next",
+                "response": "satisfaction",
+                "variables": [
+                    "lift_mode",
+                    "semi_thrust_borne",
+                    "kias",
+                    "semi_wing_borne"
+                ],
+                "qualifier_word": "upon",
+                "pre_condition": "(lift_mode = semi_thrust_borne & kias > 40.0)",
+                "regular_condition": "(lift_mode = semi_thrust_borne & kias > 40.0)",
+                "conditionTextRange": [
+                    0,
+                    47
+                ],
+                "component_name": "vehicle",
+                "componentTextRange": [
+                    49,
+                    59
+                ],
+                "timingTextRange": [
+                    67,
+                    87
+                ],
+                "post_condition": "(lift_mode = semi_wing_borne)",
+                "responseTextRange": [
+                    89,
+                    123
+                ],
+                "diagramVariables": "TC = <b><i>(lift_mode = semi_thrust_borne & kias > 40.0)</i></b>, Response = <b><i>(lift_mode = semi_wing_borne)</i></b>.",
+                "description": "ENFORCED: in the interval defined by the entire execution.\nTRIGGER: first point in the interval if <b><i>(lift_mode = semi_thrust_borne & kias > 40.0)</i></b> is true and any point in the interval where <b><i>(lift_mode = semi_thrust_borne & kias > 40.0)</i></b> becomes true (from false).\nREQUIRES: for every trigger, RES must hold at the next time step.",
+                "diagram": "_media/user-interface/examples/svgDiagrams/null_regular_next_satisfaction.svg",
+                "scope_mode_pt": "BAD_PT",
+                "scope_mode_coco": "BAD_COCO",
+                "scope_mode_ft": "BAD_FT",
+                "regular_condition_unexp_pt": "((lift_mode = semi_thrust_borne) & (kias > 40.0))",
+                "regular_condition_unexp_ft": "((lift_mode = semi_thrust_borne) & (kias > 40.0))",
+                "regular_condition_SMV_pt": "((lift_mode = semi_thrust_borne) & (kias > 40.0))",
+                "regular_condition_SMV_ft": "((lift_mode = semi_thrust_borne) & (kias > 40.0))",
+                "regular_condition_coco_smv": "((lift_mode = semi_thrust_borne) & (kias > 40.0))",
+                "regular_condition_coco": "((lift_mode = semi_thrust_borne) and (kias > 40.0))",
+                "post_condition_unexp_pt": "(lift_mode = semi_wing_borne)",
+                "post_condition_unexp_ft": "(lift_mode = semi_wing_borne)",
+                "post_condition_SMV_pt": "(lift_mode = semi_wing_borne)",
+                "post_condition_SMV_ft": "(lift_mode = semi_wing_borne)",
+                "post_condition_coco_smv": "(lift_mode = semi_wing_borne)",
+                "post_condition_coco": "(lift_mode = semi_wing_borne)",
+                "ft_fetched": "((LAST V (((! $regular_condition_unexp_ft$) & ((! LAST) & (X $regular_condition_unexp_ft$))) -> (X (LAST | (X $post_condition_unexp_ft$))))) & ($regular_condition_unexp_ft$ -> (LAST | (X $post_condition_unexp_ft$))))",
+                "ft": "((LAST V (((! ((lift_mode = semi_thrust_borne) & (kias > 40.0))) & ((! LAST) & (X ((lift_mode = semi_thrust_borne) & (kias > 40.0))))) -> (X (LAST | (X (lift_mode = semi_wing_borne)))))) & (((lift_mode = semi_thrust_borne) & (kias > 40.0)) -> (LAST | (X (lift_mode = semi_wing_borne)))))",
+                "pt_fetched": "(H ((Y ($regular_condition_unexp_pt$ & ((Y (! $regular_condition_unexp_pt$)) | FTP))) -> ($post_condition_unexp_pt$ | FTP)))",
+                "pt": "(H ((Y (((lift_mode = semi_thrust_borne) & (kias > 40.0)) & ((Y (! ((lift_mode = semi_thrust_borne) & (kias > 40.0)))) | FTP))) -> ((lift_mode = semi_wing_borne) | FTP)))",
+                "ptExpanded_fetched": "(H ((Y ($regular_condition_SMV_pt$ & ((Y (! $regular_condition_SMV_pt$)) | (! (Y TRUE))))) -> ($post_condition_SMV_pt$ | (! (Y TRUE)))))",
+                "ptExpanded": "(H ((Y (((lift_mode = semi_thrust_borne) & (kias > 40.0)) & ((Y (! ((lift_mode = semi_thrust_borne) & (kias > 40.0)))) | (! (Y TRUE))))) -> ((lift_mode = semi_wing_borne) | (! (Y TRUE)))))",
+                "ftExpanded_fetched": "((LAST V (((! $regular_condition_SMV_ft$) & ((! LAST) & (X $regular_condition_SMV_ft$))) -> (X (LAST | (X $post_condition_SMV_ft$))))) & ($regular_condition_SMV_ft$ -> (LAST | (X $post_condition_SMV_ft$))))",
+                "ftExpanded": "((LAST V (((! ((lift_mode = semi_thrust_borne) & (kias > 40.0))) & ((! LAST) & (X ((lift_mode = semi_thrust_borne) & (kias > 40.0))))) -> (X (LAST | (X (lift_mode = semi_wing_borne)))))) & (((lift_mode = semi_thrust_borne) & (kias > 40.0)) -> (LAST | (X (lift_mode = semi_wing_borne)))))",
+                "ftInfAUExpanded_fetched": "((G (((! $regular_condition_SMV_ft$) & (X $regular_condition_SMV_ft$)) -> (X (X $post_condition_SMV_ft$)))) & ($regular_condition_SMV_ft$ -> (X $post_condition_SMV_ft$)))",
+                "ftInfAUExpanded": "((G (((! ((lift_mode = semi_thrust_borne) & (kias > 40.0))) & (X ((lift_mode = semi_thrust_borne) & (kias > 40.0)))) -> (X (X (lift_mode = semi_wing_borne))))) & (((lift_mode = semi_thrust_borne) & (kias > 40.0)) -> (X (lift_mode = semi_wing_borne))))",
+                "ftInfBtwExpanded_fetched": "((G (((! $regular_condition_SMV_ft$) & (X $regular_condition_SMV_ft$)) -> (X (X $post_condition_SMV_ft$)))) & ($regular_condition_SMV_ft$ -> (X $post_condition_SMV_ft$)))",
+                "ftInfBtwExpanded": "((G (((! ((lift_mode = semi_thrust_borne) & (kias > 40.0))) & (X ((lift_mode = semi_thrust_borne) & (kias > 40.0)))) -> (X (X (lift_mode = semi_wing_borne))))) & (((lift_mode = semi_thrust_borne) & (kias > 40.0)) -> (X (lift_mode = semi_wing_borne))))",
+                "CoCoSpecCode_fetched": "(H((YtoPre($regular_condition_coco$ and ((YtoPre( not $regular_condition_coco$)) or FTP))) => ($post_condition_coco$ or FTP)))",
+                "CoCoSpecCode": "(H((YtoPre(((lift_mode = semi_thrust_borne) and (kias > 40.0)) and ((YtoPre( not ((lift_mode = semi_thrust_borne) and (kias > 40.0)))) or FTP))) => ((lift_mode = semi_wing_borne) or FTP)))",
+                "component": "<b><i>vehicle</i></b>"
+            },
+            "_id": "79b8a780-5fd9-11ed-9cbe-ffd8cbaa6d62"
+        },
+        {
+            "reqid": "LPC_STB_TO_TB",
+            "parent_reqid": "",
+            "project": "LPC_mini",
+            "rationale": "",
+            "comments": "",
+            "fulltext": "Upon lift_mode = semi_thrust_borne & hover_control_mode & kgs <= 20.0 the vehicle shall at the next timepoint satisfy lift_mode = thrust_borne",
+            "semantics": {
+                "type": "nasa",
+                "scope": {
+                    "type": "null"
+                },
+                "condition": "regular",
+                "timing": "next",
+                "response": "satisfaction",
+                "variables": [
+                    "lift_mode",
+                    "semi_thrust_borne",
+                    "hover_control_mode",
+                    "kgs",
+                    "thrust_borne"
+                ],
+                "qualifier_word": "upon",
+                "pre_condition": "(lift_mode = semi_thrust_borne & hover_control_mode & kgs <= 20.0)",
+                "regular_condition": "(lift_mode = semi_thrust_borne & hover_control_mode & kgs <= 20.0)",
+                "conditionTextRange": [
+                    0,
+                    68
+                ],
+                "component_name": "vehicle",
+                "componentTextRange": [
+                    70,
+                    80
+                ],
+                "timingTextRange": [
+                    88,
+                    108
+                ],
+                "post_condition": "(lift_mode = thrust_borne)",
+                "responseTextRange": [
+                    110,
+                    141
+                ],
+                "diagramVariables": "TC = <b><i>(lift_mode = semi_thrust_borne & hover_control_mode & kgs <= 20.0)</i></b>, Response = <b><i>(lift_mode = thrust_borne)</i></b>.",
+                "description": "ENFORCED: in the interval defined by the entire execution.\nTRIGGER: first point in the interval if <b><i>(lift_mode = semi_thrust_borne & hover_control_mode & kgs <= 20.0)</i></b> is true and any point in the interval where <b><i>(lift_mode = semi_thrust_borne & hover_control_mode & kgs <= 20.0)</i></b> becomes true (from false).\nREQUIRES: for every trigger, RES must hold at the next time step.",
+                "diagram": "_media/user-interface/examples/svgDiagrams/null_regular_next_satisfaction.svg",
+                "scope_mode_pt": "BAD_PT",
+                "scope_mode_coco": "BAD_COCO",
+                "scope_mode_ft": "BAD_FT",
+                "regular_condition_unexp_pt": "(((lift_mode = semi_thrust_borne) & hover_control_mode) & (kgs <= 20.0))",
+                "regular_condition_unexp_ft": "(((lift_mode = semi_thrust_borne) & hover_control_mode) & (kgs <= 20.0))",
+                "regular_condition_SMV_pt": "(((lift_mode = semi_thrust_borne) & hover_control_mode) & (kgs <= 20.0))",
+                "regular_condition_SMV_ft": "(((lift_mode = semi_thrust_borne) & hover_control_mode) & (kgs <= 20.0))",
+                "regular_condition_coco_smv": "(((lift_mode = semi_thrust_borne) & hover_control_mode) & (kgs <= 20.0))",
+                "regular_condition_coco": "(((lift_mode = semi_thrust_borne) and hover_control_mode) and (kgs <= 20.0))",
+                "post_condition_unexp_pt": "(lift_mode = thrust_borne)",
+                "post_condition_unexp_ft": "(lift_mode = thrust_borne)",
+                "post_condition_SMV_pt": "(lift_mode = thrust_borne)",
+                "post_condition_SMV_ft": "(lift_mode = thrust_borne)",
+                "post_condition_coco_smv": "(lift_mode = thrust_borne)",
+                "post_condition_coco": "(lift_mode = thrust_borne)",
+                "ft_fetched": "((LAST V (((! $regular_condition_unexp_ft$) & ((! LAST) & (X $regular_condition_unexp_ft$))) -> (X (LAST | (X $post_condition_unexp_ft$))))) & ($regular_condition_unexp_ft$ -> (LAST | (X $post_condition_unexp_ft$))))",
+                "ft": "((LAST V (((! (((lift_mode = semi_thrust_borne) & hover_control_mode) & (kgs <= 20.0))) & ((! LAST) & (X (((lift_mode = semi_thrust_borne) & hover_control_mode) & (kgs <= 20.0))))) -> (X (LAST | (X (lift_mode = thrust_borne)))))) & ((((lift_mode = semi_thrust_borne) & hover_control_mode) & (kgs <= 20.0)) -> (LAST | (X (lift_mode = thrust_borne)))))",
+                "pt_fetched": "(H ((Y ($regular_condition_unexp_pt$ & ((Y (! $regular_condition_unexp_pt$)) | FTP))) -> ($post_condition_unexp_pt$ | FTP)))",
+                "pt": "(H ((Y ((((lift_mode = semi_thrust_borne) & hover_control_mode) & (kgs <= 20.0)) & ((Y (! (((lift_mode = semi_thrust_borne) & hover_control_mode) & (kgs <= 20.0)))) | FTP))) -> ((lift_mode = thrust_borne) | FTP)))",
+                "ptExpanded_fetched": "(H ((Y ($regular_condition_SMV_pt$ & ((Y (! $regular_condition_SMV_pt$)) | (! (Y TRUE))))) -> ($post_condition_SMV_pt$ | (! (Y TRUE)))))",
+                "ptExpanded": "(H ((Y ((((lift_mode = semi_thrust_borne) & hover_control_mode) & (kgs <= 20.0)) & ((Y (! (((lift_mode = semi_thrust_borne) & hover_control_mode) & (kgs <= 20.0)))) | (! (Y TRUE))))) -> ((lift_mode = thrust_borne) | (! (Y TRUE)))))",
+                "ftExpanded_fetched": "((LAST V (((! $regular_condition_SMV_ft$) & ((! LAST) & (X $regular_condition_SMV_ft$))) -> (X (LAST | (X $post_condition_SMV_ft$))))) & ($regular_condition_SMV_ft$ -> (LAST | (X $post_condition_SMV_ft$))))",
+                "ftExpanded": "((LAST V (((! (((lift_mode = semi_thrust_borne) & hover_control_mode) & (kgs <= 20.0))) & ((! LAST) & (X (((lift_mode = semi_thrust_borne) & hover_control_mode) & (kgs <= 20.0))))) -> (X (LAST | (X (lift_mode = thrust_borne)))))) & ((((lift_mode = semi_thrust_borne) & hover_control_mode) & (kgs <= 20.0)) -> (LAST | (X (lift_mode = thrust_borne)))))",
+                "ftInfAUExpanded_fetched": "((G (((! $regular_condition_SMV_ft$) & (X $regular_condition_SMV_ft$)) -> (X (X $post_condition_SMV_ft$)))) & ($regular_condition_SMV_ft$ -> (X $post_condition_SMV_ft$)))",
+                "ftInfAUExpanded": "((G (((! (((lift_mode = semi_thrust_borne) & hover_control_mode) & (kgs <= 20.0))) & (X (((lift_mode = semi_thrust_borne) & hover_control_mode) & (kgs <= 20.0)))) -> (X (X (lift_mode = thrust_borne))))) & ((((lift_mode = semi_thrust_borne) & hover_control_mode) & (kgs <= 20.0)) -> (X (lift_mode = thrust_borne))))",
+                "ftInfBtwExpanded_fetched": "((G (((! $regular_condition_SMV_ft$) & (X $regular_condition_SMV_ft$)) -> (X (X $post_condition_SMV_ft$)))) & ($regular_condition_SMV_ft$ -> (X $post_condition_SMV_ft$)))",
+                "ftInfBtwExpanded": "((G (((! (((lift_mode = semi_thrust_borne) & hover_control_mode) & (kgs <= 20.0))) & (X (((lift_mode = semi_thrust_borne) & hover_control_mode) & (kgs <= 20.0)))) -> (X (X (lift_mode = thrust_borne))))) & ((((lift_mode = semi_thrust_borne) & hover_control_mode) & (kgs <= 20.0)) -> (X (lift_mode = thrust_borne))))",
+                "CoCoSpecCode_fetched": "(H((YtoPre($regular_condition_coco$ and ((YtoPre( not $regular_condition_coco$)) or FTP))) => ($post_condition_coco$ or FTP)))",
+                "CoCoSpecCode": "(H((YtoPre((((lift_mode = semi_thrust_borne) and hover_control_mode) and (kgs <= 20.0)) and ((YtoPre( not (((lift_mode = semi_thrust_borne) and hover_control_mode) and (kgs <= 20.0)))) or FTP))) => ((lift_mode = thrust_borne) or FTP)))",
+                "component": "<b><i>vehicle</i></b>"
+            },
+            "_id": "79b8ce90-5fd9-11ed-9cbe-ffd8cbaa6d62"
+        },
+        {
+            "reqid": "LPC_SWB_TO_WB",
+            "parent_reqid": "",
+            "project": "LPC_mini",
+            "rationale": "",
+            "comments": "",
+            "fulltext": "Upon lift_mode = semi_wing_borne & kias > 100.0 the vehicle shall at the next timepoint satisfy lift_mode = wing_borne",
+            "semantics": {
+                "type": "nasa",
+                "scope": {
+                    "type": "null"
+                },
+                "condition": "regular",
+                "timing": "next",
+                "response": "satisfaction",
+                "variables": [
+                    "lift_mode",
+                    "semi_wing_borne",
+                    "kias",
+                    "wing_borne"
+                ],
+                "qualifier_word": "upon",
+                "pre_condition": "(lift_mode = semi_wing_borne & kias > 100.0)",
+                "regular_condition": "(lift_mode = semi_wing_borne & kias > 100.0)",
+                "conditionTextRange": [
+                    0,
+                    46
+                ],
+                "component_name": "vehicle",
+                "componentTextRange": [
+                    48,
+                    58
+                ],
+                "timingTextRange": [
+                    66,
+                    86
+                ],
+                "post_condition": "(lift_mode = wing_borne)",
+                "responseTextRange": [
+                    88,
+                    117
+                ],
+                "diagramVariables": "TC = <b><i>(lift_mode = semi_wing_borne & kias > 100.0)</i></b>, Response = <b><i>(lift_mode = wing_borne)</i></b>.",
+                "description": "ENFORCED: in the interval defined by the entire execution.\nTRIGGER: first point in the interval if <b><i>(lift_mode = semi_wing_borne & kias > 100.0)</i></b> is true and any point in the interval where <b><i>(lift_mode = semi_wing_borne & kias > 100.0)</i></b> becomes true (from false).\nREQUIRES: for every trigger, RES must hold at the next time step.",
+                "diagram": "_media/user-interface/examples/svgDiagrams/null_regular_next_satisfaction.svg",
+                "scope_mode_pt": "BAD_PT",
+                "scope_mode_coco": "BAD_COCO",
+                "scope_mode_ft": "BAD_FT",
+                "regular_condition_unexp_pt": "((lift_mode = semi_wing_borne) & (kias > 100.0))",
+                "regular_condition_unexp_ft": "((lift_mode = semi_wing_borne) & (kias > 100.0))",
+                "regular_condition_SMV_pt": "((lift_mode = semi_wing_borne) & (kias > 100.0))",
+                "regular_condition_SMV_ft": "((lift_mode = semi_wing_borne) & (kias > 100.0))",
+                "regular_condition_coco_smv": "((lift_mode = semi_wing_borne) & (kias > 100.0))",
+                "regular_condition_coco": "((lift_mode = semi_wing_borne) and (kias > 100.0))",
+                "post_condition_unexp_pt": "(lift_mode = wing_borne)",
+                "post_condition_unexp_ft": "(lift_mode = wing_borne)",
+                "post_condition_SMV_pt": "(lift_mode = wing_borne)",
+                "post_condition_SMV_ft": "(lift_mode = wing_borne)",
+                "post_condition_coco_smv": "(lift_mode = wing_borne)",
+                "post_condition_coco": "(lift_mode = wing_borne)",
+                "ft_fetched": "((LAST V (((! $regular_condition_unexp_ft$) & ((! LAST) & (X $regular_condition_unexp_ft$))) -> (X (LAST | (X $post_condition_unexp_ft$))))) & ($regular_condition_unexp_ft$ -> (LAST | (X $post_condition_unexp_ft$))))",
+                "ft": "((LAST V (((! ((lift_mode = semi_wing_borne) & (kias > 100.0))) & ((! LAST) & (X ((lift_mode = semi_wing_borne) & (kias > 100.0))))) -> (X (LAST | (X (lift_mode = wing_borne)))))) & (((lift_mode = semi_wing_borne) & (kias > 100.0)) -> (LAST | (X (lift_mode = wing_borne)))))",
+                "pt_fetched": "(H ((Y ($regular_condition_unexp_pt$ & ((Y (! $regular_condition_unexp_pt$)) | FTP))) -> ($post_condition_unexp_pt$ | FTP)))",
+                "pt": "(H ((Y (((lift_mode = semi_wing_borne) & (kias > 100.0)) & ((Y (! ((lift_mode = semi_wing_borne) & (kias > 100.0)))) | FTP))) -> ((lift_mode = wing_borne) | FTP)))",
+                "ptExpanded_fetched": "(H ((Y ($regular_condition_SMV_pt$ & ((Y (! $regular_condition_SMV_pt$)) | (! (Y TRUE))))) -> ($post_condition_SMV_pt$ | (! (Y TRUE)))))",
+                "ptExpanded": "(H ((Y (((lift_mode = semi_wing_borne) & (kias > 100.0)) & ((Y (! ((lift_mode = semi_wing_borne) & (kias > 100.0)))) | (! (Y TRUE))))) -> ((lift_mode = wing_borne) | (! (Y TRUE)))))",
+                "ftExpanded_fetched": "((LAST V (((! $regular_condition_SMV_ft$) & ((! LAST) & (X $regular_condition_SMV_ft$))) -> (X (LAST | (X $post_condition_SMV_ft$))))) & ($regular_condition_SMV_ft$ -> (LAST | (X $post_condition_SMV_ft$))))",
+                "ftExpanded": "((LAST V (((! ((lift_mode = semi_wing_borne) & (kias > 100.0))) & ((! LAST) & (X ((lift_mode = semi_wing_borne) & (kias > 100.0))))) -> (X (LAST | (X (lift_mode = wing_borne)))))) & (((lift_mode = semi_wing_borne) & (kias > 100.0)) -> (LAST | (X (lift_mode = wing_borne)))))",
+                "ftInfAUExpanded_fetched": "((G (((! $regular_condition_SMV_ft$) & (X $regular_condition_SMV_ft$)) -> (X (X $post_condition_SMV_ft$)))) & ($regular_condition_SMV_ft$ -> (X $post_condition_SMV_ft$)))",
+                "ftInfAUExpanded": "((G (((! ((lift_mode = semi_wing_borne) & (kias > 100.0))) & (X ((lift_mode = semi_wing_borne) & (kias > 100.0)))) -> (X (X (lift_mode = wing_borne))))) & (((lift_mode = semi_wing_borne) & (kias > 100.0)) -> (X (lift_mode = wing_borne))))",
+                "ftInfBtwExpanded_fetched": "((G (((! $regular_condition_SMV_ft$) & (X $regular_condition_SMV_ft$)) -> (X (X $post_condition_SMV_ft$)))) & ($regular_condition_SMV_ft$ -> (X $post_condition_SMV_ft$)))",
+                "ftInfBtwExpanded": "((G (((! ((lift_mode = semi_wing_borne) & (kias > 100.0))) & (X ((lift_mode = semi_wing_borne) & (kias > 100.0)))) -> (X (X (lift_mode = wing_borne))))) & (((lift_mode = semi_wing_borne) & (kias > 100.0)) -> (X (lift_mode = wing_borne))))",
+                "CoCoSpecCode_fetched": "(H((YtoPre($regular_condition_coco$ and ((YtoPre( not $regular_condition_coco$)) or FTP))) => ($post_condition_coco$ or FTP)))",
+                "CoCoSpecCode": "(H((YtoPre(((lift_mode = semi_wing_borne) and (kias > 100.0)) and ((YtoPre( not ((lift_mode = semi_wing_borne) and (kias > 100.0)))) or FTP))) => ((lift_mode = wing_borne) or FTP)))",
+                "component": "<b><i>vehicle</i></b>"
+            },
+            "_id": "79b8ce91-5fd9-11ed-9cbe-ffd8cbaa6d62"
+        },
+        {
+            "reqid": "LPC_TB_TO_STB",
+            "parent_reqid": "",
+            "project": "LPC_mini",
+            "rationale": "",
+            "comments": "",
+            "fulltext": "Upon lift_mode = thrust_borne & (!hover_control_mode |  kgs > 20.0) the vehicle shall at the next timepoint satisfy lift_mode = semi_thrust_borne",
+            "semantics": {
+                "type": "nasa",
+                "scope": {
+                    "type": "null"
+                },
+                "condition": "regular",
+                "timing": "next",
+                "response": "satisfaction",
+                "variables": [
+                    "lift_mode",
+                    "thrust_borne",
+                    "hover_control_mode",
+                    "kgs",
+                    "semi_thrust_borne"
+                ],
+                "qualifier_word": "upon",
+                "pre_condition": "(lift_mode = thrust_borne & ( ! hover_control_mode | kgs > 20.0 ))",
+                "regular_condition": "(lift_mode = thrust_borne & ( ! hover_control_mode | kgs > 20.0 ))",
+                "conditionTextRange": [
+                    0,
+                    66
+                ],
+                "component_name": "vehicle",
+                "componentTextRange": [
+                    68,
+                    78
+                ],
+                "timingTextRange": [
+                    86,
+                    106
+                ],
+                "post_condition": "(lift_mode = semi_thrust_borne)",
+                "responseTextRange": [
+                    108,
+                    144
+                ],
+                "diagramVariables": "TC = <b><i>(lift_mode = thrust_borne & ( ! hover_control_mode | kgs > 20.0 ))</i></b>, Response = <b><i>(lift_mode = semi_thrust_borne)</i></b>.",
+                "description": "ENFORCED: in the interval defined by the entire execution.\nTRIGGER: first point in the interval if <b><i>(lift_mode = thrust_borne & ( ! hover_control_mode | kgs > 20.0 ))</i></b> is true and any point in the interval where <b><i>(lift_mode = thrust_borne & ( ! hover_control_mode | kgs > 20.0 ))</i></b> becomes true (from false).\nREQUIRES: for every trigger, RES must hold at the next time step.",
+                "diagram": "_media/user-interface/examples/svgDiagrams/null_regular_next_satisfaction.svg",
+                "scope_mode_pt": "BAD_PT",
+                "scope_mode_coco": "BAD_COCO",
+                "scope_mode_ft": "BAD_FT",
+                "regular_condition_unexp_pt": "((lift_mode = thrust_borne) & ((! hover_control_mode) | (kgs > 20.0)))",
+                "regular_condition_unexp_ft": "((lift_mode = thrust_borne) & ((! hover_control_mode) | (kgs > 20.0)))",
+                "regular_condition_SMV_pt": "((lift_mode = thrust_borne) & ((! hover_control_mode) | (kgs > 20.0)))",
+                "regular_condition_SMV_ft": "((lift_mode = thrust_borne) & ((! hover_control_mode) | (kgs > 20.0)))",
+                "regular_condition_coco_smv": "((lift_mode = thrust_borne) & ((! hover_control_mode) | (kgs > 20.0)))",
+                "regular_condition_coco": "((lift_mode = thrust_borne) and (( not hover_control_mode) or (kgs > 20.0)))",
+                "post_condition_unexp_pt": "(lift_mode = semi_thrust_borne)",
+                "post_condition_unexp_ft": "(lift_mode = semi_thrust_borne)",
+                "post_condition_SMV_pt": "(lift_mode = semi_thrust_borne)",
+                "post_condition_SMV_ft": "(lift_mode = semi_thrust_borne)",
+                "post_condition_coco_smv": "(lift_mode = semi_thrust_borne)",
+                "post_condition_coco": "(lift_mode = semi_thrust_borne)",
+                "ft_fetched": "((LAST V (((! $regular_condition_unexp_ft$) & ((! LAST) & (X $regular_condition_unexp_ft$))) -> (X (LAST | (X $post_condition_unexp_ft$))))) & ($regular_condition_unexp_ft$ -> (LAST | (X $post_condition_unexp_ft$))))",
+                "ft": "((LAST V (((! ((lift_mode = thrust_borne) & ((! hover_control_mode) | (kgs > 20.0)))) & ((! LAST) & (X ((lift_mode = thrust_borne) & ((! hover_control_mode) | (kgs > 20.0)))))) -> (X (LAST | (X (lift_mode = semi_thrust_borne)))))) & (((lift_mode = thrust_borne) & ((! hover_control_mode) | (kgs > 20.0))) -> (LAST | (X (lift_mode = semi_thrust_borne)))))",
+                "pt_fetched": "(H ((Y ($regular_condition_unexp_pt$ & ((Y (! $regular_condition_unexp_pt$)) | FTP))) -> ($post_condition_unexp_pt$ | FTP)))",
+                "pt": "(H ((Y (((lift_mode = thrust_borne) & ((! hover_control_mode) | (kgs > 20.0))) & ((Y (! ((lift_mode = thrust_borne) & ((! hover_control_mode) | (kgs > 20.0))))) | FTP))) -> ((lift_mode = semi_thrust_borne) | FTP)))",
+                "ptExpanded_fetched": "(H ((Y ($regular_condition_SMV_pt$ & ((Y (! $regular_condition_SMV_pt$)) | (! (Y TRUE))))) -> ($post_condition_SMV_pt$ | (! (Y TRUE)))))",
+                "ptExpanded": "(H ((Y (((lift_mode = thrust_borne) & ((! hover_control_mode) | (kgs > 20.0))) & ((Y (! ((lift_mode = thrust_borne) & ((! hover_control_mode) | (kgs > 20.0))))) | (! (Y TRUE))))) -> ((lift_mode = semi_thrust_borne) | (! (Y TRUE)))))",
+                "ftExpanded_fetched": "((LAST V (((! $regular_condition_SMV_ft$) & ((! LAST) & (X $regular_condition_SMV_ft$))) -> (X (LAST | (X $post_condition_SMV_ft$))))) & ($regular_condition_SMV_ft$ -> (LAST | (X $post_condition_SMV_ft$))))",
+                "ftExpanded": "((LAST V (((! ((lift_mode = thrust_borne) & ((! hover_control_mode) | (kgs > 20.0)))) & ((! LAST) & (X ((lift_mode = thrust_borne) & ((! hover_control_mode) | (kgs > 20.0)))))) -> (X (LAST | (X (lift_mode = semi_thrust_borne)))))) & (((lift_mode = thrust_borne) & ((! hover_control_mode) | (kgs > 20.0))) -> (LAST | (X (lift_mode = semi_thrust_borne)))))",
+                "ftInfAUExpanded_fetched": "((G (((! $regular_condition_SMV_ft$) & (X $regular_condition_SMV_ft$)) -> (X (X $post_condition_SMV_ft$)))) & ($regular_condition_SMV_ft$ -> (X $post_condition_SMV_ft$)))",
+                "ftInfAUExpanded": "((G (((! ((lift_mode = thrust_borne) & ((! hover_control_mode) | (kgs > 20.0)))) & (X ((lift_mode = thrust_borne) & ((! hover_control_mode) | (kgs > 20.0))))) -> (X (X (lift_mode = semi_thrust_borne))))) & (((lift_mode = thrust_borne) & ((! hover_control_mode) | (kgs > 20.0))) -> (X (lift_mode = semi_thrust_borne))))",
+                "ftInfBtwExpanded_fetched": "((G (((! $regular_condition_SMV_ft$) & (X $regular_condition_SMV_ft$)) -> (X (X $post_condition_SMV_ft$)))) & ($regular_condition_SMV_ft$ -> (X $post_condition_SMV_ft$)))",
+                "ftInfBtwExpanded": "((G (((! ((lift_mode = thrust_borne) & ((! hover_control_mode) | (kgs > 20.0)))) & (X ((lift_mode = thrust_borne) & ((! hover_control_mode) | (kgs > 20.0))))) -> (X (X (lift_mode = semi_thrust_borne))))) & (((lift_mode = thrust_borne) & ((! hover_control_mode) | (kgs > 20.0))) -> (X (lift_mode = semi_thrust_borne))))",
+                "CoCoSpecCode_fetched": "(H((YtoPre($regular_condition_coco$ and ((YtoPre( not $regular_condition_coco$)) or FTP))) => ($post_condition_coco$ or FTP)))",
+                "CoCoSpecCode": "(H((YtoPre(((lift_mode = thrust_borne) and (( not hover_control_mode) or (kgs > 20.0))) and ((YtoPre( not ((lift_mode = thrust_borne) and (( not hover_control_mode) or (kgs > 20.0))))) or FTP))) => ((lift_mode = semi_thrust_borne) or FTP)))",
+                "component": "<b><i>vehicle</i></b>"
+            },
+            "_id": "79b8f5a1-5fd9-11ed-9cbe-ffd8cbaa6d62"
+        },
+        {
+            "reqid": "LPC_INIT_LIFT_MODE",
+            "parent_reqid": "",
+            "project": "LPC_mini",
+            "rationale": "",
+            "comments": "",
+            "fulltext": "The vehicle shall immediately satisfy lift_mode = wing_borne <=> kias >= 90.0",
+            "semantics": {
+                "type": "nasa",
+                "scope": {
+                    "type": "null"
+                },
+                "condition": "null",
+                "timing": "immediately",
+                "response": "satisfaction",
+                "variables": [
+                    "lift_mode",
+                    "wing_borne",
+                    "kias"
+                ],
+                "component_name": "vehicle",
+                "componentTextRange": [
+                    0,
+                    10
+                ],
+                "timingTextRange": [
+                    18,
+                    28
+                ],
+                "post_condition": "(lift_mode = wing_borne <=> kias >= 90.0)",
+                "responseTextRange": [
+                    30,
+                    76
+                ],
+                "diagramVariables": "Response = <b><i>(lift_mode = wing_borne <=> kias >= 90.0)</i></b>.",
+                "description": "ENFORCED: in the interval defined by the entire execution.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, if trigger holds then RES also holds at the same time point.",
+                "diagram": "_media/user-interface/examples/svgDiagrams/null_null_immediately_satisfaction.svg",
+                "scope_mode_pt": "BAD_PT",
+                "scope_mode_coco": "BAD_COCO",
+                "scope_mode_ft": "BAD_FT",
+                "post_condition_unexp_pt": "((lift_mode = wing_borne) <-> (kias >= 90.0))",
+                "post_condition_unexp_ft": "((lift_mode = wing_borne) <-> (kias >= 90.0))",
+                "post_condition_SMV_pt": "((lift_mode = wing_borne) <-> (kias >= 90.0))",
+                "post_condition_SMV_ft": "((lift_mode = wing_borne) <-> (kias >= 90.0))",
+                "post_condition_coco_smv": "((lift_mode = wing_borne) <-> (kias >= 90.0))",
+                "post_condition_coco": "((lift_mode = wing_borne) = (kias >= 90.0))",
+                "ft_fetched": "$post_condition_unexp_ft$",
+                "ft": "((lift_mode = wing_borne) <-> (kias >= 90.0))",
+                "pt_fetched": "(H (FTP -> $post_condition_unexp_pt$))",
+                "pt": "(H (FTP -> ((lift_mode = wing_borne) <-> (kias >= 90.0))))",
+                "ptExpanded_fetched": "(H ((! (Y TRUE)) -> $post_condition_SMV_pt$))",
+                "ptExpanded": "(H ((! (Y TRUE)) -> ((lift_mode = wing_borne) <-> (kias >= 90.0))))",
+                "ftExpanded_fetched": "$post_condition_SMV_ft$",
+                "ftExpanded": "((lift_mode = wing_borne) <-> (kias >= 90.0))",
+                "ftInfAUExpanded_fetched": "$post_condition_SMV_ft$",
+                "ftInfAUExpanded": "((lift_mode = wing_borne) <-> (kias >= 90.0))",
+                "ftInfBtwExpanded_fetched": "$post_condition_SMV_ft$",
+                "ftInfBtwExpanded": "((lift_mode = wing_borne) <-> (kias >= 90.0))",
+                "CoCoSpecCode_fetched": "(H(FTP => $post_condition_coco$))",
+                "CoCoSpecCode": "(H(FTP => ((lift_mode = wing_borne) = (kias >= 90.0))))",
+                "component": "<b><i>vehicle</i></b>"
+            },
+            "_id": "79b91cb0-5fd9-11ed-9cbe-ffd8cbaa6d62"
+        },
+        {
+            "reqid": "LPC_LIFT_MODE",
+            "parent_reqid": "",
+            "project": "LPC_mini",
+            "rationale": "",
+            "comments": "",
+            "fulltext": "The vehicle shall always satisfy lift_mode = thrust_borne | lift_mode = semi_thrust_borne | lift_mode = semi_wing_borne | lift_mode = wing_borne",
+            "semantics": {
+                "type": "nasa",
+                "scope": {
+                    "type": "null"
+                },
+                "condition": "null",
+                "timing": "always",
+                "response": "satisfaction",
+                "variables": [
+                    "lift_mode",
+                    "thrust_borne",
+                    "semi_thrust_borne",
+                    "semi_wing_borne",
+                    "wing_borne"
+                ],
+                "component_name": "vehicle",
+                "componentTextRange": [
+                    0,
+                    10
+                ],
+                "timingTextRange": [
+                    18,
+                    23
+                ],
+                "post_condition": "(lift_mode = thrust_borne | lift_mode = semi_thrust_borne | lift_mode = semi_wing_borne | lift_mode = wing_borne)",
+                "responseTextRange": [
+                    25,
+                    143
+                ],
+                "diagramVariables": "Response = <b><i>(lift_mode = thrust_borne | lift_mode = semi_thrust_borne | lift_mode = semi_wing_borne | lift_mode = wing_borne)</i></b>.",
+                "description": "ENFORCED: in the interval defined by the entire execution.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must hold at all time points between (and including) the trigger and the end of the interval.",
+                "diagram": "_media/user-interface/examples/svgDiagrams/null_null_always_satisfaction.svg",
+                "scope_mode_pt": "BAD_PT",
+                "scope_mode_coco": "BAD_COCO",
+                "scope_mode_ft": "BAD_FT",
+                "post_condition_unexp_pt": "((((lift_mode = thrust_borne) | (lift_mode = semi_thrust_borne)) | (lift_mode = semi_wing_borne)) | (lift_mode = wing_borne))",
+                "post_condition_unexp_ft": "((((lift_mode = thrust_borne) | (lift_mode = semi_thrust_borne)) | (lift_mode = semi_wing_borne)) | (lift_mode = wing_borne))",
+                "post_condition_SMV_pt": "((((lift_mode = thrust_borne) | (lift_mode = semi_thrust_borne)) | (lift_mode = semi_wing_borne)) | (lift_mode = wing_borne))",
+                "post_condition_SMV_ft": "((((lift_mode = thrust_borne) | (lift_mode = semi_thrust_borne)) | (lift_mode = semi_wing_borne)) | (lift_mode = wing_borne))",
+                "post_condition_coco_smv": "((((lift_mode = thrust_borne) | (lift_mode = semi_thrust_borne)) | (lift_mode = semi_wing_borne)) | (lift_mode = wing_borne))",
+                "post_condition_coco": "((((lift_mode = thrust_borne) or (lift_mode = semi_thrust_borne)) or (lift_mode = semi_wing_borne)) or (lift_mode = wing_borne))",
+                "ft_fetched": "(LAST V $post_condition_unexp_ft$)",
+                "ft": "(LAST V ((((lift_mode = thrust_borne) | (lift_mode = semi_thrust_borne)) | (lift_mode = semi_wing_borne)) | (lift_mode = wing_borne)))",
+                "pt_fetched": "(H $post_condition_unexp_pt$)",
+                "pt": "(H ((((lift_mode = thrust_borne) | (lift_mode = semi_thrust_borne)) | (lift_mode = semi_wing_borne)) | (lift_mode = wing_borne)))",
+                "ptExpanded_fetched": "(H $post_condition_SMV_pt$)",
+                "ptExpanded": "(H ((((lift_mode = thrust_borne) | (lift_mode = semi_thrust_borne)) | (lift_mode = semi_wing_borne)) | (lift_mode = wing_borne)))",
+                "ftExpanded_fetched": "(LAST V $post_condition_SMV_ft$)",
+                "ftExpanded": "(LAST V ((((lift_mode = thrust_borne) | (lift_mode = semi_thrust_borne)) | (lift_mode = semi_wing_borne)) | (lift_mode = wing_borne)))",
+                "ftInfAUExpanded_fetched": "(G $post_condition_SMV_ft$)",
+                "ftInfAUExpanded": "(G ((((lift_mode = thrust_borne) | (lift_mode = semi_thrust_borne)) | (lift_mode = semi_wing_borne)) | (lift_mode = wing_borne)))",
+                "ftInfBtwExpanded_fetched": "(G $post_condition_SMV_ft$)",
+                "ftInfBtwExpanded": "(G ((((lift_mode = thrust_borne) | (lift_mode = semi_thrust_borne)) | (lift_mode = semi_wing_borne)) | (lift_mode = wing_borne)))",
+                "CoCoSpecCode_fetched": "(H($post_condition_coco$))",
+                "CoCoSpecCode": "(H(((((lift_mode = thrust_borne) or (lift_mode = semi_thrust_borne)) or (lift_mode = semi_wing_borne)) or (lift_mode = wing_borne))))",
+                "component": "<b><i>vehicle</i></b>"
+            },
+            "_id": "79b91cb1-5fd9-11ed-9cbe-ffd8cbaa6d62"
+        },
+        {
+            "reqid": "LPC_INIT_KIAS",
+            "parent_reqid": "",
+            "project": "LPC_mini",
+            "rationale": "",
+            "comments": "",
+            "fulltext": "The vehicle shall immediately satisfy kias = 120.0",
+            "semantics": {
+                "type": "nasa",
+                "scope": {
+                    "type": "null"
+                },
+                "condition": "null",
+                "timing": "immediately",
+                "response": "satisfaction",
+                "variables": [
+                    "kias"
+                ],
+                "component_name": "vehicle",
+                "componentTextRange": [
+                    0,
+                    10
+                ],
+                "timingTextRange": [
+                    18,
+                    28
+                ],
+                "post_condition": "(kias = 120.0)",
+                "responseTextRange": [
+                    30,
+                    49
+                ],
+                "diagramVariables": "Response = <b><i>(kias = 120.0)</i></b>.",
+                "description": "ENFORCED: in the interval defined by the entire execution.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, if trigger holds then RES also holds at the same time point.",
+                "diagram": "_media/user-interface/examples/svgDiagrams/null_null_immediately_satisfaction.svg",
+                "scope_mode_pt": "BAD_PT",
+                "scope_mode_coco": "BAD_COCO",
+                "scope_mode_ft": "BAD_FT",
+                "post_condition_unexp_pt": "(kias = 120.0)",
+                "post_condition_unexp_ft": "(kias = 120.0)",
+                "post_condition_SMV_pt": "(kias = 120.0)",
+                "post_condition_SMV_ft": "(kias = 120.0)",
+                "post_condition_coco_smv": "(kias = 120.0)",
+                "post_condition_coco": "(kias = 120.0)",
+                "ft_fetched": "$post_condition_unexp_ft$",
+                "ft": "(kias = 120.0)",
+                "pt_fetched": "(H (FTP -> $post_condition_unexp_pt$))",
+                "pt": "(H (FTP -> (kias = 120.0)))",
+                "ptExpanded_fetched": "(H ((! (Y TRUE)) -> $post_condition_SMV_pt$))",
+                "ptExpanded": "(H ((! (Y TRUE)) -> (kias = 120.0)))",
+                "ftExpanded_fetched": "$post_condition_SMV_ft$",
+                "ftExpanded": "(kias = 120.0)",
+                "ftInfAUExpanded_fetched": "$post_condition_SMV_ft$",
+                "ftInfAUExpanded": "(kias = 120.0)",
+                "ftInfBtwExpanded_fetched": "$post_condition_SMV_ft$",
+                "ftInfBtwExpanded": "(kias = 120.0)",
+                "CoCoSpecCode_fetched": "(H(FTP => $post_condition_coco$))",
+                "CoCoSpecCode": "(H(FTP => (kias = 120.0)))",
+                "component": "<b><i>vehicle</i></b>"
+            },
+            "_id": "79b943c0-5fd9-11ed-9cbe-ffd8cbaa6d62"
+        },
+        {
+            "reqid": "LPC_KIAS_KGS",
+            "parent_reqid": "",
+            "project": "LPC_mini",
+            "rationale": "",
+            "comments": "",
+            "fulltext": "The vehicle shall always satisfy kias = kgs",
+            "semantics": {
+                "type": "nasa",
+                "scope": {
+                    "type": "null"
+                },
+                "condition": "null",
+                "timing": "always",
+                "response": "satisfaction",
+                "variables": [
+                    "kias",
+                    "kgs"
+                ],
+                "component_name": "vehicle",
+                "componentTextRange": [
+                    0,
+                    10
+                ],
+                "timingTextRange": [
+                    18,
+                    23
+                ],
+                "post_condition": "(kias = kgs)",
+                "responseTextRange": [
+                    25,
+                    42
+                ],
+                "diagramVariables": "Response = <b><i>(kias = kgs)</i></b>.",
+                "description": "ENFORCED: in the interval defined by the entire execution.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must hold at all time points between (and including) the trigger and the end of the interval.",
+                "diagram": "_media/user-interface/examples/svgDiagrams/null_null_always_satisfaction.svg",
+                "scope_mode_pt": "BAD_PT",
+                "scope_mode_coco": "BAD_COCO",
+                "scope_mode_ft": "BAD_FT",
+                "post_condition_unexp_pt": "(kias = kgs)",
+                "post_condition_unexp_ft": "(kias = kgs)",
+                "post_condition_SMV_pt": "(kias = kgs)",
+                "post_condition_SMV_ft": "(kias = kgs)",
+                "post_condition_coco_smv": "(kias = kgs)",
+                "post_condition_coco": "(kias = kgs)",
+                "ft_fetched": "(LAST V $post_condition_unexp_ft$)",
+                "ft": "(LAST V (kias = kgs))",
+                "pt_fetched": "(H $post_condition_unexp_pt$)",
+                "pt": "(H (kias = kgs))",
+                "ptExpanded_fetched": "(H $post_condition_SMV_pt$)",
+                "ptExpanded": "(H (kias = kgs))",
+                "ftExpanded_fetched": "(LAST V $post_condition_SMV_ft$)",
+                "ftExpanded": "(LAST V (kias = kgs))",
+                "ftInfAUExpanded_fetched": "(G $post_condition_SMV_ft$)",
+                "ftInfAUExpanded": "(G (kias = kgs))",
+                "ftInfBtwExpanded_fetched": "(G $post_condition_SMV_ft$)",
+                "ftInfBtwExpanded": "(G (kias = kgs))",
+                "CoCoSpecCode_fetched": "(H($post_condition_coco$))",
+                "CoCoSpecCode": "(H((kias = kgs)))",
+                "component": "<b><i>vehicle</i></b>"
+            },
+            "_id": "79b96ad1-5fd9-11ed-9cbe-ffd8cbaa6d62"
+        },
+        {
+            "reqid": "LPC_KIAS_DERIVATIVE",
+            "parent_reqid": "",
+            "project": "LPC_mini",
+            "rationale": "",
+            "comments": "",
+            "fulltext": "The vehicle shall always satisfy FTP | absReal(preReal(0.0, kias) - kias) <= 10.0",
+            "semantics": {
+                "type": "nasa",
+                "scope": {
+                    "type": "null"
+                },
+                "condition": "null",
+                "timing": "always",
+                "response": "satisfaction",
+                "variables": [
+                    "kias"
+                ],
+                "component_name": "vehicle",
+                "componentTextRange": [
+                    0,
+                    10
+                ],
+                "timingTextRange": [
+                    18,
+                    23
+                ],
+                "post_condition": "(FTP | absReal ( preReal ( 0.0 , kias ) - kias ) <= 10.0)",
+                "responseTextRange": [
+                    25,
+                    80
+                ],
+                "diagramVariables": "Response = <b><i>(FTP | absReal ( preReal ( 0.0 , kias ) - kias ) <= 10.0)</i></b>.",
+                "description": "ENFORCED: in the interval defined by the entire execution.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must hold at all time points between (and including) the trigger and the end of the interval.",
+                "diagram": "_media/user-interface/examples/svgDiagrams/null_null_always_satisfaction.svg",
+                "scope_mode_pt": "BAD_PT",
+                "scope_mode_coco": "BAD_COCO",
+                "scope_mode_ft": "BAD_FT",
+                "post_condition_unexp_pt": "((! (Y TRUE)) | (absReal((preReal(0.0,kias) - kias)) <= 10.0))",
+                "post_condition_unexp_ft": "(FTP | (absReal((preReal(0.0,kias) - kias)) <= 10.0))",
+                "post_condition_SMV_pt": "((! (Y TRUE)) | (absReal((preReal(0.0,kias) - kias)) <= 10.0))",
+                "post_condition_SMV_ft": "(FTP | (absReal((preReal(0.0,kias) - kias)) <= 10.0))",
+                "post_condition_coco_smv": "((! (Y TRUE)) | (absReal((preReal(0.0,kias) - kias)) <= 10.0))",
+                "post_condition_coco": "(( not (YtoPre( true ))) or (absReal ( ( preReal ( 0.0 , kias ) - kias ) ) <= 10.0))",
+                "ft_fetched": "(LAST V $post_condition_unexp_ft$)",
+                "ft": "(LAST V (FTP | (absReal((preReal(0.0,kias) - kias)) <= 10.0)))",
+                "pt_fetched": "(H $post_condition_unexp_pt$)",
+                "pt": "(H ((! (Y TRUE)) | (absReal((preReal(0.0,kias) - kias)) <= 10.0)))",
+                "ptExpanded_fetched": "(H $post_condition_SMV_pt$)",
+                "ptExpanded": "(H ((! (Y TRUE)) | (absReal((preReal(0.0,kias) - kias)) <= 10.0)))",
+                "ftExpanded_fetched": "(LAST V $post_condition_SMV_ft$)",
+                "ftExpanded": "(LAST V (FTP | (absReal((preReal(0.0,kias) - kias)) <= 10.0)))",
+                "ftInfAUExpanded_fetched": "(G $post_condition_SMV_ft$)",
+                "ftInfAUExpanded": "(G (FTP | (absReal((preReal(0.0,kias) - kias)) <= 10.0)))",
+                "ftInfBtwExpanded_fetched": "(G $post_condition_SMV_ft$)",
+                "ftInfBtwExpanded": "(G (FTP | (absReal((preReal(0.0,kias) - kias)) <= 10.0)))",
+                "CoCoSpecCode_fetched": "(H($post_condition_coco$))",
+                "CoCoSpecCode": "(H((( not (YtoPre( true ))) or (absReal ( ( preReal ( 0.0 , kias ) - kias ) ) <= 10.0))))",
+                "component": "<b><i>vehicle</i></b>"
+            },
+            "_id": "79b991e0-5fd9-11ed-9cbe-ffd8cbaa6d62"
+        },
+        {
+            "reqid": "LPC_WB_TO_SWB",
+            "parent_reqid": "",
+            "project": "LPC_mini",
+            "rationale": "",
+            "comments": "",
+            "fulltext": "Upon  lift_mode = wing_borne & kias <= 90.0 the vehicle shall at the next timepoint satisfy lift_mode = semi_wing_borne",
+            "semantics": {
+                "type": "nasa",
+                "scope": {
+                    "type": "null"
+                },
+                "condition": "regular",
+                "timing": "next",
+                "response": "satisfaction",
+                "variables": [
+                    "lift_mode",
+                    "wing_borne",
+                    "kias",
+                    "semi_wing_borne"
+                ],
+                "qualifier_word": "upon",
+                "pre_condition": "(lift_mode = wing_borne & kias <= 90.0)",
+                "regular_condition": "(lift_mode = wing_borne & kias <= 90.0)",
+                "conditionTextRange": [
+                    0,
+                    42
+                ],
+                "component_name": "vehicle",
+                "componentTextRange": [
+                    44,
+                    54
+                ],
+                "timingTextRange": [
+                    62,
+                    82
+                ],
+                "post_condition": "(lift_mode = semi_wing_borne)",
+                "responseTextRange": [
+                    84,
+                    118
+                ],
+                "diagramVariables": "TC = <b><i>(lift_mode = wing_borne & kias <= 90.0)</i></b>, Response = <b><i>(lift_mode = semi_wing_borne)</i></b>.",
+                "description": "ENFORCED: in the interval defined by the entire execution.\nTRIGGER: first point in the interval if <b><i>(lift_mode = wing_borne & kias <= 90.0)</i></b> is true and any point in the interval where <b><i>(lift_mode = wing_borne & kias <= 90.0)</i></b> becomes true (from false).\nREQUIRES: for every trigger, RES must hold at the next time step.",
+                "diagram": "_media/user-interface/examples/svgDiagrams/null_regular_next_satisfaction.svg",
+                "scope_mode_pt": "BAD_PT",
+                "scope_mode_coco": "BAD_COCO",
+                "scope_mode_ft": "BAD_FT",
+                "regular_condition_unexp_pt": "((lift_mode = wing_borne) & (kias <= 90.0))",
+                "regular_condition_unexp_ft": "((lift_mode = wing_borne) & (kias <= 90.0))",
+                "regular_condition_SMV_pt": "((lift_mode = wing_borne) & (kias <= 90.0))",
+                "regular_condition_SMV_ft": "((lift_mode = wing_borne) & (kias <= 90.0))",
+                "regular_condition_coco_smv": "((lift_mode = wing_borne) & (kias <= 90.0))",
+                "regular_condition_coco": "((lift_mode = wing_borne) and (kias <= 90.0))",
+                "post_condition_unexp_pt": "(lift_mode = semi_wing_borne)",
+                "post_condition_unexp_ft": "(lift_mode = semi_wing_borne)",
+                "post_condition_SMV_pt": "(lift_mode = semi_wing_borne)",
+                "post_condition_SMV_ft": "(lift_mode = semi_wing_borne)",
+                "post_condition_coco_smv": "(lift_mode = semi_wing_borne)",
+                "post_condition_coco": "(lift_mode = semi_wing_borne)",
+                "ft_fetched": "((LAST V (((! $regular_condition_unexp_ft$) & ((! LAST) & (X $regular_condition_unexp_ft$))) -> (X (LAST | (X $post_condition_unexp_ft$))))) & ($regular_condition_unexp_ft$ -> (LAST | (X $post_condition_unexp_ft$))))",
+                "ft": "((LAST V (((! ((lift_mode = wing_borne) & (kias <= 90.0))) & ((! LAST) & (X ((lift_mode = wing_borne) & (kias <= 90.0))))) -> (X (LAST | (X (lift_mode = semi_wing_borne)))))) & (((lift_mode = wing_borne) & (kias <= 90.0)) -> (LAST | (X (lift_mode = semi_wing_borne)))))",
+                "pt_fetched": "(H ((Y ($regular_condition_unexp_pt$ & ((Y (! $regular_condition_unexp_pt$)) | FTP))) -> ($post_condition_unexp_pt$ | FTP)))",
+                "pt": "(H ((Y (((lift_mode = wing_borne) & (kias <= 90.0)) & ((Y (! ((lift_mode = wing_borne) & (kias <= 90.0)))) | FTP))) -> ((lift_mode = semi_wing_borne) | FTP)))",
+                "ptExpanded_fetched": "(H ((Y ($regular_condition_SMV_pt$ & ((Y (! $regular_condition_SMV_pt$)) | (! (Y TRUE))))) -> ($post_condition_SMV_pt$ | (! (Y TRUE)))))",
+                "ptExpanded": "(H ((Y (((lift_mode = wing_borne) & (kias <= 90.0)) & ((Y (! ((lift_mode = wing_borne) & (kias <= 90.0)))) | (! (Y TRUE))))) -> ((lift_mode = semi_wing_borne) | (! (Y TRUE)))))",
+                "ptFinBtwExpanded_fetched": "(H ((Y ($regular_condition_SMV_pt$ & ((Y (! $regular_condition_SMV_pt$)) | (! (Y TRUE))))) -> ($post_condition_SMV_pt$ | (! (Y TRUE)))))",
+                "ptFinBtwExpanded": "(H ((Y (((lift_mode = wing_borne) & (kias <= 90.0)) & ((Y (! ((lift_mode = wing_borne) & (kias <= 90.0)))) | (! (Y TRUE))))) -> ((lift_mode = semi_wing_borne) | (! (Y TRUE)))))",
+                "ftExpanded_fetched": "((LAST V (((! $regular_condition_SMV_ft$) & ((! LAST) & (X $regular_condition_SMV_ft$))) -> (X (LAST | (X $post_condition_SMV_ft$))))) & ($regular_condition_SMV_ft$ -> (LAST | (X $post_condition_SMV_ft$))))",
+                "ftExpanded": "((LAST V (((! ((lift_mode = wing_borne) & (kias <= 90.0))) & ((! LAST) & (X ((lift_mode = wing_borne) & (kias <= 90.0))))) -> (X (LAST | (X (lift_mode = semi_wing_borne)))))) & (((lift_mode = wing_borne) & (kias <= 90.0)) -> (LAST | (X (lift_mode = semi_wing_borne)))))",
+                "ftInfAUExpanded_fetched": "((G (((! $regular_condition_SMV_ft$) & (X $regular_condition_SMV_ft$)) -> (X (X $post_condition_SMV_ft$)))) & ($regular_condition_SMV_ft$ -> (X $post_condition_SMV_ft$)))",
+                "ftInfAUExpanded": "((G (((! ((lift_mode = wing_borne) & (kias <= 90.0))) & (X ((lift_mode = wing_borne) & (kias <= 90.0)))) -> (X (X (lift_mode = semi_wing_borne))))) & (((lift_mode = wing_borne) & (kias <= 90.0)) -> (X (lift_mode = semi_wing_borne))))",
+                "ftInfBtwExpanded_fetched": "((G (((! $regular_condition_SMV_ft$) & (X $regular_condition_SMV_ft$)) -> (X (X $post_condition_SMV_ft$)))) & ($regular_condition_SMV_ft$ -> (X $post_condition_SMV_ft$)))",
+                "ftInfBtwExpanded": "((G (((! ((lift_mode = wing_borne) & (kias <= 90.0))) & (X ((lift_mode = wing_borne) & (kias <= 90.0)))) -> (X (X (lift_mode = semi_wing_borne))))) & (((lift_mode = wing_borne) & (kias <= 90.0)) -> (X (lift_mode = semi_wing_borne))))",
+                "ftFinBtwExpanded_fetched": "((LAST V (((! $regular_condition_SMV_ft$) & ((! LAST) & (X $regular_condition_SMV_ft$))) -> (X (LAST | (X $post_condition_SMV_ft$))))) & ($regular_condition_SMV_ft$ -> (LAST | (X $post_condition_SMV_ft$))))",
+                "ftFinBtwExpanded": "((LAST V (((! ((lift_mode = wing_borne) & (kias <= 90.0))) & ((! LAST) & (X ((lift_mode = wing_borne) & (kias <= 90.0))))) -> (X (LAST | (X (lift_mode = semi_wing_borne)))))) & (((lift_mode = wing_borne) & (kias <= 90.0)) -> (LAST | (X (lift_mode = semi_wing_borne)))))",
+                "CoCoSpecCode_fetched": "(H((YtoPre($regular_condition_coco$ and ((YtoPre( not $regular_condition_coco$)) or FTP))) => ($post_condition_coco$ or FTP)))",
+                "CoCoSpecCode": "(H((YtoPre(((lift_mode = wing_borne) and (kias <= 90.0)) and ((YtoPre( not ((lift_mode = wing_borne) and (kias <= 90.0)))) or FTP))) => ((lift_mode = semi_wing_borne) or FTP)))",
+                "component": "vehicle"
+            },
+            "_id": "79b991e1-5fd9-11ed-9cbe-ffd8cbaa6d62"
+        },
+        {
+            "reqid": "LPC_REACH_HOVER_06",
+            "parent_reqid": "",
+            "project": "LPC_mini",
+            "rationale": "",
+            "comments": "",
+            "fulltext": "The vehicle shall within 6 ticks satisfy lift_mode = thrust_borne",
+            "semantics": {
+                "type": "nasa",
+                "scope": {
+                    "type": "null"
+                },
+                "condition": "null",
+                "timing": "within",
+                "response": "satisfaction",
+                "variables": [
+                    "lift_mode",
+                    "thrust_borne"
+                ],
+                "component_name": "vehicle",
+                "componentTextRange": [
+                    0,
+                    10
+                ],
+                "duration": "6",
+                "timingTextRange": [
+                    18,
+                    31
+                ],
+                "post_condition": "(lift_mode = thrust_borne)",
+                "responseTextRange": [
+                    33,
+                    64
+                ],
+                "diagramVariables": " n = <b><i>6</i></b>, Response = <b><i>(lift_mode = thrust_borne)</i></b>.",
+                "description": "ENFORCED: in the interval defined by the entire execution.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must hold at some point with distance <= <b><i>6</i></b> from the trigger (i.e., at trigger, trigger+1, ..., or trigger+<b><i>6</i></b>). If the interval ends sooner than trigger+<b><i>6</i></b>, then RES need not hold.",
+                "diagram": "_media/user-interface/examples/svgDiagrams/null_null_within_satisfaction.svg",
+                "scope_mode_pt": "BAD_PT",
+                "scope_mode_coco": "BAD_COCO",
+                "scope_mode_ft": "BAD_FT",
+                "post_condition_unexp_pt": "(lift_mode = thrust_borne)",
+                "post_condition_unexp_ft": "(lift_mode = thrust_borne)",
+                "post_condition_SMV_pt": "(lift_mode = thrust_borne)",
+                "post_condition_SMV_ft": "(lift_mode = thrust_borne)",
+                "post_condition_coco_smv": "(lift_mode = thrust_borne)",
+                "post_condition_coco": "(lift_mode = thrust_borne)",
+                "ft_fetched": "((F[<=$duration$] $post_condition_unexp_ft$) | (F[<$duration$] LAST))",
+                "ft": "((F[<=6] (lift_mode = thrust_borne)) | (F[<6] LAST))",
+                "pt_fetched": "(H ((H (! $post_condition_unexp_pt$)) -> (O[<$duration$] FTP)))",
+                "pt": "(H ((H (! (lift_mode = thrust_borne))) -> (O[<6] FTP)))",
+                "ptExpanded_fetched": "(H ((H (! $post_condition_SMV_pt$)) -> (O[<$duration$] (! (Y TRUE)))))",
+                "ptExpanded": "(H ((H (! (lift_mode = thrust_borne))) -> (O[0,5] (! (Y TRUE)))))",
+                "ptFinBtwExpanded_fetched": "(H ((H (! $post_condition_SMV_pt$)) -> (O[<$duration$] (! (Y TRUE)))))",
+                "ptFinBtwExpanded": "(H ((H (! (lift_mode = thrust_borne))) -> (O[0,5] (! (Y TRUE)))))",
+                "ftExpanded_fetched": "((F[<=$duration$] $post_condition_SMV_ft$) | (F[<$duration$] LAST))",
+                "ftExpanded": "((F[0,6] (lift_mode = thrust_borne)) | (F[0,5] LAST))",
+                "ftInfAUExpanded_fetched": "(F[<=$duration$] $post_condition_SMV_ft$)",
+                "ftInfAUExpanded": "(F[0,6] (lift_mode = thrust_borne))",
+                "ftInfBtwExpanded_fetched": "(F[<=$duration$] $post_condition_SMV_ft$)",
+                "ftInfBtwExpanded": "(F[0,6] (lift_mode = thrust_borne))",
+                "ftFinBtwExpanded_fetched": "((F[<=$duration$] $post_condition_SMV_ft$) | (F[<$duration$] LAST))",
+                "ftFinBtwExpanded": "((F[0,6] (lift_mode = thrust_borne)) | (F[0,5] LAST))",
+                "CoCoSpecCode_fetched": "(H((H( not $post_condition_coco$)) => (OT($duration$-1,0,FTP))))",
+                "CoCoSpecCode": "(H((H( not (lift_mode = thrust_borne))) => (OT(6-1,0,FTP))))",
+                "component": "vehicle"
+            },
+            "_id": "79b9b8f0-5fd9-11ed-9cbe-ffd8cbaa6d62"
+        },
+        {
+            "reqid": "LPC_INIT_HOVER_MODE",
+            "parent_reqid": "",
+            "project": "LPC_mini",
+            "rationale": "",
+            "comments": "",
+            "fulltext": "The vehicle shall immediately satisfy hover_control_mode <=> kgs < 20.0",
+            "semantics": {
+                "type": "nasa",
+                "scope": {
+                    "type": "null"
+                },
+                "condition": "null",
+                "timing": "immediately",
+                "response": "satisfaction",
+                "variables": [
+                    "hover_control_mode",
+                    "kgs"
+                ],
+                "component_name": "vehicle",
+                "componentTextRange": [
+                    0,
+                    10
+                ],
+                "timingTextRange": [
+                    18,
+                    28
+                ],
+                "post_condition": "(hover_control_mode <=> kgs < 20.0)",
+                "responseTextRange": [
+                    30,
+                    70
+                ],
+                "diagramVariables": "Response = <b><i>(hover_control_mode <=> kgs < 20.0)</i></b>.",
+                "description": "ENFORCED: in the interval defined by the entire execution.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, if trigger holds then RES also holds at the same time point.",
+                "diagram": "_media/user-interface/examples/svgDiagrams/null_null_immediately_satisfaction.svg",
+                "scope_mode_pt": "BAD_PT",
+                "scope_mode_coco": "BAD_COCO",
+                "scope_mode_ft": "BAD_FT",
+                "post_condition_unexp_pt": "(hover_control_mode <-> (kgs < 20.0))",
+                "post_condition_unexp_ft": "(hover_control_mode <-> (kgs < 20.0))",
+                "post_condition_SMV_pt": "(hover_control_mode <-> (kgs < 20.0))",
+                "post_condition_SMV_ft": "(hover_control_mode <-> (kgs < 20.0))",
+                "post_condition_coco_smv": "(hover_control_mode <-> (kgs < 20.0))",
+                "post_condition_coco": "(hover_control_mode = (kgs < 20.0))",
+                "ft_fetched": "$post_condition_unexp_ft$",
+                "ft": "(hover_control_mode <-> (kgs < 20.0))",
+                "pt_fetched": "(H (FTP -> $post_condition_unexp_pt$))",
+                "pt": "(H (FTP -> (hover_control_mode <-> (kgs < 20.0))))",
+                "ptExpanded_fetched": "(H ((! (Y TRUE)) -> $post_condition_SMV_pt$))",
+                "ptExpanded": "(H ((! (Y TRUE)) -> (hover_control_mode <-> (kgs < 20.0))))",
+                "ftExpanded_fetched": "$post_condition_SMV_ft$",
+                "ftExpanded": "(hover_control_mode <-> (kgs < 20.0))",
+                "ftInfAUExpanded_fetched": "$post_condition_SMV_ft$",
+                "ftInfAUExpanded": "(hover_control_mode <-> (kgs < 20.0))",
+                "ftInfBtwExpanded_fetched": "$post_condition_SMV_ft$",
+                "ftInfBtwExpanded": "(hover_control_mode <-> (kgs < 20.0))",
+                "CoCoSpecCode_fetched": "(H(FTP => $post_condition_coco$))",
+                "CoCoSpecCode": "(H(FTP => (hover_control_mode = (kgs < 20.0))))",
+                "component": "<b><i>vehicle</i></b>"
+            },
+            "_id": "79b9b8f1-5fd9-11ed-9cbe-ffd8cbaa6d62"
+        },
+        {
+            "reqid": "LPC_KIAS_0",
+            "parent_reqid": "",
+            "project": "LPC_mini",
+            "rationale": "",
+            "comments": "",
+            "fulltext": "The vehicle shall always satisfy kias >= 0.0",
+            "semantics": {
+                "type": "nasa",
+                "scope": {
+                    "type": "null"
+                },
+                "condition": "null",
+                "timing": "always",
+                "response": "satisfaction",
+                "variables": [
+                    "kias"
+                ],
+                "component_name": "vehicle",
+                "componentTextRange": [
+                    0,
+                    10
+                ],
+                "timingTextRange": [
+                    18,
+                    23
+                ],
+                "post_condition": "(kias >= 0.0)",
+                "responseTextRange": [
+                    25,
+                    43
+                ],
+                "diagramVariables": "Response = <b><i>(kias >= 0.0)</i></b>.",
+                "description": "ENFORCED: in the interval defined by the entire execution.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must hold at all time points between (and including) the trigger and the end of the interval.",
+                "diagram": "_media/user-interface/examples/svgDiagrams/null_null_always_satisfaction.svg",
+                "scope_mode_pt": "BAD_PT",
+                "scope_mode_coco": "BAD_COCO",
+                "scope_mode_ft": "BAD_FT",
+                "post_condition_unexp_pt": "(kias >= 0.0)",
+                "post_condition_unexp_ft": "(kias >= 0.0)",
+                "post_condition_SMV_pt": "(kias >= 0.0)",
+                "post_condition_SMV_ft": "(kias >= 0.0)",
+                "post_condition_coco_smv": "(kias >= 0.0)",
+                "post_condition_coco": "(kias >= 0.0)",
+                "ft_fetched": "(LAST V $post_condition_unexp_ft$)",
+                "ft": "(LAST V (kias >= 0.0))",
+                "pt_fetched": "(H $post_condition_unexp_pt$)",
+                "pt": "(H (kias >= 0.0))",
+                "ptExpanded_fetched": "(H $post_condition_SMV_pt$)",
+                "ptExpanded": "(H (kias >= 0.0))",
+                "ptFinBtwExpanded_fetched": "(H $post_condition_SMV_pt$)",
+                "ptFinBtwExpanded": "(H (kias >= 0.0))",
+                "ftExpanded_fetched": "(LAST V $post_condition_SMV_ft$)",
+                "ftExpanded": "(LAST V (kias >= 0.0))",
+                "ftInfAUExpanded_fetched": "(G $post_condition_SMV_ft$)",
+                "ftInfAUExpanded": "(G (kias >= 0.0))",
+                "ftInfBtwExpanded_fetched": "(G $post_condition_SMV_ft$)",
+                "ftInfBtwExpanded": "(G (kias >= 0.0))",
+                "ftFinBtwExpanded_fetched": "(LAST V $post_condition_SMV_ft$)",
+                "ftFinBtwExpanded": "(LAST V (kias >= 0.0))",
+                "CoCoSpecCode_fetched": "(H($post_condition_coco$))",
+                "CoCoSpecCode": "(H((kias >= 0.0)))",
+                "component": "vehicle"
+            },
+            "_id": "79ba7c42-5fd9-11ed-9cbe-ffd8cbaa6d62"
+        },
+        {
+            "reqid": "LPC_SWB_STAY_ON_NEXT",
+            "parent_reqid": "",
+            "project": "LPC_mini",
+            "rationale": "",
+            "comments": "",
+            "fulltext": "Whenever lift_mode = semi_wing_borne & kias <= 100.0 & kias > 30.0 the vehicle shall at the next timepoint satisfy lift_mode = semi_wing_borne",
+            "status": "",
+            "semantics": {
+                "type": "nasa",
+                "scope": {
+                    "type": "null"
+                },
+                "condition": "noTrigger",
+                "timing": "next",
+                "response": "satisfaction",
+                "variables": [
+                    "lift_mode",
+                    "semi_wing_borne",
+                    "kias"
+                ],
+                "qualifier_word": "whenever",
+                "pre_condition": "(lift_mode = semi_wing_borne & kias <= 100.0 & kias > 30.0)",
+                "regular_condition": "(lift_mode = semi_wing_borne & kias <= 100.0 & kias > 30.0)",
+                "conditionTextRange": [
+                    0,
+                    65
+                ],
+                "component_name": "vehicle",
+                "componentTextRange": [
+                    67,
+                    77
+                ],
+                "timingTextRange": [
+                    85,
+                    105
+                ],
+                "post_condition": "(lift_mode = semi_wing_borne)",
+                "responseTextRange": [
+                    107,
+                    141
+                ],
+                "diagramVariables": "CC = <b><i>(lift_mode = semi_wing_borne & kias <= 100.0 & kias > 30.0)</i></b>, Response = <b><i>(lift_mode = semi_wing_borne)</i></b>.",
+                "description": "ENFORCED: in the interval defined by the entire execution.\nTRIGGER: every point in the interval where <b><i>(lift_mode = semi_wing_borne & kias <= 100.0 & kias > 30.0)</i></b> is true.\nREQUIRES: for every trigger, RES must hold at the next time step.",
+                "diagram": "_media/user-interface/examples/svgDiagrams/null_noTrigger_next_satisfaction.svg",
+                "scope_mode_pt": "BAD_PT",
+                "scope_mode_ft": "BAD_FT",
+                "regular_condition_unexp_pt": "(((lift_mode = semi_wing_borne) & (kias <= 100.0)) & (kias > 30.0))",
+                "regular_condition_unexp_ft": "(((lift_mode = semi_wing_borne) & (kias <= 100.0)) & (kias > 30.0))",
+                "regular_condition_SMV_pt": "(((lift_mode = semi_wing_borne) & (kias <= 100.0)) & (kias > 30.0))",
+                "regular_condition_SMV_ft": "(((lift_mode = semi_wing_borne) & (kias <= 100.0)) & (kias > 30.0))",
+                "post_condition_unexp_pt": "(lift_mode = semi_wing_borne)",
+                "post_condition_unexp_ft": "(lift_mode = semi_wing_borne)",
+                "post_condition_SMV_pt": "(lift_mode = semi_wing_borne)",
+                "post_condition_SMV_ft": "(lift_mode = semi_wing_borne)",
+                "ft_fetched": "(LAST V ($regular_condition_unexp_ft$ -> (LAST | (X $post_condition_unexp_ft$))))",
+                "ft": "(LAST V ((((lift_mode = semi_wing_borne) & (kias <= 100.0)) & (kias > 30.0)) -> (LAST | (X (lift_mode = semi_wing_borne)))))",
+                "pt_fetched": "(H ((Y $regular_condition_unexp_pt$) -> ($post_condition_unexp_pt$ | FTP)))",
+                "pt": "(H ((Y (((lift_mode = semi_wing_borne) & (kias <= 100.0)) & (kias > 30.0))) -> ((lift_mode = semi_wing_borne) | FTP)))",
+                "ptExpanded_fetched": "(H ((Y $regular_condition_SMV_pt$) -> ($post_condition_SMV_pt$ | (! (Y TRUE)))))",
+                "ptExpanded": "(H ((Y (((lift_mode = semi_wing_borne) & (kias <= 100.0)) & (kias > 30.0))) -> ((lift_mode = semi_wing_borne) | (! (Y TRUE)))))",
+                "CoCoSpecCode": "H((YtoPre((((lift_mode = semi_wing_borne) and (kias <= 100.0)) and (kias > 30.0))) => ((lift_mode = semi_wing_borne) or not (YtoPre(true)))))",
+                "ftExpanded_fetched": "(LAST V ($regular_condition_SMV_ft$ -> (LAST | (X $post_condition_SMV_ft$))))",
+                "ftExpandedUnoptimized": "(LAST V ((((lift_mode = semi_wing_borne) & (kias <= 100.0)) & (kias > 30.0)) -> (LAST | (X (lift_mode = semi_wing_borne)))))",
+                "ftExpanded": "(LAST V ((((lift_mode = semi_wing_borne) & (kias <= 100.0)) & (kias > 30.0)) -> (LAST | (X (lift_mode = semi_wing_borne)))))",
+                "ftInfAUExpanded_fetched": "(G ($regular_condition_SMV_ft$ -> (X $post_condition_SMV_ft$)))",
+                "ftInfAUExpanded": "(G ((((lift_mode = semi_wing_borne) & (kias <= 100.0)) & (kias > 30.0)) -> (X (lift_mode = semi_wing_borne))))",
+                "component": "vehicle"
+            },
+            "_id": "8d7f9310-9a0b-11ee-80d9-a77c0c691f6d"
+        },
+        {
+            "reqid": "LPC_WB_STAY_ON_NEXT",
+            "parent_reqid": "",
+            "project": "LPC_mini",
+            "rationale": "",
+            "comments": "",
+            "fulltext": "Whenever  lift_mode = wing_borne & kias > 90.0 the vehicle shall at the next timepoint satisfy lift_mode = wing_borne",
+            "status": "",
+            "semantics": {
+                "type": "nasa",
+                "scope": {
+                    "type": "null"
+                },
+                "condition": "noTrigger",
+                "timing": "next",
+                "response": "satisfaction",
+                "variables": [
+                    "lift_mode",
+                    "wing_borne",
+                    "kias"
+                ],
+                "qualifier_word": "whenever",
+                "pre_condition": "(lift_mode = wing_borne & kias > 90.0)",
+                "regular_condition": "(lift_mode = wing_borne & kias > 90.0)",
+                "conditionTextRange": [
+                    0,
+                    45
+                ],
+                "component_name": "vehicle",
+                "componentTextRange": [
+                    47,
+                    57
+                ],
+                "timingTextRange": [
+                    65,
+                    85
+                ],
+                "post_condition": "(lift_mode = wing_borne)",
+                "responseTextRange": [
+                    87,
+                    116
+                ],
+                "diagramVariables": "CC = <b><i>(lift_mode = wing_borne & kias > 90.0)</i></b>, Response = <b><i>(lift_mode = wing_borne)</i></b>.",
+                "description": "ENFORCED: in the interval defined by the entire execution.\nTRIGGER: every point in the interval where <b><i>(lift_mode = wing_borne & kias > 90.0)</i></b> is true.\nREQUIRES: for every trigger, RES must hold at the next time step.",
+                "diagram": "_media/user-interface/examples/svgDiagrams/null_noTrigger_next_satisfaction.svg",
+                "scope_mode_pt": "BAD_PT",
+                "scope_mode_ft": "BAD_FT",
+                "regular_condition_unexp_pt": "((lift_mode = wing_borne) & (kias > 90.0))",
+                "regular_condition_unexp_ft": "((lift_mode = wing_borne) & (kias > 90.0))",
+                "regular_condition_SMV_pt": "((lift_mode = wing_borne) & (kias > 90.0))",
+                "regular_condition_SMV_ft": "((lift_mode = wing_borne) & (kias > 90.0))",
+                "post_condition_unexp_pt": "(lift_mode = wing_borne)",
+                "post_condition_unexp_ft": "(lift_mode = wing_borne)",
+                "post_condition_SMV_pt": "(lift_mode = wing_borne)",
+                "post_condition_SMV_ft": "(lift_mode = wing_borne)",
+                "ft_fetched": "(LAST V ($regular_condition_unexp_ft$ -> (LAST | (X $post_condition_unexp_ft$))))",
+                "ft": "(LAST V (((lift_mode = wing_borne) & (kias > 90.0)) -> (LAST | (X (lift_mode = wing_borne)))))",
+                "pt_fetched": "(H ((Y $regular_condition_unexp_pt$) -> ($post_condition_unexp_pt$ | FTP)))",
+                "pt": "(H ((Y ((lift_mode = wing_borne) & (kias > 90.0))) -> ((lift_mode = wing_borne) | FTP)))",
+                "ptExpanded_fetched": "(H ((Y $regular_condition_SMV_pt$) -> ($post_condition_SMV_pt$ | (! (Y TRUE)))))",
+                "ptExpanded": "(H ((Y ((lift_mode = wing_borne) & (kias > 90.0))) -> ((lift_mode = wing_borne) | (! (Y TRUE)))))",
+                "CoCoSpecCode": "H((YtoPre(((lift_mode = wing_borne) and (kias > 90.0))) => ((lift_mode = wing_borne) or not (YtoPre(true)))))",
+                "ftExpanded_fetched": "(LAST V ($regular_condition_SMV_ft$ -> (LAST | (X $post_condition_SMV_ft$))))",
+                "ftExpandedUnoptimized": "(LAST V (((lift_mode = wing_borne) & (kias > 90.0)) -> (LAST | (X (lift_mode = wing_borne)))))",
+                "ftExpanded": "(LAST V (((lift_mode = wing_borne) & (kias > 90.0)) -> (LAST | (X (lift_mode = wing_borne)))))",
+                "ftInfAUExpanded_fetched": "(G ($regular_condition_SMV_ft$ -> (X $post_condition_SMV_ft$)))",
+                "ftInfAUExpanded": "(G (((lift_mode = wing_borne) & (kias > 90.0)) -> (X (lift_mode = wing_borne))))",
+                "component": "vehicle"
+            },
+            "_id": "b91e9110-9a0b-11ee-80d9-a77c0c691f6d"
+        }
+    ],
+    "variables": [
+        {
+            "project": "LPC_mini",
+            "component_name": "vehicle",
+            "variable_name": "hover_control_mode",
+            "reqs": [
+                "1958ecc0-9a0b-11ee-80d9-a77c0c691f6d",
+                "50bf5be0-9a0b-11ee-80d9-a77c0c691f6d",
+                "79b8ce90-5fd9-11ed-9cbe-ffd8cbaa6d62",
+                "79b8f5a1-5fd9-11ed-9cbe-ffd8cbaa6d62",
+                "79b9b8f1-5fd9-11ed-9cbe-ffd8cbaa6d62"
+            ],
+            "dataType": "boolean",
+            "idType": "Output",
+            "moduleName": "",
+            "description": "",
+            "assignment": "",
+            "copilotAssignment": "",
+            "modeRequirement": "",
+            "modeldoc": false,
+            "modeldoc_id": "",
+            "modelComponent": "",
+            "completed": true,
+            "_id": "LPC_minivehiclehover_control_mode"
+        },
+        {
+            "project": "LPC_mini",
+            "component_name": "vehicle",
+            "variable_name": "kgs",
+            "reqs": [
+                "1958ecc0-9a0b-11ee-80d9-a77c0c691f6d",
+                "50bf5be0-9a0b-11ee-80d9-a77c0c691f6d",
+                "79b8ce90-5fd9-11ed-9cbe-ffd8cbaa6d62",
+                "79b8f5a1-5fd9-11ed-9cbe-ffd8cbaa6d62",
+                "79b96ad1-5fd9-11ed-9cbe-ffd8cbaa6d62",
+                "79b9b8f1-5fd9-11ed-9cbe-ffd8cbaa6d62"
+            ],
+            "dataType": "double",
+            "idType": "Output",
+            "moduleName": "",
+            "description": "",
+            "assignment": "",
+            "copilotAssignment": "",
+            "modeRequirement": "",
+            "modeldoc": false,
+            "modeldoc_id": "",
+            "modelComponent": "",
+            "completed": true,
+            "_id": "LPC_minivehiclekgs"
+        },
+        {
+            "project": "LPC_mini",
+            "component_name": "vehicle",
+            "variable_name": "kias",
+            "reqs": [
+                "50bf5be0-9a0b-11ee-80d9-a77c0c691f6d",
+                "79b85961-5fd9-11ed-9cbe-ffd8cbaa6d62",
+                "79b8a780-5fd9-11ed-9cbe-ffd8cbaa6d62",
+                "79b8ce91-5fd9-11ed-9cbe-ffd8cbaa6d62",
+                "79b91cb0-5fd9-11ed-9cbe-ffd8cbaa6d62",
+                "79b943c0-5fd9-11ed-9cbe-ffd8cbaa6d62",
+                "79b96ad1-5fd9-11ed-9cbe-ffd8cbaa6d62",
+                "79b991e0-5fd9-11ed-9cbe-ffd8cbaa6d62",
+                "79b991e1-5fd9-11ed-9cbe-ffd8cbaa6d62",
+                "79ba7c42-5fd9-11ed-9cbe-ffd8cbaa6d62",
+                "8d7f9310-9a0b-11ee-80d9-a77c0c691f6d",
+                "b91e9110-9a0b-11ee-80d9-a77c0c691f6d"
+            ],
+            "dataType": "double",
+            "idType": "Output",
+            "moduleName": "",
+            "description": "",
+            "assignment": "",
+            "copilotAssignment": "",
+            "modeRequirement": "",
+            "modeldoc": false,
+            "modeldoc_id": "",
+            "modelComponent": "",
+            "completed": true,
+            "_id": "LPC_minivehiclekias"
+        },
+        {
+            "project": "LPC_mini",
+            "component_name": "vehicle",
+            "variable_name": "lift_mode",
+            "reqs": [
+                "1958ecc0-9a0b-11ee-80d9-a77c0c691f6d",
+                "50bf5be0-9a0b-11ee-80d9-a77c0c691f6d",
+                "79b83250-5fd9-11ed-9cbe-ffd8cbaa6d62",
+                "79b85961-5fd9-11ed-9cbe-ffd8cbaa6d62",
+                "79b8a780-5fd9-11ed-9cbe-ffd8cbaa6d62",
+                "79b8ce90-5fd9-11ed-9cbe-ffd8cbaa6d62",
+                "79b8ce91-5fd9-11ed-9cbe-ffd8cbaa6d62",
+                "79b8f5a1-5fd9-11ed-9cbe-ffd8cbaa6d62",
+                "79b91cb0-5fd9-11ed-9cbe-ffd8cbaa6d62",
+                "79b91cb1-5fd9-11ed-9cbe-ffd8cbaa6d62",
+                "79b991e1-5fd9-11ed-9cbe-ffd8cbaa6d62",
+                "79b9b8f0-5fd9-11ed-9cbe-ffd8cbaa6d62",
+                "8d7f9310-9a0b-11ee-80d9-a77c0c691f6d",
+                "b91e9110-9a0b-11ee-80d9-a77c0c691f6d"
+            ],
+            "dataType": "integer",
+            "idType": "Output",
+            "moduleName": "",
+            "description": "",
+            "assignment": "",
+            "copilotAssignment": "",
+            "modeRequirement": "",
+            "modeldoc": false,
+            "modeldoc_id": "",
+            "modelComponent": "",
+            "completed": true,
+            "_id": "LPC_minivehiclelift_mode"
+        },
+        {
+            "project": "LPC_mini",
+            "component_name": "vehicle",
+            "variable_name": "semi_thrust_borne",
+            "reqs": [
+                "50bf5be0-9a0b-11ee-80d9-a77c0c691f6d",
+                "79b85961-5fd9-11ed-9cbe-ffd8cbaa6d62",
+                "79b8a780-5fd9-11ed-9cbe-ffd8cbaa6d62",
+                "79b8ce90-5fd9-11ed-9cbe-ffd8cbaa6d62",
+                "79b8f5a1-5fd9-11ed-9cbe-ffd8cbaa6d62",
+                "79b91cb1-5fd9-11ed-9cbe-ffd8cbaa6d62"
+            ],
+            "dataType": "integer",
+            "idType": "Internal",
+            "moduleName": "",
+            "description": "1",
+            "assignment": "1",
+            "copilotAssignment": "",
+            "modeRequirement": "",
+            "modeldoc": false,
+            "modeldoc_id": "",
+            "modelComponent": "",
+            "completed": true,
+            "_id": "LPC_minivehiclesemi_thrust_borne"
+        },
+        {
+            "project": "LPC_mini",
+            "component_name": "vehicle",
+            "variable_name": "semi_wing_borne",
+            "reqs": [
+                "79b85961-5fd9-11ed-9cbe-ffd8cbaa6d62",
+                "79b8a780-5fd9-11ed-9cbe-ffd8cbaa6d62",
+                "79b8ce91-5fd9-11ed-9cbe-ffd8cbaa6d62",
+                "79b91cb1-5fd9-11ed-9cbe-ffd8cbaa6d62",
+                "79b991e1-5fd9-11ed-9cbe-ffd8cbaa6d62",
+                "8d7f9310-9a0b-11ee-80d9-a77c0c691f6d"
+            ],
+            "dataType": "integer",
+            "idType": "Internal",
+            "moduleName": "",
+            "description": "2",
+            "assignment": "2",
+            "copilotAssignment": "",
+            "modeRequirement": "",
+            "modeldoc": false,
+            "modeldoc_id": "",
+            "modelComponent": "",
+            "completed": true,
+            "_id": "LPC_minivehiclesemi_wing_borne"
+        },
+        {
+            "project": "LPC_mini",
+            "component_name": "vehicle",
+            "variable_name": "thrust_borne",
+            "reqs": [
+                "1958ecc0-9a0b-11ee-80d9-a77c0c691f6d",
+                "79b83250-5fd9-11ed-9cbe-ffd8cbaa6d62",
+                "79b8ce90-5fd9-11ed-9cbe-ffd8cbaa6d62",
+                "79b8f5a1-5fd9-11ed-9cbe-ffd8cbaa6d62",
+                "79b91cb1-5fd9-11ed-9cbe-ffd8cbaa6d62",
+                "79b9b8f0-5fd9-11ed-9cbe-ffd8cbaa6d62"
+            ],
+            "dataType": "integer",
+            "idType": "Internal",
+            "moduleName": "",
+            "description": "0",
+            "assignment": "0",
+            "copilotAssignment": "",
+            "modeRequirement": "",
+            "modeldoc": false,
+            "modeldoc_id": "",
+            "modelComponent": "",
+            "completed": true,
+            "_id": "LPC_minivehiclethrust_borne"
+        },
+        {
+            "project": "LPC_mini",
+            "component_name": "vehicle",
+            "variable_name": "wing_borne",
+            "reqs": [
+                "79b8ce91-5fd9-11ed-9cbe-ffd8cbaa6d62",
+                "79b91cb0-5fd9-11ed-9cbe-ffd8cbaa6d62",
+                "79b91cb1-5fd9-11ed-9cbe-ffd8cbaa6d62",
+                "79b991e1-5fd9-11ed-9cbe-ffd8cbaa6d62",
+                "b91e9110-9a0b-11ee-80d9-a77c0c691f6d"
+            ],
+            "dataType": "integer",
+            "idType": "Internal",
+            "moduleName": "",
+            "description": "3",
+            "assignment": "3",
+            "copilotAssignment": "",
+            "modeRequirement": "",
+            "modeldoc": false,
+            "modeldoc_id": "",
+            "modelComponent": "",
+            "completed": true,
+            "_id": "LPC_minivehiclewing_borne"
+        }
+    ]
+}

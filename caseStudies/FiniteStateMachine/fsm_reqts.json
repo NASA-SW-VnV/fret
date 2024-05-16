@@ -2,7 +2,7 @@
     {
         "reqid": "FSM-002",
         "parent_reqid": "",
-        "project": "Demo-FSM",
+        "project": "FSM",
         "rationale": "The autopilot shall change states from TRANSITION to STANDBY when the pilot is in control (standby).",
         "fulltext": "FSM shall always satisfy if (standby & state = ap_transition_state) then STATE = ap_standby_state",
         "semantics": {
@@ -52,7 +52,7 @@
     {
         "reqid": "FSM-005",
         "parent_reqid": "",
-        "project": "Demo-FSM",
+        "project": "FSM",
         "rationale": "The autopilot shall change states from NOMINAL to STANDBYwhen the pilot is in control (standby).",
         "fulltext": "FSM shall always satisfy if (state=ap_nominal_state & standby)  then STATE = ap_standby_state",
         "semantics": {
@@ -102,7 +102,7 @@
     {
         "reqid": "FSM-003",
         "parent_reqid": "",
-        "project": "Demo-FSM",
+        "project": "FSM",
         "rationale": "The autopilot shall change states from TRANSITION to NOMINAL when the system is supported and sensor data is good.",
         "fulltext": "FSM shall always satisfy if (state = ap_transition_state & good & supported) then STATE = ap_nominal_state",
         "semantics": {
@@ -153,7 +153,7 @@
     {
         "reqid": "FSM-008",
         "parent_reqid": "",
-        "project": "Demo-FSM",
+        "project": "FSM",
         "rationale": "The autopilot shall change states from STANDBY to TRANSITION when the pilot is not in control (not standby)",
         "fulltext": " FSM shall always satisfy if (state = ap_standby_state & !standby) then STATE = ap_transition_state",
         "semantics": {
@@ -203,7 +203,7 @@
     {
         "reqid": "FSM-011",
         "parent_reqid": "",
-        "project": "Demo-FSM",
+        "project": "FSM",
         "rationale": "The sensor shall change states from NOMINAL to TRANSITION when the autopilot is not requesting support (not request)",
         "fulltext": "FSM shall always  satisfy if (senstate = sen_nominal_state & !request) then SENSTATE = sen_transition_state",
         "semantics": {
@@ -253,7 +253,7 @@
     {
         "reqid": "FSM-009",
         "parent_reqid": "",
-        "project": "Demo-FSM",
+        "project": "FSM",
         "rationale": "The autopilot shall change states from STANDBY to MANEUVER when a failure occurs (apfail)",
         "fulltext": "FSM shall always satisfy if (state = ap_standby_state & apfail ) then STATE = ap_maneuver_state",
         "semantics": {
@@ -303,7 +303,7 @@
     {
         "reqid": "FSM-012",
         "parent_reqid": "",
-        "project": "Demo-FSM",
+        "project": "FSM",
         "rationale": "The sensor shall change states from FAULT to TRANSITION when the autopilot is not requesting support (not request) and limits are not exceeded (not limits)",
         "fulltext": "FSM shall  always  satisfy if (senstate = sen_fault_state & !request & !limits) then SENSTATE = sen_transition_state",
         "semantics": {
@@ -354,7 +354,7 @@
     {
         "reqid": "FSM-010",
         "parent_reqid": "",
-        "project": "Demo-FSM",
+        "project": "FSM",
         "rationale": "The sensor shall change states from NOMINAL to FAULT when limits are exceeded",
         "fulltext": "FSM shall always satisfy if (senstate = sen_nominal_state & limits) then SENSTATE = sen_fault_state",
         "semantics": {
@@ -404,7 +404,7 @@
     {
         "reqid": "FSM-013",
         "parent_reqid": "",
-        "project": "Demo-FSM",
+        "project": "FSM",
         "rationale": "The sensor shall change states from TRANSITION to NOMINAL when the autopilot is requesting support (request) and the autopilot reports the correct active mode (mode)",
         "fulltext": "FSM shall always satisfy if (senstate = sen_transition_state & request) then SENSTATE = sen_nominal_state",
         "semantics": {
@@ -454,7 +454,7 @@
     {
         "reqid": "FSM-007",
         "parent_reqid": "",
-        "project": "Demo-FSM",
+        "project": "FSM",
         "rationale": "The autopilot shall change states from PULLUP to TRANSITION when the system is supported and sensor data is good",
         "fulltext": "FSM shall always satisfy if (state = ap_maneuver_state & supported & good) then STATE = ap_transition_state",
         "semantics": {
@@ -505,7 +505,7 @@
     {
         "reqid": "FSM-004",
         "parent_reqid": "",
-        "project": "Demo-FSM",
+        "project": "FSM",
         "rationale": "",
         "fulltext": "FSM shall always satisfy if (! good & state = ap_nominal_state) then STATE = ap_maneuver_state",
         "semantics": {
@@ -555,7 +555,7 @@
     {
         "reqid": "FSM-001",
         "parent_reqid": "",
-        "project": "Demo-FSM",
+        "project": "FSM",
         "rationale": "Exceeding sensor limits shall latch an autopilot pullup when the pilot is not in control (not standby) and the system is supported without failures (not apfail).",
         "fulltext": "FSM  shall  always  satisfy if (limits & !standby & !apfail & supported) then pullup",
         "semantics": {
@@ -605,7 +605,7 @@
     {
         "reqid": "FSM-006",
         "parent_reqid": "",
-        "project": "Demo-FSM",
+        "project": "FSM",
         "rationale": "The autopilot shall change states from MANEUVER to STANDBY when the pilot is in control (standby) and sensor data is good",
         "fulltext": "FSM shall always satisfy if (state = ap_maneuver_state & standby & good) then STATE = ap_standby_state",
         "semantics": {
