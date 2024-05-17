@@ -1,10 +1,10 @@
 cd /tmp
+if [ -d "FRET_PACK" ]; then rm -rf FRET_PACK; fi
 mkdir FRET_PACK
 cd FRET_PACK
-# git clone  https://github.com/NASA-SW-VnV/fret.git
+git clone  https://github.com/NASA-SW-VnV/fret.git
+#git clone ssh://babelfish.ndc.nasa.gov/git/fret
 
-# git clone https://babelfish.arc.nasa.gov/git/fret
-git clone ssh://babelfish.ndc.nasa.gov/git/fret
 cd fret
 #Set the branch that you want to package, e.g.,:
 #git checkout master

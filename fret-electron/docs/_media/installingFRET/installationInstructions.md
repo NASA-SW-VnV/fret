@@ -31,9 +31,9 @@ When you open the FRET distribution, you will see the following directory struct
   3. npm start
 
 
-* Alternatively, for Linux users, we provide a Docker image to build an executable. See [Building executables](buildingExecutables.md).
+* Alternatively, for MacOS or Linux users, we provide means to build an executable natively or through Docker. See [Building executables](buildingExecutables.md).
 
-* For the installation of FRET on Windows see [Installation_Windows](installation_windows.md).
+* For the installation of FRET on Windows see our [Windows installation guide](installation_windows.md).
 
 * If you run into installation issues, check our [Troubleshooting](Troubleshooting.md) section.
 

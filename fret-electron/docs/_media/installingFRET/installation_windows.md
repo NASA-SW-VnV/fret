@@ -37,7 +37,7 @@ npm run fret-install
 Finally, run FRET:
 
 ```
-npm start #(or npm start --sandbox, if you encounter issues with Ubuntu 22.04 LTS or later)
+npm start #(or npm start --no-sandbox, if you encounter issues with Ubuntu 22.04 LTS or later)
 ```
 
 To install optional dependencies ( [NuSMV](http://nusmv.fbk.eu/),
