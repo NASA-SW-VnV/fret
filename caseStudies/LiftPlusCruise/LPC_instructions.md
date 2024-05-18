@@ -2,7 +2,10 @@
 
 ## Prerequisites
 
-JKind engine to display realizable trace.
+z3 and the JKind engine which can compute realizable traces. See
+[Realizability
+Dependencies](../../fret-electron/docs/_media/exports/realizabilityManual.md).
+
 
 ## References
 
