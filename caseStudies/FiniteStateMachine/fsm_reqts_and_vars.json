@@ -921,16 +921,6 @@
     ],
     "variables": [
         {
-            "Declarations": {
-                "Enumerations": []
-            },
-            "date": "28-Oct-2019",
-            "file_path": "/Users/amavrido/Documents/CoCoSpecMaterial/lm_challenges/1_fsm/fsm_12B.mdl",
-            "project": "FSM",
-            "fretComponent": "FSM",
-            "_id": "2cacc8dd-1577-4abf-b10e-0033a0e1d1be"
-        },
-        {
             "project": "FSM",
             "component_name": "FSM",
             "variable_name": "SENSTATE",
@@ -1376,16 +1366,6 @@
             "modelComponent": "",
             "model_id": "",
             "_id": "FSMswR"
-        },
-        {
-            "Declarations": {
-                "Enumerations": []
-            },
-            "date": "28-Oct-2019",
-            "file_path": "/Users/amavrido/Documents/CoCoSpecMaterial/lm_challenges/1_fsm/fsm_12B.mdl",
-            "project": "FSM",
-            "fretComponent": "FSM",
-            "_id": "e944eac6-eb43-4b81-b3ad-e2b82d56f7a8"
         },
         {
             "component_name": "fsm_12B/FiniteStateMachine",
