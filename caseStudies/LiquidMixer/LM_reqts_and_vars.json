@@ -1112,16 +1112,6 @@
             "_id": "Liquid_mixerliquid_mixervalve_2"
         },
         {
-            "file_path": "",
-            "date": "15-Jul-2020",
-            "Declarations": {
-                "Enumerations": []
-            },
-            "project": "Liquid_mixer",
-            "fretComponent": "liquid_mixer",
-            "_id": "de2523a5-1263-4113-99e4-4b8e11e23780"
-        },
-        {
             "project": "Liquid_mixer",
             "modeldoc": true,
             "variable_name": "emergencybutton",
