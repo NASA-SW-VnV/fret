@@ -70,7 +70,7 @@
                 "ftInfAUExpanded": "(G ((((lift_mode = thrust_borne) & (kgs <= 20.0)) & hover_control_mode) -> (X (lift_mode = thrust_borne))))",
                 "component": "vehicle"
             },
-            "_id": "1958ecc0-9a0b-11ee-80d9-a77c0c691f6d"
+            "_id": "LPC_TB_STAY_ON_NEXT"
         },
         {
             "reqid": "LPC_STB_STAY_ON_NEXT",
@@ -143,7 +143,7 @@
                 "ftInfAUExpanded": "(G ((((lift_mode = semi_thrust_borne) & (kias <= 40.0)) & ((kgs > 20.0) | (! hover_control_mode))) -> (X (lift_mode = semi_thrust_borne))))",
                 "component": "vehicle"
             },
-            "_id": "50bf5be0-9a0b-11ee-80d9-a77c0c691f6d"
+            "_id": "LPC_STB_STAY_ON_NEXT"
         },
         {
             "reqid": "LPC_REACH_HOVER_12",
@@ -211,7 +211,7 @@
                 "CoCoSpecCode": "(H((H( not (lift_mode = thrust_borne))) => (OT(12-1,0,FTP))))",
                 "component": "vehicle"
             },
-            "_id": "79b83250-5fd9-11ed-9cbe-ffd8cbaa6d62"
+            "_id": "LPC_REACH_HOVER_12"
         },
         {
             "reqid": "LPC_SWB_TO_STB",
@@ -293,7 +293,7 @@
                 "CoCoSpecCode": "(H((YtoPre(((lift_mode = semi_wing_borne) and (kias <= 30.0)) and ((YtoPre( not ((lift_mode = semi_wing_borne) and (kias <= 30.0)))) or FTP))) => ((lift_mode = semi_thrust_borne) or FTP)))",
                 "component": "vehicle"
             },
-            "_id": "79b85961-5fd9-11ed-9cbe-ffd8cbaa6d62"
+            "_id": "LPC_SWB_TO_STB"
         },
         {
             "reqid": "LPC_STB_TO_SWB",
@@ -371,7 +371,7 @@
                 "CoCoSpecCode": "(H((YtoPre(((lift_mode = semi_thrust_borne) and (kias > 40.0)) and ((YtoPre( not ((lift_mode = semi_thrust_borne) and (kias > 40.0)))) or FTP))) => ((lift_mode = semi_wing_borne) or FTP)))",
                 "component": "<b><i>vehicle</i></b>"
             },
-            "_id": "79b8a780-5fd9-11ed-9cbe-ffd8cbaa6d62"
+            "_id": "LPC_STB_TO_SWB"
         },
         {
             "reqid": "LPC_STB_TO_TB",
@@ -450,7 +450,7 @@
                 "CoCoSpecCode": "(H((YtoPre((((lift_mode = semi_thrust_borne) and hover_control_mode) and (kgs <= 20.0)) and ((YtoPre( not (((lift_mode = semi_thrust_borne) and hover_control_mode) and (kgs <= 20.0)))) or FTP))) => ((lift_mode = thrust_borne) or FTP)))",
                 "component": "<b><i>vehicle</i></b>"
             },
-            "_id": "79b8ce90-5fd9-11ed-9cbe-ffd8cbaa6d62"
+            "_id": "LPC_STB_TO_TB"
         },
         {
             "reqid": "LPC_SWB_TO_WB",
@@ -528,7 +528,7 @@
                 "CoCoSpecCode": "(H((YtoPre(((lift_mode = semi_wing_borne) and (kias > 100.0)) and ((YtoPre( not ((lift_mode = semi_wing_borne) and (kias > 100.0)))) or FTP))) => ((lift_mode = wing_borne) or FTP)))",
                 "component": "<b><i>vehicle</i></b>"
             },
-            "_id": "79b8ce91-5fd9-11ed-9cbe-ffd8cbaa6d62"
+            "_id": "LPC_SWB_TO_WB"
         },
         {
             "reqid": "LPC_TB_TO_STB",
@@ -607,7 +607,7 @@
                 "CoCoSpecCode": "(H((YtoPre(((lift_mode = thrust_borne) and (( not hover_control_mode) or (kgs > 20.0))) and ((YtoPre( not ((lift_mode = thrust_borne) and (( not hover_control_mode) or (kgs > 20.0))))) or FTP))) => ((lift_mode = semi_thrust_borne) or FTP)))",
                 "component": "<b><i>vehicle</i></b>"
             },
-            "_id": "79b8f5a1-5fd9-11ed-9cbe-ffd8cbaa6d62"
+            "_id": "LPC_TB_TO_STB"
         },
         {
             "reqid": "LPC_INIT_LIFT_MODE",
@@ -671,7 +671,7 @@
                 "CoCoSpecCode": "(H(FTP => ((lift_mode = wing_borne) = (kias >= 90.0))))",
                 "component": "<b><i>vehicle</i></b>"
             },
-            "_id": "79b91cb0-5fd9-11ed-9cbe-ffd8cbaa6d62"
+            "_id": "LPC_INIT_LIFT_MODE"
         },
         {
             "reqid": "LPC_LIFT_MODE",
@@ -737,7 +737,7 @@
                 "CoCoSpecCode": "(H(((((lift_mode = thrust_borne) or (lift_mode = semi_thrust_borne)) or (lift_mode = semi_wing_borne)) or (lift_mode = wing_borne))))",
                 "component": "<b><i>vehicle</i></b>"
             },
-            "_id": "79b91cb1-5fd9-11ed-9cbe-ffd8cbaa6d62"
+            "_id": "LPC_LIFT_MODE"
         },
         {
             "reqid": "LPC_INIT_KIAS",
@@ -799,7 +799,7 @@
                 "CoCoSpecCode": "(H(FTP => (kias = 120.0)))",
                 "component": "<b><i>vehicle</i></b>"
             },
-            "_id": "79b943c0-5fd9-11ed-9cbe-ffd8cbaa6d62"
+            "_id": "LPC_INIT_KIAS"
         },
         {
             "reqid": "LPC_KIAS_KGS",
@@ -862,7 +862,7 @@
                 "CoCoSpecCode": "(H((kias = kgs)))",
                 "component": "<b><i>vehicle</i></b>"
             },
-            "_id": "79b96ad1-5fd9-11ed-9cbe-ffd8cbaa6d62"
+            "_id": "LPC_KIAS_KGS"
         },
         {
             "reqid": "LPC_KIAS_DERIVATIVE",
@@ -924,7 +924,7 @@
                 "CoCoSpecCode": "(H((( not (YtoPre( true ))) or (absReal ( ( preReal ( 0.0 , kias ) - kias ) ) <= 10.0))))",
                 "component": "<b><i>vehicle</i></b>"
             },
-            "_id": "79b991e0-5fd9-11ed-9cbe-ffd8cbaa6d62"
+            "_id": "LPC_KIAS_DERIVATIVE"
         },
         {
             "reqid": "LPC_WB_TO_SWB",
@@ -1006,7 +1006,7 @@
                 "CoCoSpecCode": "(H((YtoPre(((lift_mode = wing_borne) and (kias <= 90.0)) and ((YtoPre( not ((lift_mode = wing_borne) and (kias <= 90.0)))) or FTP))) => ((lift_mode = semi_wing_borne) or FTP)))",
                 "component": "vehicle"
             },
-            "_id": "79b991e1-5fd9-11ed-9cbe-ffd8cbaa6d62"
+            "_id": "LPC_WB_TO_SWB"
         },
         {
             "reqid": "LPC_REACH_HOVER_06",
@@ -1074,7 +1074,7 @@
                 "CoCoSpecCode": "(H((H( not (lift_mode = thrust_borne))) => (OT(6-1,0,FTP))))",
                 "component": "vehicle"
             },
-            "_id": "79b9b8f0-5fd9-11ed-9cbe-ffd8cbaa6d62"
+            "_id": "LPC_REACH_HOVER_06"
         },
         {
             "reqid": "LPC_INIT_HOVER_MODE",
@@ -1137,7 +1137,7 @@
                 "CoCoSpecCode": "(H(FTP => (hover_control_mode = (kgs < 20.0))))",
                 "component": "<b><i>vehicle</i></b>"
             },
-            "_id": "79b9b8f1-5fd9-11ed-9cbe-ffd8cbaa6d62"
+            "_id": "LPC_INIT_HOVER_MODE"
         },
         {
             "reqid": "LPC_KIAS_0",
@@ -1203,7 +1203,7 @@
                 "CoCoSpecCode": "(H((kias >= 0.0)))",
                 "component": "vehicle"
             },
-            "_id": "79ba7c42-5fd9-11ed-9cbe-ffd8cbaa6d62"
+            "_id": "LPC_KIAS_0"
         },
         {
             "reqid": "LPC_SWB_STAY_ON_NEXT",
@@ -1274,7 +1274,7 @@
                 "ftInfAUExpanded": "(G ((((lift_mode = semi_wing_borne) & (kias <= 100.0)) & (kias > 30.0)) -> (X (lift_mode = semi_wing_borne))))",
                 "component": "vehicle"
             },
-            "_id": "8d7f9310-9a0b-11ee-80d9-a77c0c691f6d"
+            "_id": "LPC_SWB_STAY_ON_NEXT"
         },
         {
             "reqid": "LPC_WB_STAY_ON_NEXT",
@@ -1345,7 +1345,7 @@
                 "ftInfAUExpanded": "(G (((lift_mode = wing_borne) & (kias > 90.0)) -> (X (lift_mode = wing_borne))))",
                 "component": "vehicle"
             },
-            "_id": "b91e9110-9a0b-11ee-80d9-a77c0c691f6d"
+            "_id": "LPC_WB_STAY_ON_NEXT"
         }
     ],
     "variables": [
@@ -1354,11 +1354,11 @@
             "component_name": "vehicle",
             "variable_name": "hover_control_mode",
             "reqs": [
-                "1958ecc0-9a0b-11ee-80d9-a77c0c691f6d",
-                "50bf5be0-9a0b-11ee-80d9-a77c0c691f6d",
-                "79b8ce90-5fd9-11ed-9cbe-ffd8cbaa6d62",
-                "79b8f5a1-5fd9-11ed-9cbe-ffd8cbaa6d62",
-                "79b9b8f1-5fd9-11ed-9cbe-ffd8cbaa6d62"
+                "LPC_TB_STAY_ON_NEXT",
+                "LPC_STB_STAY_ON_NEXT",
+                "LPC_STB_TO_TB",
+                "LPC_TB_TO_STB",
+                "LPC_INIT_HOVER_MODE"
             ],
             "dataType": "boolean",
             "idType": "Output",
@@ -1378,12 +1378,12 @@
             "component_name": "vehicle",
             "variable_name": "kgs",
             "reqs": [
-                "1958ecc0-9a0b-11ee-80d9-a77c0c691f6d",
-                "50bf5be0-9a0b-11ee-80d9-a77c0c691f6d",
-                "79b8ce90-5fd9-11ed-9cbe-ffd8cbaa6d62",
-                "79b8f5a1-5fd9-11ed-9cbe-ffd8cbaa6d62",
-                "79b96ad1-5fd9-11ed-9cbe-ffd8cbaa6d62",
-                "79b9b8f1-5fd9-11ed-9cbe-ffd8cbaa6d62"
+                "LPC_TB_STAY_ON_NEXT",
+                "LPC_STB_STAY_ON_NEXT",
+                "LPC_STB_TO_TB",
+                "LPC_TB_TO_STB",
+                "LPC_KIAS_KGS",
+                "LPC_INIT_HOVER_MODE"
             ],
             "dataType": "double",
             "idType": "Output",
@@ -1403,18 +1403,18 @@
             "component_name": "vehicle",
             "variable_name": "kias",
             "reqs": [
-                "50bf5be0-9a0b-11ee-80d9-a77c0c691f6d",
-                "79b85961-5fd9-11ed-9cbe-ffd8cbaa6d62",
-                "79b8a780-5fd9-11ed-9cbe-ffd8cbaa6d62",
-                "79b8ce91-5fd9-11ed-9cbe-ffd8cbaa6d62",
-                "79b91cb0-5fd9-11ed-9cbe-ffd8cbaa6d62",
-                "79b943c0-5fd9-11ed-9cbe-ffd8cbaa6d62",
-                "79b96ad1-5fd9-11ed-9cbe-ffd8cbaa6d62",
-                "79b991e0-5fd9-11ed-9cbe-ffd8cbaa6d62",
-                "79b991e1-5fd9-11ed-9cbe-ffd8cbaa6d62",
-                "79ba7c42-5fd9-11ed-9cbe-ffd8cbaa6d62",
-                "8d7f9310-9a0b-11ee-80d9-a77c0c691f6d",
-                "b91e9110-9a0b-11ee-80d9-a77c0c691f6d"
+                "LPC_STB_STAY_ON_NEXT",
+                "LPC_SWB_TO_STB",
+                "LPC_STB_TO_SWB",
+                "LPC_SWB_TO_WB",
+                "LPC_INIT_LIFT_MODE",
+                "LPC_INIT_KIAS",
+                "LPC_KIAS_KGS",
+                "LPC_KIAS_DERIVATIVE",
+                "LPC_WB_TO_SWB",
+                "LPC_KIAS_0",
+                "LPC_SWB_STAY_ON_NEXT",
+                "LPC_WB_STAY_ON_NEXT"
             ],
             "dataType": "double",
             "idType": "Output",
@@ -1434,20 +1434,20 @@
             "component_name": "vehicle",
             "variable_name": "lift_mode",
             "reqs": [
-                "1958ecc0-9a0b-11ee-80d9-a77c0c691f6d",
-                "50bf5be0-9a0b-11ee-80d9-a77c0c691f6d",
-                "79b83250-5fd9-11ed-9cbe-ffd8cbaa6d62",
-                "79b85961-5fd9-11ed-9cbe-ffd8cbaa6d62",
-                "79b8a780-5fd9-11ed-9cbe-ffd8cbaa6d62",
-                "79b8ce90-5fd9-11ed-9cbe-ffd8cbaa6d62",
-                "79b8ce91-5fd9-11ed-9cbe-ffd8cbaa6d62",
-                "79b8f5a1-5fd9-11ed-9cbe-ffd8cbaa6d62",
-                "79b91cb0-5fd9-11ed-9cbe-ffd8cbaa6d62",
-                "79b91cb1-5fd9-11ed-9cbe-ffd8cbaa6d62",
-                "79b991e1-5fd9-11ed-9cbe-ffd8cbaa6d62",
-                "79b9b8f0-5fd9-11ed-9cbe-ffd8cbaa6d62",
-                "8d7f9310-9a0b-11ee-80d9-a77c0c691f6d",
-                "b91e9110-9a0b-11ee-80d9-a77c0c691f6d"
+                "LPC_TB_STAY_ON_NEXT",
+                "LPC_STB_STAY_ON_NEXT",
+                "LPC_REACH_HOVER_12",
+                "LPC_SWB_TO_STB",
+                "LPC_STB_TO_SWB",
+                "LPC_STB_TO_TB",
+                "LPC_SWB_TO_WB",
+                "LPC_TB_TO_STB",
+                "LPC_INIT_LIFT_MODE",
+                "LPC_LIFT_MODE",
+                "LPC_WB_TO_SWB",
+                "LPC_REACH_HOVER_06",
+                "LPC_SWB_STAY_ON_NEXT",
+                "LPC_WB_STAY_ON_NEXT"
             ],
             "dataType": "integer",
             "idType": "Output",
@@ -1467,12 +1467,12 @@
             "component_name": "vehicle",
             "variable_name": "semi_thrust_borne",
             "reqs": [
-                "50bf5be0-9a0b-11ee-80d9-a77c0c691f6d",
-                "79b85961-5fd9-11ed-9cbe-ffd8cbaa6d62",
-                "79b8a780-5fd9-11ed-9cbe-ffd8cbaa6d62",
-                "79b8ce90-5fd9-11ed-9cbe-ffd8cbaa6d62",
-                "79b8f5a1-5fd9-11ed-9cbe-ffd8cbaa6d62",
-                "79b91cb1-5fd9-11ed-9cbe-ffd8cbaa6d62"
+                "LPC_STB_STAY_ON_NEXT",
+                "LPC_SWB_TO_STB",
+                "LPC_STB_TO_SWB",
+                "LPC_STB_TO_TB",
+                "LPC_TB_TO_STB",
+                "LPC_LIFT_MODE"
             ],
             "dataType": "integer",
             "idType": "Internal",
@@ -1492,12 +1492,12 @@
             "component_name": "vehicle",
             "variable_name": "semi_wing_borne",
             "reqs": [
-                "79b85961-5fd9-11ed-9cbe-ffd8cbaa6d62",
-                "79b8a780-5fd9-11ed-9cbe-ffd8cbaa6d62",
-                "79b8ce91-5fd9-11ed-9cbe-ffd8cbaa6d62",
-                "79b91cb1-5fd9-11ed-9cbe-ffd8cbaa6d62",
-                "79b991e1-5fd9-11ed-9cbe-ffd8cbaa6d62",
-                "8d7f9310-9a0b-11ee-80d9-a77c0c691f6d"
+                "LPC_SWB_TO_STB",
+                "LPC_STB_TO_SWB",
+                "LPC_SWB_TO_WB",
+                "LPC_LIFT_MODE",
+                "LPC_WB_TO_SWB",
+                "LPC_SWB_STAY_ON_NEXT"
             ],
             "dataType": "integer",
             "idType": "Internal",
@@ -1517,12 +1517,12 @@
             "component_name": "vehicle",
             "variable_name": "thrust_borne",
             "reqs": [
-                "1958ecc0-9a0b-11ee-80d9-a77c0c691f6d",
-                "79b83250-5fd9-11ed-9cbe-ffd8cbaa6d62",
-                "79b8ce90-5fd9-11ed-9cbe-ffd8cbaa6d62",
-                "79b8f5a1-5fd9-11ed-9cbe-ffd8cbaa6d62",
-                "79b91cb1-5fd9-11ed-9cbe-ffd8cbaa6d62",
-                "79b9b8f0-5fd9-11ed-9cbe-ffd8cbaa6d62"
+                "LPC_TB_STAY_ON_NEXT",
+                "LPC_REACH_HOVER_12",
+                "LPC_STB_TO_TB",
+                "LPC_TB_TO_STB",
+                "LPC_LIFT_MODE",
+                "LPC_REACH_HOVER_06"
             ],
             "dataType": "integer",
             "idType": "Internal",
@@ -1542,11 +1542,11 @@
             "component_name": "vehicle",
             "variable_name": "wing_borne",
             "reqs": [
-                "79b8ce91-5fd9-11ed-9cbe-ffd8cbaa6d62",
-                "79b91cb0-5fd9-11ed-9cbe-ffd8cbaa6d62",
-                "79b91cb1-5fd9-11ed-9cbe-ffd8cbaa6d62",
-                "79b991e1-5fd9-11ed-9cbe-ffd8cbaa6d62",
-                "b91e9110-9a0b-11ee-80d9-a77c0c691f6d"
+                "LPC_SWB_TO_WB",
+                "LPC_INIT_LIFT_MODE",
+                "LPC_LIFT_MODE",
+                "LPC_WB_TO_SWB",
+                "LPC_WB_STAY_ON_NEXT"
             ],
             "dataType": "integer",
             "idType": "Internal",
