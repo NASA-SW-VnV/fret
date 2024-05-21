@@ -164,7 +164,7 @@ export default class FretModel {
       this.fieldColors = doc.fieldColors
 
       // requirements
-      this.requirements = await fretDbGetters.getRequirements()      
+      this.requirements = await fretDbGetters.getRequirements()
       this.projectRequirements = await fretDbGetters.getProjectRequirements(this.selectedProject)
 
     }
@@ -790,11 +790,7 @@ export default class FretModel {
       });
     }
 
-    if (openNewVariablesDialog){
-      return {openNewVariablesDialog: true, newVariables: newVariables}
-    } else {
-      return await this.updateVariable_noNewVariables(evt, args)
-    }
+    return {openNewVariablesDialog: openNewVariablesDialog, newVariables: newVariables}
 
   }
 
