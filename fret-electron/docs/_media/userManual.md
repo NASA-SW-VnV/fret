@@ -26,10 +26,9 @@ FRET is a framework for the elicitation, specification, formalization and unders
 #### FRET Example Requirements
 
 We provide a set of example requirements that can be directly
-[imported](./user-interface/exportImport/import.md) in FRET in
-[fsm\_reqts.json](../../../caseStudies/FiniteStateMachine/fsm_reqts.json). There are other examples
-in the `fret/caseStudies` directory; for example,
-[LiftPlusCruise](../../../caseStudies/LiftPlusCruise/LPC_instructions.md).
+[imported](./user-interface/exportImport/import.md) in FRET in the
+[case studies directory](../../../caseStudies). The easiest example to start with is
+[fsm\_reqts.json](../../../caseStudies/FiniteStateMachine/fsm_reqts.json).
 
 ## FRET Team
 
