@@ -35,7 +35,9 @@ When you open the FRET distribution, you will see the following directory struct
 
 * For the installation of FRET on Windows see our [Windows installation guide](installation_windows.md).
 
-* If you run into installation issues, check our [Troubleshooting](Troubleshooting.md) section.
+* If you run into installation issues, check the [Troubleshooting](Troubleshooting.md) section.
+
+* FRET developers, check the [Developer's guide](../developersGuide/installingAndRunningFRET.md).
 
 ### Notes
 

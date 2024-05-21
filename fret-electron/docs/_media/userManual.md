@@ -10,6 +10,7 @@ FRET is a framework for the elicitation, specification, formalization and unders
 
 
 * [Installing and Running FRET](./installingFRET/installationInstructions.md)
+* [Developer's Guide](./developersGuide/installingAndRunningFRET.md)
 * [FRETish grammar](./fretishGrammar/index.pdf)
 * [FRET Graphical User Interface (GUI)](./user-interface/tutorial.md)
     * [Writing requirements](./user-interface/writingReqs.md)
