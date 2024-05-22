@@ -35,7 +35,7 @@ We provide a set of example requirements that can be directly
 
 [Andreas Katis](https://andreaskatis.github.io/),
 [Anastasia Mavridou](http://amavridou.com/),
-[Tom Pressburger](https://ti.arc.nasa.gov/profile/ttp/),
+[Tom Pressburger](https://www.researchgate.net/profile/T-Pressburger),
 [Johann Schumann](https://ti.arc.nasa.gov/profile/schumann/),
 [Khanh Trinh](https://www.researchgate.net/profile/Khanh-Trinh-3).
 
