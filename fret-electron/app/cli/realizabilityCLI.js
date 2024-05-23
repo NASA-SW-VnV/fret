@@ -67,6 +67,8 @@ function printResultsinConsole(options, analysisResult, ccResult) {
           })
           console.table(ccConflictsTable);        
         })
+      } else if (compositionalResult.result === 'UNKNOWN') {
+        console.log('Diagnosis is not available for UNKNOWN results.')
       }
     } else {
       let monolithicResult = {...analysisResult.systemComponents[0].monolithic};
@@ -82,6 +84,8 @@ function printResultsinConsole(options, analysisResult, ccResult) {
             conflictIndex++;
           })
           console.table(conflictsTable);        
+      }  else if (monolithicResult.result === 'UNKNOWN') {
+        console.log('Diagnosis is not available for UNKNOWN results.')
       }
     }
   }
