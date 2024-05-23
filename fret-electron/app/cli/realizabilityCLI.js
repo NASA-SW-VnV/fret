@@ -56,7 +56,7 @@ function printResultsinConsole(options, analysisResult, ccResult) {
       });
       console.table(realizabilityResultsTable)
 
-      if (options.diagnose) {  
+      if (compositionalResult.result === 'UNREALIZABLE' && options.diagnose) {  
         compositionalResult.connectedComponents.filter(cc => cc.result === 'UNREALIZABLE').forEach(function(cc, idx, array) {
           console.log('\nDiagnosis results for connected component '+cc.ccName+':')
           let ccConflictsTable = {}
@@ -73,7 +73,7 @@ function printResultsinConsole(options, analysisResult, ccResult) {
       console.log("Result: "+monolithicResult.result);
       console.log("Time: "+monolithicResult.time);
 
-      if (options.diagnose) {  
+      if (monolithicResult.result === 'UNREALIZABLE' && options.diagnose) {  
           console.log('\nDiagnosis results for component '+ analysisResult.systemComponents[0].name +':')
           let conflictsTable = {}
           let conflictIndex = 0;
