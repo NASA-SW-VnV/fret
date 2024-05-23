@@ -256,7 +256,11 @@ class Glossary extends React.Component {
 
   render() {
     const { classes } = this.props;
-    const { selectedComponent, checked, filteredVariables } = this.state;
+    const { selectedComponent, checked, filteredVariables, components } = this.state;
+    var compMi = this.state.componentsWithVariables;
+    if(process.env.EXTERNAL_TOOL !=='1'){
+      compMi = components;
+    }
     return (
       <div>
         <FormControl>
@@ -267,7 +271,7 @@ class Glossary extends React.Component {
             onChange={this.handleComponentChange}
             value={selectedComponent}
           >
-            {Object.keys(this.state.componentsWithVariables).sort().map(componentName =>
+            {Object.keys(compMi).sort().map(componentName =>
               <MenuItem id={"qa_gls_mi_comp_"+componentName} key={componentName} value={componentName}>{componentName}</MenuItem>
             )
             }
