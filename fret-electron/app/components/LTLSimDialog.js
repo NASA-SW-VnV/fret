@@ -1395,7 +1395,7 @@ for (let i=0; i< reqID_data.length; i++){
                         dense
                         >
                         <ListItemIcon><NotesIcon color="primary"/></ListItemIcon>
-                        <ListItemText inset primary = {'Save [JSON])'} />
+                        <ListItemText inset primary = {'Save [JSON]'} />
                       </MenuItem>
                       {
                         (this.state.traces || []).map(traceID => {
