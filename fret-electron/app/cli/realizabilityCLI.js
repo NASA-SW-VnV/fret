@@ -61,11 +61,15 @@ function printResultsinConsole(options, analysisResult, ccResult) {
           console.log('\nDiagnosis results for connected component '+cc.ccName+':')
           let ccConflictsTable = {}
           let conflictIndex = 0;
-          cc.diagnosisReport.Conflicts.forEach(conflict => {
-            ccConflictsTable['Conflict '+ (conflictIndex+1)] = {'Requirements': conflict.Conflict}
-            conflictIndex++;
-          })
-          console.table(ccConflictsTable);        
+          if (cc.diagnosisStatus !== 'ERROR') {
+              cc.diagnosisReport.Conflicts.forEach(conflict => {
+              ccConflictsTable['Conflict '+ (conflictIndex+1)] = {'Requirements': conflict.Conflict}
+              conflictIndex++;
+            })
+            console.table(ccConflictsTable);   
+          } else {
+            console.log(cc.error);
+          }               
         })
       } else if (compositionalResult.result === 'UNKNOWN') {
         console.log('Diagnosis is not available for UNKNOWN results.')
@@ -79,11 +83,15 @@ function printResultsinConsole(options, analysisResult, ccResult) {
           console.log('\nDiagnosis results for component '+ analysisResult.systemComponents[0].name +':')
           let conflictsTable = {}
           let conflictIndex = 0;
-          monolithicResult.diagnosisReport.Conflicts.forEach(conflict => {
-            conflictsTable['Conflict '+ (conflictIndex+1)] = {'Requirements': conflict.Conflict}
-            conflictIndex++;
-          })
-          console.table(conflictsTable);        
+          if (monolithicResult.diagnosisStatus !== 'ERROR') {
+              monolithicResult.diagnosisReport.Conflicts.forEach(conflict => {
+              conflictsTable['Conflict '+ (conflictIndex+1)] = {'Requirements': conflict.Conflict}
+              conflictIndex++;
+            })
+            console.table(conflictsTable);        
+          } else {
+            console.log(monolithicResult.error);
+          }          
       }  else if (monolithicResult.result === 'UNKNOWN') {
         console.log('Diagnosis is not available for UNKNOWN results.')
       }
