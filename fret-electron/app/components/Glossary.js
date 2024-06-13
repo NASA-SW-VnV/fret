@@ -178,12 +178,18 @@ class Glossary extends React.Component {
     let variables;
     const componentsWithVariables = {...this.state.components}
     if(process.env.EXTERNAL_TOOL !=='1'){
-      variables = this.props.variables
+      variables = this.props.variables  // if not external tool, then variables are passed in using the prop variables
     } else {
-      variables = this.props.editVariables.docs;
+      variables = this.props.editVariables.docs;   // if external tool, then variables are passed in using the prop editVariables
       // console.log('new editVariables', this.props.editVariables)
-      //TODO: now it only works for one component, update.
-      componentsWithVariables[variables[0].component_name] = [];
+
+      variables.forEach(function (variable) {
+        const componentName = variable.component_name;
+        if (componentName && !componentsWithVariables[componentName]) {
+          componentsWithVariables[componentName] = [];
+        }
+      });
+      // console.log('componentsWithVariables', componentsWithVariables)
     }
     const mapDbIdToReqId =  this.createMapDbIdToReqId();
 
