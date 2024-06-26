@@ -35,7 +35,7 @@ import {leveldbDB, modelDB, system_DBkeys} from './fretDB'
 import {removeVariablesInBulk, removeVariables } from './modelDbSupport/deleteVariables_main'
 import {removeReqsInBulk} from './fretDbSupport/deleteRequirements_main'
 import {getContractInfo, getPropertyInfo, getDelayInfo, getMappingInfo,
-  synchFRETvariables} from './modelDbSupport/variableMappingSupports'
+  synchFRETvariables, variableIdentifierReplacement} from './modelDbSupport/variableMappingSupports'
 //import FretSemantics from './../app/parser/FretSemantics'
 import {export_to_md} from "../app/utils/utilityFunctions";
 import {synchAnalysisWithDB, } from './fretDbSupport/analysisTabSupport'
