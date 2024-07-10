@@ -309,7 +309,7 @@ let TableToolbar = props => {
               }
             />
 
-            <IconButton id="qa_tbl_ib_bulkChange" 
+            <IconButton id="qa_tbl_ib_bulkChange"
               aria-label="Bulk Change" onClick={() => bulkChangeEnabler()}>
               <Tooltip title="Bulk Change">
               <ListIcon color='secondary'/>
@@ -373,7 +373,7 @@ class SortableTable extends React.Component {
     page: 0,
     rowsPerPage: 10,
     displayRequirementOpen: false,
-    selectedRequirement: {}, 
+    selectedRequirement: {},
     selectionBulkChange: [],
     snackBarDisplayInfo: {},
     addChildRequirementMode: undefined,
@@ -515,7 +515,7 @@ class SortableTable extends React.Component {
   handleRequirementDialogOpen = (row) => event => {event.stopPropagation();
     if (row.dbkey) {
       // context isolation
-      // 
+      //
 
       var argList = [row];
       // ipcRenderer call main with argLit and main returns result to update Redux store
@@ -526,7 +526,7 @@ class SortableTable extends React.Component {
                                         }) */
         this.setState({
           selectedRequirement: result.doc,
-          displayRequirementOpen: true,})        
+          displayRequirementOpen: true,})
       }).catch((err) => {
         console.log(err);
       })
@@ -662,6 +662,7 @@ class SortableTable extends React.Component {
   // user select a status option from menu item
   handleChange = (event, row) => {
     event.stopPropagation();
+    const {page} = this.state
 
     if (row.dbkey) {
 
@@ -670,12 +671,12 @@ class SortableTable extends React.Component {
       ipcRenderer.invoke('changeRequirementStatus',args).then((result) => {
         this.props.changeRequirementStatus({  type: 'actions/requirementChangedStatus',
                                               // requirements
-                                              requirements : result.requirements, 
+                                              requirements : result.requirements,
                                             })
+        this.setState({ page });
       }).catch((err) => {
         console.log(err);
       })
-
       this.setState({ projectName: '' });
     }
   };

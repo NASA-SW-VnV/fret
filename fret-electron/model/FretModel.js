@@ -709,7 +709,7 @@ export default class FretModel {
     var dbkey = args[0]
     var statusValue = args[1]
 
-    leveldbDB.get(dbkey).then(function (doc) {
+    await leveldbDB.get(dbkey).then(function (doc) {
       return leveldbDB.put({ ...doc, status: statusValue }, err => {
         if (err) {
           return console.log(err);
