@@ -297,12 +297,15 @@ class DiagnosisEngine {
 
       if (Array.from(partitionMap.values()).includes("UNREALIZABLE")) {
         var unrealMap = new Map();
-        for (let [partKey, partValue] in partitionMap) {
+        for (let [partKey, partValue] of partitionMap.entries()) {
+          this.optLog('\n Partition spec: '+partKey+', result: '+partValue);
           if (partValue === "UNREALIZABLE") {
             unrealMap.set(partKey, partValue);
+            this.optLog("\n Current Map of unrealizable subspecifications:\n\n")
+            this.optLog(unrealMap)
           }
         }
-
+        
         for (const [unrealKey, unrealValue] of unrealMap.entries()) {
           if (unrealKey.length > 1) {          
             var slicedContract = JSON.parse(JSON.stringify(this.contract));
@@ -328,7 +331,6 @@ class DiagnosisEngine {
 
       if (Array.from(complementsMap.values()).includes("UNREALIZABLE") && n !== 2) {
         var unrealMap = new Map();
-
         for (const [partKey, partValue] of complementsMap.entries()) {      
           if (partValue === "UNREALIZABLE") {
             unrealMap.set(partKey, partValue);
@@ -418,7 +420,7 @@ class DiagnosisEngine {
 
   labelRootNode() {
     try {
-      var conflicts = this.deltaDebug(this.contract, 2);
+      var conflicts = this.deltaDebug(this.contract, 2);      
       if (conflicts.toString().startsWith("UNKNOWN")) {
         return conflicts;
       }
@@ -530,7 +532,7 @@ class DiagnosisEngine {
       var rootResult = this.labelRootNode();
       if (rootResult && rootResult.toString().startsWith("UNKNOWN")) {
         return callback("Something went wrong during diagnosis.\n" + rootResult);
-      } else {
+      } else {        
         while(this.unlabeled.length !== 0) {
           var hsNode = this.reuseLabelorCloseNode(this.unlabeled[0]);
           if (hsNode.getLabel().length === 0) {
