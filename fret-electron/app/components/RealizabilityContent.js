@@ -380,7 +380,7 @@ class RealizabilityContent extends React.Component {
     const {projectReport, selected, selectedReqs} = this.state;
     if (name === 'selected') {
       if (this.isComponentComplete(event.target.value.component_name)) {      
-        var args = [event.target.value, projectReport, selectedReqs]
+        var args = [event.target.value, projectReport, []]
         ipcRenderer.invoke('selectRealizabilityComponent',args).then((result) => {
           this.props.selectRealizabilityComponent({
             type: 'actions/selectRealizabilityComponent',
@@ -797,7 +797,7 @@ class RealizabilityContent extends React.Component {
                           <Button id="qa_rlzCont_btn_help" color="secondary" onClick={this.handleHelpOpen} size="small" className={classes.vAlign} variant="contained"> Help </Button>
                         </div>
                         </Grid>
-                        <div style={{width : '100%'}}>
+                        <div style={{width : '95%'}}>
                         {selected !== '' && selected !== 'all' &&
                           <div className={classes.root}>
                             &nbsp;
@@ -825,8 +825,7 @@ class RealizabilityContent extends React.Component {
                               &nbsp;
                               {compositional &&
                                 <div>
-                                  <AppBar position="static" color="default">
-                                    <div className={classes.appbar}>
+                                  <AppBar position="static" color="default">                                    
                                       <Tabs
                                         value={ccSelected}
                                         onChange={this.handleCCChange}
@@ -836,9 +835,8 @@ class RealizabilityContent extends React.Component {
                                         textColor="primary"
                                         classes={{scrollable : classes.tabsScrollable}}
                                       >
-                                      {tabs}
-                                      </Tabs>
-                                    </div>
+                                        {tabs}
+                                      </Tabs>                                    
                                   </AppBar>
                                   <TabContainer>
                                     <DiagnosisProvider>
