@@ -689,8 +689,8 @@ export default class FretModel {
           .filter(r => !system_DBkeys.includes(r.key))
           .filter(r => filterOff || r.doc.project == project)
         filteredReqs.forEach((r) => {
-          var doc = (({reqid, parent_reqid, project, rationale, comments, fulltext, semantics, input}) =>
-            ({reqid, parent_reqid, project, rationale, comments, fulltext, semantics, input}))(r.doc)
+          var doc = (({reqid, parent_reqid, project, rationale, comments, fulltext, semantics, input, status}) =>
+            ({reqid, parent_reqid, project, rationale, comments, fulltext, semantics, input, status}))(r.doc)
           doc._id = uuidv1()
           filteredResult.push(doc)
         })
