@@ -350,8 +350,7 @@ function checkRealizability(selectedProject, components, rlzState, selectedReqs)
         modeldoc: false
       }
     }).then(function (modelResult){
-      var contract = getContractInfo(modelResult);
-      contract.componentName = tC.component_name+'Spec';
+      var contract = getContractInfo(modelResult);      
 
       getProjectRequirements(selectedProject).then(fretResult => {
         contract.properties = getPropertyInfo(fretResult, contract.outputVariables, tC.component_name);
@@ -360,8 +359,11 @@ function checkRealizability(selectedProject, components, rlzState, selectedReqs)
         return contract;
       }).then(function (contract){
         if (monolithic) {
+            //We add the 'Spec' suffix to avoid clashes with potential Lustre keywords.
+            var specName = tC.component_name + 'Spec';
+            contract.componentName = specName;
             contract.properties = contract.properties.filter(p => selectedReqs.includes(p.reqid.substring(2)))
-            var filePath = analysisPath + tC.component_name+'.lus';
+            var filePath = analysisPath + specName +'.lus';
             var output = fs.openSync(filePath, 'w');
             var lustreContract = ejsCache_realize.renderRealizeCode(engineName).component.complete(contract);
 
@@ -392,9 +394,11 @@ function checkRealizability(selectedProject, components, rlzState, selectedReqs)
             })
         } else if (compositional) {
           projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents.forEach(cc => {
-            var filePath = analysisPath + tC.component_name+'_'+cc.ccName+'.lus';
+            var specName = tC.component_name+'_'+cc.ccName+'Spec';
+            var filePath = analysisPath + specName +'.lus';
             var output = fs.openSync(filePath, 'w');
             var ccContract = JSON.parse(JSON.stringify(contract))
+            ccContract.componentName = specName;
 
             var ccProperties = contract.properties.filter(p => cc.requirements.includes(p.reqid.substring(2)));
 
@@ -489,8 +493,7 @@ function diagnoseSpec(selectedProject, rlzState, selectedReqs) {
       }
     }).then(function (modelResult){
 
-      var contract = getContractInfo(modelResult);
-      contract.componentName = selected.component_name+'Spec';
+      var contract = getContractInfo(modelResult);      
 
       getProjectRequirements(selectedProject).then(fretResult => {
         contract.properties = getPropertyInfo(fretResult, contract.outputVariables, selected.component_name).filter(p => selectedReqs.includes(p.reqid));
@@ -504,6 +507,7 @@ function diagnoseSpec(selectedProject, rlzState, selectedReqs) {
       }).then(function (contract){
         if (compositional) {
           var ccContract = JSON.parse(JSON.stringify(contract))
+          ccContract.componentName = selected.component_name+'_'+ccSelected;
           var ccProperties = contract.properties.filter(p => projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].requirements.includes(p.reqid.substring(2)));
           ccContract.properties = ccProperties
 
@@ -530,7 +534,7 @@ function diagnoseSpec(selectedProject, rlzState, selectedReqs) {
 
           });
         } else if (monolithic) {
-
+          contract.componentName = selected.component_name;
           let engine = new DiagnosisEngine(contract, actualTimeout, 'realizability', engineName, engineOptions);
 
           engine.main(function (err, result) {

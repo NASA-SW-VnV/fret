@@ -31,6 +31,7 @@
 // AGREEMENT.
 // *****************************************************************************
 const fs = require('fs');
+const path = require('path');
 const exec = require('child_process').exec;
 const execSync = require('child_process').execSync;
 
@@ -40,12 +41,15 @@ const execSync = require('child_process').execSync;
 //code 40 for unrealizable
 //code 30 for unknown
 
+//Andreas: Kind2 changed its realizability check feature with v2.2.0, to check all nodes in the Lustre file instead of just imported nodes. As a workaround, we add the option `--lus_main <file name without extension>` to prevent additional unecessary checks over auxillary nodes, such as temporal operators.
+
 export function checkRealizability(filePath, engine, options, callback) {
   let command;
   if (engine === 'jkind'){
     command = 'jrealizability '+ options + ' ' + filePath;   
   } else if (engine === 'kind2'){
-    command = 'kind2 ' + options + ' ' + filePath;
+    var fileName = path.basename(filePath, path.extname(filePath));
+    command = 'kind2' + ' --lus_main ' + fileName + ' ' + options + ' ' + filePath;    
   }
   exec(command, function (err, stdout, stderr) {
     if (err && err.code !== 40 && err.code !== 30) {
@@ -113,7 +117,8 @@ export function checkReal(filePath, engine, options) {
   if (engine === 'jkind'){
     command = 'jrealizability ' + options + ' ' + filePath;
   } else {
-    command = 'kind2 ' + options + ' ' + filePath;
+    var fileName = path.basename(filePath, path.extname(filePath)); 
+    command = 'kind2' + ' --lus_main ' + fileName + ' ' + options + ' ' + filePath;
   }
   var result, output;
   try {

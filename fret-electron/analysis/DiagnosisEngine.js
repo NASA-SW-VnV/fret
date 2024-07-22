@@ -115,7 +115,7 @@ class DiagnosisEngine {
 
   registerPartitionProcess(contract) {
     this.optLog("\nRegistering query for requirements:\n\n"+JSON.stringify(contract.properties.map(p => p.reqid)));
-    contract.componentName = this.contract.componentName+'_'+'diagnosticQuery'+'_'+this.diagnosticQueryIndex; 
+    contract.componentName = this.contract.componentName+'_'+'diagnosticQuery'+'_'+this.diagnosticQueryIndex;
     this.diagnosticQueryIndex++;
     this.engines.push(contract);
   }
@@ -129,7 +129,12 @@ class DiagnosisEngine {
       for (let eng in this.engines) {
         var propertyList = this.engines[eng].properties.map(p => p.reqid).filter(id => !id.toLowerCase().includes('assumption'));
         this.optLog("\nRunning query for properties:\n\n"+propertyList);
-        var filePath = this.tmppath+this.engines[eng].componentName+(minimal ? '_minimal' : '')+'.lus';
+
+        //the file's name is the components name, minus the 'Spec' suffix.
+        var fileName = this.engines[eng].componentName + (minimal ? '_minimal' : '') + 'Spec';        
+        var filePath = this.tmppath+fileName+'.lus';
+        this.engines[eng].componentName = fileName;
+        
         var output = fs.openSync(filePath, 'w');      
         var lustreContract = ejsCache_realize.renderRealizeCode(this.engineName).component.complete(this.engines[eng]);
         fs.writeSync(output, lustreContract);
