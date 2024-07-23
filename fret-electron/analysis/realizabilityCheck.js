@@ -160,4 +160,7 @@ export function checkReal(filePath, engine, options) {
   
 }
 
-// console.log(checkRealizability('tmp/liquid_mixer.lus', ''));
+
+// checkRealizability('/home/akatis/Documents/fret-analysis/FSMSpec.lus','kind2','-json --enable CONTRACTCK --timeout 900', function(err, result, time, traceInfo) {
+//   console.log(result)
+// })
