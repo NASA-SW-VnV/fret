@@ -187,11 +187,17 @@ function get_LTL_from_old_SALT(SALT_string,SALT_env_var='SALT_HOME') {
   var stdout = '';
   try {
     compilation = execSync(SALT_command).toString();
-    stdout = execSync('/tmp/salt_temp').toString();
   } catch (error) {
-    console.log('SemanticsGenerator:get_LTL_from_old_SALT error:');
+    console.log('SemanticsGenerator:get_LTL_from_old_SALT error 1:');
     console.log(error);
-    console.log('SALT_string:\n' + SALT_string);
+    //console.log('SALT_string:\n' + SALT_string);
   }
+  try {
+    stdout = execSync('/tmp/salt_temp').toString();
+  }
+  catch (error) {
+    console.log('SemanticsGenerator:get_LTL_from_old_SALT error 2:');
+    console.log(error);
+ }
   return stdout;
 }

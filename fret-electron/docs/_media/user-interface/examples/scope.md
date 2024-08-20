@@ -3,7 +3,7 @@
 specifies where the requirement must hold: in intervals defined with respect to a MODE, e.g.,
 
 * **before** MODE, **only before** MODE
-* **in** MODE, **not in** MODE,  **only in** MODE
+* **in** MODE, **when/if not in** MODE,  **only in** MODE
 * **after** MODE, **only after** MODE
 
 or if not specified as above, then globally, i.e., throughout the entire execution.

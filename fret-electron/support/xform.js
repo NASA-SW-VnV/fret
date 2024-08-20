@@ -352,7 +352,7 @@ function rewrite_bottomup(term,rules) {
 }
 
 function rule_SinceInclusive (term) {
-  let sbst = ustils.matchAST(['Since','__p',['And','__p','__q']],term);
+  let sbst = utils.matchAST(['Since','__p',['And','__p','__q']],term);
   if (sbst !== null) return ['SinceInclusive',sbst['__p'], sbst['__q']];
   else { let sbst = utils.matchAST(['Since','__p',['And','__q','__p']]);
 	 if (sbst !== null) return ['SinceInclusive',sbst['__p'], sbst['__q']];
@@ -578,6 +578,10 @@ optimizeSemantics()
 */
 
 /*
+console.log(transform('((H ((((FALSE & (Z (! FALSE))) & (Z (H (! FALSE)))) & (Y TRUE)) -> (Y r))) & ((H (! ((FALSE & (Z (! FALSE))) & (Z (H (! FALSE)))))) -> r))',optimizePT))
+
+console.log(transform('((((((! FALSE) & (! LAST)) & (X FALSE)) | LAST) V (((((! FALSE) & (! LAST)) & (X FALSE)) | LAST) -> r)) | FALSE)',optimizeFT))
+
 console.log(optimizeFT(astsem.LTLtoAST('FALSE | ite(safe,green,red)')))
 console.log(transformTemporalConditions("persisted(3,!p) & occurred(4,p)"))
 console.log(transformTemporalConditionsNoBounds("persisted(3,!p) & occurred(4,p)"))

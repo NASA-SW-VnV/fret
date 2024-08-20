@@ -59,7 +59,7 @@ const NegateFormula =
 const sentenceTime = [
   ['-,-,immediately,-', 'REQUIRES: for every trigger, if trigger holds then RES also holds at the same time point.'],
   ['-,-,next,-', 'REQUIRES: for every trigger, RES must hold at the next time step.'],
-  ['-,-,finally,-', 'REQUIRES: for every trigger, if trigger holds then RES holds at the end of the interval.'],
+  ['-,-,finally,-', 'REQUIRES: for every trigger, if trigger holds, then RES holds at the end of the interval.'],
   ['-,-,eventually,-', 'REQUIRES: for every trigger, RES must hold at some time point between (and including) the trigger and the end of the interval.'],
   ['-,-,never,-', 'REQUIRES: for every trigger, RES must be false at all time points between (and including) the trigger and the end of the interval.'],
   ['-,-,always,-', 'REQUIRES: for every trigger, RES must hold at all time points between (and including) the trigger and the end of the interval.'],
@@ -102,7 +102,7 @@ const sentenceScope = [
   ['onlyIn,-,-,-','ENFORCED: in every interval where MODE does NOT hold.'],
   ['after,-,-,-', 'ENFORCED: in the interval (if defined) starting strictly after the first MODE interval and spanning to the end of the execution.'],
   ['onlyAfter,-,-,-','ENFORCED: in the interval (if defined) from the start of the execution to (and including) the first interval where MODE holds. In the interval defined by the entire execution, if MODE never holds.'],
-  ['before,-,-,-', 'ENFORCED: in the interval (if defined) from the start of the execution to (and exclusive of) the first point where MODE holds. In the interval defined by the entire execution, if MODE never holds.'],
+  ['before,-,-,-', 'ENFORCED: in the interval (if defined) from the start of the execution to (and exclusive of) the first point where MODE holds. In the interval defined by the entire execution, if MODE never holds. If MODE holds initially, the requirement is vacuously satisfied.'],
   ['onlyBefore,-,-,-','ENFORCED: in the interval (if defined) starting at the first point where MODE holds and spanning to the end of the execution.'],
   ['null,-,-,-', 'ENFORCED: in the interval defined by the entire execution.']
 ]

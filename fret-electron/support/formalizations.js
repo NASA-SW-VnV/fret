@@ -39,8 +39,8 @@ const formalizations_past = require(fretSupportPath + 'formalizations_past');
 const formalization_descriptions = require(fretSupportPath + 'formalization-descriptions');
 const nonsense_patterns = [
     '-,!regular,always|eventually|within|never|immediately,order|not_order',
-    '-,regular,-,order|not_order',
-    'before,-,immediately|within|after,-'
+    '-,regular,-,order|not_order'
+  //,'before,-,immediately|within|after,-'
 ]
 
 const high_level_unhandled = [
