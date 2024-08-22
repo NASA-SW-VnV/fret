@@ -476,21 +476,24 @@ class SlateEditor2 extends React.Component {
     } else if (isKeyHotkey('arrowup', event)) {
 
       const numLeaves = this.props.editor.children[0].children.length; // if numLeaves > 1, using template
-      if(numLeaves > 1){
+      const {variables} = this.state;
+      if(numLeaves > 1 || variables.length > 1){                       // if variables.length > 1, glossary autofill options
         event.preventDefault();
-        let newIndex = -1;
+        let elementId;
         this.setState(prevState => {
           const { menuIndex, menuOptions, variables } = prevState;
-          let newIndex;
+          let newIndex = -1;
           if (menuOptions && menuOptions.length > 0) {
             newIndex = menuIndex <= 0 ? menuOptions.length - 1 : menuIndex - 1;
+            elementId = 'qa_tdm_option_'+newIndex
           } else if(variables.length > 0) {
             newIndex = menuIndex <= 0 ? variables.length - 1 : menuIndex - 1;
+            elementId = 'qa_vdm_var_'+variables[newIndex]
           }
           return { menuIndex: newIndex }
 
         }, () => {
-          if (newIndex >= 0) this.scrollToOption(newIndex)
+          if (this.state.menuIndex >= 0) this.scrollToOption(elementId)
         })
       } else {
         // non templated, allow default behavior
@@ -498,20 +501,23 @@ class SlateEditor2 extends React.Component {
 
     } else if (isKeyHotkey('arrowdown', event)) {
       const numLeaves = this.props.editor.children[0].children.length; // if numLeaves > 1, using template
-      if(numLeaves > 1){
+      const {variables} = this.state;
+      if(numLeaves > 1 || variables.length > 1){                      // if variables.length > 1, glossary autofill options
         event.preventDefault();
-        let newIndex = -1;
+        let elementId;
         this.setState(prevState => {
           const { menuIndex, menuOptions, variables } = prevState;
-          let newIndex;
+          let newIndex = -1;
           if (menuOptions && menuOptions.length > 0) {
             newIndex = menuIndex >= menuOptions.length - 1 ? 0 : menuIndex + 1;
+            elementId = 'qa_tdm_option_'+newIndex
           } else if(variables.length > 0) {
-            newIndex = menuIndex <= 0 ? variables.length - 1 : menuIndex + 1;
+            newIndex = menuIndex >= variables.length - 1 ? 0 : menuIndex + 1;
+            elementId = 'qa_vdm_var_'+variables[newIndex]
           }
           return { menuIndex: newIndex }
         }, () => {
-          if (newIndex >= 0) this.scrollToOption(newIndex)
+          if (this.state.menuIndex >= 0) this.scrollToOption(elementId)
         })
       } else {
         // non templated, allow default behavior
@@ -915,8 +921,8 @@ class SlateEditor2 extends React.Component {
     }
   }
 
-  scrollToOption(menuIndex) {
-    const domElement = document.getElementById('Option_'+menuIndex);
+  scrollToOption(elementId) {
+    const domElement = document.getElementById(elementId);
     domElement.scrollIntoView();
   }
 
@@ -1137,9 +1143,10 @@ class SlateEditor2 extends React.Component {
     // if field-element render text in buble
     switch(props.element.type) {
         case 'field-element':
+          var buble_name = props.element.name? props.element.name: 'none';
           return (
             <span
-              id = "qa_crt_buble"
+              id = {"qa_crt_buble_"+buble_name}
               {...props.attributes}
               style={{
                 padding: '1px 0px',
