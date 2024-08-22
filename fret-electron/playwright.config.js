@@ -1,5 +1,5 @@
 // @ts-check
-const { devices } = require('@playwright/test');
+//const { devices } = require('@playwright/test');
 
 /**
  * Read environment variables from file.
@@ -15,7 +15,7 @@ const fret_sqa_dirName = path.join(documentsDir,'fret_sqa');
 
 /**
  * @see https://playwright.dev/docs/test-configuration
- * @type {import('@playwright/test').PlaywrightTestConfig}
+
  */
 const config = {
   testDir: './test/e2e',
@@ -46,7 +46,7 @@ const config = {
     // baseURL: 'http://localhost:3000',
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: 'retain-on-failure',
+    trace: 'on',
   },
 
 

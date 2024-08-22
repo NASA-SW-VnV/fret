@@ -693,21 +693,27 @@ class MainView extends React.Component {
               <List>
               <div>
                 <ListItem id="qa_db_li_dashboard" button onClick={() => this.setMainContent('dashboard')}>
+                  <Tooltip id="qa_db_li_dashboard_tooltip" title={!this.state.drawerOpen ? 'Dashboard' : ''}>
                   <ListItemIcon>
                     <DashboardIcon />
                   </ListItemIcon>
+                  </Tooltip>
                   <ListItemText primary="Dashboard" />
                 </ListItem>
                 <ListItem id="qa_db_li_table" button onClick={() => this.setMainContent('requirements')}>
+                  <Tooltip id="qa_db_li_table_tooltip" title={!this.state.drawerOpen ? 'Requirements' : ''}>
                   <ListItemIcon>
                     <ListIcon />
                   </ListItemIcon>
+                  </Tooltip>
                   <ListItemText primary="Requirements" />
                 </ListItem>
                 <ListItem id="qa_db_li_analysis" button onClick={() => this.setMainContent('analysis')}>
+                  <Tooltip id="qa_db_li_analysis_tooltip"  title={!this.state.drawerOpen ? 'Analysis Portal' : ''}>
                   <ListItemIcon>
                     <CodeIcon />
                   </ListItemIcon>
+                  </Tooltip>
                   <ListItemText id="qa_db_li_analysis_portal_text" primary="Analysis Portal" />
                 </ListItem>
               </div>
@@ -718,9 +724,11 @@ class MainView extends React.Component {
                   <ListItem id="qa_db_li_import" button onClick={() => {
                     this.requirementsFileInput.current.click()
                   }}>
+                    <Tooltip id="qa_db_li_import_tooltip" title={!this.state.drawerOpen ? 'Import' : ''}>
                     <ListItemIcon>
                       <ImportIcon />
                     </ListItemIcon>
+                    </Tooltip>
                     <ListItemText primary="Import" />
                     <input
                       id="qa_db_li_import_input"
@@ -735,9 +743,11 @@ class MainView extends React.Component {
                     />
                   </ListItem>
                   <ListItem id="qa_db_li_export" button onClick={() => this.openExportRequirementsDialog()}>
+                    <Tooltip id="qa_db_li_export_tooltip" title={!this.state.drawerOpen ? 'Export' : ''}>
                     <ListItemIcon>
                       <ExportIcon />
                     </ListItemIcon>
+                    </Tooltip>
                     <ListItemText primary="Export" />
                   </ListItem>
                 </div>
@@ -746,9 +756,11 @@ class MainView extends React.Component {
               <List>
               <div>
               <ListItem id="qa_db_li_help" button onClick={() => this.setMainContent('help')}>
+                <Tooltip title={!this.state.drawerOpen ? 'Help' : ''}>
                 <ListItemIcon>
                   <HelpIcon />
                 </ListItemIcon>
+                </Tooltip>
                 <ListItemText primary="Help" />
               </ListItem>
               </div>
