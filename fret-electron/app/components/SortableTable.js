@@ -354,7 +354,8 @@ const styles = theme => ({
     borderRadius: 5,
     width: 45,
     height: 30,
-  }
+  },
+  lowerCaseButton: {textTransform: 'none'}
 });
 
 // color to match select background to requirement bubble color
@@ -855,7 +856,7 @@ class SortableTable extends React.Component {
                           </Select>
                         </TableCell>
                         <TableCell>
-                        <Button id={"qa_tbl_btn_bulk_id_"+label}  color='secondary' onClick={this.handleRequirementDialogOpen(n)}>
+                        <Button className={classes.lowerCaseButton} id={"qa_tbl_btn_bulk_id_"+label}  color='secondary' onClick={this.handleRequirementDialogOpen(n)}>
                             {label}
                           </Button>
                         </TableCell>
@@ -902,7 +903,7 @@ class SortableTable extends React.Component {
                           </Select>
                         </TableCell>
                         <TableCell>
-                        <Button id={"qa_tbl_btn_not_bulk_id_"+label} color='secondary' onClick={this.handleRequirementDialogOpen(n)}>
+                        <Button className={classes.lowerCaseButton} id={"qa_tbl_btn_not_bulk_id_"+label} color='secondary' onClick={this.handleRequirementDialogOpen(n)}>
                               {label}
                             </Button>
                           </TableCell>
