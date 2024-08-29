@@ -212,6 +212,7 @@ class MainView extends React.Component {
   state = {
     drawerOpen: false,
     snackbarOpen: false,
+    errorSnackbarOpen: false,
     createDialogOpen: false,
     createProjectDialogOpen: false,
     lastCreatedRequirementId: undefined,
@@ -297,8 +298,13 @@ class MainView extends React.Component {
         this.openRequirementImportDialog()
       } else if('json' === fileExtension) {
         const replaceString = false;
-        const data = await readAndParseJSONFile(file, replaceString);
-        this.handleJSONImport(data)
+        try {
+          const data = await readAndParseJSONFile(file, replaceString);
+          this.handleJSONImport(data)
+        } catch(err) {
+          console.log('err', err)
+          this.setState({errorSnackbarOpen: true})
+        }
       } else {
         console.log('We do not support yet this file import')
       }
@@ -443,6 +449,14 @@ class MainView extends React.Component {
     }
 
     this.setState({ snackbarOpen: false });
+  };
+
+  handleErrorSnackbarClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    this.setState({ errorSnackbarOpen: false });
   };
 
   setMainContent = (content) => {
@@ -835,6 +849,32 @@ class MainView extends React.Component {
               color="inherit"
               className={classes.snackbarClose}
               onClick={this.handleSnackbarClose}
+            >
+              <CloseIcon />
+            </IconButton>,
+          ]}
+        />
+        <Snackbar
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'center',
+          }}
+
+          open={this.state.errorSnackbarOpen}
+          autoHideDuration={6000}
+          onClose={this.handleErrorSnackbarClose}
+          snackbarcontentprops={{
+            'aria-describedby': 'message-id',
+          }}
+          message={<span id="message-id">The imported json file is invalid</span>}
+          action={[
+            <IconButton
+              id="qa_db_snackbar_close"
+              key="close"
+              aria-label="Close"
+              color="inherit"
+              className={classes.snackbarClose}
+              onClick={this.handleErrorSnackbarClose}
             >
               <CloseIcon />
             </IconButton>,
