@@ -429,6 +429,17 @@ class SlateEditor2 extends React.Component {
     } else if (isKeyHotkey('mod+a', event)) {
       /* Select all hotkey. Handled by default event behavior */
     } else if (isKeyHotkey('mod+z', event)) {
+      const numLeaves = this.props.editor.children[0].children.length; // if numLeaves > 1, using template
+      const {variables} = this.state;
+      if(numLeaves > 1 ){
+        // using templates
+        //this.props.editor.undo()
+      } else if(variables.length > 1){
+        // glossary autofill
+        //this.props.editor.undo()
+      } else {
+        this.props.editor.undo()
+      }
       /* Undo hotkey. Handled by default event behavior
        * (but not implemented by slate) */
     } else if (isKeyHotkey('mod+y', event)) {

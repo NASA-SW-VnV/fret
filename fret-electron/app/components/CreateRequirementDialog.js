@@ -87,6 +87,7 @@ const {ipcRenderer} = require('electron');
 const fs = require('fs');
 const path = require('path');
 import { saveAs } from 'file-saver';
+import {withHistory} from "slate-history";
 
 const formStyles = theme => ({
   accordion: {
@@ -144,7 +145,7 @@ class CreateRequirementDialog extends React.Component {
     status: '',
     selectedTemplate: -1,
     tabValue: 0,
-    editor: withFields(withReact(createEditor())),
+    editor: withFields(withReact(withHistory(createEditor()))),
     dialogTop: 0,
     dialogLeft: 0,
     autoFillVariables: [],
@@ -154,7 +155,7 @@ class CreateRequirementDialog extends React.Component {
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (prevProps.open !== this.props.open && this.props.open) {
-      const editor = withFields(withReact(createEditor()));
+      const editor = withFields(withReact(withHistory(createEditor())));
       this.setState({ editor })
     }
     this.setDialogPosition();
