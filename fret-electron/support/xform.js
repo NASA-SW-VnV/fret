@@ -96,7 +96,10 @@ const pastTimeSimplifications = [
   ['(Y TRUE) & (Y __p)', trueFn, '(Y __p)'],
   ['(! (Y TRUE)) | (Y __p)', trueFn, '(Z __p)'],
   ['(Y __p) | (! (Y TRUE))', trueFn, '(Z __p)'],
-  ['O Z __p', trueFn, 'TRUE']
+  ['O Z __p', trueFn, 'TRUE'],
+  ['HTimed(__l,__r,__p)', trueFn,'H[__l,__r] __p'],
+  ['OTimed(__l,__r,__p)', trueFn,'O[__l,__r] __p'],
+  ['STimed(__l,__r,__p,__q)',trueFn,'__p S[__l,__r] __q']  
 
           // -xtltl flag given to SALT does this: [ '__p | <| [] __p', trueFn, 'O __p']
 	  // For "regular,within":
@@ -115,8 +118,12 @@ const futureTimeSimplifications = [
     ['G FALSE',trueFn,'FALSE'], ['G TRUE', trueFn, 'TRUE'],
     ['G[__l,__h] TRUE', trueFn, 'TRUE'],
     ['X TRUE', trueFn, 'TRUE'], ['X FALSE', trueFn, 'FALSE'],
-    ['F[< __p] FALSE',trueFn,'FALSE'], ['F[<= __p] FALSE',trueFn,'FALSE']
+    ['F[< __p] FALSE',trueFn,'FALSE'], ['F[<= __p] FALSE',trueFn,'FALSE'],
+    ['FTimed(__l,__r,__p)', trueFn,'F[__l,__r] __p'],
+    ['GTimed(__l,__r,__p)', trueFn,'G[__l,__r] __p'],
+    ['UTimed(__l,__r,__p,__q)',trueFn,'__p U[__l,__r] __q']
 ];
+
 
 const finitizeFuture = [
     ['G __p', trueFn, 'LAST V __p'],
