@@ -91,7 +91,8 @@ const pastTimeSimplifications = [
   ['__p S (__p & Z FALSE)', trueFn, 'H __p'],
   ['__p S (__p & ! Y TRUE)', trueFn, 'H __p'],
   ['__p S (FTP & __p)', trueFn, 'H __p'],
-  ['! ((! __p) S (! __p))', trueFn, '__p'],
+  ['__p S __p', trueFn, '__p'],
+  //['! ((! __p) S (! __p))', trueFn, '__p'],
   ['((Y TRUE) & __p) S __q', trueFn, '__p S __q'],
   ['(Y TRUE) & (Y __p)', trueFn, '(Y __p)'],
   ['(! (Y TRUE)) | (Y __p)', trueFn, '(Z __p)'],
@@ -265,9 +266,23 @@ function applyTriple(term,triple) {
     else return null;
 }
 
+function extractIndex(term) {
+  if (isArray(term)) {
+    const hd = term[0]
+    if (isArray(hd)) return hd[0]
+    else return hd
+  } return term // this may be a number or boolean or variable but there will be no rules applicable to numbers or booleans
+}
+
+function getApplicableTriples(indexedTriples,ind) {
+  const triples = indexedTriples[ind];
+  return (triples === undefined ? [] : triples);
+}
+
 // If a triple in the array of triples applies to term, return its result, otherwise null.
-function applyTriples(term,triples) {
+function applyTriples(term,indexedTriples) {
     let r = null;
+    const triples = getApplicableTriples(indexedTriples,extractIndex(term))
     for (let triple of triples) {
 	let result = applyTriple(term,triple);
 	if (result !== null) {
@@ -285,21 +300,32 @@ function parseit(triple) {
     return [pat,fn,replacement]
 }
 
+function indexTriples(triples) {
+  let index = {};
+  for (const triple of triples) {
+    const pat = triple[0]
+    const ind = extractIndex(pat)
+    if (index[ind] === undefined) index[ind] = [];
+    index[ind].push(triple);
+  }
+  return index;
+}
+
 const ptSimplifications =
-      pastTimeSimplifications.concat(booleanSimplifications).map(parseit);
+      indexTriples(pastTimeSimplifications.concat(booleanSimplifications).map(parseit));
 
 const ftSimplifications =
-      futureTimeSimplifications.concat(booleanSimplifications).map(parseit);
+      indexTriples(futureTimeSimplifications.concat(booleanSimplifications).map(parseit));
 
-const finitizingFuture = finitizeFuture.map(parseit);
+const finitizingFuture = indexTriples(finitizeFuture.map(parseit));
 
-const parsedPastTemporalConditions = pastTemporalConditions.map(parseit)
-const parsedFutureTemporalConditions = futureTemporalConditions.map(parseit)
-const parsedTemporalConditions = temporalConditions.map(parseit);
+const parsedPastTemporalConditions = indexTriples(pastTemporalConditions .map(parseit))
+const parsedFutureTemporalConditions = indexTriples(futureTemporalConditions .map(parseit)) 
+const parsedTemporalConditions = indexTriples(temporalConditions.map(parseit));
 
-const parsedPastTemporalConditionsNoBounds = pastTemporalConditionsNoBounds.map(parseit)
-const parsedFutureTemporalConditionsNoBounds = futureTemporalConditionsNoBounds.map(parseit)
-const parsedTemporalConditionsNoBounds = temporalConditionsNoBounds.map(parseit);
+const parsedPastTemporalConditionsNoBounds = indexTriples(pastTemporalConditionsNoBounds.map(parseit))
+const parsedFutureTemporalConditionsNoBounds = indexTriples(futureTemporalConditionsNoBounds .map(parseit))
+const parsedTemporalConditionsNoBounds = indexTriples(temporalConditionsNoBounds.map(parseit));
 
 
 function applyPtSimplifications (term) {
@@ -582,10 +608,20 @@ function optimizeSemantics() {
     }
 }
 optimizeSemantics()
-*/
 
-/*
+
+console.log('ptSimplifications = ', JSON.stringify(ptSimplifications))
+
 console.log(transform('((H ((((FALSE & (Z (! FALSE))) & (Z (H (! FALSE)))) & (Y TRUE)) -> (Y r))) & ((H (! ((FALSE & (Z (! FALSE))) & (Z (H (! FALSE)))))) -> r))',optimizePT))
+
+let xx = 'H FALSE'
+function testapply(x) {
+  console.log('Simplify "' + x + '" to ' + transform(x,optimizePT)) // 
+}
+testapply(xx)
+
+
+
 
 console.log(transform('((((((! FALSE) & (! LAST)) & (X FALSE)) | LAST) V (((((! FALSE) & (! LAST)) & (X FALSE)) | LAST) -> r)) | FALSE)',optimizeFT))
 
@@ -597,6 +633,10 @@ console.log(transformPastTemporalConditionsNoBounds("persisted(3,!p) & occurred(
 console.log(transformFutureTemporalConditions("persists(3,!p) & occurs(4,p)"))
 console.log(transformFutureTemporalConditionsNoBounds("persists(3,!p) & occurs(4,p)"))
 console.log(transformTemporalConditions("m"))
+
+*/
+
+/*
 
 
 /*
