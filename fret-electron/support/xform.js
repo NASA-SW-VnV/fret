@@ -83,6 +83,7 @@ const booleanSimplifications = [
 
 const pastTimeSimplifications = [
   ['O FALSE',trueFn,'FALSE'], ['O TRUE', trueFn, 'TRUE'],
+  ['O[__l,__r] TRUE', trueFn, 'TRUE'],
   ['H FALSE',trueFn,'FALSE'], ['H TRUE', trueFn, 'TRUE'],
   [ '! H ! __p', trueFn, 'O __p'],
   [ '! O ! __p', trueFn, 'H __p'],
@@ -120,6 +121,7 @@ const futureTimeSimplifications = [
     ['G[__l,__h] TRUE', trueFn, 'TRUE'],
     ['X TRUE', trueFn, 'TRUE'], ['X FALSE', trueFn, 'FALSE'],
     ['F[< __p] FALSE',trueFn,'FALSE'], ['F[<= __p] FALSE',trueFn,'FALSE'],
+    ['(G[__l,__r] __p) | G __p', trueFn, 'G[__l,__r] __p'],
     ['FTimed(__l,__r,__p)', trueFn,'F[__l,__r] __p'],
     ['GTimed(__l,__r,__p)', trueFn,'G[__l,__r] __p'],
     ['UTimed(__l,__r,__p,__q)',trueFn,'__p U[__l,__r] __q']
