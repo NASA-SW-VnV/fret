@@ -1,0 +1,4 @@
+<% for (i=0; i < properties.length; i++) {%>
+    -- <%-properties[i].fullText%>
+    LTLSPEC NAME <%-properties[i].reqid%> := <%- properties[i].value %>;    
+    <%}%>

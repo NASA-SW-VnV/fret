@@ -209,7 +209,15 @@ function getMappingInfo(result, contractName) {
   return mapping;
 }
 
-function getContractInfo(result) {
+function getContractInfo(result, language) {
+  function getSMVDataType(dataType) {
+    if (dataType === 'boolean'){
+      return dataType;
+    } else if (dataType.includes('int') ){
+      return 'integer';
+    }    
+  }
+  
   function getCoCoSpecDataType(dataType){
     if (dataType === 'boolean'){
         return 'bool';
@@ -217,6 +225,14 @@ function getContractInfo(result) {
       return 'int';
     } else if (dataType === 'double' || 'single'){
       return 'real';
+    }
+  }  
+
+  function getDataType(dataType, language) {
+    if (language === 'smv') {
+      return getSMVDataType(dataType);
+    } else {
+      return getCoCoSpecDataType(dataType);
     }
   }
 
@@ -236,20 +252,20 @@ function getContractInfo(result) {
     var variable ={};
     variable.name = doc.variable_name;
     if (doc.idType === 'Input'){
-      variable.type = getCoCoSpecDataType(doc.dataType);
+      variable.type = getDataType(doc.dataType, language);
       contract.inputVariables.push(variable);
     } else if (doc.idType === 'Output'){
-      variable.type = getCoCoSpecDataType(doc.dataType);
+      variable.type = getDataType(doc.dataType, language);
       contract.outputVariables.push(variable);
     } else if (doc.idType === 'Internal'){
-      variable.type = getCoCoSpecDataType(doc.dataType);
+      variable.type = getDataType(doc.dataType, language);
       contract.internalVariables.push(variable);
       contract.assignments.push(doc.assignment);
       contract.copilotAssignments.push(doc.copilotAssignment);
     } else if (doc.idType === 'Mode'){
       if (doc.modeRequirement !== '')
         variable.assignment = doc.modeRequirement;
-        variable.type = getCoCoSpecDataType(doc.dataType);
+        variable.type = getDataType(doc.dataType, language);
         contract.modes.push(variable);
     } else if (doc.idType === 'Function'){
       variable.moduleName = doc.moduleName;
@@ -259,39 +275,68 @@ function getContractInfo(result) {
   return contract;
 }
 
-function getObligationInfo(doc, outputVariables, component){
+function getObligationInfo(doc, outputVariables, component, language, fragment){
   var properties = [];
     var property ={};
     property.allInput = false;
     if (doc.semantics.component_name === component){
-      if (typeof doc.semantics.CoCoSpecCode !== 'undefined'){
-        if (doc.semantics.CoCoSpecCode !== constants.nonsense_semantics &&
-          doc.semantics.CoCoSpecCode !== constants.undefined_semantics &&
-          doc.semantics.CoCoSpecCode !== constants.unhandled_semantics){
-            property.value = doc.semantics.CoCoSpecCode;
-            property.reqid = doc.reqid;
-            property.fullText = "Req text: " + doc.fulltext;
-            property.fretish = doc.fulltext;
-            //TODO: remove HTLM-tags from ptExpanded
-            property.ptLTL = doc.semantics.ptExpanded.replace(/<b>/g, "").replace(/<i>/g, "").replace(/<\/b>/g, "").replace(/<\/i>/g, "");
-            let obligationsLustre = xform.generateFLIPObligations({[property.reqid]: property.ptLTL}, 'cocospec');
-            for (const obl of obligationsLustre) {
-              let [formula, condition, obligation] = obl;
-              let obligationProperty = {}
-              obligationProperty.allInput = false;
-              obligationProperty.value = obligation;
-              obligationProperty.reqid = doc.reqid +'_'+condition;
-              obligationProperty.fullText = "Req text: " + doc.fulltext;
-              obligationProperty.fretish = doc.fulltext;
-              obligationProperty.ptLTL = obligation;
-              properties.push(obligationProperty);
-            }
-            outputVariables.forEach(function(variable){
-            if (property.value.includes(variable)){
-                property.allInput = true;
+      if (language !== 'smv') {
+        if (typeof doc.semantics.CoCoSpecCode !== 'undefined'){
+          if (doc.semantics.CoCoSpecCode !== constants.nonsense_semantics &&
+            doc.semantics.CoCoSpecCode !== constants.undefined_semantics &&
+            doc.semantics.CoCoSpecCode !== constants.unhandled_semantics){
+              property.value = doc.semantics.CoCoSpecCode;
+              property.reqid = doc.reqid;
+              property.fullText = "Req text: " + doc.fulltext;
+              property.fretish = doc.fulltext;
+              //TODO: remove HTLM-tags from ptExpanded
+              property.ptLTL = doc.semantics.ptExpanded.replace(/<b>/g, "").replace(/<i>/g, "").replace(/<\/b>/g, "").replace(/<\/i>/g, "");
+              let obligationsLustre = xform.generateFLIPObligations({[property.reqid]: property.ptLTL}, language);
+              for (const obl of obligationsLustre) {
+                let [formula, condition, obligation] = obl;
+                let obligationProperty = {}
+                obligationProperty.allInput = false;
+                obligationProperty.value = obligation;
+                obligationProperty.reqid = doc.reqid +'_'+condition;
+                obligationProperty.fullText = "Req text: " + doc.fulltext;
+                obligationProperty.fretish = doc.fulltext;
+                obligationProperty.ptLTL = obligation;
+                properties.push(obligationProperty);
               }
-            })
+              outputVariables.forEach(function(variable){
+              if (property.value.includes(variable)){
+                  property.allInput = true;
+                }
+              })
+          }
         }
+      } else {
+        property.value = doc.semantics.ftInfAUExpanded;
+        property.reqid = doc.reqid;
+        property.fullText = "Req text: " + doc.fulltext;
+        property.fretish = doc.fulltext;
+        
+        let obligationsSMV;
+        
+        if (fragment === 'ptLTL') {
+          property.ptLTL = doc.semantics.ptExpanded.replace(/<b>/g, "").replace(/<i>/g, "").replace(/<\/b>/g, "").replace(/<\/i>/g, "");
+          obligationsSMV = xform.generateFLIPObligations({[property.reqid]: property.ptLTL}, language);
+        } else {
+          //ftLTL
+          property.ftLTL = doc.semantics.ftInfAUExpanded.replace(/<b>/g, "").replace(/<i>/g, "").replace(/<\/b>/g, "").replace(/<\/i>/g, "");
+          obligationsSMV = xform.generateFLIPObligations({[property.reqid]: property.ftLTL}, language);
+        }
+
+        for (const obl of obligationsSMV) {
+          let [formula, condition, obligation] = obl;
+          let obligationProperty = {}
+          obligationProperty.allInput = true;
+          obligationProperty.value = obligation;
+          obligationProperty.reqid = doc.reqid +'_'+condition;
+          obligationProperty.fullText = "Req text: " + doc.fulltext;
+          obligationProperty.fretish = doc.fulltext;
+          properties.push(obligationProperty);
+        }        
       }
     }
   return properties;

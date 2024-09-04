@@ -41,6 +41,7 @@ import {export_to_md} from "../app/utils/utilityFunctions";
 import {synchAnalysisWithDB, } from './fretDbSupport/analysisTabSupport'
 import { retrieveRlzRequirements, computeConnectedComponents, checkRealizability, diagnoseSpec, checkDependenciesExist } from './realizabilitySupport/realizabilityUtils'
 import ejsCache from '../support/CoCoSpecTemplates/ejsCache';
+import ejsCacheSMV from '../support/SMVTemplates/ejsCacheSMV';
 import ejsCacheCoPilot from '../support/CoPilotTemplates/ejsCacheCoPilot';
 
 const modelDbSetters = require('./modelDbSupport/modelDbSetters_main.js');
@@ -1045,7 +1046,7 @@ export default class FretModel {
       }
     }).then(function (modelResult){
 
-      let contract = getContractInfo(modelResult);
+      let contract = getContractInfo(modelResult, language);
       contract.componentName = component+'Spec';
       if (language === 'cocospec' && modelResult.docs[0].modelComponent != ""){
         var variableMapping = getMappingInfo(modelResult, contract.componentName);
@@ -1092,7 +1093,7 @@ export default class FretModel {
   }
 
   async exportTestObligations(evt, args) {
-    let [component, selectedProject, language] = args;
+    let [component, selectedProject, language, fragment] = args;
     const files = [];
     return modelDB.find({
         selector: {
@@ -1136,15 +1137,19 @@ export default class FretModel {
 
             localModelResult.docs = localModelResult.docs.filter(modelDoc => (modelVariables.includes(modelDoc.variable_name)))              
 
-            let contract = getContractInfo(localModelResult);
+            let contract = getContractInfo(localModelResult, language);
             contract.componentName = component+'Spec';
             
 
-            contract.properties = getObligationInfo(doc, contract.outputVariables, component);
+            contract.properties = getObligationInfo(doc, contract.outputVariables, component, language, fragment);
             contract.delays = getDelayInfo(fretResult, component);
             if (language === 'cocospec'){                
               contract = variableIdentifierReplacement(contract);
               const file = {content: ejsCache.renderContractCode().contract.complete(contract), name: contract.componentName+'_'+doc.reqid+'.lus' }
+              files.push(file);
+            } else {
+              //smv
+              const file = {content: ejsCacheSMV.renderModelCode().model.complete(contract), name: contract.componentName+'_'+doc.reqid+'.smv' }
               files.push(file);
             }
             return contract.properties.length;              

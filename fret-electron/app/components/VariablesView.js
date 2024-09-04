@@ -123,6 +123,7 @@ let VariablesViewHeader = props => {
            }}>
            <MenuItem id="qa_var_mi_cocospec" value="cocospec">CoCoSpec</MenuItem>
            <MenuItem id="qa_var_mi_copilot" value="copilot">CoPilot</MenuItem>
+           <MenuItem id="qa_var_mi_smv" value="smv">SMV</MenuItem>
          </Select>
        </FormControl>
      </div>
@@ -214,11 +215,11 @@ class ComponentSummary extends React.Component {
     })
   }
 
-  exportTestObligations = event => {
+  exportTestObligations = fragment => event => {
     event.stopPropagation();
     this.setState({actionsMenuOpen: false})
     const {component, selectedProject, language} = this.props;
-    var args = [component, selectedProject, language];
+    var args = [component, selectedProject, language, fragment];
 
     ipcRenderer.invoke('exportTestObligations', args).then((result) => {
       this.setState({snackbarOpen: true, numberOfObligations: result.numOfObligations});
@@ -267,7 +268,7 @@ class ComponentSummary extends React.Component {
           </span>
         </Tooltip>     
       );
-    } else if (completed && language && language === 'cocospec') {
+    } else if (completed && language && language !== '') {
       return (
         <div className={classes.wrapper}>
           <Button          
@@ -278,8 +279,16 @@ class ComponentSummary extends React.Component {
             Export        
           </Button>
           <Menu anchorEl={this.anchorRef.current} open={this.state.actionsMenuOpen} onClose={(event) => this.handleActionsMenuClose(event)}>
-            <MenuItem onClick={this.exportComponentCode}>Verification Code</MenuItem>          
-            <MenuItem onClick={this.exportTestObligations}>Test Obligations</MenuItem>                    
+            {language === 'cocospec' ?
+              <div>
+                <MenuItem onClick={this.exportComponentCode}>Verification Code</MenuItem>
+                <MenuItem onClick={this.exportTestObligations('ptLTL')}>Test Obligations</MenuItem>                
+              </div> :
+              <div>
+                <MenuItem onClick={this.exportTestObligations('ftLTL')}>Test Obligations (Future Time LTL)</MenuItem>
+                <MenuItem onClick={this.exportTestObligations('ptLTL')}>Test Obligations (Past Time LTL)</MenuItem>
+              </div>            
+            }
           </Menu>
           <Snackbar
           anchorOrigin={{
