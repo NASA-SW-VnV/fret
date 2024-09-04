@@ -82,23 +82,29 @@ const booleanSimplifications = [
 ];
 
 const pastTimeSimplifications = [
+  ['! (Y TRUE)', trueFn, 'Z FALSE'],
+  ['! (Z FALSE)', trueFn, 'Y TRUE'],
   ['O FALSE',trueFn,'FALSE'], ['O TRUE', trueFn, 'TRUE'],
   ['O[__l,__r] TRUE', trueFn, 'TRUE'],
-  ['H FALSE',trueFn,'FALSE'], ['H TRUE', trueFn, 'TRUE'],
-  [ '! H ! __p', trueFn, 'O __p'],
-  [ '! O ! __p', trueFn, 'H __p'],
-  [ 'TRUE S __p', trueFn, 'O __p'],
-  ['__p S (__p & FTP)', trueFn, 'H __p'],
-  ['__p S (__p & Z FALSE)', trueFn, 'H __p'],
-  ['__p S (__p & ! Y TRUE)', trueFn, 'H __p'],
-  ['__p S (FTP & __p)', trueFn, 'H __p'],
-  ['__p S __p', trueFn, '__p'],
-  //['! ((! __p) S (! __p))', trueFn, '__p'],
-  ['((Y TRUE) & __p) S __q', trueFn, '__p S __q'],
-  ['(Y TRUE) & (Y __p)', trueFn, '(Y __p)'],
-  ['(! (Y TRUE)) | (Y __p)', trueFn, '(Z __p)'],
-  ['(Y __p) | (! (Y TRUE))', trueFn, '(Z __p)'],
   ['O Z __p', trueFn, 'TRUE'],
+  ['H FALSE',trueFn,'FALSE'], ['H TRUE', trueFn, 'TRUE'],
+  ['H (Z FALSE)', trueFn, 'Z FALSE'],
+  ['H (__p & __q)', trueFn, '(H __p) & (H __q)'],
+  ['H (O __p)', trueFn, 'H __p'],
+  ['H (O[__l, __r] __p)', trueFn, 'H __p'],
+  ['H (H[__l, __r] __p])', trueFn, 'H __p'],
+  ['H (Y TRUE)', trueFn, 'FALSE'],
+  ['! H ! __p', trueFn, 'O __p'],
+  ['! O ! __p', trueFn, 'H __p'],
+  ['TRUE S __p', trueFn, 'O __p'],
+  ['__p S (__p & Z FALSE)', trueFn, 'H __p'],
+  ['__p S ((Z FALSE) & __p)', trueFn, 'H __p'],
+  ['__p S __p', trueFn, '__p'],
+  ['((Y TRUE) & __p) S __q', trueFn, '__p S __q'],
+  ['(Y TRUE) S __q', trueFn, 'O __q'],
+  ['(Y TRUE) & (Y __p)', trueFn, '(Y __p)'],
+  ['(Z FALSE) | (Y __p)', trueFn, '(Z __p)'],
+  ['(Y __p) | (Z FALSE)', trueFn, '(Z __p)'],
   ['HTimed(__l,__r,__p)', trueFn,'H[__l,__r] __p'],
   ['OTimed(__l,__r,__p)', trueFn,'O[__l,__r] __p'],
   ['STimed(__l,__r,__p,__q)',trueFn,'__p S[__l,__r] __q']  
@@ -119,6 +125,8 @@ const futureTimeSimplifications = [
     ['F FALSE',trueFn,'FALSE'], ['F TRUE', trueFn, 'TRUE'],
     ['G FALSE',trueFn,'FALSE'], ['G TRUE', trueFn, 'TRUE'],
     ['G[__l,__h] TRUE', trueFn, 'TRUE'],
+    ['G (G[0,__h] __r)', trueFn, 'G __r'],
+    ['G G __r', trueFn, 'G __r'],
     ['X TRUE', trueFn, 'TRUE'], ['X FALSE', trueFn, 'FALSE'],
     ['F[< __p] FALSE',trueFn,'FALSE'], ['F[<= __p] FALSE',trueFn,'FALSE'],
     ['(G[__l,__r] __p) | G __p', trueFn, 'G[__l,__r] __p'],
@@ -153,7 +161,7 @@ function nonBoolConstant(v) {
 */
 
 const pastTemporalConditions = [
-  ['FTP', trueFn, '(! (Y TRUE))'],
+  ['FTP', trueFn, '(Z FALSE)'],
   //These special cases are unnecessary due to booleanSimplifications
   //['preBool(FALSE,__p)',trueFn,'((! $Left$) & (Y __p))'],
   //['preBool(TRUE,__p)',trueFn,'($Left$ | (Y __p))'],
@@ -321,12 +329,12 @@ const ftSimplifications =
 
 const finitizingFuture = indexTriples(finitizeFuture.map(parseit));
 
-const parsedPastTemporalConditions = indexTriples(pastTemporalConditions .map(parseit))
-const parsedFutureTemporalConditions = indexTriples(futureTemporalConditions .map(parseit)) 
+const parsedPastTemporalConditions = indexTriples(pastTemporalConditions.map(parseit))
+const parsedFutureTemporalConditions = indexTriples(futureTemporalConditions.map(parseit)) 
 const parsedTemporalConditions = indexTriples(temporalConditions.map(parseit));
 
 const parsedPastTemporalConditionsNoBounds = indexTriples(pastTemporalConditionsNoBounds.map(parseit))
-const parsedFutureTemporalConditionsNoBounds = indexTriples(futureTemporalConditionsNoBounds .map(parseit))
+const parsedFutureTemporalConditionsNoBounds = indexTriples(futureTemporalConditionsNoBounds.map(parseit))
 const parsedTemporalConditionsNoBounds = indexTriples(temporalConditionsNoBounds.map(parseit));
 
 
