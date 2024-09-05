@@ -91,8 +91,8 @@ const pastTimeSimplifications = [
   ['H (Z FALSE)', trueFn, 'Z FALSE'],
   ['H (__p & __q)', trueFn, '(H __p) & (H __q)'],
   ['H (O __p)', trueFn, 'H __p'],
-  ['H (O[__l, __r] __p)', trueFn, 'H __p'],
-  ['H (H[__l, __r] __p])', trueFn, 'H __p'],
+  //['H (O[0, __r] __p)', trueFn, 'H __p'],
+  ['H (H[0, __r] __p])', trueFn, 'H __p'],
   ['H (Y TRUE)', trueFn, 'FALSE'],
   ['! H ! __p', trueFn, 'O __p'],
   ['! O ! __p', trueFn, 'H __p'],
@@ -120,13 +120,14 @@ const futureTimeSimplifications = [
     ['! (((! __p) & (! __q)) U (! __r))',trueFn, '(__p | __q) V __r'],
     ['TRUE U __p', trueFn, 'F __p'],
     ['FALSE V __p', trueFn, 'G __p'], ['TRUE V __p', trueFn, '__p'],
+    ['__p V TRUE', trueFn, 'TRUE'],
     // The next one is a fact about weak until (SMV doesn't have weak until)
     ['((__p V (__q | __p)) | (G __q))', trueFn, '__p V (__q | __p)'],
     ['F FALSE',trueFn,'FALSE'], ['F TRUE', trueFn, 'TRUE'],
     ['G FALSE',trueFn,'FALSE'], ['G TRUE', trueFn, 'TRUE'],
     ['G[__l,__h] TRUE', trueFn, 'TRUE'],
     ['G (G[0,__h] __r)', trueFn, 'G __r'],
-    ['G G __r', trueFn, 'G __r'],
+    ['G (G __r)', trueFn, 'G __r'],
     ['X TRUE', trueFn, 'TRUE'], ['X FALSE', trueFn, 'FALSE'],
     ['F[< __p] FALSE',trueFn,'FALSE'], ['F[<= __p] FALSE',trueFn,'FALSE'],
     ['(G[__l,__r] __p) | G __p', trueFn, 'G[__l,__r] __p'],
@@ -624,15 +625,24 @@ console.log('ptSimplifications = ', JSON.stringify(ptSimplifications))
 
 console.log(transform('((H ((((FALSE & (Z (! FALSE))) & (Z (H (! FALSE)))) & (Y TRUE)) -> (Y r))) & ((H (! ((FALSE & (Z (! FALSE))) & (Z (H (! FALSE)))))) -> r))',optimizePT))
 
-let xx = 'H FALSE'
-function testapply(x) {
-  console.log('Simplify "' + x + '" to ' + transform(x,optimizePT)) // 
+*/
+
+let xx = 'persists(3,p)'
+let yy = '((G[<=3] p) & (G[<3] (! LAST)))'
+let x3 = '((LAST V ((! ((((! TRUE) & (! LAST)) & (X TRUE)) & (! LAST))) | (X ((G[0,3] r) & (G[0,2] (! ((TRUE & (! LAST)) & (X (! TRUE))))))))) & (TRUE -> ((G[0,3] r) & (G[0,2] (! ((TRUE & (! LAST)) & (X (! TRUE))))))))'
+
+
+function testapply(form) {
+  const expform = transformFutureTemporalConditions(form)
+  console.log('Transformed ' + form + ' into ' + expform)
+  console.log('Simplify "' + expform + '" to ' + transform(expform,optimizePT))
+  console.log
 }
 testapply(xx)
+testapply(yy)
+testapply(x3)
 
-
-
-
+/*
 console.log(transform('((((((! FALSE) & (! LAST)) & (X FALSE)) | LAST) V (((((! FALSE) & (! LAST)) & (X FALSE)) | LAST) -> r)) | FALSE)',optimizeFT))
 
 console.log(optimizeFT(astsem.LTLtoAST('FALSE | ite(safe,green,red)')))
