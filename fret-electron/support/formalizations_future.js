@@ -41,7 +41,8 @@ const utilities = require(fretSupportPath + 'utilities')
 // for infinite traces LAST=false
 const EndpointRewrites = [
     ['FiM|FFiM|LNiM', '((not MODE) and (not LAST) and next MODE)'], // what if beginning of trace? FTP
-    ['LiM|FNiM|FLiM', '(MODE and (not LAST) and next (not MODE))']
+  ['LiM|FNiM|FLiM', '(MODE and (LAST or next (not MODE)))']
+    //['LiM|FNiM|FLiM', '(MODE and (not LAST) and next (not MODE))']
     // we found the need for adding (not LAST) because of after
     // now interestingly when they act as right end they also get the or LAST
     // when we enforce when right never occurs
@@ -51,7 +52,8 @@ const EndpointRewrites = [
 // for infinite traces LAST=false
 const SMVEndpointRewrites = [
   ['FiM|FFiM|LNiM', '((! MODE) & (! LAST) & (X MODE))'],
-  ['LiM|FNiM|FLiM', '(MODE & (! LAST) & X (! MODE))']
+  ['LiM|FNiM|FLiM', '(MODE & (LAST | X (! MODE)))']
+  //['LiM|FNiM|FLiM', '(MODE & (! LAST) & X (! MODE))']
     // we found the need for adding (not LAST) because of after
     // now interestingly when they act as right end they also get the or LAST
     // when we enforce when right never occurs
