@@ -627,6 +627,8 @@ console.log(transform('((H ((((FALSE & (Z (! FALSE))) & (Z (H (! FALSE)))) & (Y 
 
 */
 
+/*
+
 let xx = 'persists(3,p)'
 let yy = '((G[<=3] p) & (G[<3] (! LAST)))'
 let x3 = '((LAST V ((! ((((! TRUE) & (! LAST)) & (X TRUE)) & (! LAST))) | (X ((G[0,3] r) & (G[0,2] (! ((TRUE & (! LAST)) & (X (! TRUE))))))))) & (TRUE -> ((G[0,3] r) & (G[0,2] (! ((TRUE & (! LAST)) & (X (! TRUE))))))))'
@@ -642,6 +644,8 @@ testapply(xx)
 testapply(yy)
 testapply(x3)
 
+*/
+
 /*
 console.log(transform('((((((! FALSE) & (! LAST)) & (X FALSE)) | LAST) V (((((! FALSE) & (! LAST)) & (X FALSE)) | LAST) -> r)) | FALSE)',optimizeFT))
 
@@ -655,9 +659,6 @@ console.log(transformFutureTemporalConditionsNoBounds("persists(3,!p) & occurs(4
 console.log(transformTemporalConditions("m"))
 
 */
-
-/*
-
 
 /*
 console.log(transform('persisted(3,temp>100)',expandTemporalConditions));

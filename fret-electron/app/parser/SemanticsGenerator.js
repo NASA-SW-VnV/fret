@@ -201,3 +201,8 @@ function get_LTL_from_old_SALT(SALT_string,SALT_env_var='SALT_HOME') {
  }
   return stdout;
 }
+
+/*
+let xx = get_LTL_from_old_SALT('assert eventually a')
+console.log(xx)
+*/
