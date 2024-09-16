@@ -151,7 +151,7 @@ class DiagnosisEngine {
             let jsonOutput = checkOutput.output;
 
             if (this.engineName === 'kind2') {
-              let kind2JsonResult = jsonOutput.filter(e => e.objectType === "realizabilityCheck")[0];
+              let kind2JsonResult = jsonOutput[jsonOutput.findLastIndex(e => e.objectType === "realizabilityCheck")];
               let newJsonOutput = {
                 "Runtime": {
                   "unit": kind2JsonResult.runtime['unit'],
