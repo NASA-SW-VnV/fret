@@ -127,6 +127,16 @@ ipcMain.handle('addProject', async (evt, arg) => {
   return result
 })
 
+ipcMain.handle('renameProject', async (evt, [oldName, newName]) => {
+  const result = await fretModel.renameProject(oldName, newName);
+  return result
+})
+
+ipcMain.handle('copyProject', async (evt, [oldName, newName]) => {
+  const result = await fretModel.copyProject(oldName, newName);
+  return result
+})
+
 ipcMain.handle('deleteProject', async (evt, arg) => {
   const result = await fretModel.deleteProject(evt, arg);
   //console.log('main.dev deleteProject result return: ', result);

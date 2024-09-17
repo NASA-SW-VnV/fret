@@ -46,6 +46,7 @@ import Widget from './DashboardWidget';
 import DraggableClusters from './DraggableClusters';
 import CirclePacking from './CirclePacking';
 import css from './Dashboard.css';
+import { connect } from "react-redux";
 
 const constants = require('../parser/Constants');
 
@@ -143,10 +144,18 @@ class Dashboard extends React.Component {
 
 Dashboard.propTypes = {
   classes: PropTypes.object.isRequired,
-  selectedProject: PropTypes.string.isRequired,
-  requirements: PropTypes.array.isRequired,
-  listOfProjects: PropTypes.array.isRequired
-
 }
 
-export default withStyles(styles)(Dashboard);
+function mapStateToProps(state) {
+  const requirements = state.actionsSlice.requirements;
+  const listOfProjects = state.actionsSlice.listOfProjects;
+  const selectedProject = state.actionsSlice.selectedProject;
+  return {
+    requirements,
+    listOfProjects,
+    selectedProject,
+  };
+}
+
+//export default withStyles(styles)(Dashboard);
+export default withStyles(styles)(connect(mapStateToProps)(Dashboard));

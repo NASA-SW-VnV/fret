@@ -94,6 +94,8 @@ import ImportedVariablesWarningDialog from "./ImportedVariablesWarningDialog";
 import csv from 'csv';
 import { readAndParseCSVFile, readAndParseJSONFile } from '../utils/utilityFunctions';
 import Error from '@material-ui/icons/Error';
+import EditIcon from "@material-ui/icons/Edit";
+import FileCopyOutlinedIcon from '@material-ui/icons/FileCopyOutlined';
 
 const FretSemantics = require('../parser/FretSemantics');
 
@@ -230,6 +232,8 @@ class MainView extends React.Component {
     missingExternalImportDialogOpen: false,
     missingExternalImportDialogReason: 'unknown',
     warningDialogOpen: false,
+    editedProject: null,
+    copiedProject: null,
     };
 
   constructor(props) {
@@ -423,6 +427,8 @@ class MainView extends React.Component {
     this.setState(
       {
         createProjectDialogOpen: false,
+        editedProject: null,
+        copiedProject: null,
       });
   }
 
@@ -475,6 +481,14 @@ class MainView extends React.Component {
 
   handleDeleteProject = (name) => {
     this.openDeleteProjectDialog(name)
+  }
+
+  handleRenameProject = (name) => {
+    this.setState({ createProjectDialogOpen: true, editedProject: name });
+  }
+
+  handleCopyProject = (name) => {
+    this.setState({ createProjectDialogOpen: true, copiedProject: name });
   }
 
   openDeleteProjectDialog = (name) => {
@@ -606,7 +620,7 @@ class MainView extends React.Component {
 
   render() {
     const { classes, theme, listOfProjects, requirements } = this.props;
-    const { anchorEl, warningDialogOpen } = this.state;
+    const { anchorEl, warningDialogOpen, editedProject, copiedProject } = this.state;
 
     return (
       <div className={classes.root}>
@@ -675,6 +689,11 @@ class MainView extends React.Component {
                                     <IconButton id={"qa_proj_del_"+name.replace(/\s+/g, '_')} onClick={() => this.handleDeleteProject(name)} size="small" aria-label="delete" disabled={name === 'Default'} >
                                       <Tooltip id="project-tooltip-icon-delete" title="Delete Project">
                                       <DeleteIcon color={name === 'Default' ? 'disabled': 'error'}/>
+                                      </Tooltip>
+                                    </IconButton>
+                                    <IconButton id={"qa_proj_copy_"+name.replace(/\s+/g, '_')} onClick={() => this.handleCopyProject(name)} size="small" aria-label="delete" disabled={name === 'Default'} >
+                                      <Tooltip id="project-tooltip-icon-copy" title="copy Project">
+                                      <FileCopyOutlinedIcon/>
                                       </Tooltip>
                                     </IconButton>
                                   </MenuItem>
@@ -798,6 +817,8 @@ class MainView extends React.Component {
               open={this.state.createProjectDialogOpen}
               handleDialogClose={this.handleCreateProjectDialogClose}
               listOfProjects={listOfProjects}
+              oldName={editedProject}
+              copiedProject={copiedProject}
           />
           <DeleteProjectDialog
             open={this.state.deleteProjectDialogOpen}

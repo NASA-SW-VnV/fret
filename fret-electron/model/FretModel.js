@@ -54,6 +54,7 @@ const fs = require('fs');
 import { v1 as uuidv1 } from 'uuid';
 import FretSemantics from "../app/parser/FretSemantics";
 import {Default_Project_name} from "./requirementsImport/convertAndImportRequirements_main";
+import {createRequirements} from "./fretDbSupport/fretDbSetters_main";
 const utilities = require('../support/utilities');
 export default class FretModel {
   constructor(){
@@ -268,6 +269,15 @@ export default class FretModel {
     }
   }
 
+  async renameProject(oldName, newName){
+    const newProjectsList = await fretDbSetters.renameProject(oldName, newName)
+    this.listOfProjects = [Default_Project_name, ...newProjectsList];
+
+
+    return {listOfProjects: this.listOfProjects, }
+
+  }
+
   async deleteProject(evt,args){
 
     var project = args[0]
@@ -422,6 +432,47 @@ export default class FretModel {
 
     }
     return states
+
+  }
+
+  async copyProject(projectName, newProjectName) {
+    await this.addProject(null, [newProjectName]);
+    await this.copyProjectRequirements(projectName, newProjectName)
+    this.requirements = await fretDbGetters.getRequirements()
+    return {listOfProjects: this.listOfProjects, requirements : this.requirements}
+
+  }
+
+  async copyProjectRequirements(projectName, newProjectName) {
+    const requirements = await this.selectProjectRequirements(projectName)
+    const newProjectRequirements = []
+    const mapOldReqIdToNewReqId = {};
+    for(let i = 0; i < requirements.docs.length; i++){
+      const r = requirements.docs[i];
+      const newRequirement = {
+        _id: uuidv1(),
+        reqid : r.reqid,
+        parent_reqid : r.parent_reqid,
+        project : newProjectName,
+        rationale : r.rationale,
+        comments : r.comments,
+        status: r.status,
+        fulltext : r.fulltext,
+        semantics : r.semantics,
+        template : r.template,
+        input : r.input
+      }
+      newProjectRequirements.push(newRequirement)
+      mapOldReqIdToNewReqId[r._id] = newRequirement._id;
+
+    }
+    newProjectRequirements.forEach(req => {
+      if(req.parent_reqid) {
+        req.parent_reqid = mapOldReqIdToNewReqId[req.parent_reqid];
+      }
+    })
+
+    return createRequirements(newProjectRequirements);
 
   }
 
@@ -967,7 +1018,18 @@ export default class FretModel {
         contract.properties = getPropertyInfo(fretResult, contract.outputVariables, component);
         contract.delays = getDelayInfo(fretResult, component);
         if (language === 'cocospec'){
-          contract = variableIdentifierReplacement(contract);
+          let contractVariables = [].concat(contract.inputVariables.concat(contract.outputVariables.concat(contract.internalVariables.concat(contract.functions.concat(contract.modes)))));
+          for (const property of contract.properties){
+            // property.reqid = '__'+property.reqid;
+            for (const contractVar of contractVariables) {
+              var regex = new RegExp('\\b' + contractVar.name.substring(2) + '\\b', "g");
+              property.value = property.value.replace(regex, contractVar.name);
+            }
+            if (!contract.internalVariables.includes("__FTP")) {
+              var regex = new RegExp('\\b' + 'FTP' + '\\b', "g");
+              property.value = property.value.replace(regex, '__FTP');
+            }
+          }
           const file = {content: ejsCache.renderContractCode().contract.complete(contract), name: contract.componentName+'.lus' }
           files.push(file);
         } else if (language === 'copilot'){
@@ -975,7 +1037,6 @@ export default class FretModel {
           contract.modes.forEach(function(mode) {
             contract.assignments.push(mode.assignment);
           });
-          contract = variableIdentifierReplacement(contract);
           const file = {content: ejsCacheCoPilot.renderCoPilotSpec().contract.complete(contract), name: contract.componentName+'.json' }
           files.push(file);
         }

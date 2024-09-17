@@ -80,8 +80,10 @@ async function synchAnalysisWithDB (selectedProject) {
         //An object {docs: [], ...} is returned from leveldbDB.find() when projectName = 'All Projects'.
         //The same object will be returned for non-existing projects though, so I am accounting for this below.
         //Normally, we shouldn't need to check the value of projectName at this level.
-        //This is needed to properly handle non-existing projects in the CLI.    
-        throw new Error('Project "'+selectedProject+'" was not found.')
+        //This is needed to properly handle non-existing projects in the CLI.
+        if(selectedProject != 'All Projects') {
+          throw new Error('Project "'+selectedProject+'" was not found.')
+        }
       }
       }).catch((err) => {
         throw err

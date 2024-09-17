@@ -41,6 +41,8 @@ export {
   addRequirement as addRequirement,
   addProject as addProject,
   deleteProject as deleteProject,
+  renameProject as renameProject,
+  createRequirements as createRequirements,
 }
 
 async function setFRETProps (doc, updatedFieldColors) {
@@ -77,7 +79,7 @@ async function addRequirement (dbid, dbrev, edittedFields, generatedFields) {
         resp = false;
         //console.log('fretDbSetters:addRequirement returning false');
         //return false;
-        
+
       }
       //console.log('fretDbSetters:addRequirement returning true')
       //return true;
@@ -85,6 +87,9 @@ async function addRequirement (dbid, dbrev, edittedFields, generatedFields) {
   return resp;
 }
 
+async function createRequirements(requirements) {
+  return leveldbDB.bulkDocs(requirements)
+}
 
 async function addProject(projName){
   return await leveldbDB.get('FRET_PROJECTS').then((doc) => {
@@ -95,7 +100,24 @@ async function addProject(projName){
       _rev: doc._rev,
       names: list
     })
-    return list;        
+    return list;
+    }).catch((err) => {
+      console.log(err);
+    });
+}
+
+async function renameProject(oldName, newName){
+  return leveldbDB.get('FRET_PROJECTS').then((doc) => {
+    const list = doc.names;
+    const indexOfProject = list.findIndex(name => name === oldName);
+    list.splice(indexOfProject, 1, newName);
+
+    leveldbDB.put({
+      _id: 'FRET_PROJECTS',
+      _rev: doc._rev,
+      names: list
+    })
+    return list;
     }).catch((err) => {
       console.log(err);
     });
@@ -118,7 +140,7 @@ async function deleteProject(project){
        return r;
      })
      */
-     
+
      //from MODEL
       removeReqsInBulk(deleteReqsList.docs);
       removeVariablesInBulk(deleteReqsList.docs);

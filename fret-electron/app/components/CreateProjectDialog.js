@@ -44,7 +44,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 
 const {ipcRenderer} = require('electron');
 import { connect } from "react-redux";
-import { addProject } from '../reducers/allActionsSlice';
+import {addProject, formalizeRequirement} from '../reducers/allActionsSlice';
 
 const styles = theme => ({
   textField: {
@@ -54,7 +54,7 @@ const styles = theme => ({
   },
 })
 
-class CreateProjectDialog extends React.Component {
+class CreateOrRenameProjectDialog extends React.Component {
   state = {
     open: false,
     projectName: '',
@@ -62,10 +62,17 @@ class CreateProjectDialog extends React.Component {
     fieldErrorMessage: ''
   };
 
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if(this.props.open && this.props.oldName && this.props.oldName !== prevProps.oldName) {
+      this.setState({projectName: this.props.oldName});
+    }
+  }
+
   handleClose = () => {
     this.setState({
       open: false,
-      fieldErrorMessage: ''
+      fieldErrorMessage: '',
+      projectName: ''
     });
     this.props.handleDialogClose();
   };
@@ -75,19 +82,39 @@ class CreateProjectDialog extends React.Component {
     this.props.handleDialogClose();
     const name = this.state.projectName
     // context isolation
-    var argList = [name]
-    // ipcRenderer call main with argLit and main returns result to update Redux store
-    ipcRenderer.invoke('addProject',argList).then((result) => {
-      // console.log('CreateProjectDialog ipcRenderer addProject result.listOfProjects: ', result.listOfProjects)
+    let argList ;
+    let channel;
+    // rename project
+    if(this.props.oldName) {
+      channel = 'renameProject';
+      argList = [this.props.oldName, name];
+    } else if(this.props.copiedProject) {
+      channel = 'copyProject';
+      argList = [this.props.copiedProject, name];
+    } else {
+      channel = 'addProject';
+      argList = [name];
+    }
+      // ipcRenderer call main with argLit and main returns result to update Redux store
+    ipcRenderer.invoke(channel ,argList).then((result) => {
+      console.log('**CreateProjectDialog ipcRenderer channel result.listOfProjects: ', result.listOfProjects)
+      console.log('**CreateProjectDialog ipcRenderer channel: ', channel)
+      console.log('**CreateProjectDialog ipcRenderer channel result.requirements: ', result.requirements)
+
       const defaultProject = result.listOfProjects.shift();
 
       this.props.addProject({ type: 'actions/addProject',
                               listOfProjects: [defaultProject, ...result.listOfProjects.sort()],
                             })
+      if(channel==='copyProject') {
+        //this.props.copyProjectRequirements({type: 'actions/copyProjectRequirements', requirements: result.requirements})
+        this.props.formalizeRequirement({type: 'actions/formalizeRequirement', requirements: result.requirements})
+      }
+
     }).catch((err) => {
       console.log(err);
     })
-    
+
     this.setState({ projectName: '' });
   }
 
@@ -117,7 +144,8 @@ class CreateProjectDialog extends React.Component {
   };
 
   render() {
-    const { classes, open } = this.props
+    const { classes, open, oldName, copiedProject } = this.props
+    const title = oldName ? "Rename Project "+oldName : copiedProject ? "Copy Project "+copiedProject: "New Project"
 
     return(
       <Dialog
@@ -126,10 +154,10 @@ class CreateProjectDialog extends React.Component {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{"New Project"}</DialogTitle>
+        <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
         <DialogContent id="qa_newProj_dc_projectName" style={{ height: '75px' }}>
           <TextField
-            id="qa_newProj_tf_projectName" 
+            id="qa_newProj_tf_projectName"
             autoFocus
             label="Project Name"
             className={classes.textField}
@@ -144,7 +172,7 @@ class CreateProjectDialog extends React.Component {
             Cancel
           </Button>
           <Button
-            id="qa_newProj_btn_ok" 
+            id="qa_newProj_btn_ok"
             onClick={this.handleOK}
             color="secondary"
             variant='contained'
@@ -158,16 +186,19 @@ class CreateProjectDialog extends React.Component {
   }
 }
 
-CreateProjectDialog.propTypes = {
+CreateOrRenameProjectDialog.propTypes = {
   classes: PropTypes.object.isRequired,
   open: PropTypes.bool.isRequired,
   handleDialogClose: PropTypes.func.isRequired,
-  listOfProjects: PropTypes.array.isRequired
+  listOfProjects: PropTypes.array.isRequired,
+  oldName: PropTypes.string,
+  copiedProject: PropTypes.string,
 }
 
 
 const mapDispatchToProps = {
-  addProject
+  addProject,
+  formalizeRequirement
 };
 
-export default withStyles(styles)(connect(null,mapDispatchToProps)(CreateProjectDialog));
+export default withStyles(styles)(connect(null,mapDispatchToProps)(CreateOrRenameProjectDialog));

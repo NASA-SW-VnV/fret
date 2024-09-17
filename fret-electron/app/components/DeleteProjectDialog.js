@@ -68,25 +68,25 @@ class DeleteProjectDialog extends React.Component {
 
       this.props.deleteProject({ type: 'actions/deleteProject',
                                   // projects
-                                  listOfProjects : result.listOfProjects,
+                                  listOfProjects : result.listOfProjects.sort(),
                                   selectedProject : result.selectedProject,
                                   // requirements
-                                  requirements : result.requirements, 
+                                  requirements : result.requirements,
                                   // components
-                                  components : result.components,     
-                                  modelComponent : result.modelComponent, 
-                                  modelVariables : result.modelVariables,   
-                                  selectedVariable : result.selectedVariable, 
-                                  importedComponents : result.importedComponents, 
-                                  completedComponents : result.completedComponents, 
-                                  cocospecData : result.cocospecData, 
-                                  cocospecModes : result.cocospecModes, 
+                                  components : result.components,
+                                  modelComponent : result.modelComponent,
+                                  modelVariables : result.modelVariables,
+                                  selectedVariable : result.selectedVariable,
+                                  importedComponents : result.importedComponents,
+                                  completedComponents : result.completedComponents,
+                                  cocospecData : result.cocospecData,
+                                  cocospecModes : result.cocospecModes,
                               })
 
     }).catch((err) => {
       console.log(err);
     })
-   
+
   };
 
   componentWillReceiveProps = (props) => {
