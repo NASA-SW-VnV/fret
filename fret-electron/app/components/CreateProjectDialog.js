@@ -108,7 +108,34 @@ class CreateOrRenameProjectDialog extends React.Component {
                             })
       if(channel==='copyProject') {
         //this.props.copyProjectRequirements({type: 'actions/copyProjectRequirements', requirements: result.requirements})
-        this.props.formalizeRequirement({type: 'actions/formalizeRequirement', requirements: result.requirements})
+        //this.props.formalizeRequirement({type: 'actions/formalizeRequirement', requirements: result.requirements})
+        this.props.initializeStore({ type: 'actions/initializeStore',
+          // projects
+          listOfProjects: [defaultProject, ...result.listOfProjects.sort()],
+          selectedProject: result.selectedProject,
+          fieldColors: result.fieldColors,
+          // requirements
+          requirements: result.requirements,
+          // components
+          variable_data: result.variable_data,
+          components: result.components,
+          modelComponent: result.modelComponent,
+          modelVariables : result.modelVariables,
+          selectedVariable: result.selectedVariable,
+          importedComponents: result.importedComponents,
+          completedComponents: result.completedComponents,
+          cocospecData: result.cocospecData,
+          cocospecModes: result.cocospecModes,
+          // realizability
+          rlz_data: result.rlz_data,
+          selectedRlz: result.selectedRlz,
+          monolithic: result.monolithic,
+          compositional: result.compositional,
+          ccSelected: result.ccSelected,
+          projectReport: result.projectReport,
+          diagnosisRequirements: result.diagnosisRequirements,
+          prevState: result.prevState,
+          })
       }
 
     }).catch((err) => {

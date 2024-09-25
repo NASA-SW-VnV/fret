@@ -34,7 +34,13 @@ const fs=require("fs");
 import {modelDB} from '../fretDB'
 
 export {
-  createOrUpdateVariables as createOrUpdateVariables
+  createOrUpdateVariables as createOrUpdateVariables,
+  createVariables as createVariables
+}
+
+
+async function createVariables(variables) {
+  return modelDB.bulkDocs(variables)
 }
 
 function createOrUpdateVariables (variables, componentName, projectName, dbid) {

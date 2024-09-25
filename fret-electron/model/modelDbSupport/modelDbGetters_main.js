@@ -37,11 +37,10 @@ export {
   getProjectVariables as getProjectVariables
 }
 
-function getProjectVariables (projectName, componentNames) {
+async function getProjectVariables (projectName) {
    return modelDB.find({
     selector: {
       project: projectName,
-      component_name: { $in: Object.keys(componentNames) }
     }
   });
 }

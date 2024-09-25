@@ -55,6 +55,8 @@ import { v1 as uuidv1 } from 'uuid';
 import FretSemantics from "../app/parser/FretSemantics";
 import {Default_Project_name} from "./requirementsImport/convertAndImportRequirements_main";
 import {createRequirements} from "./fretDbSupport/fretDbSetters_main";
+import {createVariables} from "./modelDbSupport/modelDbSetters_main";
+import {getProjectVariables} from "./modelDbSupport/modelDbGetters_main";
 const utilities = require('../support/utilities');
 export default class FretModel {
   constructor(){
@@ -437,18 +439,63 @@ export default class FretModel {
 
   async copyProject(projectName, newProjectName) {
     await this.addProject(null, [newProjectName]);
-    await this.copyProjectRequirements(projectName, newProjectName)
-    this.requirements = await fretDbGetters.getRequirements()
-    return {listOfProjects: this.listOfProjects, requirements : this.requirements}
+    await this.copyProjectRequirements(projectName, newProjectName);
+
+    await this.synchStatesWithDB()
+    var result =  this.getAllStates()
+    return result
+
+  }
+
+
+  async copyProjectModelDb(projectName, newProjectName, mapOldReqIdToNewReqId) {
+    //console.log('copyProjectModelDb: entering')
+    const variables = await getProjectVariables(projectName)
+    const newProjectVariables = []
+    for(let i = 0; i < variables.docs.length; i++){
+      const v = variables.docs[i];
+      var componentName = v.component_name;
+      var variableName = v.variable_name;
+      var modeldbid = newProjectName + componentName + variableName;
+      var reqs = v.reqs.map(function(dbid){
+        return mapOldReqIdToNewReqId[dbid]
+      })
+      //console.log('copyProjectModelDb  v: ',v)
+
+      const newVariable = {
+        _id: modeldbid,
+        project: newProjectName,
+        component_name: componentName,
+        variable_name: variableName,
+        reqs: reqs,
+        dataType: v.dataType,
+        idType: v.idType,
+        moduleName:v.moduleName,
+        description: v.description,
+        assignment: v.assignment,
+        copilotAssignment: v.copilotAssignment,
+        modeRequirement: v.modeRequirement,
+        modeldoc: v.modeldoc,
+        modelComponent: v.modelComponent,
+        modeldoc_id: v.modeldoc_id,
+        completed: v.completed,
+      }
+      newProjectVariables.push(newVariable)
+      //console.log('copyProjectModelDb newVariable: ',newVariable)
+    }
+
+    return createVariables(newProjectVariables);
 
   }
 
   async copyProjectRequirements(projectName, newProjectName) {
+    // copy requirements
     const requirements = await this.selectProjectRequirements(projectName)
     const newProjectRequirements = []
     const mapOldReqIdToNewReqId = {};
     for(let i = 0; i < requirements.docs.length; i++){
       const r = requirements.docs[i];
+      //console.log('copyProjectModelDb  r: ',r)
       const newRequirement = {
         _id: uuidv1(),
         reqid : r.reqid,
@@ -462,7 +509,7 @@ export default class FretModel {
         template : r.template,
         input : r.input
       }
-      newProjectRequirements.push(newRequirement)
+      newProjectRequirements.push(newRequirement);
       mapOldReqIdToNewReqId[r._id] = newRequirement._id;
 
     }
@@ -471,10 +518,18 @@ export default class FretModel {
         req.parent_reqid = mapOldReqIdToNewReqId[req.parent_reqid];
       }
     })
+    const newRequirements = createRequirements(newProjectRequirements);
 
-    return createRequirements(newProjectRequirements);
+    // copy variables
+    // console.log('copyProjectRequirements: before calling copyProjectModelDb')
+    const newVariables = await this.copyProjectModelDb(projectName, newProjectName, mapOldReqIdToNewReqId);
+
+    return newRequirements;
 
   }
+
+
+
 
   async retrieveRequirement(evt,arg){
     //console.log('FretModel retrieveRequirement arg: ', arg)
@@ -776,7 +831,7 @@ export default class FretModel {
     return states
   }
 
-  selectProjectRequirements(projectName) {
+  async selectProjectRequirements(projectName) {
 
     return leveldbDB.find({
       selector: {
