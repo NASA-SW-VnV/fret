@@ -495,7 +495,7 @@ export default class FretModel {
     const mapOldReqIdToNewReqId = {};
     for(let i = 0; i < requirements.docs.length; i++){
       const r = requirements.docs[i];
-      //console.log('copyProjectModelDb  r: ',r)
+      //console.log('copyProjectRequirements  before r: ',r)
       const newRequirement = {
         _id: uuidv1(),
         reqid : r.reqid,
@@ -513,11 +513,6 @@ export default class FretModel {
       mapOldReqIdToNewReqId[r._id] = newRequirement._id;
 
     }
-    newProjectRequirements.forEach(req => {
-      if(req.parent_reqid) {
-        req.parent_reqid = mapOldReqIdToNewReqId[req.parent_reqid];
-      }
-    })
     const newRequirements = createRequirements(newProjectRequirements);
 
     // copy variables
