@@ -234,7 +234,7 @@ function notBeforeTiming(property,stopcond,endsScope='ENDSCOPE') {
     return untilTiming(negate(property),stopcond,endsScope);
 }
 
-exports.getEndPointRewrites = () => {
+exports.getEndPointRewriteRules = () => {
   return EndPointRewrites
 }
 
