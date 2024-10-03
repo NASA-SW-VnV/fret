@@ -129,7 +129,12 @@ const futureTimeSimplifications = [
     ['G (G __r)', trueFn, 'G __r'],
     ['X TRUE', trueFn, 'TRUE'], ['X FALSE', trueFn, 'FALSE'],
     ['F[< __p] FALSE',trueFn,'FALSE'], ['F[<= __p] FALSE',trueFn,'FALSE'],
-    ['(G[__l,__r] __p) | G __p', trueFn, 'G[__l,__r] __p'],
+
+  // This next one (commented out) is true but causes past
+  // formalizations to be inconsistent with their future counterpart
+  // for some reason, maybe finitizing?
+  //['(G[__l,__r] __p) | G __p', trueFn, 'G[__l,__r] __p'],
+
     ['FTimed(__l,__r,__p)', trueFn,'F[__l,__r] __p'],
     ['GTimed(__l,__r,__p)', trueFn,'G[__l,__r] __p'],
     ['UTimed(__l,__r,__p,__q)',trueFn,'__p U[__l,__r] __q']
