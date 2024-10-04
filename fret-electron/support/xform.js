@@ -82,6 +82,7 @@ const booleanSimplifications = [
 ];
 
 const pastTimeSimplifications = [
+  ['FTP', trueFn, 'Z FALSE'],
   ['! (Y TRUE)', trueFn, 'Z FALSE'],
   ['! (Z FALSE)', trueFn, 'Y TRUE'],
   ['O FALSE',trueFn,'FALSE'], ['O TRUE', trueFn, 'TRUE'],
