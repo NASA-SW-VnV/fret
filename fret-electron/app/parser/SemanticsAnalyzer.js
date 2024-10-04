@@ -488,6 +488,20 @@ SemanticsAnalyzer.prototype.semantics = () => {
 
   // left has unexpanded endpoints like FTP and FFin_$scope_mode$
   let left = fetchedSemantics.endpoints.left;
+  let right = fetchedSemantics.endpoints.right;
+
+  // ptleftSMV has the endpoints expanded into ptLTL
+  let ptleftSMV = fetchedSemantics.endpoints.SMVptExtleft;
+  // ptleftCoCo is the same as ptleftSMV except that FTP is *not* expanded.
+  ///let ptleftCoCo = ptleftSMV.replace(/\(!(\s)*\(Y TRUE\)\)/g, 'FTP');
+  let ptrightSMV = fetchedSemantics.endpoints.SMVptExtright;
+
+  let ftleftSMV = fetchedSemantics.endpoints.SMVftExtleft2;
+  let ftrightSMV = fetchedSemantics.endpoints.SMVftExtright2;
+
+/*
+ // left has unexpanded endpoints like FTP and FFin_$scope_mode$
+  let left = fetchedSemantics.endpoints.left;
   let right = fetchedSemantics.endpoints.right
   // ptleftSMV has the endpoints expanded into ptLTL
   let ptleftSMV = fetchedSemantics.endpoints.SMVptExtleft;
@@ -497,6 +511,7 @@ SemanticsAnalyzer.prototype.semantics = () => {
 
   let ftleftSMV = fetchedSemantics.endpoints.SMVftExtleft;
   let ftrightSMV = fetchedSemantics.endpoints.SMVftExtright;
+*/
 
   let regCond = canon_bool_expr(result.regular_condition);
   let postCond = canon_bool_expr(result.post_condition);

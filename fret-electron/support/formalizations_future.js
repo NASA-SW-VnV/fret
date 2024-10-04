@@ -386,3 +386,37 @@ exports.EndPointsRewrite = (formula, format) => {
 exports.getEndPointRewrites = () => {
   return EndPointRewrites
 }
+
+// Note for future time we have (LEFT_END, RIGHT_END]
+// for infinite traces LAST=false
+// The different definition of LiM is used to expand temporal properties.
+const EndpointRewrites2 = [
+    ['FiM|FFiM|LNiM', '((not MODE) and (not LAST) and next MODE)'], // what if beginning of trace? FTP
+    ['LiM|FNiM|FLiM', '(MODE and (LAST or next (not MODE)))']
+    //['LiM|FNiM|FLiM', '(MODE and (not LAST) and next (not MODE))']
+    // we found the need for adding (not LAST) because of after
+    // now interestingly when they act as right end they also get the or LAST
+    // when we enforce when right never occurs
+]
+
+// Note for future time we have (LEFT_END, RIGHT_END]
+// for infinite traces LAST=false
+// The different definition of LiM is used to expand temporal properties.
+const SMVEndpointRewrites2 = [
+  ['FiM|FFiM|LNiM', '((! MODE) & (! LAST) & (X MODE))'],
+  ['LiM|FNiM|FLiM', '(MODE & (LAST | X (! MODE)))']
+  //['LiM|FNiM|FLiM', '(MODE & (! LAST) & X (! MODE))']
+    // we found the need for adding (not LAST) because of after
+    // now interestingly when they act as right end they also get the or LAST
+    // when we enforce when right never occurs
+]
+
+
+exports.EndPointsRewrite2 = (formula, format) => {
+  let rules = (format === 'smv' ? SMVEndpointRewrites2 : EndpointRewrites2);
+  return utilities.replaceStrings(rules, formula);
+}
+
+exports.getEndPointRewrites2 = () => {
+  return EndPointRewrites2
+}

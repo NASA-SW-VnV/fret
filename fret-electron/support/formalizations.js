@@ -160,6 +160,16 @@ exports.EndPointsRewrite = (type, formula, format = 'salt') => {
   return ('Undefined type of formula for rewriting... '); // if no ft and no pt
 }
 
+// format is 'salt' or 'smv'
+exports.EndPointsRewrite2 = (type, formula, format = 'salt') => {
+  if (type == 'ft')
+    return formalizations_future.EndPointsRewrite2(formula, format);
+  if (type == 'pt')
+    return formalizations_past.EndPointsRewrite(formula, format);
+  return ('Undefined type of formula for rewriting... '); // if no ft and no pt
+}
+
+
 exports.getDescription = (key, options = {sem:'finite', in:'afterUntil'}) => {
   if (utilities.matchesStrings(nonsense_arrays, key).length != 0) {// there was a match
     console.log('Meaningless: ' + key)
