@@ -83,6 +83,9 @@ cd app/tools/LTLSIM/ltlsim-core;
 npm install;
 cd -
 npm install;
+
+npm run build;
+
 export PATH=`pwd`/app/tools/LTLSIM/ltlsim-core/simulator:$PATH;
 npm start;
 cd app
