@@ -92,7 +92,7 @@ const pastTimeSimplifications = [
   ['H (Z FALSE)', trueFn, 'Z FALSE'],
   ['H (__p & __q)', trueFn, '(H __p) & (H __q)'],
   ['H (O __p)', trueFn, 'H ((Y TRUE) | __p)'], // p only needs to hold at FTP
-  ['H (H[0, __r] __p])', trueFn, 'H __p'],
+  ['H (H[0, __r] __p)', trueFn, 'H __p'],
   ['H (Y TRUE)', trueFn, 'FALSE'],
   ['! H ! __p', trueFn, 'O __p'],
   ['! O ! __p', trueFn, 'H __p'],
