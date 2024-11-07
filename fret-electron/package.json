@@ -1,7 +1,7 @@
 {
   "name": "fret",
   "productName": "FRET",
-  "version": "0.0.1",
+  "version": "2.9.0",
   "description": "FRET",
   "scripts": {
     "fret-install": "npm install && npm --prefix ../tools/LTLSIM/ltlsim-core install ../tools/LTLSIM/ltlsim-core && npm run build",
