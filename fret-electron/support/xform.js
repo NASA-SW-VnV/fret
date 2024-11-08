@@ -138,7 +138,8 @@ const futureTimeSimplifications = [
 
     ['FTimed(__l,__r,__p)', trueFn,'F[__l,__r] __p'],
     ['GTimed(__l,__r,__p)', trueFn,'G[__l,__r] __p'],
-    ['UTimed(__l,__r,__p,__q)',trueFn,'__p U[__l,__r] __q']
+    ['UTimed(__l,__r,__p,__q)',trueFn,'__p U[__l,__r] __q'],
+    ['WeakUntl(__p,__q)', trueFn, '(__p U __q) | G __p']
 ];
 
 
