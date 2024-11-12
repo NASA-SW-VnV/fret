@@ -1,13 +1,13 @@
 {
   "name": "fret",
   "productName": "FRET",
-  "version": "0.0.1",
+  "version": "2.9.1",
   "description": "FRET",
   "main": "./main.prod.js",
   "author": {
-    "name": "Nija Shi`",
-    "email": "nija.shi@nasa.gov",
-    "url": "https://ti.arc.nasa.gov/profile/shi/"
+    "name": "Anastasia Mavridou`",
+    "email": "anastasia.mavridou@nasa.gov",
+    "url": ""
   },
   "scripts": {
     "electron-rebuild": "node -r @babel/register ../internals/scripts/ElectronRebuild.js",
