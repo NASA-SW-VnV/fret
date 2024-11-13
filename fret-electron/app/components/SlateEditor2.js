@@ -429,6 +429,9 @@ class SlateEditor2 extends React.Component {
     } else if (isKeyHotkey('mod+a', event)) {
       /* Select all hotkey. Handled by default event behavior */
     } else if (isKeyHotkey('mod+z', event)) {
+      /* Undo hotkey. Handled by default event behavior
+       * (but not implemented by slate) */
+      event.preventDefault();
       const numLeaves = this.props.editor.children[0].children.length; // if numLeaves > 1, using template
       const {variables} = this.state;
       if(numLeaves > 1 ){
@@ -438,13 +441,23 @@ class SlateEditor2 extends React.Component {
         // glossary autofill
         //this.props.editor.undo()
       } else {
-        this.props.editor.undo()
+        this.props.editor.undo();
       }
-      /* Undo hotkey. Handled by default event behavior
-       * (but not implemented by slate) */
     } else if (isKeyHotkey('mod+y', event)) {
       /* Redo hotkey. Handled by default event behavior
        * (but not implemented by slate) */
+      event.preventDefault();
+      const numLeaves = this.props.editor.children[0].children.length; // if numLeaves > 1, using template
+      const {variables} = this.state;
+      if(numLeaves > 1 ){
+        // using templates
+        //this.props.editor.redo()
+      } else if(variables.length > 1){
+        // glossary autofill
+        //this.props.editor.redo()
+      } else {        
+        this.props.editor.redo();
+      }
     } else if (event.key.length === 1) {
       /* Regular character. All other hotkeys have a length > 1.
        * In this case the corresponding character is simply
