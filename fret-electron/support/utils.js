@@ -240,16 +240,13 @@ function subst(term,sbst) {
     } else console.log('subst says: what type is ' + term)
 }
 
-
-
-
-
 /**
  * This function rewrites an expression produced by FRET formalization.
- * The bounds in bounded LTL operators 
- * ([<=t] -> [0, t], [=t] -> [t, t], [<t] -> [0, t-1], 
- * expressions containing "t+1" are rewritten
- * such that "t+1" is evaluated to an integer
+ * The bounds in bounded LTL operators are translated to SMV format.
+ * [<=t] --> [0, t], [=t] --> [t, t], [<t] --> [0, t-1], 
+ * Expressions containing "t+1" are rewritten
+ * such that "t+1" is evaluated to an integer.
+ * Units, e.g., "seconds", are discarded.
  * @param {string} expression the expression that should be modified
  * @returns {string} the modified expression
 */

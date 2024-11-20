@@ -378,7 +378,8 @@ function replaceTemplateVars(formula,html=false) {
   else return "!! Unexpected case in SemanticsAnalyzer.replaceTemplateVars"
 }
 
-// Canonicalize for SMV format: TRUE, FALSE, and special chars replaced in identifiers.
+// Canonicalize for SMV format: TRUE, FALSE, and special chars
+// replaced in identifiers (e.g., "." --> "_DOT_").
 function canon_bool_expr(expr) {
   if (expr) {
     const without_special_chars = utils.replace_special_chars(expr);
@@ -467,9 +468,9 @@ SemanticsAnalyzer.prototype.conditions = () => {
 // These are used below in SemanticsAnalyzer.prototype.semantics
 
 function rename(fetched,exp,ptft) {
-  // exp is 'unexp' or 'SMV'. ptft is 'pt' or 'ft'
-  // Renames placeholders in the template; e.g. $regular_condition$ to
-  // $regular_condition_SMV_pt$ 
+  // exp is 'unexp' or 'SMV'. ptft is 'pt' or 'ft'.  Renames
+  // placeholders in the template; e.g., $regular_condition$ to
+  // $regular_condition_SMV_pt$
   const replaced = fetched.replace(/\$regular_condition\$/g,'$regular_condition' + '_' + exp + '_' + ptft + '$').replace(/\$post_condition\$/g,'$post_condition' + '_' + exp + '_' + ptft + '$').replace(/\$stop_condition\$/g,'$stop_condition' + '_' + exp + '_' + ptft + '$').replace(/\$scope_mode\$/g,'$scope_mode' + '_' + ptft + '$');
   //console.log('rename(' + fetched + ') = ' + replaced)
   return replaced
@@ -477,22 +478,38 @@ function rename(fetched,exp,ptft) {
 
 // Each instantiate function below substitutes the actual fields
 // (e.g., the stop condition from the requirement being formalized)
-// into the template and then optimizes.
+// into the template and then optimizes (i.e., applies simplification
+// rewrite rules).
 
 function instantiateToAST(fetched) {
   return xform.transformToAST(utils.salt2smv(replaceTemplateVars(fetched)),xform.optimizePT)
 }
 
+// If past is true, optimize using past-time rewrite rules else
+// future-time rewrite rules.
 function instantiate(fetched, past) {
   return xform.transform(utils.salt2smv(replaceTemplateVars(fetched)),past ? xform.optimizePT : xform.optimizeFT)
 }
 
+// This substitutes FALSE wherever LAST appears in the formula, and
+// then simplifies the result.
 function instantiateInf(fetched) {
   return xform.transform(utils.salt2smv(LAST_is_FALSE(replaceTemplateVars(fetched))),xform.optimizeFT)
 }
 
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
+
+// This code creates the formalization of the current requirement.  It
+// first adds fields to the variable named "result" that hold, for
+// each condition (mode, pre, post, stop), both past and future
+// formalizations of the condition (recall that there may be temporal
+// conditions in the conditions that need to be rewritten into
+// LTL). It then instantiates the past and future templates from
+// semantics.json with the formalized conditions, and then optimizes
+// the result by applying simplification rewrite rules from
+// support/xform.js.
+
 SemanticsAnalyzer.prototype.semantics = () => {
   const startTime = Date.now()
   if (constants.verboseSemanticsAnalyzer) console.log('Semantics result in:\n' + prettyObject(result));
@@ -502,8 +519,15 @@ SemanticsAnalyzer.prototype.semantics = () => {
     result.description = constants.natural_description;
   } else if (result.type === 'nasa') {
 
-  // fetchedSemantics is an object with fields:
-  // endpoints, pt, ptExpanded, ft, etc. See app/parser/semantics.json
+  // fetchedSemantics is an object with fields: endpoints, ft,
+  // ftExpanded, pt, ptExpanded, etc., that hold the formalization
+  // templates for the current requirement's template key. See
+  // app/parser/semantics.json
+
+  // Note: The pt and ft fields of result have things like
+  // Fin_$scope_mode$. pt and ft aren't used anymore, so a possible
+  // cleanup is to remove their computation in this function.
+
   const fetchedSemantics = fetchSemantics.getSemantics(result.scope, result.condition, result.timing, result.response);
   if (constants.verboseSemanticsAnalyzer) console.log('fetchedSemantics: ' + prettyObject(fetchedSemantics));
 
@@ -524,10 +548,12 @@ SemanticsAnalyzer.prototype.semantics = () => {
   const ptrightSMV = fetchedSemantics.endpoints.SMVptExtright;
 
   // ftrightSMV has the "correct" (non-IST journal) version of ftLTL
-  // which is used in the temporal condition substitution
-  // (SMV format) to be substituted in temporal conditions; e.g.,
+  // (SMV format) which is only used to be substituted in temporal
+  // conditions. Actually, the only difference between the "correct"
+  // and IST definitions is the following:
   // "SMVftExtright2": "($scope_mode$ & (LAST | X (! $scope_mode$)))"
   // IST: "SMVftExtright": "($scope_mode$ & (! LAST) & X (! $scope_mode$))",  
+
   const ftleftSMV = fetchedSemantics.endpoints.SMVftExtleft2;
   const ftrightSMV = fetchedSemantics.endpoints.SMVftExtright2;
 
@@ -537,10 +563,17 @@ SemanticsAnalyzer.prototype.semantics = () => {
 
    if (constants.verboseSemanticsAnalyzer) console.log("Before mode: " + (Date.now() - startTime) + " ms")
 
-  // Handle scope mode condition. It could be a boolean expr
-  // with a temporal condition.
+    // Generate past and future formulas for the mode or mode
+    // condition. The mode condition could be a Boolean expr with a
+    // temporal condition, so rewrite the temporal condition into
+    // LTL. The temporal condition in a mode will not expand into a
+    // formula with $Left$ or $Right$ (see
+    // e.g. futureTemporalConditionsNoBounds in support/xform.js)
+    // unlike the other conditions.
+ 
     if (result.scope.type === 'null') {
-      result.scope_mode_pt = "BAD_PT";
+      // These should never appear in formalizations
+      result.scope_mode_pt = "BAD_PT"; 
       result.scope_mode_ft = "BAD_FT"
     } else {
       // the scope_mode field only exists when scope.type !== 'null'
@@ -553,14 +586,18 @@ SemanticsAnalyzer.prototype.semantics = () => {
 
   if (constants.verboseSemanticsAnalyzer) console.log("After mode: " + (Date.now() - startTime) + " ms")
 
-  // Handle pre condition
+  // Generate past and future formulas for the precondition, with
+  // temporal conditions expanded.
   if (regCond) {
       // regCondTCxform has the temporal conditions rewritten into LTL.
       const regCondTCxform_pt = xform.transformPastTemporalConditions(regCond)
-      if (constants.verboseSemanticsAnalyzer) console.log("regCondTCxform_pt: " + JSON.stringify(regCondTCxform_pt));
+    if (constants.verboseSemanticsAnalyzer) console.log("regCondTCxform_pt: " + JSON.stringify(regCondTCxform_pt));
+    
       const regCondTCxform_ft = xform.transformFutureTemporalConditions(regCond)
 
-      // regCondUnexp_pt,_ft has the endpoints unexpanded e.g. FTP, FFin_$scope_mode$.
+      // regCondUnexp_pt,_ft have the endpoints unexpanded e.g. FTP,
+      // FFin_$scope_mode$.
+
       const regCondUnexp_pt = regCondTCxform_pt.replace(/\$Left\$/g, left).replace(/\$scope_mode\$/g, '$scope_mode_pt$');
       result.regular_condition_unexp_pt = regCondUnexp_pt;
 
@@ -575,6 +612,9 @@ SemanticsAnalyzer.prototype.semantics = () => {
     }
 
     if (constants.verboseSemanticsAnalyzer) console.log("After precondition: " + (Date.now() - startTime) + " ms")
+
+  // Generate past and future formulas for the response, with
+  // temporal conditions expanded.
 
     if (postCond) {
 	const postCondTCxform_pt = xform.transformPastTemporalConditions(postCond);
@@ -594,6 +634,9 @@ SemanticsAnalyzer.prototype.semantics = () => {
     }
 
     if (constants.verboseSemanticsAnalyzer) console.log("After postcondition: " + (Date.now() - startTime) + " ms")
+
+  // Generate past and future formulas for the stop condition, with
+  // temporal conditions expanded.
 
   if (stopCond) {
       // stopCondTCxform has the temporal conditions rewritten into LTL.
@@ -624,6 +667,11 @@ SemanticsAnalyzer.prototype.semantics = () => {
 
     if (constants.verboseSemanticsAnalyzer) console.log("After setup: " + (Date.now() - startTime) + " ms")
 
+    // Now we fetch the past-time SMV template for the current
+    // requirement's template key, replace placeholder names such as
+    // $scope_mode$ with $scope_mode_pt$ and then instantiate
+    // $scope_mode_pt$ by the SMV for the requirement's scope
+    // condition computed above.
     const fetched_ptExpanded = rename(fetchedSemantics.ptExpanded, 'SMV', 'pt')
     const ptExpandedAST = instantiateToAST(fetched_ptExpanded)
     result.ptExpanded = astsem.ASTtoLTL(ptExpandedAST)
@@ -631,23 +679,28 @@ SemanticsAnalyzer.prototype.semantics = () => {
 
     if (constants.verboseSemanticsAnalyzer) console.log("After ptExpanded/CoCoSpecCode: " + (Date.now() - startTime) + " ms")
 
+    // Do finite future with the after/until semantics
     const fetched_ftExpanded = rename(fetchedSemantics.ftExpanded,'SMV','ft')
     result.ftExpanded = instantiate(fetched_ftExpanded, false)
 
     if (constants.verboseSemanticsAnalyzer) console.log("After ftExpanded: " + (Date.now() - startTime) + " ms")
 
+    // Do infinite future with the after/until semantics
     const fetched_ftInfAUExpanded = rename(fetchedSemantics.ftInfAUExpanded,'SMV','ft')
     result.ftInfAUExpanded = instantiateInf(fetched_ftInfAUExpanded)
     
     if (constants.verboseSemanticsAnalyzer) console.log("After ftInfAUExpanded: " + (Date.now() - startTime) + " ms")
       
     if (constants.generateBetweenSemantics) {
+      // Do past, with the between semantics
       const fetched_ptFinBtwExpanded = rename(fetchedSemantics.ptFinBtwExpanded,'SMV','pt')
       result.ptFinBtwExpanded = instantiate(fetched_ptFinBtwExpanded, true);
       
+      // Do infinite future, with the between semantics.
       const fetched_ftInfBtwExpanded = rename(fetchedSemantics.ftInfBtwExpanded,'SMV','ft')
       result.ftInfBtwExpanded = instantiateInf(fetched_ftInfBtwExpanded);
 
+      // Do finite future, with the between semantics.
       const fetched_ftFinBtwExpanded = rename(fetchedSemantics.ftFinBtwExpanded,'SMV','ft')
       result.ftFinBtwExpanded = instantiate(fetched_ftFinBtwExpanded, false);
     }
