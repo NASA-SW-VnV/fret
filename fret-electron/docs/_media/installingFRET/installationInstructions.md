@@ -41,7 +41,7 @@ When you open the FRET distribution, you will see the following directory struct
 
 ### Notes
 
-> __Note:__ To run the LTLSIM simulator, a NuSMV (see http://nusmv.fbk.eu/) installation is required. Please make sure that the NuSMV binaries directory is added to the PATH environment variable. Additionally, please add `$PATH_TO_FRET/fret/tools/LTLSIM/ltlsim-core/simulator` to the PATH environment variable.
+> __Note:__ To run the LTLSIM simulator, a NuSMV (see http://nusmv.fbk.eu/) installation is required. Please make sure that the NuSMV binaries directory is added to the PATH environment variable. Additionally, please add `$PATH_TO_FRET/fret/tools/LTLSIM/ltlsim-core/simulator` to the PATH environment variable. Note that $PATH_TO_FRET  is the path location where the FRET git repo was cloned (and not the path to the FRET binary).
 
 > __Note:__ To perform realizability checking, additional dependencies must be installed. Read the realizability checking [Dependencies](../exports/realizabilityManual.md) section for details.
 
