@@ -476,10 +476,23 @@ class RealizabilityContent extends React.Component {
     })
   }
 
-  disableSimulateRealizableButton = (systemComponentIndex, connectedComponentIndex) => {
-    const {projectReport, monolithic, compositional} = this.state;            
+  isNotJKind = (systemComponentIndex) => {
+    const {projectReport, monolithic, compositional} = this.state;
+    let analysisSolver;
     
-    let isNotJKind = (analysisSolver) => {return analysisSolver !== 'jkind'};
+    if (monolithic || compositional) {
+      if (compositional) {
+          analysisSolver = projectReport.systemComponents[systemComponentIndex].compositional.solver;                     
+      } else {        
+          analysisSolver = projectReport.systemComponents[systemComponentIndex].monolithic.solver;                  
+      }
+    }
+
+    return analysisSolver !== 'jkind'
+  }
+
+  disableSimulateRealizableButton = (systemComponentIndex, connectedComponentIndex) => {
+    const {projectReport, monolithic, compositional} = this.state;
     
     if (!(this.LTLSimStatus.ltlsim && this.LTLSimStatus.nusmv)) {
       return true;
@@ -488,13 +501,11 @@ class RealizabilityContent extends React.Component {
     if (monolithic || compositional) {
       if (compositional) {
         if (projectReport.systemComponents[systemComponentIndex].compositional.result !== 'UNCHECKED') {
-          let analysisSolver = projectReport.systemComponents[systemComponentIndex].compositional.solver;        
-          return isNotJKind(analysisSolver) || projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].result !== 'REALIZABLE';
+          return this.isNotJKind(systemComponentIndex) || projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].result !== 'REALIZABLE';
         }       
       } else {
         if (projectReport.systemComponents[systemComponentIndex].monolithic.result !== 'UNCHECKED') {
-          let analysisSolver = projectReport.systemComponents[systemComponentIndex].monolithic.solver;        
-          return isNotJKind(analysisSolver) || projectReport.systemComponents[systemComponentIndex].monolithic.result !== 'REALIZABLE';        
+          return this.isNotJKind(systemComponentIndex) || projectReport.systemComponents[systemComponentIndex].monolithic.result !== 'REALIZABLE';
         }      
       }
     }
@@ -766,7 +777,7 @@ class RealizabilityContent extends React.Component {
                             id="qa_rlzCont_btn_check"
                             disabled={selectedReqs.length === 0 || !dependenciesExist || (dependenciesExist && selected === '')}
                             onClick={(event) => this.checkRealizability(event, selectedReqs)}>Check Realizability</MenuItem>
-                            <Tooltip title={'This action is available only when using the \'JKind\' engine option.'}>
+                            <Tooltip title={this.isNotJKind(systemComponentIndex) ? 'This action is available only when using the \'JKind\' engine option.' : ''}>
                               <span>
                                 <MenuItem
                                   id="qa_rlzCont_btn_realizSimulate"
