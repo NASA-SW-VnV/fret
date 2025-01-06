@@ -15,8 +15,11 @@ RUN apt-get --yes install wget
 # Tools needed to compile FRET
 RUN apt-get --yes --no-install-recommends install make gcc g++ git python3
 
-# Dependencies needed to run FRET
-RUN apt-get --yes --no-install-recommends install libgtk-3.0 libdrm2 libgbm1 libnss3 libx11-xcb1 libasound2
+# Dependencies needed to run FRET (Ubuntu 24.04 or greater)
+RUN apt-get --yes --no-install-recommends install libgtk-3-0t64 libdrm2 libgbm1 libnss3 libx11-xcb1 libasound2t64
+
+# Dependencies needed to run FRET (Ubuntu versions older than 24.04)
+# RUN apt-get --yes --no-install-recommends install libgtk-3.0 libdrm2 libgbm1 libnss3 libx11-xcb1 libasound2
 
 # Running electron as root requires --no-sandbox, which we can't pass easily,
 # so we create a separate user to compile and package FRET.
