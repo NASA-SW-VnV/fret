@@ -25,6 +25,12 @@ Since this is a clean Ubuntu installation, it may be the case that `git` is not 
 sudo apt install git
 ```
 
+FRET currently assumes the existence of a `Documents` folder in the home directory, which may not exist in your Ubuntu installation. If the folder does not exist, create it by running the command:
+
+```
+mkdir ~/Documents
+```
+
 Since FRET's main functionalities are provided via its Graphical User Interface (GUI), it is necessary to ensure that appropriate **Windows** graphics software drivers have been installed. For further details, consult this Microsoft [guide](https://learn.microsoft.com/en-us/windows/wsl/tutorials/gui-apps). If you encounter GUI-related issues, you may need to update your graphics drivers or WSL installation to the latest possible version. Otherwise, consult this [Github Issue thread](https://github.com/microsoft/wslg/issues/1148) for further insights.
 
 After all the required dependencies have been installed, clone the FRET repository using `git` to a directory of your choosing, and proceed with the standard installation steps:
