@@ -43,7 +43,7 @@
  * @flow
  */
 import {leveldbDB, modelDB, system_DBkeys} from '../model/fretDB'
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow, ipcMain, dialog } from 'electron';
 require('@electron/remote/main').initialize()
 import MenuBuilder from './menu';
 import FretModel from '../model/FretModel';
@@ -346,6 +346,14 @@ app.on('ready', async () => {
     mainWindow.show();
     mainWindow.focus();
   });
+
+  mainWindow.on('enter-full-screen', () =>  {
+    dialog.showMessageBox(mainWindow, {
+      type: 'info',
+      title: 'Fullscreen',
+      message: 'To exit fullscreen mode, press F11 (Windows, Linux) or Ctrl+Cmd+H (MacOS).'
+    })
+  })
 
   mainWindow.on('closed', () => {
     mainWindow = null;
