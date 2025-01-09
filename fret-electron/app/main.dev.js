@@ -351,7 +351,7 @@ app.on('ready', async () => {
     dialog.showMessageBox(mainWindow, {
       type: 'info',
       title: 'Fullscreen',
-      message: 'To exit fullscreen mode, press F11 (Windows, Linux) or Ctrl+Cmd+H (MacOS).'
+      message: 'To exit fullscreen mode, press F11 (Windows, Linux) or Ctrl+Cmd+F (MacOS).'
     })
   })
 
