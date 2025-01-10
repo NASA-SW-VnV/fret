@@ -3,9 +3,9 @@
 ### Dependencies
 
  * [NodeJS](https://nodejs.org/en/download/) (use any version between v16.16.x - v20.13.1)
- * Python (use any version between v2.7.x - v3.11.x, or v3.12.x with `distutils` installed)
+ * Python (use any version between v3.10.x - v3.12.x)
  * `gcc`, `g++`, `make`
- * Ubuntu users, ensure that the following packages are installed: 
+ * Ubuntu users, ensure that the following packages are installed:
      - Ubuntu 24.04 or later: `libgtk-3-0t64 libdrm2 libgbm1 libnss3 libx11-xcb1 libasound2t64`
      - Older than Ubuntu 24.04: `libgtk-3.0 libdrm2 libgbm1 libnss3 libx11-xcb1 libasound2`
  * (Optional) [NuSMV](http://nusmv.fbk.eu/)
