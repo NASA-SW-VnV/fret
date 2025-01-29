@@ -156,7 +156,9 @@ class DiagnosisEngine {
               if (result === "UNREALIZABLE" && minimal) {
 
                 if (self.engineName === 'kind2') {
-                  let kind2JsonResult = jsonOutput[jsonOutput.findLastIndex(e => e.objectType === "realizabilityCheck")];
+                  var jsonOutputReverse = jsonOutput.reverse();
+                  let kind2JsonResult = jsonOutputReverse.find(e => e.objectType === "realizabilityCheck");
+                  
                   let newJsonOutput = {
                     "Runtime": {
                       "unit": kind2JsonResult.runtime['unit'],

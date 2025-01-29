@@ -85,8 +85,9 @@ export function checkRealizability(filePath, engine, options, callback) {
         callback(null, result, time, realizableTraceInfo, jsonOutput);
       } else {
         var kind2Output = JSON.parse(stdout);
-        var realizabilityResults = kind2Output[kind2Output.findLastIndex(e => e.objectType === "realizabilityCheck")];
-        var consistencyResults = kind2Output[kind2Output.findLastIndex(e => e.objectType === "satisfiabilityCheck")];
+        var kind2OutputReverse = kind2Output.reverse();
+        var realizabilityResults = kind2OutputReverse.find(e => e.objectType === "realizabilityCheck");
+        var consistencyResults = kind2OutputReverse.find(e => e.objectType === "satisfiabilityCheck");
         var logResultsArray = kind2Output.filter(e => e.objectType === "log");
         var logResults = logResultsArray[logResultsArray.length-1];
         result = (logResults && logResults.value === "Wallclock timeout.") ? "UNKNOWN" : ((consistencyResults && consistencyResults.result === "unsatisfiable") ? "UNREALIZABLE" : realizabilityResults.result.toUpperCase());
@@ -115,8 +116,9 @@ export function checkReal(filePath, engine, options) {
   //having to handle the lack of the environment check option elsewhere in the code.
   
   function retrieveKind2Result(output) {    
-    var realizabilityResults = output[output.findLastIndex(e => e.objectType === "realizabilityCheck")];      
-    var consistencyResults = output[output.findLastIndex(e => e.objectType === "satisfiabilityCheck")];
+    var reverseOutput = output.reverse();
+    var realizabilityResults = reverseOutput.find(e => e.objectType === "realizabilityCheck");
+    var consistencyResults = reverseOutput.find(e => e.objectType === "satisfiabilityCheck");
     var logResultsArray = output.filter(e => e.objectType === "log");
     var logResults = logResultsArray[logResultsArray.length-1];
     let result = (logResults && logResults.value === "Wallclock timeout.") ? "UNKNOWN" : ((consistencyResults && consistencyResults.result === "unsatisfiable") ? "UNREALIZABLE" : realizabilityResults.result.toUpperCase());
