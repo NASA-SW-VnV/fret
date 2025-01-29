@@ -29,6 +29,7 @@
 // PRIOR RECIPIENT, TO THE EXTENT PERMITTED BY LAW.  RECIPIENT'S SOLE REMEDY FOR
 // ANY SUCH MATTER SHALL BE THE IMMEDIATE, UNILATERAL TERMINATION OF THIS
 // AGREEMENT.
+
 // *****************************************************************************
 const fs = require('fs');
 const path = require('path');
@@ -65,19 +66,23 @@ export function checkRealizability(filePath, engine, options, callback) {
       }
       callback(err);
     } else {
-      let result, time, traceInfo;
+      let result, time, realizableTraceInfo, jsonOutput;
       if (engine === 'jkind') {
         result = stdout.match(new RegExp('(?:\\+\\n)' + '(.*?)' + '(?:\\s\\|\\|\\s(K|R|S|T))'))[1];
         time = stdout.match(new RegExp('(Time = )(.*?)\\n'))[2];        
         
-        if (options.includes('json') && result === "REALIZABLE"){
+        if (options.includes('json')) {
           var fileContent = fs.readFileSync(filePath+'.json', 'utf8');
-          let output = JSON.parse(fileContent);
-          traceInfo = {K: Object.keys(output.Counterexample[0]).length - 2, Trace: output.Counterexample};
-        } else {          
-          traceInfo = null;
-        }  
-        callback(null, result, time, traceInfo);
+          jsonOutput = JSON.parse(fileContent);
+          if (result === "REALIZABLE") {
+            realizableTraceInfo = {K: Object.keys(jsonOutput.Counterexample[0]).length - 2, Trace: jsonOutput.Counterexample};
+          } else {
+            realizableTraceInfo = null;
+          }
+        } else {
+          jsonOutput = null;
+        }
+        callback(null, result, time, realizableTraceInfo, jsonOutput);
       } else {
         var kind2Output = JSON.parse(stdout);
         var realizabilityResults = kind2Output[kind2Output.findLastIndex(e => e.objectType === "realizabilityCheck")];
@@ -93,8 +98,8 @@ export function checkRealizability(filePath, engine, options, callback) {
           time = "Wallclock timeout."
         }
 
-        traceInfo = (realizabilityResults && realizabilityResults.deadlockingTrace) ? realizabilityResults.deadlockingTrace : null;
-        callback(null, result, time, traceInfo);
+        realizableTraceInfo = (realizabilityResults && realizabilityResults.deadlockingTrace) ? realizabilityResults.deadlockingTrace : null;
+        callback(null, result, time, realizableTraceInfo, kind2Output);
       }
       
     }

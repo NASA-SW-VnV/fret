@@ -368,7 +368,7 @@ function checkRealizability(selectedProject, components, rlzState, selectedReqs)
             var lustreContract = ejsCache_realize.renderRealizeCode(engineName).component.complete(contract);
 
             fs.writeSync(output, lustreContract);
-              realizability.checkRealizability(filePath, engineName, engineOptions, function(err, result, time, traceInfo) {
+              realizability.checkRealizability(filePath, engineName, engineOptions, function(err, result, time, traceInfo, _) {
 
               if (err) {
                   rlzState.projectReport.systemComponents[systemComponentIndex].monolithic.result = 'ERROR';
@@ -405,7 +405,7 @@ function checkRealizability(selectedProject, components, rlzState, selectedReqs)
             ccContract.properties = (cc.ccName === ccSelected) ? ccProperties.filter(p => selectedReqs.includes(p.reqid.substring(2))) : ccProperties;
             var lustreContract = ejsCache_realize.renderRealizeCode(engineName).component.complete(ccContract);
             fs.writeSync(output, lustreContract);
-            realizability.checkRealizability(filePath, engineName, engineOptions, function(err, result, time, traceInfo) {
+            realizability.checkRealizability(filePath, engineName, engineOptions, function(err, result, time, traceInfo, _) {
               
               if (err) {
                 cc.result = 'ERROR';
@@ -512,7 +512,7 @@ function diagnoseSpec(selectedProject, rlzState, selectedReqs) {
           ccContract.properties = ccProperties
 
           let engine = new DiagnosisEngine(ccContract, actualTimeout, 'realizability', engineName, engineOptions);
-          engine.main(function (err, result) {
+          engine.main().then(function ([err, result]) {
             if (err) {              
               projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].diagnosisStatus = 'ERROR';
               projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].error = err.message+'\n'+err.stdout.toString();
@@ -537,7 +537,7 @@ function diagnoseSpec(selectedProject, rlzState, selectedReqs) {
           contract.componentName = selected.component_name;
           let engine = new DiagnosisEngine(contract, actualTimeout, 'realizability', engineName, engineOptions);
 
-          engine.main(function (err, result) {
+          engine.main().then(function ([err, result]) {
             if (err) {
               projectReport.systemComponents[systemComponentIndex].monolithic.diagnosisStatus = 'ERROR';
               projectReport.systemComponents[systemComponentIndex].monolithic.error = err;
