@@ -38,9 +38,8 @@ import Button from '@material-ui/core/Button';
 
 import RealizabilityContent from './RealizabilityContent';
 import AnalysisReportContent from './AnalysisReportContent';
-import { connect } from "react-redux";
-import { saveAs } from 'file-saver';
 import { readAndParseJSONFile } from '../utils/utilityFunctions';
+import Grid from '@material-ui/core/Grid';
 
 let id = 0;
 
@@ -143,16 +142,20 @@ class RealizabilityView extends React.Component {
       }
     } else {
       return (
-        <div>
-          <Typography variant='h6'>
-            Realizability Analysis: {selectedProject}
-          </Typography>
-          <RealizabilityContent
-            selectedProject={selectedProject}
-            components={components}
-            completedComponents={completedComponents}
-          />
-        </div>
+        <Grid container direction="column" spacing={2}>
+          <Grid item>
+            <Typography variant='h6'>
+              Realizability Analysis: {selectedProject}
+            </Typography>
+          </Grid>
+          <Grid item>
+            <RealizabilityContent
+              selectedProject={selectedProject}
+              components={components}
+              completedComponents={completedComponents}
+            />
+          </Grid>
+        </Grid>
       );
     }
   }

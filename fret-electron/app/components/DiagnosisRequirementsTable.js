@@ -310,7 +310,7 @@ class DiagnosisRequirementsTableHead extends React.Component {
   };
 
   render() {
-    const { onSelectAllClick, order, orderBy, numSelected, rowCount, importedRequirements } = this.props;
+    const { onSelectAllClick, order, orderBy, numSelected, rowCount, importedRequirements, disableSelection } = this.props;
 
     return (
       <TableHead>
@@ -318,6 +318,7 @@ class DiagnosisRequirementsTableHead extends React.Component {
           {!importedRequirements &&
             <TableCell id="qa_diagReqTbl_selectAllReqs" padding="checkbox">
               <Checkbox                
+                disabled={disableSelection}
                 indeterminate={numSelected > 0 && numSelected < rowCount}
                 checked={numSelected === rowCount}
                 onChange={onSelectAllClick}
@@ -362,7 +363,8 @@ DiagnosisRequirementsTableHead.propTypes = {
   orderBy: PropTypes.string.isRequired,
   rowCount: PropTypes.number.isRequired,
   selectEnabled: PropTypes.bool.isRequired,
-  importedRequirements: PropTypes.bool.isRequired
+  importedRequirements: PropTypes.bool.isRequired,
+  disableSelection: PropTypes.bool.isRequired
 };
 
 const styles = theme => ({
@@ -510,7 +512,7 @@ class DiagnosisRequirementsTable extends React.Component {
 
   render() {
     const { reqs, color } = this.context.state;
-    const { classes, connectedComponent, importedRequirements, rlzData } = this.props;
+    const { classes, connectedComponent, importedRequirements, rlzData, disableSelection } = this.props;
     const { order, orderBy, selected, tempSelected, rowsPerPage, page, selectEnabled } = this.state;
     const { selectedRequirements } = this.props;
 
@@ -547,6 +549,7 @@ class DiagnosisRequirementsTable extends React.Component {
                 rowCount={requirementsData.length}
                 selectEnabled={selectEnabled}
                 importedRequirements={importedRequirements}
+                disableSelection={disableSelection}
               />
               {Object.keys(connectedComponent).length !== 0 ?
                 (<TableBody id="qa_diagReqTbl_tableBody_1">{
@@ -568,13 +571,11 @@ class DiagnosisRequirementsTable extends React.Component {
                             borderStyle: isInConflict ? 'solid' : 'initial', 
                             borderColor: isInConflict ? color : 'initial'}}
                           classes={{selected: (isSelected && isInConflictOrCC) ? classes.tableRowSelected : 'initial'}}
-                          onClick={event => { !importedRequirements ? this.handleClick(event, n.reqid) : null}}            
-                        >
-                        {true &&
+                          onClick={event => { (!importedRequirements && !disableSelection) ? this.handleClick(event, n.reqid) : null}}            
+                        >                        
                           <TableCell padding="checkbox">
-                            <Checkbox id={"qa_diagReqTbl_"+n.reqid} checked={isSelected}/>
+                            <Checkbox disabled={disableSelection} id={"qa_diagReqTbl_"+n.reqid} checked={isSelected}/>
                           </TableCell>
-                        }
                           <TableCell id={"qa_diagReqTbl_tc_body_id_"+label}>
                             {label}
                           </TableCell>
@@ -607,13 +608,11 @@ class DiagnosisRequirementsTable extends React.Component {
                             borderStyle: isInConflict ? 'solid' : 'initial', 
                             borderColor: isInConflict ? color : 'initial'}}
                           classes={{selected: classes.tableRowSelected}}
-                          onClick={event => (!importedRequirements ? this.handleClick(event, n.reqid) : null)}
+                          onClick={event => ((!importedRequirements && !disableSelection) ? this.handleClick(event, n.reqid) : null)}
                           >
-                          {true &&
-                            <TableCell padding="checkbox">
-                              <Checkbox id={"qa_diagReqTbl_"+n.reqid} checked={isSelected}/>
-                            </TableCell>
-                          }
+                          <TableCell padding="checkbox">
+                            <Checkbox disabled={disableSelection} id={"qa_diagReqTbl_"+n.reqid} checked={isSelected}/>
+                          </TableCell>
                           <TableCell id={"qa_diagReqTbl_tc_body_id_"+label}>
                             {label}
                           </TableCell>
@@ -659,7 +658,8 @@ DiagnosisRequirementsTable.propTypes = {
   selectedRequirements: PropTypes.array.isRequired,
   listOfProjects: PropTypes.array.isRequired,
   connectedComponent : PropTypes.object.isRequired,
-  importedRequirements: PropTypes.bool.isRequired
+  importedRequirements: PropTypes.bool.isRequired,
+  disableSelection: PropTypes.bool.isRequired
 };
 
 

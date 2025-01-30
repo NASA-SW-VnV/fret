@@ -471,18 +471,6 @@ function diagnoseSpec(selectedProject, rlzState, selectedReqs) {
   let engineName = nameAndEngine.name;
   let engineOptions = nameAndEngine.options + actualTimeout;
 
-  if(compositional) {
-    projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].diagnosisSolver = engineName;
-    projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].diagnosisStatus = 'PROCESSING';
-
-    rlzState.projectReport = projectReport;
-
-  } else {
-    projectReport.systemComponents[systemComponentIndex].monolithic.diagnosisSolver = engineName;
-    projectReport.systemComponents[systemComponentIndex].monolithic.diagnosisStatus = 'PROCESSING';
-    rlzState.projectReport = projectReport;
-  }
-
   return new Promise((resolve) => {
     modelDB.find({
       selector: {
