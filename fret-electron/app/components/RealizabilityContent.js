@@ -93,8 +93,6 @@ const {ipcRenderer} = require('electron');
 
 import { selectRealizabilityComponent } from '../reducers/allActionsSlice';
 import { connect } from "react-redux";
-import DiagnosisEngine from '../../analysis/DiagnosisEngine';
-import { watchFile } from 'original-fs';
 
 function desc(a, b, orderBy) {
   var element_a, element_b
@@ -696,7 +694,7 @@ class RealizabilityContent extends React.Component {
     }
 
     return(
-      <div>
+      <div>        
         <SelectRequirementsContext.Provider value={this.state}>
           <div>
             <SelectRequirementsContext.Consumer>
@@ -889,6 +887,7 @@ class RealizabilityContent extends React.Component {
                                           (<Fade in={diagStatus === 'DIAGNOSED'}>
                                             <div>
                                               {[...Array(2)].map((e, i) => <div key={i}> &nbsp; </div>)}
+                                              <Typography>Diagnosis Results: </Typography>
                                               <ChordDiagram selectedReport = {diagReport} selectedProject={selectedProject} requirements={diagnosisRequirements}/>
                                               &nbsp;
                                             </div>
