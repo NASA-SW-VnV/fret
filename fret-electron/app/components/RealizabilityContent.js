@@ -57,7 +57,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import TextField from '@material-ui/core/TextField';
 import Select from '@material-ui/core/Select';
 
-import Checkbox from '@material-ui/core/Checkbox';
+import Radio from '@material-ui/core/Radio';
 
 /*analysis icons*/
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
@@ -746,7 +746,7 @@ class RealizabilityContent extends React.Component {
                               selected === '' || (selected !== 'all' && systemComponentIndex > -1 && (!projectReport.systemComponents[systemComponentIndex].compositional || projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents.length <= 1))                  
                             }
                             control={
-                              <Checkbox
+                              <Radio
                                 id="qa_rlzCont_cb_compositional"
                                 checked={compositional}
                                 onChange={this.handleChange('compositional')}
@@ -759,7 +759,7 @@ class RealizabilityContent extends React.Component {
                           <FormControlLabel
                             disabled={selected === '' || (systemComponentIndex > -1 && !projectReport.systemComponents[systemComponentIndex].compositional)}
                             control={
-                              <Checkbox
+                              <Radio
                                 id="qa_rlzCont_cb_monolithic"
                                 checked={monolithic}
                                 onChange={this.handleChange('monolithic')}
