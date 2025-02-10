@@ -634,7 +634,7 @@ let negNormalizationRules = [
   ['! O[__l, __u] __p', trueFn, 'H[__l, __u] ! __p'],  
   ]
 
-let negNormalizationRulesParsed = negNormalizationRules.map(parseit)
+let negNormalizationRulesParsed = indexTriples(negNormalizationRules.map(parseit))
 
 function applyNegNormalization(term) {
   return applyTriples(term,negNormalizationRulesParsed)
@@ -769,7 +769,7 @@ let flipRules = [
     (sbst) => (occursIn(sbst['__a'], sbst['__phi_a'])),'(H[__l,__u] __phi_a) & O[__l,__u] flip(__a, __phi_a)'],  
 ]
 
-let flipRulesParsed = flipRules.map(parseit)
+let flipRulesParsed = indexTriples(flipRules.map(parseit))
 
 function applyFlip(term) {
   return applyTriples(term,flipRulesParsed)
