@@ -126,6 +126,7 @@ class CreateOrRenameProjectDialog extends React.Component {
           completedComponents: result.completedComponents,
           cocospecData: result.cocospecData,
           cocospecModes: result.cocospecModes,
+          booleanOnlyComponents: result.booleanOnlyComponents,
           // realizability
           rlz_data: result.rlz_data,
           selectedRlz: result.selectedRlz,

@@ -28,6 +28,8 @@ const allActionsSlice = createSlice({
     components: [],             // for a specific project: this is an array of all the components
     completedComponents: [],    // for a specific project: this is an array of all components
                                 // that we have completed the variable mappings
+
+    booleanOnlyComponents: [], //Array that retains components that only include boolean variables. Used in Test Case Generation.
     cocospecData: {},     // for a specific project: this is an object where each
                           // key is a component of this project, and the value of each key is an array of variables
     cocospecModes: {},    // for a specific project: this is an object where each
@@ -40,8 +42,9 @@ const allActionsSlice = createSlice({
     ccSelected: undefined,
     projectReport: undefined,
     diagnosisRequirements: undefined,
-    //prevState: undefined,
 
+    // test case generation
+    testgen_data: []    
 
   },
 
@@ -58,6 +61,7 @@ const allActionsSlice = createSlice({
       // analysis
       state.components = action.payload.components;
       state.completedComponents = action.payload.completedComponents;
+      state.booleanOnlyComponents = action.payload.booleanOnlyComponents;
       state.cocospecData = action.payload.cocospecData;
       state.cocospecModes = action.payload.cocospecModes;
       // variables
@@ -72,7 +76,8 @@ const allActionsSlice = createSlice({
       state.compositional = action.payload.compositional;
       state.ccSelected = action.payload.ccSelected;
       state.diagnosisRequirements = action.payload.diagnosisRequirements;
-      //state.prevState = action.payload.prevState;
+      //test case generation
+      state.testgen_data = action.payload.testgen_data;
     },
 
     // project slice
@@ -86,6 +91,7 @@ const allActionsSlice = createSlice({
       state.selectedProject = action.payload.selectedProject;
       state.requirements = action.payload.requirements;
       state.completedComponents = action.payload.completedComponents;
+      state.booleanOnlyComponents = action.payload.booleanOnlyComponents;
       state.cocospecData = action.payload.cocospecData;
       state.cocospecModes = action.payload.cocospecModes;
       state.components = action.payload.components;
@@ -93,7 +99,8 @@ const allActionsSlice = createSlice({
       state.modelVariables = action.payload.modelVariables;
       state.importedComponents = action.payload.importedComponents;
       state.selectedVariable = action.payload.selectedVariable;
-      state.rlz_data = action.payload.rlz_data
+      state.rlz_data = action.payload.rlz_data;
+      state.testgen_data = action.payload.testgen_data;
     },
     selectProject(state, action) {
       // console.log('actionsSlice selectProject reducer', action)
@@ -101,9 +108,11 @@ const allActionsSlice = createSlice({
       state.requirements = action.payload.requirements;
       state.components = action.payload.components;
       state.completedComponents = action.payload.completedComponents;
+      state.booleanOnlyComponents = action.payload.booleanOnlyComponents;
       state.cocospecData = action.payload.cocospecData;
       state.cocospecModes = action.payload.cocospecModes;
-      state.rlz_data = action.payload.rlz_data
+      state.rlz_data = action.payload.rlz_data;
+      state.testgen_data = action.payload.testgen_data;
     },
     mapVariables(state, action) {
       state.variable_data = action.payload.variable_data;
@@ -127,9 +136,11 @@ const allActionsSlice = createSlice({
       state.selectedVariable = action.payload.selectedVariable;
       state.importedComponents = action.payload.importedComponents;
       state.completedComponents = action.payload.completedComponents;
+      state.booleanOnlyComponents = action.payload.booleanOnlyComponents;
       state.cocospecData = action.payload.cocospecData;
       state.cocospecModes = action.payload.cocospecModes;
-      state.rlz_data = action.payload.rlz_data
+      state.rlz_data = action.payload.rlz_data;
+      state.testgen_data = action.payload.testgen_data;
     },
     deleteRequirement(state, action) {
       // console.log('actionsSlice deleteRequirement reducer', action)
@@ -141,6 +152,7 @@ const allActionsSlice = createSlice({
       state.selectedVariable = action.payload.selectedVariable;
       state.importedComponents = action.payload.importedComponents;
       state.completedComponents = action.payload.completedComponents;
+      state.booleanOnlyComponents = action.payload.booleanOnlyComponents;
       state.cocospecData = action.payload.cocospecData;
       state.cocospecModes = action.payload.cocospecModes;
     },
@@ -155,6 +167,7 @@ const allActionsSlice = createSlice({
       state.selectedVariable = action.payload.selectedVariable;
       state.importedComponents = action.payload.importedComponents;
       state.completedComponents = action.payload.completedComponents;
+      state.booleanOnlyComponents = action.payload.booleanOnlyComponents;
       state.cocospecData = action.payload.cocospecData;
       state.cocospecModes = action.payload.cocospecModes;
     },
@@ -175,6 +188,7 @@ const allActionsSlice = createSlice({
       state.selectedVariable = action.payload.selectedVariable;
       state.importedComponents = action.payload.importedComponents;
       state.completedComponents = action.payload.completedComponents;
+      state.booleanOnlyComponents = action.payload.booleanOnlyComponents;
       state.cocospecData = action.payload.cocospecData;
       state.cocospecModes = action.payload.cocospecModes;
     },
@@ -197,6 +211,7 @@ const allActionsSlice = createSlice({
       state.selectedVariable = action.payload.selectedVariable;
       state.importedComponents = action.payload.importedComponents;
       state.completedComponents = action.payload.completedComponents;
+      state.booleanOnlyComponents = action.payload.booleanOnlyComponents;
       state.cocospecData = action.payload.cocospecData;
       state.cocospecModes = action.payload.cocospecModes;
     },
@@ -212,6 +227,7 @@ const allActionsSlice = createSlice({
       state.selectedVariable = action.payload.selectedVariable;
       state.importedComponents = action.payload.importedComponents;
       state.completedComponents = action.payload.completedComponents;
+      state.booleanOnlyComponents = action.payload.booleanOnlyComponents;
       state.cocospecData = action.payload.cocospecData;
       state.cocospecModes = action.payload.cocospecModes;
     },
@@ -224,6 +240,7 @@ const allActionsSlice = createSlice({
       state.selectedVariable = action.payload.selectedVariable;
       state.importedComponents = action.payload.importedComponents;
       state.completedComponents = action.payload.completedComponents;
+      state.booleanOnlyComponents = action.payload.booleanOnlyComponents;
       state.cocospecData = action.payload.cocospecData;
       state.cocospecModes = action.payload.cocospecModes;
     },
@@ -236,6 +253,7 @@ const allActionsSlice = createSlice({
       state.selectedVariable = action.payload.selectedVariable;
       state.importedComponents = action.payload.importedComponents;
       state.completedComponents = action.payload.completedComponents;
+      state.booleanOnlyComponents = action.payload.booleanOnlyComponents;
       state.cocospecData = action.payload.cocospecData;
       state.cocospecModes = action.payload.cocospecModes;
     },
@@ -246,9 +264,12 @@ const allActionsSlice = createSlice({
     checkRealizability(state, action) {
       // console.log('actionsSlice rlzDiagUnrealizableRequirement function', action)
     },
-    selectRealizabilityComponent(state,action){
+    selectRealizabilityComponent(state, action){
       // console.log('actionsSlice selectRealizabilityComponent function', action)
-      state.rlz_data = action.payload.rlz_data
+      state.rlz_data = action.payload.rlz_data;
+    },
+    selectTestGenComponent(state, action) {
+      state.testgen_data = action.payload.testgen_data;
     },
     setProjectRequirements(state, action) {
       state.projectRequirements = action.payload.projectRequirements
@@ -262,7 +283,7 @@ export const { initializeStore, addProject, deleteProject, selectProject,updateF
   updateVariable_noNewVariables, selectVariable, exportModel, importRequirements,
   createOrUpdateRequirement, deleteRequirement, importRequirementsCsv, formalizeRequirement,
   changeRequirementStatus, importComponent, exportComponent, selectCorspdModelComp, mapVariables,
-  rlzDiagUnrealizableRequirement, checkRealizability, selectRealizabilityComponent, setGlossaryProjectRequirements, setGlossaryVariables,
+  rlzDiagUnrealizableRequirement, checkRealizability, selectRealizabilityComponent, selectTestGenComponent, setGlossaryProjectRequirements, setGlossaryVariables,
   setProjectRequirements
 } = allActionsSlice.actions
 export default allActionsSlice.reducer

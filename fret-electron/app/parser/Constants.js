@@ -70,6 +70,7 @@ module.exports = Object.freeze({
 // Configuration - console logs
   verboseTesting: false,
   verboseRealizabilityTesting: false,
+  verboseTestGenTesting: false,
   verboseReportTesting: false,
   verboseSemanticsAnalyzer: false,
   verboseSemanticsGenerator: false,

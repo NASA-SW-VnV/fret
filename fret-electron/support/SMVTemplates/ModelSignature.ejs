@@ -1,8 +1,12 @@
 -- <%-componentName%>
 MODULE main
- IVAR
+ VAR
+  ltlsim_t:0..5;
   <%for (i=0; i < inputVariables.length; i++) {%><%- inputVariables[i].name %>:<%- inputVariables[i].type %>;
     <%}%>
   <%for (i=0; i < outputVariables.length; i++) {%><%- outputVariables[i].name %>: <%- outputVariables[i].type %>;
     <%}%>
-DEFINE
+ ASSIGN
+  init(ltlsim_t) := 0;
+  next(ltlsim_t) := (ltlsim_t >= 5) ? 5 : ltlsim_t + 1;
+ DEFINE

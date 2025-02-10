@@ -34,6 +34,7 @@ import {modelDB} from '../fretDB'
 const constants = require('../../app/parser/Constants');
 const checkDbFormat = require('../fretDbSupport/checkDBFormat.js');
 const fretDBGetters = require('../fretDbSupport/fretDbGetters_main.js');
+const variableMappingSupports = require('../modelDbSupport/variableMappingSupports.js')
 
 export {
     synchAnalysisWithDB as synchAnalysisWithDB,
@@ -69,11 +70,14 @@ async function synchAnalysisWithDB (selectedProject) {
           cocospecModes: data.cocospecModes,
           components: data.components.sort((a, b) => {
             return a.component_name.toLowerCase().trim() > b.component_name.toLowerCase().trim()}),
-          completedComponents: []
+          completedComponents: [],
+          booleanOnlyComponents: []
         }
 
         retVal.completedComponents =  await checkComponents(retVal.components, selectedProject,
           retVal.cocospecData, retVal.cocospecModes,[]);
+        retVal.booleanOnlyComponents = await identifyBooleanOnlyComponents(retVal.components, selectedProject);
+        
         return retVal
       } else {
         //Andreas: Currently a good portion of the code in FretModel.js functions on the base that
@@ -141,16 +145,11 @@ function  setVariablesAndModes(result){
 
 
 async function  checkComponents (components, selectedProject, cocospecData, cocospecModes,completedComponents) {
-  // console.log("analysisTabSupport, selectedProject: " + selectedProject);
-  // console.log("analysisTabSupport, components: " + components);
-
     var completedComponents = []
     let checkCounter = 0;
     if(components){
       await Promise.all(components.map(function (component) {
         let component_name = component.component_name;
-        // console.log("analysisTabSupport, cocospecData: " + JSON.stringify(cocospecData[component_name]));
-        // console.log("analysisTabSupport, cocospecDataLength: " + cocospecData[component_name].length)
         var dataAndModesLength = cocospecData[component_name] ? cocospecData[component_name].length : 0;
         return modelDB.find({
           selector: {
@@ -160,7 +159,6 @@ async function  checkComponents (components, selectedProject, cocospecData, coco
             modeldoc: false
           }
         }).then(function (result) {
-          // console.log("analysisTabSupport, result: " + result.docs.length)
           if (result.docs.length === dataAndModesLength && dataAndModesLength !== 0){
             if (!completedComponents.includes(component_name))
             completedComponents.push(component_name);
@@ -179,6 +177,28 @@ async function  checkComponents (components, selectedProject, cocospecData, coco
         })
       }))
     }
-    // console.log("analysisTabSupport, completedComponents: " + completedComponents)
     return completedComponents
   }
+
+
+async function identifyBooleanOnlyComponents(components, selectedProject) {
+  if (components) {
+    return Promise.all(components.map(function (component) {
+      let component_name = component.component_name
+      return modelDB.find({
+        selector: {
+          component_name: component_name,
+          project: selectedProject,
+          completed: true,
+          modeldoc: false
+        }
+      }).then(function (result) {
+        if (result.docs.map(doc => variableMappingSupports.getSMVDataType(doc.dataType)).every((element) => element === 'boolean')) {
+          return component_name
+        }
+      }).catch(function(err) {
+        console.log(err);
+      })
+    })).then(booleanOnlyComponents => {return booleanOnlyComponents})
+  }  
+}

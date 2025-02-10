@@ -39,6 +39,13 @@ if test -f "$FILERC"; then
  rm x.js;
 fi
 
+FILERC=components/TestGenContent.js;
+if test -f "$FILERC"; then 
+ mv components/TestGenContent.js x.js;
+ sed -e 's+\.\./docs/+docs/+' x.js > components/TestGenContent.js;
+ rm x.js;
+fi
+
 FILEDE=analysis/DiagnosisEngine.js;
 if test -f "$FILEDE"; then
  mv analysis/DiagnosisEngine.js x.js;

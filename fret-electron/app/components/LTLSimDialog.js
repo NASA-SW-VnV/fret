@@ -67,6 +67,7 @@ import {ipcRenderer} from "electron";
 import {
   setProjectRequirements
 } from "../reducers/allActionsSlice";
+import { active } from 'd3';
 
 const ltlsim = require('ltlsim-core').ltlsim;
 const LTLSimController = require('ltlsim-core').LTLSimController;
@@ -255,8 +256,12 @@ class LTLSimDialog extends Component {
     	if (this.props.CEXFileName !== undefined){
 		this.loadCEXTrace(this.props.CEXFileName)
 		}
-      this.getProjectRequirements()
-    	}
+
+		if (this.props.testGenTests !== undefined) {
+			this.loadTestGenTraces(this.props.testGenTests)
+		}
+    	this.getProjectRequirements()
+    }
 
 
 
@@ -680,6 +685,43 @@ console.log("TODO: update the traces")
             this.update();
         });
     }
+
+	//FUNCTION loadTestGenTraces(content)
+	//load traces generated from test case generation
+	loadTestGenTraces(content) {
+		if (content){
+			LTLSimController.setTraceLength(this.state.model, 6);
+			
+			var newTraces = []
+			var newActiveTraces = []
+			var loadedTraces = content
+			for (const tr of loadedTraces) {
+				newTraces.push(tr.traceID);
+				newActiveTraces.push(tr);
+			}
+			this.setState({
+				traces: newTraces,
+				activeTraces: newActiveTraces
+			})
+			// this.setState((prevState) => {
+			// 	let { model, traces, activeTraces} = prevState;
+		  		// var loadedTraces = JSON.parse(content);
+				// traces=[];
+	  			// activeTraces=[];
+	  			// for (const tr of loadedTraces){
+				// 	traces = traces.concat(tr.traceID);
+	  			// 	activeTraces = activeTraces.concat(tr);
+	  			// }
+			 	// return {
+	 			// 	traces: traces,
+		  		// 	activeTraces: activeTraces
+			 	// };
+	  		// }, () => {
+				/* Call LTL simulation after the state was updated */
+				this.update();
+	  		// });
+	  	}		
+	}
 
 	//===============================================================
     	// FUNCTION loadCEXTrace(filepath)

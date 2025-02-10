@@ -403,6 +403,7 @@ class VariablesSortableTable extends React.Component {
                                    completedComponents: result.completedComponents,
                                    cocospecData: result.cocospecData,
                                    cocospecModes: result.cocospecModes,
+                                   booleanOnlyComponents: result.booleanOnlyComponents
                                  })
      }).catch((err) => {
        console.log(err);
@@ -431,6 +432,7 @@ class VariablesSortableTable extends React.Component {
                                   completedComponents: result.completedComponents,
                                   cocospecData: result.cocospecData,
                                   cocospecModes: result.cocospecModes,
+                                  booleanOnlyComponents: result.booleanOnlyComponents
                                 })
     }).catch((err) => {
       console.log(err);
@@ -449,7 +451,7 @@ class VariablesSortableTable extends React.Component {
 
   render() {
     const {classes, selectedProject, selectedComponent, selectedVariable,
-      modelComponent, importedComponents, variable_data, modelVariables} = this.props;
+      modelComponent, importedComponents, variable_data, modelVariables, language} = this.props;
 
     const comp_variable_data = variable_data[selectedComponent] || []
     const comp_modelVariables = modelVariables[selectedComponent] || []
@@ -524,7 +526,9 @@ class VariablesSortableTable extends React.Component {
           selectedVariable={selectedVariable}
           open={this.state.displayVariableOpen}
           handleDialogClose={this.handleVariableDialogClose}
-          modelVariables= {comp_modelVariables}/>
+          modelVariables= {comp_modelVariables}
+          language={language}
+        />
         <Snackbar
           anchorOrigin={{
             vertical: 'bottom',
@@ -560,6 +564,7 @@ VariablesSortableTable.propTypes = {
   classes: PropTypes.object.isRequired,
   selectedProject: PropTypes.string.isRequired,
   selectedComponent: PropTypes.string.isRequired,
+  language:PropTypes.string.isRequired
 };
 
 function mapStateToProps(state) {

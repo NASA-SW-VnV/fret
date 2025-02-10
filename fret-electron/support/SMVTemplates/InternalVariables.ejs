@@ -1,4 +1,8 @@
-<%for (i=0; i < internalVariables.length; i++) {%>
+  LAST := case
+    ltlsim_t<=4 : FALSE;
+    TRUE : TRUE;
+  esac;
+  <%for (i=0; i < internalVariables.length; i++) {%>
     <%var semiColon = assignments[i].endsWith(';') ? '' : ';'%>
     <%- internalVariables[i].name %> := <%- assignments[i] %><%- semiColon -%><%}%>
     

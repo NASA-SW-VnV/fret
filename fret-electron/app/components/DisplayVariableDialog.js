@@ -50,6 +50,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import NewVariablesDialog from './NewVariablesDialog';
 import { updateVariable_noNewVariables, } from '../reducers/allActionsSlice';
 import { connect } from "react-redux";
+import Language from '@material-ui/icons/Language';
 
 const {ipcRenderer} = require('electron');
 
@@ -236,6 +237,7 @@ class DisplayVariableDialog extends React.Component {
                   completedComponents : noNewVariablesResult.completedComponents,
                   cocospecData : noNewVariablesResult.cocospecData,
                   cocospecModes : noNewVariablesResult.cocospecModes,
+                  booleanOnlyComponents: result.booleanOnlyComponents,
                   // variables
                   variable_data : noNewVariablesResult.variable_data,
                   modelComponent : noNewVariablesResult.modelComponent,
@@ -444,7 +446,7 @@ class DisplayVariableDialog extends React.Component {
       })
   }
 
-  dataTypeField = () => {
+  dataTypeField = (language) => {
     const { classes, selectedVariable } = this.props;
 
     return(
@@ -465,17 +467,21 @@ class DisplayVariableDialog extends React.Component {
           <em>None</em>
         </MenuItem>
         <MenuItem id="qa_disVar_mi_dataType_boolean" value="boolean" >boolean</MenuItem>
-        <MenuItem id="qa_disVar_mi_dataType_integer" value="integer" >integer</MenuItem>
-        <MenuItem id="qa_disVar_mi_dataType_unsigned_integer" value="unsigned integer" >unsigned integer</MenuItem>
-        <MenuItem id="qa_disVar_mi_dataType_single" value="single">single</MenuItem>
-        <MenuItem id="qa_disVar_mi_dataType_double" value="double">double</MenuItem>
+        {language !== 'smv' &&
+          <div>
+            <MenuItem id="qa_disVar_mi_dataType_integer" value="integer" >integer</MenuItem>
+            <MenuItem id="qa_disVar_mi_dataType_unsigned_integer" value="unsigned integer" >unsigned integer</MenuItem>
+            <MenuItem id="qa_disVar_mi_dataType_single" value="single">single</MenuItem>
+            <MenuItem id="qa_disVar_mi_dataType_double" value="double">double</MenuItem>
+          </div>
+        }
       </Select>
     </FormControl>
     )
   }
 
   render() {
-    const { classes, selectedVariable, modelVariables, open } = this.props;
+    const { classes, selectedVariable, modelVariables, open, language } = this.props;
     const { idType, errorsLustre, errorsCopilot, checkLustre, checkCoPilot, modeldoc_id, modeldoc_vectorSize, modeldoc_vectorIndex, selectedBusObject, selectedBusElement, busObjects } = this.state;
     
     return (
@@ -543,16 +549,22 @@ class DisplayVariableDialog extends React.Component {
                   <MenuItem id="qa_disVar_mi_varType_None" value="" key={selectedVariable}>
                     <em>None</em>
                   </MenuItem>
-                  <MenuItem id="qa_disVar_mi_varType_Function" value="Function">Function</MenuItem>
+                  {language !== 'smv' &&
+                    <MenuItem id="qa_disVar_mi_varType_Function" value="Function">Function</MenuItem>
+                  }
                   <MenuItem id="qa_disVar_mi_varType_Input" value="Input" >Input</MenuItem>
-                  <MenuItem id="qa_disVar_mi_varType_Internal" value="Internal">Internal</MenuItem>
-                  <MenuItem id="qa_disVar_mi_varType_Mode" value="Mode">Mode</MenuItem>
+                  {language !== 'smv' &&
+                    <MenuItem id="qa_disVar_mi_varType_Internal" value="Internal">Internal</MenuItem>
+                  }
+                  {language !== 'smv' &&
+                    <MenuItem id="qa_disVar_mi_varType_Mode" value="Mode">Mode</MenuItem>
+                  }
                   <MenuItem id="qa_disVar_mi_varType_Output" value="Output">Output</MenuItem>
                 </Select>
               </FormControl>
               {(idType === 'Input' || idType === 'Output') ?
                 (selectedVariable.modelComponent === undefined || selectedVariable.modelComponent === "")  ?
-                  this.dataTypeField()
+                  this.dataTypeField(language)
                   :
                   (<div>
                     <FormControl className={classes.formControl}>
@@ -620,7 +632,7 @@ class DisplayVariableDialog extends React.Component {
                     }
                     {
                       selectedBusObject === 'Custom' &&
-                      this.dataTypeField()
+                      this.dataTypeField(language)
                     }
                   </div>) :
                 (idType === 'Function') ?
@@ -784,6 +796,7 @@ DisplayVariableDialog.propTypes = {
   handleDialogClose: PropTypes.func.isRequired,
   modelVariables: PropTypes.array.isRequired,
   classes: PropTypes.object.isRequired,
+  language: PropTypes.string.isRequired
 }
 
 const mapDispatchToProps = {

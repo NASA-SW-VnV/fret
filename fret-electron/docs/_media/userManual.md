@@ -20,6 +20,7 @@ FRET is a framework for the elicitation, specification, formalization and unders
     * [Using the simulator](./UsingTheSimulator/ltlsim.md)
     * [Exporting for analysis](./ExportingForAnalysis/analysis.md)
     * [Realizability checking](./exports/realizabilityManual.md)
+    * [Test Case Generation](./exports/testgenManual.md)
 * [FRET Command Line Interface (CLI)](./cli/cli.md)
     * [Generating Formalizations](./cli/cli.md#Generating-formalizations)
     * [Realizability checking](./cli/cli.md#Realizability-checking)

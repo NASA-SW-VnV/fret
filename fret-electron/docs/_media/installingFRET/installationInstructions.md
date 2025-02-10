@@ -50,6 +50,8 @@ When you open the FRET distribution, you will see the following directory struct
 
 > __Note:__ You can config FRET to specify which version of python to use. For example, to use python3 executable, run the following: `npm config set python /usr/bin/python3.x`
 
+> __Note:__ To generate test cases or test obligations, NuSMV must be installed.
+
 
 [Back to FRET home page](../userManual.md)
 

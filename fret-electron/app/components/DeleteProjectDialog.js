@@ -81,6 +81,7 @@ class DeleteProjectDialog extends React.Component {
                                   completedComponents : result.completedComponents,
                                   cocospecData : result.cocospecData,
                                   cocospecModes : result.cocospecModes,
+                                  booleanOnlyComponents: result.booleanOnlyComponents
                               })
 
     }).catch((err) => {

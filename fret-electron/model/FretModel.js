@@ -39,7 +39,8 @@ import {getContractInfo, getPropertyInfo, getDelayInfo, getMappingInfo, getOblig
 //import FretSemantics from './../app/parser/FretSemantics'
 import {export_to_md} from "../app/utils/utilityFunctions";
 import {synchAnalysisWithDB, } from './fretDbSupport/analysisTabSupport'
-import { retrieveRlzRequirements, computeConnectedComponents, checkRealizability, diagnoseSpec, checkDependenciesExist } from './realizabilitySupport/realizabilityUtils'
+import { retrieveRequirementsFromComponent, computeConnectedComponents, checkRealizability, diagnoseSpec, checkDependenciesExist } from './realizabilitySupport/realizabilityUtils'
+import { generateTests, checkTestGenDependenciesExist } from './testGenSupport/testGenUtils'
 import ejsCache from '../support/CoCoSpecTemplates/ejsCache';
 import ejsCacheSMV from '../support/SMVTemplates/ejsCacheSMV';
 import ejsCacheCoPilot from '../support/CoPilotTemplates/ejsCacheCoPilot';
@@ -73,6 +74,7 @@ export default class FretModel {
     // *analysis*
     this.components = []     // for a specific project: this is an array of all the components
     this.completedComponents = []   // for a specific project: this is an array of all components
+    this.booleanOnlyComponents = [] //System components that include only boolean variables. Used in test case generation.
     // that we have completed the variable mappings
     this.cocospecData = {}   // for a specific project: this is an object where each
     // key is a component of this project, and the value of each key is an array of variables
@@ -91,6 +93,7 @@ export default class FretModel {
 
     // realizability
     this.rlz_data = []
+    this.testgen_data = []
     this.monolithic = false
     this.compositional = false
     this.ccSelected = ''
@@ -116,6 +119,7 @@ export default class FretModel {
       // analysis
       components : this.components,
       completedComponents : this.completedComponents,
+      booleanOnlyComponents: this.booleanOnlyComponents,
       cocospecData : this.cocospecData,
       cocospecModes : this.cocospecModes,
 
@@ -192,6 +196,7 @@ export default class FretModel {
         this.cocospecModes = analysisStates.cocospecModes
         this.components = analysisStates.components
         this.completedComponents = analysisStates.completedComponents
+        this.booleanOnlyComponents = analysisStates.booleanOnlyComponents
       }
 
       // for each component, we want to call synchFRETvariables
@@ -305,6 +310,7 @@ export default class FretModel {
         selectedVariable : this.selectedVariable,
         importedComponents : this.importedComponents,
         completedComponents : this.completedComponents,
+        booleanOnlyComponents: this.booleanOnlyComponents,
         cocospecData : this.cocospecData,
         cocospecModes : this.cocospecModes,
         rlz_data : this.rlz_data,
@@ -339,7 +345,7 @@ export default class FretModel {
         cocospecData : this.cocospecData,
         cocospecModes : this.cocospecModes,
         completedComponents : this.completedComponents,
-
+        booleanOnlyComponents: this.booleanOnlyComponents,
         // * variableMapping
         modelComponent : this.modelComponent,
         variable_data : this.variable_data,
@@ -425,7 +431,7 @@ export default class FretModel {
       cocospecData : this.cocospecData,
       cocospecModes : this.cocospecModes,
       completedComponents : this.completedComponents,
-
+      booleanOnlyComponents: this.booleanOnlyComponents,
       // * variableMapping
       modelComponent : this.modelComponent,
       variable_data : this.variable_data,
@@ -568,7 +574,7 @@ export default class FretModel {
         cocospecData : this.cocospecData,
         cocospecModes : this.cocospecModes,
         completedComponents : this.completedComponents,
-
+        booleanOnlyComponents : this.booleanOnlyComponents,
         // * variableMapping
         modelComponent : this.modelComponent,
         variable_data : this.variable_data,
@@ -650,7 +656,7 @@ export default class FretModel {
       cocospecData : this.cocospecData,
       cocospecModes : this.cocospecModes,
       completedComponents : this.completedComponents,
-
+      booleanOnlyComponents: this.booleanOnlyComponents,
       // * variables
       modelComponent : this.modelComponent,
       variable_data : this.variable_data,
@@ -682,7 +688,7 @@ export default class FretModel {
       cocospecData : this.cocospecData,
       cocospecModes : this.cocospecModes,
       completedComponents : this.completedComponents,
-
+      booleanOnlyComponents: this.booleanOnlyComponents,
       // * variableMapping
       modelComponent : this.modelComponent,
       variable_data : this.variable_data,
@@ -959,6 +965,7 @@ export default class FretModel {
       cocospecData : this.cocospecData,
       cocospecModes : this.cocospecModes,
       completedComponents : this.completedComponents,
+      booleanOnlyComponents : this.booleanOnlyComponents,
       // * variableMapping
       modelComponent : this.modelComponent,
       variable_data : this.variable_data,
@@ -1021,6 +1028,7 @@ export default class FretModel {
       cocospecData : this.cocospecData,
       cocospecModes : this.cocospecModes,
       completedComponents : this.completedComponents,
+      booleanOnlyComponents : this.booleanOnlyComponents,
       // * variableMapping
       modelComponent : this.modelComponent,
       variable_data : this.variable_data,
@@ -1218,6 +1226,7 @@ export default class FretModel {
       cocospecData : this.cocospecData,
       cocospecModes : this.cocospecModes,
       completedComponents : this.completedComponents,
+      booleanOnlyComponents : this.booleanOnlyComponents,
       // * variables
       modelComponent : this.modelComponent,
       variable_data : this.variable_data,
@@ -1232,7 +1241,7 @@ export default class FretModel {
   async selectRealizabilityComponent(evt,args) {
     const component = args[0]
     var connectedComponentInfo = await computeConnectedComponents(this.selectedProject, this.completedComponents, ...args);
-    this.rlz_data = await retrieveRlzRequirements(this.selectedProject,component.component_name)
+    this.rlz_data = await retrieveRequirementsFromComponent(this.selectedProject,component.component_name)
     var states = {
       rlz_data : this.rlz_data,
       connectedComponentInfo: connectedComponentInfo
@@ -1259,6 +1268,44 @@ export default class FretModel {
   async diagnoseUnrealizableRequirements(evt, args){
     var diagnosisResult = await diagnoseSpec(this.selectedProject, ...args);
     return diagnosisResult;
+  }
+
+  async checkTestGenDependencies(evt, args) {
+    var missingDependencies = await checkTestGenDependenciesExist();
+    return missingDependencies;
+  }
+
+  async selectTestGenComponent(evt,args) {
+    const [ component, projectReport, selectedReqs ] = args;
+    this.testgen_data = await retrieveRequirementsFromComponent(this.selectedProject,component.component_name)
+    
+    return fretDbGetters.getProjectRequirements(this.selectedProject).then(fretResult => {
+      projectReport.systemComponents = [].concat(projectReport.systemComponents.map(obj => {
+          if (obj.name === component.component_name) {
+            return {...obj,
+              comments: '',
+              requirements: fretResult.docs,
+              selectedReqs: (selectedReqs.length === 0 ? fretResult.docs.filter(doc => doc.semantics && doc.semantics.component_name === component.component_name).map(doc => doc.reqid) : selectedReqs),
+              tests: [],
+              time: ''
+            }
+          }
+          return obj;
+      }))
+    
+
+      var states = {
+        testgen_data : this.testgen_data,
+        selectedReqs: (selectedReqs.length === 0 ? this.testgen_data.map(d => d.doc.reqid)  : selectedReqs),
+        projectReport: projectReport      
+      }
+      return states
+    })
+  }
+
+  async generateTests(evt, args) {
+    var testGenResult = generateTests(this.selectedProject, this.components, ...args);
+    return testGenResult;
   }
 
   async ltlsimSaveJson(evt,args){

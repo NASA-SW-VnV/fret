@@ -40,6 +40,7 @@ import Tab from '@material-ui/core/Tab';
 import Tooltip from '@material-ui/core/Tooltip';
 import VariablesView from './VariablesView';
 import RealizabilityView from './RealizabilityView';
+import TestGenView from './TestGenView';
 import { connect } from "react-redux";
 
 const process = require('process');
@@ -125,16 +126,8 @@ class AnalysisTabs extends React.Component {
 
   render() {
     const {classes, selectedProject, listOfProjects,components,
-      completedComponents, cocospecData, cocospecModes} = this.props;
+      completedComponents, cocospecData, cocospecModes, booleanOnlyComponents} = this.props;
     const {value} = this.state;
-
-    // console.log('AnalysisTabs.render, value: ',value)
-    // console.log('AnalysisTabs.render, components: ',components)
-    // console.log('AnalysisTabs.render, completedComponents: ',completedComponents)
-    // console.log('AnalysisTabs.render, cocospecData: ',cocospecData)
-    // console.log('AnalysisTabs.render, cocospecModes: ',cocospecModes)
-
-
 
     return (
       <div>
@@ -151,11 +144,12 @@ class AnalysisTabs extends React.Component {
             {process.platform === "win32" ?
               <Tooltip title={'Realizability checking is currently not supported in Windows OS'}>
                 <span>
-                  <Tab id="qa_rlz_tab_win" disabled label="Realizability" />
+                  <Tab id="qa_rlz_tab_win" disabled label="Realizability Checking" />
                 </span>
               </Tooltip> :
-              <Tab id="qa_rlz_tab" label="Realizability"/>
+              <Tab id="qa_rlz_tab" label="Realizability Checking"/>
             }
+            <Tab id="qa_testgen_tab" label="Test Case Generation"/>
           </Tabs>
         </AppBar>
         {value === 0 &&
@@ -163,7 +157,7 @@ class AnalysisTabs extends React.Component {
             <VariablesView selectedProject={selectedProject} listOfProjects={listOfProjects}
             components={components.map(e => e.component_name)} completedComponents={completedComponents}
             cocospecData={cocospecData} cocospecModes={cocospecModes}
-            variableIdentifierReplacement={this.variableIdentifierReplacement}/>
+            variableIdentifierReplacement={this.variableIdentifierReplacement} booleanOnlyComponents={booleanOnlyComponents}/>
           </TabContainer>
         }
         {value === 1 &&
@@ -172,6 +166,11 @@ class AnalysisTabs extends React.Component {
             components={components} completedComponents={completedComponents}
             cocospecData={cocospecData} cocospecModes={cocospecModes}
             />
+          </TabContainer>
+        }
+        {value === 2 &&
+          <TabContainer>
+            <TestGenView selectedProject={selectedProject} listOfProjects={listOfProjects} components={components} completedComponents={completedComponents} cocospecData={cocospecData} cocospecModes={cocospecModes} booleanOnlyComponents={booleanOnlyComponents}/>
           </TabContainer>
         }
       </div>
@@ -188,15 +187,17 @@ AnalysisTabs.propTypes = {
 
 
 function mapStateToProps(state) {
-  const completedComponents = state.actionsSlice.completedComponents;
+  const completedComponents = state.actionsSlice.completedComponents;  
   const cocospecData = state.actionsSlice.cocospecData;
   const cocospecModes = state.actionsSlice.cocospecModes;
   const components = state.actionsSlice.components;
+  const booleanOnlyComponents = state.actionsSlice.booleanOnlyComponents;
   return {
     completedComponents,
     cocospecData,
     cocospecModes,
-    components
+    components,
+    booleanOnlyComponents
   };
 }
 

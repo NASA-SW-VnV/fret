@@ -255,7 +255,7 @@ class ComponentSummary extends React.Component {
   }
 
   render() {
-    const {classes, component, completed, language} = this.props;
+    const {classes, component, completed, language, isBooleanComponent} = this.props;
     if (language === 'copilot'){
       return (
         <Tooltip title='Export verification code.'>
@@ -269,51 +269,64 @@ class ComponentSummary extends React.Component {
         </Tooltip>     
       );
     } else if (completed && language && language !== '') {
-      return (
-        <div className={classes.wrapper}>
-          <Button          
-            ref={this.anchorRef}
-            size="small" variant="contained" color="secondary"          
-            endIcon={<KeyboardArrowDownIcon />}
-            onClick={(event) => this.handleActionsClick(event)}>
-            Export        
-          </Button>
-          <Menu anchorEl={this.anchorRef.current} open={this.state.actionsMenuOpen} onClose={(event) => this.handleActionsMenuClose(event)}>
-            {language === 'cocospec' ?
-              <div>
-                <MenuItem onClick={this.exportComponentCode}>Verification Code</MenuItem>
-                <MenuItem onClick={this.exportTestObligations('ptLTL')}>Test Obligations</MenuItem>                
-              </div> :
-              <div>
-                <MenuItem onClick={this.exportTestObligations('ftLTL')}>Test Obligations (Future Time LTL)</MenuItem>
-                <MenuItem onClick={this.exportTestObligations('ptLTL')}>Test Obligations (Past Time LTL)</MenuItem>
-              </div>            
-            }
-          </Menu>
-          <Snackbar
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'center',
-          }}
-          open={this.state.snackbarOpen}
-          autoHideDuration={6000}
-          onClose={this.handleSnackbarClose}
-          snackbarcontentprops={{
-            'aria-describedby': 'message-id',
-          }}
-          message={<span id="message-id">{'Generated '+this.state.numberOfObligations+' test obligations.'}</span>}
-          action={[
-            <IconButton
-              key="close"
-              aria-label="Close"
-              color="inherit"
-              onClick={this.handleSnackbarClose}
-            >
-              <CloseIcon />
-            </IconButton>
-          ]} />
-        </div>   
-      );
+      if (language === 'smv' && !isBooleanComponent) {
+        return (
+          <Tooltip title='SMV obligation export is available for components that only contain boolean variables.'>
+            <span>
+              <Button id={"qa_var_btn_export_"+component}
+                 size="small" color="secondary" disabled variant='contained' className={classes.buttonControl}>
+                  Export
+              </Button>
+            </span>
+          </Tooltip>          
+        )
+      } else {
+        return (
+          <div className={classes.wrapper}>
+            <Button          
+              ref={this.anchorRef}
+              size="small" variant="contained" color="secondary"          
+              endIcon={<KeyboardArrowDownIcon />}
+              onClick={(event) => this.handleActionsClick(event)}>
+              Export        
+            </Button>
+            <Menu anchorEl={this.anchorRef.current} open={this.state.actionsMenuOpen} onClose={(event) => this.handleActionsMenuClose(event)}>
+              {language === 'cocospec' ?
+                <div>
+                  <MenuItem onClick={this.exportComponentCode}>Verification Code</MenuItem>
+                  <MenuItem onClick={this.exportTestObligations('ptLTL')}>Test Obligations</MenuItem>                
+                </div> :
+                <div>
+                  <MenuItem onClick={this.exportTestObligations('ftLTL')}>Test Obligations (Future Time LTL)</MenuItem>
+                  <MenuItem onClick={this.exportTestObligations('ptLTL')}>Test Obligations (Past Time LTL)</MenuItem>
+                </div>            
+              }
+            </Menu>
+            <Snackbar
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'center',
+            }}
+            open={this.state.snackbarOpen}
+            autoHideDuration={6000}
+            onClose={this.handleSnackbarClose}
+            snackbarcontentprops={{
+              'aria-describedby': 'message-id',
+            }}
+            message={<span id="message-id">{'Generated '+this.state.numberOfObligations+' test obligations.'}</span>}
+            action={[
+              <IconButton
+                key="close"
+                aria-label="Close"
+                color="inherit"
+                onClick={this.handleSnackbarClose}
+              >
+                <CloseIcon />
+              </IconButton>
+            ]} />
+          </div>   
+        )
+      }
     } else {
       return (
           <Tooltip title='To export verification code or test obligations, please complete mandatory variable fields and export language first.'>
@@ -335,7 +348,8 @@ ComponentSummary.propTypes = {
   completed: PropTypes.bool.isRequired,
   selectedProject: PropTypes.string.isRequired,
   language: PropTypes.string.isRequired,
-  variableIdentifierReplacement: PropTypes.func.isRequired
+  variableIdentifierReplacement: PropTypes.func.isRequired,
+  isBooleanComponent: PropTypes.bool.isRequired
 };
 
 ComponentSummary = withStyles(componentStyles)(ComponentSummary);
@@ -375,7 +389,7 @@ class VariablesView extends React.Component {
 
   render() {
     const self = this;
-    const {classes, selectedProject, listOfProjects, components, completedComponents, cocospecData, cocospecModes} = this.props;
+    const {classes, selectedProject, listOfProjects, components, completedComponents, cocospecData, cocospecModes, booleanOnlyComponents} = this.props;
     const{language}= this.state;
     components.sort();
 
@@ -418,6 +432,7 @@ class VariablesView extends React.Component {
                   selectedProject={selectedProject}
                   language={language}
                   variableIdentifierReplacement={this.props.variableIdentifierReplacement}
+                  isBooleanComponent={booleanOnlyComponents.includes(component)}
                 />
               </AccordionSummary>
               <Divider />
@@ -426,6 +441,7 @@ class VariablesView extends React.Component {
                   <VariablesSortableTable
                     selectedProject={selectedProject}
                     selectedComponent={component}
+                    language={language}
                   />
                 </div>
                 </AccordionDetails>
@@ -446,7 +462,8 @@ VariablesView.propTypes = {
   cocospecModes: PropTypes.object.isRequired,
   components: PropTypes.array.isRequired,
   completedComponents: PropTypes.array.isRequired,
-  variableIdentifierReplacement: PropTypes.func.isRequired
+  variableIdentifierReplacement: PropTypes.func.isRequired,
+  booleanOnlyComponents: PropTypes.array.isRequired
 };
 
 export default withStyles(styles)(VariablesView);

@@ -44,7 +44,8 @@ export {
   getMappingInfo as getMappingInfo,
   getObligationInfo as getObligationInfo,
   synchFRETvariables as synchFRETvariables,
-  variableIdentifierReplacement as variableIdentifierReplacement
+  variableIdentifierReplacement as variableIdentifierReplacement,
+  getSMVDataType as getSMVDataType
 }
 
 
@@ -91,7 +92,7 @@ async function synchFRETvariables (selectedProject, component) {
 
 }
 
-async function  synchModelVariablesAndComponents(componentModel,selectedProject){
+async function synchModelVariablesAndComponents(componentModel,selectedProject){
 
   let modelVariables = [],
       modelComponents = [];
@@ -209,33 +210,33 @@ function getMappingInfo(result, contractName) {
   return mapping;
 }
 
+function getSMVDataType(dataType) {
+  if (dataType === 'boolean'){
+    return dataType;
+  } else if (dataType.includes('int') ){
+    return 'integer';
+  }    
+}
+
+function getCoCoSpecDataType(dataType){
+  if (dataType === 'boolean'){
+      return 'bool';
+  } else if (dataType.includes('int') ){
+    return 'int';
+  } else if (dataType === 'double' || 'single'){
+    return 'real';
+  }
+}  
+
+function getDataType(dataType, language) {
+  if (language === 'smv') {
+    return getSMVDataType(dataType);
+  } else {
+    return getCoCoSpecDataType(dataType);
+  }
+}
+
 function getContractInfo(result, language) {
-  function getSMVDataType(dataType) {
-    if (dataType === 'boolean'){
-      return dataType;
-    } else if (dataType.includes('int') ){
-      return 'integer';
-    }    
-  }
-  
-  function getCoCoSpecDataType(dataType){
-    if (dataType === 'boolean'){
-        return 'bool';
-    } else if (dataType.includes('int') ){
-      return 'int';
-    } else if (dataType === 'double' || 'single'){
-      return 'real';
-    }
-  }  
-
-  function getDataType(dataType, language) {
-    if (language === 'smv') {
-      return getSMVDataType(dataType);
-    } else {
-      return getCoCoSpecDataType(dataType);
-    }
-  }
-
   var contract = {
     componentName: '',
     outputVariables: [],
@@ -364,4 +365,5 @@ function variableIdentifierReplacement(contract){
   })
   return contract;
 }
+
 

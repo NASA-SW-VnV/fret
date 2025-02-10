@@ -281,6 +281,28 @@ ipcMain.handle('calculateProjectSemantics', async(evt, projectName) => {
   return fretModel.calculateProjectSemantics(projectName);
 })
 
+//test case generation
+
+// ipcMain.handle('identifyBooleanOnlyComponents', async(evt, arg) => {
+//   const result = await fretModel.identifyBooleanOnlyComponents(evt, arg);
+//   return result
+// })
+
+ipcMain.handle('checkTestGenDependencies', async(evt) => {
+  const result = await fretModel.checkTestGenDependencies(evt);
+  return result
+})
+
+ipcMain.handle('selectTestGenComponent', async (evt, arg) => {
+  const result = await fretModel.selectTestGenComponent(evt, arg);
+  return result
+})
+
+ipcMain.handle('generateTests', async (evt, arg) => {
+  const result = await fretModel.generateTests(evt, arg);
+  return result
+})
+
 /**
  * Add event listeners...
  */

@@ -46,7 +46,7 @@ const constants = require('../../app/parser/Constants');
 var analysisPath = require("os").homedir() + '/Documents/fret-analysis/';
 
 export {
-    retrieveRlzRequirements as retrieveRlzRequirements,
+    retrieveRequirementsFromComponent as retrieveRequirementsFromComponent,
     computeConnectedComponents as computeConnectedComponents,
     checkRealizability as checkRealizability,
     diagnoseSpec as diagnoseSpec,
@@ -132,7 +132,7 @@ function checkDependenciesExist() {
   }
 }
 
-async function retrieveRlzRequirements (selectedProject, selectedComponent) {
+async function retrieveRequirementsFromComponent (selectedProject, selectedComponent) {
     const filterOff = selectedProject == "All Projects";
     return getAllDocs().then((result) => {
         let dbData = result.rows

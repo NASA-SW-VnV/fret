@@ -134,6 +134,7 @@ class RequirementImportDialogs extends React.Component {
                                       completedComponents : result.completedComponents, 
                                       cocospecData : result.cocospecData, 
                                       cocospecModes : result.cocospecModes,
+                                      booleanOnlyComponents: result.booleanOnlyComponents,
                                       // variables
                                       variable_data : result.variable_data,
                                       modelComponent : result.modelComponent,                                   

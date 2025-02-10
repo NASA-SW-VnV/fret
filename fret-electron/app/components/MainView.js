@@ -261,6 +261,7 @@ class MainView extends React.Component {
                                   selectedVariable: result.selectedVariable,
                                   importedComponents: result.importedComponents,
                                   completedComponents: result.completedComponents,
+                                  booleanOnlyComponents: result.booleanOnlyComponents,
                                   cocospecData: result.cocospecData,
                                   cocospecModes: result.cocospecModes,
                                   // realizability
@@ -373,6 +374,7 @@ class MainView extends React.Component {
                                   completedComponents : result.completedComponents,
                                   cocospecData : result.cocospecData,
                                   cocospecModes : result.cocospecModes,
+                                  booleanOnlyComponents: result.booleanOnlyComponents                                  
                       })
       return result.components
     }).then((components) => ipcRenderer.invoke('mapVariables', components)).then((result) => {
