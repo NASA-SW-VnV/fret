@@ -769,10 +769,10 @@ class RealizabilityContent extends React.Component {
                           />
                           </div>
                           </Grid>
-                        {diagStatus === 'PROCESSING' &&
+                        {analysisProcessing &&
                           <Grid item>
                             <div style={{display : 'flex', alignItems: 'center'}}>                                                            
-                              <Typography>Diagnosis in progress...</Typography>
+                              <Typography variant="body2">Analysis in progress, do not exit REALIZABILITY CHECKING tab...</Typography>
                               <CircularProgress size={15}/>                              
                             </div>
                           </Grid>
