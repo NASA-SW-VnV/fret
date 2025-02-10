@@ -53,17 +53,17 @@ function checkTestGenDependenciesExist() {
     let missingDependencies = [];
     try {
         if ((process.platform === "linux") || (process.platform === "darwin")){
-            execSync('which nusmv');
+            execSync('which NuSMV');
         } else if (process.platform === "win32") {
-            execSync('where nusmv');
+            execSync('where NuSMV');
         } else {
             throw "Unknown_OS"
         }
     } catch (err) {
     if (err !== "Unknown_OS"){
-        missingDependencies.push('nusmv');
+        missingDependencies.push('NuSMV');
         } else {
-            missingDependencies.push('nusmv - Unknown OS detected');
+            missingDependencies.push('NuSMV - Unknown OS detected');
         }
     }
 
@@ -117,7 +117,7 @@ function testIsUnique(variableValues, uniqueVariableValues) {
 }
 
 function runNuSMV(filePath, callback) {
-    var command = 'nusmv -s -source ' + (analysisPath+'mc_steps.scr ') + filePath;
+    var command = 'NuSMV -s -source ' + (analysisPath+'mc_steps.scr ') + filePath;
 
     exec(command, function(err, stdout, stderr) {
         if (err) {
