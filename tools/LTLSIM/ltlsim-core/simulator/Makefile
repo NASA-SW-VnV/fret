@@ -6,7 +6,7 @@ ifeq ($(OS), Windows_NT)
 endif
 
 #If you want to keep the temporary smv files, uncomment the next line.
-CFLAGS += -DKEEP_TMP_FILES
+#CFLAGS += -DKEEP_TMP_FILES
 
 HEADERS = \
 		ltlsim_commands.h \
