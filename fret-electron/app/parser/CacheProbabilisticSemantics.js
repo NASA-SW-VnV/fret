@@ -41,6 +41,7 @@ var ProductIterable = require('product-iterable');
 var fs = require('fs');
 
 const fieldRanges = {
+  Scope: [],
   Condition: [],
   Probability: [],
   Timing: [],
@@ -88,7 +89,7 @@ function createProbabilisticSemantics(product) {
       //console.log(iterator.value[1]+"\n"); // probability
       //console.log(iterator.value[2]+"\n"); // timing
       //console.log(iterator.value[3]+"\n"); // response
-      FRETSemantics[key].pctl= formalizations.getProbabilisticFormalization(iterator.value[0], iterator.value[1], iterator.value[2], iterator.value[3], bound = 'bound');
+      FRETSemantics[key].pctl= formalizations.getProbabilisticFormalization(iterator.value[0], iterator.value[1], iterator.value[2], iterator.value[3], iterator.value[4], bound = 'bound');
       //console.log("=====================");
      iterator = keyIterator.next();
     }
