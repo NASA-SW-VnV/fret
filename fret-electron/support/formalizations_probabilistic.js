@@ -181,39 +181,32 @@ function notBeforeTiming(property,stopcond,endsScope='ENDSCOPE') {
 
 
  exports.getProbabilisticFormalization = (condition, probability, timing, response, bound) => {
- let response_alg = utilities.matchingBase(['false',timing,condition], Response);
+ let formula = utilities.matchingBase(['false',timing,condition], Formula);
 
- if (response_alg == 'no_match')
+ if (formula == 'no_match')
    return constants.undefined_semantics;
 
-let baseform ;
-  if (probability.includes('almostsure')) {
-    baseform = parenthesize('P >= 1 [' + response_alg +']');
-  }
-  else if (probability.includes('bound')) {
-    baseform = parenthesize('P ' + bound + ' [' + response_alg +']');
-  }
-  //console.log('baseform ' + baseform)
-  let generalForm;
-  if (condition.includes('null')){
-    generalForm = baseform;
-  }
-  else {
-    let trigger, jointEvent, conditioningEvent, ftpForm;
-    if (condition.includes('holding')){
-      trigger = 'COND';
-      jointEvent = conjunction('COND',response_alg);
-      conditioningEvent = 'COND';
-      ftpForm = 'true';
-    } else if (condition.includes('regular')){
-      trigger = conjunction(negate('COND'), 'X COND');
-      jointEvent = 'X '+ parenthesize(conjunction('COND',response_alg));
-      conditioningEvent = 'X COND';
-      ftpForm = parenthesize(implication('COND', baseform));
+ let probForm ;
+    if (probability.includes('almostsure')) {
+      probForm = parenthesize('P >= 1 [' + formula +']');
     }
-    let conditionalForm = parenthesize('P = ? [' + jointEvent + ']') + '/' + parenthesize('P = ? [' + conditioningEvent + ']') + bound ;
-     generalForm = parenthesize('P >= 1 [ G' + parenthesize(implication(trigger, conditionalForm))+'] & ' + ftpForm );
-  }
-  //console.log('generalForm ' + generalForm)
+    else if (probability.includes('bound')) {
+      probForm = parenthesize('P ' + bound + ' [' + formula +']');
+    }
+    let baseForm;
+    var cond = 'COND'
+    if (condition.includes('null')){
+      baseForm = 'PROBFORM';
+    } else if (condition.includes('holding')){
+      baseForm = parenthesize('always' + parenthesize(conditionHoldingORFTP(cond) +
+  					     parenthesize('PROBFORM')));
+
+    } else if (condition.includes('regular')){
+      baseForm = parenthesize('TRIGGER_IMPLIES ' + parenthesize('PROBFORM'));
+      var formula_1 = 'always' + parenthesize(baseForm.replace(/TRIGGER_IMPLIES/g, conditionTrigger(cond)))
+      var formula_2 = baseForm.replace(/TRIGGER_IMPLIES/g, conditionHoldingORFTP(cond))
+      baseForm = conjunction(formula_1, formula_2)
+    }
+  let generalForm = baseForm;
   return generalForm;
   }

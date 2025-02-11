@@ -1,218 +1,218 @@
 {
-  "noTrigger,almostsure,after,satisfaction": {
-    "pctl": "(P >= 1 [ G(((COND)implies((P = ? [((COND) and ((((G[<=BOUND] ((not (RES))))) and ((F[<=BOUNDPLUSONE] (RES))))))])/(P = ? [COND])bound)))] & true)"
+  "holding,almostsure,after,satisfaction": {
+    "pctl": "(always(COND implies (PROBFORM)))"
   },
-  "noTrigger,almostsure,always,satisfaction": {
-    "pctl": "(P >= 1 [ G(((COND)implies((P = ? [((COND) and ((G RES)))])/(P = ? [COND])bound)))] & true)"
+  "holding,almostsure,always,satisfaction": {
+    "pctl": "(always(COND implies (PROBFORM)))"
   },
-  "noTrigger,almostsure,before,satisfaction": {
-    "pctl": "(P >= 1 [ G(((COND)implies((P = ? [((COND) and ((RES R (not (STOPCOND)))))])/(P = ? [COND])bound)))] & true)"
+  "holding,almostsure,before,satisfaction": {
+    "pctl": "(always(COND implies (PROBFORM)))"
   },
-  "noTrigger,almostsure,eventually,satisfaction": {
-    "pctl": "(P >= 1 [ G(((COND)implies((P = ? [((COND) and ((F RES)))])/(P = ? [COND])bound)))] & true)"
+  "holding,almostsure,eventually,satisfaction": {
+    "pctl": "(always(COND implies (PROBFORM)))"
   },
-  "noTrigger,almostsure,finally,satisfaction": {
-    "pctl": "(P >= 1 [ G(((COND)implies((P = ? [((COND) and ((G true)))])/(P = ? [COND])bound)))] & true)"
+  "holding,almostsure,finally,satisfaction": {
+    "pctl": "(always(COND implies (PROBFORM)))"
   },
-  "noTrigger,almostsure,for,satisfaction": {
-    "pctl": "(P >= 1 [ G(((COND)implies((P = ? [((COND) and ((G[<=BOUND] (RES))))])/(P = ? [COND])bound)))] & true)"
+  "holding,almostsure,for,satisfaction": {
+    "pctl": "(always(COND implies (PROBFORM)))"
   },
-  "noTrigger,almostsure,immediately,satisfaction": {
-    "pctl": "(P >= 1 [ G(((COND)implies((P = ? [((COND) and (RES))])/(P = ? [COND])bound)))] & true)"
+  "holding,almostsure,immediately,satisfaction": {
+    "pctl": "(always(COND implies (PROBFORM)))"
   },
-  "noTrigger,almostsure,never,satisfaction": {
-    "pctl": "(P >= 1 [ G(((COND)implies((P = ? [((COND) and ((G (not (RES)))))])/(P = ? [COND])bound)))] & true)"
+  "holding,almostsure,never,satisfaction": {
+    "pctl": "(always(COND implies (PROBFORM)))"
   },
-  "noTrigger,almostsure,next,satisfaction": {
-    "pctl": "(P >= 1 [ G(((COND)implies((P = ? [((COND) and ((X (RES))))])/(P = ? [COND])bound)))] & true)"
+  "holding,almostsure,next,satisfaction": {
+    "pctl": "(always(COND implies (PROBFORM)))"
   },
-  "noTrigger,almostsure,null,satisfaction": {
-    "pctl": "(P >= 1 [ G(((COND)implies((P = ? [((COND) and ((F RES)))])/(P = ? [COND])bound)))] & true)"
+  "holding,almostsure,null,satisfaction": {
+    "pctl": "(always(COND implies (PROBFORM)))"
   },
-  "noTrigger,almostsure,until,satisfaction": {
-    "pctl": "(P >= 1 [ G(((COND)implies((P = ? [((COND) and ((STOPCOND R ((RES) or (STOPCOND)))))])/(P = ? [COND])bound)))] & true)"
+  "holding,almostsure,until,satisfaction": {
+    "pctl": "(always(COND implies (PROBFORM)))"
   },
-  "noTrigger,almostsure,within,satisfaction": {
-    "pctl": "(P >= 1 [ G(((COND)implies((P = ? [((COND) and ((F[<=BOUND] (RES))))])/(P = ? [COND])bound)))] & true)"
+  "holding,almostsure,within,satisfaction": {
+    "pctl": "(always(COND implies (PROBFORM)))"
   },
-  "noTrigger,bound,after,satisfaction": {
-    "pctl": "(P >= 1 [ G(((COND)implies((P = ? [((COND) and ((((G[<=BOUND] ((not (RES))))) and ((F[<=BOUNDPLUSONE] (RES))))))])/(P = ? [COND])bound)))] & true)"
+  "holding,bound,after,satisfaction": {
+    "pctl": "(always(COND implies (PROBFORM)))"
   },
-  "noTrigger,bound,always,satisfaction": {
-    "pctl": "(P >= 1 [ G(((COND)implies((P = ? [((COND) and ((G RES)))])/(P = ? [COND])bound)))] & true)"
+  "holding,bound,always,satisfaction": {
+    "pctl": "(always(COND implies (PROBFORM)))"
   },
-  "noTrigger,bound,before,satisfaction": {
-    "pctl": "(P >= 1 [ G(((COND)implies((P = ? [((COND) and ((RES R (not (STOPCOND)))))])/(P = ? [COND])bound)))] & true)"
+  "holding,bound,before,satisfaction": {
+    "pctl": "(always(COND implies (PROBFORM)))"
   },
-  "noTrigger,bound,eventually,satisfaction": {
-    "pctl": "(P >= 1 [ G(((COND)implies((P = ? [((COND) and ((F RES)))])/(P = ? [COND])bound)))] & true)"
+  "holding,bound,eventually,satisfaction": {
+    "pctl": "(always(COND implies (PROBFORM)))"
   },
-  "noTrigger,bound,finally,satisfaction": {
-    "pctl": "(P >= 1 [ G(((COND)implies((P = ? [((COND) and ((G true)))])/(P = ? [COND])bound)))] & true)"
+  "holding,bound,finally,satisfaction": {
+    "pctl": "(always(COND implies (PROBFORM)))"
   },
-  "noTrigger,bound,for,satisfaction": {
-    "pctl": "(P >= 1 [ G(((COND)implies((P = ? [((COND) and ((G[<=BOUND] (RES))))])/(P = ? [COND])bound)))] & true)"
+  "holding,bound,for,satisfaction": {
+    "pctl": "(always(COND implies (PROBFORM)))"
   },
-  "noTrigger,bound,immediately,satisfaction": {
-    "pctl": "(P >= 1 [ G(((COND)implies((P = ? [((COND) and (RES))])/(P = ? [COND])bound)))] & true)"
+  "holding,bound,immediately,satisfaction": {
+    "pctl": "(always(COND implies (PROBFORM)))"
   },
-  "noTrigger,bound,never,satisfaction": {
-    "pctl": "(P >= 1 [ G(((COND)implies((P = ? [((COND) and ((G (not (RES)))))])/(P = ? [COND])bound)))] & true)"
+  "holding,bound,never,satisfaction": {
+    "pctl": "(always(COND implies (PROBFORM)))"
   },
-  "noTrigger,bound,next,satisfaction": {
-    "pctl": "(P >= 1 [ G(((COND)implies((P = ? [((COND) and ((X (RES))))])/(P = ? [COND])bound)))] & true)"
+  "holding,bound,next,satisfaction": {
+    "pctl": "(always(COND implies (PROBFORM)))"
   },
-  "noTrigger,bound,null,satisfaction": {
-    "pctl": "(P >= 1 [ G(((COND)implies((P = ? [((COND) and ((F RES)))])/(P = ? [COND])bound)))] & true)"
+  "holding,bound,null,satisfaction": {
+    "pctl": "(always(COND implies (PROBFORM)))"
   },
-  "noTrigger,bound,until,satisfaction": {
-    "pctl": "(P >= 1 [ G(((COND)implies((P = ? [((COND) and ((STOPCOND R ((RES) or (STOPCOND)))))])/(P = ? [COND])bound)))] & true)"
+  "holding,bound,until,satisfaction": {
+    "pctl": "(always(COND implies (PROBFORM)))"
   },
-  "noTrigger,bound,within,satisfaction": {
-    "pctl": "(P >= 1 [ G(((COND)implies((P = ? [((COND) and ((F[<=BOUND] (RES))))])/(P = ? [COND])bound)))] & true)"
+  "holding,bound,within,satisfaction": {
+    "pctl": "(always(COND implies (PROBFORM)))"
   },
   "null,almostsure,after,satisfaction": {
-    "pctl": "(P >= 1 [(((G[<=BOUND] ((not (RES))))) and ((F[<=BOUNDPLUSONE] (RES))))])"
+    "pctl": "PROBFORM"
   },
   "null,almostsure,always,satisfaction": {
-    "pctl": "(P >= 1 [(G RES)])"
+    "pctl": "PROBFORM"
   },
   "null,almostsure,before,satisfaction": {
-    "pctl": "(P >= 1 [(RES R (not (STOPCOND)))])"
+    "pctl": "PROBFORM"
   },
   "null,almostsure,eventually,satisfaction": {
-    "pctl": "(P >= 1 [(F RES)])"
+    "pctl": "PROBFORM"
   },
   "null,almostsure,finally,satisfaction": {
-    "pctl": "(P >= 1 [(G true)])"
+    "pctl": "PROBFORM"
   },
   "null,almostsure,for,satisfaction": {
-    "pctl": "(P >= 1 [(G[<=BOUND] (RES))])"
+    "pctl": "PROBFORM"
   },
   "null,almostsure,immediately,satisfaction": {
-    "pctl": "(P >= 1 [RES])"
+    "pctl": "PROBFORM"
   },
   "null,almostsure,never,satisfaction": {
-    "pctl": "(P >= 1 [(G (not (RES)))])"
+    "pctl": "PROBFORM"
   },
   "null,almostsure,next,satisfaction": {
-    "pctl": "(P >= 1 [(X (RES))])"
+    "pctl": "PROBFORM"
   },
   "null,almostsure,null,satisfaction": {
-    "pctl": "(P >= 1 [(F RES)])"
+    "pctl": "PROBFORM"
   },
   "null,almostsure,until,satisfaction": {
-    "pctl": "(P >= 1 [(STOPCOND R ((RES) or (STOPCOND)))])"
+    "pctl": "PROBFORM"
   },
   "null,almostsure,within,satisfaction": {
-    "pctl": "(P >= 1 [(F[<=BOUND] (RES))])"
+    "pctl": "PROBFORM"
   },
   "null,bound,after,satisfaction": {
-    "pctl": "(P bound [(((G[<=BOUND] ((not (RES))))) and ((F[<=BOUNDPLUSONE] (RES))))])"
+    "pctl": "PROBFORM"
   },
   "null,bound,always,satisfaction": {
-    "pctl": "(P bound [(G RES)])"
+    "pctl": "PROBFORM"
   },
   "null,bound,before,satisfaction": {
-    "pctl": "(P bound [(RES R (not (STOPCOND)))])"
+    "pctl": "PROBFORM"
   },
   "null,bound,eventually,satisfaction": {
-    "pctl": "(P bound [(F RES)])"
+    "pctl": "PROBFORM"
   },
   "null,bound,finally,satisfaction": {
-    "pctl": "(P bound [(G true)])"
+    "pctl": "PROBFORM"
   },
   "null,bound,for,satisfaction": {
-    "pctl": "(P bound [(G[<=BOUND] (RES))])"
+    "pctl": "PROBFORM"
   },
   "null,bound,immediately,satisfaction": {
-    "pctl": "(P bound [RES])"
+    "pctl": "PROBFORM"
   },
   "null,bound,never,satisfaction": {
-    "pctl": "(P bound [(G (not (RES)))])"
+    "pctl": "PROBFORM"
   },
   "null,bound,next,satisfaction": {
-    "pctl": "(P bound [(X (RES))])"
+    "pctl": "PROBFORM"
   },
   "null,bound,null,satisfaction": {
-    "pctl": "(P bound [(F RES)])"
+    "pctl": "PROBFORM"
   },
   "null,bound,until,satisfaction": {
-    "pctl": "(P bound [(STOPCOND R ((RES) or (STOPCOND)))])"
+    "pctl": "PROBFORM"
   },
   "null,bound,within,satisfaction": {
-    "pctl": "(P bound [(F[<=BOUND] (RES))])"
+    "pctl": "PROBFORM"
   },
   "regular,almostsure,after,satisfaction": {
-    "pctl": "(P >= 1 [ G((((((not (COND))) and (X COND)))implies((P = ? [X (((COND) and ((((G[<=BOUND] ((not (RES))))) and ((F[<=BOUNDPLUSONE] (RES)))))))])/(P = ? [X COND])bound)))] & (((COND)implies((P >= 1 [(((G[<=BOUND] ((not (RES))))) and ((F[<=BOUNDPLUSONE] (RES))))])))))"
+    "pctl": "((always((((not COND) and next COND) implies next  (PROBFORM)))) and ((COND implies  (PROBFORM))))"
   },
   "regular,almostsure,always,satisfaction": {
-    "pctl": "(P >= 1 [ G((((((not (COND))) and (X COND)))implies((P = ? [X (((COND) and ((G RES))))])/(P = ? [X COND])bound)))] & (((COND)implies((P >= 1 [(G RES)])))))"
+    "pctl": "((always((((not COND) and next COND) implies next  (PROBFORM)))) and ((COND implies  (PROBFORM))))"
   },
   "regular,almostsure,before,satisfaction": {
-    "pctl": "(P >= 1 [ G((((((not (COND))) and (X COND)))implies((P = ? [X (((COND) and ((RES R (not (STOPCOND))))))])/(P = ? [X COND])bound)))] & (((COND)implies((P >= 1 [(RES R (not (STOPCOND)))])))))"
+    "pctl": "((always((((not COND) and next COND) implies next  (PROBFORM)))) and ((COND implies  (PROBFORM))))"
   },
   "regular,almostsure,eventually,satisfaction": {
-    "pctl": "(P >= 1 [ G((((((not (COND))) and (X COND)))implies((P = ? [X (((COND) and ((F RES))))])/(P = ? [X COND])bound)))] & (((COND)implies((P >= 1 [(F RES)])))))"
+    "pctl": "((always((((not COND) and next COND) implies next  (PROBFORM)))) and ((COND implies  (PROBFORM))))"
   },
   "regular,almostsure,finally,satisfaction": {
-    "pctl": "(P >= 1 [ G((((((not (COND))) and (X COND)))implies((P = ? [X (((COND) and ((G true))))])/(P = ? [X COND])bound)))] & (((COND)implies((P >= 1 [(G true)])))))"
+    "pctl": "((always((((not COND) and next COND) implies next  (PROBFORM)))) and ((COND implies  (PROBFORM))))"
   },
   "regular,almostsure,for,satisfaction": {
-    "pctl": "(P >= 1 [ G((((((not (COND))) and (X COND)))implies((P = ? [X (((COND) and ((G[<=BOUND] (RES)))))])/(P = ? [X COND])bound)))] & (((COND)implies((P >= 1 [(G[<=BOUND] (RES))])))))"
+    "pctl": "((always((((not COND) and next COND) implies next  (PROBFORM)))) and ((COND implies  (PROBFORM))))"
   },
   "regular,almostsure,immediately,satisfaction": {
-    "pctl": "(P >= 1 [ G((((((not (COND))) and (X COND)))implies((P = ? [X (((COND) and (RES)))])/(P = ? [X COND])bound)))] & (((COND)implies((P >= 1 [RES])))))"
+    "pctl": "((always((((not COND) and next COND) implies next  (PROBFORM)))) and ((COND implies  (PROBFORM))))"
   },
   "regular,almostsure,never,satisfaction": {
-    "pctl": "(P >= 1 [ G((((((not (COND))) and (X COND)))implies((P = ? [X (((COND) and ((G (not (RES))))))])/(P = ? [X COND])bound)))] & (((COND)implies((P >= 1 [(G (not (RES)))])))))"
+    "pctl": "((always((((not COND) and next COND) implies next  (PROBFORM)))) and ((COND implies  (PROBFORM))))"
   },
   "regular,almostsure,next,satisfaction": {
-    "pctl": "(P >= 1 [ G((((((not (COND))) and (X COND)))implies((P = ? [X (((COND) and ((X (RES)))))])/(P = ? [X COND])bound)))] & (((COND)implies((P >= 1 [(X (RES))])))))"
+    "pctl": "((always((((not COND) and next COND) implies next  (PROBFORM)))) and ((COND implies  (PROBFORM))))"
   },
   "regular,almostsure,null,satisfaction": {
-    "pctl": "(P >= 1 [ G((((((not (COND))) and (X COND)))implies((P = ? [X (((COND) and ((F RES))))])/(P = ? [X COND])bound)))] & (((COND)implies((P >= 1 [(F RES)])))))"
+    "pctl": "((always((((not COND) and next COND) implies next  (PROBFORM)))) and ((COND implies  (PROBFORM))))"
   },
   "regular,almostsure,until,satisfaction": {
-    "pctl": "(P >= 1 [ G((((((not (COND))) and (X COND)))implies((P = ? [X (((COND) and ((STOPCOND R ((RES) or (STOPCOND))))))])/(P = ? [X COND])bound)))] & (((COND)implies((P >= 1 [(STOPCOND R ((RES) or (STOPCOND)))])))))"
+    "pctl": "((always((((not COND) and next COND) implies next  (PROBFORM)))) and ((COND implies  (PROBFORM))))"
   },
   "regular,almostsure,within,satisfaction": {
-    "pctl": "(P >= 1 [ G((((((not (COND))) and (X COND)))implies((P = ? [X (((COND) and ((F[<=BOUND] (RES)))))])/(P = ? [X COND])bound)))] & (((COND)implies((P >= 1 [(F[<=BOUND] (RES))])))))"
+    "pctl": "((always((((not COND) and next COND) implies next  (PROBFORM)))) and ((COND implies  (PROBFORM))))"
   },
   "regular,bound,after,satisfaction": {
-    "pctl": "(P >= 1 [ G((((((not (COND))) and (X COND)))implies((P = ? [X (((COND) and ((((G[<=BOUND] ((not (RES))))) and ((F[<=BOUNDPLUSONE] (RES)))))))])/(P = ? [X COND])bound)))] & (((COND)implies((P bound [(((G[<=BOUND] ((not (RES))))) and ((F[<=BOUNDPLUSONE] (RES))))])))))"
+    "pctl": "((always((((not COND) and next COND) implies next  (PROBFORM)))) and ((COND implies  (PROBFORM))))"
   },
   "regular,bound,always,satisfaction": {
-    "pctl": "(P >= 1 [ G((((((not (COND))) and (X COND)))implies((P = ? [X (((COND) and ((G RES))))])/(P = ? [X COND])bound)))] & (((COND)implies((P bound [(G RES)])))))"
+    "pctl": "((always((((not COND) and next COND) implies next  (PROBFORM)))) and ((COND implies  (PROBFORM))))"
   },
   "regular,bound,before,satisfaction": {
-    "pctl": "(P >= 1 [ G((((((not (COND))) and (X COND)))implies((P = ? [X (((COND) and ((RES R (not (STOPCOND))))))])/(P = ? [X COND])bound)))] & (((COND)implies((P bound [(RES R (not (STOPCOND)))])))))"
+    "pctl": "((always((((not COND) and next COND) implies next  (PROBFORM)))) and ((COND implies  (PROBFORM))))"
   },
   "regular,bound,eventually,satisfaction": {
-    "pctl": "(P >= 1 [ G((((((not (COND))) and (X COND)))implies((P = ? [X (((COND) and ((F RES))))])/(P = ? [X COND])bound)))] & (((COND)implies((P bound [(F RES)])))))"
+    "pctl": "((always((((not COND) and next COND) implies next  (PROBFORM)))) and ((COND implies  (PROBFORM))))"
   },
   "regular,bound,finally,satisfaction": {
-    "pctl": "(P >= 1 [ G((((((not (COND))) and (X COND)))implies((P = ? [X (((COND) and ((G true))))])/(P = ? [X COND])bound)))] & (((COND)implies((P bound [(G true)])))))"
+    "pctl": "((always((((not COND) and next COND) implies next  (PROBFORM)))) and ((COND implies  (PROBFORM))))"
   },
   "regular,bound,for,satisfaction": {
-    "pctl": "(P >= 1 [ G((((((not (COND))) and (X COND)))implies((P = ? [X (((COND) and ((G[<=BOUND] (RES)))))])/(P = ? [X COND])bound)))] & (((COND)implies((P bound [(G[<=BOUND] (RES))])))))"
+    "pctl": "((always((((not COND) and next COND) implies next  (PROBFORM)))) and ((COND implies  (PROBFORM))))"
   },
   "regular,bound,immediately,satisfaction": {
-    "pctl": "(P >= 1 [ G((((((not (COND))) and (X COND)))implies((P = ? [X (((COND) and (RES)))])/(P = ? [X COND])bound)))] & (((COND)implies((P bound [RES])))))"
+    "pctl": "((always((((not COND) and next COND) implies next  (PROBFORM)))) and ((COND implies  (PROBFORM))))"
   },
   "regular,bound,never,satisfaction": {
-    "pctl": "(P >= 1 [ G((((((not (COND))) and (X COND)))implies((P = ? [X (((COND) and ((G (not (RES))))))])/(P = ? [X COND])bound)))] & (((COND)implies((P bound [(G (not (RES)))])))))"
+    "pctl": "((always((((not COND) and next COND) implies next  (PROBFORM)))) and ((COND implies  (PROBFORM))))"
   },
   "regular,bound,next,satisfaction": {
-    "pctl": "(P >= 1 [ G((((((not (COND))) and (X COND)))implies((P = ? [X (((COND) and ((X (RES)))))])/(P = ? [X COND])bound)))] & (((COND)implies((P bound [(X (RES))])))))"
+    "pctl": "((always((((not COND) and next COND) implies next  (PROBFORM)))) and ((COND implies  (PROBFORM))))"
   },
   "regular,bound,null,satisfaction": {
-    "pctl": "(P >= 1 [ G((((((not (COND))) and (X COND)))implies((P = ? [X (((COND) and ((F RES))))])/(P = ? [X COND])bound)))] & (((COND)implies((P bound [(F RES)])))))"
+    "pctl": "((always((((not COND) and next COND) implies next  (PROBFORM)))) and ((COND implies  (PROBFORM))))"
   },
   "regular,bound,until,satisfaction": {
-    "pctl": "(P >= 1 [ G((((((not (COND))) and (X COND)))implies((P = ? [X (((COND) and ((STOPCOND R ((RES) or (STOPCOND))))))])/(P = ? [X COND])bound)))] & (((COND)implies((P bound [(STOPCOND R ((RES) or (STOPCOND)))])))))"
+    "pctl": "((always((((not COND) and next COND) implies next  (PROBFORM)))) and ((COND implies  (PROBFORM))))"
   },
   "regular,bound,within,satisfaction": {
-    "pctl": "(P >= 1 [ G((((((not (COND))) and (X COND)))implies((P = ? [X (((COND) and ((F[<=BOUND] (RES)))))])/(P = ? [X COND])bound)))] & (((COND)implies((P bound [(F[<=BOUND] (RES))])))))"
+    "pctl": "((always((((not COND) and next COND) implies next  (PROBFORM)))) and ((COND implies  (PROBFORM))))"
   }
 }
