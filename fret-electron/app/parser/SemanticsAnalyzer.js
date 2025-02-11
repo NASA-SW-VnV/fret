@@ -184,7 +184,7 @@ RequirementListener.prototype.enterQualifier_word = function(ctx) {
   if (result.qualifier_word === "whenever"
     // The second conjunct is for when both continual and trigger appear
       && result.condition !== 'regular')
-    result.condition = "noTrigger";
+    result.condition = "holding";
   else result.condition = "regular";
 }
 
@@ -411,7 +411,7 @@ function createVariableDescription(scope, condition, timing, response, stop_cond
   }
   if (condition == 'regular'){
     description += 'TC = $regular_condition$, '
-  } else if (condition == 'noTrigger') {
+  } else if (condition == 'holding') {
       description += 'CC = $regular_condition$, '
   }
 

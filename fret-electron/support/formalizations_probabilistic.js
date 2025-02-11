@@ -35,7 +35,7 @@ const constants = require('../app/parser/Constants');
 const utilities = require(fretSupportPath + 'utilities')
 
 
-
+// This is for infinite traces (so LAST - false)
 const PRISMEndpointRewrites = [
   ['FiM|FFiM|LNiM', '((! MODE) & (X MODE))'],
   ['LiM|FNiM|FLiM', '(MODE & X (! MODE))']
@@ -93,9 +93,6 @@ function notImmediately(property) {
 function Finally(property,endsScope='ENDSCOPE') {
   return always(implication(endsScope,property))
 }
-// function Finally(property) {
-//   return always('true');
-// }
 
 //TODO: Check this
 function notFinally(property) {
@@ -185,6 +182,7 @@ function notBeforeTiming(property,stopcond,endsScope='ENDSCOPE') {
 
  exports.getProbabilisticFormalization = (condition, probability, timing, response, bound) => {
  let response_alg = utilities.matchingBase(['false',timing,condition], Response);
+
  if (response_alg == 'no_match')
    return constants.undefined_semantics;
 
@@ -202,7 +200,7 @@ let baseform ;
   }
   else {
     let trigger, jointEvent, conditioningEvent, ftpForm;
-    if (condition.includes('noTrigger')){
+    if (condition.includes('holding')){
       trigger = 'COND';
       jointEvent = conjunction('COND',response_alg);
       conditioningEvent = 'COND';
