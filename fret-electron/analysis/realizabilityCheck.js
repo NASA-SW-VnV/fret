@@ -64,7 +64,8 @@ export function checkRealizability(filePath, engine, options, callback) {
         var logResults = kind2Output.filter(e => ((e.objectType === "log") && (e.level === "error")))[0];
         err.message = err.message + '\n' + logResults.value.toString();
       }
-      callback(err);
+      var errorMessage = 'Error: ' + (engine === 'jkind' ? 'JKind' : 'Kind 2') + ' call terminated unexpectedly.'
+      callback(errorMessage);
     } else {
       let result, time, realizableTraceInfo, jsonOutput;
       if (engine === 'jkind') {
@@ -85,22 +86,45 @@ export function checkRealizability(filePath, engine, options, callback) {
         callback(null, result, time, realizableTraceInfo, jsonOutput);
       } else {
         var kind2Output = JSON.parse(stdout);
-        var kind2OutputReverse = kind2Output.reverse();
-        var realizabilityResults = kind2OutputReverse.find(e => e.objectType === "realizabilityCheck");
-        var consistencyResults = kind2OutputReverse.find(e => e.objectType === "satisfiabilityCheck");
-        var logResultsArray = kind2Output.filter(e => e.objectType === "log");
-        var logResults = logResultsArray[logResultsArray.length-1];
-        result = (logResults && logResults.value === "Wallclock timeout.") ? "UNKNOWN" : ((consistencyResults && consistencyResults.result === "unsatisfiable") ? "UNREALIZABLE" : realizabilityResults.result.toUpperCase());
-        if (consistencyResults) {
-          time = (realizabilityResults.runtime['value'] + consistencyResults.runtime['value']).toString() + realizabilityResults.runtime['unit'];
-        } else if (realizabilityResults) {
-          time = (realizabilityResults.runtime['value'] + (consistencyResults ? consistencyResults.runtime['value'] : 0)).toString() + realizabilityResults.runtime['unit'];
-        } else {
-          time = "Wallclock timeout."
+        var analysisElement = []
+        var inAnalysisBlock = false;
+        for (const elem of kind2Output.filter(e => e.objectType)) {
+          if (elem.objectType === 'analysisStart') {
+            var contractContext = elem.context ? elem.context === 'contract' : true;
+            if (contractContext) {
+              inAnalysisBlock = true;
+              analysisElement.push(elem)
+            }            
+          } else if (inAnalysisBlock && elem.objectType === 'analysisStop') {
+            analysisElement.push(elem)
+            break;
+          } else if (inAnalysisBlock) {
+            analysisElement.push(elem)
+          }
         }
 
-        realizableTraceInfo = (realizabilityResults && realizabilityResults.deadlockingTrace) ? realizabilityResults.deadlockingTrace : null;
-        callback(null, result, time, realizableTraceInfo, kind2Output);
+        var realizabilityResults = analysisElement.find(e => e.objectType === 'realizabilityCheck');
+        var consistencyResults = analysisElement.find(e => e.objectType === 'satisfiabilityCheck')
+        // var kind2OutputReverse = kind2Output.reverse();
+        // var realizabilityResults = kind2OutputReverse.find(e => e.objectType === "realizabilityCheck");
+        // var consistencyResults = kind2OutputReverse.find(e => e.objectType === "satisfiabilityCheck");
+        if (realizabilityResults) {
+          var logResultsArray = kind2Output.filter(e => e.objectType === "log");
+          var logResults = logResultsArray[logResultsArray.length-1];
+          result = (logResults && logResults.value === "Wallclock timeout.") ? "UNKNOWN" : (consistencyResults ? (consistencyResults.result === "unsatisfiable" ? "UNREALIZABLE" : realizabilityResults.result.toUpperCase()) : realizabilityResults.result.toUpperCase());
+          if (consistencyResults) {
+            time = (realizabilityResults.runtime['value'] + consistencyResults.runtime['value']).toString() + realizabilityResults.runtime['unit'];
+          } else if (realizabilityResults) {
+            time = (realizabilityResults.runtime['value'] + (consistencyResults ? consistencyResults.runtime['value'] : 0)).toString() + realizabilityResults.runtime['unit'];
+          } else {
+            time = "Wallclock timeout."
+          }
+
+          realizableTraceInfo = (realizabilityResults && realizabilityResults.deadlockingTrace) ? realizabilityResults.deadlockingTrace : null;
+          callback(null, result, time, realizableTraceInfo, kind2Output);
+        } else {          
+          callback('Error: Kind 2 call terminated unexpectedly.')
+        }
       }
       
     }

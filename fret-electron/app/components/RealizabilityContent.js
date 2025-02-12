@@ -217,7 +217,7 @@ export function ResultIcon(props) {
     const {reskey, result, time, error} = props;
 
     return (
-      <Tooltip title={<span style={{ whiteSpace: 'pre-line' }}> {(result === 'ERROR' ? ("The following error(s) occured at the solver level:\n" + error) : result) +
+      <Tooltip title={<span style={{ whiteSpace: 'pre-line' }}> {(result === 'ERROR' ? error : result) +
         (time !== undefined ? time : '')} </span>}>
         {result === 'REALIZABLE' ?
           <CheckCircleOutlineIcon id = {"qa_rlzCont_res_"+reskey+"_"+result} style={{fontSize : '20px', verticalAlign : 'bottom', color : '#68BC00'}}/> :
@@ -443,6 +443,12 @@ class RealizabilityContent extends React.Component {
         projectReport: result.projectReport,
         diagnosisRequirements: result.diagnosisRequirements
       });
+    }).catch(err => {
+      self.setState((prevState) => ({
+        ...prevState,
+        projectReport: err.projectReport,
+        diagnosisRequirements: err.diagnosisRequirements
+      }))
     })
   }
 
@@ -782,8 +788,8 @@ class RealizabilityContent extends React.Component {
                             <ErrorIcon id="qa_rlzCont_icon_depMissing" className={classes.wrapper} style={{verticalAlign : 'bottom'}} color='error'/>
                           </Tooltip>
                         }
-                        {monolithic && diagStatus === 'ERROR' &&                        
-                          <Tooltip title={(systemComponentIndex !== -1 && projectReport.systemComponents[systemComponentIndex]) ? projectReport.systemComponents[systemComponentIndex].monolithic.error.toString() : ''}>
+                        {(diagStatus === 'ERROR' && !analysisProcessing) &&
+                          <Tooltip title={(systemComponentIndex !== -1 && projectReport.systemComponents[systemComponentIndex]) ? (monolithic ? projectReport.systemComponents[systemComponentIndex].monolithic.error.toString() : projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].error.toString()) : 'Diagnosis terminated unexpectedly.'}>
                             <ErrorIcon id="qa_rlzCont_icon_analysisError" className={classes.wrapper} style={{verticalAlign: 'bottom'}} color='error'/>
                           </Tooltip>
                         }

@@ -372,7 +372,7 @@ function checkRealizability(selectedProject, components, rlzState, selectedReqs)
 
               if (err) {
                   rlzState.projectReport.systemComponents[systemComponentIndex].monolithic.result = 'ERROR';
-                  rlzState.projectReport.systemComponents[systemComponentIndex].monolithic.error = err.message;
+                  rlzState.projectReport.systemComponents[systemComponentIndex].monolithic.error = err;
               } else {
                   rlzState.projectReport.systemComponents[systemComponentIndex].monolithic.result = result;
                   rlzState.projectReport.systemComponents[systemComponentIndex].monolithic.time = time;
@@ -409,7 +409,7 @@ function checkRealizability(selectedProject, components, rlzState, selectedReqs)
               
               if (err) {
                 cc.result = 'ERROR';
-                cc.error = err.message;
+                cc.error = err;
                 rlzState.projectReport = projectReport;
                 ccResults.push('ERROR');
               } else {
@@ -471,7 +471,7 @@ function diagnoseSpec(selectedProject, rlzState, selectedReqs) {
   let engineName = nameAndEngine.name;
   let engineOptions = nameAndEngine.options + actualTimeout;
 
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     modelDB.find({
       selector: {
         component_name: selected.component_name,
@@ -503,7 +503,7 @@ function diagnoseSpec(selectedProject, rlzState, selectedReqs) {
           engine.main().then(function ([err, result]) {
             if (err) {              
               projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].diagnosisStatus = 'ERROR';
-              projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].error = err.message+'\n'+err.stdout.toString();
+              projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].error = err;
 
                 rlzState.projectReport = projectReport
               } else if (result) {
@@ -520,6 +520,12 @@ function diagnoseSpec(selectedProject, rlzState, selectedReqs) {
 
             resolve(rlzState)
 
+          }).catch(err => {
+            projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].diagnosisStatus = 'ERROR';
+            projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].error = err;
+
+            rlzState.projectReport = projectReport
+            resolve(rlzState)
           });
         } else if (monolithic) {
           contract.componentName = selected.component_name;
@@ -530,7 +536,7 @@ function diagnoseSpec(selectedProject, rlzState, selectedReqs) {
               projectReport.systemComponents[systemComponentIndex].monolithic.diagnosisStatus = 'ERROR';
               projectReport.systemComponents[systemComponentIndex].monolithic.error = err;
 
-                rlzState.projectReport = projectReport
+              rlzState.projectReport = projectReport
             } else if (result) {
               projectReport.systemComponents[systemComponentIndex].monolithic.diagnosisStatus = 'DIAGNOSED';
               projectReport.systemComponents[systemComponentIndex].monolithic.diagnosisReport = result[1];
@@ -543,7 +549,27 @@ function diagnoseSpec(selectedProject, rlzState, selectedReqs) {
             }
 
             resolve(rlzState)
+          }).catch(err => {
+            projectReport.systemComponents[systemComponentIndex].monolithic.diagnosisStatus = 'ERROR';
+            projectReport.systemComponents[systemComponentIndex].monolithic.error = err;
+
+            rlzState.projectReport = projectReport
+            resolve(rlzState)
           });
+        }
+      }).catch (err => {
+        if (compositional) {
+          projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].diagnosisStatus = 'ERROR';
+          projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].error = err;
+
+          rlzState.projectReport = projectReport
+          resolve(rlzState)
+        } else {
+          projectReport.systemComponents[systemComponentIndex].monolithic.diagnosisStatus = 'ERROR';
+          projectReport.systemComponents[systemComponentIndex].monolithic.error = err;
+
+          rlzState.projectReport = projectReport
+          resolve(rlzState)          
         }
       })
     })

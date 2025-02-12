@@ -124,7 +124,7 @@ class DiagnosisEngine {
   runEnginesAndGatherResults(minimal) {
     this.optLog('Engines to run: ' + JSON.stringify(this.engines.map(eng => eng.properties.map(p => p.reqid))))
     var localMap = new Map();
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         let self = this;                       
         if (self.engines.length === 0) {
           self.optLog("No engines to run, return.")
@@ -150,66 +150,95 @@ class DiagnosisEngine {
               }
 
               realizabilityCheck.checkRealizability(filePath, self.engineName, self.engineOptions, function(err, result, time, traceInfo, jsonOutput) {
+                if (err) {
+                  self.engines = []
+                  reject(err)
+                } else {
+                  try {
+                    localMap.set(propertyList, result);
 
-              localMap.set(propertyList, result);
+                    if (result === "UNREALIZABLE" && minimal) {
+                      if (self.engineName === 'kind2') {
+                        var analysisElement = []
+                        var inAnalysisBlock = false;
+                        for (const elem of jsonOutput.filter(e => e.objectType)) {
+                          if (elem.objectType === 'analysisStart') {
+                            var contractContext = elem.context ? elem.context === 'contract' : true;
+                            if (contractContext) {
+                              inAnalysisBlock = true;
+                              analysisElement.push(elem)
+                            }            
+                          } else if (inAnalysisBlock && elem.objectType === 'analysisStop') {
+                            analysisElement.push(elem)
+                            break;
+                          } else if (inAnalysisBlock) {
+                            analysisElement.push(elem)
+                          }
+                        }
+                
+                        var kind2JsonResult = analysisElement.find(e => e.objectType === 'realizabilityCheck');                        
+                        let newJsonOutput = {
+                          "Runtime": {
+                            "unit": kind2JsonResult.runtime['unit'],
+                            "value": kind2JsonResult.runtime['value']},
+                          "Answer": {"text": kind2JsonResult.result},
+                          "K": kind2JsonResult.deadlockingTrace[0].streams[0].instantValues.length,
+                          "Counterexample": []
+                        };
+                        let signals = kind2JsonResult.deadlockingTrace[0].streams;
 
-              if (result === "UNREALIZABLE" && minimal) {
-
-                if (self.engineName === 'kind2') {
-                  var jsonOutputReverse = jsonOutput.reverse();
-                  let kind2JsonResult = jsonOutputReverse.find(e => e.objectType === "realizabilityCheck");
-                  
-                  let newJsonOutput = {
-                    "Runtime": {
-                      "unit": kind2JsonResult.runtime['unit'],
-                      "value": kind2JsonResult.runtime['value']},
-                    "Answer": {"text": kind2JsonResult.result},
-                    "K": kind2JsonResult.deadlockingTrace[0].streams[0].instantValues.length,
-                    "Counterexample": []
-                  };
-                  let signals = kind2JsonResult.deadlockingTrace[0].streams;
-
-                  for (const signal of signals) {
-                    let signalInfo = {"name": signal.name, "type": signal.type}              
-                    for (let i = 0; i < newJsonOutput.K; i++){                
-                      let signalValue = signals[signals.indexOf(signal)].instantValues[i][1];
-                      signalInfo['Step '+i] = (typeof signalValue === "object") ? (signalValue.num / signalValue.den) : signalValue ;
+                        for (const signal of signals) {
+                          let signalInfo = {"name": signal.name, "type": signal.type}              
+                          for (let i = 0; i < newJsonOutput.K; i++){                
+                            let signalValue = signals[signals.indexOf(signal)].instantValues[i][1];
+                            signalInfo['Step '+i] = (typeof signalValue === "object") ? (signalValue.num / signalValue.den) : signalValue ;
+                          }
+                          newJsonOutput.Counterexample.push(signalInfo);
+                        }
+                        jsonOutput = newJsonOutput;
+                      }
+                      self.counterExamples.set(propertyList, jsonOutput);
                     }
-                    newJsonOutput.Counterexample.push(signalInfo);
-                  }
-                  jsonOutput = newJsonOutput;
-                }
-                self.counterExamples.set(propertyList, jsonOutput);
-              }
-              self.optLog('localMap size: '+localMap.size)
-              self.optLog('Number of engines: '+ self.engines.length)
+                    self.optLog('localMap size: '+localMap.size)
+                    self.optLog('Number of engines: '+ self.engines.length)
 
-              if (localMap.size === self.engines.length) {
-                self.engines = [];
-                self.optLog("\nMap of results for registered engines:\n\n")
-                self.optLog(localMap);
-                resolve(localMap);
-              }
-            })
+                    if (localMap.size === self.engines.length) {
+                      self.engines = [];
+                      self.optLog("\nMap of results for registered engines:\n\n")
+                      self.optLog(localMap);
+                      resolve(localMap);
+                    }
+                  } catch (err) {
+                    self.engines = []
+                    reject(err)
+                  }
+                }
+              })
             } else {
               realizabilityCheck.checkRealizability(filePath, self.engineName, self.engineOptions, function(err, result, time, traceInfo, jsonOutput) {
                 if (err) {
-                  self.optLog(err)
+                  self.engines = []
+                  reject(err)
                 } else {
-                localMap.set(propertyList, result);
-                self.optLog("\nResult for properties "+JSON.stringify(propertyList)+":\n\n"+result);
-                self.optLog("\nCurrent localMap:\n\n");
-                self.optLog(localMap);
+                  try {
+                    localMap.set(propertyList, result);
+                    self.optLog("\nResult for properties "+JSON.stringify(propertyList)+":\n\n"+result);
+                    self.optLog("\nCurrent localMap:\n\n");
+                    self.optLog(localMap);
 
-                self.optLog('localMap size: '+localMap.size)
-                self.optLog('Number of engines: '+ self.engines.length)
-      
-                if (localMap.size === self.engines.length) {
-                  self.engines = [];
-                  self.optLog("\nMap of results for registered engines:\n\n")
-                  self.optLog(localMap);
-                  resolve(localMap);
-                }
+                    self.optLog('localMap size: '+localMap.size)
+                    self.optLog('Number of engines: '+ self.engines.length)
+          
+                    if (localMap.size === self.engines.length) {
+                      self.engines = [];
+                      self.optLog("\nMap of results for registered engines:\n\n")
+                      self.optLog(localMap);
+                      resolve(localMap);
+                    }
+                  } catch (err) {
+                    self.engines = []
+                    reject(err)
+                  }
                 }
               })
           }          
@@ -316,7 +345,7 @@ class DiagnosisEngine {
               innerResolve(complementsMap)
             }})
           }).then(complementsMap => {
-            return new Promise(conflictResolve => {
+            return new Promise((conflictResolve, conflictReject) => {
               for (const [complKey, complValue] of complementsMap.entries()) {
                 if(!this.realizableMap.has(complKey.join(''))) {
                   this.realizableMap.set(complKey.join(''), complValue);
@@ -380,6 +409,8 @@ class DiagnosisEngine {
                         if (unrealMapIterator === unrealMap.size) {
                           conflictResolve(minConflicts)
                         }
+                      }).catch(err => {
+                        conflictReject(err)
                       })
                     }
                   } else {
@@ -395,7 +426,7 @@ class DiagnosisEngine {
               }    
           })
         }).then(minConflicts => {
-          return new Promise(secondConflictResolve => {
+          return new Promise((secondConflictResolve, secondConflictReject) => {
             if (Array.from(complementsMap.values()).includes("UNREALIZABLE") && n !== 2) {
               var unrealMap = new Map();
               for (const [partKey, partValue] of complementsMap.entries()) {      
@@ -440,6 +471,8 @@ class DiagnosisEngine {
                         secondConflictResolve(minConflicts);
                       }                    
                     }
+                  }).catch(err => {
+                    secondConflictReject(err)
                   })
                 }              
               }            
@@ -448,7 +481,7 @@ class DiagnosisEngine {
             }
           })
         }).then(minConflicts => {
-          return new Promise(thirdConflictResolve => {
+          return new Promise((thirdConflictResolve, thirdConflictReject) => {
             if (minConflicts.length === 0 && n < properties.length) {
               this.optLog('No minimal conflicts, but n < # of properties (n = '+n+', #properties = '+properties.length+')')
               this.deltaDebug(contract, Math.min(properties.length, 2*n)).then(tmpConflicts => {
@@ -464,6 +497,8 @@ class DiagnosisEngine {
                     thirdConflictResolve(minConflicts)
                   }            
                 }
+              }).catch(err => {
+                thirdConflictReject(err)
               })      
             } else {
               thirdConflictResolve(minConflicts)
@@ -485,7 +520,10 @@ class DiagnosisEngine {
         }).then(minConflicts => {
         this.optLog("Delta-Debugging done. Contract: "+contract.properties.map(p => p.reqid)+", n = "+n);
         resolve(minConflicts)
-      })
+      }).catch(err => {
+        reject(err)
+        }        
+      )
     })    
   }
 
@@ -532,7 +570,7 @@ class DiagnosisEngine {
   }
 
   labelRootNode() {
-    return new Promise((resolve) => {    
+    return new Promise((resolve, reject) => {    
       this.deltaDebug(this.contract, 2).then(conflicts => {
       this.optLog("Conflicts from root deltadebug: "+conflicts)
       if (conflicts.toString().startsWith("UNKNOWN")) {
@@ -576,9 +614,13 @@ class DiagnosisEngine {
           conflicts.push(propList);
           this.addUniqueConflicts(conflicts);
           resolve("DONE")
+        }).catch(err => {
+          reject(err)
         })
       }
-    }).catch(err => resolve(err));
+    }).catch(err => {
+      reject(err)
+    });
     })
   }
 
@@ -635,91 +677,102 @@ class DiagnosisEngine {
 
   labelUnlabeledNodes() {
     return new Promise((resolve, reject) => {
-      var hsNode = this.reuseLabelorCloseNode(this.unlabeled.shift());
-      if (hsNode.getLabel().length === 0) {
-        var hittingSet = hsNode.getHittingSet();
-        if (!this.labelNode(hsNode)) {
-          
-          var slicedContract = JSON.parse(JSON.stringify(this.contract));
-          slicedContract.properties = this.contract.properties.filter(x => !hittingSet.includes(x.reqid) || x.reqid.toLowerCase().includes('assumption'));       
+      if(this.unlabeled.length > 0) {
+        var hsNode = this.reuseLabelorCloseNode(this.unlabeled.shift());
+        if (hsNode.getLabel().length === 0) {
+          var hittingSet = hsNode.getHittingSet();
+          if (!this.labelNode(hsNode)) {
+            
+            var slicedContract = JSON.parse(JSON.stringify(this.contract));
+            slicedContract.properties = this.contract.properties.filter(x => !hittingSet.includes(x.reqid) || x.reqid.toLowerCase().includes('assumption'));       
 
-          var propID = slicedContract.properties.map(p => p.reqid).filter(id => !id.toLowerCase().includes('assumption')).join('');
-          if (this.realizableMap.has(propID) && this.realizableMap.get(propID) === "REALIZABLE") {
-              var label = ['done'];
-              hsNode.setLabel(label);
-              this.labeled.push(hsNode);
-              resolve('DONE');
-          } else {
+            var propID = slicedContract.properties.map(p => p.reqid).filter(id => !id.toLowerCase().includes('assumption')).join('');
+            if (this.realizableMap.has(propID) && this.realizableMap.get(propID) === "REALIZABLE") {
+                var label = ['done'];
+                hsNode.setLabel(label);
+                this.labeled.push(hsNode);
+                resolve('DONE');
+            } else {
 
-            this.optLog("Current engines: "+JSON.stringify(this.engines.map(eng => eng.properties.map(p => p.reqid))))
-            this.optLog("Current sliced contract: "+slicedContract.properties.map(p => p.reqid).join(''))
-            this.registerPartitionProcess(slicedContract);
-            this.runEnginesAndGatherResults(false).then(localMap => {
-              if (Array.from(localMap.values()).includes("UNKNOWN")) {
-                const unknownSets = []
-                for (let [key, val] of localMap) {
-                  if (val === "UNKNOWN") {
-                    unknownSets.push(key);
+              this.optLog("Current engines: "+JSON.stringify(this.engines.map(eng => eng.properties.map(p => p.reqid))))
+              this.optLog("Current sliced contract: "+slicedContract.properties.map(p => p.reqid).join(''))
+              this.registerPartitionProcess(slicedContract);
+              this.runEnginesAndGatherResults(false).then(localMap => {
+                if (Array.from(localMap.values()).includes("UNKNOWN")) {
+                  const unknownSets = []
+                  for (let [key, val] of localMap) {
+                    if (val === "UNKNOWN") {
+                      unknownSets.push(key);
+                    }
                   }
-                }
-                reject(["Something went wrong during diagnosis. Requirements: " + unknownSets, null])                                
-              } else {
-                var result;
-                for (const [localKey, localValue] of localMap.entries()) {
-                  if (localKey.join('') === propID) {
-                    result = localValue;
-                    break;
-                  }
-                }
-
-                if (result === "REALIZABLE" || result === "UNKNOWN") {
-                  var label = ['done'];
-                  hsNode.setLabel(label);
-                  this.labeled.push(hsNode);
-                  resolve('DONE')
+                  reject(["Something went wrong during diagnosis. Requirements: " + unknownSets, null])                                
                 } else {
-                  this.deltaDebug(slicedContract, 2).then(conflicts => {
-                    this.optLog("Output of deltaDebug for new labeling using contract "+slicedContract.properties.map(p => p.reqid)+" : "+conflicts)
-                    if (conflicts.toString().startsWith("UNKNOWN")) {
-                      reject(["Something went wrong during diagnosis. Requirements: " + slicedContract.properties.map(p => p.reqid),null])
-                    } else {
-                      if (conflicts.length === 0) {
-                        var label = ['done'];
-                        hsNode.setLabel(label);
-                        this.labeled.push(hsNode);
-                        resolve('DONE')
-                      } else {
-                        this.addUniqueConflicts(conflicts);
-                        this.labelNode(hsNode);
-                        resolve('DONE')
-                      }
+                  var result;
+                  for (const [localKey, localValue] of localMap.entries()) {
+                    if (localKey.join('') === propID) {
+                      result = localValue;
+                      break;
                     }
                   }
 
-                )
+                  if (result === "REALIZABLE" || result === "UNKNOWN") {
+                    var label = ['done'];
+                    hsNode.setLabel(label);
+                    this.labeled.push(hsNode);
+                    resolve('DONE')
+                  } else {
+                    this.deltaDebug(slicedContract, 2).then(conflicts => {
+                      this.optLog("Output of deltaDebug for new labeling using contract "+slicedContract.properties.map(p => p.reqid)+" : "+conflicts)
+                      if (conflicts.toString().startsWith("UNKNOWN")) {
+                        reject(["Something went wrong during diagnosis. Requirements: " + slicedContract.properties.map(p => p.reqid),null])
+                      } else {
+                        if (conflicts.length === 0) {
+                          var label = ['done'];
+                          hsNode.setLabel(label);
+                          this.labeled.push(hsNode);
+                          resolve('DONE')
+                        } else {
+                          this.addUniqueConflicts(conflicts);
+                          this.labelNode(hsNode);
+                          resolve('DONE')
+                        }
+                      }
+                    }
+                  ).catch(err => {
+                    reject(err)
+                  })  
+                }
               }
+              }).catch(err => {
+                reject(err)
+              })
             }
-            })
           }
-        }
-      } else if(hsNode.getLabel()[0] !== 'closed') {
-        this.labeled.push(hsNode);
-        this.unlabeled = this.unlabeled.concat(hsNode.getChildren());
-        resolve('DONE')
-      } else {
-        resolve('DONE')
-      }
-    }).then(
-      (resolved) => {
-        if (resolved === 'DONE' && this.unlabeled.length > 0) {
-          return this.labelUnlabeledNodes()
+        } else if(hsNode.getLabel()[0] !== 'closed') {
+          this.labeled.push(hsNode);
+          this.unlabeled = this.unlabeled.concat(hsNode.getChildren());
+          resolve('DONE')
         } else {
-          return
+          resolve('DONE')
         }
-      }, (rejected) => {
-        return rejected
+      } else {
+        resolve('DONE');
       }
-    )
+    }).then((resolved) => {
+      if (resolved === 'DONE' && this.unlabeled.length > 0) {
+        try {
+          return this.labelUnlabeledNodes()
+        } catch (err) {
+          throw err;
+        }
+      } else {
+        return
+      }      
+    }, (rejected) => {
+      throw rejected
+    }).catch((err) => {
+      throw err
+    })
   }
 
   main() {
@@ -732,13 +785,13 @@ class DiagnosisEngine {
     };
     fs.writeFile(analysisPath+'diagnosisObject.json', JSON.stringify(engineArgumentsObj), 'utf8', (err) => {});
 
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       this.labelRootNode().then((rootResult) => {
         this.optLog("Root node labeled: "+JSON.stringify(rootResult))
         if (rootResult && rootResult.toString().startsWith("UNKNOWN")) {
           resolve(["Something went wrong during diagnosis.\n" + rootResult, null])
         } else {
-          this.labelUnlabeledNodes().then(resolvedLabeling => {
+          this.labelUnlabeledNodes().then((resolvedLabeling) => {
             // HS Tree print : Parent <-- Node --> List of children
             for (let i in this.labeled) {
               if (this.labeled[i].getParent() !== null) {
@@ -772,9 +825,17 @@ class DiagnosisEngine {
                 // this.computeDiagnoses();                     i
                 resolve([null, ["UNREALIZABLE", this.combineReports()]]);
               }
+            }).catch(err => {
+              reject(err)
             }) 
           }
+        }, (rejectedLabeling) => {
+          throw rejectedLabeling
+        }).catch(err => {
+          reject(err)
         })}
+      }).catch(err => {
+        reject(err)
       })
     })
   }
