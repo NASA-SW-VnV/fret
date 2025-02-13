@@ -48,6 +48,21 @@ const fieldRanges = {
   Response: []
 }
 
+//from formalizations
+const NegateFormula =
+  [['onlyIn|onlyBefore|onlyAfter,-,-,-','true'],
+ 	['null|after|before|in|notin,-,-,-','false']];
+
+//from formalizations
+const ScopeEndpoints =
+  [['null,-,-,-', ['FTP','LAST']],
+   ['before,-,-,-', ['FTP','FFiM']],
+   ['after,-,-,-', ['FLiM','LAST']],
+   ['in,-,-,-', ['FiM','LiM']],
+   ['notin|onlyIn,-,-,-', ['FNiM','LNiM']],
+   ['onlyBefore,-,-,-', ['FFiM','LAST']],
+   ['onlyAfter,-,-,-', ['FTP','FLiM']]];
+
 const semanticsObjNonsense = {
   pctl: constants.nonsense_semantics
 }
@@ -83,14 +98,13 @@ function createProbabilisticSemantics(product) {
   var iterator = keyIterator.next();
 
   while (!iterator.done) {
-      var key = iterator.value.toString()
-      //console.log(key)
-      //console.log(iterator.value[0]+"\n"); // condition
-      //console.log(iterator.value[1]+"\n"); // probability
-      //console.log(iterator.value[2]+"\n"); // timing
-      //console.log(iterator.value[3]+"\n"); // response
-      FRETSemantics[key].pctl= formalizations.getProbabilisticFormalization(iterator.value[0], iterator.value[1], iterator.value[2], iterator.value[3], iterator.value[4], bound = 'bound');
-      //console.log("=====================");
+      var key = iterator.value;
+      console.log(key);
+      var endpoints = utilities.matchingBase(key,ScopeEndpoints);
+      var scopeRequiresNegation = utilities.matchingBase(key,NegateFormula);
+
+      FRETSemantics[key].pctl= formalizations.getProbabilisticFormalization(key, bound = 'bound', scopeRequiresNegation, endpoints[0], endpoints[1]);
+      console.log("=====================");
      iterator = keyIterator.next();
     }
 

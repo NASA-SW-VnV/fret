@@ -158,7 +158,6 @@ function notAfterTiming(property, duration, endsScope='ENDSCOPE') {
 
 function untilTiming(property,stopcond,endsScope='ENDSCOPE') {
     let formula1 = `(${property} until exclusive weak ${stopcond})`
-    // if no stopcond, the property must hold until the end.
     let formula2 = `${endsScope} releases ${property}`
     return disjunction(formula1,formula2)
 }
@@ -168,9 +167,6 @@ function notUntilTiming(property,stopcond,endsScope='ENDSCOPE') {
 }
 
 function beforeTiming(property,stopcond,endsScope='ENDSCOPE') {
-    //let formula1 = `${property} releases ${negate(stopcond)}`
-    //let formula2 = `${endsScope} releases ${negate(stopcond)}`
-    // In case stopcond never happens, we don't require property to hold.
     let formula = `(${property} or ${endsScope}) releases ${negate(stopcond)}`
     return formula;
 }
@@ -179,20 +175,29 @@ function notBeforeTiming(property,stopcond,endsScope='ENDSCOPE') {
     return untilTiming(negate(property),stopcond,endsScope);
 }
 
+ exports.getProbabilisticFormalization = (key, bound, negate, left, right) => {
+   let scope = key[0];
+   console.log("scope: "+scope);
+   let condition = key[1];
+   console.log("condition: "+condition);
+   let probability = key [2];
+   console.log("probability: "+probability);
+   let timing = key [3];
+   console.log("timing: "+timing);
 
- exports.getProbabilisticFormalization = (condition, probability, timing, response, bound) => {
- let formula = utilities.matchingBase(['false',timing,condition], Formula);
+   let formula = utilities.matchingBase([negate,timing,condition], Formula);
 
- if (formula == 'no_match')
+   if (formula == 'no_match')
    return constants.undefined_semantics;
 
- let probForm ;
+    let probForm ;
     if (probability.includes('almostsure')) {
       probForm = parenthesize('P >= 1 [' + formula +']');
     }
     else if (probability.includes('bound')) {
       probForm = parenthesize('P ' + bound + ' [' + formula +']');
     }
+    console.log("PROBFORM: "+ probForm +"\n");
     let baseForm;
     var cond = 'COND'
     if (condition.includes('null')){
@@ -207,6 +212,62 @@ function notBeforeTiming(property,stopcond,endsScope='ENDSCOPE') {
       var formula_2 = baseForm.replace(/TRIGGER_IMPLIES/g, conditionHoldingORFTP(cond))
       baseForm = conjunction(formula_1, formula_2)
     }
-  let generalForm = baseForm;
-  return generalForm;
+    console.log("BASEFORM: "+ baseForm +"\n");
+
+    let generalForm = addScope(scope, baseForm, left, right);
+    console.log("GENERALFORM" + generalForm +"\n");
+    return generalForm;
+  }
+
+  function addScope (scope, baseForm, left, right){
+    var endsScope = right;
+    var baseForm = baseForm.replace(/ENDSCOPE/g, endsScope);
+    var qualifier = 'weak';
+
+    switch (scope) {
+      case 'null':
+        return (baseForm);
+      case 'before':
+        return (before(baseForm, endsScope, 'MODE', qualifier));
+      case 'onlyAfter':
+        return (before(baseForm, endsScope, 'false', qualifier));
+      case 'onlyBefore':
+        return(onlyBefore(baseForm, left));
+      case 'after':
+        return(after(baseForm, left));
+      case 'in':
+        return(inMode('MODE', baseForm, left, endsScope, qualifier));
+      case 'notin':
+        return(inMode('(not MODE)', baseForm, left,endsScope, qualifier));
+      case 'onlyIn':
+        return(inMode('(not MODE)', baseForm, left, endsScope, qualifier));
+      }
+  }
+
+  function before (formula, point, modeCondition, qualifier){
+      var nominal = parenthesize(`(${formula}) before inclusive ${qualifier} ${point}`);
+      return (disjunction(point,nominal));
+  }
+
+  function onlyBefore (formula, point){
+      var nominal = `(not MODE) implies ` + after(formula, point)
+      var checkAtStart = `(MODE implies (${formula}))`
+      return conjunction(nominal, checkAtStart)
+  }
+
+  function after (formula, point) {
+    if (point != 'LAST')
+      return `((${formula}) after exclusive optional ${point})`
+    else {
+      return true
+    }
+  }
+
+  function inMode (modeCondition, formula, left, right, qualifier) {
+    var nominal = parenthesize('always' +
+               parenthesize (parenthesize(formula) +
+                  ` between exclusive optional (${left} and not LAST), inclusive ${qualifier} ${right}`))
+    var checkAtStart = parenthesize(modeCondition + ' implies ' +
+                before(formula, right, 'false', qualifier));
+    return conjunction(nominal, checkAtStart)
   }
