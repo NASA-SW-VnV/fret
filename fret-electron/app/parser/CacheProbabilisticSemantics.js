@@ -37,6 +37,7 @@ const constants = require(fretParserPath + 'Constants');
 const utilities = require('../../support/utilities');
 const saltSemantics = require('../../support/saltSemantics');
 const formalizations = require('../../support/formalizations_probabilistic');
+const xform = require('../../support/xform');
 
 var ProductIterable = require('product-iterable');
 var fs = require('fs');
@@ -149,8 +150,8 @@ function createProbabilisticSemantics(product) {
           //    }
           let pctlForm = sem.replace(/LTLSPEC/, '').trim();
           let pctlFormCust = semanticsGenerator.customizeForFret(pctlForm);
-          //TODO: let pctlFormCustOpt = xform.transform(pctlFormCust,xform.optimizeFT);
-          FRETSemantics[key].pctl = pctlFormCust;
+          let pctlFormCustOpt = xform.transform(pctlFormCust,xform.optimizeFT);
+          FRETSemantics[key].pctl = pctlFormCustOpt;
           //if (constants.verboseCacheSemantics) {
               console.log('*** createProbabilisticSemantics after: ' + JSON.stringify(key) + ': ' +
                     FRETSemantics[key].pctl);
@@ -158,8 +159,8 @@ function createProbabilisticSemantics(product) {
           let pctlExpandedEndpoints = utilities.replaceStrings(PrismEndpointRewrites, pctlForm);
           let pctlExpPRISM = utilities.replaceStrings(PRISMSubsts, pctlExpandedEndpoints);
           let pctlExpPRISMCust = semanticsGenerator.customizeForFret(pctlExpPRISM);
-          //TODO: let pctlExpPRISMCustOpt = xform.transform(pctlExpPRISMCust,xform.optimizeFT);
-          FRETSemantics[key].pctlExpanded = pctlExpPRISMCust;
+          let pctlExpPRISMCustOpt = xform.transform(pctlExpPRISMCust,xform.optimizeFT);
+          FRETSemantics[key].pctlExpanded = pctlExpPRISMCustOpt;
         }
         else {
             console.log('FT SALT parsing error: Unexpected prefix from SALT: ' + sem +' for key: '+ key);
