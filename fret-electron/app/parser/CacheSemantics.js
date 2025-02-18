@@ -60,15 +60,15 @@ const semanticsObjNonsense = {
   //pt_SI: constants.nonsense_semantics, // for more efficient cocospec
   CoCoSpecCode: constants.nonsense_semantics,
   R2U2Code: constants.nonsense_semantics,
-    ftInfAU: constants.nonsense_semantics,
-    ftInfAUExpanded: constants.nonsense_semantics,
-    ftInfBtw: constants.nonsense_semantics,
-    ftInfBtwExpanded: constants.nonsense_semantics,
-    ftFinBtw: constants.nonsense_semantics,
-    ftFinBtwExpanded: constants.nonsense_semantics,
-    ptFinBtw: constants.nonsense_semantics,
-    ptFinBtwExpanded: constants.nonsense_semantics,
-    CoCoSpecCodeFinBtw: constants.nonsense_semantics,
+  ftInfAU: constants.nonsense_semantics,
+  ftInfAUExpanded: constants.nonsense_semantics,
+  ftInfBtw: constants.nonsense_semantics,
+  ftInfBtwExpanded: constants.nonsense_semantics,
+  ftFinBtw: constants.nonsense_semantics,
+  ftFinBtwExpanded: constants.nonsense_semantics,
+  ptFinBtw: constants.nonsense_semantics,
+  ptFinBtwExpanded: constants.nonsense_semantics,
+  CoCoSpecCodeFinBtw: constants.nonsense_semantics,
   description: constants.nonsense_description,
   diagram: constants.undefined_svg
 }
@@ -82,15 +82,15 @@ var semanticsObjUndefined = {
   //pt_SI: constants.undefined_semantics, // for more efficient cocospec
   CoCoSpecCode: constants.undefined_semantics,
   R2U2Code: constants.undefined_semantics,
-    ftInfAU: constants.undefined_semantics,
-    ftInfAUExpanded: constants.undefined_semantics,
-    ftInfBtw: constants.undefined_semantics,
-    ftInfBtwExpanded: constants.undefined_semantics,
-    ftFinBtw: constants.undefined_semantics,
-    ftFinBtwExpanded: constants.undefined_semantics,
-    ptFinBtw: constants.undefined_semantics,
-    ptFinBtwExpanded: constants.undefined_semantics,
-    CoCoSpecCodeFinBtw: constants.undefined_semantics,
+  ftInfAU: constants.undefined_semantics,
+  ftInfAUExpanded: constants.undefined_semantics,
+  ftInfBtw: constants.undefined_semantics,
+  ftInfBtwExpanded: constants.undefined_semantics,
+  ftFinBtw: constants.undefined_semantics,
+  ftFinBtwExpanded: constants.undefined_semantics,
+  ptFinBtw: constants.undefined_semantics,
+  ptFinBtwExpanded: constants.undefined_semantics,
+  CoCoSpecCodeFinBtw: constants.undefined_semantics,
   description: constants.undefined_description,
   diagram: constants.undefined_svg
 }
@@ -174,110 +174,110 @@ function createSemantics(product,options,properties) {
     //ttp var batchSemantics_SI = null
 
     if ((batchSemantics.length - semanticsMap.length ) > 1) {
-	// batchSemantics seems to always have an empty string at the end
-	console.log(batchSemantics.length)
-	console.log(semanticsMap.length)
-	console.log("ERROR - SALT must have choked on some inputs")
+    	// batchSemantics seems to always have an empty string at the end
+    	console.log(batchSemantics.length)
+    	console.log(semanticsMap.length)
+    	console.log("ERROR - SALT must have choked on some inputs")
     } //ttp else // make sure that first pass terminated
-    //ttp batchSemantics_SI = semanticsGenerator.getBatchSemanticsFromSALT(saltString,'SALT_SI_HOME').split('\n'); //ttp SI
+        //ttp batchSemantics_SI = semanticsGenerator.getBatchSemanticsFromSALT(saltString,'SALT_SI_HOME').split('\n'); //ttp SI
 
     // the following means that there was a valid Salt installation to calculate the semantics
     if (batchSemantics != constants.undefined_semantics) {
 
-	// now set up FRETSemantics based on map
-	for (var index=0; index < semanticsMap.length; index++) {
-	    if (constants.verboseCacheSemantics) console.log(batchSemantics[index])
-	    let sem = batchSemantics[index];  // LTL formula
-	    let type = semanticsMap[index].tp;  // future or past
-	    let key = semanticsMap[index].fields; // what key it is for
+    	// now set up FRETSemantics based on map
+    	for (var index=0; index < semanticsMap.length; index++) {
+    	    if (constants.verboseCacheSemantics) console.log(batchSemantics[index])
+    	    let sem = batchSemantics[index];  // LTL formula
+    	    let type = semanticsMap[index].tp;  // future or past
+    	    let key = semanticsMap[index].fields; // what key it is for
 
-	    //var sem_SI = batchSemantics_SI[index]; //ttp SI LTL formula with SI for pt
+    	    //var sem_SI = batchSemantics_SI[index]; //ttp SI LTL formula with SI for pt
 
 	    if (constants.verboseCacheSemantics) {
-		console.log('\nCS1: ' + type + ' ' + key + ': ' + sem);
+		      console.log('\nCS1: ' + type + ' ' + key + ': ' + sem);
 	    }
 
 	    if (sem) { // SALT did not return undefined
-		if (sem.startsWith('LTLSPEC')) {
-		    switch (type){
-		    case 'ft':
+		      if (sem.startsWith('LTLSPEC')) {
+		          switch (type){
+		              case 'ft':
 
-			if (constants.verboseCacheSemantics) {
-			    //console.log('\nCS5: ' + JSON.stringify(FRETSemantics["null,null,always,satisfaction"] === FRETSemantics["null,null,immediately,satisfaction"]))
-			    console.log('createSemantics ft before ' + JSON.stringify(key) + ': ' +
-			           	FRETSemantics[key][properties.ft]);
-			    //console.log('createSemantics ft "null,null,always,satisfaction": '+ JSON.stringify(FRETSemantics["null,null,always,satisfaction"][properties.ft]))
-			}
+              		if (constants.verboseCacheSemantics) {
+              		    //console.log('\nCS5: ' + JSON.stringify(FRETSemantics["null,null,always,satisfaction"] === FRETSemantics["null,null,immediately,satisfaction"]))
+              		    console.log('createSemantics ft before ' + JSON.stringify(key) + ': ' +
+              		           	FRETSemantics[key][properties.ft]);
+              		    //console.log('createSemantics ft "null,null,always,satisfaction": '+ JSON.stringify(FRETSemantics["null,null,always,satisfaction"][properties.ft]))
+              		}
 
-			let ftForm = sem.replace(/LTLSPEC/, '').trim();
-			let ftFormCust = semanticsGenerator.customizeForFret(ftForm);
-			let ftFormCustOpt = xform.transform(ftFormCust,xform.optimizeFT);
-			let ftFormCustOptF =
-			    (options.sem === 'finite') ?
-			    xform.transform(ftFormCustOpt,xform.finitizeFT)
-			    : ftFormCustOpt;
-			FRETSemantics[key][properties.ft] = ftFormCustOptF;
+            			let ftForm = sem.replace(/LTLSPEC/, '').trim();
+            			let ftFormCust = semanticsGenerator.customizeForFret(ftForm);
+            			let ftFormCustOpt = xform.transform(ftFormCust,xform.optimizeFT);
+            			let ftFormCustOptF =
+            			    (options.sem === 'finite') ?
+            			    xform.transform(ftFormCustOpt,xform.finitizeFT)
+            			    : ftFormCustOpt;
+            			FRETSemantics[key][properties.ft] = ftFormCustOptF;
 
-			if (constants.verboseCacheSemantics) {
-			    //console.log('\nCS6: ' + JSON.stringify(FRETSemantics["null,null,always,satisfaction"] === FRETSemantics["null,null,immediately,satisfaction"]))
-			    console.log('createSemantics ft after: ' + JSON.stringify(key) + ': ' +
-				       	FRETSemantics[key][properties.ft]);
-			    //console.log('createSemantics ft "null,null,always,satisfaction": '+ JSON.stringify(FRETSemantics["null,null,always,satisfaction"][properties.ft]))
-			}
+            			if (constants.verboseCacheSemantics) {
+            			    //console.log('\nCS6: ' + JSON.stringify(FRETSemantics["null,null,always,satisfaction"] === FRETSemantics["null,null,immediately,satisfaction"]))
+            			    console.log('createSemantics ft after: ' + JSON.stringify(key) + ': ' +
+            				       	FRETSemantics[key][properties.ft]);
+            			    //console.log('createSemantics ft "null,null,always,satisfaction": '+ JSON.stringify(FRETSemantics["null,null,always,satisfaction"][properties.ft]))
+            			}
 
-			let ftExpandedEndpoints = formalizations.EndPointsRewrite('ft', ftForm);
-			let ftExpSMV = formalizations.translateToSMV(ftExpandedEndpoints);
-			let ftExpSMVCust = semanticsGenerator.customizeForFret(ftExpSMV);
-			let ftExpSMVCustOpt = xform.transform(ftExpSMVCust,xform.optimizeFT);
-			let ftExpSMVCustOptF = (options.sem === 'finite') ?
-			    xform.transform(ftExpSMVCustOpt,xform.finitizeFT) :
-			    ftExpSMVCustOpt;
-			FRETSemantics[key][properties.ftExpanded] = ftExpSMVCustOptF;
+            			let ftExpandedEndpoints = formalizations.EndPointsRewrite('ft', ftForm);
+            			let ftExpSMV = formalizations.translateToSMV(ftExpandedEndpoints);
+            			let ftExpSMVCust = semanticsGenerator.customizeForFret(ftExpSMV);
+            			let ftExpSMVCustOpt = xform.transform(ftExpSMVCust,xform.optimizeFT);
+            			let ftExpSMVCustOptF = (options.sem === 'finite') ?
+            			    xform.transform(ftExpSMVCustOpt,xform.finitizeFT) :
+            			    ftExpSMVCustOpt;
+            			FRETSemantics[key][properties.ftExpanded] = ftExpSMVCustOptF;
 
-			break;
-		    case 'pt':
-			if (options.sem === 'finite') {
- 			    var ptSALT = sem.replace(/LTLSPEC/, '').trim()
+            			break;
+            		    case 'pt':
+            			if (options.sem === 'finite') {
+             			    var ptSALT = sem.replace(/LTLSPEC/, '').trim()
 
-			    var ptForm = semanticsGenerator.customizeForFret(ptSALT);
-			    var ptFormOpt = xform.transform(ptForm,xform.optimizePT);
-			    var ptFormOptSI = xform.transform(ptFormOpt,xform.introduceSI)
-			    var coco = semanticsGenerator.getCoCoSpecString(ptFormOptSI, 'pt');
+            			    var ptForm = semanticsGenerator.customizeForFret(ptSALT);
+            			    var ptFormOpt = xform.transform(ptForm,xform.optimizePT);
+            			    var ptFormOptSI = xform.transform(ptFormOpt,xform.introduceSI)
+            			    var coco = semanticsGenerator.getCoCoSpecString(ptFormOptSI, 'pt');
 
-			    var ptExpandedEndpoints = formalizations.EndPointsRewrite('pt', ptSALT);
-			    var ptExpSMV = formalizations.translateToSMV(ptExpandedEndpoints);
-			    var ptExpSMVCust = semanticsGenerator.customizeForFret(ptExpSMV);
-			    var ptExpSMVCustOpt = xform.transform(ptExpSMVCust,xform.optimizePT);
+            			    var ptExpandedEndpoints = formalizations.EndPointsRewrite('pt', ptSALT);
+            			    var ptExpSMV = formalizations.translateToSMV(ptExpandedEndpoints);
+            			    var ptExpSMVCust = semanticsGenerator.customizeForFret(ptExpSMV);
+            			    var ptExpSMVCustOpt = xform.transform(ptExpSMVCust,xform.optimizePT);
 
-			    //FRETSemantics[key].pt = ptForm;
-			    FRETSemantics[key][properties.pt] = ptFormOpt;
-			    //FRETSemantics[key].pt_SI = ptFormOptSI;
-			    FRETSemantics[key][properties.ptExpanded] = ptExpSMVCustOpt;
-			    FRETSemantics[key][properties.CoCoSpecCode] = coco;
-			    break;
-			}
-		    }
-		}
-		else {
-		    console.log('FT SALT parsing error: Unexpected prefix from SALT: ' + sem +' for key: '+ key);
-		}
-	    } else {
-		console.log('Undefined result returned from SALT for key ' + key)
-	    }
-	}
-	if (constants.verboseCacheSemantics) {
-	console.log('\nCS3: '+ JSON.stringify(FRETSemantics["null,null,always,satisfaction"]));
-	}
+            			    //FRETSemantics[key].pt = ptForm;
+            			    FRETSemantics[key][properties.pt] = ptFormOpt;
+            			    //FRETSemantics[key].pt_SI = ptFormOptSI;
+            			    FRETSemantics[key][properties.ptExpanded] = ptExpSMVCustOpt;
+            			    FRETSemantics[key][properties.CoCoSpecCode] = coco;
+            			    break;
+                   }
+	               }
+	             }
+	             else {
+		               console.log('FT SALT parsing error: Unexpected prefix from SALT: ' + sem +' for key: '+ key);
+               }
+             } else {
+	               console.log('Undefined result returned from SALT for key ' + key)
+             }
+          }
+        	if (constants.verboseCacheSemantics) {
+        	   console.log('\nCS3: '+ JSON.stringify(FRETSemantics["null,null,always,satisfaction"]));
+        	}
 
-    }
-    if (constants.generateSvgSemantics) {
-    fs.writeFileSync(svgPath+"Diagrams.html", htmlHeader + htmlShortcuts + htmlBody + htmlEnd, function(err) {
-      if(err) {
-        return console.log(err);
+        }
+        if (constants.generateSvgSemantics) {
+        fs.writeFileSync(svgPath+"Diagrams.html", htmlHeader + htmlShortcuts + htmlBody + htmlEnd, function(err) {
+          if(err) {
+            return console.log(err);
+          }
+        })
       }
-    })
-  }
-}
+};
 
 /**
  * Creates svg File corresponding to the key pattern and returns the path of the file.
@@ -355,7 +355,7 @@ function createSaltBatchString(product,options) {
       var eps =  formalizations.getEndpoints(iterator.value);
       endpoints['left'] = semanticsGenerator.customizeForFret(eps[0]);
       endpoints['right'] = semanticsGenerator.customizeForFret(eps[1]);
-    
+
       endpoints['ptExtleft'] = semanticsGenerator.customizeForFret(formalizations.EndPointsRewrite('pt', eps[0]));
       endpoints['ptExtright'] = semanticsGenerator.customizeForFret(formalizations.EndPointsRewrite('pt', eps[1]));
       endpoints['SMVptExtleft'] = semanticsGenerator.customizeForFret(formalizations.EndPointsRewrite('pt', eps[0], 'smv'));
@@ -376,14 +376,14 @@ function createSaltBatchString(product,options) {
       // ---------------------------------------------
 
       if (constants.verboseCacheSemantics)
-	  console.log('\n\nKey is ' + key);
+	       console.log('\n\nKey is ' + key);
 
       var sltft = semanticsGenerator.getSaltString(scopeObj,iterator.value[1],iterator.value[2],iterator.value[3], 'ft',options);
       var sltpt = semanticsGenerator.getSaltString(scopeObj,iterator.value[1],iterator.value[2],iterator.value[3], 'pt',options);
 
       if (constants.verboseCacheSemantics) {
-	  console.log('\nGenerated SALT string for future is ' + sltft);
-	  console.log('\nGenerated SALT string for past is ' + sltpt);
+	       console.log('\nGenerated SALT string for future is ' + sltft);
+	        console.log('\nGenerated SALT string for past is ' + sltpt);
       }
 
       // future and past semantics must have the same cases of finite nonsense semantics
