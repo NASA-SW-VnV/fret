@@ -181,38 +181,43 @@ exports.getTimedResponse = (key, bound) => {
   let formula = utilities.matchingBase([negate,timing,condition], Formula);
 }
 
-function addScopeInTiming (scope,formula){
+function addScopeInTiming (scope,formula,right){
   switch (scope) {
     case 'null':
-      return (formula);
+      return formula;
     case 'before':
-      return ;
+      return  scopedNominal(formula, right, 'weak');
     case 'onlyAfter':
-      return ;
+      return parenthesize(`not `+ scopedNominal(formula, right, 'weak'));
     case 'onlyBefore':
-      return ;
+      return parenthesize('not '+ parenthesize(formula));
     case 'after':
-      return (formula);
+      return formula;
     case 'in':
-      return ;
+      return scopedNominal(formula, right, 'weak');
     case 'notin':
-      return ;
+      return scopedNominal(formula, right, 'weak');
     case 'onlyIn':
-      return ;
+      return scopedNominal('not ' + formula, right, 'weak');
     }
+}
+
+function scopedNominal (formula, point, qualifier){
+  return parenthesize(`(${formula}) before inclusive ${qualifier} ${point}`);
 }
 
  exports.getProbabilisticFormalization = (key, bound, negate, left, right) => {
    let scope = key[0];
-   //console.log("scope: "+scope);
    let condition = key[1];
-   //console.log("condition: "+condition);
    let probability = key[2];
-   //console.log("probability: "+probability);
    let timing = key[3];
-   //console.log("timing: "+timing);
 
+   //console.log("key: "+ scope + " " +condition + " " probability + " " timing)
    let formula = utilities.matchingBase([negate,timing,condition], Formula);
+   //console.log("timed response: "+ formula);
+   formula = addScopeInTiming(scope,formula,right);
+   //console.log("scoped timed response: "+ formula);
+
 
    if (formula == 'no_match')
    return constants.undefined_semantics;
