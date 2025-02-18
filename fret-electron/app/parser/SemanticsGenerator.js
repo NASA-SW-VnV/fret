@@ -67,7 +67,7 @@ const substitutionsCustomizeFret = [
   ['ACT1', '\$action1\$'],
   ['ACT2', '\$action2\$'],
   ['ACT', '\$action\$'],
-    ['STOPCOND', '\$stop_condition\$'],
+  ['STOPCOND', '\$stop_condition\$'],
   ['COND', '\$regular_condition\$'],
   ['<\\|\\[\=','O[='], // <|[=$duration$] ==> O[=$duration$]
   ['0', 'FALSE'] //SALT returns SMV format where FALSE is 0
