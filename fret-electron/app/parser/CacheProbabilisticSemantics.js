@@ -144,18 +144,18 @@ function createProbabilisticSemantics(product) {
 
     if (sem) { // SALT did not return undefined
         if (sem.startsWith('LTLSPEC')) {
-          //if (constants.verboseCacheSemantics) {
+          if (constants.verboseCacheSemantics) {
               console.log('*** createProbabilisticSemantics before ' + JSON.stringify(key) + ': ' +
                       FRETSemantics[key].pctl);
-          //    }
+          }
           let pctlForm = sem.replace(/LTLSPEC/, '').trim();
           let pctlFormCust = semanticsGenerator.customizeForFret(pctlForm);
           let pctlFormCustOpt = xform.transform(pctlFormCust,xform.optimizeFT);
           FRETSemantics[key].pctl = pctlFormCustOpt;
-          //if (constants.verboseCacheSemantics) {
+          if (constants.verboseCacheSemantics) {
               console.log('*** createProbabilisticSemantics after: ' + JSON.stringify(key) + ': ' +
                     FRETSemantics[key].pctl);
-          //}
+          }
           let pctlExpandedEndpoints = utilities.replaceStrings(PrismEndpointRewrites, pctlForm);
           let pctlExpPRISM = utilities.replaceStrings(PRISMSubsts, pctlExpandedEndpoints);
           let pctlExpPRISMCust = semanticsGenerator.customizeForFret(pctlExpPRISM);
@@ -187,13 +187,13 @@ function createSaltBatchString(product){
     scopeObj.type = iterator.value[0];
     var key = iterator.value.toString();
   //TODO: Check endpoints
-  //if (constants.verboseCacheSemantics)
+  if (constants.verboseCacheSemantics)
      console.log('\n\nKey is ' + key);
 
     var sltpctl = getProbabilisticSaltString(scopeObj,iterator.value[1],iterator.value[2],iterator.value[3]);
-    //if (constants.verboseCacheSemantics) {
+    if (constants.verboseCacheSemantics) {
        console.log('\nGenerated SALT string for future is ' + sltpctl);
-     //}
+    }
      switch (sltpctl) {
        case constants.nonsense_semantics:
        // note they are all set to the SAME object but it is OK because they never change
@@ -218,8 +218,8 @@ function getProbabilisticSaltString (scope, condition, timing, response) {
   var scopeRequiresNegation = utilities.matchingBase(key,NegateFormula);
   var template = formalizations.getProbabilisticFormalization(key, bound = 'bound', scopeRequiresNegation, endpoints[0], endpoints[1]);
   console.log("=====================");
-  //if (constants.verboseSemanticsGenerator)
-  console.log('\ngetProbabilisticSaltString template for ' + ' key ' + key + ' is ' + template);
+  if (constants.verboseSemanticsGenerator)
+    console.log('\ngetProbabilisticSaltString template for ' + ' key ' + key + ' is ' + template);
   if (template == constants.undefined_semantics || template == constants.nonsense_semantics) {
     return template;
   }
