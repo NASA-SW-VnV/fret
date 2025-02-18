@@ -206,30 +206,41 @@ function scopedNominal (formula, point, qualifier){
   return parenthesize(`(${formula}) before inclusive ${qualifier} ${point}`);
 }
 
- exports.getProbabilisticFormalization = (key, bound, negate, left, right) => {
+exports.getTimedResponseFormalization = (key, negate, right) => {
+  let scope = key[0];
+  let condition = key[1];
+  let probability = key[2];
+  let timing = key[3];
+
+  //console.log("key: "+ scope + " " +condition + " " probability + " " timing)
+  let formula = utilities.matchingBase([negate,timing,condition], Formula);
+  //console.log("timed response: "+ formula);
+  if (formula == 'no_match')
+    {return constants.undefined_semantics;}
+  else {formula = addScopeInTiming(scope,formula,right);}
+  //console.log("scoped timed response: "+ formula);
+  return formula;
+}
+
+exports.getPROBFORM = (formula, bound) => {
+  let probForm ;
+  if (probability.includes('almostsure')) {
+    probForm = parenthesize('P >= 1 [' + formula +']');
+  }
+  else if (probability.includes('bound')) {
+    probForm = parenthesize('P ' + bound + ' [' + formula +']');
+  }
+  //console.log("PROBFORM: "+ probForm +"\n");
+  return probForm;
+}
+
+ exports.getConditionScopeFormalization = (key, left, right) => {
    let scope = key[0];
    let condition = key[1];
    let probability = key[2];
    let timing = key[3];
 
-   //console.log("key: "+ scope + " " +condition + " " probability + " " timing)
-   let formula = utilities.matchingBase([negate,timing,condition], Formula);
-   //console.log("timed response: "+ formula);
-   formula = addScopeInTiming(scope,formula,right);
-   //console.log("scoped timed response: "+ formula);
 
-
-   if (formula == 'no_match')
-   return constants.undefined_semantics;
-
-    let probForm ;
-    if (probability.includes('almostsure')) {
-      probForm = parenthesize('P >= 1 [' + formula +']');
-    }
-    else if (probability.includes('bound')) {
-      probForm = parenthesize('P ' + bound + ' [' + formula +']');
-    }
-    //console.log("PROBFORM: "+ probForm +"\n");
     let baseForm;
     var cond = 'COND'
     if (condition.includes('null')){
