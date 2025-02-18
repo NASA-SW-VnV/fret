@@ -175,15 +175,42 @@ function notBeforeTiming(property,stopcond,endsScope='ENDSCOPE') {
     return untilTiming(negate(property),stopcond,endsScope);
 }
 
+exports.getTimedResponse = (key, bound) => {
+  let scope = key[0];
+  let timing = key[3];
+  let formula = utilities.matchingBase([negate,timing,condition], Formula);
+}
+
+function addScopeInTiming (scope,formula){
+  switch (scope) {
+    case 'null':
+      return (formula);
+    case 'before':
+      return ;
+    case 'onlyAfter':
+      return ;
+    case 'onlyBefore':
+      return ;
+    case 'after':
+      return (formula);
+    case 'in':
+      return ;
+    case 'notin':
+      return ;
+    case 'onlyIn':
+      return ;
+    }
+}
+
  exports.getProbabilisticFormalization = (key, bound, negate, left, right) => {
    let scope = key[0];
-   console.log("scope: "+scope);
+   //console.log("scope: "+scope);
    let condition = key[1];
-   console.log("condition: "+condition);
-   let probability = key [2];
-   console.log("probability: "+probability);
-   let timing = key [3];
-   console.log("timing: "+timing);
+   //console.log("condition: "+condition);
+   let probability = key[2];
+   //console.log("probability: "+probability);
+   let timing = key[3];
+   //console.log("timing: "+timing);
 
    let formula = utilities.matchingBase([negate,timing,condition], Formula);
 
@@ -197,7 +224,7 @@ function notBeforeTiming(property,stopcond,endsScope='ENDSCOPE') {
     else if (probability.includes('bound')) {
       probForm = parenthesize('P ' + bound + ' [' + formula +']');
     }
-    console.log("PROBFORM: "+ probForm +"\n");
+    //console.log("PROBFORM: "+ probForm +"\n");
     let baseForm;
     var cond = 'COND'
     if (condition.includes('null')){
@@ -212,10 +239,10 @@ function notBeforeTiming(property,stopcond,endsScope='ENDSCOPE') {
       var formula_2 = baseForm.replace(/TRIGGER_IMPLIES/g, conditionHoldingORFTP(cond))
       baseForm = conjunction(formula_1, formula_2)
     }
-    console.log("BASEFORM: "+ baseForm +"\n");
+    //console.log("BASEFORM: "+ baseForm +"\n");
 
     let generalForm = addScope(scope, baseForm, left, right);
-    console.log("GENERALFORM" + generalForm +"\n");
+    //console.log("GENERALFORM" + generalForm +"\n");
     return generalForm;
   }
 
