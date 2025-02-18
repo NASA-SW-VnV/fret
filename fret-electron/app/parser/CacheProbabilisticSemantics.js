@@ -50,19 +50,33 @@ const fieldRanges = {
 }
 
 //from formalizations
-const NegateFormula =
-  [['onlyIn|onlyBefore|onlyAfter,-,-,-','true'],
- 	['null|after|before|in|notin,-,-,-','false']];
+const NegateFormula =[
+  ['onlyIn|onlyBefore|onlyAfter,-,-,-','true'],
+ 	['null|after|before|in|notin,-,-,-','false']
+];
 
 //from formalizations
-const ScopeEndpoints =
-  [['null,-,-,-', ['FTP','LAST']],
+const ScopeEndpoints =[
+   ['null,-,-,-', ['FTP','LAST']],
    ['before,-,-,-', ['FTP','FFiM']],
    ['after,-,-,-', ['FLiM','LAST']],
    ['in,-,-,-', ['FiM','LiM']],
    ['notin|onlyIn,-,-,-', ['FNiM','LNiM']],
    ['onlyBefore,-,-,-', ['FFiM','LAST']],
-   ['onlyAfter,-,-,-', ['FTP','FLiM']]];
+   ['onlyAfter,-,-,-', ['FTP','FLiM']]
+ ];
+
+ const PrismEndpointRewrites = [
+   ['FiM|FFiM|LNiM', '((! MODE) & (X MODE))'],
+   ['LiM|FNiM|FLiM', '(MODE & X (! MODE))']
+ ];
+
+ const PRISMSubsts = [
+   [' and ', ' & '],
+   [' or ', ' | '],
+   ['not ', '! '],
+   ['next ', 'X ']
+ ];
 
 const semanticsObjNonsense = {
   pctl: constants.nonsense_semantics,
@@ -127,32 +141,25 @@ function createProbabilisticSemantics(product) {
         let type = semanticsMap[index].tp;  // future or past
         let key = semanticsMap[index].fields; // what key it is for
 
-    if (constants.verboseCacheSemantics) {
-        console.log('\nCS1: ' + type + ' ' + key + ': ' + sem);
-    }
-
     if (sem) { // SALT did not return undefined
         if (sem.startsWith('LTLSPEC')) {
           //if (constants.verboseCacheSemantics) {
-              console.log('createProbabilisticSemantics before ' + JSON.stringify(key) + ': ' +
+              console.log('*** createProbabilisticSemantics before ' + JSON.stringify(key) + ': ' +
                       FRETSemantics[key].pctl);
           //    }
           let pctlForm = sem.replace(/LTLSPEC/, '').trim();
-          let ftFormCust = semanticsGenerator.customizeForFret(pctlForm);
-          //TODO: Check optimization (customizeForFret at SemanticsGenerator)
-          FRETSemantics[key].pctl = ftFormCust;
+          let pctlFormCust = semanticsGenerator.customizeForFret(pctlForm);
+          //TODO: let pctlFormCustOpt = xform.transform(pctlFormCust,xform.optimizeFT);
+          FRETSemantics[key].pctl = pctlFormCust;
           //if (constants.verboseCacheSemantics) {
-              console.log('createProbabilisticSemantics after: ' + JSON.stringify(key) + ': ' +
+              console.log('*** createProbabilisticSemantics after: ' + JSON.stringify(key) + ': ' +
                     FRETSemantics[key].pctl);
           //}
-          //let ftExpandedEndpoints = formalizations.EndPointsRewrite('ft', ftForm);
-          //let ftExpSMV = formalizations.translateToSMV(ftExpandedEndpoints);
-          //let ftExpSMVCust = semanticsGenerator.customizeForFret(ftExpSMV);
-          //let ftExpSMVCustOpt = xform.transform(ftExpSMVCust,xform.optimizeFT);
-          //let ftExpSMVCustOptF = (options.sem === 'finite') ?
-          //    xform.transform(ftExpSMVCustOpt,xform.finitizeFT) :
-          //    ftExpSMVCustOpt;
-          //FRETSemantics[key][properties.ftExpanded] = ftExpSMVCustOptF;
+          let pctlExpandedEndpoints = utilities.replaceStrings(PrismEndpointRewrites, pctlForm);
+          let pctlExpPRISM = utilities.replaceStrings(PRISMSubsts, pctlExpandedEndpoints);
+          let pctlExpPRISMCust = semanticsGenerator.customizeForFret(pctlExpPRISM);
+          //TODO: let pctlExpPRISMCustOpt = xform.transform(pctlExpPRISMCust,xform.optimizeFT);
+          FRETSemantics[key].pctlExpanded = pctlExpPRISMCust;
         }
         else {
             console.log('FT SALT parsing error: Unexpected prefix from SALT: ' + sem +' for key: '+ key);
