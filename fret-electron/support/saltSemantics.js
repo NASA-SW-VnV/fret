@@ -40,7 +40,9 @@ const formalizations = require(fretSupportPath + 'formalizations')
 
 const substitutionsResponse = [
   ['-,-,-,satisfaction','SAT'],
-  ['-,-,-,action', 'ACT']
+  ['-,-,-,action', 'ACT'],
+  ['-,-,-,-,satisfaction','SAT'], //probabilistic
+  ['-,-,-,-,action','ACT']
 ]
 
 
