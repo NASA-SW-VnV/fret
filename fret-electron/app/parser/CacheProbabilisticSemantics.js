@@ -190,7 +190,7 @@ function createSaltBatchString(product){
   if (constants.verboseCacheSemantics)
      console.log('\n\nKey is ' + key);
 
-    var sltpctl = getProbabilisticSaltString(scopeObj,iterator.value[1],iterator.value[2],iterator.value[3]);
+    var sltpctl = getConditionScopeSaltString(scopeObj,iterator.value[1],iterator.value[2],iterator.value[3]);
     if (constants.verboseCacheSemantics) {
        console.log('\nGenerated SALT string for future is ' + sltpctl);
     }
@@ -212,14 +212,30 @@ function createSaltBatchString(product){
    return ({mp:SemanticsMap, str:saltStr})
 }
 
-function getProbabilisticSaltString (scope, condition, timing, response) {
+function getScopedTimedResponseSaltString (scope, condition, timing, response) {
   var key = [scope.type,condition,timing,response];
-  var endpoints = utilities.matchingBase(key,ScopeEndpoints);
-  var scopeRequiresNegation = utilities.matchingBase(key,NegateFormula);
-  var template = formalizations.getProbabilisticFormalization(key, bound = 'bound', scopeRequiresNegation, endpoints[0], endpoints[1]);
-  console.log("=====================");
+  var endpoints = utilities.matchingBase(key, ScopeEndpoints);
+  var scopeRequiresNegation = utilities.matchingBase(key, NegateFormula);
+  var template = formalizations.getTimedResponseFormalization(key, scopeRequiresNegation, endpoints[1]);
+  //console.log("=====================");
   if (constants.verboseSemanticsGenerator)
-    console.log('\ngetProbabilisticSaltString template for ' + ' key ' + key + ' is ' + template);
+    console.log('\ngetScopedTimedResponseSaltString template for ' + ' key ' + key + ' is ' + template);
+  if (template == constants.undefined_semantics || template == constants.nonsense_semantics) {
+    return template;
+  }
+  else {
+    return (saltSemantics.createSaltString(key, template, 'ft'));
+  }
+}
+
+function getConditionScopeSaltString (scope, condition, timing, response) {
+  var key = [scope.type,condition,timing,response];
+  var endpoints = utilities.matchingBase(key, ScopeEndpoints);
+  var template = formalizations.getConditionScopeFormalization(key, endpoints[0], endpoints[1]);
+  //var template = formalizations.getProbabilisticFormalization(key, bound = 'bound', scopeRequiresNegation, endpoints[0], endpoints[1]);
+  //console.log("=====================");
+  if (constants.verboseSemanticsGenerator)
+    console.log('\ngetConditionScopeSaltString template for ' + ' key ' + key + ' is ' + template);
   if (template == constants.undefined_semantics || template == constants.nonsense_semantics) {
     return template;
   }
