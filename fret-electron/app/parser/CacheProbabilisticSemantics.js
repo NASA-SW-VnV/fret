@@ -52,19 +52,19 @@ const fieldRanges = {
 
 //from formalizations
 const NegateFormula =[
-  ['onlyIn|onlyBefore|onlyAfter,-,-,-','true'],
- 	['null|after|before|in|notin,-,-,-','false']
+  ['onlyIn|onlyBefore|onlyAfter,-,-,-,-','true'],
+ 	['null|after|before|in|notin,-,-,-,-','false']
 ];
 
 //from formalizations
 const ScopeEndpoints =[
-   ['null,-,-,-', ['FTP','LAST']],
-   ['before,-,-,-', ['FTP','FFiM']],
-   ['after,-,-,-', ['FLiM','LAST']],
-   ['in,-,-,-', ['FiM','LiM']],
-   ['notin|onlyIn,-,-,-', ['FNiM','LNiM']],
-   ['onlyBefore,-,-,-', ['FFiM','LAST']],
-   ['onlyAfter,-,-,-', ['FTP','FLiM']]
+   ['null,-,-,-,-', ['FTP','LAST']],
+   ['before,-,-,-,-', ['FTP','FFiM']],
+   ['after,-,-,-,-', ['FLiM','LAST']],
+   ['in,-,-,-,-', ['FiM','LiM']],
+   ['notin|onlyIn,-,-,-,-', ['FNiM','LNiM']],
+   ['onlyBefore,-,-,-,-', ['FFiM','LAST']],
+   ['onlyAfter,-,-,-,-', ['FTP','FLiM']]
  ];
 
  const PrismEndpointRewrites = [
@@ -166,29 +166,18 @@ function createProbabilisticSemantics(product) {
 
         if (semTR && semSC) { // SALT did not return undefined
             if (semTR.startsWith('LTLSPEC') && semSC.startsWith('LTLSPEC')) {
-              if (constants.verboseCacheSemantics) {
-                  console.log('*** createProbabilisticSemantics before ' + JSON.stringify(keySC) + ': ' +
-                          FRETSemantics[keySC].pctl);
-              }
               let pctlFormTR = semTR.replace(/LTLSPEC/, '').trim();
               let pctlFormCustTR = semanticsGenerator.customizeForFret(pctlFormTR);
               let pctlFormCustOptTR = xform.transform(pctlFormCustTR,xform.optimizeFT);
-              if (constants.verboseCacheSemantics)
-                console.log('pctlFormCustOptTR: '+ pctlFormCustOptTR +"\n");
               let probForm = formalizations_probabilistic.getProbabilisticFormula(pctlFormCustOptTR, keyTR.toString());
-              if (constants.verboseCacheSemantics)
-                console.log("PROBFORM: "+ probForm +"\n");
 
               let pctlFormSC = semSC.replace(/LTLSPEC/, '').trim();
               let pctlFormCustSC = semanticsGenerator.customizeForFret(pctlFormSC);
               const pctlFormCustOptSC = xform.transform(pctlFormCustSC,xform.optimizeFT);
-
               let pctlForm = pctlFormCustOptSC.replaceAll("PROBFORM", probForm);
+
               FRETSemantics[keySC].pctl = pctlForm;
-              if (constants.verboseCacheSemantics) {
-                  console.log('*** createProbabilisticSemantics after: ' + JSON.stringify(keySC) + ': ' +
-                        FRETSemantics[keySC].pctl);
-              }
+
               let pctlExpandedEndpoints = utilities.replaceStrings(PrismEndpointRewrites, pctlFormSC);
               let pctlExpPRISMCust = semanticsGenerator.customizeForFret(pctlExpandedEndpoints);
               let pctlExpPRISMCustOpt = xform.transform(pctlExpPRISMCust,xform.optimizeFT);
@@ -225,9 +214,9 @@ function createSaltBatchString(product,isTimedResponse){
 
   var sltpctl;
   if (isTimedResponse){
-    sltpctl = getScopedTimedResponseSaltString(scopeObj,iterator.value[1],iterator.value[2],iterator.value[3]);
+    sltpctl = getScopedTimedResponseSaltString(scopeObj,iterator.value[1],iterator.value[2],iterator.value[3],iterator.value[4]);
   } else {
-    sltpctl = getConditionScopeSaltString(scopeObj,iterator.value[1],iterator.value[2],iterator.value[3]);
+    sltpctl = getConditionScopeSaltString(scopeObj,iterator.value[1],iterator.value[2],iterator.value[3],iterator.value[4]);
   }
 
   if (constants.verboseCacheSemantics) {
@@ -251,8 +240,8 @@ function createSaltBatchString(product,isTimedResponse){
  return ({mp:SemanticsMap, str:saltStr})
 }
 
-function getScopedTimedResponseSaltString (scope, condition, timing, response) {
-  var key = [scope.type,condition,timing,response];
+function getScopedTimedResponseSaltString (scope, condition, probability, timing, response) {
+  var key = [scope.type,condition,probability, timing,response];
   var endpoints = utilities.matchingBase(key, ScopeEndpoints);
   var scopeRequiresNegation = utilities.matchingBase(key, NegateFormula);
   var template = formalizations_probabilistic.getTimedResponseFormalization(key, scopeRequiresNegation, endpoints[1]);
@@ -266,8 +255,8 @@ function getScopedTimedResponseSaltString (scope, condition, timing, response) {
   }
 }
 
-function getConditionScopeSaltString (scope, condition, timing, response) {
-  var key = [scope.type,condition,timing,response];
+function getConditionScopeSaltString (scope, condition, probability, timing, response) {
+  var key = [scope.type,condition,probability, timing,response];
   var endpoints = utilities.matchingBase(key, ScopeEndpoints);
   var template = formalizations_probabilistic.getConditionScopeFormalization(key, endpoints[0], endpoints[1]);
   if (constants.verboseSemanticsGenerator)
