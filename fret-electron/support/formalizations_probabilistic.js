@@ -222,44 +222,45 @@ exports.getTimedResponseFormalization = (key, negate, right) => {
   return formula;
 }
 
-exports.getPROBFORM = (formula, bound) => {
+exports.getProbabilisticFormula = (formula, key) => {
   let probForm ;
+  var key_array = key.split(',');
+  let probability = key_array[2];
   if (probability.includes('almostsure')) {
-    probForm = parenthesize('P >= 1 [' + formula +']');
+    probForm = parenthesize('P>=1[' + formula +']');
   }
   else if (probability.includes('bound')) {
-    probForm = parenthesize('P ' + bound + ' [' + formula +']');
+    probForm = parenthesize('P' + '$bound$' + '[' + formula +']');
   }
   //console.log("PROBFORM: "+ probForm +"\n");
   return probForm;
 }
 
  exports.getConditionScopeFormalization = (key, left, right) => {
-   let scope = key[0];
-   let condition = key[1];
-   let probability = key[2];
-   let timing = key[3];
+  let scope = key[0];
+  let condition = key[1];
+  let probability = key[2];
+  let timing = key[3];
+  let baseForm;
+  var cond = 'COND';
 
+  if (condition.includes('null')){
+    baseForm = 'PROBFORM';
+  } else if (condition.includes('holding')){
+    baseForm = parenthesize('always' + parenthesize(conditionHoldingORFTP(cond) +
+  				     parenthesize('PROBFORM')));
 
-    let baseForm;
-    var cond = 'COND'
-    if (condition.includes('null')){
-      baseForm = 'PROBFORM';
-    } else if (condition.includes('holding')){
-      baseForm = parenthesize('always' + parenthesize(conditionHoldingORFTP(cond) +
-  					     parenthesize('PROBFORM')));
+  } else if (condition.includes('regular')){
+    baseForm = parenthesize('TRIGGER_IMPLIES ' + parenthesize('PROBFORM'));
+    var formula_1 = 'always' + parenthesize(baseForm.replace(/TRIGGER_IMPLIES/g, conditionTrigger(cond)))
+    var formula_2 = baseForm.replace(/TRIGGER_IMPLIES/g, conditionHoldingORFTP(cond))
+    baseForm = conjunction(formula_1, formula_2)
+  }
+  //console.log("BASEFORM: "+ baseForm +"\n");
 
-    } else if (condition.includes('regular')){
-      baseForm = parenthesize('TRIGGER_IMPLIES ' + parenthesize('PROBFORM'));
-      var formula_1 = 'always' + parenthesize(baseForm.replace(/TRIGGER_IMPLIES/g, conditionTrigger(cond)))
-      var formula_2 = baseForm.replace(/TRIGGER_IMPLIES/g, conditionHoldingORFTP(cond))
-      baseForm = conjunction(formula_1, formula_2)
-    }
-    //console.log("BASEFORM: "+ baseForm +"\n");
-
-    let generalForm = addScope(scope, baseForm, left, right);
-    //console.log("GENERALFORM" + generalForm +"\n");
-    return generalForm;
+  let generalForm = addScope(scope, baseForm, left, right);
+  //console.log("GENERALFORM" + generalForm +"\n");
+  return generalForm;
   }
 
   function addScope (scope, baseForm, left, right){

@@ -36,7 +36,7 @@ const semanticsGenerator = new SemanticsGenerator();
 const constants = require(fretParserPath + 'Constants');
 const utilities = require('../../support/utilities');
 const saltSemantics = require('../../support/saltSemantics');
-const formalizations = require('../../support/formalizations_probabilistic');
+const formalizations_probabilistic = require('../../support/formalizations_probabilistic');
 const xform = require('../../support/xform');
 
 var ProductIterable = require('product-iterable');
@@ -76,7 +76,8 @@ const ScopeEndpoints =[
    [' and ', ' & '],
    [' or ', ' | '],
    ['not ', '! '],
-   ['next ', 'X ']
+   ['next ', 'X '],
+   [' -> ', " => "]
  ];
 
 const semanticsObjNonsense = {
@@ -115,64 +116,97 @@ fs.writeFile(semanticsJSONname, JSON.stringify(FRETSemantics,undefined,2), funct
      }
 });
 
-function createProbabilisticSemantics(product) {
-
-  var saltInfo = createSaltBatchString(product);
-  console.log('\ncreateSemantics:saltInfo\n' + JSON.stringify(saltInfo));
-
-  var saltString = saltInfo.str;
-  var semanticsMap = saltInfo.mp;
-
-  var batchSemantics = semanticsGenerator.getBatchSemanticsFromSALT(saltString,'SALT_HOME').split('\n');
-
+function checkBatchSemantics(batchSemantics, semanticsMap){
   if ((batchSemantics.length - semanticsMap.length ) > 1) {
     // batchSemantics seems to always have an empty string at the end
     console.log(batchSemantics.length)
     console.log(semanticsMap.length)
     console.log("ERROR - SALT must have choked on some inputs")
   }
+}
+
+function createProbabilisticSemantics(product) {
+  var saltInfoTimedResponse = createSaltBatchString(product, true); //true means that it is timed response
+  var saltInfoTimedResponseString = saltInfoTimedResponse.str;
+  var semanticsTimedResponseMap = saltInfoTimedResponse.mp;
+
+  var saltInfoScopedCondition = createSaltBatchString(product, false);
+  var saltInfoScopedConditionString = saltInfoScopedCondition.str;
+  var semanticsScopedConditionMap = saltInfoScopedCondition.mp;
+
+  if (constants.verboseCacheSemantics) {
+    console.log('\ncreateSemantics:saltInfoTimedResponse\n' + JSON.stringify(saltInfoTimedResponse));
+    console.log('\ncreateSemantics:saltInfoScopedCondition\n' + JSON.stringify(saltInfoScopedCondition));
+  }
+
+  var batchSemanticsTimedResponse = semanticsGenerator.getBatchSemanticsFromSALT(saltInfoTimedResponseString,'SALT_HOME').split('\n');
+  checkBatchSemantics(batchSemanticsTimedResponse, semanticsTimedResponseMap);
+
+  var batchSemanticsScopedCondition = semanticsGenerator.getBatchSemanticsFromSALT(saltInfoScopedConditionString, 'SALT_HOME').split('\n');
+  checkBatchSemantics(batchSemanticsScopedCondition, semanticsScopedConditionMap);
 
   // the following means that there was a valid Salt installation to calculate the semantics
-  if (batchSemantics != constants.undefined_semantics) {
+  if (batchSemanticsScopedCondition != constants.undefined_semantics && batchSemanticsTimedResponse != constants.undefined_semantics) {
 
     // now set up FRETSemantics based on map
-    for (var index=0; index < semanticsMap.length; index++) {
-        if (constants.verboseCacheSemantics) console.log(batchSemantics[index])
-        let sem = batchSemantics[index];  // LTL formula
-        let type = semanticsMap[index].tp;  // future or past
-        let key = semanticsMap[index].fields; // what key it is for
+    for (var index=0; index < semanticsScopedConditionMap.length; index++) {
+        if (constants.verboseCacheSemantics) {
+          console.log(batchSemanticsTimedResponse[index]);
+          console.log(batchSemanticsScopedCondition[index]);
+        }
+        let semTR = batchSemanticsTimedResponse[index];  // LTL formula
+        let keyTR = semanticsTimedResponseMap[index].fields; // what key it is for
 
-    if (sem) { // SALT did not return undefined
-        if (sem.startsWith('LTLSPEC')) {
-          if (constants.verboseCacheSemantics) {
-              console.log('*** createProbabilisticSemantics before ' + JSON.stringify(key) + ': ' +
-                      FRETSemantics[key].pctl);
-          }
-          let pctlForm = sem.replace(/LTLSPEC/, '').trim();
-          let pctlFormCust = semanticsGenerator.customizeForFret(pctlForm);
-          let pctlFormCustOpt = xform.transform(pctlFormCust,xform.optimizeFT);
-          FRETSemantics[key].pctl = pctlFormCustOpt;
-          if (constants.verboseCacheSemantics) {
-              console.log('*** createProbabilisticSemantics after: ' + JSON.stringify(key) + ': ' +
-                    FRETSemantics[key].pctl);
-          }
-          let pctlExpandedEndpoints = utilities.replaceStrings(PrismEndpointRewrites, pctlForm);
-          let pctlExpPRISM = utilities.replaceStrings(PRISMSubsts, pctlExpandedEndpoints);
-          let pctlExpPRISMCust = semanticsGenerator.customizeForFret(pctlExpPRISM);
-          let pctlExpPRISMCustOpt = xform.transform(pctlExpPRISMCust,xform.optimizeFT);
-          FRETSemantics[key].pctlExpanded = pctlExpPRISMCustOpt;
+        let semSC = batchSemanticsScopedCondition[index];  // LTL formula
+        let keySC = semanticsScopedConditionMap[index].fields; // what key it is for
+
+        if (keySC !== keyTR){
+          console.log('Keys are not matching: ' + keySC+" "+ keyTR);
         }
-        else {
-            console.log('FT SALT parsing error: Unexpected prefix from SALT: ' + sem +' for key: '+ key);
-        }
-      } else {
-          console.log('Undefined result returned from SALT for key ' + key)
-      }
+
+        if (semTR && semSC) { // SALT did not return undefined
+            if (semTR.startsWith('LTLSPEC') && semSC.startsWith('LTLSPEC')) {
+              if (constants.verboseCacheSemantics) {
+                  console.log('*** createProbabilisticSemantics before ' + JSON.stringify(keySC) + ': ' +
+                          FRETSemantics[keySC].pctl);
+              }
+              let pctlFormTR = semTR.replace(/LTLSPEC/, '').trim();
+              let pctlFormCustTR = semanticsGenerator.customizeForFret(pctlFormTR);
+              let pctlFormCustOptTR = xform.transform(pctlFormCustTR,xform.optimizeFT);
+              if (constants.verboseCacheSemantics)
+                console.log('pctlFormCustOptTR: '+ pctlFormCustOptTR +"\n");
+              let probForm = formalizations_probabilistic.getProbabilisticFormula(pctlFormCustOptTR, keyTR.toString());
+              if (constants.verboseCacheSemantics)
+                console.log("PROBFORM: "+ probForm +"\n");
+
+              let pctlFormSC = semSC.replace(/LTLSPEC/, '').trim();
+              let pctlFormCustSC = semanticsGenerator.customizeForFret(pctlFormSC);
+              const pctlFormCustOptSC = xform.transform(pctlFormCustSC,xform.optimizeFT);
+
+              let pctlForm = pctlFormCustOptSC.replaceAll("PROBFORM", probForm);
+              FRETSemantics[keySC].pctl = pctlForm;
+              if (constants.verboseCacheSemantics) {
+                  console.log('*** createProbabilisticSemantics after: ' + JSON.stringify(keySC) + ': ' +
+                        FRETSemantics[keySC].pctl);
+              }
+              let pctlExpandedEndpoints = utilities.replaceStrings(PrismEndpointRewrites, pctlFormSC);
+              let pctlExpPRISMCust = semanticsGenerator.customizeForFret(pctlExpandedEndpoints);
+              let pctlExpPRISMCustOpt = xform.transform(pctlExpPRISMCust,xform.optimizeFT);
+              let pctlExpPRISM = utilities.replaceStrings(PRISMSubsts, pctlExpPRISMCustOpt);
+              let pctlExpForm = pctlExpPRISM.replaceAll("PROBFORM", probForm);
+              FRETSemantics[keySC].pctlExpanded = pctlExpForm;
+            }
+            else {
+                console.log('FT SALT parsing error: Unexpected prefix from SALT: ' + sem +' for key: '+ key);
+            }
+          } else {
+              console.log('Undefined result returned from SALT for key ' + key)
+          }
      }
    }
  };
 
-function createSaltBatchString(product){
+function createSaltBatchString(product,isTimedResponse){
   var saltStr = '';
   let options = [];
   options.sem = 'infinite';
@@ -190,34 +224,39 @@ function createSaltBatchString(product){
   if (constants.verboseCacheSemantics)
      console.log('\n\nKey is ' + key);
 
-    var sltpctl = getConditionScopeSaltString(scopeObj,iterator.value[1],iterator.value[2],iterator.value[3]);
-    if (constants.verboseCacheSemantics) {
-       console.log('\nGenerated SALT string for future is ' + sltpctl);
-    }
-     switch (sltpctl) {
-       case constants.nonsense_semantics:
-       // note they are all set to the SAME object but it is OK because they never change
-         FRETSemantics[key] = semanticsObjNonsense;
-         break;
-       case constants.undefined_semantics: // already initialized to undefined
-         break;
-       default: // prepare string for batch salt
-         // now prepare for salt
-         saltStr = saltStr + ' ' + sltpctl  // add it for salt processing
-         SemanticsMap[index] = {fields:key, tp:'ft'} // stores key and type located at this index
-         index++;
-     }
-     iterator = keyIterator.next();
+  var sltpctl;
+  if (isTimedResponse){
+    sltpctl = getScopedTimedResponseSaltString(scopeObj,iterator.value[1],iterator.value[2],iterator.value[3]);
+  } else {
+    sltpctl = getConditionScopeSaltString(scopeObj,iterator.value[1],iterator.value[2],iterator.value[3]);
+  }
+
+  if (constants.verboseCacheSemantics) {
+     console.log('\nGenerated SALT string for future is ' + sltpctl);
+  }
+   switch (sltpctl) {
+     case constants.nonsense_semantics:
+     // note they are all set to the SAME object but it is OK because they never change
+       FRETSemantics[key] = semanticsObjNonsense;
+       break;
+     case constants.undefined_semantics: // already initialized to undefined
+       break;
+     default: // prepare string for batch salt
+       // now prepare for salt
+       saltStr = saltStr + ' ' + sltpctl  // add it for salt processing
+       SemanticsMap[index] = {fields:key, tp:'ft'} // stores key and type located at this index
+       index++;
    }
-   return ({mp:SemanticsMap, str:saltStr})
+   iterator = keyIterator.next();
+ }
+ return ({mp:SemanticsMap, str:saltStr})
 }
 
 function getScopedTimedResponseSaltString (scope, condition, timing, response) {
   var key = [scope.type,condition,timing,response];
   var endpoints = utilities.matchingBase(key, ScopeEndpoints);
   var scopeRequiresNegation = utilities.matchingBase(key, NegateFormula);
-  var template = formalizations.getTimedResponseFormalization(key, scopeRequiresNegation, endpoints[1]);
-  //console.log("=====================");
+  var template = formalizations_probabilistic.getTimedResponseFormalization(key, scopeRequiresNegation, endpoints[1]);
   if (constants.verboseSemanticsGenerator)
     console.log('\ngetScopedTimedResponseSaltString template for ' + ' key ' + key + ' is ' + template);
   if (template == constants.undefined_semantics || template == constants.nonsense_semantics) {
@@ -231,9 +270,7 @@ function getScopedTimedResponseSaltString (scope, condition, timing, response) {
 function getConditionScopeSaltString (scope, condition, timing, response) {
   var key = [scope.type,condition,timing,response];
   var endpoints = utilities.matchingBase(key, ScopeEndpoints);
-  var template = formalizations.getConditionScopeFormalization(key, endpoints[0], endpoints[1]);
-  //var template = formalizations.getProbabilisticFormalization(key, bound = 'bound', scopeRequiresNegation, endpoints[0], endpoints[1]);
-  //console.log("=====================");
+  var template = formalizations_probabilistic.getConditionScopeFormalization(key, endpoints[0], endpoints[1]);
   if (constants.verboseSemanticsGenerator)
     console.log('\ngetConditionScopeSaltString template for ' + ' key ' + key + ' is ' + template);
   if (template == constants.undefined_semantics || template == constants.nonsense_semantics) {
