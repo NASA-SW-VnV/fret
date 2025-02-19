@@ -220,7 +220,6 @@ function createSaltBatchString(product,isTimedResponse){
     var scopeObj = {};
     scopeObj.type = iterator.value[0];
     var key = iterator.value.toString();
-  //TODO: Check endpoints
   if (constants.verboseCacheSemantics)
      console.log('\n\nKey is ' + key);
 
