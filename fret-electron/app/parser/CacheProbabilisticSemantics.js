@@ -181,8 +181,14 @@ function createProbabilisticSemantics(product) {
               let pctlExpPRISMCust = semanticsGenerator.customizeForFret(pctlExpandedEndpoints);
               let pctlExpPRISMCustOpt = xform.transform(pctlExpPRISMCust,xform.optimizeFT);
               let pctlExpPRISM = utilities.replaceStrings(PRISMSubsts, pctlExpPRISMCustOpt);
-              let pctlExpForm = pctlExpPRISM.replaceAll("PROBFORM", probForm);
-              FRETSemantics[keySC].pctlExpanded = "P>=1["pctlExpForm+"]";
+
+              let pctlFormExpandedEndpoints = utilities.replaceStrings(PrismEndpointRewrites, pctlFormTR);
+              let pctlFormExpandedEndpointsCust = semanticsGenerator.customizeForFret(pctlFormExpandedEndpoints);
+              let pctlFormExpandedEndpointsCustOpt = xform.transform(pctlFormExpandedEndpointsCust,xform.optimizeFT);
+              let pctlFormExpandedEndpointsCustOptProb = formalizations_probabilistic.getProbabilisticFormula(pctlFormExpandedEndpointsCustOpt, keyTR.toString());
+              let pctlExpForm = pctlExpPRISM.replaceAll("PROBFORM", pctlFormExpandedEndpointsCustOptProb);
+
+              FRETSemantics[keySC].pctlExpanded = "P>=1["+pctlExpForm+"]";
             }
             else {
                 console.log('FT SALT parsing error: Unexpected prefix from SALT: ' + sem +' for key: '+ key);
