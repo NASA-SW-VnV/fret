@@ -35,12 +35,6 @@ const constants = require('../app/parser/Constants');
 const utilities = require(fretSupportPath + 'utilities')
 
 
-// This is for infinite traces (so LAST - false)
-const PRISMEndpointRewrites = [
-  ['FiM|FFiM|LNiM', '((! MODE) & (X MODE))'],
-  ['LiM|FNiM|FLiM', '(MODE & X (! MODE))']
-]
-
 const Formula = [ // negate,timing,condition
   ['false,immediately,-', immediately('RES')],
   ['true,immediately,-', notImmediately('RES')],
@@ -182,6 +176,8 @@ exports.getTimedResponse = (key, bound) => {
 }
 
 function addScopeInTiming (scope,formula,right){
+  var endsScope = right;
+  var formula = formula.replace(/ENDSCOPE/g, endsScope);
   switch (scope) {
     case 'null':
       return formula;
