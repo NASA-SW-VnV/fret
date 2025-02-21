@@ -312,7 +312,7 @@ function getObligationInfo(doc, outputVariables, component, language, fragment){
           }
         }
       } else {
-        property.value = doc.semantics.ftInfAUExpanded;
+        
         property.reqid = doc.reqid;
         property.fullText = "Req text: " + doc.fulltext;
         property.fretish = doc.fulltext;
@@ -320,11 +320,17 @@ function getObligationInfo(doc, outputVariables, component, language, fragment){
         let obligationsSMV;
         
         if (fragment === 'ptLTL') {
+          property.value = doc.semantics.ptExpanded;
           property.ptLTL = doc.semantics.ptExpanded.replace(/<b>/g, "").replace(/<i>/g, "").replace(/<\/b>/g, "").replace(/<\/i>/g, "");
           obligationsSMV = xform.generateFLIPObligations({[property.reqid]: property.ptLTL}, language);
-        } else {
-          //ftLTL
+        } else if (fragment === 'ftLTL') {
+          property.value = doc.semantics.ftInfAUExpanded;
           property.ftLTL = doc.semantics.ftInfAUExpanded.replace(/<b>/g, "").replace(/<i>/g, "").replace(/<\/b>/g, "").replace(/<\/i>/g, "");
+          obligationsSMV = xform.generateFLIPObligations({[property.reqid]: property.ftLTL}, language);
+        } else {
+          //ftLTL-fin
+          property.value = doc.semantics.ftExpanded;
+          property.ftLTL = doc.semantics.ftExpanded.replace(/<b>/g, "").replace(/<i>/g, "").replace(/<\/b>/g, "").replace(/<\/i>/g, "");
           obligationsSMV = xform.generateFLIPObligations({[property.reqid]: property.ftLTL}, language);
         }
 

@@ -297,7 +297,8 @@ class ComponentSummary extends React.Component {
                   <MenuItem onClick={this.exportTestObligations('ptLTL')}>Test Obligations</MenuItem>                
                 </div> :
                 <div>
-                  <MenuItem onClick={this.exportTestObligations('ftLTL')}>Test Obligations (Future Time LTL)</MenuItem>
+                  <MenuItem onClick={this.exportTestObligations('ftLTL')}>Test Obligations (Future Time LTL - Infinite trace)</MenuItem>
+                  <MenuItem onClick={this.exportTestObligations('ftLTL-fin')}>Test Obligations (Future Time LTL - Finite trace)</MenuItem>
                   <MenuItem onClick={this.exportTestObligations('ptLTL')}>Test Obligations (Past Time LTL)</MenuItem>
                 </div>            
               }
