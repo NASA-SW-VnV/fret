@@ -237,7 +237,7 @@ class DisplayVariableDialog extends React.Component {
                   completedComponents : noNewVariablesResult.completedComponents,
                   cocospecData : noNewVariablesResult.cocospecData,
                   cocospecModes : noNewVariablesResult.cocospecModes,
-                  booleanOnlyComponents: result.booleanOnlyComponents,
+                  booleanOnlyComponents: noNewVariablesResult.booleanOnlyComponents,
                   // variables
                   variable_data : noNewVariablesResult.variable_data,
                   modelComponent : noNewVariablesResult.modelComponent,
@@ -467,13 +467,17 @@ class DisplayVariableDialog extends React.Component {
           <em>None</em>
         </MenuItem>
         <MenuItem id="qa_disVar_mi_dataType_boolean" value="boolean" >boolean</MenuItem>
-        {language !== 'smv' &&
-          <div>
+        {language !== 'smv' &&          
             <MenuItem id="qa_disVar_mi_dataType_integer" value="integer" >integer</MenuItem>
+        }
+        {language !== 'smv' &&
             <MenuItem id="qa_disVar_mi_dataType_unsigned_integer" value="unsigned integer" >unsigned integer</MenuItem>
+        }
+        {language !== 'smv' &&
             <MenuItem id="qa_disVar_mi_dataType_single" value="single">single</MenuItem>
+        }
+        {language !== 'smv' &&
             <MenuItem id="qa_disVar_mi_dataType_double" value="double">double</MenuItem>
-          </div>
         }
       </Select>
     </FormControl>
