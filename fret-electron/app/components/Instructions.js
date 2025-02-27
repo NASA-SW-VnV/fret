@@ -203,6 +203,7 @@ class Instructions extends React.Component {
       selectedItem: null,
       ptFormat: 'SMV',
       ftFormat: 'SMV',
+      pctLFormat: 'PRISM',
       ftInfinite: false
     };
 
@@ -269,23 +270,12 @@ handleSwitchChange =(event) => {
     return true
   }
 
-  typeProbabilistic(){
-    var f = this.props.formalization.semantics.probability
-    if (f=="query")
-      return "Probability query"
-    else if (f=="null")
-      return f
-    else
-      return "Bounded probability"
-  }
-
   renderFormula() {
     const { classes, requirement, requirementID} = this.props;
     var { ft, description, diagram, type } = this.props.formalization.semantics;
     var path = `../docs/`+this.props.formalization.semantics.diagram;
     var notationPath = `../docs/_media/user-interface/examples/svgDiagrams/Notation.svg`;
-    var isprobabilistic = this.isProbabilistic();
-    var typeprobability = this.typeProbabilistic();
+    var isProbabilistic = this.isProbabilistic();
     if (type === 'nasa'){
       /* TODO: Currently, formalization.semantics contains HTML beautified expression
        * (i.e. including <b> and <i> tags). They are currently removed in LTLSimLauncher
@@ -315,7 +305,7 @@ handleSwitchChange =(event) => {
     && (ft !== constants.undefined_semantics) && (diagram !== constants.undefined_svg))
     return(
       <div>
-      {!isprobabilistic && <div>
+      {!isProbabilistic && <div>
         <br />
         <div id="qa_crtAst_sem_desc" className={classes.description} dangerouslySetInnerHTML={{ __html: this.props.formalization.semantics.description}} />
         <br />
@@ -336,18 +326,17 @@ handleSwitchChange =(event) => {
       </Accordion>
         <br /><br />
         </div> }
-        { isprobabilistic && <Typography id="prob"> {typeprobability}  <br /><br /> </Typography> }
         <Typography variant='subtitle1' color='primary'>
         Formalization
         </Typography>
         <br />
         <Accordion>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography id="qa_crtAst_sem_typ_futureTime" className={classes.heading}>Future Time LTL</Typography>
+          {!isProbabilistic ? <Typography id="qa_crtAst_sem_typ_futureTime" className={classes.heading}>Future Time LTL</Typography> : <Typography id="qa_crtAst_sem_typ_futureTime" className={classes.heading}>Probabilistic CTL*</Typography>}
         </AccordionSummary>
         <AccordionDetails>
           <div>
-          {!isprobabilistic && <FormGroup row>
+          {!isProbabilistic && <FormGroup row>
           <div>
           <FormControl>
             <Select
@@ -368,7 +357,7 @@ handleSwitchChange =(event) => {
             </div>
             <br />
           </FormGroup>}
-          {!isprobabilistic && <br />}
+          {!isProbabilistic && <br />}
             <div id="qa_crtAst_sem_typ_futureTimeFormula" className={classes.formula}
               dangerouslySetInnerHTML={{ __html: (this.state.ftInfinite ? this.props.formalization.semantics.ftInfAUExpanded : this.props.formalization.semantics.ftExpanded)}} />
 
@@ -379,7 +368,7 @@ handleSwitchChange =(event) => {
           </div>
         </AccordionDetails>
       </Accordion>
-      {!isprobabilistic && <Accordion>
+      {!isProbabilistic && <Accordion>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <Typography id="qa_crtAst_sem_typ_pastTime" className={classes.heading}>Past Time LTL</Typography>
         </AccordionSummary>
@@ -415,7 +404,7 @@ handleSwitchChange =(event) => {
         </AccordionDetails>
       </Accordion>}
       <br />
-      {!isprobabilistic && ltlsimLauncher}
+      {!isProbabilistic && ltlsimLauncher}
       </div>)
       if ((ft !== constants.unhandled_semantics) && (ft !== constants.nonsense_semantics) && (ft !== constants.undefined_semantics) && (diagram === constants.undefined_svg))
       return(
