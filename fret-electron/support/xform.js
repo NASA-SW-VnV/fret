@@ -50,11 +50,8 @@ module.exports = {
     transformPastTemporalConditionsNoBounds,
     transformFutureTemporalConditionsNoBounds,
     transformTemporalConditionsNoBounds,
-<<<<<<< HEAD
-    generateFLIPObligations
-=======
+    generateFLIPObligations,
     simplifyPrismProp
->>>>>>> 3a37b0a7 (occurred/occurs(m,n,p), export simplifyPrismProp)
 }
 
 const isArray = utils.isArray;
@@ -1024,6 +1021,11 @@ function testProb(form) {
   console.log('simplifyPrismProp = ' + s)
 }
 
+//testProb(form)
+//testProb(form2)
+testProb(form3)
+//testProb(form4)
+=======
 let form = 'P>=1[!p & X(p) => P=?[!p & X(p) & X(q)]/P=?[!p & X(p)] >= 0.8]'
 let form2 = 'P=?[p] >= 0.8'
 

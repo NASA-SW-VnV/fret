@@ -249,18 +249,7 @@ function subst(term,sbst) {
     } else console.log('subst says: what type is ' + term)
 }
 
-function nonTemporalSubst(repl,pat,form) {
-  if (isAtom(form)) {
-    if (sameAST(pat, form)) return repl
-    else return form
-  } else if (isArray(form)) {
-    if (isTemporalOp(form[0])) return form
-    else if (sameAST(pat,form)) return repl
-    else return [form[0]].concat(form.slice(1).map((subform) =>
-						    nonTemporalSubst(repl,pat,subform)))
-  } else console.log('nonTemporalSubst says what type is ' +
-		     JSON.stringify(form))
-}
+
 
 function extractConjuncts(term) {
   let cjs = []
@@ -293,6 +282,19 @@ function isTemporalFormula(form) {
     return isTemporalOp(form[0]) || form.slice(1).some(isTemporalFormula)
   else console.log('isTemporalFormula: unhandled case')
 }
+
+// function nonTemporalSubst(repl,pat,form) {
+//   if (isAtom(form)) {
+//     if (sameAST(pat, form)) return repl
+//     else return form
+//   } else if (isArray(form)) {
+//     if (isTemporalOp(form[0])) return form
+//     else if (sameAST(pat,form)) return repl
+//     else return [form[0]].concat(form.slice(1).map((subform) =>
+// 						    nonTemporalSubst(repl,pat,subform)))
+//   } else console.log('nonTemporalSubst says what type is ' +
+// 		     JSON.stringify(form))
+// }
 
 function nonTemporalSubst(repl,pat,form) {
   let changed = false;
