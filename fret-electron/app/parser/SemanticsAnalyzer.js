@@ -57,8 +57,6 @@ function optLog(str) {
     if (constants.verboseSemanticsAnalyzer) console.log(str);
 }
 
-
-
 function SemanticsAnalyzer() {
   RequirementListener.call(this);
   return this;
@@ -125,13 +123,6 @@ SemanticsAnalyzer.prototype.enterScope = function(ctx) {
   }
 }
 
-/*
-RequirementListener.prototype.enterScope_required = function(ctx) {
-    var text = ctx.getText().toLowerCase();
-    result.scope.required = !text.includes('not');
-}
-*/
-
 SemanticsAnalyzer.prototype.exitScope = function(ctx) {
   result.scopeTextRange = [ctx.start.start, ctx.stop.stop]
 }
@@ -175,10 +166,6 @@ RequirementListener.prototype.enterOnly_condition = function(ctx) {
   result.condition = 'only'
 }
 
-//RequirementListener.prototype.enterRegular_condition = function(ctx) {
-//  if (result.condition == 'null') result.condition = 'regular'
-//}
-
 RequirementListener.prototype.enterQualifier_word = function(ctx) {
   result.qualifier_word = antlrUtilities.getText(ctx).toLowerCase().trim();
   if (result.qualifier_word === "whenever"
@@ -188,14 +175,9 @@ RequirementListener.prototype.enterQualifier_word = function(ctx) {
   else result.condition = "regular";
 }
 
-//RequirementListener.prototype.enterQualifier_word2 = function(ctx) {
-//    result.qualifier_word2 = antlrUtilities.getText(ctx).toLowerCase().trim();
-//}
-
 RequirementListener.prototype.enterPre_condition = function(ctx) {
   let pc = '(' + antlrUtilities.getText(ctx).trim() + ')';
   let pcNoIfThen = pc.replace(/ then /gi, ' => ').replace(/(\(| )(if )/gi,((match,p1,offset,str) => p1));
-  //let pcTransformed = xform.transformTemporalConditions(pcNoIfThen);
   result.pre_condition = pcNoIfThen;
 }
 
@@ -224,11 +206,6 @@ RequirementListener.prototype.exitQualified_condition2 = function(ctx) {
 RequirementListener.prototype.enterStop_condition = function(ctx) {
     result.stop_condition = '(' + antlrUtilities.getText(ctx).trim() + ')';
 }
-
-//don't need this, regular_condition will already have outer parens
-//RequirementListener.prototype.exitRegular_condition = function(ctx) {
-//   result.regular_condition = '(' + result.regular_condition + ')';
-// }
 
 RequirementListener.prototype.enterPost_condition = function(ctx) {
     let pc = '(' + antlrUtilities.getText(ctx).trim() + ')';
@@ -290,90 +267,21 @@ RequirementListener.prototype.enterNot_order = function(ctx) {
   result.response = 'not_order'
 }
 
-/*
-RequirementListener.prototype.enterAction = function(ctx) {
-  result.action = antlrUtilities.getText(ctx)
-  if(ctx.ID(0)){
-    var variable = ctx.ID(0).toString();
-    if (variable && ! result.variables.includes(variable))
-      result.variables.push(variable);
-  }
-}
-*/
-
-/*
-RequirementListener.prototype.enterAction1 = function(ctx) {
-    result.action1 = '(' + antlrUtilities.getText(ctx) + ')';
-
-}
-*/
-
-/*
-RequirementListener.prototype.enterAction2 = function(ctx) {
-  result.action2 = '(' + antlrUtilities.getText(ctx) + ')'
-}
-*/
-
 RequirementListener.prototype.enterNumeric_expr = function(ctx) {
   if(ctx.ID(0)){
     const variable = ctx.ID(0).toString();
     if (variable) pushNewVariable(variable);
-    //if (variable && ! result.variables.includes(variable))
-    //  result.variables.push(variable);
   }
 };
-//we do not need this
-// RequirementListener.prototype.enterNew_mode = function(ctx) {
-//   var mode = antlrUtilities.getText(ctx);
-//   if (mode && !result.variables.includes(mode))
-//     result.variables.push(mode);
-// };
+
 
 
 RequirementListener.prototype.enterBool_expr = function(ctx) {
   if(ctx.ID(0)){
     const variable = ctx.ID(0).toString();
     if (variable) pushNewVariable(variable);
-    //if (variable && ! result.variables.includes(variable))
-    //  result.variables.push(variable);
   }
 };
-
-/*
-function replaceTemplateVarsWithResults(formula) {
-  // formula may have template vars like $scope_mode_pt$.
-  // Substitute what's in the global variable "result" for them.
-  if (constants.verboseSemanticsAnalyzer) console.log("rTVWR in: " + JSON.stringify(formula))
-  if (formula) {
-    let args = formula.match(/\$\w+\d*\$/g);
-    if (args) {
-      args.forEach((a) => {
-	formula = formula.replace(a,result[a.substring(1, a.length - 1)]);
-      })
-    }
-  }
-  if (constants.verboseSemanticsAnalyzer) console.log("rTVWR out: " + JSON.stringify(formula))
-  return formula;
-}
-
-function replaceTemplateVarsWithArgs(formula, noHTML, noClassicImplSymbol){
-  if (formula) {
-    let args = formula.match(/\$\w+\d*\$/g)
-    if (args) {
-	// Update formula with arguments from the global "result" (substituted if necessary)
-        args.forEach((a) => {
-          let repl = replaceTemplateVarsWithResults(result[a.substring(1, a.length - 1)])
-	  formula = formula.replace(a, noHTML ? repl :'<b><i>' + repl + '</i></b>')
-        })
-    }
-    if (noClassicImplSymbol) {
-      formula = formula.replace(/=>/g,'->');
-    }
-    return formula;
-  } else // formula is instead an error message that contains no args.
-    return ("Unexpected case - SemanticsAnalyzer replaceTemplateVarsWithArgs");
-}
-*/
 
 // Replace $foo$ with result['foo'] throughout formula.  Note that the
 // replacement might have $bar$ within it, in the case of temporal
@@ -460,13 +368,6 @@ function SALTExpr2SMV (expr) {
    return '(' + get_LTL_from_old_SALT('assert ' + expr).slice(8).trim() + ')';
 }
 
-/*
-function LAST_is_FALSE (formula) {
-    const rewritten_formula = formula.replace(/& \(! LAST\)/g, '').replace(/\(! LAST\) &/g,'').replace(/\(! LAST\) U/g,'F').replace(/LAST/g,'FALSE')
-    return rewritten_formula
-}
-*/
-
 function LAST_is_FALSE (formula) {
   return formula.replace(/\bLAST\b/g, 'FALSE');
 }
@@ -489,7 +390,6 @@ function rename(fetched,exp,ptft) {
   // placeholders in the template; e.g., $regular_condition$ to
   // $regular_condition_SMV_pt$
   const replaced = fetched.replace(/\$regular_condition\$/g,'$regular_condition' + '_' + exp + '_' + ptft + '$').replace(/\$post_condition\$/g,'$post_condition' + '_' + exp + '_' + ptft + '$').replace(/\$stop_condition\$/g,'$stop_condition' + '_' + exp + '_' + ptft + '$').replace(/\$scope_mode\$/g,'$scope_mode' + '_' + ptft + '$');
-  //console.log('rename(' + fetched + ') = ' + replaced)
   return replaced
 }
 
@@ -533,6 +433,7 @@ SemanticsAnalyzer.prototype.semantics = () => {
 
   if (result.type === 'freeForm') {
     result.ft = constants.natural_semantics;
+    result.pctl = constants.natural_semantics;
     result.description = constants.natural_description;
   } else if (result.type === 'nasa') {
 
@@ -545,8 +446,11 @@ SemanticsAnalyzer.prototype.semantics = () => {
   // Fin_$scope_mode$. pt and ft aren't used anymore, so a possible
   // cleanup is to remove their computation in this function.
 
+//when clicking Semantics, generate both LTL and PCTL*
   const fetchedSemantics = fetchSemantics.getSemantics(result.scope, result.condition, result.timing, result.response);
+  const fetchedProbabilisticSemantics = fetchSemantics.getProbabilisticSemantics(result.scope, result.condition, result.probability, result.timing, result.response);
   if (constants.verboseSemanticsAnalyzer) console.log('fetchedSemantics: ' + prettyObject(fetchedSemantics));
+  if (constants.verboseSemanticsAnalyzer) console.log('fetchedSemantics: ' + prettyObject(fetchedProbabilisticSemantics));
 
   // Create variable descriptions like 'M = cruise TC = goingTooSlow Response = speedup'
   const variableDescription = createVariableDescription(result.scope, result.condition, result.timing, result.response, result.stop_condition);
@@ -574,11 +478,15 @@ SemanticsAnalyzer.prototype.semantics = () => {
   const ftleftSMV = fetchedSemantics.endpoints.SMVftExtleft2;
   const ftrightSMV = fetchedSemantics.endpoints.SMVftExtright2;
 
+  //TODO: add endpoints in probabilisticSemantics.json
+  const leftPRISM = fetchedProbabilisticSemantics.endpoints.PRISMleft;
+  const rightPRISM = fetchedProbabilisticSemantics.endpoints.PRISMright;
+
   const regCond = canon_bool_expr(result.regular_condition);
   const postCond = canon_bool_expr(result.post_condition);
   const stopCond = canon_bool_expr(result.stop_condition);
 
-   if (constants.verboseSemanticsAnalyzer) console.log("Before mode: " + (Date.now() - startTime) + " ms")
+   //if (constants.verboseSemanticsAnalyzer) console.log("Before mode: " + (Date.now() - startTime) + " ms")
 
     // Generate past and future formulas for the mode or mode
     // condition. The mode condition could be a Boolean expr with a
@@ -591,7 +499,7 @@ SemanticsAnalyzer.prototype.semantics = () => {
     if (result.scope.type === 'null') {
       // These should never appear in formalizations
       result.scope_mode_pt = "BAD_PT";
-      result.scope_mode_ft = "BAD_FT"
+      result.scope_mode_ft = "BAD_FT";
     } else {
       // the scope_mode field only exists when scope.type !== 'null'
       const modeCond = canon_bool_expr(result.scope_mode);
@@ -601,13 +509,13 @@ SemanticsAnalyzer.prototype.semantics = () => {
       result.scope_mode_ft = modeCondTCxform_ft;
   }
 
-  if (constants.verboseSemanticsAnalyzer) console.log("After mode: " + (Date.now() - startTime) + " ms")
+  //if (constants.verboseSemanticsAnalyzer) console.log("After mode: " + (Date.now() - startTime) + " ms")
 
   // Generate past and future formulas for the precondition, with
   // temporal conditions expanded.
   if (regCond) {
       // regCondTCxform has the temporal conditions rewritten into LTL.
-      const regCondTCxform_pt = xform.transformPastTemporalConditions(regCond)
+      const regCondTCxform_pt = xform.transformPastTemporalConditions(regCond);
     if (constants.verboseSemanticsAnalyzer) console.log("regCondTCxform_pt: " + JSON.stringify(regCondTCxform_pt));
 
       const regCondTCxform_ft = xform.transformFutureTemporalConditions(regCond)
@@ -626,9 +534,12 @@ SemanticsAnalyzer.prototype.semantics = () => {
 
       const regCondSMV_ft = regCondTCxform_ft.replace(/\$Right\$/g,ftrightSMV).replace(/\$scope_mode\$/g,'$scope_mode_ft$');
       result.regular_condition_SMV_ft = regCondSMV_ft;
+
+      const regCondPRISM = regCondTCxform_ft.replace(/\$Right\$/g,rightPRISM).replace(/\$scope_mode\$/g,'$scope_mode_ft$');
+      result.regular_condition_PCTL = regCondPRISM;
     }
 
-    if (constants.verboseSemanticsAnalyzer) console.log("After precondition: " + (Date.now() - startTime) + " ms")
+    //if (constants.verboseSemanticsAnalyzer) console.log("After precondition: " + (Date.now() - startTime) + " ms")
 
   // Generate past and future formulas for the response, with
   // temporal conditions expanded.
@@ -636,6 +547,7 @@ SemanticsAnalyzer.prototype.semantics = () => {
     if (postCond) {
 	const postCondTCxform_pt = xform.transformPastTemporalConditions(postCond);
 	const postCondTCxform_ft = xform.transformFutureTemporalConditions(postCond);
+  const postCondTCxformPRISM =xform.transformFutureTemporalConditions(postCond);
 
         const postCondUnexp_pt = postCondTCxform_pt.replace(/\$Left\$/g, left).replace(/\$scope_mode\$/g, '$scope_mode_pt$');
 	result.post_condition_unexp_pt = postCondUnexp_pt;
@@ -648,9 +560,12 @@ SemanticsAnalyzer.prototype.semantics = () => {
 
 	const postCondSMV_ft = postCondTCxform_ft.replace(/\$Right\$/g,ftrightSMV).replace(/\$scope_mode\$/g,'$scope_mode_ft$');
 	result.post_condition_SMV_ft = postCondSMV_ft;
+
+  const postCondPRISM = postCondTCxform_ft.replace(/\$Right\$/g,rightPRISM).replace(/\$scope_mode\$/g,'$scope_mode_ft$');
+  result.post_condition_PCTL = postCondPRISM;
     }
 
-    if (constants.verboseSemanticsAnalyzer) console.log("After postcondition: " + (Date.now() - startTime) + " ms")
+  //if (constants.verboseSemanticsAnalyzer) console.log("After postcondition: " + (Date.now() - startTime) + " ms")
 
   // Generate past and future formulas for the stop condition, with
   // temporal conditions expanded.
@@ -671,9 +586,12 @@ SemanticsAnalyzer.prototype.semantics = () => {
 
       const stopCondSMV_ft = stopCondTCxform_ft.replace(/\$Right\$/g,ftrightSMV).replace(/\$scope_mode\$/g,'$scope_mode_ft$');
       result.stop_condition_SMV_ft = stopCondSMV_ft;
+
+      const stopCondPRISM = stopCondTCxform_ft.replace(/\$Right\$/g,rightPRISM).replace(/\$scope_mode\$/g,'$scope_mode_ft$');
+      result.stop_condition_SMV_ft = stopCondPRISM;
     }
 
-    if (constants.verboseSemanticsAnalyzer) console.log("After stop condition: " + (Date.now() - startTime) + " ms")
+    //if (constants.verboseSemanticsAnalyzer) console.log("After stop condition: " + (Date.now() - startTime) + " ms")
 
     //pt and ft are used in the Create/Edit/Update Requirement display
     const fetched_ft = rename(fetchedSemantics.ft,'unexp','ft')
@@ -682,7 +600,10 @@ SemanticsAnalyzer.prototype.semantics = () => {
     const fetched_pt = rename(fetchedSemantics.pt,'unexp','pt')
     result.pt = replaceTemplateVars(fetched_pt);
 
-    if (constants.verboseSemanticsAnalyzer) console.log("After setup: " + (Date.now() - startTime) + " ms")
+    const fetched_pctl = rename(fetchedSemantics.pctl,'unexp','pctl');
+    result.pctl = replaceTemplateVars(fetched_pctl);
+
+    //if (constants.verboseSemanticsAnalyzer) console.log("After setup: " + (Date.now() - startTime) + " ms")
 
     // Now we fetch the past-time SMV template for the current
     // requirement's template key, replace placeholder names such as
@@ -700,13 +621,19 @@ SemanticsAnalyzer.prototype.semantics = () => {
     const fetched_ftExpanded = rename(fetchedSemantics.ftExpanded,'SMV','ft')
     result.ftExpanded = instantiate(fetched_ftExpanded, false)
 
-    if (constants.verboseSemanticsAnalyzer) console.log("After ftExpanded: " + (Date.now() - startTime) + " ms")
+    //if (constants.verboseSemanticsAnalyzer) console.log("After ftExpanded: " + (Date.now() - startTime) + " ms")
+
+    // Do finite future with the after/until semantics
+    const fetched_pctlExpanded = rename(fetchedSemantics.pctlExpanded,'PRISM','pctl')
+    result.pctlExpanded = instantiate(fetched_pctlExpanded, false)
+
+    //if (constants.verboseSemanticsAnalyzer) console.log("After ftExpanded: " + (Date.now() - startTime) + " ms")
 
     // Do infinite future with the after/until semantics
     const fetched_ftInfAUExpanded = rename(fetchedSemantics.ftInfAUExpanded,'SMV','ft')
     result.ftInfAUExpanded = instantiateInf(fetched_ftInfAUExpanded)
 
-    if (constants.verboseSemanticsAnalyzer) console.log("After ftInfAUExpanded: " + (Date.now() - startTime) + " ms")
+    //if (constants.verboseSemanticsAnalyzer) console.log("After ftInfAUExpanded: " + (Date.now() - startTime) + " ms")
 
     if (constants.generateBetweenSemantics) {
       // Do past, with the between semantics
@@ -722,7 +649,7 @@ SemanticsAnalyzer.prototype.semantics = () => {
       result.ftFinBtwExpanded = instantiate(fetched_ftFinBtwExpanded, false);
     }
 
-    if (constants.verboseSemanticsAnalyzer) console.log("After Between: " + (Date.now() - startTime) + " ms")
+    //if (constants.verboseSemanticsAnalyzer) console.log("After Between: " + (Date.now() - startTime) + " ms")
 
     result.component = replaceTemplateVars('$component_name$')
 
@@ -733,6 +660,7 @@ SemanticsAnalyzer.prototype.semantics = () => {
 
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
+
 SemanticsAnalyzer.prototype.clearResult = () => {
   result = {};
 }
