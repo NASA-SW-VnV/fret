@@ -428,8 +428,9 @@ function instantiateInf(fetched) {
 // support/xform.js.
 
 SemanticsAnalyzer.prototype.semantics = () => {
-  const startTime = Date.now()
-  if (constants.verboseSemanticsAnalyzer) console.log('Semantics result in:\n' + prettyObject(result));
+
+  if (constants.verboseSemanticsAnalyzer)
+    console.log('Semantics result in:\n' + prettyObject(result));
 
   if (result.type === 'freeForm') {
     result.ft = constants.natural_semantics;
@@ -448,9 +449,10 @@ SemanticsAnalyzer.prototype.semantics = () => {
 
 //when clicking Semantics, generate both LTL and PCTL*
   const fetchedSemantics = fetchSemantics.getSemantics(result.scope, result.condition, result.timing, result.response);
+
   const fetchedProbabilisticSemantics = fetchSemantics.getProbabilisticSemantics(result.scope, result.condition, result.probability, result.timing, result.response);
   if (constants.verboseSemanticsAnalyzer) console.log('fetchedSemantics: ' + prettyObject(fetchedSemantics));
-  if (constants.verboseSemanticsAnalyzer) console.log('fetchedSemantics: ' + prettyObject(fetchedProbabilisticSemantics));
+  if (constants.verboseSemanticsAnalyzer) console.log('fetchedProbabilisticSemantics: ' + prettyObject(fetchedProbabilisticSemantics));
 
   // Create variable descriptions like 'M = cruise TC = goingTooSlow Response = speedup'
   const variableDescription = createVariableDescription(result.scope, result.condition, result.timing, result.response, result.stop_condition);
@@ -478,9 +480,10 @@ SemanticsAnalyzer.prototype.semantics = () => {
   const ftleftSMV = fetchedSemantics.endpoints.SMVftExtleft2;
   const ftrightSMV = fetchedSemantics.endpoints.SMVftExtright2;
 
-  //TODO: add endpoints in probabilisticSemantics.json
-  const leftPRISM = fetchedProbabilisticSemantics.endpoints.PRISMleft;
-  const rightPRISM = fetchedProbabilisticSemantics.endpoints.PRISMright;
+  //if (result.probability){
+    const leftPRISM = fetchedProbabilisticSemantics.endpoints.PRISMleft;
+    const rightPRISM = fetchedProbabilisticSemantics.endpoints.PRISMright;
+  //}
 
   const regCond = canon_bool_expr(result.regular_condition);
   const postCond = canon_bool_expr(result.post_condition);
@@ -508,8 +511,6 @@ SemanticsAnalyzer.prototype.semantics = () => {
       result.scope_mode_pt = modeCondTCxform_pt;
       result.scope_mode_ft = modeCondTCxform_ft;
   }
-
-  //if (constants.verboseSemanticsAnalyzer) console.log("After mode: " + (Date.now() - startTime) + " ms")
 
   // Generate past and future formulas for the precondition, with
   // temporal conditions expanded.
@@ -539,15 +540,13 @@ SemanticsAnalyzer.prototype.semantics = () => {
       result.regular_condition_PCTL = regCondPRISM;
     }
 
-    //if (constants.verboseSemanticsAnalyzer) console.log("After precondition: " + (Date.now() - startTime) + " ms")
-
   // Generate past and future formulas for the response, with
   // temporal conditions expanded.
 
     if (postCond) {
 	const postCondTCxform_pt = xform.transformPastTemporalConditions(postCond);
 	const postCondTCxform_ft = xform.transformFutureTemporalConditions(postCond);
-  const postCondTCxformPRISM =xform.transformFutureTemporalConditions(postCond);
+  //const postCondTCxformPRISM =xform.transformFutureTemporalConditions(postCond);
 
         const postCondUnexp_pt = postCondTCxform_pt.replace(/\$Left\$/g, left).replace(/\$scope_mode\$/g, '$scope_mode_pt$');
 	result.post_condition_unexp_pt = postCondUnexp_pt;
@@ -564,8 +563,6 @@ SemanticsAnalyzer.prototype.semantics = () => {
   const postCondPRISM = postCondTCxform_ft.replace(/\$Right\$/g,rightPRISM).replace(/\$scope_mode\$/g,'$scope_mode_ft$');
   result.post_condition_PCTL = postCondPRISM;
     }
-
-  //if (constants.verboseSemanticsAnalyzer) console.log("After postcondition: " + (Date.now() - startTime) + " ms")
 
   // Generate past and future formulas for the stop condition, with
   // temporal conditions expanded.
@@ -591,8 +588,6 @@ SemanticsAnalyzer.prototype.semantics = () => {
       result.stop_condition_SMV_ft = stopCondPRISM;
     }
 
-    //if (constants.verboseSemanticsAnalyzer) console.log("After stop condition: " + (Date.now() - startTime) + " ms")
-
     //pt and ft are used in the Create/Edit/Update Requirement display
     const fetched_ft = rename(fetchedSemantics.ft,'unexp','ft')
     result.ft = replaceTemplateVars(fetched_ft);
@@ -600,10 +595,8 @@ SemanticsAnalyzer.prototype.semantics = () => {
     const fetched_pt = rename(fetchedSemantics.pt,'unexp','pt')
     result.pt = replaceTemplateVars(fetched_pt);
 
-    const fetched_pctl = rename(fetchedSemantics.pctl,'unexp','pctl');
+    const fetched_pctl = rename(fetchedProbabilisticSemantics.pctl,'unexp','pctl');
     result.pctl = replaceTemplateVars(fetched_pctl);
-
-    //if (constants.verboseSemanticsAnalyzer) console.log("After setup: " + (Date.now() - startTime) + " ms")
 
     // Now we fetch the past-time SMV template for the current
     // requirement's template key, replace placeholder names such as
@@ -615,25 +608,16 @@ SemanticsAnalyzer.prototype.semantics = () => {
     result.ptExpanded = astsem.ASTtoLTL(ptExpandedAST)
     result.CoCoSpecCode = astsem.ASTtoCoCo(ptExpandedAST)
 
-    if (constants.verboseSemanticsAnalyzer) console.log("After ptExpanded/CoCoSpecCode: " + (Date.now() - startTime) + " ms")
-
     // Do finite future with the after/until semantics
     const fetched_ftExpanded = rename(fetchedSemantics.ftExpanded,'SMV','ft')
     result.ftExpanded = instantiate(fetched_ftExpanded, false)
 
-    //if (constants.verboseSemanticsAnalyzer) console.log("After ftExpanded: " + (Date.now() - startTime) + " ms")
-
-    // Do finite future with the after/until semantics
-    const fetched_pctlExpanded = rename(fetchedSemantics.pctlExpanded,'PRISM','pctl')
+    const fetched_pctlExpanded = rename(fetchedProbabilisticSemantics.pctlExpanded,'PRISM','pctl')
     result.pctlExpanded = instantiate(fetched_pctlExpanded, false)
-
-    //if (constants.verboseSemanticsAnalyzer) console.log("After ftExpanded: " + (Date.now() - startTime) + " ms")
 
     // Do infinite future with the after/until semantics
     const fetched_ftInfAUExpanded = rename(fetchedSemantics.ftInfAUExpanded,'SMV','ft')
     result.ftInfAUExpanded = instantiateInf(fetched_ftInfAUExpanded)
-
-    //if (constants.verboseSemanticsAnalyzer) console.log("After ftInfAUExpanded: " + (Date.now() - startTime) + " ms")
 
     if (constants.generateBetweenSemantics) {
       // Do past, with the between semantics
@@ -648,8 +632,6 @@ SemanticsAnalyzer.prototype.semantics = () => {
       const fetched_ftFinBtwExpanded = rename(fetchedSemantics.ftFinBtwExpanded,'SMV','ft')
       result.ftFinBtwExpanded = instantiate(fetched_ftFinBtwExpanded, false);
     }
-
-    //if (constants.verboseSemanticsAnalyzer) console.log("After Between: " + (Date.now() - startTime) + " ms")
 
     result.component = replaceTemplateVars('$component_name$')
 
