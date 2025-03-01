@@ -37,6 +37,7 @@ const constants = require(fretParserPath + 'Constants');
 const utilities = require('../../support/utilities');
 const saltSemantics = require('../../support/saltSemantics');
 const formalizations_probabilistic = require('../../support/formalizations_probabilistic');
+const formalizations = require('../../support/formalizations');
 const xform = require('../../support/xform');
 
 var ProductIterable = require('product-iterable');
@@ -214,35 +215,44 @@ function createSaltBatchString(product,isTimedResponse){
     var scopeObj = {};
     scopeObj.type = iterator.value[0];
     var key = iterator.value.toString();
-  if (constants.verboseCacheSemantics)
-     console.log('\n\nKey is ' + key);
 
-  var sltpctl;
-  if (isTimedResponse){
-    sltpctl = getScopedTimedResponseSaltString(scopeObj,iterator.value[1],iterator.value[2],iterator.value[3],iterator.value[4]);
-  } else {
-    sltpctl = getConditionScopeSaltString(scopeObj,iterator.value[1],iterator.value[2],iterator.value[3],iterator.value[4]);
-  }
+    var endpoints = {left:'', right:'', PRISMleft:'', PRISMright:''};
+    var eps =  formalizations.getEndpoints(iterator.value);
+    endpoints['left'] = semanticsGenerator.customizeForFret(eps[0]);
+    endpoints['right'] = semanticsGenerator.customizeForFret(eps[1]);
+    endpoints['PRISMleft'] = semanticsGenerator.customizeForFret(formalizations_probabilistic.EndPointsRewrite(eps[0], 'prism'));
+    endpoints['PRISMright'] = semanticsGenerator.customizeForFret(formalizations_probabilistic.EndPointsRewrite(eps[1], 'prism'));
+    FRETSemantics[key]['endpoints'] = endpoints;
+    
+    if (constants.verboseCacheSemantics)
+       console.log('\n\nKey is ' + key);
 
-  if (constants.verboseCacheSemantics) {
-     console.log('\nGenerated SALT string for future is ' + sltpctl);
-  }
-   switch (sltpctl) {
-     case constants.nonsense_semantics:
-     // note they are all set to the SAME object but it is OK because they never change
-       FRETSemantics[key] = semanticsObjNonsense;
-       break;
-     case constants.undefined_semantics: // already initialized to undefined
-       break;
-     default: // prepare string for batch salt
-       // now prepare for salt
-       saltStr = saltStr + ' ' + sltpctl  // add it for salt processing
-       SemanticsMap[index] = {fields:key, tp:'ft'} // stores key and type located at this index
-       index++;
+    var sltpctl;
+    if (isTimedResponse){
+      sltpctl = getScopedTimedResponseSaltString(scopeObj,iterator.value[1],iterator.value[2],iterator.value[3],iterator.value[4]);
+    } else {
+      sltpctl = getConditionScopeSaltString(scopeObj,iterator.value[1],iterator.value[2],iterator.value[3],iterator.value[4]);
+    }
+
+    if (constants.verboseCacheSemantics) {
+       console.log('\nGenerated SALT string for future is ' + sltpctl);
+    }
+     switch (sltpctl) {
+       case constants.nonsense_semantics:
+       // note they are all set to the SAME object but it is OK because they never change
+         FRETSemantics[key] = semanticsObjNonsense;
+         break;
+       case constants.undefined_semantics: // already initialized to undefined
+         break;
+       default: // prepare string for batch salt
+         // now prepare for salt
+         saltStr = saltStr + ' ' + sltpctl  // add it for salt processing
+         SemanticsMap[index] = {fields:key, tp:'ft'} // stores key and type located at this index
+         index++;
+     }
+     iterator = keyIterator.next();
    }
-   iterator = keyIterator.next();
- }
- return ({mp:SemanticsMap, str:saltStr})
+   return ({mp:SemanticsMap, str:saltStr})
 }
 
 function getScopedTimedResponseSaltString (scope, condition, probability, timing, response) {

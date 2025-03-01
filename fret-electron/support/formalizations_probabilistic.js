@@ -60,6 +60,17 @@ const Formula = [ // negate,timing,condition
   ['true,before,-', notBeforeTiming('RES','STOPCOND')]
 ]
 
+
+const EndpointRewrites = [
+    ['FiM|FFiM|LNiM', '((not MODE) and next MODE)'],
+    ['LiM|FNiM|FLiM', '(MODE and next (not MODE))']
+]
+
+const PRISMEndpointRewrites = [
+  ['FiM|FFiM|LNiM', '((! MODE) & (X MODE))'],
+  ['LiM|FNiM|FLiM', '(MODE & X (! MODE))']
+]
+
 function negate(str) {return utilities.negate(str)}
 function parenthesize(str) {return utilities.parenthesize(str)}
 function disjunction(str1, str2) {return utilities.disjunction([str1, str2])}
@@ -200,6 +211,11 @@ function addScopeInTiming (scope,formula,right){
 
 function scopedNominal (formula, point, qualifier){
   return parenthesize(`(${formula}) before inclusive ${qualifier} ${point}`);
+}
+
+exports.EndPointsRewrite = (formula, format) => {
+  let rules = (format === 'prism' ? PRISMEndpointRewrites : EndpointRewrites);
+  return utilities.replaceStrings(rules, formula);
 }
 
 exports.getTimedResponseFormalization = (key, negate, right) => {
