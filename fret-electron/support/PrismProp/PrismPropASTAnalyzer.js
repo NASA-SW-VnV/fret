@@ -18,9 +18,6 @@ function PrismPropASTAnalyzer() {
   return this;
 }
 
-//PrismPropVisitor.prototype = Object.create(antlr4.tree.ParseTreeVisitor.prototype);
-//PrismPropVisitor.prototype.constructor = PrismPropVisitor;
-
 PrismPropASTAnalyzer.prototype = Object.create(PrismPropVisitor.prototype)
 PrismPropASTAnalyzer.prototype.constructor = PrismPropASTAnalyzer;
 
@@ -145,14 +142,14 @@ PrismPropVisitor.prototype.visitBinaryPathOp = function(ctx) {
 
 // Visit a parse tree produced by PrismPropParser#timeComp.
 PrismPropVisitor.prototype.visitTimeComp = function(ctx) {
-  return [this.visit(ctx.comparisonOp(0)), 
+  return [this.visit(ctx.comparisonOp(0)),
 	  this.visit(ctx.time(0))]
 };
 
 
 // Visit a parse tree produced by PrismPropParser#timeRange.
 PrismPropVisitor.prototype.visitTimeRange = function(ctx) {
-  return [this.visit(ctx.time(0)), 
+  return [this.visit(ctx.time(0)),
           this.visit(ctx.time(1)) ]
 };
 
@@ -464,7 +461,7 @@ PrismPropVisitor.prototype.visitQuery = function(ctx) {
 // Visit a parse tree produced by PrismPropParser#probOp.
 PrismPropVisitor.prototype.visitProbOp = function(ctx) {
   // This isn't used because it could also be Pquery,
-  // depending on the probability bound. See 
+  // depending on the probability bound. See
   // visitProbBoolFormula and visitProbQuery
   return 'PBool'
 };
