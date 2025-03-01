@@ -32,6 +32,7 @@
 // *****************************************************************************
 const fretParserPath = "./"
 const jsonFullSemantics = require(fretParserPath + 'semantics.json');
+const jsonProbSemantics = require(fretParserPath + 'probabilisticSemantics.json');
 const checkViolations = require('./CheckViolations');
 const constants = require('./Constants');
 
@@ -55,4 +56,17 @@ exports.getSemantics = (scope, condition, timing, response) => {
     semantics = jsonFullSemantics[scope.type+","+condition+","+timing+","+response];
   }
     return semantics;
+}
+
+exports.getProbabilisticSemantics = (scope, condition, probability, timing, response) => {
+  var probSemantics = {};
+  //check violations on scope, condition, timing and response, TODO: extend for probability
+  var violations = checkViolations.checkRequirementViolations(scope, condition, timing, response);
+  if (violations.length > 0){
+    probSemantics.ft = constants.unhandled_semantics;
+    probSemantics.description = checkViolations.getUnhandledViolationsMessage(violations);
+  } else {
+    probSemantics = jsonProbSemantics[scope.type+","+condition+","+probability+","+timing+","+response];
+  }
+  return probSemantics;
 }
