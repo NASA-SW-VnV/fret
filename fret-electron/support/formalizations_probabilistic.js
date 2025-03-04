@@ -238,13 +238,13 @@ exports.getProbabilisticFormula = (formula, key) => {
   let probForm ;
   var key_array = key.split(',');
   let probability = key_array[2];
-  if (probability.includes('almostsure')) {
+  if (probability.includes('null')) {
     probForm = parenthesize('P>=1[' + formula +']');
   }
   else if (probability.includes('bound')) {
     probForm = parenthesize('P' + '$bound$' + '[' + formula +']');
   }
-  //console.log("PROBFORM: "+ probForm +"\n");
+  // console.log("PROBFORM: "+ probForm +"\n");
   return probForm;
 }
 
