@@ -203,7 +203,7 @@ class Instructions extends React.Component {
       selectedItem: null,
       ptFormat: 'SMV',
       ftFormat: 'SMV',
-      pctLFormat: 'PRISM',
+      pctlFormat: 'PRISM',
       ftInfinite: false
     };
 
@@ -357,10 +357,10 @@ handleSwitchChange =(event) => {
             </div>
             <br />
           </FormGroup>}
-          {!isProbabilistic && <br />}
-            <div id="qa_crtAst_sem_typ_futureTimeFormula" className={classes.formula}
+            {!isProbabilistic ? <div id="qa_crtAst_sem_typ_futureTimeFormula" className={classes.formula}
               dangerouslySetInnerHTML={{ __html: (this.state.ftInfinite ? this.props.formalization.semantics.ftInfAUExpanded : this.props.formalization.semantics.ftExpanded)}} />
-
+            : <div id="qa_crtAst_sem_typ_futureTimeFormula" className={classes.formula}
+              dangerouslySetInnerHTML={{ __html: (this.props.formalization.semantics.pctlExpanded)}} />}
             <br />
             <div id="qa_crtAst_sem_typ_futureTimeComp" className={classes.description} dangerouslySetInnerHTML={{ __html:' Target: '+ this.props.formalization.semantics.component + ' component.'}} />
             {ftpInFT &&

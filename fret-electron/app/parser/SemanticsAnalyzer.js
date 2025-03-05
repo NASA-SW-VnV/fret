@@ -168,7 +168,7 @@ RequirementListener.prototype.enterOnly_condition = function(ctx) {
 RequirementListener.prototype.enterQualifier_word = function(ctx) {
   result.qualifier_word = antlrUtilities.getText(ctx).toLowerCase().trim();
   if (result.qualifier_word === "whenever"
-    // The second conjunct is for when both continual and trigger appear
+    // The second conjunct is for when both holding and regular appear
       && result.condition !== 'regular')
     result.condition = "holding";
   else result.condition = "regular";
