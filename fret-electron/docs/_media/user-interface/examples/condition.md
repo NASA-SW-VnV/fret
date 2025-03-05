@@ -3,14 +3,14 @@
 specifies the condition after which the response shall hold,
 taking into account scope and timing. A condition can be either:
 
-* a _trigger_ condition, meaning the requirement holds **_upon_** a condition becoming true; i.e., at the point
+* a _regular_ condition, meaning the requirement holds **_upon_** a condition becoming true; i.e., at the point
 where the condition becomes true after being false, or the
 condition is true at the beginning of a scope interval;
 
-* a _continual_ condition, meaning the response holds **_whenever_** the condition holds.
+* a _holding_ condition, meaning the response holds **_whenever_** the condition holds.
 
-A continual condition is introduced by the keyword **whenever**.
-A trigger condition is introduced by the keyword **upon** (or **when**,
+A holding condition is introduced by the keyword **whenever**.
+A regular condition is introduced by the keyword **upon** (or **when**,
 **where**, **if**).
 The condition can be a sequence of Boolean expressions, optionally connected
 by the keywords *and* and *or*.
@@ -47,7 +47,7 @@ possible to avoid mistakes and misunderstandings.
 * **Upon** powered_on the component shall immediately satisfy bootup
 * **Whenever** intruder the alarm shall immediately satisfy sound
 
-The contrast between trigger and continual conditions is shown in the following two
+The contrast between regular and holding conditions is shown in the following two
 examples, in the case where at some point p holds forever:
 
 * Upon p the software shall eventually satisfy q

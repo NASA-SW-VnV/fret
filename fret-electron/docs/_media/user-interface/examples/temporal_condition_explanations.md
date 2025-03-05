@@ -8,7 +8,7 @@ Temporal Condition Documentation
 
 This document describes temporal operators about values at previous time
 points, persistence or occurrence of conditions, and conditions holding at
-the next or previous occurrences of conditions. 
+the next or previous occurrences of conditions.
 
 ### Previous
 
@@ -32,7 +32,7 @@ future-time metric temporal logic. The past-time predicates appear
 unformalized in the future-time formalization of the requirement; similarly,
 the future-time predicates appear unformalized in the past-time
 formalization of the requirement.
- 
+
 In what follows, the variable `n` must be an integer literal (i.e., 1, 2);
 not, e.g., a variable name.
 
@@ -60,7 +60,7 @@ immediately satisfy r*, *r* will be required to be true when *p* occurs for
 the first time, because that is the first time that *occurred(7,p)* becomes
 true from false. To say that something shall occur for 7 seconds, use
 `occurred` in the response, e.g., *the sw shall always satisfy if
-occurred(7,temp > high) then alarm*, or a continual condition, e.g.,
+occurred(7,temp > high) then alarm*, or a holding condition, e.g.,
 *whenever occurred(7,temp > high) the sw shall satisfy alarm*. The Simulator
 is a big help in understanding the semantics.
 

@@ -21,7 +21,7 @@ Moreover, the following formalizations can be displayed, even though more option
 1. Future Time Metric Linear Temporal Logic for finite traces, in format compatible with the [SMV](https://en.wikipedia.org/wiki/NuSMV) model checker.
 2. Past Time Metric Linear Temporal Logic, in format compatible with the [SMV](https://en.wikipedia.org/wiki/NuSMV) model checker.
 
-FRET generates semantics based on templates. Each template is represented by a quadruple [scope, condition,timing,response], representing different options for the corresponding fields of each written requirement.
+FRET generates semantics based on templates. Each template is represented by a quadruple [scope,condition,timing,response], representing different options for the corresponding fields of each written requirement.
 
 Let us look at our example requirement: <span style="color:blue">In flight mode the battery shall always satisfy voltage > 9 </span>
 
