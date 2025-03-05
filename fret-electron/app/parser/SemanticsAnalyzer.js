@@ -75,7 +75,6 @@ function initialize(type) {
 }
 
 function pushNewVariable(v) {
-  //console.log('pushNewVariable: ' + JSON.stringify(v))
   if (!result.variables.includes(v) && !constants.predefinedVars.includes(v))
     result.variables.push(v)
 }
@@ -219,7 +218,8 @@ RequirementListener.prototype.enterProbability_aux = function(ctx) {
   if (selector === "what") result.probability = 'query'
   else if (selector === "probability") {
     result.probability = 'bound';
-    result.probability_bound = [prob[1],prob[2]];
+    result.probability_bound = prob[1] + prob[2];
+    //result.probability_bound = [prob[1],prob[2]];
   }
   else console.log('enterProbability: unknown keyword')
 }
@@ -290,6 +290,7 @@ function replaceTemplateVars(formula,html=false) {
   if (formula) {
     let arr = formula.match(/\$\w+\$/);
     while (arr) {
+
       const tv = arr[0]
       const tvnodollar = tv.substring(1,tv.length-1)
       const repl = result[tvnodollar]
@@ -389,7 +390,10 @@ function rename(fetched,exp,ptft) {
   // exp is 'unexp' or 'SMV'. ptft is 'pt' or 'ft'.  Renames
   // placeholders in the template; e.g., $regular_condition$ to
   // $regular_condition_SMV_pt$
-  const replaced = fetched.replace(/\$regular_condition\$/g,'$regular_condition' + '_' + exp + '_' + ptft + '$').replace(/\$post_condition\$/g,'$post_condition' + '_' + exp + '_' + ptft + '$').replace(/\$stop_condition\$/g,'$stop_condition' + '_' + exp + '_' + ptft + '$').replace(/\$scope_mode\$/g,'$scope_mode' + '_' + ptft + '$');
+  const replaced = fetched.replace(/\$regular_condition\$/g,'$regular_condition' + '_' + exp + '_' + ptft + '$').
+  replace(/\$post_condition\$/g,'$post_condition' + '_' + exp + '_' + ptft + '$').
+  replace(/\$stop_condition\$/g,'$stop_condition' + '_' + exp + '_' + ptft + '$').
+  replace(/\$scope_mode\$/g,'$scope_mode' + '_' + ptft + '$');
   return replaced
 }
 
@@ -412,6 +416,15 @@ function instantiate(fetched, past) {
 // then simplifies the result.
 function instantiateInf(fetched) {
   return xform.transform(utils.salt2smv(LAST_is_FALSE(replaceTemplateVars(fetched))),xform.optimizeFT)
+}
+
+function instantiateProb(fetched){
+  let fetchedTV = replaceTemplateVars(fetched);
+  let fetchedTVnoL = LAST_is_FALSE(fetchedTV)
+  //TODO:
+  //let fetchedTVnoLOpt = xform.transform(fetchedTVnoL,xform.optimizeFT)
+  return fetchedTVnoL
+  //return xform.transform(LAST_is_FALSE(replaceTemplateVars(fetched)),xform.optimizeFT)
 }
 
 //----------------------------------------------------------------------
@@ -480,6 +493,7 @@ SemanticsAnalyzer.prototype.semantics = () => {
   const ftleftSMV = fetchedSemantics.endpoints.SMVftExtleft2;
   const ftrightSMV = fetchedSemantics.endpoints.SMVftExtright2;
 
+  //TODO:
   //if (result.probability){
     const leftPRISM = fetchedProbabilisticSemantics.endpoints.PRISMleft;
     const rightPRISM = fetchedProbabilisticSemantics.endpoints.PRISMright;
@@ -488,6 +502,7 @@ SemanticsAnalyzer.prototype.semantics = () => {
   const regCond = canon_bool_expr(result.regular_condition);
   const postCond = canon_bool_expr(result.post_condition);
   const stopCond = canon_bool_expr(result.stop_condition);
+  const probBound = result.probability_bound;
 
    //if (constants.verboseSemanticsAnalyzer) console.log("Before mode: " + (Date.now() - startTime) + " ms")
 
@@ -510,6 +525,11 @@ SemanticsAnalyzer.prototype.semantics = () => {
       const modeCondTCxform_ft = xform.transformFutureTemporalConditionsNoBounds(modeCond)
       result.scope_mode_pt = modeCondTCxform_pt;
       result.scope_mode_ft = modeCondTCxform_ft;
+      result.scope_mode_pctl = modeCondTCxform_ft;
+  }
+
+  if (probBound){
+    result.bound = probBound;
   }
 
   // Generate past and future formulas for the precondition, with
@@ -517,7 +537,7 @@ SemanticsAnalyzer.prototype.semantics = () => {
   if (regCond) {
       // regCondTCxform has the temporal conditions rewritten into LTL.
       const regCondTCxform_pt = xform.transformPastTemporalConditions(regCond);
-    if (constants.verboseSemanticsAnalyzer) console.log("regCondTCxform_pt: " + JSON.stringify(regCondTCxform_pt));
+      if (constants.verboseSemanticsAnalyzer) console.log("regCondTCxform_pt: " + JSON.stringify(regCondTCxform_pt));
 
       const regCondTCxform_ft = xform.transformFutureTemporalConditions(regCond)
 
@@ -530,14 +550,17 @@ SemanticsAnalyzer.prototype.semantics = () => {
       const regCondUnexp_ft = regCondTCxform_ft.replace(/\$Right\$/g,right).replace(/\$scope_mode\$/g, '$scope_mode_ft$');
       result.regular_condition_unexp_ft = regCondUnexp_ft;
 
+      const regCondUnexp_pctl = regCondTCxform_ft.replace(/\$Right\$/g,right).replace(/\$scope_mode\$/g,'$scope_mode_ft$');
+      result.regular_condition_unexp_pctl = regCondUnexp_pctl;
+
       const regCondSMV_pt = regCondTCxform_pt.replace(/\$Left\$/g, ptleftSMV).replace(/\$scope_mode\$/g,'$scope_mode_pt$');
       result.regular_condition_SMV_pt = regCondSMV_pt;
 
       const regCondSMV_ft = regCondTCxform_ft.replace(/\$Right\$/g,ftrightSMV).replace(/\$scope_mode\$/g,'$scope_mode_ft$');
       result.regular_condition_SMV_ft = regCondSMV_ft;
 
-      const regCondPRISM = regCondTCxform_ft.replace(/\$Right\$/g,rightPRISM).replace(/\$scope_mode\$/g,'$scope_mode_ft$');
-      result.regular_condition_PCTL = regCondPRISM;
+      const regCondPRISM_pctl = regCondTCxform_ft.replace(/\$Right\$/g,rightPRISM).replace(/\$scope_mode\$/g,'$scope_mode_ft$');
+      result.regular_condition_PRISM_pctl = regCondPRISM_pctl;
     }
 
   // Generate past and future formulas for the response, with
@@ -546,13 +569,15 @@ SemanticsAnalyzer.prototype.semantics = () => {
     if (postCond) {
 	const postCondTCxform_pt = xform.transformPastTemporalConditions(postCond);
 	const postCondTCxform_ft = xform.transformFutureTemporalConditions(postCond);
-  //const postCondTCxformPRISM =xform.transformFutureTemporalConditions(postCond);
 
-        const postCondUnexp_pt = postCondTCxform_pt.replace(/\$Left\$/g, left).replace(/\$scope_mode\$/g, '$scope_mode_pt$');
+  const postCondUnexp_pt = postCondTCxform_pt.replace(/\$Left\$/g, left).replace(/\$scope_mode\$/g, '$scope_mode_pt$');
 	result.post_condition_unexp_pt = postCondUnexp_pt;
 
 	const postCondUnexp_ft = postCondTCxform_ft.replace(/\$Right\$/g,right).replace(/\$scope_mode\$/g, '$scope_mode_ft$');
 	result.post_condition_unexp_ft = postCondUnexp_ft;
+
+  const postCondUnexp_pctl = postCondTCxform_ft.replace(/\$Right\$/g,right).replace(/\$scope_mode\$/g,'$scope_mode_ft$');
+  result.post_condition_unexp_pctl = postCondUnexp_pctl;
 
 	const postCondSMV_pt = postCondTCxform_pt.replace(/\$Left\$/g, ptleftSMV).replace(/\$scope_mode\$/g,'$scope_mode_pt$');
 	result.post_condition_SMV_pt = postCondSMV_pt;
@@ -560,8 +585,8 @@ SemanticsAnalyzer.prototype.semantics = () => {
 	const postCondSMV_ft = postCondTCxform_ft.replace(/\$Right\$/g,ftrightSMV).replace(/\$scope_mode\$/g,'$scope_mode_ft$');
 	result.post_condition_SMV_ft = postCondSMV_ft;
 
-  const postCondPRISM = postCondTCxform_ft.replace(/\$Right\$/g,rightPRISM).replace(/\$scope_mode\$/g,'$scope_mode_ft$');
-  result.post_condition_PCTL = postCondPRISM;
+  const postCondPRISM_pctl = postCondTCxform_ft.replace(/\$Right\$/g,rightPRISM).replace(/\$scope_mode\$/g,'$scope_mode_ft$');
+  result.post_condition_PRISM_pctl = postCondPRISM_pctl;
     }
 
   // Generate past and future formulas for the stop condition, with
@@ -578,14 +603,17 @@ SemanticsAnalyzer.prototype.semantics = () => {
       const stopCondUnexp_ft = stopCondTCxform_ft.replace(/\$Right\$/g,right).replace(/\$scope_mode\$/g, '$scope_mode_ft$');
       result.stop_condition_unexp_ft = stopCondUnexp_ft;
 
+      const stopCondUnexp_pctl = stopCondTCxform_ft.replace(/\$Right\$/g,right).replace(/\$scope_mode\$/g,'$scope_mode_ft$');
+      result.stop_condition_PRISM_pctl = stopCondUnexp_pctl;
+
       const stopCondSMV_pt = stopCondTCxform_pt.replace(/\$Left\$/g,ptleftSMV).replace(/\$scope_mode\$/g,'$scope_mode_pt$');
       result.stop_condition_SMV_pt = stopCondSMV_pt;
 
       const stopCondSMV_ft = stopCondTCxform_ft.replace(/\$Right\$/g,ftrightSMV).replace(/\$scope_mode\$/g,'$scope_mode_ft$');
       result.stop_condition_SMV_ft = stopCondSMV_ft;
 
-      const stopCondPRISM = stopCondTCxform_ft.replace(/\$Right\$/g,rightPRISM).replace(/\$scope_mode\$/g,'$scope_mode_ft$');
-      result.stop_condition_SMV_ft = stopCondPRISM;
+      const stopCondPRISM_pctl = stopCondTCxform_ft.replace(/\$Right\$/g,rightPRISM).replace(/\$scope_mode\$/g,'$scope_mode_ft$');
+      result.stop_condition_PRISM_pctl = stopCondPRISM_pctl;
     }
 
     //pt and ft are used in the Create/Edit/Update Requirement display
@@ -613,7 +641,7 @@ SemanticsAnalyzer.prototype.semantics = () => {
     result.ftExpanded = instantiate(fetched_ftExpanded, false)
 
     const fetched_pctlExpanded = rename(fetchedProbabilisticSemantics.pctlExpanded,'PRISM','pctl')
-    result.pctlExpanded = instantiate(fetched_pctlExpanded, false)
+    result.pctlExpanded = instantiateProb(fetched_pctlExpanded)
 
     // Do infinite future with the after/until semantics
     const fetched_ftInfAUExpanded = rename(fetchedSemantics.ftInfAUExpanded,'SMV','ft')
