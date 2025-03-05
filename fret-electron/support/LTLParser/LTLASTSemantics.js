@@ -266,6 +266,11 @@ function abstractArithExprsAndNonMonotonicOpsInAST(ast) {
 		} else if (isVar(ast) || isAtom(ast)) {
 			abstractions = {}			
         	result = ast;
+		} else {
+			//Everything else, which I think is only custom predicates, which should work like the 'Negate' case.
+			let abstractedSubAST = ast[0]+'_'+abstractArithExprsAndNonMonotonicOpsInAST(ast[1]).result
+			abstractions[abstractedSubAST] = ast;
+			result = abstractedSubAST			
 		}
     } else if (isVar(ast) || isAtom(ast)) {	
 		abstractions = {}		
