@@ -267,8 +267,8 @@ function abstractArithExprsAndNonMonotonicOpsInAST(ast) {
 			abstractions = {}			
         	result = ast;
 		} else {
-			//Everything else, which I think is only custom predicates, which should work like the 'Negate' case.
-			let abstractedSubAST = ast[0]+'_'+abstractArithExprsAndNonMonotonicOpsInAST(ast[1]).result
+			//Everything else, which should only be custom predicates.			
+			let abstractedSubAST = ast.map(a => abstractArithExprsAndNonMonotonicOpsInAST(a).result).join('_')
 			abstractions[abstractedSubAST] = ast;
 			result = abstractedSubAST			
 		}
