@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="507px" height="160px">
+      <pattern id="dottedPattern"
+       x="10" y="9" width="10" height="10" patternUnits="userSpaceOnUse" >
+       <!-- start pattern-->
+       <circle cx="6" cy="6" r="3" style="stroke: none; fill: orange" />
+       <!-- end pattern -->
+       </pattern>
+
+<rect x ="200" y="65" width="300" height="65" stroke="#D5DBDB" stroke-width="2" fill="#D5DBDB " />
+<rect x ="200" y="108.33333333333333" width="300" height="21.666666666666668" stroke="orange" stroke-width="2" fill="orange " />
+<rect x ="200" y="65" width="135" height="65" stroke="black" stroke-width="4" fill="none " />
+<text x = "207" y="82" font-family="sans-serif" font-size="17px"     font-weight="normal" text-anchor="start" alignment-baseline="middle" fill="black">M</text>
+
+
+  <path d="M 10 130 h 490" stroke="#000" stroke-width="3" fill="none"/>
+<path d="M 500 130 l -14.26 4.64v -9.28z" stroke="#000" stroke-width="0"/>
+
+</svg>
