@@ -78,7 +78,8 @@ const ScopeEndpoints =[
    [' or ', ' | '],
    ['not ', '! '],
    ['next ', 'X '],
-   [' -> ', " => "]
+   [' -> ', " => "],
+   [' V ', ' R '] //for releases temporal operator
  ];
 
 const semanticsObjNonsense = {
@@ -171,11 +172,12 @@ function createProbabilisticSemantics(product) {
               let pctlFormCustTR = semanticsGenerator.customizeForFret(pctlFormTR);
               let pctlFormCustOptTR = xform.transform(pctlFormCustTR,xform.optimizeFT);
               let probForm = formalizations_probabilistic.getProbabilisticFormula(pctlFormCustOptTR, keyTR.toString());
+              let probFormPRISM = utilities.replaceStrings(PRISMSubsts, probForm);
 
               let pctlFormSC = semSC.replace(/LTLSPEC/, '').trim();
               let pctlFormCustSC = semanticsGenerator.customizeForFret(pctlFormSC);
               const pctlFormCustOptSC = xform.transform(pctlFormCustSC,xform.optimizeFT);
-              let pctlForm = pctlFormCustOptSC.replaceAll("PROBFORM", probForm);
+              let pctlForm = pctlFormCustOptSC.replaceAll("PROBFORM", probFormPRISM);
               FRETSemantics[keySC].pctl = "P>=1["+pctlForm+"]";
 
               let pctlExpandedEndpoints = utilities.replaceStrings(PrismEndpointRewrites, pctlFormSC);
@@ -187,7 +189,8 @@ function createProbabilisticSemantics(product) {
               let pctlFormExpandedEndpointsCust = semanticsGenerator.customizeForFret(pctlFormExpandedEndpoints);
               let pctlFormExpandedEndpointsCustOpt = xform.transform(pctlFormExpandedEndpointsCust,xform.optimizeFT);
               let pctlFormExpandedEndpointsCustOptProb = formalizations_probabilistic.getProbabilisticFormula(pctlFormExpandedEndpointsCustOpt, keyTR.toString());
-              let pctlExpForm = pctlExpPRISM.replaceAll("PROBFORM", pctlFormExpandedEndpointsCustOptProb);
+              let pctlFormExpandedEndpointsCustOptProbPRISM = utilities.replaceStrings(PRISMSubsts, pctlFormExpandedEndpointsCustOptProb);
+              let pctlExpForm = pctlExpPRISM.replaceAll("PROBFORM", pctlFormExpandedEndpointsCustOptProbPRISM);
 
               FRETSemantics[keySC].pctlExpanded = "P>=1["+pctlExpForm+"]";
             }
@@ -223,7 +226,7 @@ function createSaltBatchString(product,isTimedResponse){
     endpoints['PRISMleft'] = semanticsGenerator.customizeForFret(formalizations_probabilistic.EndPointsRewrite(eps[0], 'prism'));
     endpoints['PRISMright'] = semanticsGenerator.customizeForFret(formalizations_probabilistic.EndPointsRewrite(eps[1], 'prism'));
     FRETSemantics[key]['endpoints'] = endpoints;
-    
+
     if (constants.verboseCacheSemantics)
        console.log('\n\nKey is ' + key);
 
