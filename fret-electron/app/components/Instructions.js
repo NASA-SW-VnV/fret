@@ -264,18 +264,13 @@ handleSwitchChange =(event) => {
     this.setState({LTLSimDialogOpen: false});
   }
 
-  isProbabilistic(){
-    if (this.props.formalization.semantics.probability=="null")
-      return false
-    return true
-  }
 
   renderFormula() {
     const { classes, requirement, requirementID} = this.props;
     var { ft, description, diagram, type } = this.props.formalization.semantics;
     var path = `../docs/`+this.props.formalization.semantics.diagram;
     var notationPath = `../docs/_media/user-interface/examples/svgDiagrams/Notation.svg`;
-    var isProbabilistic = this.isProbabilistic();
+    let isProbabilistic=this.props.isProbabilistic;
     if (type === 'nasa'){
       /* TODO: Currently, formalization.semantics contains HTML beautified expression
        * (i.e. including <b> and <i> tags). They are currently removed in LTLSimLauncher
@@ -577,7 +572,8 @@ Instructions.propTypes = {
   handleTabChange: PropTypes.func.isRequired,
   requirements: PropTypes.array,
   setAutoFillVariables: PropTypes.func,
-  editVariables: PropTypes.object
+  editVariables: PropTypes.object,
+  isProbabilistic: PropTypes.bool.isRequired
 };
 
 function mapStateToProps(state) {

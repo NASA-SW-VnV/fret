@@ -144,7 +144,6 @@ class SlateEditor2 extends React.Component {
     this.state = {
       editorValue: [],     // The Dom of the Editable of this Slate class
       inputText: ' ',      // all requirement texts
-      //fieldColors: {},
       menuOptions: [],
       menuIndex: 0,
       selectedField: undefined,
@@ -232,8 +231,8 @@ class SlateEditor2 extends React.Component {
   }
 
 switchHandler = (event) => {
-  let switchBoolean = event.target.checked;
-  if (switchBoolean){
+  this.props.switchProbabilisticHandler(event);
+  if (event.target.checked){
     this.setState({
      fields: fieldswithprop
     })
@@ -1456,7 +1455,8 @@ SlateEditor2.propTypes = {
   updateSemantics: PropTypes.func.isRequired,
   inputFields: PropTypes.object,  // requirement fullText
   grammarRule: PropTypes.string,
-  template: PropTypes.object
+  template: PropTypes.object,
+  switchProbabilisticHandler : PropTypes.func.isRequired
 }
 /**
  * Export.

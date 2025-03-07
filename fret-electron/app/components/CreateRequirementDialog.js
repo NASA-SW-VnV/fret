@@ -150,6 +150,7 @@ class CreateRequirementDialog extends React.Component {
     dialogLeft: 0,
     autoFillVariables: [],
     existingFileName: '',
+    isProbabilistic: false,
   };
 
 
@@ -426,6 +427,12 @@ class CreateRequirementDialog extends React.Component {
     this.setState({autoFillVariables})
   }
 
+  switchProbabilisticHandler = (event) => {
+    this.setState({
+      isProbabilistic: event.target.checked,
+    });
+  }
+
   renderEditor = (inputFields, selectedTemplate) => {
     const {tabValue, dialogTop, dialogLeft} = this.state;
     return (
@@ -439,6 +446,7 @@ class CreateRequirementDialog extends React.Component {
         autoFillVariables={this.state.autoFillVariables}
         dialogTop={dialogTop}
         dialogLeft={dialogLeft}
+        switchProbabilisticHandler ={this.switchProbabilisticHandler}
         />
     )
   }
@@ -624,6 +632,7 @@ class CreateRequirementDialog extends React.Component {
               setAutoFillVariables={this.setAutoFillVariables}
               requirements={this.props.requirements}
               editVariables={this.props.editVariables}
+              isProbabilistic={this.state.isProbabilistic}
               />
             </div>
           </div>
