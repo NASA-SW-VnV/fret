@@ -151,7 +151,8 @@ class SlateEditor2 extends React.Component {
       variables: [],
       beforeRange: null,
       position: null,
-      fields: []
+      fields: [],
+      isProbabilistic: false
     }
 
 
@@ -234,12 +235,15 @@ switchHandler = (event) => {
   this.props.switchProbabilisticHandler(event);
   if (event.target.checked){
     this.setState({
-     fields: fieldswithprop
+     fields: fieldswithprop,
+     isProbabilistic: event.target.checked
     })
   }
   else{
+    console.log("event.target.checked: "+ event.target.checked);
     this.setState({
-      fields: fieldsoriginal
+      fields: fieldsoriginal,
+      isProbabilistic: event.target.checked
      })
   }
 };
@@ -1244,6 +1248,7 @@ switchHandler = (event) => {
     // leaf.isPlaceholder or leaf.type
     const { attributes, children, leaf } = props
     const { fieldColors } = this.props
+    let { isProbabilistic } = this.state
     let style = {};
     if (leaf.isPlaceholder) {
       style = { color: 'gray' };
@@ -1259,7 +1264,7 @@ switchHandler = (event) => {
           style = { color: fieldColors.component };
           break
         case 'probabilityTextRange':
-          style = { color: fieldColors.probability };
+          style = isProbabilistic ? { color: fieldColors.probability } : {color: 'lightgray'};
           break
         case 'timingTextRange':
           style = { color: fieldColors.timing };
@@ -1280,7 +1285,7 @@ switchHandler = (event) => {
   renderEditor = () => {
     // process slate data then render slate editor
     const { template } = this.props;
-    const { menuOptions, menuIndex, editorValue, variables, position } = this.state;
+    const { menuOptions, menuIndex, editorValue, variables, position, isProbabilstic } = this.state;
     const hasFields = Boolean(template);
     this.props.editor.fieldsEnabled = hasFields;
 
