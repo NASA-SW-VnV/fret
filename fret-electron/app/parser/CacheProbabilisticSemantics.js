@@ -162,7 +162,7 @@ function createProbabilisticSemantics(product) {
         let semSC = batchSemanticsScopedCondition[index];  // LTL formula
         let keySC = semanticsScopedConditionMap[index].fields; // what key it is for
 
-        if (keySC !== keyTR){
+      if (keySC !== keyTR){
           console.log('Keys are not matching: ' + keySC+" "+ keyTR);
         }
 
@@ -177,8 +177,19 @@ function createProbabilisticSemantics(product) {
               let pctlFormSC = semSC.replace(/LTLSPEC/, '').trim();
               let pctlFormCustSC = semanticsGenerator.customizeForFret(pctlFormSC);
               const pctlFormCustOptSC = xform.transform(pctlFormCustSC,xform.optimizeFT);
-              let pctlForm = pctlFormCustOptSC.replaceAll("PROBFORM", probFormPRISM);
-              FRETSemantics[keySC].pctl = "P>=1["+pctlForm+"]";
+              let pctlFormCustOptSCPRISM = utilities.replaceStrings(PRISMSubsts, pctlFormCustOptSC);
+              let pctlForm = pctlFormCustOptSCPRISM.replaceAll("PROBFORM", probFormPRISM);
+
+              let key_array = keySC.split(',');
+
+              let finalPctl;
+              if (key_array[0] !== 'null' || key_array[1] !== 'null'){
+                  finalPctl = "P>=1["+pctlForm+"]";
+              }
+              else {
+                finalPctl = pctlForm;
+              }
+              FRETSemantics[keySC].pctl = finalPctl;
 
               let pctlExpandedEndpoints = utilities.replaceStrings(PrismEndpointRewrites, pctlFormSC);
               let pctlExpPRISMCust = semanticsGenerator.customizeForFret(pctlExpandedEndpoints);
@@ -192,7 +203,14 @@ function createProbabilisticSemantics(product) {
               let pctlFormExpandedEndpointsCustOptProbPRISM = utilities.replaceStrings(PRISMSubsts, pctlFormExpandedEndpointsCustOptProb);
               let pctlExpForm = pctlExpPRISM.replaceAll("PROBFORM", pctlFormExpandedEndpointsCustOptProbPRISM);
 
-              FRETSemantics[keySC].pctlExpanded = "P>=1["+pctlExpForm+"]";
+              let finalPctlExpanded;
+              if (key_array[0] !== 'null' || key_array[1] !== 'null'){
+                  finalPctlExpanded = "P>=1["+pctlExpForm+"]";
+              }
+              else {
+                finalPctlExpanded = pctlExpForm;
+              }
+              FRETSemantics[keySC].pctlExpanded = finalPctlExpanded;
             }
             else {
                 console.log('FT SALT parsing error: Unexpected prefix from SALT: ' + sem +' for key: '+ key);
