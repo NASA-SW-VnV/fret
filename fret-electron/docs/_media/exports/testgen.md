@@ -20,7 +20,7 @@ Accompanying the main test case generation task are the following features:
 - For variables of `Internal` data type, a SMV expression over existing `boolean` variables must be provided as an assignment. 
 - Test obligations for components that include arithmetic types can still be exported, using the CoCoSpec format export option in Variable Mapping.
 - Test case generation operates over the future-time LTL formulas of the requirements. As such, it currently does not support requirements using past-time predicates `persisted` and `occured`.
-- For existing projects, you may encounter issues either in test case generation or test obligation exports, due to outdated information in the FRET databases. To resolve such issues, you may need to update the  variable assignment for `Internal` data types. in Variable Mapping. To do so, open the relevant `Internal` variables, make a minor modification to each assignment and click on `UPDATE`.
+- For existing projects, you may encounter issues either in test case generation or test obligation exports, due to outdated information in the FRET databases. To resolve such issues, you may need to update the  variables in Variable Mapping. For `Internal` variables, make a minor modification to each assignment (such as deleting and re-adding the last character in the assignment), and click on `UPDATE`. For `Input` or `Output` variables, open the relevant variables and click on `UPDATE`.
 
 ## Dependencies
 
