@@ -255,7 +255,7 @@ class ComponentSummary extends React.Component {
   }
 
   render() {
-    const {classes, component, completed, language, isBooleanComponent} = this.props;
+    const {classes, component, completed, language, smvCompleted, isBooleanComponent} = this.props;
     if (language === 'copilot'){
       return (
         <Tooltip title='Export verification code.'>
@@ -268,7 +268,47 @@ class ComponentSummary extends React.Component {
           </span>
         </Tooltip>     
       );
-    } else if (completed && language && language !== '') {
+    } else if (completed && language && language === 'cocospec') {    
+      return (
+        <div className={classes.wrapper}>
+          <Button          
+            ref={this.anchorRef}
+            size="small" variant="contained" color="secondary"          
+            endIcon={<KeyboardArrowDownIcon />}
+            onClick={(event) => this.handleActionsClick(event)}>
+            Export        
+          </Button>
+          <Menu anchorEl={this.anchorRef.current} open={this.state.actionsMenuOpen} onClose={(event) => this.handleActionsMenuClose(event)}>
+            <div>
+              <MenuItem onClick={this.exportComponentCode}>Verification Code</MenuItem>
+              <MenuItem onClick={this.exportTestObligations('ptLTL')}>Test Obligations</MenuItem>                
+            </div>
+          </Menu>
+          <Snackbar
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'center',
+          }}
+          open={this.state.snackbarOpen}
+          autoHideDuration={6000}
+          onClose={this.handleSnackbarClose}
+          snackbarcontentprops={{
+            'aria-describedby': 'message-id',
+          }}
+          message={<span id="message-id">{'Generated '+this.state.numberOfObligations+' test obligations.'}</span>}
+          action={[
+            <IconButton
+              key="close"
+              aria-label="Close"
+              color="inherit"
+              onClick={this.handleSnackbarClose}
+            >
+              <CloseIcon />
+            </IconButton>
+          ]} />
+        </div>   
+      )      
+    } else if (smvCompleted && language && language === 'smv') {
       if (language === 'smv' && !isBooleanComponent) {
         return (
           <Tooltip title='SMV obligation export is available for components that only contain boolean variables.'>
@@ -291,17 +331,11 @@ class ComponentSummary extends React.Component {
               Export        
             </Button>
             <Menu anchorEl={this.anchorRef.current} open={this.state.actionsMenuOpen} onClose={(event) => this.handleActionsMenuClose(event)}>
-              {language === 'cocospec' ?
-                <div>
-                  <MenuItem onClick={this.exportComponentCode}>Verification Code</MenuItem>
-                  <MenuItem onClick={this.exportTestObligations('ptLTL')}>Test Obligations</MenuItem>                
-                </div> :
-                <div>
-                  <MenuItem onClick={this.exportTestObligations('ftLTL')}>Test Obligations (Future Time LTL - Infinite trace)</MenuItem>
-                  <MenuItem onClick={this.exportTestObligations('ftLTL-fin')}>Test Obligations (Future Time LTL - Finite trace)</MenuItem>
-                  <MenuItem onClick={this.exportTestObligations('ptLTL')}>Test Obligations (Past Time LTL)</MenuItem>
-                </div>            
-              }
+              <div>
+                <MenuItem onClick={this.exportTestObligations('ftLTL')}>Test Obligations (Future Time LTL - Infinite trace)</MenuItem>
+                <MenuItem onClick={this.exportTestObligations('ftLTL-fin')}>Test Obligations (Future Time LTL - Finite trace)</MenuItem>
+                <MenuItem onClick={this.exportTestObligations('ptLTL')}>Test Obligations (Past Time LTL)</MenuItem>
+              </div>            
             </Menu>
             <Snackbar
             anchorOrigin={{
@@ -350,6 +384,7 @@ ComponentSummary.propTypes = {
   selectedProject: PropTypes.string.isRequired,
   language: PropTypes.string.isRequired,
   variableIdentifierReplacement: PropTypes.func.isRequired,
+  smvCompleted: PropTypes.bool.isRequired,
   isBooleanComponent: PropTypes.bool.isRequired
 };
 
@@ -390,7 +425,7 @@ class VariablesView extends React.Component {
 
   render() {
     const self = this;
-    const {classes, selectedProject, listOfProjects, components, completedComponents, cocospecData, cocospecModes, booleanOnlyComponents} = this.props;
+    const {classes, selectedProject, listOfProjects, components, completedComponents, cocospecData, cocospecModes, smvCompletedComponents, booleanOnlyComponents} = this.props;
     const{language}= this.state;
     components.sort();
 
@@ -433,6 +468,7 @@ class VariablesView extends React.Component {
                   selectedProject={selectedProject}
                   language={language}
                   variableIdentifierReplacement={this.props.variableIdentifierReplacement}
+                  smvCompleted={smvCompletedComponents.includes(component)}
                   isBooleanComponent={booleanOnlyComponents.includes(component)}
                 />
               </AccordionSummary>

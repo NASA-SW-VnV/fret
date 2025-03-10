@@ -261,6 +261,7 @@ class MainView extends React.Component {
                                   selectedVariable: result.selectedVariable,
                                   importedComponents: result.importedComponents,
                                   completedComponents: result.completedComponents,
+                                  smvCompletedComponents : result.smvCompletedComponents,
                                   booleanOnlyComponents: result.booleanOnlyComponents,
                                   cocospecData: result.cocospecData,
                                   cocospecModes: result.cocospecModes,
@@ -374,6 +375,7 @@ class MainView extends React.Component {
                                   completedComponents : result.completedComponents,
                                   cocospecData : result.cocospecData,
                                   cocospecModes : result.cocospecModes,
+                                  smvCompletedComponents : result.smvCompletedComponents,
                                   booleanOnlyComponents: result.booleanOnlyComponents                                  
                       })
       return result.components

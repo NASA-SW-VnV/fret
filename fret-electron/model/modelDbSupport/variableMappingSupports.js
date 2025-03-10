@@ -245,6 +245,7 @@ function getContractInfo(result, language) {
     functions: [],
     assignments: [],
     copilotAssignments: [],
+    smvAssignments: [],
     modes: [],
     properties: []
   };
@@ -263,6 +264,7 @@ function getContractInfo(result, language) {
       contract.internalVariables.push(variable);
       contract.assignments.push(doc.assignment);
       contract.copilotAssignments.push(doc.copilotAssignment);
+      contract.smvAssignments.push(doc.smvAssignment);
     } else if (doc.idType === 'Mode'){
       if (doc.modeRequirement !== '')
         variable.assignment = doc.modeRequirement;

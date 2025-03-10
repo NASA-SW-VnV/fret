@@ -126,7 +126,7 @@ class AnalysisTabs extends React.Component {
 
   render() {
     const {classes, selectedProject, listOfProjects,components,
-      completedComponents, cocospecData, cocospecModes, booleanOnlyComponents} = this.props;
+      completedComponents, cocospecData, cocospecModes, smvCompletedComponents, booleanOnlyComponents} = this.props;
     const {value} = this.state;
 
     return (
@@ -157,7 +157,7 @@ class AnalysisTabs extends React.Component {
             <VariablesView selectedProject={selectedProject} listOfProjects={listOfProjects}
             components={components.map(e => e.component_name)} completedComponents={completedComponents}
             cocospecData={cocospecData} cocospecModes={cocospecModes}
-            variableIdentifierReplacement={this.variableIdentifierReplacement} booleanOnlyComponents={booleanOnlyComponents}/>
+            variableIdentifierReplacement={this.variableIdentifierReplacement} smvCompletedComponents={smvCompletedComponents} booleanOnlyComponents={booleanOnlyComponents}/>
           </TabContainer>
         }
         {value === 1 &&
@@ -170,7 +170,7 @@ class AnalysisTabs extends React.Component {
         }
         {value === 2 &&
           <TabContainer>
-            <TestGenView selectedProject={selectedProject} listOfProjects={listOfProjects} components={components} completedComponents={completedComponents} cocospecData={cocospecData} cocospecModes={cocospecModes} booleanOnlyComponents={booleanOnlyComponents}/>
+            <TestGenView selectedProject={selectedProject} listOfProjects={listOfProjects} components={components} completedComponents={smvCompletedComponents} cocospecData={cocospecData} cocospecModes={cocospecModes} booleanOnlyComponents={booleanOnlyComponents}/>
           </TabContainer>
         }
       </div>
@@ -191,12 +191,14 @@ function mapStateToProps(state) {
   const cocospecData = state.actionsSlice.cocospecData;
   const cocospecModes = state.actionsSlice.cocospecModes;
   const components = state.actionsSlice.components;
+  const smvCompletedComponents = state.actionsSlice.smvCompletedComponents;
   const booleanOnlyComponents = state.actionsSlice.booleanOnlyComponents;
   return {
     completedComponents,
     cocospecData,
     cocospecModes,
     components,
+    smvCompletedComponents,
     booleanOnlyComponents
   };
 }

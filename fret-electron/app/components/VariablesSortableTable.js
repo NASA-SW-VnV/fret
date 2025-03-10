@@ -403,6 +403,7 @@ class VariablesSortableTable extends React.Component {
                                    completedComponents: result.completedComponents,
                                    cocospecData: result.cocospecData,
                                    cocospecModes: result.cocospecModes,
+                                   smvCompletedComponents: result.smvCompletedComponents,
                                    booleanOnlyComponents: result.booleanOnlyComponents
                                  })
      }).catch((err) => {
@@ -432,6 +433,7 @@ class VariablesSortableTable extends React.Component {
                                   completedComponents: result.completedComponents,
                                   cocospecData: result.cocospecData,
                                   cocospecModes: result.cocospecModes,
+                                  smvCompletedComponents: result.smvCompletedComponents,
                                   booleanOnlyComponents: result.booleanOnlyComponents
                                 })
     }).catch((err) => {

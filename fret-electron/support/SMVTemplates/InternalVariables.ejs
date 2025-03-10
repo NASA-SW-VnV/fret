@@ -3,6 +3,6 @@
     TRUE : TRUE;
   esac;
   <%for (i=0; i < internalVariables.length; i++) {%>
-    <%var semiColon = assignments[i].endsWith(';') ? '' : ';'%>
-    <%- internalVariables[i].name %> := <%- assignments[i] %><%- semiColon -%><%}%>
+    <%var semiColon = smvAssignments[i].endsWith(';') ? '' : ';'%>
+    <%- internalVariables[i].name %> := <%- smvAssignments[i] %><%- semiColon -%><%}%>
     

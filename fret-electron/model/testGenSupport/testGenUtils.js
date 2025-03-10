@@ -221,8 +221,8 @@ function generateSpecObligationFile(component, docs, modelResult) {
     for (const doc of docs) {
         modelVariables = [...new Set(modelVariables.concat(doc.semantics.variables))];
         for (const modelDoc of localModelResult.docs) {                
-            if (modelVariables.includes(modelDoc.variable_name) && modelDoc.assignment && modelDoc.assignmentVariables && modelDoc.assignmentVariables.length > 0) {
-            const assignmentVariables = modelDoc.assignmentVariables;
+            if (modelVariables.includes(modelDoc.variable_name) && modelDoc.smvAssignment && modelDoc.smvAssignmentVariables && modelDoc.smvAssignmentVariables.length > 0) {
+            const assignmentVariables = modelDoc.smvAssignmentVariables;
             for (const assignVar of assignmentVariables) {
                 if (modelVariables.indexOf(assignVar) === -1) {
                 modelVariables.push(assignVar);

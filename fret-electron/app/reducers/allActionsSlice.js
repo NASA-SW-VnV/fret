@@ -28,7 +28,8 @@ const allActionsSlice = createSlice({
     components: [],             // for a specific project: this is an array of all the components
     completedComponents: [],    // for a specific project: this is an array of all components
                                 // that we have completed the variable mappings
-
+    smvCompletedComponents: [], // for a specific project: this is an array of all components
+                                // that we have completed the SMV variable mappings for
     booleanOnlyComponents: [], //Array that retains components that only include boolean variables. Used in Test Case Generation.
     cocospecData: {},     // for a specific project: this is an object where each
                           // key is a component of this project, and the value of each key is an array of variables
@@ -61,6 +62,7 @@ const allActionsSlice = createSlice({
       // analysis
       state.components = action.payload.components;
       state.completedComponents = action.payload.completedComponents;
+      state.smvCompletedComponents = action.payload.smvCompletedComponents;
       state.booleanOnlyComponents = action.payload.booleanOnlyComponents;
       state.cocospecData = action.payload.cocospecData;
       state.cocospecModes = action.payload.cocospecModes;
@@ -91,6 +93,7 @@ const allActionsSlice = createSlice({
       state.selectedProject = action.payload.selectedProject;
       state.requirements = action.payload.requirements;
       state.completedComponents = action.payload.completedComponents;
+      state.smvCompletedComponents = action.payload.smvCompletedComponents;
       state.booleanOnlyComponents = action.payload.booleanOnlyComponents;
       state.cocospecData = action.payload.cocospecData;
       state.cocospecModes = action.payload.cocospecModes;
@@ -108,6 +111,7 @@ const allActionsSlice = createSlice({
       state.requirements = action.payload.requirements;
       state.components = action.payload.components;
       state.completedComponents = action.payload.completedComponents;
+      state.smvCompletedComponents = action.payload.smvCompletedComponents;
       state.booleanOnlyComponents = action.payload.booleanOnlyComponents;
       state.cocospecData = action.payload.cocospecData;
       state.cocospecModes = action.payload.cocospecModes;
@@ -136,6 +140,7 @@ const allActionsSlice = createSlice({
       state.selectedVariable = action.payload.selectedVariable;
       state.importedComponents = action.payload.importedComponents;
       state.completedComponents = action.payload.completedComponents;
+      state.smvCompletedComponents = action.payload.smvCompletedComponents;
       state.booleanOnlyComponents = action.payload.booleanOnlyComponents;
       state.cocospecData = action.payload.cocospecData;
       state.cocospecModes = action.payload.cocospecModes;
@@ -152,6 +157,7 @@ const allActionsSlice = createSlice({
       state.selectedVariable = action.payload.selectedVariable;
       state.importedComponents = action.payload.importedComponents;
       state.completedComponents = action.payload.completedComponents;
+      state.smvCompletedComponents = action.payload.smvCompletedComponents;
       state.booleanOnlyComponents = action.payload.booleanOnlyComponents;
       state.cocospecData = action.payload.cocospecData;
       state.cocospecModes = action.payload.cocospecModes;
@@ -167,6 +173,7 @@ const allActionsSlice = createSlice({
       state.selectedVariable = action.payload.selectedVariable;
       state.importedComponents = action.payload.importedComponents;
       state.completedComponents = action.payload.completedComponents;
+      state.smvCompletedComponents = action.payload.smvCompletedComponents;
       state.booleanOnlyComponents = action.payload.booleanOnlyComponents;
       state.cocospecData = action.payload.cocospecData;
       state.cocospecModes = action.payload.cocospecModes;
@@ -188,6 +195,7 @@ const allActionsSlice = createSlice({
       state.selectedVariable = action.payload.selectedVariable;
       state.importedComponents = action.payload.importedComponents;
       state.completedComponents = action.payload.completedComponents;
+      state.smvCompletedComponents = action.payload.smvCompletedComponents;
       state.booleanOnlyComponents = action.payload.booleanOnlyComponents;
       state.cocospecData = action.payload.cocospecData;
       state.cocospecModes = action.payload.cocospecModes;
@@ -211,6 +219,7 @@ const allActionsSlice = createSlice({
       state.selectedVariable = action.payload.selectedVariable;
       state.importedComponents = action.payload.importedComponents;
       state.completedComponents = action.payload.completedComponents;
+      state.smvCompletedComponents = action.payload.smvCompletedComponents;
       state.booleanOnlyComponents = action.payload.booleanOnlyComponents;
       state.cocospecData = action.payload.cocospecData;
       state.cocospecModes = action.payload.cocospecModes;
@@ -227,6 +236,7 @@ const allActionsSlice = createSlice({
       state.selectedVariable = action.payload.selectedVariable;
       state.importedComponents = action.payload.importedComponents;
       state.completedComponents = action.payload.completedComponents;
+      state.smvCompletedComponents = action.payload.smvCompletedComponents;
       state.booleanOnlyComponents = action.payload.booleanOnlyComponents;
       state.cocospecData = action.payload.cocospecData;
       state.cocospecModes = action.payload.cocospecModes;
@@ -240,6 +250,7 @@ const allActionsSlice = createSlice({
       state.selectedVariable = action.payload.selectedVariable;
       state.importedComponents = action.payload.importedComponents;
       state.completedComponents = action.payload.completedComponents;
+      state.smvCompletedComponents = action.payload.smvCompletedComponents;
       state.booleanOnlyComponents = action.payload.booleanOnlyComponents;
       state.cocospecData = action.payload.cocospecData;
       state.cocospecModes = action.payload.cocospecModes;
@@ -253,6 +264,7 @@ const allActionsSlice = createSlice({
       state.selectedVariable = action.payload.selectedVariable;
       state.importedComponents = action.payload.importedComponents;
       state.completedComponents = action.payload.completedComponents;
+      state.smvCompletedComponents = action.payload.smvCompletedComponents;
       state.booleanOnlyComponents = action.payload.booleanOnlyComponents;
       state.cocospecData = action.payload.cocospecData;
       state.cocospecModes = action.payload.cocospecModes;

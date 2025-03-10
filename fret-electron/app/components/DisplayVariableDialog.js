@@ -56,7 +56,7 @@ const {ipcRenderer} = require('electron');
 
 const lustreExprSemantics = require('../../support/lustreExprSemantics');
 const copilotExprSemantics = require('../../support/copilotExprSemantics');
-
+const smvBasicExprSemantics = require('../../support/smvBasicExprSemantics');
 
 const styles = theme => ({
   container: {
@@ -94,6 +94,7 @@ class DisplayVariableDialog extends React.Component {
     dataType: '',
     assignment: '',
     copilotAssignment: '',
+    smvAssignment: '',
     moduleName: '',
     modeRequirement: '',
     modeldoc_id: '',            // not needed for Redux store
@@ -110,12 +111,15 @@ class DisplayVariableDialog extends React.Component {
     modelComponent: '',
     errorsCopilot: '',
     errorsLustre: '',
+    errorsSMV: '',
     checkLustre: true,
     checkCoPilot: false,
+    checkSMV: false,
     newVariablesDialogOpen: false,
     newVariables: [],
     copilotVariables: [],
     lustreVariables: [],
+    smvVariables: []
   }
 
   handleNewVariables = (variables) => {
@@ -148,7 +152,7 @@ class DisplayVariableDialog extends React.Component {
   handleTextFieldChange = name => event => {
     let resultLustre;
     let resultCopilot;
-
+    let resultSMV;
     if (name === 'assignment') {
       resultLustre = lustreExprSemantics.compileLustreExpr(event.target.value);
       this.setState({
@@ -163,6 +167,13 @@ class DisplayVariableDialog extends React.Component {
         errorsCopilot: resultCopilot.parseErrors ? 'Parse Errors: ' + resultCopilot.parseErrors : '',
         copilotVariables: resultCopilot.variables ? resultCopilot.variables : []
       });
+    } else if (name === 'smvAssignment') {
+      resultSMV = smvBasicExprSemantics.compileSMVBasicExpr(event.target.value);
+      this.setState({
+        [name]: event.target.value,
+        errorsSMV: resultSMV.parseErrors ? 'Parse Errors: ' + resultSMV.parseErrors : '',
+        smvVariables: resultSMV.variables ? resultSMV.variables : []
+      })
     } else if (name === 'moduleName' || name === 'description') {
       this.setState({
         [name]: event.target.value,
@@ -187,6 +198,7 @@ class DisplayVariableDialog extends React.Component {
       dataType: '',
       assignment: '',
       copilotAssignment: '',
+      smvAssignment: '',
       moduleName: '',
       modeRequirement: '',
       modeldoc_id: '',            // not needed for Redux store
@@ -195,24 +207,26 @@ class DisplayVariableDialog extends React.Component {
       errorsLustre: '',
       checkLustre: true,
       checkCoPilot: false,
+      checkSMV: false,
       newVariablesDialogOpen: false,
       newVariables: [],
       copilotVariables: [],
       lustreVariables: [],
+      smvVariables: []
     })
   };
 
   handleUpdate = () => {
     const self = this;
     const { selectedVariable } = this.props;
-    const { description, idType, dataType, assignment, copilotAssignment, modeRequirement, modeldoc_id, modelComponent, lustreVariables, copilotVariables, moduleName, busObjects, selectedBusObject, selectedBusElement, modeldoc_vectorSize, modeldoc_vectorIndex} = this.state;
+    const { description, idType, dataType, assignment, copilotAssignment, smvAssignment, modeRequirement, modeldoc_id, modelComponent, lustreVariables, copilotVariables, smvVariables, moduleName, busObjects, selectedBusObject, selectedBusElement, modeldoc_vectorSize, modeldoc_vectorIndex} = this.state;
     var modeldbid = selectedVariable._id;
 
-    var variables = lustreVariables.concat(copilotVariables);
+    var variables = lustreVariables.concat(copilotVariables).concat(smvVariables);
 
     var args = [selectedVariable.project,selectedVariable.component_name,variables, idType,
       modeldoc_id, dataType, modeldbid, description,assignment,
-      copilotAssignment,modeRequirement,modelComponent,lustreVariables,copilotVariables,
+      copilotAssignment, smvAssignment, modeRequirement,modelComponent,lustreVariables,copilotVariables, smvVariables,
       moduleName, busObjects, selectedBusObject, selectedBusElement, modeldoc_vectorSize, modeldoc_vectorIndex]
 
     // context isolation
@@ -237,6 +251,7 @@ class DisplayVariableDialog extends React.Component {
                   completedComponents : noNewVariablesResult.completedComponents,
                   cocospecData : noNewVariablesResult.cocospecData,
                   cocospecModes : noNewVariablesResult.cocospecModes,
+                  smvCompletedComponents : noNewVariablesResult.smvCompletedComponents,
                   booleanOnlyComponents: noNewVariablesResult.booleanOnlyComponents,
                   // variables
                   variable_data : noNewVariablesResult.variable_data,
@@ -266,6 +281,7 @@ class DisplayVariableDialog extends React.Component {
         dataType: selectedVariable.dataType,
         assignment: selectedVariable.assignment,
         copilotAssignment: selectedVariable.copilotAssignment,
+        smvAssignment: selectedVariable.smvAssignment,
         modeRequirement: selectedVariable.modeRequirement,
         modeldoc_id: selectedVariable.modeldoc_id,
         selectedBusObject: selectedVariable.busObject,
@@ -288,6 +304,7 @@ class DisplayVariableDialog extends React.Component {
         modeldoc_id: '',
         assignment: '',
         copilotAssignment: '',
+        smvAssignment: '',
         modeRequirement: '',
         moduleName: '',
         selectedBusElement: undefined,
@@ -301,6 +318,7 @@ class DisplayVariableDialog extends React.Component {
         modeldoc_id: '',
         assignment: '',
         copilotAssignment: '',
+        smvAssignment: '',
         modeRequirement: '',
         moduleName: ''
       });
@@ -486,7 +504,7 @@ class DisplayVariableDialog extends React.Component {
 
   render() {
     const { classes, selectedVariable, modelVariables, open, language } = this.props;
-    const { idType, errorsLustre, errorsCopilot, checkLustre, checkCoPilot, modeldoc_id, modeldoc_vectorSize, modeldoc_vectorIndex, selectedBusObject, selectedBusElement, busObjects } = this.state;
+    const { idType, errorsLustre, errorsCopilot, errorsSMV, checkLustre, checkCoPilot, checkSMV, modeldoc_id, modeldoc_vectorSize, modeldoc_vectorIndex, selectedBusObject, selectedBusElement, busObjects } = this.state;
     
     return (
       <div>
@@ -677,7 +695,7 @@ class DisplayVariableDialog extends React.Component {
                     </Fragment> :
                     (idType === 'Internal') ?
                       <Fragment>
-                        <FormControl className={classes.formControl}>
+                        {/* <FormControl className={classes.formControl}>
                           <InputLabel htmlFor="dataType-simple">Data Type*</InputLabel>
                           <Select
                             id="qa_disVar_sel_dataType"
@@ -699,7 +717,8 @@ class DisplayVariableDialog extends React.Component {
                             <MenuItem id="qa_disVar_mi_dataType_single" value="single">single</MenuItem>
                             <MenuItem id="qa_disVar_mi_dataType_double" value="double">double</MenuItem>
                           </Select>
-                        </FormControl>
+                        </FormControl> */}
+                        {this.dataTypeField(language)}
                         {
                           checkLustre &&
                           <TextField
@@ -732,7 +751,22 @@ class DisplayVariableDialog extends React.Component {
                             error={!!errorsCopilot}
                           />
                         }
-
+                        {
+                          checkSMV &&
+                          <TextField
+                            id="qa_disVar_tf_varAssignSMV"
+                            label="Variable Assignment in SMV*"
+                            type="text"
+                            value={this.state.smvAssignment}
+                            margin="normal"
+                            className={classes.descriptionField}
+                            multiline
+                            onChange={this.handleTextFieldChange('smvAssignment')}
+                            onFocus={this.handleTextFieldFocused('smvAssignment')}
+                            helperText={errorsSMV}
+                            error={!!errorsSMV}
+                          />
+                        }
                         <div>
                           <FormControlLabel
                             control={
@@ -753,6 +787,16 @@ class DisplayVariableDialog extends React.Component {
                               />
                             }
                             label="CoPilot"
+                          />
+                          <FormControlLabel
+                            control={
+                              <Checkbox id="qa_disVar_cb_SMV"
+                                        checked={this.state.checkSMV}
+                                        onChange={this.handleCheckChange('checkSMV')}
+                                        value="checkSMV"
+                              />
+                            }
+                            label="SMV"
                           />
                         </div>
                       </Fragment> :
@@ -777,7 +821,7 @@ class DisplayVariableDialog extends React.Component {
             </Button>
             <Button id="qa_disVar_btn_update"
                     onClick={this.handleUpdate}
-                    disabled={idType === 'Internal' && (errorsCopilot!== '' && checkCoPilot || errorsLustre !== '' && checkLustre)}
+                    disabled={idType === 'Internal' && ((errorsCopilot!== '' && checkCoPilot) || (errorsLustre !== '' && checkLustre) || (errorsSMV !== '' && checkSMV))}
                     color="secondary"
                     variant='contained'>
               Update

@@ -16,7 +16,11 @@ Accompanying the main test case generation task are the following features:
 
 - FRET utilizes the finite trace Future-Time LTL formulas of each requirement for generating tests. 
 - Generated tests are set to be six (6) time steps long to minimize test case generation time and make tests easy to use in the simulator.
-- Only components that include variables of `Input` or `Output` variable type and `boolean` data type are currently supported for test case generation. Test obligations for components that include arithmetic types and `Internal` variables can still be exported, using the Lustre export option in Variable Mapping.
+- Only components that include variables of `Input`, `Output` or `Internal` variable type and `boolean` data type are currently supported for test case generation. 
+- For variables of `Internal` data type, a SMV expression over existing `boolean` variables must be provided as an assignment. 
+- Test obligations for components that include arithmetic types can still be exported, using the CoCoSpec format export option in Variable Mapping.
+- Test case generation operates over the future-time LTL formulas of the requirements. As such, it currently does not support requirements using past-time predicates `persisted` and `occured`.
+- For existing projects, you may encounter issues either in test case generation or test obligation exports, due to outdated information in the FRET databases. To resolve such issues, you may need to update the  variable assignment for `Internal` data types. in Variable Mapping. To do so, open the relevant `Internal` variables, make a minor modification to each assignment and click on `UPDATE`.
 
 ## Dependencies
 
