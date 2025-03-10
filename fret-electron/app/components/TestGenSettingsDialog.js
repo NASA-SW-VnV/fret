@@ -43,38 +43,67 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
+import Select from '@material-ui/core/Select';
+import { FormControl, InputLabel, MenuItem, Tooltip } from '@material-ui/core';
 
 
 const styles = theme => ({
-  root: {
-    display: 'flex',
-    flexDirection : 'column'
-  },
-  container: {
-      display: 'flex',
-      flexWrap: 'wrap',
-  },
-  list: {
-  	width: 400
-  },
-  formControl: {
-    marginTop: theme.spacing(2),
-    width: 150,
-  },
-  textField:{
-  	width: 300
-  },
-  toolbar: theme.mixins.toolbar
-});
+	root: {
+	  display: 'flex',
+	  flexDirection : 'column'
+	},
+	container: {
+		display: 'flex',
+		flexWrap: 'wrap',
+	},
+	list: {
+		width: 400
+	},
+	formControl: {
+	  marginTop: theme.spacing(2),
+	  width: 150,
+	},
+	textField:{
+		width: 300
+	},
+	drawer: {
+  
+	},
+	drawerHeader: {
+  
+	},
+	drawerPaper: {
+  
+	},
+	toolbar: theme.mixins.toolbar
+  });
+
+const engines = [
+	{
+		value: 'nusmv',
+		dependencies: ['NuSMV'],
+		label: 'NuSMV'
+	},
+	{
+		value: 'kind2',
+		dependencies: ['kind2', 'z3'],
+		label: 'Kind 2'
+	}
+]
 
 class TestGenSettingsDialog extends React.Component {
     state = {
 		open: false,
+		selectedEngine: 'nusmv',
 		retainFiles: false
 	}
 
 	componentWillReceiveProps = (props) => {
-		this.setState({open: props.open, retainFiles: props.retainFiles})
+		this.setState({
+			open: props.open,
+			selectedEngine: props.selectedEngine,
+			retainFiles: props.retainFiles
+		})
 	}
 
 	handleClose = () => {
@@ -82,15 +111,38 @@ class TestGenSettingsDialog extends React.Component {
 		this.props.handleSettingsClose();
 	}
 
+	handleEngineChange = (event, key) => {		
+		//Retrieve value of disabled props from MenuItem child. If disabled, do not proceed with the change.
+		if (!key.props.children.props.children.props.disabled) {
+			this.setState({selectedEngine: event.target.value});
+			this.props.handleSettingsEngineChange(event.target.value);
+		}	
+	}
+
 	handleRetainFilesOptionChange = (event) => {
 		this.setState({retainFiles: event.target.checked});
 		this.props.handleRetainFilesChange(event.target.checked);
 	}
 
+	determineEngineTitleAndDisabled(engineValue, engineDependencies, missingDependencies, isComponentBooleanOnly) {
+		var engineTitle = ''
+		var engineDisabled = false;
+		if (engineValue === 'nusmv' && !isComponentBooleanOnly) {
+			engineTitle = 'Option not available because the system component contains non-Boolean variables';
+			engineDisabled = true
+		}
+		if (engineDependencies.some(e => missingDependencies.includes(e))) {
+			engineTitle = 'Option not available because of missing dependencies: ' + eng.dependencies.filter(dep => new Set(missingDependencies).has(dep)).join(', ')
+			engineDisabled = true;
+		}
+		return [engineTitle, engineDisabled]
+	}
+
 	render() {
-		const { open } = this.state;
-		const { classes } = this.props;		
-				return(
+		const { open, selectedEngine } = this.state;
+		const { classes, missingDependencies, isComponentBooleanOnly} = this.props;	
+		
+		return(
 			<div>
 		    <Drawer
 				  className={classes.drawer}
@@ -112,7 +164,27 @@ class TestGenSettingsDialog extends React.Component {
             			</IconButton>
           			</div>
           			<Divider/>
-          			<List className={classes.list}>          				        				          				
+          			<List className={classes.list}>
+				  		<ListItem>
+							<FormControl className={classes.formControl}>
+								<InputLabel>Engine</InputLabel>
+								<Select id="qa_testgenSet_sel_engine" key={'engine'} value={selectedEngine} onChange={this.handleEngineChange}
+								>
+									{engines.map(eng => {
+										var [engineTitle, engineDisabled] = this.determineEngineTitleAndDisabled(eng.value, eng.dependencies, missingDependencies, isComponentBooleanOnly)
+										return (
+											<Tooltip key={eng.value} value={eng.value} title={engineTitle}>
+												<span>
+												<MenuItem id={"qa_testgenSet_mi_"+eng.value} component="div" disabled={engineDisabled}>
+													{eng.label}
+												</MenuItem>
+												</span>
+											</Tooltip>
+										)
+									})}
+								</Select>
+							</FormControl>
+						</ListItem>
           				<ListItem>
 				            <FormControlLabel
 				              control={
@@ -136,8 +208,12 @@ class TestGenSettingsDialog extends React.Component {
 TestGenSettingsDialog.propTypes = {
 	classes: PropTypes.object.isRequired,
 	open: PropTypes.bool.isRequired,
+	selectedEngine: PropTypes.string.isRequired,
+	isComponentBooleanOnly: PropTypes.bool.isRequired,
 	retainFiles: PropTypes.bool.isRequired,
+	missingDependencies: PropTypes.array.isRequired,	
 	handleSettingsClose: PropTypes.func.isRequired,
+	handleSettingsEngineChange: PropTypes.func.isRequired,
 	handleRetainFilesChange: PropTypes.func.isRequired
 }
 

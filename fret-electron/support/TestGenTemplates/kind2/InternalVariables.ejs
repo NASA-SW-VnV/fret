@@ -1,0 +1,27 @@
+<%var ftpExists = false%>
+<%for (i=0; i < internalVariables.length; i++) {
+	if (internalVariables[i].name === '__FTP') { ftpExists = true; break; }
+	else { continue; }
+}%>
+
+var 
+
+<%var ftp = ftpExists ? '' : '__FTP : bool;'%>
+<%- ftp -%>
+
+<%for (i=0; i < internalVariables.length; i++) {%>
+<%- internalVariables[i].name %> : <%- internalVariables[i].type %>;<%}%>
+
+<% for (i=0; i < properties.length; i++) {%> 
+<%var newid = properties[i].reqid.replace(/[^a-zA-Z0-9_~]/g,'_')%>
+<%- newid -%> : bool;	
+<%}%>
+
+let
+
+<%var ftpAssignment = ftpExists ? '' : '__FTP = true -> false;'%>
+<%- ftpAssignment -%>
+
+<%for (i=0; i < internalVariables.length; i++) {%>
+<%var semiColon = assignments[i].endsWith(';') ? '' : ';'%>
+<%- internalVariables[i].name %> = <%- assignments[i] %><%- semiColon -%><%}%>

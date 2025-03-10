@@ -192,6 +192,7 @@ class TestGenContent extends React.Component {
         helpOpen : false,
         projectReport: {projectName: '', systemComponents: []},
         settingsOpen: false,
+        selectedEngine: 'nusmv',
         retainFiles: false,
         actionsMenuOpen: false,
         selectedReqs: [],
@@ -229,7 +230,7 @@ class TestGenContent extends React.Component {
 
     componentDidUpdate(prevProps, prevState) {
       const {selectedProject, components} = this.props;
-      const {projectReport, selected, selectedReqs} = this.state;    
+      const {projectReport} = this.state;    
       let sysComps = []
   
       if (selectedProject !== prevProps.selectedProject) {
@@ -244,12 +245,6 @@ class TestGenContent extends React.Component {
         for (const component of components) {
           sysComps.push({name: component.component_name})
         }
-        // ipcRenderer.invoke('identifyBooleanOnlyComponents', [this.state.projectReport]).then((result) => {
-        // console.log(result)
-        // this.setState({
-        //   projectReport: result
-        // })
-        // })
         this.setState({
           selected: '',
           projectReport: {...projectReport, systemComponents: sysComps},
@@ -282,6 +277,10 @@ class TestGenContent extends React.Component {
     handleSettingsClose = () => {
         this.setState({settingsOpen : false});
     };
+
+    handleSettingsEngineChange = (engine) => {
+      this.setState({selectedEngine : engine});
+    }
     
     handleRetainFilesChange = (value) => {
         this.setState({retainFiles: value});
@@ -299,7 +298,7 @@ class TestGenContent extends React.Component {
     }
 
     handleChange = name => event => {        
-      const {projectReport} = this.state;
+      const {projectReport, selectedEngine} = this.state;
       if (name === 'selected') {
         if (this.isComponentComplete(event.target.value.component_name)) {      
           var args = [event.target.value, projectReport, []];
@@ -308,10 +307,16 @@ class TestGenContent extends React.Component {
               type: 'actions/selectTestGenComponent',
               testgen_data: result.testgen_data,
             })
+
+            var defaultSelectedEngine = 'nusmv'
+            if (!this.isComponentBooleanOnly(event.target.value.component_name)){
+              defaultSelectedEngine = 'kind2'
+            }
             this.setState({
               selected: (event.target.value === 'all') ? {selected: 'all'} : event.target.value,
               selectedReqs: result.selectedReqs,
-              projectReport: result.projectReport
+              projectReport: result.projectReport,
+              selectedEngine: defaultSelectedEngine
             })
           }).catch((err) => {
             console.log(err);
@@ -321,7 +326,7 @@ class TestGenContent extends React.Component {
     }
 
     generateTests = (event, selectedReqs) => {              
-      const { selected, projectReport, retainFiles } = this.state;
+      const { selected, projectReport, retainFiles, selectedEngine } = this.state;
           
       const self = this;    
   
@@ -329,7 +334,7 @@ class TestGenContent extends React.Component {
 
       var systemComponentIndex = projectReport.systemComponents.findIndex( sc => sc.name === selected.component_name);      
 
-      let currentProjectState = {selected, projectReport, retainFiles};
+      let currentProjectState = {selected, projectReport, retainFiles, selectedEngine};
       currentProjectState.projectReport.systemComponents[systemComponentIndex].result = 'PROCESSING';
   
       ipcRenderer.invoke('generateTests', [currentProjectState, selectedReqs]).then((result) => {
@@ -359,7 +364,7 @@ class TestGenContent extends React.Component {
     }   
 
     render() {
-        const { order, orderBy, selected, dependenciesExist, actionsMenuOpen, projectReport } = this.state;
+        const { order, orderBy, selected, dependenciesExist, actionsMenuOpen, projectReport, selectedEngine, missingDependencies, retainFiles, settingsOpen, helpOpen, LTLSimDialogOpen} = this.state;
         const { classes, selectedProject, components, testgen_data } = this.props;
         var menuItems =[];
         
@@ -400,10 +405,11 @@ class TestGenContent extends React.Component {
             //flatten nested arrays for variable values to conform to the trace format in LTLSIM
             testTraces = testTraces.map(trace => {              
               return {...trace, theTrace: {...trace.theTrace, values: trace.theTrace.values.flat(Infinity)}}
-            })    
+            })
+            //TODO: properly load kind2 cex test traces    
             return(          
               <LTLSimDialog
-                open={this.state.LTLSimDialogOpen}
+                open={LTLSimDialogOpen}
                 ids={IDs}
                 logics="PT"
                 ftExpressions={ftExpressions}
@@ -453,13 +459,14 @@ class TestGenContent extends React.Component {
                                             key={n.component_name}
                                             value={!this.isComponentComplete(n.component_name) ? '' : n}
                                             title={
-                                              (!this.isComponentComplete(n.component_name)) ? 'Analysis is not possible for this component. Please complete mandatory variable fields in Variable Mapping first.' :
-                                              (!this.isComponentBooleanOnly(n.component_name) ? 'Analysis is not possible for this component. Test Case Generation is currently available for components that only contain boolean variables.' : '')
+                                              (!this.isComponentComplete(n.component_name)) ? 'Analysis is not possible for this component. Please complete mandatory variable fields in Variable Mapping first.' : ''
                                               }>
                                             <span key={n.component_name}>
                                             <MenuItem key={n.component_name} 
                                                 id={"qa_testgenCont_mi_sysComp_"+n.component_name}
-                                                disabled={!(this.isComponentComplete(n.component_name) && this.isComponentBooleanOnly(n.component_name))}>
+                                                disabled={
+                                                  !(this.isComponentComplete(n.component_name))                     
+                                                  }>
                                                 <div key={n.component_name} style={{display : 'flex', alignItems : 'center'}}>
                                                 {n.component_name}
                                                 &nbsp;
@@ -517,7 +524,7 @@ class TestGenContent extends React.Component {
                                     </MenuItem>
                                     <MenuItem
                                       id="qa_testGenCont_btn_testSimulate"
-                                      disabled={projectReport.systemComponents[systemComponentIndex] ? projectReport.systemComponents[systemComponentIndex].tests.length === 0 : true}
+                                      disabled={(selectedEngine === 'nusmv' && projectReport.systemComponents[systemComponentIndex]) ? projectReport.systemComponents[systemComponentIndex].tests.length === 0 : true}
                                       onClick={(event) => this.openLTLSimDialog(event)}
                                     >
                                     {'Simulate Generated Test Cases'}
@@ -574,7 +581,7 @@ class TestGenContent extends React.Component {
                                                 disableSelection={analysisInProgress}
                                             />
                                             }
-                                            {this.state.LTLSimDialogOpen && <LTLSimComponent selectedReqs={selectedReqs} systemComponentIndex={systemComponentIndex}/>}
+                                            {LTLSimDialogOpen && <LTLSimComponent selectedReqs={selectedReqs} systemComponentIndex={systemComponentIndex}/>}
                                         </div>
                                     </div>
                                 </div>
@@ -582,8 +589,8 @@ class TestGenContent extends React.Component {
                                 </div>
                             </div>
                             }
-                            <TestGenSettingsDialog className={classes} retainFiles={this.state.retainFiles} open={this.state.settingsOpen} handleSettingsClose={this.handleSettingsClose} handleRetainFilesChange={this.handleRetainFilesChange}/>
-                            <Dialog maxWidth='lg' onClose={this.handleHelpClose} open={this.state.helpOpen}>
+                            <TestGenSettingsDialog className={classes} selectedEngine={selectedEngine} isComponentBooleanOnly={this.isComponentBooleanOnly(selected.component_name)} retainFiles={retainFiles} missingDependencies={missingDependencies} open={settingsOpen} handleSettingsClose={this.handleSettingsClose} handleSettingsEngineChange={this.handleSettingsEngineChange} handleRetainFilesChange={this.handleRetainFilesChange}/>
+                            <Dialog maxWidth='lg' onClose={this.handleHelpClose} open={helpOpen}>
                             <DialogTitle id="testgen-help">
                                 <Typography>
                                 Help

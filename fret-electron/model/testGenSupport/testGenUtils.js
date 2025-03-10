@@ -31,14 +31,14 @@
 // AGREEMENT.
 // *****************************************************************************
 import { leveldbDB, modelDB, system_DBkeys } from '../fretDB'
-import { getContractInfo } from '../modelDbSupport/variableMappingSupports';
-import ejsCacheSMV from '../../support/SMVTemplates/ejsCacheSMV';
+import { getContractInfo, getDelayInfo } from '../modelDbSupport/variableMappingSupports';
+import ejsCache_testgen from '../../support/TestGenTemplates/ejsCache_testgen';
 const { performance } = require('perf_hooks');
 const xform = require('../../support/xform');
 const fs=require("fs");
 const constants = require('../../app/parser/Constants');
 var parseString = require('xml2js').parseString;
-const { exec, execSync } = require('child_process');
+const { exec, execSync, spawn } = require('child_process');
 const process = require('process');
 var analysisPath = require("os").homedir() + '/Documents/fret-analysis/';
 
@@ -51,19 +51,23 @@ function optLog(str) {if (constants.verboseTestGenTesting) console.log(str)}
   
 function checkTestGenDependenciesExist() {
     let missingDependencies = [];
-    try {
-        if ((process.platform === "linux") || (process.platform === "darwin")){
-            execSync('which NuSMV');
-        } else if (process.platform === "win32") {
-            execSync('where NuSMV');
-        } else {
-            throw "Unknown_OS"
-        }
-    } catch (err) {
-    if (err !== "Unknown_OS"){
-        missingDependencies.push('NuSMV');
-        } else {
-            missingDependencies.push('NuSMV - Unknown OS detected');
+    const dependenciesToCheck = ['NuSMV', 'kind2', 'z3'];
+
+    for (const dependency of dependenciesToCheck) {
+        try {
+            if ((process.platform === "linux") || (process.platform === "darwin")){
+                execSync('which ' + dependency);
+            } else if (process.platform === "win32") {
+                execSync('where ' + dependency);
+            } else {
+                throw "Unknown_OS"
+            }
+        } catch (err) {
+        if (err !== "Unknown_OS"){
+            missingDependencies.push(dependency);
+            } else {
+                missingDependencies.push(dependency + ' - Unknown OS detected');
+            }
         }
     }
 
@@ -114,6 +118,117 @@ function testIsUnique(variableValues, uniqueVariableValues) {
         }
     }
     return true;
+}
+
+function runKind2(specName, filePath, callback) {
+    const kind2 = spawn('kind2', ['-json','--lus_main', specName, filePath]);
+
+    var stdout = '';
+    kind2.stdout.on('data', (data) => {
+        stdout = stdout + data.toString();
+    });
+    
+    kind2.on('close', (code) => {
+    // console.log(`kind2 process exited with code ${code}`);
+    var jsonContent = JSON.parse(stdout);
+    switch (code) {
+        case 40:
+            //some properties are invalid, return tests
+            kind2.kill();
+            const propertyContent = jsonContent.filter(c => c.objectType === 'property' && c.answer.value === 'falsifiable')
+            var traceArray = [];
+            var testCounter = 1;
+            var uniqueVariableValues = [];
+            for (const propertyResult of propertyContent) {                
+                var ltlsimJSONTrace = {
+                    traceID: "test"+testCounter,
+                    traceDescriptions: "",
+                    theTrace: {
+                        keys: [],
+                        values: []
+                    },
+                    saveToReqID: "*",
+                    saveToComponent: "*",
+                    saveToProject: ""
+                }
+
+                // let newJsonOutput = {
+                // "traceID": 'test'+traceCounter,
+                // "Runtime": {
+                //     "unit": propertyResult.runtime['unit'],
+                //     "value": propertyResult.runtime['value']},
+                // "Answer": {"text": propertyResult.answer.value},
+                // "K": propertyResult.k,
+                // "Counterexample": []
+                // };
+                let signals = propertyResult.counterExample[0].streams;                
+                let variableNames = signals.map(sig => sig.name);
+                let variableValues = []
+                for (var i = 0; i<=propertyResult.k; i++) {
+                    var variableValuesAtStepI = signals.map(sig => sig.instantValues[i][1])
+                    variableValuesAtStepI = variableValuesAtStepI.map(val => (typeof val === "object") ? (val.num / val.den) : val)
+                    variableValues.push(variableValuesAtStepI)
+                }
+
+                // for (const signal of signals) {
+                // let signalInfo = {"name": signal.name, "type": signal.type}              
+                // for (let i = 0; i < newJsonOutput.K; i++){                
+                //     let signalValue = signals[signals.indexOf(signal)].instantValues[i][1];
+                //     signalInfo['Step '+i] = (typeof signalValue === "object") ? (signalValue.num / signalValue.den) : signalValue ;
+                // }
+                // newJsonOutput.Counterexample.push(signalInfo);
+                // }
+
+                if(testIsUnique(variableValues.flat(Infinity), uniqueVariableValues)) {
+                    uniqueVariableValues.push(variableValues.flat(Infinity))
+
+
+                    ltlsimJSONTrace = {...ltlsimJSONTrace, theTrace: {...ltlsimJSONTrace.theTrace, keys: [...ltlsimJSONTrace.theTrace.keys.concat(variableNames)]}}
+                        
+
+                    ltlsimJSONTrace = {...ltlsimJSONTrace, theTrace: {...ltlsimJSONTrace.theTrace, values: variableValues}};
+                    traceArray.push(ltlsimJSONTrace)
+                    testCounter++;
+                }
+            }
+
+            fs.writeFileSync(analysisPath + 'trace.json', JSON.stringify(traceArray, null, 4))
+            callback(null, traceArray)
+            break;
+        case 0:
+        case 30:
+            //no properties are invalid
+            kind2.kill();
+            callback(new Error('No tests could be generated for this specification. All obligations are valid properties.'))
+            break;
+        case 1:
+            //general error
+            kind2.kill();
+            callback(new Error('Kind 2 returned with a general error.'))
+            break;
+        case 2:
+            //incorrect command line argument
+            kind2.kill();
+            callback(new Error('Incorrect command line argument provided to Kind 2.'))
+            break;
+        case 3:
+            //parse error            
+            var logObject = jsonContent.reverse().find(({ level }) => level === 'error')
+            kind2.kill();
+            callback(new Error('Kind 2 detected a parse error. File: '+logObject.file+', Line: '+logObject.line+', Column: '+logObject.column+', Value: '+logObject.value))
+            break;
+        case 4:
+            //no smt solver found
+            kind2.kill();
+            callback(new Error('Kind 2 did not detect an SMT solver.'))
+            break;
+        case 5:
+            //unknown or unsupported version of SMT solver found
+            kind2.kill();
+            callback(new Error('Kind 2 detected an unknown or unsupported version of SMT solver.'))
+            break;
+    }
+    });
 }
 
 function runNuSMV(filePath, callback) {
@@ -206,46 +321,67 @@ function generateNuSMVInterpreterFile() {
     return;
 }
 
-function generateSpecObligationFile(component, docs, modelResult) {
+function generateSpecObligationFile(component, docs, modelResult, selectedEngine) {
     var localModelResult = {...modelResult}
     var modelVariables = []
-    var newDoc = {
+    var newDoc =  selectedEngine === 'nusmv' ? {
         values: [],
         reqids: [],
         fullTexts: [],
         fretish: [],
         ftLTL: ''
-    }    
+    } : {
+        values: [],
+        reqids: [],
+        fullTexts: [],
+        fretish: [],
+        ptLTL: ''
+    }
 
     //Identify all relevant model variables for the selected requirements.
     //Also, create new doc object to be used for obligation generation.
+
     for (const doc of docs) {
         modelVariables = [...new Set(modelVariables.concat(doc.semantics.variables))];
         for (const modelDoc of localModelResult.docs) {                
-            if (modelVariables.includes(modelDoc.variable_name) && modelDoc.smvAssignment && modelDoc.smvAssignmentVariables && modelDoc.smvAssignmentVariables.length > 0) {
-            const assignmentVariables = modelDoc.smvAssignmentVariables;
-            for (const assignVar of assignmentVariables) {
-                if (modelVariables.indexOf(assignVar) === -1) {
-                modelVariables.push(assignVar);
+            const modelDocAssignment = selectedEngine === 'nusmv' ? modelDoc.smvAssignment : modelDoc.assignment
+            const modelDocAssignmentVariables = selectedEngine === 'nusmv' ? modelDoc.smvAssignmentVariables : modelDoc.assignmentVariables
+            if (modelVariables.includes(modelDoc.variable_name) && modelDocAssignment && modelDocAssignmentVariables && modelDocAssignmentVariables.length > 0) {
+            const assignmentVariables = modelDocAssignmentVariables;
+                for (const assignVar of assignmentVariables) {
+                    if (modelVariables.indexOf(assignVar) === -1) {
+                    modelVariables.push(assignVar);
+                    }
                 }
-            }
             }
         }
 
-        var htmlFreeSemantics = doc.semantics.ftExpanded.replace(/<b>/g, "").replace(/<i>/g, "").replace(/<\/b>/g, "").replace(/<\/i>/g, "");
+        var htmlFreeSemantics = selectedEngine === 'nusmv' ? 
+            doc.semantics.ftExpanded.replace(/<b>/g, "").replace(/<i>/g, "").replace(/<\/b>/g, "").replace(/<\/i>/g, "") :
+            doc.semantics.ptExpanded.replace(/<b>/g, "").replace(/<i>/g, "").replace(/<\/b>/g, "").replace(/<\/i>/g, "");
 
-        newDoc = {
+        newDoc = selectedEngine === 'nusmv' ? {
             reqids: newDoc.reqids.concat(doc.reqid),
             fullTexts: newDoc.fullTexts.concat(doc.fulltext),
             fretish: newDoc.fretish.concat(doc.fretish),
             ftLTL: newDoc.ftLTL.length === 0 ? htmlFreeSemantics : newDoc.ftLTL + ' & ' + htmlFreeSemantics
+        } : {
+            reqids: newDoc.reqids.concat(doc.reqid),
+            fullTexts: newDoc.fullTexts.concat(doc.fulltext),
+            fretish: newDoc.fretish.concat(doc.fretish),
+            ptLTL: newDoc.ptLTL.length === 0 ? htmlFreeSemantics : newDoc.ptLTL + ' & ' + htmlFreeSemantics
         }
     }
 
     //Filter out irrelevant model variables.
     localModelResult.docs = localModelResult.docs.filter(modelDoc => (modelVariables.includes(modelDoc.variable_name)))
 
-    var contract = getContractInfo(localModelResult, 'smv')
+    const language = selectedEngine === 'nusmv' ? 'smv' : 'cocospec'
+    var contract = getContractInfo(localModelResult, language)
+    if (selectedEngine === 'kind2') {
+        contract.delays = getDelayInfo({docs: docs}, component);
+    }
+
     contract.componentName = component+'Spec';
 
     var propertyName;
@@ -255,7 +391,7 @@ function generateSpecObligationFile(component, docs, modelResult) {
         propertyName = newDoc.reqids[0];
     }
 
-    var obligations = xform.generateFLIPObligations({[propertyName]: newDoc.ftLTL}, 'smv');
+    var obligations = xform.generateFLIPObligations({[propertyName]: (selectedEngine === 'nusmv') ? newDoc.ftLTL : newDoc.ptLTL}, language);
     
     for (const obl of obligations) {       
         var [ formula, condition, obligation ] = obl;
@@ -266,16 +402,17 @@ function generateSpecObligationFile(component, docs, modelResult) {
         contract.properties.push(obligationProperty);
     }
 
-    const file = {content: ejsCacheSMV.renderModelCode().model.complete(contract), name: contract.componentName+'_'+'obligations.smv'}
+    const fileName = contract.componentName + '_' + 'obligations' + (selectedEngine === 'nusmv' ? '.smv' : '.lus')
+    const file = {content: ejsCache_testgen.renderTestGenCode(selectedEngine).component.complete(contract), name: fileName}
     var filePath = analysisPath + file.name;
     var output = fs.openSync(filePath, 'w');
 
     fs.writeSync(output, file.content);
-    return filePath;
+    return [contract.componentName, filePath];
 }
 
 function generateTests(selectedProject, components, testGenState, selectedReqs) {
-    const {selected, projectReport, retainFiles } = testGenState;
+    const {selected, projectReport, retainFiles, selectedEngine } = testGenState;
 
     if (!fs.existsSync(analysisPath)) {
         fs.mkdirSync(analysisPath);
@@ -299,13 +436,20 @@ function generateTests(selectedProject, components, testGenState, selectedReqs) 
                 selectedReqs: selectedReqs
             }
 
-            modelDB.find({
-            selector: {
+            const selectorObject = selectedEngine === 'nusmv' ? {
+                component_name: tC.component_name,
+                project: selectedProject,
+                smvCompleted: true,
+                modeldoc: false        
+            } : {
                 component_name: tC.component_name,
                 project: selectedProject,
                 completed: true,
                 modeldoc: false
             }
+
+            modelDB.find({
+            selector: selectorObject
             }).then(function (modelResult){
                 return leveldbDB.find({
                     selector: {
@@ -317,32 +461,57 @@ function generateTests(selectedProject, components, testGenState, selectedReqs) 
                     const filteredDocs = fretResult.docs.filter(resultDoc => (resultDoc.semantics.component_name === tC.component_name) && selectedReqs.includes(resultDoc.reqid));
 
                     const startTime = performance.now();
-                    var filePath = generateSpecObligationFile(tC.component_name, filteredDocs, modelResult)
+                    var [specName, filePath] = generateSpecObligationFile(tC.component_name, filteredDocs, modelResult, selectedEngine)
 
-                    generateNuSMVInterpreterFile();
+                    if (selectedEngine === 'nusmv') {
+                        generateNuSMVInterpreterFile();
 
-                    runNuSMV(filePath, function(err, result) {
-                        if (err) {
-                            testGenState.projectReport.systemComponents[systemComponentIndex].result = 'ERROR';
-                            testGenState.projectReport.systemComponents[systemComponentIndex].error = err.message;testGenState.projectReport.systemComponents[systemComponentIndex].requirements = fretResult.docs;
-                            console.log(JSON.stringify(err))
-                        } else {
-                            testGenState.projectReport.systemComponents[systemComponentIndex].result = 'SUCCESS';
-                            testGenState.projectReport.systemComponents[systemComponentIndex].error = '';
-                            testGenState.projectReport.systemComponents[systemComponentIndex].tests = result
-                            testGenState.projectReport.systemComponents[systemComponentIndex].requirements = fretResult.docs;
-                        }
+                        runNuSMV(filePath, function(err, result) {
+                            if (err) {
+                                testGenState.projectReport.systemComponents[systemComponentIndex].result = 'ERROR';
+                                testGenState.projectReport.systemComponents[systemComponentIndex].error = err.message;testGenState.projectReport.systemComponents[systemComponentIndex].requirements = fretResult.docs;
+                                console.log(JSON.stringify(err))
+                            } else {
+                                testGenState.projectReport.systemComponents[systemComponentIndex].result = 'SUCCESS';
+                                testGenState.projectReport.systemComponents[systemComponentIndex].error = '';
+                                testGenState.projectReport.systemComponents[systemComponentIndex].tests = result
+                                testGenState.projectReport.systemComponents[systemComponentIndex].requirements = fretResult.docs;
+                            }
 
-                        const endTime = performance.now();
+                            const endTime = performance.now();
 
-                        testGenState.projectReport.systemComponents[systemComponentIndex].time = ((endTime - startTime).toFixed(2)) + ' ms';
+                            testGenState.projectReport.systemComponents[systemComponentIndex].time = ((endTime - startTime).toFixed(2)) + ' ms';
 
-                        if (!retainFiles) {
-                            deleteAnalysisFiles();
-                        }
+                            if (!retainFiles) {
+                                deleteAnalysisFiles();
+                            }
 
-                        resolve(testGenState.projectReport)
-                    })
+                            resolve(testGenState.projectReport)
+                        })
+                    } else {
+                        runKind2(specName, filePath, function(err, result) {
+                            if (err) {
+                                testGenState.projectReport.systemComponents[systemComponentIndex].result = 'ERROR';
+                                testGenState.projectReport.systemComponents[systemComponentIndex].error = err.message;testGenState.projectReport.systemComponents[systemComponentIndex].requirements = fretResult.docs;
+                                console.log(JSON.stringify(err))                                
+                            } else {
+                                testGenState.projectReport.systemComponents[systemComponentIndex].result = 'SUCCESS';
+                                testGenState.projectReport.systemComponents[systemComponentIndex].error = '';
+                                testGenState.projectReport.systemComponents[systemComponentIndex].tests = result
+                                testGenState.projectReport.systemComponents[systemComponentIndex].requirements = fretResult.docs;                                
+                            }
+                            
+                            const endTime = performance.now();
+
+                            testGenState.projectReport.systemComponents[systemComponentIndex].time = ((endTime - startTime).toFixed(2)) + ' ms';
+
+                            if (!retainFiles) {
+                                deleteAnalysisFiles();
+                            }
+
+                            resolve(testGenState.projectReport)
+                        })
+                    }
                 })
             })
         }

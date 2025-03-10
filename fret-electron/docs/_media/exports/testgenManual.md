@@ -10,21 +10,24 @@ Accompanying the main test case generation task are the following features:
 
 1. Inspection of generated tests using the interactive simulator LTLSIM.
 2. Export of generated tests in JSON format.
-3. (Through the Variable Mapping Tab) Export of FLIP test obligations in Lustre (CoCoSpec) or SMV.
+3. (Through the Variable Mapping Tab) Export of FLIP test obligations in CoCoSpec (Lustre) or SMV.
 
 ## Notes
 
-- FRET utilizes the finite trace Future-Time LTL formulas of each requirement for generating tests. 
-- Generated tests are set to be six (6) time steps long to minimize test case generation time and make tests easy to use in the simulator.
-- Only components that include variables of `Input`, `Output` or `Internal` variable type and `boolean` data type are currently supported for test case generation. 
-- For variables of `Internal` data type, a SMV expression over existing `boolean` variables must be provided as an assignment. 
-- Test obligations for components that include arithmetic types can still be exported, using the CoCoSpec format export option in Variable Mapping.
-- Test case generation operates over the future-time LTL formulas of the requirements. As such, it currently does not support requirements using past-time predicates `persisted` and `occured`.
+- When using the NuSMV engine, FRET utilizes the finite trace Future-Time LTL formulas of each requirement for generating tests. When using the Kind 2 engine, FRET utilizes the Past-Time LTL formulas, instead.
+- For the NuSMV engine, Generated tests are set to be six (6) time steps long to minimize test case generation time and make tests easy to use in the simulator.
+- Only components that include variables of `Input`, `Output` or `Internal` variable type are currently supported for test case generation.
+- The NuSMV engine can only be used with System components that include variables of 'boolean' Data Type.
+- The NuSMV engine should not be used for requirements using Past-Time predicates `persisted` and `occured`.
+- Simulation of generated test cases is currently not supported for the Kind 2 engine.
 - For existing projects, you may encounter issues either in test case generation or test obligation exports, due to outdated information in the FRET databases. To resolve such issues, you may need to update the  variables in Variable Mapping. For `Internal` variables, make a minor modification to each assignment (such as deleting and re-adding the last character in the assignment), and click on `UPDATE`. For `Input` or `Output` variables, open the relevant variables and click on `UPDATE`.
 
 ## Dependencies
 
-NuSMV is required to use the test case generation feature.
+Dependencies, listed by engine option, are provided below:
+
+- 'Kind 2': The [Kind 2](https://kind2-mc.github.io/kind2/)  model checker and the [Z3](https://github.com/Z3Prover/z3)  theorem prover must be installed.
+- `NuSMV`: The [NuSMV](https://nusmv.fbk.eu/) model checker must be installed.
 
 ## A step-by-step guide to generating tests from FRETish
 
