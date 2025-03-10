@@ -192,6 +192,7 @@ function runNuSMV(filePath, callback) {
 
 function generateNuSMVInterpreterFile() {
     var nusmvInterpreterCommands = [
+        'set on_failure_script_quits 1',
         'read_model',
         'flatten_hierarchy',
         'encode_variables',
