@@ -122,8 +122,14 @@ export function checkRealizability(filePath, engine, options, callback) {
 
           realizableTraceInfo = (realizabilityResults && realizabilityResults.deadlockingTrace) ? realizabilityResults.deadlockingTrace : null;
           callback(null, result, time, realizableTraceInfo, kind2Output);
-        } else {          
-          callback('Error: Kind 2 call terminated unexpectedly.')
+        } else {
+          var logResultsArray = kind2Output.filter(e => e.objectType === "log");
+          var logResults = logResultsArray[logResultsArray.length-1];
+          if (logResults && logResults.value === "Wallclock timeout.") {
+            callback(null, "UNKNOWN", "Wallclock timeout.", null, kind2Output)
+          } else {
+            callback('Error: Kind 2 call terminated unexpectedly.')
+          }
         }
       }
       

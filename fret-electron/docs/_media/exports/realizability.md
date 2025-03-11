@@ -27,8 +27,14 @@ Depending on the configuration, the following dependencies must be installed:
 ## Notes
 
 - Leaving the REALIZABILITY CHECKING tab at any time (including during analysis) will reset all results.
+- While a realizability checking or diagnostic analysis is running, users can perform the following actions without affecting the analysis:
 
-
+    1. If in Compositional view, navigate through the connected component tabs (CC).
+    2. Write comments in the field under the 'Comments' accordion, to be saved to a realizability analysis report.
+    3. Interact with the requirements table e.g., to sort requirements or switch table page.
+    4. Import/Export Project requirements and variables using the corresponding options from the sidebar.
+    5. Open the realizability analysis manual, by clicking on the 'HELP' button.
+    
 ## A step-by-step guide to checking realizability
 
 Note: In the past, we have encountered arbitrary analysis failures when using JKind and Z3, during which Z3 crashes with a segmentation fault. If you encounter this issue, please switch to an alternative engine setting, or try running the analysis again.
