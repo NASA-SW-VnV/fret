@@ -121,7 +121,7 @@ function testIsUnique(variableValues, uniqueVariableValues) {
 }
 
 function runKind2(specName, filePath, callback) {
-    const kind2 = spawn('kind2', ['-json','--lus_main', specName, filePath]);
+    const kind2 = spawn('kind2', ['-json','--enable','BMC','--enable','IND','--enable','IND2','--lus_main', specName, filePath]);
 
     var stdout = '';
     kind2.stdout.on('data', (data) => {
@@ -226,6 +226,10 @@ function runKind2(specName, filePath, callback) {
             //unknown or unsupported version of SMT solver found
             kind2.kill();
             callback(new Error('Kind 2 detected an unknown or unsupported version of SMT solver.'))
+            break;
+        default:
+            kind2.kill();
+            callback(new Error('Kind 2 terminated unexpectedly.'))
             break;
     }
     });

@@ -254,6 +254,14 @@ class ComponentSummary extends React.Component {
     this.setState({snackbarOpen: false});
   }
 
+  determineIncompleteComponentTooltipTitle(language) {
+    if (language === 'smv') {
+      return 'To export verification code or test obligations, please complete mandatory variable fields and export language first. For SMV export, only variables of type Input, Output and Internal are supported.'
+    } else {
+      return 'To export verification code or test obligations, please complete mandatory variable fields and export language first.'
+    }
+  }
+
   render() {
     const {classes, component, completed, language, smvCompleted, isBooleanComponent} = this.props;
     if (language === 'copilot'){
@@ -364,7 +372,7 @@ class ComponentSummary extends React.Component {
       }
     } else {
       return (
-          <Tooltip title='To export verification code or test obligations, please complete mandatory variable fields and export language first.'>
+          <Tooltip title={this.determineIncompleteComponentTooltipTitle(language)}>
             <span>
               <Button id={"qa_var_btn_export_"+component}
                  size="small" color="secondary" disabled variant='contained' className={classes.buttonControl}>
