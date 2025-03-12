@@ -16,7 +16,7 @@ Accompanying the main test case generation task are the following features:
 
 - When using the NuSMV engine, FRET utilizes the finite trace Future-Time LTL formulas of each requirement for generating tests. When using the Kind 2 engine, FRET utilizes the Past-Time LTL formulas, instead.
 - For the NuSMV engine, Generated tests are set to be six (6) time steps long to minimize test case generation time and make tests easy to use in the simulator.
-- Only components that include variables of `Input`, `Output` or `Internal` variable type are currently supported for test case generation.
+- Only components that include variables of `Input`, `Output` or `Internal` variable type are currently supported for test case generation and exporting of test obligations.
 - The NuSMV engine can only be used with System components that include variables of 'boolean' Data Type.
 - The NuSMV engine should not be used for requirements using Past-Time predicates `persisted` and `occured`.
 - Simulation of generated test cases is currently not supported for the Kind 2 engine.
