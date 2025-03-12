@@ -86,7 +86,7 @@ class ExportTestCasesButton extends React.Component {
 ExportTestCasesButton.propTypes = {
 	classes: PropTypes.object.isRequired,
     componentName: PropTypes.string.isRequired,
-	tests: PropTypes.object.isRequired
+	tests: PropTypes.array.isRequired
 };
 
 export default withStyles(styles)(ExportTestCasesButton);

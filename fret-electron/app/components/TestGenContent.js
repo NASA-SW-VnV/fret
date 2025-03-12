@@ -474,7 +474,7 @@ class TestGenContent extends React.Component {
                                                   reskey={n.component_name} 
                                                   result={testGenStatus[n.component_name] !== undefined ? testGenStatus[n.component_name] : ''} 
                                                   time={projectReport.systemComponents[systemComponentIndex] ? projectReport.systemComponents[systemComponentIndex].time : ''}
-                                                  numOfTests={projectReport.systemComponents[systemComponentIndex] ? projectReport.systemComponents[systemComponentIndex].tests.length : ''}
+                                                  numOfTests={projectReport.systemComponents[systemComponentIndex] ? projectReport.systemComponents[systemComponentIndex].tests.length : 0}
                                                   error={
                                                   (systemComponentIndex !== -1 && projectReport.systemComponents[systemComponentIndex]) ? projectReport.systemComponents[systemComponentIndex].error : ''
                                                 }/>
