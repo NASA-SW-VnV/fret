@@ -59,11 +59,11 @@ const SpecialCases =
 	   'historically (FTP implies (not RES))']
       ];
 
-var noTrigger = false;
+var holding = false;
 
 function determineBaseForm (negate, timing, condition) {
-  var cond = (condition=='regular'|condition=='noTrigger')?'COND':'null';
-  noTrigger = condition == 'noTrigger'
+  var cond = (condition=='regular'|condition=='holding')?'COND':'null';
+  holding = condition == 'holding'
   var duration = 'BOUND';
   var property = 'RES';
   var stopCondition = 'STOPCOND'
@@ -146,7 +146,7 @@ function occursBeforeTime (duration, formula) {
 function previous(formula) {return `previous ${formula}`}
 
 function conditionTrigger (cond, left) {
-  if (noTrigger) return cond
+  if (holding) return cond
   else return disjunction(`${cond} and previous (not (${cond}))`, `${cond} and ${left}`)
 }
 
@@ -279,9 +279,9 @@ function beforeTiming(property, stopcond, cond='null') {
     let trigger = conditionTrigger(cond,left);
     // if no condition occurs anywhere from stop to left, vacuously true
     // otherwise check is similar to above case but adds trigger
-    var noLeftAndNoTrigger = conjunction(negate(left), negate(trigger));
+    var noLeftAndHolding = conjunction(negate(left), negate(trigger));
     stopEnforces = disjunction(noCondInterval(cond, left),
-                              conjunction(noLeftAndNoTrigger,
+                              conjunction(noLeftAndHolding,
                                           previous(occursBy(property, trigger))));
   }
 

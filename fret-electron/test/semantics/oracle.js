@@ -45,7 +45,7 @@ exports.applyConstraints =
   var modesArray = this.activeScopeIntervals(scope,traceInterval,modeIntervals);
 
   var timingFunction = timing;
-  if (condition === 'regular' || condition === 'noTrigger' ) {
+  if (condition === 'regular' || condition === 'holding' ) {
     timingFunction = timingFunction + 'Cond'
     //console.log("************  CHECK THIS OUT **************")
   }
@@ -73,7 +73,7 @@ exports.applyConstraints =
 	      }
 	  }
       }
-    else if (condition == 'noTrigger') {
+    else if (condition == 'holding') {
 	  for (let conditionInterval of conditionIntervals) {
 	    let triggerInterval = intervalLogic.intersect(scopeInterval, conditionInterval);
 	      if (testOptions.verboseOracle)

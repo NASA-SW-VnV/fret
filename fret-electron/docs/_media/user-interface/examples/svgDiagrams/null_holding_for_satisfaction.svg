@@ -7,12 +7,16 @@
        </pattern>
 
 <rect x ="80" y="65" width="420" height="65" stroke="#D5DBDB" stroke-width="2" fill="#D5DBDB " />
-<rect x ="80" y="108.33333333333333" width="60" height="21.666666666666668" stroke="green" stroke-width="2" fill="green " />
-<text x = "110" y="119.16666666666666" font-family="sans-serif" font-size="17px"     font-weight="normal" text-anchor="middle" alignment-baseline="middle" fill="black">n</text>
+<rect x ="220" y="74.66666666666666" width="253" height="21.666666666666668" stroke="#a0dbfd" stroke-width="2" fill="#a0dbfd " />
+<rect x ="240" y="108.33333333333333" width="60" height="21.666666666666668" stroke="green" stroke-width="2" fill="green " />
+<text x = "270" y="119.16666666666666" font-family="sans-serif" font-size="17px"     font-weight="normal" text-anchor="middle" alignment-baseline="middle" fill="black">n</text>
 
 
     <line x1 = "80" y1 ="40" x2="80" y2 = "155"     stroke = "blue" stroke-width = "3" ></line>
 <text x = "80" y="25" font-family="sans-serif" font-size="20px"     font-weight="normal" text-anchor="middle" alignment-baseline="middle" fill="blue">Beginning of Time</text>
+
+    <line x1 = "240" y1 ="40" x2="240" y2 = "155"     stroke = "black" stroke-width = "3" ></line>
+<text x = "240" y="25" font-family="sans-serif" font-size="20px"     font-weight="normal" text-anchor="middle" alignment-baseline="middle" fill="black">CC</text>
 
   <path d="M 10 130 h 490" stroke="#000" stroke-width="3" fill="none"/>
 <path d="M 500 130 l -14.26 4.64v -9.28z" stroke="#000" stroke-width="0"/>

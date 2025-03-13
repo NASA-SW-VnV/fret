@@ -107,7 +107,7 @@ scopeSubs : {
 },
 
 conditionSubs : {
-  fullCondition: ['null','regular','noTrigger'],
+  fullCondition: ['null','regular','holding'],
   nullCondition: ['null'],
 },
 

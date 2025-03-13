@@ -7,10 +7,14 @@
        </pattern>
 
 <rect x ="10" y="65" width="190" height="65" stroke="#D5DBDB" stroke-width="2" fill="#D5DBDB " />
-<rect x ="10" y="108.33333333333333" width="190" height="21.666666666666668" stroke="green" stroke-width="2" fill="green " />
+<rect x ="25" y="74.66666666666666" width="148" height="21.666666666666668" stroke="#a0dbfd" stroke-width="2" fill="#a0dbfd " />
+<rect x ="45" y="108.33333333333333" width="155" height="21.666666666666668" stroke="green" stroke-width="2" fill="green " />
 <rect x ="200" y="65" width="135" height="65" stroke="black" stroke-width="4" fill="none " />
 <text x = "207" y="82" font-family="sans-serif" font-size="17px"     font-weight="normal" text-anchor="start" alignment-baseline="middle" fill="black">M</text>
 
+
+    <line x1 = "45" y1 ="40" x2="45" y2 = "155"     stroke = "black" stroke-width = "3" ></line>
+<text x = "45" y="25" font-family="sans-serif" font-size="20px"     font-weight="normal" text-anchor="middle" alignment-baseline="middle" fill="black">CC</text>
 
   <path d="M 10 130 h 490" stroke="#000" stroke-width="3" fill="none"/>
 <path d="M 500 130 l -14.26 4.64v -9.28z" stroke="#000" stroke-width="0"/>

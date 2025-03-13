@@ -269,7 +269,7 @@ exports.getFormalization = (key, negate, leftEnd, rightEnd, options) => {
 
       main_formula = conjunction(formula_1, formula_2)
     }
-  else if (key[1].includes('noTrigger')) {
+  else if (key[1].includes('holding')) {
     main_formula = parenthesize(' always ' +
 				parenthesize(parenthesize('COND') +
 					     ' implies ' +

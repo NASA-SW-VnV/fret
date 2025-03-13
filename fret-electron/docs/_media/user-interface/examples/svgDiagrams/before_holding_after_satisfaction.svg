@@ -7,12 +7,16 @@
        </pattern>
 
 <rect x ="10" y="65" width="190" height="65" stroke="#D5DBDB" stroke-width="2" fill="#D5DBDB " />
-<rect x ="10" y="108.33333333333333" width="60" height="21.666666666666668" stroke="red" stroke-width="2" fill="red " />
-<text x = "40" y="119.16666666666666" font-family="sans-serif" font-size="17px"     font-weight="normal" text-anchor="middle" alignment-baseline="middle" fill="black">n</text>
+<rect x ="25" y="74.66666666666666" width="148" height="21.666666666666668" stroke="#a0dbfd" stroke-width="2" fill="#a0dbfd " />
+<rect x ="45" y="108.33333333333333" width="60" height="21.666666666666668" stroke="red" stroke-width="2" fill="red " />
+<text x = "75" y="119.16666666666666" font-family="sans-serif" font-size="17px"     font-weight="normal" text-anchor="middle" alignment-baseline="middle" fill="black">n</text>
 
 <rect x ="200" y="65" width="135" height="65" stroke="black" stroke-width="4" fill="none " />
 <text x = "207" y="82" font-family="sans-serif" font-size="17px"     font-weight="normal" text-anchor="start" alignment-baseline="middle" fill="black">M</text>
 
+
+    <line x1 = "45" y1 ="40" x2="45" y2 = "155"     stroke = "black" stroke-width = "3" ></line>
+<text x = "45" y="25" font-family="sans-serif" font-size="20px"     font-weight="normal" text-anchor="middle" alignment-baseline="middle" fill="black">CC</text>
 
     <marker id="Arrowhead" markerWidth="4" markerHeight="2.67" orient="auto"
       refX="0" refY="1.33" >
@@ -20,14 +24,14 @@
   </marker>
     
 
-    <path d="m 82 94 v15" stroke = "green" stroke-width = "7" marker-end="url(#Arrowhead)"/>
+    <path d="m 117 94 v15" stroke = "green" stroke-width = "7" marker-end="url(#Arrowhead)"/>
     
 
 
-    <circle cx = "70" cy = "130" r = "6" fill = "black" />
+    <circle cx = "105" cy = "130" r = "6" fill = "black" />
     
 
-    <circle cx = "82" cy = "130" r = "6" fill = "black" />
+    <circle cx = "117" cy = "130" r = "6" fill = "black" />
     
 
   <path d="M 10 130 h 490" stroke="#000" stroke-width="3" fill="none"/>
