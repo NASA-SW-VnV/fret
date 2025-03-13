@@ -226,7 +226,15 @@ module.exports = class LTLSimController {
 		var c=0;
 		var NL=[];
 		for (c=0; c<V.length; c++){
-		    NL.push(LTLSimController.getAtomic(model,V[c]).trace[i]);
+		    // NL.push(LTLSimController.getAtomic(model,V[c]).trace[i]);
+		    var val = LTLSimController.getAtomic(model,V[c]).trace[i];
+		    if (val == false){
+			val = 0;
+			}
+		    else if (val == true){
+			val = 1;
+			}
+		    NL.push(val);
 		    }
 
 	try {
@@ -252,11 +260,36 @@ module.exports = class LTLSimController {
 	for (i=0; i < model.traceLength; i++){
 		var c=0;
 		for (c=0; c<V.length; c++){
-		    NL.push(LTLSimController.getAtomic(model,V[c]).trace[i]);
+		    // NL.push(LTLSimController.getAtomic(model,V[c]).trace[i]);
+		    var val = LTLSimController.getAtomic(model,V[c]).trace[i];
+		    if (val == false){
+			val = 0;
+			}
+		    else if (val == true){
+			val = 1;
+			}
+		    NL.push(val);
 		    }
 		}
+console.log("LTLSimController: getTrace",model.atomics.keys,model.atomics.type);
+	var TL=[];
+	var CCL=[];
+	var MINL=[];
+	var MAXL=[];
+	for (i=0; i < V.length; i++){
+	    TL.push(LTLSimController.getAtomic_type(model,V[i]));
+	    CCL.push(LTLSimController.getAtomic_canChange(model,V[i]));
+	    MINL.push(LTLSimController.getAtomic_minval(model,V[i]));
+	    MAXL.push(LTLSimController.getAtomic_maxval(model,V[i]));
+	    }
+
 	return {
+		traceLength: model.traceLength,
 		keys: model.atomics.keys.slice(),
+		type: TL,
+		canChange: CCL,
+		minval: MINL,
+		maxval: MAXL,
 		values: NL
 		};
     }
@@ -264,6 +297,7 @@ module.exports = class LTLSimController {
     //------------------------------------------------------------
     // add trace to the controller from object
     // NOTE: do not add LAST or FTP
+    // * fill up or truncate to currently set traceLength
     //------------------------------------------------------------
     static setTrace(model, trace) {
 			//
@@ -272,10 +306,39 @@ module.exports = class LTLSimController {
 			//
             trace.keys.forEach((a) => {
 	      if (a != "LAST" && a != "FTP"){
+			//
+			// we need to define a new variable (key)
+			//
         	if (model.atomics.keys.indexOf(a) === -1) {
             		model.atomics.keys.push(a);
             		model.atomics.values[a] = 
 				new Atomic(a, model.traceLength);
+
+			var idx = trace.keys.indexOf(a);
+            		if ('type' in trace){
+				model.atomics.type[a] = trace.type[idx];
+				}
+			else {
+				model.atomics.type[a] = 'category';  // set later
+				}
+            		if ('canChange' in trace){ 
+				model.atomics.canChange[a] = trace.canChange[idx];
+				}
+			else {
+				model.atomics.canChange[a] = true;
+				}
+            		if ('minval' in trace){ 
+				model.atomics.minval[a] = trace.minval[idx];
+				}
+			else {
+				model.atomics.minval[a] = 0;
+				}
+            		if ('maxval' in trace){ 
+				model.atomics.maxval[a] = trace.maxval[idx];
+				}
+			else {
+				model.atomics.maxval[a] = 10;
+				}
 			}
 		}
 	       });
@@ -297,18 +360,61 @@ module.exports = class LTLSimController {
 		};
 
 		
+		//
+		// load values
+		//   they are stored in temporal order
+		//
             let idx=0;
 	    let i = 0;
-    	    while (i < model.traceLength){
+            let tracelength = trace.values.length / trace.keys.length;
+	    let trace_min_vals = [];
+	    let trace_max_vals = [];
+      	    	trace.keys.forEach((a) => {
+			trace_min_vals[a] = 9e99;
+			trace_max_vals[a] = -9e99;
+			});
+			
+	    if ('traceLength' in trace){
+		let trace_tracelength = trace.traceLength;
+		if (trace_tracelength != tracelength){
+			console.log("trace-length calculation not matching....");
+			}
+		}
+    	    while (i < trace.traceLength){
+console.log("setTrace: ",i);
       	    	trace.keys.forEach((a) => {
 	          if (a != "LAST" && a != "FTP"){
 			var val = trace.values[idx];
-			model.atomics.values[a].trace[i] = val;
+console.log("setTrace: val",val);
+console.log("setTrace: a",a);
+		        if (i < model.traceLength){
+				model.atomics.values[a].trace[i] = val;
+				if (trace_min_vals[a] > val){
+					trace_min_vals[a] = val;
+					}
+				if (trace_max_vals[a] < val){
+					trace_max_vals[a] = val;
+					}
+				}
 		        }
 		  idx = idx+1;
 		    });
 		i = i+1;
 		};
+    	trace.keys.forEach((a) => {
+		if (trace_min_vals[a] < model.atomics.minval[a]){
+			model.atomics.minval[a] = trace_min_vals[a];
+			}
+		if (trace_max_vals[a] < model.atomics.maxval[a]){
+			model.atomics.maxval[a] = trace_max_vals[a];
+			}
+		if ((trace_min_vals[a] != 0) || (trace_max_vals[a] != 1)){
+			model.atomics.type[a] = 'number';
+			}
+			
+		});
+		
+	
         return true;
     }
 

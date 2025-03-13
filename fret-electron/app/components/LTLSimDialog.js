@@ -1,3 +1,44 @@
+/*
+DONE * + dialog:  press return after editing ID --> FRET restart
+DONE * + dialog: remove ^M (RETURN) from the Trace ID (if any)
+DONE: * UP-arrow menu for save current vs save all
+DONE * saved: LinkedRequirement IDs  are sanitized version of the prop.RequirementOIDs !!!!  always filtered out
+
+* matching check only against the root-requirements ID -- should check for any of the selected requirements IDs
+
+DONE: * enter data into LTLSimController (import Traces) & add variable info
+
+* remove the save to /tmp/debug-trace and /tmp/fret-traces
+DONE * export current trace: also as .csv
+1-- * ltlsim-controller: only add type, canchange if defined...
+* remove save-to and 
+        "saveToReqID": "R2.2-3",
+        "saveToComponent": "*",
+        "saveToProject": "Boeing-refuel-2.2"
+2-- * check: are all values updated from current trace when saving
+1-- * loading/import
+DONE	debug with new file format
+2-- * clean up and remove obsolete code
+* remove: console.log("The JSON DB file was saved!");
+
+* add more space in header -> Andreas or -> Martin
+* status of exporting/loading in title or as popup
+
+* add traceLength
+
+*/
+/*
+
+    handleSaveCurrentTraceToFile: current trace to selectable JSON file
+    handleSaveCurrentTraceToCSVFile: current trace to selectable CSV file
+
+    handleSaveCurrentTrace(origin): to DB -- obsolete
+    handleSaveCurrentTraceAs(origin): to DB -- obsolete
+
+    handleLoadTraces(origin): from DB -- obsolete
+    handleLoadTrace: LT testing -- should be obsolete
+    handleImportTraces: Uparrow
+*/
 // *****************************************************************************
 // Notices:
 //
@@ -45,6 +86,8 @@ import FormulaEvaluationIcon from '@material-ui/icons/Highlight';
 import FTLogicsIcon from '@material-ui/icons/ArrowForward';
 import PTLogicsIcon from '@material-ui/icons/ArrowBack';
 import SaveIcon from '@material-ui/icons/ArrowUpward';
+//import SaveAllIcon from "@material-ui/icons/KeyboardDoubleArrowUp";
+import SaveAllIcon from "@material-ui/icons/KeyboardArrowUp";
 import LoadIcon from '@material-ui/icons/ArrowDownward';
 import AddIcon from '@material-ui/icons/Add';
 
@@ -149,6 +192,9 @@ class LTLSimDialog extends Component {
 		// Requirements Menu anchor
     	    anchorEl_Req: null,
 
+		// Export Menu anchor
+    	    anchorEl_Export: null,
+
 		// trace add dialog
 	    traceAddDialogOpen: false,
 
@@ -165,6 +211,9 @@ class LTLSimDialog extends Component {
 	    traceID: this.props.traceID,
 		// current trace description
 	    traceDescription: "",
+		// current list of linked requirements
+		// always linked to the "calling" root requirement
+	    traceLinkedRequirementIDs: this.props.ids,
 		// current counter how many traces are loaded
 	    traceIDCnt: 0,
 
@@ -185,7 +234,12 @@ class LTLSimDialog extends Component {
 		//
 		// list of active traces (can be selected)
 		//
-	    activeTraces: []
+	    activeTraces: [],
+
+		//
+		// "loading" cursor status
+		//
+	    loading: false
         }
 
         // Set the traces for "LAST" or "FTP" variables in the model, if any
@@ -202,8 +256,13 @@ class LTLSimDialog extends Component {
         this.handleAddRequirements = this.handleAddRequirements.bind(this);
         this.handleLoadTrace = this.handleLoadTrace.bind(this);
         this.handleLoadTraces = this.handleLoadTraces.bind(this);
+        this.handleImportTraces = this.handleImportTraces.bind(this);
         this.handleSaveTraces = this.handleSaveTraces.bind(this);
-        this.handleSaveToFile = this.handleSaveToFile.bind(this);
+        this.handleSaveCurrentTrace = this.handleSaveCurrentTrace.bind(this);
+        this.handleSaveCurrentTraceAs = this.handleSaveCurrentTraceAs.bind(this);
+        this.handleSaveCurrentTraceToFile = this.handleSaveCurrentTraceToFile.bind(this);
+        this.handleSaveCurrentTraceToCSVFile = this.handleSaveCurrentTraceToCSVFile.bind(this);
+        this.handleSaveAllTracesToFile = this.handleSaveAllTracesToFile.bind(this);
         this.handleClickLogics = this.handleClickLogics.bind(this);
         this.handleClickHighlight = this.handleClickHighlight.bind(this);
         this.handleLtlsimResult_FT = this.handleLtlsimResult_FT.bind(this);
@@ -431,17 +490,17 @@ class LTLSimDialog extends Component {
 
     	//===============================================================
 	// FUNCTION handleTraceAddDialogSave(dialogState)
-	// handle for the "add trace" SAVE
-	// TODO 082023: only saves into JSON file; should use a "traces" DB
-	// TODO: 082023 pull the default filename into configuration
+	// handle for the "add trace information" and then UPDATE
 	//
     handleTraceAddDialogSave(dialogState) {
         this.setState((prevState) => {
         const {traces, activeTraces} = prevState;
-        const {reqID, traceID, traceDescription, saveTo} = dialogState;
+        const {reqID, traceID, traceDescription, traceLinkedRequirementIDs, saveTo} = dialogState;
         let { model } = prevState;
 	let trace = LTLSimController.getTrace(model);
 
+	console.log("TODO: update trace info");
+	console.log(trace);
 
 	LTLSimController.saveTrace(model, '/tmp/debug-trace.csv');
 
@@ -465,6 +524,8 @@ class LTLSimDialog extends Component {
 		const newActiveTraces = activeTraces.concat({
 			traceID: traceID,
 			traceDescription: traceDescription,
+			traceLinkedRequirementIDs: traceLinkedRequirementIDs,
+			linkedProject: this.props.project,
 			theTrace: trace,
 			saveToReqID: saveToReqID,
 			saveToComponent: saveToComponent,
@@ -483,7 +544,8 @@ class LTLSimDialog extends Component {
             		traceAddDialogOpen: false,
 	    			traceID: traceID,
 	    			traceDescription: traceDescription,
-					traces: allTraces,
+				traceLinkedRequirementIDs: traceLinkedRequirementIDs,
+				traces: allTraces,
 	    			activeTraces: newActiveTraces
             		};
 
@@ -510,20 +572,20 @@ class LTLSimDialog extends Component {
 
     }
 
-
     	//===============================================================
-    	// FUNCTION handleSaveToFile = async () => {
-	// save current trace (export) to file as .csv or json
+    	// FUNCTION handleSaveCurrentTraceToFile = async () => {
+	// save current trace (export) to file as json
 	//
-    handleSaveToFile = async () => {
+    handleSaveCurrentTraceToFile = async () => {
+        var title="Export current Trace";
 	var homeDir = app.getPath('home');
     	var filepath = await dialog.showSaveDialog(
       		{
        		defaultPath : homeDir,
-       		title : 'Export Trace',
+       		title : title,
        		buttonLabel : 'Save',
        		filters: [
-       		{ name: "Documents", extensions: ['csv','json'] }
+       		{ name: "Documents", extensions: ['json'] }
        		],
       		})
 
@@ -531,47 +593,131 @@ class LTLSimDialog extends Component {
 			// cancel ?
 			//
 	if (!filepath.filePath){
+		this.handleClose_Export()
 		return;
 		}
+
 	this.setState((prevState) => {
-		if (filepath.filePath.substring(filepath.filePath.length-3) == "csv"){
-       			let { model } = prevState;
-            		LTLSimController.saveTrace(model, filepath.filePath);
 
+		//-------------- save current trace ------------------
+		let { model,
+		      activeTraces,
+		      traceID,
+	    	      traceLinkedRequirementIDs,
+		      traceDescription} = prevState;
+
+		var currTrace = activeTraces.find(tr => {
+			return tr.traceID === traceID
+			});
+		if (!currTrace){
+
+console.log("LTLSim: export-single-not current before getTrace ");
+			//
+			// current trace is not in our list
+			//
+			let trace = LTLSimController.getTrace(model);
+console.log("LTLSim: export-single-not current ",trace);
+		    	currTrace = {
+    				traceID: traceID,
+    				traceDescription: traceDescription,
+	    	      		traceLinkedRequirementIDs: traceLinkedRequirementIDs,
+				linkedProject: this.props.project,
+				theTrace: trace,
+				saveToReqID: "*",
+				saveToComponent: "*",
+				saveToProject: this.props.project
+				};
 			}
-
-		if (filepath.filePath.substring(filepath.filePath.length-4) == "json"){
-			let { model,
-			      activeTraces,
-			      traceID,
-			      traceDescription} = prevState;
-
-			var currTrace = activeTraces.find(tr => {
-				return tr.traceID === traceID
-				});
-			if (!currTrace){
-				//
-				// current trace is not in our list
-				//
-				let trace = LTLSimController.getTrace(model);
-			    	currTrace = {
-	    				traceID: traceID,
-	    				traceDescription: traceDescription,
-					theTrace: trace,
-					saveToReqID: "*",
-					saveToComponent: "*",
-					saveToProject: this.props.project
-					};
-				}
-        		var JTrace = JSON.stringify(currTrace, null, 4)
-        		fs.writeFile(filepath.filePath, JTrace, (err) => {
-            			if(err) {
-                			return console.log(err);
-            				}
-            			console.log("The file was saved!");
-              			})
-			}
+console.log("LTLSim: export-single-currTrace ",currTrace);
+		var LCT =[];
+		LCT.push(currTrace);
+	
+       		var JTrace = JSON.stringify(LCT, null, 4)
+       		fs.writeFile(filepath.filePath, JTrace, (err) => {
+           			if(err) {
+               			return console.log(err);
+           				}
+           			console.log("The file was saved!");
+          			});
     		});
+
+	this.handleClose_Export()
+	}
+
+    	//===============================================================
+    	// FUNCTION handleSaveCurrentTraceToCSVFile
+	// save current trace (export) to file as CSV
+	//
+    handleSaveCurrentTraceToCSVFile = async () => {
+        var title="Export current Trace";
+	var homeDir = app.getPath('home');
+    	var filepath = await dialog.showSaveDialog(
+      		{
+       		defaultPath : homeDir,
+       		title : title,
+       		buttonLabel : 'Save',
+       		filters: [
+       		{ name: "Documents", extensions: ['csv'] }
+       		],
+      		})
+
+			//
+			// cancel ?
+			//
+	if (!filepath.filePath){
+		this.handleClose_Export()
+		return;
+		}
+
+	this.setState((prevState) => {
+
+		//-------------- save current trace ------------------
+		let { model } = prevState;
+
+		LTLSimController.saveTrace(model, filepath.filePath);
+		return;
+    		});
+
+	this.handleClose_Export()
+	}
+
+    	//===============================================================
+    	// FUNCTION handleSaveAllTracesToFile = async () => {
+	// save current trace (export) to file as json
+	//
+    handleSaveAllTracesToFile = async () => {
+        var title="Export all Traces";
+	var homeDir = app.getPath('home');
+    	var filepath = await dialog.showSaveDialog(
+      		{
+       		defaultPath : homeDir,
+       		title : title,
+       		buttonLabel : 'Save',
+       		filters: [
+       		{ name: "Documents", extensions: ['json'] }
+       		],
+      		})
+
+			//
+			// cancel ?
+			//
+	if (!filepath.filePath){
+		this.handleClose_Export()
+		return;
+		}
+
+	this.setState((prevState) => {
+
+		let { activeTraces } = prevState;
+       		var JTrace = JSON.stringify(activeTraces, null, 4)
+       		fs.writeFile(filepath.filePath, JTrace, (err) => {
+           			if(err) {
+               			return console.log(err);
+           				}
+           			console.log("The file was saved!");
+          			});
+    		});
+	this.handleClose_Export();
 	}
 
 	//===============================================================
@@ -631,6 +777,7 @@ class LTLSimDialog extends Component {
 	    			traceDescription: "imported from "+filepath[0],
 				theTrace: trace,
 				saveToReqID: saveToReqID,
+				traceLinkedRequirementIDs: this.state.rootRequirementID,
 				saveToComponent: saveToComponent,
 				saveToProject: saveToProject
 				} );
@@ -642,6 +789,7 @@ class LTLSimDialog extends Component {
 	    			traceID: NewTraceID,
 				traces: NewTraces,
 	    			traceDescription: "imported from "+filepath[0],
+				traceLinkedRequirementIDs: this.state.rootRequirementID,
 	    			activeTraces: newActiveTraces
             			};
 			}
@@ -651,6 +799,8 @@ class LTLSimDialog extends Component {
 			//
       			var content = fs.readFileSync(filepath[0]);
       			var loadedTrace = JSON.parse(content);
+console.log("HANDLELOADTRACE: ", loadedTrace);
+console.log("HANDLELOADTRACE: ", loadedTrace.length);
 
 			var loadedTraceInList = activeTraces.find(tr => {
 				return tr.traceID === loadedTrace.traceID
@@ -668,7 +818,8 @@ class LTLSimDialog extends Component {
 		//
 		// load the trace and set FTP and LAST accordingly
 		//
-		LTLSimController.setTrace(this.state.model,loadedTrace.theTrace);
+//TODO: [0]
+		LTLSimController.setTrace(this.state.model,loadedTrace[0].theTrace);
 		setMarginVariableTraces(this.state.model);
 
 console.log("TODO: update the traces")
@@ -686,6 +837,54 @@ console.log("TODO: update the traces")
         });
     }
 
+//===============================================================
+    	// FUNCTION handleSaveCurrentTrace(origin) {
+    	// save current trace to DB if named
+	// TODO: handle to requirement or to project
+    	//
+    handleSaveCurrentTrace(origin) {
+	//
+        this.setState((prevState) => {
+	  let { model, traces, activeTraces} = prevState;
+
+	  var JTrace = JSON.stringify(activeTraces, null, 4)
+	  fs.writeFile(trace_db_json, JTrace, (err) => {
+		if(err) {
+       			return console.log(err);
+       			}
+       	  console.log("The JSON DB file was saved!");
+	  });
+	  return {
+		anchorEl: null,
+		};
+        });
+        }
+
+//===============================================================
+    	// FUNCTION handleSaveCurrentTraceAs(origin) {
+    	// save current trace to DB if named
+	// TODO: handle to requirement or to project
+    	//
+    handleSaveCurrentTraceAs(origin) {
+	//
+        this.setState((prevState) => {
+	  let { model, traces, activeTraces} = prevState;
+
+	  var JTrace = JSON.stringify(activeTraces, null, 4)
+	  fs.writeFile(trace_db_json, JTrace, (err) => {
+		if(err) {
+       			return console.log(err);
+       			}
+       	  console.log("The JSON DB file was saved!");
+	  });
+	  return {
+		anchorEl: null,
+		};
+        });
+        }
+
+
+//===============================================================
 	//FUNCTION loadTestGenTraces(content)
 	//load traces generated from test case generation
 	loadTestGenTraces(content) {
@@ -839,6 +1038,7 @@ console.log("TODO: update the traces")
 		traceID: NewtraceID,
 		traceDescription: NewtraceDescription,
 		theTrace: theTrace,
+		traceLinkedRequirementIDs: this.state.rootRequirementID,
 		saveToReqID: "*",
 		saveToComponent: "*",
 		saveToProject: "*"
@@ -849,6 +1049,209 @@ console.log("TODO: update the traces")
 	this.state.traces = this.state.traces.concat([NewtraceID]);
 	this.state.activeTraces = this.state.activeTraces.concat(newActiveTraces);
     	}
+
+  //===============================================================
+  // FUNCTION handleImportTraces(origin) {
+  // load one or more traces from file (user-selected)
+  //
+  handleImportTraces() {
+        this.setState((prevState) => {
+  		var homeDir = app.getPath('home');
+    		var filepath = dialog.showOpenDialogSync(
+      				{
+			properties:['openFile'],
+        		defaultPath : homeDir,
+        		title : 'Import Traces',
+        		buttonLabel : 'Load',
+        		filters: [
+          		{ name: "Trace", extensions: ['csv','json'] }
+        		],
+      			});
+		 if (!filepath || filepath.length == 0) {
+			// cancel
+			return;
+			}
+
+		let { model, 
+			traces, 
+			activeTraces, 
+			traceIDCnt} = prevState;
+
+			//
+			// load a .csv file
+			//  * add new ID
+			//  * add to list of all traces
+			//  * link to the current root requirement
+			//
+		if (filepath[0].substring(filepath[0].length-3) == "csv"){
+			//
+			// load CSV as current trace; no meta information
+			// loaded via the LTLSimController object
+			//
+			console.log('loading a CSV trace');
+			console.log('NOTE: ONLY BOOLEAN');
+			LTLSimController.addTrace(model, filepath[0]);
+			setMarginVariableTraces(this.state.model);
+
+				// must have newly-generated default name
+			let NTC = traceIDCnt;
+			let NewTraceID = "Imported-"+(NTC);
+			NTC = NTC + 1;
+
+			let saveToReqID = this.props.requirementIDs[0]
+			let saveToComponent = "*"
+			let saveToProject = this.props.project
+			let trace = LTLSimController.getTrace(model);
+			let newActiveTraces = activeTraces.concat(
+				{
+	    			traceID: NewTraceID,
+	    			traceDescription: "imported from "+filepath[0],
+				theTrace: trace,
+				traceLinkedRequirementIDs: this.state.rootRequirementID,
+				saveToReqID: saveToReqID,
+				saveToComponent: saveToComponent,
+				saveToProject: saveToProject
+				} );
+
+			let NewTraces = traces.concat(NewTraceID);
+
+        		return {
+				traceIDCnt: NTC,
+	    			traceID: NewTraceID,
+				traces: NewTraces,
+	    			traceDescription: "imported from "+filepath[0],
+	    			activeTraces: newActiveTraces
+            			};
+			}
+		else {
+			//
+			//------------------------------------
+			// reading JSON file
+			// * open and read file contents
+			// * decode the json
+			// * go through the list
+			// * check
+			//     * does the project match
+			//     * is the Linked Requirements list 
+			//	a subset of the current requirements list?
+			//
+			// TODO: how about overwrite???
+			//------------------------------------
+			//
+			console.log('loading json traces');
+         	    	var content = fs.readFileSync(filepath[0], (err) => {
+              			if(err) {
+                      			console.log("The trace file could not be opened!");
+                      			return console.log(err);
+                      		}
+              		});
+
+      			if (content == null){
+                      		console.log("Import Traces: content empty");
+				return;
+				}
+	       		let { model, traces, activeTraces, requirementIDs} = prevState;
+	        	var loadedTraces = JSON.parse(content);
+
+console.log("Import Traces:  requirementIDs ", this.props.requirementIDs);
+
+console.log("Import Traces:  Number traces to be loaded ", loadedTraces.length);
+console.log("Import Traces: ", loadedTraces);
+
+			// process loaded traces
+			var addToTraces=[];
+			var addToTraceIDs=[];
+
+	    		for (let tr=0; tr< loadedTraces.length; tr++){
+				console.log("Import Traces: considering ID: "+loadedTraces[tr].traceID);
+				console.log("Import Traces: considering Descr: "+loadedTraces[tr].traceDescription);
+				console.log("Import Traces: considering Project:"+loadedTraces[tr].linkedProject);
+				//
+				// consider only those matching to project
+				//
+			    if (0 && (loadedTraces[tr].linkedProject != this.props.project)){
+				console.log("IMPORT JSON TRACES: project not matching");
+				continue;
+				}
+
+				//
+				// skip trace if already there with same ID
+				//
+				// TODO
+			    if (traces.includes(loadedTraces[tr].traceID)){
+				console.log("IMPORT: skipping "+ loadedTraces[tr].traceID);
+				continue;
+				}
+
+				//
+				// check if linked requirements are here
+				//
+			   var do_load = 0;
+console.log(loadedTraces[tr].traceLinkedRequirementIDs);
+	    		   for (let lr=0; lr< loadedTraces[tr].traceLinkedRequirementIDs.length; lr++){
+
+console.log("IMPORT-CHK-REQ:");
+console.log(    loadedTraces[tr].traceLinkedRequirementIDs[lr]);
+console.log("----");
+console.log( this.props.requirementIDs);
+console.log("----");
+console.log(    this.props.requirementIDs.includes(loadedTraces[tr].traceLinkedRequirementIDs[lr]));
+console.log("----");
+				for (let rid=0; rid < this.props.requirementIDs.length;rid++){
+console.log("RID: ",rid);
+console.log(loadedTraces[tr].traceLinkedRequirementIDs[lr]);
+console.log(this.props.requirementIDs[rid]);
+
+				let reqID_R =this.props.requirementIDs[rid]
+			 		 .replace(/ /g,"_")
+			 		 .replace(/-/g,"_")
+			 		 .replace(/\./g,"_")
+			  		 .replace(/\+/g,"_")
+				if (
+				   (loadedTraces[tr].traceLinkedRequirementIDs[lr] == "*") || (reqID_R == loadedTraces[tr].traceLinkedRequirementIDs[lr])){ 
+					do_load = 1;
+console.log("equal");
+				    	break
+				        }
+				    }
+				}
+			if (do_load == 0){
+				continue;
+				}
+			console.log("Import Traces: adding "+loadedTraces[tr].traceID);
+			addToTraces.push(loadedTraces[tr]);
+			addToTraceIDs.push(loadedTraces[tr].traceID);
+			} // for tr
+console.log("after reading to add: ", addToTraces);
+console.log("after reading to add: IDs : ", addToTraceIDs);
+
+console.log("IMPORT: TODO -- ADD TO CONTROLLER WITH ALL");
+
+			for (let tr=0; tr<addToTraces.length;tr++){
+console.log("setTrace idx: ", tr);
+console.log(addToTraces[tr]);
+				LTLSimController.setTrace(model,addToTraces[tr].theTrace);
+				}
+
+				// add the trace to the to-be-added-list
+			traces = traces.concat(addToTraceIDs);
+			activeTraces = activeTraces.concat(addToTraces);
+
+console.log("after reading all: ", addToTraces);
+console.log("after reading active: ", addToTraceIDs);
+
+       	    		return {
+				traces: traces,
+    				activeTraces: activeTraces
+       				};
+			}
+		}, () => {
+            /* Call LTL simulation after the state was updated */
+            this.update();
+		});
+    }
+
+
 
   //===============================================================
   // FUNCTION handleLoadTraces(origin) {
@@ -982,7 +1385,8 @@ console.log("TODO: update the traces")
 		anchorEl: null,
 		traceID: NewTraceID,
 		traceIDCnt: NTC,
-		traceDescription: ""
+		traceDescription: "",
+		traceLinkedRequirementIDs: this.state.rootRequirementID
 		};
 	}, () => {
 		this.update();
@@ -1003,8 +1407,28 @@ console.log("TODO: update the traces")
   	};
 
     //===============================================================
+    handleMenuClick_File = event => {
+     	this.setState({ anchorEl_File: event.currentTarget });
+  	};
+
+    //===============================================================
+    handleMenuClick_Export = event => {
+     	this.setState({ anchorEl_Export: event.currentTarget });
+  	};
+
+    //===============================================================
     handleClose_Req = () => {
     this.setState({ anchorEl_Req: null });
+    };
+
+    //===============================================================
+    handleClose_Export = () => {
+    this.setState({ anchorEl_Export: null });
+    };
+
+    //===============================================================
+    handleClose_File = () => {
+    this.setState({ anchorEl_File: null });
     };
 
     //===============================================================
@@ -1172,6 +1596,11 @@ for (let i=0; i< reqID_data.length; i++){
     //============================================================
     handleLtlsimSimulate(formulaFilter) {
         this.setState((prevState) => {
+		//
+		// set the cursor to "loading"
+		//
+	    this.setLoading(true);
+
             let { model, visibleSubformulas, visibleRequirementIDs, logics } = prevState;
             const { ids } = this.props;
 
@@ -1202,14 +1631,25 @@ for (let i=0; i< reqID_data.length; i++){
                 true,
                 (logics === "FT") ? this.handleLtlsimResult_FT :
             		this.handleLtlsimResult_PT,
-                undefined,
-                undefined);
+                //CURSOR:before undefined,
+                //CURSOR:before undefined
+		async () => {
+			this.setLoading(false)
+			},
+		async () => {
+			this.setLoading(false)
+			}
+		);
 
                 return {
                     model
                 };
         })
     }
+
+    setLoading = (loading) => {
+	this.setState({loading})
+	}
 
 //==========================================================
       handleLtlsimResult_FT(id, sid, value, trace) {
@@ -1225,8 +1665,10 @@ for (let i=0; i< reqID_data.length; i++){
                 return prevState;
             }
         })
+	this.setLoading(false);
     }
 
+//CURSOR: why these repeated functions below??
 //==========================================================
       handleLtlsimResult_FT(id, sid, value, trace) {
         this.setState((prevState) => {
@@ -1277,6 +1719,7 @@ for (let i=0; i< reqID_data.length; i++){
                 return prevState;
             }
         })
+	this.setLoading(false);
     }
 
 
@@ -1299,9 +1742,14 @@ for (let i=0; i< reqID_data.length; i++){
 	//=================================================================
     render () {
         const { classes, open, onClose, requirements, ids, requirementIDs } = this.props;
-        let { model, visibleSubformulas, highlight, anchorEl, anchorEl_Req, logics, traceID, reqID_data, visibleRequirementIDs } = this.state;
-        let formula = LTLSimController.getFormula(model, ids[0]);
-        const displayID = requirementIDs[0] ? requirementIDs[0] : "FSM-006";
+
+        let { model, visibleSubformulas, highlight, anchorEl, anchorEl_File, anchorEl_Req, anchorEl_Export, logics, traceID, reqID_data, visibleRequirementIDs } = this.state;
+         let formula = LTLSimController.getFormula(model, ids[0]);
+        const displayID = requirementIDs[0] ? requirementIDs[0] : "INVALID";
+        const currentTraceID = traceID ? traceID : "UNNAMED";
+
+
+
 
         if (formula !== undefined && formula !== null) {
             return (
@@ -1318,11 +1766,9 @@ for (let i=0; i< reqID_data.length; i++){
                         className={classes.flex}>
                         LTLSIM
                     </Typography>
-                    <Typography
-                        color="inherit"
-                        >
-                        {"Trace:    "+traceID+"             "}
-                    </Typography>
+			{/* //----------------------------------------------- */}
+			{/* //	Requirements menu */}
+			{/* //----------------------------------------------- */}
                     <Tooltip title="Show additional Requirements" >
                     <Button
 					  id="qa_ltlSim_sel_Req"
@@ -1333,7 +1779,7 @@ for (let i=0; i< reqID_data.length; i++){
                       onClick={this.handleMenuClick_Req}
                       style={{ textTransform : 'none' }}
                     >
-                      Req
+                      Requirements
                       <KeyboardArrowDownIcon className={classes.rightIcon} fontSize="small"/>
                     </Button>
                     </Tooltip>
@@ -1387,9 +1833,12 @@ for (let i=0; i< reqID_data.length; i++){
                         })
                       }
                     </Menu>
-                    <Tooltip title="Load/Save traces" >
-                    <Button
-					  id="qa_ltlSim_sel_Trace"
+{/* //----------------------------------------------- */}
+{/* //    View Menu */}
+{/* //----------------------------------------------- */}
+                    <Tooltip title="View/Select traces" >
+                     <Button
+		      id="qa_ltlSim_sel_Trace_view"
                       color="secondary"
                       size="small"
                       aria-owns={anchorEl ? 'simple-menu' : null}
@@ -1397,48 +1846,18 @@ for (let i=0; i< reqID_data.length; i++){
                       onClick={this.handleMenuClick}
                       style={{ textTransform : 'none' }}
                     >
-                      Trace
+                      Traces
                       <KeyboardArrowDownIcon className={classes.rightIcon} fontSize="small"/>
                     </Button>
                     </Tooltip>
                     <Menu
-                      id="qa_ltlSim_sel_menu_Trace"
+                      id="qa_ltlSim_sel_menu_View_Trace"
                       anchorEl={anchorEl}
                       open={Boolean(anchorEl)}
                       onClose={this.handleClose}
                     >
-                      <MenuItem
-					    id="qa_ltlSim_mi_traceNew"
-                        onClick={() =>  this.handleSelectNewTask('NewTrace')}
-                        dense
-                        >
-                        <ListItemIcon><NotesIcon color="primary"/></ListItemIcon>
-                        <ListItemText inset primary = {'New'} />
-                      </MenuItem>
-                      <MenuItem
-					  	id="qa_ltlSim_mi_traceLoadProject"
-                        onClick={() =>  this.handleLoadTraces('Project')}
-                        dense
-                        >
-                        <ListItemIcon><NotesIcon color="primary"/></ListItemIcon>
-                        <ListItemText inset primary = {'Load/Project'} />
-                      </MenuItem>
-                      <MenuItem
-					    id="qa_ltlSim_mi_traceLoadRequirement"
-                        onClick={() =>  this.handleLoadTraces('Requirement')}
-                        dense
-                        >
-                        <ListItemIcon><NotesIcon color="primary"/></ListItemIcon>
-                        <ListItemText inset primary = {'Load/Requirement'} />
-                      </MenuItem>
-                      <MenuItem
-					    id="qa_ltlSim_mi_traceSaveJSON"
-                        onClick={() =>  this.handleSaveTraces('')}
-                        dense
-                        >
-                        <ListItemIcon><NotesIcon color="primary"/></ListItemIcon>
-                        <ListItemText inset primary = {'Save [JSON]'} />
-                      </MenuItem>
+                      Select Traces
+	{/* //++++++++++++++ Trace->show trace(s) +++++++++++++++++++++++++++++++++++ */}
                       {
                         (this.state.traces || []).map(traceID => {
                           return <MenuItem
@@ -1452,12 +1871,38 @@ for (let i=0; i< reqID_data.length; i++){
                         })
                       }
                     </Menu>
-                    <Tooltip title="Add Details and Save to requirement" >
-                        <IconButton id="qa_ltlSim_ib_addDetails"
+{/* //----------------------------------------------- */}
+{/* //	show Trace name (if any) in header */}
+{/* //----------------------------------------------- */}
+                    <Typography
+                        color="inherit"
+                        >
+                        {"Trace ID:    "+currentTraceID+"             "}
+                    </Typography>
+{/* //----------------------------------------------- */}
+{/* //    CLEAR                                       */}
+{/* //----------------------------------------------- */}
+                    <Tooltip title="Clear/New Trace" >
+                    <Button
+		      id="qa_ltlSim_Clear_Trace"
+                      color="secondary"
+                      size="small"
+                      onClick={() =>  this.handleSelectNewTask('New')}
+                    >
+                      Clear
+                    </Button>
+                    </Tooltip>
+
+
+{/* //----------------------------------------------- */}
+{/* // + button */}
+{/* //----------------------------------------------- */}
+                    <Tooltip title="Add Trace Name and Details" >
+                        <IconButton id="qa_ltlSim_ib_save"
                             color={"secondary"}
                             onClick={this.handleAddRequirements}>
-                            <AddIcon />
-                        </IconButton>
+			    <AddIcon />
+			</IconButton>
                     </Tooltip>
   		    <LTLSimAddTraceDialog
 			  						id="qa_ltlSimAdd_Dialog"
@@ -1469,21 +1914,101 @@ for (let i=0; i< reqID_data.length; i++){
     				    reqID = {requirementIDs[0]}
     				    traceID = {this.state.traceID}
     				    traceDescription = {this.state.traceDescription}
+    				    traceLinkedRequirementIDs = {this.state.traceLinkedRequirementIDs}
+    				    project = {this.props.project}
+    				    requirementIDs = {requirementIDs}
+    				    reqID_data = {this.state.reqID_data}
                                 />
+{/* //----------------------------------------------- */}
+{/* // import traces (downarrow) */}
+{/* // onClick={this.handleImportTraces}> */}
+{/* //----------------------------------------------- */}
                     <Tooltip title="Load Trace" >
                         <IconButton id="qa_ltlSim_ib_loadTrace"
                             color={"secondary"}
-                            onClick={this.handleLoadTrace}>
+			    onClick={this.handleImportTraces}> 
                             <LoadIcon />
                         </IconButton>
                     </Tooltip>
-                    <Tooltip title="Save Trace to File" >
+{/* //----------------------------------------------- */}
+{/* // export single trace (uparrow) */}
+{/* //----------------------------------------------- */}
+{/*
+                    <Tooltip title="Save Current Trace to File" >
                         <IconButton id="qa_ltlSim_ib_saveTrace"
                             color={"secondary"}
-                            onClick={this.handleSaveToFile}>
+                            onClick={this.handleSaveCurrentTraceToFile}>
                             <SaveIcon />
                         </IconButton>
                     </Tooltip>
+*/}
+{/* //----------------------------------------------- */}
+{/* // export all traces (uparrow) */}
+{/* //----------------------------------------------- */}
+{/*
+                    <Tooltip title="Save All Trace to File" >
+                        <IconButton id="qa_ltlSim_ib_saveTrace"
+                            color={"secondary"}
+                            onClick={this.handleSaveAllTracesToFile}>
+                            <SaveAllIcon />
+                        </IconButton>
+                    </Tooltip>
+*/}
+
+{/* //----------------------------------------------- */}
+{/* //    Export Menu */}
+{/* //----------------------------------------------- */}
+                    <Tooltip title="Export single or multiple traces" >
+                     <IconButton
+		      id="qa_ltlSim_sel_Trace_view"
+                      color="secondary"
+                      size="small"
+                      aria-owns={anchorEl_Export ? 'simple-menu' : null}
+                      aria-haspopup="true"
+                      onClick={this.handleMenuClick_Export}
+                      onClose={this.handleMenuClose_Export}
+                      style={{ textTransform : 'none' }}
+                    >
+                      <SaveIcon />
+                      <KeyboardArrowDownIcon className={classes.rightIcon} fontSize="small"/>
+                    </IconButton>
+                    </Tooltip>
+                    <Menu
+                      id="qa_ltlSim_sel_menu_View_Trace"
+                      anchorEl={anchorEl_Export}
+                      open={Boolean(anchorEl_Export)}
+                      onClose={this.handleClose_Export}
+                    >
+                      Export
+		    <MenuItem
+		        id={"qa_ltlSim_mi_trace_name_"+traceID}
+                        dense
+                        onClick={this.handleSaveCurrentTraceToFile}>
+                        {/*<ListItemIcon><NotesIcon color="secondary"/></ListItemIcon>*/}
+                        <ListItemIcon></ListItemIcon>
+                        <ListItemText inset primary = "Current Trace -JSON" />
+                   </MenuItem>
+		    <MenuItem
+		        id={"qa_ltlSim_mi_trace_name_"+traceID}
+                        dense
+                        onClick={this.handleSaveCurrentTraceToCSVFile}>
+                        {/*<ListItemIcon><NotesIcon color="secondary"/></ListItemIcon>*/}
+                        <ListItemIcon></ListItemIcon>
+                        <ListItemText inset primary = "Current Trace -CSV" />
+                   </MenuItem>
+		    <MenuItem
+		        id={"qa_ltlSim_mi_trace_name_"+traceID}
+                        dense
+                        onClick={this.handleSaveAllTracesToFile}>
+                        {/*<ListItemIcon><NotesIcon color="secondary"/></ListItemIcon>*/}
+                        <ListItemIcon></ListItemIcon>
+                        <ListItemText inset primary = "All Traces -JSON" />
+                   </MenuItem>
+                    </Menu>
+
+{/* //----------------------------------------------- */}
+{/* // change logics */}
+{/* //----------------------------------------------- */}
                     <Tooltip title={(logics === "FT") ?
                         "Change the logics to past time LTL" :
                         "Change the logics to future time LTL"} >
@@ -1496,6 +2021,10 @@ for (let i=0; i< reqID_data.length; i++){
                                 <PTLogicsIcon />}
                         </IconButton>
                     </Tooltip>
+{/* //----------------------------------------------- */}
+{/* // highlight formulas */}
+{/* //----------------------------------------------- */}
+
                     <Tooltip title={highlight ?
                         "Turn off formula highlight (colors the formula according to the overall valuation)" :
                         "Turn on formula highlight (colors the formula according to the overall valuation)"} >
@@ -1526,6 +2055,7 @@ for (let i=0; i< reqID_data.length; i++){
                 {LTLSimController.getFormulaKeys(model).length > 0 &&
                   <div>
                     <TimeSeriesWidget
+			loading={this.state.loading}
                         model={model}
                         visibleAtomics={LTLSimController.getAtomicKeys(model).filter(a => (a !== "LAST" && a !== "FTP"))}
                         visibleFormulas={LTLSimController.getFormulaKeys(model)}
