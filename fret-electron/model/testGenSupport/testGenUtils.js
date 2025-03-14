@@ -139,7 +139,8 @@ function runKind2(specName, filePath, callback) {
             var traceArray = [];
             var testCounter = 1;
             var uniqueVariableValues = [];
-            for (const propertyResult of propertyContent) {                
+            for (const propertyResult of propertyContent) {     
+                //If we want to support loading Kind 2 traces in the future, the traceLength property must be added in the theTrace object below.           
                 var ltlsimJSONTrace = {
                     traceID: "test"+testCounter,
                     traceDescriptions: "",
@@ -287,6 +288,7 @@ function runNuSMV(filePath, callback) {
                         traceID: "test"+testCounter,
                         traceDescriptions: "",
                         theTrace: {
+                            traceLength: 6,
                             keys: [],
                             values: []
                         },
