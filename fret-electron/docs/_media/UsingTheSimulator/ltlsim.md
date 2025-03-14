@@ -5,6 +5,7 @@
 The temporal structure of a requirement can be rather complicated
 and hard to understand.
 In this respect, FRET supports the user twofold:
+
 * in the requirements editor window, the assistant shows a principled
 graphical representation of the current requirement including
 important time points.
@@ -13,11 +14,13 @@ traces and to study the valuation of one or more requirements.
 
 
 The LTLSIM tool, described below, is used for visualization of the temporal
-behavior of 
+behavior of
+
 * one or more requirements during editing/viewing, and
 * a set of requirements showing up in a conflict group during
 Realizability Analysis. Here LTLSIM is started with a counter-example trace
 shown automatically.
+
 
 In the following, we describe the common functionality of LTLSIM for both
 use cases, and mention specifics as we go.
@@ -38,6 +41,7 @@ LTLSIM can be used after a realizability checking analysis has been carried out 
 
 ## The LTLSIM Window
 The LTLSIM simulator has four major elements:
+
 * the control buttons and menues in header of the window,
 * the requirements field,
 * the variable traces, and
@@ -93,14 +97,14 @@ header line of the LTLSIM window
 ***
 
 ### Requirements
-This menu `Req` allows the user to add (or remove) additional requirements from
+This menu `Requirements^` allows the user to select (or deselect) additional requirements from
 the current project to be included into the analysis. Clicking opens a selection
 menu of possible requirements. Requirement names that are shown in gray are already selected; clicking on those hides that requirement from the visualization.
 The first line shows the requirement name, from which LTLSIM was called. This
 requirement cannot be hidden
 
 ### Listing of Requirements
-The current list of requirements in the visualizer, including the full text in FRETish, can be toggled by clicking on `Requirements in FRETish` just below the header.
+The current list of requirements in the visualizer, including the full text in FRETish, can be toggled by clicking on "Requirements in FRETish" just below the header.
 
 ***
 <img src="../screen_shots/LTLSIM-REQ-SEL.png">
@@ -108,13 +112,27 @@ The current list of requirements in the visualizer, including the full text in F
 ***
 
 ### Traces
-From this menu, a new (empty) trace can be created. The current trace values are
-lost unless that trace has been saved or exported.
-The current trace can be saved into a json file. 
+From this menu, a trace can be selected from existing and loaded traces. Only one trace is visible at a time.
+
+### New Trace
+
+A new trace with zero-values is generated when selecting the `CLEAR` button. The values of the previous trace are lost unless saved. A new trace ID will be generated. Its default name is `T` followed by a number. This default ID can be changed by trace annotation.
 
 ### Annotating Traces
-When clicking on the `+` button, a dialog pops up, which allows the user
-to provide a name and description for the current trace.
+When clicking on the `+` button, a dialog pops up, which allows the user to enter or update:
+
+* Trace ID - short name which will be displayed at the top and in the menues
+* Trace Description - (optional) text for describing the trace
+* Link trace to requirement(s) - annotate, to which requirement(s) this trace belongs. Available requirements (from the current project) are available in the pull-down menu `Link to ^`. By default the trace always belongs to its principle requirements (the one, for which the visualizer has been opened). A trace can belong to one or multiple requirements.
+* CANCEL - cancel all changes and return
+* UPDATE - update this information to the current trace. Only then, the current trace is shown in the trace menu
+
+Notes:
+
+* if the Trace ID is not changed, the trace information will be updated
+* If the trace-ID is changed, then the current trace will be stored under this name. This can be used to produce copies of traces.
+* This popup window creates or updates annotations but  does *not* save the trace to file.
+
 
 ***
 <img src="../screen_shots/LTLSIM-TRACE-DIALOG.png">
@@ -122,30 +140,28 @@ to provide a name and description for the current trace.
 ***
 
 ### Importing Traces
-Clicking on the DownArrow opens a file selection dialog to import a trace
-in CSV or JSON format.
+Clicking on the DownArrow button opens a file selection dialog to import traces in CSV or JSON format.
+
+A CSV file can contain only a *single* trace, using the JSON format, multiple traces can be loaded.
 
 In the CVS format, the first line contains the variable names, subsequent
-lines the values. Dependent variables, corresponding to arithmetic expressions, must be preceded by a `*`, as shown in the following example. The trace export automatically performs this operation during saving the trace.
+lines the values. This trace is loaded and shown as the currently active trace with a newly generated Trace ID and a description stating that this trace has been imported. This trace is only linked to the calling requirement
 
-```
-LAST,xxx,*xxx_S__lt__S_2_S_
-0,0,true
-0,1,true
-0,0,true
-0,2,false
-0,0,true
-1,0,true
-```
-
-Note that the `LAST` variable is added automatically for future-time formulas.
-However that variable is not displayed.
+A JSON file can contain one or more traces. By default, all traces from that file will be loaded if their linked Requirements entry will match one of the selectable requirements of the current LTLSim.
+If a linked requirements entry of a requirement
+contains a "*", it will be loaded in any case.
 
 
 ### Exporting Traces
-The current trace can be exported into a CSV or JSON file. Upon clicking the
+The Export button (uparrow) opens a menu with the possibility to export the current trace in JSON or CSV format or all traces (in JSON format only)
+Upon clicking the
 uparrow-button, a file selection dialog opens and the current trace will be
 written into that file.
+
+
+
+
+
 
 ### Selection of Logic
 When LTLSIM is invoked from the requirements editor, the future-time
@@ -168,7 +184,7 @@ green or red
 ### Setting the Trace Length
 Clicking on the top chart of LTLSIM (the time line) opens a dialog window
 where the trace length can be changed.
-Note that longer traces can substantially increase visualization time, since 
+Note that longer traces can substantially increase visualization time, since
 the nuXvm tool must check validity of each formula for each time point
 
 ***
@@ -182,6 +198,9 @@ previous window. Note that opening LTLSIM from the same window immediately again
 retains and displays the previous trace.
 
 
+## File format for Traces
+### CSV Format
+### JSON Format
 
 ## Visualization
 When visualizing the future-time formalization, the bottom trace shows, at
