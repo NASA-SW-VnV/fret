@@ -82,9 +82,6 @@ const dialog =require('@electron/remote').dialog
 const fs = require("fs");
 
 
-//TODO 082023
-const trace_db_json = "/tmp/fret_traces.json";
-
 const styles = theme => ({
   appBar: {
     position: 'relative',
@@ -214,7 +211,6 @@ class LTLSimDialog extends Component {
         this.handleTraceAddDialogCancel = this.handleTraceAddDialogCancel.bind(this);
         this.handleAddRequirements = this.handleAddRequirements.bind(this);
         this.handleImportTraces = this.handleImportTraces.bind(this);
-        this.handleSaveTraces = this.handleSaveTraces.bind(this);
         this.handleSaveCurrentTraceToFile = this.handleSaveCurrentTraceToFile.bind(this);
         this.handleSaveCurrentTraceToCSVFile = this.handleSaveCurrentTraceToCSVFile.bind(this);
         this.handleSaveAllTracesToFile = this.handleSaveAllTracesToFile.bind(this);
@@ -457,8 +453,6 @@ class LTLSimDialog extends Component {
 	console.log("TODO: update trace info");
 	console.log(trace);
 
-	LTLSimController.saveTrace(model, '/tmp/debug-trace.csv');
-
 	let saveToReqID = this.props.requirementIDs[0];
 	let saveToComponent = "*"
 	let saveToProject = this.props.project
@@ -487,13 +481,6 @@ class LTLSimDialog extends Component {
 			saveToProject: saveToProject
 			});
 
-	        var JTrace = JSON.stringify(newActiveTraces, null, 4)
-	        fs.writeFile(trace_db_json, JTrace, (err) => {
-		if(err) {
-       			return console.log(err);
-       			}
-       	        console.log("The JSON DB file was saved!");
-		});
 
         	return {
             		traceAddDialogOpen: false,
@@ -508,13 +495,6 @@ class LTLSimDialog extends Component {
 	else {
 		// updating existing traces file, i.e. overwrite
 		const newActiveTraces = activeTraces;
-
-	        var JTrace = JSON.stringify(newActiveTraces, null, 4)
-	        fs.writeFile(trace_db_json, JTrace, (err) => {
-		if(err) {
-       			return console.log(err);
-       			}
-		});
 
         	return {
             		traceAddDialogOpen: false,
@@ -1011,29 +991,6 @@ class LTLSimDialog extends Component {
             this.update();
 		});
     }
-
-
-    	//===============================================================
-    	// FUNCTION handleSaveTraces(origin) {
-    	// save traces to json data-base in "trace_db_json"
-    	//
-    handleSaveTraces(origin) {
-	//
-        this.setState((prevState) => {
-	  let { model, traces, activeTraces} = prevState;
-
-	  var JTrace = JSON.stringify(activeTraces, null, 4)
-	  fs.writeFile(trace_db_json, JTrace, (err) => {
-		if(err) {
-       			return console.log(err);
-       			}
-       	  console.log("The JSON DB file was saved!");
-	  });
-	  return {
-		anchorEl: null,
-		};
-        });
-        }
 
 
     //===============================================================
