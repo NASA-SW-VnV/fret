@@ -1092,18 +1092,7 @@ export default class FretModel {
         contract.properties = getPropertyInfo(fretResult, contract.outputVariables, component);
         contract.delays = getDelayInfo(fretResult, component);
         if (language === 'cocospec'){
-          let contractVariables = [].concat(contract.inputVariables.concat(contract.outputVariables.concat(contract.internalVariables.concat(contract.functions.concat(contract.modes)))));
-          for (const property of contract.properties){
-            // property.reqid = '__'+property.reqid;
-            for (const contractVar of contractVariables) {
-              var regex = new RegExp('\\b' + contractVar.name.substring(2) + '\\b', "g");
-              property.value = property.value.replace(regex, contractVar.name);
-            }
-            if (!contract.internalVariables.includes("__FTP")) {
-              var regex = new RegExp('\\b' + 'FTP' + '\\b', "g");
-              property.value = property.value.replace(regex, '__FTP');
-            }
-          }
+          contract = variableIdentifierReplacement(contract);
           const file = {content: ejsCache.renderContractCode().contract.complete(contract), name: contract.componentName+'.lus' }
           files.push(file);
         } else if (language === 'copilot'){
@@ -1111,6 +1100,7 @@ export default class FretModel {
           contract.modes.forEach(function(mode) {
             contract.assignments.push(mode.assignment);
           });
+          contract = variableIdentifierReplacement(contract);
           const file = {content: ejsCacheCoPilot.renderCoPilotSpec().contract.complete(contract), name: contract.componentName+'.json' }
           files.push(file);
         }
