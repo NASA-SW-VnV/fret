@@ -42,7 +42,7 @@ freeform :
 nasa
         : (scope)? (reqt_condition)?
           (component SHALL | SHALL component)
-    	  (probability)?
+          (probability)?
           (timing)? response
         ;
 // Note: "while" was introduced because we can't have
@@ -106,7 +106,6 @@ satisfaction : SATISFY post_condition ;
 probability : (',')? WITH probability_aux (',')? ;
 
 probability_aux :
-     WHAT PROB |
      PROB RELATIONAL_OP prob_num ;
 
 prob_num : NUMBER ;
