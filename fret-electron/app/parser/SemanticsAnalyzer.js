@@ -215,11 +215,10 @@ RequirementListener.prototype.enterPost_condition = function(ctx) {
 RequirementListener.prototype.enterProbability_aux = function(ctx) {
   const prob = antlrUtilities.getText(ctx).trim().split(' ');
   const selector = prob[0].toLowerCase()
-  if (selector === "what") result.probability = 'query'
-  else if (selector === "probability") {
+  console.log("selector "+ selector)
+  if (selector === "probability") {
     result.probability = 'bound';
-    result.probability_bound = prob[1] + prob[2];
-    //result.probability_bound = [prob[1],prob[2]];
+    result.probability_bound = [prob[1],prob[2]];
   }
   else console.log('enterProbability: unknown keyword')
 }
@@ -502,7 +501,7 @@ SemanticsAnalyzer.prototype.semantics = () => {
   const regCond = canon_bool_expr(result.regular_condition);
   const postCond = canon_bool_expr(result.post_condition);
   const stopCond = canon_bool_expr(result.stop_condition);
-  const probBound = result.probability_bound;
+  const probBound = result.probability_bound[0]+result.probability_bound[1];
 
    //if (constants.verboseSemanticsAnalyzer) console.log("Before mode: " + (Date.now() - startTime) + " ms")
 
