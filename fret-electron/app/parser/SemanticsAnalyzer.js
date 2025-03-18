@@ -502,7 +502,9 @@ SemanticsAnalyzer.prototype.semantics = () => {
   const regCond = canon_bool_expr(result.regular_condition);
   const postCond = canon_bool_expr(result.post_condition);
   const stopCond = canon_bool_expr(result.stop_condition);
-  const probBound = result.probability_bound[0]+result.probability_bound[1];
+  let probBound;
+  if (result.probability_bound)
+    probBound = result.probability_bound[0]+result.probability_bound[1];
 
    //if (constants.verboseSemanticsAnalyzer) console.log("Before mode: " + (Date.now() - startTime) + " ms")
 
