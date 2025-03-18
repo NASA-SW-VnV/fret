@@ -214,8 +214,7 @@ RequirementListener.prototype.enterPost_condition = function(ctx) {
 
 RequirementListener.prototype.enterProbability_aux = function(ctx) {
   const prob = antlrUtilities.getText(ctx).trim().split(' ');
-  const selector = prob[0].toLowerCase()
-  console.log("selector "+ selector)
+  const selector = prob[0].toLowerCase();
   if (selector === "probability") {
     result.probability = 'bound';
     result.probability_bound = [prob[1],prob[2]];
@@ -368,8 +367,11 @@ function SALTExpr2SMV (expr) {
    return '(' + get_LTL_from_old_SALT('assert ' + expr).slice(8).trim() + ')';
 }
 
-function LAST_is_FALSE (formula) {
-  return formula.replace(/\bLAST\b/g, 'FALSE');
+function LAST_is_FALSE (formula, tool) {
+  if (tool === "PRISM")
+    return formula.replace(/\bLAST\b/g, 'false');
+  else
+    return formula.replace(/\bLAST\b/g, 'FALSE');
 }
 
 SemanticsAnalyzer.prototype.conditions = () => {
@@ -414,16 +416,15 @@ function instantiate(fetched, past) {
 // This substitutes FALSE wherever LAST appears in the formula, and
 // then simplifies the result.
 function instantiateInf(fetched) {
-  return xform.transform(utils.salt2smv(LAST_is_FALSE(replaceTemplateVars(fetched))),xform.optimizeFT)
+  return xform.transform(utils.salt2smv(LAST_is_FALSE(replaceTemplateVars(fetched),"SMV")),xform.optimizeFT)
 }
 
 function instantiateProb(fetched){
   let fetchedTV = replaceTemplateVars(fetched);
-  let fetchedTVnoL = LAST_is_FALSE(fetchedTV)
+  let fetchedTVnoL = LAST_is_FALSE(fetchedTV,"PRISM")
   //TODO:
   //let fetchedTVnoLOpt = xform.transform(fetchedTVnoL,xform.optimizeFT)
   return fetchedTVnoL
-  //return xform.transform(LAST_is_FALSE(replaceTemplateVars(fetched)),xform.optimizeFT)
 }
 
 //----------------------------------------------------------------------
