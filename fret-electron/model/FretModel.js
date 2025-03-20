@@ -623,7 +623,8 @@ export default class FretModel {
       let variables = [] ;
 
       if(Array.isArray(data) && data.length > 0) {
-        if(data[0].reqid) {
+        if(data[0].hasOwnProperty('reqid')) //check if the first object contains the reqid key
+        {
           requirements = data;
         } else {
           variables = data;
@@ -914,7 +915,7 @@ export default class FretModel {
 
   async updateVariable_noNewVariables(evt, args){
 
-    var [project, component_name, variables, idType, modeldoc_id, dataType, modeldbid, description, assignment, 
+    var [project, component_name, variables, idType, modeldoc_id, dataType, modeldbid, description, assignment,
           copilotAssignment, smvAssignment, modeRequirement, modelComponent, lustreVariables, copilotVariables, smvVariables, moduleName, busObjects, selectedBusObject, selectedBusElement, modeldoc_vectorSize, modeldoc_vectorIndex] = args;
 
     var completedVariable = false;
@@ -938,7 +939,7 @@ export default class FretModel {
     } else if (modeRequirement || (dataType && (assignment || copilotAssignment)) || (idType === "Function")) {
       completedVariable = true;
     }
-    
+
     if (dataType && dataType === 'boolean' && smvAssignment) {
       smvCompletedVariable = true;
     }
@@ -966,7 +967,7 @@ export default class FretModel {
         modeldoc_id: modeldoc_id,
         busObjects: busObjects,
         busObject: selectedBusObject,
-        busElementIndex: selectedBusElement,        
+        busElementIndex: selectedBusElement,
         modeldoc_vectorSize: modeldoc_vectorSize,
         modeldoc_vectorIndex: Number(modeldoc_vectorIndex),
         modelComponent: modelComponent,
@@ -1127,7 +1128,7 @@ export default class FretModel {
         }).then(function (modelResult){
           if (modelResult.docs[0].modelComponent != ""){
             var variableMapping = getMappingInfo(modelResult, component+'Spec');
-            const file = {content: JSON.stringify(variableMapping, undefined, 4), name: 'cocospecMapping'+component+'.json' }            
+            const file = {content: JSON.stringify(variableMapping, undefined, 4), name: 'cocospecMapping'+component+'.json' }
             files.push(file);
           }
 
@@ -1146,8 +1147,8 @@ export default class FretModel {
               //     per requirement. If, for example, a requirement contains an internal variable that is referrencing some input variable
               //     then, if we don't perform this step the resulting obligations file will not have a variable declaration for the input.
               var modelVariables = [...doc.semantics.variables];
-              for (const modelDoc of localModelResult.docs) {                
-                if (modelVariables.includes(modelDoc.variable_name) && modelDoc.assignment && modelDoc.assignmentVariables && modelDoc.assignmentVariables.length > 0) {                  
+              for (const modelDoc of localModelResult.docs) {
+                if (modelVariables.includes(modelDoc.variable_name) && modelDoc.assignment && modelDoc.assignmentVariables && modelDoc.assignmentVariables.length > 0) {
                   const assignmentVariables = modelDoc.assignmentVariables;
                   for (const assignVar of assignmentVariables) {
                     if (modelVariables.indexOf(assignVar) === -1) {
@@ -1155,25 +1156,25 @@ export default class FretModel {
                     }
                   }
                 }
-              }              
+              }
 
-              localModelResult.docs = localModelResult.docs.filter(modelDoc => (modelVariables.includes(modelDoc.variable_name)))              
+              localModelResult.docs = localModelResult.docs.filter(modelDoc => (modelVariables.includes(modelDoc.variable_name)))
 
               let contract = getContractInfo(localModelResult, language);
               contract.componentName = component+'Spec';
-              
+
 
               contract.properties = getObligationInfo(doc, contract.outputVariables, component, language, fragment);
-              contract.delays = getDelayInfo(fretResult, component);               
+              contract.delays = getDelayInfo(fretResult, component);
               contract = variableIdentifierReplacement(contract);
               const file = {content: ejsCache.renderContractCode().contract.complete(contract), name: contract.componentName+'_'+doc.reqid+'.lus' }
               files.push(file);
-              return contract.properties.length;              
+              return contract.properties.length;
             }
 
-            var filePromises = fretResult.docs.filter(resultDoc => resultDoc.semantics.component_name === component).map(filteredDoc => generateObligationFile(filteredDoc))       
-            
-            return Promise.all(filePromises).then(numOfObligations => {              
+            var filePromises = fretResult.docs.filter(resultDoc => resultDoc.semantics.component_name === component).map(filteredDoc => generateObligationFile(filteredDoc))
+
+            return Promise.all(filePromises).then(numOfObligations => {
               return {files: files, numOfObligations: numOfObligations.reduce((accumulator, currentValue) => { return accumulator + currentValue },0)}
             });
           }).catch((err) => {
@@ -1205,8 +1206,8 @@ export default class FretModel {
             //     per requirement. If, for example, a requirement contains an internal variable that is referrencing some input variable
             //     then, if we don't perform this step the resulting obligations file will not have a variable declaration for the input.
             var modelVariables = [...doc.semantics.variables];
-            
-            for (const modelDoc of localModelResult.docs) {                
+
+            for (const modelDoc of localModelResult.docs) {
               if (modelVariables.includes(modelDoc.variable_name) && modelDoc.smvAssignment && modelDoc.smvAssignmentVariables && modelDoc.smvAssignmentVariables.length > 0) {
                 const assignmentVariables = modelDoc.smvAssignmentVariables;
                 for (const assignVar of assignmentVariables) {
@@ -1217,23 +1218,23 @@ export default class FretModel {
               }
             }
 
-            localModelResult.docs = localModelResult.docs.filter(modelDoc => (modelVariables.includes(modelDoc.variable_name)))              
+            localModelResult.docs = localModelResult.docs.filter(modelDoc => (modelVariables.includes(modelDoc.variable_name)))
 
             let contract = getContractInfo(localModelResult, language);
             contract.componentName = component+'Spec';
-            
+
 
             contract.properties = getObligationInfo(doc, contract.outputVariables, component, language, fragment);
             contract.delays = getDelayInfo(fretResult, component);
             const file = {content: ejsCacheSMV.renderModelCode().model.complete(contract), name: contract.componentName+'_'+doc.reqid+'.smv' }
             files.push(file);
 
-            return contract.properties.length;              
+            return contract.properties.length;
           }
 
-          var filePromises = fretResult.docs.filter(resultDoc => resultDoc.semantics.component_name === component).map(filteredDoc => generateObligationFile(filteredDoc))       
-          
-          return Promise.all(filePromises).then(numOfObligations => {              
+          var filePromises = fretResult.docs.filter(resultDoc => resultDoc.semantics.component_name === component).map(filteredDoc => generateObligationFile(filteredDoc))
+
+          return Promise.all(filePromises).then(numOfObligations => {
             return {files: files, numOfObligations: numOfObligations.reduce((accumulator, currentValue) => { return accumulator + currentValue },0)}
           });
         }).catch((err) => {
@@ -1349,7 +1350,7 @@ export default class FretModel {
   async selectTestGenComponent(evt,args) {
     const [ component, projectReport, selectedReqs ] = args;
     this.testgen_data = await retrieveRequirementsFromComponent(this.selectedProject,component.component_name)
-    
+
     return fretDbGetters.getProjectRequirements(this.selectedProject).then(fretResult => {
       projectReport.systemComponents = [].concat(projectReport.systemComponents.map(obj => {
           if (obj.name === component.component_name) {
@@ -1363,12 +1364,12 @@ export default class FretModel {
           }
           return obj;
       }))
-    
+
 
       var states = {
         testgen_data : this.testgen_data,
         selectedReqs: (selectedReqs.length === 0 ? this.testgen_data.map(d => d.doc.reqid)  : selectedReqs),
-        projectReport: projectReport      
+        projectReport: projectReport
       }
       return states
     })
