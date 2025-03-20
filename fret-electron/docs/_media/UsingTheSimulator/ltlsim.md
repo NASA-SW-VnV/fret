@@ -229,7 +229,7 @@ propositions are used as Boolean formulas:
 ## Example
 
 As an example, we use the requirement:
-`When in takeoff, the AC shall within 10 seconds satisfy TAKEOFF`.
+`When in takeoff mode, the AC shall within 10 seconds satisfy TAKEOFF`.
 ***
 <img src="../screen_shots/ltlsim_SC1.png">
 
