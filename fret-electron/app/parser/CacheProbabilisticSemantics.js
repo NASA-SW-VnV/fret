@@ -82,6 +82,11 @@ const ScopeEndpoints =[
    [' V ', ' R '] //for releases temporal operator
  ];
 
+ const PRISMMetricSubsts = [
+   ['[<=$duration$]', '<=$duration$'],
+   ['[<=$duration$+1]', '<=($duration$+1)']
+ ]
+
 const semanticsObjNonsense = {
   pctl: constants.nonsense_semantics,
   pctlExpanded: constants.nonsense_semantics,
@@ -179,15 +184,16 @@ function createProbabilisticSemantics(product) {
               const pctlFormCustOptSC = xform.transform(pctlFormCustSC,xform.optimizeFT);
               let pctlFormCustOptSCPRISM = utilities.replaceStrings(PRISMSubsts, pctlFormCustOptSC);
               let pctlForm = pctlFormCustOptSCPRISM.replaceAll("PROBFORM", probFormPRISM);
+              let pctlFormMetricPRISM = utilities.replaceSubstring(PRISMMetricSubsts, pctlForm);
 
               let key_array = keySC.split(',');
 
               let finalPctl;
               if (key_array[0] !== 'null' || key_array[1] !== 'null'){
-                  finalPctl = "P>=1["+pctlForm+"]";
+                  finalPctl = "P>=1["+pctlFormMetricPRISM+"]";
               }
               else {
-                finalPctl = pctlForm;
+                finalPctl = pctlFormMetricPRISM;
               }
               FRETSemantics[keySC].pctl = finalPctl;
 
@@ -202,13 +208,14 @@ function createProbabilisticSemantics(product) {
               let pctlFormExpandedEndpointsCustOptProb = formalizations_probabilistic.getProbabilisticFormula(pctlFormExpandedEndpointsCustOpt, keyTR.toString());
               let pctlFormExpandedEndpointsCustOptProbPRISM = utilities.replaceStrings(PRISMSubsts, pctlFormExpandedEndpointsCustOptProb);
               let pctlExpForm = pctlExpPRISM.replaceAll("PROBFORM", pctlFormExpandedEndpointsCustOptProbPRISM);
+              let pctlExpFormMetricPRISM = utilities.replaceSubstring(PRISMMetricSubsts, pctlExpForm);
 
               let finalPctlExpanded;
               if (key_array[0] !== 'null' || key_array[1] !== 'null'){
-                  finalPctlExpanded = "P>=1["+pctlExpForm+"]";
+                  finalPctlExpanded = "P>=1["+pctlExpFormMetricPRISM+"]";
               }
               else {
-                finalPctlExpanded = pctlExpForm;
+                finalPctlExpanded = pctlExpFormMetricPRISM;
               }
               FRETSemantics[keySC].pctlExpanded = finalPctlExpanded;
             }
