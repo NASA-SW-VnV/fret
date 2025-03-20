@@ -243,7 +243,6 @@ RequirementListener.prototype.exitTiming = function(ctx) {
 
 // keep only the number; i.e., throw away the units
 RequirementListener.prototype.enterDuration = function(ctx) {
-//    result.duration = antlrUtilities.getText(ctx).trim().match(/\d+(?:\.\d+)?/);
     let d = antlrUtilities.getText(ctx).trim().match(/\d+(?:\.\d+)?/)
     if (d) result.duration = d[0];
 }

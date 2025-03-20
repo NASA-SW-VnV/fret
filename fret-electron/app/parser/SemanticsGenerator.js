@@ -103,12 +103,7 @@ function getBatchSemanticsFromSALT(saltStr,SALT_env_var='SALT_HOME') {
   if (saltStr) {
     if (constants.verboseSemanticsGenerator) console.log("Formulas for SALT\n" + saltStr);
     var LTLStr = constants.undefined_semantics;
-
-    //if (process.env.SALT_VERSION === 'old') {
     LTLStr = get_LTL_from_old_SALT(saltStr,SALT_env_var);
-      //LTLStr = utilities.replaceStrings(substitutionsCustomizeFret, LTLStr);
-    //}
-    //else console.log('\nUnsupported SALT_VERSION: "' + process.env.SALT_VERSION + '": must be "old".');
 
     if (constants.verboseSemanticsGenerator) console.log("\ngetBatchSemanticsFromSALT: LTLStr\n" + LTLStr);
 
