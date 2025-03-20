@@ -507,6 +507,7 @@ VariablesView.propTypes = {
   cocospecModes: PropTypes.object.isRequired,
   components: PropTypes.array.isRequired,
   completedComponents: PropTypes.array.isRequired,
+  smvCompletedComponents: PropTypes.array.isRequired,
   variableIdentifierReplacement: PropTypes.func.isRequired,
   booleanOnlyComponents: PropTypes.array.isRequired
 };

@@ -335,6 +335,8 @@ class MainView extends React.Component {
           // analysis
           components : result.components,
           completedComponents : result.completedComponents,
+          smvCompletedComponents: result.smvCompletedComponents,
+          booleanOnlyComponents: result.booleanOnlyComponents,
           cocospecData : result.cocospecData,
           cocospecModes : result.cocospecModes,
           // variables
