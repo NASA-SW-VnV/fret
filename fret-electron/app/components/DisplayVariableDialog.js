@@ -571,14 +571,12 @@ class DisplayVariableDialog extends React.Component {
                   <MenuItem id="qa_disVar_mi_varType_None" value="" key={selectedVariable}>
                     <em>None</em>
                   </MenuItem>
-                  {language !== 'smv' &&
-                    <MenuItem id="qa_disVar_mi_varType_Function" value="Function">Function</MenuItem>
-                  }
+                  <MenuItem id="qa_disVar_mi_varType_Function" value="Function">Function</MenuItem>
                   <MenuItem id="qa_disVar_mi_varType_Input" value="Input" >Input</MenuItem>                  
                   <MenuItem id="qa_disVar_mi_varType_Internal" value="Internal">Internal</MenuItem>
-                  {language !== 'smv' &&
+                  {/* {language !== 'smv' &&
                     <MenuItem id="qa_disVar_mi_varType_Mode" value="Mode">Mode</MenuItem>
-                  }
+                  } */}
                   <MenuItem id="qa_disVar_mi_varType_Output" value="Output">Output</MenuItem>
                 </Select>
               </FormControl>
@@ -655,18 +653,18 @@ class DisplayVariableDialog extends React.Component {
                       this.dataTypeField(language)
                     }
                   </div>) :
-                (idType === 'Function') ?
-                  <TextField
-                    id="qa_disVar_tf_funcModName"
-                    label="Function Module Name"
-                    type="text"
-                    margin="normal"
-                    defaultValue={this.state.moduleName}
-                    className={classes.descriptionField}
-                    multiline
-                    onChange={this.handleTextFieldChange('moduleName')}
-                    onFocus={this.handleTextFieldFocused('moduleName')}
-                  /> :
+                // (idType === 'Function') ?
+                //   <TextField
+                //     id="qa_disVar_tf_funcModName"
+                //     label="Function Module Name"
+                //     type="text"
+                //     margin="normal"
+                //     defaultValue={this.state.moduleName}
+                //     className={classes.descriptionField}
+                //     multiline
+                //     onChange={this.handleTextFieldChange('moduleName')}
+                //     onFocus={this.handleTextFieldFocused('moduleName')}
+                //   /> :
                   (idType === 'Mode') ?
                     <Fragment>
                       <TextField
@@ -693,29 +691,6 @@ class DisplayVariableDialog extends React.Component {
                     </Fragment> :
                     (idType === 'Internal') ?
                       <Fragment>
-                        {/* <FormControl className={classes.formControl}>
-                          <InputLabel htmlFor="dataType-simple">Data Type*</InputLabel>
-                          <Select
-                            id="qa_disVar_sel_dataType"
-                            key={selectedVariable}
-                            value={this.state.dataType}
-                            onChange={this.handleChange}
-                            inputProps={{
-                              name: 'dataType',
-                              id: 'dataType-simple',
-                            }}>
-                            <MenuItem id="qa_disVar_mi_dataType_None"
-                                      value=""
-                            >
-                              <em>None</em>
-                            </MenuItem>
-                            <MenuItem id="qa_disVar_mi_dataType_boolean" value="boolean" >boolean</MenuItem>
-                            <MenuItem id="qa_disVar_mi_dataType_integer" value="integer" >integer</MenuItem>
-                            <MenuItem id="qa_disVar_mi_dataType_unsigned_integer" value="unsigned integer" >unsigned integer</MenuItem>
-                            <MenuItem id="qa_disVar_mi_dataType_single" value="single">single</MenuItem>
-                            <MenuItem id="qa_disVar_mi_dataType_double" value="double">double</MenuItem>
-                          </Select>
-                        </FormControl> */}
                         {this.dataTypeField(language)}
                         {
                           checkLustre &&
