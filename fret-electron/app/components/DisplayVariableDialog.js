@@ -39,7 +39,7 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-
+import Tooltip from '@material-ui/core/Tooltip';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
@@ -488,26 +488,38 @@ class DisplayVariableDialog extends React.Component {
           <em>None</em>
         </MenuItem>
         <MenuItem id="qa_disVar_mi_dataType_boolean" value="boolean" >boolean</MenuItem>
-        {language !== 'smv' &&          
-            <MenuItem id="qa_disVar_mi_dataType_integer" value="integer" >integer</MenuItem>
-        }
-        {language !== 'smv' &&
-            <MenuItem id="qa_disVar_mi_dataType_unsigned_integer" value="unsigned integer" >unsigned integer</MenuItem>
-        }
-        {language !== 'smv' &&
-            <MenuItem id="qa_disVar_mi_dataType_single" value="single">single</MenuItem>
-        }
-        {language !== 'smv' &&
-            <MenuItem id="qa_disVar_mi_dataType_double" value="double">double</MenuItem>
-        }
+        <MenuItem id="qa_disVar_mi_dataType_integer" value="integer" >integer</MenuItem>
+        <MenuItem id="qa_disVar_mi_dataType_unsigned_integer" value="unsigned integer" >unsigned integer</MenuItem>
+        <MenuItem id="qa_disVar_mi_dataType_single" value="single">single</MenuItem>
+        <MenuItem id="qa_disVar_mi_dataType_double" value="double">double</MenuItem>
       </Select>
     </FormControl>
     )
   }
 
+  renderUpdateButton = () => {
+    const { language } = this.props
+    const {idType, dataType, errorsCopilot, checkCoPilot, errorsLustre, checkLustre, errorsSMV, checkSMV} = this.state
+    const parseErrorsCondition = (idType === 'Internal' && ((errorsCopilot!== '' && checkCoPilot) || (errorsLustre !== '' && checkLustre) || (errorsSMV !== '' && checkSMV)))
+    const smvCompatibleDataTypeCondition = (dataType !== 'boolean' && language === 'smv')
+    return(
+      <Tooltip title={parseErrorsCondition ? 'A parsing error exists in variable assignment. Resolve the parsing error or disable the corresponding language.' : smvCompatibleDataTypeCondition ? 'Data type \'' + dataType + '\' is not currently supported for SMV.' : ''}>
+    <span>
+      <Button id="qa_disVar_btn_update"
+              onClick={this.handleUpdate}
+              disabled={parseErrorsCondition || smvCompatibleDataTypeCondition}
+              color="secondary"
+              variant='contained'>
+        Update
+      </Button>
+    </span>
+    </Tooltip>
+    )
+  }
+
   render() {
     const { classes, selectedVariable, modelVariables, open, language } = this.props;
-    const { idType, errorsLustre, errorsCopilot, errorsSMV, checkLustre, checkCoPilot, checkSMV, modeldoc_id, modeldoc_vectorSize, modeldoc_vectorIndex, selectedBusObject, selectedBusElement, busObjects } = this.state;
+    const { idType, dataType, errorsLustre, errorsCopilot, errorsSMV, checkLustre, checkCoPilot, checkSMV, modeldoc_id, modeldoc_vectorSize, modeldoc_vectorIndex, selectedBusObject, selectedBusElement, busObjects } = this.state;
     
     return (
       <div>
@@ -673,7 +685,7 @@ class DisplayVariableDialog extends React.Component {
                       <TextField
                         id="qa_disVar_tf_dataType"
                         label="Data Type*"
-                        defaultValue={this.state.dataType}
+                        defaultValue={dataType}
                         className={classes.extendedTextField}
                         margin="normal"
                         InputProps={{
@@ -766,11 +778,16 @@ class DisplayVariableDialog extends React.Component {
                           />
                           <FormControlLabel
                             control={
-                              <Checkbox id="qa_disVar_cb_SMV"
-                                        checked={this.state.checkSMV}
-                                        onChange={this.handleCheckChange('checkSMV')}
-                                        value="checkSMV"
-                              />
+                              <Tooltip title={dataType !== 'boolean' ? 'Data type \'' + dataType + '\' is not currently supported for SMV.' : ''}>
+                                <span>
+                                  <Checkbox id="qa_disVar_cb_SMV"
+                                            checked={this.state.checkSMV}
+                                            disabled={dataType !== 'boolean'}
+                                            onChange={this.handleCheckChange('checkSMV')}
+                                            value="checkSMV"
+                                  />
+                                </span>
+                              </Tooltip>
                             }
                             label="SMV"
                           />
@@ -795,13 +812,7 @@ class DisplayVariableDialog extends React.Component {
             <Button id="qa_disVar_btn_cancel" onClick={this.handleClose}>
               Cancel
             </Button>
-            <Button id="qa_disVar_btn_update"
-                    onClick={this.handleUpdate}
-                    disabled={idType === 'Internal' && ((errorsCopilot!== '' && checkCoPilot) || (errorsLustre !== '' && checkLustre) || (errorsSMV !== '' && checkSMV))}
-                    color="secondary"
-                    variant='contained'>
-              Update
-            </Button>
+            {this.renderUpdateButton()}
           </DialogActions>
         </Dialog>
         <NewVariablesDialog

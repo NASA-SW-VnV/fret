@@ -256,7 +256,7 @@ class ComponentSummary extends React.Component {
 
   determineIncompleteComponentTooltipTitle(language) {
     if (language === 'smv') {
-      return 'To export verification code or test obligations, please complete mandatory variable fields and export language first. For SMV export, only variables of type Input, Output and Internal are supported.'
+      return 'To export verification code or test obligations, please complete mandatory variable fields and export language first. For SMV export, only variables of Boolean data type are supported.'
     } else {
       return 'To export verification code or test obligations, please complete mandatory variable fields and export language first.'
     }
