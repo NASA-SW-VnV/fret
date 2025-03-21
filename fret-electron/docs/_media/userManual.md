@@ -17,7 +17,7 @@ FRET is a framework for the elicitation, specification, formalization and unders
     * [Importing requirements](./user-interface/exportImport/import.md)
     * [Exporting requirements](./user-interface/exportImport/export.md)
     * [Semantics](./semantics/semanticsOverview.md)
-    * [Using the simulator](./UsingTheSimulator/ltlsim.md)
+    * [Using the simulator](./UsingTheSimulator/ltlsim-API-new.md)
     * [Exporting for analysis](./ExportingForAnalysis/analysis.md)
     * [Realizability checking](./exports/realizabilityManual.md)
     * [Test Case Generation](./exports/testgenManual.md)
