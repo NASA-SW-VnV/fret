@@ -121,7 +121,7 @@ function testIsUnique(variableValues, uniqueVariableValues) {
 }
 
 function runKind2(specName, filePath, callback) {
-    const kind2 = spawn('kind2', ['-json','--enable','BMC','--enable','IND','--enable','IND2','--lus_main', specName, filePath]);
+    const kind2 = spawn('kind2', ['-json','--disable','IC3IA','--lus_main', specName, filePath]);
 
     var stdout = '';
     kind2.stdout.on('data', (data) => {
@@ -143,7 +143,7 @@ function runKind2(specName, filePath, callback) {
                 //If we want to support loading Kind 2 traces in the future, the traceLength property must be added in the theTrace object below.           
                 var ltlsimJSONTrace = {
                     traceID: "test"+testCounter,
-                    traceDescriptions: "",
+                    traceDescription: "",
                     theTrace: {
                         keys: [],
                         values: []
@@ -286,7 +286,7 @@ function runNuSMV(filePath, callback) {
 
                     var ltlsimJSONTrace = {
                         traceID: "test"+testCounter,
-                        traceDescriptions: "",
+                        traceDescription: "",
                         theTrace: {
                             traceLength: 6,
                             keys: [],

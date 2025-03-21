@@ -85,7 +85,7 @@ export default class FretModel {
     // *variableMapping*
     this.variable_data = {}  // for a specific project: this is an object where each
     // key is a component of this project, and the value  is
-    // an array[rowid: counter, variable_name, modeldoc_id, idType, dataType, description]
+    // an array[rowid: counter, variable_name, modeldoc_id, idType, dataType, completedStatus, description]
     this.modelComponent = []  // for a specific project: this is an array of strings for dropdown menu titled 'Corresponding Model Component'
     this.modelVariables  = []   // array of simulink model variables from import filtered by the selected model component
     this.selectedVariable = {}  // ui selection
@@ -493,6 +493,7 @@ export default class FretModel {
         modelComponent: v.modelComponent,
         modeldoc_id: v.modeldoc_id,
         completed: v.completed,
+        smvCompleted: v.smvCompleted
       }
       newProjectVariables.push(newVariable)
       //console.log('copyProjectModelDb newVariable: ',newVariable)

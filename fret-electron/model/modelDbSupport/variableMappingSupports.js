@@ -50,9 +50,9 @@ export {
 
 
 let counter = 0;
-function createData(variable_name, modeldoc_id, idType, dataType, description) {
+function createData(variable_name, modeldoc_id, idType, dataType, completedStatus, description) {
   counter += 1;
-  return { rowid: counter, variable_name, modeldoc_id, idType, dataType, description};
+  return { rowid: counter, variable_name, modeldoc_id, idType, dataType, completedStatus, description};
 }
 
 async function synchFRETvariables (selectedProject, component) {
@@ -70,7 +70,7 @@ async function synchFRETvariables (selectedProject, component) {
       var variable_data =  result.docs.map(r => {
         //console.log('variableMappingSupports.synchFRETvariables: ',r)
         componentModel = r.modelComponent;
-              return createData(r.variable_name, r.modeldoc_id, r.idType, r.dataType, r.description)
+              return createData(r.variable_name, r.modeldoc_id, r.idType, r.dataType, { completed: r.completed, smvCompleted: r.smvCompleted }, r.description)
             }).sort((a, b) => {return a.variable_name > b.variable_name})
       modelComponent= componentModel
 

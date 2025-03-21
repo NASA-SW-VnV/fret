@@ -309,7 +309,7 @@ class TestGenContent extends React.Component {
             })
 
             var defaultSelectedEngine = 'nusmv'
-            if (!this.isComponentBooleanOnly(event.target.value.component_name)){
+            if (!this.isComponentEngineComplete(event.target.value.component_name).nusmv || !this.isComponentBooleanOnly(event.target.value.component_name)){
               defaultSelectedEngine = 'kind2'
             }
             this.setState({
@@ -344,14 +344,19 @@ class TestGenContent extends React.Component {
       })
     }
 
-    isComponentComplete(name) {
-        const {completedComponents} = this.props;
-        return completedComponents.includes(name);
+    isComponentComplete(name) {        
+        const {completedComponents, smvCompletedComponents} = this.props.completedComponents
+        return [...new Set([...completedComponents, ...smvCompletedComponents])].includes(name);
     }
 
     isComponentBooleanOnly(name) {
       const {booleanOnlyComponents} = this.props;
       return booleanOnlyComponents.includes(name);
+    }
+
+    isComponentEngineComplete(name) {
+      const {completedComponents, smvCompletedComponents} = this.props.completedComponents
+      return {kind2 : completedComponents.includes(name), nusmv: smvCompletedComponents.includes(name)}
     }
 
     checkDependenciesExist() {
@@ -365,7 +370,7 @@ class TestGenContent extends React.Component {
 
     render() {
         const { order, orderBy, selected, dependenciesExist, actionsMenuOpen, projectReport, selectedEngine, missingDependencies, retainFiles, settingsOpen, helpOpen, LTLSimDialogOpen} = this.state;
-        const { classes, selectedProject, components, testgen_data } = this.props;
+        const { classes, selectedProject, components, completedComponents, testgen_data } = this.props;
         var menuItems =[];
         
         var systemComponentIndex = projectReport.systemComponents.findIndex( sc => sc.name === selected.component_name );
@@ -511,7 +516,7 @@ class TestGenContent extends React.Component {
                                     aria-haspopup="true"
                                     aria-expanded={actionsMenuOpen ? 'true' : undefined}   
                                     size="small" variant="contained" color="secondary"
-                                    disabled={analysisInProgress}
+                                    disabled={analysisInProgress || !dependenciesExist || (dependenciesExist && selected === '')}
                                     endIcon={<KeyboardArrowDownIcon />}
                                     onClick={(event) => this.handleActionsClick(event)}>
                                     Actions        
@@ -589,7 +594,7 @@ class TestGenContent extends React.Component {
                                 </div>
                             </div>
                             }
-                            <TestGenSettingsDialog className={classes} selectedEngine={selectedEngine} isComponentBooleanOnly={this.isComponentBooleanOnly(selected.component_name)} retainFiles={retainFiles} missingDependencies={missingDependencies} open={settingsOpen} handleSettingsClose={this.handleSettingsClose} handleSettingsEngineChange={this.handleSettingsEngineChange} handleRetainFilesChange={this.handleRetainFilesChange}/>
+                            <TestGenSettingsDialog className={classes} selectedEngine={selectedEngine} isComponentBooleanOnly={this.isComponentBooleanOnly(selected.component_name)} retainFiles={retainFiles} missingDependencies={missingDependencies} isComponentEngineComplete={this.isComponentEngineComplete(selected.component_name)} open={settingsOpen} handleSettingsClose={this.handleSettingsClose} handleSettingsEngineChange={this.handleSettingsEngineChange} handleRetainFilesChange={this.handleRetainFilesChange}/>
                             <Dialog maxWidth='lg' onClose={this.handleHelpClose} open={helpOpen}>
                             <DialogTitle id="testgen-help">
                                 <Typography>
@@ -619,7 +624,7 @@ TestGenContent.propTypes = {
     classes: PropTypes.object.isRequired,
     selectedProject: PropTypes.string.isRequired,
     components: PropTypes.array.isRequired,
-    completedComponents: PropTypes.array.isRequired,
+    completedComponents: PropTypes.object.isRequired,
     booleanOnlyComponents: PropTypes.array.isRequired
   };
   

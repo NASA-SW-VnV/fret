@@ -124,12 +124,22 @@ class TestGenSettingsDialog extends React.Component {
 		this.props.handleRetainFilesChange(event.target.checked);
 	}
 
-	determineEngineTitleAndDisabled(engineValue, engineDependencies, missingDependencies, isComponentBooleanOnly) {
+	determineEngineTitleAndDisabled(engineValue, engineDependencies, missingDependencies, isComponentEngineComplete, isComponentBooleanOnly) {
 		var engineTitle = ''
 		var engineDisabled = false;
-		if (engineValue === 'nusmv' && !isComponentBooleanOnly) {
-			engineTitle = 'Option not available because the system component contains non-Boolean variables';
-			engineDisabled = true
+		if (engineValue === 'nusmv') {
+			if (!isComponentBooleanOnly) {
+				engineTitle = 'Option not available because the system component contains non-Boolean variables.';
+				engineDisabled = true
+			} else if (!isComponentEngineComplete.nusmv) {
+				engineTitle = 'Option not available because the system component SMV variable information is not complete.';
+				engineDisabled = true
+			}
+		} else if (engineValue === 'kind2') {
+			if (!isComponentEngineComplete.kind2) {
+				engineTitle = 'Option not available because the system component Lustre variable information is not complete.';
+				engineDisabled = true;
+			}
 		}
 		if (engineDependencies.some(e => missingDependencies.includes(e))) {
 			engineTitle = 'Option not available because of missing dependencies: ' + eng.dependencies.filter(dep => new Set(missingDependencies).has(dep)).join(', ')
@@ -140,7 +150,7 @@ class TestGenSettingsDialog extends React.Component {
 
 	render() {
 		const { open, selectedEngine } = this.state;
-		const { classes, missingDependencies, isComponentBooleanOnly} = this.props;	
+		const { classes, missingDependencies, isComponentEngineComplete, isComponentBooleanOnly} = this.props;	
 		
 		return(
 			<div>
@@ -171,7 +181,7 @@ class TestGenSettingsDialog extends React.Component {
 								<Select id="qa_testgenSet_sel_engine" key={'engine'} value={selectedEngine} onChange={this.handleEngineChange}
 								>
 									{engines.map(eng => {
-										var [engineTitle, engineDisabled] = this.determineEngineTitleAndDisabled(eng.value, eng.dependencies, missingDependencies, isComponentBooleanOnly)
+										var [engineTitle, engineDisabled] = this.determineEngineTitleAndDisabled(eng.value, eng.dependencies, missingDependencies, isComponentEngineComplete, isComponentBooleanOnly)
 										return (
 											<Tooltip key={eng.value} value={eng.value} title={engineTitle}>
 												<span>
@@ -211,7 +221,8 @@ TestGenSettingsDialog.propTypes = {
 	selectedEngine: PropTypes.string.isRequired,
 	isComponentBooleanOnly: PropTypes.bool.isRequired,
 	retainFiles: PropTypes.bool.isRequired,
-	missingDependencies: PropTypes.array.isRequired,	
+	missingDependencies: PropTypes.array.isRequired,
+	isComponentEngineComplete: PropTypes.object.isRequired,	
 	handleSettingsClose: PropTypes.func.isRequired,
 	handleSettingsEngineChange: PropTypes.func.isRequired,
 	handleRetainFilesChange: PropTypes.func.isRequired

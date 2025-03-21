@@ -803,7 +803,7 @@ class RealizabilityContent extends React.Component {
                               aria-haspopup="true"
                               aria-expanded={actionsMenuOpen ? 'true' : undefined}   
                               size="small" variant="contained" color="secondary"
-                              disabled={analysisProcessing}
+                              disabled={analysisProcessing || !dependenciesExist || (dependenciesExist && selected === '')}
                               endIcon={<KeyboardArrowDownIcon />}
                               onClick={(event) => this.handleActionsClick(event)}>
                               Actions        

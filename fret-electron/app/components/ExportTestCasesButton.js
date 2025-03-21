@@ -53,7 +53,9 @@ class ExportTestCasesButton extends React.Component {
       event.stopPropagation();
       const {tests, componentName} = this.props;
       //Keep only trace ID and the actual trace.
-      //Additionally, remove LAST and its values.
+      //Additionally, remove information of the last signal in each trace (in keys and values properties):
+      //  - For NUSMV-generated tests, this signal is the variable LAST.
+      //  - For Kind 2-generated tests, this signal is the obligation property for which a counterexample was generated.
       const filteredTests = tests.map(t => {
         return {
             'testId': t.traceID, 

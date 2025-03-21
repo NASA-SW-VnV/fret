@@ -41,19 +41,17 @@ import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
-import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Tooltip from '@material-ui/core/Tooltip';
 import Snackbar from '@material-ui/core/Snackbar';
 import Button from '@material-ui/core/Button';
 import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
-
+import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 /* Model component specification */
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
-import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 
@@ -65,17 +63,8 @@ import DisplayVariableDialog from './DisplayVariableDialog';
 import { connect } from "react-redux";
 const {ipcRenderer} = require('electron');
 import { importComponent, selectCorspdModelComp, selectVariable,} from '../reducers/allActionsSlice';
-import { readAndParseCSVFile, readAndParseJSONFile } from '../utils/utilityFunctions';
+import { readAndParseJSONFile } from '../utils/utilityFunctions';
 
-const utilities = require('../../support/utilities');
-var uuid = require('uuid');
-import { v1 as uuidv1 } from 'uuid';
-
-let counter = 0;
-function createData(variable_name, modeldoc_id, idType, dataType, description) {
-  counter += 1;
-  return { rowid: counter, variable_name, modeldoc_id, idType, dataType, description};
-}
 
 function desc(a, b, orderBy) {
   var element_a, element_b
@@ -83,8 +72,8 @@ function desc(a, b, orderBy) {
     element_a = a[orderBy]
     element_b = b[orderBy]
   } else {
-    element_a = a[orderBy].toLowerCase().trim()
-    element_b = b[orderBy].toLowerCase().trim()
+    element_a = a[orderBy].toString().toLowerCase().trim()
+    element_b = b[orderBy].toString().toLowerCase().trim()
   }
 
   if (element_b < element_a)
@@ -113,6 +102,7 @@ const rows = [
   {id: 'modeldoc_id', numeric: false, disablePadding:false, label: 'Model Variable Name'},
   {id: 'idType', numeric: false, disablePadding:false, label: 'Variable Type'},
   {id: 'dataType', numeric: false, disablePadding:false, label: 'Data Type'},
+  {id: 'completedStatus', numeric: false, disablePadding:true, label: 'Complete'},
   {id: 'description', numeric: false, disablePadding:false, label: 'Description'}
 ];
 
@@ -322,12 +312,6 @@ class VariablesSortableTable extends React.Component {
     this.mounted = false;
   }
 
-  componentDidUpdate(prevProps) {
-    if (this.props.selectedProject !== prevProps.selectedProject) {
-      //this.synchStateWithModelDB();
-    }
-  }
-
   handleRequestSort = (event, property) => {
     const orderBy = property;
     let order = 'desc';
@@ -451,11 +435,26 @@ class VariablesSortableTable extends React.Component {
     this.setState({ snackbarOpen: false });
   };
 
-  render() {
-    const {classes, selectedProject, selectedComponent, selectedVariable,
-      modelComponent, importedComponents, variable_data, modelVariables, language} = this.props;
+  useLanguageCompletedStatus = (componentVariableData, language) => {
+    for (const cvd of componentVariableData) {
+      if (language === 'smv' && cvd.completedStatus.smvCompleted) {
+        cvd.completedStatus = cvd.completedStatus.smvCompleted
+      } else if ((language === 'cocospec' || language === 'copilot') && cvd.completedStatus.completed) {
+        cvd.completedStatus = cvd.completedStatus.completed
+      } else {
+        cvd.completedStatus = false
+      }
+    }
+    return componentVariableData
+  }
 
-    const comp_variable_data = variable_data[selectedComponent] || []
+  render() {
+    const {classes, selectedComponent, selectedVariable,
+      modelComponent, importedComponents, variable_data, modelVariables, language} = this.props;
+    
+    var comp_variable_data = variable_data[selectedComponent] ? JSON.parse(JSON.stringify(variable_data[selectedComponent])) : []
+    //Update the componentStatus value in the comp_variable_data object to be the one of the language that was selected.
+    comp_variable_data = this.useLanguageCompletedStatus(comp_variable_data, language)
     const comp_modelVariables = modelVariables[selectedComponent] || []
     const comp_modelComponent = modelComponent[selectedComponent] || []
     const comp_importedComponents = importedComponents[selectedComponent] ? importedComponents[selectedComponent].filter(elt => elt) : []
@@ -496,6 +495,11 @@ class VariablesSortableTable extends React.Component {
                     <TableCell id={"qa_var_tc_modelName_"+label}>{n.modeldoc_id}</TableCell>
                     <TableCell id={"qa_var_tc_modelType_"+label}>{n.idType}</TableCell>
                     <TableCell id={"qa_var_tc_dataType_"+label}>{n.dataType}</TableCell>
+                    <TableCell id={"qa_var_tc_completedStatus_"+label} align="center">
+                      {n.completedStatus &&
+                        <CheckCircleOutlineIcon style={{color : '#68BC00'}}/>
+                      }
+                    </TableCell>
                     <TableCell id={"qa_var_tc_description_"+label}>{n.description}</TableCell>
                   </TableRow>
                 )
