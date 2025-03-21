@@ -891,6 +891,11 @@ console.log("/+ handling");
 		saveToProject: "*"
 		}]
 
+		//
+		// set the new trace-length before loading the trace into the
+		// controller
+		//
+	LTLSimController.setTraceLength(this.state.model, K);
 	LTLSimController.setTrace(this.state.model,theTrace);
 
 	this.state.traces = this.state.traces.concat([NewtraceID]);
