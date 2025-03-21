@@ -13,7 +13,10 @@ Here is an example requirement:
 
 While typing the body of a requirement, FRET parses the requirement and recognizes and color codes the parts associated with each field. The lower part of the window dynamically displays (in red) parser feedback while typing. Help is provided for the user by clicking on the corresponding colored field bubbles on top of the editor.
 
-FRET supports two modes for writing requirements: (1) Classic FRET and (2) Probabilistic FRET. You can switch between them using the toggle button (see next screenshot). Probabilistic FRET contains the *probability* field.
+FRET supports two modes for writing requirements: (1) Classic FRET and (2) Probabilistic FRET. You can switch between them using the toggle button (*Activate probabilistic FRETish*). Probabilistic FRET contains the *probability* field.
+
+Here is an example requirement:
+<span style="color:gray">**"In auto-taxi mode SensorSelection shall with probability > 0.95 always satisfy accurate"** </span>
 
 ***
 
