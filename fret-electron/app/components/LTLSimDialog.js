@@ -196,6 +196,10 @@ class LTLSimDialog extends Component {
 	    activeTraces: [],
 
 		//
+		// updatedFlag: set to "*" if the current trace hasn't been updated
+		//
+	    updatedFlag: "*",
+		//
 		// "loading" cursor status
 		//
 	    loading: false
@@ -468,9 +472,15 @@ class LTLSimDialog extends Component {
 		saveToComponent = "*"
 		}
 
-	if ((this.state.activeTraces.find(tr => {
-		return tr.traceID === traceID;
-		})) == null){
+		//
+		// if the trace ID doesn't exist, create
+		// a new trace
+		//
+	let thisTrace = this.state.activeTraces.find(tr => {
+			return tr.traceID === traceID;
+			});
+
+	if (thisTrace == null){
 
 		const allTraces = traces.concat(traceID);
 		const newActiveTraces = activeTraces.concat({
@@ -487,26 +497,46 @@ class LTLSimDialog extends Component {
 
         	return {
             		traceAddDialogOpen: false,
-	    			traceID: traceID,
-	    			traceDescription: traceDescription,
-				traceLinkedRequirementIDs: traceLinkedRequirementIDs,
-				traces: allTraces,
-	    			activeTraces: newActiveTraces
+    			traceID: traceID,
+    			traceDescription: traceDescription,
+			traceLinkedRequirementIDs: traceLinkedRequirementIDs,
+			traces: allTraces,
+			updatedFlag: "",
+    			activeTraces: newActiveTraces
             		};
 
 		}
 	else {
-		// updating existing traces file, i.e. overwrite
-		const newActiveTraces = activeTraces;
+		//
+		// updating existing trace
+		//
+		let newActiveTraces = activeTraces;
+
+		for (let actTrace of newActiveTraces){
+			if (actTrace.traceID === thisTrace.traceID){
+				actTrace.traceDescription = traceDescription;
+				actTrace.traceLinkedRequirementIDs = traceLinkedRequirementIDs;
+				}
+			}
+console.log("+ handling");
+console.log(activeTraces)
+console.log(newActiveTraces)
+console.log("/+ handling");
 
         	return {
             		traceAddDialogOpen: false,
-	    			traceID: traceID,
-	    			traceDescription: traceDescription,
-	    			activeTraces: newActiveTraces
+    			traceID: traceID,
+    			traceDescription: traceDescription,
+			traceLinkedRequirementIDs: traceLinkedRequirementIDs,
+			updatedFlag: "",
+    			activeTraces: newActiveTraces
             		};
 		};
-        });
+//JSC0321-2
+	  }, () => {
+		/* Call LTL simulation after the state was updated */
+		this.update();
+	  });
 
     }
 
@@ -573,6 +603,7 @@ class LTLSimDialog extends Component {
     				traceDescription: traceDescription,
 	    	      		traceLinkedRequirementIDs: traceLinkedRequirementIDs,
 				linkedProject: this.props.project,
+				updatedFlag: "",
 				theTrace: trace,
 				saveToReqID: "*",
 				saveToComponent: "*",
@@ -854,6 +885,7 @@ class LTLSimDialog extends Component {
 		traceDescription: NewtraceDescription,
 		theTrace: theTrace,
 		traceLinkedRequirementIDs: this.state.rootRequirementID,
+		updatedFlag: "",
 		saveToReqID: "*",
 		saveToComponent: "*",
 		saveToProject: "*"
@@ -933,6 +965,7 @@ class LTLSimDialog extends Component {
         		return {
 				traceIDCnt: NTC,
 	    			traceID: NewTraceID,
+				updatedFlag: "",
 				traces: NewTraces,
 	    			traceDescription: "imported from "+filepath[0],
 	    			activeTraces: newActiveTraces
@@ -1043,6 +1076,7 @@ console.log("/Adding to controller")
 
        	    		return {
 				traces: traces,
+				updatedFlag: "",
 	    			traceID: NewTraceID,
     				activeTraces: activeTraces
        				};
@@ -1103,6 +1137,7 @@ console.log("/Adding to controller")
 		anchorEl: null,
 		traceID: NewTraceID,
 		traceIDCnt: NTC,
+		updatedFlag: "*",
 		traceDescription: "",
 		traceLinkedRequirementIDs: this.state.rootRequirementID
 		};
@@ -1112,7 +1147,6 @@ console.log("/Adding to controller")
 	);
 
       	}
-
     //===============================================================
     //
     handleClose = () => {
@@ -1274,7 +1308,8 @@ for (let i=0; i< reqID_data.length; i++){
             }
 
             return {
-                model
+                model,
+		updatedFlag: "*"
             };
         }, () => {
             /* Call LTL simulation after the state was updated */
@@ -1303,7 +1338,8 @@ for (let i=0; i< reqID_data.length; i++){
                 })
             }
             return {
-                model
+                model,
+		updatedFlag: "*"
             };
         }, () => {
             /* Call LTL simulation after the state was updated */
@@ -1360,7 +1396,8 @@ for (let i=0; i< reqID_data.length; i++){
 		);
 
                 return {
-                    model
+                    model,
+		    //JSC 0321-3 updatedFlag: "*"
                 };
         })
     }
@@ -1432,7 +1469,10 @@ for (let i=0; i< reqID_data.length; i++){
                                                     EFormulaStates.VALIDATED :
                                                     EFormulaStates.VIOLATED);
 
-                return { model };
+                return { 
+			updatedFlag: "*",
+			model 
+			};
             } else {
                 return prevState;
             }
@@ -1461,7 +1501,7 @@ for (let i=0; i< reqID_data.length; i++){
     render () {
         const { classes, open, onClose, requirements, ids, requirementIDs } = this.props;
 
-        let { model, visibleSubformulas, highlight, anchorEl, anchorEl_File, anchorEl_Req, anchorEl_Export, logics, traceID, reqID_data, visibleRequirementIDs } = this.state;
+        let { model, visibleSubformulas, highlight, anchorEl, anchorEl_File, anchorEl_Req, anchorEl_Export, logics, traceID, reqID_data, visibleRequirementIDs, updatedFlag } = this.state;
          let formula = LTLSimController.getFormula(model, ids[0]);
         const displayID = requirementIDs[0] ? requirementIDs[0] : "INVALID";
         const currentTraceID = traceID ? traceID : "UNNAMED";
@@ -1583,7 +1623,7 @@ for (let i=0; i< reqID_data.length; i++){
                     <Typography
                         color="inherit"
                         >
-                        {"Trace ID:    "+currentTraceID+"             "}
+                        {"Trace ID:    "+currentTraceID+updatedFlag+"             "}
                     </Typography>
 {/* //----------------------------------------------- */}
 {/* //    CLEAR                                       */}
