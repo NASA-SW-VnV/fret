@@ -56,6 +56,8 @@ class TraceDialog extends Component {
         this.resetState = this.resetState.bind(this);
         this.handleCancel = this.handleCancel.bind(this);
         this.handleApply = this.handleApply.bind(this);
+        this.handleInput = this.handleInput.bind(this);
+        this.onSubmit = this.onSubmit.bind(this);
         this.handleTraceLengthChange = this.handleTraceLengthChange.bind(this);
     }
 
@@ -81,6 +83,10 @@ class TraceDialog extends Component {
         })
     }
 
+    onSubmit() {
+        return false;
+    }
+
     handleCancel() {
         this.resetState();
         this.props.onCancel();
@@ -88,6 +94,13 @@ class TraceDialog extends Component {
 
     handleApply() {
         this.props.onApply(Number(this.state.traceLength));
+    }
+
+    handleInput() {
+  	// if (event.key === 'Enter') 
+  	if (event.keyCode === 13) {
+    		event.preventDefault(); // Prevent the default action of the Enter key
+  		}
     }
 
     componentWillReceiveProps() {
@@ -100,12 +113,11 @@ class TraceDialog extends Component {
                 open={this.props.open}
                 onClose={this.handleCancel}
                 aria-labelledby="set-tracelength">
-                <DialogTitle id="set-traceelength">Set Tracelength</DialogTitle>
+                <DialogTitle id="set-tracelength">Set Tracelength</DialogTitle>
                 <DialogContent>
-                    <form>
                         <TextField 
                             id="qa_trace_tf_input"
-                            label="Traceelength"
+                            label="Tracelength"
                             error={(this.state.error.length > 0)}
                             helperText={this.state.error}
                             type="number"
@@ -113,8 +125,9 @@ class TraceDialog extends Component {
                             margin="normal"
                             value={this.state.traceLength}
                             onChange={this.handleTraceLengthChange}
+			    onKeyDown={this.handleInput}
+			    onKeyPress={this.handleInput}
                         />
-                    </form>
                 </DialogContent>
                 <DialogActions>
                     <Button 
