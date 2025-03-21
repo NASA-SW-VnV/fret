@@ -1021,6 +1021,9 @@ class LTLSimDialog extends Component {
 			} // for tr
 
 			for (let tr=0; tr<addToTraces.length;tr++){
+console.log("Adding to controller")
+console.log(addToTraces[tr].theTrace)
+console.log("/Adding to controller")
 				LTLSimController.setTrace(model,addToTraces[tr].theTrace);
 				}
 
@@ -1033,6 +1036,10 @@ class LTLSimDialog extends Component {
 				// add the trace to the to-be-added-list
 			traces = traces.concat(addToTraceIDs);
 			activeTraces = activeTraces.concat(addToTraces);
+
+//JSC0321
+			let NewTraceLength = addToTraces[0].theTrace.traceLength;
+			LTLSimController.setTraceLength(this.state.model, NewTraceLength);
 
        	    		return {
 				traces: traces,
@@ -1059,6 +1066,8 @@ class LTLSimDialog extends Component {
 		//
 		// load the trace and set FTP and LAST accordingly
 		//
+//JSC0321
+        LTLSimController.setTraceLength(this.state.model, NC.theTrace.traceLength);
 	LTLSimController.setTrace(this.state.model,NC.theTrace);
 	setMarginVariableTraces(this.state.model);
 

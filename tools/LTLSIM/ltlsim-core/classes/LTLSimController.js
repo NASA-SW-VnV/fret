@@ -48,6 +48,13 @@ module.exports = class LTLSimController {
     //
     //------------------------------------------------------------
     static addAtomic(model, id, atType, canChange, mi, ma) {
+console.log("addAtomic");
+console.log(id)
+console.log(atType)
+console.log(canChange)
+console.log(mi)
+console.log(ma)
+console.log("/addAtomic");
         if (model.atomics.keys.indexOf(id) === -1) {
             model.atomics.keys.push(id);
             model.atomics.values[id] = new Atomic(id, model.traceLength);
@@ -64,6 +71,13 @@ module.exports = class LTLSimController {
     // with update of min/max values
     //------------------------------------------------------------
     static addAtomicU(model, id, atType, canChange, mi, ma) {
+console.log("addAtomicU");
+console.log(id)
+console.log(atType)
+console.log(canChange)
+console.log(mi)
+console.log(ma)
+console.log("/addAtomicU");
         if (model.atomics.keys.indexOf(id) === -1) {
             model.atomics.keys.push(id);
             model.atomics.values[id] = new Atomic(id, model.traceLength);
@@ -309,7 +323,24 @@ console.log("LTLSimController: getTrace",model.atomics.keys,model.atomics.type);
 			//
 			// we need to define a new variable (key)
 			//
+console.log("setTrace");
+console.log(a)
+let ii= model.atomics.keys.indexOf(a);
+console.log(ii)
+console.log(model.atomics.keys[ii])
+console.log(model.atomics.keys[a])
+console.log(model.atomics.type[a])
+console.log(model.atomics.canChange[a])
+console.log(model.atomics.minval[a])
+console.log(model.atomics.maxval[a])
+console.log("/setTrace");
         	if (model.atomics.keys.indexOf(a) === -1) {
+console.log("controller handling variable ")
+console.log(a)
+console.log(trace.type[idx]);
+console.log(trace.canChange[idx]);
+console.log("/controller handling variable ")
+
             		model.atomics.keys.push(a);
             		model.atomics.values[a] = 
 				new Atomic(a, model.traceLength);
@@ -370,8 +401,14 @@ console.log("LTLSimController: getTrace",model.atomics.keys,model.atomics.type);
 	    let trace_min_vals = [];
 	    let trace_max_vals = [];
       	    	trace.keys.forEach((a) => {
-			trace_min_vals[a] = 9e99;
-			trace_max_vals[a] = -9e99;
+			if (trace.type[a] == "number") {
+				trace_min_vals[a] = 9e99;
+				trace_max_vals[a] = -9e99;
+				}
+			else {
+				trace_min_vals[a] = 0;
+				trace_max_vals[a] = 1;
+				}
 			});
 			
 	    if ('traceLength' in trace){
@@ -380,13 +417,17 @@ console.log("LTLSimController: getTrace",model.atomics.keys,model.atomics.type);
 			console.log("trace-length calculation not matching....");
 			}
 		}
+//console.log("setTrace 2")
+//console.log(trace_min_vals)
+//console.log(trace_max_vals)
+//console.log("/setTrace 2")
     	    while (i < trace.traceLength){
-console.log("setTrace: ",i);
+//console.log("setTrace: time i ",i);
       	    	trace.keys.forEach((a) => {
 	          if (a != "LAST" && a != "FTP"){
 			var val = trace.values[idx];
-console.log("setTrace: val",val);
-console.log("setTrace: a",a);
+//console.log("setTrace: val",val);
+//console.log("setTrace: a",a);
 		        if (i < model.traceLength){
 				model.atomics.values[a].trace[i] = val;
 				if (trace_min_vals[a] > val){
@@ -397,11 +438,18 @@ console.log("setTrace: a",a);
 					}
 				}
 		        }
+//console.log(trace_min_vals)
+//console.log(trace_max_vals)
 		  idx = idx+1;
 		    });
 		i = i+1;
 		};
     	trace.keys.forEach((a) => {
+//console.log("min-max vals")
+//console.log(trace_min_vals[a]);
+//console.log(trace_max_vals[a]);
+//console.log("/min-max vals")
+
 		if (trace_min_vals[a] < model.atomics.minval[a]){
 			model.atomics.minval[a] = trace_min_vals[a];
 			}
@@ -498,21 +546,11 @@ console.log("setTrace: a",a);
 			// might need to re-evaluate
 			// V0: re-evaluate all
 			// !!!!!!!! newvalue and dataIDX is not set....
-//JSC-0415
   			let result = LTLAEX.parse(a, model);
 			let newtrace = result.trace;
-//			var newtrace;
-//			newtrace = model.atomics.values[a].trace
-//			newtrace[0] =1;
 			model.atomics.values[a].trace = newtrace;
 			}
 		});
-//if (id == "state")
-//	if (newValue == 2)
-//		model.atomics.values["state_eq_2"].trace[dataIdx] = 1;
-// var a="state_eq_2"
-// 		console.log("eval. type="+model.atomics.type[a]);
-// 		console.log("eval. canchange="+model.atomics.canChange[a]);
             return true;
         }
         return false;

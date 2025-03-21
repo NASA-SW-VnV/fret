@@ -335,16 +335,12 @@ console.log(traceLinkedRequirementIDs);
                       open={Boolean(anchorEl_LinkReq)}
                       onClose={this.handleClose_LinkReq}
                     >
-						Link to Requirements
                       <MenuItem
 					    id={"qa_ltlSim_mi_LinkReq_1_"+this.props.project+":"+this.props.requirementIDs[0]}
                         onClick={() =>  this.handleLinkReqSelAll()}
                         dense
                         >
-                        <ListItemIcon><NotesIcon color="primary"/></ListItemIcon>
-                        <ListItemText inset
-				disableTypography
-			  primary = {<Typography style={{ color: '#AAA000'}}>{this.props.project+":"+this.props.requirementIDs[0]}</Typography>} />
+			<Typography style={{ color: '#AAA000'}}>{this.props.project+":"+this.props.requirementIDs[0]}</Typography>
                       </MenuItem>
                       {
 
@@ -359,10 +355,7 @@ console.log(traceLinkedRequirementIDs);
                                     key={this.props.project+":"+reqID.dbkey}
                                     dense
                                     onClick={() => this.handleLinkReqSel(reqID)}>
-                                    <ListItemIcon><NotesIcon color="secondary"/></ListItemIcon>
-                                    <ListItemText inset
-				       disableTypography
-			  	       primary = {<Typography style={{ color: '#A0A0A0'}}>{this.props.project+":"+reqID.reqID}</Typography>} />
+			  	    <Typography style={{ color: '#A0A0A0'}}>{this.props.project+":"+reqID.reqID}</Typography>
                                   </MenuItem>
 				  }
 			else {
@@ -371,10 +364,7 @@ console.log(traceLinkedRequirementIDs);
                                     key={this.props.project+":"+reqID.dbkey}
                                     dense
                                     onClick={() => this.handleLinkReqSel(reqID)}>
-                                    <ListItemIcon><NotesIcon color="secondary"/></ListItemIcon>
-                                    <ListItemText inset
-				       disableTypography
-			  	       primary = {<Typography style={{ color: '#000000'}}>{this.props.project+":"+reqID.reqID}</Typography>} />
+			  	    <Typography style={{ color: '#000000'}}>{this.props.project+":"+reqID.reqID}</Typography>
                                   </MenuItem>
 			    }
                         })
@@ -398,9 +388,6 @@ console.log(traceLinkedRequirementIDs);
                         color="primary">
                         UPDATE
                     </Button>
-			{/* ---------------------------------------------- */}
-			{/*                                                */}
-			{/* ---------------------------------------------- */}
                 </DialogActions>
             </Dialog>
         )
