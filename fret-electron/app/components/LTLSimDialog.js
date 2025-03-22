@@ -776,6 +776,11 @@ console.log("/+ handling");
 	//	* activeTraces: add structure with info
 	//
     loadCEXTrace(filepath) {
+
+		//
+		// get trace-length from CEX
+		// must be >= 4 - otherwise problems with LTLSim
+		//
 	var loadedTrace = filepath;
 	var K = loadedTrace.K < 4 ? 4 : loadedTrace.K;
 
@@ -783,7 +788,9 @@ console.log("/+ handling");
     		// TODO: Andreas: Tried to add this here to deal with
 		// traces that were longer than the initial trace length value,
     		// but it seems like it causes issues with traces of length < 4.
+
 	LTLSimController.setTraceLength(this.state.model, K);
+//JSC0321 --- why these 2 lines? LTLSim_tracelength == K
 	let LTLSIM_tracelength = LTLSimController.getTraceLength(this.state.model);
 	var keys=[]
 	var vars_trace_type=[]
@@ -791,7 +798,22 @@ console.log("/+ handling");
 			  .replace(/-/g,"_")
 			  .replace(/\./g,"_")
 			  .replace(/\+/g,"_"));
+
+		//
+		// only consider variables that show up in the requirements provided
+		// in the props
+		//
 	cex = cex.filter(variable => !sanitizedReqIds.includes(variable.name));
+
+		//
+		// go through the individual variables in the CEX
+		//
+        	// {
+            	// "name": "emergency_button",
+            	// "type": "bool",
+            	// "Step 0": true
+        	// },
+		//
 	for (let idx=0; idx < cex.length; idx++){
 
 		let key_R =cex[idx].name.replace(/ /g,"_")
@@ -812,6 +834,8 @@ console.log("/+ handling");
 			if (cex[idx].type == "real"){
 				atomic_type = "number"
 				}
+//JSC0321: can other types show up?
+
 			//
 			// find minimum and maximum value
 			//
@@ -873,6 +897,7 @@ console.log("/+ handling");
 	var theTrace={
 	traceLength: K,
 	keys: keys,
+	type: vars_trace_type,
 	values: values
 	};
 
@@ -894,8 +919,12 @@ console.log("/+ handling");
 		//
 		// set the new trace-length before loading the trace into the
 		// controller
+//JSC0321 should be set already
 		//
 	LTLSimController.setTraceLength(this.state.model, K);
+		//
+		// load the trace
+		//
 	LTLSimController.setTrace(this.state.model,theTrace);
 
 	this.state.traces = this.state.traces.concat([NewtraceID]);

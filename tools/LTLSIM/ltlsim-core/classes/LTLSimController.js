@@ -401,7 +401,7 @@ console.log("/controller handling variable ")
 	    let trace_min_vals = [];
 	    let trace_max_vals = [];
       	    	trace.keys.forEach((a) => {
-			if (trace.type[a] == "number") {
+			if (trace.type && trace.type[a] == "number") {
 				trace_min_vals[a] = 9e99;
 				trace_max_vals[a] = -9e99;
 				}
