@@ -272,7 +272,7 @@ class DisplayVariableDialog extends React.Component {
   }
 
   componentWillReceiveProps = (props) => {
-    const { selectedVariable, handleDialogClose } = props
+    const { selectedVariable, handleDialogClose, language } = props
     if (Object.keys(selectedVariable).length) {
       this.setState({
         description: selectedVariable.description,
@@ -280,11 +280,11 @@ class DisplayVariableDialog extends React.Component {
         moduleName: selectedVariable.moduleName,
         dataType: selectedVariable.dataType,
         assignment: selectedVariable.assignment,
-        checkLustre: selectedVariable.assignment ? true : false,
+        checkLustre: language === 'cocospec' ? true : (selectedVariable.assignment ? true : false),
         copilotAssignment: selectedVariable.copilotAssignment,
-        checkCoPilot: selectedVariable.copilotAssignment ? true : false,
+        checkCoPilot: language === 'copilot' ? true : (selectedVariable.copilotAssignment ? true : false),
         smvAssignment: selectedVariable.smvAssignment,
-        checkSMV: selectedVariable.smvAssignment ? true : false,
+        checkSMV: language === 'smv' ? ((selectedVariable.dataType === '' || selectedVariable.dataType === 'boolean') ? true : false) : (selectedVariable.smvAssignment ? true : false),
         modeRequirement: selectedVariable.modeRequirement,
         modeldoc_id: selectedVariable.modeldoc_id,
         selectedBusObject: selectedVariable.busObject,
