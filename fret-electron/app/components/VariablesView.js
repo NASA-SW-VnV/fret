@@ -280,6 +280,7 @@ class ComponentSummary extends React.Component {
       return (
         <div className={classes.wrapper}>
           <Button
+            id={"qa_var_btn_export_"+component}
             ref={this.anchorRef}
             size="small" variant="contained" color="secondary"
             endIcon={<KeyboardArrowDownIcon />}
@@ -332,6 +333,7 @@ class ComponentSummary extends React.Component {
         return (
           <div className={classes.wrapper}>
             <Button
+              id={"qa_var_btn_export_"+component}
               ref={this.anchorRef}
               size="small" variant="contained" color="secondary"
               endIcon={<KeyboardArrowDownIcon />}
