@@ -498,7 +498,7 @@ class DisplayVariableDialog extends React.Component {
         <MenuItem id="qa_disVar_mi_dataType_double" value="double">double</MenuItem>
       </Select>
       {errorState && 
-        <FormHelperText>{'Data type \'' + dataType + '\' is not currently supported for SMV.'}</FormHelperText>
+        <FormHelperText>{'Data type \'' + dataType + '\' is not supported for SMV.'}</FormHelperText>
       }
     </FormControl>
     )
@@ -510,7 +510,7 @@ class DisplayVariableDialog extends React.Component {
     const parseErrorsCondition = (idType === 'Internal' && ((errorsCopilot!== '' && checkCoPilot) || (errorsLustre !== '' && checkLustre) || (errorsSMV !== '' && checkSMV)))
     const smvCompatibleDataTypeCondition = (dataType !== 'boolean' && language === 'smv')
     return(
-      <Tooltip title={parseErrorsCondition ? 'A parsing error exists in variable assignment. Resolve the parsing error or disable the corresponding language.' : smvCompatibleDataTypeCondition ? 'Data type \'' + dataType + '\' is not currently supported for SMV.' : ''}>
+      <Tooltip title={parseErrorsCondition ? 'A parsing error exists in variable assignment. Resolve the parsing error or disable the corresponding language.' : smvCompatibleDataTypeCondition ? 'Data type \'' + dataType + '\' is not supported for SMV.' : ''}>
     <span>
       <Button id="qa_disVar_btn_update"
               onClick={this.handleUpdate}
