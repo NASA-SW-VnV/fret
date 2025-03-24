@@ -43,6 +43,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
+import FormHelperText from '@material-ui/core/FormHelperText';
 import Select from '@material-ui/core/Select';
 
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -467,15 +468,18 @@ class DisplayVariableDialog extends React.Component {
       })
   }
 
-  dataTypeField = (language) => {
-    const { classes, selectedVariable } = this.props;
+  dataTypeField = () => {
+    const { classes, selectedVariable, language } = this.props;
+    const { dataType } = this.state;
+
+    const errorState = (language === 'smv' && (dataType !== 'boolean' && this.state.dataType !== ''))
 
     return(
-      <FormControl className={classes.formControl}>
+      <FormControl className={classes.formControl} error={errorState}>
       <InputLabel htmlFor="dataType-simple">Data Type*</InputLabel>
       <Select id="qa_disVar_sel_dataType"
               key={selectedVariable}
-              value={this.state.dataType}
+              value={dataType}
               onChange={this.handleChange}
               inputProps={{
                 name: 'dataType',
@@ -493,6 +497,9 @@ class DisplayVariableDialog extends React.Component {
         <MenuItem id="qa_disVar_mi_dataType_single" value="single">single</MenuItem>
         <MenuItem id="qa_disVar_mi_dataType_double" value="double">double</MenuItem>
       </Select>
+      {errorState && 
+        <FormHelperText>{'Data type \'' + dataType + '\' is not currently supported for SMV.'}</FormHelperText>
+      }
     </FormControl>
     )
   }
