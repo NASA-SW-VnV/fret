@@ -280,7 +280,7 @@ class DisplayVariableDialog extends React.Component {
         moduleName: selectedVariable.moduleName,
         dataType: selectedVariable.dataType,
         assignment: selectedVariable.assignment,
-        checkLustre: language === 'cocospec' ? true : (selectedVariable.assignment ? true : false),
+        checkLustre: (language === 'cocospec' || language === '') ? true : (selectedVariable.assignment ? true : false),
         copilotAssignment: selectedVariable.copilotAssignment,
         checkCoPilot: language === 'copilot' ? true : (selectedVariable.copilotAssignment ? true : false),
         smvAssignment: selectedVariable.smvAssignment,
