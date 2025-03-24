@@ -90,10 +90,8 @@ leveldbDB.setMaxListeners(30)
 
 // Enable Debugging for API/HTTP: NodePouchDB.debug.enable('*')
 // Inialize properties for the first time
-const FRET_PROPS_DBKEY = 'FRET_PROPS'
-const baseProps = {
-  _id: FRET_PROPS_DBKEY,
-  fieldColors: {
+const FRET_PROPS_DBKEY = 'FRET_PROPS';
+const fieldColors = {
     scope: '#9F0500',
     condition: '#FB9E00',
     component: '#68BC00',
@@ -101,14 +99,25 @@ const baseProps = {
     probability: '#009CE0',
     timing: '#0062B1',
     response: '#653294'
-  }
-}
+};
 
-leveldbDB.put(baseProps).catch((err) => {
-  if (err.name !== "conflict") {
-    console.log(err)
-  }
-})
+leveldbDB.get(FRET_PROPS_DBKEY).then(function(doc) {
+    // Document exists, update it
+    doc.fieldColors = fieldColors; // Update the document as needed
+    return leveldbDB.put(doc); // Save the updated document
+}).catch(function(err) {
+    if (err.status === 404) {
+        // Document doesn't exist, create a new one
+        const newDoc = {
+            _id: FRET_PROPS_DBKEY,
+            fieldColors: fieldColors,  // New document content
+        };
+        return leveldbDB.put(newDoc); // Save the new document
+    } else {
+        console.error('Error handling document', err);
+    }
+});
+
 
 const FRET_PROJECTS_DBKEY = 'FRET_PROJECTS'
 // For backward compatibility, ensure that an object
