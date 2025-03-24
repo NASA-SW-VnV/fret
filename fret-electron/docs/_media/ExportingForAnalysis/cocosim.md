@@ -8,6 +8,10 @@ In particular, our framework provides: 1) automatic extraction of Simulink model
 
 
 ## The Lustre and CoCoSpec languages
+
+> [!NOTE]
+> CoCoSpec Modes are currently not supported due to incompatibilities with new features introduced in the FRETish `scope` field. We plan to reintroduce this feature in the future.
+
  CoCoSpec is an extension of the synchronous dataflow language Lustre. System components are expressed in Lustre as `nodes` with inputs and outputs. Variables are used to represent `input`, `output`, and locally defined (`internal`) streams. Basic variable data types include `real` numbers, `integer` numbers, and `Booleans`. Additionally, `structure` and `enumerated` data types are supported. For the user that is familiar with Simulink data types, we provide a mapping between Simulink and Lustre data types in the following table:
 
  | Simulink data types | Lustre data types |

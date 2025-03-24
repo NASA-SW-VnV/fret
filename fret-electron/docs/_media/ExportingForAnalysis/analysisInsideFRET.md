@@ -46,7 +46,7 @@ FRET automatically extracts all components, variables, functions, and modes that
 ***
 &nbsp;&nbsp;&nbsp;&nbsp;
 
-![](AnalysisPortalStep2c.png)
+![](AnalysisPortalStep2c_v3.0.png)
 
 ***
 
@@ -54,13 +54,14 @@ FRET automatically extracts all components, variables, functions, and modes that
 
 **3. Choose export language**
 
-Pick an export language for the generated specification/code. We currently offer two options: 1) CoCoSpec and 2) Copilot.
+Pick an export language for the generated specification/code. We currently offer two options: 1) CoCoSpec and 2) Copilot. SMV is currently only compatible with test obligation exports (see Test Case Generation manual for details).
+
 
 
 ***
 &nbsp;&nbsp;&nbsp;&nbsp;
 
-![](AnalysisPortal3.png)
+![](AnalysisPortal3_v3.0.png)
 
 ***
 
@@ -94,7 +95,7 @@ A user may optionally import information from a corresponding Simulink model and
 ***
 &nbsp;&nbsp;&nbsp;&nbsp;
 
-![](AnalysisPortal4a.png)
+![](AnalysisPortal4a_v3.0.png)
 
 ***
 
@@ -103,7 +104,7 @@ If model information has been imported, the user may pick for each FRET componen
 ***
 &nbsp;&nbsp;&nbsp;&nbsp;
 
-![](AnalysisPortal4b.png)
+![](AnalysisPortal4b_v3.0.png)
 
 ***
 
@@ -112,7 +113,7 @@ Next, for each variable, all mandatory fields must be completed. For each type o
 ***
 &nbsp;&nbsp;&nbsp;&nbsp;
 
-![](AnalysisPortal4c.png)
+![](AnalysisPortal4c_v3.0.png)
 
 ***
 
@@ -121,10 +122,16 @@ To complete the information of a variable, please click on the corresponding FRE
 ***
 &nbsp;&nbsp;&nbsp;&nbsp;
 
-![](AnalysisPortal4d.png)
+![](AnalysisPortal4d_v3.0.png)
 
 ***
+&nbsp;&nbsp;&nbsp;&nbsp;
 
+***TIP:*** To verify that a variable's information has been completed, set the Export language to the language in question and observe the `Complete` column in the variables table. Variables with complete information will have a circled green check mark in the `Complete` column.
+
+***
+![](AnalysisPortal4e.png)
+***
 &nbsp;&nbsp;&nbsp;&nbsp;
 
 **5. Click on the Export button and save the generated code**

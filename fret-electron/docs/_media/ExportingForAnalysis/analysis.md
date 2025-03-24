@@ -38,16 +38,16 @@ Once a specific project is chosen, the Analysis Portal will provide a summary of
 FRET automatically extracts all components, variables, functions, and modes that have been specified in the requirements of a project. For each component it creates an accordion field that (if clicked) displays a table with the variables and the modes of that particular component.
 
 ***
-<img src="../screen_shots/AnalysisPortalStep2c.png">
+<img src="../screen_shots/AnalysisPortalStep2c_v3.0.png">
 
 ***  
 
 **3. Choose export language**
 
-Pick an export language for the generated specification/code. We currently offer two options: 1) CoCoSpec and 2) Copilot.
+Pick an export language for the generated specification/code. We currently offer two options: 1) CoCoSpec and 2) Copilot . SMV is currently only compatible with test obligation exports (see [Test Case Generation manual](../exports/testgenManual.md) for details).
 
 ***
-<img src="../screen_shots/AnalysisPortal3.png">
+<img src="../screen_shots/AnalysisPortal3_v3.0.png">
 
 ***  
 
@@ -73,32 +73,37 @@ To generate CoCoSpec code, for each variable, the following information must be 
 A user may optionally import information from a corresponding Simulink model and also make the mapping between the components/variables described in the requirements and the components/port types of the Simulink model. To do that, the user can optionally generate the model information in a compliant-to-FRET JSON format by using `fret/tools/Scripts/Matlab/fret_IR.m`. Then the JSON file can be imported into FRET by clicking the Import button.
 
 ***
-<img src="../screen_shots/AnalysisPortal4a.png">  
+<img src="../screen_shots/AnalysisPortal4a_v3.0.png">  
 
 ***
 
 If model information has been imported, the user may pick for each FRET component a corresponding model component from the dropdown menu of the variables table.
 
 ***
-<img src="../screen_shots/AnalysisPortal4b.png">  
+<img src="../screen_shots/AnalysisPortal4b_v3.0.png">  
 
 ***
 
 Next, for each variable, all mandatory fields must be completed. For each type of variable, i.e., `Input`, `Output`, `Internal`, and `Mode`, there are different mandatory fields. Mandatory fields are depicted with an asterisk.
 
 ***
-<img src="../screen_shots/AnalysisPortal4c.png">  
+<img src="../screen_shots/AnalysisPortal4c_v3.0.png">  
 
 ***
 
 To complete the information of a variable, please click on the corresponding FRET Variable name. Then the Update Variable information will pop up. To save the updated information please click on the `UPDATE` button.
 
 ***
-<img src="../screen_shots/AnalysisPortal4d.png">
+<img src="../screen_shots/AnalysisPortal4d_v3.0.png">
 
 ***
 
+> [!TIP]
+> To verify that a variable's information has been completed, set the Export language to the language in question and observe the `Complete` column in the variables table. Variables with complete information will have a circled green check mark in the `Complete` column.
 
+***
+<img src="../screen_shots/AnalysisPortal4e.png">
+***
 
 **5. Click on the Export button and save the generated code**
 
