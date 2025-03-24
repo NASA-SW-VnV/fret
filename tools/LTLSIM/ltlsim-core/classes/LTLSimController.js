@@ -48,13 +48,6 @@ module.exports = class LTLSimController {
     //
     //------------------------------------------------------------
     static addAtomic(model, id, atType, canChange, mi, ma) {
-console.log("addAtomic");
-console.log(id)
-console.log(atType)
-console.log(canChange)
-console.log(mi)
-console.log(ma)
-console.log("/addAtomic");
         if (model.atomics.keys.indexOf(id) === -1) {
             model.atomics.keys.push(id);
             model.atomics.values[id] = new Atomic(id, model.traceLength);
@@ -71,13 +64,6 @@ console.log("/addAtomic");
     // with update of min/max values
     //------------------------------------------------------------
     static addAtomicU(model, id, atType, canChange, mi, ma) {
-console.log("addAtomicU");
-console.log(id)
-console.log(atType)
-console.log(canChange)
-console.log(mi)
-console.log(ma)
-console.log("/addAtomicU");
         if (model.atomics.keys.indexOf(id) === -1) {
             model.atomics.keys.push(id);
             model.atomics.values[id] = new Atomic(id, model.traceLength);
@@ -285,7 +271,6 @@ console.log("/addAtomicU");
 		    NL.push(val);
 		    }
 		}
-console.log("LTLSimController: getTrace",model.atomics.keys,model.atomics.type);
 	var TL=[];
 	var CCL=[];
 	var MINL=[];
@@ -323,23 +308,7 @@ console.log("LTLSimController: getTrace",model.atomics.keys,model.atomics.type);
 			//
 			// we need to define a new variable (key)
 			//
-console.log("setTrace");
-console.log(a)
-let ii= model.atomics.keys.indexOf(a);
-console.log(ii)
-console.log(model.atomics.keys[ii])
-console.log(model.atomics.keys[a])
-console.log(model.atomics.type[a])
-console.log(model.atomics.canChange[a])
-console.log(model.atomics.minval[a])
-console.log(model.atomics.maxval[a])
-console.log("/setTrace");
         	if (model.atomics.keys.indexOf(a) === -1) {
-console.log("controller handling variable ")
-console.log(a)
-console.log(trace.type[idx]);
-console.log(trace.canChange[idx]);
-console.log("/controller handling variable ")
 
             		model.atomics.keys.push(a);
             		model.atomics.values[a] = 

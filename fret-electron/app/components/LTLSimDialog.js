@@ -518,10 +518,6 @@ class LTLSimDialog extends Component {
 				actTrace.traceLinkedRequirementIDs = traceLinkedRequirementIDs;
 				}
 			}
-console.log("+ handling");
-console.log(activeTraces)
-console.log(newActiveTraces)
-console.log("/+ handling");
 
         	return {
             		traceAddDialogOpen: false,
@@ -532,7 +528,6 @@ console.log("/+ handling");
     			activeTraces: newActiveTraces
             		};
 		};
-//JSC0321-2
 	  }, () => {
 		/* Call LTL simulation after the state was updated */
 		this.update();
@@ -834,7 +829,6 @@ console.log("/+ handling");
 			if (cex[idx].type == "real"){
 				atomic_type = "number"
 				}
-//JSC0321: can other types show up?
 
 			//
 			// find minimum and maximum value
@@ -919,7 +913,6 @@ console.log("/+ handling");
 		//
 		// set the new trace-length before loading the trace into the
 		// controller
-//JSC0321 should be set already
 		//
 	LTLSimController.setTraceLength(this.state.model, K);
 		//
@@ -1088,9 +1081,6 @@ console.log("/+ handling");
 			} // for tr
 
 			for (let tr=0; tr<addToTraces.length;tr++){
-console.log("Adding to controller")
-console.log(addToTraces[tr].theTrace)
-console.log("/Adding to controller")
 				LTLSimController.setTrace(model,addToTraces[tr].theTrace);
 				}
 
@@ -1104,7 +1094,6 @@ console.log("/Adding to controller")
 			traces = traces.concat(addToTraceIDs);
 			activeTraces = activeTraces.concat(addToTraces);
 
-//JSC0321
 			let NewTraceLength = addToTraces[0].theTrace.traceLength;
 			LTLSimController.setTraceLength(this.state.model, NewTraceLength);
 
@@ -1134,7 +1123,6 @@ console.log("/Adding to controller")
 		//
 		// load the trace and set FTP and LAST accordingly
 		//
-//JSC0321
         LTLSimController.setTraceLength(this.state.model, NC.theTrace.traceLength);
 	LTLSimController.setTrace(this.state.model,NC.theTrace);
 	setMarginVariableTraces(this.state.model);
@@ -1431,7 +1419,6 @@ for (let i=0; i< reqID_data.length; i++){
 
                 return {
                     model,
-		    //JSC 0321-3 updatedFlag: "*"
                 };
         })
     }
@@ -1522,7 +1509,6 @@ for (let i=0; i< reqID_data.length; i++){
 	// from MainView
         let formulaFilter = visibleRequirementIDs.filter((f) => {
                 let formula = LTLSimController.getFormula(model, f);
-		//JSC
 		return true;
             });
 

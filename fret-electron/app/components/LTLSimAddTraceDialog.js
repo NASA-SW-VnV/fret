@@ -223,7 +223,6 @@ class LTLSimAddTraceDialog extends Component {
     handleLinkReqSel(reqID){
       this.setState((prevState) => {
 	const {traceLinkedRequirementIDs} = prevState;
-console.log(traceLinkedRequirementIDs);
         const {requirementIDs } = this.props;
 
 	let reqID_R =reqID.reqID.replace(/ /g,"_")

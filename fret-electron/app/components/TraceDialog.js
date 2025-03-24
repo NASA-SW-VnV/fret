@@ -97,9 +97,9 @@ class TraceDialog extends Component {
     }
 
     handleInput() {
-  	// if (event.key === 'Enter') 
+		// Prevent the default action of the Enter key
   	if (event.keyCode === 13) {
-    		event.preventDefault(); // Prevent the default action of the Enter key
+    		event.preventDefault(); 
   		}
     }
 
