@@ -31,7 +31,7 @@ X, and Linux.
 License
 -------
 
-FRET has been released under the NASA Open Source Agreement version 1.3, see [LICENSE.pdf](LICENSE.pdf).
+FRET has been released under the Apache 2.0 license, see [LICENSE.pdf](LICENSE.pdf).
 
 Contributors
 ------------
