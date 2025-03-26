@@ -481,13 +481,13 @@ class DisplayVariableDialog extends React.Component {
     const { language } = this.props
     const {idType, dataType, errorsCopilot, checkCoPilot, errorsLustre, checkLustre, errorsSMV, checkSMV} = this.state
     const parseErrorsCondition = (idType === 'Internal' && ((errorsCopilot!== '' && checkCoPilot) || (errorsLustre !== '' && checkLustre) || (errorsSMV !== '' && checkSMV)))
-    const smvCompatibleDataTypeCondition = (dataType !== 'boolean' && language === 'smv')
+    const smvIncompatibleDataTypeCondition = ((dataType !== 'boolean' && dataType !== '') && language === 'smv')
     return(
-      <Tooltip title={parseErrorsCondition ? 'A parsing error exists in variable assignment. Resolve the parsing error or disable the corresponding language.' : smvCompatibleDataTypeCondition ? 'Data type \'' + dataType + '\' is not supported for SMV.' : ''}>
+      <Tooltip title={parseErrorsCondition ? 'A parsing error exists in variable assignment. Resolve the parsing error or disable the corresponding language.' : smvIncompatibleDataTypeCondition ? 'Data type \'' + dataType + '\' is not supported for SMV.' : ''}>
     <span>
       <Button id="qa_disVar_btn_update"
               onClick={this.handleUpdate}
-              disabled={parseErrorsCondition || smvCompatibleDataTypeCondition}
+              disabled={parseErrorsCondition || smvIncompatibleDataTypeCondition}
               color="secondary"
               variant='contained'>
         Update
