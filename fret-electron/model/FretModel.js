@@ -910,8 +910,11 @@ export default class FretModel {
           smvCompletedVariable = true;
         }
       }
-    } else if (modeRequirement || (dataType && (assignment || copilotAssignment)) || (idType === "Function")) {
+    } else if (modeRequirement || (dataType && (assignment || copilotAssignment))) {
       completedVariable = true;
+    } else if (idType === "Function") {
+      completedVariable = true;
+      smvCompletedVariable = true;
     }
 
     if (dataType && dataType === 'boolean' && smvAssignment) {
