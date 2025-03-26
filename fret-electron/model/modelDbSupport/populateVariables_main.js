@@ -32,6 +32,16 @@ function batchCreateOrUpdate (variables) {
   });
 };
 
+function updateSMVCompletedState(variable) {
+  if (variable.dataType === 'boolean' && 
+    variable.idType !== 'Internal' && 
+    variable.completed && 
+    !Object.hasOwn(variable, 'smvCompleted')) {
+      variable.smvCompleted = true
+  }
+  return variable
+}
+
 //This function populates the model DB when a new requirement is added (imported) or updated
 async  function populateVariables() {
     let mapIdsToVariables = {};
@@ -50,6 +60,7 @@ async  function populateVariables() {
       // data.rows are variable docs in modelDB
       var variableRows = data.rows.map(row => row.doc);
       variableRows.forEach(variable => {
+        variable = updateSMVCompletedState(variable)
         if (variable.modeldoc === false){
           mapIdsToVariables[variable._id] = variable;
           mapIdsToVariables[variable._id].reqs = [];
@@ -95,11 +106,13 @@ async  function populateVariables() {
                   description: '',
                   assignment: '',
                   copilotAssignment: '',
+                  smvAssignment: '',
                   modeRequirement: '',
                   modeldoc: false,
                   modelComponent: '',
                   modeldoc_id: '',
-                  completed: false
+                  completed: false,
+                  smvCompleted: false
                 };
                 mapIdsToVariables[variableId] = newVariable;
                 requirementVariables[variableId] = [dbId];
