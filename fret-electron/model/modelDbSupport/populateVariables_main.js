@@ -33,11 +33,12 @@ function batchCreateOrUpdate (variables) {
 };
 
 function updateSMVCompletedState(variable) {
-  if (variable.dataType === 'boolean' && 
-    variable.idType !== 'Internal' && 
-    variable.completed && 
-    !Object.hasOwn(variable, 'smvCompleted')) {
-      variable.smvCompleted = true
+  if (!Object.hasOwn(variable, 'smvCompleted') && variable.completed && variable.idType !== 'Internal') {
+    if (variable.dataType === 'boolean' || variable.idType === 'Function') {
+        variable.smvCompleted = true
+    } else {
+        variable.smvCompleted = false
+    }
   }
   return variable
 }

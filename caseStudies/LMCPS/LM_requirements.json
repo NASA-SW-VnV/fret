@@ -10438,7 +10438,7 @@
             "modeldoc_vectorIndex": 0,
             "modelComponent": "EB_12B/EB",
             "completed": true,
-            "smvCompleted": false,
+            "smvCompleted": true,
             "_id": "LM_requirementsEBdet_3x3"
         },
         {
@@ -11382,7 +11382,7 @@
             "modeldoc_vectorIndex": 0,
             "modelComponent": "euler321_I2B_12B",
             "completed": true,
-            "smvCompleted": false,
+            "smvCompleted": true,
             "_id": "LM_requirementsEulercos"
         },
         {
@@ -11407,7 +11407,7 @@
             "modeldoc_vectorIndex": 0,
             "modelComponent": "euler321_I2B_12B",
             "completed": true,
-            "smvCompleted": false,
+            "smvCompleted": true,
             "_id": "LM_requirementsEulerdet_3x3"
         },
         {
@@ -11696,7 +11696,7 @@
             "modeldoc_vectorIndex": 0,
             "modelComponent": "euler321_I2B_12B",
             "completed": true,
-            "smvCompleted": false,
+            "smvCompleted": true,
             "_id": "LM_requirementsEulersin"
         },
         {
@@ -13609,7 +13609,7 @@
             "modeldoc_vectorIndex": 0,
             "modelComponent": "swim_12B/swim_airspeed",
             "completed": true,
-            "smvCompleted": false,
+            "smvCompleted": true,
             "_id": "LM_requirementsSWIMsqrt"
         },
         {
