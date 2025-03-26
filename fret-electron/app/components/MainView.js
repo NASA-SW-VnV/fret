@@ -1,7 +1,7 @@
 // Copyright © 2025, United States Government, as represented by the Administrator of the National Aeronautics and Space Administration. All rights reserved.
-// 
-// The “FRET : Formal Requirements Elicitation Tool - Version 3.0” software is licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0. 
-// 
+//
+// The “FRET : Formal Requirements Elicitation Tool - Version 3.0” software is licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0.
+//
 // Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 // @flow
 import React from 'react';
@@ -35,7 +35,7 @@ import DashboardIcon from '@material-ui/icons/Dashboard';
 import GraphIcon from '@material-ui/icons/Timeline';
 import ClusterIcon from '@material-ui/icons/BubbleChart';
 import ListIcon from '@material-ui/icons/List';
-import HelpIcon from '@material-ui/icons/Help';
+import InfoIcon from '@material-ui/icons/Info';
 import SettingsIcon from '@material-ui/icons/Settings';
 import LanguageIcon from '@material-ui/icons/Language';
 import CloseIcon from '@material-ui/icons/Close';
@@ -351,7 +351,7 @@ class MainView extends React.Component {
                                   cocospecData : result.cocospecData,
                                   cocospecModes : result.cocospecModes,
                                   smvCompletedComponents : result.smvCompletedComponents,
-                                  booleanOnlyComponents: result.booleanOnlyComponents                                  
+                                  booleanOnlyComponents: result.booleanOnlyComponents
                       })
       return result.components
     }).then((components) => ipcRenderer.invoke('mapVariables', components)).then((result) => {
@@ -767,13 +767,13 @@ class MainView extends React.Component {
               <Divider />
               <List>
               <div>
-              <ListItem id="qa_db_li_help" button onClick={() => this.setMainContent('help')}>
-                <Tooltip title={!this.state.drawerOpen ? 'Help' : ''}>
+              <ListItem id="info" button onClick={() => this.setMainContent('info')}>
+                <Tooltip title={!this.state.drawerOpen ? 'Info' : ''}>
                 <ListItemIcon>
-                  <HelpIcon />
+                  <InfoIcon />
                 </ListItemIcon>
                 </Tooltip>
-                <ListItemText primary="Help" />
+                <ListItemText primary="Info" />
               </ListItem>
               </div>
               </List>
