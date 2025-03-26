@@ -83,8 +83,7 @@ With default settings, the output trace is colored according to the overall valu
 ### Active requirements
 The current trace can be valuated according to multiple requirements. When LTLSIM is started out of the requirements editor, that requirement is shown automatically.
 
-Clicking on `Requirements in FRETish` will show the full FRETish text of each requirement together with its ID. This avoids frequent change between editor and simulator view.
-A second click on that title hides the details again.
+Clicking on `Requirements in FRETish` will show the full FRETish text of each requirement together with its ID. This avoids frequent change between editor and simulator view. A second click on that title hides the details again.
 
 ***
 <img src="../screen_shots/LTLSIM-REQ-DETAIL.png">
@@ -213,8 +212,7 @@ This means data of a longer trace are lost when shortening. These changes can be
 ***
 
 ### Closing the LTLSIM
-Clicking the `X` on the top right closes the LTLSIM and returns to the
-previous window. 
+Clicking the `X` on the top right closes the LTLSIM and returns to the previous window. 
 
 Notes:
 
