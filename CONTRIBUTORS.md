@@ -2,26 +2,31 @@ FRET Team
 ---------
 
 * [Andreas Katis](https://andreaskatis.github.io/)
-* [Anastasia Mavridou](https://ti.arc.nasa.gov/profile/amavrido/)
-* [Tom Pressburger](https://ti.arc.nasa.gov/profile/ttp/)
-* [Johann Schumann](https://ti.arc.nasa.gov/profile/schumann/)
-* [Khanh Trinh](https://www.researchgate.net/profile/Khanh-Trinh-3)
+* [Anastasia Mavridou](http://amavridou.com/)
+* Johann Schumann
 
-Alumni and Interns
-------------------
+Alumni
+-------
+
+* David Bushnell
+* Dimitra Giannakopoulou
+* Tom Pressburger
+* Nija Shi
+* Khanh Trinh
+
+Interns
+-------
 
 * Milan Bhandari
-* David Bushnell
 * Tanja de Jong
-* Dimitra Giannakopoulou
 * Kelly Ho
 * George (Yorgo) Karamanolis
 * David Kooi
+* [Daniel Mendoza](https://cs.stanford.edu/people/dmendo/)
 * Jessica Phelan
-* Julian Rhein
+* [Julian Rhein](https://www.fsd.ed.tum.de/staff-members/julian-rhein/)
 * Daniel Riley
-* Nija Shi
-* Gricel Vazquez
+* [Gricel Vazquez Flores](https://www.cs.york.ac.uk/people/?group=his&username=gricel)
 
 
 FRET Before Open Sourcing
