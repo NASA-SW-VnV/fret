@@ -1,7 +1,7 @@
 // Copyright © 2025, United States Government, as represented by the Administrator of the National Aeronautics and Space Administration. All rights reserved.
-// 
-// The “FRET : Formal Requirements Elicitation Tool - Version 3.0” software is licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0. 
-// 
+//
+// The “FRET : Formal Requirements Elicitation Tool - Version 3.0” software is licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0.
+//
 // Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 const constants = require('../../app/parser/Constants');
 const utilities = require('../utilities');
@@ -33,7 +33,7 @@ const infix = { ExclusiveOr : 'xor', And : '&', Or : '|', Implies : '->',
 		Since : 'S', Triggers : 'T', Untl : 'U', Releases : 'V',
 		SinceInclusive : 'SI', UntilInclusive : 'UI',
 	        SinceTimed : 'S', UntlTimed : 'U',
-		SinceInclusiveTimed: 'SI', UntilInclusiveTimed: 'UI', 
+		SinceInclusiveTimed: 'SI', UntilInclusiveTimed: 'UI',
 		//TriggersTimed: 'TT', ReleasesTimed: 'VT',
 		Plus : '+', Minus : '-', Divide : '/', Mult : '*', Mod : 'mod',
 		Expt : '^',
@@ -50,12 +50,12 @@ const prefix = { Not : '!', Historically : 'H', Once : 'O', Negate : '-',
 
 // CoCoPrefix and CoCoInfix have no future temporal operators
 
-const CoCoPrefix = {  Negate : '-', Not : 'not ', 
+const CoCoPrefix = {  Negate : '-', Not : 'not ',
 		      Historically : 'H', Once : 'O',
 		      PrevFalse : 'YtoPre', PrevTrue : 'ZtoPre',
-		      HistoricallyTimed : 'HT', OnceTimed : 'OT', 
-		      Triggers : 'T', 
-		      Since : 'S', SinceTimed : 'ST', 
+		      HistoricallyTimed : 'HT', OnceTimed : 'OT',
+		      Triggers : 'T',
+		      Since : 'S', SinceTimed : 'ST',
 		      SinceInclusive : 'SI', SinceInclusiveTimed : 'SIT' }
 
 // These CoCoSpec binary operators have their arguments reversed from
@@ -63,11 +63,11 @@ const CoCoPrefix = {  Negate : '-', Not : 'not ',
 // support/CommonTemplates/LibraryOfOperators.ejs
 const Reversed = ["S","ST","SI","SIT"];
 
-const CoCoInfix = { ExclusiveOr : 'xor', And : 'and', Or : 'or', 
+const CoCoInfix = { ExclusiveOr : 'xor', And : 'and', Or : 'or',
 		    Implies : '=>', Equiv : '=',
-		    Plus : '+', Minus : '-', Divide : '/', Mult : '*', 
+		    Plus : '+', Minus : '-', Divide : '/', Mult : '*',
 		    Mod : 'mod', Expt : '^',
-		    LessThan : '<', LessThanOrEqual : '<=',  
+		    LessThan : '<', LessThanOrEqual : '<=',
 		    NotEqual: '<>', Equal : '=',
 		    GreaterThan : '>', GreaterThanOrEqual : '>='
 	      };
@@ -87,7 +87,7 @@ function LTLtoAST (LTL) {
   var tree = parser.bool_expr();
   return LTLASTAnalyzer.visit(tree);
 };
- 
+
 function boundToString (range) {
     if (isString(range)) return range;
     let firstInfix = infix[range[0]];
@@ -113,14 +113,14 @@ function ASTtoLTL(ast) {
            if (isArray(ast[0])) { // the first element of timed operators is an array
 	       let op = ast[0][0];
 	       let pre = prefix[op];
-	       if (pre !== undefined) 
+	       if (pre !== undefined)
 		  result = ('(' + pre + boundToString(ast[0][1]) + ' ' + ASTtoLTL(ast[1]) + ')');
                else { let infixChar = infix[op];
-	              if (infixChar !== undefined) 
+	              if (infixChar !== undefined)
 			  result = ('(' + ASTtoLTL(ast[1]) + ' '
 				    + infixChar + boundToString(ast[0][1])
 				    + ' ' + ASTtoLTL(ast[2]) + ')');
-		      else console.log('!! Unknown operator: ' + op)
+		      //else console.log('!! Unknown operator: ' + op)
 		    }
 	   }
            else { let op = ast[0];
@@ -137,10 +137,10 @@ function ASTtoLTL(ast) {
 
 		       }
 		}
-    } else console.log("ASTtoLTL doesn't know the type of: " + ast);
+  }// else console.log("ASTtoLTL doesn't know the type of: " + ast);
     return result;
 }
-    
+
 // return a string of the ast printed in CoCoSpec (Lustre) format
 function ASTtoCoCo(ast) {
     let result = '';
@@ -155,13 +155,11 @@ function ASTtoCoCo(ast) {
 	let pre = CoCoPrefix[op];
         if (pre !== undefined) {
 	  const bound = head[1]
-          if (!isArray(bound)) console.log("ASTtoCoCo: Bound error: " + JSON.stringify(head));
+          //if (!isArray(bound)) console.log("ASTtoCoCo: Bound error: " + JSON.stringify(head));
 	  let args = ast.slice(1).map(ASTtoCoCo);
 	  if (Reversed.includes(pre)) args = args.reverse();
           result = pre + '(' + bound[1] + ', ' + bound[0] + ', ' + args.join(',') + ')';
-	}
-	else console.log('ASTtoCoCo: Unknown timed temporal operator: '
-			 + JSON.stringify(head))
+	} //else console.log('ASTtoCoCo: Unknown timed temporal operator: ' + JSON.stringify(head))
       }
       else {
 	const infixChar = CoCoInfix[head];
@@ -177,7 +175,7 @@ function ASTtoCoCo(ast) {
 	  result = (op + '(' + args.join(',') + ')');
 	}
       }
-    } else console.log("ASTtoCoCo doesn't know the type of " + JSON.stringify(ast));
+    } //else console.log("ASTtoCoCo doesn't know the type of " + JSON.stringify(ast));
   return result;
 }
 
@@ -186,7 +184,7 @@ function ASTtoCoCo(ast) {
 function abstractArithExprsAndNonMonotonicOpsInAST(ast) {
 	let abstractions = {}
     var result = []
-    if (isArray(ast)) {        
+    if (isArray(ast)) {
 		if (isArray(ast[0])) {
 			//Timed operators
 			let head = ast[0];
@@ -212,7 +210,7 @@ function abstractArithExprsAndNonMonotonicOpsInAST(ast) {
 			}
 		} else if (infix[ast[0]]) {
 			switch (ast[0]) {
-				case 'Plus':            
+				case 'Plus':
 				case 'Minus':
 				case 'Divide':
 				case 'Mult':
@@ -227,7 +225,7 @@ function abstractArithExprsAndNonMonotonicOpsInAST(ast) {
 				case 'Equiv':
 				case 'xor':
 					let abstractedSubAST = abstractArithExprsAndNonMonotonicOpsInAST(ast[1]).result+'_'+ast[0]+'_'+abstractArithExprsAndNonMonotonicOpsInAST(ast[2]).result
-					abstractions[abstractedSubAST] = ast;            
+					abstractions[abstractedSubAST] = ast;
 					result = abstractedSubAST;
 					break;
 				default:
@@ -237,18 +235,18 @@ function abstractArithExprsAndNonMonotonicOpsInAST(ast) {
 					result = [ast[0], abstractedSubAST_1.result, abstractedSubAST_2.result]
 			}
 		} else if (isVar(ast) || isAtom(ast)) {
-			abstractions = {}			
+			abstractions = {}
         	result = ast;
 		} else {
-			//Everything else, which should only be custom predicates.			
+			//Everything else, which should only be custom predicates.
 			let abstractedSubAST = ast.map(a => abstractArithExprsAndNonMonotonicOpsInAST(a).result).join('_')
 			abstractions[abstractedSubAST] = ast;
-			result = abstractedSubAST			
+			result = abstractedSubAST
 		}
-    } else if (isVar(ast) || isAtom(ast)) {	
-		abstractions = {}		
+    } else if (isVar(ast) || isAtom(ast)) {
+		abstractions = {}
 		result = ast;
-	} else console.log("abstractArithExprsAndNonMonotonicOpsInAST doesn't know the type of: " + ast);
+	} //else console.log("abstractArithExprsAndNonMonotonicOpsInAST doesn't know the type of: " + ast);
     return { result, abstractions };
 }
 
@@ -273,12 +271,12 @@ function concretizeArithExprsInAST(ast, abstractions) {
 			result = (ast[0] in abstractions) ? abstractions[ast] : ast[0];
 		} else if (isBoolean(ast) || isVar(ast)) {
 			result = ast;
-		} else console.log("concretizeArithExprsInAST doesn't know the type of: " + ast);
+		} //else console.log("concretizeArithExprsInAST doesn't know the type of: " + ast);
 	} else if (isString(ast)) {
 		result = (ast in abstractions) ? abstractions[ast] : ast;
 	} else if (isBoolean(ast) || isVar(ast)) {
 		result = ast
-	} else console.log("concretizeArithExprsInAST doesn't know the type of: " + ast);
+	} //else console.log("concretizeArithExprsInAST doesn't know the type of: " + ast);
 	return result;
 }
 
@@ -298,5 +296,3 @@ console.log('\n' + JSON.stringify(ASTtoCoCo(exast)))
 /*
 ST(3, 3, (((HT(2, 0, ((p and q) or r)) and H((YtoPre(q) => ZtoPre((not (r) = ss))))) and (x <> (3 - (2 mod abs(-(z)))))) and p),(q xor (((3 + ((4 * 6) / 7)) >= (2 ^ 3)) or (((false and S(p,q)) and SI(qq,rr)) and SIT(3, 0, uu,vv)))))
 */
-
-
