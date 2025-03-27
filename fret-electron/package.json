@@ -1,7 +1,7 @@
 {
   "name": "fret",
   "productName": "FRET",
-  "version": "2.9.1",
+  "version": "3.0",
   "description": "FRET",
   "scripts": {
     "fret-install": "npm install && npm --prefix ../tools/LTLSIM/ltlsim-core install ../tools/LTLSIM/ltlsim-core && npm run build",
@@ -91,7 +91,7 @@
     "email": "anastasia.mavridou@nasa.gov",
     "url": ""
   },
-  "license": "NOSA 1.3",
+  "license": "Apache 2.0",
   "bugs": {
     "url": "https://babelfish.arc.nasa.gov/jira/projects/FRET/issues"
   },
