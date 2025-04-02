@@ -30,7 +30,7 @@ When you open the FRET distribution, you will see the following directory struct
 * Here are the steps to install and run FRET on Linux and MacOS systems:
 
   1. `cd fret-electron`
-  2. `npm run fret-install` (please do `npm run fret-reinstall` instead if you already have a FRET installation)
+  2. `npm run fret-install`
   3. `npm start`
 
 
