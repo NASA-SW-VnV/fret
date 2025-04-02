@@ -87,6 +87,8 @@ npm -v # Should print "10.8.2".
 
 ```
 
+> __Note:__ Since different projects might require different node versions, nvm (or fnm) provide an easy way to switch between previously installed node versions, e.g., by `nvm use vA.B.C`. 
+
 Here is the [NodeJS website](https://nodejs.org/en). If you download a NodeJS prebuild, please make sure that it is in the `v16.16.x - v20.19.x` version interval.
 
 
