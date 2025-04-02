@@ -2,8 +2,8 @@
 
 ### Dependencies
 
- * [NodeJS](https://nodejs.org/en/download/) (use any version between v16.16.x - v20.13.1)
- * Python (use any version between v3.10.x - v3.12.x)
+ * NodeJS (use any version between v16.16.x - v20.19.x, detailed instructions [here](#How-to-install-NodeJS)
+ * Python (use any version between v3.10.x - v3.13.x)
  * `gcc`, `g++`, `make`
  * Ubuntu users, ensure that the following packages are installed:
      - Ubuntu 24.04 or later: `libgtk-3-0t64 libdrm2 libgbm1 libnss3 libx11-xcb1 libasound2t64`
@@ -52,6 +52,44 @@ When you open the FRET distribution, you will see the following directory struct
 
 > __Note:__ To generate test cases or test obligations, NuSMV must be installed.
 
+### How to install NodeJS
+
+The easiest official way is through the node version manager (nvm). For Mac OS or Linux, please do the following:
+```
+# Download and install nvm:
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.2/install.sh | bash
+
+# in lieu of restarting the shell
+\. "$HOME/.nvm/nvm.sh"
+
+# Download and install Node.js:
+nvm install 20
+
+# Verify the Node.js version:
+node -v # Should print "v20.19.0".
+nvm current # Should print "v20.19.0".
+
+# Verify npm version:
+npm -v # Should print "10.8.2".
+```
+
+For Windows, please do the following:
+```
+# Download and install fnm:
+winget install Schniz.fnm
+
+# Download and install Node.js:
+fnm install 20
+
+# Verify the Node.js version:
+node -v # Should print "v20.19.0".
+
+# Verify npm version:
+npm -v # Should print "10.8.2".
+
+```
+
+Here is the [NodeJS website](https://nodejs.org/en). If you download a NodeJS prebuild, please make sure that it is in the v16.16.x - v20.19.x version interval.
 
 [Back to FRET home page](../userManual.md)
 
