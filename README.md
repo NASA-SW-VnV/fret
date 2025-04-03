@@ -7,7 +7,7 @@ FRET: Formal Requirements Elicitation Tool
 Introduction
 ------------
 
-FRET is a comprehensive framework for the elicitation, specification, formalization, and analysis of system requirements. It enables users to define requirements using a structured natural language while providing multiple representations to enhance clarity, validation, and verification. These representations include natural language descriptions, formal mathematical logics, and visual diagrams, allowing users with different expertise to review and understand requirements effectively.
+FRET is a framework for the elicitation, specification, formalization, and analysis of system requirements. It enables users to define requirements using a structured natural language while providing multiple representations to enhance clarity, validation, and verification. These representations include natural language descriptions, formal mathematical logics, and visual diagrams, allowing users with different expertise to review and understand requirements effectively.
 
 FRET supports hierarchical requirement definition, enabling users to structure requirements based on different levels. It also offers export capabilities in various formats, facilitating integration with external formal analysis tools. FRET provides automated, requirement-based test case generation, incorporating a coverage metric to assess the adequacy of generated tests. Furthermore, FRET includes built-in consistency checking mechanisms to detect logical contradictions and thus, it helps to ensure that requirements are both complete and logically sound.
 
