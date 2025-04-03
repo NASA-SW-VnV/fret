@@ -15,23 +15,12 @@
 
 ### Install and Run
 
-When you open the FRET distribution, you will see the following directory structure:
+* Here are the four simple steps to install and run FRET on Linux and MacOS systems:
 
-```
-.
-├── fret-electron
-├── tools
-├── caseStudies
-├── CONTRIBUTORS.md
-├── LICENSE.pdf
-└── README.md
-```
-
-* Here are the steps to install and run FRET on Linux and MacOS systems:
-
-  1. `cd fret-electron`
-  2. `npm run fret-install`
-  3. `npm start`
+  1. `git clone https://github.com/NASA-SW-VnV/fret.git`
+  2. `cd fret/fret-electron`
+  3. `npm run fret-install`
+  4. `npm start`
 
 
 * Alternatively, for MacOS or Linux users, we provide means to build an executable natively or through Docker. See [Building executables](buildingExecutables.md).
