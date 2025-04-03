@@ -20,7 +20,7 @@ Contact
 
 For further information on FRET, please contact <andreas.katis@nasa.gov> and <anastasia.mavridou@nasa.gov>. 
 
-You can also report issues and participate in [discussions on GitHub](https://github.com/NASA-SW-VnV/fret.git).
+You can also report [issues](https://github.com/NASA-SW-VnV/fret/issues) and participate in [discussions on GitHub](https://github.com/NASA-SW-VnV/fret.git).
 
 Installation
 ------------
