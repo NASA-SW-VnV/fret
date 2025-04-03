@@ -1,6 +1,9 @@
 FRET: Formal Requirements Elicitation Tool
 =============================================
 
+[![License](https://img.shields.io/badge/license-Apache_2.0-blue)](LICENSE.pdf)
+[![Release](https://img.shields.io/badge/release-v3.0-orange)](https://github.com/NASA-SW-VnV/fret/releases/tag/v3.0.0)
+
 Introduction
 ------------
 
