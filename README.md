@@ -4,41 +4,50 @@ FRET: Formal Requirements Elicitation Tool
 Introduction
 ------------
 
-FRET is a framework for the elicitation, specification, formalization and understanding of requirements. Users enter system requirements in a specialized natural language. FRET helps understanding and review of semantics by utilizing a variety of forms for each requirement: natural language description, formal mathematical logics, and diagrams. Requirements can be defined in a hierarchical fashion and can be exported in a variety of forms to be used by analysis tools.
+FRET is a comprehensive framework for the elicitation, specification, formalization, and analysis of system requirements. It enables users to define requirements using a structured natural language while providing multiple representations to enhance clarity, validation, and verification. These representations include natural language descriptions, formal mathematical logics, and visual diagrams, allowing users with different expertise to review and understand requirements effectively.
 
-Contact
--------
+FRET supports hierarchical requirement definition, enabling users to structure requirements based on different levels. It also offers export capabilities in various formats, facilitating integration with external formal analysis tools. FRET provides automated, requirement-based test case generation, incorporating a coverage metric to assess the adequacy of generated tests. Furthermore, FRET includes built-in consistency checking mechanisms to detect logical contradictions and thus, it helps to ensure that requirements are both complete and logically sound.
 
-For further information on FRET, please contact <andreas.katis@nasa.gov> and
-<anastasia.mavridou@nasa.gov> or issues and
-discussions on GitHub at [https://github.com/NASA-SW-VnV/fret.git](https://github.com/NASA-SW-VnV/fret.git). Detailed
-information can be found in the
-[FRET manual](fret-electron/docs/_media/userManual.md).
-
-Installation
-------------
-
-Detailed instructions can be found in [installation instructions](fret-electron/docs/_media/installingFRET/installationInstructions.md).
-
-Platforms
----------
-
-FRET has been tested in a range of architecture/operating system
-combinations. It has been tested on PC Intel, Apple Mac and Sun
-architectures, with different versions and distributions of Windows, Mac OS
-X, and Linux.
+For more details, refer to the [FRET manual](fret-electron/docs/_media/userManual.md).
 
 License
 -------
 
-FRET has been released under the Apache 2.0 license, see [LICENSE.pdf](LICENSE.pdf).
+FRET is released under the Apache 2.0 license. For more details, please refer to the [LICENSE.pdf](LICENSE.pdf).
+
+Contact
+-------
+
+For further information on FRET, please contact <andreas.katis@nasa.gov> and <anastasia.mavridou@nasa.gov>. 
+
+You can also report issues and participate in [discussions on GitHub](https://github.com/NASA-SW-VnV/fret.git).
+
+Installation
+------------
+
+See [installation guide](fret-electron/docs/_media/installingFRET/installationInstructions.md).
+
+Troubleshooting
+------------
+
+See [Troubleshooting](Troubleshooting.md).
+
+Release notes
+---------
+
+See [Releases](https://github.com/NASA-SW-VnV/fret/releases).
+
+Platforms
+---------
+
+FRET has been tested across a variety of architecture and operating system combinations, including PC (Intel), Apple Mac, and Sun architectures. It has been validated on multiple versions and distributions of Windows, macOS, and Linux.
 
 Contributors
 ------------
 
-See the FRET [Contributors](CONTRIBUTORS.md).
+See [Contributors](CONTRIBUTORS.md).
 
 Publications
 ------------
 
-Here are some FRET-related [Publications](PUBLICATIONS.md).
+For a comprehensive collection of FRET-related research, development and case studies, please refer to the [Publications](PUBLICATIONS.md) section. This includes scholarly works that highlight the features and applications of FRET.

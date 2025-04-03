@@ -41,7 +41,7 @@
 
 ### How to install NodeJS
 
-For Mac OS or Linux, the easiest official way is through the node version manager (nvm):
+The easiest official way is through the node version manager (nvm):
 ```
 # Download and install nvm:
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.2/install.sh | bash
@@ -58,22 +58,6 @@ nvm current # Should print "v20.19.0".
 
 # Verify npm version:
 npm -v # Should print "10.8.2".
-```
-
-For Windows, the easiest official way is through the fast node manager (fnm):
-```
-# Download and install fnm:
-winget install Schniz.fnm
-
-# Download and install Node.js:
-fnm install 20
-
-# Verify the Node.js version:
-node -v # Should print "v20.19.0".
-
-# Verify npm version:
-npm -v # Should print "10.8.2".
-
 ```
 
 > __Note:__ Since different projects might require different node versions, nvm (or fnm) provide an easy way to switch between previously installed node versions, e.g., by `nvm use vA.B.C`. 

@@ -60,11 +60,16 @@ NASA/TM–20220017032, April 2023.
 
 * David Kooi, Anastasia Mavridou. [Integrating Realizability Checking in FRET](https://ntrs.nasa.gov/api/citations/20190033980/downloads/20190033980.pdf), NASA/TM–2019-20190033980, June 2019.
 
+### Test Case Generation
+* Andreas Katis, Anastasia Mavridou, Thomas Pressburger.
+A Streamlined, Formal Approach to Requirements-based Testing,
+NFM 20205.
+
 ### Connection with verification tools
 
 * Xaver Fink, Anastasia Mavridou, Andreas Katis, Borja Fernandez Adiego.
-Verifying PLC Programs via Monitors: Extending
-the Integration of FRET and PLCverif, NFM 2024.
+[Verifying PLC Programs via Monitors: Extending the Integration of FRET and PLCverif](https://link.springer.com/chapter/10.1007/978-3-031-60698-4_26),
+NFM 2024.
 
 * Zsófia Ádám, Ignacio D. Lopez-Miguel, Anastasia Mavridou, Thomas Pressburger, Marcin Bęś, Enrique Blanco Viñuela, Andreas Katis, Jean-Charles Tournier, Khanh V. Trinh, Borja Fernandez Adiego.
 [From Natural Language Requirements to the Verification of Programmable Logic Controllers: Integrating FRET into PLCverif](https://link.springer.com/chapter/10.1007/978-3-031-33170-1_21),
@@ -95,10 +100,27 @@ DSN-W 2023.
 [Exploring Requirements for Software that Learns: A Research Preview](https://link.springer.com/chapter/10.1007/978-3-031-29786-1_12),
 REFSQ 2023.
 
+### Human-robot teamwork
+
+* Hazel M. Taylor, Anastasia Mavridou, Marie Farrell, Louise A. Dennis
+Explainability Pattern Specifications for Human-Robot Teamwork,
+ERAS 2025.
 
 ### External publications
 
-* Nathaniel Benz, Irfan Sjivo, Pavlo G. Vlastos, Aaron Woodard, Corey Carter, Mohammad Hejase.
+* Hazel Taylor, Matt Luckcuck, Marie Farrell, Caroline Jay, Angelo Cangelosi and Louise Dennis.
+[Eliciting Explainability Requirements for Safety-Critical Systems: A Nuclear Case Study](https://research.manchester.ac.uk/en/publications/eliciting-explainability-requirements-for-safety-critical-systems),
+REFSQ 2025.
+
+* Oisin Sheridan, Leandro Buss Becker, Marie Farrell, Matt Luckcuck and Rosemary Monahan.
+[Sharper Specs for Smarter Drones: Formalising Requirements with FRET](https://research.manchester.ac.uk/en/publications/sharper-specs-for-smarter-drones-formalising-requirements-with-fr),
+REFSQ 2025.
+
+* Julius Adelt, Marie Farrell, Paula Herber, Matt Luckcuck and Rosemary Monahan.
+[Defining Contracts for Autonomous Hybrid Systems in Structured Natural Language](https://research.manchester.ac.uk/en/publications/defining-contracts-for-autonomous-hybrid-systems-in-structured-na),
+Martin Franzle's Festschrift 2025.
+
+*  Nathaniel Benz, Irfan Sjivo, Pavlo G. Vlastos, Aaron Woodard, Corey Carter, Mohammad Hejase.
 [The Troupe System: An autonomous multi-agent rover swarm](https://ntrs.nasa.gov/api/citations/20240000218/downloads/SciTech_2024_TroupeSystem.pdf),
 AIAA SCITECH 2024.
 
@@ -122,9 +144,29 @@ AIAA SCITECH 2024.
 
 # Chronological Publication List
 -----------------------------------
+
+* Hazel M. Taylor, Anastasia Mavridou, Marie Farrell, Louise A. Dennis
+Explainability Pattern Specifications for Human-Robot Teamwork,
+ERAS 2025.
+
+* Andreas Katis, Anastasia Mavridou, Thomas Pressburger.
+A Streamlined, Formal Approach to Requirements-based Testing,
+NFM 20205.
+
+* Hazel Taylor, Matt Luckcuck, Marie Farrell, Caroline Jay, Angelo Cangelosi and Louise Dennis.
+[Eliciting Explainability Requirements for Safety-Critical Systems: A Nuclear Case Study](https://research.manchester.ac.uk/en/publications/eliciting-explainability-requirements-for-safety-critical-systems),
+REFSQ 2025.
+
+* Oisin Sheridan, Leandro Buss Becker, Marie Farrell, Matt Luckcuck and Rosemary Monahan.
+[Sharper Specs for Smarter Drones: Formalising Requirements with FRET](https://research.manchester.ac.uk/en/publications/sharper-specs-for-smarter-drones-formalising-requirements-with-fr),
+REFSQ 2025.
+
+* Julius Adelt, Marie Farrell, Paula Herber, Matt Luckcuck and Rosemary Monahan.
+[Defining Contracts for Autonomous Hybrid Systems in Structured Natural Language](https://research.manchester.ac.uk/en/publications/defining-contracts-for-autonomous-hybrid-systems-in-structured-na),
+Martin Franzle's Festschrift 2025.
+
 * Xaver Fink, Anastasia Mavridou, Andreas Katis, Borja Fernandez Adiego.
-Verifying PLC Programs via Monitors: Extending
-the Integration of FRET and PLCverif,
+[Verifying PLC Programs via Monitors: Extending the Integration of FRET and PLCverif](https://link.springer.com/chapter/10.1007/978-3-031-60698-4_26),
 NFM 2024.
 
 * Gricel Vazquez, Anastasia Mavridou, Marie Farrell, Tom Pressurger, Radu Calinescu.
