@@ -31,9 +31,6 @@ app/node_modules
 # OSX
 .DS_Store
 
-# WorkSpace Setting repository
-.vscode/*
-
 # Tests
 test/cocospec/CoCoSpecTests
 test/semantics/CoCoSpecTests
