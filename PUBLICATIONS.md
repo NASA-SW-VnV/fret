@@ -60,10 +60,10 @@ NASA/TM–20220017032, April 2023.
 
 * David Kooi, Anastasia Mavridou. [Integrating Realizability Checking in FRET](https://ntrs.nasa.gov/api/citations/20190033980/downloads/20190033980.pdf), NASA/TM–2019-20190033980, June 2019.
 
-### Test Case Generation
+### Test case generation
 * Andreas Katis, Anastasia Mavridou, Thomas Pressburger.
 A Streamlined, Formal Approach to Requirements-based Testing,
-NFM 20205.
+NFM 2025.
 
 ### Connection with verification tools
 
@@ -151,7 +151,7 @@ ERAS 2025.
 
 * Andreas Katis, Anastasia Mavridou, Thomas Pressburger.
 A Streamlined, Formal Approach to Requirements-based Testing,
-NFM 20205.
+NFM 2025.
 
 * Hazel Taylor, Matt Luckcuck, Marie Farrell, Caroline Jay, Angelo Cangelosi and Louise Dennis.
 [Eliciting Explainability Requirements for Safety-Critical Systems: A Nuclear Case Study](https://research.manchester.ac.uk/en/publications/eliciting-explainability-requirements-for-safety-critical-systems),
