@@ -182,7 +182,7 @@ Martin Franzle's Festschrift 2025.
 NASA/TM–20240006865 2024.
 
 * Marie Farrell, Matt Luckcuck, Rosemary Monahan, Conor Reynolds and Oisin Sheridan.
-[Adventures in FRET and Specification](https://link.springer.com/chapter/10.1007/978-3-031-75380-0_7)
+[Adventures in FRET and Specification](https://link.springer.com/chapter/10.1007/978-3-031-75380-0_7),
 ISoLA 2024.
 
 * Marie Farrell, Matt Luckcuck, Rosemary Monahan, Conor Reynolds and Oisin Sheridan.
