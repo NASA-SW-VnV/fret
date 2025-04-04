@@ -7,16 +7,11 @@ FRET: Formal Requirements Elicitation Tool
 Introduction
 ------------
 
-FRET is a framework for the elicitation, specification, formalization, and analysis of system requirements. It enables users to define requirements using a structured natural language while providing multiple representations to enhance clarity, validation, and verification. These representations include natural language descriptions, formal mathematical logics, and visual diagrams, allowing users with different expertise to review and understand requirements effectively.
+FRET is a framework for the elicitation, specification, formalization, and analysis of system requirements. It enables users to specify unambiguous requirements using restricted English sentences while providing multiple representations to enhance clarity and validation of semantics. These representations include natural language descriptions, formal mathematical logics, and visual diagrams, allowing users with different expertise to review and understand the precise meaning of each requirement.
 
-FRET supports hierarchical requirement definition, enabling users to structure requirements based on different levels. It also offers export capabilities in various formats, facilitating integration with external formal analysis tools. FRET provides automated, requirement-based test case generation, incorporating a coverage metric to assess the adequacy of generated tests. Furthermore, FRET includes built-in consistency checking mechanisms to detect logical contradictions and thus, it helps to ensure that requirements are both complete and logically sound.
+FRET supports hierarchical requirement definition, enabling users to organize requirements based on different levels. It also offers export capabilities in various formats, facilitating integration with external formal analysis tools. FRET provides automated, requirement-based test case generation, incorporating a coverage metric to assess the adequacy of generated tests. Furthermore, FRET includes built-in consistency checking mechanisms to detect conflicts between requirements and thus, it helps to ensure that requirements are complete and correct.
 
 For more details, refer to the [FRET manual](fret-electron/docs/_media/userManual.md).
-
-License
--------
-
-FRET is released under the Apache 2.0 license. For more details, please refer to the [LICENSE.pdf](LICENSE.pdf).
 
 Contact
 -------
@@ -33,24 +28,39 @@ See [installation guide](fret-electron/docs/_media/installingFRET/installationIn
 Troubleshooting
 ------------
 
-See [Troubleshooting](Troubleshooting.md).
+See [troubleshooting](Troubleshooting.md).
 
 Release notes
 ---------
 
-See [Releases](https://github.com/NASA-SW-VnV/fret/releases).
+See [release notes](https://github.com/NASA-SW-VnV/fret/releases).
 
 Platforms
 ---------
 
-FRET has been tested across a variety of architecture and operating system combinations, including PC (Intel), Apple Mac, and Sun architectures. It has been validated on multiple versions and distributions of Windows, macOS, and Linux.
+FRET has been tested across a variety of architecture and operating system combinations. It has been validated on multiple versions and distributions of macOS, Linux and Windows.
 
 Contributors
 ------------
 
-See [Contributors](CONTRIBUTORS.md).
+See [contributors list](CONTRIBUTORS.md).
+
+We now also accept external contributions  under a Contributor License Agreement (CLA):
+
+* [Individual CLA](Individual_CLA_ARC-18066-1B_FRET.pdf)
+
+* [Corporate CLA](Corporate_CLA_ARC-18066-1B_FRET.pdf)
 
 Publications
 ------------
 
-For a comprehensive collection of FRET-related research, development and case studies, please refer to the [Publications](PUBLICATIONS.md) section. This includes scholarly works that highlight the features and applications of FRET.
+For a comprehensive collection of FRET-related research, development and case studies, please refer to the [publications](PUBLICATIONS.md) section. This includes scholarly works that highlight the features and applications of FRET.
+
+License
+-------
+
+Copyright © 2025, United States Government as represented by the Administrator of the National Aeronautics and Space Administration. All rights reserved.
+ 
+The FRET : Formal Requirements Elicitation Tool - Version 3.0 software is licensed under the Apache License, Version 2.0; you may not use this application except in compliance with the License. You may obtain a copy of the License [here](LICENSE.pdf).
+ 
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
