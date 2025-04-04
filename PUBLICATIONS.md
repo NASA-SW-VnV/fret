@@ -128,6 +128,10 @@ Martin Franzle's Festschrift 2025.
 [Adventures in FRET and Specification](https://link.springer.com/chapter/10.1007/978-3-031-75380-0_7)
 ISoLA 2024.
 
+* Marie Farrell, Matt Luckcuck, Rosemary Monahan, Conor Reynolds and Oisin Sheridan.
+[FRETting and Formal Modelling: A Mechanical Lung Ventilator](https://link.springer.com/chapter/10.1007/978-3-031-63790-2_28),
+ABZ 2024.
+
 *  Nathaniel Benz, Irfan Sjivo, Pavlo G. Vlastos, Aaron Woodard, Corey Carter, Mohammad Hejase.
 [The Troupe System: An autonomous multi-agent rover swarm](https://ntrs.nasa.gov/api/citations/20240000218/downloads/SciTech_2024_TroupeSystem.pdf),
 AIAA SCITECH 2024.
@@ -180,6 +184,10 @@ NASA/TM–20240006865 2024.
 * Marie Farrell, Matt Luckcuck, Rosemary Monahan, Conor Reynolds and Oisin Sheridan.
 [Adventures in FRET and Specification](https://link.springer.com/chapter/10.1007/978-3-031-75380-0_7)
 ISoLA 2024.
+
+* Marie Farrell, Matt Luckcuck, Rosemary Monahan, Conor Reynolds and Oisin Sheridan.
+[FRETting and Formal Modelling: A Mechanical Lung Ventilator](https://link.springer.com/chapter/10.1007/978-3-031-63790-2_28),
+ABZ 2024.
 
 * Xaver Fink, Anastasia Mavridou, Andreas Katis, Borja Fernandez Adiego.
 [Verifying PLC Programs via Monitors: Extending the Integration of FRET and PLCverif](https://link.springer.com/chapter/10.1007/978-3-031-60698-4_26),
