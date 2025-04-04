@@ -45,11 +45,11 @@ Contributors
 
 See [contributors list](CONTRIBUTORS.md).
 
-We now also accept external contributions  under a Contributor License Agreement (CLA):
+We accept external contributions under a Contributor License Agreement (CLA):
 
-* [Individual CLA](Individual_CLA_ARC-18066-1B_FRET.pdf)
+* [individual CLA](Individual_CLA_ARC-18066-1B_FRET.pdf)
 
-* [Corporate CLA](Corporate_CLA_ARC-18066-1B_FRET.pdf)
+* [corporate CLA](Corporate_CLA_ARC-18066-1B_FRET.pdf)
 
 Publications
 ------------
