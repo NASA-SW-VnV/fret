@@ -18,7 +18,7 @@ Contact
 
 For further information on FRET, please contact <andreas.katis@nasa.gov> and <anastasia.mavridou@nasa.gov>. 
 
-You can also report [issues](https://github.com/NASA-SW-VnV/fret/issues) and participate in [discussions on GitHub](https://github.com/NASA-SW-VnV/fret.git).
+You can also report [issues](https://github.com/NASA-SW-VnV/fret/issues) and participate in [discussions](https://github.com/NASA-SW-VnV/fret/discussions).
 
 Installation
 ------------
@@ -45,7 +45,13 @@ Contributors
 
 See [contributors list](CONTRIBUTORS.md).
 
-We accept external contributions under a Contributor License Agreement (CLA):
+We welcome external contributions to the FRET project and any other input that supports the continued growth and improvement of FRET.
+
+If you have questions, suggestions, or ideas, please start a [discussion](https://github.com/NASA-SW-VnV/fret/discussions).
+
+If you wish to address an [issue](https://github.com/NASA-SW-VnV/fret/issues), comment on it to let us know so we can assign it to you. If the issue does not yet exist, you may create one or propose converting a discussion into an issue. 
+
+We currently accept external code contributions under a Contributor License Agreement (CLA):
 
 * [individual CLA](Individual_CLA_ARC-18066-1B_FRET.pdf)
 
