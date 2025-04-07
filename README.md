@@ -49,7 +49,7 @@ We welcome external contributions to the FRET project and any other input that s
 
 If you have questions, suggestions, or ideas, please start a [discussion](https://github.com/NASA-SW-VnV/fret/discussions).
 
-If you wish to address an [issue](https://github.com/NASA-SW-VnV/fret/issues), comment on it to let us know so we can assign it to you. If the issue does not yet exist, you may create one or propose converting a discussion into an issue. 
+If you wish to address an [issue](https://github.com/NASA-SW-VnV/fret/issues), comment on it to let us know so we can assign it to you. For new issues, please start a [discussion](https://github.com/NASA-SW-VnV/fret/discussions) and then propose its conversion to an issue.
 
 We currently accept external code contributions under a Contributor License Agreement (CLA):
 
