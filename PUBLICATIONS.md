@@ -24,6 +24,9 @@ AIAA SCITECH 2024.
 * Irfan Sljivo, Anastasia Mavridou, Johann Schumann, Ivan Perez, Pavlo G. Vlastos, Corey Carter.
 [Dynamic Assurance of Autonomous Systems through Ground Control Software](https://ntrs.nasa.gov/api/citations/20230018233/downloads/SciTech2024_Final.pdf), AIAA SCITECH 2024.
 
+* Thomas Pressburger, Anastasia Mavridou, Ivan Perez, Alwyn Goodloe, Peter Mehlitz, Dennis Volpano, Hannah Walsh.
+[Wildfire-fighting Use Case Requirements to Monitor](https://ntrs.nasa.gov/api/citations/20230010160/downloads/TR_UseCase_Reqts-8.pdf), NASA/TM-20230010160 2023.
+
 * Thomas Pressburger, Andreas Katis, Aaron Dutle, Anastasia Mavridou.
 [Authoring, Analyzing, and Monitoring Requirements for a Lift-Plus-Cruise Aircraft](https://link.springer.com/chapter/10.1007/978-3-031-29786-1_21),
 REFSQ 2023.
@@ -220,6 +223,9 @@ NFM 2023.
 * Carlos Mao de Ferro, Anastasia Mavridou, Michael Dille, Francisco Martins.
 [Simplifying Requirements Formalization for Resource-Constrained Mission-Critical Software](https://ieeexplore.ieee.org/abstract/document/10207116),
 DSN-W 2023.
+
+* Thomas Pressburger, Anastasia Mavridou, Ivan Perez, Alwyn Goodloe, Peter Mehlitz, Dennis Volpano, Hannah Walsh.
+[Wildfire-fighting Use Case Requirements to Monitor](https://ntrs.nasa.gov/api/citations/20230010160/downloads/TR_UseCase_Reqts-8.pdf), NASA/TM-20230010160 2023.
 
 * Marie Farrell, Anastasia Mavridou, Johann Schumann.
 [Exploring Requirements for Software that Learns: A Research Preview](https://link.springer.com/chapter/10.1007/978-3-031-29786-1_12),
