@@ -13,7 +13,7 @@ We thank the community for using FRET. [Here](#external-publications) is a list 
 
 ### Case studies
 
-* Gricel Vazquez, Anastasia Mavridou, Marie Farrell, Tom Pressurger, Radu Calinescu.
+* Gricel Vazquez, Anastasia Mavridou, Marie Farrell, Tom Pressburger, Radu Calinescu.
 [Robotics: A New Mission for FRET Requirements](https://pure.manchester.ac.uk/ws/portalfiles/portal/298664527/NFM2024.pdf),
 NFM 2024.
 
@@ -193,7 +193,7 @@ ABZ 2024.
 [Verifying PLC Programs via Monitors: Extending the Integration of FRET and PLCverif](https://link.springer.com/chapter/10.1007/978-3-031-60698-4_26),
 NFM 2024.
 
-* Gricel Vazquez, Anastasia Mavridou, Marie Farrell, Tom Pressurger, Radu Calinescu.
+* Gricel Vazquez, Anastasia Mavridou, Marie Farrell, Tom Pressburger, Radu Calinescu.
 [Robotics: A New Mission for FRET Requirements](https://pure.manchester.ac.uk/ws/portalfiles/portal/298664527/NFM2024.pdf),
 NFM 2024.
 
