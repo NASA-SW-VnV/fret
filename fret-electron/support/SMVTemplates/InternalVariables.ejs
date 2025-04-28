@@ -1,8 +1,9 @@
+<%if(traceLength){%>
   LAST := case
-    ltlsim_t<=4 : FALSE;
+    ltlsim_t<=<%- traceLength - 1 %> : FALSE;
     TRUE : TRUE;
   esac;
-  <%for (i=0; i < internalVariables.length; i++) {%>
+<%}%>
+<%for (i=0; i < internalVariables.length; i++) {%>
     <%var semiColon = smvAssignments[i].endsWith(';') ? '' : ';'%>
     <%- internalVariables[i].name %> := <%- smvAssignments[i] %><%- semiColon -%><%}%>
-    

@@ -1,12 +1,16 @@
 -- <%-componentName%>
 MODULE main
  VAR
-  ltlsim_t:0..5;
+<%if(traceLength){%>
+  ltlsim_t:0..<%- traceLength %>;
+<%}%>
   <%for (i=0; i < inputVariables.length; i++) {%><%- inputVariables[i].name %>:<%- inputVariables[i].type %>;
-    <%}%>
+  <%}%>
   <%for (i=0; i < outputVariables.length; i++) {%><%- outputVariables[i].name %>: <%- outputVariables[i].type %>;
-    <%}%>
+  <%}%>
+<%if(traceLength){%>
  ASSIGN
-  init(ltlsim_t) := 0;
-  next(ltlsim_t) := (ltlsim_t >= 5) ? 5 : ltlsim_t + 1;
+   init(ltlsim_t) := 0;
+   next(ltlsim_t) := (ltlsim_t >= <%- traceLength %>) ? <%- traceLength %> : ltlsim_t + 1; 
+<%}%>
  DEFINE

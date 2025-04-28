@@ -1203,6 +1203,9 @@ export default class FretModel {
 
             contract.properties = getObligationInfo(doc, contract.outputVariables, component, language, fragment);
             contract.delays = getDelayInfo(fretResult, component);
+            
+            //Add traceLength property with undefined value, in order to skip the production of finite-trace auxillary code.
+            contract.traceLength = undefined;
             const file = {content: ejsCacheSMV.renderModelCode().model.complete(contract), name: contract.componentName+'_'+doc.reqid+'.smv' }
             files.push(file);
 

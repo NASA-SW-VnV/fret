@@ -166,6 +166,7 @@ class TestGenContent extends React.Component {
         projectReport: {projectName: '', systemComponents: []},
         settingsOpen: false,
         selectedEngine: 'nusmv',
+        testLength: 4,
         retainFiles: false,
         actionsMenuOpen: false,
         selectedReqs: [],
@@ -298,8 +299,12 @@ class TestGenContent extends React.Component {
       }
     }
 
+    handleTestLengthChange = (value) => {
+      this.setState({testLength: Number(value)})
+    };
+
     generateTests = (event, selectedReqs) => {              
-      const { selected, projectReport, retainFiles, selectedEngine } = this.state;
+      const { selected, projectReport, retainFiles, selectedEngine, testLength } = this.state;
           
       const self = this;    
   
@@ -307,7 +312,7 @@ class TestGenContent extends React.Component {
 
       var systemComponentIndex = projectReport.systemComponents.findIndex( sc => sc.name === selected.component_name);      
 
-      let currentProjectState = {selected, projectReport, retainFiles, selectedEngine};
+      let currentProjectState = {selected, projectReport, retainFiles, selectedEngine, testLength};
       currentProjectState.projectReport.systemComponents[systemComponentIndex].result = 'PROCESSING';
   
       ipcRenderer.invoke('generateTests', [currentProjectState, selectedReqs]).then((result) => {
@@ -384,7 +389,7 @@ class TestGenContent extends React.Component {
             testTraces = testTraces.map(trace => {              
               return {...trace, theTrace: {...trace.theTrace, values: trace.theTrace.values.flat(Infinity)}}
             })
-            //TODO: properly load kind2 cex test traces    
+            
             return(          
               <LTLSimDialog
                 open={LTLSimDialogOpen}
@@ -502,7 +507,7 @@ class TestGenContent extends React.Component {
                                     </MenuItem>
                                     <MenuItem
                                       id="qa_testGenCont_btn_testSimulate"
-                                      disabled={(selectedEngine === 'nusmv' && projectReport.systemComponents[systemComponentIndex]) ? projectReport.systemComponents[systemComponentIndex].tests.length === 0 : true}
+                                      disabled={(projectReport.systemComponents[systemComponentIndex]) ? projectReport.systemComponents[systemComponentIndex].tests.length === 0 : true}
                                       onClick={(event) => this.openLTLSimDialog(event)}
                                     >
                                     {'Simulate Generated Test Cases'}
@@ -567,7 +572,7 @@ class TestGenContent extends React.Component {
                                 </div>
                             </div>
                             }
-                            <TestGenSettingsDialog className={classes} selectedEngine={selectedEngine} isComponentBooleanOnly={this.isComponentBooleanOnly(selected.component_name)} retainFiles={retainFiles} missingDependencies={missingDependencies} isComponentEngineComplete={this.isComponentEngineComplete(selected.component_name)} open={settingsOpen} handleSettingsClose={this.handleSettingsClose} handleSettingsEngineChange={this.handleSettingsEngineChange} handleRetainFilesChange={this.handleRetainFilesChange}/>
+                            <TestGenSettingsDialog className={classes} selectedEngine={selectedEngine} isComponentBooleanOnly={this.isComponentBooleanOnly(selected.component_name)} retainFiles={retainFiles} missingDependencies={missingDependencies} isComponentEngineComplete={this.isComponentEngineComplete(selected.component_name)} open={settingsOpen} handleSettingsClose={this.handleSettingsClose} handleSettingsEngineChange={this.handleSettingsEngineChange} handleTestLengthChange={this.handleTestLengthChange} handleRetainFilesChange={this.handleRetainFilesChange}/>
                             <Dialog maxWidth='lg' onClose={this.handleHelpClose} open={helpOpen}>
                             <DialogTitle id="testgen-help">
                                 <Typography>

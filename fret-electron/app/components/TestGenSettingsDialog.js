@@ -17,6 +17,7 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import Select from '@material-ui/core/Select';
+import TextField from '@material-ui/core/TextField';
 import { FormControl, InputLabel, MenuItem, Tooltip } from '@material-ui/core';
 
 
@@ -68,7 +69,9 @@ class TestGenSettingsDialog extends React.Component {
     state = {
 		open: false,
 		selectedEngine: 'nusmv',
-		retainFiles: false
+		retainFiles: false,
+		testLength:'',
+		error:''
 	}
 
 	componentWillReceiveProps = (props) => {
@@ -90,6 +93,17 @@ class TestGenSettingsDialog extends React.Component {
 			this.setState({selectedEngine: event.target.value});
 			this.props.handleSettingsEngineChange(event.target.value);
 		}	
+	}
+
+	handleTestLengthOptionChange = (event, value) => {
+		var reg = new RegExp('^([1-9])([0-9]*)$');
+	    if (reg.test(event.target.value) || event.target.value === '') {
+		  this.setState({
+			testLength: event.target.value,
+		  	error: testTestLength(event.target.value)
+		  })
+	      this.props.handleTestLengthChange(event.target.value);
+	    }
 	}
 
 	handleRetainFilesOptionChange = (event) => {
@@ -168,6 +182,21 @@ class TestGenSettingsDialog extends React.Component {
 								</Select>
 							</FormControl>
 						</ListItem>
+						{selectedEngine === 'nusmv' &&
+							<ListItem>
+								<TextField
+									className={classes.textField}
+									id="qa_testgenSet_tf_testLength"
+									label="Test case length"
+									placeholder="4"
+									value={this.state.testLength}
+									helperText={this.state.error}
+									onChange={this.handleTestLengthOptionChange}
+									InputLabelProps={{ shrink: true }}
+									error={(this.state.error.length > 0)}
+								/>
+							</ListItem>
+						}
           				<ListItem>
 				            <FormControlLabel
 				              control={
@@ -188,6 +217,13 @@ class TestGenSettingsDialog extends React.Component {
 	}
 }
 
+function testTestLength(testLength) {
+    if (testLength !== '' && Number(testLength) < 4) {
+        return "The minimum value supported is 4 (smaller values will be replaced with 4 during analysis)."
+    }
+    return "";
+}
+
 TestGenSettingsDialog.propTypes = {
 	classes: PropTypes.object.isRequired,
 	open: PropTypes.bool.isRequired,
@@ -198,6 +234,7 @@ TestGenSettingsDialog.propTypes = {
 	isComponentEngineComplete: PropTypes.object.isRequired,	
 	handleSettingsClose: PropTypes.func.isRequired,
 	handleSettingsEngineChange: PropTypes.func.isRequired,
+	handleTestLengthChange: PropTypes.func.isRequired,
 	handleRetainFilesChange: PropTypes.func.isRequired
 }
 

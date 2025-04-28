@@ -187,6 +187,7 @@ class RealizabilitySettingsDialog extends React.Component {
 	          						id="qa_rlzCont_tf_realizableTraceLength"
 	          						label="Example trace length (realizable results)"
 	          						placeholder="auto"
+									value={this.state.realizableTraceLength}
 	          						onChange={this.handleTraceLengthOptionChange}
 	          						InputLabelProps={{ shrink: true }}
 	          					/>

@@ -15,7 +15,7 @@ Accompanying the main test case generation task are the following features:
 ## Notes
 
 - When using the NuSMV engine, FRET utilizes the finite trace Future-Time LTL formulas of each requirement for generating tests. When using the Kind 2 engine, FRET utilizes the Past-Time LTL formulas, instead.
-- For the NuSMV engine, Generated tests are set to be six (6) time steps long to minimize test case generation time and make tests easy to use in the simulator. We will extend this to support tests of arbitrary length in future releases.
+- For the NuSMV engine, users can determine the length of the generated tests using the corresponding option in the settings. The minimum allowed length value is 4 steps. Values smaller than 4 are ignored and the underlying analysis proceeds with the default value 4 as a result.
 - Only components that include variables of `Input`, `Output` or `Internal` variable type are currently supported for test case generation. For exporting of test obligations, we additionally support variables of `Function` variable type. For exports including `Function` variables, users need to define the variable's corresponding SMV module in the exported `.smv` files.
 - The NuSMV engine can only be used with System components that include variables of 'boolean' Data Type.
 - The NuSMV engine should not be used for requirements using Past-Time predicates `persisted` and `occured`.
@@ -27,8 +27,8 @@ Accompanying the main test case generation task are the following features:
 
 Dependencies, listed by engine option, are provided below:
 
-- 'Kind 2': The [Kind 2](https://kind2-mc.github.io/kind2/)  model checker and the [Z3](https://github.com/Z3Prover/z3)  theorem prover must be installed.
-- 'NuSMV': The [NuSMV](https://nusmv.fbk.eu/) model checker must be installed.
+- 'Kind 2': The [Kind 2](https://kind2-mc.github.io/kind2/)  model checker and the [Z3](https://github.com/Z3Prover/z3)  theorem prover must be installed. Latest known supported version is v2.3.0.
+- 'NuSMV': The [NuSMV](https://nusmv.fbk.eu/) model checker must be installed. Latest known supported version is v2.7.0. 
 
 ## A step-by-step guide to generating tests from FRETish
 
@@ -111,6 +111,7 @@ Currently the exported JSON file uses the following format to save test cases:
     {
         "testID": "test1",
         "testTrace": {
+            "traceLength": i, #i: Positive integer designating the length of the test trace.
             "keys": [
                 #Array of variable names in system component                
             ],
@@ -135,6 +136,29 @@ Currently the exported JSON file uses the following format to save test cases:
 ## Export Test Obligations
 
 In order to generate tests using external Lustre/CoCoSpec or NuSMV backends, users have the option to export the corresponding test obligations. For Lustre exports only the Past-Time LTL obligations can be generated.
+
+Note: For the SMV `Future-Time LTL - Finite Trace` export option, the resulting files require additional definitions in order to designate when the end of execution is observed, by setting the `LAST` boolean flag to true. For example, in order to evaluate the obligations on consider execution traces up to a predefined number of steps, say 6, one can manually add a definition for a step counter as follows:
+
+```
+VAR
+    --Declare step counter in the list of variable declarations.
+    t : 0 .. 5;
+ASSIGN
+    --Define behavior of step counter in ASSIGN block.
+    init(t) := 0;
+    next(t) := (t >= 5) ? 5 : t + 1;
+```
+
+and define `LAST` to be true at the sixth step as follows:
+
+```
+DEFINE
+    --Add definition of LAST in DEFINE block.
+    LAST := case
+        t <= 4 : FALSE;
+        TRUE   : TRUE;
+    esac;
+```
 
 To export test obligations follow these steps (use screenshots below as reference to each step):
 

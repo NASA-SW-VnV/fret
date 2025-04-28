@@ -6,6 +6,7 @@
 import { leveldbDB, modelDB, system_DBkeys } from '../fretDB'
 import { getContractInfo, getDelayInfo } from '../modelDbSupport/variableMappingSupports';
 import ejsCache_testgen from '../../support/TestGenTemplates/ejsCache_testgen';
+import { trace } from 'console';
 const { performance } = require('perf_hooks');
 const xform = require('../../support/xform');
 const fs=require("fs");
@@ -112,30 +113,22 @@ function runKind2(specName, filePath, callback) {
             var traceArray = [];
             var testCounter = 1;
             var uniqueVariableValues = [];
-            for (const propertyResult of propertyContent) {     
-                //If we want to support loading Kind 2 traces in the future, the traceLength property must be added in the theTrace object below.           
+            for (const propertyResult of propertyContent) {           
                 var ltlsimJSONTrace = {
                     traceID: "test"+testCounter,
                     traceDescription: "",
                     theTrace: {
                         keys: [],
+                        traceLength: 4,
                         values: []
                     },
                     saveToReqID: "*",
                     saveToComponent: "*",
                     saveToProject: ""
                 }
-
-                // let newJsonOutput = {
-                // "traceID": 'test'+traceCounter,
-                // "Runtime": {
-                //     "unit": propertyResult.runtime['unit'],
-                //     "value": propertyResult.runtime['value']},
-                // "Answer": {"text": propertyResult.answer.value},
-                // "K": propertyResult.k,
-                // "Counterexample": []
-                // };
-                let signals = propertyResult.counterExample[0].streams;                
+                
+                //Currently, the last signal is the property that was checked. We omit this signal from the traces.
+                let signals = propertyResult.counterExample[0].streams.slice(0,-1);
                 let variableNames = signals.map(sig => sig.name);
                 let variableValues = []
                 for (var i = 0; i<=propertyResult.k; i++) {
@@ -144,23 +137,12 @@ function runKind2(specName, filePath, callback) {
                     variableValues.push(variableValuesAtStepI)
                 }
 
-                // for (const signal of signals) {
-                // let signalInfo = {"name": signal.name, "type": signal.type}              
-                // for (let i = 0; i < newJsonOutput.K; i++){                
-                //     let signalValue = signals[signals.indexOf(signal)].instantValues[i][1];
-                //     signalInfo['Step '+i] = (typeof signalValue === "object") ? (signalValue.num / signalValue.den) : signalValue ;
-                // }
-                // newJsonOutput.Counterexample.push(signalInfo);
-                // }
-
                 if(testIsUnique(variableValues.flat(Infinity), uniqueVariableValues)) {
                     uniqueVariableValues.push(variableValues.flat(Infinity))
 
 
-                    ltlsimJSONTrace = {...ltlsimJSONTrace, theTrace: {...ltlsimJSONTrace.theTrace, keys: [...ltlsimJSONTrace.theTrace.keys.concat(variableNames)]}}
+                    ltlsimJSONTrace = {...ltlsimJSONTrace, theTrace: {...ltlsimJSONTrace.theTrace, keys: [...ltlsimJSONTrace.theTrace.keys.concat(variableNames)], traceLength: propertyResult.k+1, values: variableValues}}
                         
-
-                    ltlsimJSONTrace = {...ltlsimJSONTrace, theTrace: {...ltlsimJSONTrace.theTrace, values: variableValues}};
                     traceArray.push(ltlsimJSONTrace)
                     testCounter++;
                 }
@@ -209,16 +191,25 @@ function runKind2(specName, filePath, callback) {
     });
 }
 
-function runNuSMV(filePath, callback) {
-    var command = 'NuSMV -s -source ' + (analysisPath+'mc_steps.scr ') + filePath;
+function runNuSMV(filePath, traceLength, callback) {    
+    var command = 'NuSMV -s -source mc_steps.scr ' + filePath;
 
-    exec(command, function(err, stdout, stderr) {
+    exec(command, {cwd: analysisPath}, function(err, stdout, stderr) {
         if (err) {
             console.log(JSON.stringify(err))
             callback(err)
         } else {
-            var testLength = 6;
-            var xmldoc = fs.readFileSync(analysisPath+'out.xml','utf8');        
+            var xmldoc = '';
+
+            //Note: NuSMV 2.7.0 changed its behavior in printing trace files. In 2.6.0, '-a -o outfile' would print a single file "outfile".
+            //In 2.7.0, a separate file "num_outfile" is created for each trace.
+            //The loop below provides a way to preserve compatibility with both versions.
+            for (const xmlFile of fs.readdirSync(analysisPath)) {
+                if (xmlFile.endsWith('out.xml')) {
+                    xmldoc = xmldoc + fs.readFileSync(analysisPath+xmlFile,'utf8');
+                }
+            }
+                        
             xmldoc = xmldoc.replaceAll(/<\?xml.*>\n/g,'')        
             xmldoc = '<root>' + xmldoc + '</root>';
             var jsondoc;
@@ -236,6 +227,9 @@ function runNuSMV(filePath, callback) {
             //Remove "ltlsim_t" variable, as it would otherwise appear in LTLSIM
             variableNames = variableNames.slice(1)
 
+            //Remove "LAST" variable.
+            variableNames = variableNames.slice(0,-1)
+
             var traceArray = []
             var testCounter = 1;
 
@@ -244,13 +238,11 @@ function runNuSMV(filePath, callback) {
 
             for (const cex of jsondoc) {
 
-                //Get variable values from JSON trace.
-                //Note: NuSMV counterexamples may include more states than the ones needed.
-                //Currently, we generate tests of length 6 by default, so any state after the sixth is not necessary. As such those values are dropped.
+                //Get variable values from JSON trace. Remove ltlsim_t and LAST values.
                 var variableValues = cex.node.map((nd, index) => {
-                    return nd.state.map(st => st.value.map(val => val._).slice(1))
+                    return nd.state.map(st => st.value.map(val => val._).slice(1).slice(0,-1))
                 })
-                .slice(0, testLength)                
+                .slice(0,traceLength)  
                 .flat(1)
                 
 
@@ -261,7 +253,7 @@ function runNuSMV(filePath, callback) {
                         traceID: "test"+testCounter,
                         traceDescription: "",
                         theTrace: {
-                            traceLength: 6,
+                            traceLength: traceLength,
                             keys: [],
                             values: []
                         },
@@ -270,10 +262,8 @@ function runNuSMV(filePath, callback) {
                         saveToProject: ""
                     }
                 
-                    ltlsimJSONTrace = {...ltlsimJSONTrace, theTrace: {...ltlsimJSONTrace.theTrace, keys: [...ltlsimJSONTrace.theTrace.keys.concat(variableNames)]}}
-                    
+                    ltlsimJSONTrace = {...ltlsimJSONTrace, theTrace: {...ltlsimJSONTrace.theTrace, keys: [...ltlsimJSONTrace.theTrace.keys.concat(variableNames)], values: variableValues}};
 
-                    ltlsimJSONTrace = {...ltlsimJSONTrace, theTrace: {...ltlsimJSONTrace.theTrace, values: variableValues}};
                     traceArray.push(ltlsimJSONTrace);
                     testCounter++;
                 }
@@ -292,7 +282,7 @@ function generateNuSMVInterpreterFile() {
         'encode_variables',
         'build_model',
         'check_ltlspec',
-        'show_traces -a -v -p 4 -o ' + analysisPath+'out.xml',
+        'show_traces -a -v -p 4 -o out.xml',
         'quit'
         ]
     var filePath = analysisPath + 'mc_steps.scr';
@@ -300,7 +290,7 @@ function generateNuSMVInterpreterFile() {
     return;
 }
 
-function generateSpecObligationFile(component, docs, modelResult, selectedEngine) {
+function generateSpecObligationFile(component, docs, modelResult, selectedEngine, traceLength) {
     var localModelResult = {...modelResult}
     var modelVariables = []
     var newDoc =  selectedEngine === 'nusmv' ? {
@@ -357,6 +347,9 @@ function generateSpecObligationFile(component, docs, modelResult, selectedEngine
 
     const language = selectedEngine === 'nusmv' ? 'smv' : 'cocospec'
     var contract = getContractInfo(localModelResult, language)
+
+    //Zero-based counting in generated file.
+    contract.traceLength = traceLength - 1;
     if (selectedEngine === 'kind2') {
         contract.delays = getDelayInfo({docs: docs}, component);
     }
@@ -391,10 +384,17 @@ function generateSpecObligationFile(component, docs, modelResult, selectedEngine
 }
 
 function generateTests(selectedProject, components, testGenState, selectedReqs) {
-    const {selected, projectReport, retainFiles, selectedEngine } = testGenState;
+    const {selected, projectReport, retainFiles, selectedEngine , testLength} = testGenState;
+
+    var traceLength = (testLength < 4 ? 4 : testLength);
 
     if (!fs.existsSync(analysisPath)) {
         fs.mkdirSync(analysisPath);
+    }
+
+    //Clean fret-analysis folder from previously retained results.
+    if (fs.readdirSync(analysisPath).length > 0) {
+        deleteAnalysisFiles();
     }
 
     var targetComponents;
@@ -440,12 +440,12 @@ function generateTests(selectedProject, components, testGenState, selectedReqs) 
                     const filteredDocs = fretResult.docs.filter(resultDoc => (resultDoc.semantics.component_name === tC.component_name) && selectedReqs.includes(resultDoc.reqid));
 
                     const startTime = performance.now();
-                    var [specName, filePath] = generateSpecObligationFile(tC.component_name, filteredDocs, modelResult, selectedEngine)
+                    var [specName, filePath] = generateSpecObligationFile(tC.component_name, filteredDocs, modelResult, selectedEngine, traceLength)
 
                     if (selectedEngine === 'nusmv') {
                         generateNuSMVInterpreterFile();
 
-                        runNuSMV(filePath, function(err, result) {
+                        runNuSMV(filePath, traceLength, function(err, result) {
                             if (err) {
                                 testGenState.projectReport.systemComponents[systemComponentIndex].result = 'ERROR';
                                 testGenState.projectReport.systemComponents[systemComponentIndex].error = err.message;testGenState.projectReport.systemComponents[systemComponentIndex].requirements = fretResult.docs;

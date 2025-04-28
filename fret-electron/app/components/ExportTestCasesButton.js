@@ -26,16 +26,15 @@ class ExportTestCasesButton extends React.Component {
       event.stopPropagation();
       const {tests, componentName} = this.props;
       //Keep only trace ID and the actual trace.
-      //Additionally, remove information of the last signal in each trace (in keys and values properties):
-      //  - For NUSMV-generated tests, this signal is the variable LAST.
-      //  - For Kind 2-generated tests, this signal is the obligation property for which a counterexample was generated.
       const filteredTests = tests.map(t => {
         return {
-            'testId': t.traceID, 
+            'testId': t.traceID,
             'testTrace': {
                 ...t.theTrace, 
-                keys: t.theTrace.keys.slice(0,-1), 
-                values: t.theTrace.values.map(valArr => valArr.slice(0,-1))}}})
+                keys: t.theTrace.keys,
+                traceLength: t.theTrace.traceLength, 
+                values: t.theTrace.values}
+      }})
 
       var content = JSON.stringify(filteredTests, null, 4);
       var blob = new Blob([content],{type:"text/plain;charset=utf-8"});
