@@ -170,6 +170,23 @@ module.exports = class LTLSimController {
     }
 
     //------------------------------------------------------------
+    // list model (for debugging)
+    //------------------------------------------------------------
+    static listModel(model) {
+  
+	var VN = model.atomics.keys;
+        
+	console.log("Model Variables:")
+	for (var i=0; i< VN.length; i++){
+		
+		console.log("Name: "+ VN[i])
+		console.log("Chg:  "+ model.atomics.canChange[VN[i]])
+		}
+	console.log("---------------------")
+	}
+
+
+    //------------------------------------------------------------
     // save traces to CSV file
     //------------------------------------------------------------
     static saveTrace(model, tracefile) {

@@ -1029,7 +1029,9 @@ class LTLSimDialog extends Component {
 				// check if linked requirements are here
 				//
 			   var do_load = 0;
-	    		   for (let lr=0; lr< loadedTraces[tr].traceLinkedRequirementIDs.length; lr++){
+   			   if ("traceLinkedRequirements" in loadedTraces[tr]){
+
+	    		     for (let lr=0; lr< loadedTraces[tr].traceLinkedRequirementIDs.length; lr++){
 
 				for (let rid=0; rid < this.props.requirementIDs.length;rid++){
 
@@ -1044,7 +1046,13 @@ class LTLSimDialog extends Component {
 				    	break
 				        }
 				    }
-				}
+                                }
+			      }
+                           else {
+				  // no linked reqs corresponds to "*"
+				do_load = 1;
+			      }
+
 			if (do_load == 0){
 				continue;
 				}
