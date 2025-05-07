@@ -19,8 +19,7 @@ Accompanying the main test case generation task are the following features:
 - Only components that include variables of `Input`, `Output` or `Internal` variable type are currently supported for test case generation. For exporting of test obligations, we additionally support variables of `Function` variable type. For exports including `Function` variables, users need to define the variable's corresponding SMV module in the exported `.smv` files.
 - The NuSMV engine can only be used with System components that include variables of 'boolean' Data Type.
 - The NuSMV engine should not be used for requirements using Past-Time predicates `persisted` and `occured`.
-- Simulation of generated test cases is currently not supported for the Kind 2 engine.
-- Exported test cases using the `Export Test Cases` cannot be loaded in LTLSIM. To export test cases in a LTLSIM-compatible format use the corresponding export options from within the LTLSIM window.
+- Exported test cases using the `Export Test Cases` option cannot be loaded in LTLSIM. To export test cases in a LTLSIM-compatible format use the corresponding export options from within the LTLSIM window.
 - For existing projects, you may encounter issues either in test case generation or test obligation exports, due to outdated information in the FRET databases. To resolve such issues, you may need to update the  variables in Variable Mapping. For `Internal` variables, make a minor modification to each assignment (such as deleting and re-adding the last character in the assignment), and click on `UPDATE`. For `Input` or `Output` variables, open the relevant variables and click on `UPDATE`.
 
 ## Dependencies
