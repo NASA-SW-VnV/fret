@@ -786,7 +786,7 @@ class RealizabilityContent extends React.Component {
                               id="qa_rlzCont_btn_check"
                               disabled={selectedReqs.length === 0 || !dependenciesExist || (dependenciesExist && selected === '')}
                               onClick={(event) => this.checkRealizability(event, selectedReqs)}>Check Realizability</MenuItem>
-                              <Tooltip title={this.isNotJKind(systemComponentIndex) ? 'This action is available only when using the \'JKind\' engine option.' : ''}>
+                              <Tooltip title={(this.state.selectedEngine !== 2 && this.state.selectedEngine !== 3) ? 'This action is available only when using the \'JKind\' engine option.' : ''}>
                                 <span>
                                   <MenuItem
                                     id="qa_rlzCont_btn_realizSimulate"
