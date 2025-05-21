@@ -900,6 +900,7 @@ class RealizabilityContent extends React.Component {
                                       (<Fade in={diagStatus === 'DIAGNOSED'}>
                                         <div>
                                           {[...Array(2)].map((e, i) => <div key={i}> &nbsp; </div>)}
+                                          <Typography>Diagnosis Results: </Typography>
                                           <ChordDiagram selectedReport = {diagReport} selectedProject={selectedProject} requirements = {diagnosisRequirements}/>
                                           &nbsp;
                                         </div>

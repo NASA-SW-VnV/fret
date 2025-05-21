@@ -119,7 +119,7 @@ class DiagnosisEngine {
 
               //At the moment, for JKind we need to use the k-induction engine instead of the fixpoint engine, to generate counterexamples.
               if (self.engineName !== 'kind2') {
-                self.engineOptions = self.engineOptions.replace('-fixpoint ','');
+                self.engineOptions.splice(self.engineOptions.indexOf('-fixpoint'),1)
               }
 
               realizabilityCheck.checkRealizability(filePath, self.engineName, self.engineOptions, function(err, result, time, traceInfo, jsonOutput) {
@@ -229,7 +229,8 @@ class DiagnosisEngine {
 
         var complements = [];
         var conflictExists = false;
-        var properties = contract.properties.map(p => p.reqid).filter(id => !id.toLowerCase().includes('assumption'));      
+        var properties = contract.properties.map(p => p.reqid).filter(id => !id.toLowerCase().includes('assumption'));
+                
         for (var i = 0; i < n; i++) {
           var partition = this.getPartition(properties, n, i, false);
           this.optLog("Partition: "+JSON.stringify(partition));
@@ -543,29 +544,10 @@ class DiagnosisEngine {
   }
 
   labelRootNode() {
-    return new Promise((resolve, reject) => {    
-      this.deltaDebug(this.contract, 2).then(conflicts => {
-      this.optLog("Conflicts from root deltadebug: "+conflicts)
-      if (conflicts.toString().startsWith("UNKNOWN")) {
-        resolve(conflicts)
-      }
-      if (conflicts.length !== 0) {
-        if (conflicts[0].join('') !== this.contract.properties.map(p => p.reqid).filter(id => !id.toLowerCase().includes('assumption')).join('')) {
-          this.root.setLabel(conflicts[0]);
-          this.unlabeled = this.unlabeled.concat(this.root.children);
-          this.addUniqueConflicts(conflicts);
-          this.labeled.push(this.root);
-          resolve("DONE");
-        } else {
-          //the entire spec is the minimal conflict
-          this.root.setLabel(conflicts[0]);
-          this.addUniqueConflicts(conflicts);
-          this.labeled.push(this.root);
-          resolve("DONE");
-        }
-      } else {
+    return new Promise((resolve, reject) => {
+      if (this.contract.properties.length === 1) {
         this.registerPartitionProcess(this.contract);
-        this.runEnginesAndGatherResults(false).then(resMap => {
+        this.runEnginesAndGatherResults(true).then(resMap => {
           if (Array.from(resMap.values()).includes("UNKNOWN")) {
             const unknownSets = []
             for (let [key, val] of resMap) {
@@ -573,27 +555,64 @@ class DiagnosisEngine {
                 unknownSets.push(key);
               }
             }
-            resolve("UNKNOWN - Requirements: " + unknownSets)        
+            resolve(["Diagnosis failed due to 'unknown' result (engine timeout or solver failure).\nRequirements: " + unknownSets,null])
+          } else {
+            // this.computeDiagnoses();                     i
+            resolve([null, ["UNREALIZABLE", this.combineReports()]]);
           }
-          var propList = this.contract.properties.map(p => p.reqid).filter(id => !id.toLowerCase().includes('assumption')); 
-          var propID = propList.join('')
-          for (const [resKey, resValue] of resMap.entries()){
-            if (resKey.join('') === propID && resValue === "REALIZABLE") {
+        })
+      } else {    
+        this.deltaDebug(this.contract, 2).then(conflicts => {
+          this.optLog("Conflicts from root deltadebug: "+conflicts)
+          if (conflicts.toString().startsWith("UNKNOWN")) {
+            resolve(conflicts)
+          }
+          if (conflicts.length !== 0) {
+            if (conflicts[0].join('') !== this.contract.properties.map(p => p.reqid).filter(id => !id.toLowerCase().includes('assumption')).join('')) {
+              this.root.setLabel(conflicts[0]);
+              this.unlabeled = this.unlabeled.concat(this.root.children);
+              this.addUniqueConflicts(conflicts);
+              this.labeled.push(this.root);
+              resolve("DONE");
+            } else {
+              //the entire spec is the minimal conflict
+              this.root.setLabel(conflicts[0]);
+              this.addUniqueConflicts(conflicts);
+              this.labeled.push(this.root);
               resolve("DONE");
             }
-          }      
-          this.root.setLabel(propList);
-          this.labeled.push(this.root);
-          conflicts.push(propList);
-          this.addUniqueConflicts(conflicts);
-          resolve("DONE")
+          } else {
+            this.registerPartitionProcess(this.contract);
+            this.runEnginesAndGatherResults(false).then(resMap => {
+              if (Array.from(resMap.values()).includes("UNKNOWN")) {
+                const unknownSets = []
+                for (let [key, val] of resMap) {
+                  if (val === "UNKNOWN") {
+                    unknownSets.push(key);
+                  }
+                }
+                resolve("UNKNOWN - Requirements: " + unknownSets)        
+              }
+              var propList = this.contract.properties.map(p => p.reqid).filter(id => !id.toLowerCase().includes('assumption')); 
+              var propID = propList.join('')
+              for (const [resKey, resValue] of resMap.entries()){
+                if (resKey.join('') === propID && resValue === "REALIZABLE") {
+                  resolve("DONE");
+                }
+              }      
+              this.root.setLabel(propList);
+              this.labeled.push(this.root);
+              conflicts.push(propList);
+              this.addUniqueConflicts(conflicts);
+              resolve("DONE")
+            }).catch(err => {
+              reject(err)
+            })
+          }    
         }).catch(err => {
           reject(err)
-        })
+        });
       }
-    }).catch(err => {
-      reject(err)
-    });
     })
   }
 

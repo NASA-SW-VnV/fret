@@ -247,22 +247,22 @@ function getEngineNameAndOptions(selectedEngine) {
     case 0:
     //Kind 2 without MBP
       name = 'kind2';
-      options = '-json --enable CONTRACTCK --timeout '
+      options = ['-json', '--enable', 'CONTRACTCK', '--timeout'];
       break;
     case 1:
     //Kind 2 (MBP)
       name = 'kind2';
-      options = '-json --enable CONTRACTCK --ae_val_use_ctx false --timeout '
+      options = ['-json', '--enable', 'CONTRACTCK', '--ae_val_use_ctx', 'false', '--timeout'];
       break;
     case 2:
     //JKind without MBP
       name = 'jkind';
-      options = '-json -fixpoint -timeout '
+      options = ['-json', '-fixpoint', '-timeout'];
       break;
     case 3:
     //JKind+AEVAL (MBP)
       name = 'jkind';
-      options = '-fixpoint -solver aeval -timeout '
+      options = ['-fixpoint', '-solver', 'aeval', '-timeout'];
       break;
   }
   return {name, options};
@@ -275,12 +275,14 @@ function checkRealizability(selectedProject, components, rlzState, selectedReqs)
     fs.mkdirSync(analysisPath);
   }
 
-  var actualTimeout = (timeout === '' ? 900 : timeout);
+  var actualTimeout = (timeout === '' ? '900' : timeout.toString());
 
   let nameAndEngine = getEngineNameAndOptions(selectedEngine);
   let engineName = nameAndEngine.name;
-  let engineOptions = nameAndEngine.options + actualTimeout;
-  if (realizableTraceLength > 0 && engineName === 'jkind') engineOptions = engineOptions + ' -tracelength ' + realizableTraceLength;
+  let engineOptions = nameAndEngine.options;
+  engineOptions.push(actualTimeout);
+  
+  if (realizableTraceLength > 0 && engineName === 'jkind') engineOptions.concat(['-tracelength', realizableTraceLength.toString()]);
 
   var targetComponents;
   if (selected === 'all') {
@@ -346,6 +348,7 @@ function checkRealizability(selectedProject, components, rlzState, selectedReqs)
               if (err) {
                   rlzState.projectReport.systemComponents[systemComponentIndex].monolithic.result = 'ERROR';
                   rlzState.projectReport.systemComponents[systemComponentIndex].monolithic.error = err;
+                  rlzState.projectReport.systemComponents[systemComponentIndex].monolithic.time = undefined;
               } else {
                   rlzState.projectReport.systemComponents[systemComponentIndex].monolithic.result = result;
                   rlzState.projectReport.systemComponents[systemComponentIndex].monolithic.time = time;
@@ -356,7 +359,7 @@ function checkRealizability(selectedProject, components, rlzState, selectedReqs)
                     }
                   }
                   rlzState.projectReport.systemComponents[systemComponentIndex].monolithic.traceInfo = traceInfo;
-                  rlzState.projectReport.systemComponents[systemComponentIndex].monolithic.error = '';
+                  rlzState.projectReport.systemComponents[systemComponentIndex].monolithic.error = '';                  
               }
 
               if (!retainFiles) {
@@ -383,6 +386,7 @@ function checkRealizability(selectedProject, components, rlzState, selectedReqs)
               if (err) {
                 cc.result = 'ERROR';
                 cc.error = err;
+                cc.time = undefined;
                 rlzState.projectReport = projectReport;
                 ccResults.push('ERROR');
               } else {
@@ -435,15 +439,15 @@ function checkRealizability(selectedProject, components, rlzState, selectedReqs)
 
 function diagnoseSpec(selectedProject, rlzState, selectedReqs) {
   const {selected, ccSelected, monolithic, compositional, timeout, projectReport, retainFiles, selectedEngine} = rlzState;
-  var actualTimeout = (timeout === '' ? 900 : timeout);
+  var actualTimeout = (timeout === '' ? '900' : timeout.toString());
 
   var systemComponentIndex = projectReport.systemComponents.findIndex( sc => sc.name === selected.component_name);
   var connectedComponentIndex = monolithic ? 0 : projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents.findIndex(cc => cc.ccName === ccSelected);
 
   let nameAndEngine = getEngineNameAndOptions(selectedEngine);
-  let engineName = nameAndEngine.name;
-  let engineOptions = nameAndEngine.options + actualTimeout;
-
+  let engineName = nameAndEngine.name;  
+  let engineOptions = nameAndEngine.options;
+  engineOptions.push(actualTimeout);
   return new Promise((resolve, reject) => {
     modelDB.find({
       selector: {

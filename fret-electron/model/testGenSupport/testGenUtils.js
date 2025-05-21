@@ -148,44 +148,44 @@ function runKind2(specName, filePath, callback) {
                 }
             }
 
-            fs.writeFileSync(analysisPath + 'trace.json', JSON.stringify(traceArray, null, 4))
-            callback(null, traceArray)
+            fs.writeFileSync(analysisPath + 'trace.json', JSON.stringify(traceArray, null, 4));
+            callback(null, traceArray);
             break;
         case 0:
         case 30:
             //no properties are invalid
             kind2.kill();
-            callback(new Error('No tests could be generated for this specification. All obligations are valid properties.'))
+            callback(new Error('No tests could be generated for this specification. All obligations are valid properties.'));
             break;
         case 1:
             //general error
             kind2.kill();
-            callback(new Error('Kind 2 returned with a general error.'))
+            callback(new Error('Kind 2 returned with a general error.'));
             break;
         case 2:
             //incorrect command line argument
             kind2.kill();
-            callback(new Error('Incorrect command line argument provided to Kind 2.'))
+            callback(new Error('Incorrect command line argument provided to Kind 2.'));
             break;
         case 3:
             //parse error            
             var logObject = jsonContent.reverse().find(({ level }) => level === 'error')
             kind2.kill();
-            callback(new Error('Kind 2 detected a parse error. File: '+logObject.file+', Line: '+logObject.line+', Column: '+logObject.column+', Value: '+logObject.value))
+            callback(new Error('Kind 2 detected a parse error. File: '+logObject.file+', Line: '+logObject.line+', Column: '+logObject.column+', Value: '+logObject.value));
             break;
         case 4:
             //no smt solver found
             kind2.kill();
-            callback(new Error('Kind 2 did not detect an SMT solver.'))
+            callback(new Error('Kind 2 did not detect an SMT solver.'));
             break;
         case 5:
             //unknown or unsupported version of SMT solver found
             kind2.kill();
-            callback(new Error('Kind 2 detected an unknown or unsupported version of SMT solver.'))
+            callback(new Error('Kind 2 detected an unknown or unsupported version of SMT solver.'));
             break;
         default:
             kind2.kill();
-            callback(new Error('Kind 2 terminated unexpectedly.'))
+            callback(new Error('Kind 2 terminated unexpectedly.'));
             break;
     }
     });
