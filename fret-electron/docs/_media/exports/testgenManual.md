@@ -26,7 +26,7 @@ Accompanying the main test case generation task are the following features:
 
 Dependencies, listed by engine option, are provided below:
 
-- 'Kind 2': The [Kind 2](https://kind2-mc.github.io/kind2/)  model checker and the [Z3](https://github.com/Z3Prover/z3)  theorem prover must be installed. Latest known supported version for Kind 2 is v2.3.0, and v4.14.1 for Z3.
+- 'Kind 2': The [Kind 2](https://kind2-mc.github.io/kind2/)  model checker and the [Z3](https://github.com/Z3Prover/z3)  theorem prover must be installed. Latest known supported version for Kind 2 is v2.2.0, and v4.14.1 for Z3.
 - 'NuSMV': The [NuSMV](https://nusmv.fbk.eu/) model checker must be installed. Latest known supported version is v2.7.0.
 
 ## A step-by-step guide to generating tests from FRETish
