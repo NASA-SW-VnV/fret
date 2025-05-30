@@ -103,90 +103,94 @@ function runKind2(specName, filePath, callback) {
     });
     
     kind2.on('close', (code) => {
-    // console.log(`kind2 process exited with code ${code}`);
-    var jsonContent = JSON.parse(stdout);
-    switch (code) {
-        case 40:
-            //some properties are invalid, return tests
-            kind2.kill();
-            const propertyContent = jsonContent.filter(c => c.objectType === 'property' && c.answer.value === 'falsifiable')
-            var traceArray = [];
-            var testCounter = 1;
-            var uniqueVariableValues = [];
-            for (const propertyResult of propertyContent) {           
-                var ltlsimJSONTrace = {
-                    traceID: "test"+testCounter,
-                    traceDescription: "",
-                    theTrace: {
-                        keys: [],
-                        traceLength: 4,
-                        values: []
-                    },
-                    saveToReqID: "*",
-                    saveToComponent: "*",
-                    saveToProject: ""
+    // console.log(`kind2 process exited with code ${code}`);    
+    try {
+        var jsonContent = JSON.parse(stdout);
+        switch (code) {
+            case 40:
+                //some properties are invalid, return tests
+                kind2.kill();
+                const propertyContent = jsonContent.filter(c => c.objectType === 'property' && c.answer.value === 'falsifiable')
+                var traceArray = [];
+                var testCounter = 1;
+                var uniqueVariableValues = [];
+                for (const propertyResult of propertyContent) {           
+                    var ltlsimJSONTrace = {
+                        traceID: "test"+testCounter,
+                        traceDescription: "",
+                        theTrace: {
+                            keys: [],
+                            traceLength: 4,
+                            values: []
+                        },
+                        saveToReqID: "*",
+                        saveToComponent: "*",
+                        saveToProject: ""
+                    }
+                    
+                    //Currently, the last signal is the property that was checked. We omit this signal from the traces.
+                    let signals = propertyResult.counterExample[0].streams.slice(0,-1);
+                    let variableNames = signals.map(sig => sig.name);
+                    let variableValues = []
+                    for (var i = 0; i<=propertyResult.k; i++) {
+                        var variableValuesAtStepI = signals.map(sig => sig.instantValues[i][1])
+                        variableValuesAtStepI = variableValuesAtStepI.map(val => (typeof val === "object") ? (val.num / val.den) : val)
+                        variableValues.push(variableValuesAtStepI)
+                    }
+
+                    if(testIsUnique(variableValues.flat(Infinity), uniqueVariableValues)) {
+                        uniqueVariableValues.push(variableValues.flat(Infinity))
+
+
+                        ltlsimJSONTrace = {...ltlsimJSONTrace, theTrace: {...ltlsimJSONTrace.theTrace, keys: [...ltlsimJSONTrace.theTrace.keys.concat(variableNames)], traceLength: propertyResult.k+1, values: variableValues}}
+                            
+                        traceArray.push(ltlsimJSONTrace)
+                        testCounter++;
+                    }
                 }
-                
-                //Currently, the last signal is the property that was checked. We omit this signal from the traces.
-                let signals = propertyResult.counterExample[0].streams.slice(0,-1);
-                let variableNames = signals.map(sig => sig.name);
-                let variableValues = []
-                for (var i = 0; i<=propertyResult.k; i++) {
-                    var variableValuesAtStepI = signals.map(sig => sig.instantValues[i][1])
-                    variableValuesAtStepI = variableValuesAtStepI.map(val => (typeof val === "object") ? (val.num / val.den) : val)
-                    variableValues.push(variableValuesAtStepI)
-                }
 
-                if(testIsUnique(variableValues.flat(Infinity), uniqueVariableValues)) {
-                    uniqueVariableValues.push(variableValues.flat(Infinity))
-
-
-                    ltlsimJSONTrace = {...ltlsimJSONTrace, theTrace: {...ltlsimJSONTrace.theTrace, keys: [...ltlsimJSONTrace.theTrace.keys.concat(variableNames)], traceLength: propertyResult.k+1, values: variableValues}}
-                        
-                    traceArray.push(ltlsimJSONTrace)
-                    testCounter++;
-                }
-            }
-
-            fs.writeFileSync(analysisPath + 'trace.json', JSON.stringify(traceArray, null, 4));
-            callback(null, traceArray);
-            break;
-        case 0:
-        case 30:
-            //no properties are invalid
-            kind2.kill();
-            callback(new Error('No tests could be generated for this specification. All obligations are valid properties.'));
-            break;
-        case 1:
-            //general error
-            kind2.kill();
-            callback(new Error('Kind 2 returned with a general error.'));
-            break;
-        case 2:
-            //incorrect command line argument
-            kind2.kill();
-            callback(new Error('Incorrect command line argument provided to Kind 2.'));
-            break;
-        case 3:
-            //parse error            
-            var logObject = jsonContent.reverse().find(({ level }) => level === 'error')
-            kind2.kill();
-            callback(new Error('Kind 2 detected a parse error. File: '+logObject.file+', Line: '+logObject.line+', Column: '+logObject.column+', Value: '+logObject.value));
-            break;
-        case 4:
-            //no smt solver found
-            kind2.kill();
-            callback(new Error('Kind 2 did not detect an SMT solver.'));
-            break;
-        case 5:
-            //unknown or unsupported version of SMT solver found
-            kind2.kill();
-            callback(new Error('Kind 2 detected an unknown or unsupported version of SMT solver.'));
-            break;
-        default:
-            kind2.kill();
-            callback(new Error('Kind 2 terminated unexpectedly.'));
-            break;
+                fs.writeFileSync(analysisPath + 'trace.json', JSON.stringify(traceArray, null, 4));
+                callback(null, traceArray);
+                break;
+            case 0:
+            case 30:
+                //no properties are invalid
+                kind2.kill();
+                callback(new Error('No tests could be generated for this specification. All obligations are valid properties.'));
+                break;
+            case 1:
+                //general error
+                kind2.kill();
+                callback(new Error('Kind 2 returned with a general error.'));
+                break;
+            case 2:
+                //incorrect command line argument
+                kind2.kill();
+                callback(new Error('Incorrect command line argument provided to Kind 2.'));
+                break;
+            case 3:
+                //parse error            
+                var logObject = jsonContent.reverse().find(({ level }) => level === 'error')
+                kind2.kill();
+                callback(new Error('Kind 2 detected a parse error. File: '+logObject.file+', Line: '+logObject.line+', Column: '+logObject.column+', Value: '+logObject.value));
+                break;
+            case 4:
+                //no smt solver found
+                kind2.kill();
+                callback(new Error('Kind 2 did not detect an SMT solver.'));
+                break;
+            case 5:
+                //unknown or unsupported version of SMT solver found
+                kind2.kill();
+                callback(new Error('Kind 2 detected an unknown or unsupported version of SMT solver.'));
+                break;
+            default:
+                kind2.kill();
+                callback(new Error('Kind 2 terminated unexpectedly.'));
+                break;
+        }
+    } catch (err) {
+        callback(new Error('Kind2 JSON output parsing failed.'))
     }
     });
 }
