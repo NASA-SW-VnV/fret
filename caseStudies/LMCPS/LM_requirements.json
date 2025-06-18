@@ -304,6 +304,72 @@
             "_id": "593c6d90-f5cc-11ee-9c69-3f6527c3093c"
         },
         {
+            "reqid": "AP-010bv2",
+            "parent_reqid": "",
+            "project": "LM_requirements",
+            "rationale": "",
+            "comments": "",
+            "fulltext": "When in hdg Autopilot shall always satisfy (Psi - (HDGmodeCmd - psiAtZero))/(HDGmodeCmd - psiAtZero) <=0.1",
+            "status": "",
+            "semantics": {
+                "type": "nasa",
+                "scope": {
+                    "type": "in"
+                },
+                "condition": "null",
+                "probability": "null",
+                "timing": "always",
+                "response": "satisfaction",
+                "variables": [
+                    "hdg",
+                    "Psi",
+                    "HDGmodeCmd",
+                    "psiAtZero"
+                ],
+                "scope_mode": "hdg",
+                "scopeTextRange": [
+                    0,
+                    10
+                ],
+                "component_name": "Autopilot",
+                "componentTextRange": [
+                    12,
+                    20
+                ],
+                "timingTextRange": [
+                    28,
+                    33
+                ],
+                "post_condition": "(( Psi - ( HDGmodeCmd - psiAtZero ) ) / ( HDGmodeCmd - psiAtZero ) <= 0.1)",
+                "responseTextRange": [
+                    35,
+                    105
+                ],
+                "diagramVariables": "M = <b><i>hdg</i></b>, Response = <b><i>(( Psi - ( HDGmodeCmd - psiAtZero ) ) / ( HDGmodeCmd - psiAtZero ) <= 0.1)</i></b>.",
+                "description": "ENFORCED: in every interval where <b><i>hdg</i></b> holds.\nTRIGGER: first point in the interval.\nREQUIRES: for every trigger, RES must hold at all time points between (and including) the trigger and the end of the interval.",
+                "diagram": "_media/user-interface/examples/svgDiagrams/in_null_always_satisfaction.svg",
+                "scope_mode_pt": "hdg",
+                "scope_mode_ft": "hdg",
+                "scope_mode_pctl": "hdg",
+                "post_condition_unexp_pt": "(((Psi - (HDGmodeCmd - psiAtZero)) / (HDGmodeCmd - psiAtZero)) <= 0.1)",
+                "post_condition_unexp_ft": "(((Psi - (HDGmodeCmd - psiAtZero)) / (HDGmodeCmd - psiAtZero)) <= 0.1)",
+                "post_condition_unexp_pctl": "(((Psi - (HDGmodeCmd - psiAtZero)) / (HDGmodeCmd - psiAtZero)) <= 0.1)",
+                "post_condition_SMV_pt": "(((Psi - (HDGmodeCmd - psiAtZero)) / (HDGmodeCmd - psiAtZero)) <= 0.1)",
+                "post_condition_SMV_ft": "(((Psi - (HDGmodeCmd - psiAtZero)) / (HDGmodeCmd - psiAtZero)) <= 0.1)",
+                "post_condition_PRISM_pctl": "(((Psi - (HDGmodeCmd - psiAtZero)) / (HDGmodeCmd - psiAtZero)) <= 0.1)",
+                "ft": "(LAST V (hdg -> (((Psi - (HDGmodeCmd - psiAtZero)) / (HDGmodeCmd - psiAtZero)) <= 0.1)))",
+                "pt": "(H (hdg -> (((Psi - (HDGmodeCmd - psiAtZero)) / (HDGmodeCmd - psiAtZero)) <= 0.1)))",
+                "pctl": "P>=1[((G ((! (Fin_hdg & (! LAST))) | (X (P>=1[(Lin_hdg R (((Psi - (HDGmodeCmd - psiAtZero)) / (HDGmodeCmd - psiAtZero)) <= 0.1))])))) & (hdg => (Lin_hdg | (P>=1[(Lin_hdg R (((Psi - (HDGmodeCmd - psiAtZero)) / (HDGmodeCmd - psiAtZero)) <= 0.1))]))))]",
+                "ptExpanded": "(H (hdg -> (((Psi - (HDGmodeCmd - psiAtZero)) / (HDGmodeCmd - psiAtZero)) <= 0.1)))",
+                "CoCoSpecCode": "H((hdg => (((Psi - (HDGmodeCmd - psiAtZero)) / (HDGmodeCmd - psiAtZero)) <= 0.1)))",
+                "ftExpanded": "(LAST V (hdg -> (((Psi - (HDGmodeCmd - psiAtZero)) / (HDGmodeCmd - psiAtZero)) <= 0.1)))",
+                "pctlExpanded": "P>=1[((G ((! (((! hdg) & (X hdg)) & (! false))) | (X (P>=1[((hdg & (X (! hdg))) R (((Psi - (HDGmodeCmd - psiAtZero)) / (HDGmodeCmd - psiAtZero)) <= 0.1))])))) & (hdg => ((hdg & (X (! hdg))) | (P>=1[((hdg & (X (! hdg))) R (((Psi - (HDGmodeCmd - psiAtZero)) / (HDGmodeCmd - psiAtZero)) <= 0.1))]))))]",
+                "ftInfAUExpanded": "(G (hdg -> (((Psi - (HDGmodeCmd - psiAtZero)) / (HDGmodeCmd - psiAtZero)) <= 0.1)))",
+                "component": "Autopilot"
+            },
+            "_id": "723b4df0-4c71-11f0-9950-995d41b48604"
+        },
+        {
             "reqid": "EUL-004",
             "parent_reqid": "",
             "project": "LM_requirements",
@@ -563,6 +629,84 @@
                 "component": "FSM_Autopilot"
             },
             "_id": "96f47360-f6aa-11ee-bf4a-fb27967e923c"
+        },
+        {
+            "reqid": "AP-010av2",
+            "parent_reqid": "",
+            "project": "LM_requirements",
+            "rationale": "",
+            "comments": "",
+            "fulltext": "When in hdg when preBool(false, absReal(Psi - HDGmodeCmd - preReal(113.0, Psi - HDGmodeCmd)) <= 1.0) Autopilot shall immediately satisfy absReal(Psi - HDGmodeCmd) <= 1.0",
+            "status": "",
+            "semantics": {
+                "type": "nasa",
+                "scope": {
+                    "type": "in"
+                },
+                "condition": "regular",
+                "probability": "null",
+                "timing": "immediately",
+                "response": "satisfaction",
+                "variables": [
+                    "hdg",
+                    "Psi",
+                    "HDGmodeCmd"
+                ],
+                "scope_mode": "hdg",
+                "scopeTextRange": [
+                    0,
+                    10
+                ],
+                "qualifier_word": "when",
+                "pre_condition": "(preBool ( false , absReal ( Psi - HDGmodeCmd - preReal ( 113.0 , Psi - HDGmodeCmd ) ) <= 1.0 ))",
+                "regular_condition": "(preBool ( false , absReal ( Psi - HDGmodeCmd - preReal ( 113.0 , Psi - HDGmodeCmd ) ) <= 1.0 ))",
+                "conditionTextRange": [
+                    12,
+                    99
+                ],
+                "component_name": "Autopilot",
+                "componentTextRange": [
+                    101,
+                    109
+                ],
+                "timingTextRange": [
+                    117,
+                    127
+                ],
+                "post_condition": "(absReal ( Psi - HDGmodeCmd ) <= 1.0)",
+                "responseTextRange": [
+                    129,
+                    168
+                ],
+                "diagramVariables": "M = <b><i>hdg</i></b>, TC = <b><i>(preBool ( false , absReal ( Psi - HDGmodeCmd - preReal ( 113.0 , Psi - HDGmodeCmd ) ) <= 1.0 ))</i></b>, Response = <b><i>(absReal ( Psi - HDGmodeCmd ) <= 1.0)</i></b>.",
+                "description": "ENFORCED: in every interval where <b><i>hdg</i></b> holds.\nTRIGGER: first point in the interval if <b><i>(preBool ( false , absReal ( Psi - HDGmodeCmd - preReal ( 113.0 , Psi - HDGmodeCmd ) ) <= 1.0 ))</i></b> is true and any point in the interval where <b><i>(preBool ( false , absReal ( Psi - HDGmodeCmd - preReal ( 113.0 , Psi - HDGmodeCmd ) ) <= 1.0 ))</i></b> becomes true (from false).\nREQUIRES: for every trigger, if trigger holds then RES also holds at the same time point.",
+                "diagram": "_media/user-interface/examples/svgDiagrams/in_regular_immediately_satisfaction.svg",
+                "scope_mode_pt": "hdg",
+                "scope_mode_ft": "hdg",
+                "scope_mode_pctl": "hdg",
+                "regular_condition_unexp_pt": "(((Z FALSE) & FALSE) | ((Y TRUE) & (Y (absReal(((Psi - HDGmodeCmd) - preReal(113.0,(Psi - HDGmodeCmd)))) <= 1.0))))",
+                "regular_condition_unexp_ft": "preBool(FALSE,(absReal(((Psi - HDGmodeCmd) - preReal(113.0,(Psi - HDGmodeCmd)))) <= 1.0))",
+                "regular_condition_unexp_pctl": "preBool(FALSE,(absReal(((Psi - HDGmodeCmd) - preReal(113.0,(Psi - HDGmodeCmd)))) <= 1.0))",
+                "regular_condition_SMV_pt": "(((Z FALSE) & FALSE) | ((Y TRUE) & (Y (absReal(((Psi - HDGmodeCmd) - preReal(113.0,(Psi - HDGmodeCmd)))) <= 1.0))))",
+                "regular_condition_SMV_ft": "preBool(FALSE,(absReal(((Psi - HDGmodeCmd) - preReal(113.0,(Psi - HDGmodeCmd)))) <= 1.0))",
+                "regular_condition_PRISM_pctl": "preBool(FALSE,(absReal(((Psi - HDGmodeCmd) - preReal(113.0,(Psi - HDGmodeCmd)))) <= 1.0))",
+                "post_condition_unexp_pt": "(absReal((Psi - HDGmodeCmd)) <= 1.0)",
+                "post_condition_unexp_ft": "(absReal((Psi - HDGmodeCmd)) <= 1.0)",
+                "post_condition_unexp_pctl": "(absReal((Psi - HDGmodeCmd)) <= 1.0)",
+                "post_condition_SMV_pt": "(absReal((Psi - HDGmodeCmd)) <= 1.0)",
+                "post_condition_SMV_ft": "(absReal((Psi - HDGmodeCmd)) <= 1.0)",
+                "post_condition_PRISM_pctl": "(absReal((Psi - HDGmodeCmd)) <= 1.0)",
+                "ft": "((LAST V ((! (Fin_hdg & (! LAST))) | (X (((Lin_hdg | LAST) V (((! preBool(FALSE,(absReal(((Psi - HDGmodeCmd) - preReal(113.0,(Psi - HDGmodeCmd)))) <= 1.0))) & ((! LAST) & ((X preBool(FALSE,(absReal(((Psi - HDGmodeCmd) - preReal(113.0,(Psi - HDGmodeCmd)))) <= 1.0))) & (! (Lin_hdg | LAST))))) -> ((X (absReal((Psi - HDGmodeCmd)) <= 1.0)) & (! (Lin_hdg | LAST))))) & (preBool(FALSE,(absReal(((Psi - HDGmodeCmd) - preReal(113.0,(Psi - HDGmodeCmd)))) <= 1.0)) -> (absReal((Psi - HDGmodeCmd)) <= 1.0)))))) & (hdg -> (((Lin_hdg | LAST) V (((! preBool(FALSE,(absReal(((Psi - HDGmodeCmd) - preReal(113.0,(Psi - HDGmodeCmd)))) <= 1.0))) & ((! LAST) & ((X preBool(FALSE,(absReal(((Psi - HDGmodeCmd) - preReal(113.0,(Psi - HDGmodeCmd)))) <= 1.0))) & (! (Lin_hdg | LAST))))) -> ((X (absReal((Psi - HDGmodeCmd)) <= 1.0)) & (! (Lin_hdg | LAST))))) & (preBool(FALSE,(absReal(((Psi - HDGmodeCmd) - preReal(113.0,(Psi - HDGmodeCmd)))) <= 1.0)) -> (absReal((Psi - HDGmodeCmd)) <= 1.0)))))",
+                "pt": "((H (Lin_hdg -> (Y ((((((Z FALSE) & FALSE) | ((Y TRUE) & (Y (absReal(((Psi - HDGmodeCmd) - preReal(113.0,(Psi - HDGmodeCmd)))) <= 1.0)))) & ((Y (! (((Z FALSE) & FALSE) | ((Y TRUE) & (Y (absReal(((Psi - HDGmodeCmd) - preReal(113.0,(Psi - HDGmodeCmd)))) <= 1.0)))))) | Fin_hdg)) -> (absReal((Psi - HDGmodeCmd)) <= 1.0)) S ((((((Z FALSE) & FALSE) | ((Y TRUE) & (Y (absReal(((Psi - HDGmodeCmd) - preReal(113.0,(Psi - HDGmodeCmd)))) <= 1.0)))) & ((Y (! (((Z FALSE) & FALSE) | ((Y TRUE) & (Y (absReal(((Psi - HDGmodeCmd) - preReal(113.0,(Psi - HDGmodeCmd)))) <= 1.0)))))) | Fin_hdg)) -> (absReal((Psi - HDGmodeCmd)) <= 1.0)) & Fin_hdg))))) & (((! Lin_hdg) S ((! Lin_hdg) & Fin_hdg)) -> ((((((Z FALSE) & FALSE) | ((Y TRUE) & (Y (absReal(((Psi - HDGmodeCmd) - preReal(113.0,(Psi - HDGmodeCmd)))) <= 1.0)))) & ((Y (! (((Z FALSE) & FALSE) | ((Y TRUE) & (Y (absReal(((Psi - HDGmodeCmd) - preReal(113.0,(Psi - HDGmodeCmd)))) <= 1.0)))))) | Fin_hdg)) -> (absReal((Psi - HDGmodeCmd)) <= 1.0)) S ((((((Z FALSE) & FALSE) | ((Y TRUE) & (Y (absReal(((Psi - HDGmodeCmd) - preReal(113.0,(Psi - HDGmodeCmd)))) <= 1.0)))) & ((Y (! (((Z FALSE) & FALSE) | ((Y TRUE) & (Y (absReal(((Psi - HDGmodeCmd) - preReal(113.0,(Psi - HDGmodeCmd)))) <= 1.0)))))) | Fin_hdg)) -> (absReal((Psi - HDGmodeCmd)) <= 1.0)) & Fin_hdg))))",
+                "pctl": "P>=1[((G ((! (Fin_hdg & (! LAST))) | (X ((Lin_hdg R (((! preBool(FALSE,(absReal(((Psi - HDGmodeCmd) - preReal(113.0,(Psi - HDGmodeCmd)))) <= 1.0))) & ((X preBool(FALSE,(absReal(((Psi - HDGmodeCmd) - preReal(113.0,(Psi - HDGmodeCmd)))) <= 1.0))) & (! Lin_hdg))) => ((X (P>=1[(absReal((Psi - HDGmodeCmd)) <= 1.0)])) & (! Lin_hdg)))) & (preBool(FALSE,(absReal(((Psi - HDGmodeCmd) - preReal(113.0,(Psi - HDGmodeCmd)))) <= 1.0)) => (P>=1[(absReal((Psi - HDGmodeCmd)) <= 1.0)])))))) & (hdg => (Lin_hdg | ((Lin_hdg R (((! preBool(FALSE,(absReal(((Psi - HDGmodeCmd) - preReal(113.0,(Psi - HDGmodeCmd)))) <= 1.0))) & ((X preBool(FALSE,(absReal(((Psi - HDGmodeCmd) - preReal(113.0,(Psi - HDGmodeCmd)))) <= 1.0))) & (! Lin_hdg))) => ((X (P>=1[(absReal((Psi - HDGmodeCmd)) <= 1.0)])) & (! Lin_hdg)))) & (preBool(FALSE,(absReal(((Psi - HDGmodeCmd) - preReal(113.0,(Psi - HDGmodeCmd)))) <= 1.0)) => (P>=1[(absReal((Psi - HDGmodeCmd)) <= 1.0)]))))))]",
+                "ptExpanded": "((H (((! hdg) & (Y hdg)) -> (Y ((((Y (absReal(((Psi - HDGmodeCmd) - preReal(113.0,(Psi - HDGmodeCmd)))) <= 1.0)) & ((Y (! (Y (absReal(((Psi - HDGmodeCmd) - preReal(113.0,(Psi - HDGmodeCmd)))) <= 1.0)))) | (hdg & (Z (! hdg))))) -> (absReal((Psi - HDGmodeCmd)) <= 1.0)) S ((((Y (absReal(((Psi - HDGmodeCmd) - preReal(113.0,(Psi - HDGmodeCmd)))) <= 1.0)) & ((Y (! (Y (absReal(((Psi - HDGmodeCmd) - preReal(113.0,(Psi - HDGmodeCmd)))) <= 1.0)))) | (hdg & (Z (! hdg))))) -> (absReal((Psi - HDGmodeCmd)) <= 1.0)) & (hdg & (Z (! hdg)))))))) & (((! ((! hdg) & (Y hdg))) S ((! ((! hdg) & (Y hdg))) & (hdg & (Z (! hdg))))) -> ((((Y (absReal(((Psi - HDGmodeCmd) - preReal(113.0,(Psi - HDGmodeCmd)))) <= 1.0)) & ((Y (! (Y (absReal(((Psi - HDGmodeCmd) - preReal(113.0,(Psi - HDGmodeCmd)))) <= 1.0)))) | (hdg & (Z (! hdg))))) -> (absReal((Psi - HDGmodeCmd)) <= 1.0)) S ((((Y (absReal(((Psi - HDGmodeCmd) - preReal(113.0,(Psi - HDGmodeCmd)))) <= 1.0)) & ((Y (! (Y (absReal(((Psi - HDGmodeCmd) - preReal(113.0,(Psi - HDGmodeCmd)))) <= 1.0)))) | (hdg & (Z (! hdg))))) -> (absReal((Psi - HDGmodeCmd)) <= 1.0)) & (hdg & (Z (! hdg)))))))",
+                "CoCoSpecCode": "(H(((not (hdg) and YtoPre(hdg)) => YtoPre(SI((hdg and ZtoPre(not (hdg))),((YtoPre((absReal(((Psi - HDGmodeCmd) - preReal(113.0,(Psi - HDGmodeCmd)))) <= 1.0)) and (YtoPre(not (YtoPre((absReal(((Psi - HDGmodeCmd) - preReal(113.0,(Psi - HDGmodeCmd)))) <= 1.0)))) or (hdg and ZtoPre(not (hdg))))) => (absReal((Psi - HDGmodeCmd)) <= 1.0)))))) and (SI((hdg and ZtoPre(not (hdg))),not ((not (hdg) and YtoPre(hdg)))) => SI((hdg and ZtoPre(not (hdg))),((YtoPre((absReal(((Psi - HDGmodeCmd) - preReal(113.0,(Psi - HDGmodeCmd)))) <= 1.0)) and (YtoPre(not (YtoPre((absReal(((Psi - HDGmodeCmd) - preReal(113.0,(Psi - HDGmodeCmd)))) <= 1.0)))) or (hdg and ZtoPre(not (hdg))))) => (absReal((Psi - HDGmodeCmd)) <= 1.0)))))",
+                "ftExpanded": "((LAST V ((! ((((! hdg) & (! LAST)) & (X hdg)) & (! LAST))) | (X (((((hdg & (! LAST)) & (X (! hdg))) | LAST) V (((! preBool(FALSE,(absReal(((Psi - HDGmodeCmd) - preReal(113.0,(Psi - HDGmodeCmd)))) <= 1.0))) & ((! LAST) & ((X preBool(FALSE,(absReal(((Psi - HDGmodeCmd) - preReal(113.0,(Psi - HDGmodeCmd)))) <= 1.0))) & (! (((hdg & (! LAST)) & (X (! hdg))) | LAST))))) -> ((X (absReal((Psi - HDGmodeCmd)) <= 1.0)) & (! (((hdg & (! LAST)) & (X (! hdg))) | LAST))))) & (preBool(FALSE,(absReal(((Psi - HDGmodeCmd) - preReal(113.0,(Psi - HDGmodeCmd)))) <= 1.0)) -> (absReal((Psi - HDGmodeCmd)) <= 1.0)))))) & (hdg -> (((((hdg & (! LAST)) & (X (! hdg))) | LAST) V (((! preBool(FALSE,(absReal(((Psi - HDGmodeCmd) - preReal(113.0,(Psi - HDGmodeCmd)))) <= 1.0))) & ((! LAST) & ((X preBool(FALSE,(absReal(((Psi - HDGmodeCmd) - preReal(113.0,(Psi - HDGmodeCmd)))) <= 1.0))) & (! (((hdg & (! LAST)) & (X (! hdg))) | LAST))))) -> ((X (absReal((Psi - HDGmodeCmd)) <= 1.0)) & (! (((hdg & (! LAST)) & (X (! hdg))) | LAST))))) & (preBool(FALSE,(absReal(((Psi - HDGmodeCmd) - preReal(113.0,(Psi - HDGmodeCmd)))) <= 1.0)) -> (absReal((Psi - HDGmodeCmd)) <= 1.0)))))",
+                "pctlExpanded": "P>=1[((G ((! (((! hdg) & (X hdg)) & (! false))) | (X (((hdg & (X (! hdg))) R (((! preBool(FALSE,(absReal(((Psi - HDGmodeCmd) - preReal(113.0,(Psi - HDGmodeCmd)))) <= 1.0))) & ((X preBool(FALSE,(absReal(((Psi - HDGmodeCmd) - preReal(113.0,(Psi - HDGmodeCmd)))) <= 1.0))) & (! (hdg & (X (! hdg)))))) => ((X (P>=1[(absReal((Psi - HDGmodeCmd)) <= 1.0)])) & (! (hdg & (X (! hdg))))))) & (preBool(FALSE,(absReal(((Psi - HDGmodeCmd) - preReal(113.0,(Psi - HDGmodeCmd)))) <= 1.0)) => (P>=1[(absReal((Psi - HDGmodeCmd)) <= 1.0)])))))) & (hdg => ((hdg & (X (! hdg))) | (((hdg & (X (! hdg))) R (((! preBool(FALSE,(absReal(((Psi - HDGmodeCmd) - preReal(113.0,(Psi - HDGmodeCmd)))) <= 1.0))) & ((X preBool(FALSE,(absReal(((Psi - HDGmodeCmd) - preReal(113.0,(Psi - HDGmodeCmd)))) <= 1.0))) & (! (hdg & (X (! hdg)))))) => ((X (P>=1[(absReal((Psi - HDGmodeCmd)) <= 1.0)])) & (! (hdg & (X (! hdg))))))) & (preBool(FALSE,(absReal(((Psi - HDGmodeCmd) - preReal(113.0,(Psi - HDGmodeCmd)))) <= 1.0)) => (P>=1[(absReal((Psi - HDGmodeCmd)) <= 1.0)]))))))]",
+                "ftInfAUExpanded": "((G ((! ((! hdg) & (X hdg))) | (X (((hdg & (X (! hdg))) V (((! preBool(FALSE,(absReal(((Psi - HDGmodeCmd) - preReal(113.0,(Psi - HDGmodeCmd)))) <= 1.0))) & ((X preBool(FALSE,(absReal(((Psi - HDGmodeCmd) - preReal(113.0,(Psi - HDGmodeCmd)))) <= 1.0))) & (! (hdg & (X (! hdg)))))) -> ((X (absReal((Psi - HDGmodeCmd)) <= 1.0)) & (! (hdg & (X (! hdg))))))) & (preBool(FALSE,(absReal(((Psi - HDGmodeCmd) - preReal(113.0,(Psi - HDGmodeCmd)))) <= 1.0)) -> (absReal((Psi - HDGmodeCmd)) <= 1.0)))))) & (hdg -> (((hdg & (X (! hdg))) V (((! preBool(FALSE,(absReal(((Psi - HDGmodeCmd) - preReal(113.0,(Psi - HDGmodeCmd)))) <= 1.0))) & ((X preBool(FALSE,(absReal(((Psi - HDGmodeCmd) - preReal(113.0,(Psi - HDGmodeCmd)))) <= 1.0))) & (! (hdg & (X (! hdg)))))) -> ((X (absReal((Psi - HDGmodeCmd)) <= 1.0)) & (! (hdg & (X (! hdg))))))) & (preBool(FALSE,(absReal(((Psi - HDGmodeCmd) - preReal(113.0,(Psi - HDGmodeCmd)))) <= 1.0)) -> (absReal((Psi - HDGmodeCmd)) <= 1.0)))))",
+                "component": "Autopilot"
+            },
+            "_id": "aa3aa1b0-4c71-11f0-9950-995d41b48604"
         },
         {
             "reqid": "EUL-006A",
@@ -9419,7 +9563,9 @@
             "component_name": "Autopilot",
             "variable_name": "HDGmodeCmd",
             "reqs": [
-                "c829ea58-eae3-11ee-a414-a1a504cbafae"
+                "c829ea58-eae3-11ee-a414-a1a504cbafae",
+                "aa3aa1b0-4c71-11f0-9950-995d41b48604",
+                "723b4df0-4c71-11f0-9950-995d41b48604"
             ],
             "dataType": "double",
             "idType": "Output",
@@ -9443,7 +9589,9 @@
             "component_name": "Autopilot",
             "variable_name": "Psi",
             "reqs": [
-                "c829ea58-eae3-11ee-a414-a1a504cbafae"
+                "c829ea58-eae3-11ee-a414-a1a504cbafae",
+                "aa3aa1b0-4c71-11f0-9950-995d41b48604",
+                "723b4df0-4c71-11f0-9950-995d41b48604"
             ],
             "dataType": "double",
             "idType": "Output",
@@ -9591,7 +9739,9 @@
                 "c829ea58-eae3-11ee-a414-a1a504cbafae",
                 "c829ea68-eae3-11ee-a414-a1a504cbafae",
                 "c829ea75-eae3-11ee-a414-a1a504cbafae",
-                "c829ea7d-eae3-11ee-a414-a1a504cbafae"
+                "c829ea7d-eae3-11ee-a414-a1a504cbafae",
+                "723b4df0-4c71-11f0-9950-995d41b48604",
+                "aa3aa1b0-4c71-11f0-9950-995d41b48604"
             ],
             "dataType": "boolean",
             "idType": "Input",
@@ -9609,6 +9759,35 @@
             "completed": true,
             "smvCompleted": true,
             "_id": "LM_requirementsAutopilothdg"
+        },
+        {
+            "project": "LM_requirements",
+            "component_name": "Autopilot",
+            "variable_name": "psiAtZero",
+            "reqs": [
+                "723b4df0-4c71-11f0-9950-995d41b48604"
+            ],
+            "dataType": "double",
+            "idType": "Internal",
+            "moduleName": "",
+            "description": "",
+            "assignment": "Psi -> if (hdg and not pre hdg) then Psi else pre psiAtZero",
+            "assignmentVariables": [
+                "Psi",
+                "hdg",
+                "psiAtZero"
+            ],
+            "copilotAssignment": "",
+            "smvAssignment": "",
+            "smvAssignmentVariables": [],
+            "modeRequirement": "",
+            "modeldoc": false,
+            "modeldoc_id": "",
+            "modeldoc_vectorIndex": null,
+            "modelComponent": "ap_12BAdapted/GlobalScope",
+            "completed": true,
+            "smvCompleted": false,
+            "_id": "LM_requirementsAutopilotpsiAtZero"
         },
         {
             "project": "LM_requirements",
