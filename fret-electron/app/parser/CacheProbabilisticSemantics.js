@@ -63,15 +63,15 @@ const ScopeEndpoints =[
 const semanticsObjNonsense = {
   pctl: constants.nonsense_semantics,
   pctlExpanded: constants.nonsense_semantics,
-  descriptions: constants.nonsense_description,
-  diagram: constants.undefined_svg
+  probabilistic_description: constants.nonsense_description,
+  probabilistic_diagram: constants.undefined_svg
 }
 
 var semanticsObjUndefined = {
   pctl: constants.undefined_semantics,
   pctlExpanded: constants.undefined_semantics,
-  description: constants.undefined_description,
-  diagram: constants.undefined_svg
+  probabilistic_description: constants.undefined_description,
+  probabilistic_diagram: constants.undefined_svg
 }
 
 Object.keys(fieldRanges).forEach((k, i) => {
@@ -247,6 +247,7 @@ function createSaltBatchString(product,isTimedResponse){
          break;
        default: // prepare string for batch salt
          // now prepare for salt
+         FRETSemantics[key].probabilistic_description = formalizations_probabilistic.getDescription(iterator.value, iterator.value[1], iterator.value[2], iterator.value[3],iterator.value[4]);
          saltStr = saltStr + ' ' + sltpctl  // add it for salt processing
          SemanticsMap[index] = {fields:key, tp:'ft'} // stores key and type located at this index
          index++;

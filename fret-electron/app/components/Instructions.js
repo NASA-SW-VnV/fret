@@ -264,7 +264,6 @@ handleSwitchChange =(event) => {
                             requirementID={requirementID}
                             />;
     }
-
     //Check if FTP appears in the formulas to display clarification message.
     var ftpInFT = this.props.formalization.semantics.ft ? this.props.formalization.semantics.ft.replace(/[()(<b>)(<i>)(</b>)(</i>)]/g,'').split(" ").includes("FTP") : false;
     var ftpInPT = this.props.formalization.semantics.pt ? this.props.formalization.semantics.pt.replace(/[()(<b>)(<i>)(</b>)(</i>)]/g,'').split(" ").includes("FTP") : false;
@@ -272,13 +271,15 @@ handleSwitchChange =(event) => {
     && (ft !== constants.undefined_semantics) && (diagram !== constants.undefined_svg))
     return(
       <div>
-      {!isProbabilistic && <div>
+       <div>
         <br />
-        <div id="qa_crtAst_sem_desc" className={classes.description} dangerouslySetInnerHTML={{ __html: this.props.formalization.semantics.description}} />
+        {!isProbabilistic ? <div id="qa_crtAst_sem_desc" className={classes.description} dangerouslySetInnerHTML={{ __html: this.props.formalization.semantics.description}} /> : 
+        <div id="qa_crtAst_sem_prob_desc" className={classes.description} dangerouslySetInnerHTML={{ __html: this.props.formalization.semantics.probabilistic_description}} />}
+        {!isProbabilistic &&  <div>
         <br />
-        <div className={css.imgWrap}>
-        <img id="qa_crtAst_sem_img" src= {path}/>
-        </div>
+        < div className={css.imgWrap}>
+         <img id="qa_crtAst_sem_img" src= {path}/>
+        </div> 
         <div id="qa_crtAst_sem_imgFooter" className={classes.variableDescription} dangerouslySetInnerHTML={{ __html: this.props.formalization.semantics.diagramVariables}} />
         <br />
         <Accordion>
@@ -290,9 +291,10 @@ handleSwitchChange =(event) => {
         <img id="qa_crtAst_sem_img_diagramSem" src= {notationPath}/>
         </div>
         </AccordionDetails>
-      </Accordion>
+      </Accordion> 
+      </div>}
         <br /><br />
-        </div> }
+        </div> 
         <Typography variant='subtitle1' color='primary'>
         Formalization
         </Typography>

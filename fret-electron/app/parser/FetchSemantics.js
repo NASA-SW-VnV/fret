@@ -37,7 +37,7 @@ exports.getProbabilisticSemantics = (scope, condition, probability, timing, resp
   var violations = checkViolations.checkRequirementViolations(scope, condition, timing, response);
   if (violations.length > 0){
     probSemantics.pctl = constants.unhandled_semantics;
-    probSemantics.description = checkViolations.getUnhandledViolationsMessage(violations);
+    probSemantics.probabilistic_description = checkViolations.getUnhandledViolationsMessage(violations);
   } else {
     probSemantics = jsonProbSemantics[scope.type+","+condition+","+probability+","+timing+","+response];
   }

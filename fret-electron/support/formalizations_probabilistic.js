@@ -6,6 +6,7 @@
 const fretSupportPath = "./"
 const constants = require('../app/parser/Constants');
 const utilities = require(fretSupportPath + 'utilities')
+const formalization_descriptions_probabilistic = require(fretSupportPath + 'formalization_descriptions_probabilistic');
 
 
 const Formula = [ // negate,timing,condition
@@ -299,4 +300,21 @@ exports.getProbabilisticFormula = (formula, key) => {
     var checkAtStart = parenthesize(modeCondition + ' implies ' +
                 before(formula, right, 'false', qualifier));
     return conjunction(nominal, checkAtStart)
+  }
+
+// var nonsense_arrays = nonsense_patterns.map((pat) => pat.split(','));
+// var unhandled_arrays = high_level_unhandled.map((pat) => pat.split(','));
+
+  exports.getDescription = (key) => {
+    // if (utilities.matchesStrings(nonsense_arrays, key).length != 0) {// there was a match
+    //   console.log('Meaningless: ' + key)
+    //   return constants.nonsense_description;
+    // }
+  
+    // if (utilities.matchesStrings(unhandled_arrays, key).length != 0) {// there was a match
+    //   console.log('Not defined yet: ' + key)
+    //   return constants.undefined_description;
+    // }
+  
+    return formalization_descriptions_probabilistic.getDescription(key)
   }

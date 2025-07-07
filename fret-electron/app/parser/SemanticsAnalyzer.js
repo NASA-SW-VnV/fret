@@ -191,6 +191,8 @@ RequirementListener.prototype.enterProbability_aux = function(ctx) {
   if (selector === "probability") {
     result.probability = 'bound';
     result.probability_bound = [prob[1],prob[2]];
+    if (result.probability_bound)
+      result.probability_bound_expression = result.probability_bound[0]+result.probability_bound[1];
   }
   else console.log('enterProbability: unknown keyword')
 }
@@ -260,12 +262,11 @@ function replaceTemplateVars(formula,html=false) {
   if (formula) {
     let arr = formula.match(/\$\w+\$/);
     while (arr) {
-
-      const tv = arr[0]
-      const tvnodollar = tv.substring(1,tv.length-1)
-      const repl = result[tvnodollar]
+      const tv = arr[0];
+      const tvnodollar = tv.substring(1,tv.length-1);
+      const repl = result[tvnodollar];
       formula = formula.replace(tv,
-				html ? '<b><i>' + repl + '</i></b>' : repl)
+				html ? '<b><i>' + repl + '</i></b>' : repl);
       arr = formula.match(/\$\w+\$/);
     }
     return formula;
@@ -444,7 +445,8 @@ SemanticsAnalyzer.prototype.semantics = () => {
   if (variableDescription !== '') {
     result.diagramVariables = replaceTemplateVars(variableDescription,true);
    }
-    result.description = replaceTemplateVars(fetchedSemantics.description,true);
+  result.description = replaceTemplateVars(fetchedSemantics.description,true);
+  result.probabilistic_description = replaceTemplateVars(fetchedProbabilisticSemantics.probabilistic_description,true);
   result.diagram = fetchedSemantics.diagram;
 
   // left has unexpanded endpoints like FTP and FFin_$scope_mode$
