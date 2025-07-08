@@ -31,33 +31,33 @@ const NegateFormula =[
 
 
 const sentenceTime = [
-  ['-,-,-,immediately,-', 'REQUIRES: for every trigger, with probability PROB, if trigger holds then RES also holds at the same time point.'],
-  ['-,-,-,next,-', 'REQUIRES: for every trigger, with probability PROB, RES must hold at the next time step.'],
-  ['-,-,-,finally,-', 'REQUIRES: for every trigger, with probability PROB, if trigger holds, then RES holds at the end of the interval.'],
-  ['-,-,-,eventually,-', 'REQUIRES: for every trigger, with probability PROB, RES must hold at some time point between (and including) the trigger and the end of the interval.'],
-  ['-,-,-,never,-', 'REQUIRES: for every trigger, with probability PROB, RES must be false at all time points between (and including) the trigger and the end of the interval.'],
-  ['-,-,-,always,-', 'REQUIRES: for every trigger, with probability PROB, RES must hold at all time points between (and including) the trigger and the end of the interval.'],
-  ['-,-,-,within,-', 'REQUIRES: for every trigger, with probability PROB, RES must hold at some point with distance <= $duration$ from the trigger (i.e., at trigger, trigger+1, ..., or trigger+$duration$). If the interval ends sooner than trigger+$duration$, then RES need not hold.'],
-  ['-,-,-,after,-', 'REQUIRES: for every trigger, with probability PROB, RES must be false at all time points with distance <=$duration$ from the trigger (i.e., trigger, trigger+1, ..., and trigger+$duration$). Moreover, RES must hold at the point that is at distance $duration$+1 from the trigger, that is, trigger+$duration$+1, except if the end of the interval occurs earlier.'],
-  ['-,-,-,for,-', 'REQUIRES: for every trigger, with probability PROB, RES must hold at the trigger and remain true for $duration$ time points past the trigger (i.e., trigger, trigger+1, ..., and trigger+$duration$), or to the end of the interval if the interval ends sooner than trigger+$duration$.'],
-  ['-,-,-,null,-', 'REQUIRES: for every trigger, with probability PROB, RES must hold at some time point between (and including) the trigger and the end of the interval.'],
-  ['-,-,-,until,-', 'REQUIRES: for every trigger, with probability PROB, RES must remain true until (but not necessarily including) the point where the stop condition holds, or to the end of the interval. If the stop condition never occurs, RES must hold until the end of the scope, or forever.  If the stop condition holds at the trigger, the requirement is satisfied.'],
-  ['-,-,-,before,-', 'REQUIRES: for every trigger, with probability PROB, RES must hold at least once strictly before the state where the stop condition holds. If the stop condition never occurs in the interval, RES does not need to hold. If the stop condition holds at the trigger, the requirement is not satisfied.']
+  ['-,-,-,immediately,-', 'REQUIRED BEHAVIOR: for every trigger, with probability PROB, if trigger holds then RES also holds at the same time point.'],
+  ['-,-,-,next,-', 'REQUIRED BEHAVIOR: for every trigger, with probability PROB, RES must hold at the next time step.'],
+  ['-,-,-,finally,-', 'REQUIRED BEHAVIOR: for every trigger, with probability PROB, if trigger holds, then RES holds at the end of the interval.'],
+  ['-,-,-,eventually,-', 'REQUIRED BEHAVIOR: for every trigger, with probability PROB, RES must hold at some time point between (and including) the trigger and the end of the interval.'],
+  ['-,-,-,never,-', 'REQUIRED BEHAVIOR: for every trigger, with probability PROB, RES must be false at all time points between (and including) the trigger and the end of the interval.'],
+  ['-,-,-,always,-', 'REQUIRED BEHAVIOR: for every trigger, with probability PROB, RES must hold at all time points between (and including) the trigger and the end of the interval.'],
+  ['-,-,-,within,-', 'REQUIRED BEHAVIOR: for every trigger, with probability PROB, RES must hold at some point with distance <= $duration$ from the trigger (i.e., at trigger, trigger+1, ..., or trigger+$duration$). If the interval ends sooner than trigger+$duration$, then RES need not hold.'],
+  ['-,-,-,after,-', 'REQUIRED BEHAVIOR: for every trigger, with probability PROB, RES must be false at all time points with distance <=$duration$ from the trigger (i.e., trigger, trigger+1, ..., and trigger+$duration$). Moreover, RES must hold at the point that is at distance $duration$+1 from the trigger, that is, trigger+$duration$+1, except if the end of the interval occurs earlier.'],
+  ['-,-,-,for,-', 'REQUIRED BEHAVIOR: for every trigger, with probability PROB, RES must hold at the trigger and remain true for $duration$ time points past the trigger (i.e., trigger, trigger+1, ..., and trigger+$duration$), or to the end of the interval if the interval ends sooner than trigger+$duration$.'],
+  ['-,-,-,null,-', 'REQUIRED BEHAVIOR: for every trigger, with probability PROB, RES must hold at some time point between (and including) the trigger and the end of the interval.'],
+  ['-,-,-,until,-', 'REQUIRED BEHAVIOR: for every trigger, with probability PROB, RES must remain true until (but not necessarily including) the point where the stop condition holds, or to the end of the interval. If the stop condition never occurs, RES must hold until the end of the scope, or forever.  If the stop condition holds at the trigger, the requirement is satisfied.'],
+  ['-,-,-,before,-', 'REQUIRED BEHAVIOR: for every trigger, with probability PROB, RES must hold at least once strictly before the state where the stop condition holds. If the stop condition never occurs in the interval, RES does not need to hold. If the stop condition holds at the trigger, the requirement is not satisfied.']
 ]
 
 const sentenceNegatedTime = [
-  ['-,-,-,immediately,-', 'REQUIRES: for every trigger, with probability PROB, trigger and RES cannot hold at the same time point.'],
-  ['-,-,-,finally,-', 'REQUIRES: for every trigger, with probability PROB, trigger and RES cannot hold at the last time point of the interval.'],
-  ['-,-,-,next,-', 'REQUIRES: for every trigger, with probability PROB, RES cannot hold at the next time point.'],
-  ['-,-,-,eventually,-', 'REQUIRES: for every trigger, with probability PROB, RES must be false at all time points between (and including) the trigger and the end of the interval.'],
-  ['-,-,-,never,-', 'REQUIRES: for every trigger, with probability PROB, RES must hold at some time point between (and including) the trigger and the end of the interval.'],
-  ['-,-,-,always,-', 'REQUIRES: for every trigger, with probability PROB, RES must be false at some time point between (and including) the trigger and the end of the interval.'],
-  ['-,-,-,within,-', 'REQUIRES: for every trigger, with probability PROB, RES must be false at all time points with distance <=$duration$ from the trigger (i.e., at trigger, trigger+1, ..., and trigger+$duration$), or until the end of the interval.'],
-  ['-,-,-,after,-', 'REQUIRES: for every trigger, with probability PROB, RES must either hold at some point with distance <=$duration$ from the trigger (i.e., at trigger, trigger+1, ..., or trigger+$duration$), or RES must remain false for $duration$+1 time points starting at the trigger (i.e., at trigger, trigger+1, ..., and trigger+$duration$+1), or to the end of the interval if it ends sooner than trigger+$duration$+1.'],
-  ['-,-,-,for,-', 'REQUIRES: for every trigger, with probability PROB, RES must be false at some point with distance <=$duration$ from the trigger (i.e., at trigger, trigger+1, ..., or trigger+$duration$), except if the end of the interval occurs sooner.'],
-  ['-,-,-,until,-', 'REQUIRES: for every trigger, with probability PROB, RES must be false at least once strictly before the state where the stop condition holds. If the stop condition never holds in the interval, RES need not be false at least once.'],
-  ['-,-,-,before,-', 'REQUIRES: for every trigger, with probability PROB, RES must be false until, but not necessarily including, the state where the stop condition holds. If the stop condition never occurs in the interval, RES cannot occur.'],
-  ['-,-,-,null,-', 'REQUIRES: for every trigger, with probability PROB, RES must be false at all time points between (and including) the trigger and the end of the interval.']
+  ['-,-,-,immediately,-', 'REQUIRED BEHAVIOR: for every trigger, with probability PROB, trigger and RES cannot hold at the same time point.'],
+  ['-,-,-,finally,-', 'REQUIRED BEHAVIOR: for every trigger, with probability PROB, trigger and RES cannot hold at the last time point of the interval.'],
+  ['-,-,-,next,-', 'REQUIRED BEHAVIOR: for every trigger, with probability PROB, RES cannot hold at the next time point.'],
+  ['-,-,-,eventually,-', 'REQUIRED BEHAVIOR: for every trigger, with probability PROB, RES must be false at all time points between (and including) the trigger and the end of the interval.'],
+  ['-,-,-,never,-', 'REQUIRED BEHAVIOR: for every trigger, with probability PROB, RES must hold at some time point between (and including) the trigger and the end of the interval.'],
+  ['-,-,-,always,-', 'REQUIRED BEHAVIOR: for every trigger, with probability PROB, RES must be false at some time point between (and including) the trigger and the end of the interval.'],
+  ['-,-,-,within,-', 'REQUIRED BEHAVIOR: for every trigger, with probability PROB, RES must be false at all time points with distance <=$duration$ from the trigger (i.e., at trigger, trigger+1, ..., and trigger+$duration$), or until the end of the interval.'],
+  ['-,-,-,after,-', 'REQUIRED BEHAVIOR: for every trigger, with probability PROB, RES must either hold at some point with distance <=$duration$ from the trigger (i.e., at trigger, trigger+1, ..., or trigger+$duration$), or RES must remain false for $duration$+1 time points starting at the trigger (i.e., at trigger, trigger+1, ..., and trigger+$duration$+1), or to the end of the interval if it ends sooner than trigger+$duration$+1.'],
+  ['-,-,-,for,-', 'REQUIRED BEHAVIOR: for every trigger, with probability PROB, RES must be false at some point with distance <=$duration$ from the trigger (i.e., at trigger, trigger+1, ..., or trigger+$duration$), except if the end of the interval occurs sooner.'],
+  ['-,-,-,until,-', 'REQUIRED BEHAVIOR: for every trigger, with probability PROB, RES must be false at least once strictly before the state where the stop condition holds. If the stop condition never holds in the interval, RES need not be false at least once.'],
+  ['-,-,-,before,-', 'REQUIRED BEHAVIOR: for every trigger, with probability PROB, RES must be false until, but not necessarily including, the state where the stop condition holds. If the stop condition never occurs in the interval, RES cannot occur.'],
+  ['-,-,-,null,-', 'REQUIRED BEHAVIOR: for every trigger, with probability PROB, RES must be false at all time points between (and including) the trigger and the end of the interval.']
 ]
 
 const senteceProbability = [
@@ -77,14 +77,14 @@ const sentenceCondition = [
 ]
 
 const sentenceScope = [
-  ['in,-,-,-,-','ENFORCED: in every interval where MODE holds.'],
-  ['notin,-,-,-,-', 'ENFORCED: in every interval where MODE does NOT hold.'],
-  ['onlyIn,-,-,-,-','ENFORCED: in every interval where MODE does NOT hold.'],
-  ['after,-,-,-,-', 'ENFORCED: in the interval (if defined) starting strictly after the first MODE interval and spanning to the end of the execution.'],
-  ['onlyAfter,-,-,-,-','ENFORCED: in the interval (if defined) from the start of the execution to (and including) the first interval where MODE holds. In the interval defined by the entire execution, if MODE never holds.'],
-  ['before,-,-,-,-', 'ENFORCED: in the interval (if defined) from the start of the execution to (and exclusive of) the first point where MODE holds. In the interval defined by the entire execution, if MODE never holds. If MODE holds initially, the requirement is vacuously satisfied.'],
-  ['onlyBefore,-,-,-,-','ENFORCED: in the interval (if defined) starting at the first point where MODE holds and spanning to the end of the execution.'],
-  ['null,-,-,-,-', 'ENFORCED: in the interval defined by the entire execution.']
+  ['in,-,-,-,-','SCOPE: in every interval where MODE holds.'],
+  ['notin,-,-,-,-', 'SCOPE: in every interval where MODE does NOT hold.'],
+  ['onlyIn,-,-,-,-','SCOPE: in every interval where MODE does NOT hold.'],
+  ['after,-,-,-,-', 'SCOPE: in the interval (if defined) starting strictly after the first MODE interval and spanning to the end of the execution.'],
+  ['onlyAfter,-,-,-,-','SCOPE: in the interval (if defined) from the start of the execution to (and including) the first interval where MODE holds. In the interval defined by the entire execution, if MODE never holds.'],
+  ['before,-,-,-,-', 'SCOPE: in the interval (if defined) from the start of the execution to (and exclusive of) the first point where MODE holds. In the interval defined by the entire execution, if MODE never holds. If MODE holds initially, the requirement is vacuously satisfied.'],
+  ['onlyBefore,-,-,-,-','SCOPE: in the interval (if defined) starting at the first point where MODE holds and spanning to the end of the execution.'],
+  ['null,-,-,-,-', 'SCOPE: in the interval defined by the entire execution.']
 ]
 
 
@@ -92,6 +92,7 @@ const substitutionsGeneral = [
   ['MODE', '\$scope_mode\$'],
   ['COMP', '\$component_name\$'],
   ['COND', '\$regular_condition\$'],
+  ['RES', '\$post_condition\$'],
   ['PROB', '\$probability_bound_expression\$']
 ]
 
@@ -113,7 +114,7 @@ exports.getDescription = (key) => {
     return 'Unexpected undefined description';
 
 
-  var description = scope + '\n' + condition + '\n' + timing;
+  var description = scope + '<br>' + condition + '<br>' + timing;
 
   description = utilities.replaceStrings(substitutionsGeneral, description)
 
