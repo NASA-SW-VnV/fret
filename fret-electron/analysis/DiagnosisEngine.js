@@ -118,11 +118,12 @@ class DiagnosisEngine {
             if (minimal) {
 
               //At the moment, for JKind we need to use the k-induction engine instead of the fixpoint engine, to generate counterexamples.
+              var filteredEngineOptions = [...self.engineOptions];
               if (self.engineName !== 'kind2') {
-                self.engineOptions.splice(self.engineOptions.indexOf('-fixpoint'),1)
+                filteredEngineOptions = self.engineOptions.filter(o => o !== '-fixpoint')
               }
 
-              realizabilityCheck.checkRealizability(filePath, self.engineName, self.engineOptions, function(err, result, time, traceInfo, jsonOutput) {
+              realizabilityCheck.checkRealizability(filePath, self.engineName, filteredEngineOptions, function(err, result, time, traceInfo, jsonOutput) {
                 if (err) {
                   self.engines = []
                   reject(err)
@@ -775,7 +776,7 @@ class DiagnosisEngine {
       engineName: this.engineName,
       engineOptions: this.engineOptions
     };
-    fs.writeFile(analysisPath+'diagnosisObject.json', JSON.stringify(engineArgumentsObj), 'utf8', (err) => {});
+    fs.writeFile(analysisPath+'diagnosisObject.json', JSON.stringify(engineArgumentsObj, null, 4), 'utf8', (err) => {});
 
     return new Promise((resolve, reject) => {
       this.labelRootNode().then((rootResult) => {
