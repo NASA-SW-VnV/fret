@@ -50,7 +50,7 @@ function desc(a, b, orderBy) {
   return 0
 }
 
-function stableSort(array, conflictReqs, selectedReqs, cmp) {
+function stableSort(array, conflictReqs, selectedReqs, cmp) {  
   if (conflictReqs.length === 0) {
     const notSelectedData = array.filter(el => !selectedReqs.includes(el.reqid));
     const stabilizedThis = array.filter(el => !notSelectedData.map(el2 => el2.reqid).includes(el.reqid)).map((el, index) => [el, index]);
@@ -473,6 +473,9 @@ class DiagnosisRequirementsTable extends React.Component {
   handleApplySelection = () => {
     const { updateSelectedRequirements } = this.props;
     const { tempSelected } = this.state;
+    const {setMessage} = this.context;
+    
+    setMessage({reqs : '', color : ''})
     this.setState({
       selectEnabled: false,
       selected: tempSelected
@@ -500,6 +503,8 @@ class DiagnosisRequirementsTable extends React.Component {
         
 
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, requirementsData.length - page * rowsPerPage)
+    console.log(stableSort(requirementsData, reqs, selectedRequirements, getSorting(order, orderBy))
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage))
     return ( 
            
       <div>
@@ -566,6 +571,7 @@ class DiagnosisRequirementsTable extends React.Component {
                   stableSort(requirementsData, reqs, selectedRequirements, getSorting(order, orderBy))
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map(n => {
+                    console.log(n.reqid)
                     const isSelected = this.isSelected(n.reqid);
                     const label = n.reqid ? n.reqid.replace(/-/g,'') : 'NONE'
                     //Previous versions of FRET had reqs as an array string, including braces. The check below accounts for these cases.
