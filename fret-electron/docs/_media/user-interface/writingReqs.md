@@ -47,6 +47,8 @@ Classic FRET contains the following three optional fields:
 > __Note:__ The Boolean operators allowed in the boolean expression *while* scope, condition, *until* and *before* timings, and response fields are: `!` (negation), `&` (conjunction), `|` (disjunction), `xor` (exclusive or),  `->` or `=>` (implication), `<->` or `<=>` (equivalence). An alternative phrasing for implication is `if p then q`. There are nine predefined temporal predicates: , `preBool`, `preInt`, `preReal`, `persisted`, `occurred`, `persists`, `occurs`, `prevOcc` and `nextOcc`. See [Temporal Condition Help](./examples/temporal_condition_explanations.md).
 The arithmetic comparison operators are `=, !=, <, >, <=, >=`. The arithmetic operators are `+, -, *, /, mod`, and `^` (exponentiation). Arithmetic terms and predicates are in standard form; e.g., `f(x,y)`,  `p(x,y,z)`.
 
+> __Note:__ Currently FRET supports a set of built-in functions, such as `absReal`, `maxReal`, `minReal`. This set of functions can be further extended as needed. These functions return the absolute, maximum, and minimum values of real numbers, respectively. See [Built-In Functions Help](./examples/builtin_functions_explanations.md) for more. 
+
 > __Reserved Words:__ The following cannot be used as variables in Boolean and arithmetic expressions:  
 `A, ABF, ABG, AF, AG, ASSIGN, AX, BU, COMPASSION, COMPUTE, COMPWFF,
 CONSTANTS, CONSTRAINT, CTLSPEC, CTLWFF, DEFINE, E, EBF, EBG, EF, EG, EX, F,
