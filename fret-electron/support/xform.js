@@ -18,6 +18,7 @@ module.exports = {
     introduceSI,
     transform,
     transformToAST,
+    transformToStream,
     transformPastTemporalConditions,
     transformFutureTemporalConditions,
     transformTemporalConditions,
@@ -666,6 +667,26 @@ function transformToAST(formulaString,transformation) {
     if (AST === undefined) console.log("xform.transform couldn't parse '" + formulaString + "'");
   let transformedAST = transformation(AST);
   return transformedAST;
+}
+
+function transformToStream(formulaString) {
+  formulaString = formulaString.replaceAll("G[0,M]", "G");
+  if (formulaString === "TRUE" || formulaString === "FALSE"){
+    return formulaString;
+  }
+  let AST = astsem.LTLtoAST(formulaString);
+  if (AST === undefined) console.log("xform.transformToStream couldn't parse '" + formulaString + "'");
+  let sbst = utils.matchAST(['And',['Globally', '__p'],'__r'],AST);
+  if (sbst !== null) { 
+    // Replace '(G __p) & __r' with 'G (__p & (FTP => __r))' but only at top-level
+    AST = utils.subst(['Globally', ['And', '__p', ['Implies', 'FTP', '__r']]], sbst);
+  }
+  if (AST[0] === 'Globally'){
+    AST = AST[1];
+  } else {
+    AST= ['Implies', 'FTP', AST];
+  }
+  return astsem.ASTtoLTL(AST);
 }
 
 function transformProb(formulaString,transformation) {

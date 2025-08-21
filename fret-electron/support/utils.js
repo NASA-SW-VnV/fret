@@ -334,8 +334,11 @@ function salt2smv(ptForm) {
         .replace(/\[<=(\d+)\s*\w*\s*\+1\]/g, (str, p1, offset, s) => (`[0,${parseInt(p1)+1}]`))
         .replace(/\[<(\d+)\s*\w*\s*\]/g, (str, p1, offset, s) => (`[0,${parseInt(p1)-1}]`))
         .replace(/\[<(\d+)\s*\w*\s*\+1\]/g, "[0,$1]")
-	.replace(/\[=(\d+)\s*\w*\s*\]/g, "[$1,$1]")
+	    .replace(/\[=(\d+)\s*\w*\s*\]/g, "[$1,$1]")
         .replace(/\[=(\d+)\s*\w*\s*\+1\]/g, (str, p1, offset, s) => (`[${parseInt(p1)+1},${parseInt(p1)+1}]`))
+        .replace(/\((\d+)\s*\w*\s*\+\s*\w*\s*1\)/g, (str, p1, offset, s) => (`${parseInt(p1)+1}`))
+        .replace(/\((\d+)\s*\w*\s*\+\s*\w*\s*1\)/g, (str, p1, offset, s) => (`${parseInt(p1)+1}`))
+
     return ptForm;
 }
 

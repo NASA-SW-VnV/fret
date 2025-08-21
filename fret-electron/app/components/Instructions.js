@@ -176,6 +176,7 @@ class Instructions extends React.Component {
       ptFormat: 'SMV',
       ftFormat: 'SMV',
       pctlFormat: 'PRISM',
+      mltlFormat: 'R2U2',
       ftInfinite: false
     };
 
@@ -218,6 +219,12 @@ handleFormatChange = (event) => {
  this.setState({
    ptFormat: event.target.value,
  });
+}
+
+handleMLTLFormatChange = (event) => {
+  this.setState({
+    mltlFormat: event.target.value,
+  });
 }
 
 handleSwitchChange =(event) => {
@@ -370,6 +377,46 @@ handleSwitchChange =(event) => {
           {ftpInPT &&
               <div className={classes.description} dangerouslySetInnerHTML={{ __html:' FTP: First Time Point.'}} />}
         </div>
+        </AccordionDetails>
+      </Accordion>}
+      {!isProbabilistic && <Accordion>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+          <Typography id="qa_crtAst_sem_typ_missionTime" className={classes.heading}>Future Time Mission-time LTL</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+        <div>
+        <FormGroup row>
+        <div>
+        <FormControl>
+          <Select
+            labelId="format"
+            id="qa_crtAst_sem_sel_mltl"
+            value={this.state.mltlFormat}
+            onChange={this.handleMLTLFormatChange}
+          >
+          <MenuItem id="qa_crtAst_sem_mi_R2U2" value='R2U2' key='R2U2'>R2U2</MenuItem>
+          <MenuItem id="qa_crtAst_sem_mi_WEST" value='WEST' key='WEST'>WEST</MenuItem>
+          </Select>
+          <FormHelperText>Format</FormHelperText>
+          </FormControl>
+          </div>
+          <br />
+        </FormGroup>
+        <br />
+            <div id="qa_crtAst_sem_typ_mltlFormula" className={classes.formula}
+              dangerouslySetInnerHTML={{ __html: (this.state.mltlFormat=='R2U2'
+                ? (this.props.formalization.semantics.R2U2Code)
+                : this.props.formalization.semantics.WEST)}} />
+            <br />
+            <div id="qa_crtAst_sem_typ_missionTimeComp" className={classes.description} dangerouslySetInnerHTML={{ __html:' Target: '+ this.props.formalization.semantics.component + ' component.'}} />
+            { (this.state.mltlFormat == 'R2U2' && (this.props.formalization.semantics.R2U2Code ? this.props.formalization.semantics.R2U2Code.includes("TAU == 0") : false)) &&
+              <div className={classes.description} dangerouslySetInnerHTML={{ __html:' TAU == 0 : First time point.'}} />}
+            { 
+            ((this.state.mltlFormat == 'R2U2' && (this.props.formalization.semantics.R2U2Code ? this.props.formalization.semantics.R2U2Code.includes(",M]") : false)) ||
+              (this.state.mltlFormat == 'WEST' && (this.props.formalization.semantics.WEST ? this.props.formalization.semantics.WEST.includes(",M]") : false))) &&
+              true &&
+              <div className={classes.description} dangerouslySetInnerHTML={{ __html:' M: End of Mission-time.'}} />}
+          </div>
         </AccordionDetails>
       </Accordion>}
       <br />

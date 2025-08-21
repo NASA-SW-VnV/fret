@@ -274,6 +274,39 @@ function replaceTemplateVars(formula,html=false) {
   else return "!! Unexpected case in SemanticsAnalyzer.replaceTemplateVars"
 }
 
+function replaceTemplateVarsForWest(formula){
+  var temp_map = new Map();
+  let prop_index = 0;
+  if (formula) {
+    let arr = formula.match(/\$\w+\$/);
+    while (arr) {
+      const tv = arr[0]
+      const tvnodollar = tv.substring(1,tv.length-1)
+      let west_repl = "";
+      let tv_repl = result[tvnodollar] != undefined ? result[tvnodollar] : tvnodollar ;
+      if ((/\$\w+\$/).test(tv_repl)){ // Checks if variable contains children variables(e.g., persists, occurs, nextOcc)
+        // Checks for props without $...$ and adds them for proper conversion to WEST
+        let symbols = tv_repl.replaceAll(/\$\w+\$/g, "").replaceAll(/F|G|R|U|X|V/g, "").match(/[a-zA-Z][_a-zA-Z0-9]*/g);
+        for (const symbol of symbols) { tv_repl = tv_repl.replace(symbol, '$' + symbol + '$'); }
+        west_repl = tv_repl;
+      } else if (tvnodollar === "duration"){
+        west_repl = tv_repl;
+      }
+      else if (temp_map.has(tv_repl)){
+        west_repl = temp_map.get(tv_repl);
+      } else{
+        temp_map.set(tv_repl, "p" + prop_index)
+        west_repl = temp_map.get(tv_repl);
+        prop_index++;
+      }
+      formula = formula.replace(tv, west_repl)
+      arr = formula.match(/\$\w+\$/);
+    }
+    return formula;
+  }
+  else return "!! Unexpected case in SemanticsAnalyzer.replaceTemplateVarsForWest("
+}
+
 // Canonicalize for SMV format: TRUE, FALSE, and special chars
 // replaced in identifiers (e.g., "." --> "_DOT_").
 function canon_bool_expr(expr) {
@@ -307,12 +340,6 @@ function createVariableDescription(scope, condition, timing, response, stop_cond
     description += 'Response = $action$.'
   return description;
 
-}
-
-//----------------------------------------------------------------------
-//----------------------------------------------------------------------
-function replaceWithR2U2Substs(formula) {
-  return utilities.replaceStrings(R2U2Semantics.R2U2Substs, formula);
 }
 
 var execSync = require('child_process').execSync;
@@ -384,6 +411,27 @@ function instantiateToAST(fetched) {
 // future-time rewrite rules.
 function instantiate(fetched, past) {
   return xform.transform(utils.salt2smv(replaceTemplateVars(fetched)),past ? xform.optimizePT : xform.optimizeFT)
+}
+
+const MLTLSubsts = [
+        ['X ', 'F[1,1] '],
+        [' V', ' R'],
+        ['G ', 'G[0,M] '],
+        ['F ', 'F[0,M] '],
+        [' U ', ' U[0,M] '],
+        [' R ', ' R[0,M] '],
+        ['=>', '->'],
+        ['<=>', '<->'],
+        ['TRUE', 'true'],
+        ['FALSE', 'false']
+      ];
+
+function instantiateStream(fetched) {
+  return utilities.replaceStrings(MLTLSubsts, xform.transformToStream(xform.transform(utils.salt2smv(LAST_is_FALSE(replaceTemplateVars(fetched),"R2U2")), xform.optimizeMLTL_FT)));
+}
+
+function instantiateWest(fetched) {
+  return utilities.replaceStrings(MLTLSubsts, xform.transform(utils.salt2smv(LAST_is_FALSE(replaceTemplateVarsForWest(fetched),"WEST")), xform.optimizeMLTL_FT));
 }
 
 // This substitutes FALSE wherever LAST appears in the formula, and
@@ -467,6 +515,9 @@ SemanticsAnalyzer.prototype.semantics = () => {
   const ftleftSMV = fetchedSemantics.endpoints.SMVftExtleft2;
   const ftrightSMV = fetchedSemantics.endpoints.SMVftExtright2;
 
+  const ftleftMLTL = fetchedSemantics.endpoints.MLTLftExtleft;
+  const ftrightMLTL = fetchedSemantics.endpoints.MLTLftExtright;
+
   //TODO:
   //if (result.probability){
     const leftPRISM = fetchedProbabilisticSemantics.endpoints.PRISMleft;
@@ -535,6 +586,9 @@ SemanticsAnalyzer.prototype.semantics = () => {
       const regCondSMV_ft = regCondTCxform_ft.replace(/\$Right\$/g,ftrightSMV).replace(/\$scope_mode\$/g,'$scope_mode_ft$');
       result.regular_condition_SMV_ft = regCondSMV_ft;
 
+      const regCondMLTL_ft = regCondTCxform_ft.replace(/\$Right\$/g,ftrightMLTL).replace(/\$scope_mode\$/g,'$scope_mode_ft$');
+      result.regular_condition_MLTL_ft = regCondMLTL_ft;
+
       const regCondPRISM_pctl = regCondTCxform_ft.replace(/\$Right\$/g,rightPRISM).replace(/\$scope_mode\$/g,'$scope_mode_ft$');
       result.regular_condition_PRISM_pctl = regCondPRISM_pctl;
     }
@@ -560,6 +614,9 @@ SemanticsAnalyzer.prototype.semantics = () => {
 
 	const postCondSMV_ft = postCondTCxform_ft.replace(/\$Right\$/g,ftrightSMV).replace(/\$scope_mode\$/g,'$scope_mode_ft$');
 	result.post_condition_SMV_ft = postCondSMV_ft;
+
+  const postCondMLTL_ft = postCondTCxform_ft.replace(/\$Right\$/g,ftrightMLTL).replace(/\$scope_mode\$/g,'$scope_mode_ft$');
+  result.post_condition_MLTL_ft = postCondMLTL_ft;
 
   const postCondPRISM_pctl = postCondTCxform_ft.replace(/\$Right\$/g,rightPRISM).replace(/\$scope_mode\$/g,'$scope_mode_ft$');
   result.post_condition_PRISM_pctl = postCondPRISM_pctl;
@@ -587,6 +644,9 @@ SemanticsAnalyzer.prototype.semantics = () => {
 
       const stopCondSMV_ft = stopCondTCxform_ft.replace(/\$Right\$/g,ftrightSMV).replace(/\$scope_mode\$/g,'$scope_mode_ft$');
       result.stop_condition_SMV_ft = stopCondSMV_ft;
+
+      const stopCondMLTL_ft = stopCondTCxform_ft.replace(/\$Right\$/g,ftrightMLTL).replace(/\$scope_mode\$/g,'$scope_mode_ft$');
+      result.stop_condition_MLTL_ft = stopCondMLTL_ft;
 
       const stopCondPRISM_pctl = stopCondTCxform_ft.replace(/\$Right\$/g,rightPRISM).replace(/\$scope_mode\$/g,'$scope_mode_ft$');
       result.stop_condition_PRISM_pctl = stopCondPRISM_pctl;
@@ -622,6 +682,27 @@ SemanticsAnalyzer.prototype.semantics = () => {
     // Do infinite future with the after/until semantics
     const fetched_ftInfAUExpanded = rename(fetchedSemantics.ftInfAUExpanded,'SMV','ft')
     result.ftInfAUExpanded = instantiateInf(fetched_ftInfAUExpanded)
+
+    const fetched_mltl = rename(fetchedSemantics.MLTL, 'MLTL', 'ft');
+    const instantiated_mltl = instantiateStream(fetched_mltl);
+    const R2U2Substs = [
+          [' & ', ' && '],
+          [' \\| ', ' || '],
+          [' = ', ' == '],
+          [' mod | MOD | Mod ', ' % '],
+          ['absReal', 'abs'],
+          ['absInt', 'abs'],
+          ['preBool', 'prev'],
+          ['preReal', 'prev'],
+          ['preInt', 'prev'],
+          ['minReal', 'min'],
+          ['minInt', 'min'],
+          ['minReal', 'max'],
+          ['minInt', 'max'],
+          ['FTP', '(TAU == 0)']
+		    ];
+    result.R2U2Code = utilities.replaceStrings(R2U2Substs, instantiated_mltl);
+    result.WEST = instantiateWest(fetched_mltl);
 
     if (constants.generateBetweenSemantics) {
       // Do past, with the between semantics
