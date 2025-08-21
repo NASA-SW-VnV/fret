@@ -4,7 +4,7 @@ Temporal Condition Documentation
 > The list of reserved words that cannot be used as variables in Boolean and
 > arithmetic expressions appears in the user manual in the section "Writing
 > requirements". In particular, the following are not allowed: A, E, F, G,
-> H, O, S, T, U, V, X, Y, Z, init.
+> H, O, R, S, T, U, V, X, Y, Z, init.
 
 This document describes temporal operators about values at previous time
 points, persistence or occurrence of conditions, and conditions holding at
