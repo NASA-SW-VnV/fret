@@ -3,7 +3,7 @@
 // The “FRET : Formal Requirements Elicitation Tool - Version 3.0” software is licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0. 
 // 
 // Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
-// Generated from LTL.g4 by ANTLR 4.8
+// Generated from LTL.g4 by ANTLR 4.7.2
 // jshint ignore: start
 var antlr4 = require('antlr4/index');
 var LTLListener = require('./LTLListener').LTLListener;
@@ -11,9 +11,8 @@ var LTLVisitor = require('./LTLVisitor').LTLVisitor;
 
 var grammarFileName = "LTL.g4";
 
-
 var serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964",
-    "\u0003:\u0103\u0004\u0002\t\u0002\u0004\u0003\t\u0003\u0004\u0004\t",
+    "\u0003;\u0103\u0004\u0002\t\u0002\u0004\u0003\t\u0003\u0004\u0004\t",
     "\u0004\u0004\u0005\t\u0005\u0004\u0006\t\u0006\u0004\u0007\t\u0007\u0004",
     "\b\t\b\u0004\t\t\t\u0004\n\t\n\u0004\u000b\t\u000b\u0004\f\t\f\u0004",
     "\r\t\r\u0004\u000e\t\u000e\u0004\u000f\t\u000f\u0004\u0010\t\u0010\u0004",
@@ -56,8 +55,8 @@ var serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964",
     "\u0019\u0003\u001a\u0003\u001a\u0003\u001b\u0003\u001b\u0003\u001b\u0002",
     "\u0004\u0002\u0004\u001c\u0002\u0004\u0006\b\n\f\u000e\u0010\u0012\u0014",
     "\u0016\u0018\u001a\u001c\u001e \"$&(*,.024\u0002\b\u0003\u0002\u0006",
-    "\u0007\u0003\u0002\n\u000f\u0003\u0002\u0013\u0018\u0003\u0002\u0019",
-    "\u001e\u0003\u0002&(\u0003\u0002.2\u0002\u010f\u0002U\u0003\u0002\u0002",
+    "\u0007\u0003\u0002\n\u000f\u0003\u0002\u0013\u0019\u0003\u0002\u001a",
+    "\u001f\u0003\u0002\')\u0003\u0002/3\u0002\u010f\u0002U\u0003\u0002\u0002",
     "\u0002\u0004\u00a3\u0003\u0002\u0002\u0002\u0006\u00c5\u0003\u0002\u0002",
     "\u0002\b\u00cb\u0003\u0002\u0002\u0002\n\u00cd\u0003\u0002\u0002\u0002",
     "\f\u00cf\u0003\u0002\u0002\u0002\u000e\u00d1\u0003\u0002\u0002\u0002",
@@ -72,8 +71,8 @@ var serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964",
     "\u00022\u00fe\u0003\u0002\u0002\u00024\u0100\u0003\u0002\u0002\u0002",
     "67\b\u0002\u0001\u000278\u0005\u0014\u000b\u000289\u0005\u0002\u0002",
     "\u00029:\u0005\u0016\f\u0002:V\u0003\u0002\u0002\u0002;<\u0005$\u0013",
-    "\u0002<=\u0005\u0002\u0002\u0007=V\u0003\u0002\u0002\u0002>V\u00078",
-    "\u0002\u0002?S\u00077\u0002\u0002@O\u0005\u0014\u000b\u0002AD\u0005",
+    "\u0002<=\u0005\u0002\u0002\u0007=V\u0003\u0002\u0002\u0002>V\u00079",
+    "\u0002\u0002?S\u00078\u0002\u0002@O\u0005\u0014\u000b\u0002AD\u0005",
     "\u0004\u0003\u0002BD\u0005\u0002\u0002\u0002CA\u0003\u0002\u0002\u0002",
     "CB\u0003\u0002\u0002\u0002DL\u0003\u0002\u0002\u0002EH\u0007\u0003\u0002",
     "\u0002FI\u0005\u0004\u0003\u0002GI\u0005\u0002\u0002\u0002HF\u0003\u0002",
@@ -104,7 +103,7 @@ var serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964",
     "\u0002\u0002~\u007f\u0007\b\u0002\u0002\u007f\u0080\u0007\t\u0002\u0002",
     "\u0080\u0081\u0005\u0004\u0003\u0002\u0081\u0082\u0007\u0003\u0002\u0002",
     "\u0082\u0083\u0005\u0004\u0003\t\u0083\u00a4\u0003\u0002\u0002\u0002",
-    "\u0084\u0098\u00077\u0002\u0002\u0085\u0094\u0005\u0014\u000b\u0002",
+    "\u0084\u0098\u00078\u0002\u0002\u0085\u0094\u0005\u0014\u000b\u0002",
     "\u0086\u0089\u0005\u0004\u0003\u0002\u0087\u0089\u0005\u0002\u0002\u0002",
     "\u0088\u0086\u0003\u0002\u0002\u0002\u0088\u0087\u0003\u0002\u0002\u0002",
     "\u0089\u0091\u0003\u0002\u0002\u0002\u008a\u008d\u0007\u0003\u0002\u0002",
@@ -153,31 +152,31 @@ var serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964",
     "\u0003\u0002\u0002\u0002\u00cb\u00ca\u0003\u0002\u0002\u0002\u00cc\t",
     "\u0003\u0002\u0002\u0002\u00cd\u00ce\t\u0004\u0002\u0002\u00ce\u000b",
     "\u0003\u0002\u0002\u0002\u00cf\u00d0\t\u0005\u0002\u0002\u00d0\r\u0003",
-    "\u0002\u0002\u0002\u00d1\u00d4\u0007\u001f\u0002\u0002\u00d2\u00d5\u0005",
+    "\u0002\u0002\u0002\u00d1\u00d4\u0007 \u0002\u0002\u00d2\u00d5\u0005",
     "\u0010\t\u0002\u00d3\u00d5\u0005\u0012\n\u0002\u00d4\u00d2\u0003\u0002",
     "\u0002\u0002\u00d4\u00d3\u0003\u0002\u0002\u0002\u00d5\u00d6\u0003\u0002",
-    "\u0002\u0002\u00d6\u00d7\u0007 \u0002\u0002\u00d7\u000f\u0003\u0002",
+    "\u0002\u0002\u00d6\u00d7\u0007!\u0002\u0002\u00d7\u000f\u0003\u0002",
     "\u0002\u0002\u00d8\u00db\u0005\u0002\u0002\u0002\u00d9\u00da\u0007\u0003",
     "\u0002\u0002\u00da\u00dc\u0005\u0002\u0002\u0002\u00db\u00d9\u0003\u0002",
     "\u0002\u0002\u00db\u00dc\u0003\u0002\u0002\u0002\u00dc\u0011\u0003\u0002",
     "\u0002\u0002\u00dd\u00de\u0005\f\u0007\u0002\u00de\u00df\u0005\u0002",
-    "\u0002\u0002\u00df\u0013\u0003\u0002\u0002\u0002\u00e0\u00e1\u0007!",
-    "\u0002\u0002\u00e1\u0015\u0003\u0002\u0002\u0002\u00e2\u00e3\u0007\"",
-    "\u0002\u0002\u00e3\u0017\u0003\u0002\u0002\u0002\u00e4\u00e5\u0007#",
-    "\u0002\u0002\u00e5\u0019\u0003\u0002\u0002\u0002\u00e6\u00e7\u0007$",
-    "\u0002\u0002\u00e7\u001b\u0003\u0002\u0002\u0002\u00e8\u00e9\u0007%",
+    "\u0002\u0002\u00df\u0013\u0003\u0002\u0002\u0002\u00e0\u00e1\u0007\"",
+    "\u0002\u0002\u00e1\u0015\u0003\u0002\u0002\u0002\u00e2\u00e3\u0007#",
+    "\u0002\u0002\u00e3\u0017\u0003\u0002\u0002\u0002\u00e4\u00e5\u0007$",
+    "\u0002\u0002\u00e5\u0019\u0003\u0002\u0002\u0002\u00e6\u00e7\u0007%",
+    "\u0002\u0002\u00e7\u001b\u0003\u0002\u0002\u0002\u00e8\u00e9\u0007&",
     "\u0002\u0002\u00e9\u001d\u0003\u0002\u0002\u0002\u00ea\u00eb\t\u0006",
-    "\u0002\u0002\u00eb\u001f\u0003\u0002\u0002\u0002\u00ec\u00ed\u0007)",
-    "\u0002\u0002\u00ed!\u0003\u0002\u0002\u0002\u00ee\u00ef\u0007*\u0002",
-    "\u0002\u00ef#\u0003\u0002\u0002\u0002\u00f0\u00f1\u0007*\u0002\u0002",
-    "\u00f1%\u0003\u0002\u0002\u0002\u00f2\u00f3\u0007+\u0002\u0002\u00f3",
-    "\'\u0003\u0002\u0002\u0002\u00f4\u00f5\u0007,\u0002\u0002\u00f5)\u0003",
-    "\u0002\u0002\u0002\u00f6\u00f7\u0007-\u0002\u0002\u00f7+\u0003\u0002",
+    "\u0002\u0002\u00eb\u001f\u0003\u0002\u0002\u0002\u00ec\u00ed\u0007*",
+    "\u0002\u0002\u00ed!\u0003\u0002\u0002\u0002\u00ee\u00ef\u0007+\u0002",
+    "\u0002\u00ef#\u0003\u0002\u0002\u0002\u00f0\u00f1\u0007+\u0002\u0002",
+    "\u00f1%\u0003\u0002\u0002\u0002\u00f2\u00f3\u0007,\u0002\u0002\u00f3",
+    "\'\u0003\u0002\u0002\u0002\u00f4\u00f5\u0007-\u0002\u0002\u00f5)\u0003",
+    "\u0002\u0002\u0002\u00f6\u00f7\u0007.\u0002\u0002\u00f7+\u0003\u0002",
     "\u0002\u0002\u00f8\u00f9\t\u0007\u0002\u0002\u00f9-\u0003\u0002\u0002",
-    "\u0002\u00fa\u00fb\u00073\u0002\u0002\u00fb/\u0003\u0002\u0002\u0002",
-    "\u00fc\u00fd\u00074\u0002\u0002\u00fd1\u0003\u0002\u0002\u0002\u00fe",
-    "\u00ff\u00075\u0002\u0002\u00ff3\u0003\u0002\u0002\u0002\u0100\u0101",
-    "\u00076\u0002\u0002\u01015\u0003\u0002\u0002\u0002\u0018CHLOSU_fjl\u0088",
+    "\u0002\u00fa\u00fb\u00074\u0002\u0002\u00fb/\u0003\u0002\u0002\u0002",
+    "\u00fc\u00fd\u00075\u0002\u0002\u00fd1\u0003\u0002\u0002\u0002\u00fe",
+    "\u00ff\u00076\u0002\u0002\u00ff3\u0003\u0002\u0002\u0002\u0100\u0101",
+    "\u00077\u0002\u0002\u01015\u0003\u0002\u0002\u0002\u0018CHLOSU_fjl\u0088",
     "\u008d\u0091\u0094\u0098\u00a3\u00bc\u00c0\u00c2\u00cb\u00d4\u00db"].join("");
 
 
@@ -190,19 +189,19 @@ var sharedContextCache = new antlr4.PredictionContextCache();
 var literalNames = [ null, "','", "'at'", "'the'", "'next'", "'previous'", 
                      "'occurrence'", "'of'", "'H'", "'O'", "'<|'", "'G'", 
                      "'F'", "'|>'", "'Y'", "'X'", "'Z'", "'S'", "'T'", "'SI'", 
-                     "'U'", "'V'", "'UI'", "'='", "'<'", "'<='", "'>'", 
-                     "'>='", "'!='", "'['", "']'", "'('", "')'", "'^'", 
-                     "'*'", "'/'", "'mod'", "'Mod'", "'MOD'", "'+'", "'-'", 
-                     "'!'", "'&'", "'|'", "'xor'", "'Xor'", "'xOR'", "'xOr'", 
-                     "'XOR'", "'->'", "'<->'", "'FALSE'", "'TRUE'" ];
+                     "'U'", "'V'", "'R'", "'UI'", "'='", "'<'", "'<='", 
+                     "'>'", "'>='", "'!='", "'['", "']'", "'('", "')'", 
+                     "'^'", "'*'", "'/'", "'mod'", "'Mod'", "'MOD'", "'+'", 
+                     "'-'", "'!'", "'&'", "'|'", "'xor'", "'Xor'", "'xOR'", 
+                     "'xOr'", "'XOR'", "'->'", "'<->'", "'FALSE'", "'TRUE'" ];
 
 var symbolicNames = [ null, null, null, null, null, null, null, null, null, 
                       null, null, null, null, null, null, null, null, null, 
                       null, null, null, null, null, null, null, null, null, 
                       null, null, null, null, null, null, null, null, null, 
                       null, null, null, null, null, null, null, null, null, 
-                      null, null, null, null, null, null, null, null, "ID", 
-                      "NUMBER", "UINT", "WS" ];
+                      null, null, null, null, null, null, null, null, null, 
+                      "ID", "NUMBER", "UINT", "WS" ];
 
 var ruleNames =  [ "arithmetic_expr", "bool_expr", "timedUnaryLTLOp", "unaryLTLOp", 
                    "binaryLTLOp", "comparisonOp", "bound", "range", "saltBound", 
@@ -281,10 +280,11 @@ LTLParser.T__48 = 49;
 LTLParser.T__49 = 50;
 LTLParser.T__50 = 51;
 LTLParser.T__51 = 52;
-LTLParser.ID = 53;
-LTLParser.NUMBER = 54;
-LTLParser.UINT = 55;
-LTLParser.WS = 56;
+LTLParser.T__52 = 53;
+LTLParser.ID = 54;
+LTLParser.NUMBER = 55;
+LTLParser.UINT = 56;
+LTLParser.WS = 57;
 
 LTLParser.RULE_arithmetic_expr = 0;
 LTLParser.RULE_bool_expr = 1;
@@ -312,7 +312,6 @@ LTLParser.RULE_implies = 22;
 LTLParser.RULE_equiv = 23;
 LTLParser.RULE_f = 24;
 LTLParser.RULE_t = 25;
-
 
 function Arithmetic_exprContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -601,7 +600,7 @@ LTLParser.prototype.arithmetic_expr = function(_p) {
         this.state = 83;
         this._errHandler.sync(this);
         switch(this._input.LA(1)) {
-        case LTLParser.T__30:
+        case LTLParser.T__31:
             localctx = new ArithGroupContext(this, localctx);
             this._ctx = localctx;
             _prevctx = localctx;
@@ -613,7 +612,7 @@ LTLParser.prototype.arithmetic_expr = function(_p) {
             this.state = 55;
             this.rp();
             break;
-        case LTLParser.T__39:
+        case LTLParser.T__40:
             localctx = new ArithUnaryContext(this, localctx);
             this._ctx = localctx;
             _prevctx = localctx;
@@ -644,7 +643,7 @@ LTLParser.prototype.arithmetic_expr = function(_p) {
                 this.state = 77;
                 this._errHandler.sync(this);
                 _la = this._input.LA(1);
-                if((((_la) & ~0x1f) == 0 && ((1 << _la) & ((1 << LTLParser.T__1) | (1 << LTLParser.T__7) | (1 << LTLParser.T__8) | (1 << LTLParser.T__9) | (1 << LTLParser.T__10) | (1 << LTLParser.T__11) | (1 << LTLParser.T__12) | (1 << LTLParser.T__13) | (1 << LTLParser.T__14) | (1 << LTLParser.T__15) | (1 << LTLParser.T__30))) !== 0) || ((((_la - 40)) & ~0x1f) == 0 && ((1 << (_la - 40)) & ((1 << (LTLParser.T__39 - 40)) | (1 << (LTLParser.T__40 - 40)) | (1 << (LTLParser.T__50 - 40)) | (1 << (LTLParser.T__51 - 40)) | (1 << (LTLParser.ID - 40)) | (1 << (LTLParser.NUMBER - 40)))) !== 0)) {
+                if((((_la) & ~0x1f) == 0 && ((1 << _la) & ((1 << LTLParser.T__1) | (1 << LTLParser.T__7) | (1 << LTLParser.T__8) | (1 << LTLParser.T__9) | (1 << LTLParser.T__10) | (1 << LTLParser.T__11) | (1 << LTLParser.T__12) | (1 << LTLParser.T__13) | (1 << LTLParser.T__14) | (1 << LTLParser.T__15))) !== 0) || ((((_la - 32)) & ~0x1f) == 0 && ((1 << (_la - 32)) & ((1 << (LTLParser.T__31 - 32)) | (1 << (LTLParser.T__40 - 32)) | (1 << (LTLParser.T__41 - 32)) | (1 << (LTLParser.T__51 - 32)) | (1 << (LTLParser.T__52 - 32)) | (1 << (LTLParser.ID - 32)) | (1 << (LTLParser.NUMBER - 32)))) !== 0)) {
                     this.state = 65;
                     this._errHandler.sync(this);
                     var la_ = this._interp.adaptivePredict(this._input,0,this._ctx);
@@ -732,17 +731,17 @@ LTLParser.prototype.arithmetic_expr = function(_p) {
                     this.state = 93;
                     this._errHandler.sync(this);
                     switch(this._input.LA(1)) {
-                    case LTLParser.T__33:
+                    case LTLParser.T__34:
                         this.state = 90;
                         this.mult();
                         break;
-                    case LTLParser.T__34:
+                    case LTLParser.T__35:
                         this.state = 91;
                         this.div();
                         break;
-                    case LTLParser.T__35:
                     case LTLParser.T__36:
                     case LTLParser.T__37:
+                    case LTLParser.T__38:
                         this.state = 92;
                         this.mod();
                         break;
@@ -763,11 +762,11 @@ LTLParser.prototype.arithmetic_expr = function(_p) {
                     this.state = 100;
                     this._errHandler.sync(this);
                     switch(this._input.LA(1)) {
-                    case LTLParser.T__38:
+                    case LTLParser.T__39:
                         this.state = 98;
                         this.plus();
                         break;
-                    case LTLParser.T__39:
+                    case LTLParser.T__40:
                         this.state = 99;
                         this.minus();
                         break;
@@ -798,7 +797,6 @@ LTLParser.prototype.arithmetic_expr = function(_p) {
     }
     return localctx;
 };
-
 
 function Bool_exprContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -1387,7 +1385,7 @@ LTLParser.prototype.bool_expr = function(_p) {
                 this.state = 146;
                 this._errHandler.sync(this);
                 _la = this._input.LA(1);
-                if((((_la) & ~0x1f) == 0 && ((1 << _la) & ((1 << LTLParser.T__1) | (1 << LTLParser.T__7) | (1 << LTLParser.T__8) | (1 << LTLParser.T__9) | (1 << LTLParser.T__10) | (1 << LTLParser.T__11) | (1 << LTLParser.T__12) | (1 << LTLParser.T__13) | (1 << LTLParser.T__14) | (1 << LTLParser.T__15) | (1 << LTLParser.T__30))) !== 0) || ((((_la - 40)) & ~0x1f) == 0 && ((1 << (_la - 40)) & ((1 << (LTLParser.T__39 - 40)) | (1 << (LTLParser.T__40 - 40)) | (1 << (LTLParser.T__50 - 40)) | (1 << (LTLParser.T__51 - 40)) | (1 << (LTLParser.ID - 40)) | (1 << (LTLParser.NUMBER - 40)))) !== 0)) {
+                if((((_la) & ~0x1f) == 0 && ((1 << _la) & ((1 << LTLParser.T__1) | (1 << LTLParser.T__7) | (1 << LTLParser.T__8) | (1 << LTLParser.T__9) | (1 << LTLParser.T__10) | (1 << LTLParser.T__11) | (1 << LTLParser.T__12) | (1 << LTLParser.T__13) | (1 << LTLParser.T__14) | (1 << LTLParser.T__15))) !== 0) || ((((_la - 32)) & ~0x1f) == 0 && ((1 << (_la - 32)) & ((1 << (LTLParser.T__31 - 32)) | (1 << (LTLParser.T__40 - 32)) | (1 << (LTLParser.T__41 - 32)) | (1 << (LTLParser.T__51 - 32)) | (1 << (LTLParser.T__52 - 32)) | (1 << (LTLParser.ID - 32)) | (1 << (LTLParser.NUMBER - 32)))) !== 0)) {
                     this.state = 134;
                     this._errHandler.sync(this);
                     var la_ = this._interp.adaptivePredict(this._input,10,this._ctx);
@@ -1566,7 +1564,7 @@ LTLParser.prototype.bool_expr = function(_p) {
                     this.state = 186;
                     this._errHandler.sync(this);
                     _la = this._input.LA(1);
-                    if(_la===LTLParser.T__28) {
+                    if(_la===LTLParser.T__29) {
                         this.state = 185;
                         this.bound();
                     }
@@ -1595,7 +1593,6 @@ LTLParser.prototype.bool_expr = function(_p) {
     }
     return localctx;
 };
-
 
 function TimedUnaryLTLOpContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -1668,7 +1665,6 @@ LTLParser.prototype.timedUnaryLTLOp = function() {
     }
     return localctx;
 };
-
 
 function UnaryLTLOpContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -1765,7 +1761,6 @@ LTLParser.prototype.unaryLTLOp = function() {
     return localctx;
 };
 
-
 function BinaryLTLOpContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
@@ -1817,7 +1812,7 @@ LTLParser.prototype.binaryLTLOp = function() {
         this.enterOuterAlt(localctx, 1);
         this.state = 203;
         _la = this._input.LA(1);
-        if(!((((_la) & ~0x1f) == 0 && ((1 << _la) & ((1 << LTLParser.T__16) | (1 << LTLParser.T__17) | (1 << LTLParser.T__18) | (1 << LTLParser.T__19) | (1 << LTLParser.T__20) | (1 << LTLParser.T__21))) !== 0))) {
+        if(!((((_la) & ~0x1f) == 0 && ((1 << _la) & ((1 << LTLParser.T__16) | (1 << LTLParser.T__17) | (1 << LTLParser.T__18) | (1 << LTLParser.T__19) | (1 << LTLParser.T__20) | (1 << LTLParser.T__21) | (1 << LTLParser.T__22))) !== 0))) {
         this._errHandler.recoverInline(this);
         }
         else {
@@ -1837,7 +1832,6 @@ LTLParser.prototype.binaryLTLOp = function() {
     }
     return localctx;
 };
-
 
 function ComparisonOpContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -1890,7 +1884,7 @@ LTLParser.prototype.comparisonOp = function() {
         this.enterOuterAlt(localctx, 1);
         this.state = 205;
         _la = this._input.LA(1);
-        if(!((((_la) & ~0x1f) == 0 && ((1 << _la) & ((1 << LTLParser.T__22) | (1 << LTLParser.T__23) | (1 << LTLParser.T__24) | (1 << LTLParser.T__25) | (1 << LTLParser.T__26) | (1 << LTLParser.T__27))) !== 0))) {
+        if(!((((_la) & ~0x1f) == 0 && ((1 << _la) & ((1 << LTLParser.T__23) | (1 << LTLParser.T__24) | (1 << LTLParser.T__25) | (1 << LTLParser.T__26) | (1 << LTLParser.T__27) | (1 << LTLParser.T__28))) !== 0))) {
         this._errHandler.recoverInline(this);
         }
         else {
@@ -1910,7 +1904,6 @@ LTLParser.prototype.comparisonOp = function() {
     }
     return localctx;
 };
-
 
 function BoundContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -1968,23 +1961,23 @@ LTLParser.prototype.bound = function() {
     try {
         this.enterOuterAlt(localctx, 1);
         this.state = 207;
-        this.match(LTLParser.T__28);
+        this.match(LTLParser.T__29);
         this.state = 210;
         this._errHandler.sync(this);
         switch(this._input.LA(1)) {
-        case LTLParser.T__30:
-        case LTLParser.T__39:
+        case LTLParser.T__31:
+        case LTLParser.T__40:
         case LTLParser.ID:
         case LTLParser.NUMBER:
             this.state = 208;
             this.range();
             break;
-        case LTLParser.T__22:
         case LTLParser.T__23:
         case LTLParser.T__24:
         case LTLParser.T__25:
         case LTLParser.T__26:
         case LTLParser.T__27:
+        case LTLParser.T__28:
             this.state = 209;
             this.saltBound();
             break;
@@ -1992,7 +1985,7 @@ LTLParser.prototype.bound = function() {
             throw new antlr4.error.NoViableAltException(this);
         }
         this.state = 212;
-        this.match(LTLParser.T__29);
+        this.match(LTLParser.T__30);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
 	        localctx.exception = re;
@@ -2006,7 +1999,6 @@ LTLParser.prototype.bound = function() {
     }
     return localctx;
 };
-
 
 function RangeContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -2093,7 +2085,6 @@ LTLParser.prototype.range = function() {
     return localctx;
 };
 
-
 function SaltBoundContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
@@ -2167,7 +2158,6 @@ LTLParser.prototype.saltBound = function() {
     return localctx;
 };
 
-
 function LpContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
@@ -2217,7 +2207,7 @@ LTLParser.prototype.lp = function() {
     try {
         this.enterOuterAlt(localctx, 1);
         this.state = 222;
-        this.match(LTLParser.T__30);
+        this.match(LTLParser.T__31);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
 	        localctx.exception = re;
@@ -2231,7 +2221,6 @@ LTLParser.prototype.lp = function() {
     }
     return localctx;
 };
-
 
 function RpContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -2282,7 +2271,7 @@ LTLParser.prototype.rp = function() {
     try {
         this.enterOuterAlt(localctx, 1);
         this.state = 224;
-        this.match(LTLParser.T__31);
+        this.match(LTLParser.T__32);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
 	        localctx.exception = re;
@@ -2296,7 +2285,6 @@ LTLParser.prototype.rp = function() {
     }
     return localctx;
 };
-
 
 function ExptContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -2347,7 +2335,7 @@ LTLParser.prototype.expt = function() {
     try {
         this.enterOuterAlt(localctx, 1);
         this.state = 226;
-        this.match(LTLParser.T__32);
+        this.match(LTLParser.T__33);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
 	        localctx.exception = re;
@@ -2361,7 +2349,6 @@ LTLParser.prototype.expt = function() {
     }
     return localctx;
 };
-
 
 function MultContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -2412,7 +2399,7 @@ LTLParser.prototype.mult = function() {
     try {
         this.enterOuterAlt(localctx, 1);
         this.state = 228;
-        this.match(LTLParser.T__33);
+        this.match(LTLParser.T__34);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
 	        localctx.exception = re;
@@ -2426,7 +2413,6 @@ LTLParser.prototype.mult = function() {
     }
     return localctx;
 };
-
 
 function DivContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -2477,7 +2463,7 @@ LTLParser.prototype.div = function() {
     try {
         this.enterOuterAlt(localctx, 1);
         this.state = 230;
-        this.match(LTLParser.T__34);
+        this.match(LTLParser.T__35);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
 	        localctx.exception = re;
@@ -2491,7 +2477,6 @@ LTLParser.prototype.div = function() {
     }
     return localctx;
 };
-
 
 function ModContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -2544,7 +2529,7 @@ LTLParser.prototype.mod = function() {
         this.enterOuterAlt(localctx, 1);
         this.state = 232;
         _la = this._input.LA(1);
-        if(!(((((_la - 36)) & ~0x1f) == 0 && ((1 << (_la - 36)) & ((1 << (LTLParser.T__35 - 36)) | (1 << (LTLParser.T__36 - 36)) | (1 << (LTLParser.T__37 - 36)))) !== 0))) {
+        if(!(((((_la - 37)) & ~0x1f) == 0 && ((1 << (_la - 37)) & ((1 << (LTLParser.T__36 - 37)) | (1 << (LTLParser.T__37 - 37)) | (1 << (LTLParser.T__38 - 37)))) !== 0))) {
         this._errHandler.recoverInline(this);
         }
         else {
@@ -2564,7 +2549,6 @@ LTLParser.prototype.mod = function() {
     }
     return localctx;
 };
-
 
 function PlusContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -2615,7 +2599,7 @@ LTLParser.prototype.plus = function() {
     try {
         this.enterOuterAlt(localctx, 1);
         this.state = 234;
-        this.match(LTLParser.T__38);
+        this.match(LTLParser.T__39);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
 	        localctx.exception = re;
@@ -2629,7 +2613,6 @@ LTLParser.prototype.plus = function() {
     }
     return localctx;
 };
-
 
 function MinusContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -2680,7 +2663,7 @@ LTLParser.prototype.minus = function() {
     try {
         this.enterOuterAlt(localctx, 1);
         this.state = 236;
-        this.match(LTLParser.T__39);
+        this.match(LTLParser.T__40);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
 	        localctx.exception = re;
@@ -2694,7 +2677,6 @@ LTLParser.prototype.minus = function() {
     }
     return localctx;
 };
-
 
 function NegateContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -2745,7 +2727,7 @@ LTLParser.prototype.negate = function() {
     try {
         this.enterOuterAlt(localctx, 1);
         this.state = 238;
-        this.match(LTLParser.T__39);
+        this.match(LTLParser.T__40);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
 	        localctx.exception = re;
@@ -2759,7 +2741,6 @@ LTLParser.prototype.negate = function() {
     }
     return localctx;
 };
-
 
 function NotContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -2810,7 +2791,7 @@ LTLParser.prototype.not = function() {
     try {
         this.enterOuterAlt(localctx, 1);
         this.state = 240;
-        this.match(LTLParser.T__40);
+        this.match(LTLParser.T__41);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
 	        localctx.exception = re;
@@ -2824,7 +2805,6 @@ LTLParser.prototype.not = function() {
     }
     return localctx;
 };
-
 
 function AndContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -2875,7 +2855,7 @@ LTLParser.prototype.and = function() {
     try {
         this.enterOuterAlt(localctx, 1);
         this.state = 242;
-        this.match(LTLParser.T__41);
+        this.match(LTLParser.T__42);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
 	        localctx.exception = re;
@@ -2889,7 +2869,6 @@ LTLParser.prototype.and = function() {
     }
     return localctx;
 };
-
 
 function OrContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -2940,7 +2919,7 @@ LTLParser.prototype.or = function() {
     try {
         this.enterOuterAlt(localctx, 1);
         this.state = 244;
-        this.match(LTLParser.T__42);
+        this.match(LTLParser.T__43);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
 	        localctx.exception = re;
@@ -2954,7 +2933,6 @@ LTLParser.prototype.or = function() {
     }
     return localctx;
 };
-
 
 function XorContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -3007,7 +2985,7 @@ LTLParser.prototype.xor = function() {
         this.enterOuterAlt(localctx, 1);
         this.state = 246;
         _la = this._input.LA(1);
-        if(!(((((_la - 44)) & ~0x1f) == 0 && ((1 << (_la - 44)) & ((1 << (LTLParser.T__43 - 44)) | (1 << (LTLParser.T__44 - 44)) | (1 << (LTLParser.T__45 - 44)) | (1 << (LTLParser.T__46 - 44)) | (1 << (LTLParser.T__47 - 44)))) !== 0))) {
+        if(!(((((_la - 45)) & ~0x1f) == 0 && ((1 << (_la - 45)) & ((1 << (LTLParser.T__44 - 45)) | (1 << (LTLParser.T__45 - 45)) | (1 << (LTLParser.T__46 - 45)) | (1 << (LTLParser.T__47 - 45)) | (1 << (LTLParser.T__48 - 45)))) !== 0))) {
         this._errHandler.recoverInline(this);
         }
         else {
@@ -3027,7 +3005,6 @@ LTLParser.prototype.xor = function() {
     }
     return localctx;
 };
-
 
 function ImpliesContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -3078,7 +3055,7 @@ LTLParser.prototype.implies = function() {
     try {
         this.enterOuterAlt(localctx, 1);
         this.state = 248;
-        this.match(LTLParser.T__48);
+        this.match(LTLParser.T__49);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
 	        localctx.exception = re;
@@ -3092,7 +3069,6 @@ LTLParser.prototype.implies = function() {
     }
     return localctx;
 };
-
 
 function EquivContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -3143,7 +3119,7 @@ LTLParser.prototype.equiv = function() {
     try {
         this.enterOuterAlt(localctx, 1);
         this.state = 250;
-        this.match(LTLParser.T__49);
+        this.match(LTLParser.T__50);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
 	        localctx.exception = re;
@@ -3157,7 +3133,6 @@ LTLParser.prototype.equiv = function() {
     }
     return localctx;
 };
-
 
 function FContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -3208,7 +3183,7 @@ LTLParser.prototype.f = function() {
     try {
         this.enterOuterAlt(localctx, 1);
         this.state = 252;
-        this.match(LTLParser.T__50);
+        this.match(LTLParser.T__51);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
 	        localctx.exception = re;
@@ -3222,7 +3197,6 @@ LTLParser.prototype.f = function() {
     }
     return localctx;
 };
-
 
 function TContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -3273,7 +3247,7 @@ LTLParser.prototype.t = function() {
     try {
         this.enterOuterAlt(localctx, 1);
         this.state = 254;
-        this.match(LTLParser.T__51);
+        this.match(LTLParser.T__52);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
 	        localctx.exception = re;

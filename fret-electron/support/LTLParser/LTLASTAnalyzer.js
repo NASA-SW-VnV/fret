@@ -23,7 +23,7 @@ const symbolToOpMap =
 	S : 'Since', T : 'Triggers',
 	SI : 'SinceInclusive', UI : 'UntilInclusive',
 	X : 'Nxt', G : 'Globally', F : 'Future', U : 'Untl',
-	V : 'Releases',
+	V : 'Releases', R : 'Releases',
 	'<|' : 'LookingBackwards', '|>' : 'LookingForwards',
 	'!' : 'Not', '&' : 'And', '|' : 'Or', '->' : 'Implies', '<->' : 'Equiv',
 	'xor' : 'ExclusiveOr',
