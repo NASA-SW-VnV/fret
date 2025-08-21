@@ -44,6 +44,7 @@ async function synchAnalysisWithDB (selectedProject) {
           components: data.components.sort((a, b) => {
             return a.component_name.toLowerCase().trim() > b.component_name.toLowerCase().trim()}),
           completedComponents: [],
+          r2u2CompletedComponents: [],
           smvCompletedComponents: [],
           booleanOnlyComponents: []
         }
@@ -51,6 +52,7 @@ async function synchAnalysisWithDB (selectedProject) {
         retVal.completedComponents =  await checkComponents(retVal.components, selectedProject,
           retVal.cocospecData, retVal.cocospecModes,[]);
 
+        retVal.r2u2CompletedComponents = await checkR2U2Components(retVal.components, selectedProject, retVal.cocospecData);
         retVal.smvCompletedComponents = await checkSMVComponents(retVal.components, selectedProject,retVal.cocospecData)
         retVal.booleanOnlyComponents = await identifyBooleanOnlyComponents(retVal.components, selectedProject);
         
@@ -155,6 +157,42 @@ async function  checkComponents (components, selectedProject, cocospecData, coco
     }
     return completedComponents
   }
+
+async function  checkR2U2Components (components, selectedProject, data, completedComponents) {
+  var completedComponents = []
+  let checkCounter = 0;
+  if(components){
+    await Promise.all(components.map(function (component) {
+      let component_name = component.component_name;
+      var dataLength = data[component_name] ? data[component_name].length : 0;
+      return modelDB.find({
+        selector: {
+          component_name: component_name,
+          project: selectedProject,
+          r2u2Completed: true,
+          modeldoc: false
+        }
+      }).then(function (result) {
+        if (result.docs.length === dataLength && dataLength !== 0){
+          if (!completedComponents.includes(component_name))
+          completedComponents.push(component_name);
+          checkCounter++;
+        } else {
+          var index = completedComponents.indexOf(component_name);
+          if (index > -1) completedComponents.splice(index, 1);
+          checkCounter++;
+        }
+        if (checkCounter === components.length){
+          completedComponents = [].concat(completedComponents)
+        }
+      }).catch(function (err) {
+        console.log(err);
+        return false;
+      })
+    }))
+  }
+  return completedComponents
+}
 
 async function  checkSMVComponents (components, selectedProject, data, completedComponents) {
   var completedComponents = []

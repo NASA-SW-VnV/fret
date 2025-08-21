@@ -234,6 +234,7 @@ class MainView extends React.Component {
                                   selectedVariable: result.selectedVariable,
                                   importedComponents: result.importedComponents,
                                   completedComponents: result.completedComponents,
+                                  r2u2CompletedComponents: result.r2u2CompletedComponents,
                                   smvCompletedComponents : result.smvCompletedComponents,
                                   booleanOnlyComponents: result.booleanOnlyComponents,
                                   cocospecData: result.cocospecData,
@@ -308,6 +309,7 @@ class MainView extends React.Component {
           // analysis
           components : result.components,
           completedComponents : result.completedComponents,
+          r2u2CompletedComponents : result.r2u2CompletedComponents,
           smvCompletedComponents: result.smvCompletedComponents,
           booleanOnlyComponents: result.booleanOnlyComponents,
           cocospecData : result.cocospecData,
@@ -350,6 +352,7 @@ class MainView extends React.Component {
                                   completedComponents : result.completedComponents,
                                   cocospecData : result.cocospecData,
                                   cocospecModes : result.cocospecModes,
+                                  r2u2CompletedComponents : result.r2u2CompletedComponents,
                                   smvCompletedComponents : result.smvCompletedComponents,
                                   booleanOnlyComponents: result.booleanOnlyComponents
                       })

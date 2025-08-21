@@ -96,6 +96,7 @@ let VariablesViewHeader = props => {
            }}>
            <MenuItem id="qa_var_mi_cocospec" value="cocospec">CoCoSpec</MenuItem>
            <MenuItem id="qa_var_mi_copilot" value="copilot">CoPilot</MenuItem>
+           <MenuItem id="qa_var_mi_r2u2" value="r2u2">R2U2</MenuItem>
            <MenuItem id="qa_var_mi_smv" value="smv">SMV</MenuItem>
          </Select>
        </FormControl>
@@ -230,13 +231,16 @@ class ComponentSummary extends React.Component {
   determineIncompleteComponentTooltipTitle(language) {
     if (language === 'smv') {
       return 'To export verification code or test obligations, please complete mandatory variable fields and export language first. For SMV export, only variables of Boolean data type are supported.'
-    } else {
+    } else if (language === 'r2u2'){
+      return 'To export verification code or test obligations, please complete mandatory variable fields and export language first. For R2U2 export, variables of Function variable type are NOT supported.'
+    }
+    else {
       return 'To export verification code or test obligations, please complete mandatory variable fields and export language first.'
     }
   }
 
   render() {
-    const {classes, component, completed, language, smvCompleted, isBooleanComponent} = this.props;
+    const {classes, component, completed, language, r2u2Completed, smvCompleted, isBooleanComponent} = this.props;
     if (language === 'copilot'){
       return (
         <Tooltip title='Export verification code.'>
@@ -290,6 +294,18 @@ class ComponentSummary extends React.Component {
           ]} />
         </div>
       )
+    } else if (r2u2Completed && language && language === 'r2u2') {
+      return (
+        <Tooltip title='Export C2PO specification file.'>
+        <span>
+          <Button id={"qa_var_btn_export_"+component} size="small"
+            onClick={this.exportComponentCode} color="secondary"
+            variant='contained' className={classes.buttonControl}>
+              Export
+          </Button>
+          </span>
+        </Tooltip>
+      );
     } else if (smvCompleted && language && language === 'smv') {
       if (language === 'smv' && !isBooleanComponent) {
         return (
@@ -367,6 +383,7 @@ ComponentSummary.propTypes = {
   selectedProject: PropTypes.string.isRequired,
   language: PropTypes.string.isRequired,
   variableIdentifierReplacement: PropTypes.func.isRequired,
+  r2u2Completed: PropTypes.bool.isRequired,
   smvCompleted: PropTypes.bool.isRequired,
   isBooleanComponent: PropTypes.bool.isRequired
 };
@@ -408,7 +425,7 @@ class VariablesView extends React.Component {
 
   render() {
     const self = this;
-    const {classes, selectedProject, listOfProjects, components, completedComponents, cocospecData, cocospecModes, smvCompletedComponents, booleanOnlyComponents} = this.props;
+    const {classes, selectedProject, listOfProjects, components, completedComponents, cocospecData, cocospecModes, r2u2CompletedComponents, smvCompletedComponents, booleanOnlyComponents} = this.props;
     const{language}= this.state;
     components.sort();
 
@@ -451,6 +468,7 @@ class VariablesView extends React.Component {
                   selectedProject={selectedProject}
                   language={language}
                   variableIdentifierReplacement={this.props.variableIdentifierReplacement}
+                  r2u2Completed={r2u2CompletedComponents.includes(component)}
                   smvCompleted={smvCompletedComponents.includes(component)}
                   isBooleanComponent={booleanOnlyComponents.includes(component)}
                 />
@@ -482,6 +500,7 @@ VariablesView.propTypes = {
   cocospecModes: PropTypes.object.isRequired,
   components: PropTypes.array.isRequired,
   completedComponents: PropTypes.array.isRequired,
+  r2u2CompletedComponents: PropTypes.array.isRequired,
   smvCompletedComponents: PropTypes.array.isRequired,
   variableIdentifierReplacement: PropTypes.func.isRequired,
   booleanOnlyComponents: PropTypes.array.isRequired

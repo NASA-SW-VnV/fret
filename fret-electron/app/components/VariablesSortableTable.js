@@ -360,6 +360,7 @@ class VariablesSortableTable extends React.Component {
                                    completedComponents: result.completedComponents,
                                    cocospecData: result.cocospecData,
                                    cocospecModes: result.cocospecModes,
+                                   r2u2CompletedComponents: result.r2u2CompletedComponents,
                                    smvCompletedComponents: result.smvCompletedComponents,
                                    booleanOnlyComponents: result.booleanOnlyComponents
                                  })
@@ -390,6 +391,7 @@ class VariablesSortableTable extends React.Component {
                                   completedComponents: result.completedComponents,
                                   cocospecData: result.cocospecData,
                                   cocospecModes: result.cocospecModes,
+                                  r2u2CompletedComponents: result.r2u2CompletedComponents,
                                   smvCompletedComponents: result.smvCompletedComponents,
                                   booleanOnlyComponents: result.booleanOnlyComponents
                                 })
@@ -412,6 +414,8 @@ class VariablesSortableTable extends React.Component {
     for (const cvd of componentVariableData) {
       if (language === 'smv' && cvd.completedStatus.smvCompleted) {
         cvd.completedStatus = cvd.completedStatus.smvCompleted
+      } else if (language === 'r2u2' && cvd.completedStatus.r2u2Completed) {
+        cvd.completedStatus = cvd.completedStatus.r2u2Completed
       } else if ((language === 'cocospec' || language === 'copilot') && cvd.completedStatus.completed) {
         cvd.completedStatus = cvd.completedStatus.completed
       } else {

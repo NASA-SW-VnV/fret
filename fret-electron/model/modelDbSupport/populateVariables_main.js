@@ -32,6 +32,17 @@ function batchCreateOrUpdate (variables) {
   });
 };
 
+function updateR2U2CompletedState(variable) {
+  if (!Object.hasOwn(variable, 'r2u2Completed') && variable.completed && variable.idType !== 'Internal') {
+    if (variable.dataType === 'boolean' || variable.dataType === 'integer' || variable.dataType === 'double') {
+        variable.r2u2Completed = true
+    } else {
+        variable.r2u2Completed = false
+    }
+  }
+  return variable
+}
+
 function updateSMVCompletedState(variable) {
   if (!Object.hasOwn(variable, 'smvCompleted') && variable.completed && variable.idType !== 'Internal') {
     if (variable.dataType === 'boolean' || variable.idType === 'Function') {
@@ -62,6 +73,7 @@ async  function populateVariables() {
       var variableRows = data.rows.map(row => row.doc);
       variableRows.forEach(variable => {
         variable = updateSMVCompletedState(variable)
+        variable = updateR2U2CompletedState(variable)
         if (variable.modeldoc === false){
           mapIdsToVariables[variable._id] = variable;
           mapIdsToVariables[variable._id].reqs = [];
@@ -113,6 +125,7 @@ async  function populateVariables() {
                   modelComponent: '',
                   modeldoc_id: '',
                   completed: false,
+                  r2u2Completed: false,
                   smvCompleted: false
                 };
                 mapIdsToVariables[variableId] = newVariable;
