@@ -32,6 +32,15 @@ const NuSMVSubsts = [
 		     [' since ', ' S ']
 		    ];
 
+const MLTLSubsts = [
+          ['X ', 'F[1,1] '],
+          [' V', ' R'],
+          ['G ', 'G[0,M] '],
+          ['F ', 'F[0,M] '],
+          [' U ', ' U[0,M] '],
+          [' R ', ' R[0,M] '],
+		    ];
+
 
 const NegateFormula =
   [['onlyIn|onlyBefore|onlyAfter,-,-,-','true'],
@@ -60,6 +69,13 @@ function conjunction(str1, str2) {return utilities.conjunction([str1, str2])}
 
 exports.translateToSMV = (formula) => {
   return utilities.replaceStrings(NuSMVSubsts, formula)
+}
+
+exports.translateToMLTL = (formula) => {
+  for (var i = 0; i < MLTLSubsts.length; i++) {
+    formula = formula.replaceAll(MLTLSubsts[i][0], MLTLSubsts[i][1]);
+  }
+  return formula;
 }
 
 exports.getEndpoints = (key) => {

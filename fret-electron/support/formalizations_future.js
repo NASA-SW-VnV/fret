@@ -32,6 +32,13 @@ const SMVEndpointRewrites = [
     // when we enforce when right never occurs
 ]
 
+// Note for future time we have (LEFT_END, RIGHT_END]
+// for infinite traces LAST=false
+const MLTLEndpointRewrites = [
+  ['FiM|FFiM|LNiM', '((! MODE) & (X MODE))'], // Strong Next
+  ['LiM|FNiM|FLiM', '(MODE & X (! MODE))'] // Strong Next
+]
+
 
 const SpecialCases =
       // mode,cond,timing
@@ -352,7 +359,7 @@ function inMode (modeCondition, formula, left, right, qualifier) {
 
 
 exports.EndPointsRewrite = (formula, format) => {
-  let rules = (format === 'smv' ? SMVEndpointRewrites : EndpointRewrites);
+  let rules = (format === 'smv' ? SMVEndpointRewrites : format === 'mltl' ? MLTLEndpointRewrites : EndpointRewrites);
   return utilities.replaceStrings(rules, formula);
 }
 

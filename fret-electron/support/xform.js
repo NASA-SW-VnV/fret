@@ -13,6 +13,7 @@ const { negate } = require('./utilities');
 module.exports = {
     optimizePT,
     optimizeFT,
+    optimizeMLTL_FT,
     finitizeFT,
     introduceSI,
     transform,
@@ -42,21 +43,34 @@ const booleanSimplifications = [
     [ '! (! __p)', trueFn, '__p'],
     [ '__p | __p', trueFn, '__p'],
     [ '__p & __p', trueFn, '__p'],
-    [ '! (!__p & !__q)',trueFn,'__p | __q'],
+    [ '! ((! __p) & (! __q))',trueFn,'__p | __q'],
     [ '(__p & __q) | (__p & __r)', trueFn, '__p & (__q | __r)'],
+    [ '(__p & (__q | __r)) | __r', trueFn, '(__p & __q) | __r'],
     [ '(! __p) | (__p & __q)', trueFn, '(! __p) | __q'],
     [ '__p | ((! __p) & __q)', trueFn, '__p | __q'],
+    [ '__p | (__q & (! __p))', trueFn, '__p | __q'],
     [ '(! __p) & ! (__q | __p)', trueFn, '(! __p) & (! __q)'],
     [ '(! __p) & ! (__p & __q)', trueFn, '! __p'],
     [ '__p & ! ((! __p) & __q)', trueFn, '__p'],
+    ['__p & (__p & __q)', trueFn, '__p & __q'],
     [ '(! (__p & __q)) & (! (__r | __q))', trueFn, '(! __q) & (! __r)'],
+    ['(! __p) | __q', trueFn, '__p => __q'],
+    ['(__p => __q) | __q', trueFn, '__p => __q'],
+    ['__p => (__q => __r)', trueFn, '(__p & __q) => __r'],
+    ['__p => ((__p & __q) | __r)', trueFn, '__p => (__q | __r)'],
+    ['(__p & (__q & __r)) => (__s & __r)', trueFn, '(__p & (__q & __r)) => __s'],
+    ['(__p & (__q & __r)) => ((__r & __s) | __t)', trueFn, '(__p & (__q & __r)) => (__s | __t)'],
+    ['__p => (__q & (__r => ((__p & __s) | __t)))', trueFn, '__p => (__q & (__r => (__s | __t)))'], 
+    ['(__p & __q) => ((__q & __r) | __s)', trueFn, '(__p & __q) => (__r | __s)'],
+    ['(__p & __r) => ((__p & __q) | __s)', trueFn, '(__p & __r) => (__q | __s)'],
     ['! FALSE',trueFn,'TRUE'], ['! TRUE', trueFn, 'FALSE'],
     ['__p | FALSE',trueFn,'__p'], ['FALSE | __p',trueFn,'__p'],
     ['__p | TRUE',trueFn,'TRUE'], ['TRUE | __p',trueFn,'TRUE'],
     ['__p & TRUE',trueFn,'__p'], ['TRUE & __p',trueFn,'__p'],
     ['__p & FALSE', trueFn, 'FALSE'], ['FALSE & __p', trueFn, 'FALSE'],
     ['TRUE => __p', trueFn, '__p'],   ['FALSE => __p', trueFn, 'TRUE'],
-    ['ite(__p, __q, __r)', trueFn, '((__p & __q) | ((! __p) & __r))']
+    ['__p => TRUE', trueFn, 'TRUE'],   ['__p => FALSE', trueFn, '(! __p)'],
+    ['ite(__p, __q, __r)', trueFn, '((__p & __q) | ((! __p) & __r))'],
 ];
 
 const pastTimeSimplifications = [
@@ -120,6 +134,163 @@ const futureTimeSimplifications = [
     ['WeakUntl(__p,__q)', trueFn, '(__p U __q) | G __p']
 ];
 
+const MLTLFutureTimeSimplifications = [
+    // Simplifications to reduce Next with temporal interval:
+    // (Note: the first two may not seem like simplifications but they make
+    // the rest of the simplifications easier to write.)
+    ['X (__p & __r)', trueFn, '(X __p) & (X __r)'],
+    ['X (__p | __r)', trueFn, '(X __p) | (X __r)'],
+    ['X (X __p)', trueFn, 'F[2,2] __p'],
+    ['X (G __r)', trueFn, 'G[1,M] __r'],
+    ['X (G[<= __h] __p)', trueFn, 'G[1, __h+1] __p'],
+    ['X (G[= __h] __p)', trueFn, 'G[__h+1, __h+1] __p'],
+    ['X (F __p)', trueFn, 'F[1,M] __p'], 
+    ['X (F[< __h] __p)', trueFn, 'F[1, __h] __p'],
+    ['X (F[<= __h] __p)', trueFn, 'F[1, __h+1] __p'],
+    ['X (F[= __h] __p)', trueFn, 'F[__h+1, __h+1] __p'],
+    ['X (F[1,__h] __p)', trueFn, 'F[2,__h+1] __p'],
+    ['X (__p U __q)', trueFn, '__p U[1,M] __q'],
+    ['X (__p V __q)', trueFn, '__p V[1,M] __q'],
+    ['X (__p V[<= __h] __q)', trueFn, '__p V[1, __h+1] __q'],
+
+    // Simplifications reducing Next via distributive law:
+    ['(X __p) U ((X __q) & ((F[1, __h+1] __r) | (G[(__h+1)+1, (__h+1)+1] __s)))', trueFn, 'X (__p U (__q & ((F[<= __h] __r) | (G[= __h+1] __s))))'],
+    ['(X __p) U ((X __q) & (F[1, __h+1] __r))', trueFn, 'X (__p U (__q & (F[<= __h] __r)))'],
+    ['(X __p) U ((X __q) & (G[1, __h+1] __r))', trueFn, 'X (__p U (__q & (G[<= __h] __r)))'],
+    ['(X __p) U ((X __q) & (F[1,M] __r))', trueFn, 'X (__p U (__q & (F __r)))'],
+    ['(X __p) U ((X __q) & (G[1,M] __r))', trueFn, 'X (__p U (__q & (G __r)))'],
+    ['(X __p) U ((X __q) & ((__r V[1,M] __s) | G[1,M] __t))', trueFn, 'X (__p U (__q & ((__r V __s) | G __t)))'],
+    ['(X __p) U ((X __q) & (__r V[1,M] __s))', trueFn, 'X (__p U (__q & (__r V __s)))'],
+    ['(X __p) U ((X __q) & (F[2,2] __r))', trueFn, 'X (__p U (__q & (X __r)))'],
+    ['(X __p) U ((X __q) & (X __r))', trueFn, 'X(__p U (__q & __r))'],
+    ['(X __p) U ((X __q) & ((G[1,M] __r) & (X __s)))', trueFn, 'X (__p U (__q & ((G __r) & __s)))'],
+    ['G (X __p)', trueFn, 'X (G __p)'],
+    ['F[__l,__h] (X __p)', trueFn, 'X (F[__l,__h] __p)'],
+
+    // Simplifications reducing when in or not in a mode:
+    ['(! __p) => (__q | (G (! ((! __p) & (X __p)))))', trueFn, '(! __p) => (__q | (G (X (! __p))))'],
+    ['(__p) => (__q | F[< __h] (__p & (X (! __p))))', trueFn, '(__p) => (__q | F[< __h] (X (! __p)))'],
+    ['(__p & __r) => (__q | F[< __h] (__p & (X (! __p))))', trueFn, '(__p & __r) => (__q | F[< __h] (X (! __p)))'],
+    ['(! __p) => (__q | F[< __h] ((! __p) & (X __p)))', trueFn, '(! __p) => (__q | F[< __h] (X __p))'],
+    ['((! __p) & __r) => (__q | F[< __h] ((! __p) & (X __p)))', trueFn, '((! __p) & __r) => (__q | F[< __h] (X __p))'],
+    ['(! __p) -> ((__q | (F[< __h] ((! __p) & (X __p)))) | __r)', trueFn, '(! __p) -> ((__q | (F[< __h] (X __p))) | __r)'],
+    ['((! __p) & __r) -> ((__q | (F[< __h] ((! __p) & (X __p)))) | __s)', trueFn, '((! __p) & __r) -> ((__q | (F[< __h] (X __p))) | __s)'],
+    ['(__p) => (__s & (__q | F[< __h] (__p & (X (! __p)))))', trueFn, '(__p) => (__s & (__q | F[< __h] (X (! __p))))'],
+    ['(__p & __r) => (__s & (__q | F[< __h] (__p & (X (! __p)))))', trueFn, '(__p & __r) => (__s & (__q | F[< __h] (X (! __p))))'],
+    ['(! __p) => (__s & (__q | F[< __h] ((! __p) & (X __p))))', trueFn, '(! __p) => (__s & (__q | F[< __h] (X __p)))'],
+    ['((! __p) & __r) => (__s & (__q | F[< __h] ((! __p) & (X __p))))', trueFn, '((! __p) & __r) => (__s & (__q | F[< __h] (X __p)))'],
+    ['(__p & (X (! __p))) => (X (__q => (__r | (F[< __h] ((! __p) & (X __p))))))', trueFn, '(__p & (X (! __p))) => (X (__q => (__r | (F[< __h] (X __p)))))'],
+    ['((! __p) & (X __p)) => (X (__q => (__r | (F[< __h] (__p & (X (! __p)))))))', trueFn, '((! __p) & (X __p)) => (X (__q => (__r | (F[< __h] (X (! __p))))))'],
+    ['(__p & (X (! __p))) => (X (__q => (__s & (__r | (F[< __h] ((! __p) & (X __p)))))))', trueFn, '(__p & (X (! __p))) => (X (__q => (__s & (__r | (F[< __h] (X __p))))))'],
+    ['((! __p) & (X __p)) => (X (__q => (__s & (__r | (F[< __h] (__p & (X (! __p))))))))', trueFn, '((! __p) & (X __p)) => (X (__q => (__s & (__r | (F[< __h] (X (! __p)))))))'],
+    ['(__p & (X (! __p))) => (X (__r =>  ((__t | (F[< __h] ((! __p) & (X __p)))) | __q)))', trueFn, '(__p & (X (! __p))) => (X (__r =>  ((__t | (F[< __h] (X __p))) | __q)))'],
+    ['(__p & (X (! __p))) => (__q | F[1, __h] ((! __p) & (X __p)))', trueFn, '(__p & (X (! __p))) => (__q | F[1, __h] (X __p))'],
+    ['((! __p) & (__r & (__s & (X (! __p))))) => (__t | (F[1,__h] ((! __p) & (X __p))))', trueFn, '((! __p) & (__r & (__s & (X (! __p))))) => (__t | (F[1,__h] (X __p)))'],
+    ['((! __p) & (X __p)) => (__q | F[1, __h] (__p & (X (! __p))))', trueFn, '((! __p) & (X __p)) => (__q | F[1, __h] (X (! __p)))'],
+    ['(__p & (__r & (__s & (X __p)))) => (__t | (F[1,__h] (__p & (X (! __p)))))', trueFn, '(__p & (__r & (__s & (X __p)))) => (__t | (F[1,__h] (X (! __p))))'],
+    ['(__p & (X (! __p))) => (__s & (__q | F[1, __h] ((! __p) & (X __p))))', trueFn, '(__p & (X (! __p))) => (__s & (__q | F[1, __h] (X __p)))'],
+    ['((! __p) & (__r & (__s & (X (! __p))))) => (__q & (__t | (F[1,__h] ((! __p) & (X __p)))))', trueFn, '((! __p) & (__r & (__s & (X (! __p))))) => (__q & (__t | (F[1,__h] (X __p))))'],
+    ['((! __p) & (X __p)) => (__s & (__q | F[1, __h] (__p & (X (! __p)))))', trueFn, '((! __p) & (X __p)) => (__s & (__q | F[1, __h] (X (! __p))))'],
+    ['(__p & (__r & (__s & (X __p)))) => (__q & (__t | (F[1,__h] (__p & (X (! __p))))))', trueFn, '(__p & (__r & (__s & (X __p)))) => (__q & (__t | (F[1,__h] (X (! __p)))))'],
+    ['(__p & (X (! __p))) -> ((__q | (F[1,__h] ((! __p) & (X __p)))) | __r)', trueFn, '(__p & (X (! __p))) -> ((__q | (F[1,__h] (X __p))) | __r)'],
+    ['((! __p) & (__r & (__s & (X (! __p))))) => ((__t | (F[1,__h] ((! __p) & (X __p)))) | __q)', trueFn, '((! __p) & (__r & (__s & (X (! __p))))) => ((__t | (F[1,__h] (X __p))) | __q)'],
+    ['__p => ((! (__p & (X (! __p)))) U __q)', trueFn, '__p => ((X __p) U __q)'],
+    ['(__p & __r) => ((! (__p & (X (! __p)))) U __q)', trueFn, '(__p & __r) => ((X __p) U __q)'],
+    ['(! __p) => ((! ((! __p) & (X __p))) U __q)', trueFn, '(! __p) => ((X (! __p)) U __q)'],
+    ['((! __p) & __r) => ((! ((! __p) & (X __p))) U __q)', trueFn, '((! __p) & __r) => ((X (! __p)) U __q)'],
+    ['(__p & (X (! __p))) => ((! ((! __p) & (X __p))) U[1,__h] __q)', trueFn, '(__p & (X (! __p))) => ((X (! __p)) U[1,__h] __q)'],
+    ['(__q & (__r & (X (! __p)))) => ((! ((! __p) & (X __p))) U[1, __h] __s)', trueFn, '(__q & (__r & (X (! __p)))) => ((X (! __p)) U[1, __h] __s)'],
+    ['((! __p) & (X __p)) => ((! (__p & (X (! __p)))) U[1,__h] __q)', trueFn, '((! __p) & (X __p)) => ((X __p) U[1,__h] __q)'],
+    ['(__q & (__r & (X __p))) => ((! (__p & (X (! __p)))) U[1, __h] __s)', trueFn, '(__q & (__r & (X __p))) => ((X __p) U[1, __h] __s)'],
+    ['__p => (__q & (__r => ((! (__p & (X (! __p)))) U __s)))', trueFn, '__p => (__q & (__r => ((X __p) U __s)))'],
+    ['(! __p) => (__q & (__r => ((! ((! __p) & (X __p))) U __s)))', trueFn, '(! __p) => (__q & (__r => ((X (! __p)) U __s)))'],
+    ['(__p & (X (! __p))) => (__q & (X (__r => ((! ((! __p) & (X __p))) U __s))))', trueFn, '(__p & (X (! __p))) => (__q & (X (__r => ((X (! __p)) U __s))))'],
+    ['((! __p) & (X __p)) => (__q & (X (__r => ((! (__p & (X (! __p)))) U __s))))', trueFn, '((! __p) & (X __p)) => (__q & (X (__r => ((X __p) U __s))))'],
+    ['(! __p) => (((! ((! __p) & (X __p))) U (((! __p) & (X __p)) & __r)) | __q)', trueFn, '(! __p) => (((X (! __p)) U ((X __p) & __r)) | __q)'],
+    ['__p => ((__p & (X (! __p))) V __q)', trueFn, '__p => ((X (! __p)) V __q)'],
+    ['(__p & __r) => ((__p & (X (! __p))) V __q)', trueFn, '(__p & __r) => ((X (! __p)) V __q)'],
+    ['(! __p) => (((! __p) & (X __p)) V __q)', trueFn, '(! __p) => ((X __p) V __q)'],
+    ['((! __p) & __r) => (((! __p) & (X __p)) V __q)', trueFn, '((! __p) & __r) => ((X __p) V __q)'],
+    ['__p => ((__p & (X (! __p))) V __r) & __s)', trueFn, '__p => ((X (! __p)) V __r) & __s)'],
+    ['(! __p) => ((((! __p) & (X __p)) V __r) & __s)', trueFn, '(! __p) => ((X __p) V __r) & __s)'],
+    ['__p => ((__q | (__p & (X (! __p)))) V __r)', trueFn, '__p => ((__q | (X (! __p))) V __r)'],
+    ['(__p & __r) => ((__q | (__p & (X (! __p)))) V __s)', trueFn, '(__p & __r) => ((__q | (X (! __p))) V __s)'],
+    ['(! __p) => ((__q | ((! __p) & (X __p))) V __r)', trueFn, '(! __p) => ((__q | (X __p)) V __r)'],
+    ['((! __p) & __r) => ((__q | ((! __p) & (X __p))) V __s)', trueFn, '((! __p) & __r) => ((__q | (X __p)) V __s)'],
+    ['(! __p) => ((__q => ((! __p) & (X __p))) V __r)', trueFn, '(! __p) => ((__q => (X __p)) V __r)'],
+    ['((! __p) & __r) => ((__q => ((! __p) & (X __p))) V __s)', trueFn, '((! __p) & __r) => ((__q => (X __p)) V __s)'],
+    ['__p => (__q & (__r => ((__p & (X (! __p))) V __s)))', trueFn, '__p => (__q & (__r => ((X (! __p)) V __s)))'],
+    ['(! __p) => (__q & (__r => (((! __p) & (X __p)) V __s)))', trueFn, '(! __p) => (__q & (__r => ((X __p) V __s)))'],
+    ['(__p & (X (! __p))) => (__q & (X (__r => (((! __p) & (X __p)) V __s))))', trueFn, '(__p & (X (! __p))) => (__q & (X (__r => ((X __p) V __s))))'],
+    ['((! __p) & (X __p)) => (__q & (X (__r => ((__p & (X (! __p))) V __s))))', trueFn, '((! __p) & (X __p)) => (__q & (X (__r => ((X (! __p)) V __s))))'],
+    ['__p => (((X (! __p)) V ((__q & (__r & (! (__p & (X (! __p)))))) => __s)) & __t)', trueFn, '__p => (((X (! __p)) V ((__q & (__r & (X __p))) => __s)) & __t)'],
+    ['(! __p) => (((X __p) V ((__q & (__r & (! ((! __p) & (X __p))))) => __s)) & __t)', trueFn, '(! __p) => (((X __p) V ((__q & (__r & (X (! __p)))) => __s)) & __t)'],
+    ['__p => (__q | ((__p & (X (! __p))) V[<= __h] __r))', trueFn, '__p => (__q | ((X (! __p)) V[<= __h] __r))'],
+    ['(__p & __r) => (__q | ((__p & (X (! __p))) V[<= __h] __s))', trueFn, '(__p & __r) => (__q | ((X (! __p)) V[<= __h] __s))'],
+    ['(! __p) => (__q | (((! __p) & (X __p)) V[<= __h] __r))', trueFn, '(! __p) => (__q | ((X __p) V[<= __h] __r))'],
+    ['((! __p) & __r) => (__q | (((! __p) & (X __p)) V[<= __h] __s))', trueFn, '((! __p) & __r) => (__q | ((X __p) V[<= __h] __s))'],
+    ['(! __p) -> (__q | (__r | (((! __p) & (X __p)) V[<= __h] __s)))', trueFn, '(! __p) -> (__q | (__r | ((X __p) V[<= __h] __s)))'],
+    ['((! __p) & __r) -> (__q | (__s | (((! __p) & (X __p)) V[<= __h] __t)))', trueFn, '((! __p) & __r) -> (__q | (__s | ((X __p) V[<= __h] __t)))'],
+    ['__p => ((__q | ((__p & (X (! __p))) V[<= __h] __r)) & __s)', trueFn, '__p => ((__q | ((X (! __p)) V[<= __h] __r)) & __s)'],
+    ['(__p & __r) => ((__q | ((__p & (X (! __p))) V[<= __h] __s)) & __t)', trueFn, '(__p & __r) => ((__q | ((X (! __p)) V[<= __h] __s)) & __t)'],
+    ['(! __p) => ((__q | ((((! __p) & (X __p))) V[<= __h] __r)) & __s)', trueFn, '(! __p) => ((__q | ((X __p) V[<= __h] __r)) & __s)'],
+    ['((! __p) & __r) => ((__q | ((((! __p) & (X __p))) V[<= __h] __s)) & __t)', trueFn, '((! __p) & __r) => ((__q | ((X __p) V[<= __h] __s)) & __t)'],
+    ['(__p & (X (! __p))) => ((__q => ((! __p) & (X __p))) V[1,__h] __r)', trueFn, '(__p & (X (! __p))) => ((__q => (X __p)) V[1,__h] __r)'],
+    ['(__p & (X (! __p))) => (X (__r => ((__q | ((! __p) & (X __p)) V __s))))', trueFn, '(__p & (X (! __p))) => (X (__r => ((__q | (X __p)) V __s)))'],
+    ['((! __p) & (X __p)) => (X (__r => ((__q | (__p & (X (! __p)))) V __s)))', trueFn, '((! __p) & (X __p)) => (X (__r => ((__q | (X (! __p))) V __s)))'],
+    ['(__p & (X (! __p))) => (X (__r => ((__q => ((! __p) & (X __p)) V __s))))', trueFn, '(__p & (X (! __p))) => (X (__r => ((__q => (X __p)) V __s)))'],
+    ['(__p & (X (! __p))) => (X (__q => (__r | (((! __p) & (X __p)) V[<= __h] __s))))', trueFn, '(__p & (X (! __p))) => (X (__q => (__r | ((X __p) V[<= __h] __s))))'],
+    ['((! __p) & (X __p)) => (X (__q => (__r | ((__p & (X (! __p)) V[<= __h] __s)))))', trueFn, '((! __p) & (X __p)) => (X (__q => (__r | ( (X (! __p)) V[<= __h] __s))))'],
+    ['(__p & (X (! __p))) => (X (__q => (__r | (__t | (((! __p) & (X __p)) V[<= __h] __s)))))', trueFn, '(__p & (X (! __p))) => (X (__q => (__r | (__t | ((X __p) V[<= __h] __s)))))'],
+    ['(__p & (X (! __p))) => (X (__q => ((__r | (((! __p) & (X __p)) V[<= __h] __s)) & __u)))', trueFn, '(__p & (X (! __p))) => (X (__q => ((__r | ((X __p) V[<= __h] __s)) & __u)))'],
+    ['((! __p) & (X __p)) => (X (__q => ((__r | (__p & (X (! __p)) V[<= __h] __s)) & __u)))', trueFn, '((! __p) & (X __p)) => (X (__q => ((__r | ( (X (! __p)) V[<= __h] __s)) & __u)))'],
+    ['(__p & (X (! __p))) => (((! __p) & (X __p)) V[1,__h] __q)', trueFn, '(__p & (X (! __p))) => ((X __p) V[1,__h] __q)'],
+    ['(__q & (__r & (X (! __p)))) => (((! __p) & (X __p)) V[1, __h] __s)', trueFn, '(__q & (__r & (X (! __p)))) => ((X __p) V[1, __h] __s)'],
+    ['((! __p) & (X __p)) => ((__p & (X (! __p))) V[1,__h] __q)', trueFn, '((! __p) & (X __p)) => ((X (! __p)) V[1,__h] __q)'],
+    ['(__q & (__r & (X __p))) => ((__p & (X (! __p))) V[1, __h] __s)', trueFn, '(__q & (__r & (X __p))) => ((X (! __p)) V[1, __h] __s)'],
+    ['(__p & (X (! __p))) => (__q | (((! __p) & (X __p)) V[1,__h] __r))', trueFn, '(__p & (X (! __p))) => (__q | ((X __p) V[1,__h] __r))'],
+    ['((! __p) & (X __p)) => (__q | ((__p & (X (! __p))) V[1,__h] __r))', trueFn, '((! __p) & (X __p)) => (__q | ((X (! __p)) V[1,__h] __r))'],
+    ['(__p & (X (! __p))) => ((((! __p) & (X __p)) V[1,__h] __r) & __s)', trueFn, '(__p & (X (! __p))) => ((X __p) V[1,__h] __r) & __s)'],
+    ['((! __p) & (X __p)) => ((__p & (X (! __p))) V[1,__h] __r) & __s)', trueFn, '((! __p) & (X __p)) =>((X (! __p)) V[1,__h] __r) & __s)'],
+    ['((! __p) & (X __p)) => (((X (! __p)) V[1,__h] ((__q & (__r & (! (__p & (X (! __p)))))) => __s)) & __t)', trueFn, '((! __p) & (X __p)) => (((X (! __p)) V[1,__h] ((__q & (__r & (X __p))) => __s)) & __t)'],
+    ['(__p & (X (! __p))) => (((X __p) V[1,__h] ((__q & (__r & (! ((! __p) & (X __p))))) => __s)) & __t)', trueFn, '(__p & (X (! __p))) => (((X __p) V[1,__h] ((__q & (__r & (X (! __p)))) => __s)) & __t)'],
+    ['(__p & (X (! __p))) => ((__q | ((((! __p) & (X __p))) V[1,__h] __r)) & __s)', trueFn, '(__p & (X (! __p))) => ((__q | ((X __p) V[1,__h] __r)) & __s)'],
+    ['((! __p) & (X __p)) => ((__q | ((__p & (X (! __p))) V[1,__h] __r)) & __s)', trueFn, '((! __p) & (X __p)) =>((__q | ((X (! __p)) V[1,__h] __r)) & __s)'],
+    ['(__p & (X (! __p))) -> (__q | (__r | (((! __p) & (X __p)) V[1,__h] __s)))', trueFn, '(__p & (X (! __p))) -> (__q | (__r | ((X __p) V[1,__h] __s)))'],
+    ['(__p & (X (! __p))) => ((__q | ((! __p) & (X __p))) V[1,__h] __r)', trueFn, '(__p & (X (! __p))) => ((__q | (X __p)) V[1,__h] __r)'],
+    ['((! __p) & (X __p)) => ((__q | (__p & (X (! __p)))) V[1,__h] __r)', trueFn, '((! __p) & (X __p)) => ((__q | (X (! __p))) V[1,__h] __r)'],
+    ['(__p & (__r & (__s & (X __p)))) => ((__t | (__p & (X (! __p)))) V[1, __h] __q)', trueFn, '(__p & (__r & (__s & (X __p)))) => ((__t | (X (! __p))) V[1, __h] __q)'],
+    ['((! __p) & (__r & (__s & (X (! __p))))) => ((__t | ((! __p) & (X __p))) V[1, __h] __q)', trueFn, '((! __p) & (__r & (__s & (X (! __p))))) => ((__t | (X __p)) V[1, __h] __q)'],
+    ['((! __p) & (__r & (__s & (X (! __p))))) => (__t | (((! __p) & (X __p)) V[1,__h] __q))', trueFn, '((! __p) & (__r & (__s & (X (! __p))))) => (__t | ((X __p) V[1,__h] __q))'],
+    ['(__p & (__r & (__s & (X __p)))) => (__t | ((__p & (X (! __p))) V[1,__h] __q))', trueFn, '(__p & (__r & (__s & (X __p)))) => (__t | ((X (! __p)) V[1,__h] __q))'],
+    ['((! __p) & (__r & (__s & (X (! __p))))) => ((__t | (((! __p) & (X __p)) V[1,__h] __q)) & __u)', trueFn, '((! __p) & (__r & (__s & (X (! __p))))) => ((__t | ((X __p) V[1,__h] __q)) & __u)'],
+    ['(__p & (__r & (__s & (X __p)))) => ((__t | ((__p & (X (! __p))) V[1,__h] __q)) & __u)', trueFn, '(__p & (__r & (__s & (X __p)))) => ((__t | ((X (! __p)) V[1,__h] __q)) & __u)'],
+    ['((! __p) & (__r & (__s & (X (! __p))))) => (__t | (__u | (((! __p) & (X __p)) V[1,__h] __q)))', trueFn, '((! __p) & (__r & (__s & (X (! __p))))) => (__t | (__u | ((X __p) V[1,__h] __q)))'],
+    ['((! __p) & (__r & (__s & (X (! __p))))) => ((__t => ((! __p) & (X __p))) V[1, __h] __q)', trueFn, '((! __p) & (__r & (__s & (X (! __p))))) => ((__t => (X __p)) V[1, __h] __q)'],
+    ['(__p & (X (! __p))) => (__q & (X (__r => (((! __p) & (X __p)) | __s))))', trueFn, '(__p & (X (! __p))) => (__q & (X (__r => ((X __p) | __s))))'],
+    ['((! __p) & (X __p)) => (__q & (X (__r => ((__p & (X (! __p))) | __s))))', trueFn, '((! __p) & (X __p)) => (__q & (X (__r => ((X (! __p)) | __s))))'],
+    
+    // Simplifications reducing interval bounds:
+    ['(G[__l,__h] __p) | (__q V __p)', trueFn, '(G[__l,__h] __p) | (__q V[__l,__h] __p)'],
+    ['(G[<= __h] (! __p)) & (F[<= __h+1] __p)', trueFn, '(G[<= __h] (! __p)) & (F[= __h+1] __p)'],
+    ['(F[<= __h] __p) | (G[<= __h+1] (! __p))', trueFn, '(F[<= __h] __p) | (G[= __h+1] (! __p))'],
+    ['((G[<= __p] (! __q)) | (__r V[__l, __h] (! __q))) & ((F[<= __p+1] __q) | (F[< __p+1] __r))', trueFn, '((G[<= __p] (! __q)) | (__r V[__l, __h] (! __q))) & ((F[= __p+1] __q) | (F[< __p+1] __r))'],
+    ['(G[__l,__h] __p) | G __p', trueFn, 'G[__l,__h] __p'],
+    
+    // Misc. simplifications reducing temporal operators:
+    ['!(__p U __q)', trueFn, '(! __p) V (! __q)'],
+    ['!(F __p)', trueFn, 'G (! __p)'],
+    ['((__p & __q) | __r) V __p', trueFn, '(__q | __r) V __p'],
+    ['((__p | __q) V (__r | __s)) | (__q V __r)', trueFn, '((__p | __q) V (__r | __s))'],
+    ['((__p | __q) V !(__r & __s)) | (__q V (! __r))', trueFn, '((__p | __q) V !(__r & __s))'],
+    ['((! __p) U (__p)) | (G (! __p))', trueFn, 'TRUE'],
+    
+    // Simplifications reducing Release to an external Globally:
+    ['(G (! __p & (X __p)) => ((X(! __p)) V[1,M] __q)) & (__p => ((X(! __p)) V __q))', trueFn, 'G(__p => __q)'],
+    ['(G (__p & (X (! __p))) => ((X __p) V[1,M] __q)) & ((! __p) => ((X __p) V __q))', trueFn, 'G((! __p) => __q)'],
+    ['(G (! __p & (X __p)) => (((X(! __p)) V[1,M] __q) & (X __r))) & (__p => (((X(! __p)) V __q) & __r))', trueFn, '(G ((__p => __q) & (((! __p) & (X __p) => (X __r))))) & (__p => __r)'], //c
+    ['(G (__p & (X (! __p))) => (((X __p) V[1,M] __q) & (X __r))) & ((! __p) => (((X __p) V __q) & __r))', trueFn, '(G (((! __p) => __q) & ((__p & (X (! __p)) => (X __r))))) & ((! __p) => __r)'], //c
+  ];
 
 const finitizeFuture = [
     ['G __p', trueFn, 'LAST V __p'],
@@ -137,8 +308,8 @@ function mnIsNumber(sbst) {
 const futureTemporalConditions = [
     ['persists(__n,__p)', nIsNumber ,'((G[<=__n] __p) & (G[<__n] ! $Right$))'],
     ['persists(__m,__n,__p)', mnIsNumber ,'((G[__m,__n] __p) & (G[<__n] ! $Right$))'],
-  ['occurs(__n,__p)', nIsNumber,'(((! $Right$) U __p) & (F[<=__n] __p))'],
   ['occurs(__m,__n,__p)', mnIsNumber,'(!$Right) U[__m,__n] __p'],
+  ['occurs(__n,__p)', nIsNumber,'(! $Right$) U[<= __n] __p'],
     // This commented out version assumes there must be a next occurrence of p
     // ['nextOcc(__p,__q)', trueFn, '(X((!__p & !$Right$) U (__p & __q)))']
     // This version is satisfied if there is no next occurrence of p.
@@ -305,6 +476,9 @@ const ptSimplifications =
 const ftSimplifications =
       indexTriples(futureTimeSimplifications.concat(booleanSimplifications).map(parseit));
 
+const MLTLFtSimplifications =
+      indexTriples(MLTLFutureTimeSimplifications.concat(futureTimeSimplifications).concat(booleanSimplifications).map(parseit));
+
 const finitizingFuture = indexTriples(finitizeFuture.map(parseit));
 
 const parsedPastTemporalConditions = indexTriples(pastTemporalConditions.map(parseit))
@@ -329,6 +503,10 @@ function applyPtSimplifications (term) {
 
 function applyFtSimplifications (term) {
     return applyTriples(term,ftSimplifications);
+}
+
+function applyMLTLFtSimplifications (term) {
+    return applyTriples(term,MLTLFtSimplifications);
 }
 
 function applyFinitizing(term) {
@@ -410,6 +588,13 @@ function optimizeFT(ftAST) {
     let result = rewrite_bottomup(ftAST,optimizeFTrules);
     //if (isEqual(result,ptAST)) return null; else
     //console.log('optimizeFT exit: ' + JSON.stringify(result))
+    return result;
+}
+
+const optimizeMLTLrules = [applyMLTLFtSimplifications];
+
+function optimizeMLTL_FT(MLTLAST) {
+    let result = rewrite_bottomup(MLTLAST,optimizeMLTLrules);
     return result;
 }
 

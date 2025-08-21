@@ -32,7 +32,7 @@ const semanticsObjNonsense = {
   ptExpanded: constants.nonsense_semantics, // used with SMV
   //pt_SI: constants.nonsense_semantics, // for more efficient cocospec
   CoCoSpecCode: constants.nonsense_semantics,
-  R2U2Code: constants.nonsense_semantics,
+  MLTL: constants.nonsense_semantics,
   ftInfAU: constants.nonsense_semantics,
   ftInfAUExpanded: constants.nonsense_semantics,
   ftInfBtw: constants.nonsense_semantics,
@@ -54,7 +54,7 @@ var semanticsObjUndefined = {
   ptExpanded: constants.undefined_semantics, // used with SMV
   //pt_SI: constants.undefined_semantics, // for more efficient cocospec
   CoCoSpecCode: constants.undefined_semantics,
-  R2U2Code: constants.undefined_semantics,
+  MLTL: constants.undefined_semantics,
   ftInfAU: constants.undefined_semantics,
   ftInfAUExpanded: constants.undefined_semantics,
   ftInfBtw: constants.undefined_semantics,
@@ -112,6 +112,9 @@ createSemantics(product,{sem:'finite',in:'afterUntil'},
 
 createSemantics(product, {sem:'infinite',in:'afterUntil'},
 		{ft:'ftInfAU',ftExpanded:'ftInfAUExpanded'});
+
+createSemantics(product, {sem:'mltl',in:'afterUntil'},
+		{ftExpanded: 'MLTL'});
 
 createSemantics(product, {sem:'infinite',in:'between'},
 		{ft:'ftInfBtw',ftExpanded:'ftInfBtwExpanded'});
@@ -183,6 +186,16 @@ function createSemantics(product,options,properties) {
               		}
 
             			let ftForm = sem.replace(/LTLSPEC/, '').trim();
+
+                  if (options.sem === 'mltl'){
+                    let ftExpandedEndpoints = formalizations.EndPointsRewrite('ft', ftForm, 'mltl');
+                    let ftExpCust = semanticsGenerator.customizeForFret(ftExpandedEndpoints, true).replace(/\bLAST\b/g, 'FALSE');
+                    let ftExpCustOpt = xform.transform(ftExpCust,xform.optimizeMLTL_FT);
+                    let ftExpCustOptR2U2 = formalizations.translateToMLTL(ftExpCustOpt);
+                    FRETSemantics[key][properties.ftExpanded] = ftExpCustOptR2U2;
+                    break;
+                  }
+
             			let ftFormCust = semanticsGenerator.customizeForFret(ftForm);
             			let ftFormCustOpt = xform.transform(ftFormCust,xform.optimizeFT);
             			let ftFormCustOptF =
@@ -206,7 +219,7 @@ function createSemantics(product,options,properties) {
             			    xform.transform(ftExpSMVCustOpt,xform.finitizeFT) :
             			    ftExpSMVCustOpt;
             			FRETSemantics[key][properties.ftExpanded] = ftExpSMVCustOptF;
-
+                  
             			break;
             		    case 'pt':
             			if (options.sem === 'finite') {
@@ -321,6 +334,7 @@ function createSaltBatchString(product,options) {
 		     SMVptExtleft:'', SMVptExtright: '',
 		     ftExtleft:'', ftExtright: '',
 		     SMVftExtleft:'', SMVftExtright: '',
+         MLTLftExtleft:'', MLTLftExtright: '',
 		     ftExtleft2:'', ftExtright2: '',
 		     SMVftExtleft2:'', SMVftExtright2: '',
 		    };
@@ -338,6 +352,9 @@ function createSaltBatchString(product,options) {
       endpoints['ftExtright'] = semanticsGenerator.customizeForFret(formalizations.EndPointsRewrite('ft', eps[1]));
       endpoints['SMVftExtleft'] = semanticsGenerator.customizeForFret(formalizations.EndPointsRewrite('ft', eps[0], 'smv'));
       endpoints['SMVftExtright'] = semanticsGenerator.customizeForFret(formalizations.EndPointsRewrite('ft', eps[1], 'smv'));
+      endpoints['MLTLftExtleft'] = semanticsGenerator.customizeForFret(formalizations.EndPointsRewrite('ft', eps[0], 'mltl'));
+      endpoints['MLTLftExtright'] = semanticsGenerator.customizeForFret(formalizations.EndPointsRewrite('ft', eps[1], 'mltl'));
+
 
       endpoints['ftExtleft2'] = semanticsGenerator.customizeForFret(formalizations.EndPointsRewrite2('ft', eps[0]));
       endpoints['ftExtright2'] = semanticsGenerator.customizeForFret(formalizations.EndPointsRewrite2('ft', eps[1]));
