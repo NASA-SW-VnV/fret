@@ -26,7 +26,7 @@ function trimReqtText(text) {
 
 // NuSMV reserved words minus TRUE|FALSE|xor|next|mod|of|in because
 // those are used in the FRETish grammar.
-const reservedWords = /\b(?:MODULE|DEFINE|MDEFINE|CONSTANTS|VAR|IVAR|FROZENVAR|INIT|TRANS|INVAR|SPEC|CTLSPEC|LTLSPEC|PSLSPEC|FTSPEC|PTSPEC|INPUT|COMPUTE|NAME|INVARSPEC|FAIRNESS|JUSTICE|COMPASSION|ISA|ASSIGN|CONSTRAINT|SIMPWFF|CTLWFF|LTLWFF|PSLWFF|COMPWFF|IN|MIN|MAX|MIRROR|PRED|PREDICATES|process|array|boolean|integer|real|word|word1|bool|signed|unsigned|extend|resize|sizeof|uwconst|swconst|EX|AX|EF|AF|EG|AG|E|F|O|G|H|X|Y|Z|A|U|R|S|V|T|BU|EBF|ABF|EBG|ABG|case|esac|init|union|xnor|self|count|abs|max|min)\b/g
+const reservedWords = /\b(?:MODULE|DEFINE|MDEFINE|CONSTANTS|VAR|IVAR|FROZENVAR|INIT|TRANS|INVAR|SPEC|CTLSPEC|LTLSPEC|PSLSPEC|FTSPEC|PTSPEC|INPUT|STRUCT|COMPUTE|NAME|INVARSPEC|FAIRNESS|JUSTICE|COMPASSION|ISA|ASSIGN|CONSTRAINT|SIMPWFF|CTLWFF|LTLWFF|PSLWFF|COMPWFF|IN|MIN|MAX|MIRROR|PRED|PREDICATES|process|array|boolean|integer|real|word|word1|bool|int|float|signed|unsigned|extend|resize|sizeof|uwconst|swconst|EX|AX|EF|AF|EG|AG|E|F|O|G|H|X|Y|Z|A|U|R|S|V|T|BU|EBF|ABF|EBG|ABG|case|esac|init|union|xnor|self|count|abs|max|min)\b/g
 
 
 function findReservedWords(text) {

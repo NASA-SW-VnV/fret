@@ -697,8 +697,8 @@ SemanticsAnalyzer.prototype.semantics = () => {
           ['preInt', 'prev'],
           ['minReal', 'min'],
           ['minInt', 'min'],
-          ['minReal', 'max'],
-          ['minInt', 'max'],
+          ['maxReal', 'max'],
+          ['maxInt', 'max'],
           ['FTP', '(TAU == 0)']
 		    ];
     result.R2U2Code = utilities.replaceStrings(R2U2Substs, instantiated_mltl);
