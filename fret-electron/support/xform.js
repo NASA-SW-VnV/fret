@@ -55,15 +55,6 @@ const booleanSimplifications = [
     [ '__p & ! ((! __p) & __q)', trueFn, '__p'],
     ['__p & (__p & __q)', trueFn, '__p & __q'],
     [ '(! (__p & __q)) & (! (__r | __q))', trueFn, '(! __q) & (! __r)'],
-    ['(! __p) | __q', trueFn, '__p => __q'],
-    ['(__p => __q) | __q', trueFn, '__p => __q'],
-    ['__p => (__q => __r)', trueFn, '(__p & __q) => __r'],
-    ['__p => ((__p & __q) | __r)', trueFn, '__p => (__q | __r)'],
-    ['(__p & (__q & __r)) => (__s & __r)', trueFn, '(__p & (__q & __r)) => __s'],
-    ['(__p & (__q & __r)) => ((__r & __s) | __t)', trueFn, '(__p & (__q & __r)) => (__s | __t)'],
-    ['__p => (__q & (__r => ((__p & __s) | __t)))', trueFn, '__p => (__q & (__r => (__s | __t)))'], 
-    ['(__p & __q) => ((__q & __r) | __s)', trueFn, '(__p & __q) => (__r | __s)'],
-    ['(__p & __r) => ((__p & __q) | __s)', trueFn, '(__p & __r) => (__q | __s)'],
     ['! FALSE',trueFn,'TRUE'], ['! TRUE', trueFn, 'FALSE'],
     ['__p | FALSE',trueFn,'__p'], ['FALSE | __p',trueFn,'__p'],
     ['__p | TRUE',trueFn,'TRUE'], ['TRUE | __p',trueFn,'TRUE'],
@@ -136,6 +127,18 @@ const futureTimeSimplifications = [
 ];
 
 const MLTLFutureTimeSimplifications = [
+    // Boolean Simplifications
+    [ '(! __p) | (__p & __q)', trueFn, '__p => __q'],
+    ['(! __p) | __q', trueFn, '__p => __q'],
+    ['(__p => __q) | __q', trueFn, '__p => __q'],
+    ['__p => (__q => __r)', trueFn, '(__p & __q) => __r'],
+    ['__p => ((__p & __q) | __r)', trueFn, '__p => (__q | __r)'],
+    ['(__p & (__q & __r)) => (__s & __r)', trueFn, '(__p & (__q & __r)) => __s'],
+    ['(__p & (__q & __r)) => ((__r & __s) | __t)', trueFn, '(__p & (__q & __r)) => (__s | __t)'],
+    ['__p => (__q & (__r => ((__p & __s) | __t)))', trueFn, '__p => (__q & (__r => (__s | __t)))'], 
+    ['(__p & __q) => ((__q & __r) | __s)', trueFn, '(__p & __q) => (__r | __s)'],
+    ['(__p & __r) => ((__p & __q) | __s)', trueFn, '(__p & __r) => (__q | __s)'],
+
     // Simplifications to reduce Next with temporal interval:
     // (Note: the first two may not seem like simplifications but they make
     // the rest of the simplifications easier to write.)
@@ -174,8 +177,8 @@ const MLTLFutureTimeSimplifications = [
     ['(__p & __r) => (__q | F[< __h] (__p & (X (! __p))))', trueFn, '(__p & __r) => (__q | F[< __h] (X (! __p)))'],
     ['(! __p) => (__q | F[< __h] ((! __p) & (X __p)))', trueFn, '(! __p) => (__q | F[< __h] (X __p))'],
     ['((! __p) & __r) => (__q | F[< __h] ((! __p) & (X __p)))', trueFn, '((! __p) & __r) => (__q | F[< __h] (X __p))'],
-    ['(! __p) -> ((__q | (F[< __h] ((! __p) & (X __p)))) | __r)', trueFn, '(! __p) -> ((__q | (F[< __h] (X __p))) | __r)'],
-    ['((! __p) & __r) -> ((__q | (F[< __h] ((! __p) & (X __p)))) | __s)', trueFn, '((! __p) & __r) -> ((__q | (F[< __h] (X __p))) | __s)'],
+    ['(! __p) => ((__q | (F[< __h] ((! __p) & (X __p)))) | __r)', trueFn, '(! __p) => ((__q | (F[< __h] (X __p))) | __r)'],
+    ['((! __p) & __r) => ((__q | (F[< __h] ((! __p) & (X __p)))) | __s)', trueFn, '((! __p) & __r) => ((__q | (F[< __h] (X __p))) | __s)'],
     ['(__p) => (__s & (__q | F[< __h] (__p & (X (! __p)))))', trueFn, '(__p) => (__s & (__q | F[< __h] (X (! __p))))'],
     ['(__p & __r) => (__s & (__q | F[< __h] (__p & (X (! __p)))))', trueFn, '(__p & __r) => (__s & (__q | F[< __h] (X (! __p))))'],
     ['(! __p) => (__s & (__q | F[< __h] ((! __p) & (X __p))))', trueFn, '(! __p) => (__s & (__q | F[< __h] (X __p)))'],
@@ -193,7 +196,7 @@ const MLTLFutureTimeSimplifications = [
     ['((! __p) & (__r & (__s & (X (! __p))))) => (__q & (__t | (F[1,__h] ((! __p) & (X __p)))))', trueFn, '((! __p) & (__r & (__s & (X (! __p))))) => (__q & (__t | (F[1,__h] (X __p))))'],
     ['((! __p) & (X __p)) => (__s & (__q | F[1, __h] (__p & (X (! __p)))))', trueFn, '((! __p) & (X __p)) => (__s & (__q | F[1, __h] (X (! __p))))'],
     ['(__p & (__r & (__s & (X __p)))) => (__q & (__t | (F[1,__h] (__p & (X (! __p))))))', trueFn, '(__p & (__r & (__s & (X __p)))) => (__q & (__t | (F[1,__h] (X (! __p)))))'],
-    ['(__p & (X (! __p))) -> ((__q | (F[1,__h] ((! __p) & (X __p)))) | __r)', trueFn, '(__p & (X (! __p))) -> ((__q | (F[1,__h] (X __p))) | __r)'],
+    ['(__p & (X (! __p))) => ((__q | (F[1,__h] ((! __p) & (X __p)))) | __r)', trueFn, '(__p & (X (! __p))) => ((__q | (F[1,__h] (X __p))) | __r)'],
     ['((! __p) & (__r & (__s & (X (! __p))))) => ((__t | (F[1,__h] ((! __p) & (X __p)))) | __q)', trueFn, '((! __p) & (__r & (__s & (X (! __p))))) => ((__t | (F[1,__h] (X __p))) | __q)'],
     ['__p => ((! (__p & (X (! __p)))) U __q)', trueFn, '__p => ((X __p) U __q)'],
     ['(__p & __r) => ((! (__p & (X (! __p)))) U __q)', trueFn, '(__p & __r) => ((X __p) U __q)'],
@@ -230,8 +233,8 @@ const MLTLFutureTimeSimplifications = [
     ['(__p & __r) => (__q | ((__p & (X (! __p))) V[<= __h] __s))', trueFn, '(__p & __r) => (__q | ((X (! __p)) V[<= __h] __s))'],
     ['(! __p) => (__q | (((! __p) & (X __p)) V[<= __h] __r))', trueFn, '(! __p) => (__q | ((X __p) V[<= __h] __r))'],
     ['((! __p) & __r) => (__q | (((! __p) & (X __p)) V[<= __h] __s))', trueFn, '((! __p) & __r) => (__q | ((X __p) V[<= __h] __s))'],
-    ['(! __p) -> (__q | (__r | (((! __p) & (X __p)) V[<= __h] __s)))', trueFn, '(! __p) -> (__q | (__r | ((X __p) V[<= __h] __s)))'],
-    ['((! __p) & __r) -> (__q | (__s | (((! __p) & (X __p)) V[<= __h] __t)))', trueFn, '((! __p) & __r) -> (__q | (__s | ((X __p) V[<= __h] __t)))'],
+    ['(! __p) => (__q | (__r | (((! __p) & (X __p)) V[<= __h] __s)))', trueFn, '(! __p) => (__q | (__r | ((X __p) V[<= __h] __s)))'],
+    ['((! __p) & __r) => (__q | (__s | (((! __p) & (X __p)) V[<= __h] __t)))', trueFn, '((! __p) & __r) => (__q | (__s | ((X __p) V[<= __h] __t)))'],
     ['__p => ((__q | ((__p & (X (! __p))) V[<= __h] __r)) & __s)', trueFn, '__p => ((__q | ((X (! __p)) V[<= __h] __r)) & __s)'],
     ['(__p & __r) => ((__q | ((__p & (X (! __p))) V[<= __h] __s)) & __t)', trueFn, '(__p & __r) => ((__q | ((X (! __p)) V[<= __h] __s)) & __t)'],
     ['(! __p) => ((__q | ((((! __p) & (X __p))) V[<= __h] __r)) & __s)', trueFn, '(! __p) => ((__q | ((X __p) V[<= __h] __r)) & __s)'],
@@ -257,7 +260,7 @@ const MLTLFutureTimeSimplifications = [
     ['(__p & (X (! __p))) => (((X __p) V[1,__h] ((__q & (__r & (! ((! __p) & (X __p))))) => __s)) & __t)', trueFn, '(__p & (X (! __p))) => (((X __p) V[1,__h] ((__q & (__r & (X (! __p)))) => __s)) & __t)'],
     ['(__p & (X (! __p))) => ((__q | ((((! __p) & (X __p))) V[1,__h] __r)) & __s)', trueFn, '(__p & (X (! __p))) => ((__q | ((X __p) V[1,__h] __r)) & __s)'],
     ['((! __p) & (X __p)) => ((__q | ((__p & (X (! __p))) V[1,__h] __r)) & __s)', trueFn, '((! __p) & (X __p)) =>((__q | ((X (! __p)) V[1,__h] __r)) & __s)'],
-    ['(__p & (X (! __p))) -> (__q | (__r | (((! __p) & (X __p)) V[1,__h] __s)))', trueFn, '(__p & (X (! __p))) -> (__q | (__r | ((X __p) V[1,__h] __s)))'],
+    ['(__p & (X (! __p))) => (__q | (__r | (((! __p) & (X __p)) V[1,__h] __s)))', trueFn, '(__p & (X (! __p))) => (__q | (__r | ((X __p) V[1,__h] __s)))'],
     ['(__p & (X (! __p))) => ((__q | ((! __p) & (X __p))) V[1,__h] __r)', trueFn, '(__p & (X (! __p))) => ((__q | (X __p)) V[1,__h] __r)'],
     ['((! __p) & (X __p)) => ((__q | (__p & (X (! __p)))) V[1,__h] __r)', trueFn, '((! __p) & (X __p)) => ((__q | (X (! __p))) V[1,__h] __r)'],
     ['(__p & (__r & (__s & (X __p)))) => ((__t | (__p & (X (! __p)))) V[1, __h] __q)', trueFn, '(__p & (__r & (__s & (X __p)))) => ((__t | (X (! __p))) V[1, __h] __q)'],
@@ -273,6 +276,7 @@ const MLTLFutureTimeSimplifications = [
     
     // Simplifications reducing interval bounds:
     ['(G[__l,__h] __p) | (__q V __p)', trueFn, '(G[__l,__h] __p) | (__q V[__l,__h] __p)'],
+    ['(__p U __q) & (F[__l,__h] __q)', trueFn, '__p U[__l,__h] __q'],
     ['(G[<= __h] (! __p)) & (F[<= __h+1] __p)', trueFn, '(G[<= __h] (! __p)) & (F[= __h+1] __p)'],
     ['(F[<= __h] __p) | (G[<= __h+1] (! __p))', trueFn, '(F[<= __h] __p) | (G[= __h+1] (! __p))'],
     ['((G[<= __p] (! __q)) | (__r V[__l, __h] (! __q))) & ((F[<= __p+1] __q) | (F[< __p+1] __r))', trueFn, '((G[<= __p] (! __q)) | (__r V[__l, __h] (! __q))) & ((F[= __p+1] __q) | (F[< __p+1] __r))'],
@@ -289,8 +293,8 @@ const MLTLFutureTimeSimplifications = [
     // Simplifications reducing Release to an external Globally:
     ['(G (! __p & (X __p)) => ((X(! __p)) V[1,M] __q)) & (__p => ((X(! __p)) V __q))', trueFn, 'G(__p => __q)'],
     ['(G (__p & (X (! __p))) => ((X __p) V[1,M] __q)) & ((! __p) => ((X __p) V __q))', trueFn, 'G((! __p) => __q)'],
-    ['(G (! __p & (X __p)) => (((X(! __p)) V[1,M] __q) & (X __r))) & (__p => (((X(! __p)) V __q) & __r))', trueFn, '(G ((__p => __q) & (((! __p) & (X __p) => (X __r))))) & (__p => __r)'], //c
-    ['(G (__p & (X (! __p))) => (((X __p) V[1,M] __q) & (X __r))) & ((! __p) => (((X __p) V __q) & __r))', trueFn, '(G (((! __p) => __q) & ((__p & (X (! __p)) => (X __r))))) & ((! __p) => __r)'], //c
+    ['(G (! __p & (X __p)) => (((X(! __p)) V[1,M] __q) & (X __r))) & (__p => (((X(! __p)) V __q) & __r))', trueFn, '(G ((__p => __q) & (((! __p) & (X __p) => (X __r))))) & (__p => __r)'],
+    ['(G (__p & (X (! __p))) => (((X __p) V[1,M] __q) & (X __r))) & ((! __p) => (((X __p) V __q) & __r))', trueFn, '(G (((! __p) => __q) & ((__p & (X (! __p)) => (X __r))))) & ((! __p) => __r)'],
   ];
 
 const finitizeFuture = [
@@ -309,8 +313,8 @@ function mnIsNumber(sbst) {
 const futureTemporalConditions = [
     ['persists(__n,__p)', nIsNumber ,'((G[<=__n] __p) & (G[<__n] ! $Right$))'],
     ['persists(__m,__n,__p)', mnIsNumber ,'((G[__m,__n] __p) & (G[<__n] ! $Right$))'],
-  ['occurs(__m,__n,__p)', mnIsNumber,'(!$Right) U[__m,__n] __p'],
-  ['occurs(__n,__p)', nIsNumber,'(! $Right$) U[<= __n] __p'],
+    ['occurs(__n,__p)', nIsNumber,'(((! $Right$) U __p) & (F[<=__n] __p))'],
+    ['occurs(__m,__n,__p)', mnIsNumber,'(! $Right$) U[__m,__n] __p'],
     // This commented out version assumes there must be a next occurrence of p
     // ['nextOcc(__p,__q)', trueFn, '(X((!__p & !$Right$) U (__p & __q)))']
     // This version is satisfied if there is no next occurrence of p.
