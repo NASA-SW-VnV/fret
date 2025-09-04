@@ -28,8 +28,8 @@ function renderC2POSpec (contract) {
         c2po_spec += "FTSPEC\r\n";
     contract.properties.forEach((property) => {
         if (property.R2U2.includes("M]")) {
-            c2po_spec += "\t-- WARNING: The following spec (" + property.reqid.replaceAll('-', '_') + ") includes the interval from [0,M].\r\n"
-            c2po_spec += "\t-- If M (end of the mission) is large, this specification may result in high memory usage.\r\n"
+            c2po_spec += "\t-- WARNING: The following spec (" + property.reqid.replaceAll('-', '_') + ") includes M (i.e., end of mission-time) in a temporal interval.\r\n"
+            c2po_spec += "\t-- If M is large, this specification may result in high memory usage.\r\n"
 	        c2po_spec += "\t-- Please specify M manually in this file or with the --mission-time flag in C2PO.\r\n"
         }
         if ((property.R2U2 === "true") || (property.R2U2 === "false")){ // C2PO won't like a spec just being true or false
