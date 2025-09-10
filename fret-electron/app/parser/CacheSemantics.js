@@ -191,8 +191,8 @@ function createSemantics(product,options,properties) {
                     let ftExpandedEndpoints = formalizations.EndPointsRewrite('ft', ftForm, 'mltl');
                     let ftExpCust = semanticsGenerator.customizeForFret(ftExpandedEndpoints, true).replace(/\bLAST\b/g, 'FALSE');
                     let ftExpCustOpt = xform.transform(ftExpCust,xform.optimizeMLTL_FT);
-                    let ftExpCustOptR2U2 = formalizations.translateToMLTL(ftExpCustOpt);
-                    FRETSemantics[key][properties.ftExpanded] = ftExpCustOptR2U2;
+                    let ftExpCustOptMLTL = formalizations.translateToMLTL(ftExpCustOpt);
+                    FRETSemantics[key][properties.ftExpanded] = ftExpCustOptMLTL;
                     break;
                   }
 
