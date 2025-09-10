@@ -282,7 +282,7 @@ function checkRealizability(selectedProject, components, rlzState, selectedReqs)
   let engineOptions = nameAndEngine.options;
   engineOptions.push(actualTimeout);
   
-  if (realizableTraceLength > 0 && engineName === 'jkind') engineOptions.concat(['-tracelength', realizableTraceLength.toString()]);
+  if (realizableTraceLength > 0 && engineName === 'jkind') engineOptions.push(...['-tracelength', realizableTraceLength.toString()]);
 
   var targetComponents;
   if (selected === 'all') {
