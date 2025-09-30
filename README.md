@@ -28,7 +28,7 @@ See [installation guide](fret-electron/docs/_media/installingFRET/installationIn
 Troubleshooting
 ------------
 
-See [troubleshooting](Troubleshooting.md).
+See [troubleshooting](fret-electron/docs/_media/installingFRET/Troubleshooting.md).
 
 Release notes
 ---------
