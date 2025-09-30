@@ -18,7 +18,7 @@ Depending on the configuration, the following dependencies must be installed:
 
 * JKind ("JKind", "JKind + MBP"). To install JKind with JRealizability, make sure to have at least Java 11 installed. Then, download `jkind.jar`, `jkind`, `jrealizability` and `jlustre2kind` from the [the latest release](https://github.com/andrewkatis/jkind-1/releases/latest), put the downloaded files to a folder of your choice and add the path to the folder to your PATH environment variable.
 
-* Kind 2 ("Kind 2", "Kind 2 + MBP"). Latest known supported version: v2.2.0. To install Kind 2, please follow any of the available options mentioned [here](https://github.com/kind2-mc/kind2/blob/develop/README.rst) to download or build a binary, and add the path of the binary to your PATH environment variable.
+* Kind 2 ("Kind 2", "Kind 2 + MBP"). Latest known supported version: v2.2.0. **Version v2.3.0 is NOT supported.** To install Kind 2, please follow any of the available options mentioned [here](https://github.com/kind2-mc/kind2/blob/develop/README.rst) to download or build a binary, and add the path of the binary to your PATH environment variable.
 
 * Z3 SMT solver (required for all configurations). Latest known supported version: v4.14.1. To install Z3, download any stable release from [here](https://github.com/Z3Prover/z3/releases), extract and add the location of the binary to your PATH environment variable.
 

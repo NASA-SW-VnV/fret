@@ -10,7 +10,7 @@
      - Older than Ubuntu 24.04: `libgtk-3.0 libdrm2 libgbm1 libnss3 libx11-xcb1 libasound2`
  * (Optional) [NuSMV](http://nusmv.fbk.eu/)
  * (Optional) [JKind](https://github.com/andrewkatis/jkind-1/releases/latest)
- * (Optional) [Kind 2](https://github.com/kind2-mc/kind2/blob/develop/README.rst)
+ * (Optional) [Kind 2](https://github.com/kind2-mc/kind2/blob/develop/README.rst) Note: Version 2.3.0 is not supported.
  * (Optional) [Z3](https://github.com/Z3Prover/z3/releases)
 
 ### Install and Run
@@ -33,11 +33,14 @@
 
 ### Notes
 
-> __Note:__ To run the LTLSIM simulator, a NuSMV (see http://nusmv.fbk.eu/) installation is required. Please make sure that the NuSMV binaries directory is added to the PATH environment variable. Additionally, please add `$PATH_TO_FRET/fret/tools/LTLSIM/ltlsim-core/simulator` to the PATH environment variable. Note that $PATH_TO_FRET  is the path location where the FRET git repo was cloned (and not the path to the FRET binary).
+> [!NOTE]
+> To run the LTLSIM simulator, a NuSMV (see http://nusmv.fbk.eu/) installation is required. Please make sure that the NuSMV binaries directory is added to the PATH environment variable. Additionally, please add `$PATH_TO_FRET/fret/tools/LTLSIM/ltlsim-core/simulator` to the PATH environment variable. Note that $PATH_TO_FRET  is the path location where the FRET git repo was cloned (and not the path to the FRET binary).
 
-> __Note:__ To perform realizability checking, additional dependencies must be installed. Read the realizability checking [Dependencies](../exports/realizabilityManual.md) section for details.
+> [!NOTE]
+> To perform realizability checking, additional dependencies must be installed. Read the realizability checking [Dependencies](../exports/realizabilityManual.md) section for details.
 
-> __Note:__ To generate test cases or test obligations, a NuSMV (see http://nusmv.fbk.eu/) installation is required.
+> [!NOTE]
+> To generate test cases or test obligations, additional dependencies must be installed. Read the test case generation [Dependencies](../exports/testgenManual.md) section for details.
 
 ### How to install NodeJS
 
@@ -59,8 +62,8 @@ nvm current # Should print "v20.19.0".
 # Verify npm version:
 npm -v # Should print "10.8.2".
 ```
-
-> __Note:__ Since different projects might require different node versions, nvm (or fnm) provide an easy way to switch between previously installed node versions, e.g., by `nvm use vA.B.C`. 
+> [!NOTE]
+> Since different projects might require different node versions, nvm (or fnm) provide an easy way to switch between previously installed node versions, e.g., by `nvm use vA.B.C`. 
 
 Here is the [NodeJS website](https://nodejs.org/en). If you download a NodeJS prebuild, please make sure that it is in the `v16.16.x - v20.19.x` version interval.
 
