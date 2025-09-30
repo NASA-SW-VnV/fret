@@ -20,7 +20,6 @@ import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 
-
 /* Model component specification */
 import InputLabel from '@material-ui/core/InputLabel';
 import Menu from '@material-ui/core/Menu';
@@ -44,7 +43,6 @@ import SaveRealizabilityReport from './SaveRealizabilityReport';
 import RealizabilitySettingsDialog from './RealizabilitySettingsDialog';
 
 import ErrorIcon from '@material-ui/icons/Error';
-
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -104,17 +102,10 @@ const rows = [
 ];
 
 
-const styles = theme => ({
-  root: {
-    display: 'flex',
-    flexDirection : 'column'
-  },
+const styles = theme => ({  
   wrapper: {
     margin: theme.spacing(1),
     position: 'relative',
-  },
-  dv : {
-    display: 'inline-block',
   },
   formControl: {
     minWidth: 200,
@@ -123,35 +114,11 @@ const styles = theme => ({
   vAlign : {
     verticalAlign : 'bottom'
   },
-  root: {
-    // flex: 1,
-    backgroundColor: theme.palette.background.paper,
-  },
-  tabRoot : {
-    // minHeight: 36,
-  },
-  tabsScrollable : {
-    overflowX: 'hidden',
-  },
-  buttonProgress: {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    marginTop: -12,
-    marginLeft: -12,
-  },
   closeButton: {
     position: 'absolute',
     right: theme.spacing(1),
     top: theme.spacing(1),
     color: theme.palette.grey[500],
-  },
-  switchBase: {
-    color: "#26c6da"
-  },
-  track: {
-    opacity: 0.7,
-    backgroundColor: "#26c6da"
   }
 });
 
@@ -548,8 +515,8 @@ class RealizabilityContent extends React.Component {
     var connectedComponentIndex = (systemComponentIndex !== -1 && projectReport.systemComponents[systemComponentIndex].compositional) ? projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents.findIndex( cc => cc.ccName === ccSelected ) : 0;
 
     if (compositional && selected.component_name && projectReport.systemComponents[systemComponentIndex]) {
-      for (const cc of projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents) {
-            tabs.push(<Tab id = {"qa_rlzCont_tab_"+cc.ccName} key={cc.ccName} value={cc.ccName} classes={{root : classes.tabRoot}} label={
+      for (const cc of projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents) {  
+            tabs.push(<Tab id = {"qa_rlzCont_tab_"+cc.ccName} key={cc.ccName} value={cc.ccName} label={
           <div key={cc.ccName} style={{display : 'flex', alignItems : 'center', flexWrap : 'wrap'}}>
             {cc.ccName}
             &nbsp;
@@ -604,12 +571,6 @@ class RealizabilityContent extends React.Component {
                           .concat(Object.values(monolithicDiagStatus))
                           .concat(Object.values(compositionalDiagStatus).flat(Infinity))
     var analysisProcessing = globalStatus.includes('PROCESSING')
-
-    let actionsMargin = {marginRight: '55%', transition: 'margin-right 450ms cubic-bezier(0.23, 1, 0.32, 1)' };
-
-    if (this.state.settingsOpen) {
-      actionsMargin.marginRight = '40%'
-    }
 
     let LTLSimComponent = (props) => {
       const {selectedReqs, systemComponentIndex, connectedComponentIndex} = props;
@@ -678,12 +639,12 @@ class RealizabilityContent extends React.Component {
           <div>
             <SelectRequirementsContext.Consumer>
                 {({selectedReqs, setMessage}) =>                            
-                  <div>
+                  <div>                    
                     {components.length !== 0 &&
-                      <div>
-                      <Grid container direction="row" justifyContent="space-between" alignItems="center">
+                      <Grid container direction="column" spacing={4}>
+                      <Grid item container direction="row" justifyContent="space-between" wrap="nowrap" alignItems="center">
+                          <Grid item container direction="row" justifyContent="flex-start" alignItems="center">
                           <Grid item>
-                          <div style={{display: 'flex', alignItems:'center'}}>
                           <FormControl className={classes.formControl} required>
                             <InputLabel>System Component</InputLabel>
                             <Select
@@ -718,6 +679,8 @@ class RealizabilityContent extends React.Component {
                                 }))}
                             </Select>
                           </FormControl>
+                          </Grid>
+                          <Grid item>
                           <FormControlLabel
                             disabled={
                               selected === '' || (selected !== 'all' && systemComponentIndex > -1 && (!projectReport.systemComponents[systemComponentIndex].compositional || projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents.length <= 1))                  
@@ -733,6 +696,8 @@ class RealizabilityContent extends React.Component {
                             }
                             label="Compositional"
                           />
+                          </Grid>
+                          <Grid item>
                           <FormControlLabel
                             disabled={selected === '' || (systemComponentIndex > -1 && !projectReport.systemComponents[systemComponentIndex].compositional)}
                             control={
@@ -746,119 +711,117 @@ class RealizabilityContent extends React.Component {
                             }
                             label="Monolithic"
                           />
-                          </div>
                           </Grid>
-                        {analysisProcessing &&
-                          <Grid item>
+                          </Grid>                        
+                        {analysisProcessing && 
+                          <Grid item xs={12}>                         
                             <div style={{display : 'flex', alignItems: 'center'}}>                                                            
                               <Typography variant="body2">Analysis in progress, do not exit REALIZABILITY CHECKING tab...</Typography>
                               <CircularProgress size={15}/>                              
                             </div>
-                          </Grid>
-                        }
+                          </Grid>                          
+                        }                                                
                         {!dependenciesExist &&
-                          <Tooltip title={"Dependencies missing for realizability checking. Click \"HELP\" for details."}>
-                            <ErrorIcon id="qa_rlzCont_icon_depMissing" className={classes.wrapper} style={{verticalAlign : 'bottom'}} color='error'/>
-                          </Tooltip>
-                        }
+                          <Grid item>
+                            <Tooltip title={"Dependencies missing for realizability checking. Click \"HELP\" for details."}>
+                              <ErrorIcon id="qa_rlzCont_icon_depMissing" className={classes.wrapper} style={{verticalAlign : 'bottom'}} color='error'/>
+                            </Tooltip>
+                          </Grid>
+                        }                                                
                         {(diagStatus === 'ERROR' && !analysisProcessing) &&
-                          <Tooltip title={(systemComponentIndex !== -1 && projectReport.systemComponents[systemComponentIndex]) ? (monolithic ? projectReport.systemComponents[systemComponentIndex].monolithic.error.toString() : projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].error.toString()) : 'Diagnosis terminated unexpectedly.'}>
-                            <ErrorIcon id="qa_rlzCont_icon_analysisError" className={classes.wrapper} style={{verticalAlign: 'bottom'}} color='error'/>
-                          </Tooltip>
-                        }
-                        <Grid item>
-                          <Grid container direction="row" spacing={2}>
+                          <Grid item>
+                            <Tooltip title={(systemComponentIndex !== -1 && projectReport.systemComponents[systemComponentIndex]) ? (monolithic ? projectReport.systemComponents[systemComponentIndex].monolithic.error.toString() : projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].error.toString()) : 'Diagnosis terminated unexpectedly.'}>
+                              <ErrorIcon id="qa_rlzCont_icon_analysisError" className={classes.wrapper} style={{verticalAlign: 'bottom'}} color='error'/>
+                            </Tooltip>
+                          </Grid>
+                        }                        
+                          <Grid item container direction="row" spacing={2} alignItems="center" justifyContent="flex-end">
                             <Grid item>
-                            <Button 
-                              id="qa_rlzCont_btn_actions"
-                              ref={this.anchorRef}
-                              aria-controls={actionsMenuOpen ? 'realizability_actions_menu' : undefined}
-                              aria-haspopup="true"
-                              aria-expanded={actionsMenuOpen ? 'true' : undefined}   
-                              size="small" variant="contained" color="secondary"
-                              disabled={analysisProcessing || !dependenciesExist || (dependenciesExist && selected === '')}
-                              endIcon={<KeyboardArrowDownIcon />}
-                              onClick={(event) => this.handleActionsClick(event)}>
-                              Actions        
-                            </Button>
-                            <Menu id="qa_rlzCont_sel_actions" anchorEl={this.anchorRef.current} open={actionsMenuOpen} onClose={(event) => this.handleActionsMenuClose(event)} MenuListProps={{'aria-labelledby': 'realizability_actions_button'}}>
-                              <MenuItem 
-                              id="qa_rlzCont_btn_check"
-                              disabled={selectedReqs.length === 0 || !dependenciesExist || (dependenciesExist && selected === '')}
-                              onClick={(event) => this.checkRealizability(event, selectedReqs)}>Check Realizability</MenuItem>
-                              <Tooltip title={(this.state.selectedEngine !== 2 && this.state.selectedEngine !== 3) ? 'This action is available only when using the \'JKind\' engine option.' : ''}>
-                                <span>
-                                  <MenuItem
-                                    id="qa_rlzCont_btn_realizSimulate"
-                                    disabled={this.disableSimulateRealizableButton(systemComponentIndex, connectedComponentIndex)}
-                                    onClick={(event) => this.openLTLSimDialog(event)}
-                                  >
-                                    {'Simulate Realizable Requirements' + (compositional ? (' ('+ccSelected.toUpperCase()+')') : '')}
-                                  </MenuItem>
-                                </span>
-                              </Tooltip>
-                              <MenuItem 
-                                id="qa_rlzCont_btn_diagnose"
-                                onClick={(event) => this.diagnoseSpec(event, selectedReqs)}
-                                disabled={selectedReqs.length === 0 || status[selected.component_name] === 'PROCESSING' || diagStatus === 'PROCESSING' || !dependenciesExist || (dependenciesExist && (selected === '' || selected === 'all')) ||
-                                (dependenciesExist && selected !== '' && compositional && projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].result !== 'UNREALIZABLE') ||
-                                  (selected !== '' && monolithic && status[selected.component_name] !== 'UNREALIZABLE')}
-                              >
-                                {'Diagnose Unrealizable Requirements' + (compositional ? (' ('+ccSelected.toUpperCase()+')') : '')}
-                              </MenuItem>
-                              <MenuItem id="qa_rlzCont_btn_save">
-                                <SaveRealizabilityReport classes={{vAlign: classes.vAlign}} enabled={projectReport.systemComponents.length > 0 && status[selected.component_name] !== 'PROCESSING' && diagStatus !== 'PROCESSING'} projectReport={projectReport}/>
-                              </MenuItem>
-                              <MenuItem id="qa_rlzCont_btn_settings" onClick={() => this.handleSettingsOpen()}>Change Settings</MenuItem>
-                            </Menu>
+                              <Button 
+                                id="qa_rlzCont_btn_actions"
+                                ref={this.anchorRef}
+                                aria-controls={actionsMenuOpen ? 'realizability_actions_menu' : undefined}
+                                aria-haspopup="true"
+                                aria-expanded={actionsMenuOpen ? 'true' : undefined}   
+                                size="small" variant="contained" color="secondary"
+                                disabled={analysisProcessing || !dependenciesExist || (dependenciesExist && selected === '')}
+                                endIcon={<KeyboardArrowDownIcon />}
+                                onClick={(event) => this.handleActionsClick(event)}>
+                                Actions        
+                              </Button>
+                              <Menu id="qa_rlzCont_sel_actions" anchorEl={this.anchorRef.current} open={actionsMenuOpen} onClose={(event) => this.handleActionsMenuClose(event)} MenuListProps={{'aria-labelledby': 'realizability_actions_button'}}>
+                                <MenuItem 
+                                id="qa_rlzCont_btn_check"
+                                disabled={selectedReqs.length === 0 || !dependenciesExist || (dependenciesExist && selected === '')}
+                                onClick={(event) => this.checkRealizability(event, selectedReqs)}>Check Realizability</MenuItem>
+                                <Tooltip title={(this.state.selectedEngine !== 2 && this.state.selectedEngine !== 3) ? 'This action is available only when using the \'JKind\' engine option.' : ''}>
+                                  <span>
+                                    <MenuItem
+                                      id="qa_rlzCont_btn_realizSimulate"
+                                      disabled={this.disableSimulateRealizableButton(systemComponentIndex, connectedComponentIndex)}
+                                      onClick={(event) => this.openLTLSimDialog(event)}
+                                    >
+                                      {'Simulate Realizable Requirements' + (compositional ? (' ('+ccSelected.toUpperCase()+')') : '')}
+                                    </MenuItem>
+                                  </span>
+                                </Tooltip>
+                                <MenuItem 
+                                  id="qa_rlzCont_btn_diagnose"
+                                  onClick={(event) => this.diagnoseSpec(event, selectedReqs)}
+                                  disabled={selectedReqs.length === 0 || status[selected.component_name] === 'PROCESSING' || diagStatus === 'PROCESSING' || !dependenciesExist || (dependenciesExist && (selected === '' || selected === 'all')) ||
+                                  (dependenciesExist && selected !== '' && compositional && projectReport.systemComponents[systemComponentIndex].compositional.connectedComponents[connectedComponentIndex].result !== 'UNREALIZABLE') ||
+                                    (selected !== '' && monolithic && status[selected.component_name] !== 'UNREALIZABLE')}
+                                >
+                                  {'Diagnose Unrealizable Requirements' + (compositional ? (' ('+ccSelected.toUpperCase()+')') : '')}
+                                </MenuItem>
+                                <MenuItem id="qa_rlzCont_btn_save">
+                                  <SaveRealizabilityReport classes={{vAlign: classes.vAlign}} enabled={projectReport.systemComponents.length > 0 && status[selected.component_name] !== 'PROCESSING' && diagStatus !== 'PROCESSING'} projectReport={projectReport}/>
+                                </MenuItem>
+                                <MenuItem id="qa_rlzCont_btn_settings" onClick={() => this.handleSettingsOpen()}>Change Settings</MenuItem>
+                              </Menu>
                             </Grid>
                             <Grid item>
-                            <Button id="qa_rlzCont_btn_help" color="secondary" onClick={this.handleHelpOpen} size="small" className={classes.vAlign} variant="contained"> Help </Button>
+                              <Button id="qa_rlzCont_btn_help" color="secondary" onClick={this.handleHelpOpen} size="small" className={classes.vAlign} variant="contained"> Help </Button>
                             </Grid>
                           </Grid>
                         </Grid>
-                      </Grid>
-                        <div>
+                      <Grid item>
+                      {selected !== '' && selected !== 'all' &&                                                    
+                            <Accordion>
+                              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                                <Typography>Comments</Typography>
+                              </AccordionSummary>
+                              <AccordionDetails>
+                              <TextField
+                                      multiline={true}
+                                      variant="outlined"
+                                      label="Enter your comments here."
+                                      type="text"
+                                      fullWidth
+                                      value={projectReport.systemComponents[systemComponentIndex].comments}
+                                      onChange={this.handleChange('comments')}
+                              />
+                              </AccordionDetails>
+                            </Accordion>
+                        }
+                        </Grid>
+                        <Grid item>
                         {selected !== '' && selected !== 'all' &&
-                          <div className={classes.root}>
-                            &nbsp;
-                            &nbsp;
-                            &nbsp;
-                            <div>
-                              <Accordion>
-                                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                                  <Typography>Comments</Typography>
-                                </AccordionSummary>
-                                <AccordionDetails>
-                                <TextField
-                                        multiline={true}
-                                        variant="outlined"
-                                        label="Enter your comments here."
-                                        type="text"
-                                        fullWidth
-                                        value={projectReport.systemComponents[systemComponentIndex].comments}
-                                        onChange={this.handleChange('comments')}
-                                />
-                                </AccordionDetails>
-                              </Accordion>
-                              &nbsp;
-                              &nbsp;
-                              &nbsp;
+                          <div>
                               {compositional &&
                                 <div>
-                                  <AppBar position="static" color="default">                                    
+                                  <AppBar position="static" color="default" style={{maxWidth: '90vw'}}>                                    
                                       <Tabs
                                         value={ccSelected}
                                         onChange={this.handleCCChange}
-                                        variant="scrollable"
+                                        variant='scrollable'
                                         scrollButtons="on"
                                         indicatorColor="secondary"
-                                        textColor="primary"
-                                        classes={{scrollable : classes.tabsScrollable}}
+                                        textColor="primary"                                        
                                       >
                                         {tabs}
-                                      </Tabs>                                    
-                                  </AppBar>
+                                      </Tabs>         
+                                  </AppBar>                                  
                                   <TabContainer>
                                     <DiagnosisProvider>
                                       <div>
@@ -925,11 +888,10 @@ class RealizabilityContent extends React.Component {
                                   </div>
                                 </DiagnosisProvider>
                               }
-                            </div>
                           </div>
                         }
-                        </div>
-                      </div>
+                        </Grid> 
+                      </Grid>                     
                     }
                     <RealizabilitySettingsDialog className={classes} selectedEngine={this.state.selectedEngine} retainFiles={this.state.retainFiles} missingDependencies={missingDependencies} open={this.state.settingsOpen} handleSettingsClose={this.handleSettingsClose} handleSettingsEngineChange={this.handleSettingsEngineChange} handleTimeoutChange={this.handleTimeoutChange} handleTraceLengthChange={this.handleTraceLengthChange} handleRetainFilesChange={this.handleRetainFilesChange}/>
                     <Dialog maxWidth='lg' onClose={this.handleHelpClose} open={this.state.helpOpen}>
