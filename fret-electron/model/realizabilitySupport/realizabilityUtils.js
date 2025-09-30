@@ -44,6 +44,7 @@ function checkDependenciesExist() {
   let missingDependencies = [];
   try {
     execSync('jkind -help');
+    execSync('jrealizability -help');
   } catch(err) {
     missingDependencies.push('jkind');
   }
