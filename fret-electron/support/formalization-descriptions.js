@@ -102,7 +102,7 @@ exports.getDescription = (key, options = {sem:'finite', in:'afterUntil'}) => {
     return 'Unexpected undefined description';
 
 
-  var description = scope + '\n' + condition + '\n' + timing;
+  var description = scope + '<br>' + condition + '<br>' + timing;
 
   description = utilities.replaceStrings(substitutionsGeneral, description)
 
