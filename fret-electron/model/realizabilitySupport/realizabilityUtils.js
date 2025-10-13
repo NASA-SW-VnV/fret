@@ -111,7 +111,7 @@ async function retrieveRequirementsFromComponent (selectedProject, selectedCompo
     return getAllDocs().then((result) => {
         let dbData = result.rows
                   .filter(r => !system_DBkeys.includes(r.key))
-                  .filter(r => filterOff || (r.doc.project === selectedProject && r.doc.semantics.component_name === selectedComponent))
+                  .filter(r => filterOff || (r.doc.project === selectedProject && r.doc.semantics && r.doc.semantics.component_name === selectedComponent))
         return dbData
       }).catch((err) => {
         optLog(err);
