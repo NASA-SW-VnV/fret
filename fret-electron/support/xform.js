@@ -275,11 +275,11 @@ const MLTLFutureTimeSimplifications = [
     ['((! __p) & (X __p)) => (__q & (X (__r => ((__p & (X (! __p))) | __s))))', trueFn, '((! __p) & (X __p)) => (__q & (X (__r => ((X (! __p)) | __s))))'],
     
     // Simplifications reducing interval bounds:
-    ['(G[__l,__h] __p) | (__q V __p)', trueFn, '(G[__l,__h] __p) | (__q V[__l,__h] __p)'],
-    ['(__p U __q) & (F[__l,__h] __q)', trueFn, '__p U[__l,__h] __q'],
+    ['(G[<= __h] __p) | (__q V __p)', trueFn, '__q V[<= __h] __p'],
+    ['(__p U __q) & (F[0,__h] __q)', trueFn, '__p U[0,__h] __q'],
     ['(G[<= __h] (! __p)) & (F[<= __h+1] __p)', trueFn, '(G[<= __h] (! __p)) & (F[= __h+1] __p)'],
     ['(F[<= __h] __p) | (G[<= __h+1] (! __p))', trueFn, '(F[<= __h] __p) | (G[= __h+1] (! __p))'],
-    ['((G[<= __p] (! __q)) | (__r V[__l, __h] (! __q))) & ((F[<= __p+1] __q) | (F[< __p+1] __r))', trueFn, '((G[<= __p] (! __q)) | (__r V[__l, __h] (! __q))) & ((F[= __p+1] __q) | (F[< __p+1] __r))'],
+    ['(__r V[<= __p] (! __q)) & ((F[<= __p+1] __q) | (F[< __p+1] __r))', trueFn, '(__r V[<= __p] (! __q)) & ((F[= __p+1] __q) | (F[< __p+1] __r))'],
     ['(G[__l,__h] __p) | G __p', trueFn, 'G[__l,__h] __p'],
     
     // Misc. simplifications reducing temporal operators:
