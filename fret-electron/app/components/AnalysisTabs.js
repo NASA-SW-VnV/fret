@@ -144,7 +144,7 @@ class AnalysisTabs extends React.Component {
         }
         {value === 2 &&          
           <TabContainer>
-            <TestGenView selectedProject={selectedProject} listOfProjects={listOfProjects} components={components} completedComponents={{completedComponents, r2u2CompletedComponents, smvCompletedComponents}} cocospecData={cocospecData} cocospecModes={cocospecModes} booleanOnlyComponents={booleanOnlyComponents}/>
+            <TestGenView selectedProject={selectedProject} listOfProjects={listOfProjects} components={components} completedComponents={{completedComponents, smvCompletedComponents}} cocospecData={cocospecData} cocospecModes={cocospecModes} booleanOnlyComponents={booleanOnlyComponents}/>
           </TabContainer>
         }
       </div>
