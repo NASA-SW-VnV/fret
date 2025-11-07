@@ -232,7 +232,7 @@ class ComponentSummary extends React.Component {
     if (language === 'smv') {
       return 'To export verification code or test obligations, please complete mandatory variable fields and export language first. For SMV export, only variables of Boolean data type are supported.'
     } else if (language === 'r2u2'){
-      return 'To export verification code or test obligations, please complete mandatory variable fields and export language first. For R2U2 export, variables of Function variable type are NOT supported.'
+      return 'For R2U2 export, please complete mandatory variable fields. Note that variables of Function variable type are NOT supported.'
     }
     else {
       return 'To export verification code or test obligations, please complete mandatory variable fields and export language first.'

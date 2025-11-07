@@ -26,13 +26,18 @@ function trimReqtText(text) {
 
 // NuSMV reserved words minus TRUE|FALSE|xor|next|mod|of|in because
 // those are used in the FRETish grammar.
-const reservedWords = /\b(?:MODULE|DEFINE|MDEFINE|CONSTANTS|VAR|IVAR|FROZENVAR|INIT|TRANS|INVAR|SPEC|CTLSPEC|LTLSPEC|PSLSPEC|FTSPEC|PTSPEC|INPUT|STRUCT|COMPUTE|NAME|INVARSPEC|FAIRNESS|JUSTICE|COMPASSION|ISA|ASSIGN|CONSTRAINT|SIMPWFF|CTLWFF|LTLWFF|PSLWFF|COMPWFF|IN|MIN|MAX|MIRROR|PRED|PREDICATES|process|array|boolean|integer|real|word|word1|bool|int|float|signed|unsigned|extend|resize|sizeof|uwconst|swconst|EX|AX|EF|AF|EG|AG|E|F|O|G|H|X|Y|Z|A|U|R|S|V|T|BU|EBF|ABF|EBG|ABG|case|esac|init|union|xnor|self|count|abs|max|min)\b/g
+const smvReservedWords = /\b(?:MODULE|DEFINE|MDEFINE|CONSTANTS|VAR|IVAR|FROZENVAR|INIT|TRANS|INVAR|SPEC|CTLSPEC|LTLSPEC|PSLSPEC|COMPUTE|NAME|INVARSPEC|FAIRNESS|JUSTICE|COMPASSION|ISA|ASSIGN|CONSTRAINT|SIMPWFF|CTLWFF|LTLWFF|PSLWFF|COMPWFF|IN|MIN|MAX|MIRROR|PRED|PREDICATES|process|array|boolean|integer|real|word|word1|bool|signed|unsigned|extend|resize|sizeof|uwconst|swconst|EX|AX|EF|AF|EG|AG|E|F|O|G|H|X|Y|Z|A|U|S|V|T|BU|EBF|ABF|EBG|ABG|case|esac|init|union|xnor|self|count|abs|max|min)\b/g
 
+// R2U2 reserved words
+const r2u2ReservedWords = /\b(?:FTSPEC|PTSPEC|INPUT|DEFINE|STRUCT|ENUM|bool|int|float|F|G|O|H|U|R|S|T)\b/g
 
 function findReservedWords(text) {
   text = utils.replace_special_chars(text);
-  const matches = text.match(reservedWords);//remaining.match(reservedWords);
-  return (matches ? 'These reserved letter combinations cannot be used: ' + matches.join(', ') + '.' : '');
+  const smvMatches = text.match(smvReservedWords)
+  const remaining = text.replace(smvMatches, "")
+  const r2u2Matches = remaining.match(r2u2ReservedWords)
+  const matches = (smvMatches ? smvMatches : []).concat(r2u2Matches ? r2u2Matches : [])
+  return (matches.length !== 0 ? 'These reserved letter combinations cannot be used: ' + matches.join(', ') + '.' : '');
 }
 
 // Tests that text is just a string starting and ending with double-quotes

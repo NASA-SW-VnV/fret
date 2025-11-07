@@ -114,7 +114,7 @@ createSemantics(product, {sem:'infinite',in:'afterUntil'},
 		{ft:'ftInfAU',ftExpanded:'ftInfAUExpanded'});
 
 createSemantics(product, {sem:'mltl',in:'afterUntil'},
-		{ftExpanded: 'MLTL'});
+		{mltl: 'MLTL'});
 
 createSemantics(product, {sem:'infinite',in:'between'},
 		{ft:'ftInfBtw',ftExpanded:'ftInfBtwExpanded'});
@@ -192,7 +192,7 @@ function createSemantics(product,options,properties) {
                     let ftExpCust = semanticsGenerator.customizeForFret(ftExpandedEndpoints, true).replace(/\bLAST\b/g, 'FALSE');
                     let ftExpCustOpt = xform.transform(ftExpCust,xform.optimizeMLTL_FT);
                     let ftExpCustOptMLTL = formalizations.translateToMLTL(ftExpCustOpt);
-                    FRETSemantics[key][properties.ftExpanded] = ftExpCustOptMLTL;
+                    FRETSemantics[key][properties.mltl] = ftExpCustOptMLTL;
                     break;
                   }
 
