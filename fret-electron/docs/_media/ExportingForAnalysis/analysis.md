@@ -33,6 +33,9 @@ The Analysis Portal will appear empty initially if no specific project is chosen
 
 ***
 
+> [!NOTE]
+> If attempting to export R2U2 monitors from an older FRET project, users must press the Calculate Semantics action button (i.e., the refresh icon next to the applicable project) to generate the appropriate MLTL semantics required by R2U2.
+
 Once a specific project is chosen, the Analysis Portal will provide a summary of the variables used in the project's requirements organized per component.
 
 FRET automatically extracts all components, variables, functions, and modes that have been specified in the requirements of a project. For each component it creates an accordion field that (if clicked) displays a table with the variables and the modes of that particular component.
@@ -64,7 +67,7 @@ No variable information is required for Copilot. Optionally, the user can follow
 
 ***4b. CoCoSpec code and R2U2 monitor generation***
 
-To generate CoCoSpec code, for each variable, the following information must be entered by the user; i.e.,
+To generate CoCoSpec code and R2U2 monitors, for each variable, the following information must be entered by the user; i.e.,
 * data type (i.e., bool, int, real, etc),
 * variable type (i.e., input, output, internal, mode, function),
 * internal variable assignments,

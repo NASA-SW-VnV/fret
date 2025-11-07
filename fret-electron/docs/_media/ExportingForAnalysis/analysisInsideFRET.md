@@ -39,6 +39,10 @@ The Analysis Portal will appear empty initially if no specific project is chosen
 
 ***
 
+***Note:*** If attempting to export R2U2 monitors from an older FRET project, users must press the Calculate Semantics action button (i.e., the refresh icon next to the applicable project) to generate the appropriate MLTL semantics required by R2U2.
+
+&nbsp;&nbsp;&nbsp;&nbsp;
+
 Once a specific project is chosen, the Analysis Portal will provide a summary of the variables used in the project's requirements organized per component.
 
 FRET automatically extracts all components, variables, functions, and modes that have been specified in the requirements of a project. For each component it creates an accordion field that (if clicked) displays a table with the variables and the modes of that particular component.
@@ -84,13 +88,15 @@ No variable information is required for Copilot. Optionally, the user can follow
 
 ***4b. CoCoSpec code and R2U2 monitor generation***
 
-To generate CoCoSpec code, for each variable, the following information must be entered by the user; i.e.,
+To generate CoCoSpec code and R2U2 monitors, for each variable, the following information must be entered by the user; i.e.,
 * data type (i.e., bool, int, real, etc),
 * variable type (i.e., input, output, internal, mode, function),
 * internal variable assignments,
 * mode require statements.
 
-** Note: R2U2 does not support unsigned integer or single data types or function variable types.
+***Note:*** R2U2 does not support unsigned integer or single data types or function variable types.
+
+&nbsp;&nbsp;&nbsp;&nbsp;
 
 A user may optionally import information from a corresponding Simulink model and also make the mapping between the components/variables described in the requirements and the components/port types of the Simulink model. To do that, the user can optionally generate the model information in a compliant-to-FRET JSON format by using `fret/tools/Scripts/Matlab/fret_IR.m`. Then the JSON file can be imported into FRET by clicking the Import button.
 
