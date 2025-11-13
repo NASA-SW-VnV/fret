@@ -72,10 +72,7 @@ exports.translateToSMV = (formula) => {
 }
 
 exports.translateToMLTL = (formula) => {
-  for (var i = 0; i < MLTLSubsts.length; i++) {
-    formula = formula.replaceAll(MLTLSubsts[i][0], MLTLSubsts[i][1]);
-  }
-  return formula;
+  return utilities.replaceStrings(MLTLSubsts, formula)
 }
 
 exports.getEndpoints = (key) => {
