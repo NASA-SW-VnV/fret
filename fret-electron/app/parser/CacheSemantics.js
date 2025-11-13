@@ -33,6 +33,7 @@ const semanticsObjNonsense = {
   //pt_SI: constants.nonsense_semantics, // for more efficient cocospec
   CoCoSpecCode: constants.nonsense_semantics,
   mltlExpanded: constants.nonsense_semantics,
+  R2U2Code: constants.nonsense_semantics,
   ftInfAU: constants.nonsense_semantics,
   ftInfAUExpanded: constants.nonsense_semantics,
   ftInfBtw: constants.nonsense_semantics,
@@ -55,6 +56,7 @@ var semanticsObjUndefined = {
   //pt_SI: constants.undefined_semantics, // for more efficient cocospec
   CoCoSpecCode: constants.undefined_semantics,
   mltlExpanded: constants.undefined_semantics,
+  R2U2Code: constants.undefined_semantics,
   ftInfAU: constants.undefined_semantics,
   ftInfAUExpanded: constants.undefined_semantics,
   ftInfBtw: constants.undefined_semantics,
@@ -114,7 +116,7 @@ createSemantics(product, {sem:'infinite',in:'afterUntil'},
 		{ft:'ftInfAU',ftExpanded:'ftInfAUExpanded'});
 
 createSemantics(product, {sem:'mltl',in:'afterUntil'},
-		{mltlExpanded: 'mltlExpanded'});
+		{mltlExpanded: 'mltlExpanded', R2U2Code: 'R2U2Code'});
 
 createSemantics(product, {sem:'infinite',in:'between'},
 		{ft:'ftInfBtw',ftExpanded:'ftInfBtwExpanded'});
@@ -193,6 +195,8 @@ function createSemantics(product,options,properties) {
                     let ftExpCustOpt = xform.transform(ftExpCust,xform.optimizeMLTL_FT);
                     let ftExpCustOptMLTL = formalizations.translateToMLTL(ftExpCustOpt);
                     FRETSemantics[key][properties.mltlExpanded] = ftExpCustOptMLTL;
+                    let ftExpCustOptMLTLStream = formalizations.translateToMLTL(xform.transformToStream(ftExpCustOpt));
+                    FRETSemantics[key][properties.R2U2Code] = ftExpCustOptMLTLStream;
                     break;
                   }
 

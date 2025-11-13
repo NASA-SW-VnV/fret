@@ -10,7 +10,7 @@ export {
 }
 
 function renderC2POSpec (contract) {
-    var c2po_spec = "-- C2PO Specification Valid with C2PO/R2U2 v4.0\r\n";
+    var c2po_spec = "-- C2PO Specification Valid with C2PO/R2U2 v4.0 or greater\r\n";
     if (contract.outputVariables != 0 || contract.inputVariables != 0)
         c2po_spec += "INPUT\r\n";
     contract.outputVariables.forEach((variable) => {

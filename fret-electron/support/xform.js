@@ -281,6 +281,7 @@ const MLTLFutureTimeSimplifications = [
     ['(F[<= __h] __p) | (G[<= __h+1] (! __p))', trueFn, '(F[<= __h] __p) | (G[= __h+1] (! __p))'],
     ['(__r V[<= __p] (! __q)) & ((F[<= __p+1] __q) | (F[< __p+1] __r))', trueFn, '(__r V[<= __p] (! __q)) & ((F[= __p+1] __q) | (F[< __p+1] __r))'],
     ['(G[__l,__h] __p) | G __p', trueFn, 'G[__l,__h] __p'],
+    ['(F __p) & (F[__l, __h] __p)', trueFn, 'F[__l,__h] __p'],
     
     // Misc. simplifications reducing temporal operators:
     ['!(__p U __q)', trueFn, '(! __p) V (! __q)'],
@@ -289,6 +290,7 @@ const MLTLFutureTimeSimplifications = [
     ['((__p | __q) V (__r | __s)) | (__q V __r)', trueFn, '((__p | __q) V (__r | __s))'],
     ['((__p | __q) V !(__r & __s)) | (__q V (! __r))', trueFn, '((__p | __q) V !(__r & __s))'],
     ['((! __p) U (__p)) | (G (! __p))', trueFn, 'TRUE'],
+    ['TRUE U[__l, __h] __p', trueFn, 'F[__l, __h] __p'],
     
     // Simplifications reducing Release to an external Globally:
     ['(G ((! __p & (X __p)) => ((X(! __p)) V[1,M] __q))) & (__p => ((X(! __p)) V __q))', trueFn, 'G(__p => __q)'],
