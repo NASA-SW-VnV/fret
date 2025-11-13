@@ -274,9 +274,10 @@ function replaceTemplateVars(formula,html=false) {
   else return "!! Unexpected case in SemanticsAnalyzer.replaceTemplateVars"
 }
 
-function replaceTemplateVarsForWest(formula){
+function replaceTemplateVarsForWEST(formula){
   var temp_map = new Map();
   let prop_index = 0;
+  var string_map = ""
   if (formula) {
     let arr = formula.match(/\$\w+\$/);
     while (arr) {
@@ -284,12 +285,10 @@ function replaceTemplateVarsForWest(formula){
       const tvnodollar = tv.substring(1,tv.length-1)
       let west_repl = "";
       let tv_repl = result[tvnodollar] != undefined ? result[tvnodollar] : tvnodollar ;
-      if ((/\$\w+\$/).test(tv_repl)){ // Checks if variable contains children variables(e.g., persists, occurs, nextOcc)
-        // Checks for props without $...$ and adds them for proper conversion to WEST
-        let symbols = tv_repl.replaceAll(/\$\w+\$/g, "").replaceAll(/F|G|R|U|X|V/g, "").match(/[a-zA-Z][_a-zA-Z0-9]*/g);
-        for (const symbol of symbols) { tv_repl = tv_repl.replace(symbol, '$' + symbol + '$'); }
-        west_repl = tv_repl;
-      } else if (tvnodollar === "duration"){
+      if((/F|G|R|U|X|V/g).test(tv_repl)){
+        tv_repl = utilities.replaceStrings(MLTLSubsts,xform.transform(utils.salt2smv(LAST_is_FALSE(tv_repl, "MLTL")), xform.optimizeMLTL_FT)) // Transform temporal conditions (e.g., persists, occurs, nextOcc)
+      }
+      if (tvnodollar === "duration"){
         west_repl = tv_repl;
       }
       else if (temp_map.has(tv_repl)){
@@ -297,14 +296,18 @@ function replaceTemplateVarsForWest(formula){
       } else{
         temp_map.set(tv_repl, "p" + prop_index)
         west_repl = temp_map.get(tv_repl);
+        if (prop_index != 0) {
+          string_map += "<br/>"
+        }
+        string_map += "p" + prop_index + ": " + tv_repl
         prop_index++;
       }
       formula = formula.replace(tv, west_repl)
       arr = formula.match(/\$\w+\$/);
     }
-    return formula;
+    return [formula, string_map]
   }
-  else return "!! Unexpected case in SemanticsAnalyzer.replaceTemplateVarsForWest("
+  else return ["!! Unexpected case in SemanticsAnalyzer.replaceTemplateVarsForWEST(", ""]
 }
 
 // Canonicalize for SMV format: TRUE, FALSE, and special chars
@@ -427,11 +430,28 @@ const MLTLSubsts = [
       ];
 
 function instantiateStream(fetched) {
-  return utilities.replaceStrings(MLTLSubsts, xform.transformToStream(xform.transform(utils.salt2smv(LAST_is_FALSE(replaceTemplateVars(fetched),"R2U2")), xform.optimizeMLTL_FT)));
+  const R2U2Substs = [
+          [' & ', ' && '],
+          [' \\| ', ' || '],
+          [' = ', ' == '],
+          [' mod | MOD | Mod ', ' % '],
+          ['absReal', 'abs'],
+          ['absInt', 'abs'],
+          ['preBool', 'prev'],
+          ['preReal', 'prev'],
+          ['preInt', 'prev'],
+          ['minReal', 'min'],
+          ['minInt', 'min'],
+          ['maxReal', 'max'],
+          ['maxInt', 'max'],
+          ['FTP', '(TAU == 0)']
+		    ];
+  return utilities.replaceStrings(R2U2Substs.concat(MLTLSubsts), utils.salt2smv(xform.transform(LAST_is_FALSE(replaceTemplateVars(fetched), "MLTL"), xform.optimizeMLTL_FT)))
 }
 
-function instantiateWest(fetched) {
-  return utilities.replaceStrings(MLTLSubsts, xform.transform(utils.salt2smv(LAST_is_FALSE(replaceTemplateVarsForWest(fetched),"WEST")), xform.optimizeMLTL_FT));
+function instantiateWEST(fetched) {
+  let [spec, mapping] = replaceTemplateVarsForWEST(fetched)
+  return [utilities.replaceStrings(MLTLSubsts, utils.salt2smv(spec)), mapping]
 }
 
 // This substitutes FALSE wherever LAST appears in the formula, and
@@ -683,26 +703,12 @@ SemanticsAnalyzer.prototype.semantics = () => {
     const fetched_ftInfAUExpanded = rename(fetchedSemantics.ftInfAUExpanded,'SMV','ft')
     result.ftInfAUExpanded = instantiateInf(fetched_ftInfAUExpanded)
 
-    const fetched_mltl = rename(fetchedSemantics.MLTL, 'MLTL', 'ft');
-    const instantiated_mltl = instantiateStream(fetched_mltl);
-    const R2U2Substs = [
-          [' & ', ' && '],
-          [' \\| ', ' || '],
-          [' = ', ' == '],
-          [' mod | MOD | Mod ', ' % '],
-          ['absReal', 'abs'],
-          ['absInt', 'abs'],
-          ['preBool', 'prev'],
-          ['preReal', 'prev'],
-          ['preInt', 'prev'],
-          ['minReal', 'min'],
-          ['minInt', 'min'],
-          ['maxReal', 'max'],
-          ['maxInt', 'max'],
-          ['FTP', '(TAU == 0)']
-		    ];
-    result.R2U2Code = utilities.replaceStrings(R2U2Substs, instantiated_mltl);
-    result.WEST = instantiateWest(fetched_mltl);
+    const fetched_mltlExpanded = rename(fetchedSemantics.mltlExpanded, 'MLTL', 'ft')
+    const [westInstantiated, WESTMapping] = instantiateWEST(fetched_mltlExpanded)
+    result.mltlExpanded = westInstantiated
+    result.WESTMapping = WESTMapping
+    const fetched_R2U2Code = rename(fetchedSemantics.R2U2Code, 'MLTL', 'ft')
+    result.R2U2Code = instantiateStream(fetched_R2U2Code)
 
     if (constants.generateBetweenSemantics) {
       // Do past, with the between semantics

@@ -406,14 +406,16 @@ handleSwitchChange =(event) => {
             <div id="qa_crtAst_sem_typ_mltlFormula" className={classes.formula}
               dangerouslySetInnerHTML={{ __html: (this.state.mltlFormat=='R2U2'
                 ? (this.props.formalization.semantics.R2U2Code)
-                : this.props.formalization.semantics.WEST)}} />
+                : this.props.formalization.semantics.mltlExpanded)}} />
             <br />
             <div id="qa_crtAst_sem_typ_missionTimeComp" className={classes.description} dangerouslySetInnerHTML={{ __html:' Target: '+ this.props.formalization.semantics.component + ' component.'}} />
+            { (this.state.mltlFormat == 'WEST' && (this.props.formalization.semantics.WESTMapping)) &&
+              <div className={classes.description} dangerouslySetInnerHTML={{ __html:this.props.formalization.semantics.WESTMapping}} />}
             { (this.state.mltlFormat == 'R2U2' && (this.props.formalization.semantics.R2U2Code ? this.props.formalization.semantics.R2U2Code.includes("TAU == 0") : false)) &&
               <div className={classes.description} dangerouslySetInnerHTML={{ __html:' TAU == 0 : First time point.'}} />}
             { 
             ((this.state.mltlFormat == 'R2U2' && (this.props.formalization.semantics.R2U2Code ? this.props.formalization.semantics.R2U2Code.includes(",M]") : false)) ||
-              (this.state.mltlFormat == 'WEST' && (this.props.formalization.semantics.WEST ? this.props.formalization.semantics.WEST.includes(",M]") : false))) &&
+              (this.state.mltlFormat == 'WEST' && (this.props.formalization.semantics.mltlExpanded ? this.props.formalization.semantics.mltlExpanded.includes(",M]") : false))) &&
               true &&
               <div className={classes.description} dangerouslySetInnerHTML={{ __html:' M: End of Mission-time.'}} />}
           </div>

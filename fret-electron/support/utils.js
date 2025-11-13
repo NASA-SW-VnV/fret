@@ -321,8 +321,8 @@ function simplifyImplication(form) {
  * It changes => to -> and removes html tags.
  * The bounds in bounded LTL operators are translated to SMV format.
  * [<=t] --> [0, t], [=t] --> [t, t], [<t] --> [0, t-1],
- * Expressions containing "t+1" are rewritten
- * such that "t+1" is evaluated to an integer.
+ * Expressions containing "t+1" or "((t+1)+1)" are as the lower or upper bound
+ * are rewritten such that "t+1" and "((t+1)+1)" are evaluated to an integer.
  * Units, e.g., "seconds", are discarded.
  * @param {string} expression the expression that should be modified
  * @returns {string} the modified expression
