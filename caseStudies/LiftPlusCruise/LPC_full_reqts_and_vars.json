@@ -71,8 +71,9 @@
                 "ftExpanded": "(LAST V ((((lift_mode = thrust_borne) & (kgs <= 20.0)) & hover_control_mode) -> (LAST | (X (lift_mode = thrust_borne)))))",
                 "pctlExpanded": "P>=1[(G ((((lift_mode = thrust_borne) & (kgs <= 20.0)) & hover_control_mode) => (P>=1[(false | (X (lift_mode = thrust_borne)))])))]",
                 "ftInfAUExpanded": "(G ((((lift_mode = thrust_borne) & (kgs <= 20.0)) & hover_control_mode) -> (X (lift_mode = thrust_borne))))",
+                "mltlExpanded": "(G[0,M] (p0 -> (F[1,1] p1)))",
+                "WESTMapping": "p0: (((lift_mode = thrust_borne) & (kgs <= 20.0)) & hover_control_mode)<br/>p1: (lift_mode = thrust_borne)",
                 "R2U2Code": "((((lift_mode == thrust_borne) && (kgs <= 20.0)) && hover_control_mode) -> (F[1,1] (lift_mode == thrust_borne)))",
-                "WEST": "(G[0,M] (p0 -> (F[1,1] p1)))",
                 "component": "vehicle"
             },
             "_id": "1958ecc0-9a0b-11ee-80d9-a77c0c691f6d"
@@ -149,8 +150,9 @@
                 "ftExpanded": "(LAST V ((((lift_mode = semi_thrust_borne) & (kias <= 40.0)) & ((kgs > 20.0) | (! hover_control_mode))) -> (LAST | (X (lift_mode = semi_thrust_borne)))))",
                 "pctlExpanded": "P>=1[(G ((((lift_mode = semi_thrust_borne) & (kias <= 40.0)) & ((kgs > 20.0) | (! hover_control_mode))) => (P>=1[(false | (X (lift_mode = semi_thrust_borne)))])))]",
                 "ftInfAUExpanded": "(G ((((lift_mode = semi_thrust_borne) & (kias <= 40.0)) & ((kgs > 20.0) | (! hover_control_mode))) -> (X (lift_mode = semi_thrust_borne))))",
+                "mltlExpanded": "(G[0,M] (p0 -> (F[1,1] p1)))",
+                "WESTMapping": "p0: (((lift_mode = semi_thrust_borne) & (kias <= 40.0)) & ((kgs > 20.0) | (! hover_control_mode)))<br/>p1: (lift_mode = semi_thrust_borne)",
                 "R2U2Code": "((((lift_mode == semi_thrust_borne) && (kias <= 40.0)) && ((kgs > 20.0) || (! hover_control_mode))) -> (F[1,1] (lift_mode == semi_thrust_borne)))",
-                "WEST": "(G[0,M] (p0 -> (F[1,1] p1)))",
                 "component": "vehicle"
             },
             "_id": "50bf5be0-9a0b-11ee-80d9-a77c0c691f6d"
@@ -211,8 +213,9 @@
                 "ftExpanded": "((F[0,13] (lift_mode = thrust_borne)) | (F[0,12] LAST))",
                 "pctlExpanded": "(P>=1[(F<=13 (lift_mode = thrust_borne))])",
                 "ftInfAUExpanded": "(F[0,13] (lift_mode = thrust_borne))",
+                "mltlExpanded": "(F[0,13] p0)",
+                "WESTMapping": "p0: (lift_mode = thrust_borne)",
                 "R2U2Code": "((TAU == 0) -> (F[0,13] (lift_mode == thrust_borne)))",
-                "WEST": "(F[0,13] p0)",
                 "component": "vehicle"
             },
             "_id": "79b76f00-5fd9-11ed-9cbe-ffd8cbaa6d62"
@@ -273,8 +276,9 @@
                 "ftExpanded": "(LAST V (preBool(FALSE,((lift_mode = wing_borne) & (kias > 90.0))) -> (lift_mode = wing_borne)))",
                 "pctlExpanded": "(P>=1[(G (preBool(FALSE,((lift_mode = wing_borne) & (kias > 90.0))) -> (lift_mode = wing_borne)))])",
                 "ftInfAUExpanded": "(G (preBool(FALSE,((lift_mode = wing_borne) & (kias > 90.0))) -> (lift_mode = wing_borne)))",
+                "mltlExpanded": "(G[0,M] p0)",
+                "WESTMapping": "p0: (preBool(false,((lift_mode = wing_borne) & (kias > 90.0))) -> (lift_mode = wing_borne))",
                 "R2U2Code": "(prev(false,((lift_mode == wing_borne) && (kias > 90.0))) -> (lift_mode == wing_borne))",
-                "WEST": "(G[0,M] p0)",
                 "component": "vehicle"
             },
             "_id": "79b76f01-5fd9-11ed-9cbe-ffd8cbaa6d62"
@@ -334,8 +338,9 @@
                 "ftExpanded": "((F[0,10] (! fcs)) | (F[0,9] LAST))",
                 "pctlExpanded": "(P>=1[(F<=10 (! fcs))])",
                 "ftInfAUExpanded": "(F[0,10] (! fcs))",
+                "mltlExpanded": "(F[0,10] p0)",
+                "WESTMapping": "p0: (! fcs)",
                 "R2U2Code": "((TAU == 0) -> (F[0,10] (! fcs)))",
-                "WEST": "(F[0,10] p0)",
                 "component": "vehicle"
             },
             "_id": "79b79610-5fd9-11ed-9cbe-ffd8cbaa6d62"
@@ -396,8 +401,9 @@
                 "ftExpanded": "((F[0,14] (lift_mode = thrust_borne)) | (F[0,13] LAST))",
                 "pctlExpanded": "(P>=1[(F<=14 (lift_mode = thrust_borne))])",
                 "ftInfAUExpanded": "(F[0,14] (lift_mode = thrust_borne))",
+                "mltlExpanded": "(F[0,14] p0)",
+                "WESTMapping": "p0: (lift_mode = thrust_borne)",
                 "R2U2Code": "((TAU == 0) -> (F[0,14] (lift_mode == thrust_borne)))",
-                "WEST": "(F[0,14] p0)",
                 "component": "vehicle"
             },
             "_id": "79b79611-5fd9-11ed-9cbe-ffd8cbaa6d62"
@@ -457,8 +463,9 @@
                 "ftExpanded": "(LAST V (preBool(FALSE,((! cr) & (kias >= 90.0))) -> (! cr)))",
                 "pctlExpanded": "(P>=1[(G (preBool(FALSE,((! cr) & (kias >= 90.0))) -> (! cr)))])",
                 "ftInfAUExpanded": "(G (preBool(FALSE,((! cr) & (kias >= 90.0))) -> (! cr)))",
+                "mltlExpanded": "(G[0,M] p0)",
+                "WESTMapping": "p0: (preBool(false,((! cr) & (kias >= 90.0))) -> (! cr))",
                 "R2U2Code": "(prev(false,((! cr) && (kias >= 90.0))) -> (! cr))",
-                "WEST": "(G[0,M] p0)",
                 "component": "vehicle"
             },
             "_id": "79b7bd20-5fd9-11ed-9cbe-ffd8cbaa6d62"
@@ -519,8 +526,9 @@
                 "ftExpanded": "(LAST V (preBool(FALSE,(((lift_mode = semi_wing_borne) & (kias <= 100.0)) & (kias > 30.0))) -> (lift_mode = semi_wing_borne)))",
                 "pctlExpanded": "(P>=1[(G (preBool(FALSE,(((lift_mode = semi_wing_borne) & (kias <= 100.0)) & (kias > 30.0))) -> (lift_mode = semi_wing_borne)))])",
                 "ftInfAUExpanded": "(G (preBool(FALSE,(((lift_mode = semi_wing_borne) & (kias <= 100.0)) & (kias > 30.0))) -> (lift_mode = semi_wing_borne)))",
+                "mltlExpanded": "(G[0,M] p0)",
+                "WESTMapping": "p0: (preBool(false,(((lift_mode = semi_wing_borne) & (kias <= 100.0)) & (kias > 30.0))) -> (lift_mode = semi_wing_borne))",
                 "R2U2Code": "(prev(false,(((lift_mode == semi_wing_borne) && (kias <= 100.0)) && (kias > 30.0))) -> (lift_mode == semi_wing_borne))",
-                "WEST": "(G[0,M] p0)",
                 "component": "vehicle"
             },
             "_id": "79b7bd21-5fd9-11ed-9cbe-ffd8cbaa6d62"
@@ -581,8 +589,9 @@
                 "ftExpanded": "((F[0,15] (lift_mode = thrust_borne)) | (F[0,14] LAST))",
                 "pctlExpanded": "(P>=1[(F<=15 (lift_mode = thrust_borne))])",
                 "ftInfAUExpanded": "(F[0,15] (lift_mode = thrust_borne))",
+                "mltlExpanded": "(F[0,15] p0)",
+                "WESTMapping": "p0: (lift_mode = thrust_borne)",
                 "R2U2Code": "((TAU == 0) -> (F[0,15] (lift_mode == thrust_borne)))",
-                "WEST": "(F[0,15] p0)",
                 "component": "vehicle"
             },
             "_id": "79b7e430-5fd9-11ed-9cbe-ffd8cbaa6d62"
@@ -651,13 +660,14 @@
                 "ft": "((LAST V (((! (fcs & (kias < 30.0))) & ((! LAST) & (X (fcs & (kias < 30.0))))) -> (X (LAST | (X (! fcs)))))) & ((fcs & (kias < 30.0)) -> (LAST | (X (! fcs)))))",
                 "pt": "(H ((Y ((fcs & (kias < 30.0)) & (Z (! (fcs & (kias < 30.0)))))) -> ((! fcs) | (Z FALSE))))",
                 "pctl": "P>=1[((G (((! (fcs & (kias < 30.0))) & (X (fcs & (kias < 30.0)))) => (X (P>=1[(LAST | (X (! fcs)))])))) & ((fcs & (kias < 30.0)) => (P>=1[(LAST | (X (! fcs)))])))]",
-                "ptExpanded": "(H (((Y ((fcs & (kias < 30.0)) & (Z (! (fcs & (kias < 30.0)))))) & fcs) -> (Z FALSE)))",
-                "CoCoSpecCode": "H(((YtoPre(((fcs and (kias < 30.0)) and ZtoPre(not ((fcs and (kias < 30.0)))))) and fcs) => ZtoPre(false)))",
+                "ptExpanded": "(H ((Y ((fcs & (kias < 30.0)) & (Z (! (fcs & (kias < 30.0)))))) -> ((! fcs) | (Z FALSE))))",
+                "CoCoSpecCode": "H((YtoPre(((fcs and (kias < 30.0)) and ZtoPre(not ((fcs and (kias < 30.0)))))) => (not (fcs) or ZtoPre(false))))",
                 "ftExpanded": "((LAST V (((! (fcs & (kias < 30.0))) & ((! LAST) & (X (fcs & (kias < 30.0))))) -> (X (LAST | (X (! fcs)))))) & ((fcs & (kias < 30.0)) -> (LAST | (X (! fcs)))))",
                 "pctlExpanded": "P>=1[((G (((! (fcs & (kias < 30.0))) & (X (fcs & (kias < 30.0)))) => (X (P>=1[(false | (X (! fcs)))])))) & ((fcs & (kias < 30.0)) => (P>=1[(false | (X (! fcs)))])))]",
                 "ftInfAUExpanded": "((G (((! (fcs & (kias < 30.0))) & (X (fcs & (kias < 30.0)))) -> (X (X (! fcs))))) & ((fcs & (kias < 30.0)) -> (X (! fcs))))",
-                "R2U2Code": "((((! (fcs && (kias < 30.0))) && (F[1,1] (fcs && (kias < 30.0)))) -> (F[2,2] (! fcs))) && ((TAU == 0) -> ((fcs && (kias < 30.0)) -> (F[1,1] (! fcs)))))",
-                "WEST": "((G[0,M] (((! p0) & (F[1,1] p0)) -> (F[2,2] p1))) & (p0 -> (F[1,1] p1)))",
+                "mltlExpanded": "((G[0,M] (((! p0) & (F[1,1] p0)) -> (F[2,2] p1))) & (p0 -> (F[1,1] p1)))",
+                "WESTMapping": "p0: (fcs & (kias < 30.0))<br/>p1: (! fcs)",
+                "R2U2Code": "((((! (fcs && (kias < 30.0))) && (F[1,1] (fcs && (kias < 30.0)))) -> (F[2,2] (! fcs))) && (((TAU == 0) && (fcs && (kias < 30.0))) -> (F[1,1] (! fcs))))",
                 "component": "vehicle"
             },
             "_id": "79b7e431-5fd9-11ed-9cbe-ffd8cbaa6d62"
@@ -717,8 +727,9 @@
                 "ftExpanded": "(LAST V (preBool(FALSE,((! dr) & (kias >= 60.0))) -> (! dr)))",
                 "pctlExpanded": "(P>=1[(G (preBool(FALSE,((! dr) & (kias >= 60.0))) -> (! dr)))])",
                 "ftInfAUExpanded": "(G (preBool(FALSE,((! dr) & (kias >= 60.0))) -> (! dr)))",
+                "mltlExpanded": "(G[0,M] p0)",
+                "WESTMapping": "p0: (preBool(false,((! dr) & (kias >= 60.0))) -> (! dr))",
                 "R2U2Code": "(prev(false,((! dr) && (kias >= 60.0))) -> (! dr))",
-                "WEST": "(G[0,M] p0)",
                 "component": "vehicle"
             },
             "_id": "79b80b40-5fd9-11ed-9cbe-ffd8cbaa6d62"
@@ -779,8 +790,9 @@
                 "ftExpanded": "((F[0,10] (lift_mode = thrust_borne)) | (F[0,9] LAST))",
                 "pctlExpanded": "(P>=1[(F<=10 (lift_mode = thrust_borne))])",
                 "ftInfAUExpanded": "(F[0,10] (lift_mode = thrust_borne))",
+                "mltlExpanded": "(F[0,10] p0)",
+                "WESTMapping": "p0: (lift_mode = thrust_borne)",
                 "R2U2Code": "((TAU == 0) -> (F[0,10] (lift_mode == thrust_borne)))",
-                "WEST": "(F[0,10] p0)",
                 "component": "vehicle"
             },
             "_id": "79b80b41-5fd9-11ed-9cbe-ffd8cbaa6d62"
@@ -841,8 +853,9 @@
                 "ftExpanded": "((F[0,12] (lift_mode = thrust_borne)) | (F[0,11] LAST))",
                 "pctlExpanded": "(P>=1[(F<=12 (lift_mode = thrust_borne))])",
                 "ftInfAUExpanded": "(F[0,12] (lift_mode = thrust_borne))",
+                "mltlExpanded": "(F[0,12] p0)",
+                "WESTMapping": "p0: (lift_mode = thrust_borne)",
                 "R2U2Code": "((TAU == 0) -> (F[0,12] (lift_mode == thrust_borne)))",
-                "WEST": "(F[0,12] p0)",
                 "component": "vehicle"
             },
             "_id": "79b83250-5fd9-11ed-9cbe-ffd8cbaa6d62"
@@ -903,8 +916,9 @@
                 "ftExpanded": "((F[0,11] (lift_mode = thrust_borne)) | (F[0,10] LAST))",
                 "pctlExpanded": "(P>=1[(F<=11 (lift_mode = thrust_borne))])",
                 "ftInfAUExpanded": "(F[0,11] (lift_mode = thrust_borne))",
+                "mltlExpanded": "(F[0,11] p0)",
+                "WESTMapping": "p0: (lift_mode = thrust_borne)",
                 "R2U2Code": "((TAU == 0) -> (F[0,11] (lift_mode == thrust_borne)))",
-                "WEST": "(F[0,11] p0)",
                 "component": "vehicle"
             },
             "_id": "79b83251-5fd9-11ed-9cbe-ffd8cbaa6d62"
@@ -964,8 +978,9 @@
                 "ftExpanded": "(LAST V (rearprop xor hover_control_mode))",
                 "pctlExpanded": "(P>=1[(G (rearprop xor hover_control_mode))])",
                 "ftInfAUExpanded": "(G (rearprop xor hover_control_mode))",
+                "mltlExpanded": "(G[0,M] p0)",
+                "WESTMapping": "p0: (rearprop xor hover_control_mode)",
                 "R2U2Code": "(rearprop xor hover_control_mode)",
-                "WEST": "(G[0,M] p0)",
                 "component": "vehicle"
             },
             "_id": "79b85960-5fd9-11ed-9cbe-ffd8cbaa6d62"
@@ -1041,8 +1056,9 @@
                 "ftExpanded": "((LAST V (((! ((lift_mode = semi_wing_borne) & (kias <= 30.0))) & ((! LAST) & (X ((lift_mode = semi_wing_borne) & (kias <= 30.0))))) -> (X (LAST | (X (lift_mode = semi_thrust_borne)))))) & (((lift_mode = semi_wing_borne) & (kias <= 30.0)) -> (LAST | (X (lift_mode = semi_thrust_borne)))))",
                 "pctlExpanded": "P>=1[((G (((! ((lift_mode = semi_wing_borne) & (kias <= 30.0))) & (X ((lift_mode = semi_wing_borne) & (kias <= 30.0)))) => (X (P>=1[(false | (X (lift_mode = semi_thrust_borne)))])))) & (((lift_mode = semi_wing_borne) & (kias <= 30.0)) => (P>=1[(false | (X (lift_mode = semi_thrust_borne)))])))]",
                 "ftInfAUExpanded": "((G (((! ((lift_mode = semi_wing_borne) & (kias <= 30.0))) & (X ((lift_mode = semi_wing_borne) & (kias <= 30.0)))) -> (X (X (lift_mode = semi_thrust_borne))))) & (((lift_mode = semi_wing_borne) & (kias <= 30.0)) -> (X (lift_mode = semi_thrust_borne))))",
-                "R2U2Code": "((((! ((lift_mode == semi_wing_borne) && (kias <= 30.0))) && (F[1,1] ((lift_mode == semi_wing_borne) && (kias <= 30.0)))) -> (F[2,2] (lift_mode == semi_thrust_borne))) && ((TAU == 0) -> (((lift_mode == semi_wing_borne) && (kias <= 30.0)) -> (F[1,1] (lift_mode == semi_thrust_borne)))))",
-                "WEST": "((G[0,M] (((! p0) & (F[1,1] p0)) -> (F[2,2] p1))) & (p0 -> (F[1,1] p1)))",
+                "mltlExpanded": "((G[0,M] (((! p0) & (F[1,1] p0)) -> (F[2,2] p1))) & (p0 -> (F[1,1] p1)))",
+                "WESTMapping": "p0: ((lift_mode = semi_wing_borne) & (kias <= 30.0))<br/>p1: (lift_mode = semi_thrust_borne)",
+                "R2U2Code": "((((! ((lift_mode == semi_wing_borne) && (kias <= 30.0))) && (F[1,1] ((lift_mode == semi_wing_borne) && (kias <= 30.0)))) -> (F[2,2] (lift_mode == semi_thrust_borne))) && (((TAU == 0) && ((lift_mode == semi_wing_borne) && (kias <= 30.0))) -> (F[1,1] (lift_mode == semi_thrust_borne))))",
                 "component": "vehicle"
             },
             "_id": "79b85961-5fd9-11ed-9cbe-ffd8cbaa6d62"
@@ -1102,8 +1118,9 @@
                 "ftExpanded": "(fcs <-> (kias > 40.0))",
                 "pctlExpanded": "(P>=1[(fcs <-> (kias > 40.0))])",
                 "ftInfAUExpanded": "(fcs <-> (kias > 40.0))",
+                "mltlExpanded": "p0",
+                "WESTMapping": "p0: (fcs <-> (kias > 40.0))",
                 "R2U2Code": "((TAU == 0) -> (fcs <-> (kias > 40.0)))",
-                "WEST": "p0",
                 "component": "vehicle"
             },
             "_id": "79b88070-5fd9-11ed-9cbe-ffd8cbaa6d62"
@@ -1185,8 +1202,9 @@
                 "ftExpanded": "((LAST V (((! (((lift_mode = semi_wing_borne) & (30.0 < kias)) & (kias <= 100.0))) & ((! LAST) & (X (((lift_mode = semi_wing_borne) & (30.0 < kias)) & (kias <= 100.0))))) -> (X ((((lift_mode = semi_wing_borne) & ((kias <= 30.0) | (kias > 100.0))) V ((lift_mode = semi_wing_borne) | ((lift_mode = semi_wing_borne) & ((kias <= 30.0) | (kias > 100.0))))) | (LAST V (lift_mode = semi_wing_borne)))))) & ((((lift_mode = semi_wing_borne) & (30.0 < kias)) & (kias <= 100.0)) -> ((((lift_mode = semi_wing_borne) & ((kias <= 30.0) | (kias > 100.0))) V ((lift_mode = semi_wing_borne) | ((lift_mode = semi_wing_borne) & ((kias <= 30.0) | (kias > 100.0))))) | (LAST V (lift_mode = semi_wing_borne)))))",
                 "pctlExpanded": "P>=1[((G (((! (((lift_mode = semi_wing_borne) & (30.0 < kias)) & (kias <= 100.0))) & (X (((lift_mode = semi_wing_borne) & (30.0 < kias)) & (kias <= 100.0)))) => (X (P>=1[((((lift_mode = semi_wing_borne) & ((kias <= 30.0) | (kias > 100.0))) R ((lift_mode = semi_wing_borne) | ((lift_mode = semi_wing_borne) & ((kias <= 30.0) | (kias > 100.0))))) | (false R (lift_mode = semi_wing_borne)))])))) & ((((lift_mode = semi_wing_borne) & (30.0 < kias)) & (kias <= 100.0)) => (P>=1[((((lift_mode = semi_wing_borne) & ((kias <= 30.0) | (kias > 100.0))) R ((lift_mode = semi_wing_borne) | ((lift_mode = semi_wing_borne) & ((kias <= 30.0) | (kias > 100.0))))) | (false R (lift_mode = semi_wing_borne)))])))]",
                 "ftInfAUExpanded": "((G (((! (((lift_mode = semi_wing_borne) & (30.0 < kias)) & (kias <= 100.0))) & (X (((lift_mode = semi_wing_borne) & (30.0 < kias)) & (kias <= 100.0)))) -> (X (((lift_mode = semi_wing_borne) & ((kias <= 30.0) | (kias > 100.0))) V ((lift_mode = semi_wing_borne) | ((lift_mode = semi_wing_borne) & ((kias <= 30.0) | (kias > 100.0)))))))) & ((((lift_mode = semi_wing_borne) & (30.0 < kias)) & (kias <= 100.0)) -> (((lift_mode = semi_wing_borne) & ((kias <= 30.0) | (kias > 100.0))) V ((lift_mode = semi_wing_borne) | ((lift_mode = semi_wing_borne) & ((kias <= 30.0) | (kias > 100.0)))))))",
-                "R2U2Code": "((((! (((lift_mode == semi_wing_borne) && (30.0 < kias)) && (kias <= 100.0))) && (F[1,1] (((lift_mode == semi_wing_borne) && (30.0 < kias)) && (kias <= 100.0)))) -> (((lift_mode == semi_wing_borne) && ((kias <= 30.0) || (kias > 100.0))) R[1,M] ((lift_mode == semi_wing_borne) || ((lift_mode == semi_wing_borne) && ((kias <= 30.0) || (kias > 100.0)))))) && ((TAU == 0) -> ((((lift_mode == semi_wing_borne) && (30.0 < kias)) && (kias <= 100.0)) -> (((lift_mode == semi_wing_borne) && ((kias <= 30.0) || (kias > 100.0))) R[0,M] ((lift_mode == semi_wing_borne) || ((lift_mode == semi_wing_borne) && ((kias <= 30.0) || (kias > 100.0))))))))",
-                "WEST": "((G[0,M] (((! p0) & (F[1,1] p0)) -> (p1 R[1,M] (p2 | p1)))) & (p0 -> (p1 R[0,M] (p2 | p1))))",
+                "mltlExpanded": "((G[0,M] (((! p0) & (F[1,1] p0)) -> (p1 R[1,M] (p2 | p1)))) & (p0 -> (p1 R[0,M] (p2 | p1))))",
+                "WESTMapping": "p0: (((lift_mode = semi_wing_borne) & (30.0 < kias)) & (kias <= 100.0))<br/>p1: ((lift_mode = semi_wing_borne) & ((kias <= 30.0) | (kias > 100.0)))<br/>p2: (lift_mode = semi_wing_borne)",
+                "R2U2Code": "((((! (((lift_mode == semi_wing_borne) && (30.0 < kias)) && (kias <= 100.0))) && (F[1,1] (((lift_mode == semi_wing_borne) && (30.0 < kias)) && (kias <= 100.0)))) -> (((lift_mode == semi_wing_borne) && ((kias <= 30.0) || (kias > 100.0))) R[1,M] ((lift_mode == semi_wing_borne) || ((lift_mode == semi_wing_borne) && ((kias <= 30.0) || (kias > 100.0)))))) && (((TAU == 0) && (((lift_mode == semi_wing_borne) && (30.0 < kias)) && (kias <= 100.0))) -> (((lift_mode == semi_wing_borne) && ((kias <= 30.0) || (kias > 100.0))) R[0,M] ((lift_mode == semi_wing_borne) || ((lift_mode == semi_wing_borne) && ((kias <= 30.0) || (kias > 100.0)))))))",
                 "component": "vehicle"
             },
             "_id": "79b88071-5fd9-11ed-9cbe-ffd8cbaa6d62"
@@ -1262,8 +1280,9 @@
                 "ftExpanded": "((LAST V (((! ((lift_mode = semi_thrust_borne) & (kias > 40.0))) & ((! LAST) & (X ((lift_mode = semi_thrust_borne) & (kias > 40.0))))) -> (X (LAST | (X (lift_mode = semi_wing_borne)))))) & (((lift_mode = semi_thrust_borne) & (kias > 40.0)) -> (LAST | (X (lift_mode = semi_wing_borne)))))",
                 "pctlExpanded": "P>=1[((G (((! ((lift_mode = semi_thrust_borne) & (kias > 40.0))) & (X ((lift_mode = semi_thrust_borne) & (kias > 40.0)))) => (X (P>=1[(false | (X (lift_mode = semi_wing_borne)))])))) & (((lift_mode = semi_thrust_borne) & (kias > 40.0)) => (P>=1[(false | (X (lift_mode = semi_wing_borne)))])))]",
                 "ftInfAUExpanded": "((G (((! ((lift_mode = semi_thrust_borne) & (kias > 40.0))) & (X ((lift_mode = semi_thrust_borne) & (kias > 40.0)))) -> (X (X (lift_mode = semi_wing_borne))))) & (((lift_mode = semi_thrust_borne) & (kias > 40.0)) -> (X (lift_mode = semi_wing_borne))))",
-                "R2U2Code": "((((! ((lift_mode == semi_thrust_borne) && (kias > 40.0))) && (F[1,1] ((lift_mode == semi_thrust_borne) && (kias > 40.0)))) -> (F[2,2] (lift_mode == semi_wing_borne))) && ((TAU == 0) -> (((lift_mode == semi_thrust_borne) && (kias > 40.0)) -> (F[1,1] (lift_mode == semi_wing_borne)))))",
-                "WEST": "((G[0,M] (((! p0) & (F[1,1] p0)) -> (F[2,2] p1))) & (p0 -> (F[1,1] p1)))",
+                "mltlExpanded": "((G[0,M] (((! p0) & (F[1,1] p0)) -> (F[2,2] p1))) & (p0 -> (F[1,1] p1)))",
+                "WESTMapping": "p0: ((lift_mode = semi_thrust_borne) & (kias > 40.0))<br/>p1: (lift_mode = semi_wing_borne)",
+                "R2U2Code": "((((! ((lift_mode == semi_thrust_borne) && (kias > 40.0))) && (F[1,1] ((lift_mode == semi_thrust_borne) && (kias > 40.0)))) -> (F[2,2] (lift_mode == semi_wing_borne))) && (((TAU == 0) && ((lift_mode == semi_thrust_borne) && (kias > 40.0))) -> (F[1,1] (lift_mode == semi_wing_borne))))",
                 "component": "vehicle"
             },
             "_id": "79b8a780-5fd9-11ed-9cbe-ffd8cbaa6d62"
@@ -1342,13 +1361,14 @@
                 "ft": "((LAST V (((! (((lift_mode = semi_thrust_borne) & (kias <= 40.0)) & ((! hover_control_mode) | (kgs > 20.0)))) & ((! LAST) & (X (((lift_mode = semi_thrust_borne) & (kias <= 40.0)) & ((! hover_control_mode) | (kgs > 20.0)))))) -> (X ((((lift_mode = semi_thrust_borne) & ((kias > 40.0) | ((kgs <= 20.0) & hover_control_mode))) V ((lift_mode = semi_thrust_borne) | ((lift_mode = semi_thrust_borne) & ((kias > 40.0) | ((kgs <= 20.0) & hover_control_mode))))) | (LAST V (lift_mode = semi_thrust_borne)))))) & ((((lift_mode = semi_thrust_borne) & (kias <= 40.0)) & ((! hover_control_mode) | (kgs > 20.0))) -> ((((lift_mode = semi_thrust_borne) & ((kias > 40.0) | ((kgs <= 20.0) & hover_control_mode))) V ((lift_mode = semi_thrust_borne) | ((lift_mode = semi_thrust_borne) & ((kias > 40.0) | ((kgs <= 20.0) & hover_control_mode))))) | (LAST V (lift_mode = semi_thrust_borne)))))",
                 "pt": "(H ((H (! (((lift_mode = semi_thrust_borne) & (kias <= 40.0)) & ((! hover_control_mode) | (kgs > 20.0))))) | (((! ((lift_mode = semi_thrust_borne) & ((kias > 40.0) | ((kgs <= 20.0) & hover_control_mode)))) S ((! ((lift_mode = semi_thrust_borne) & ((kias > 40.0) | ((kgs <= 20.0) & hover_control_mode)))) & ((((lift_mode = semi_thrust_borne) & (kias <= 40.0)) & ((! hover_control_mode) | (kgs > 20.0))) & (Z (! (((lift_mode = semi_thrust_borne) & (kias <= 40.0)) & ((! hover_control_mode) | (kgs > 20.0)))))))) -> (lift_mode = semi_thrust_borne))))",
                 "pctl": "P>=1[((G (((! (((lift_mode = semi_thrust_borne) & (kias <= 40.0)) & ((! hover_control_mode) | (kgs > 20.0)))) & (X (((lift_mode = semi_thrust_borne) & (kias <= 40.0)) & ((! hover_control_mode) | (kgs > 20.0))))) => (X (P>=1[((undefined R ((lift_mode = semi_thrust_borne) | undefined)) | (LAST R (lift_mode = semi_thrust_borne)))])))) & ((((lift_mode = semi_thrust_borne) & (kias <= 40.0)) & ((! hover_control_mode) | (kgs > 20.0))) => (P>=1[((undefined R ((lift_mode = semi_thrust_borne) | undefined)) | (LAST R (lift_mode = semi_thrust_borne)))])))]",
-                "ptExpanded": "(H ((H (! (((lift_mode = semi_thrust_borne) & (kias <= 40.0)) & (hover_control_mode -> (kgs > 20.0))))) | (((! ((lift_mode = semi_thrust_borne) & ((kias > 40.0) | ((kgs <= 20.0) & hover_control_mode)))) S ((! ((lift_mode = semi_thrust_borne) & ((kias > 40.0) | ((kgs <= 20.0) & hover_control_mode)))) & ((((lift_mode = semi_thrust_borne) & (kias <= 40.0)) & (hover_control_mode -> (kgs > 20.0))) & (Z (! (((lift_mode = semi_thrust_borne) & (kias <= 40.0)) & (hover_control_mode -> (kgs > 20.0)))))))) -> (lift_mode = semi_thrust_borne))))",
-                "CoCoSpecCode": "H((H(not ((((lift_mode = semi_thrust_borne) and (kias <= 40.0)) and (hover_control_mode => (kgs > 20.0))))) or (SI(((((lift_mode = semi_thrust_borne) and (kias <= 40.0)) and (hover_control_mode => (kgs > 20.0))) and ZtoPre(not ((((lift_mode = semi_thrust_borne) and (kias <= 40.0)) and (hover_control_mode => (kgs > 20.0)))))),not (((lift_mode = semi_thrust_borne) and ((kias > 40.0) or ((kgs <= 20.0) and hover_control_mode))))) => (lift_mode = semi_thrust_borne))))",
-                "ftExpanded": "((LAST V (((! (((lift_mode = semi_thrust_borne) & (kias <= 40.0)) & (hover_control_mode -> (kgs > 20.0)))) & ((! LAST) & (X (((lift_mode = semi_thrust_borne) & (kias <= 40.0)) & (hover_control_mode -> (kgs > 20.0)))))) -> (X ((((lift_mode = semi_thrust_borne) & ((kias > 40.0) | ((kgs <= 20.0) & hover_control_mode))) V ((lift_mode = semi_thrust_borne) | ((lift_mode = semi_thrust_borne) & ((kias > 40.0) | ((kgs <= 20.0) & hover_control_mode))))) | (LAST V (lift_mode = semi_thrust_borne)))))) & ((((lift_mode = semi_thrust_borne) & (kias <= 40.0)) & (hover_control_mode -> (kgs > 20.0))) -> ((((lift_mode = semi_thrust_borne) & ((kias > 40.0) | ((kgs <= 20.0) & hover_control_mode))) V ((lift_mode = semi_thrust_borne) | ((lift_mode = semi_thrust_borne) & ((kias > 40.0) | ((kgs <= 20.0) & hover_control_mode))))) | (LAST V (lift_mode = semi_thrust_borne)))))",
+                "ptExpanded": "(H ((H (! (((lift_mode = semi_thrust_borne) & (kias <= 40.0)) & ((! hover_control_mode) | (kgs > 20.0))))) | (((! ((lift_mode = semi_thrust_borne) & ((kias > 40.0) | ((kgs <= 20.0) & hover_control_mode)))) S ((! ((lift_mode = semi_thrust_borne) & ((kias > 40.0) | ((kgs <= 20.0) & hover_control_mode)))) & ((((lift_mode = semi_thrust_borne) & (kias <= 40.0)) & ((! hover_control_mode) | (kgs > 20.0))) & (Z (! (((lift_mode = semi_thrust_borne) & (kias <= 40.0)) & ((! hover_control_mode) | (kgs > 20.0)))))))) -> (lift_mode = semi_thrust_borne))))",
+                "CoCoSpecCode": "H((H(not ((((lift_mode = semi_thrust_borne) and (kias <= 40.0)) and (not (hover_control_mode) or (kgs > 20.0))))) or (SI(((((lift_mode = semi_thrust_borne) and (kias <= 40.0)) and (not (hover_control_mode) or (kgs > 20.0))) and ZtoPre(not ((((lift_mode = semi_thrust_borne) and (kias <= 40.0)) and (not (hover_control_mode) or (kgs > 20.0)))))),not (((lift_mode = semi_thrust_borne) and ((kias > 40.0) or ((kgs <= 20.0) and hover_control_mode))))) => (lift_mode = semi_thrust_borne))))",
+                "ftExpanded": "((LAST V (((! (((lift_mode = semi_thrust_borne) & (kias <= 40.0)) & ((! hover_control_mode) | (kgs > 20.0)))) & ((! LAST) & (X (((lift_mode = semi_thrust_borne) & (kias <= 40.0)) & ((! hover_control_mode) | (kgs > 20.0)))))) -> (X ((((lift_mode = semi_thrust_borne) & ((kias > 40.0) | ((kgs <= 20.0) & hover_control_mode))) V ((lift_mode = semi_thrust_borne) | ((lift_mode = semi_thrust_borne) & ((kias > 40.0) | ((kgs <= 20.0) & hover_control_mode))))) | (LAST V (lift_mode = semi_thrust_borne)))))) & ((((lift_mode = semi_thrust_borne) & (kias <= 40.0)) & ((! hover_control_mode) | (kgs > 20.0))) -> ((((lift_mode = semi_thrust_borne) & ((kias > 40.0) | ((kgs <= 20.0) & hover_control_mode))) V ((lift_mode = semi_thrust_borne) | ((lift_mode = semi_thrust_borne) & ((kias > 40.0) | ((kgs <= 20.0) & hover_control_mode))))) | (LAST V (lift_mode = semi_thrust_borne)))))",
                 "pctlExpanded": "P>=1[((G (((! (((lift_mode = semi_thrust_borne) & (kias <= 40.0)) & ((! hover_control_mode) | (kgs > 20.0)))) & (X (((lift_mode = semi_thrust_borne) & (kias <= 40.0)) & ((! hover_control_mode) | (kgs > 20.0))))) => (X (P>=1[((((lift_mode = semi_thrust_borne) & ((kias > 40.0) | ((kgs <= 20.0) & hover_control_mode))) R ((lift_mode = semi_thrust_borne) | ((lift_mode = semi_thrust_borne) & ((kias > 40.0) | ((kgs <= 20.0) & hover_control_mode))))) | (false R (lift_mode = semi_thrust_borne)))])))) & ((((lift_mode = semi_thrust_borne) & (kias <= 40.0)) & ((! hover_control_mode) | (kgs > 20.0))) => (P>=1[((((lift_mode = semi_thrust_borne) & ((kias > 40.0) | ((kgs <= 20.0) & hover_control_mode))) R ((lift_mode = semi_thrust_borne) | ((lift_mode = semi_thrust_borne) & ((kias > 40.0) | ((kgs <= 20.0) & hover_control_mode))))) | (false R (lift_mode = semi_thrust_borne)))])))]",
-                "ftInfAUExpanded": "((G (((! (((lift_mode = semi_thrust_borne) & (kias <= 40.0)) & (hover_control_mode -> (kgs > 20.0)))) & (X (((lift_mode = semi_thrust_borne) & (kias <= 40.0)) & (hover_control_mode -> (kgs > 20.0))))) -> (X (((lift_mode = semi_thrust_borne) & ((kias > 40.0) | ((kgs <= 20.0) & hover_control_mode))) V ((lift_mode = semi_thrust_borne) | ((lift_mode = semi_thrust_borne) & ((kias > 40.0) | ((kgs <= 20.0) & hover_control_mode)))))))) & ((((lift_mode = semi_thrust_borne) & (kias <= 40.0)) & (hover_control_mode -> (kgs > 20.0))) -> (((lift_mode = semi_thrust_borne) & ((kias > 40.0) | ((kgs <= 20.0) & hover_control_mode))) V ((lift_mode = semi_thrust_borne) | ((lift_mode = semi_thrust_borne) & ((kias > 40.0) | ((kgs <= 20.0) & hover_control_mode)))))))",
-                "R2U2Code": "((((! (((lift_mode == semi_thrust_borne) && (kias <= 40.0)) && (hover_control_mode -> (kgs > 20.0)))) && (F[1,1] (((lift_mode == semi_thrust_borne) && (kias <= 40.0)) && (hover_control_mode -> (kgs > 20.0))))) -> (((lift_mode == semi_thrust_borne) && ((kias > 40.0) || ((kgs <= 20.0) && hover_control_mode))) R[1,M] ((lift_mode == semi_thrust_borne) || ((lift_mode == semi_thrust_borne) && ((kias > 40.0) || ((kgs <= 20.0) && hover_control_mode)))))) && ((TAU == 0) -> ((((lift_mode == semi_thrust_borne) && (kias <= 40.0)) && (hover_control_mode -> (kgs > 20.0))) -> (((lift_mode == semi_thrust_borne) && ((kias > 40.0) || ((kgs <= 20.0) && hover_control_mode))) R[0,M] ((lift_mode == semi_thrust_borne) || ((lift_mode == semi_thrust_borne) && ((kias > 40.0) || ((kgs <= 20.0) && hover_control_mode))))))))",
-                "WEST": "((G[0,M] (((! p0) & (F[1,1] p0)) -> (p1 R[1,M] (p2 | p1)))) & (p0 -> (p1 R[0,M] (p2 | p1))))",
+                "ftInfAUExpanded": "((G (((! (((lift_mode = semi_thrust_borne) & (kias <= 40.0)) & ((! hover_control_mode) | (kgs > 20.0)))) & (X (((lift_mode = semi_thrust_borne) & (kias <= 40.0)) & ((! hover_control_mode) | (kgs > 20.0))))) -> (X (((lift_mode = semi_thrust_borne) & ((kias > 40.0) | ((kgs <= 20.0) & hover_control_mode))) V ((lift_mode = semi_thrust_borne) | ((lift_mode = semi_thrust_borne) & ((kias > 40.0) | ((kgs <= 20.0) & hover_control_mode)))))))) & ((((lift_mode = semi_thrust_borne) & (kias <= 40.0)) & ((! hover_control_mode) | (kgs > 20.0))) -> (((lift_mode = semi_thrust_borne) & ((kias > 40.0) | ((kgs <= 20.0) & hover_control_mode))) V ((lift_mode = semi_thrust_borne) | ((lift_mode = semi_thrust_borne) & ((kias > 40.0) | ((kgs <= 20.0) & hover_control_mode)))))))",
+                "mltlExpanded": "((G[0,M] (((! p0) & (F[1,1] p0)) -> (p1 R[1,M] (p2 | p1)))) & (p0 -> (p1 R[0,M] (p2 | p1))))",
+                "WESTMapping": "p0: (((lift_mode = semi_thrust_borne) & (kias <= 40.0)) & ((! hover_control_mode) | (kgs > 20.0)))<br/>p1: ((lift_mode = semi_thrust_borne) & ((kias > 40.0) | ((kgs <= 20.0) & hover_control_mode)))<br/>p2: (lift_mode = semi_thrust_borne)",
+                "R2U2Code": "((((! (((lift_mode == semi_thrust_borne) && (kias <= 40.0)) && (hover_control_mode -> (kgs > 20.0)))) && (F[1,1] (((lift_mode == semi_thrust_borne) && (kias <= 40.0)) && (hover_control_mode -> (kgs > 20.0))))) -> (((lift_mode == semi_thrust_borne) && ((kias > 40.0) || ((kgs <= 20.0) && hover_control_mode))) R[1,M] ((lift_mode == semi_thrust_borne) || ((lift_mode == semi_thrust_borne) && ((kias > 40.0) || ((kgs <= 20.0) && hover_control_mode)))))) && (((TAU == 0) && (((lift_mode == semi_thrust_borne) && (kias <= 40.0)) && (hover_control_mode -> (kgs > 20.0)))) -> (((lift_mode == semi_thrust_borne) && ((kias > 40.0) || ((kgs <= 20.0) && hover_control_mode))) R[0,M] ((lift_mode == semi_thrust_borne) || ((lift_mode == semi_thrust_borne) && ((kias > 40.0) || ((kgs <= 20.0) && hover_control_mode)))))))",
                 "component": "vehicle"
             },
             "_id": "79b8a781-5fd9-11ed-9cbe-ffd8cbaa6d62"
@@ -1425,8 +1445,9 @@
                 "ftExpanded": "((LAST V (((! (((lift_mode = semi_thrust_borne) & hover_control_mode) & (kgs <= 20.0))) & ((! LAST) & (X (((lift_mode = semi_thrust_borne) & hover_control_mode) & (kgs <= 20.0))))) -> (X (LAST | (X (lift_mode = thrust_borne)))))) & ((((lift_mode = semi_thrust_borne) & hover_control_mode) & (kgs <= 20.0)) -> (LAST | (X (lift_mode = thrust_borne)))))",
                 "pctlExpanded": "P>=1[((G (((! (((lift_mode = semi_thrust_borne) & hover_control_mode) & (kgs <= 20.0))) & (X (((lift_mode = semi_thrust_borne) & hover_control_mode) & (kgs <= 20.0)))) => (X (P>=1[(false | (X (lift_mode = thrust_borne)))])))) & ((((lift_mode = semi_thrust_borne) & hover_control_mode) & (kgs <= 20.0)) => (P>=1[(false | (X (lift_mode = thrust_borne)))])))]",
                 "ftInfAUExpanded": "((G (((! (((lift_mode = semi_thrust_borne) & hover_control_mode) & (kgs <= 20.0))) & (X (((lift_mode = semi_thrust_borne) & hover_control_mode) & (kgs <= 20.0)))) -> (X (X (lift_mode = thrust_borne))))) & ((((lift_mode = semi_thrust_borne) & hover_control_mode) & (kgs <= 20.0)) -> (X (lift_mode = thrust_borne))))",
-                "R2U2Code": "((((! (((lift_mode == semi_thrust_borne) && hover_control_mode) && (kgs <= 20.0))) && (F[1,1] (((lift_mode == semi_thrust_borne) && hover_control_mode) && (kgs <= 20.0)))) -> (F[2,2] (lift_mode == thrust_borne))) && ((TAU == 0) -> ((((lift_mode == semi_thrust_borne) && hover_control_mode) && (kgs <= 20.0)) -> (F[1,1] (lift_mode == thrust_borne)))))",
-                "WEST": "((G[0,M] (((! p0) & (F[1,1] p0)) -> (F[2,2] p1))) & (p0 -> (F[1,1] p1)))",
+                "mltlExpanded": "((G[0,M] (((! p0) & (F[1,1] p0)) -> (F[2,2] p1))) & (p0 -> (F[1,1] p1)))",
+                "WESTMapping": "p0: (((lift_mode = semi_thrust_borne) & hover_control_mode) & (kgs <= 20.0))<br/>p1: (lift_mode = thrust_borne)",
+                "R2U2Code": "((((! (((lift_mode == semi_thrust_borne) && hover_control_mode) && (kgs <= 20.0))) && (F[1,1] (((lift_mode == semi_thrust_borne) && hover_control_mode) && (kgs <= 20.0)))) -> (F[2,2] (lift_mode == thrust_borne))) && (((TAU == 0) && (((lift_mode == semi_thrust_borne) && hover_control_mode) && (kgs <= 20.0))) -> (F[1,1] (lift_mode == thrust_borne))))",
                 "component": "vehicle"
             },
             "_id": "79b8ce90-5fd9-11ed-9cbe-ffd8cbaa6d62"
@@ -1502,8 +1523,9 @@
                 "ftExpanded": "((LAST V (((! ((lift_mode = semi_wing_borne) & (kias > 100.0))) & ((! LAST) & (X ((lift_mode = semi_wing_borne) & (kias > 100.0))))) -> (X (LAST | (X (lift_mode = wing_borne)))))) & (((lift_mode = semi_wing_borne) & (kias > 100.0)) -> (LAST | (X (lift_mode = wing_borne)))))",
                 "pctlExpanded": "P>=1[((G (((! ((lift_mode = semi_wing_borne) & (kias > 100.0))) & (X ((lift_mode = semi_wing_borne) & (kias > 100.0)))) => (X (P>=1[(false | (X (lift_mode = wing_borne)))])))) & (((lift_mode = semi_wing_borne) & (kias > 100.0)) => (P>=1[(false | (X (lift_mode = wing_borne)))])))]",
                 "ftInfAUExpanded": "((G (((! ((lift_mode = semi_wing_borne) & (kias > 100.0))) & (X ((lift_mode = semi_wing_borne) & (kias > 100.0)))) -> (X (X (lift_mode = wing_borne))))) & (((lift_mode = semi_wing_borne) & (kias > 100.0)) -> (X (lift_mode = wing_borne))))",
-                "R2U2Code": "((((! ((lift_mode == semi_wing_borne) && (kias > 100.0))) && (F[1,1] ((lift_mode == semi_wing_borne) && (kias > 100.0)))) -> (F[2,2] (lift_mode == wing_borne))) && ((TAU == 0) -> (((lift_mode == semi_wing_borne) && (kias > 100.0)) -> (F[1,1] (lift_mode == wing_borne)))))",
-                "WEST": "((G[0,M] (((! p0) & (F[1,1] p0)) -> (F[2,2] p1))) & (p0 -> (F[1,1] p1)))",
+                "mltlExpanded": "((G[0,M] (((! p0) & (F[1,1] p0)) -> (F[2,2] p1))) & (p0 -> (F[1,1] p1)))",
+                "WESTMapping": "p0: ((lift_mode = semi_wing_borne) & (kias > 100.0))<br/>p1: (lift_mode = wing_borne)",
+                "R2U2Code": "((((! ((lift_mode == semi_wing_borne) && (kias > 100.0))) && (F[1,1] ((lift_mode == semi_wing_borne) && (kias > 100.0)))) -> (F[2,2] (lift_mode == wing_borne))) && (((TAU == 0) && ((lift_mode == semi_wing_borne) && (kias > 100.0))) -> (F[1,1] (lift_mode == wing_borne))))",
                 "component": "vehicle"
             },
             "_id": "79b8ce91-5fd9-11ed-9cbe-ffd8cbaa6d62"
@@ -1563,8 +1585,9 @@
                 "ftExpanded": "(dr <-> (kias < 60.0))",
                 "pctlExpanded": "(P>=1[(dr <-> (kias < 60.0))])",
                 "ftInfAUExpanded": "(dr <-> (kias < 60.0))",
+                "mltlExpanded": "p0",
+                "WESTMapping": "p0: (dr <-> (kias < 60.0))",
                 "R2U2Code": "((TAU == 0) -> (dr <-> (kias < 60.0)))",
-                "WEST": "p0",
                 "component": "vehicle"
             },
             "_id": "79b8f5a0-5fd9-11ed-9cbe-ffd8cbaa6d62"
@@ -1636,13 +1659,14 @@
                 "ft": "((LAST V (((! ((lift_mode = thrust_borne) & ((! hover_control_mode) | (kgs > 20.0)))) & ((! LAST) & (X ((lift_mode = thrust_borne) & ((! hover_control_mode) | (kgs > 20.0)))))) -> (X (LAST | (X (lift_mode = semi_thrust_borne)))))) & (((lift_mode = thrust_borne) & ((! hover_control_mode) | (kgs > 20.0))) -> (LAST | (X (lift_mode = semi_thrust_borne)))))",
                 "pt": "(H ((Y (((lift_mode = thrust_borne) & ((! hover_control_mode) | (kgs > 20.0))) & (Z (! ((lift_mode = thrust_borne) & ((! hover_control_mode) | (kgs > 20.0))))))) -> ((lift_mode = semi_thrust_borne) | (Z FALSE))))",
                 "pctl": "P>=1[((G (((! ((lift_mode = thrust_borne) & ((! hover_control_mode) | (kgs > 20.0)))) & (X ((lift_mode = thrust_borne) & ((! hover_control_mode) | (kgs > 20.0))))) => (X (P>=1[(LAST | (X (lift_mode = semi_thrust_borne)))])))) & (((lift_mode = thrust_borne) & ((! hover_control_mode) | (kgs > 20.0))) => (P>=1[(LAST | (X (lift_mode = semi_thrust_borne)))])))]",
-                "ptExpanded": "(H ((Y (((lift_mode = thrust_borne) & (hover_control_mode -> (kgs > 20.0))) & (Z (! ((lift_mode = thrust_borne) & (hover_control_mode -> (kgs > 20.0))))))) -> ((lift_mode = semi_thrust_borne) | (Z FALSE))))",
-                "CoCoSpecCode": "H((YtoPre((((lift_mode = thrust_borne) and (hover_control_mode => (kgs > 20.0))) and ZtoPre(not (((lift_mode = thrust_borne) and (hover_control_mode => (kgs > 20.0))))))) => ((lift_mode = semi_thrust_borne) or ZtoPre(false))))",
-                "ftExpanded": "((LAST V (((! ((lift_mode = thrust_borne) & (hover_control_mode -> (kgs > 20.0)))) & ((! LAST) & (X ((lift_mode = thrust_borne) & (hover_control_mode -> (kgs > 20.0)))))) -> (X (LAST | (X (lift_mode = semi_thrust_borne)))))) & (((lift_mode = thrust_borne) & (hover_control_mode -> (kgs > 20.0))) -> (LAST | (X (lift_mode = semi_thrust_borne)))))",
+                "ptExpanded": "(H ((Y (((lift_mode = thrust_borne) & ((! hover_control_mode) | (kgs > 20.0))) & (Z (! ((lift_mode = thrust_borne) & ((! hover_control_mode) | (kgs > 20.0))))))) -> ((lift_mode = semi_thrust_borne) | (Z FALSE))))",
+                "CoCoSpecCode": "H((YtoPre((((lift_mode = thrust_borne) and (not (hover_control_mode) or (kgs > 20.0))) and ZtoPre(not (((lift_mode = thrust_borne) and (not (hover_control_mode) or (kgs > 20.0))))))) => ((lift_mode = semi_thrust_borne) or ZtoPre(false))))",
+                "ftExpanded": "((LAST V (((! ((lift_mode = thrust_borne) & ((! hover_control_mode) | (kgs > 20.0)))) & ((! LAST) & (X ((lift_mode = thrust_borne) & ((! hover_control_mode) | (kgs > 20.0)))))) -> (X (LAST | (X (lift_mode = semi_thrust_borne)))))) & (((lift_mode = thrust_borne) & ((! hover_control_mode) | (kgs > 20.0))) -> (LAST | (X (lift_mode = semi_thrust_borne)))))",
                 "pctlExpanded": "P>=1[((G (((! ((lift_mode = thrust_borne) & ((! hover_control_mode) | (kgs > 20.0)))) & (X ((lift_mode = thrust_borne) & ((! hover_control_mode) | (kgs > 20.0))))) => (X (P>=1[(false | (X (lift_mode = semi_thrust_borne)))])))) & (((lift_mode = thrust_borne) & ((! hover_control_mode) | (kgs > 20.0))) => (P>=1[(false | (X (lift_mode = semi_thrust_borne)))])))]",
-                "ftInfAUExpanded": "((G (((! ((lift_mode = thrust_borne) & (hover_control_mode -> (kgs > 20.0)))) & (X ((lift_mode = thrust_borne) & (hover_control_mode -> (kgs > 20.0))))) -> (X (X (lift_mode = semi_thrust_borne))))) & (((lift_mode = thrust_borne) & (hover_control_mode -> (kgs > 20.0))) -> (X (lift_mode = semi_thrust_borne))))",
-                "R2U2Code": "((((! ((lift_mode == thrust_borne) && (hover_control_mode -> (kgs > 20.0)))) && (F[1,1] ((lift_mode == thrust_borne) && (hover_control_mode -> (kgs > 20.0))))) -> (F[2,2] (lift_mode == semi_thrust_borne))) && ((TAU == 0) -> (((lift_mode == thrust_borne) && (hover_control_mode -> (kgs > 20.0))) -> (F[1,1] (lift_mode == semi_thrust_borne)))))",
-                "WEST": "((G[0,M] (((! p0) & (F[1,1] p0)) -> (F[2,2] p1))) & (p0 -> (F[1,1] p1)))",
+                "ftInfAUExpanded": "((G (((! ((lift_mode = thrust_borne) & ((! hover_control_mode) | (kgs > 20.0)))) & (X ((lift_mode = thrust_borne) & ((! hover_control_mode) | (kgs > 20.0))))) -> (X (X (lift_mode = semi_thrust_borne))))) & (((lift_mode = thrust_borne) & ((! hover_control_mode) | (kgs > 20.0))) -> (X (lift_mode = semi_thrust_borne))))",
+                "mltlExpanded": "((G[0,M] (((! p0) & (F[1,1] p0)) -> (F[2,2] p1))) & (p0 -> (F[1,1] p1)))",
+                "WESTMapping": "p0: ((lift_mode = thrust_borne) & ((! hover_control_mode) | (kgs > 20.0)))<br/>p1: (lift_mode = semi_thrust_borne)",
+                "R2U2Code": "((((! ((lift_mode == thrust_borne) && (hover_control_mode -> (kgs > 20.0)))) && (F[1,1] ((lift_mode == thrust_borne) && (hover_control_mode -> (kgs > 20.0))))) -> (F[2,2] (lift_mode == semi_thrust_borne))) && (((TAU == 0) && ((lift_mode == thrust_borne) && (hover_control_mode -> (kgs > 20.0)))) -> (F[1,1] (lift_mode == semi_thrust_borne))))",
                 "component": "vehicle"
             },
             "_id": "79b8f5a1-5fd9-11ed-9cbe-ffd8cbaa6d62"
@@ -1703,8 +1727,9 @@
                 "ftExpanded": "((lift_mode = wing_borne) <-> (kias >= 90.0))",
                 "pctlExpanded": "(P>=1[((lift_mode = wing_borne) <-> (kias >= 90.0))])",
                 "ftInfAUExpanded": "((lift_mode = wing_borne) <-> (kias >= 90.0))",
+                "mltlExpanded": "p0",
+                "WESTMapping": "p0: ((lift_mode = wing_borne) <-> (kias >= 90.0))",
                 "R2U2Code": "((TAU == 0) -> ((lift_mode == wing_borne) <-> (kias >= 90.0)))",
-                "WEST": "p0",
                 "component": "vehicle"
             },
             "_id": "79b91cb0-5fd9-11ed-9cbe-ffd8cbaa6d62"
@@ -1767,8 +1792,9 @@
                 "ftExpanded": "(LAST V ((((lift_mode = thrust_borne) | (lift_mode = semi_thrust_borne)) | (lift_mode = semi_wing_borne)) | (lift_mode = wing_borne)))",
                 "pctlExpanded": "(P>=1[(G ((((lift_mode = thrust_borne) | (lift_mode = semi_thrust_borne)) | (lift_mode = semi_wing_borne)) | (lift_mode = wing_borne)))])",
                 "ftInfAUExpanded": "(G ((((lift_mode = thrust_borne) | (lift_mode = semi_thrust_borne)) | (lift_mode = semi_wing_borne)) | (lift_mode = wing_borne)))",
+                "mltlExpanded": "(G[0,M] p0)",
+                "WESTMapping": "p0: ((((lift_mode = thrust_borne) | (lift_mode = semi_thrust_borne)) | (lift_mode = semi_wing_borne)) | (lift_mode = wing_borne))",
                 "R2U2Code": "((((lift_mode == thrust_borne) || (lift_mode == semi_thrust_borne)) || (lift_mode == semi_wing_borne)) || (lift_mode == wing_borne))",
-                "WEST": "(G[0,M] p0)",
                 "component": "vehicle"
             },
             "_id": "79b91cb1-5fd9-11ed-9cbe-ffd8cbaa6d62"
@@ -1827,8 +1853,9 @@
                 "ftExpanded": "(kias = 120.0)",
                 "pctlExpanded": "(P>=1[(kias = 120.0)])",
                 "ftInfAUExpanded": "(kias = 120.0)",
+                "mltlExpanded": "p0",
+                "WESTMapping": "p0: (kias = 120.0)",
                 "R2U2Code": "((TAU == 0) -> (kias == 120.0))",
-                "WEST": "p0",
                 "component": "vehicle"
             },
             "_id": "79b943c0-5fd9-11ed-9cbe-ffd8cbaa6d62"
@@ -1911,8 +1938,9 @@
                 "ftExpanded": "((LAST V (((! (((lift_mode = thrust_borne) & hover_control_mode) & (kgs <= 20.0))) & ((! LAST) & (X (((lift_mode = thrust_borne) & hover_control_mode) & (kgs <= 20.0))))) -> (X ((((lift_mode = thrust_borne) & ((kgs > 20.0) | (! hover_control_mode))) V ((lift_mode = thrust_borne) | ((lift_mode = thrust_borne) & ((kgs > 20.0) | (! hover_control_mode))))) | (LAST V (lift_mode = thrust_borne)))))) & ((((lift_mode = thrust_borne) & hover_control_mode) & (kgs <= 20.0)) -> ((((lift_mode = thrust_borne) & ((kgs > 20.0) | (! hover_control_mode))) V ((lift_mode = thrust_borne) | ((lift_mode = thrust_borne) & ((kgs > 20.0) | (! hover_control_mode))))) | (LAST V (lift_mode = thrust_borne)))))",
                 "pctlExpanded": "P>=1[((G (((! (((lift_mode = thrust_borne) & hover_control_mode) & (kgs <= 20.0))) & (X (((lift_mode = thrust_borne) & hover_control_mode) & (kgs <= 20.0)))) => (X (P>=1[((((lift_mode = thrust_borne) & ((kgs > 20.0) | (! hover_control_mode))) R ((lift_mode = thrust_borne) | ((lift_mode = thrust_borne) & ((kgs > 20.0) | (! hover_control_mode))))) | (false R (lift_mode = thrust_borne)))])))) & ((((lift_mode = thrust_borne) & hover_control_mode) & (kgs <= 20.0)) => (P>=1[((((lift_mode = thrust_borne) & ((kgs > 20.0) | (! hover_control_mode))) R ((lift_mode = thrust_borne) | ((lift_mode = thrust_borne) & ((kgs > 20.0) | (! hover_control_mode))))) | (false R (lift_mode = thrust_borne)))])))]",
                 "ftInfAUExpanded": "((G (((! (((lift_mode = thrust_borne) & hover_control_mode) & (kgs <= 20.0))) & (X (((lift_mode = thrust_borne) & hover_control_mode) & (kgs <= 20.0)))) -> (X (((lift_mode = thrust_borne) & ((kgs > 20.0) | (! hover_control_mode))) V ((lift_mode = thrust_borne) | ((lift_mode = thrust_borne) & ((kgs > 20.0) | (! hover_control_mode)))))))) & ((((lift_mode = thrust_borne) & hover_control_mode) & (kgs <= 20.0)) -> (((lift_mode = thrust_borne) & ((kgs > 20.0) | (! hover_control_mode))) V ((lift_mode = thrust_borne) | ((lift_mode = thrust_borne) & ((kgs > 20.0) | (! hover_control_mode)))))))",
-                "R2U2Code": "((((! (((lift_mode == thrust_borne) && hover_control_mode) && (kgs <= 20.0))) && (F[1,1] (((lift_mode == thrust_borne) && hover_control_mode) && (kgs <= 20.0)))) -> (((lift_mode == thrust_borne) && ((kgs > 20.0) || (! hover_control_mode))) R[1,M] ((lift_mode == thrust_borne) || ((lift_mode == thrust_borne) && ((kgs > 20.0) || (! hover_control_mode)))))) && ((TAU == 0) -> ((((lift_mode == thrust_borne) && hover_control_mode) && (kgs <= 20.0)) -> (((lift_mode == thrust_borne) && ((kgs > 20.0) || (! hover_control_mode))) R[0,M] ((lift_mode == thrust_borne) || ((lift_mode == thrust_borne) && ((kgs > 20.0) || (! hover_control_mode))))))))",
-                "WEST": "((G[0,M] (((! p0) & (F[1,1] p0)) -> (p1 R[1,M] (p2 | p1)))) & (p0 -> (p1 R[0,M] (p2 | p1))))",
+                "mltlExpanded": "((G[0,M] (((! p0) & (F[1,1] p0)) -> (p1 R[1,M] (p2 | p1)))) & (p0 -> (p1 R[0,M] (p2 | p1))))",
+                "WESTMapping": "p0: (((lift_mode = thrust_borne) & hover_control_mode) & (kgs <= 20.0))<br/>p1: ((lift_mode = thrust_borne) & ((kgs > 20.0) | (! hover_control_mode)))<br/>p2: (lift_mode = thrust_borne)",
+                "R2U2Code": "((((! (((lift_mode == thrust_borne) && hover_control_mode) && (kgs <= 20.0))) && (F[1,1] (((lift_mode == thrust_borne) && hover_control_mode) && (kgs <= 20.0)))) -> (((lift_mode == thrust_borne) && ((kgs > 20.0) || (! hover_control_mode))) R[1,M] ((lift_mode == thrust_borne) || ((lift_mode == thrust_borne) && ((kgs > 20.0) || (! hover_control_mode)))))) && (((TAU == 0) && (((lift_mode == thrust_borne) && hover_control_mode) && (kgs <= 20.0))) -> (((lift_mode == thrust_borne) && ((kgs > 20.0) || (! hover_control_mode))) R[0,M] ((lift_mode == thrust_borne) || ((lift_mode == thrust_borne) && ((kgs > 20.0) || (! hover_control_mode)))))))",
                 "component": "vehicle"
             },
             "_id": "79b943c1-5fd9-11ed-9cbe-ffd8cbaa6d62"
@@ -1994,8 +2022,9 @@
                 "ftExpanded": "((LAST V (((! ((lift_mode = wing_borne) & (kias > 90.0))) & ((! LAST) & (X ((lift_mode = wing_borne) & (kias > 90.0))))) -> (X ((((lift_mode = wing_borne) & (kias <= 90.0)) V ((lift_mode = wing_borne) | ((lift_mode = wing_borne) & (kias <= 90.0)))) | (LAST V (lift_mode = wing_borne)))))) & (((lift_mode = wing_borne) & (kias > 90.0)) -> ((((lift_mode = wing_borne) & (kias <= 90.0)) V ((lift_mode = wing_borne) | ((lift_mode = wing_borne) & (kias <= 90.0)))) | (LAST V (lift_mode = wing_borne)))))",
                 "pctlExpanded": "P>=1[((G (((! ((lift_mode = wing_borne) & (kias > 90.0))) & (X ((lift_mode = wing_borne) & (kias > 90.0)))) => (X (P>=1[((((lift_mode = wing_borne) & (kias <= 90.0)) R ((lift_mode = wing_borne) | ((lift_mode = wing_borne) & (kias <= 90.0)))) | (false R (lift_mode = wing_borne)))])))) & (((lift_mode = wing_borne) & (kias > 90.0)) => (P>=1[((((lift_mode = wing_borne) & (kias <= 90.0)) R ((lift_mode = wing_borne) | ((lift_mode = wing_borne) & (kias <= 90.0)))) | (false R (lift_mode = wing_borne)))])))]",
                 "ftInfAUExpanded": "((G (((! ((lift_mode = wing_borne) & (kias > 90.0))) & (X ((lift_mode = wing_borne) & (kias > 90.0)))) -> (X (((lift_mode = wing_borne) & (kias <= 90.0)) V ((lift_mode = wing_borne) | ((lift_mode = wing_borne) & (kias <= 90.0))))))) & (((lift_mode = wing_borne) & (kias > 90.0)) -> (((lift_mode = wing_borne) & (kias <= 90.0)) V ((lift_mode = wing_borne) | ((lift_mode = wing_borne) & (kias <= 90.0))))))",
-                "R2U2Code": "((((! ((lift_mode == wing_borne) && (kias > 90.0))) && (F[1,1] ((lift_mode == wing_borne) && (kias > 90.0)))) -> (((lift_mode == wing_borne) && (kias <= 90.0)) R[1,M] ((lift_mode == wing_borne) || ((lift_mode == wing_borne) && (kias <= 90.0))))) && ((TAU == 0) -> (((lift_mode == wing_borne) && (kias > 90.0)) -> (((lift_mode == wing_borne) && (kias <= 90.0)) R[0,M] ((lift_mode == wing_borne) || ((lift_mode == wing_borne) && (kias <= 90.0)))))))",
-                "WEST": "((G[0,M] (((! p0) & (F[1,1] p0)) -> (p1 R[1,M] (p2 | p1)))) & (p0 -> (p1 R[0,M] (p2 | p1))))",
+                "mltlExpanded": "((G[0,M] (((! p0) & (F[1,1] p0)) -> (p1 R[1,M] (p2 | p1)))) & (p0 -> (p1 R[0,M] (p2 | p1))))",
+                "WESTMapping": "p0: ((lift_mode = wing_borne) & (kias > 90.0))<br/>p1: ((lift_mode = wing_borne) & (kias <= 90.0))<br/>p2: (lift_mode = wing_borne)",
+                "R2U2Code": "((((! ((lift_mode == wing_borne) && (kias > 90.0))) && (F[1,1] ((lift_mode == wing_borne) && (kias > 90.0)))) -> (((lift_mode == wing_borne) && (kias <= 90.0)) R[1,M] ((lift_mode == wing_borne) || ((lift_mode == wing_borne) && (kias <= 90.0))))) && (((TAU == 0) && ((lift_mode == wing_borne) && (kias > 90.0))) -> (((lift_mode == wing_borne) && (kias <= 90.0)) R[0,M] ((lift_mode == wing_borne) || ((lift_mode == wing_borne) && (kias <= 90.0))))))",
                 "component": "vehicle"
             },
             "_id": "79b96ad0-5fd9-11ed-9cbe-ffd8cbaa6d62"
@@ -2055,8 +2084,9 @@
                 "ftExpanded": "(LAST V (kias = kgs))",
                 "pctlExpanded": "(P>=1[(G (kias = kgs))])",
                 "ftInfAUExpanded": "(G (kias = kgs))",
+                "mltlExpanded": "(G[0,M] p0)",
+                "WESTMapping": "p0: (kias = kgs)",
                 "R2U2Code": "(kias == kgs)",
-                "WEST": "(G[0,M] p0)",
                 "component": "vehicle"
             },
             "_id": "79b96ad1-5fd9-11ed-9cbe-ffd8cbaa6d62"
@@ -2116,8 +2146,9 @@
                 "ftExpanded": "(cr <-> (kias < 90.0))",
                 "pctlExpanded": "(P>=1[(cr <-> (kias < 90.0))])",
                 "ftInfAUExpanded": "(cr <-> (kias < 90.0))",
+                "mltlExpanded": "p0",
+                "WESTMapping": "p0: (cr <-> (kias < 90.0))",
                 "R2U2Code": "((TAU == 0) -> (cr <-> (kias < 90.0)))",
-                "WEST": "p0",
                 "component": "vehicle"
             },
             "_id": "79b96ad2-5fd9-11ed-9cbe-ffd8cbaa6d62"
@@ -2176,8 +2207,9 @@
                 "ftExpanded": "(LAST V (FTP | (absReal((preReal(0.0,kias) - kias)) <= 10.0)))",
                 "pctlExpanded": "(P>=1[(G (FTP | (absReal((preReal(0.0,kias) - kias)) <= 10.0)))])",
                 "ftInfAUExpanded": "(G (FTP | (absReal((preReal(0.0,kias) - kias)) <= 10.0)))",
+                "mltlExpanded": "(G[0,M] p0)",
+                "WESTMapping": "p0: (FTP | (absReal((preReal(0.0,kias) - kias)) <= 10.0))",
                 "R2U2Code": "((TAU == 0) || (abs((prev(0.0,kias) - kias)) <= 10.0))",
-                "WEST": "(G[0,M] p0)",
                 "component": "vehicle"
             },
             "_id": "79b991e0-5fd9-11ed-9cbe-ffd8cbaa6d62"
@@ -2253,8 +2285,9 @@
                 "ftExpanded": "((LAST V (((! ((lift_mode = wing_borne) & (kias <= 90.0))) & ((! LAST) & (X ((lift_mode = wing_borne) & (kias <= 90.0))))) -> (X (LAST | (X (lift_mode = semi_wing_borne)))))) & (((lift_mode = wing_borne) & (kias <= 90.0)) -> (LAST | (X (lift_mode = semi_wing_borne)))))",
                 "pctlExpanded": "P>=1[((G (((! ((lift_mode = wing_borne) & (kias <= 90.0))) & (X ((lift_mode = wing_borne) & (kias <= 90.0)))) => (X (P>=1[(false | (X (lift_mode = semi_wing_borne)))])))) & (((lift_mode = wing_borne) & (kias <= 90.0)) => (P>=1[(false | (X (lift_mode = semi_wing_borne)))])))]",
                 "ftInfAUExpanded": "((G (((! ((lift_mode = wing_borne) & (kias <= 90.0))) & (X ((lift_mode = wing_borne) & (kias <= 90.0)))) -> (X (X (lift_mode = semi_wing_borne))))) & (((lift_mode = wing_borne) & (kias <= 90.0)) -> (X (lift_mode = semi_wing_borne))))",
-                "R2U2Code": "((((! ((lift_mode == wing_borne) && (kias <= 90.0))) && (F[1,1] ((lift_mode == wing_borne) && (kias <= 90.0)))) -> (F[2,2] (lift_mode == semi_wing_borne))) && ((TAU == 0) -> (((lift_mode == wing_borne) && (kias <= 90.0)) -> (F[1,1] (lift_mode == semi_wing_borne)))))",
-                "WEST": "((G[0,M] (((! p0) & (F[1,1] p0)) -> (F[2,2] p1))) & (p0 -> (F[1,1] p1)))",
+                "mltlExpanded": "((G[0,M] (((! p0) & (F[1,1] p0)) -> (F[2,2] p1))) & (p0 -> (F[1,1] p1)))",
+                "WESTMapping": "p0: ((lift_mode = wing_borne) & (kias <= 90.0))<br/>p1: (lift_mode = semi_wing_borne)",
+                "R2U2Code": "((((! ((lift_mode == wing_borne) && (kias <= 90.0))) && (F[1,1] ((lift_mode == wing_borne) && (kias <= 90.0)))) -> (F[2,2] (lift_mode == semi_wing_borne))) && (((TAU == 0) && ((lift_mode == wing_borne) && (kias <= 90.0))) -> (F[1,1] (lift_mode == semi_wing_borne))))",
                 "component": "vehicle"
             },
             "_id": "79b991e1-5fd9-11ed-9cbe-ffd8cbaa6d62"
@@ -2315,8 +2348,9 @@
                 "ftExpanded": "((F[0,6] (lift_mode = thrust_borne)) | (F[0,5] LAST))",
                 "pctlExpanded": "(P>=1[(F<=6 (lift_mode = thrust_borne))])",
                 "ftInfAUExpanded": "(F[0,6] (lift_mode = thrust_borne))",
+                "mltlExpanded": "(F[0,6] p0)",
+                "WESTMapping": "p0: (lift_mode = thrust_borne)",
                 "R2U2Code": "((TAU == 0) -> (F[0,6] (lift_mode == thrust_borne)))",
-                "WEST": "(F[0,6] p0)",
                 "component": "vehicle"
             },
             "_id": "79b9b8f0-5fd9-11ed-9cbe-ffd8cbaa6d62"
@@ -2376,8 +2410,9 @@
                 "ftExpanded": "(hover_control_mode <-> (kgs < 20.0))",
                 "pctlExpanded": "(P>=1[(hover_control_mode <-> (kgs < 20.0))])",
                 "ftInfAUExpanded": "(hover_control_mode <-> (kgs < 20.0))",
+                "mltlExpanded": "p0",
+                "WESTMapping": "p0: (hover_control_mode <-> (kgs < 20.0))",
                 "R2U2Code": "((TAU == 0) -> (hover_control_mode <-> (kgs < 20.0)))",
-                "WEST": "p0",
                 "component": "vehicle"
             },
             "_id": "79b9b8f1-5fd9-11ed-9cbe-ffd8cbaa6d62"
@@ -2437,8 +2472,9 @@
                 "ftExpanded": "(LAST V (preBool(FALSE,((! fcs) & (kias <= 40.0))) -> (! fcs)))",
                 "pctlExpanded": "(P>=1[(G (preBool(FALSE,((! fcs) & (kias <= 40.0))) -> (! fcs)))])",
                 "ftInfAUExpanded": "(G (preBool(FALSE,((! fcs) & (kias <= 40.0))) -> (! fcs)))",
+                "mltlExpanded": "(G[0,M] p0)",
+                "WESTMapping": "p0: (preBool(false,((! fcs) & (kias <= 40.0))) -> (! fcs))",
                 "R2U2Code": "(prev(false,((! fcs) && (kias <= 40.0))) -> (! fcs))",
-                "WEST": "(G[0,M] p0)",
                 "component": "vehicle"
             },
             "_id": "79b9b8f2-5fd9-11ed-9cbe-ffd8cbaa6d62"
@@ -2498,8 +2534,9 @@
                 "ftExpanded": "(LAST V (preBool(FALSE,(cr & (kias <= 100.0))) -> cr))",
                 "pctlExpanded": "(P>=1[(G (preBool(FALSE,(cr & (kias <= 100.0))) -> cr))])",
                 "ftInfAUExpanded": "(G (preBool(FALSE,(cr & (kias <= 100.0))) -> cr))",
+                "mltlExpanded": "(G[0,M] p0)",
+                "WESTMapping": "p0: (preBool(false,(cr & (kias <= 100.0))) -> cr)",
                 "R2U2Code": "(prev(false,(cr && (kias <= 100.0))) -> cr)",
-                "WEST": "(G[0,M] p0)",
                 "component": "vehicle"
             },
             "_id": "79b9e000-5fd9-11ed-9cbe-ffd8cbaa6d62"
@@ -2558,8 +2595,9 @@
                 "ftExpanded": "(wind_speed = 10.0)",
                 "pctlExpanded": "(P>=1[(wind_speed = 10.0)])",
                 "ftInfAUExpanded": "(wind_speed = 10.0)",
+                "mltlExpanded": "p0",
+                "WESTMapping": "p0: (wind_speed = 10.0)",
                 "R2U2Code": "((TAU == 0) -> (wind_speed == 10.0))",
-                "WEST": "p0",
                 "component": "vehicle"
             },
             "_id": "79b9e001-5fd9-11ed-9cbe-ffd8cbaa6d62"
@@ -2619,8 +2657,9 @@
                 "ftExpanded": "(LAST V (preBool(FALSE,(dr & (kias <= 70.0))) -> dr))",
                 "pctlExpanded": "(P>=1[(G (preBool(FALSE,(dr & (kias <= 70.0))) -> dr))])",
                 "ftInfAUExpanded": "(G (preBool(FALSE,(dr & (kias <= 70.0))) -> dr))",
+                "mltlExpanded": "(G[0,M] p0)",
+                "WESTMapping": "p0: (preBool(false,(dr & (kias <= 70.0))) -> dr)",
                 "R2U2Code": "(prev(false,(dr && (kias <= 70.0))) -> dr)",
-                "WEST": "(G[0,M] p0)",
                 "component": "vehicle"
             },
             "_id": "79ba0710-5fd9-11ed-9cbe-ffd8cbaa6d62"
@@ -2681,8 +2720,9 @@
                 "ftExpanded": "((F[0,16] (lift_mode = thrust_borne)) | (F[0,15] LAST))",
                 "pctlExpanded": "(P>=1[(F<=16 (lift_mode = thrust_borne))])",
                 "ftInfAUExpanded": "(F[0,16] (lift_mode = thrust_borne))",
+                "mltlExpanded": "(F[0,16] p0)",
+                "WESTMapping": "p0: (lift_mode = thrust_borne)",
                 "R2U2Code": "((TAU == 0) -> (F[0,16] (lift_mode == thrust_borne)))",
-                "WEST": "(F[0,16] p0)",
                 "component": "vehicle"
             },
             "_id": "79ba0711-5fd9-11ed-9cbe-ffd8cbaa6d62"
@@ -2741,8 +2781,9 @@
                 "ftExpanded": "(LAST V ((-30.0 <= wind_speed) & (wind_speed <= 30.0)))",
                 "pctlExpanded": "(P>=1[(G ((-30.0 <= wind_speed) & (wind_speed <= 30.0)))])",
                 "ftInfAUExpanded": "(G ((-30.0 <= wind_speed) & (wind_speed <= 30.0)))",
+                "mltlExpanded": "(G[0,M] p0)",
+                "WESTMapping": "p0: ((-30.0 <= wind_speed) & (wind_speed <= 30.0))",
                 "R2U2Code": "((-30.0 <= wind_speed) && (wind_speed <= 30.0))",
-                "WEST": "(G[0,M] p0)",
                 "component": "vehicle"
             },
             "_id": "79ba2e20-5fd9-11ed-9cbe-ffd8cbaa6d62"
@@ -2816,8 +2857,9 @@
                 "ftExpanded": "((LAST V (((! ((! fcs) & (kias > 40.0))) & ((! LAST) & (X ((! fcs) & (kias > 40.0))))) -> (X (LAST | (X fcs))))) & (((! fcs) & (kias > 40.0)) -> (LAST | (X fcs))))",
                 "pctlExpanded": "P>=1[((G (((! ((! fcs) & (kias > 40.0))) & (X ((! fcs) & (kias > 40.0)))) => (X (P>=1[(false | (X fcs))])))) & (((! fcs) & (kias > 40.0)) => (P>=1[(false | (X fcs))])))]",
                 "ftInfAUExpanded": "((G (((! ((! fcs) & (kias > 40.0))) & (X ((! fcs) & (kias > 40.0)))) -> (X (X fcs)))) & (((! fcs) & (kias > 40.0)) -> (X fcs)))",
-                "R2U2Code": "((((! ((! fcs) && (kias > 40.0))) && (F[1,1] ((! fcs) && (kias > 40.0)))) -> (F[2,2] fcs)) && ((TAU == 0) -> (((! fcs) && (kias > 40.0)) -> (F[1,1] fcs))))",
-                "WEST": "((G[0,M] (((! p0) & (F[1,1] p0)) -> (F[2,2] p1))) & (p0 -> (F[1,1] p1)))",
+                "mltlExpanded": "((G[0,M] (((! p0) & (F[1,1] p0)) -> (F[2,2] p1))) & (p0 -> (F[1,1] p1)))",
+                "WESTMapping": "p0: ((! fcs) & (kias > 40.0))<br/>p1: fcs",
+                "R2U2Code": "((((! ((! fcs) && (kias > 40.0))) && (F[1,1] ((! fcs) && (kias > 40.0)))) -> (F[2,2] fcs)) && (((TAU == 0) && ((! fcs) && (kias > 40.0))) -> (F[1,1] fcs)))",
                 "component": "vehicle"
             },
             "_id": "79ba2e21-5fd9-11ed-9cbe-ffd8cbaa6d62"
@@ -2891,8 +2933,9 @@
                 "ftExpanded": "((LAST V (((! ((! cr) & (kias < 90.0))) & ((! LAST) & (X ((! cr) & (kias < 90.0))))) -> (X (LAST | (X cr))))) & (((! cr) & (kias < 90.0)) -> (LAST | (X cr))))",
                 "pctlExpanded": "P>=1[((G (((! ((! cr) & (kias < 90.0))) & (X ((! cr) & (kias < 90.0)))) => (X (P>=1[(false | (X cr))])))) & (((! cr) & (kias < 90.0)) => (P>=1[(false | (X cr))])))]",
                 "ftInfAUExpanded": "((G (((! ((! cr) & (kias < 90.0))) & (X ((! cr) & (kias < 90.0)))) -> (X (X cr)))) & (((! cr) & (kias < 90.0)) -> (X cr)))",
-                "R2U2Code": "((((! ((! cr) && (kias < 90.0))) && (F[1,1] ((! cr) && (kias < 90.0)))) -> (F[2,2] cr)) && ((TAU == 0) -> (((! cr) && (kias < 90.0)) -> (F[1,1] cr))))",
-                "WEST": "((G[0,M] (((! p0) & (F[1,1] p0)) -> (F[2,2] p1))) & (p0 -> (F[1,1] p1)))",
+                "mltlExpanded": "((G[0,M] (((! p0) & (F[1,1] p0)) -> (F[2,2] p1))) & (p0 -> (F[1,1] p1)))",
+                "WESTMapping": "p0: ((! cr) & (kias < 90.0))<br/>p1: cr",
+                "R2U2Code": "((((! ((! cr) && (kias < 90.0))) && (F[1,1] ((! cr) && (kias < 90.0)))) -> (F[2,2] cr)) && (((TAU == 0) && ((! cr) && (kias < 90.0))) -> (F[1,1] cr)))",
                 "component": "vehicle"
             },
             "_id": "79ba2e22-5fd9-11ed-9cbe-ffd8cbaa6d62"
@@ -2953,8 +2996,9 @@
                 "ftExpanded": "(LAST V (kgs = (kias + wind_speed)))",
                 "pctlExpanded": "(P>=1[(G (kgs = (kias + wind_speed)))])",
                 "ftInfAUExpanded": "(G (kgs = (kias + wind_speed)))",
+                "mltlExpanded": "(G[0,M] p0)",
+                "WESTMapping": "p0: (kgs = (kias + wind_speed))",
                 "R2U2Code": "(kgs == (kias + wind_speed))",
-                "WEST": "(G[0,M] p0)",
                 "component": "vehicle"
             },
             "_id": "79ba5530-5fd9-11ed-9cbe-ffd8cbaa6d62"
@@ -3014,8 +3058,9 @@
                 "ftExpanded": "(LAST V (preBool(FALSE,(fcs & (kias >= 30.0))) -> fcs))",
                 "pctlExpanded": "(P>=1[(G (preBool(FALSE,(fcs & (kias >= 30.0))) -> fcs))])",
                 "ftInfAUExpanded": "(G (preBool(FALSE,(fcs & (kias >= 30.0))) -> fcs))",
+                "mltlExpanded": "(G[0,M] p0)",
+                "WESTMapping": "p0: (preBool(false,(fcs & (kias >= 30.0))) -> fcs)",
                 "R2U2Code": "(prev(false,(fcs && (kias >= 30.0))) -> fcs)",
-                "WEST": "(G[0,M] p0)",
                 "component": "vehicle"
             },
             "_id": "79ba5531-5fd9-11ed-9cbe-ffd8cbaa6d62"
@@ -3084,13 +3129,14 @@
                 "ft": "((LAST V (((! (cr & (kias > 100.0))) & ((! LAST) & (X (cr & (kias > 100.0))))) -> (X (LAST | (X (! cr)))))) & ((cr & (kias > 100.0)) -> (LAST | (X (! cr)))))",
                 "pt": "(H ((Y ((cr & (kias > 100.0)) & (Z (! (cr & (kias > 100.0)))))) -> ((! cr) | (Z FALSE))))",
                 "pctl": "P>=1[((G (((! (cr & (kias > 100.0))) & (X (cr & (kias > 100.0)))) => (X (P>=1[(LAST | (X (! cr)))])))) & ((cr & (kias > 100.0)) => (P>=1[(LAST | (X (! cr)))])))]",
-                "ptExpanded": "(H (((Y ((cr & (kias > 100.0)) & (Z (! (cr & (kias > 100.0)))))) & cr) -> (Z FALSE)))",
-                "CoCoSpecCode": "H(((YtoPre(((cr and (kias > 100.0)) and ZtoPre(not ((cr and (kias > 100.0)))))) and cr) => ZtoPre(false)))",
+                "ptExpanded": "(H ((Y ((cr & (kias > 100.0)) & (Z (! (cr & (kias > 100.0)))))) -> ((! cr) | (Z FALSE))))",
+                "CoCoSpecCode": "H((YtoPre(((cr and (kias > 100.0)) and ZtoPre(not ((cr and (kias > 100.0)))))) => (not (cr) or ZtoPre(false))))",
                 "ftExpanded": "((LAST V (((! (cr & (kias > 100.0))) & ((! LAST) & (X (cr & (kias > 100.0))))) -> (X (LAST | (X (! cr)))))) & ((cr & (kias > 100.0)) -> (LAST | (X (! cr)))))",
                 "pctlExpanded": "P>=1[((G (((! (cr & (kias > 100.0))) & (X (cr & (kias > 100.0)))) => (X (P>=1[(false | (X (! cr)))])))) & ((cr & (kias > 100.0)) => (P>=1[(false | (X (! cr)))])))]",
                 "ftInfAUExpanded": "((G (((! (cr & (kias > 100.0))) & (X (cr & (kias > 100.0)))) -> (X (X (! cr))))) & ((cr & (kias > 100.0)) -> (X (! cr))))",
-                "R2U2Code": "((((! (cr && (kias > 100.0))) && (F[1,1] (cr && (kias > 100.0)))) -> (F[2,2] (! cr))) && ((TAU == 0) -> ((cr && (kias > 100.0)) -> (F[1,1] (! cr)))))",
-                "WEST": "((G[0,M] (((! p0) & (F[1,1] p0)) -> (F[2,2] p1))) & (p0 -> (F[1,1] p1)))",
+                "mltlExpanded": "((G[0,M] (((! p0) & (F[1,1] p0)) -> (F[2,2] p1))) & (p0 -> (F[1,1] p1)))",
+                "WESTMapping": "p0: (cr & (kias > 100.0))<br/>p1: (! cr)",
+                "R2U2Code": "((((! (cr && (kias > 100.0))) && (F[1,1] (cr && (kias > 100.0)))) -> (F[2,2] (! cr))) && (((TAU == 0) && (cr && (kias > 100.0))) -> (F[1,1] (! cr))))",
                 "component": "vehicle"
             },
             "_id": "79ba7c40-5fd9-11ed-9cbe-ffd8cbaa6d62"
@@ -3149,8 +3195,9 @@
                 "ftExpanded": "(LAST V (FTP | (absReal((preReal(0.0,wind_speed) - wind_speed)) <= 10.0)))",
                 "pctlExpanded": "(P>=1[(G (FTP | (absReal((preReal(0.0,wind_speed) - wind_speed)) <= 10.0)))])",
                 "ftInfAUExpanded": "(G (FTP | (absReal((preReal(0.0,wind_speed) - wind_speed)) <= 10.0)))",
+                "mltlExpanded": "(G[0,M] p0)",
+                "WESTMapping": "p0: (FTP | (absReal((preReal(0.0,wind_speed) - wind_speed)) <= 10.0))",
                 "R2U2Code": "((TAU == 0) || (abs((prev(0.0,wind_speed) - wind_speed)) <= 10.0))",
-                "WEST": "(G[0,M] p0)",
                 "component": "vehicle"
             },
             "_id": "79ba7c41-5fd9-11ed-9cbe-ffd8cbaa6d62"
@@ -3209,8 +3256,9 @@
                 "ftExpanded": "(LAST V (kias >= 0.0))",
                 "pctlExpanded": "(P>=1[(G (kias >= 0.0))])",
                 "ftInfAUExpanded": "(G (kias >= 0.0))",
+                "mltlExpanded": "(G[0,M] p0)",
+                "WESTMapping": "p0: (kias >= 0.0)",
                 "R2U2Code": "(kias >= 0.0)",
-                "WEST": "(G[0,M] p0)",
                 "component": "vehicle"
             },
             "_id": "79ba7c42-5fd9-11ed-9cbe-ffd8cbaa6d62"
@@ -3270,8 +3318,9 @@
                 "ftExpanded": "((F[0,11] (! fcs)) | (F[0,10] LAST))",
                 "pctlExpanded": "(P>=1[(F<=11 (! fcs))])",
                 "ftInfAUExpanded": "(F[0,11] (! fcs))",
+                "mltlExpanded": "(F[0,11] p0)",
+                "WESTMapping": "p0: (! fcs)",
                 "R2U2Code": "((TAU == 0) -> (F[0,11] (! fcs)))",
-                "WEST": "(F[0,11] p0)",
                 "component": "vehicle"
             },
             "_id": "79baa350-5fd9-11ed-9cbe-ffd8cbaa6d62"
@@ -3334,8 +3383,9 @@
                 "ftExpanded": "(LAST V (preBool(FALSE,(((lift_mode = semi_thrust_borne) & (kias <= 40.0)) & ((kgs > 20.0) | (! hover_control_mode)))) -> (lift_mode = semi_thrust_borne)))",
                 "pctlExpanded": "(P>=1[(G (preBool(FALSE,(((lift_mode = semi_thrust_borne) & (kias <= 40.0)) & ((kgs > 20.0) | (! hover_control_mode)))) -> (lift_mode = semi_thrust_borne)))])",
                 "ftInfAUExpanded": "(G (preBool(FALSE,(((lift_mode = semi_thrust_borne) & (kias <= 40.0)) & ((kgs > 20.0) | (! hover_control_mode)))) -> (lift_mode = semi_thrust_borne)))",
+                "mltlExpanded": "(G[0,M] p0)",
+                "WESTMapping": "p0: (preBool(false,(((lift_mode = semi_thrust_borne) & (kias <= 40.0)) & ((kgs > 20.0) | (! hover_control_mode)))) -> (lift_mode = semi_thrust_borne))",
                 "R2U2Code": "(prev(false,(((lift_mode == semi_thrust_borne) && (kias <= 40.0)) && ((kgs > 20.0) || (! hover_control_mode)))) -> (lift_mode == semi_thrust_borne))",
-                "WEST": "(G[0,M] p0)",
                 "component": "vehicle"
             },
             "_id": "79baca60-5fd9-11ed-9cbe-ffd8cbaa6d62"
@@ -3397,8 +3447,9 @@
                 "ftExpanded": "(LAST V (preBool(FALSE,(((lift_mode = thrust_borne) & (kgs <= 20.0)) & hover_control_mode)) -> (lift_mode = thrust_borne)))",
                 "pctlExpanded": "(P>=1[(G (preBool(FALSE,(((lift_mode = thrust_borne) & (kgs <= 20.0)) & hover_control_mode)) -> (lift_mode = thrust_borne)))])",
                 "ftInfAUExpanded": "(G (preBool(FALSE,(((lift_mode = thrust_borne) & (kgs <= 20.0)) & hover_control_mode)) -> (lift_mode = thrust_borne)))",
+                "mltlExpanded": "(G[0,M] p0)",
+                "WESTMapping": "p0: (preBool(false,(((lift_mode = thrust_borne) & (kgs <= 20.0)) & hover_control_mode)) -> (lift_mode = thrust_borne))",
                 "R2U2Code": "(prev(false,(((lift_mode == thrust_borne) && (kgs <= 20.0)) && hover_control_mode)) -> (lift_mode == thrust_borne))",
-                "WEST": "(G[0,M] p0)",
                 "component": "vehicle"
             },
             "_id": "79baca61-5fd9-11ed-9cbe-ffd8cbaa6d62"
@@ -3457,8 +3508,9 @@
                 "ftExpanded": "(LAST V (absReal(wind_speed) <= 20.0))",
                 "pctlExpanded": "(P>=1[(G (absReal(wind_speed) <= 20.0))])",
                 "ftInfAUExpanded": "(G (absReal(wind_speed) <= 20.0))",
+                "mltlExpanded": "(G[0,M] p0)",
+                "WESTMapping": "p0: (absReal(wind_speed) <= 20.0)",
                 "R2U2Code": "(abs(wind_speed) <= 20.0)",
-                "WEST": "(G[0,M] p0)",
                 "component": "vehicle"
             },
             "_id": "79baf170-5fd9-11ed-9cbe-ffd8cbaa6d62"
@@ -3532,8 +3584,9 @@
                 "ftExpanded": "((LAST V (((! ((! dr) & (kias < 60.0))) & ((! LAST) & (X ((! dr) & (kias < 60.0))))) -> (X (LAST | (X dr))))) & (((! dr) & (kias < 60.0)) -> (LAST | (X dr))))",
                 "pctlExpanded": "P>=1[((G (((! ((! dr) & (kias < 60.0))) & (X ((! dr) & (kias < 60.0)))) => (X (P>=1[(false | (X dr))])))) & (((! dr) & (kias < 60.0)) => (P>=1[(false | (X dr))])))]",
                 "ftInfAUExpanded": "((G (((! ((! dr) & (kias < 60.0))) & (X ((! dr) & (kias < 60.0)))) -> (X (X dr)))) & (((! dr) & (kias < 60.0)) -> (X dr)))",
-                "R2U2Code": "((((! ((! dr) && (kias < 60.0))) && (F[1,1] ((! dr) && (kias < 60.0)))) -> (F[2,2] dr)) && ((TAU == 0) -> (((! dr) && (kias < 60.0)) -> (F[1,1] dr))))",
-                "WEST": "((G[0,M] (((! p0) & (F[1,1] p0)) -> (F[2,2] p1))) & (p0 -> (F[1,1] p1)))",
+                "mltlExpanded": "((G[0,M] (((! p0) & (F[1,1] p0)) -> (F[2,2] p1))) & (p0 -> (F[1,1] p1)))",
+                "WESTMapping": "p0: ((! dr) & (kias < 60.0))<br/>p1: dr",
+                "R2U2Code": "((((! ((! dr) && (kias < 60.0))) && (F[1,1] ((! dr) && (kias < 60.0)))) -> (F[2,2] dr)) && (((TAU == 0) && ((! dr) && (kias < 60.0))) -> (F[1,1] dr)))",
                 "component": "vehicle"
             },
             "_id": "79baf171-5fd9-11ed-9cbe-ffd8cbaa6d62"
@@ -3602,13 +3655,14 @@
                 "ft": "((LAST V (((! (dr & (kias > 70.0))) & ((! LAST) & (X (dr & (kias > 70.0))))) -> (X (LAST | (X (! dr)))))) & ((dr & (kias > 70.0)) -> (LAST | (X (! dr)))))",
                 "pt": "(H ((Y ((dr & (kias > 70.0)) & (Z (! (dr & (kias > 70.0)))))) -> ((! dr) | (Z FALSE))))",
                 "pctl": "P>=1[((G (((! (dr & (kias > 70.0))) & (X (dr & (kias > 70.0)))) => (X (P>=1[(LAST | (X (! dr)))])))) & ((dr & (kias > 70.0)) => (P>=1[(LAST | (X (! dr)))])))]",
-                "ptExpanded": "(H (((Y ((dr & (kias > 70.0)) & (Z (! (dr & (kias > 70.0)))))) & dr) -> (Z FALSE)))",
-                "CoCoSpecCode": "H(((YtoPre(((dr and (kias > 70.0)) and ZtoPre(not ((dr and (kias > 70.0)))))) and dr) => ZtoPre(false)))",
+                "ptExpanded": "(H ((Y ((dr & (kias > 70.0)) & (Z (! (dr & (kias > 70.0)))))) -> ((! dr) | (Z FALSE))))",
+                "CoCoSpecCode": "H((YtoPre(((dr and (kias > 70.0)) and ZtoPre(not ((dr and (kias > 70.0)))))) => (not (dr) or ZtoPre(false))))",
                 "ftExpanded": "((LAST V (((! (dr & (kias > 70.0))) & ((! LAST) & (X (dr & (kias > 70.0))))) -> (X (LAST | (X (! dr)))))) & ((dr & (kias > 70.0)) -> (LAST | (X (! dr)))))",
                 "pctlExpanded": "P>=1[((G (((! (dr & (kias > 70.0))) & (X (dr & (kias > 70.0)))) => (X (P>=1[(false | (X (! dr)))])))) & ((dr & (kias > 70.0)) => (P>=1[(false | (X (! dr)))])))]",
                 "ftInfAUExpanded": "((G (((! (dr & (kias > 70.0))) & (X (dr & (kias > 70.0)))) -> (X (X (! dr))))) & ((dr & (kias > 70.0)) -> (X (! dr))))",
-                "R2U2Code": "((((! (dr && (kias > 70.0))) && (F[1,1] (dr && (kias > 70.0)))) -> (F[2,2] (! dr))) && ((TAU == 0) -> ((dr && (kias > 70.0)) -> (F[1,1] (! dr)))))",
-                "WEST": "((G[0,M] (((! p0) & (F[1,1] p0)) -> (F[2,2] p1))) & (p0 -> (F[1,1] p1)))",
+                "mltlExpanded": "((G[0,M] (((! p0) & (F[1,1] p0)) -> (F[2,2] p1))) & (p0 -> (F[1,1] p1)))",
+                "WESTMapping": "p0: (dr & (kias > 70.0))<br/>p1: (! dr)",
+                "R2U2Code": "((((! (dr && (kias > 70.0))) && (F[1,1] (dr && (kias > 70.0)))) -> (F[2,2] (! dr))) && (((TAU == 0) && (dr && (kias > 70.0))) -> (F[1,1] (! dr))))",
                 "component": "vehicle"
             },
             "_id": "79bb1880-5fd9-11ed-9cbe-ffd8cbaa6d62"
@@ -3668,8 +3722,9 @@
                 "ftExpanded": "((F[0,9] (! fcs)) | (F[0,8] LAST))",
                 "pctlExpanded": "(P>=1[(F<=9 (! fcs))])",
                 "ftInfAUExpanded": "(F[0,9] (! fcs))",
+                "mltlExpanded": "(F[0,9] p0)",
+                "WESTMapping": "p0: (! fcs)",
                 "R2U2Code": "((TAU == 0) -> (F[0,9] (! fcs)))",
-                "WEST": "(F[0,9] p0)",
                 "component": "vehicle"
             },
             "_id": "79bb1881-5fd9-11ed-9cbe-ffd8cbaa6d62"
@@ -3744,8 +3799,9 @@
                 "ftExpanded": "(LAST V ((((lift_mode = semi_wing_borne) & (kias <= 100.0)) & (kias > 30.0)) -> (LAST | (X (lift_mode = semi_wing_borne)))))",
                 "pctlExpanded": "P>=1[(G ((((lift_mode = semi_wing_borne) & (kias <= 100.0)) & (kias > 30.0)) => (P>=1[(false | (X (lift_mode = semi_wing_borne)))])))]",
                 "ftInfAUExpanded": "(G ((((lift_mode = semi_wing_borne) & (kias <= 100.0)) & (kias > 30.0)) -> (X (lift_mode = semi_wing_borne))))",
+                "mltlExpanded": "(G[0,M] (p0 -> (F[1,1] p1)))",
+                "WESTMapping": "p0: (((lift_mode = semi_wing_borne) & (kias <= 100.0)) & (kias > 30.0))<br/>p1: (lift_mode = semi_wing_borne)",
                 "R2U2Code": "((((lift_mode == semi_wing_borne) && (kias <= 100.0)) && (kias > 30.0)) -> (F[1,1] (lift_mode == semi_wing_borne)))",
-                "WEST": "(G[0,M] (p0 -> (F[1,1] p1)))",
                 "component": "vehicle"
             },
             "_id": "8d7f9310-9a0b-11ee-80d9-a77c0c691f6d"
@@ -3820,8 +3876,9 @@
                 "ftExpanded": "(LAST V (((lift_mode = wing_borne) & (kias > 90.0)) -> (LAST | (X (lift_mode = wing_borne)))))",
                 "pctlExpanded": "P>=1[(G (((lift_mode = wing_borne) & (kias > 90.0)) => (P>=1[(false | (X (lift_mode = wing_borne)))])))]",
                 "ftInfAUExpanded": "(G (((lift_mode = wing_borne) & (kias > 90.0)) -> (X (lift_mode = wing_borne))))",
+                "mltlExpanded": "(G[0,M] (p0 -> (F[1,1] p1)))",
+                "WESTMapping": "p0: ((lift_mode = wing_borne) & (kias > 90.0))<br/>p1: (lift_mode = wing_borne)",
                 "R2U2Code": "(((lift_mode == wing_borne) && (kias > 90.0)) -> (F[1,1] (lift_mode == wing_borne)))",
-                "WEST": "(G[0,M] (p0 -> (F[1,1] p1)))",
                 "component": "vehicle"
             },
             "_id": "b91e9110-9a0b-11ee-80d9-a77c0c691f6d"
