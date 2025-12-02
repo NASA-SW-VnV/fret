@@ -45,6 +45,7 @@ async function synchAnalysisWithDB (selectedProject) {
             return a.component_name.toLowerCase().trim() > b.component_name.toLowerCase().trim()}),
           completedComponents: [],
           r2u2CompletedComponents: [],
+          componentsWithR2U2Semantics: [],
           smvCompletedComponents: [],
           booleanOnlyComponents: []
         }
@@ -53,7 +54,8 @@ async function synchAnalysisWithDB (selectedProject) {
           retVal.cocospecData, retVal.cocospecModes,[]);
 
         retVal.r2u2CompletedComponents = await checkR2U2Components(retVal.components, selectedProject, retVal.cocospecData);
-        retVal.smvCompletedComponents = await checkSMVComponents(retVal.components, selectedProject,retVal.cocospecData)
+        retVal.componentsWithR2U2Semantics = await checkComponentsWithR2U2Semantics(result.docs);
+        retVal.smvCompletedComponents = await checkSMVComponents(retVal.components, selectedProject,retVal.cocospecData);
         retVal.booleanOnlyComponents = await identifyBooleanOnlyComponents(retVal.components, selectedProject);
         
         return retVal
@@ -72,7 +74,7 @@ async function synchAnalysisWithDB (selectedProject) {
       });
   }
 
-function  setVariablesAndModes(result){
+function setVariablesAndModes(result){
     var data = {
       cocospecData: {},
       cocospecModes: {},
@@ -122,7 +124,7 @@ function  setVariablesAndModes(result){
   }
 
 
-async function  checkComponents (components, selectedProject, cocospecData, cocospecModes,completedComponents) {
+async function checkComponents(components, selectedProject, cocospecData, cocospecModes,completedComponents) {
     var completedComponents = []
     let checkCounter = 0;
     if(components){
@@ -158,7 +160,7 @@ async function  checkComponents (components, selectedProject, cocospecData, coco
     return completedComponents
   }
 
-async function  checkR2U2Components (components, selectedProject, data, completedComponents) {
+async function checkR2U2Components(components, selectedProject, data, completedComponents) {
   var completedComponents = []
   let checkCounter = 0;
   if(components){
@@ -194,7 +196,23 @@ async function  checkR2U2Components (components, selectedProject, data, complete
   return completedComponents
 }
 
-async function  checkSMVComponents (components, selectedProject, data, completedComponents) {
+function checkComponentsWithR2U2Semantics(requirements) {
+    var componentsWithR2U2Semantics = []    
+    if (requirements) {      
+      for (const req of requirements) {        
+        if (componentsWithR2U2Semantics.includes(req.semantics.component_name)) {
+          continue;
+        } else {
+          if (('R2U2Code' in req.semantics)) {
+            componentsWithR2U2Semantics.push(req.semantics.component_name);
+          }
+        }
+      }
+    }
+    return componentsWithR2U2Semantics;    
+  }
+
+async function checkSMVComponents(components, selectedProject, data, completedComponents) {
   var completedComponents = []
   let checkCounter = 0;
   if(components){

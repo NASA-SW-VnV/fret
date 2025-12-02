@@ -136,10 +136,11 @@ class ComponentSummary extends React.Component {
   state = {
     actionsMenuOpen: false,
     snackbarOpen: false,
-    numberOfObligations: 0
+    numberOfObligations: 0    
   }
 
   anchorRef = React.createRef();
+
   getMappingInfo(result, contractName) {
     var mapping = {};
     var componentMapping = {};
@@ -240,7 +241,8 @@ class ComponentSummary extends React.Component {
   }
 
   render() {
-    const {classes, component, completed, language, r2u2Completed, smvCompleted, isBooleanComponent} = this.props;
+    const {classes, component, completed, language, r2u2Completed, r2u2SemanticsExist, smvCompleted, isBooleanComponent} = this.props;
+       
     if (language === 'copilot'){
       return (
         <Tooltip title='Export verification code.'>
@@ -295,17 +297,30 @@ class ComponentSummary extends React.Component {
         </div>
       )
     } else if (r2u2Completed && language && language === 'r2u2') {
-      return (
-        <Tooltip title='Export C2PO specification file.'>
-        <span>
-          <Button id={"qa_var_btn_export_"+component} size="small"
-            onClick={this.exportComponentCode} color="secondary"
-            variant='contained' className={classes.buttonControl}>
-              Export
-          </Button>
-          </span>
-        </Tooltip>
-      );
+      if (r2u2SemanticsExist) {        
+        return (
+          <Tooltip title='Export C2PO specification file.'>
+          <span>
+            <Button id={"qa_var_btn_export_"+component} size="small"
+              onClick={this.exportComponentCode} color="secondary"
+              variant='contained' className={classes.buttonControl}>
+                Export
+            </Button>
+            </span>
+          </Tooltip>
+        );
+      } else {
+        return (
+          <Tooltip title="Export is disabled due to missing R2U2 semantics. Perform the 'Calculate Semantics' action next to the project name in the project selection menu and try again.">
+            <span>
+              <Button id={"qa_var_btn_export_"+component}
+                 size="small" color="secondary" disabled variant='contained' className={classes.buttonControl}>
+                  Export
+              </Button>
+            </span>
+          </Tooltip>
+        )
+      }      
     } else if (smvCompleted && language && language === 'smv') {
       if (language === 'smv' && !isBooleanComponent) {
         return (
@@ -384,6 +399,7 @@ ComponentSummary.propTypes = {
   language: PropTypes.string.isRequired,
   variableIdentifierReplacement: PropTypes.func.isRequired,
   r2u2Completed: PropTypes.bool.isRequired,
+  r2u2SemanticsExist: PropTypes.bool.isRequired,
   smvCompleted: PropTypes.bool.isRequired,
   isBooleanComponent: PropTypes.bool.isRequired
 };
@@ -425,10 +441,10 @@ class VariablesView extends React.Component {
 
   render() {
     const self = this;
-    const {classes, selectedProject, listOfProjects, components, completedComponents, cocospecData, cocospecModes, r2u2CompletedComponents, smvCompletedComponents, booleanOnlyComponents} = this.props;
+    const {classes, selectedProject, listOfProjects, components, completedComponents, cocospecData, cocospecModes, r2u2CompletedComponents, componentsWithR2U2Semantics, smvCompletedComponents, booleanOnlyComponents} = this.props;
     const{language}= this.state;
     components.sort();
-
+    
     return (
       <div>
           <div className={classes.actions}>
@@ -469,6 +485,7 @@ class VariablesView extends React.Component {
                   language={language}
                   variableIdentifierReplacement={this.props.variableIdentifierReplacement}
                   r2u2Completed={r2u2CompletedComponents.includes(component)}
+                  r2u2SemanticsExist={componentsWithR2U2Semantics.includes(component)}
                   smvCompleted={smvCompletedComponents.includes(component)}
                   isBooleanComponent={booleanOnlyComponents.includes(component)}
                 />
@@ -501,6 +518,7 @@ VariablesView.propTypes = {
   components: PropTypes.array.isRequired,
   completedComponents: PropTypes.array.isRequired,
   r2u2CompletedComponents: PropTypes.array.isRequired,
+  componentsWithR2U2Semantics: PropTypes.array.isRequired,
   smvCompletedComponents: PropTypes.array.isRequired,
   variableIdentifierReplacement: PropTypes.func.isRequired,
   booleanOnlyComponents: PropTypes.array.isRequired

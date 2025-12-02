@@ -49,6 +49,7 @@ export default class FretModel {
     this.components = []     // for a specific project: this is an array of all the components
     this.completedComponents = []   // for a specific project: this is an array of all components
     this.r2u2CompletedComponents = [] //System components with complete variable information in R2U2 format.
+    this.componentsWithR2U2Semantics = [] //System components with requirements that have R2U2 semantics stored in their database entry.
     this.smvCompletedComponents = [] //System components with complete variable information in SMV.
     this.booleanOnlyComponents = [] //System components that include only boolean variables. Used in test case generation.
     // that we have completed the variable mappings
@@ -96,6 +97,7 @@ export default class FretModel {
       components : this.components,
       completedComponents : this.completedComponents,
       r2u2CompletedComponents : this.r2u2CompletedComponents,
+      componentsWithR2U2Semantics: this.componentsWithR2U2Semantics,
       smvCompletedComponents: this.smvCompletedComponents,
       booleanOnlyComponents: this.booleanOnlyComponents,
       cocospecData : this.cocospecData,
@@ -175,6 +177,7 @@ export default class FretModel {
         this.components = analysisStates.components
         this.completedComponents = analysisStates.completedComponents
         this.r2u2CompletedComponents = analysisStates.r2u2CompletedComponents
+        this.componentsWithR2U2Semantics = analysisStates.componentsWithR2U2Semantics
         this.smvCompletedComponents = analysisStates.smvCompletedComponents
         this.booleanOnlyComponents = analysisStates.booleanOnlyComponents
       }
@@ -291,6 +294,7 @@ export default class FretModel {
         importedComponents : this.importedComponents,
         completedComponents : this.completedComponents,
         r2u2CompletedComponents : this.r2u2CompletedComponents,
+        componentsWithR2U2Semantics: this.componentsWithR2U2Semantics,
         smvCompletedComponents: this.smvCompletedComponents,
         booleanOnlyComponents: this.booleanOnlyComponents,
         cocospecData : this.cocospecData,
@@ -328,6 +332,7 @@ export default class FretModel {
         cocospecModes : this.cocospecModes,
         completedComponents : this.completedComponents,
         r2u2CompletedComponents : this.r2u2CompletedComponents,
+        componentsWithR2U2Semantics: this.componentsWithR2U2Semantics,
         smvCompletedComponents: this.smvCompletedComponents,
         booleanOnlyComponents: this.booleanOnlyComponents,
         // * variableMapping
@@ -416,6 +421,7 @@ export default class FretModel {
       cocospecModes : this.cocospecModes,
       completedComponents : this.completedComponents,
       r2u2CompletedComponents : this.r2u2CompletedComponents,
+      componentsWithR2U2Semantics: this.componentsWithR2U2Semantics,
       smvCompletedComponents: this.smvCompletedComponents,
       booleanOnlyComponents: this.booleanOnlyComponents,
       // * variableMapping
@@ -564,6 +570,7 @@ export default class FretModel {
         cocospecModes : this.cocospecModes,
         completedComponents : this.completedComponents,
         r2u2CompletedComponents : this.r2u2CompletedComponents,
+        componentsWithR2U2Semantics: this.componentsWithR2U2Semantics,
         smvCompletedComponents: this.smvCompletedComponents,
         booleanOnlyComponents : this.booleanOnlyComponents,
         // * variableMapping
@@ -591,6 +598,7 @@ export default class FretModel {
     var states = {
       // projects
       requirements : this.requirements,
+      componentsWithR2U2Semantics: this.componentsWithR2U2Semantics,
     }
     return states
 
@@ -649,6 +657,7 @@ export default class FretModel {
       cocospecModes : this.cocospecModes,
       completedComponents : this.completedComponents,
       r2u2CompletedComponents : this.r2u2CompletedComponents,
+      componentsWithR2U2Semantics: this.componentsWithR2U2Semantics,
       smvCompletedComponents: this.smvCompletedComponents,
       booleanOnlyComponents: this.booleanOnlyComponents,
       // * variables
@@ -683,6 +692,7 @@ export default class FretModel {
       cocospecModes : this.cocospecModes,
       completedComponents : this.completedComponents,
       r2u2CompletedComponents : this.r2u2CompletedComponents,
+      componentsWithR2U2Semantics: this.componentsWithR2U2Semantics,
       smvCompletedComponents: this.smvCompletedComponents,
       booleanOnlyComponents: this.booleanOnlyComponents,
       // * variableMapping
@@ -972,6 +982,7 @@ export default class FretModel {
       cocospecModes : this.cocospecModes,
       completedComponents : this.completedComponents,
       r2u2CompletedComponents : this.r2u2CompletedComponents,
+      componentsWithR2U2Semantics: this.componentsWithR2U2Semantics,
       smvCompletedComponents: this.smvCompletedComponents,
       booleanOnlyComponents : this.booleanOnlyComponents,
       // * variableMapping
@@ -1037,6 +1048,7 @@ export default class FretModel {
       cocospecModes : this.cocospecModes,
       completedComponents : this.completedComponents,
       r2u2CompletedComponents : this.r2u2CompletedComponents,
+      componentsWithR2U2Semantics: this.componentsWithR2U2Semantics,
       smvCompletedComponents: this.smvCompletedComponents,
       booleanOnlyComponents : this.booleanOnlyComponents,
       // * variableMapping
@@ -1245,7 +1257,7 @@ export default class FretModel {
         })
       })
     }
-  }
+  }  
 
   async selectCorspdModelComp(evt,args){       // TBD add tests
     // console.log('FretModel selectCorspdModelComp: ', args)
@@ -1301,6 +1313,7 @@ export default class FretModel {
       cocospecModes : this.cocospecModes,
       completedComponents : this.completedComponents,
       r2u2CompletedComponents : this.r2u2CompletedComponents,
+      componentsWithR2U2Semantics: this.componentsWithR2U2Semantics,
       smvCompletedComponents: this.smvCompletedComponents,
       booleanOnlyComponents : this.booleanOnlyComponents,
       // * variables
@@ -1414,8 +1427,10 @@ export default class FretModel {
       }
     }))
     await this.synchProjectsAndRequirmentsWithDB()
+    await this.synchAnalysesAndVariablesWithDB()
     return {
-      requirements: this.requirements
+      requirements: this.requirements,
+      componentsWithR2U2Semantics: this.componentsWithR2U2Semantics
     }
 
   }

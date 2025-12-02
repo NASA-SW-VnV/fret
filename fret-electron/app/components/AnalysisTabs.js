@@ -99,7 +99,7 @@ class AnalysisTabs extends React.Component {
 
   render() {
     const {classes, selectedProject, listOfProjects,components,
-      completedComponents, cocospecData, cocospecModes, r2u2CompletedComponents, smvCompletedComponents, booleanOnlyComponents} = this.props;
+      completedComponents, cocospecData, cocospecModes, r2u2CompletedComponents, componentsWithR2U2Semantics, smvCompletedComponents, booleanOnlyComponents} = this.props;
     const {value} = this.state;
 
     return (
@@ -131,7 +131,7 @@ class AnalysisTabs extends React.Component {
             components={components.map(e => e.component_name)} completedComponents={completedComponents}
             cocospecData={cocospecData} cocospecModes={cocospecModes}
             variableIdentifierReplacement={this.variableIdentifierReplacement} 
-            r2u2CompletedComponents={r2u2CompletedComponents} smvCompletedComponents={smvCompletedComponents} booleanOnlyComponents={booleanOnlyComponents}/>
+            r2u2CompletedComponents={r2u2CompletedComponents} componentsWithR2U2Semantics={componentsWithR2U2Semantics} smvCompletedComponents={smvCompletedComponents} booleanOnlyComponents={booleanOnlyComponents}/>
           </TabContainer>
         }
         {value === 1 &&
@@ -166,6 +166,7 @@ function mapStateToProps(state) {
   const cocospecModes = state.actionsSlice.cocospecModes;
   const components = state.actionsSlice.components;
   const r2u2CompletedComponents = state.actionsSlice.r2u2CompletedComponents;
+  const componentsWithR2U2Semantics = state.actionsSlice.componentsWithR2U2Semantics;
   const smvCompletedComponents = state.actionsSlice.smvCompletedComponents;
   const booleanOnlyComponents = state.actionsSlice.booleanOnlyComponents;
   return {
@@ -174,6 +175,7 @@ function mapStateToProps(state) {
     cocospecModes,
     components,
     r2u2CompletedComponents,
+    componentsWithR2U2Semantics,
     smvCompletedComponents,
     booleanOnlyComponents
   };

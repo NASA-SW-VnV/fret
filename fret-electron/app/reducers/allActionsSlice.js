@@ -34,7 +34,9 @@ const allActionsSlice = createSlice({
     completedComponents: [],    // for a specific project: this is an array of all components
                                 // that we have completed the variable mappings
     r2u2CompletedComponents: [], // for a specific project: this is an array of all components
-                                // that we have completed the R2U2 variable mappings for 
+                                // that we have completed the R2U2 variable mappings for
+    componentsWithR2U2Semantics: [], //for a specific project: this is an array of all components
+                                    // that have R2U2 semantics stored in the requirements database                             
     smvCompletedComponents: [], // for a specific project: this is an array of all components
                                 // that we have completed the SMV variable mappings for
     booleanOnlyComponents: [], //Array that retains components that only include boolean variables. Used in Test Case Generation.
@@ -70,6 +72,7 @@ const allActionsSlice = createSlice({
       state.components = action.payload.components;
       state.completedComponents = action.payload.completedComponents;
       state.r2u2CompletedComponents = action.payload.r2u2CompletedComponents;
+      state.componentsWithR2U2Semantics = action.payload.componentsWithR2U2Semantics;
       state.smvCompletedComponents = action.payload.smvCompletedComponents;
       state.booleanOnlyComponents = action.payload.booleanOnlyComponents;
       state.cocospecData = action.payload.cocospecData;
@@ -102,6 +105,7 @@ const allActionsSlice = createSlice({
       state.requirements = action.payload.requirements;
       state.completedComponents = action.payload.completedComponents;
       state.r2u2CompletedComponents = action.payload.r2u2CompletedComponents;
+      state.componentsWithR2U2Semantics = action.payload.componentsWithR2U2Semantics;
       state.smvCompletedComponents = action.payload.smvCompletedComponents;
       state.booleanOnlyComponents = action.payload.booleanOnlyComponents;
       state.cocospecData = action.payload.cocospecData;
@@ -121,6 +125,7 @@ const allActionsSlice = createSlice({
       state.components = action.payload.components;
       state.completedComponents = action.payload.completedComponents;
       state.r2u2CompletedComponents = action.payload.r2u2CompletedComponents;
+      state.componentsWithR2U2Semantics = action.payload.componentsWithR2U2Semantics;
       state.smvCompletedComponents = action.payload.smvCompletedComponents;
       state.booleanOnlyComponents = action.payload.booleanOnlyComponents;
       state.cocospecData = action.payload.cocospecData;
@@ -151,6 +156,7 @@ const allActionsSlice = createSlice({
       state.importedComponents = action.payload.importedComponents;
       state.completedComponents = action.payload.completedComponents;
       state.r2u2CompletedComponents = action.payload.r2u2CompletedComponents;
+      state.componentsWithR2U2Semantics = action.payload.componentsWithR2U2Semantics;
       state.smvCompletedComponents = action.payload.smvCompletedComponents;
       state.booleanOnlyComponents = action.payload.booleanOnlyComponents;
       state.cocospecData = action.payload.cocospecData;
@@ -169,6 +175,7 @@ const allActionsSlice = createSlice({
       state.importedComponents = action.payload.importedComponents;
       state.completedComponents = action.payload.completedComponents;
       state.r2u2CompletedComponents = action.payload.r2u2CompletedComponents;
+      state.componentsWithR2U2Semantics = action.payload.componentsWithR2U2Semantics;
       state.smvCompletedComponents = action.payload.smvCompletedComponents;
       state.booleanOnlyComponents = action.payload.booleanOnlyComponents;
       state.cocospecData = action.payload.cocospecData;
@@ -186,6 +193,7 @@ const allActionsSlice = createSlice({
       state.importedComponents = action.payload.importedComponents;
       state.completedComponents = action.payload.completedComponents;
       state.r2u2CompletedComponents = action.payload.r2u2CompletedComponents;
+      state.componentsWithR2U2Semantics = action.payload.componentsWithR2U2Semantics;
       state.smvCompletedComponents = action.payload.smvCompletedComponents;
       state.booleanOnlyComponents = action.payload.booleanOnlyComponents;
       state.cocospecData = action.payload.cocospecData;
@@ -209,6 +217,7 @@ const allActionsSlice = createSlice({
       state.importedComponents = action.payload.importedComponents;
       state.completedComponents = action.payload.completedComponents;
       state.r2u2CompletedComponents = action.payload.r2u2CompletedComponents;
+      state.componentsWithR2U2Semantics = action.payload.componentsWithR2U2Semantics;
       state.smvCompletedComponents = action.payload.smvCompletedComponents;
       state.booleanOnlyComponents = action.payload.booleanOnlyComponents;
       state.cocospecData = action.payload.cocospecData;
@@ -216,7 +225,8 @@ const allActionsSlice = createSlice({
     },
     formalizeRequirement(state, action) {      // TBD add tests
       // console.log('actionsSlice formalizeRequirement reducer', action)
-      state.requirements = action.payload.requirements
+      state.requirements = action.payload.requirements,
+      state.componentsWithR2U2Semantics = action.payload.componentsWithR2U2Semantics
     },
     changeRequirementStatus(state, action) {
       // console.log('actionsSlice changeRequirementStatus reducer', action)
@@ -234,6 +244,7 @@ const allActionsSlice = createSlice({
       state.importedComponents = action.payload.importedComponents;
       state.completedComponents = action.payload.completedComponents;
       state.r2u2CompletedComponents = action.payload.r2u2CompletedComponents;
+      state.componentsWithR2U2Semantics = action.payload.componentsWithR2U2Semantics;
       state.smvCompletedComponents = action.payload.smvCompletedComponents;
       state.booleanOnlyComponents = action.payload.booleanOnlyComponents;
       state.cocospecData = action.payload.cocospecData;
@@ -252,6 +263,7 @@ const allActionsSlice = createSlice({
       state.importedComponents = action.payload.importedComponents;
       state.completedComponents = action.payload.completedComponents;
       state.r2u2CompletedComponents = action.payload.r2u2CompletedComponents;
+      state.componentsWithR2U2Semantics = action.payload.componentsWithR2U2Semantics;
       state.smvCompletedComponents = action.payload.smvCompletedComponents;
       state.booleanOnlyComponents = action.payload.booleanOnlyComponents;
       state.cocospecData = action.payload.cocospecData;
@@ -267,6 +279,7 @@ const allActionsSlice = createSlice({
       state.importedComponents = action.payload.importedComponents;
       state.completedComponents = action.payload.completedComponents;
       state.r2u2CompletedComponents = action.payload.r2u2CompletedComponents;
+      state.componentsWithR2U2Semantics = action.payload.componentsWithR2U2Semantics;
       state.smvCompletedComponents = action.payload.smvCompletedComponents;
       state.booleanOnlyComponents = action.payload.booleanOnlyComponents;
       state.cocospecData = action.payload.cocospecData;
@@ -282,6 +295,7 @@ const allActionsSlice = createSlice({
       state.importedComponents = action.payload.importedComponents;
       state.completedComponents = action.payload.completedComponents;
       state.r2u2CompletedComponents = action.payload.r2u2CompletedComponents;
+      state.componentsWithR2U2Semantics = action.payload.componentsWithR2U2Semantics;
       state.smvCompletedComponents = action.payload.smvCompletedComponents;
       state.booleanOnlyComponents = action.payload.booleanOnlyComponents;
       state.cocospecData = action.payload.cocospecData;

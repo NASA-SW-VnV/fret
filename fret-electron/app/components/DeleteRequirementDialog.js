@@ -47,6 +47,7 @@ class DeleteRequirementDialog extends React.Component {
                                       cocospecData : result.cocospecData,
                                       cocospecModes : result.cocospecModes,
                                       r2u2CompletedComponents: result.r2u2CompletedComponents,
+                                      componentsWithR2U2Semantics: result.componentsWithR2U2Semantics,                                      
                                       smvCompletedComponents: result.smvCompletedComponents,
                                       booleanOnlyComponents: result.booleanOnlyComponents,
                                       // variables

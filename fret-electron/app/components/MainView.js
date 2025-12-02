@@ -235,6 +235,7 @@ class MainView extends React.Component {
                                   importedComponents: result.importedComponents,
                                   completedComponents: result.completedComponents,
                                   r2u2CompletedComponents: result.r2u2CompletedComponents,
+                                  componentsWithR2U2Semantics: result.componentsWithR2U2Semantics,
                                   smvCompletedComponents : result.smvCompletedComponents,
                                   booleanOnlyComponents: result.booleanOnlyComponents,
                                   cocospecData: result.cocospecData,
@@ -310,6 +311,7 @@ class MainView extends React.Component {
           components : result.components,
           completedComponents : result.completedComponents,
           r2u2CompletedComponents : result.r2u2CompletedComponents,
+          componentsWithR2U2Semantics: result.componentsWithR2U2Semantics,
           smvCompletedComponents: result.smvCompletedComponents,
           booleanOnlyComponents: result.booleanOnlyComponents,
           cocospecData : result.cocospecData,
@@ -353,6 +355,7 @@ class MainView extends React.Component {
                                   cocospecData : result.cocospecData,
                                   cocospecModes : result.cocospecModes,
                                   r2u2CompletedComponents : result.r2u2CompletedComponents,
+                                  componentsWithR2U2Semantics: result.componentsWithR2U2Semantics,
                                   smvCompletedComponents : result.smvCompletedComponents,
                                   booleanOnlyComponents: result.booleanOnlyComponents
                       })
@@ -457,7 +460,7 @@ class MainView extends React.Component {
 
   handleCalculateProjectSemantics = async (name) => {
     const result = await ipcRenderer.invoke('calculateProjectSemantics', name);
-    this.props.formalizeRequirement({ type: 'actions/formalizeRequirement', requirements: result.requirements})
+    this.props.formalizeRequirement({ type: 'actions/formalizeRequirement', requirements: result.requirements, componentsWithR2U2Semantics: result.componentsWithR2U2Semantics})
     this.setState({ anchorEl: null });
   }
 

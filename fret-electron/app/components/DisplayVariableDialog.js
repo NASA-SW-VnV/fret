@@ -243,6 +243,7 @@ class DisplayVariableDialog extends React.Component {
                   cocospecData : noNewVariablesResult.cocospecData,
                   cocospecModes : noNewVariablesResult.cocospecModes,
                   r2u2CompletedComponents : noNewVariablesResult.r2u2CompletedComponents,
+                  componentsWithR2U2Semantics: noNewVariablesResult.componentsWithR2U2Semantics,
                   smvCompletedComponents : noNewVariablesResult.smvCompletedComponents,
                   booleanOnlyComponents: noNewVariablesResult.booleanOnlyComponents,
                   // variables
