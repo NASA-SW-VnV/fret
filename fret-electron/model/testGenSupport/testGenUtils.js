@@ -128,8 +128,7 @@ function runKind2(specName, filePath, callback) {
                         saveToProject: ""
                     }
                     
-                    //Currently, the last signal is the property that was checked. We omit this signal from the traces.
-                    let signals = propertyResult.counterExample[0].streams.slice(0,-1);
+                    let signals = propertyResult.counterExample[0].streams.filter(str => !str.name.startsWith(specName+'_'));
                     let variableNames = signals.map(sig => sig.name);
                     let variableValues = []
                     for (var i = 0; i<=propertyResult.k; i++) {
@@ -360,12 +359,7 @@ function generateSpecObligationFile(component, docs, modelResult, selectedEngine
 
     contract.componentName = component+'Spec';
 
-    var propertyName;
-    if (newDoc.reqids.length > 1) {
-        propertyName = contract.componentName;
-    } else {
-        propertyName = newDoc.reqids[0];
-    }
+    var propertyName = contract.componentName;
 
     var obligations = xform.generateFLIPObligations({[propertyName]: (selectedEngine === 'nusmv') ? newDoc.ftLTL : newDoc.ptLTL}, language);
     
