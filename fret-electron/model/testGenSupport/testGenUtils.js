@@ -94,7 +94,7 @@ function testIsUnique(variableValues, uniqueVariableValues) {
     return true;
 }
 
-function runKind2(specName, filePath, callback) {
+function runKind2(specName, filePath, propertyNames, callback) {
     const kind2 = spawn('kind2', ['-json','--disable','IC3IA','--lus_main', specName, filePath]);
 
     var stdout = '';
@@ -128,7 +128,8 @@ function runKind2(specName, filePath, callback) {
                         saveToProject: ""
                     }
                     
-                    let signals = propertyResult.counterExample[0].streams.filter(str => !str.name.startsWith(specName+'_'));
+                    //In each counterexample, Kind 2 has a dedicated signal for the property value, which we don't need to return to the frontend. Every counterexample contains every original variable, so we only need to look into one to filter out every property signal.                    
+                    let signals = propertyResult.counterExample[0].streams.filter(str => !propertyNames.includes(str.name));
                     let variableNames = signals.map(sig => sig.name);
                     let variableValues = []
                     for (var i = 0; i<=propertyResult.k; i++) {
@@ -378,7 +379,7 @@ function generateSpecObligationFile(component, docs, modelResult, selectedEngine
     var output = fs.openSync(filePath, 'w');
 
     fs.writeSync(output, file.content);
-    return [contract.componentName, filePath];
+    return [contract.componentName, filePath, contract.properties.map(p => p.reqid)];
 }
 
 function generateTests(selectedProject, components, testGenState, selectedReqs) {
@@ -438,7 +439,7 @@ function generateTests(selectedProject, components, testGenState, selectedReqs) 
                     const filteredDocs = fretResult.docs.filter(resultDoc => (resultDoc.semantics.component_name === tC.component_name) && selectedReqs.includes(resultDoc.reqid));
 
                     const startTime = performance.now();
-                    var [specName, filePath] = generateSpecObligationFile(tC.component_name, filteredDocs, modelResult, selectedEngine, traceLength)
+                    var [specName, filePath, propertyNames] = generateSpecObligationFile(tC.component_name, filteredDocs, modelResult, selectedEngine, traceLength)
 
                     if (selectedEngine === 'nusmv') {
                         generateNuSMVInterpreterFile();
@@ -466,7 +467,7 @@ function generateTests(selectedProject, components, testGenState, selectedReqs) 
                             resolve(testGenState.projectReport)
                         })
                     } else {
-                        runKind2(specName, filePath, function(err, result) {
+                        runKind2(specName, filePath, propertyNames, function(err, result) {
                             if (err) {
                                 testGenState.projectReport.systemComponents[systemComponentIndex].result = 'ERROR';
                                 testGenState.projectReport.systemComponents[systemComponentIndex].error = err.message;testGenState.projectReport.systemComponents[systemComponentIndex].requirements = fretResult.docs;
