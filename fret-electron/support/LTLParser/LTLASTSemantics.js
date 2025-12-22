@@ -61,7 +61,7 @@ const CoCoPrefix = {  Negate : '-', Not : 'not ',
 // These CoCoSpec binary operators have their arguments reversed from
 // standard notation; e.g., S(p,q) = q S p. See
 // support/CommonTemplates/LibraryOfOperators.ejs
-const Reversed = ["S","ST","SI","SIT"];
+const Reversed = ["S","ST","SI","SIT","T"];
 
 const CoCoInfix = { ExclusiveOr : 'xor', And : 'and', Or : 'or',
 		    Implies : '=>', Equiv : '=',
