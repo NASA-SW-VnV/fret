@@ -30,6 +30,7 @@ const {ipcRenderer} = require('electron');
 
 const lustreExprSemantics = require('../../support/lustreExprSemantics');
 const copilotExprSemantics = require('../../support/copilotExprSemantics');
+const r2u2ExprSemantics = require('../../support/r2u2ExprSemantics');
 const smvBasicExprSemantics = require('../../support/smvBasicExprSemantics');
 
 const styles = theme => ({
@@ -68,6 +69,7 @@ class DisplayVariableDialog extends React.Component {
     dataType: '',
     assignment: '',
     copilotAssignment: '',
+    r2u2Assignment: '',
     smvAssignment: '',
     moduleName: '',
     modeRequirement: '',
@@ -85,14 +87,17 @@ class DisplayVariableDialog extends React.Component {
     modelComponent: '',
     errorsCopilot: '',
     errorsLustre: '',
+    errorsR2U2: '',
     errorsSMV: '',
     checkLustre: true,
     checkCoPilot: false,
+    checkR2U2: false,
     checkSMV: false,
     newVariablesDialogOpen: false,
     newVariables: [],
     copilotVariables: [],
     lustreVariables: [],
+    r2u2Variables: [],
     smvVariables: []
   }
 
@@ -126,6 +131,7 @@ class DisplayVariableDialog extends React.Component {
   handleTextFieldChange = name => event => {
     let resultLustre;
     let resultCopilot;
+    let resultR2U2;
     let resultSMV;
     if (name === 'assignment') {
       resultLustre = lustreExprSemantics.compileLustreExpr(event.target.value);
@@ -141,6 +147,13 @@ class DisplayVariableDialog extends React.Component {
         errorsCopilot: resultCopilot.parseErrors ? 'Parse Errors: ' + resultCopilot.parseErrors : '',
         copilotVariables: resultCopilot.variables ? resultCopilot.variables : []
       });
+    } else if (name === 'r2u2Assignment') {
+      resultR2U2 = r2u2ExprSemantics.compileR2U2Expr(event.target.value);
+      this.setState({
+        [name]: event.target.value,
+        errorsR2U2: resultR2U2.parseErrors ? 'Parse Errors: ' + resultR2U2.parseErrors : '',
+        r2u2Variables: resultR2U2.variables ? resultR2U2.variables : []
+      })
     } else if (name === 'smvAssignment') {
       resultSMV = smvBasicExprSemantics.compileSMVBasicExpr(event.target.value);
       this.setState({
@@ -172,6 +185,7 @@ class DisplayVariableDialog extends React.Component {
       dataType: '',
       assignment: '',
       copilotAssignment: '',
+      r2u2Assignment: '',
       smvAssignment: '',
       moduleName: '',
       modeRequirement: '',
@@ -179,13 +193,16 @@ class DisplayVariableDialog extends React.Component {
       modelComponent: '',
       errorsCopilot: '',
       errorsLustre: '',
+      errorsR2U2: '',
       checkLustre: true,
       checkCoPilot: false,
+      checkR2U2: false,
       checkSMV: false,
       newVariablesDialogOpen: false,
       newVariables: [],
       copilotVariables: [],
       lustreVariables: [],
+      r2u2Variables: [],
       smvVariables: []
     })
   };
@@ -193,14 +210,14 @@ class DisplayVariableDialog extends React.Component {
   handleUpdate = () => {
     const self = this;
     const { selectedVariable } = this.props;
-    const { description, idType, dataType, assignment, copilotAssignment, smvAssignment, modeRequirement, modeldoc_id, modelComponent, lustreVariables, copilotVariables, smvVariables, moduleName, busObjects, selectedBusObject, selectedBusElement, modeldoc_vectorSize, modeldoc_vectorIndex} = this.state;
+    const { description, idType, dataType, assignment, copilotAssignment, r2u2Assignment, smvAssignment, modeRequirement, modeldoc_id, modelComponent, lustreVariables, copilotVariables, r2u2Variables, smvVariables, moduleName, busObjects, selectedBusObject, selectedBusElement, modeldoc_vectorSize, modeldoc_vectorIndex} = this.state;
     var modeldbid = selectedVariable._id;
 
-    var variables = lustreVariables.concat(copilotVariables).concat(smvVariables);
+    var variables = lustreVariables.concat(copilotVariables).concat(r2u2Variables).concat(smvVariables);
 
-    var args = [selectedVariable.project,selectedVariable.component_name,variables, idType,
+    var args = [selectedVariable.project, selectedVariable.component_name, variables, idType,
       modeldoc_id, dataType, modeldbid, description,assignment,
-      copilotAssignment, smvAssignment, modeRequirement,modelComponent,lustreVariables,copilotVariables, smvVariables,
+      copilotAssignment, r2u2Assignment, smvAssignment, modeRequirement, modelComponent, lustreVariables, copilotVariables, r2u2Variables, smvVariables,
       moduleName, busObjects, selectedBusObject, selectedBusElement, modeldoc_vectorSize, modeldoc_vectorIndex]
 
     // context isolation
@@ -225,6 +242,7 @@ class DisplayVariableDialog extends React.Component {
                   completedComponents : noNewVariablesResult.completedComponents,
                   cocospecData : noNewVariablesResult.cocospecData,
                   cocospecModes : noNewVariablesResult.cocospecModes,
+                  r2u2CompletedComponents : noNewVariablesResult.r2u2CompletedComponents,
                   smvCompletedComponents : noNewVariablesResult.smvCompletedComponents,
                   booleanOnlyComponents: noNewVariablesResult.booleanOnlyComponents,
                   // variables
@@ -257,6 +275,8 @@ class DisplayVariableDialog extends React.Component {
         checkLustre: (language === 'cocospec' || language === '') ? true : (selectedVariable.assignment ? true : false),
         copilotAssignment: selectedVariable.copilotAssignment,
         checkCoPilot: language === 'copilot' ? true : (selectedVariable.copilotAssignment ? true : false),
+        r2u2Assignment: selectedVariable.r2u2Assignment,
+        checkR2U2: language === 'r2u2' ? true : (selectedVariable.r2u2Assignment ? true : false),
         smvAssignment: selectedVariable.smvAssignment,
         checkSMV: language === 'smv' ? ((selectedVariable.dataType === '' || selectedVariable.dataType === 'boolean') ? true : false) : (selectedVariable.smvAssignment ? true : false),
         modeRequirement: selectedVariable.modeRequirement,
@@ -281,6 +301,7 @@ class DisplayVariableDialog extends React.Component {
         modeldoc_id: '',
         assignment: '',
         copilotAssignment: '',
+        r2u2Assignment: '',
         smvAssignment: '',
         modeRequirement: '',
         moduleName: '',
@@ -295,6 +316,7 @@ class DisplayVariableDialog extends React.Component {
         modeldoc_id: '',
         assignment: '',
         copilotAssignment: '',
+        r2u2Assignment: '',
         smvAssignment: '',
         modeRequirement: '',
         moduleName: ''
@@ -445,7 +467,8 @@ class DisplayVariableDialog extends React.Component {
     const { classes, selectedVariable, language } = this.props;
     const { dataType } = this.state;
 
-    const errorState = (language === 'smv' && (dataType !== 'boolean' && this.state.dataType !== ''))
+    const errorState = (language === 'smv' && (dataType !== 'boolean' && this.state.dataType !== '')) || 
+                        (language === 'r2u2' && ((dataType !== 'boolean' && dataType !== 'integer' && dataType !== 'double') && this.state.dataType !== ''))
 
     return(
       <FormControl className={classes.formControl} error={errorState}>
@@ -471,7 +494,7 @@ class DisplayVariableDialog extends React.Component {
         <MenuItem id="qa_disVar_mi_dataType_double" value="double">double</MenuItem>
       </Select>
       {errorState && 
-        <FormHelperText>{'Data type \'' + dataType + '\' is not supported for SMV.'}</FormHelperText>
+        <FormHelperText>{'Data type \'' + dataType + '\' is not supported for ' + language.toUpperCase() + '.'}</FormHelperText>
       }
     </FormControl>
     )
@@ -479,15 +502,16 @@ class DisplayVariableDialog extends React.Component {
 
   renderUpdateButton = () => {
     const { language } = this.props
-    const {idType, dataType, errorsCopilot, checkCoPilot, errorsLustre, checkLustre, errorsSMV, checkSMV} = this.state
-    const parseErrorsCondition = (idType === 'Internal' && ((errorsCopilot!== '' && checkCoPilot) || (errorsLustre !== '' && checkLustre) || (errorsSMV !== '' && checkSMV)))
+    const {idType, dataType, errorsCopilot, checkCoPilot, errorsLustre, checkLustre, errorsR2U2, checkR2U2, errorsSMV, checkSMV} = this.state
+    const parseErrorsCondition = (idType === 'Internal' && ((errorsCopilot!== '' && checkCoPilot) || (errorsLustre !== '' && checkLustre) || (errorsR2U2 !== '' && checkR2U2) || (errorsSMV !== '' && checkSMV)))
     const smvIncompatibleDataTypeCondition = ((dataType !== 'boolean' && dataType !== '') && language === 'smv')
+    const r2u2IncompatibleDataTypeCondition = (((dataType !== 'boolean' && dataType !== 'integer' && dataType !== 'double') && dataType !== '') && language === 'r2u2')
     return(
-      <Tooltip title={parseErrorsCondition ? 'A parsing error exists in variable assignment. Resolve the parsing error or disable the corresponding language.' : smvIncompatibleDataTypeCondition ? 'Data type \'' + dataType + '\' is not supported for SMV.' : ''}>
+      <Tooltip title={parseErrorsCondition ? 'A parsing error exists in variable assignment. Resolve the parsing error or disable the corresponding language.' : smvIncompatibleDataTypeCondition ? 'Data type \'' + dataType + '\' is not supported for SMV.' : r2u2IncompatibleDataTypeCondition ? 'Data type \'' + dataType + '\' is not supported for R2U2.' : ''}>
     <span>
       <Button id="qa_disVar_btn_update"
               onClick={this.handleUpdate}
-              disabled={parseErrorsCondition || smvIncompatibleDataTypeCondition}
+              disabled={parseErrorsCondition || smvIncompatibleDataTypeCondition || r2u2IncompatibleDataTypeCondition}
               color="secondary"
               variant='contained'>
         Update
@@ -499,7 +523,7 @@ class DisplayVariableDialog extends React.Component {
 
   render() {
     const { classes, selectedVariable, modelVariables, open, language } = this.props;
-    const { idType, dataType, errorsLustre, errorsCopilot, errorsSMV, checkLustre, checkCoPilot, checkSMV, modeldoc_id, modeldoc_vectorSize, modeldoc_vectorIndex, selectedBusObject, selectedBusElement, busObjects } = this.state;
+    const { idType, dataType, errorsLustre, errorsCopilot, errorsR2U2, errorsSMV, checkLustre, checkCoPilot, checkR2U2, checkSMV, modeldoc_id, modeldoc_vectorSize, modeldoc_vectorIndex, selectedBusObject, selectedBusElement, busObjects } = this.state;
     
     return (
       <div>
@@ -720,6 +744,22 @@ class DisplayVariableDialog extends React.Component {
                           />
                         }
                         {
+                          checkR2U2 &&
+                          <TextField
+                            id="qa_disVar_tf_varAssignR2U2"
+                            label="Variable Assignment in R2U2*"
+                            type="text"
+                            value={this.state.r2u2Assignment}
+                            margin="normal"
+                            className={classes.descriptionField}
+                            multiline
+                            onChange={this.handleTextFieldChange('r2u2Assignment')}
+                            onFocus={this.handleTextFieldFocused('r2u2Assignment')}
+                            helperText={errorsR2U2}
+                            error={!!errorsR2U2}
+                          />
+                        }
+                        {
                           checkSMV &&
                           <TextField
                             id="qa_disVar_tf_varAssignSMV"
@@ -755,6 +795,21 @@ class DisplayVariableDialog extends React.Component {
                               />
                             }
                             label="CoPilot"
+                          />
+                          <FormControlLabel
+                            control={
+                              <Tooltip title={(dataType !== 'boolean' && dataType !== 'integer' && dataType !== 'double') ? 'Data type \'' + dataType + '\' is not currently supported for R2U2.' : ''}>
+                                <span>
+                                  <Checkbox id="qa_disVar_cb_R2U2"
+                                            checked={this.state.checkR2U2}
+                                            disabled={(dataType !== 'boolean' && dataType !== 'integer' && dataType !== 'double')}
+                                            onChange={this.handleCheckChange('checkR2U2')}
+                                            value="checkR2U2"
+                                  />
+                                </span>
+                              </Tooltip>
+                            }
+                            label="R2U2"
                           />
                           <FormControlLabel
                             control={

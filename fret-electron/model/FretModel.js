@@ -17,6 +17,7 @@ import { generateTests, checkTestGenDependenciesExist } from './testGenSupport/t
 import ejsCache from '../support/CoCoSpecTemplates/ejsCache';
 import ejsCacheSMV from '../support/SMVTemplates/ejsCacheSMV';
 import ejsCacheCoPilot from '../support/CoPilotTemplates/ejsCacheCoPilot';
+import {renderC2POSpec, renderC2POCSVHeader, renderC2POMap} from '../support/r2u2Export';
 
 const modelDbSetters = require('./modelDbSupport/modelDbSetters_main.js');
 const modelDbDelete = require('./modelDbSupport/deleteVariables_main.js');
@@ -47,6 +48,7 @@ export default class FretModel {
     // *analysis*
     this.components = []     // for a specific project: this is an array of all the components
     this.completedComponents = []   // for a specific project: this is an array of all components
+    this.r2u2CompletedComponents = [] //System components with complete variable information in R2U2 format.
     this.smvCompletedComponents = [] //System components with complete variable information in SMV.
     this.booleanOnlyComponents = [] //System components that include only boolean variables. Used in test case generation.
     // that we have completed the variable mappings
@@ -93,6 +95,7 @@ export default class FretModel {
       // analysis
       components : this.components,
       completedComponents : this.completedComponents,
+      r2u2CompletedComponents : this.r2u2CompletedComponents,
       smvCompletedComponents: this.smvCompletedComponents,
       booleanOnlyComponents: this.booleanOnlyComponents,
       cocospecData : this.cocospecData,
@@ -171,6 +174,7 @@ export default class FretModel {
         this.cocospecModes = analysisStates.cocospecModes
         this.components = analysisStates.components
         this.completedComponents = analysisStates.completedComponents
+        this.r2u2CompletedComponents = analysisStates.r2u2CompletedComponents
         this.smvCompletedComponents = analysisStates.smvCompletedComponents
         this.booleanOnlyComponents = analysisStates.booleanOnlyComponents
       }
@@ -286,6 +290,7 @@ export default class FretModel {
         selectedVariable : this.selectedVariable,
         importedComponents : this.importedComponents,
         completedComponents : this.completedComponents,
+        r2u2CompletedComponents : this.r2u2CompletedComponents,
         smvCompletedComponents: this.smvCompletedComponents,
         booleanOnlyComponents: this.booleanOnlyComponents,
         cocospecData : this.cocospecData,
@@ -322,6 +327,7 @@ export default class FretModel {
         cocospecData : this.cocospecData,
         cocospecModes : this.cocospecModes,
         completedComponents : this.completedComponents,
+        r2u2CompletedComponents : this.r2u2CompletedComponents,
         smvCompletedComponents: this.smvCompletedComponents,
         booleanOnlyComponents: this.booleanOnlyComponents,
         // * variableMapping
@@ -409,6 +415,7 @@ export default class FretModel {
       cocospecData : this.cocospecData,
       cocospecModes : this.cocospecModes,
       completedComponents : this.completedComponents,
+      r2u2CompletedComponents : this.r2u2CompletedComponents,
       smvCompletedComponents: this.smvCompletedComponents,
       booleanOnlyComponents: this.booleanOnlyComponents,
       // * variableMapping
@@ -466,6 +473,7 @@ export default class FretModel {
         modelComponent: v.modelComponent,
         modeldoc_id: v.modeldoc_id,
         completed: v.completed,
+        r2u2Completed: v.r2u2Completed,
         smvCompleted: v.smvCompleted
       }
       newProjectVariables.push(newVariable)
@@ -555,6 +563,7 @@ export default class FretModel {
         cocospecData : this.cocospecData,
         cocospecModes : this.cocospecModes,
         completedComponents : this.completedComponents,
+        r2u2CompletedComponents : this.r2u2CompletedComponents,
         smvCompletedComponents: this.smvCompletedComponents,
         booleanOnlyComponents : this.booleanOnlyComponents,
         // * variableMapping
@@ -639,6 +648,7 @@ export default class FretModel {
       cocospecData : this.cocospecData,
       cocospecModes : this.cocospecModes,
       completedComponents : this.completedComponents,
+      r2u2CompletedComponents : this.r2u2CompletedComponents,
       smvCompletedComponents: this.smvCompletedComponents,
       booleanOnlyComponents: this.booleanOnlyComponents,
       // * variables
@@ -672,6 +682,7 @@ export default class FretModel {
       cocospecData : this.cocospecData,
       cocospecModes : this.cocospecModes,
       completedComponents : this.completedComponents,
+      r2u2CompletedComponents : this.r2u2CompletedComponents,
       smvCompletedComponents: this.smvCompletedComponents,
       booleanOnlyComponents: this.booleanOnlyComponents,
       // * variableMapping
@@ -844,21 +855,7 @@ export default class FretModel {
     var project = args[0]
     var component_name = args[1]
     var variables = args[2]
-    var idType = args[3]
-    var modeldoc_id = args[4]
-    var dataType = args[5]
-    var modeldbid = args[6]
 
-    var description = args[7]
-    var assignment = args[8]
-    var copilotAssignment = args[9]
-    var modeRequirement = args[10]
-    var modelComponent = args[11]
-    var lustreVariables = args[12]
-    var copilotVariables = args[13]
-    var moduleName = args[14]
-
-    var completedVariable = false;
     var newVariables = [];
     var openNewVariablesDialog = false
 
@@ -890,9 +887,10 @@ export default class FretModel {
   async updateVariable_noNewVariables(evt, args){
 
     var [project, component_name, variables, idType, modeldoc_id, dataType, modeldbid, description, assignment,
-          copilotAssignment, smvAssignment, modeRequirement, modelComponent, lustreVariables, copilotVariables, smvVariables, moduleName, busObjects, selectedBusObject, selectedBusElement, modeldoc_vectorSize, modeldoc_vectorIndex] = args;
+          copilotAssignment, r2u2Assignment, smvAssignment, modeRequirement, modelComponent, lustreVariables, copilotVariables, r2u2Variables, smvVariables, moduleName, busObjects, selectedBusObject, selectedBusElement, modeldoc_vectorSize, modeldoc_vectorIndex] = args;
 
     var completedVariable = false;
+    var r2u2CompletedVariable = false;
     var smvCompletedVariable = false;
 
     /*
@@ -908,6 +906,9 @@ export default class FretModel {
         completedVariable = true;
         if (dataType === 'boolean') {
           smvCompletedVariable = true;
+          r2u2CompletedVariable = true;
+        } else if (dataType === 'integer' || dataType === 'double'){
+          r2u2CompletedVariable = true;
         }
       }
     } else if (modeRequirement || (dataType && (assignment || copilotAssignment))) {
@@ -919,6 +920,10 @@ export default class FretModel {
 
     if (dataType && dataType === 'boolean' && smvAssignment) {
       smvCompletedVariable = true;
+    }
+
+    if (dataType && (dataType === 'boolean' || dataType === 'integer' || dataType === 'double') && r2u2Assignment) {
+      r2u2CompletedVariable = true;
     }
 
     await modelDB.get(modeldbid).then(function (vdoc) {
@@ -937,6 +942,7 @@ export default class FretModel {
         assignment: assignment,
         assignmentVariables: lustreVariables,
         copilotAssignment: copilotAssignment,
+        r2u2Assignment: r2u2Assignment,
         smvAssignment: smvAssignment,
         smvAssignmentVariables: smvVariables,
         modeRequirement: modeRequirement,
@@ -949,6 +955,7 @@ export default class FretModel {
         modeldoc_vectorIndex: Number(modeldoc_vectorIndex),
         modelComponent: modelComponent,
         completed: completedVariable,
+        r2u2Completed: r2u2CompletedVariable,
         smvCompleted: smvCompletedVariable
       }).catch(function (err) {
         console.log(err);
@@ -964,6 +971,7 @@ export default class FretModel {
       cocospecData : this.cocospecData,
       cocospecModes : this.cocospecModes,
       completedComponents : this.completedComponents,
+      r2u2CompletedComponents : this.r2u2CompletedComponents,
       smvCompletedComponents: this.smvCompletedComponents,
       booleanOnlyComponents : this.booleanOnlyComponents,
       // * variableMapping
@@ -1028,6 +1036,7 @@ export default class FretModel {
       cocospecData : this.cocospecData,
       cocospecModes : this.cocospecModes,
       completedComponents : this.completedComponents,
+      r2u2CompletedComponents : this.r2u2CompletedComponents,
       smvCompletedComponents: this.smvCompletedComponents,
       booleanOnlyComponents : this.booleanOnlyComponents,
       // * variableMapping
@@ -1040,6 +1049,7 @@ export default class FretModel {
     return states
 
   }
+  
 
   async exportComponent(evt,args){
     var component = args[0];
@@ -1047,14 +1057,19 @@ export default class FretModel {
     var language = args[2];
     const files = []
     await modelDB.find({
-      selector: {
+      selector: (language === 'r2u2') ? {
+        component_name: component,
+        project: selectedProject,
+        r2u2Completed: true, //for modes that are not completed; these include the ones that correspond to unformalized requirements
+        modeldoc: false
+      } : {
         component_name: component,
         project: selectedProject,
         completed: true, //for modes that are not completed; these include the ones that correspond to unformalized requirements
         modeldoc: false
       }
-    }).then(function (modelResult){
 
+    }).then(function (modelResult){
       let contract = getContractInfo(modelResult, language);
       contract.componentName = component+'Spec';
       if (language === 'cocospec' && modelResult.docs[0].modelComponent != ""){
@@ -1081,6 +1096,14 @@ export default class FretModel {
           contract = variableIdentifierReplacement(contract);
           const file = {content: ejsCacheCoPilot.renderCoPilotSpec().contract.complete(contract), name: contract.componentName+'.json' }
           files.push(file);
+        } else if (language === 'r2u2'){
+          contract = variableIdentifierReplacement(contract);
+          const spec_file = {content: renderC2POSpec(contract), name: contract.componentName+'.c2po' }
+          files.push(spec_file);
+          const map_file = {content: renderC2POMap(contract), name: contract.componentName+'.map' }
+          files.push(map_file);
+          const csv_file = {content: renderC2POCSVHeader(contract), name: contract.componentName+'.csv' }
+          files.push(csv_file);
         }
 
       }).catch((err) => {
@@ -1274,6 +1297,7 @@ export default class FretModel {
       cocospecData : this.cocospecData,
       cocospecModes : this.cocospecModes,
       completedComponents : this.completedComponents,
+      r2u2CompletedComponents : this.r2u2CompletedComponents,
       smvCompletedComponents: this.smvCompletedComponents,
       booleanOnlyComponents : this.booleanOnlyComponents,
       // * variables

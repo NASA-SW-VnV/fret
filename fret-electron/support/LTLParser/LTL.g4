@@ -38,7 +38,7 @@ timedUnaryLTLOp : 'H' | 'O' | '<|' | 'G' | 'F' | '|>';
 
 unaryLTLOp : 'Y' | 'X' | 'Z' | timedUnaryLTLOp ; 
 
-binaryLTLOp : 'S' | 'T' | 'SI' | 'U' | 'V' | 'UI';
+binaryLTLOp : 'S' | 'T' | 'SI' | 'U' | 'V' | 'R' | 'UI';
 
 comparisonOp : '=' | '<' | '<=' | '>' | '>=' | '!=' ;
 

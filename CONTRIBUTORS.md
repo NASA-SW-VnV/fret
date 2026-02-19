@@ -28,6 +28,10 @@ Interns
 * Daniel Riley
 * [Gricel Vazquez Flores](https://www.cs.york.ac.uk/people/?group=his&username=gricel)
 
+External
+-------
+
+* Alexis Aurandt (Collins Aerospace)
 
 FRET Before Open Sourcing
 -------------------------

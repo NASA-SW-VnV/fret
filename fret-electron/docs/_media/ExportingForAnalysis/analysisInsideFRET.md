@@ -1,6 +1,6 @@
 # Exporting to Analysis tools
 
-For analysis, FRET allows users to export requirements in formats that can be digested by other analysis tools. We have connected FRET with [CoCoSim](https://github.com/NASA-SW-VnV/CoCoSim) and [Copilot](https://copilot-language.github.io/) through the FRET analysis portal.
+For analysis, FRET allows users to export requirements in formats that can be digested by other analysis tools. We have connected FRET with [CoCoSim](https://github.com/NASA-SW-VnV/CoCoSim),  [Copilot](https://copilot-language.github.io/), and [R2U2](https://github.com/R2U2/r2u2) through the FRET analysis portal.
 
 Below we present a step-by-step guide of the FRET analysis portal.
 
@@ -39,6 +39,10 @@ The Analysis Portal will appear empty initially if no specific project is chosen
 
 ***
 
+***Note:*** If attempting to export R2U2 monitors from an older FRET project, users must press the Calculate Semantics action button (i.e., the refresh icon next to the applicable project) to generate the appropriate MLTL semantics required by R2U2.
+
+&nbsp;&nbsp;&nbsp;&nbsp;
+
 Once a specific project is chosen, the Analysis Portal will provide a summary of the variables used in the project's requirements organized per component.
 
 FRET automatically extracts all components, variables, functions, and modes that have been specified in the requirements of a project. For each component it creates an accordion field that (if clicked) displays a table with the variables and the modes of that particular component.
@@ -54,7 +58,7 @@ FRET automatically extracts all components, variables, functions, and modes that
 
 **3. Choose export language**
 
-Pick an export language for the generated specification/code. We currently offer two options: 1) CoCoSpec and 2) Copilot. SMV is currently only compatible with test obligation exports (see Test Case Generation manual for details).
+Pick an export language for the generated specification/code. We currently offer two options: 1) CoCoSpec, 2) Copilot, and 3) R2U2. SMV is currently only compatible with test obligation exports (see Test Case Generation manual for details).
 
 
 
@@ -82,13 +86,17 @@ No variable information is required for Copilot. Optionally, the user can follow
 
 &nbsp;&nbsp;&nbsp;&nbsp;
 
-***4b. CoCoSpec code generation***
+***4b. CoCoSpec code and R2U2 monitor generation***
 
-To generate CoCoSpec code, for each variable, the following information must be entered by the user; i.e.,
+To generate CoCoSpec code and R2U2 monitors, for each variable, the following information must be entered by the user; i.e.,
 * data type (i.e., bool, int, real, etc),
 * variable type (i.e., input, output, internal, mode, function),
 * internal variable assignments,
 * mode require statements.
+
+***Note:*** R2U2 does not support unsigned integer or single data types or function variable types.
+
+&nbsp;&nbsp;&nbsp;&nbsp;
 
 A user may optionally import information from a corresponding Simulink model and also make the mapping between the components/variables described in the requirements and the components/port types of the Simulink model. To do that, the user can optionally generate the model information in a compliant-to-FRET JSON format by using `fret/tools/Scripts/Matlab/fret_IR.m`. Then the JSON file can be imported into FRET by clicking the Import button.
 
@@ -108,7 +116,7 @@ If model information has been imported, the user may pick for each FRET componen
 
 ***
 
-Next, for each variable, all mandatory fields must be completed. For each type of variable, i.e., `Input`, `Output`, `Internal`, and `Mode`, there are different mandatory fields. Mandatory fields are depicted with an asterisk.
+Next, for each variable, all mandatory fields must be completed. For each type of variable, i.e., `Input`, `Output`, `Internal`, `Function`, and `Mode`, there are different mandatory fields. Mandatory fields are depicted with an asterisk.
 
 ***
 &nbsp;&nbsp;&nbsp;&nbsp;
@@ -136,7 +144,7 @@ To complete the information of a variable, please click on the corresponding FRE
 
 **5. Click on the Export button and save the generated code**
 
-Once all mandatory fields have been completed for all the variables/modes of a component, then the export button becomes enabled for CoCoSpec code generation.
+Once all mandatory fields have been completed for all the variables/modes of a component, then the export button becomes enabled for CoCoSpec code and R2U2 monitor generation.
 
 ***
 &nbsp;&nbsp;&nbsp;&nbsp;
@@ -154,7 +162,11 @@ Since there are no mandatory fields for Copilot, the export buttons are always e
 
 ***
 
-Once the export button is clicked, the generated code can be saved in the form of a Lustre file along with model traceability data. The two files are compined in .zip format. The Lustre specification and the traceability data files can then be given as input to the CoCoSim tool.
+***5a. Exporting CoCoSpec code***
+Once the export button is clicked, the generated code can be saved in the form of a Lustre file along with model traceability data. The two files are combined in .zip format. The Lustre specification and the traceability data files can then be given as input to the CoCoSim tool.
+
+***5b. Exporting R2U2 monitors***
+Once the export button is clicked, the generated monitors can be saved in the form of a C2PO specification file along with an example csv trace header file and map file for mapping input signals into R2U2. The three files are combined in .zip format. The C2PO specification and either the example csv trace header or map file can then be given as input to C2PO to create an R2U2 configuration.
 
 ***
 &nbsp;&nbsp;&nbsp;&nbsp;

@@ -43,7 +43,7 @@ async function synchFRETvariables (selectedProject, component) {
       var variable_data =  result.docs.map(r => {
         //console.log('variableMappingSupports.synchFRETvariables: ',r)
         componentModel = r.modelComponent;
-              return createData(r.variable_name, r.modeldoc_id, r.idType, r.dataType, { completed: r.completed, smvCompleted: r.smvCompleted }, r.description)
+              return createData(r.variable_name, r.modeldoc_id, r.idType, r.dataType, { completed: r.completed, r2u2Completed: r.r2u2Completed, smvCompleted: r.smvCompleted }, r.description)
             }).sort((a, b) => {return a.variable_name > b.variable_name})
       modelComponent= componentModel
 
@@ -106,10 +106,11 @@ function getPropertyInfo(result, outputVariables, component) {
           doc.semantics.CoCoSpecCode !== constants.undefined_semantics &&
           doc.semantics.CoCoSpecCode !== constants.unhandled_semantics){
             property.value = doc.semantics.CoCoSpecCode;
+            property.R2U2 = doc.semantics.R2U2Code;
             property.reqid = doc.reqid;
             property.fullText = "Req text: " + doc.fulltext;
             property.fretish = doc.fulltext;
-            //TODO: remove HTLM-tags from ptExpanded
+            //TODO: remove HTML-tags from ptExpanded
             property.ptLTL = doc.semantics.ptExpanded.replace(/<b>/g, "").replace(/<i>/g, "").replace(/<\/b>/g, "").replace(/<\/i>/g, "");
             outputVariables.forEach(function(variable){
             if (property.value.includes(variable)){
@@ -191,6 +192,16 @@ function getSMVDataType(dataType) {
   }
 }
 
+function getR2U2DataType(dataType) {
+  if (dataType === 'boolean'){
+    return "bool";
+  } else if (dataType ==='integer'){
+    return 'int';
+  } else if (dataType === 'double'){
+    return 'float';
+  }
+}
+
 function getCoCoSpecDataType(dataType){
   if (dataType === 'boolean'){
       return 'bool';
@@ -204,7 +215,10 @@ function getCoCoSpecDataType(dataType){
 function getDataType(dataType, language) {
   if (language === 'smv') {
     return getSMVDataType(dataType);
-  } else {
+  } else if (language === 'r2u2') {
+    return getR2U2DataType(dataType);
+  }
+  else {
     return getCoCoSpecDataType(dataType);
   }
 }
@@ -218,6 +232,7 @@ function getContractInfo(result, language) {
     functions: [],
     assignments: [],
     copilotAssignments: [],
+    r2u2Assignments: [],
     smvAssignments: [],
     modes: [],
     properties: []
@@ -237,6 +252,7 @@ function getContractInfo(result, language) {
       contract.internalVariables.push(variable);
       contract.assignments.push(doc.assignment);
       contract.copilotAssignments.push(doc.copilotAssignment);
+      contract.r2u2Assignments.push(doc.r2u2Assignment);
       contract.smvAssignments.push(doc.smvAssignment);
     } else if (doc.idType === 'Mode'){
       if (doc.modeRequirement !== '')

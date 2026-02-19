@@ -147,8 +147,16 @@ function getCoCoSpecString (ptLTL, form) {
 function get_LTL_from_old_SALT(SALT_string,SALT_env_var='SALT_HOME') {
   if (constants.verboseSemanticsGenerator)
         console.log('\n\nSALT_env_var = ' + SALT_env_var + '\n\n');
-  var SALT_assertion = "'" + SALT_string + "'";
-  var SALT_command = 'java -cp "$' + SALT_env_var + '/lib/antlr-2.7.5.jar:$' + SALT_env_var +'/bin/salt.jar:$'+SALT_env_var +'/bin" de.tum.in.salt.Compiler -xtltl -f ' + SALT_assertion;
+  const tempFilePath = 'temp_SALT.txt';
+  const fs = require('fs');
+  fs.writeFileSync(tempFilePath, SALT_string, function (err){
+    if (err){
+      console.log('SemanticsGenerator:get_LTL_from_old_SALT error 0:');
+      console.log(err);
+      return stdout;
+    }
+  })
+  var SALT_command = 'java -cp "$' + SALT_env_var + '/lib/antlr-2.7.5.jar:$' + SALT_env_var +'/bin/salt.jar:$'+SALT_env_var +'/bin" de.tum.in.salt.Compiler -xtltl ' + tempFilePath;
   if (constants.verboseSemanticsGenerator) console.log(SALT_command);
   var LTL_string = 'Initial LTL string';
   var compilation = '';
@@ -167,5 +175,12 @@ function get_LTL_from_old_SALT(SALT_string,SALT_env_var='SALT_HOME') {
     console.log('SemanticsGenerator:get_LTL_from_old_SALT error 2:');
     console.log(error);
  }
+   fs.unlinkSync(tempFilePath, (err) => {
+    if (err) {
+      console.log('SemanticsGenerator:get_LTL_from_old_SALT error 0:');
+      console.log(error);
+    }
+    if (constants.verboseSemanticsGenerator) console.log(`File ${tempFilePath} has been successfully removed.`);
+  });
   return stdout;
 }
