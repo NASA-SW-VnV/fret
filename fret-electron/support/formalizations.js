@@ -13,13 +13,11 @@ const formalization_descriptions = require(fretSupportPath + 'formalization-desc
 const nonsense_patterns = [
     '-,!regular,always|eventually|within|never|immediately,order|not_order',
     '-,regular,-,order|not_order'
-  //,'before,-,immediately|within|after,-'
 ]
 
 const high_level_unhandled = [
     '-,-,-,!satisfaction',
     '-,only,-,satisfaction'
-//    'onlyAfter|onlyBefore|onlyIn,-,until,satisfaction'
 ]
 
 const NuSMVSubsts = [

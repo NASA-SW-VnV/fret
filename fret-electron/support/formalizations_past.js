@@ -343,7 +343,6 @@ function notAfter(property, duration, cond='null') {
 
 const EndPointRewriteRules = [
     ['FFiM','(FiM and ((previous (historically not MODE)) or FTP))'],
-    //['FLiM','(LiM and previous ((not LiM) since required inclusive FTP))'],
     ['FLiM','(LiM and previous (historically (not LiM)))'], // is this the same as above?
     ['FiM', '(MODE and (FTP or (previous not MODE)))'],
     ['LiM', '((not MODE) and (previous MODE))'],
@@ -354,7 +353,6 @@ const EndPointRewriteRules = [
 
 const SMVEndPointRewriteRules = [
     ['FFiM','(FiM & ((Y (H (!MODE))) | FTP))'],
-    //['FLiM','(LiM and previous ((not LiM) since required inclusive FTP))'],
     ['FLiM','(LiM & (Y (H (!LiM))))'], // is this the same as above?
     ['FiM', '(MODE & (FTP | (Y (!MODE))))'],
     ['LiM', '((!MODE) & (Y MODE))'],

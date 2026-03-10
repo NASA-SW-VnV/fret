@@ -14,7 +14,6 @@ const utilities = require(fretSupportPath + 'utilities')
 // for infinite traces LAST=false
 const EndpointRewrites = [
     ['FiM|FFiM|LNiM', '((not MODE) and (not LAST) and next MODE)'], // what if beginning of trace? FTP
-    //['LiM|FNiM|FLiM', '(MODE and (LAST or next (not MODE)))']
     ['LiM|FNiM|FLiM', '(MODE and (not LAST) and next (not MODE))']
     // we found the need for adding (not LAST) because of after
     // now interestingly when they act as right end they also get the or LAST
@@ -25,7 +24,6 @@ const EndpointRewrites = [
 // for infinite traces LAST=false
 const SMVEndpointRewrites = [
   ['FiM|FFiM|LNiM', '((! MODE) & (! LAST) & (X MODE))'],
-  //['LiM|FNiM|FLiM', '(MODE & (LAST | X (! MODE)))']
   ['LiM|FNiM|FLiM', '(MODE & (! LAST) & X (! MODE))']
     // we found the need for adding (not LAST) because of after
     // now interestingly when they act as right end they also get the or LAST
@@ -203,8 +201,6 @@ function notUntilTiming(property,stopcond,endsScope='ENDSCOPE') {
 }
 
 function beforeTiming(property,stopcond,endsScope='ENDSCOPE') {
-    //let formula1 = `${property} releases ${negate(stopcond)}`
-    //let formula2 = `${endsScope} releases ${negate(stopcond)}`
     // In case stopcond never happens, we don't require property to hold.
     let formula = `(${property} or ${endsScope}) releases ${negate(stopcond)}`
     return formula;
@@ -333,7 +329,6 @@ function onlyBefore (formula, point) {
 function after (formula, point) {
   if (point != 'LAST')
     return `((${formula}) after exclusive optional ${point})`
-    //return `((${formula}) between exclusive optional ${point}, inclusive weak LAST)`
   else {
     // if the leftpoint is the last point, we do not want to check anything that comes after it
     return true
@@ -373,7 +368,6 @@ exports.getEndPointRewrites = () => {
 const EndpointRewrites2 = [
     ['FiM|FFiM|LNiM', '((not MODE) and (not LAST) and next MODE)'], // what if beginning of trace? FTP
     ['LiM|FNiM|FLiM', '(MODE and (LAST or next (not MODE)))']
-    //['LiM|FNiM|FLiM', '(MODE and (not LAST) and next (not MODE))']
     // we found the need for adding (not LAST) because of after
     // now interestingly when they act as right end they also get the or LAST
     // when we enforce when right never occurs
@@ -385,7 +379,6 @@ const EndpointRewrites2 = [
 const SMVEndpointRewrites2 = [
   ['FiM|FFiM|LNiM', '((! MODE) & (! LAST) & (X MODE))'],
   ['LiM|FNiM|FLiM', '(MODE & (LAST | X (! MODE)))']
-  //['LiM|FNiM|FLiM', '(MODE & (! LAST) & X (! MODE))']
     // we found the need for adding (not LAST) because of after
     // now interestingly when they act as right end they also get the or LAST
     // when we enforce when right never occurs
