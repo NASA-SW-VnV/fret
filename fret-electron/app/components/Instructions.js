@@ -331,8 +331,23 @@ handleSwitchChange =(event) => {
                   control={<Switch size="small" checked={this.state.ftInfinite} onChange={this.handleSwitchChange} name="ftInfinite" />}
                   label="Infinite trace"/>
             </div>
+          </FormGroup>}
+          {isProbabilistic && <FormGroup row>
+          <div>
+           <br />
+          <FormControl>
+            <Select
+              labelId="select-disabled-label"
+              value={this.state.pctlFormat}
+            >
+            <MenuItem id="qa_crtAst_sem_mi_PCTL" value='PRISM' key='PRISM'>PRISM</MenuItem>
+            </Select>
+            <FormHelperText>Format</FormHelperText>
+            </FormControl>
+            </div>
             <br />
           </FormGroup>}
+            <br />
             {!isProbabilistic ? <div id="qa_crtAst_sem_typ_futureTimeFormula" className={classes.formula}
               dangerouslySetInnerHTML={{ __html: (this.state.ftInfinite ? this.props.formalization.semantics.ftInfAUExpanded : this.props.formalization.semantics.ftExpanded)}} />
             : <div id="qa_crtAst_sem_typ_futureTimeFormula" className={classes.formula}
