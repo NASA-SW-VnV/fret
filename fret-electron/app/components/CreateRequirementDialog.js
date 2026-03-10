@@ -166,7 +166,7 @@ class CreateRequirementDialog extends React.Component {
   };
 
   handleClose = () => {
-    this.setState({ createDialogOpen: false, tabValue: 0 });
+    this.setState({ createDialogOpen: false, tabValue: 0, isProbabilistic: false});
     this.state.dialogCloseListener(false);
     this.setAutoFillVariables([]);
     if(process.env.EXTERNAL_TOOL=='1'){
@@ -185,7 +185,7 @@ class CreateRequirementDialog extends React.Component {
   handleCreate = async ()  => {
     if (! this.state.createDialogOpen){return;}
     this.setState({
-      createDialogOpen: false
+      createDialogOpen: false, tabValue: 0, isProbabilistic: false
     });
     var self = this;
     const { edittingRequirement, project, reqid, parent_reqid, rationale, comments} = this.state;
