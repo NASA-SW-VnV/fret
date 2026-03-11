@@ -199,12 +199,14 @@ async function checkR2U2Components(components, selectedProject, data, completedC
 function checkComponentsWithR2U2Semantics(requirements) {
     var componentsWithR2U2Semantics = []    
     if (requirements) {      
-      for (const req of requirements) {        
-        if (componentsWithR2U2Semantics.includes(req.semantics.component_name)) {
-          continue;
-        } else {
-          if (('R2U2Code' in req.semantics)) {
-            componentsWithR2U2Semantics.push(req.semantics.component_name);
+      for (const req of requirements) {
+        if (typeof req.semantics !== 'undefined') {       
+          if (componentsWithR2U2Semantics.includes(req.semantics.component_name)) {
+            continue;
+          } else {
+            if (('R2U2Code' in req.semantics)) {
+              componentsWithR2U2Semantics.push(req.semantics.component_name);
+            }
           }
         }
       }
