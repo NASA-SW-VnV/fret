@@ -23,7 +23,7 @@ SemanticsGenerator.prototype.customizeForFret = customizeForFret;
 SemanticsGenerator.prototype.getBatchSemanticsFromSALT = getBatchSemanticsFromSALT;
 SemanticsGenerator.prototype.getCoCoSpecString = getCoCoSpecString;
 
-var execSync = require('child_process').execSync;
+const spawnSync = require('child_process').spawnSync;
 
 const substitutionsCustomizeFret = [
   [constants.bound+'.0', '\$duration\$'],
@@ -162,14 +162,14 @@ function get_LTL_from_old_SALT(SALT_string,SALT_env_var='SALT_HOME') {
   var compilation = '';
   var stdout = '';
   try {
-    compilation = execSync(SALT_command).toString();
+    compilation = spawnSync('java', ['-cp', '"$'+SALT_env_var+'/lib/antlr-2.7.5.jar:$'+SALT_env_var+'/bin/salt.jar:$'+SALT_env_var+'/bin"', 'de.tum.in.salt.Compiler', '-xtltl', tempFilePath]).stdout.toString();
   } catch (error) {
     console.log('SemanticsGenerator:get_LTL_from_old_SALT error 1:');
     console.log(error);
     //console.log('SALT_string:\n' + SALT_string);
   }
   try {
-    stdout = execSync('/tmp/salt_temp').toString();
+    stdout = spawnSync('/tmp/salt_temp').stdout.toString();
   }
   catch (error) {
     console.log('SemanticsGenerator:get_LTL_from_old_SALT error 2:');

@@ -6,7 +6,7 @@
 // @flow
 import fs from 'fs';
 import chalk from 'chalk';
-import { execSync } from 'child_process';
+import { spawnSync } from 'child_process';
 import { dependencies } from '../../package.json';
 
 (() => {
@@ -22,7 +22,7 @@ import { dependencies } from '../../package.json';
     // because of a devDependency then that is okay. Warn when it is installed
     // because of a dependency
     const { dependencies: dependenciesObject } = JSON.parse(
-      execSync(`npm ls ${nativeDeps.join(' ')} --json`).toString()
+      spawnSync('npm', ['ls', ...nativeDeps, '--json'], { encoding: 'utf8' }).stdout.toString()
     );
     const rootDependencies = Object.keys(dependenciesObject);
     const filteredRootDependencies = rootDependencies.filter(rootDependency =>

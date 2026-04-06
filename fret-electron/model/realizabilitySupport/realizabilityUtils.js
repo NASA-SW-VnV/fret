@@ -11,7 +11,7 @@ import * as realizability from '../../analysis/realizabilityCheck';
 import DiagnosisEngine from '../../analysis/DiagnosisEngine';
 import { getProjectRequirements, getAllDocs } from '../fretDbSupport/fretDbGetters_main';
 
-const { execSync } = require('child_process');
+const { spawnSync } = require('child_process');
 const process = require('process');
 const fs=require("fs");
 const constants = require('../../app/parser/Constants');
@@ -43,23 +43,23 @@ function deleteAnalysisFiles() {
 function checkDependenciesExist() {
   let missingDependencies = [];
   try {
-    execSync('jkind -help');
-    execSync('jrealizability -help');
+    spawnSync('jkind', ['-help'], { encoding: 'utf8' });
+    spawnSync('jrealizability', ['-help'], { encoding: 'utf8' });
   } catch(err) {
     missingDependencies.push('jkind');
   }
 
   try {
-    execSync('kind2 -h');
+    spawnSync('kind2', ['-h'], { encoding: 'utf8' });
   } catch(err) {
     missingDependencies.push('kind2');
   }
 
   try {
     if ((process.platform === "linux") || (process.platform === "darwin")){
-      execSync('which aeval');
+      spawnSync('which', ['aeval'], { encoding: 'utf8' });
     } else if (process.platform === "win32") {
-      execSync('where aeval');
+      spawnSync('where', ['aeval'], { encoding: 'utf8' });
     } else {
       throw "Unknown_OS"
     }
@@ -73,7 +73,7 @@ function checkDependenciesExist() {
   }
 
   try {
-    execSync('z3 -h');
+    spawnSync('z3', ['-h'], { encoding: 'utf8' });
   } catch (err) {
     missingDependencies.push('z3');
   }

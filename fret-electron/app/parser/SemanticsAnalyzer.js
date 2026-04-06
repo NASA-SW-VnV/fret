@@ -345,7 +345,7 @@ function createVariableDescription(scope, condition, timing, response, stop_cond
 
 }
 
-var execSync = require('child_process').execSync;
+const spawnSync = require('child_process').spawnSync;
 function get_LTL_from_old_SALT(SALT_string,SALT_env_var='SALT_HOME') {
     if (constants.verboseSemanticsAnalyzer) console.log('\nSALT_env_var = ' + SALT_env_var + '\n');
   	let SALT_assertion = "'" + SALT_string + "'";
@@ -355,8 +355,8 @@ function get_LTL_from_old_SALT(SALT_string,SALT_env_var='SALT_HOME') {
   	var compilation = '';
   	var stdout = '';
   	try {
-  	    compilation = execSync(SALT_command).toString();
-              stdout = execSync('/tmp/salt_temp').toString();
+  	    compilation = spawnSync('java', ['-cp', '"$'+SALT_env_var+'/lib/antlr-2.7.5.jar:$'+SALT_env_var+'/bin/salt.jar:$'+SALT_env_var+'/bin"', 'de.tum.in.salt.Compiler', '-xtltl', '-f', SALT_assertion]).stdout.toString();
+              stdout = spawnSync('/tmp/salt_temp').stdout.toString();
   	} catch (error) {
 	    console.log('SemanticsAnalyzer:get_LTL_from_old_SALT error:');
             console.log(error);

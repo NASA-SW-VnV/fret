@@ -12,7 +12,7 @@ const xform = require('../../support/xform');
 const fs=require("fs");
 const constants = require('../../app/parser/Constants');
 var parseString = require('xml2js').parseString;
-const { exec, execSync, spawn } = require('child_process');
+const { spawn, spawnSync } = require('child_process');
 const process = require('process');
 var analysisPath = require("os").homedir() + '/Documents/fret-analysis/';
 
@@ -30,9 +30,9 @@ function checkTestGenDependenciesExist() {
     for (const dependency of dependenciesToCheck) {
         try {
             if ((process.platform === "linux") || (process.platform === "darwin")){
-                execSync('which ' + dependency);
+                spawnSync('which', [dependency]);
             } else if (process.platform === "win32") {
-                execSync('where ' + dependency);
+                spawnSync('where', [dependency]);
             } else {
                 throw "Unknown_OS"
             }
@@ -195,87 +195,105 @@ function runKind2(specName, filePath, propertyNames, callback) {
     });
 }
 
-function runNuSMV(filePath, traceLength, callback) {    
-    var command = 'NuSMV -s -source mc_steps.scr ' + filePath;
+function runNuSMV(filePath, traceLength, callback) {        
+    var NuSMVcommandOptions = ['-s', '-source', 'mc_steps.scr', filePath];
+    const NuSMV = spawn('NuSMV', NuSMVcommandOptions, {cwd: analysisPath});
 
-    exec(command, {cwd: analysisPath}, function(err, stdout, stderr) {
-        if (err) {
-            console.log(JSON.stringify(err))
-            callback(err)
-        } else {
-            var xmldoc = '';
+    NuSMV.on('close', (code) => {
+        optLog(`NuSMV process exited with code ${code}`);
+        switch(code) {
+            case 0:
+                try {
+                    var xmldoc = '';
 
-            //Note: NuSMV 2.7.0 changed its behavior in printing trace files. In 2.6.0, '-a -o outfile' would print a single file "outfile".
-            //In 2.7.0, a separate file "num_outfile" is created for each trace.
-            //The loop below provides a way to preserve compatibility with both versions.
-            for (const xmlFile of fs.readdirSync(analysisPath)) {
-                if (xmlFile.endsWith('out.xml')) {
-                    xmldoc = xmldoc + fs.readFileSync(analysisPath+xmlFile,'utf8');
-                }
-            }
-                        
-            xmldoc = xmldoc.replaceAll(/<\?xml.*>\n/g,'')        
-            xmldoc = '<root>' + xmldoc + '</root>';
-            var jsondoc;
-            parseString(xmldoc, {
-                    valueProcessors: [booleanValueTransformation]
-                }, 
-                function(err, result) {
-                    jsondoc = result.root['counter-example'];
-                }            
-            );
-            
-            //Add variable names to JSON trace
-            var variableNames = jsondoc[0].node[0].state[0].value.map(stVar => stVar.$.variable);
-
-            //Remove "ltlsim_t" variable, as it would otherwise appear in LTLSIM
-            variableNames = variableNames.slice(1)
-
-            //Remove "LAST" variable.
-            variableNames = variableNames.slice(0,-1)
-
-            var traceArray = []
-            var testCounter = 1;
-
-            //Array that stores unique tests.
-            var uniqueVariableValues = [];
-
-            for (const cex of jsondoc) {
-
-                //Get variable values from JSON trace. Remove ltlsim_t and LAST values.
-                var variableValues = cex.node.map((nd, index) => {
-                    return nd.state.map(st => st.value.map(val => val._).slice(1).slice(0,-1))
-                })
-                .slice(0,traceLength)  
-                .flat(1)
-                
-
-                if(testIsUnique(variableValues.flat(Infinity), uniqueVariableValues)) {
-                    uniqueVariableValues.push(variableValues.flat(Infinity))
-
-                    var ltlsimJSONTrace = {
-                        traceID: "test"+testCounter,
-                        traceDescription: "",
-                        theTrace: {
-                            traceLength: traceLength,
-                            keys: [],
-                            values: []
-                        },
-                        saveToReqID: "*",
-                        saveToComponent: "*",
-                        saveToProject: ""
+                    //Note: NuSMV 2.7.0 changed its behavior in printing trace files. In 2.6.0, '-a -o outfile' would print a single file "outfile".
+                    //In 2.7.0, a separate file "num_outfile" is created for each trace.
+                    //The loop below provides a way to preserve compatibility with both versions.
+                    for (const xmlFile of fs.readdirSync(analysisPath)) {
+                        if (xmlFile.endsWith('out.xml')) {
+                            xmldoc = xmldoc + fs.readFileSync(analysisPath+xmlFile,'utf8');
+                        }
                     }
-                
-                    ltlsimJSONTrace = {...ltlsimJSONTrace, theTrace: {...ltlsimJSONTrace.theTrace, keys: [...ltlsimJSONTrace.theTrace.keys.concat(variableNames)], values: variableValues}};
+                                    
+                    xmldoc = xmldoc.replaceAll(/<\?xml.*>\n/g,'')        
+                    xmldoc = '<root>' + xmldoc + '</root>';
+                    var jsondoc;
+                    parseString(xmldoc, {
+                            valueProcessors: [booleanValueTransformation]
+                        }, 
+                        function(err, result) {
+                            jsondoc = result.root['counter-example'];
+                        }            
+                    );
+                        
+                    //Add variable names to JSON trace
+                    var variableNames = jsondoc[0].node[0].state[0].value.map(stVar => stVar.$.variable);
 
-                    traceArray.push(ltlsimJSONTrace);
-                    testCounter++;
-                }
-            }
-            fs.writeFileSync(analysisPath + 'trace.json', JSON.stringify(traceArray, null, 4))
-            callback(null, traceArray)
+                    //Remove "ltlsim_t" variable, as it would otherwise appear in LTLSIM
+                    variableNames = variableNames.slice(1)
+
+                    //Remove "LAST" variable.
+                    variableNames = variableNames.slice(0,-1)
+
+                    var traceArray = []
+                    var testCounter = 1;
+
+                    //Array that stores unique tests.
+                    var uniqueVariableValues = [];
+
+                    for (const cex of jsondoc) {
+
+                        //Get variable values from JSON trace. Remove ltlsim_t and LAST values.
+                        var variableValues = cex.node.map((nd, index) => {
+                            return nd.state.map(st => st.value.map(val => val._).slice(1).slice(0,-1))
+                        })
+                        .slice(0,traceLength)  
+                        .flat(1)
+                        
+
+                        if(testIsUnique(variableValues.flat(Infinity), uniqueVariableValues)) {
+                            uniqueVariableValues.push(variableValues.flat(Infinity))
+
+                            var ltlsimJSONTrace = {
+                                traceID: "test"+testCounter,
+                                traceDescription: "",
+                                theTrace: {
+                                    traceLength: traceLength,
+                                    keys: [],
+                                    values: []
+                                },
+                                saveToReqID: "*",
+                                saveToComponent: "*",
+                                saveToProject: ""
+                            }
+                        
+                            ltlsimJSONTrace = {...ltlsimJSONTrace, theTrace: {...ltlsimJSONTrace.theTrace, keys: [...ltlsimJSONTrace.theTrace.keys.concat(variableNames)], values: variableValues}};
+
+                            traceArray.push(ltlsimJSONTrace);
+                            testCounter++;
+                        }
+                    }
+                    fs.writeFileSync(analysisPath + 'trace.json', JSON.stringify(traceArray, null, 4))
+                    callback(null, traceArray)
+                } catch (err) {
+                    callback(new Error('NuSMV trace parsing failed.'))
+                }   
+                break;
+            case 1:
+                //General error
+                NuSMV.kill();
+                callback(new Error('NuSMV returned with a general error.'));
+                break;
+            default:
+                NuSMV.kill();
+                callback(new Error('NuSMV terminated unexpectedly.'));
+                break;
         }
     })
+
+    NuSMV.on('error', (err) => {
+        callback(err);
+    });
 }
 
 function generateNuSMVInterpreterFile() {

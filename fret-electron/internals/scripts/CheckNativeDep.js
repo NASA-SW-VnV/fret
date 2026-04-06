@@ -6,7 +6,7 @@
 // @flow
 import fs from 'fs';
 import chalk from 'chalk';
-import { execSync } from 'child_process';
+import { spawnSync } from 'child_process';
 import { dependencies } from '../../package.json';
 
 (() => {
@@ -21,7 +21,7 @@ import { dependencies } from '../../package.json';
     // Find the reason for why the dependency is installed. If it is installed
     // because of a devDependency then that is okay. Warn when it is installed
     // because of a dependency
-    const dependenciesObject = JSON.parse(execSync(`npm ls ${nativeDeps.join(' ')} --json`).toString());
+    const dependenciesObject = JSON.parse(spawnSync('npm', ['ls', ...nativeDeps, '--json']).stdout.toString());
     const rootDependencies = Object.keys(dependenciesObject.dependencies);
     const filteredRootDependencies = rootDependencies
       .filter(rootDependency => dependenciesKeys.includes(rootDependency));

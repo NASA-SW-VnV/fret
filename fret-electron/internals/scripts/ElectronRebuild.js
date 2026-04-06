@@ -5,7 +5,7 @@
 // Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 // @flow
 const path = require('path');
-const { execSync } = require('child_process');
+const { spawnSync } = require('child_process');
 const fs = require('fs');
 const dependencies = require('../../app/package.json');
 
@@ -17,10 +17,10 @@ if (Object.keys(dependencies || {}).length > 0 && fs.existsSync(nodeModulesPath)
   '../node_modules/.bin/electron-rebuild --force --types prod,dev,optional --module-dir .';
 
   const cmd = process.platform === 'win32'
-    ? electronRebuildCmd.replace(/\//g, '\\')
-    : electronRebuildCmd;
+    ? electronRebuildCmd.replace(/\//g, '\\').split(' ')
+    : electronRebuildCmd.split(' ');
 
-  execSync(cmd, {
+  spawnSync(cmd[0], cmd.slice(1), {
     cwd: path.join(__dirname, '..', '..', 'app')
   });
 }

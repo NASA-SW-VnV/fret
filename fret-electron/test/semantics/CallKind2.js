@@ -6,7 +6,7 @@
 const fretSupportPath = "../../support/";
 const intervalLogic = require(fretSupportPath + 'intervalLogic');
 const fs = require('fs');
-const execSync = require('child_process').execSync;
+const spawnSync = require('child_process').spawnSync;
 
 function writeCoCoSpecNodeFile(filePath, cocospecFormula, fn_keys, fileNameBase) {
   var libraryPath = `../../support/CoCoSpecTemplates/LibraryOfOperatorsComplete.ejs`;
@@ -49,13 +49,13 @@ function writeCoCoSpecInputFile(mip, rip, cip, filePath, TraceLength){
 }
 
 function runTest(nodeFilePath, inputFilePath, TraceLength){
-  var kind2Command = '$KIND2_HOME/kind2 -json '+  nodeFilePath + ' --enable interpreter --interpreter_input_file ' + inputFilePath;
+  
   var formulaOutput = '';
   try {
-    var output = execSync(kind2Command).toString();
+    var output = spawnSync('kind2', ['-json', nodeFilePath, '--enable', 'interpreter', '--interpreter_input_file', inputFilePath], { encoding: 'utf8' });
     //The generated Json file contains errors, so we remove the lines with the errors
     // break the output into an array of lines
-    var lines = output.split('\n');
+    var lines = output.stdout.toString().split('\n');
     // remove lines, starting at the first position
     lines.splice(0,7);
     lines.splice(1,12);

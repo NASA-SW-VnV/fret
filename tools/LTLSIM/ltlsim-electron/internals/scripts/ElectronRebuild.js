@@ -5,7 +5,7 @@
 // Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 // @flow
 import path from 'path';
-import { execSync } from 'child_process';
+import { spawnSync } from 'child_process';
 import fs from 'fs';
 import { dependencies } from '../../app/package.json';
 
@@ -20,10 +20,10 @@ if (
 
   const cmd =
     process.platform === 'win32'
-      ? electronRebuildCmd.replace(/\//g, '\\')
-      : electronRebuildCmd;
+      ? electronRebuildCmd.replace(/\//g, '\\').split(' ')
+      : electronRebuildCmd.split(' ');
 
-  execSync(cmd, {
+  spawnSync(cmd[0], cmd.slice(1), {
     cwd: path.join(__dirname, '..', '..', 'app')
   });
 }

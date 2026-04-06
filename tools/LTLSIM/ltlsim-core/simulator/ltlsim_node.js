@@ -3,7 +3,7 @@
 // The “FRET : Formal Requirements Elicitation Tool - Version 3.0” software is licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0. 
 // 
 // Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
-const { spawn, execSync } = require('child_process');
+const { spawn, spawnSync } = require('child_process');
 const path = require('path');
 
 function apply(match, onResult) {
@@ -146,7 +146,7 @@ exports.simulate = function simulate(model, filter, concurrent, onResult, onClos
 
 exports.check = function check() {
     try {
-        let checkLTLSim = execSync('ltlsim -h').toString();
+        let checkLTLSim = spawnSync('ltlsim', ['-h'], { encoding: 'utf8' }).stdout.toString();
 
         /* Strangely, calling nusmv -h to check for nusmv does not work here, 
         as nusmv appears to print its help output on stderr instead of stdout,
@@ -158,14 +158,7 @@ exports.check = function check() {
         ltlsim is available, but we can not detect missing ltlsim when nusmv is
         available. This will look like both tools are missing). */
         try {
-            execSync('ltlsim -c', (error, stdout, stderr) => {
-                if (error) {
-                    console.error(`exec error: ${error}`);
-                    return;
-                } 
-                console.log(`stdout: ${stdout}`);
-                console.log(`stderr: ${stderr}`);
-            });
+            spawnSync('ltlsim', ['-c'], { encoding: 'utf8' });                         
         } catch(nusmvError) {
             return {
                 ltlsim: checkLTLSim.length > 0,

@@ -11,7 +11,7 @@ const constants = require(fretParserPath + 'Constants');
 //const intervalLogic = require(fretSupportPath + 'intervalLogic');
 
 const fs = require('fs');
-const execSync = require('child_process').execSync;
+const spawnSync = require('child_process').spawnSync;
 
 const verboseNuSMV = false;
 
@@ -45,13 +45,11 @@ exports.callNuSMV2 = (file_name) => {
     //var nuXmv_command = '$nuXmv_HOME/bin/nuXmv -dcx -source ' + batchFile;
     //var nuXmv_command = '$nuXmv_HOME/bin/nuXmv -source ' + batchFile;
     //var nu_command = nuXmv_command;
-
-    // -dcx is option to not print out counter-example
-    var nu_command = constants.semanticsTestEngine + ' -dcx -source ' + batchFile;
-    //console.log('command = ' + nu_command);
+        
     var NuSMV_output = '';
     try {
-	NuSMV_output = execSync(nu_command).toString();
+      // -dcx is option to not print out counter-example
+	    NuSMV_output = spawnSync(constants.semanticsTestEngine, ['-dcx', '-source', batchFile], { encoding: 'utf8' }).stdout.toString();
     } catch (error) {
 	console.log(error);
     }
@@ -82,7 +80,7 @@ exports.callNuSMV = (file_name) => {
     //console.log('command = ' + nu_command);
     var NuSMV_output = '';
     try {
-	NuSMV_output = execSync(nu_command).toString();
+	NuSMV_output = spawnSync(constants.semanticsTestEngine, ['-dcx', file_name], { encoding: 'utf8' }).stdout.toString();
     } catch (error) {
 	console.log(error);
     }
