@@ -7,11 +7,17 @@ We thank the community for using FRET. [Here](#external-publications) is a list 
 
 # Categorized Publication List
 ------------------------------
+### Tutorial paper
+
+* Anastasia Mavridou, Andreas Katis, Mari A. Aoki, Marie Farrell. [Requirements Elicitation, Formalization, and Analysis with FRET: A Tutorial](https://research.manchester.ac.uk/en/publications/requirements-elicitation-formalization-and-analysis-with-fret-a-t/), FM 2026, Tutorial Paper.
+
 ### Tool paper
 
 * Dimitra Giannakopoulou, Anastasia Mavridou, Thomas Pressburger, Julian Rhein, Johann Schumann, Nija Shi. [Formal Requirements Elicitation with FRET](https://ceur-ws.org/Vol-2584/PT-paper4.pdf), REFSQ 2020, Tool Paper.
 
 ### Case studies
+
+* Hazel M. Taylor, Anastasia Mavridou, Marie Farrell, Louise A. Dennis. [Explainability Pattern Specifications for Human-Robot Teamwork](https://pure.manchester.ac.uk/ws/portalfiles/portal/947988402/ERAS_Explainability_Pattern_Specifications_for_Human_Robot_Teamwork.pdf), ERAS 2025.
 
 * Gricel Vazquez, Anastasia Mavridou, Marie Farrell, Tom Pressburger, Radu Calinescu.
 [Robotics: A New Mission for FRET Requirements](https://pure.manchester.ac.uk/ws/portalfiles/portal/298664527/NFM2024.pdf),
@@ -45,6 +51,8 @@ NASA/TM–20220017032 2023.
 
 ### Language, semantics, and formalizations
 
+* Daniel Mendoza, Anastasia Mavridou, Andreas Katis, Caroline Trippel. [Automating Requirements Formalization: Using LLMs and Low-Complexity Distinguishing Traces for Semantic Validation](https://www-cs.stanford.edu/people/trippel/pubs/mendoza_ICSE26.pdf), ICSE 2026.
+
 * Esther Conrad, Laura Titolo, Dimitra Giannakopoulou, Thomas Pressburger, Aaron Dutle. [A Compositional Proof Framework for FRETish Requirements](https://dl.acm.org/doi/abs/10.1145/3497775.3503685), CPP 2022.
 
 * Dimitra Giannakopoulou, Thomas Pressburger, Anastasia Mavridou, Johann Schumann (2021). [Automated formalization of structured natural language requirements](https://www.sciencedirect.com/science/article/abs/pii/S0950584921000707), Information and Software Technology (IST) Journal, 137, 106590, Special Section on REFSQ’20, 2021.
@@ -64,9 +72,7 @@ NASA/TM–20220017032 2023.
 * David Kooi, Anastasia Mavridou. [Integrating Realizability Checking in FRET](https://ntrs.nasa.gov/api/citations/20190033980/downloads/20190033980.pdf), NASA/TM–2019-20190033980 2019.
 
 ### Test case generation
-* Andreas Katis, Anastasia Mavridou, Thomas Pressburger.
-A Streamlined, Formal Approach to Requirements-based Testing,
-NFM 2025.
+* Andreas Katis, Anastasia Mavridou, Thomas Pressburger. [A Streamlined, Formal Approach to Requirements-based Testing](https://ntrs.nasa.gov/api/citations/20250002869/downloads/nfm25_46.pdf), NFM 2025.
 
 ### Connection with verification tools
 
@@ -88,6 +94,8 @@ DSN-W 2023.
 
 ### Connection with runtime monitoring tools
 
+* Alexis Aurandt, Christopher Johannsen, Andreas Katis, Anastasia Mavridou, Phillip H Jones, Kristin Yvonne Rozier. From Natural Language Requirements to Runtime Monitors for Resource-Constrained Systems: Integrating FRET and R2U2, NFM 2026.
+
 * Ivan Perez, Anastasia Mavridou, Tom Pressburger, Alwyn Goodloe, Dimitra Giannakopoulou. [Automated Translation of Natural Language Requirements to Runtime Monitors](https://link.springer.com/chapter/10.1007/978-3-030-99524-9_21), TACAS 2022.
 
 * Ivan Perez, Anastasia Mavridou, Thomas Pressburger, Alexander Will, and Patrick J. Martin. [Monitoring ROS2: from Requirements to Autonomous Robots](https://arxiv.org/pdf/2209.14030.pdf), FMAS 2022.
@@ -98,6 +106,7 @@ DSN-W 2023.
 * Aaron Dutle, Cesar A. Munoz, Esther Conrad, Alwyn Goodloe, Laura Titolo, Ivan Perez, Swee Balachandran, Dimitra Giannakopoulou, Anastasia Mavridou, Thomas Pressburger. [From Requirements to Autonomous Flight: An Overview of the Monitoring ICAROUS Project](https://arxiv.org/pdf/2012.03745.pdf), FMAS 2020.
 
 ### Probabilistic and AI/ML requirements
+* Anastasia Mavridou, Divya Gopinath, Corina S Păsăreanu. [Fighting AI with AI: Leveraging Foundation Models for Assuring AI-Enabled Safety-Critical Systems](https://arxiv.org/pdf/2511.20627), FormaliSE 2026.
 
 * Adrian Agogino, Guillaume Brat, Yuning He, Daniel Hulse, Rory Lipkis, Thomas Pressburger, Divya Gopinath, Lukman Irshad, Andreas Katis, Anastasia Mavridou, Ganesh Pai, Corina Pasareanu, Ivan Perez and Johann Schumann.
 [Recommendations on Evidence and Process for Certification of Learning-enabled Components in Aerospace Systems](https://ntrs.nasa.gov/citations/20240006865),
@@ -106,12 +115,6 @@ NASA/TM–20240006865 2024.
 * Marie Farrell, Anastasia Mavridou, Johann Schumann.
 [Exploring Requirements for Software that Learns: A Research Preview](https://link.springer.com/chapter/10.1007/978-3-031-29786-1_12),
 REFSQ 2023.
-
-### Human-robot teamwork requirements
-
-* Hazel Taylor, Anastasia Mavridou, Marie Farrell and Louise Dennis.
-Explainability Pattern Specifications for Human-Robot Teamwork,
-ERAS 2025.
 
 ### External publications
 
@@ -160,13 +163,18 @@ AIAA SCITECH 2024.
 # Chronological Publication List
 -----------------------------------
 
-* Hazel Taylor, Anastasia Mavridou, Marie Farrell, Louise Dennis.
-Explainability Pattern Specifications for Human-Robot Teamwork,
-ERAS 2025.
+* Anastasia Mavridou, Andreas Katis, Mari A. Aoki, Marie Farrell. [Requirements Elicitation, Formalization, and Analysis with FRET: A Tutorial](https://research.manchester.ac.uk/en/publications/requirements-elicitation-formalization-and-analysis-with-fret-a-t/), FM 2026, Tutorial Paper.
 
-* Andreas Katis, Anastasia Mavridou, Thomas Pressburger.
-A Streamlined, Formal Approach to Requirements-based Testing,
-NFM 2025.
+* Alexis Aurandt, Christopher Johannsen, Andreas Katis, Anastasia Mavridou, Phillip H Jones, Kristin Yvonne Rozier. From Natural Language Requirements to Runtime Monitors for Resource-Constrained Systems: Integrating FRET and R2U2, NFM 2026.
+
+* Anastasia Mavridou, Divya Gopinath, Corina S Păsăreanu. [Fighting AI with AI: Leveraging Foundation Models for Assuring AI-Enabled Safety-Critical Systems](https://arxiv.org/pdf/2511.20627), FormaliSE 2026.
+
+* Daniel Mendoza, Anastasia Mavridou, Andreas Katis, Caroline Trippel. [Automating Requirements Formalization: Using LLMs and Low-Complexity Distinguishing Traces for Semantic Validation](https://www-cs.stanford.edu/people/trippel/pubs/mendoza_ICSE26.pdf), ICSE 2026.
+
+
+* Hazel M. Taylor, Anastasia Mavridou, Marie Farrell, Louise A. Dennis. [Explainability Pattern Specifications for Human-Robot Teamwork](https://pure.manchester.ac.uk/ws/portalfiles/portal/947988402/ERAS_Explainability_Pattern_Specifications_for_Human_Robot_Teamwork.pdf), ERAS 2025.
+
+* Andreas Katis, Anastasia Mavridou, Thomas Pressburger. [A Streamlined, Formal Approach to Requirements-based Testing](https://ntrs.nasa.gov/api/citations/20250002869/downloads/nfm25_46.pdf), NFM 2025.
 
 * Hazel Taylor, Matt Luckcuck, Marie Farrell, Caroline Jay, Angelo Cangelosi and Louise Dennis.
 [Eliciting Explainability Requirements for Safety-Critical Systems: A Nuclear Case Study](https://research.manchester.ac.uk/en/publications/eliciting-explainability-requirements-for-safety-critical-systems),
