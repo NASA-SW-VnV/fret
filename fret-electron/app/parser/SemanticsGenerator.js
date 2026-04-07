@@ -156,20 +156,22 @@ function get_LTL_from_old_SALT(SALT_string,SALT_env_var='SALT_HOME') {
       return stdout;
     }
   })
-  var SALT_command = 'java -cp "$' + SALT_env_var + '/lib/antlr-2.7.5.jar:$' + SALT_env_var +'/bin/salt.jar:$'+SALT_env_var +'/bin" de.tum.in.salt.Compiler -xtltl ' + tempFilePath;
-  if (constants.verboseSemanticsGenerator) console.log(SALT_command);
   var LTL_string = 'Initial LTL string';
   var compilation = '';
   var stdout = '';
   try {
-    compilation = spawnSync('java', ['-cp', '"$'+SALT_env_var+'/lib/antlr-2.7.5.jar:$'+SALT_env_var+'/bin/salt.jar:$'+SALT_env_var+'/bin"', 'de.tum.in.salt.Compiler', '-xtltl', tempFilePath]).stdout.toString();
+    const saltPath = process.env[SALT_env_var];
+    if (!saltPath) {
+      throw new Error(`Environment variable ${SALT_env_var} is not set.`);
+    }
+    compilation = spawnSync('java', ['-cp', `${saltPath}/lib/antlr-2.7.5.jar:${saltPath}/bin/salt.jar:${saltPath}/bin`, 'de.tum.in.salt.Compiler', '-xtltl', tempFilePath], {encoding: 'utf8'}).stdout;
   } catch (error) {
     console.log('SemanticsGenerator:get_LTL_from_old_SALT error 1:');
     console.log(error);
     //console.log('SALT_string:\n' + SALT_string);
   }
   try {
-    stdout = spawnSync('/tmp/salt_temp').stdout.toString();
+    stdout = spawnSync('/tmp/salt_temp', {encoding: 'utf8'}).stdout;
   }
   catch (error) {
     console.log('SemanticsGenerator:get_LTL_from_old_SALT error 2:');

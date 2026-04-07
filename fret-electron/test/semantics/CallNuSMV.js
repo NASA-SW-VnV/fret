@@ -49,7 +49,7 @@ exports.callNuSMV2 = (file_name) => {
     var NuSMV_output = '';
     try {
       // -dcx is option to not print out counter-example
-	    NuSMV_output = spawnSync(constants.semanticsTestEngine, ['-dcx', '-source', batchFile], { encoding: 'utf8' }).stdout.toString();
+	    NuSMV_output = spawnSync(constants.semanticsTestEngine, ['-dcx', '-source', batchFile], { maxBuffer: 50 * 1024 * 1024 }).stdout.toString();
     } catch (error) {
 	console.log(error);
     }
