@@ -153,7 +153,7 @@ export default class MenuBuilder {
         {
           label: 'Learn More',
           click() {
-            shell.openExternal('http://electron.atom.io');
+            shell.openExternal('https://electron.atom.io');
           }
         },
         {
