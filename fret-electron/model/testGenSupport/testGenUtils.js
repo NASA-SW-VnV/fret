@@ -198,6 +198,8 @@ function runKind2(specName, filePath, propertyNames, callback) {
 function runNuSMV(filePath, traceLength, callback) {        
     var NuSMVcommandOptions = ['-s', '-source', 'mc_steps.scr', filePath];
     const NuSMV = spawn('NuSMV', NuSMVcommandOptions, {cwd: analysisPath});
+        
+    NuSMV.stdout.on('data', () => {});
 
     NuSMV.on('close', (code) => {
         optLog(`NuSMV process exited with code ${code}`);
@@ -276,6 +278,7 @@ function runNuSMV(filePath, traceLength, callback) {
                     fs.writeFileSync(analysisPath + 'trace.json', JSON.stringify(traceArray, null, 4))
                     callback(null, traceArray)
                 } catch (err) {
+                    NuSMV.kill();
                     callback(new Error('NuSMV trace parsing failed.'))
                 }   
                 break;
@@ -292,7 +295,8 @@ function runNuSMV(filePath, traceLength, callback) {
     })
 
     NuSMV.on('error', (err) => {
-        callback(err);
+        NuSMV.kill();
+        callback(new Error(`Failed to start NuSMV process: ${err.message}`));
     });
 }
 
