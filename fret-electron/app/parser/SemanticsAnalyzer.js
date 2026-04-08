@@ -345,34 +345,6 @@ function createVariableDescription(scope, condition, timing, response, stop_cond
 
 }
 
-const spawnSync = require('child_process').spawnSync;
-function get_LTL_from_old_SALT(SALT_string,SALT_env_var='SALT_HOME') {
-    if (constants.verboseSemanticsAnalyzer) console.log('\nSALT_env_var = ' + SALT_env_var + '\n');
-  	let SALT_assertion = "'" + SALT_string + "'";    
-    var LTL_string = 'Initial LTL string';
-  	var compilation = '';
-  	var stdout = '';
-  	try {
-        const saltPath = process.env[SALT_env_var];
-        if (!saltPath) {
-          throw new Error(`Environment variable ${SALT_env_var} is not set.`);
-        }
-  	    compilation = spawnSync('java', ['-cp', `${saltPath}/lib/antlr-2.7.5.jar:${saltPath}/bin/salt.jar:${saltPath}/bin`, 'de.tum.in.salt.Compiler', '-xtltl', '-f', SALT_assertion], {encoding: 'utf8'});
-        var salttemp = spawnSync('/tmp/salt_temp', {encoding: 'utf8'});
-        if (compilation.error || salttemp.error) {
-          throw new Error(`Error executing SALT: ${compilation.error || salttemp.error}`)
-        } else {
-          stdout = salttemp.stdout;
-        }
-  	} catch (error) {
-	    console.log('SemanticsAnalyzer:get_LTL_from_old_SALT error:');
-            console.log(error);
-	    console.log('SALT_string:\n' + SALT_string);
-  	}
-    if (constants.verboseSemanticsAnalyzer) console.log('SALT result: ' + JSON.stringify(stdout));
-    return stdout;
-  }
-
 function SALTExpr2SMV (expr) {
    return '(' + get_LTL_from_old_SALT('assert ' + expr).slice(8).trim() + ')';
 }
