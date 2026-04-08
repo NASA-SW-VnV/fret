@@ -9,44 +9,7 @@ function arrayLast(array) {
     return array[array.length - 1];
 }
 
-function getRandomIntBetween(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
 
-/* Produces intervals biased towards the front
-function getRandomIntervals(min,max,n) {
-    if (n === 0) return [];
-    if ((max - min) < 2 * (n - 1)) return null; // not enough room for n intervals
-    let l = getRandomIntBetween(min, max - 2 * (n - 1));
-    let r = getRandomIntBetween(l, max - 2 * (n - 1));
-    let rest = getRandomIntervals(r+2,max,n-1)
-    rest.unshift([l,r]);
-    return rest;
-}
-*/
-
-// Generate n increasing random intervals in [0..max]
-function genRandomIntervals(max,n) {
-    if (n === 0) return [];
-    if (max < 2 * (n - 1)) return null; // not enough room for n intervals
-    let endpoints = new Array(2*n);
-    let bad = true;
-    while (bad) {
-	for (i = 0; i < 2*n; i++) endpoints[i] = getRandomIntBetween(0,max);
-	endpoints.sort((a,b) => a - b);
-	bad = false;
-	for (i = 1; i < 2*n-2; i = i+2)
-	    if (endpoints[i+1] < endpoints[i] + 2) {
-		// successive intervals aren't separated by a point so try another setting
-		bad = true;
-		break;
-	    }
-    }
-    let intervals = [];
-    for (i = 0; i < 2*n-1; i = i + 2)
-	intervals.push([endpoints[i],endpoints[i+1]]);
-    return intervals;
-}
 
 // returns '[object thetype]' where thetype in ['Boolean', 'Number', 'String', 'Array', 'Object']
 function typeof2(x) {
@@ -451,9 +414,6 @@ function unreplace_special_chars(str) {
 
 module.exports = {
     arrayLast,
-    getRandomIntBetween,
-    //getRandomIntervals,
-    genRandomIntervals,
     typeof2,
     isArray,
     isVar,
