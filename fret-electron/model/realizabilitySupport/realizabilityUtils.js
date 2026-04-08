@@ -42,39 +42,37 @@ function deleteAnalysisFiles() {
 
 function checkDependenciesExist() {
   let missingDependencies = [];
-  try {
-    spawnSync('jkind', ['-help'], { encoding: 'utf8' });
-    spawnSync('jrealizability', ['-help'], { encoding: 'utf8' });
-  } catch(err) {
+  
+  var resjkind = spawnSync('jkind', ['-help'], { encoding: 'utf8' });
+  var resjrealizability = spawnSync('jrealizability', ['-help'], { encoding: 'utf8' });
+  if (resjkind.error || resjrealizability.error) {  
     missingDependencies.push('jkind');
   }
 
-  try {
-    spawnSync('kind2', ['-h'], { encoding: 'utf8' });
-  } catch(err) {
+  var reskind2 = spawnSync('kind2', ['-h'], { encoding: 'utf8' });
+  if (reskind2.error) {
     missingDependencies.push('kind2');
   }
 
-  try {
-    if ((process.platform === "linux") || (process.platform === "darwin")){
-      spawnSync('which', ['aeval'], { encoding: 'utf8' });
-    } else if (process.platform === "win32") {
-      spawnSync('where', ['aeval'], { encoding: 'utf8' });
-    } else {
-      throw "Unknown_OS"
-    }
+  var resAeval;
+  if ((process.platform === "linux") || (process.platform === "darwin")){
+    resAeval = spawnSync('which', ['aeval'], { encoding: 'utf8' });
+  } else if (process.platform === "win32") {
+    resAeval = spawnSync('where', ['aeval'], { encoding: 'utf8' });
+  } else {
+    resAeval = {error: "Unknown_OS"};
+  }
 
-  } catch (err) {
-    if (err !== "Unknown_OS"){
+  if (resAeval.error) {
+    if (resAeval.error !== "Unknown_OS"){
       missingDependencies.push('aeval');
     } else {
       missingDependencies.push('aeval - Unknown OS detected');
     }
   }
 
-  try {
-    spawnSync('z3', ['-h'], { encoding: 'utf8' });
-  } catch (err) {
+  var resZ3 = spawnSync('z3', ['-h'], { encoding: 'utf8' });
+  if (resZ3.error) {
     missingDependencies.push('z3');
   }
 

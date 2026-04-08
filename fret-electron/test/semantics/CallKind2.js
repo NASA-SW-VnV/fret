@@ -53,6 +53,9 @@ function runTest(nodeFilePath, inputFilePath, TraceLength){
   var formulaOutput = '';
   try {
     var output = spawnSync('kind2', ['-json', nodeFilePath, '--enable', 'interpreter', '--interpreter_input_file', inputFilePath], { maxBuffer: 50 * 1024 * 1024 });
+    if (output.error) {
+      throw output.error;
+    }
     //The generated Json file contains errors, so we remove the lines with the errors
     // break the output into an array of lines
     var lines = output.stdout.toString().split('\n');

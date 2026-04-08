@@ -146,7 +146,11 @@ exports.simulate = function simulate(model, filter, concurrent, onResult, onClos
 
 exports.check = function check() {
     try {
-        let checkLTLSim = spawnSync('ltlsim', ['-h'], { encoding: 'utf8' }).stdout.toString();
+        let rescheckLTLSim = spawnSync('ltlsim', ['-h'], { encoding: 'utf8' })
+        if (rescheckLTLSim.error) {
+            throw rescheckLTLSim.error;
+        }
+        let checkLTLSim = rescheckLTLSim.stdout;
 
         /* Strangely, calling nusmv -h to check for nusmv does not work here, 
         as nusmv appears to print its help output on stderr instead of stdout,
@@ -158,7 +162,10 @@ exports.check = function check() {
         ltlsim is available, but we can not detect missing ltlsim when nusmv is
         available. This will look like both tools are missing). */
         try {
-            spawnSync('ltlsim', ['-c'], { encoding: 'utf8' });                         
+            var rescheckNusmv = spawnSync('ltlsim', ['-c'], { encoding: 'utf8' }); 
+            if (rescheckNusmv.error) {
+                throw rescheckNusmv.error;
+            }                        
         } catch(nusmvError) {
             return {
                 ltlsim: checkLTLSim.length > 0,

@@ -29,12 +29,17 @@ function checkTestGenDependenciesExist() {
 
     for (const dependency of dependenciesToCheck) {
         try {
+            var result;
             if ((process.platform === "linux") || (process.platform === "darwin")){
-                spawnSync('which', [dependency]);
+                result = spawnSync('which', [dependency]);
             } else if (process.platform === "win32") {
-                spawnSync('where', [dependency]);
+                result = spawnSync('where', [dependency]);
             } else {
-                throw "Unknown_OS"
+                result = {error: "Unknown_OS"}
+            }
+
+            if (result.error) {
+                throw result.error;
             }
         } catch (err) {
         if (err !== "Unknown_OS"){

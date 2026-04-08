@@ -49,7 +49,11 @@ exports.callNuSMV2 = (file_name) => {
     var NuSMV_output = '';
     try {
       // -dcx is option to not print out counter-example
-	    NuSMV_output = spawnSync(constants.semanticsTestEngine, ['-dcx', '-source', batchFile], { maxBuffer: 50 * 1024 * 1024 }).stdout.toString();
+	    var resNuSMV = spawnSync(constants.semanticsTestEngine, ['-dcx', '-source', batchFile], { maxBuffer: 50 * 1024 * 1024 })
+      if (resNuSMV.error) {
+        throw resNuSMV.error;
+      }
+      NuSMV_output = resNuSMV.stdout.toString();
     } catch (error) {
 	console.log(error);
     }
@@ -80,7 +84,11 @@ exports.callNuSMV = (file_name) => {
     //console.log('command = ' + nu_command);
     var NuSMV_output = '';
     try {
-	NuSMV_output = spawnSync(constants.semanticsTestEngine, ['-dcx', file_name], { encoding: 'utf8' }).stdout.toString();
+      var resNuSMV = spawnSync(constants.semanticsTestEngine, ['-dcx', file_name], { maxBuffer: 50 * 1024 * 1024 });
+      if (resNuSMV.error) {
+        throw resNuSMV.error;
+      }
+      NuSMV_output = resNuSMV.stdout.toString();
     } catch (error) {
 	console.log(error);
     }

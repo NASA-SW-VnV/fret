@@ -357,8 +357,13 @@ function get_LTL_from_old_SALT(SALT_string,SALT_env_var='SALT_HOME') {
         if (!saltPath) {
           throw new Error(`Environment variable ${SALT_env_var} is not set.`);
         }
-  	    compilation = spawnSync('java', ['-cp', `${saltPath}/lib/antlr-2.7.5.jar:${saltPath}/bin/salt.jar:${saltPath}/bin`, 'de.tum.in.salt.Compiler', '-xtltl', '-f', SALT_assertion], {encoding: 'utf8'}).stdout;
-        stdout = spawnSync('/tmp/salt_temp', {encoding: 'utf8'}).stdout;
+  	    compilation = spawnSync('java', ['-cp', `${saltPath}/lib/antlr-2.7.5.jar:${saltPath}/bin/salt.jar:${saltPath}/bin`, 'de.tum.in.salt.Compiler', '-xtltl', '-f', SALT_assertion], {encoding: 'utf8'});
+        var salttemp = spawnSync('/tmp/salt_temp', {encoding: 'utf8'});
+        if (compilation.error || salttemp.error) {
+          throw new Error(`Error executing SALT: ${compilation.error || salttemp.error}`)
+        } else {
+          stdout = salttemp.stdout;
+        }
   	} catch (error) {
 	    console.log('SemanticsAnalyzer:get_LTL_from_old_SALT error:');
             console.log(error);
