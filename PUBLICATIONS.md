@@ -94,7 +94,7 @@ DSN-W 2023.
 
 ### Connection with runtime monitoring tools
 
-* Alexis Aurandt, Christopher Johannsen, Andreas Katis, Anastasia Mavridou, Phillip H Jones, Kristin Yvonne Rozier. From Natural Language Requirements to Runtime Monitors for Resource-Constrained Systems: Integrating FRET and R2U2, NFM 2026.
+* Alexis Aurandt, Christopher Johannsen, Andreas Katis, Anastasia Mavridou, Phillip H Jones, Kristin Yvonne Rozier. [From Natural Language Requirements to Runtime Monitors for Resource-Constrained Systems: Integrating FRET and R2U2](https://link.springer.com/chapter/10.1007/978-3-032-28079-4_4), NFM 2026.
 
 * Ivan Perez, Anastasia Mavridou, Tom Pressburger, Alwyn Goodloe, Dimitra Giannakopoulou. [Automated Translation of Natural Language Requirements to Runtime Monitors](https://link.springer.com/chapter/10.1007/978-3-030-99524-9_21), TACAS 2022.
 

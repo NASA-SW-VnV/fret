@@ -31,7 +31,7 @@ Interns
 External
 -------
 
-* Alexis Aurandt (Collins Aerospace)
+* [Alexis Aurandt](https://loonwerks.com/people/alexis-aurandt.html) (Collins Aerospace)
 
 FRET Before Open Sourcing
 -------------------------
